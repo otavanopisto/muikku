@@ -84,11 +84,17 @@ function Record(props: RecordProps) {
               className="voice-recorder__file-record-progressbar"
               completed={record.progress * 100}
               maxCompleted={100}
-              customLabel={`${Math.round(record.progress * 100)}%`}
+              isLabelVisible={false}
               bgColor="#de3211"
               baseBgColor="#f5f5f5"
               height="5px"
             />
+            <span className="audiofield__file-record-percentage audiofield__file-record-percentage--uploading">
+              {t("content.statusUploading", {
+                ns: "materials",
+                progress: Math.round(record.progress * 100),
+              })}
+            </span>
           </div>
         ) : null}
         {record.failed ? (

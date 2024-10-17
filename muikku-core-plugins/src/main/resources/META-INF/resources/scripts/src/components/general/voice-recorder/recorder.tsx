@@ -13,6 +13,7 @@ import "~/sass/elements/voice-recorder.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
 import ProgressBar from "@ramonak/react-progress-bar";
+import moment from "moment";
 
 /**
  * RecorderProps
@@ -27,13 +28,16 @@ interface RecorderProps extends WithTranslation {
   values?: RecordValue[];
 }
 
+// this is the maximum recording time in seconds
+const MAX_RECORDING_TIME_IN_SECONDS = 60 * 5;
+
 /**
  * Recorder
  * @param props props
  * @returns JSX.Element
  */
 function Recorder(props: RecorderProps) {
-  const { onIsRecordingChange, onChange, values } = props;
+  const { onIsRecordingChange, onChange, values, t } = props;
 
   const { recorderState, ...handlers }: UseRecorder = useRecorder({
     status: props.status,
@@ -85,15 +89,30 @@ function Recorder(props: RecorderProps) {
 
       <AnimateHeight duration={300} height={initRecording ? "auto" : 0}>
         <span className="voice-recorder__file-container voice-recorder__file-container--recording">
-          <ProgressBar
-            className="voice-recorder__file-record-progressbar"
-            completed={(seconds / 300) * 100}
-            maxCompleted={100}
-            customLabel={`${Math.round((seconds / 300) * 100)}%`}
-            bgColor="#de3211"
-            baseBgColor="#f5f5f5"
-            height="5px"
-          />
+          <span className="audiofield__file audiofield__file--recording">
+            <ProgressBar
+              className="voice-recorder__file-record-progressbar"
+              completed={(seconds / 300) * 100}
+              maxCompleted={100}
+              customLabel={`${Math.round((seconds / 300) * 100)}%`}
+              bgColor="#de3211"
+              baseBgColor="#f5f5f5"
+              height="5px"
+            />
+            <span className="audiofield__file-record-percentage audiofield__file-record-percentage--recording">
+              {t("notifications.recording", {
+                ns: "materials",
+                currentLength: moment("2015-01-01")
+                  .startOf("day")
+                  .seconds(seconds)
+                  .format("mm:ss"),
+                maxLength: moment("2015-01-01")
+                  .startOf("day")
+                  .seconds(MAX_RECORDING_TIME_IN_SECONDS)
+                  .format("mm:ss"),
+              })}
+            </span>
+          </span>
         </span>
       </AnimateHeight>
       <RecordingsList
