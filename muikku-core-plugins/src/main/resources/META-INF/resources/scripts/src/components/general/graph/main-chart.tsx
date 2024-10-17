@@ -335,33 +335,47 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
 
   /**
    * Handles toggling the visibility of a series in the chart.
-   * @param {MainChartFilter} field - The field to toggle
+   * @param e - The change event
    */
-  const handleSeriesToggle = useCallback((field: MainChartFilter) => {
-    const chart = chartRef.current;
-    if (chart) {
-      chart.series.each((series) => {
-        if (series.dataFields.valueY === field) {
-          series.hidden = !series.hidden;
-          if (series.hidden) {
-            series.hide();
-          } else {
-            series.show();
+  const handleSeriesFilterChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      // Get the value from the event target. Expecting a string of the field name (A.K.A. MainChartFilter)
+      const value = e.target.value as MainChartFilter;
+      const chart = chartRef.current;
+
+      // Update the series visibility
+      if (chart) {
+        chart.series.each((series) => {
+          if (series.dataFields.valueY === value) {
+            series.hidden = !series.hidden;
+            if (series.hidden) {
+              series.hide();
+            } else {
+              series.show();
+            }
           }
-        }
-      });
-    }
-    setVisibleSeries((prev) =>
-      prev.includes(field) ? prev.filter((f) => f !== field) : [...prev, field]
-    );
-  }, []);
+        });
+      }
+
+      // Update the visible series state
+      setVisibleSeries((prev) =>
+        prev.includes(value)
+          ? prev.filter((f) => f !== value)
+          : [...prev, value]
+      );
+    },
+    []
+  );
 
   /**
    * Handles changing the visibility of a workspace in the chart.
-   * @param {number} visibleWorkspaceId - The ID of the workspace to toggle
+   * @param e - The change event
    */
   const handleWorkspaceFilterChange = useCallback(
-    (visibleWorkspaceId: number) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      // Get the value from the event target. Expecting a number
+      const visibleWorkspaceId = parseInt(e.target.value);
+
       setVisibleWorkspaceData((prev) =>
         prev.includes(visibleWorkspaceId)
           ? prev.filter((id) => id !== visibleWorkspaceId)
@@ -380,6 +394,8 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
       }
 
       const chart = chartRef.current;
+
+      // Update chart data
       if (chart) {
         chart.data = processChartData(
           activityLogs,
@@ -416,27 +432,23 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
 
   const filterList = (
     <div className={"filter-items filter-items--graph-filter"}>
-      {memoizedSeriesConfig.map(({ name, field, modifier }) => {
-        const ifChecked = visibleSeries.includes(field);
-        return (
-          <div
-            className={"filter-item filter-item--" + modifier}
-            key={"l-" + field}
-          >
-            <input
-              id={`filter-` + field}
-              type="checkbox"
-              onClick={() => {
-                handleSeriesToggle(field);
-              }}
-              defaultChecked={ifChecked}
-            />
-            <label htmlFor={`filter-` + field} className="filter-item__label">
-              {name}
-            </label>
-          </div>
-        );
-      })}
+      {memoizedSeriesConfig.map(({ name, field, modifier }) => (
+        <div
+          className={"filter-item filter-item--" + modifier}
+          key={"l-" + field}
+        >
+          <input
+            id={`filter-` + field}
+            type="checkbox"
+            value={field}
+            onChange={handleSeriesFilterChange}
+            checked={visibleSeries.includes(field)}
+          />
+          <label htmlFor={`filter-` + field} className="filter-item__label">
+            {name}
+          </label>
+        </div>
+      ))}
     </div>
   );
 
@@ -444,25 +456,23 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
     <Dropdown
       persistent
       modifier={"graph-filter"}
-      items={memoizedSeriesConfig.map(({ field, modifier, name }) => {
-        const isChecked = visibleSeries.includes(field);
-        return (
-          <div
-            className={"filter-item filter-item--" + modifier}
-            key={"w-" + field}
-          >
-            <input
-              id={`filter-` + field}
-              type="checkbox"
-              onClick={() => handleSeriesToggle(field)}
-              defaultChecked={isChecked}
-            />
-            <label htmlFor={`filter-` + field} className="filter-item__label">
-              {name}
-            </label>
-          </div>
-        );
-      })}
+      items={memoizedSeriesConfig.map(({ field, modifier, name }) => (
+        <div
+          className={"filter-item filter-item--" + modifier}
+          key={"w-" + field}
+        >
+          <input
+            id={`filter-` + field}
+            type="checkbox"
+            value={field}
+            onChange={handleSeriesFilterChange}
+            checked={visibleSeries.includes(field)}
+          />
+          <label htmlFor={`filter-` + field} className="filter-item__label">
+            {name}
+          </label>
+        </div>
+      ))}
     >
       <span
         className={
@@ -482,10 +492,9 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
       >
         <input
           id={`filterWorkspace` + workspace.id}
+          value={workspace.id}
           type="checkbox"
-          onClick={() => {
-            handleWorkspaceFilterChange(workspace.id);
-          }}
+          onChange={handleWorkspaceFilterChange}
           checked={visibleWorkspaceData.includes(workspace.id)}
         />
         <label
