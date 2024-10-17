@@ -231,56 +231,52 @@ class DependantApplication extends React.Component<
       const state = await this.loadPedagogyFormState(dependantUserEntityId);
 
       this.setState({
-        activeTab: "SUMMARY",
         pedagogyFormState: state,
       });
     }
+
+    this.setState({
+      activeTab: "SUMMARY",
+    });
   };
   /**
    * componentDidUpdate
    */
   async componentDidUpdate() {
-    if (!window.location.hash && this.props.dependants.state === "READY") {
-      // Dependants are loaded, but there's none selected, we pick the first one
-
-      const selectedDependantIdentifier =
-        this.props.dependants.list[0].identifier;
-      window.location.hash = selectedDependantIdentifier;
-
-      const dependantUserEntityId = this.props.dependants.list[0].userEntityId;
-
-      // we want the hops phase to be set for the newly set selected dependant
-      if (dependantUserEntityId) {
-        this.props.setHopsPhase(dependantUserEntityId);
-        this.props.loadStudentPedagogyFormAccess(dependantUserEntityId);
-
-        // Then we need the pedagoy form state, even if it's not available as of yet
-        // It will be set in the component state for the users who have it available and it
-        // cannot be removed from the state, only overridden
-        const state = await this.loadPedagogyFormState(dependantUserEntityId);
-        this.setState({
-          pedagogyFormState: state,
-        });
-      }
-    }
-
     if (window.location.hash) {
       const currentDependantIdentifier = this.getCurrentDependantIdentifier();
+      const dependantUserEntityId = this.getDependantUserEntityId(
+        currentDependantIdentifier
+      );
 
       // If there's no hopsPhase set and the user has a phased HOPS
       if (
         !this.props.hops.hopsPhase &&
         COMPULSORY_HOPS_VISIBLITY.includes(
           this.getDependantStudyProgramme(currentDependantIdentifier)
-        )
+        ) &&
+        dependantUserEntityId
       ) {
-        const dependantUserEntityId = this.getDependantUserEntityId(
-          currentDependantIdentifier
-        );
+        this.props.setHopsPhase(dependantUserEntityId);
+      }
 
-        if (dependantUserEntityId) {
-          this.props.setHopsPhase(dependantUserEntityId);
-        }
+      // If there's no pedagogy form state, we load it
+      if (
+        !this.state.pedagogyFormState &&
+        !this.state.loading &&
+        dependantUserEntityId
+      ) {
+        this.props.loadStudentPedagogyFormAccess(dependantUserEntityId);
+
+        this.setState({
+          loading: true,
+        });
+
+        const state = await this.loadPedagogyFormState(dependantUserEntityId);
+        this.setState({
+          pedagogyFormState: state,
+          loading: false,
+        });
       }
     }
   }
