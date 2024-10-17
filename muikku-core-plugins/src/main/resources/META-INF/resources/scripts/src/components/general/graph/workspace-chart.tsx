@@ -324,52 +324,56 @@ const WorkspaceChart: React.FC<MainChartProps> = ({ workspace }) => {
 
   /**
    * Handles toggling the visibility of a series in the chart.
-   * @param {MainChartFilter} field - The field to toggle
+   * @param e - The change event
    */
-  const handleSeriesToggle = useCallback((field: MainChartFilter) => {
-    const chart = chartRef.current;
-    if (chart) {
-      chart.series.each((series) => {
-        if (series.dataFields.valueY === field) {
-          series.hidden = !series.hidden;
-          if (series.hidden) {
-            series.hide();
-          } else {
-            series.show();
+  const handleSeriesFilterChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      // Get the value from the event target. Expecting a string of the field name (A.K.A. MainChartFilter)
+      const field = e.target.value as MainChartFilter;
+      const chart = chartRef.current;
+
+      if (chart) {
+        chart.series.each((series) => {
+          if (series.dataFields.valueY === field) {
+            series.hidden = !series.hidden;
+            if (series.hidden) {
+              series.hide();
+            } else {
+              series.show();
+            }
           }
-        }
-      });
-    }
-    setVisibleSeries((prev) =>
-      prev.includes(field) ? prev.filter((f) => f !== field) : [...prev, field]
-    );
-  }, []);
+        });
+      }
+      setVisibleSeries((prev) =>
+        prev.includes(field)
+          ? prev.filter((f) => f !== field)
+          : [...prev, field]
+      );
+    },
+    []
+  );
 
   const filterList = (
     <div className={"filter-items filter-items--graph-filter"}>
       {memoizedSeriesConfig
         .filter(({ field }) => visibleFilters.includes(field))
-        .map(({ name, field, modifier }) => {
-          const ifChecked = visibleSeries.includes(field);
-          return (
-            <div
-              className={"filter-item filter-item--" + modifier}
-              key={"l-" + field}
-            >
-              <input
-                id={`filter-` + field}
-                type="checkbox"
-                onClick={() => {
-                  handleSeriesToggle(field);
-                }}
-                defaultChecked={ifChecked}
-              />
-              <label htmlFor={`filter-` + field} className="filter-item__label">
-                {name}
-              </label>
-            </div>
-          );
-        })}
+        .map(({ name, field, modifier }) => (
+          <div
+            className={"filter-item filter-item--" + modifier}
+            key={"l-" + field}
+          >
+            <input
+              id={`filter-` + field}
+              type="checkbox"
+              value={field}
+              onChange={handleSeriesFilterChange}
+              checked={visibleSeries.includes(field)}
+            />
+            <label htmlFor={`filter-` + field} className="filter-item__label">
+              {name}
+            </label>
+          </div>
+        ))}
     </div>
   );
 
@@ -379,25 +383,23 @@ const WorkspaceChart: React.FC<MainChartProps> = ({ workspace }) => {
       modifier={"graph-filter"}
       items={memoizedSeriesConfig
         .filter(({ field }) => visibleFilters.includes(field))
-        .map(({ field, modifier, name }) => {
-          const isChecked = visibleSeries.includes(field);
-          return (
-            <div
-              className={"filter-item filter-item--" + modifier}
-              key={"w-" + field}
-            >
-              <input
-                id={`filter-` + field}
-                type="checkbox"
-                onClick={() => handleSeriesToggle(field)}
-                defaultChecked={isChecked}
-              />
-              <label htmlFor={`filter-` + field} className="filter-item__label">
-                {name}
-              </label>
-            </div>
-          );
-        })}
+        .map(({ field, modifier, name }) => (
+          <div
+            className={"filter-item filter-item--" + modifier}
+            key={"w-" + field}
+          >
+            <input
+              id={`filter-` + field}
+              type="checkbox"
+              value={field}
+              onChange={handleSeriesFilterChange}
+              checked={visibleSeries.includes(field)}
+            />
+            <label htmlFor={`filter-` + field} className="filter-item__label">
+              {name}
+            </label>
+          </div>
+        ))}
     >
       <span
         className={
