@@ -13,6 +13,7 @@ import "~/sass/elements/voice-recorder.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
 import ProgressBar from "@ramonak/react-progress-bar";
+import moment from "moment";
 
 /**
  * RecorderProps
@@ -89,7 +90,17 @@ function Recorder(props: RecorderProps) {
             className="voice-recorder__file-record-progressbar"
             completed={(seconds / 300) * 100}
             maxCompleted={100}
-            customLabel={`${Math.round((seconds / 300) * 100)}%`}
+            customLabel={props.t("notifications.recording", {
+              ns: "materials",
+              currentLength: moment("2015-01-01")
+                .startOf("day")
+                .seconds(seconds)
+                .format("mm:ss"),
+              maxLength: moment("2015-01-01")
+                .startOf("day")
+                .seconds(300)
+                .format("mm:ss"),
+            })}
             bgColor="#de3211"
             baseBgColor="#f5f5f5"
             height="5px"
