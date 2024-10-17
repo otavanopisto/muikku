@@ -116,12 +116,12 @@ class DependantApplication extends React.Component<
     window.location.hash.replace("#", "").split("/")[0];
   /**
    * loadPedagogyFormState
-   * @param identifier identifier
+   * @param userEntityId userEntityId
    */
-  loadPedagogyFormState = async (identifier: string) => {
+  loadPedagogyFormState = async (userEntityId: number) => {
     const pedagogyApi = MApi.getPedagogyApi();
     return await pedagogyApi.getPedagogyFormState({
-      studentIdentifier: identifier,
+      userEntityId: userEntityId,
     });
   };
 
@@ -180,6 +180,18 @@ class DependantApplication extends React.Component<
   };
 
   /**
+   * getDependantUserEntityId
+   * @param dependantId string user identifier
+   * @returns the user entity id of the dependant
+   */
+  getDependantUserEntityId = (dependantId: string) => {
+    const dependant = this.props.dependants.list.find(
+      (dependant) => dependant.identifier === dependantId
+    );
+    return dependant?.userEntityId;
+  };
+
+  /**
    * onTabChange
    * @param id id
    * @param hash hash
@@ -206,20 +218,23 @@ class DependantApplication extends React.Component<
     window.location.hash = option.value;
     this.props.clearDependantState();
 
-    // After clearing the state,
-    // we reset everything for the newly selected user
-    this.props.loadStudentPedagogyFormAccess(option.value, true);
-    const state = await this.loadPedagogyFormState(option.value);
     const dependantUserEntityId = this.props.dependants.list.find(
       (dependant) => dependant.identifier === option.value
     )?.userEntityId;
+
     if (dependantUserEntityId) {
       this.props.setHopsPhase(dependantUserEntityId);
+
+      // After clearing the state,
+      // we reset everything for the newly selected user
+      this.props.loadStudentPedagogyFormAccess(dependantUserEntityId, true);
+      const state = await this.loadPedagogyFormState(dependantUserEntityId);
+
+      this.setState({
+        activeTab: "SUMMARY",
+        pedagogyFormState: state,
+      });
     }
-    this.setState({
-      activeTab: "SUMMARY",
-      pedagogyFormState: state,
-    });
   };
   /**
    * componentDidUpdate
@@ -237,18 +252,16 @@ class DependantApplication extends React.Component<
       // we want the hops phase to be set for the newly set selected dependant
       if (dependantUserEntityId) {
         this.props.setHopsPhase(dependantUserEntityId);
-      }
+        this.props.loadStudentPedagogyFormAccess(dependantUserEntityId);
 
-      this.props.loadStudentPedagogyFormAccess(selectedDependantIdentifier);
-      // Then we need the pedagoy form state, even if it's not available as of yet
-      // It will be set in the component state for the users who have it available and it
-      // cannot be removed from the state, only overridden
-      const state = await this.loadPedagogyFormState(
-        selectedDependantIdentifier
-      );
-      this.setState({
-        pedagogyFormState: state,
-      });
+        // Then we need the pedagoy form state, even if it's not available as of yet
+        // It will be set in the component state for the users who have it available and it
+        // cannot be removed from the state, only overridden
+        const state = await this.loadPedagogyFormState(dependantUserEntityId);
+        this.setState({
+          pedagogyFormState: state,
+        });
+      }
     }
 
     if (window.location.hash) {
@@ -261,9 +274,9 @@ class DependantApplication extends React.Component<
           this.getDependantStudyProgramme(currentDependantIdentifier)
         )
       ) {
-        const dependantUserEntityId = this.props.dependants.list.find(
-          (dependant) => dependant.identifier === currentDependantIdentifier
-        )?.userEntityId;
+        const dependantUserEntityId = this.getDependantUserEntityId(
+          currentDependantIdentifier
+        );
 
         if (dependantUserEntityId) {
           this.props.setHopsPhase(dependantUserEntityId);
@@ -283,13 +296,18 @@ class DependantApplication extends React.Component<
       // Otherwise the sorting out of the hash and loading this form
       // will be done in the componendDidUpdate state
       const currentDependantIdentifier = this.getCurrentDependantIdentifier();
-      this.props.loadStudentPedagogyFormAccess(currentDependantIdentifier);
-      const state = await this.loadPedagogyFormState(
+
+      const dependantUserEntityId = this.getDependantUserEntityId(
         currentDependantIdentifier
       );
-      this.setState({
-        pedagogyFormState: state,
-      });
+
+      if (dependantUserEntityId) {
+        this.props.loadStudentPedagogyFormAccess(dependantUserEntityId);
+        const state = await this.loadPedagogyFormState(dependantUserEntityId);
+        this.setState({
+          pedagogyFormState: state,
+        });
+      }
     }
     /**
      * If page is refreshed, we need to check hash which
@@ -336,6 +354,9 @@ class DependantApplication extends React.Component<
       count: this.props.dependants ? this.props.dependants.list.length : 0,
     });
     const selectedDependantIdentifier = this.getCurrentDependantIdentifier();
+    const selectedDependantUserEntityId = this.getDependantUserEntityId(
+      selectedDependantIdentifier
+    );
 
     const dependants = this.props.dependants
       ? this.props.dependants.list.map((student) => ({
@@ -433,7 +454,7 @@ class DependantApplication extends React.Component<
           <ApplicationPanelBody modifier="tabs">
             <UpperSecondaryPedagogicalSupportWizardForm
               userRole="STUDENT_PARENT"
-              studentId={selectedDependantIdentifier}
+              studentUserEntityId={selectedDependantUserEntityId}
             />
           </ApplicationPanelBody>
         ),
