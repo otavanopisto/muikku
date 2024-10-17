@@ -200,7 +200,9 @@ class StudentDialog extends React.Component<
             userRole={userRoleForForm(
               this.props.guider.currentStudent.pedagogyFormAvailable
             )}
-            studentId={this.props.guider.currentStudent?.basic?.id}
+            studentUserEntityId={
+              this.props.guider.currentStudent.basic.userEntityId
+            }
           />
         ),
       });
