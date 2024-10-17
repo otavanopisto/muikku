@@ -47,6 +47,7 @@ const GENERAL_STUDIES_SUBJECTS = [
   "UE",
   "UO",
   "YH",
+  "PS",
 ];
 
 /**
