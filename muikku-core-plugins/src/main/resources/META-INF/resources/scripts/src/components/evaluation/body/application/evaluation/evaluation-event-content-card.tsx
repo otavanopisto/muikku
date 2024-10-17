@@ -3,7 +3,7 @@ import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
 import Link from "~/components/general/link";
 import { StateType } from "~/reducers/index";
-import { Dispatch, bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
 import "~/sass/elements/rich-text.scss";
@@ -388,7 +388,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({}, dispatch);
 }
 

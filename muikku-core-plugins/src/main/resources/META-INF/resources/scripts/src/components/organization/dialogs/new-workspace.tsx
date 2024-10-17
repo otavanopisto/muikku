@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Dialog, {
   DialogRow,
   DialogRowHeader,
@@ -29,7 +29,7 @@ import {
   CreateWorkspaceTriggerType,
 } from "~/actions/workspaces/organization";
 import { StateType } from "~/reducers";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import ApplicationList, {
   ApplicationListItemContentWrapper,
   ApplicationListItem,
@@ -1030,7 +1030,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadStaff: loadSelectorStaff,

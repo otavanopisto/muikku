@@ -2,10 +2,10 @@ import * as React from "react";
 import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions/index";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import FileDeleteDialog from "../../../dialogs/file-delete";
 import FileUploader from "~/components/general/file-uploader";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { UserFileType } from "~/reducers/user-index";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
@@ -40,7 +40,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const isAtMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
   const [navigationActive, setNavigationActive] =
     React.useState<studyHistoryAside>("history");
-  const { t } = useTranslation("guider");
+  const { t } = useTranslation(["guider", "materials"]);
 
   if (
     !props.guider.currentStudent ||
@@ -98,7 +98,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         onClick={() => handleNavigationClick("library")}
         isActive={navigationActive === "library" ? true : false}
       >
-        {t("labels.library")}
+        {t("labels.library", { ns: "guider" })}
       </NavigationElement>
     </Navigation>
   );
@@ -124,7 +124,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         onFileSuccess={(file: File, data: UserFileType) => {
           addFileToCurrentStudent(data);
         }}
-        hintText={t("content.addAttachmentInstruction")}
+        hintText={t("content.addAttachmentInstruction", { ns: "guider" })}
         fileTooLargeErrorText={t("notifications.sizeTooLarge", { ns: "files" })}
         files={files}
         fileIdKey="id"
@@ -134,7 +134,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         modifier="guider"
         emptyText={t("content.empty", { ns: "files" })}
         uploadingTextProcesser={(percent: number) =>
-          t("notifications.uploading", { ns: "files", progress: percent })
+          t("content.statusUploading", { ns: "materials", progress: percent })
         }
         notificationOfSuccessText={t("notifications.uploadSuccess", {
           ns: "files",
@@ -241,7 +241,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ addFileToCurrentStudent }, dispatch);
 }
 

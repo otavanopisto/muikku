@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import DatePicker from "react-datepicker";
@@ -11,7 +11,7 @@ import {
   saveProfileProperty,
   SaveProfilePropertyTriggerType,
 } from "~/actions/main-function/profile";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -486,7 +486,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { saveProfileProperty, displayNotification },
     dispatch

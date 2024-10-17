@@ -1,6 +1,6 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import {
   MessagesStateType,
   MessagesStatePatch,
@@ -159,7 +159,7 @@ export type REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS = SpecificActionType<
 const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
   function updateUnreadMessageThreadsCount() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       if (!getState().status.loggedIn) {
@@ -205,7 +205,7 @@ export interface LoadLastMessageThreadsFromSeverTriggerType {
 const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType =
   function loadLastMessageThreadsFromServer(maxResults) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const communicatorApi = MApi.getCommunicatorApi();
@@ -412,7 +412,7 @@ const toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType =
  */
 const sendMessage: SendMessageTriggerType = function sendMessage(message) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const recepientWorkspaces = message.to
@@ -721,7 +721,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
     callback
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       if (!dontLockToolbar) {
@@ -863,7 +863,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
 const toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType =
   function toggleMessageThreadsReadStatus(threads) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "LOCK_TOOLBAR",
@@ -901,7 +901,7 @@ const toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType 
 const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
   function deleteSelectedMessageThreads() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       dispatch({
@@ -994,7 +994,7 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
 const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
   function deleteCurrentMessageThread() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       dispatch({
@@ -1100,7 +1100,7 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
 const loadMessageThread: LoadMessageThreadTriggerType =
   function loadMessageThread(location, messageId) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1205,7 +1205,7 @@ const loadMessageThread: LoadMessageThreadTriggerType =
 const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
   function loadNewlyReceivedMessage() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1307,7 +1307,7 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
  */
 const loadSignature: LoadSignatureTriggerType = function loadSignature() {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const communicatorApi = MApi.getCommunicatorApi();
@@ -1346,7 +1346,7 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
   newSignature
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -1452,7 +1452,7 @@ export interface RemoveMessagesNavigationLabelTriggerType {
 const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
   function loadMessagesNavigationLabels(callback) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const communicatorApi = MApi.getCommunicatorApi();
@@ -1496,7 +1496,7 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
 const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
   function addMessagesNavigationLabel(name) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const communicatorApi = MApi.getCommunicatorApi();
@@ -1562,7 +1562,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
 const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
   function updateMessagesNavigationLabel(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       if (!data.newName) {
@@ -1642,7 +1642,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
 const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
   function removeMessagesNavigationLabel(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const communicatorApi = MApi.getCommunicatorApi();
@@ -1696,7 +1696,7 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
 const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
   function restoreSelectedMessageThreads() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       dispatch({
@@ -1777,7 +1777,7 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
 const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
   function restoreCurrentMessageThread() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       dispatch({

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "~/reducers";
 import EvaluationToolbar from "./application/toolbar";
@@ -10,7 +10,7 @@ import {
   SetEvaluationSelectedWorkspace,
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
 import { WorkspaceDataType } from "../../../reducers/workspaces/index";
 import { AnyActionType } from "~/actions";
@@ -251,7 +251,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
 }
 

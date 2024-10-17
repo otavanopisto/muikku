@@ -7,7 +7,7 @@ import {
   OrganizationStudentsSummary,
   OrganizationWorkspaceSummary,
 } from "~/generated/client";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 
 /**
@@ -46,7 +46,7 @@ export type UPDATE_SUMMARY_STATUS = SpecificActionType<
 const loadOrganizationSummary: LoadSummaryTriggerType =
   function loadOrganizationSummary() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const organizationtApi = MApi.getOrganizationApi();

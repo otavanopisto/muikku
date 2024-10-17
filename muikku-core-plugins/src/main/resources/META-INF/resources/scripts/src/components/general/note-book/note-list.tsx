@@ -2,9 +2,9 @@ import * as React from "react";
 import { NoteBookState } from "~/reducers/notebook/notebook";
 import { IconButton } from "../button";
 import AnimateHeight from "react-animate-height";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import CkeditorContentLoader from "../../base/ckeditor-loader/content";
 import Button from "../button";
@@ -44,7 +44,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({}, dispatch);
 }
 

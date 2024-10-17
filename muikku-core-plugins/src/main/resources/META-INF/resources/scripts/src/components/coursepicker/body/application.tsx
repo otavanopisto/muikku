@@ -1,5 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
+import { Action, Dispatch } from "redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Toolbar from "./application/toolbar";
 import CoursepickerWorkspaces from "./application/courses";
@@ -167,7 +168,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

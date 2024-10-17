@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Dialog, {
   DialogRow,
   DialogRowHeader,
@@ -18,7 +18,7 @@ import {
   CreateUsergroupTriggerType,
 } from "~/actions/main-function/users";
 import { StateType } from "~/reducers";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import AutofillSelector, {
   UiSelectItem,
 } from "~/components/base/input-select-autofill";
@@ -706,7 +706,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadStudents: loadSelectorStudents,

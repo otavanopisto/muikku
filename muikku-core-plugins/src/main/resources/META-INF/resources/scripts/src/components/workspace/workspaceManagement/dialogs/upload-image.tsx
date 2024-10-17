@@ -1,6 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -13,14 +13,14 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   updateCurrentWorkspaceImagesB64,
   UpdateCurrentWorkspaceImagesB64TriggerType,
 } from "~/actions/workspaces";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Slider = require("react-rangeslider").default;
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 import "~/sass/elements/rangeslider.scss";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -180,7 +180,6 @@ class UploadImageDialog extends React.Component<
           <div className="dialog__slider">
             <Slider
               value={this.state.scale}
-              orientation="horizontal"
               max={200}
               min={100}
               onChange={this.onChangeScale}
@@ -235,7 +234,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { displayNotification, updateCurrentWorkspaceImagesB64 },
     dispatch

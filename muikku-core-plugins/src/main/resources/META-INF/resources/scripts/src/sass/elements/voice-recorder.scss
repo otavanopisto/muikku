@@ -144,8 +144,9 @@
   margin: 5px;
 }
 
-.voice-recorder__file-container--recording {
-  margin: 10px;
+.voice-recorder__file-container--recording,
+.voice-recorder__file-container--uploading {
+  margin: 10px 5px;
 }
 
 .voice-recorder__file {
@@ -174,24 +175,20 @@
   height: auto;
 }
 
-.voice-recorder__file-upload-progressbar {
+.voice-recorder__file-record-percentage {
   @include text;
 
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-weight: 400;
-  height: auto;
+  color: $color-recording;
+  line-height: 1;
+  margin: 10px 0 5px;
 }
 
-.voice-recorder__file-record-percentage {
-  line-height: 1;
-  margin: 0 0 5px;
+.voice-recorder__file-record-percentage--recording {
+  color: $color-recording;
 }
 
-.voice-recorder__file-upload-percentage {
-  line-height: 1;
-  margin: 0 0 5px;
+.voice-recorder__file-record-percentage--uploading {
+  color: $color-uploading;
 }
 
 .voice-recorder__download-button {

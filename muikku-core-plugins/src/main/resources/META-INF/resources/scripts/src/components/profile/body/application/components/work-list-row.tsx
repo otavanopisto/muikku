@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { ButtonPill } from "~/components/general/button";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
@@ -12,7 +12,7 @@ import {
   editProfileWorklistItem,
   EditProfileWorklistItemTriggerType,
 } from "~/actions/main-function/profile";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
 import moment from "moment";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -291,7 +291,7 @@ class WorkListRow extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { deleteProfileWorklistItem, editProfileWorklistItem },
     dispatch

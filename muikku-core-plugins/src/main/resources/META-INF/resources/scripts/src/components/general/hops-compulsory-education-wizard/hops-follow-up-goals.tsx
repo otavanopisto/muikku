@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import {
   StudySector,
   FollowUpStudies,
@@ -24,6 +24,7 @@ import AnimateHeight from "react-animate-height";
 import { updateFollowUpData, useFollowUp } from "./context/follow-up-context";
 import { HopsGoals } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 /**
  * FollowUpGoalsProps
@@ -289,7 +290,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return { displayNotification };
 }
 

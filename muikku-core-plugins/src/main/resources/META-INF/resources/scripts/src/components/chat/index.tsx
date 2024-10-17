@@ -11,9 +11,9 @@ import ChatCloseAndBlockDiscussionDialog from "./dialogs/chat-close-and-block-di
 import ChatDeleteRoomDialog from "./dialogs/chat-room-delete-dialog";
 import ChatUnreadMsgCounter from "./chat-unread-msg-counter";
 import { ChatUserInfoProvider } from "./context/chat-user-info-context";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -128,7 +128,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       displayNotification,

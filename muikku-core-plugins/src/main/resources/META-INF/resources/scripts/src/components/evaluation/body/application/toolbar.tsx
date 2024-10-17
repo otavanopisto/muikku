@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/evaluation.scss";
 import { ButtonPill } from "~/components/general/button";
@@ -9,7 +9,7 @@ import {
   ApplicationPanelToolbarActionsMain,
 } from "~/components/general/application-panel/application-panel";
 import { SearchFormElement } from "~/components/general/form-element";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { EvaluationFilters } from "~/@types/evaluation";
 import {
@@ -194,7 +194,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { updateEvaluationSearch, setEvaluationFilters },
     dispatch

@@ -4,8 +4,8 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { MatriculationFormType } from "~/@types/shared";
 import MatriculationExaminationWizard from "~/components/general/matriculationExaminationWizard";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import {
   UpdateMatriculationExaminationTriggerType,
@@ -88,7 +88,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ updateMatriculationExamination }, dispatch);
 }
 
