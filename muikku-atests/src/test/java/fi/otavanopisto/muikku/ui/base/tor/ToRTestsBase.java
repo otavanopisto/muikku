@@ -101,9 +101,9 @@ public class ToRTestsBase extends AbstractUITest {
           .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, date)
           .mockCompositeCourseAssessmentRequests()
           .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, false, course1, student, admin.getId(), date, true)
-          .mockStaffCompositeAssessmentRequests()
+          .mockStaffCompositeCourseAssessmentRequests()
           .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, false, date)
-          .mockCourseAssessments(course1, courseStudent, admin, true)
+          .mockCourseAssessments(course1, courseStudent, admin)
           .mockStudentCourseStats(student.getId(), 10).build();
         
         logout();
@@ -185,7 +185,7 @@ public class ToRTestsBase extends AbstractUITest {
         .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
         .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), date, false)
-        .mockStaffCompositeAssessmentRequests();
+        .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
         mockBuilder.mockLogin(admin);
