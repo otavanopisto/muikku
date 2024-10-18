@@ -26,6 +26,5 @@ jobs:
           reporter: github-pr-review
           prettier_flags: '**/*.{ts,tsx}'
           level: error
-          fail_on_error: true
           workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 

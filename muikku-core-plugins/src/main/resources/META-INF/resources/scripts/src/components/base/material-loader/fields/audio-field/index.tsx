@@ -435,7 +435,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
         // we need to map them
         emptyData = this.state.values.map((value, index) => (
           // if the value is not uploading, we set it as static
-          <span className="audiofield__file-container" key={index} />
+          <div className="audiofield__file-container" key={index} />
         ));
       }
       return (
@@ -446,19 +446,19 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
               context: "audio",
             })}
           />
-          <span className="audiofield-wrapper rs_skip_always">
-            <span className="audiofield">
+          <div className="audiofield-wrapper rs_skip_always">
+            <div className="audiofield">
               {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
                 <input type="file" />
               ) : null}
               {!this.props.readOnly && this.state.supportsMediaAPI() ? (
-                <span className="audiofield__controls" />
+                <div className="audiofield__controls" />
               ) : null}
               {this.state.values.length > 0 ? (
-                <span className="audiofield__files-container">{emptyData}</span>
+                <div className="audiofield__files-container">{emptyData}</div>
               ) : null}
-            </span>
-          </span>
+            </div>
+          </div>
         </>
       );
     }
@@ -474,7 +474,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
         if (!value.uploading) {
           // if the value is not uploading, we set it as static
           return (
-            <span className="audiofield__file-container" key={index}>
+            <div className="audiofield__file-container" key={index}>
               <AudioPoolComponent
                 className="audiofield__file"
                 controls
@@ -498,28 +498,28 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                   />
                 </ConfirmRemoveDialog>
               ) : null}
-            </span>
+            </div>
           );
         } else if (value.failed) {
           // if the value failed we add a message, you can get the value name there so use it to say which file
           return (
-            <span className="audiofield__file-container" key={index}>
-              <span className="audiofield__file audiofield__file--FAILED-TO-UPLOAD">
+            <div className="audiofield__file-container" key={index}>
+              <div className="audiofield__file audiofield__file--FAILED-TO-UPLOAD">
                 {t("notifications.saveError", {
                   ns: "materials",
                   context: "audio",
                 })}
-              </span>
-            </span>
+              </div>
+            </div>
           );
         } else {
           // if the value is uploading
           return (
-            <span
+            <div
               className="audiofield__file-container audiofield__file-container--uploading"
               key={index}
             >
-              <span className="audiofield__file audiofield__file--uploading">
+              <div className="audiofield__file audiofield__file--uploading">
                 <ProgressBar
                   className="audiofield__file-upload-progressbar"
                   completed={value.progress * 100}
@@ -529,14 +529,14 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                   baseBgColor="#f5f5f5"
                   height="5px"
                 />
-                <span className="audiofield__file-record-percentage audiofield__file-record-percentage--uploading">
+                <div className="audiofield__file-record-percentage audiofield__file-record-percentage--uploading">
                   {t("content.statusUploading", {
                     ns: "materials",
                     progress: Math.round(value.progress * 100),
                   })}
-                </span>
-              </span>
-            </span>
+                </div>
+              </div>
+            </div>
           );
         }
       });
@@ -545,8 +545,8 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
     {
       this.state.recording
         ? (recordingInContainer = (
-            <span className="audiofield__file-container audiofield__file-container--recording">
-              <span className="audiofield__file audiofield__file--recording">
+            <div className="audiofield__file-container audiofield__file-container--recording">
+              <div className="audiofield__file audiofield__file--recording">
                 <ProgressBar
                   className="audiofield__file-upload-progressbar"
                   completed={
@@ -558,7 +558,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                   baseBgColor="#f5f5f5"
                   height="5px"
                 />
-                <span className="audiofield__file-record-percentage audiofield__file-record-percentage--recording">
+                <div className="audiofield__file-record-percentage audiofield__file-record-percentage--recording">
                   {t("notifications.recording", {
                     ns: "materials",
                     currentLength: moment("2015-01-01")
@@ -570,9 +570,9 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
                       .seconds(MAX_RECORDING_TIME_IN_SECONDS)
                       .format("mm:ss"),
                   })}
-                </span>
-              </span>
-            </span>
+                </div>
+              </div>
+            </div>
           ))
         : null;
     }
@@ -595,7 +595,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
             context: "audio",
           })}
         />
-        <span
+        <div
           className={`audiofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
@@ -603,7 +603,7 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-          <span className={`audiofield ${ElementDisabledState}`}>
+          <div className={`audiofield ${ElementDisabledState}`}>
             {!this.props.readOnly && !this.state.supportsMediaAPI() ? (
               <input
                 type="file"
@@ -613,50 +613,50 @@ class AudioField extends React.Component<AudioFieldProps, AudioFieldState> {
               />
             ) : null}
             {!this.props.readOnly && this.state.supportsMediaAPI() ? (
-              <span className="audiofield__controls">
+              <div className="audiofield__controls">
                 {!this.state.recording ? (
                   <Link
                     className="audiofield__start-record-button icon-record"
                     onClick={this.start}
                   >
-                    <span className="audiofield__start-record-label">
+                    <div className="audiofield__start-record-label">
                       {t("actions.start", { ns: "materials" })}
-                    </span>
+                    </div>
                   </Link>
                 ) : (
                   <Link
                     className="audiofield__stop-record-button icon-stop"
                     onClick={this.stop}
                   >
-                    <span className="audiofield__stop-record-label">
+                    <div className="audiofield__stop-record-label">
                       {t("actions.stop", { ns: "materials" })}
-                    </span>
+                    </div>
                   </Link>
                 )}
                 {!this.state.recording ? (
-                  <span className="audiofield__description audiofield__description--start-recording">
+                  <div className="audiofield__description audiofield__description--start-recording">
                     {t("content.startRecording", { ns: "materials" })}
-                  </span>
+                  </div>
                 ) : (
-                  <span className="audiofield__description audiofield__description--stop-recording">
+                  <div className="audiofield__description audiofield__description--stop-recording">
                     {t("content.stopRecording", { ns: "materials" })}
-                  </span>
+                  </div>
                 )}
-              </span>
+              </div>
             ) : null}
             {this.state.values.length > 0 || this.state.recording ? (
-              <span className="audiofield__files-container">
+              <div className="audiofield__files-container">
                 {dataInContainer}
                 {recordingInContainer}
-              </span>
+              </div>
             ) : null}
             {this.props.readOnly && this.state.values.length == 0 ? (
-              <span className="audiofield__files-container audiofield__files-container--empty">
+              <div className="audiofield__files-container audiofield__files-container--empty">
                 {t("content.noRecordings", { ns: "materials" })}
-              </span>
+              </div>
             ) : null}
-          </span>
-        </span>
+          </div>
+        </div>
       </>
     );
   }

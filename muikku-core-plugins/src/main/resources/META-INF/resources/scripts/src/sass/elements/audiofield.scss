@@ -111,12 +111,10 @@
   height: auto;
 }
 
-.audiofield__file-record-percentage,
-.audiofield__file-upload-percentage {
+.audiofield__file-record-percentage {
   @include text;
 
   color: $color-recording;
-  display: block;
   line-height: 1;
   margin: 10px 0 5px;
 }
