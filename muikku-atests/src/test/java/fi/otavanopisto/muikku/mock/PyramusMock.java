@@ -241,8 +241,15 @@ public class PyramusMock {
       }
       
       public Builder removeMockCourseStudent(MockCourseStudent mockCourseStudent){
-        pmock.mockCourseStudents.removeIf(mcs -> Objects.equals(mcs, mockCourseStudent));
-        pmock.mockCourseStudents.add(mockCourseStudent);
+        if (!pmock.courseStudents.isEmpty()) {
+          Iterator<MockCourseStudent> mcsI = pmock.mockCourseStudents.iterator();
+          while (mcsI.hasNext()) {
+            MockCourseStudent mcs = mcsI.next();
+            if(mcs.getStudentId() == mockCourseStudent.getStudentId() && mcs.getCourse().getId() == mockCourseStudent.getCourse().getId()) {
+              mcsI.remove();
+            }
+          }
+        }
         return this;
       }
       
@@ -987,6 +994,14 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(pmock.compositeCourseAssessmentRequests.get(courseId)))
               .withStatus(200)));
         }
+        
+        if(pmock.compositeCourseAssessmentRequests.isEmpty()) {
+          stubFor(get(urlMatching(String.format("/1/composite/course/.*/assessmentRequests")))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(new ArrayList<>()))
+              .withStatus(200)));
+        }
 
         return this;
       }
@@ -1039,7 +1054,7 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockStaffCompositeCourseAssessmentRequests() throws JsonProcessingException {
+      public Builder mockStaffCompositeAssessmentRequests() throws JsonProcessingException {
         for (Long staffMemberId : pmock.compositeStaffAssessmentRequests.keySet()) {
           stubFor(get(urlEqualTo(String.format("/1/composite/staffMembers/%d/assessmentRequests/", staffMemberId)))
             .willReturn(aResponse()
@@ -1047,14 +1062,23 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(pmock.compositeStaffAssessmentRequests.get(staffMemberId)))
               .withStatus(200)));
         }
+        
+        if(pmock.compositeStaffAssessmentRequests.isEmpty()) {
+          stubFor(get(urlMatching(String.format("/1/composite/staffMembers/.*/assessmentRequests/")))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(new ArrayList<>()))
+              .withStatus(200)));
+        }
+        
         return this;
       }
       
-      public Builder mockCourseAssessments(Course course, MockCourseStudent courseStudent, MockStaffMember staffMember) throws JsonProcessingException {
+      public Builder mockCourseAssessments(Course course, MockCourseStudent courseStudent, MockStaffMember staffMember, Boolean isPassingGrade) throws JsonProcessingException {
         OffsetDateTime assessmentCreated = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.UTC);
         // This uses always only the first course module of the course that the iterator provides - this may need multi-module support later
         CourseModule courseModule = course.getCourseModules().iterator().next();
-        CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), courseModule.getId(), 1l, 1l, staffMember.getId(), assessmentCreated, "Test evaluation.", Boolean.TRUE);
+        CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), courseModule.getId(), 1l, 1l, staffMember.getId(), assessmentCreated, "Test evaluation.", (Boolean) isPassingGrade);
         
         stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourse().getId())))
           .willReturn(aResponse()
@@ -1560,7 +1584,17 @@ public class PyramusMock {
               .withStatus(200)));
         return this;
       }
-      
+
+      public Builder resetCompositeCourseAssessmentRequests() {
+        pmock.compositeCourseAssessmentRequests = new HashMap<>();
+        return this;
+      }
+
+      public Builder resetcompositeStaffAssessmentRequests() {
+        pmock.compositeStaffAssessmentRequests = new HashMap<>();
+        return this;
+      }
+            
       public Builder resetBuilder() {
         pmock.students = new ArrayList<>();
         pmock.staffMembers = new ArrayList<>();

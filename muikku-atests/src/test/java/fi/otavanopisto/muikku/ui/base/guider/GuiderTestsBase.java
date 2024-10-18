@@ -216,8 +216,6 @@ public class GuiderTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
       Long courseId = course1.getId();
-      Double price = 0d;
-      CourseAssessmentPrice courseBasePrice = new CourseAssessmentPrice(price);
       
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -288,7 +286,7 @@ public class GuiderTestsBase extends AbstractUITest {
           .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
           .mockCompositeCourseAssessmentRequests()
           .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
-          .mockStaffCompositeCourseAssessmentRequests();
+          .mockStaffCompositeAssessmentRequests();
         
         logout();
         mockBuilder.mockLogin(admin);
@@ -296,11 +294,11 @@ public class GuiderTestsBase extends AbstractUITest {
         
         mockBuilder
         .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, true)
-        .mockStaffCompositeCourseAssessmentRequests()
+        .mockStaffCompositeAssessmentRequests()
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, false, date);
       
         // First test the course listing in the "situation"-tab
-        mockBuilder.mockCourseAssessments(course1, courseStudent, admin);          
+        mockBuilder.mockCourseAssessments(course1, courseStudent, admin, true);
         navigate("/guider", false);
         waitAndClick(".application-list__header-primary>span");
         waitForPresent(".application-list__header-secondary .application-list__indicator-badge");
