@@ -192,8 +192,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.german
                 ? "-"
                 : this.state.hops.german
-                ? t("labels.yes")
-                : t("labels.yes")}
+                  ? t("labels.yes")
+                  : t("labels.yes")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
@@ -204,8 +204,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.french
                 ? "-"
                 : this.state.hops.french
-                ? t("labels.yes")
-                : t("labels.yes")}
+                  ? t("labels.yes")
+                  : t("labels.yes")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
@@ -216,8 +216,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.italian
                 ? "-"
                 : this.state.hops.italian
-                ? t("labels.yes")
-                : t("labels.yes")}
+                  ? t("labels.yes")
+                  : t("labels.yes")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
@@ -228,8 +228,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.spanish
                 ? "-"
                 : this.state.hops.spanish
-                ? t("labels.yes")
-                : t("labels.yes")}
+                  ? t("labels.yes")
+                  : t("labels.yes")}
             </span>
           </div>
         </div>

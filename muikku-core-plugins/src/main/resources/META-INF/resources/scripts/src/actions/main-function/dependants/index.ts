@@ -112,7 +112,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
           ({
             ...dependant,
             ...{ workspaces: [], worspacesStatus: "WAITING" },
-          } as Dependant)
+          }) as Dependant
       );
 
       dispatch({

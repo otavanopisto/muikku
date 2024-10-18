@@ -119,8 +119,8 @@ function sortNavigationItems(
   return labelAUpperCase < labelBUpperCase
     ? -1
     : labelAUpperCase > labelBUpperCase
-    ? 1
-    : 0;
+      ? 1
+      : 0;
 }
 
 const initialMessagesState: MessagesState = {

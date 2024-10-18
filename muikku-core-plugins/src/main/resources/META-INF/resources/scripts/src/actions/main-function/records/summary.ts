@@ -89,8 +89,8 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
           param.type == "MATERIAL_ASSIGNMENTDONE"
             ? assignmentsDone.push(param.type)
             : param.type == "EVALUATION_GOTPASSED"
-            ? coursesDone.push(param.type)
-            : null;
+              ? coursesDone.push(param.type)
+              : null;
         });
       });
 

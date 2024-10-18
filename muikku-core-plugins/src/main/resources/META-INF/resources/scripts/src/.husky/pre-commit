@@ -1,4 +1,2 @@
-cd muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
-prettier --config .prettierrc.json \"**/*.{ts,tsx}\" --write
-
-exit 1
+cd muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+npm run prettier-format

@@ -13,7 +13,7 @@
     "eslint": "eslint . --ext .ts,.tsx",
     "stylelint": "stylelint \"**/*.scss\"",
     "prettier-format": "prettier --config .prettierrc.json \"**/*.{ts,tsx}\" --write",
-    "prepare": "cd ../../../../../../../../ && husky muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src/.husky"
+    "prepare": "cd ../../../../../../../../ && husky muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src/.husky"
   },
   "author": "",
   "license": "MIT",

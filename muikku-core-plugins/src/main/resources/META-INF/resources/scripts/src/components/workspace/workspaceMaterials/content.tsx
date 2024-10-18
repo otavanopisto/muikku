@@ -913,12 +913,12 @@ class ContentComponent extends SessionStateComponent<
                   const modifier = isAssignment
                     ? "assignment"
                     : isExercise
-                    ? "exercise"
-                    : isJournal
-                    ? "journal"
-                    : isInterimEvaluation
-                    ? "interim-evaluation"
-                    : null;
+                      ? "exercise"
+                      : isJournal
+                        ? "journal"
+                        : isInterimEvaluation
+                          ? "interim-evaluation"
+                          : null;
 
                   let icon: string | null = null;
                   let iconTitle: string | null = null;

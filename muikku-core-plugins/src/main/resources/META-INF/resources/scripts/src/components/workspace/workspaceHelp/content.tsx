@@ -596,8 +596,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     const modifier = isAssignment
                       ? "assignment"
                       : isExercise
-                      ? "exercise"
-                      : null;
+                        ? "exercise"
+                        : null;
 
                     const icon: string =
                       isTocElementViewRestricted &&

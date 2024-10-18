@@ -116,7 +116,7 @@ class WorkspaceJournalApplication extends React.Component<
             ({
               value: student,
               label: getName(student, true),
-            } as JournalStudentFilterOption)
+            }) as JournalStudentFilterOption
         );
 
       const allOptions = [

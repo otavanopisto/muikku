@@ -114,7 +114,7 @@ class EvaluationApplication extends React.Component<
             ? `${wItem.name} (${wItem.nameExtension})`
             : wItem.name,
           value: wItem.id,
-        } as OptionDefault<number>)
+        }) as OptionDefault<number>
     );
 
     const groupedOptions: (

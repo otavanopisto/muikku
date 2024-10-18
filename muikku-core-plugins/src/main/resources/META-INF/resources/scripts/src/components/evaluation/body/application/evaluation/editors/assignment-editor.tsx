@@ -369,7 +369,7 @@ class AssignmentEditor extends SessionStateComponent<
           id: audio.id,
           name: audio.name,
           contentType: audio.contentType,
-        } as AudioAssessment)
+        }) as AudioAssessment
     );
 
     await this.saveAssignmentEvaluationGradeToServer({

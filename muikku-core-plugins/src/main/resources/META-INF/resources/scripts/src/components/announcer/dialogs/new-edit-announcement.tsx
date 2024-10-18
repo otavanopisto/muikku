@@ -92,7 +92,7 @@ class NewEditAnnouncement extends SessionStateComponent<
               ({
                 type: "workspace",
                 value: w,
-              } as ContactRecipientType)
+              }) as ContactRecipientType
           )
           .concat(
             props.announcement.userGroupEntityIds
@@ -102,7 +102,7 @@ class NewEditAnnouncement extends SessionStateComponent<
                   ({
                     type: "usergroup",
                     value: props.userIndex.groups[id],
-                  } as ContactRecipientType)
+                  }) as ContactRecipientType
               ) as any
           )
       : this.getPredefinedWorkspaceByIdToConcat(props);
@@ -150,7 +150,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             ({
               type: "workspace",
               value: w,
-            } as ContactRecipientType)
+            }) as ContactRecipientType
         )
         .concat(
           nextProps.announcement.userGroupEntityIds
@@ -160,7 +160,7 @@ class NewEditAnnouncement extends SessionStateComponent<
                 ({
                   type: "usergroup",
                   value: nextProps.userIndex.groups[id],
-                } as ContactRecipientType)
+                }) as ContactRecipientType
             ) as any
         );
 
@@ -298,7 +298,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             ({
               type: "workspace",
               value: w,
-            } as ContactRecipientType)
+            }) as ContactRecipientType
         );
       this.setStateAndClear(
         {
