@@ -7,7 +7,7 @@ import "~/sass/elements/wcag.scss";
  * AddProducerProps
  */
 interface AddProducerProps extends WithTranslation {
-  producers?: Array<any>;
+    producers?: Array<any>;
   title?: string;
   addProducer: (name: string) => any;
   removeProducer?: (index: number) => any;
