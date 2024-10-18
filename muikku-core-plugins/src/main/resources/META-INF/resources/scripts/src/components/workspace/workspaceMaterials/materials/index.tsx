@@ -477,6 +477,57 @@ class WorkspaceMaterials extends React.Component<
   };
 
   /**
+   * renderDropdownItem
+   * @param item Dropdown item
+   * @param closeDropdown Function to close the dropdown
+   * @returns Rendered dropdown item
+   */
+  renderDropdownItem = (item: any, closeDropdown: () => void) => {
+    if (item.file) {
+      return (
+        <label
+          htmlFor="baseFileInput"
+          className={`link link--full link--material-management-dropdown`}
+        >
+          <input
+            type="file"
+            id="baseFileInput"
+            onChange={(e) => {
+              closeDropdown();
+              item.onChange && item.onChange(e);
+            }}
+          />
+          <span className={`link__icon icon-${item.icon}`}></span>
+          <span>{item.text}</span>
+        </label>
+      );
+    }
+    return (
+      <Link
+        className={`link link--full link--material-management-dropdown`}
+        onClick={() => {
+          closeDropdown();
+          item.onClick && item.onClick();
+        }}
+      >
+        <span className={`link__icon icon-${item.icon}`}></span>
+        <span>{item.text}</span>
+      </Link>
+    );
+  };
+
+  /**
+   * renderDropdownItems
+   * @param items Array of dropdown items
+   * @returns Array of rendered dropdown items
+   */
+  renderDropdownItems = (items: any[]) =>
+    items.map(
+      (item) => (closeDropdown: () => void) =>
+        this.renderDropdownItem(item, closeDropdown)
+    );
+
+  /**
    * render
    */
   render() {
@@ -556,44 +607,14 @@ class WorkspaceMaterials extends React.Component<
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown
             modifier="material-management"
-            items={this.getMaterialsOptionListDropdown(
-              section,
-              nextSection,
-              null,
-              true
-            ).map((item) => (closeDropdown: () => void) => {
-              if (item.file) {
-                return (
-                  <label
-                    htmlFor="baseFileInput"
-                    className={`link link--full link--material-management-dropdown`}
-                  >
-                    <input
-                      type="file"
-                      id="baseFileInput"
-                      onChange={(e) => {
-                        closeDropdown();
-                        item.onChange && item.onChange(e);
-                      }}
-                    />
-                    <span className={`link__icon icon-${item.icon}`}></span>
-                    <span>{item.text}</span>
-                  </label>
-                );
-              }
-              return (
-                <Link
-                  className={`link link--full link--material-management-dropdown`}
-                  onClick={() => {
-                    closeDropdown();
-                    item.onClick && item.onClick();
-                  }}
-                >
-                  <span className={`link__icon icon-${item.icon}`}></span>
-                  <span>{item.text}</span>
-                </Link>
-              );
-            })}
+            items={this.renderDropdownItems(
+              this.getMaterialsOptionListDropdown(
+                section,
+                nextSection,
+                null,
+                true
+              )
+            )}
           >
             <ButtonPill
               buttonModifiers="material-management-master"
@@ -631,46 +652,14 @@ class WorkspaceMaterials extends React.Component<
               >
                 <Dropdown
                   modifier="material-management"
-                  items={this.getMaterialsOptionListDropdown(
-                    section,
-                    nextSection,
-                    nextSibling,
-                    false
-                  ).map((item) => (closeDropdown: () => void) => {
-                    if (item.file) {
-                      return (
-                        <label
-                          htmlFor={node.workspaceMaterialId + "-input"}
-                          className={`link link--full link--material-management-dropdown`}
-                        >
-                          <input
-                            type="file"
-                            id={node.workspaceMaterialId + "-input"}
-                            onChange={(e) => {
-                              closeDropdown();
-                              item.onChange && item.onChange(e);
-                            }}
-                          />
-                          <span
-                            className={`link__icon icon-${item.icon}`}
-                          ></span>
-                          <span>{item.text}</span>
-                        </label>
-                      );
-                    }
-                    return (
-                      <Link
-                        className={`link link--full link--material-management-dropdown`}
-                        onClick={() => {
-                          closeDropdown();
-                          item.onClick && item.onClick();
-                        }}
-                      >
-                        <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{item.text}</span>
-                      </Link>
-                    );
-                  })}
+                  items={this.renderDropdownItems(
+                    this.getMaterialsOptionListDropdown(
+                      section,
+                      nextSection,
+                      nextSibling,
+                      false
+                    )
+                  )}
                 >
                   <ButtonPill
                     buttonModifiers="material-management-master"
