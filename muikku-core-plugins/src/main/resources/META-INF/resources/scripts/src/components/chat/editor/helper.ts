@@ -34,7 +34,7 @@ export const deserialize = (string: string) =>
     (line) =>
       ({
         children: [{ text: line }],
-      } as Descendant)
+      }) as Descendant
   );
 
 /**

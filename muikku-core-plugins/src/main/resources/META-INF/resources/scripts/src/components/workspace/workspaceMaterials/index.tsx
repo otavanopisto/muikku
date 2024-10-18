@@ -185,5 +185,5 @@ const componentWithTranslation = withTranslation("materials", {
 })(WorkspaceMaterialsBody);
 
 export default connect(mapStateToProps, null, null, {
-  withRef: true,
+  forwardRef: true,
 })(componentWithTranslation);

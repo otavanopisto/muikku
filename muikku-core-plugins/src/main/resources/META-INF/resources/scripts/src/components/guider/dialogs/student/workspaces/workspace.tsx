@@ -1,7 +1,7 @@
 import * as React from "react";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import Dropdown from "~/components/general/dropdown";
-import WorkspaceChart from "./workspace/workspace-chart";
+import WorkspaceChart from "~/components/general/graph/workspace-chart";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/course.scss";

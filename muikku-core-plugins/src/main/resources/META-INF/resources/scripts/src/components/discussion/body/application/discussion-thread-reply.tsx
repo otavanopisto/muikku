@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import DeleteThreadComponent from "../../dialogs/delete-thread-component";
 import { getName } from "~/util/modifiers";
@@ -21,6 +21,7 @@ import { DiscussionThreadReply, DiscussionUser } from "~/generated/client";
 import moment from "moment";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 /**
  * DiscussionThreadReplyProps
@@ -262,7 +263,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

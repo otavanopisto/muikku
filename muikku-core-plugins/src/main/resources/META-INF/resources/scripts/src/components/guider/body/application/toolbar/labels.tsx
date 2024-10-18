@@ -8,7 +8,7 @@ import {
   difference,
   flatten,
 } from "~/util/modifiers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import {
   createGuiderFilterLabel,
   CreateGuiderFilterLabelTriggerType,
@@ -25,7 +25,7 @@ import {
 } from "~/actions/main-function/guider";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import { GuiderState } from "~/reducers/main-function/guider";
 import { ButtonPill } from "~/components/general/button";
@@ -261,7 +261,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       createGuiderFilterLabel,

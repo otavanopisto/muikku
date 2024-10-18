@@ -1,4 +1,4 @@
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import MApi from "~/api/api";
 import { StateType } from "~/reducers";
@@ -77,7 +77,7 @@ export interface UpdateStatusChatSettingsType {
  * @param whoAmIReadyCb whoAmIReadyCb
  */
 async function loadWhoAMI(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   whoAmIReadyCb: () => void
 ) {
   const userApi = MApi.getUserApi();
@@ -182,7 +182,7 @@ async function loadWhoAMI(
  */
 async function loadWorkspacePermissions(
   workspaceId: number,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   readyCb: () => void
 ) {
   const workspaceApi = MApi.getWorkspaceApi();
@@ -255,7 +255,7 @@ async function loadWorkspacePermissions(
           "LIST_WORKSPACE_MEMBERS"
         ),
       },
-      canCurrentWorkspaceSignup,
+      canCurrentWorkspaceSignup: canCurrentWorkspaceSignup.canSignup,
     },
   });
 
@@ -270,7 +270,7 @@ const loadStatus: LoadStatusType = function loadStatus(
   whoAmIReadyCb: () => void
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     loadWhoAMI(dispatch, whoAmIReadyCb);
@@ -284,7 +284,7 @@ const loadStatus: LoadStatusType = function loadStatus(
 const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
   function loadWorkspaceStatusInfo(readyCb: () => void) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const workspaceApi = MApi.getWorkspaceApi();
@@ -314,7 +314,7 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
 const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissionsType =
   function loadEnviromentalForumAreaPermissions() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -343,7 +343,7 @@ const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissions
 const updateStatusChatSettings: LoadStatusChatSettingsType =
   function loadChatSettings() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const chatApi = MApi.getChatApi();

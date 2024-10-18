@@ -289,10 +289,11 @@ function ChatOverviewUsersList() {
    * Handles block click
    */
   const handleBlockClick = React.useCallback(
-    (user: ChatUser) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e.stopPropagation();
-      openBlockUserDialog(user);
-    },
+    (user: ChatUser) =>
+      (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        e.stopPropagation();
+        openBlockUserDialog(user);
+      },
     [openBlockUserDialog]
   );
 
@@ -394,10 +395,11 @@ function ChatOverviewBlockedList() {
    * Handles open unblock dialog
    */
   const handleOpenUnblockDialog = React.useCallback(
-    (user: ChatUser) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e.stopPropagation();
-      openCancelUnblockDialog(user);
-    },
+    (user: ChatUser) =>
+      (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        e.stopPropagation();
+        openCancelUnblockDialog(user);
+      },
     [openCancelUnblockDialog]
   );
 
@@ -499,10 +501,11 @@ function ChatOverviewRoomsList() {
    * Handles delete room
    */
   const handleDeleteRoom = React.useCallback(
-    (room: ChatRoom) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e.stopPropagation();
-      openDeleteRoomDialog(room);
-    },
+    (room: ChatRoom) =>
+      (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        e.stopPropagation();
+        openDeleteRoomDialog(room);
+      },
     [openDeleteRoomDialog]
   );
 

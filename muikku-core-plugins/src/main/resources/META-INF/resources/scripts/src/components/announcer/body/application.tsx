@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Announcements from "./application/announcements";
 import AnnouncementView from "./application/announcement-view";
@@ -12,6 +12,7 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 /**
  * AnnouncerApplicationProps
@@ -81,7 +82,7 @@ class AnnouncerApplication extends React.Component<
  * @param dispatch dispatch
  * @returns object
  */
-const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) => ({});
+const mapDispatchToProps = (dispatch: Dispatch<Action<AnyActionType>>) => ({});
 
 export default withTranslation()(
   connect(null, mapDispatchToProps)(AnnouncerApplication)

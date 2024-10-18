@@ -39,7 +39,7 @@ export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
           name: aAssessment.name,
           contentType: aAssessment.contentType,
           url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
-        } as RecordValue)
+        }) as RecordValue
     );
 
   // As default use case in the materials assignmentType is check from material object

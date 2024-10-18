@@ -16,6 +16,7 @@ import Avatar from "~/components/general/avatar";
 import PagerV2 from "~/components/general/pagerV2";
 import FocusTrap from "focus-trap-react";
 import { IconButton } from "./button";
+import { Provider, ReactReduxContext } from "react-redux";
 
 /**
  * DialogProps
@@ -134,105 +135,115 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
       closeOnOverlayClick = !!this.props.closeOnOverlayClick;
     }
     return (
-      <Portal
-        localElementId={this.props.localElementId}
-        onKeyStroke={this.props.onKeyStroke}
-        isOpen={this.props.isOpen}
-        openByClickOn={this.props.children}
-        onOpen={this.onOpen}
-        onClose={this.props.onClose}
-        beforeClose={this.beforeClose}
-        closeOnEsc
-      >
-        {(closePortal: () => any) => {
-          const modifiers: Array<string> =
-            typeof this.props.modifier === "string"
-              ? [this.props.modifier]
-              : this.props.modifier;
-          return (
-            <FocusTrap
-              active={this.state.visible}
-              focusTrapOptions={{
-                allowOutsideClick: true,
-                clickOutsideDeactivates: true,
-                // There are some issues with the focus trap and the dialog that causes scrolling issues e.g evaluation dialog
-                // because there is multiple FocusTrap components in the same page
-                preventScroll: true,
-              }}
-            >
-              <div
-                role="dialog"
-                className={`dialog ${(modifiers || [])
-                  .map((s) => `dialog--${s}`)
-                  .join(" ")} ${this.state.visible ? "dialog--visible" : ""}`}
-                onClick={
-                  closeOnOverlayClick
-                    ? this.onOverlayClick.bind(this, closePortal)
-                    : null
-                }
-                aria-modal="true"
-                aria-label="Dialog"
-                aria-labelledby={`dialog-title--${modifiers[0]}`}
-              >
-                {/* Execution container is missing from here */}
-                <section
-                  className={`dialog__window ${(modifiers || [])
-                    .map((s) => `dialog__window--${s}`)
-                    .join(" ")}`}
-                >
-                  {this.props.executing && this.props.executing === true ? (
-                    <div className="dialog__overlay dialog__overlay--executing">
-                      {this.props.executeContent ? (
-                        <div className="dialog__overlay-content">
-                          <div className="loader__executing--dialog"></div>
-                          {this.props.executeContent}
-                        </div>
-                      ) : (
-                        <div className="loader__executing"></div>
-                      )}
-                    </div>
-                  ) : null}
-                  <header
-                    className={`dialog__header ${(modifiers || [])
-                      .map((s) => `dialog__header--${s}`)
-                      .join(" ")}`}
+      <ReactReduxContext.Consumer>
+        {({ store }) => (
+          <Portal
+            localElementId={this.props.localElementId}
+            onKeyStroke={this.props.onKeyStroke}
+            isOpen={this.props.isOpen}
+            openByClickOn={this.props.children}
+            onOpen={this.onOpen}
+            onClose={this.props.onClose}
+            beforeClose={this.beforeClose}
+            closeOnEsc
+          >
+            {(closePortal: () => any) => {
+              const modifiers: Array<string> =
+                typeof this.props.modifier === "string"
+                  ? [this.props.modifier]
+                  : this.props.modifier;
+              return (
+                <Provider store={store}>
+                  <FocusTrap
+                    active={this.state.visible}
+                    focusTrapOptions={{
+                      allowOutsideClick: true,
+                      clickOutsideDeactivates: true,
+                      // There are some issues with the focus trap and the dialog that causes scrolling issues e.g evaluation dialog
+                      // because there is multiple FocusTrap components in the same page
+                      preventScroll: true,
+                    }}
                   >
                     <div
-                      className="dialog__title"
-                      id={`dialog-title--${modifiers[0]}`}
+                      role="dialog"
+                      className={`dialog ${(modifiers || [])
+                        .map((s) => `dialog--${s}`)
+                        .join(" ")} ${
+                        this.state.visible ? "dialog--visible" : ""
+                      }`}
+                      onClick={
+                        closeOnOverlayClick
+                          ? this.onOverlayClick.bind(this, closePortal)
+                          : null
+                      }
+                      aria-modal="true"
+                      aria-label="Dialog"
+                      aria-labelledby={`dialog-title--${modifiers[0]}`}
                     >
-                      {this.props.title}
+                      {/* Execution container is missing from here */}
+                      <section
+                        className={`dialog__window ${(modifiers || [])
+                          .map((s) => `dialog__window--${s}`)
+                          .join(" ")}`}
+                      >
+                        {this.props.executing &&
+                        this.props.executing === true ? (
+                          <div className="dialog__overlay dialog__overlay--executing">
+                            {this.props.executeContent ? (
+                              <div className="dialog__overlay-content">
+                                <div className="loader__executing--dialog"></div>
+                                {this.props.executeContent}
+                              </div>
+                            ) : (
+                              <div className="loader__executing"></div>
+                            )}
+                          </div>
+                        ) : null}
+                        <header
+                          className={`dialog__header ${(modifiers || [])
+                            .map((s) => `dialog__header--${s}`)
+                            .join(" ")}`}
+                        >
+                          <div
+                            className="dialog__title"
+                            id={`dialog-title--${modifiers[0]}`}
+                          >
+                            {this.props.title}
+                          </div>
+                          <IconButton
+                            aria-label="Sulje"
+                            buttonModifiers={["dialog-close"]}
+                            role="button"
+                            icon="cross"
+                            onClick={closePortal}
+                          />
+                        </header>
+                        <section
+                          className={`dialog__content ${(modifiers || [])
+                            .map((s) => `dialog__content--${s}`)
+                            .join(" ")}`}
+                        >
+                          {this.props.content(closePortal)}
+                        </section>
+                        {this.props.footer ? (
+                          <footer
+                            className={`dialog__footer ${(modifiers || [])
+                              .map((s) => `dialog__footer--${s}`)
+                              .join(" ")}`}
+                          >
+                            {this.props.footer &&
+                              this.props.footer(closePortal)}
+                          </footer>
+                        ) : null}
+                      </section>
                     </div>
-                    <IconButton
-                      aria-label="Sulje"
-                      buttonModifiers={["dialog-close"]}
-                      role="button"
-                      icon="cross"
-                      onClick={closePortal}
-                    />
-                  </header>
-                  <section
-                    className={`dialog__content ${(modifiers || [])
-                      .map((s) => `dialog__content--${s}`)
-                      .join(" ")}`}
-                  >
-                    {this.props.content(closePortal)}
-                  </section>
-                  {this.props.footer ? (
-                    <footer
-                      className={`dialog__footer ${(modifiers || [])
-                        .map((s) => `dialog__footer--${s}`)
-                        .join(" ")}`}
-                    >
-                      {this.props.footer && this.props.footer(closePortal)}
-                    </footer>
-                  ) : null}
-                </section>
-              </div>
-            </FocusTrap>
-          );
-        }}
-      </Portal>
+                  </FocusTrap>
+                </Provider>
+              );
+            }}
+          </Portal>
+        )}
+      </ReactReduxContext.Consumer>
     );
   }
 }

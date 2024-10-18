@@ -1,8 +1,8 @@
 import "~/sass/elements/link.scss";
 import "~/sass/elements/buttons.scss";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
 import Dialog from "~/components/general/dialog";
@@ -150,7 +150,7 @@ class DeleteAnnouncementDialog extends React.Component<
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { deleteSelectedAnnouncements, deleteAnnouncement },
     dispatch

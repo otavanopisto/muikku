@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/breadcrumb.scss";
 import "~/sass/elements/application-panel.scss";
@@ -19,7 +19,7 @@ import {
 } from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import Select from "react-select";
 import {
   SubscribeDiscussionArea,
@@ -292,7 +292,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       showOnlySubscribedThreads,

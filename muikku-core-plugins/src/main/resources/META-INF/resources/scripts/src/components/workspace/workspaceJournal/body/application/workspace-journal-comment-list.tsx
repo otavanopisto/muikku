@@ -6,7 +6,7 @@ import {
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import AnimateHeight from "react-animate-height";
 import WorkspaceJournalCommentEditor from "./editors/workspace-journal-comment-editor";
@@ -17,7 +17,7 @@ import {
   JournalsState,
   WorkspaceJournalWithComments,
 } from "~/reducers/workspaces/journals";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   createWorkspaceJournalComment,
   CreateWorkspaceJournalCommentTriggerType,
@@ -229,7 +229,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       displayNotification,

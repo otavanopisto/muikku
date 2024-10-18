@@ -1,7 +1,7 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import Link from "~/components/general/link";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
@@ -214,7 +214,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * returns dispatch calls
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 export default withTranslation(["frontPage", "workspace"])(

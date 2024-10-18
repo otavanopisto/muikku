@@ -18,6 +18,7 @@ import { findDOMNode } from "react-dom";
 import $ from "~/lib/jquery";
 import "~/sass/elements/dropdown.scss";
 import { v4 as uuidv4 } from "uuid";
+import { Provider, ReactReduxContext } from "react-redux";
 
 /**
  * itemType2
@@ -115,6 +116,12 @@ export default class Dropdown extends React.Component<
   private isUnmounted = false;
   private originalPositionTop: number;
 
+  // New ref declarations
+  private activatorRef: React.RefObject<HTMLElement>;
+  private portalRef: React.RefObject<Portal>;
+  private dropdownRef: React.RefObject<HTMLDivElement>;
+  private arrowRef: React.RefObject<HTMLSpanElement>;
+
   /**
    * constructor
    * @param props props
@@ -139,6 +146,12 @@ export default class Dropdown extends React.Component<
       forcedWidth: null,
       visible: false,
     };
+
+    // Initialize refs
+    this.activatorRef = React.createRef();
+    this.portalRef = React.createRef();
+    this.dropdownRef = React.createRef();
+    this.arrowRef = React.createRef();
   }
 
   /**
@@ -167,13 +180,13 @@ export default class Dropdown extends React.Component<
       return;
     }
 
-    let activator: any = this.refs["activator"];
+    let activator = this.activatorRef.current;
     if (!(activator instanceof HTMLElement)) {
-      activator = findDOMNode(activator);
+      activator = findDOMNode(activator) as HTMLElement;
     }
 
     const $target = $(activator);
-    const $dropdown = $(this.refs["dropdown"]);
+    const $dropdown = $(this.dropdownRef.current);
     const position = activator.getBoundingClientRect();
     const windowHeight = $(window).height();
     const spaceLeftInTop = position.top;
@@ -246,14 +259,14 @@ export default class Dropdown extends React.Component<
       return;
     }
 
-    let activator: any = this.refs["activator"];
+    let activator = this.activatorRef.current;
     if (!(activator instanceof HTMLElement)) {
-      activator = findDOMNode(activator);
+      activator = findDOMNode(activator) as HTMLElement;
     }
 
     const $target = $(activator);
-    const $arrow = $(this.refs["arrow"]);
-    const $dropdown = $(this.refs["dropdown"]);
+    const $arrow = $(this.arrowRef.current);
+    const $dropdown = $(this.dropdownRef.current);
     const position = activator.getBoundingClientRect();
     const windowWidth = $(window).width();
     const windowHeight = $(window).height();
@@ -400,7 +413,7 @@ export default class Dropdown extends React.Component<
    * close
    */
   close() {
-    (this.refs["portal"] as Portal).closePortal();
+    this.portalRef.current?.closePortal();
   }
 
   /**
@@ -431,7 +444,7 @@ export default class Dropdown extends React.Component<
     }
 
     if (e.key === "Tab") {
-      let element = this.refs["activator"] as any;
+      let element = this.activatorRef.current;
       if (!(element instanceof HTMLElement)) {
         element = findDOMNode(element) as any;
       }
@@ -474,7 +487,7 @@ export default class Dropdown extends React.Component<
     const id = this.id + "-item-" + n;
     let element = document.querySelector("#" + id) as HTMLElement;
     if (n === -1 && !element) {
-      element = this.refs["activator"] as any;
+      element = this.activatorRef.current;
       if (!(element instanceof HTMLElement)) {
         element = findDOMNode(element) as any;
       }
@@ -507,7 +520,7 @@ export default class Dropdown extends React.Component<
 
     let elementCloned: React.ReactElement<any> = React.cloneElement(
       children as any,
-      { ref: "activator" }
+      { ref: this.activatorRef }
     );
     const portalProps: any = {};
     if (!openByHover) {
@@ -515,7 +528,7 @@ export default class Dropdown extends React.Component<
     } else {
       if (onClick) {
         elementCloned = React.cloneElement(children as any, {
-          ref: "activator",
+          ref: this.activatorRef,
           onClick: onClick,
           id: this.id + "-button",
           role: "combobox",
@@ -535,62 +548,76 @@ export default class Dropdown extends React.Component<
     portalProps.closeOnClick = closeOnClick;
 
     return (
-      <Portal
-        ref="portal"
-        {...portalProps}
-        onOpen={this.onOpen}
-        onClose={this.onClose}
-        onWrapperKeyDown={this.onKeyDown}
-        beforeClose={this.beforeClose}
-      >
-        <div
-          ref="dropdown"
-          id={this.id + "-menu"}
-          style={{
-            position: "fixed",
-            top: this.state.top,
-            left: this.state.left,
-            width: this.state.forcedWidth,
-          }}
-          className={`dropdown ${
-            this.props.modifier ? "dropdown--" + this.props.modifier : ""
-          } ${this.state.visible ? "visible" : ""}`}
-        >
-          <span
-            className="dropdown__arrow"
-            ref="arrow"
-            style={{
-              left: this.state.arrowLeft,
-              right: this.state.arrowRight,
-              top: this.state.arrowTop,
-              transform: this.state.reverseArrow ? "scaleY(-1)" : "",
-            }}
-          ></span>
-          {(this.props.content || this.props.items) && (
-            // We use tooltipId prop here so we can attach tooltip's trigger button's [aria-describedby] attibute directly to the content of the tooltip
-            <div className="dropdown__container" id={this.props.tooltipId}>
-              {this.props.content ? this.props.content : null}
-              {this.props.items
-                ? this.props.items.map((item, index) => {
-                    const element = React.cloneElement(
-                      typeof item === "function" ? item(this.close) : item,
-                      {
-                        id: this.id + "-item-" + index,
-                        onKeyDown: this.onItemKeyDown,
-                      }
-                    );
+      <ReactReduxContext.Consumer>
+        {({ store }) => (
+          <Portal
+            ref={this.portalRef}
+            {...portalProps}
+            onOpen={this.onOpen}
+            onClose={this.onClose}
+            onWrapperKeyDown={this.onKeyDown}
+            beforeClose={this.beforeClose}
+          >
+            <Provider store={store}>
+              <div
+                ref={this.dropdownRef}
+                id={this.id + "-menu"}
+                style={{
+                  position: "fixed",
+                  top: this.state.top,
+                  left: this.state.left,
+                  width: this.state.forcedWidth,
+                }}
+                className={`dropdown ${
+                  this.props.modifier ? "dropdown--" + this.props.modifier : ""
+                } ${this.state.visible ? "visible" : ""}`}
+              >
+                <span
+                  className="dropdown__arrow"
+                  ref={this.arrowRef}
+                  style={{
+                    left: this.state.arrowLeft,
+                    right: this.state.arrowRight,
+                    top: this.state.arrowTop,
+                    transform: this.state.reverseArrow ? "scaleY(-1)" : "",
+                  }}
+                ></span>
+                {(this.props.content || this.props.items) && (
+                  // We use tooltipId prop here so we can attach tooltip's trigger button's [aria-describedby] attibute directly to the content of the tooltip
+                  <div
+                    className="dropdown__container"
+                    id={this.props.tooltipId}
+                  >
+                    {this.props.content ? this.props.content : null}
+                    {this.props.items
+                      ? this.props.items.map((item, index) => {
+                          const element = React.cloneElement(
+                            typeof item === "function"
+                              ? item(this.close)
+                              : item,
+                            {
+                              id: this.id + "-item-" + index,
+                              onKeyDown: this.onItemKeyDown,
+                            }
+                          );
 
-                    return (
-                      <div className="dropdown__container-item" key={index}>
-                        {element}
-                      </div>
-                    );
-                  })
-                : null}
-            </div>
-          )}
-        </div>
-      </Portal>
+                          return (
+                            <div
+                              className="dropdown__container-item"
+                              key={index}
+                            >
+                              {element}
+                            </div>
+                          );
+                        })
+                      : null}
+                  </div>
+                )}
+              </div>
+            </Provider>
+          </Portal>
+        )}
+      </ReactReduxContext.Consumer>
     );
   }
 }
