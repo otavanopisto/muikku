@@ -16,7 +16,7 @@ interface AddProducerProps extends WithTranslation {
 }
 
 /**
- * AddProducerState
+ * AddProducerState - test commit
  */
 interface AddProducerState {
   currentInputValue: string;
