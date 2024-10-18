@@ -1,0 +1,2 @@
+cd muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
+prettier --config .prettierrc.json \"**/*.{ts,tsx}\" --write
