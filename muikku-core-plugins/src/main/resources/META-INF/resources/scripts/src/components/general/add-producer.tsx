@@ -10,7 +10,7 @@ interface AddProducerProps extends WithTranslation {
   producers?: Array<any>;
   title?: string;
   addProducer: (name: string) => any;
-    removeProducer?: (index: number) => any;
+  removeProducer?: (index: number) => any;
   modifier?: string;
   wcagLabel?: string;
 }
