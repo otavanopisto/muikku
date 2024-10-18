@@ -114,16 +114,5 @@
     "stylelint-config-standard-scss": "13.1.0",
     "stylelint-declaration-strict-value": "1.10.6",
     "stylelint-order": "6.0.4"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "pretty-quick --staged",
-      "git add"
-    ]
   }
 }
