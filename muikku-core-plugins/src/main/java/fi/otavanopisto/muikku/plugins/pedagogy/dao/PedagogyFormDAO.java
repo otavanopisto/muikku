@@ -14,11 +14,11 @@ public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
 
   private static final long serialVersionUID = -27331130177561637L;
   
-  public PedagogyForm create(String studentIdentifier, String formData, PedagogyFormState state, String visibility) {
+  public PedagogyForm create(Long userEntityId, String formData, PedagogyFormState state, String visibility) {
     PedagogyForm form = new PedagogyForm();
     form.setFormData(formData);
     form.setState(state);
-    form.setStudentIdentifier(studentIdentifier);
+    form.setUserEntityId(userEntityId);
     return persist(form);
   }
   
@@ -32,7 +32,7 @@ public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
     return persist(form);
   }
   
-  public PedagogyForm findByStudentIdentifier(String studentIdentifier) {
+  public PedagogyForm findByUserEntityId(Long userEntityId) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -41,7 +41,7 @@ public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(PedagogyForm_.studentIdentifier), studentIdentifier)
+        criteriaBuilder.equal(root.get(PedagogyForm_.userEntityId), userEntityId)
       )
     );
 

@@ -8,14 +8,6 @@ import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
 
 public class PedagogyFormRestModel {
 
-  public String getStudentIdentifier() {
-    return studentIdentifier;
-  }
-
-  public void setStudentIdentifier(String studentIdentifier) {
-    this.studentIdentifier = studentIdentifier;
-  }
-
   public Date getCreated() {
     return created;
   }
@@ -80,8 +72,16 @@ public class PedagogyFormRestModel {
     this.ownerInfo = ownerInfo;
   }
 
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
   private Long id;
-  private String studentIdentifier;
+  private Long userEntityId;
   private Map<String, String> studentInfo;
   private Date created;
   private Long ownerId;
