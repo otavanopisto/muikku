@@ -1,15 +1,11 @@
-# https://github.com/marketplace/actions/lint-action
-name: Front-end code quality
-
+name: Prettier Code Quality Review
 on:
   pull_request:
     branches: devel
-
 jobs:
   prettier:
     name: Prettier
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
