@@ -12,8 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "eslint . --ext .ts,.tsx",
     "stylelint": "stylelint \"**/*.scss\"",
-    "prettier-format": "prettier --config .prettierrc.json \"**/*.{ts,tsx}\" --write",
-    "prepare": "cd ../../../../../../../../ &&  node muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src/.husky/install.mjs"
+    "prettier-format": "prettier --config .prettierrc.json \"**/*.{ts,tsx}\" --write"
   },
   "author": "",
   "license": "MIT",
@@ -106,10 +105,7 @@
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.34.0",
     "eslint-plugin-react-hooks": "4.3.0",
-    "husky": "9.1.6",
-    "lint-staged": "15.2.10",
     "prettier": "3.3.3",
-    "pretty-quick": "4.0.0",
     "stylelint": "16.8.2",
     "stylelint-config-standard-scss": "13.1.0",
     "stylelint-declaration-strict-value": "1.10.6",

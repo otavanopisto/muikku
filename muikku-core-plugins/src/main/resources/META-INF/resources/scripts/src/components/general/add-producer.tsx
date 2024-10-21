@@ -11,7 +11,7 @@ interface AddProducerProps extends WithTranslation {
   title?: string;
   addProducer: (name: string) => any;
   removeProducer?: (index: number) => any;
-    modifier?: string;
+  modifier?: string;
   wcagLabel?: string;
 }
 
