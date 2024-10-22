@@ -120,6 +120,7 @@ import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
 import {
+  loadHopsFormHistory,
   loadMatriculationData,
   loadStudentHopsForm,
 } from "~/actions/main-function/hops/";
@@ -361,6 +362,7 @@ export default class MainFunction extends React.Component<
     const givenLocation = tab;
 
     this.props.store.dispatch(loadStudentHopsForm(userId) as Action);
+    this.props.store.dispatch(loadHopsFormHistory(userId) as Action);
 
     // Load matriculation data if in Matriculation tab
     if (givenLocation === "matriculation" || !givenLocation) {

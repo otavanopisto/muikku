@@ -4,6 +4,7 @@ import { StateType } from "~/reducers";
 import { Dispatch } from "react-redux";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
+  HopsHistoryEntry,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
   MatriculationExamStudentStatus,
@@ -139,6 +140,18 @@ export type HOPS_STUDENT_INFO_UPDATE = SpecificActionType<
   { status: ReducerStateType; data: StudentInfo | null }
 >;
 
+// Add this new action type
+export type HOPS_FORM_HISTORY_UPDATE = SpecificActionType<
+  "HOPS_FORM_HISTORY_UPDATE",
+  { status: ReducerStateType; data: HopsHistoryEntry[] | null }
+>;
+
+// Add this new action type
+export type HOPS_FORM_HISTORY_ENTRY_UPDATE = SpecificActionType<
+  "HOPS_FORM_HISTORY_ENTRY_UPDATE",
+  { status: ReducerStateType; data: HopsHistoryEntry }
+>;
+
 /**
  * loadExamDataTriggerType
  */
@@ -197,6 +210,24 @@ export interface LoadStudentHopsFormTriggerType {
  */
 export interface LoadStudentInfoTriggerType {
   (userIdentifier?: string): AnyActionType;
+}
+
+/**
+ * Trigger type for loading HOPS form history
+ */
+export interface LoadHopsFormHistoryTriggerType {
+  (userIdentifier?: string): AnyActionType;
+}
+
+/**
+ * UpdateHopsFormHistoryEntryTriggerType
+ */
+export interface UpdateHopsFormHistoryEntryTriggerType {
+  (
+    entryId: number,
+    updatedEntry: Partial<HopsHistoryEntry>,
+    onSuccess?: () => void
+  ): AnyActionType;
 }
 
 /**
@@ -961,6 +992,124 @@ const loadStudentInfo: LoadStudentInfoTriggerType = function loadStudentInfo(
   };
 };
 
+/**
+ * Load HOPS form history data thunk
+ *
+ * @param userIdentifier userIdentifier
+ */
+const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
+  function loadHopsFormHistory(userIdentifier) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const studentIdentifier = userIdentifier
+        ? userIdentifier
+        : state.status.userSchoolDataIdentifier;
+
+      if (state.hopsNew.hopsFormHistoryStatus === "READY") {
+        return;
+      }
+
+      dispatch({
+        type: "HOPS_FORM_HISTORY_UPDATE",
+        payload: { status: "LOADING", data: null },
+      });
+
+      try {
+        const hopsFormHistoryData = await hopsApi.getStudentHopsHistoryEntries({
+          studentIdentifier,
+        });
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_UPDATE",
+          payload: { status: "READY", data: hopsFormHistoryData },
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_UPDATE",
+          payload: { status: "ERROR", data: null },
+        });
+
+        dispatch(
+          actions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "studies",
+              context: "hopsFormHistory",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+// Add this new function
+/**
+ * Update HOPS form history entry thunk
+ *
+ * @param entryId ID of the entry to update
+ * @param updatedEntry Partial HopsHistoryEntry with fields to update
+ * @param onSuccess callback function to be called on success
+ */
+const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
+  function updateHopsFormHistoryEntry(entryId, updatedEntry, onSuccess) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const studentIdentifier = state.status.userSchoolDataIdentifier;
+
+      dispatch({
+        type: "HOPS_FORM_HISTORY_ENTRY_UPDATE",
+        payload: { status: "LOADING", data: null },
+      });
+
+      try {
+        // Assuming there's an API endpoint to update a HOPS form history entry
+        const updatedEntryData = await hopsApi.updateStudentHopsHistoryEntry({
+          studentIdentifier,
+          entryId,
+          updateStudentHopsHistoryEntryRequest: {
+            details: updatedEntry.details,
+          },
+        });
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_ENTRY_UPDATE",
+          payload: { status: "READY", data: updatedEntryData },
+        });
+
+        onSuccess && onSuccess();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_ENTRY_UPDATE",
+          payload: { status: "ERROR", data: null },
+        });
+
+        dispatch(
+          actions.displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "studies",
+              context: "hopsFormHistoryEntry",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
 export {
   loadMatriculationData,
   verifyMatriculationExam,
@@ -970,4 +1119,6 @@ export {
   resetMatriculationData,
   loadStudentHopsForm,
   loadStudentInfo,
+  loadHopsFormHistory,
+  updateHopsFormHistoryEntry,
 };

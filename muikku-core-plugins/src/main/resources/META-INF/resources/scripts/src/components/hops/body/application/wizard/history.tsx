@@ -5,53 +5,82 @@ import { StatusType } from "~/reducers/base/status";
 import { IconButton } from "~/components/general/button";
 import "~/sass/elements/hops.scss";
 import { HopsHistoryEntry } from "~/generated/client";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
+import { StateType } from "~/reducers";
+import { ReducerStateType } from "~/reducers/hops";
 
 /**
  * HopsHistoryProps
  */
 interface HopsHistoryProps {
-  hopsUpdates: HopsHistoryEntry[];
-  loggedUserId: number;
-  loading: boolean;
-  superVisorModifies: boolean;
-  onHistoryEventClick: (eventId: number) => void;
+  // Redux state variables
   status: StatusType;
+  formHistory: HopsHistoryEntry[];
+  formHistoryStatus: ReducerStateType;
 }
 
 /**
  * HopsHistory
  * @param props props
  */
-const HopsHistory: React.FC<HopsHistoryProps> = (props) => (
-  <div className="hops-container__history">
-    {props.hopsUpdates.map((item, i) => (
-      <HopsHistoryEvent
-        key={i}
-        showEdit={
-          props.superVisorModifies && item.modifierId === props.loggedUserId
-        }
-        hopsUpdate={item}
-        onHistoryEventClick={props.onHistoryEventClick}
-        status={props.status}
-      />
-    ))}
-    {props.loading && (
-      <div className="hops-container__history-event">
-        <div className="loader-empty" />
-      </div>
-    )}
-  </div>
-);
+const HopsHistory: React.FC<HopsHistoryProps> = (props) => {
+  const { status, formHistory, formHistoryStatus } = props;
 
-export default HopsHistory;
+  return (
+    <div className="hops-container__history">
+      {formHistory.map((item, i) => {
+        const isMe = item.modifierId === status.userId;
+
+        return (
+          <HopsHistoryEvent
+            key={i}
+            showEdit={isMe}
+            historyEntry={item}
+            status={status}
+          />
+        );
+      })}
+      {formHistoryStatus === "LOADING" && (
+        <div className="hops-container__history-event">
+          <div className="loader-empty" />
+        </div>
+      )}
+    </div>
+  );
+};
+
+/**
+ * Maps the Redux state to component props
+ * @param state - The Redux state
+ * @returns An object with the mapped props
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    status: state.status,
+    formHistory: state.hopsNew.hopsFormHistory,
+    formHistoryStatus: state.hopsNew.hopsFormHistoryStatus,
+  };
+}
+
+/**
+ * Maps dispatch functions to component props
+ * @param dispatch - The Redux dispatch function
+ * @returns An object with the mapped dispatch functions
+ */
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HopsHistory);
 
 /**
  * HopsHistoryEventProps
  */
 interface HopsHistoryEventProps {
-  hopsUpdate: HopsHistoryEntry;
+  historyEntry: HopsHistoryEntry;
   showEdit: boolean;
-  onHistoryEventClick: (eventId: number) => void;
   status: StatusType;
 }
 
@@ -60,15 +89,16 @@ interface HopsHistoryEventProps {
  * @param props props
  */
 const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
+  const { historyEntry, showEdit, status } = props;
+
   /**
    * handleEditClick
    */
   const handleEditClick = () => {
-    props.onHistoryEventClick(props.hopsUpdate.id);
+    // props.onHistoryEventClick(props.hopsUpdate.id);
   };
 
-  const viewingOwnHistorEvent =
-    props.status.userId === props.hopsUpdate.modifierId;
+  const viewingOwnHistorEvent = status.userId === historyEntry.modifierId;
 
   return (
     <>
@@ -79,9 +109,9 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
               Muokkasit HOPS:ia
             </span>
             <span className="hops-container__history-event-date">
-              {moment(props.hopsUpdate.date).format("l")}
+              {moment(historyEntry.date).format("l")}
             </span>
-            {props.showEdit && (
+            {showEdit && (
               <span className="hops-container__history-event-action">
                 <IconButton
                   buttonModifiers={["edit-hops-history-event-description"]}
@@ -92,9 +122,9 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
             )}
           </div>
 
-          {props.hopsUpdate.details && (
+          {historyEntry.details && (
             <div className="hops-container__history-event-secondary">
-              <span>{props.hopsUpdate.details}</span>
+              <span>{historyEntry.details}</span>
             </div>
           )}
         </div>
@@ -103,26 +133,26 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
           <div className="hops-container__history-event-primary">
             <span className="hops-container__history-event-author">
               <Avatar
-                id={props.hopsUpdate.modifierId}
-                firstName={props.hopsUpdate.modifier}
-                hasImage={props.hopsUpdate.modifierHasImage}
+                id={historyEntry.modifierId}
+                firstName={historyEntry.modifier}
+                hasImage={historyEntry.modifierHasImage}
                 size="small"
               />
               <span className="hops-container__history-event-author-name">
-                {props.hopsUpdate.modifier}
+                {historyEntry.modifier}
               </span>
             </span>
             <span className="hops-container__history-event-text">
               muokkasi HOPS:ia
             </span>
             <span className="hops-container__history-event-date">
-              {moment(props.hopsUpdate.date).format("l")}
+              {moment(historyEntry.date).format("l")}
             </span>
           </div>
 
-          {props.hopsUpdate.details && (
+          {historyEntry.details && (
             <div className="hops-container__history-event-secondary">
-              <span>{props.hopsUpdate.details}</span>
+              <span>{historyEntry.details}</span>
             </div>
           )}
         </div>

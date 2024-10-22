@@ -10,6 +10,7 @@ import {
   MatriculationSubject,
   MatriculationSubjectEligibilityOPS2021,
   StudentInfo,
+  HopsHistoryEntry,
 } from "~/generated/client";
 import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 
@@ -110,6 +111,10 @@ export interface HopsState {
   // HOPS FORM
   hopsFormStatus: ReducerStateType;
   hopsForm: HopsForm | null;
+
+  // HOPS FORM HISTORY
+  hopsFormHistoryStatus: ReducerStateType;
+  hopsFormHistory: HopsHistoryEntry[] | null;
 }
 
 const initialHopsState: HopsState = {
@@ -135,6 +140,8 @@ const initialHopsState: HopsState = {
   studentInfo: null,
   hopsFormStatus: "IDLE",
   hopsForm: null,
+  hopsFormHistoryStatus: "IDLE",
+  hopsFormHistory: null,
 };
 
 /**
@@ -352,6 +359,23 @@ export const hopsNew: Reducer<HopsState> = (
         ...state,
         studentInfoStatus: action.payload.status,
         studentInfo: action.payload.data,
+      };
+
+    case "HOPS_FORM_HISTORY_UPDATE":
+      return {
+        ...state,
+        hopsFormHistoryStatus: action.payload.status,
+        hopsFormHistory: action.payload.data,
+      };
+
+    case "HOPS_FORM_HISTORY_ENTRY_UPDATE":
+      return {
+        ...state,
+        hopsFormHistory: state.hopsFormHistory
+          ? state.hopsFormHistory.map((entry) =>
+              entry.id === action.payload.data.id ? action.payload.data : entry
+            )
+          : null,
       };
 
     default:

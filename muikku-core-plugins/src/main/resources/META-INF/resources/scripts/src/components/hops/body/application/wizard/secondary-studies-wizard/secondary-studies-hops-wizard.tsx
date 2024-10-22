@@ -107,7 +107,6 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
             studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
             educationalLevel={studentInfo.studyProgrammeEducationType}
             guidanceCounselors={studentInfo.counselorList}
-            hopsHistory={[]}
           />
         </AnimatedStep>
       ),

@@ -65,7 +65,6 @@ const CompulsoryStudiesHopsWizard: React.FC<
    * Handles the form submission
    */
   const handleFormSubmitClick = () => {
-    console.log("form", localForm);
     setIsFormSaveDialogOpen(true);
     setIsEditing(false);
   };
@@ -112,7 +111,6 @@ const CompulsoryStudiesHopsWizard: React.FC<
             studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
             educationalLevel={studentInfo.studyProgrammeEducationType}
             guidanceCounselors={studentInfo.counselorList}
-            hopsHistory={[]}
           />
         </AnimatedStep>
       ),

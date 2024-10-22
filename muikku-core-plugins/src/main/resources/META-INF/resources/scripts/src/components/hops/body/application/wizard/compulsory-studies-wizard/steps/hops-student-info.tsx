@@ -2,7 +2,6 @@ import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import Button from "~/components/general/button";
-import { HopsHistoryEntry } from "~/generated/client";
 import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
 import HopsHistory from "../../history";
 
@@ -17,8 +16,6 @@ interface HopsStudentHopsInformationProps {
   educationalLevel: string;
   /** An array of guidance counselor names */
   guidanceCounselors: string[];
-  /** An array of HOPS history entries */
-  hopsHistory: HopsHistoryEntry[];
 }
 
 const loading = false;
@@ -36,7 +33,6 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = ({
   studentName,
   educationalLevel,
   guidanceCounselors,
-  hopsHistory,
 }: HopsStudentHopsInformationProps): React.ReactElement => {
   if (loading) {
     return <div className="loader-empty" />;
@@ -96,14 +92,7 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = ({
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">Muokkaushistoria</legend>
         <div className="hops-container__info">
-          <HopsHistory
-            hopsUpdates={hopsHistory}
-            loading={false}
-            loggedUserId={0}
-            onHistoryEventClick={() => undefined}
-            superVisorModifies={false}
-            status={undefined}
-          />
+          <HopsHistory />
           <div className="hops-container__row">
             <Button buttonModifiers={["load-all-hops-events"]}>
               Lataa kaikki
