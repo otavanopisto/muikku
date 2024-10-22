@@ -21,6 +21,37 @@
   }
 }
 
+.hops-form__toolbar-primary {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 10px 0 0;
+
+  > * {
+    margin: 0 0 0 10px;
+  }
+}
+
+.hops-form__toolbar-secondary {
+  align-items: center;
+  border-left: 1px solid $color-default-separator-border;
+  display: flex;
+  justify-content: center;
+  padding: 0 0 0 10px;
+
+  > * {
+    margin: 0 10px 0 0;
+  }
+}
+
+.hops-form__toolbar {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+  position: relative;
+}
+
 .hops-container__state {
   align-items: flex-start;
   border: 1px solid transparent;

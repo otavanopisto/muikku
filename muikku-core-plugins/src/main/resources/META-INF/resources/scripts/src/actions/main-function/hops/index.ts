@@ -10,6 +10,7 @@ import {
   MatriculationPlan,
   MatriculationResults,
   MatriculationSubject,
+  StudentInfo,
 } from "~/generated/client";
 import {
   MatriculationEligibilityWithAbistatus,
@@ -20,10 +21,16 @@ import i18n from "~/locales/i18n";
 import { abistatus } from "~/helper-functions/abistatus";
 import { displayNotification } from "~/actions/base/notifications";
 import { OPS2021SubjectCodesInOrder } from "~/mock/mock-data";
+import {
+  HopsForm,
+  initializeCompulsoryStudiesHops,
+  initializeSecondaryStudiesHops,
+} from "~/@types/hops";
 
 // Api instances
 const recordsApi = MApi.getRecordsApi();
 const matriculationApi = MApi.getMatriculationApi();
+const hopsApi = MApi.getHopsApi();
 
 // HOPS BACKGROUND ACTIONS TYPES
 
@@ -120,6 +127,18 @@ export type HOPS_UPDATE_CURRENTSTUDENT_STUDYPROGRAM = SpecificActionType<
 
 export type HOPS_RESET_DATA = SpecificActionType<"HOPS_RESET_DATA", undefined>;
 
+// New action type for updating HOPS form status and data
+export type HOPS_FORM_UPDATE = SpecificActionType<
+  "HOPS_FORM_UPDATE",
+  { status: ReducerStateType; data: HopsForm | null }
+>;
+
+// New action type for updating student info status and data
+export type HOPS_STUDENT_INFO_UPDATE = SpecificActionType<
+  "HOPS_STUDENT_INFO_UPDATE",
+  { status: ReducerStateType; data: StudentInfo | null }
+>;
+
 /**
  * loadExamDataTriggerType
  */
@@ -164,6 +183,20 @@ export interface UpdateMatriculationExaminationTriggerType {
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
+}
+
+/**
+ * LoadStudentHopsFormTriggerType
+ */
+export interface LoadStudentHopsFormTriggerType {
+  (userIdentifier?: string): AnyActionType;
+}
+
+/**
+ * LoadStudentInfoTriggerType
+ */
+export interface LoadStudentInfoTriggerType {
+  (userIdentifier?: string): AnyActionType;
 }
 
 /**
@@ -767,6 +800,167 @@ const resetMatriculationData: ResetMatriculationDataTriggerType =
     };
   };
 
+/**
+ * Load student HOPS form data thunk
+ *
+ * @param userIdentifier userIdentifier
+ */
+const loadStudentHopsForm: LoadStudentHopsFormTriggerType =
+  function loadStudentHopsForm(userIdentifier) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const studentIdentifier = userIdentifier
+        ? userIdentifier
+        : state.status.userSchoolDataIdentifier;
+
+      if (state.hopsNew.hopsFormStatus === "READY") {
+        return;
+      }
+
+      dispatch({
+        type: "HOPS_FORM_UPDATE",
+        payload: { status: "LOADING", data: null },
+      });
+
+      try {
+        // Student info is needed for HOPS form
+        const studentInfoData = await hopsApi.getStudentInfo({
+          studentIdentifier,
+        });
+
+        dispatch({
+          type: "HOPS_STUDENT_INFO_UPDATE",
+          payload: { status: "READY", data: studentInfoData },
+        });
+
+        // Form data for HOPS
+        const hopsFormData = await hopsApi.getStudentHops({
+          studentIdentifier,
+        });
+
+        let initializedHopsFormData: HopsForm;
+
+        // If there is no form data, lets only initialize it
+        if (hopsFormData === "") {
+          if (studentInfoData.studyProgrammeEducationType === "lukio") {
+            initializedHopsFormData = {
+              type: "secondary",
+              ...initializeSecondaryStudiesHops(),
+            };
+          } else {
+            initializedHopsFormData = {
+              type: "compulsory",
+              ...initializeCompulsoryStudiesHops(),
+            };
+          }
+        }
+        // If there is form data, lets merge it with initialized data as there might be new fields or
+        // not all fields are filled
+        else {
+          if (studentInfoData.studyProgrammeEducationType === "lukio") {
+            initializedHopsFormData = {
+              type: "secondary",
+              ...initializeSecondaryStudiesHops(),
+              ...hopsFormData,
+            };
+          } else {
+            initializedHopsFormData = {
+              type: "compulsory",
+              ...initializeCompulsoryStudiesHops(),
+              ...hopsFormData,
+            };
+          }
+        }
+
+        dispatch({
+          type: "HOPS_FORM_UPDATE",
+          payload: { status: "READY", data: initializedHopsFormData },
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch({
+          type: "HOPS_FORM_UPDATE",
+          payload: { status: "ERROR", data: null },
+        });
+
+        dispatch(
+          actions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "studies",
+              context: "hopsForm",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * Load student info data thunk
+ *
+ * @param userIdentifier userIdentifier
+ */
+const loadStudentInfo: LoadStudentInfoTriggerType = function loadStudentInfo(
+  userIdentifier
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+    const studentIdentifier = userIdentifier
+      ? userIdentifier
+      : state.status.userSchoolDataIdentifier;
+
+    if (state.hopsNew.studentInfoStatus === "READY") {
+      return;
+    }
+
+    dispatch({
+      type: "HOPS_STUDENT_INFO_UPDATE",
+      payload: { status: "LOADING", data: null },
+    });
+
+    try {
+      // Assuming there's an API endpoint to fetch student info
+      const studentInfoData = await hopsApi.getStudentInfo({
+        studentIdentifier,
+      });
+
+      dispatch({
+        type: "HOPS_STUDENT_INFO_UPDATE",
+        payload: { status: "READY", data: studentInfoData },
+      });
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      dispatch({
+        type: "HOPS_STUDENT_INFO_UPDATE",
+        payload: { status: "ERROR", data: null },
+      });
+
+      dispatch(
+        actions.displayNotification(
+          i18n.t("notifications.loadError", {
+            ns: "studies",
+            context: "studentInfo",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
 export {
   loadMatriculationData,
   verifyMatriculationExam,
@@ -774,4 +968,6 @@ export {
   saveMatriculationPlan,
   updateMatriculationExamination,
   resetMatriculationData,
+  loadStudentHopsForm,
+  loadStudentInfo,
 };

@@ -3,7 +3,6 @@ import { connect, Dispatch } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
-import { HOPSState } from "../../../reducers/main-function/hops";
 import { Tab } from "~/components/general/tabs";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
@@ -16,17 +15,19 @@ import "~/sass/elements/workspace-assessment.scss";
 import { useTranslation } from "react-i18next";
 import Matriculation from "./application/matriculation/matriculation";
 import { UseCaseContextProvider } from "~/context/use-case-context";
+import Background from "./application/background/background";
+import { HopsState } from "~/reducers/hops";
 
 /**
  * StudiesTab
  */
-type HopsTab = "MATRICULATION";
+type HopsTab = "MATRICULATION" | "BACKGROUND";
 
 /**
  * HopsApplicationProps
  */
 interface HopsApplicationProps {
-  hops: HOPSState;
+  hops: HopsState;
 }
 
 /**
@@ -34,7 +35,8 @@ interface HopsApplicationProps {
  * @param props props
  */
 const HopsApplication = (props: HopsApplicationProps) => {
-  const [activeTab, setActiveTab] = React.useState<HopsTab>("MATRICULATION");
+  const { hops } = props;
+  const [activeTab, setActiveTab] = React.useState<HopsTab>("BACKGROUND");
   const { t } = useTranslation(["studies", "common", "hops_new"]);
 
   /**
@@ -56,6 +58,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   const panelTabs: Tab[] = [
     {
+      id: "BACKGROUND",
+      name: t("labels.hopsBackground", { ns: "hops_new" }),
+      hash: "background",
+      type: "background",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <Background />
+        </ApplicationPanelBody>
+      ),
+    },
+    {
       id: "MATRICULATION",
       name: t("labels.hopsMatriculation", { ns: "hops_new" }),
       hash: "matriculation",
@@ -68,13 +81,30 @@ const HopsApplication = (props: HopsApplicationProps) => {
     },
   ];
 
+  /**
+   * isVisible
+   * @param tab tab
+   * @returns whether tab should be visible or not
+   */
+  const isVisible = (tab: Tab) => {
+    switch (tab.id) {
+      case "BACKGROUND":
+        return true;
+      case "MATRICULATION":
+        return (
+          hops.studentInfo &&
+          hops.studentInfo.studyProgrammeEducationType === "lukio"
+        );
+    }
+  };
+
   return (
     <UseCaseContextProvider value="STUDENT">
       <ApplicationPanel
         title="HOPS"
         onTabChange={onTabChange}
         activeTab={activeTab}
-        panelTabs={panelTabs}
+        panelTabs={panelTabs.filter(isVisible)}
       />
     </UseCaseContextProvider>
   );
@@ -86,7 +116,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    hops: state.hops,
+    hops: state.hopsNew,
   };
 }
 

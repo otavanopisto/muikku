@@ -1,4 +1,5 @@
 import { Reducer } from "redux";
+import { HopsForm } from "~/@types/hops";
 import { ActionType } from "~/actions";
 import {
   MatriculationEligibilityStatus,
@@ -8,6 +9,7 @@ import {
   MatriculationResults,
   MatriculationSubject,
   MatriculationSubjectEligibilityOPS2021,
+  StudentInfo,
 } from "~/generated/client";
 import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 
@@ -100,6 +102,14 @@ export interface HopsState {
   // HOPS CAREER PLAN
   hopsCareerPlanStatus: ReducerStateType;
   hopsCareerPlanState: HopsCareerPlanState;
+
+  // STUDENT INFO
+  studentInfoStatus: ReducerStateType;
+  studentInfo: StudentInfo | null;
+
+  // HOPS FORM
+  hopsFormStatus: ReducerStateType;
+  hopsForm: HopsForm | null;
 }
 
 const initialHopsState: HopsState = {
@@ -121,6 +131,10 @@ const initialHopsState: HopsState = {
   },
   hopsCareerPlanStatus: "IDLE",
   hopsCareerPlanState: {},
+  studentInfoStatus: "IDLE",
+  studentInfo: null,
+  hopsFormStatus: "IDLE",
+  hopsForm: null,
 };
 
 /**
@@ -324,6 +338,20 @@ export const hopsNew: Reducer<HopsState> = (
       return {
         ...state,
         currentStudentStudyProgramme: action.payload,
+      };
+
+    case "HOPS_FORM_UPDATE":
+      return {
+        ...state,
+        hopsFormStatus: action.payload.status,
+        hopsForm: action.payload.data,
+      };
+
+    case "HOPS_STUDENT_INFO_UPDATE":
+      return {
+        ...state,
+        studentInfoStatus: action.payload.status,
+        studentInfo: action.payload.data,
       };
 
     default:
