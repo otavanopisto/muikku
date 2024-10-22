@@ -941,19 +941,23 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         
         mockBuilder.removeMockCourseStudent(courseStudent);
         courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
+        mockBuilder
+        .addCourseStudent(course1.getId(), courseStudent).mockCourseStudents();
         
         mockBuilder
+        .addCourseStudent(course1.getId(), courseStudent)
         .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, date)
         .mockCompositeGradingScales()
         .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, date)
         .mockCompositeCourseAssessmentRequests()
         .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), date, false)
         .mockStaffCompositeCourseAssessmentRequests()
-        .addCourseStudent(course1.getId(), courseStudent)
         .mockCourseActivities();
         
         logout();
-        mockBuilder.mockLogin(admin);
+        mockBuilder
+          .mockLogin(admin)
+          .mockAssessmentRequestLocking(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, true, date);
         login();
         selectFinnishLocale();
         navigate(String.format("/evaluation"), false);
@@ -964,6 +968,14 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitAndClick(".button--evaluation-lock-request");
         assertPresent(".button--evaluation-unlock-request");
 
+        mockBuilder
+        .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, true, date)
+        .mockCompositeGradingScales()
+        .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, true, course1, student, date)
+        .mockCompositeCourseAssessmentRequests()
+        .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, true, course1, student, admin.getId(), date, false)
+        .mockStaffCompositeCourseAssessmentRequests();
+        
         logout();
         mockBuilder.mockLogin(student);
         login();

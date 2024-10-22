@@ -915,9 +915,24 @@ public class PyramusMock {
               .withHeader("Content-Type", "application/json")
               .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
               .withStatus(200)));
+       
         return this;
       }
 
+      public Builder mockAssessmentRequestLocking(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, boolean locked, OffsetDateTime date) throws JsonProcessingException {
+        List<CourseAssessmentRequest> assessmentRequests = new ArrayList<CourseAssessmentRequest>();
+        CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled, locked);
+        assessmentRequests.add(assessmentRequest);
+        
+        stubFor(put(urlEqualTo(String.format("/1/courses/%d/courseStudents/%d/assessmentRequest/lock", courseId, courseStudentId)))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
+              .withStatus(200)));
+        
+        return this;
+      }
+      
       @SuppressWarnings({ "unchecked", "rawtypes" })
       public Builder mockCompositeGradingScales() throws JsonProcessingException {
         List<CompositeGradingScale> compositeGradingScales = new ArrayList<CompositeGradingScale>();
