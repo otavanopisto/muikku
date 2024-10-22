@@ -4,6 +4,7 @@ import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import moment from "moment";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/user.scss";
 import "~/sass/elements/application-list.scss";
@@ -101,7 +102,7 @@ class StudentListItem extends React.Component<StudentProps, StudentState> {
                   {this.props.i18n.t("labels.studyTime", {
                     ns: "guider",
                     context: studyTimeEndState,
-                    time: moment(this.props.student.studyTimeEnd).format("LL"),
+                    time: localize.date(this.props.student.studyTimeEnd),
                   })}{" "}
                 </span>
               </div>
