@@ -68,11 +68,20 @@ public class RestAssignmentEvaluation {
     this.id = id;
   }
 
+  public Double getPoints() {
+    return points;
+  }
+
+  public void setPoints(Double points) {
+    this.points = points;
+  }
+
   private Long id;
   private RestAssignmentEvaluationType type;
   private WorkspaceMaterialEvaluationType evaluationType;
   private String text;
   private Date date;
   private String grade;
+  private Double points;
   private List<RestAssignmentEvaluationAudioClip> audioAssessments = new ArrayList<>();
 }

@@ -10897,6 +10897,9 @@ components:
               assessmentDate:
                 description: Unix timestamp
                 type: integer
+              points:
+                type: number
+                format: dobule
               audioAssessments:
                 type: array
                 items:
@@ -10934,6 +10937,9 @@ components:
               assessmentDate:
                 description: Unix timestamp
                 type: integer
+              points:
+                type: number
+                format: dobule
               audioAssessments:
                 type: array
                 items:
@@ -14548,6 +14554,11 @@ components:
           description: Date when the evaluation was done
           type: string
           format: date-time
+        points:
+          description: Points given for the assignment
+          type: number
+          format: double
+          nullable: true
         audioAssessments:
           description: Audio assessments of the material
           type: array
@@ -14922,6 +14933,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MaterialProducer"
+        maxPoints:
+          type: number
+          format: double
 
     Message:
       type: object
@@ -17644,6 +17658,9 @@ components:
         titleLanguage:
           description: The language of the material
           $ref: "#/components/schemas/Language"
+        maxPoints:
+          type: number
+          format: double
 
     WorkspaceFolder:
       type: object

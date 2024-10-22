@@ -590,7 +590,16 @@ public class EvaluationController {
     return assessmentRequestCancellationDAO.listByStudentAndWorkspace(studentEntityId, workspaceEntityId);
   }
 
-  public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment, WorkspaceMaterialEvaluationType evaluationType) {
+  public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(
+      UserEntity student,
+      WorkspaceMaterial workspaceMaterial,
+      GradingScale gradingScale,
+      GradingScaleItem grade,
+      UserEntity assessor,
+      Date evaluated,
+      String verbalAssessment,
+      Double points,
+      WorkspaceMaterialEvaluationType evaluationType) {
     WorkspaceMaterialEvaluation evaluation = workspaceMaterialEvaluationDAO.create(student.getId(), 
         workspaceMaterial.getId(),  
         gradingScale != null ? gradingScale.getIdentifier() : null, 
@@ -600,6 +609,7 @@ public class EvaluationController {
         assessor.getId(), 
         evaluated, 
         verbalAssessment,
+        points,
         evaluationType);
     WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
 
@@ -746,15 +756,26 @@ public class EvaluationController {
     return supplementationRequest;
   }
   
-  public WorkspaceMaterialEvaluation updateWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment, WorkspaceMaterialEvaluationType evaluationType) {
-    workspaceMaterialEvaluationDAO.updateGradingScaleIdentifier(workspaceMaterialEvaluation, gradingScale != null ? gradingScale.getIdentifier() : null);
-    workspaceMaterialEvaluationDAO.updateGradingScaleSchoolDataSource(workspaceMaterialEvaluation, gradingScale != null ? gradingScale.getSchoolDataSource() : null);
-    workspaceMaterialEvaluationDAO.updateVerbalAssessment(workspaceMaterialEvaluation, verbalAssessment);
-    workspaceMaterialEvaluationDAO.updateGradeIdentifier(workspaceMaterialEvaluation, grade != null ? grade.getIdentifier() : null);
-    workspaceMaterialEvaluationDAO.updateGradeSchoolDataSource(workspaceMaterialEvaluation, grade != null ? grade.getSchoolDataSource() : null);
-    workspaceMaterialEvaluationDAO.updateAssessorEntityId(workspaceMaterialEvaluation, assessor.getId());
-    workspaceMaterialEvaluationDAO.updateEvaluated(workspaceMaterialEvaluation, evaluated);
-    workspaceMaterialEvaluationDAO.updateEvaluationType(workspaceMaterialEvaluation, evaluationType);
+  public WorkspaceMaterialEvaluation updateWorkspaceMaterialEvaluation(
+      WorkspaceMaterialEvaluation workspaceMaterialEvaluation,
+      GradingScale gradingScale,
+      GradingScaleItem grade,
+      UserEntity assessor,
+      Date evaluated,
+      String verbalAssessment,
+      Double points,
+      WorkspaceMaterialEvaluationType evaluationType) {
+    
+    workspaceMaterialEvaluationDAO.update(workspaceMaterialEvaluation,
+        gradingScale != null ? gradingScale.getIdentifier() : null,
+        gradingScale != null ? gradingScale.getSchoolDataSource() : null,
+        grade != null ? grade.getIdentifier() : null,
+        grade != null ? grade.getSchoolDataSource() : null,
+        assessor.getId(),
+        evaluated,
+        verbalAssessment,
+        points,
+        evaluationType);
     
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialEvaluation.getWorkspaceMaterialId());
     UserEntity student = userEntityController.findUserEntityById(workspaceMaterialEvaluation.getStudentEntityId());
@@ -803,7 +824,7 @@ public class EvaluationController {
       evaluation.setEvaluationType(evaluationType);
       evaluation.setDate(workspaceMaterialEvaluation.getEvaluated());
       evaluation.setText(workspaceMaterialEvaluation.getVerbalAssessment());
-      
+      evaluation.setPoints(workspaceMaterialEvaluation.getPoints());
       // Only assessments have grading info
       if (evaluationType == WorkspaceMaterialEvaluationType.ASSESSMENT) {
         GradingScale gradingScale = gradingController.findGradingScale(

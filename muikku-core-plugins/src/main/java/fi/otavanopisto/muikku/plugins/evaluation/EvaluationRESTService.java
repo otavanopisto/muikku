@@ -514,7 +514,11 @@ public class EvaluationRESTService extends PluginRESTService {
   @POST
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createWorkspaceMaterialAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, RestAssessmentWithAudio payload) {
+  public Response createWorkspaceMaterialAssessment(
+      @PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
+      @PathParam("USERENTITYID") Long userEntityId,
+      @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId,
+      RestAssessmentWithAudio payload) {
     if (payload == null || payload.getEvaluationType() == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
@@ -570,6 +574,7 @@ public class EvaluationRESTService extends PluginRESTService {
         assessor,
         payload.getAssessmentDate(),
         payload.getVerbalAssessment(),
+        payload.getPoints(),
         payload.getEvaluationType());
     
     evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
@@ -601,6 +606,7 @@ public class EvaluationRESTService extends PluginRESTService {
         workspaceMaterialEvaluation.getVerbalAssessment(),
         workspaceMaterialEvaluation.getEvaluated(),
         gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
+        workspaceMaterialEvaluation.getPoints(),
         workspaceMaterialEvaluation.getEvaluationType(),
         audioAssessments);
     return Response.ok(restAssessment).build();
@@ -677,6 +683,7 @@ public class EvaluationRESTService extends PluginRESTService {
         assessor,
         payload.getAssessmentDate(),
         payload.getVerbalAssessment(),
+        payload.getPoints(),
         payload.getEvaluationType());
     
     evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
@@ -708,6 +715,7 @@ public class EvaluationRESTService extends PluginRESTService {
         workspaceMaterialEvaluation.getVerbalAssessment(),
         workspaceMaterialEvaluation.getEvaluated(),
         gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
+        workspaceMaterialEvaluation.getPoints(),
         workspaceMaterialEvaluation.getEvaluationType(),
         audioAssessments);
     return Response.ok(restAssessment).build();

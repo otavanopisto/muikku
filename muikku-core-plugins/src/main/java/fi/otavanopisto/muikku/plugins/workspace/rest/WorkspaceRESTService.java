@@ -1983,7 +1983,13 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("material not found").build();
       }
 
-      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, entity.getAssignmentType(), entity.getCorrectAnswers(), entity.getTitleLanguage());
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(
+          parent,
+          material,
+          entity.getAssignmentType(),
+          entity.getCorrectAnswers(),
+          entity.getTitleLanguage(),
+          entity.getMaxPoints());
       if (entity.getNextSiblingId() != null) {
         WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeById(entity.getNextSiblingId());
         if (nextSibling == null) {
@@ -2017,7 +2023,8 @@ public class WorkspaceRESTService extends PluginRESTService {
                     workspaceMaterial.getUrlName(),
                     workspaceMaterial.getAssignmentType(),
                     workspaceMaterial.getCorrectAnswers(),
-                    workspaceMaterial.getLanguage());
+                    workspaceMaterial.getLanguage(),
+                    workspaceMaterial.getMaxPoints());
               }
             }
           }
@@ -2731,7 +2738,8 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
-        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(), workspaceNode.getLanguage());
+        workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(),
+        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
@@ -3044,7 +3052,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     boolean titleChanged = !StringUtils.equals(restWorkspaceMaterial.getTitle(), workspaceMaterial.getTitle());
     Boolean hidden = restWorkspaceMaterial.getHidden();
     WorkspaceNode workspaceNode = workspaceMaterialController.updateWorkspaceNode(workspaceMaterial, materialId, parentNode, nextSibling, hidden,
-        restWorkspaceMaterial.getAssignmentType(), restWorkspaceMaterial.getCorrectAnswers(), restWorkspaceMaterial.getTitle(), restWorkspaceMaterial.getTitleLanguage());
+        restWorkspaceMaterial.getAssignmentType(), restWorkspaceMaterial.getCorrectAnswers(), restWorkspaceMaterial.getTitle(),
+        restWorkspaceMaterial.getTitleLanguage(), restWorkspaceMaterial.getMaxPoints());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
 
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
