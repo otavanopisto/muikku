@@ -1,4 +1,3 @@
-import moment from "moment";
 import * as React from "react";
 import Avatar from "~/components/general/avatar";
 import { StatusType } from "~/reducers/base/status";
@@ -10,6 +9,8 @@ import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { ReducerStateType } from "~/reducers/hops";
+import { localize } from "~/locales/i18n";
+import EditHopsEventDescriptionDialog from "./dialog/edit-hops-event";
 
 /**
  * HopsHistoryProps
@@ -91,13 +92,6 @@ interface HopsHistoryEventProps {
 const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
   const { historyEntry, showEdit, status } = props;
 
-  /**
-   * handleEditClick
-   */
-  const handleEditClick = () => {
-    // props.onHistoryEventClick(props.hopsUpdate.id);
-  };
-
   const viewingOwnHistorEvent = status.userId === historyEntry.modifierId;
 
   return (
@@ -109,15 +103,16 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
               Muokkasit HOPS:ia
             </span>
             <span className="hops-container__history-event-date">
-              {moment(historyEntry.date).format("l")}
+              {localize.date(historyEntry.date)}
             </span>
             {showEdit && (
               <span className="hops-container__history-event-action">
-                <IconButton
-                  buttonModifiers={["edit-hops-history-event-description"]}
-                  icon="pencil"
-                  onClick={handleEditClick}
-                />
+                <EditHopsEventDescriptionDialog historyEntry={historyEntry}>
+                  <IconButton
+                    buttonModifiers={["edit-hops-history-event-description"]}
+                    icon="pencil"
+                  />
+                </EditHopsEventDescriptionDialog>
               </span>
             )}
           </div>
@@ -146,7 +141,7 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
               muokkasi HOPS:ia
             </span>
             <span className="hops-container__history-event-date">
-              {moment(historyEntry.date).format("l")}
+              {localize.date(historyEntry.date)}
             </span>
           </div>
 
