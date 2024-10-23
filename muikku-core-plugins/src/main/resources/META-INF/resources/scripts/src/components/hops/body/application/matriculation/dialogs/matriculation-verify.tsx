@@ -66,7 +66,7 @@ class MatriculationVerifyDialog extends React.Component<
         <Button
           className="button"
           onClick={() => {
-            this.props.verifyMatriculationExam(this.props.exam.id);
+            this.props.verifyMatriculationExam({ examId: this.props.exam.id });
             closeDialog();
           }}
           buttonModifiers={["success", "standard-ok"]}

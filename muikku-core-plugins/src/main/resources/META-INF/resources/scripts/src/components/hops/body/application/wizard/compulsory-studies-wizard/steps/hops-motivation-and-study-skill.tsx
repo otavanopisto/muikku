@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
-import { HopsMotivationAndStudy } from "~/@types/shared";
 import AnimateHeight from "react-animate-height";
 import {
   EmptyRow,
@@ -8,7 +7,10 @@ import {
   InputRow,
 } from "~/components/general/hops-compulsory-education-wizard/hops-input-table";
 import { Textarea } from "~/components/general/hops-compulsory-education-wizard/text-area";
-import { CompulsoryStudiesHops } from "~/@types/hops";
+import {
+  CompulsoryStudiesHops,
+  HopsMotivationAndStudyCompulsoryStudies,
+} from "~/@types/hops";
 
 /**
  * Props for the HopsMotivationAndStudySkills component
@@ -51,32 +53,21 @@ const HopsMotivationAndStudySkills: React.FC<
   }, []);
 
   /**
-   * Checks if a property of CompulsoryStudiesHops contains any undefined values
-   * @param property - Key of CompulsoryStudiesHops
-   * @returns boolean indicating if undefined values are present
-   */
-  /* const hopsMotivationAndStudyPropertyHasUndefinedValues = (
-    property: keyof CompulsoryStudiesHops
-  ) => {
-    const includedUndefineValues = Object.values(form[property]).includes(
-      undefined
-    );
-
-    return includedUndefineValues;
-  }; */
-
-  /**
    * Handles changes in textarea inputs
    * @param name - Key of CompulsoryStudiesHops
    * @returns Event handler function
    */
   const handleTextareaChange =
-    (name: keyof CompulsoryStudiesHops) =>
+    (name: keyof HopsMotivationAndStudyCompulsoryStudies) =>
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       onFormChange({
         ...form,
-        [name]: {
-          [e.currentTarget.name]: e.currentTarget.value,
+        motivationAndStudy: {
+          ...form.motivationAndStudy,
+          [name]: {
+            ...form.motivationAndStudy[name],
+            [e.currentTarget.name]: e.currentTarget.value,
+          },
         },
       });
     };
@@ -87,13 +78,16 @@ const HopsMotivationAndStudySkills: React.FC<
    * @returns Event handler function
    */
   const handleScaleRangeChange =
-    (name: keyof HopsMotivationAndStudy) =>
+    (name: keyof HopsMotivationAndStudyCompulsoryStudies) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onFormChange({
         ...form,
-        [name]: {
-          ...form[name],
-          [e.currentTarget.name]: parseInt(e.currentTarget.value),
+        motivationAndStudy: {
+          ...form.motivationAndStudy,
+          [name]: {
+            ...form.motivationAndStudy[name],
+            [e.currentTarget.name]: parseInt(e.currentTarget.value),
+          },
         },
       });
     };
@@ -104,18 +98,22 @@ const HopsMotivationAndStudySkills: React.FC<
    * @returns Event handler function
    */
   const handleCheckboxItemChange =
-    (name: keyof HopsMotivationAndStudy) =>
+    (name: keyof HopsMotivationAndStudyCompulsoryStudies) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onFormChange({
         ...form,
-        [name]: {
-          ...form[name],
-          [e.target.name]: e.target.checked,
+        motivationAndStudy: {
+          ...form.motivationAndStudy,
+          [name]: {
+            ...form.motivationAndStudy[name],
+            [e.target.name]: e.target.checked,
+          },
         },
       });
     };
 
-  const { wayToLearn, studySupport, selfImageAsStudent } = form;
+  const { wayToLearn, studySupport, selfImageAsStudent } =
+    form.motivationAndStudy;
 
   return (
     <div className="hops-container" ref={myRef}>

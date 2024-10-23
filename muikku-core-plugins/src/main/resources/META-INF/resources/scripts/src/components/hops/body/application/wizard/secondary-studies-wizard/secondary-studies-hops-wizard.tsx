@@ -8,7 +8,7 @@ import { useWizard } from "~/components/general/wizard/hooks/useWizard";
 import { Step1, Step2, Step3 } from "./steps";
 import HopsWizardFooter from "../hops-wizard-footer";
 import HopsWizardHeader from "../hops-wizard-header";
-import { Dispatch } from "redux";
+import { bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { SecondaryStudiesHops } from "~/@types/hops";
@@ -20,6 +20,12 @@ import { useTranslation } from "react-i18next";
 import NewHopsEventDescriptionDialog from "../dialog/new-hops-event";
 import { Textarea } from "../components/text-area";
 import _ from "lodash";
+import {
+  SaveHopsFormTriggerType,
+  saveHopsForm,
+  LoadMoreHopsFormHistoryTriggerType,
+  loadMoreHopsFormHistory,
+} from "~/actions/main-function/hops/";
 
 /**
  * Props for the CompulsoryStudiesHopsWizard component
@@ -29,8 +35,14 @@ interface SecondaryStudiesHopsWizardProps {
   form: SecondaryStudiesHops;
   /** Information about the student */
   studentInfo: StudentInfo;
+  /** Indicates if all HOPS events have been loaded */
+  allHopsEventsLoaded: boolean;
   /** Function to handle unsaved changes */
   onHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
+  /** Redux thunk function to save the HOPS form */
+  saveHopsForm: SaveHopsFormTriggerType;
+  /** Redux thunk function to load more HOPS form history */
+  loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType;
 }
 
 /**
@@ -42,7 +54,14 @@ interface SecondaryStudiesHopsWizardProps {
 const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   props
 ) => {
-  const { form, studentInfo, onHasUnsavedChanges } = props;
+  const {
+    form,
+    studentInfo,
+    allHopsEventsLoaded,
+    onHasUnsavedChanges,
+    saveHopsForm,
+    loadMoreHopsFormHistory,
+  } = props;
   const previousStep = React.useRef<number>(0);
 
   const { t } = useTranslation(["common"]);
@@ -51,7 +70,6 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   const [isFormSaveDialogOpen, setIsFormSaveDialogOpen] =
     useState<boolean>(false);
   const [hopsUpdateDetails, setHopsUpdateDetails] = useState<string>("");
-  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   React.useEffect(() => {
     if (_.isEqual(form, localForm)) {
@@ -70,18 +88,17 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   };
 
   /**
-   * Handles the form submission
-   */
-  const handleFormSubmitClick = () => {
-    setIsFormSaveDialogOpen(true);
-    setIsEditing(false);
-  };
-
-  /**
    * Opens the save dialog
    */
   const handleOpenSaveDialog = () => {
     setIsFormSaveDialogOpen(true);
+  };
+
+  /**
+   * Handles the form submission
+   */
+  const handleFormSubmitClick = () => {
+    saveHopsForm({ form: localForm, details: hopsUpdateDetails });
   };
 
   /**
@@ -101,13 +118,6 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
     setHopsUpdateDetails(event.target.value);
   };
 
-  /**
-   * Toggles the editing mode
-   */
-  const handleToggleEditing = () => {
-    setIsEditing((editing) => !editing);
-  };
-
   const steps: WizardStep[] = useMemo(
     () => [
       {
@@ -119,6 +129,8 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
               studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
               educationalLevel={studentInfo.studyProgrammeEducationType}
               guidanceCounselors={studentInfo.counselorList}
+              allHopsEventsLoaded={allHopsEventsLoaded}
+              loadMoreHopsEvents={loadMoreHopsFormHistory}
             />
           </AnimatedStep>
         ),
@@ -143,6 +155,8 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
       },
     ],
     [
+      allHopsEventsLoaded,
+      loadMoreHopsFormHistory,
       localForm,
       studentInfo.counselorList,
       studentInfo.firstName,
@@ -156,22 +170,22 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   return (
     <WizardProvider value={wizardValue}>
       <div className="hops-form">
-        <div className="hops-form__toolbar">
-          <Button buttonModifiers={["info"]} onClick={handleToggleEditing}>
-            {isEditing ? "Peruuta" : "Muokkaa"}
-          </Button>
-          <Button
-            buttonModifiers={["success"]}
-            disabled={!isEditing}
-            onClick={handleOpenSaveDialog}
-          >
-            {t("actions.save", { ns: "common" })}
-          </Button>
-        </div>
         <div className="hops-form__container">
           <Wizard
             header={<HopsWizardHeader />}
-            footer={<HopsWizardFooter />}
+            footer={
+              <HopsWizardFooter
+                externalContentRight={
+                  <Button
+                    buttonModifiers={["info"]}
+                    onClick={handleOpenSaveDialog}
+                    disabled={_.isEqual(form, localForm)}
+                  >
+                    {t("actions.save", { ns: "common" })}
+                  </Button>
+                }
+              />
+            }
             wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
           />
         </div>
@@ -207,6 +221,7 @@ function mapStateToProps(state: StateType) {
   return {
     form: state.hopsNew.hopsForm,
     studentInfo: state.hopsNew.studentInfo,
+    allHopsEventsLoaded: state.hopsNew.hopsFormHistoryLoadedAll,
   };
 }
 
@@ -216,7 +231,10 @@ function mapStateToProps(state: StateType) {
  * @returns An object with the mapped dispatch functions
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators(
+    { saveHopsForm, loadMoreHopsFormHistory },
+    dispatch
+  );
 }
 
 export default connect(

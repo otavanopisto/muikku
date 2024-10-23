@@ -6,7 +6,9 @@ import { useWizardContext } from "~/components/general/wizard/context/wizard-con
 /**
  * HopsWizardFooter
  */
-interface HopsWizardFooterProps {}
+interface HopsWizardFooterProps {
+  externalContentRight?: React.ReactNode;
+}
 
 /**
  * HopsWizardFooter
@@ -15,6 +17,7 @@ interface HopsWizardFooterProps {}
  * @returns JSX.Element
  */
 const HopsWizardFooter = (props: HopsWizardFooterProps) => {
+  const { externalContentRight } = props;
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { previous, next, isFirstStep, isLastStep } = useWizardContext();
 
@@ -53,6 +56,8 @@ const HopsWizardFooter = (props: HopsWizardFooterProps) => {
           {t("actions.next", { ns: "common" })}
         </Button>
       )}
+
+      {externalContentRight}
     </>
   );
 };

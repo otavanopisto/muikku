@@ -155,14 +155,20 @@ export type HOPS_FORM_HISTORY_ENTRY_UPDATE = SpecificActionType<
 // Add this new action type
 export type HOPS_FORM_HISTORY_APPEND = SpecificActionType<
   "HOPS_FORM_HISTORY_APPEND",
-  { status: ReducerStateType; data: HopsHistoryEntry[] | null }
+  { status: ReducerStateType; data?: HopsHistoryEntry[] | null }
+>;
+
+// Add this new action type
+export type HOPS_FORM_SAVE = SpecificActionType<
+  "HOPS_FORM_SAVE",
+  { status: ReducerStateType; data: HopsForm | null }
 >;
 
 /**
  * loadExamDataTriggerType
  */
 export interface LoadMatriculationDataTriggerType {
-  (userIdentifier?: string): AnyActionType;
+  (data: { userIdentifier?: string }): AnyActionType;
 }
 
 /**
@@ -176,21 +182,21 @@ export interface ResetMatriculationDataTriggerType {
  * verifyMatriculationEligibilityTriggerType
  */
 export interface VerifyMatriculationExamTriggerType {
-  (examId: number): AnyActionType;
+  (data: { examId: number }): AnyActionType;
 }
 
 /**
  * LoadMatriculationExamHistoryTriggerType
  */
 export interface LoadMatriculationExamHistoryTriggerType {
-  (examId: number, userIdentifier?: string): AnyActionType;
+  (data: { examId: number; userIdentifier?: string }): AnyActionType;
 }
 
 /**
  * SaveMatriculationPlanTriggerType
  */
 export interface SaveMatriculationPlanTriggerType {
-  (plan: MatriculationPlan): AnyActionType;
+  (data: { plan: MatriculationPlan }): AnyActionType;
 }
 
 /**
@@ -208,56 +214,67 @@ export interface UpdateMatriculationExaminationTriggerType {
  * LoadStudentHopsFormTriggerType
  */
 export interface LoadStudentHopsFormTriggerType {
-  (userIdentifier?: string): AnyActionType;
+  (data: { userIdentifier?: string }): AnyActionType;
 }
 
 /**
  * LoadStudentInfoTriggerType
  */
 export interface LoadStudentInfoTriggerType {
-  (userIdentifier?: string): AnyActionType;
+  (data: { userIdentifier?: string }): AnyActionType;
 }
 
 /**
  * Trigger type for loading HOPS form history
  */
 export interface LoadHopsFormHistoryTriggerType {
-  (userIdentifier?: string): AnyActionType;
+  (data: { userIdentifier?: string }): AnyActionType;
 }
 
 /**
  * UpdateHopsFormHistoryEntryTriggerType
  */
 export interface UpdateHopsFormHistoryEntryTriggerType {
-  (
-    entryId: number,
-    updatedEntry: Partial<HopsHistoryEntry>,
-    onSuccess?: () => void
-  ): AnyActionType;
+  (data: {
+    entryId: number;
+    updatedEntry: Partial<HopsHistoryEntry>;
+    onSuccess?: () => void;
+  }): AnyActionType;
 }
 
 /**
  * Load more HOPS form history data trigger type
  */
 export interface LoadMoreHopsFormHistoryTriggerType {
-  (userIdentifier?: string): AnyActionType;
+  (data: { userIdentifier?: string }): AnyActionType;
+}
+
+/**
+ * Save HOPS form trigger type
+ */
+export interface SaveHopsFormTriggerType {
+  (data: {
+    form: HopsForm;
+    details?: string;
+    onSuccess?: () => void;
+  }): AnyActionType;
 }
 
 /**
  * Load matriculation exam data thunk
  *
- * @param userIdentifier userIdentifier
+ * @param data data
  */
 const loadMatriculationData: LoadMatriculationDataTriggerType =
-  function loadMatriculationData(userIdentifier) {
+  function loadMatriculationData(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
 
-      const studentIdentifier = userIdentifier
-        ? userIdentifier
+      const studentIdentifier = data.userIdentifier
+        ? data.userIdentifier
         : state.status.userSchoolDataIdentifier;
 
       if (state.hopsNew.hopsMatriculationStatus === "READY") {
@@ -499,10 +516,10 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
 
 /**
  * Verify matriculation exam
- * @param examId examId
+ * @param data data
  */
 const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
-  function cancelMatriculationExam(examId) {
+  function cancelMatriculationExam(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -512,7 +529,7 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
 
       try {
         await matriculationApi.setStudentExamEnrollmentState({
-          examId,
+          examId: data.examId,
           studentIdentifier,
           setStudentExamEnrollmentStateRequest: {
             state: "CONFIRMED",
@@ -522,7 +539,7 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_EXAM_STATE",
           payload: {
-            examId,
+            examId: data.examId,
             newState: "CONFIRMED",
           },
         });
@@ -544,11 +561,10 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
 
 /**
  * Load matriculation exam history
- * @param examId examId
- * @param userIdentifier userIdentifier
+ * @param data data
  */
 const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
-  function loadMatriculationExamHistoryTriggerType(examId, userIdentifier) {
+  function loadMatriculationExamHistoryTriggerType(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -559,7 +575,7 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
       dispatch({
         type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY_STATUS",
         payload: {
-          examId,
+          examId: data.examId,
           status: "LOADING",
         },
       });
@@ -567,14 +583,14 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
       try {
         const entryLogs =
           await matriculationApi.getStudentExamEnrollmentChangeLog({
-            examId,
+            examId: data.examId,
             studentIdentifier,
           });
 
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY",
           payload: {
-            examId,
+            examId: data.examId,
             history: entryLogs,
             status: "READY",
             past: true,
@@ -590,7 +606,7 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
           dispatch({
             type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY",
             payload: {
-              examId,
+              examId: data.examId,
               history: [],
               status: "READY",
               past: true,
@@ -608,10 +624,10 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
 
 /**
  * saveMatriculationPlan
- * @param plan plan
+ * @param data data
  */
 const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
-  function saveMatriculationPlan(plan) {
+  function saveMatriculationPlan(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -622,7 +638,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
       try {
         await matriculationApi.setStudentMatriculationPlan({
           studentIdentifier,
-          setStudentMatriculationPlanRequest: plan,
+          setStudentMatriculationPlanRequest: data.plan,
         });
 
         // After saving the plan, we need to update the eligibility for the subjects
@@ -633,7 +649,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
 
         // Check if subjects are removed and add them to the list
         state.hopsNew.hopsMatriculation.plan.plannedSubjects.forEach((s) => {
-          const match = plan.plannedSubjects.find(
+          const match = data.plan.plannedSubjects.find(
             (ns) => ns.subject === s.subject
           );
 
@@ -646,7 +662,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
         });
 
         // Check if new subjects are added and add them to the list
-        plan.plannedSubjects.forEach((s) => {
+        data.plan.plannedSubjects.forEach((s) => {
           const match =
             state.hopsNew.hopsMatriculation.plan.plannedSubjects.find(
               (ns) => ns.subject === s.subject
@@ -731,7 +747,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
 
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_PLAN",
-          payload: plan,
+          payload: data.plan,
         });
 
         dispatch({
@@ -847,17 +863,17 @@ const resetMatriculationData: ResetMatriculationDataTriggerType =
 /**
  * Load student HOPS form data thunk
  *
- * @param userIdentifier userIdentifier
+ * @param data data
  */
 const loadStudentHopsForm: LoadStudentHopsFormTriggerType =
-  function loadStudentHopsForm(userIdentifier) {
+  function loadStudentHopsForm(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = userIdentifier
-        ? userIdentifier
+      const studentIdentifier = data.userIdentifier
+        ? data.userIdentifier
         : state.status.userSchoolDataIdentifier;
 
       if (state.hopsNew.hopsFormStatus === "READY") {
@@ -949,18 +965,18 @@ const loadStudentHopsForm: LoadStudentHopsFormTriggerType =
 /**
  * Load student info data thunk
  *
- * @param userIdentifier userIdentifier
+ * @param data data
  */
 const loadStudentInfo: LoadStudentInfoTriggerType = function loadStudentInfo(
-  userIdentifier
+  data
 ) {
   return async (
     dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
     getState: () => StateType
   ) => {
     const state = getState();
-    const studentIdentifier = userIdentifier
-      ? userIdentifier
+    const studentIdentifier = data.userIdentifier
+      ? data.userIdentifier
       : state.status.userSchoolDataIdentifier;
 
     if (state.hopsNew.studentInfoStatus === "READY") {
@@ -1008,17 +1024,17 @@ const loadStudentInfo: LoadStudentInfoTriggerType = function loadStudentInfo(
 /**
  * Load HOPS form history data thunk
  *
- * @param userIdentifier userIdentifier
+ * @param data data
  */
 const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
-  function loadHopsFormHistory(userIdentifier) {
+  function loadHopsFormHistory(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = userIdentifier
-        ? userIdentifier
+      const studentIdentifier = data.userIdentifier
+        ? data.userIdentifier
         : state.status.userSchoolDataIdentifier;
 
       if (state.hopsNew.hopsFormHistoryStatus === "READY") {
@@ -1066,12 +1082,10 @@ const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
 /**
  * Update HOPS form history entry thunk
  *
- * @param entryId ID of the entry to update
- * @param updatedEntry Partial HopsHistoryEntry with fields to update
- * @param onSuccess callback function to be called on success
+ * @param data data
  */
 const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
-  function updateHopsFormHistoryEntry(entryId, updatedEntry, onSuccess) {
+  function updateHopsFormHistoryEntry(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
@@ -1088,9 +1102,9 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
         // Assuming there's an API endpoint to update a HOPS form history entry
         const updatedEntryData = await hopsApi.updateStudentHopsHistoryEntry({
           studentIdentifier,
-          entryId,
+          entryId: data.entryId,
           updateStudentHopsHistoryEntryRequest: {
-            details: updatedEntry.details,
+            details: data.updatedEntry.details,
           },
         });
 
@@ -1099,7 +1113,7 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
           payload: { status: "READY", data: updatedEntryData },
         });
 
-        onSuccess && onSuccess();
+        data.onSuccess && data.onSuccess();
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;
@@ -1126,22 +1140,23 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
 /**
  * Load more HOPS form history data thunk
  *
- * @param userIdentifier userIdentifier
+ * @param data data
  */
 const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
-  function loadMoreHopsFormHistory(userIdentifier) {
+  function loadMoreHopsFormHistory(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = userIdentifier
-        ? userIdentifier
+
+      const studentIdentifier = data.userIdentifier
+        ? data.userIdentifier
         : state.status.userSchoolDataIdentifier;
 
       dispatch({
         type: "HOPS_FORM_HISTORY_APPEND",
-        payload: { status: "LOADING", data: null },
+        payload: { status: "LOADING" },
       });
 
       try {
@@ -1179,6 +1194,73 @@ const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
     };
   };
 
+/**
+ * Save/Update HOPS form data thunk
+ *
+ * @param data data
+ */
+const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+    const studentIdentifier = state.status.userSchoolDataIdentifier;
+
+    dispatch({
+      type: "HOPS_FORM_SAVE",
+      payload: { status: "LOADING", data: null },
+    });
+
+    try {
+      // Assuming there's an API endpoint to save/update HOPS form
+      const savedFormData = await hopsApi.saveStudentHops({
+        studentIdentifier,
+        saveStudentHopsRequest: {
+          formData: JSON.stringify(data.form),
+          historyDetails: data.details,
+        },
+      });
+
+      const parsedFormData = JSON.parse(savedFormData) as HopsForm;
+
+      dispatch({
+        type: "HOPS_FORM_SAVE",
+        payload: { status: "READY", data: parsedFormData },
+      });
+
+      dispatch(
+        actions.displayNotification(
+          i18n.t("notifications.saveSuccess", {
+            ns: "common",
+          }),
+          "success"
+        )
+      );
+
+      data.onSuccess && data.onSuccess();
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      dispatch({
+        type: "HOPS_FORM_SAVE",
+        payload: { status: "ERROR", data: null },
+      });
+
+      dispatch(
+        actions.displayNotification(
+          i18n.t("notifications.saveError", {
+            ns: "common",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
 export {
   loadMatriculationData,
   verifyMatriculationExam,
@@ -1191,4 +1273,5 @@ export {
   loadHopsFormHistory,
   updateHopsFormHistoryEntry,
   loadMoreHopsFormHistory,
+  saveHopsForm,
 };

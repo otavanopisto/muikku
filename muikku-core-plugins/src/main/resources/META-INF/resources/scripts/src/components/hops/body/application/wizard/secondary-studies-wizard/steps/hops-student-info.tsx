@@ -4,6 +4,7 @@ import "~/sass/elements/form.scss";
 import Button from "~/components/general/button";
 import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
 import HopsHistory from "../../history";
+import { LoadMoreHopsFormHistoryTriggerType } from "~/actions/main-function/hops/";
 
 /**
  * Props for the HopsStudentHopsInformation component
@@ -16,6 +17,10 @@ interface HopsStudentHopsInformationProps {
   educationalLevel: string;
   /** An array of guidance counselor names */
   guidanceCounselors: string[];
+  /** Indicates if all HOPS events have been loaded */
+  allHopsEventsLoaded: boolean;
+  /** The function to load more HOPS events */
+  loadMoreHopsEvents: LoadMoreHopsFormHistoryTriggerType;
 }
 
 const loading = false;
@@ -29,11 +34,16 @@ const loading = false;
  * @param {HopsStudentHopsInformationProps} props - The props for the component
  * @returns {React.ReactElement} The rendered component
  */
-const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = ({
-  studentName,
-  educationalLevel,
-  guidanceCounselors,
-}: HopsStudentHopsInformationProps): React.ReactElement => {
+const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
+  props
+): React.ReactElement => {
+  const {
+    studentName,
+    educationalLevel,
+    guidanceCounselors,
+    allHopsEventsLoaded,
+    loadMoreHopsEvents,
+  } = props;
   if (loading) {
     return <div className="loader-empty" />;
   }
@@ -97,7 +107,11 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = ({
         <div className="hops-container__info">
           <HopsHistory />
           <div className="hops-container__row">
-            <Button buttonModifiers={["load-all-hops-events"]}>
+            <Button
+              buttonModifiers={["load-all-hops-events"]}
+              disabled={allHopsEventsLoaded}
+              onClick={() => loadMoreHopsEvents({})}
+            >
               Lataa kaikki
             </Button>
           </div>

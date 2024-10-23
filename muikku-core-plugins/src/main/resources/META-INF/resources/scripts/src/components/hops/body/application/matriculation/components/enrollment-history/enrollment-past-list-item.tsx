@@ -35,7 +35,7 @@ const MatriculationPastListItem = (props: MatriculationPastListItemProps) => {
    */
   const handleToggleDrawerClick = () => {
     if (exam.status === "IDLE") {
-      loadMatriculationExamHistory(exam.id);
+      loadMatriculationExamHistory({ examId: exam.id });
     }
   };
 

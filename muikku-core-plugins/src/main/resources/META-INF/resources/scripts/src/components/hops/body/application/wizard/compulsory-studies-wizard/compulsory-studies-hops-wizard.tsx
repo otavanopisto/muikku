@@ -2,7 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
 import { Textarea } from "~/components/general/hops-compulsory-education-wizard/text-area";
@@ -20,6 +20,12 @@ import HopsWizardHeader from "../hops-wizard-header";
 import NewHopsEventDescriptionDialog from "../dialog/new-hops-event";
 import { CompulsoryStudiesHops } from "~/@types/hops";
 import _ from "lodash";
+import {
+  SaveHopsFormTriggerType,
+  saveHopsForm,
+  LoadMoreHopsFormHistoryTriggerType,
+  loadMoreHopsFormHistory,
+} from "~/actions/main-function/hops/";
 
 /**
  * Props for the CompulsoryStudiesHopsWizard component
@@ -29,8 +35,14 @@ interface CompulsoryStudiesHopsWizardProps {
   form: CompulsoryStudiesHops;
   /** Information about the student */
   studentInfo: StudentInfo;
+  /** Boolean indicating if all Hops events are loaded */
+  allHopsEventsLoaded: boolean;
   /** Function to handle unsaved changes */
   onHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
+  /** Redux thunk function to save the HOPS form */
+  saveHopsForm: SaveHopsFormTriggerType;
+  /** Redux thunk function to load more Hops events */
+  loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType;
 }
 
 /**
@@ -45,7 +57,14 @@ interface CompulsoryStudiesHopsWizardProps {
 const CompulsoryStudiesHopsWizard: React.FC<
   CompulsoryStudiesHopsWizardProps
 > = (props) => {
-  const { form, studentInfo, onHasUnsavedChanges } = props;
+  const {
+    form,
+    studentInfo,
+    allHopsEventsLoaded,
+    onHasUnsavedChanges,
+    saveHopsForm,
+    loadMoreHopsFormHistory,
+  } = props;
   const previousStep = React.useRef<number>(0);
 
   const { t } = useTranslation(["common"]);
@@ -54,7 +73,6 @@ const CompulsoryStudiesHopsWizard: React.FC<
   const [isFormSaveDialogOpen, setIsFormSaveDialogOpen] =
     useState<boolean>(false);
   const [hopsUpdateDetails, setHopsUpdateDetails] = useState<string>("");
-  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   React.useEffect(() => {
     if (_.isEqual(form, localForm)) {
@@ -73,18 +91,17 @@ const CompulsoryStudiesHopsWizard: React.FC<
   };
 
   /**
-   * Handles the form submission
-   */
-  const handleFormSubmitClick = () => {
-    setIsFormSaveDialogOpen(true);
-    setIsEditing(false);
-  };
-
-  /**
    * Opens the save dialog
    */
   const handleOpenSaveDialog = () => {
     setIsFormSaveDialogOpen(true);
+  };
+
+  /**
+   * Handles the form submission
+   */
+  const handleFormSubmitClick = () => {
+    saveHopsForm({ form: localForm, details: hopsUpdateDetails });
   };
 
   /**
@@ -104,13 +121,6 @@ const CompulsoryStudiesHopsWizard: React.FC<
     setHopsUpdateDetails(event.target.value);
   };
 
-  /**
-   * Toggles the editing mode
-   */
-  const handleToggleEditing = () => {
-    setIsEditing((editing) => !editing);
-  };
-
   // Define the wizard steps
   const steps: WizardStep[] = useMemo(
     () => [
@@ -123,6 +133,8 @@ const CompulsoryStudiesHopsWizard: React.FC<
               studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
               educationalLevel={studentInfo.studyProgrammeEducationType}
               guidanceCounselors={studentInfo.counselorList}
+              allHopsEventsLoaded={allHopsEventsLoaded}
+              loadMoreHopsEvents={loadMoreHopsFormHistory}
             />
           </AnimatedStep>
         ),
@@ -147,6 +159,8 @@ const CompulsoryStudiesHopsWizard: React.FC<
       },
     ],
     [
+      allHopsEventsLoaded,
+      loadMoreHopsFormHistory,
       localForm,
       studentInfo.counselorList,
       studentInfo.firstName,
@@ -163,22 +177,22 @@ const CompulsoryStudiesHopsWizard: React.FC<
   return (
     <WizardProvider value={wizardValue}>
       <div className="hops-form">
-        <div className="hops-form__toolbar">
-          <Button buttonModifiers={["info"]} onClick={handleToggleEditing}>
-            {isEditing ? "Peruuta" : "Muokkaa"}
-          </Button>
-          <Button
-            buttonModifiers={["success"]}
-            disabled={!isEditing}
-            onClick={handleOpenSaveDialog}
-          >
-            {t("actions.save", { ns: "common" })}
-          </Button>
-        </div>
         <div className="hops-form__container">
           <Wizard
             header={<HopsWizardHeader />}
-            footer={<HopsWizardFooter />}
+            footer={
+              <HopsWizardFooter
+                externalContentRight={
+                  <Button
+                    buttonModifiers={["info"]}
+                    onClick={handleOpenSaveDialog}
+                    disabled={_.isEqual(form, localForm)}
+                  >
+                    {t("actions.save", { ns: "common" })}
+                  </Button>
+                }
+              />
+            }
             wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
           />
         </div>
@@ -214,6 +228,7 @@ function mapStateToProps(state: StateType) {
   return {
     form: state.hopsNew.hopsForm,
     studentInfo: state.hopsNew.studentInfo,
+    allHopsEventsLoaded: state.hopsNew.hopsFormHistoryLoadedAll,
   };
 }
 
@@ -223,7 +238,10 @@ function mapStateToProps(state: StateType) {
  * @returns An object with the mapped dispatch functions
  */
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+  return bindActionCreators(
+    { saveHopsForm, loadMoreHopsFormHistory },
+    dispatch
+  );
 }
 
 export default connect(

@@ -361,12 +361,18 @@ export default class MainFunction extends React.Component<
   loadHopsData(tab: string, userId?: string) {
     const givenLocation = tab;
 
-    this.props.store.dispatch(loadStudentHopsForm(userId) as Action);
-    this.props.store.dispatch(loadHopsFormHistory(userId) as Action);
+    this.props.store.dispatch(
+      loadStudentHopsForm({ userIdentifier: userId }) as Action
+    );
+    this.props.store.dispatch(
+      loadHopsFormHistory({ userIdentifier: userId }) as Action
+    );
 
     // Load matriculation data if in Matriculation tab
     if (givenLocation === "matriculation" || !givenLocation) {
-      this.props.store.dispatch(loadMatriculationData(userId) as Action);
+      this.props.store.dispatch(
+        loadMatriculationData({ userIdentifier: userId }) as Action
+      );
     }
   }
 
@@ -1047,7 +1053,9 @@ export default class MainFunction extends React.Component<
 
       // If there's an identifier, we can load records data, otherwise it's done in the hash change
       if (identifier) {
-        this.props.store.dispatch(loadMatriculationData(identifier) as Action);
+        this.props.store.dispatch(
+          loadMatriculationData({ userIdentifier: identifier }) as Action
+        );
       }
     }
     return <GuardianHopsBody />;

@@ -141,9 +141,9 @@ export interface StudentSelfImageCompulsoryStudies {
 }
 
 /**
- * HopsStudentStartingLevel
+ * HopsStartingLevelCompulsoryStudies
  */
-export interface HopsStudentStartingLevelCompulsoryStudies {
+export interface HopsStartingLevelCompulsoryStudies {
   previousEducation: string;
   previousEducationElse?: string;
   previousWorkExperience: string;
@@ -153,18 +153,24 @@ export interface HopsStudentStartingLevelCompulsoryStudies {
 }
 
 /**
+ * HopsMotivationAndStudyCompulsoryStudies
+ */
+export interface HopsMotivationAndStudyCompulsoryStudies {
+  wayToLearn: WayToLearnCompulsoryStudies;
+  studySupport: StudySupportCompulsoryStudies;
+  selfImageAsStudent: StudentSelfImageCompulsoryStudies;
+}
+
+/**
  * CompulsoryStudiesHops
  */
 export interface CompulsoryStudiesHops {
   type: "compulsory";
 
   // Previous education and language skills
-  startingLevel: HopsStudentStartingLevelCompulsoryStudies;
-
+  startingLevel: HopsStartingLevelCompulsoryStudies;
   // Self assessment
-  wayToLearn: WayToLearnCompulsoryStudies;
-  studySupport: StudySupportCompulsoryStudies;
-  selfImageAsStudent: StudentSelfImageCompulsoryStudies;
+  motivationAndStudy: HopsMotivationAndStudyCompulsoryStudies;
 }
 
 /**
@@ -283,9 +289,11 @@ export function initializeCompulsoryStudiesHops(): CompulsoryStudiesHops {
         },
       ],
     },
-    wayToLearn: {},
-    studySupport: {},
-    selfImageAsStudent: {},
+    motivationAndStudy: {
+      wayToLearn: {},
+      studySupport: {},
+      selfImageAsStudent: {},
+    },
   };
 }
 

@@ -10,7 +10,7 @@ import {
 import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
 import {
   CompulsoryStudiesHops,
-  HopsStudentStartingLevelCompulsoryStudies,
+  HopsStartingLevelCompulsoryStudies,
 } from "~/@types/hops";
 
 /**
@@ -56,22 +56,22 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
 
   /**
    * Handles changes in select inputs
-   * @param {keyof HopsStudentStartingLevelCompulsoryStudies} name - The name of the field to update
+   * @param {keyof HopsStartingLevelCompulsoryStudies} name - The name of the field to update
    * @returns - Event handler function
    */
   const handleSelectsChange =
-    (name: keyof HopsStudentStartingLevelCompulsoryStudies) =>
+    (name: keyof HopsStartingLevelCompulsoryStudies) =>
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       updateLocalForm({ [name]: e.currentTarget.value });
     };
 
   /**
    * Handles changes in text inputs
-   * @param {keyof HopsStudentStartingLevelCompulsoryStudies} name - The name of the field to update
+   * @param {keyof HopsStartingLevelCompulsoryStudies} name - The name of the field to update
    * @returns - Event handler function
    */
   const handleTextAreaChange =
-    (name: keyof HopsStudentStartingLevelCompulsoryStudies) =>
+    (name: keyof HopsStartingLevelCompulsoryStudies) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       updateLocalForm({
         startingLevel: {

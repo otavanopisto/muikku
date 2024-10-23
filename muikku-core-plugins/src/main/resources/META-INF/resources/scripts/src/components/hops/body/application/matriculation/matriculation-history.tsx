@@ -4,7 +4,6 @@ import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
-import ItemList from "~/components/general/item-list";
 import { MatriculationExamGrade } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";

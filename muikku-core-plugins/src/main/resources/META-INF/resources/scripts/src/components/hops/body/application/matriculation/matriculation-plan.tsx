@@ -100,8 +100,10 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
           })
         );
         saveMatriculationPlan({
-          ...matriculationPlan,
-          plannedSubjects: convertedList,
+          plan: {
+            ...matriculationPlan,
+            plannedSubjects: convertedList,
+          },
         });
       }, 1000);
     },
