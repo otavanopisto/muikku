@@ -116,15 +116,17 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
               </select>
             </div>
 
-            <div className="hops__form-element-container">
-              <Button
-                onClick={() => deleteStudy(index)}
-                className="hops__delete-button"
-                aria-label={`Delete study ${index + 1}`}
-              >
-                Delete
-              </Button>
-            </div>
+            {!study.hardCoded && (
+              <div className="hops__form-element-container">
+                <Button
+                  onClick={() => deleteStudy(index)}
+                  className="hops__delete-button"
+                  aria-label={`Delete study ${index + 1}`}
+                >
+                  Delete
+                </Button>
+              </div>
+            )}
           </div>
           {study.type !== "" && study.type !== "upper secondary education" && (
             <div className="hops-container__row">

@@ -245,6 +245,7 @@ export interface PreviousStudiesEntry {
   type: string;
   duration: string;
   moreInfo?: string;
+  hardCoded?: boolean;
 }
 
 /**
@@ -253,7 +254,9 @@ export interface PreviousStudiesEntry {
 export function initializeSecondaryStudiesHops(): SecondaryStudiesHops {
   return {
     type: "secondary",
-    previousEducations: [],
+    previousEducations: [
+      { type: "", duration: "", moreInfo: "", hardCoded: true },
+    ],
     nativeLanguage: "",
     studiedLanguagesAtSchool: "",
     studiedLanguagesOther: "",
