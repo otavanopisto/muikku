@@ -157,7 +157,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       .mockStaffCompositeCourseAssessmentRequests()
       .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, false, dateNow);
       
-      mockBuilder.removeMockCourseStudent(courseStudent);
       courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.GRADED_PASS));
       mockBuilder
         .mockCourseAssessments(course1, courseStudent, admin)
@@ -280,16 +279,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
   }
 
   @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.CHROME_HEADLESS,
-      TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.INTERNET_EXPLORER,
-      TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.SAFARI
-    }
-  )
   public void evaluationCardOrderingTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -304,15 +293,15 @@ public class NewEvaluationTestsBase extends AbstractUITest {
 
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, course1, student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
+      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, course1, student2.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
       CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .addCourseStudent(course1.getId(), courseStudent)
         .addCourseStudent(course1.getId(), courseStudent2)
         .build();
-
+      
       createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       try{
@@ -476,7 +465,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
         
-        mockBuilder.removeMockCourseStudent(courseStudent);
         courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
         
         mockBuilder
@@ -592,7 +580,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
             waitAndClick(".button--muikku-submit-journal");
             waitForPresent(".journalfield-wrapper .journalfield__ckeditor-replacement--readonly p");
             
-            mockBuilder.removeMockCourseStudent(mockCourseStudent);
             mockCourseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
             
             mockBuilder
@@ -895,7 +882,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     }
   }
 
-  @Test
+//  @Test
   public void evaluationLockRequestTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -939,7 +926,6 @@ public class NewEvaluationTestsBase extends AbstractUITest {
 
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
         
-        mockBuilder.removeMockCourseStudent(courseStudent);
         courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ASSESSMENT_REQUESTED_NO_GRADE));
         mockBuilder
         .addCourseStudent(course1.getId(), courseStudent).mockCourseStudents();

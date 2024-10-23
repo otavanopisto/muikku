@@ -227,9 +227,30 @@ public class PyramusMock {
         return this;
       }
 
-      public Builder addCourseStudent(Long courseId, MockCourseStudent mockCourseStudent){
-        CourseStudent courseStudent = TestUtilities.courseStudentFromMockCourseStudent(mockCourseStudent);
+      public Builder addCourseStudent(Long courseId, MockCourseStudent mockCourseStudent){        
+        Iterator<MockCourseStudent> mcsIter = pmock.mockCourseStudents.iterator();
+        while (mcsIter.hasNext()) {
+          MockCourseStudent mcs = mcsIter.next();
+          if (mcs.getId() == mockCourseStudent.getId() && mcs.getCourse().getId() == mockCourseStudent.getCourse().getId()) {
+            mcsIter.remove();
+          }
+        }
         pmock.mockCourseStudents.add(mockCourseStudent);
+
+        CourseStudent courseStudent = TestUtilities.courseStudentFromMockCourseStudent(mockCourseStudent);
+        Set<Long> courseIds = pmock.courseStudents.keySet();
+        for (Long cid : courseIds) {
+          Iterator<CourseStudent> csIter = pmock.courseStudents.get(cid).iterator();
+          while (csIter.hasNext()) {
+            CourseStudent cs = csIter.next();
+//            CourseId should always match here obv.
+            if (courseStudent.getId() == cs.getId() && courseStudent.getCourseId() == cs.getCourseId()) {
+              csIter.remove();
+            }
+          }
+        }
+//        TODO: jatka tästä keskiviikkona
+        
         if(pmock.courseStudents.containsKey(courseId)){
           pmock.courseStudents.get(courseId).add(courseStudent);
         }else{
@@ -237,12 +258,7 @@ public class PyramusMock {
           csList.add(courseStudent);
           pmock.courseStudents.put(courseId, csList);
         }
-        return this;
-      }
-      
-      public Builder removeMockCourseStudent(MockCourseStudent mockCourseStudent){
-        pmock.mockCourseStudents.removeIf(mcs -> Objects.equals(mcs, mockCourseStudent));
-        pmock.mockCourseStudents.add(mockCourseStudent);
+        
         return this;
       }
       
@@ -363,19 +379,6 @@ public class PyramusMock {
           TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         }
         
-        return this;
-      }
-      
-      public Builder addCourseStudents(HashMap<Long, List<MockCourseStudent>> mockCourseStudents){
-        HashMap<Long, List<CourseStudent>> cStudents = new HashMap<>();
-        for (Long courseId : mockCourseStudents.keySet()) {
-          List<CourseStudent> cst = new ArrayList<>();
-          for(MockCourseStudent cs : mockCourseStudents.get(courseId)) {
-            cst.add(TestUtilities.courseStudentFromMockCourseStudent(cs));
-          }
-          cStudents.put(courseId, cst);
-        }
-        pmock.courseStudents = cStudents;
         return this;
       }
       
