@@ -1522,7 +1522,7 @@ public class WorkspaceRESTService extends PluginRESTService {
               elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
               hasImage,
               activeUserIds.contains(workspaceUserEntity.getId()),
-              pedagogyController.getHasPedagogyForm(studentIdentifier.toId())));
+              pedagogyController.hasPedagogyForm(userEntity.getId())));
         }
       }
 
@@ -3179,7 +3179,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
         hasImage,
         workspaceUserEntity.getActive(),
-        pedagogyController.getHasPedagogyForm(schoolDataIdentifier.toId()));
+        pedagogyController.hasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId()));
 
     return Response.ok(workspaceStudentRestModel).build();
   }

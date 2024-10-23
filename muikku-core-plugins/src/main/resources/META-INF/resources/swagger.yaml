@@ -6845,7 +6845,7 @@ paths:
           description: Internal server error
 
   #PEDAGOGY
-  /rest/pedagogy/form/{studentIdentifier}:
+  /rest/pedagogy/form/{userEntityId}:
     get:
       operationId: getPedagogyForm
       summary: Get pedagogy form
@@ -6853,12 +6853,13 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: studentIdentifier
+        - name: userEntityId
           in: path
-          description: Student identifier
+          description: Student user entity id
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         "200":
           description: Pedagogy form
@@ -6878,12 +6879,13 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: studentIdentifier
+        - name: userEntityId
           in: path
-          description: Student identifier
+          description: Student user entity id
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/PedagogyFormCreateRequestBody"
       responses:
@@ -6898,7 +6900,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{studentIdentifier}/access:
+  /rest/pedagogy/form/{userEntityId}/access:
     get:
       operationId: getPedagogyFormAccess
       summary: Get pedagogy form access
@@ -6906,12 +6908,13 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: studentIdentifier
+        - name: userEntityId
           in: path
-          description: Student identifier
+          description: Student user entity id
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         "200":
           description: Pedagogy form access
@@ -6924,7 +6927,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{studentIdentifier}/formData:
+  /rest/pedagogy/form/{userEntityId}/formData:
     put:
       operationId: updatePedagogyFormData
       summary: Update pedagogy form data
@@ -6932,12 +6935,13 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: studentIdentifier
+        - name: userEntityId
           in: path
-          description: Student identifier
+          description: Student user entity id
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/PedagogyFormDataUpdateRequestBody"
       responses:
@@ -6952,7 +6956,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{studentIdentifier}/state:
+  /rest/pedagogy/form/{userEntityId}/state:
     get:
       operationId: getPedagogyFormState
       summary: Get pedagogy form state
@@ -6960,12 +6964,13 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: studentIdentifier
+        - name: userEntityId
           in: path
-          description: Student identifier
+          description: Student user entity id
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       responses:
         "200":
           description: Pedagogy form state
@@ -6985,12 +6990,13 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: studentIdentifier
+        - name: userEntityId
           in: path
-          description: Student identifier
+          description: Student user entity id
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
       requestBody:
         $ref: "#/components/requestBodies/PedagogyFormStateUpdateRequestBody"
       responses:
@@ -7005,7 +7011,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{studentIdentifier}/workspaces:
+  /rest/pedagogy/form/{userEntityId}/workspaces:
     get:
       operationId: getPedagogyFormWorkspaces
       summary: Get list of student workspaces
@@ -7013,12 +7019,13 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: studentIdentifier
+        - name: userEntityId
           in: path
-          description: Student identifier
+          description: Student user entity id
           required: true
           schema:
-            type: string
+            type: integer
+            format: int64
         - name: q
           in: query
           description: query string
@@ -15530,7 +15537,7 @@ components:
       type: object
       description: PedagogyForm object
       required:
-        - studentIdentifier
+        - userEntityId
         - ownerId
         - ownerInfo
         - id
@@ -15541,10 +15548,10 @@ components:
         - formData
         - created
       properties:
-        studentIdentifier:
+        userEntityId:
           description: The id of the student
-          example: "STUDENT-1"
-          type: string
+          type: integer
+          format: int64
         ownerId:
           description: Id of the user who created the document
           type: integer
