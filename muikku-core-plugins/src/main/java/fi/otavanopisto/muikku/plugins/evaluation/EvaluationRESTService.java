@@ -1774,7 +1774,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     // Note: Id is not set because CompositeAssessmentRequest from Pyramus does not have it. Might need refactoring in the future.
     
-    restAssessmentRequest.setIdentifier(compositeAssessmentRequest.getIdentifier().toId());
+    restAssessmentRequest.setIdentifier(compositeAssessmentRequest.getIdentifier() == null ? null : compositeAssessmentRequest.getIdentifier().toId());
     restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
     restAssessmentRequest.setWorkspaceUserIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toId());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());

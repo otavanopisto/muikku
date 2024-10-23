@@ -11,7 +11,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   public PyramusCompositeAssessmentRequest(String identifier, String courseStudentIdentifier, String userIdentifier, String firstName, String lastName,
       String studyProgramme, String courseIdentifier, String courseName, String courseNameExtension, Date courseEnrollmentDate,
       Date assessmentRequestDate, Date evaluationDate, boolean passing, boolean locked) {
-    this.identifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    this.identifier = identifier == null ? null : new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.courseStudentIdentifier = new SchoolDataIdentifier(courseStudentIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.userIdentifier = new SchoolDataIdentifier(userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.firstName = firstName;
