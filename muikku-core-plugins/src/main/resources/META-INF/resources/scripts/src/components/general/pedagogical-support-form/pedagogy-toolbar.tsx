@@ -173,7 +173,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         );
 
       default:
-        return <></>;
+        return null;
     }
   }
   if (userRole === "STUDENT") {
@@ -197,9 +197,11 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         );
 
       default:
-        return <></>;
+        return null;
     }
   }
+
+  return null;
 };
 
 export default PedagogyToolbar;
