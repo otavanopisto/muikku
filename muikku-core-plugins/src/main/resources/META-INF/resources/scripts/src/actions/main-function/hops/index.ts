@@ -152,6 +152,12 @@ export type HOPS_FORM_HISTORY_ENTRY_UPDATE = SpecificActionType<
   { status: ReducerStateType; data: HopsHistoryEntry }
 >;
 
+// Add this new action type
+export type HOPS_FORM_HISTORY_APPEND = SpecificActionType<
+  "HOPS_FORM_HISTORY_APPEND",
+  { status: ReducerStateType; data: HopsHistoryEntry[] | null }
+>;
+
 /**
  * loadExamDataTriggerType
  */
@@ -228,6 +234,13 @@ export interface UpdateHopsFormHistoryEntryTriggerType {
     updatedEntry: Partial<HopsHistoryEntry>,
     onSuccess?: () => void
   ): AnyActionType;
+}
+
+/**
+ * Load more HOPS form history data trigger type
+ */
+export interface LoadMoreHopsFormHistoryTriggerType {
+  (userIdentifier?: string): AnyActionType;
 }
 
 /**
@@ -1110,6 +1123,62 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
     };
   };
 
+/**
+ * Load more HOPS form history data thunk
+ *
+ * @param userIdentifier userIdentifier
+ */
+const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
+  function loadMoreHopsFormHistory(userIdentifier) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const studentIdentifier = userIdentifier
+        ? userIdentifier
+        : state.status.userSchoolDataIdentifier;
+
+      dispatch({
+        type: "HOPS_FORM_HISTORY_APPEND",
+        payload: { status: "LOADING", data: null },
+      });
+
+      try {
+        const moreHopsFormHistoryData =
+          await hopsApi.getStudentHopsHistoryEntries({
+            studentIdentifier,
+            firstResult: 6,
+            maxResults: 999,
+          });
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_APPEND",
+          payload: { status: "READY", data: moreHopsFormHistoryData },
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_APPEND",
+          payload: { status: "ERROR", data: null },
+        });
+
+        dispatch(
+          actions.displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "studies",
+              context: "hopsFormHistory",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
 export {
   loadMatriculationData,
   verifyMatriculationExam,
@@ -1121,4 +1190,5 @@ export {
   loadStudentInfo,
   loadHopsFormHistory,
   updateHopsFormHistoryEntry,
+  loadMoreHopsFormHistory,
 };

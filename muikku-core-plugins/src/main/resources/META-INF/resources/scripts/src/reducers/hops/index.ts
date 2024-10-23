@@ -368,6 +368,16 @@ export const hopsNew: Reducer<HopsState> = (
         hopsFormHistory: action.payload.data,
       };
 
+    case "HOPS_FORM_HISTORY_APPEND":
+      return {
+        ...state,
+        hopsFormHistoryStatus: action.payload.status,
+        hopsFormHistory:
+          state.hopsFormHistory && action.payload.data
+            ? [...state.hopsFormHistory, ...action.payload.data]
+            : action.payload.data,
+      };
+
     case "HOPS_FORM_HISTORY_ENTRY_UPDATE":
       return {
         ...state,
