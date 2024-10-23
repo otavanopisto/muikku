@@ -20,7 +20,7 @@ interface HopsStartingLevelProps {
   /** The current form state */
   form: CompulsoryStudiesHops;
   /** Callback function to update the form state */
-  onStartingLevelChange: (form: CompulsoryStudiesHops) => void;
+  onFormChange: (form: CompulsoryStudiesHops) => void;
 }
 
 const disabled = false;
@@ -36,7 +36,7 @@ const disabled = false;
  * @returns The rendered component
  */
 const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
-  const { form, onStartingLevelChange } = props;
+  const { form, onFormChange } = props;
   const { startingLevel } = form;
   const myRef = useRef<HTMLDivElement>(null);
 
@@ -51,7 +51,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
    */
   const updateLocalForm = (updates: Partial<CompulsoryStudiesHops>) => {
     const updatedForm = { ...form, ...updates };
-    onStartingLevelChange(updatedForm);
+    onFormChange(updatedForm);
   };
 
   /**
@@ -73,7 +73,12 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
   const handleTextAreaChange =
     (name: keyof HopsStudentStartingLevelCompulsoryStudies) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      updateLocalForm({ [name]: e.currentTarget.value });
+      updateLocalForm({
+        startingLevel: {
+          ...startingLevel,
+          [name]: e.currentTarget.value,
+        },
+      });
     };
 
   /**

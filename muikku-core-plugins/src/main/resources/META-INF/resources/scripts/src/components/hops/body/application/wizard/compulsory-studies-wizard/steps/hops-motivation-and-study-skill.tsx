@@ -18,9 +18,7 @@ interface HopsMotivationAndStudySkillsProps {
    * Callback function to update the motivation and study data
    * @param motivationAndStudy Updated CompulsoryStudiesHops object
    */
-  onMotivationAndStudyChange: (
-    motivationAndStudy: CompulsoryStudiesHops
-  ) => void;
+  onFormChange: (updatedForm: CompulsoryStudiesHops) => void;
   /**
    * Current form data
    */
@@ -44,7 +42,7 @@ const disabled = false;
 const HopsMotivationAndStudySkills: React.FC<
   HopsMotivationAndStudySkillsProps
 > = (props) => {
-  const { onMotivationAndStudyChange, form } = props;
+  const { onFormChange, form } = props;
   const myRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -75,7 +73,7 @@ const HopsMotivationAndStudySkills: React.FC<
   const handleTextareaChange =
     (name: keyof CompulsoryStudiesHops) =>
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onMotivationAndStudyChange({
+      onFormChange({
         ...form,
         [name]: {
           [e.currentTarget.name]: e.currentTarget.value,
@@ -91,7 +89,7 @@ const HopsMotivationAndStudySkills: React.FC<
   const handleScaleRangeChange =
     (name: keyof HopsMotivationAndStudy) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      onMotivationAndStudyChange({
+      onFormChange({
         ...form,
         [name]: {
           ...form[name],
@@ -108,7 +106,7 @@ const HopsMotivationAndStudySkills: React.FC<
   const handleCheckboxItemChange =
     (name: keyof HopsMotivationAndStudy) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      onMotivationAndStudyChange({
+      onFormChange({
         ...form,
         [name]: {
           ...form[name],

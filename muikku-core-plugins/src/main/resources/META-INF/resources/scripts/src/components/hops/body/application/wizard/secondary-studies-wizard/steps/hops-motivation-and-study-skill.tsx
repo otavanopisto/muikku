@@ -14,11 +14,9 @@ import { SecondaryStudiesHops } from "~/@types/hops";
 interface HopsMotivationAndStudySkillsProps {
   /**
    * Callback function to handle changes in motivation and study skills.
-   * @param motivationAndStudy Updated SecondaryStudiesHops object
+   * @param form Updated SecondaryStudiesHops object
    */
-  onMotivationAndStudyChange: (
-    motivationAndStudy: SecondaryStudiesHops
-  ) => void;
+  onFormChange: (form: SecondaryStudiesHops) => void;
   /**
    * Current form data for SecondaryStudiesHops
    */
@@ -39,7 +37,7 @@ const disabled = false;
 const HopsMotivationAndStudySkills: React.FC<
   HopsMotivationAndStudySkillsProps
 > = (props) => {
-  const { onMotivationAndStudyChange, form } = props;
+  const { onFormChange, form } = props;
 
   const { selfAssessment, moreAboutSelfAssessment } = form;
   const myRef = useRef<HTMLDivElement>(null);
@@ -57,7 +55,7 @@ const HopsMotivationAndStudySkills: React.FC<
   const handleScaleRangeChange =
     (name: keyof SecondaryStudiesHops) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      onMotivationAndStudyChange({
+      onFormChange({
         ...form,
         [name]: {
           [e.currentTarget.name]: parseInt(e.currentTarget.value),
@@ -73,7 +71,7 @@ const HopsMotivationAndStudySkills: React.FC<
   const handleTextareaChange =
     (name: keyof SecondaryStudiesHops) =>
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onMotivationAndStudyChange({ ...form, [name]: e.currentTarget.value });
+      onFormChange({ ...form, [name]: e.currentTarget.value });
     };
 
   return (

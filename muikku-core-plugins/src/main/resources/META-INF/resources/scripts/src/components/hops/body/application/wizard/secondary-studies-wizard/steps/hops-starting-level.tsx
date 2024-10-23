@@ -10,7 +10,7 @@ import { Textarea } from "../../components/text-area";
  */
 interface HopsStartingLevelProps {
   form: SecondaryStudiesHops;
-  onStartingLevelChange: (form: SecondaryStudiesHops) => void;
+  onFormChange: (form: SecondaryStudiesHops) => void;
 }
 
 // TODO: Consider making this a prop or state variable
@@ -24,7 +24,7 @@ const disabled = false;
  * for secondary studies, including previous education and language skills.
  */
 const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
-  const { form, onStartingLevelChange } = props;
+  const { form, onFormChange } = props;
   const myRef = useRef<HTMLDivElement>(null);
 
   /**
@@ -41,7 +41,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
    */
   const updateLocalForm = (updates: Partial<SecondaryStudiesHops>) => {
     const updatedForm = { ...form, ...updates };
-    onStartingLevelChange(updatedForm);
+    onFormChange(updatedForm);
   };
 
   /**
@@ -53,6 +53,30 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
   ) => {
     updateLocalForm({ previousEducations });
   };
+
+  /**
+   * Handles changes in text fields
+   * @param name - The name of the field to update
+   * @returns - Event handler function
+   */
+  const handleTextFieldChange =
+    (name: keyof SecondaryStudiesHops) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      updateLocalForm({ [name]: event.target.value });
+    };
+
+  /**
+   * Handles changes in text areas
+   * @param name - The name of the field to update
+   * @returns - Event handler function
+   */
+  const handleTextAreaChange =
+    (name: keyof SecondaryStudiesHops) =>
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      updateLocalForm({
+        [name]: event.target.value,
+      });
+    };
 
   return (
     <div className="hops-container" ref={myRef}>
@@ -79,6 +103,8 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
               id="nativeLanguage"
               label="Väestörekisteriin merkitty äidinkieli"
               className="hops__input"
+              onChange={handleTextFieldChange("nativeLanguage")}
+              value={form.nativeLanguage}
               disabled={disabled}
             />
           </div>
@@ -86,9 +112,11 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
-              id="otherLanguages"
+              id="studiedLanguagesAtSchool"
               label="Muut koulussa opiskellut kielet:"
               className="hops__input"
+              onChange={handleTextFieldChange("studiedLanguagesAtSchool")}
+              value={form.studiedLanguagesAtSchool}
               disabled={disabled}
             />
           </div>
@@ -96,10 +124,12 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <Textarea
-              id="additionalLanguageSkills"
+              id="studiedLanguagesOther"
               label="Muu kielitaito (esim. ulkomailla hankittu osaaminen):"
               className="form-element__textarea form-element__textarea--resize__vertically"
               disabled={disabled}
+              onChange={handleTextAreaChange("studiedLanguagesOther")}
+              value={form.studiedLanguagesOther}
             />
           </div>
         </div>
@@ -110,6 +140,8 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
               label="Haluan kertoa kielenopiskeluvalmiuksistani myös:"
               className="form-element__textarea form-element__textarea--resize__vertically"
               disabled={disabled}
+              onChange={handleTextAreaChange("languageLearningSkills")}
+              value={form.languageLearningSkills}
             />
           </div>
         </div>

@@ -222,7 +222,6 @@ export interface SecondaryStudiesHops {
   // Previous education and language skills
   previousEducations: PreviousStudiesEntry[];
   previousEducationInfo?: string;
-  languageSkills: LanguageGrade[];
   nativeLanguage: string;
   studiedLanguagesAtSchool: string;
   studiedLanguagesOther: string;
@@ -249,7 +248,6 @@ export function initializeSecondaryStudiesHops(): SecondaryStudiesHops {
   return {
     type: "secondary",
     previousEducations: [],
-    languageSkills: [],
     nativeLanguage: "",
     studiedLanguagesAtSchool: "",
     studiedLanguagesOther: "",

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
@@ -13,6 +12,7 @@ import SecondaryStudiesHopsWizard from "../wizard/secondary-studies-wizard/secon
  */
 interface BackgroundProps {
   hops: HopsState;
+  onHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
 }
 
 /**
@@ -20,19 +20,21 @@ interface BackgroundProps {
  * @param props props
  */
 const Background = (props: BackgroundProps) => {
-  const { hops } = props;
-
-  const { t } = useTranslation(["hops_new", "guider", "common"]);
+  const { hops, onHasUnsavedChanges } = props;
 
   if (!hops.studentInfo || !hops.hopsForm) {
     return null;
   }
 
   if (hops.studentInfo.studyProgrammeEducationType === "peruskoulu") {
-    return <CompulsoryStudiesHopsWizard />;
+    return (
+      <CompulsoryStudiesHopsWizard onHasUnsavedChanges={onHasUnsavedChanges} />
+    );
   }
 
-  return <SecondaryStudiesHopsWizard />;
+  return (
+    <SecondaryStudiesHopsWizard onHasUnsavedChanges={onHasUnsavedChanges} />
+  );
 };
 
 /**

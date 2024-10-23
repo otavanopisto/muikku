@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -19,6 +19,7 @@ import HopsWizardFooter from "../hops-wizard-footer";
 import HopsWizardHeader from "../hops-wizard-header";
 import NewHopsEventDescriptionDialog from "../dialog/new-hops-event";
 import { CompulsoryStudiesHops } from "~/@types/hops";
+import _ from "lodash";
 
 /**
  * Props for the CompulsoryStudiesHopsWizard component
@@ -28,6 +29,8 @@ interface CompulsoryStudiesHopsWizardProps {
   form: CompulsoryStudiesHops;
   /** Information about the student */
   studentInfo: StudentInfo;
+  /** Function to handle unsaved changes */
+  onHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
 }
 
 /**
@@ -42,7 +45,7 @@ interface CompulsoryStudiesHopsWizardProps {
 const CompulsoryStudiesHopsWizard: React.FC<
   CompulsoryStudiesHopsWizardProps
 > = (props) => {
-  const { form, studentInfo } = props;
+  const { form, studentInfo, onHasUnsavedChanges } = props;
   const previousStep = React.useRef<number>(0);
 
   const { t } = useTranslation(["common"]);
@@ -53,12 +56,20 @@ const CompulsoryStudiesHopsWizard: React.FC<
   const [hopsUpdateDetails, setHopsUpdateDetails] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
+  React.useEffect(() => {
+    if (_.isEqual(form, localForm)) {
+      onHasUnsavedChanges(false);
+    } else {
+      onHasUnsavedChanges(true);
+    }
+  }, [form, localForm, onHasUnsavedChanges]);
+
   /**
    * Handles changes to the form data
    * @param updatedForm - The updated form data
    */
   const handleFormChange = (updatedForm: CompulsoryStudiesHops) => {
-    setLocalForm(updatedForm);
+    setLocalForm((previousForm) => ({ ...previousForm, ...updatedForm }));
   };
 
   /**
@@ -101,42 +112,48 @@ const CompulsoryStudiesHopsWizard: React.FC<
   };
 
   // Define the wizard steps
-  const steps: WizardStep[] = [
-    {
-      index: 0,
-      name: "Perustiedot",
-      component: (
-        <AnimatedStep previousStep={previousStep}>
-          <Step1
-            studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
-            educationalLevel={studentInfo.studyProgrammeEducationType}
-            guidanceCounselors={studentInfo.counselorList}
-          />
-        </AnimatedStep>
-      ),
-    },
-    {
-      index: 1,
-      name: "Osaamisen ja lähtötason arvointi",
-      component: (
-        <AnimatedStep previousStep={previousStep}>
-          <Step2 form={localForm} onStartingLevelChange={handleFormChange} />
-        </AnimatedStep>
-      ),
-    },
-    {
-      index: 2,
-      name: "Opiskelutaidot ja motivaatio",
-      component: (
-        <AnimatedStep previousStep={previousStep}>
-          <Step3
-            form={localForm}
-            onMotivationAndStudyChange={handleFormChange}
-          />
-        </AnimatedStep>
-      ),
-    },
-  ];
+  const steps: WizardStep[] = useMemo(
+    () => [
+      {
+        index: 0,
+        name: "Perustiedot",
+        component: (
+          <AnimatedStep previousStep={previousStep}>
+            <Step1
+              studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
+              educationalLevel={studentInfo.studyProgrammeEducationType}
+              guidanceCounselors={studentInfo.counselorList}
+            />
+          </AnimatedStep>
+        ),
+      },
+      {
+        index: 1,
+        name: "Osaamisen ja lähtötason arvointi",
+        component: (
+          <AnimatedStep previousStep={previousStep}>
+            <Step2 form={localForm} onFormChange={handleFormChange} />
+          </AnimatedStep>
+        ),
+      },
+      {
+        index: 2,
+        name: "Opiskelutaidot ja motivaatio",
+        component: (
+          <AnimatedStep previousStep={previousStep}>
+            <Step3 form={localForm} onFormChange={handleFormChange} />
+          </AnimatedStep>
+        ),
+      },
+    ],
+    [
+      localForm,
+      studentInfo.counselorList,
+      studentInfo.firstName,
+      studentInfo.lastName,
+      studentInfo.studyProgrammeEducationType,
+    ]
+  );
 
   const wizardValue = useWizard({
     steps,
