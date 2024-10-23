@@ -789,6 +789,9 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
             payload: isBeingEvaluatedValue,
           });
         } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
           dispatch(
             actions.displayNotification(
               i18n.t("notifications.loadError", {
@@ -2413,7 +2416,7 @@ const isBeingEvaluated = (
   activity?: WorkspaceActivity,
   assessmentRequests?: AssessmentRequest[]
 ) => {
-  if (!activity || !assessmentRequests) {
+  if (!activity || !assessmentRequests || assessmentRequests.length === 0) {
     return false;
   }
 

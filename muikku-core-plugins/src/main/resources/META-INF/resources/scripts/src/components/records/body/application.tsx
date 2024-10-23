@@ -137,7 +137,7 @@ class StudiesApplication extends React.Component<
     const pedagogyApi = MApi.getPedagogyApi();
 
     return await pedagogyApi.getPedagogyFormState({
-      studentIdentifier: this.props.status.userSchoolDataIdentifier,
+      userEntityId: this.props.status.userId,
     });
   };
 
@@ -251,7 +251,7 @@ class StudiesApplication extends React.Component<
           <ApplicationPanelBody modifier="tabs">
             <UpperSecondaryPedagogicalSupportWizardForm
               userRole="STUDENT"
-              studentId={this.props.status.userSchoolDataIdentifier}
+              studentUserEntityId={this.props.status.userId}
             />
           </ApplicationPanelBody>
         ),

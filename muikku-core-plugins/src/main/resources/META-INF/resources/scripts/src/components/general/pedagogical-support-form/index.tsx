@@ -37,7 +37,7 @@ export const UPPERSECONDARY_PEDAGOGYFORM = [
  */
 interface UpperSecondaryPedagogicalSupportWizardFormmProps {
   userRole: UserRole;
-  studentId: string;
+  studentUserEntityId: number;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -53,7 +53,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
 > = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan"]);
   const usePedagogyValues = usePedagogy(
-    props.studentId,
+    props.studentUserEntityId,
     props.displayNotification
   );
   const { loading, data } = usePedagogyValues;
