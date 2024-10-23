@@ -1890,7 +1890,7 @@
       "copyError": "Kurssin kopiointi epäonnistui",
       "createError": "Kurssin luonti epäonnistui",
       "loadError": "$t(common:notifications.loadError)",
-      "loadError_activity": "Kurssin tietojan lataus epäonnistui",
+      "loadError_activity": "Kurssin tietojen lataus epäonnistui",
       "loadError_chatSettings": "Chatin asetuksien lataus epäonnistui",
       "loadError_coverImage": "Etusivun kuvan lataus epäonnistui",
       "loadError_curriculumFilters": "Linjasuodattimien lataus epäonnistui",
