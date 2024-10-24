@@ -124,7 +124,7 @@ export const MatriculationExaminationEnrollmentCompleted = (
         </div>
       ),
       undefined: null,
-    }[saveState]);
+    })[saveState];
 
   return <div>{renderStateMessage(saveState)}</div>;
 };

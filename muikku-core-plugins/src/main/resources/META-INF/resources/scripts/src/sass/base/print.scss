@@ -1,7 +1,9 @@
 @media print {
   body {
+
     /* stylelint-disable declaration-no-important */
     background-color: $color-default !important;
+
     /* stylelint-enable declaration-no-important */
   }
 
@@ -31,6 +33,7 @@
 
     /* stylelint-disable declaration-no-important */
     padding: 1rem 0 0 !important;
+
     /* stylelint-ensable declaration-no-important */
   }
 

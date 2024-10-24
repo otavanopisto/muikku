@@ -2,7 +2,7 @@ import * as React from "react";
 import Link from "~/components/general/link";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
 import { colorIntToHex, getName } from "~/util/modifiers";
@@ -24,6 +24,7 @@ import {
   MessageThreadLabel,
   User,
 } from "~/generated/client";
+import { Action, Dispatch } from "redux";
 
 /**
  * MessageProps
@@ -511,7 +512,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

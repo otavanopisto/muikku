@@ -3,7 +3,7 @@ import { StateType } from "../../../reducers/index";
 import notificationActions, {
   displayNotification,
 } from "~/actions/base/notifications";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import {
   UpdateImportanceObject,
   EvaluationAssigmentData,
@@ -617,7 +617,7 @@ export interface DeleteEvaluationJournalCommentTriggerType {
 const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
   function loadEvaluationGradingSystemFromServer() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -673,7 +673,7 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
 const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest =
   function loadEvaluationAssessmentRequestsFromServer(useFromWorkspace) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -739,7 +739,7 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
 const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
   function loadEvaluationWorkspacesFromServer() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -798,7 +798,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
 const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessment =
   function loadListOfImportantAssessmentIdsFromServer() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -857,7 +857,7 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
 const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAssessment =
   function loadListOfUnimportantAssessmentIdsFromServer() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -915,7 +915,7 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
 const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
   function loadEvaluationSortFunction() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -979,7 +979,7 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
 const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
   function loadEvaluationAssessmentEventsFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -1036,7 +1036,7 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
 const loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFromServerTriggerType =
   function loadEvaluationJournalFeedbkackFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -1093,7 +1093,7 @@ const loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFrom
 const createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFeedbackTriggerType =
   function createEvaluationJournalFeedback(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -1156,7 +1156,7 @@ const createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFe
 const deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType =
   function deleteEvaluationJournalFeedback(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -1215,7 +1215,7 @@ const deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerTyp
 const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJournalEvents =
   function loadEvaluationSelectedAssessmentJournalEventsFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const workspaceApi = MApi.getWorkspaceApi();
@@ -1289,7 +1289,7 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
     workspaceId,
   }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const workspaceApi = MApi.getWorkspaceApi();
@@ -1344,7 +1344,7 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
 const updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction =
   function updateEvaluationSortFunctionToServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1415,7 +1415,7 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
     onFail,
   }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1551,7 +1551,7 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
     onFail,
   }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1658,7 +1658,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
     onFail,
   }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1802,7 +1802,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
 const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
   function loadCurrentStudentAssigmentsData({ workspaceId }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const workspaceApi = MApi.getWorkspaceApi();
@@ -1884,7 +1884,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
 const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData =
   function updateCurrentStudentEvaluationData(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1947,7 +1947,7 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
 const setSelectedWorkspaceId: SetEvaluationSelectedWorkspace =
   function setSelectedWorkspaceId(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_SELECTED_WORKSPACE_CHANGE",
@@ -1967,7 +1967,7 @@ const setSelectedWorkspaceId: SetEvaluationSelectedWorkspace =
 const setEvaluationFilters: SetEvaluationFilters =
   function setEvaluationFilters(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_FILTERS_CHANGE",
@@ -1983,7 +1983,7 @@ const setEvaluationFilters: SetEvaluationFilters =
 const updateBillingToServer: UpdateEvaluationEvent =
   function updateBillingToServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const worklistApi = MApi.getWorklistApi();
@@ -2032,7 +2032,7 @@ const updateBillingToServer: UpdateEvaluationEvent =
 const setSelectedAssessmentAndLoadEvents: UpdateEvaluationSelectedAssessment =
   function updateSelectedAssessment(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_ASSESSMENT_UPDATE",
@@ -2054,7 +2054,7 @@ const setSelectedAssessmentAndLoadEvents: UpdateEvaluationSelectedAssessment =
 const updateSelectedAassessment: UpdateEvaluationSelectedAssessment =
   function updateSelectedAssessment(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_ASSESSMENT_UPDATE",
@@ -2070,7 +2070,7 @@ const updateSelectedAassessment: UpdateEvaluationSelectedAssessment =
 const updateEvaluationSearch: UpdateEvaluationSearch =
   function updateEvaluationSearch(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_SEARCH_CHANGE",
@@ -2085,7 +2085,7 @@ const updateEvaluationSearch: UpdateEvaluationSearch =
  */
 const updateImportance: UpdateImportance = function updateImportance(data) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -2164,7 +2164,7 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
 const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
   function updateOpenedAssignmentEvaluation(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_OPENED_ASSIGNMENT_UPDATE",
@@ -2181,7 +2181,7 @@ const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
 const deleteAssessmentRequest: DeleteAssessmentRequest =
   function deleteAssessmentRequest({ workspaceUserEntityId }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -2226,7 +2226,7 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
 const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
   function deleteInterimEvaluationRequest({ interimEvaluatiomRequestId }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -2270,7 +2270,7 @@ const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
 const deleteSupplementationRequest: DeleteSupplementationRequest =
   function deleteSupplementationRequest(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const { workspaceUserEntityId, supplementationRequestId } = data;
@@ -2319,7 +2319,7 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
   onSuccess,
 }) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const workspaceApi = MApi.getWorkspaceApi();
@@ -2367,7 +2367,7 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
 const loadBasePriceFromServer: LoadBasePrice =
   function loadBasePriceFromServer({ workspaceEntityId }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       const worklistApi = MApi.getWorklistApi();
 
@@ -2412,7 +2412,7 @@ const loadBasePriceFromServer: LoadBasePrice =
 const updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests =
   function updateNeedsReloadEvaluationRequests({ value }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_NEEDS_RELOAD_REQUESTS_UPDATE",
@@ -2428,7 +2428,7 @@ const updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests =
 const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFromServerTriggerType =
   function loadWorkspaceJournalCommentsFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationJournalComments =
@@ -2489,7 +2489,7 @@ const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFrom
 const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType =
   function createEvaluationJournalComment(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const {
@@ -2575,7 +2575,7 @@ const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType 
 const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType =
   function createEvaluationJournalComment(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const {
@@ -2656,7 +2656,7 @@ const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType 
 const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType =
   function createEvaluationJournalComment(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const { commentId, journalEntryId, workspaceEntityId, fail, success } =
@@ -2747,7 +2747,7 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
 const lockAssessmentRequest: LockAssessmentRequest =
   function lockAssessmentRequest(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const { assessment, locked } = data;

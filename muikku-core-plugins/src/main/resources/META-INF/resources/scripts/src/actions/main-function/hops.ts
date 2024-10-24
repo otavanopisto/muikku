@@ -2,7 +2,7 @@ import actions from "../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { HOPSStatusType } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import MApi, { isMApiError } from "~/api/api";
 import { HopsEligibility, HopsUppersecondary } from "~/generated/client";
 import i18n from "~/locales/i18n";
@@ -48,7 +48,7 @@ const setHopsPhase: SetHopsPhaseTriggerType = function setHopsPhase(
   userEntityId: number
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const userApi = MApi.getUserApi();
@@ -74,7 +74,7 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
   userIdentifier
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -159,7 +159,7 @@ const updateHops: UpdateHopsTriggerType = function updateHops(
  */
 const setHopsTo: SetHopsToTriggerType = function setHopsTo(newHops) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();

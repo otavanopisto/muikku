@@ -7,8 +7,8 @@
 import Link from "../link";
 import * as React from "react";
 import { logout, LogoutTriggerType } from "~/actions/base/status";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import $ from "~/lib/jquery";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
@@ -388,7 +388,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ logout, openReadingRuler }, dispatch);
 }
 

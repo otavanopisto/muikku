@@ -115,12 +115,12 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
     const assigmentTypeStyles = isAssignment
       ? styles.tocElementAssignment
       : isExercise
-      ? styles.tocElementExcercise
-      : isJournal
-      ? styles.tocElementJournal
-      : isInterimEvaluation
-      ? styles.tocElementInterimEvaluation
-      : null;
+        ? styles.tocElementExcercise
+        : isJournal
+          ? styles.tocElementJournal
+          : isInterimEvaluation
+            ? styles.tocElementInterimEvaluation
+            : null;
 
     const filteredOut = !assignmentTypeFilters.includes(
       mSubNode.assignmentType || (isTheory && "THEORY")
@@ -195,8 +195,8 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
         mSubNode.viewRestrict === MaterialViewRestriction.LoggedIn
           ? styles.tocElementIconRestrictedToLoggedUsers
           : mSubNode.viewRestrict === MaterialViewRestriction.WorkspaceMembers
-          ? styles.tocElementIconRestrictedToMembers
-          : null;
+            ? styles.tocElementIconRestrictedToMembers
+            : null;
     }
 
     return (
@@ -254,8 +254,8 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
       mNode.viewRestrict === MaterialViewRestriction.LoggedIn
         ? styles.tocTopicIconRestrictedToLoggedUsers
         : mNode.viewRestrict === MaterialViewRestriction.WorkspaceMembers
-        ? styles.tocTopicIconRestrictedToMembers
-        : null;
+          ? styles.tocTopicIconRestrictedToMembers
+          : null;
 
     return (
       <View

@@ -2,7 +2,7 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { User, UserGroup, UserWhoAmI } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 
 /**
  * LoadUserIndexTriggerType
@@ -66,7 +66,7 @@ const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
   callback
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -112,7 +112,7 @@ const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
 const loadUserGroupIndex: LoadUserGroupIndexTriggerType =
   function loadUserGroupIndex(groupId) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const usergroupApi = MApi.getUsergroupApi();

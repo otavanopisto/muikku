@@ -8,8 +8,10 @@ import "~/sass/elements/ordered-container.scss";
 import "~/sass/elements/panel.scss";
 
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { ErrorType } from "~/reducers/base/error";
+import { Action, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 
 /**
  * ErrorBodyProps
@@ -66,7 +68,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

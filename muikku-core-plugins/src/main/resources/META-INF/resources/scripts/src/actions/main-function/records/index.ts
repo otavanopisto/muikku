@@ -9,7 +9,7 @@ import {
 } from "~/reducers/main-function/records";
 import i18n from "~/locales/i18n";
 import { UserFile } from "~/generated/client";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import { WorkspaceActivityInfo } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import {
@@ -105,7 +105,7 @@ export interface UpdateTranscriptOfRecordsFilesTriggerType {
 const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToRecordsTriggerType =
   function updateAllStudentUsersAndSetViewToRecords(userIdentifier) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const meApi = MApi.getMeApi();
@@ -384,7 +384,7 @@ const setLocationToInfoInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRec
 const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType =
   function updateTranscriptOfRecordsFiles() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();

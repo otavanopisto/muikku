@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
@@ -29,6 +28,7 @@ import EditHopsEventDescriptionDialog from "./dialogs/edit-hops-event-descriptio
 import StudyProgressContextProvider from "~/components/general/study-progress/context";
 import MApi, { isMApiError } from "~/api/api";
 import { HopsGoals, HopsHistoryEntry } from "~/generated/client";
+import { Action, Dispatch } from "redux";
 
 export const COMPULSORY_HOPS_VISIBLITY = [
   "Nettiperuskoulu",
@@ -790,7 +790,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {
     displayNotification,
   };

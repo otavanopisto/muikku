@@ -216,8 +216,8 @@ export class DiscussionCurrentThreadElement extends React.Component<
     const baseMod = this.props.isOpMessage
       ? "discussion-message"
       : this.props.isReplyOfReply
-      ? "discussion-reply-of-reply"
-      : "discussion-reply";
+        ? "discussion-reply-of-reply"
+        : "discussion-reply";
 
     return (
       !this.props.hidden && (

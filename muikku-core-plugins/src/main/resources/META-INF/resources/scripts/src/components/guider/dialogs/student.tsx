@@ -4,8 +4,8 @@ import Dialog, {
   DialogTitleContainer,
 } from "~/components/general/dialog";
 import Tabs from "~/components/general/tabs";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
@@ -345,7 +345,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch action dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadStudentHistory,

@@ -6,10 +6,6 @@ import CKEditor from "~/components/general/ckeditor";
 import "~/sass/elements/form.scss";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
 import { localize } from "~/locales/i18n";
 
 /**

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import {
   AnnouncementsState,
   AnnouncerNavigationItemType,
@@ -10,6 +10,8 @@ import "~/sass/elements/item-list.scss";
 import Navigation, { NavigationElement } from "../../general/navigation";
 import { NavigationTopic } from "../../general/navigation";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 
 /**
  * NavigationAsideProps
@@ -32,7 +34,7 @@ class NavigationAside extends React.Component<
 > {
   /**
    * render
-   * @returns
+   * @returns JSX.Element
    */
   render() {
     const navigationElementList: JSX.Element[] =
@@ -78,7 +80,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

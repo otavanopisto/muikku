@@ -9,8 +9,8 @@ import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 import i18n from "~/locales/i18n";
 import { GetAnnouncementsRequest } from "~/generated/client";
-import { Dispatch } from "react-redux";
 import MApi, { isMApiError } from "~/api/api";
+import { Action, Dispatch } from "redux";
 
 /**
  * loadAnnouncementsHelper
@@ -26,7 +26,7 @@ export async function loadAnnouncementsHelper(
   workspaceId: number,
   notOverrideCurrent: boolean,
   force: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
   if (!notOverrideCurrent) {

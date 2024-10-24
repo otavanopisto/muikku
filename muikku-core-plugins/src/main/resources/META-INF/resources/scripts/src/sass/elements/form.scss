@@ -30,9 +30,10 @@
   justify-content: center;
 
   .recording-warning {
-    color: $color-failed;
+    color: $color-recording;
     display: flex;
     justify-content: center;
+    padding: 10px 0;
   }
 }
 

@@ -18,10 +18,6 @@ import { DiscussionState } from "./discussion";
 import { UserIndexState } from "./user-index";
 import { GuiderState } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
-import {
-  MatriculationState,
-  MatriculationSubjectEligibilityState,
-} from "./main-function/records/yo";
 import { RecordsType } from "./main-function/records";
 import { ErrorType } from "./base/error";
 import { ProfileState } from "./main-function/profile";
@@ -43,8 +39,6 @@ export interface StateType {
   status: StatusType;
   contacts: ContactsState;
   websocket?: WebsocketStateType;
-  yo?: MatriculationState;
-  eligibilitySubjects?: MatriculationSubjectEligibilityState;
   credentials?: CredentialsState;
   announcements?: AnnouncementsState;
   hops?: HOPSState;

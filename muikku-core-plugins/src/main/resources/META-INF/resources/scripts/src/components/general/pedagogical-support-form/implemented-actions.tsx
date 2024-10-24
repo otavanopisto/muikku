@@ -50,7 +50,7 @@ export const ImplementedActionsListItem: React.FC<
   ImplementedActionsListItemProps
 > = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
-  const { userRole, editIsActive, studentId } = usePedagogyContext();
+  const { userRole, editIsActive, studentUserEntityId } = usePedagogyContext();
 
   const {
     index,
@@ -122,7 +122,7 @@ export const ImplementedActionsListItem: React.FC<
           </label>
           <WorkspaceSelect
             id="implemenetedSupportActionCourse"
-            studentIdentifier={studentId}
+            userEntityId={studentUserEntityId}
             onChange={(option) => {
               onActionChange(index, "course", option?.value || undefined);
             }}

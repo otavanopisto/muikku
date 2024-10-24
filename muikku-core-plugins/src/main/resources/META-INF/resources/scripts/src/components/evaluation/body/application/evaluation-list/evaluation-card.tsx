@@ -12,8 +12,8 @@ import {
   LoadEvaluationAssessmentRequest,
   loadEvaluationAssessmentRequestsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { StateType } from "~/reducers/index";
 import { ButtonPill, IconButton } from "~/components/general/button";
@@ -634,7 +634,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { loadEvaluationAssessmentRequestsFromServer },
     dispatch

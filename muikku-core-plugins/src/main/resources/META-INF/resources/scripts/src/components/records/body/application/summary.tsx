@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { localize } from "~/locales/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -24,7 +24,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import Notes from "~/components/general/notes/notes";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { Instructions } from "~/components/general/instructions";
@@ -398,10 +398,12 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                 </div>
                 {this.props.summary.data.graphData.activity &&
                 this.props.summary.data.graphData.workspaces ? (
-                  <MainChart
-                    workspaces={this.props.summary.data.graphData.workspaces}
-                    activityLogs={this.props.summary.data.graphData.activity}
-                  />
+                  <>
+                    <MainChart
+                      workspaces={this.props.summary.data.graphData.workspaces}
+                      activityLogs={this.props.summary.data.graphData.activity}
+                    />
+                  </>
                 ) : null}
               </div>
             </div>
@@ -430,7 +432,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

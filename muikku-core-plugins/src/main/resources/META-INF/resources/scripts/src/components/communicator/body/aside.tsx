@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import LabelUpdateDialog from "../dialogs/label-update";
 import { MessagesState } from "~/reducers/main-function/messages";
 import { StateType } from "~/reducers";
@@ -13,6 +13,7 @@ import Navigation, {
 } from "~/components/general/navigation";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 /**
  * NavigationProps
@@ -94,7 +95,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

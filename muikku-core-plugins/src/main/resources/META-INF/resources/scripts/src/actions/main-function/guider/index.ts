@@ -13,7 +13,7 @@ import notificationActions from "~/actions/base/notifications";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import { colorIntToHex } from "~/util/modifiers";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import { LoadingState } from "~/@types/shared";
 import {
   CeeposOrder,
@@ -479,7 +479,7 @@ const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
 const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
   function removeFileFromCurrentStudent(file) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
@@ -559,7 +559,7 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
 const loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType =
   function loadStudentPedagogyFormAccess(userEntityId, forceLoad) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       // if the access is loaded, do not load again
@@ -624,7 +624,7 @@ const loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType =
  */
 const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const hopsApi = MApi.getHopsApi();
@@ -931,7 +931,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
   forceLoad
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     try {
@@ -1235,7 +1235,7 @@ const loadStudentHistory: LoadStudentTriggerType = function loadStudentHistory(
 const loadStudentContactLogs: LoadContactLogsTriggerType =
   function loadStudentContactLogs(id, resultsPerPage, page, forceLoad) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
@@ -1329,7 +1329,7 @@ const createContactLogEvent: CreateContactLogEventTriggerType =
     onFail
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
@@ -1418,7 +1418,7 @@ const deleteContactLogEvent: DeleteContactLogEventTriggerType =
     onFail
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
@@ -1486,7 +1486,7 @@ const editContactLogEvent: EditContactLogEventTriggerType =
     onFail
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
@@ -1586,7 +1586,7 @@ const createContactLogEventComment: CreateContactLogEventCommentTriggerType =
     onFail
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
@@ -1692,7 +1692,7 @@ const deleteContactLogEventComment: DeleteContactLogEventCommentTriggerType =
     onFail
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
@@ -1757,7 +1757,7 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
     onFail
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
@@ -1863,7 +1863,7 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
 const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
   function updateCurrentStudentHopsPhase(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const userApi = MApi.getUserApi();
@@ -1912,7 +1912,7 @@ async function removeLabelFromUserUtil(
   student: Student,
   flags: UserStudentFlag[],
   label: UserFlag,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
   const userApi = MApi.getUserApi();
@@ -1960,7 +1960,7 @@ async function addLabelToUserUtil(
   student: Student,
   flags: UserStudentFlag[],
   label: UserFlag,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
   const userApi = MApi.getUserApi();
@@ -2007,7 +2007,7 @@ async function addLabelToUserUtil(
 const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
   function addGuiderLabelToCurrentUser(label) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guider: GuiderState = getState().guider;
@@ -2030,7 +2030,7 @@ const addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType =
 const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType =
   function removeGuiderLabelFromCurrentUser(label) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guider: GuiderState = getState().guider;
@@ -2053,7 +2053,7 @@ const removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerT
 const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
   function addGuiderLabelToSelectedUsers(label) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guider: GuiderState = getState().guider;
@@ -2070,7 +2070,7 @@ const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
 const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTriggerType =
   function removeGuiderLabelFromSelectedUsers(label) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guider: GuiderState = getState().guider;
@@ -2093,7 +2093,7 @@ const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrig
 const updateLabelFilters: UpdateLabelFiltersTriggerType =
   function updateLabelFilters() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const currentUser = getState().status.userSchoolDataIdentifier;
@@ -2129,7 +2129,7 @@ const updateLabelFilters: UpdateLabelFiltersTriggerType =
 const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
   function updateWorkspaceFilters() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const workspaceApi = MApi.getWorkspaceApi();
@@ -2170,7 +2170,7 @@ const updateWorkspaceFilters: UpdateWorkspaceFiltersTriggerType =
 const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
   function updateUserGroupFilters() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const usergroupApi = MApi.getUsergroupApi();
@@ -2211,7 +2211,7 @@ const updateUserGroupFilters: UpdateWorkspaceFiltersTriggerType =
 const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
   function createGuiderFilterLabel(name) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const userApi = MApi.getUserApi();
@@ -2272,7 +2272,7 @@ const createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType =
 const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
   function updateGuiderFilterLabel(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const userApi = MApi.getUserApi();
@@ -2344,7 +2344,7 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
 const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
   function removeGuiderFilterLabel(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const userApi = MApi.getUserApi();
@@ -2385,7 +2385,7 @@ const removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType =
 const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerType =
   function updateAvailablePurchaseProducts() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const ceeposApi = MApi.getCeeposApi();
@@ -2422,7 +2422,7 @@ const updateAvailablePurchaseProducts: UpdateAvailablePurchaseProductsTriggerTyp
 const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
   function doOrderForCurrentStudent(orderProduct) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const ceeposApi = MApi.getCeeposApi();
@@ -2463,7 +2463,7 @@ const doOrderForCurrentStudent: DoOrderForCurrentStudentTriggerType =
 const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
   function deleteOrderFromCurrentStudent(order: CeeposOrder) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const ceeposApi = MApi.getCeeposApi();
@@ -2499,7 +2499,7 @@ const deleteOrderFromCurrentStudent: DeleteOrderFromCurrentStudentTriggerType =
 const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerType =
   function completeOrderFromCurrentStudent(order: CeeposOrder) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const ceeposApi = MApi.getCeeposApi();

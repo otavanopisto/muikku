@@ -93,9 +93,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
           />
           <div className="chat__users chat__users--others" role="menu">
             <div className="chat__users-category-title">
-              {t("labels.discussions", {
-                ns: "chat",
-              })}
+              {t("labels.discussions", { ns: "chat" })}
             </div>
             <ChatMyActiveDiscussions
               onItemClick={() => setPanelRightOpen(false)}

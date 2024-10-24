@@ -42,17 +42,17 @@ const matriculationExaminationSupport = [
   "other",
 ] as const;
 
-export type UserRole = typeof useRoles[number];
+export type UserRole = (typeof useRoles)[number];
 
 // Types for the PedagogyForm JSON
-export type SupportReason = typeof reasonsForSupport[number];
+export type SupportReason = (typeof reasonsForSupport)[number];
 
 // Types for the PedagogyForm JSON
-export type SupportAction = typeof supportActions[number];
+export type SupportAction = (typeof supportActions)[number];
 
 // Types for the PedagogyForm JSON
 export type SupportActionMatriculationExamination =
-  typeof matriculationExaminationSupport[number];
+  (typeof matriculationExaminationSupport)[number];
 
 // Types for the PedagogyForm JSON
 export type OpinionType = "studentOpinionOfSupport" | "schoolOpinionOfSupport";

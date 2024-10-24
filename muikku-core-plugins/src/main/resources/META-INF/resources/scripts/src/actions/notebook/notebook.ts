@@ -1,4 +1,4 @@
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
@@ -178,7 +178,7 @@ export interface LoadNotebookDefaultPosition {
 const loadNotebookEntries: LoadNotebookEntries =
   function loadNotebookEntries() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const workspaceNotesApi = MApi.getWorkspaceNotesApi();
@@ -285,7 +285,7 @@ const loadNotebookEntries: LoadNotebookEntries =
 const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
   function updateNotebookEntriesOrder(dragIndex, hoverIndex, dropped) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const workspaceNotesApi = MApi.getWorkspaceNotesApi();
@@ -375,7 +375,7 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
 const saveNewNotebookEntry: SaveNewNotebookEntry =
   function saveNewNotebookEntry(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -509,7 +509,7 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
 const updateEditedNotebookEntry: UpdateEditNotebookEntry =
   function updateEditedNotebookEntry(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -567,7 +567,7 @@ const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
   data
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -628,7 +628,7 @@ const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
 const toggleNotebookEditor: ToggleNotebookEditor =
   function toggleNotebookEditor(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       dispatch({
@@ -646,7 +646,7 @@ const toggleNotebookEditor: ToggleNotebookEditor =
 const updateSelectedNotePosition: UpdateSelectedNotePosition =
   function updateSelectedNotePosition(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       dispatch({
@@ -664,7 +664,7 @@ const updateSelectedNotePosition: UpdateSelectedNotePosition =
 const createNewFromCutContent: CreateNewFromCutContent =
   function createNewFromCutContent(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -685,7 +685,7 @@ const createNewFromCutContent: CreateNewFromCutContent =
 const loadNotebookDefaultPosition: LoadNotebookDefaultPosition =
   function loadNotebookDefaultPosition() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();

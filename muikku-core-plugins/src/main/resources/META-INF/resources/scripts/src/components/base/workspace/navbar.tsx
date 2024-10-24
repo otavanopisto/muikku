@@ -3,7 +3,7 @@ import Link from "~/components/general/link";
 import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
@@ -19,7 +19,7 @@ import {
   UpdateWorkspaceEditModeStateTriggerType,
   updateWorkspaceEditModeState,
 } from "~/actions/workspaces";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import i18n from "~/locales/i18n";
@@ -493,7 +493,7 @@ function mapStateToProps(state: StateType) {
  *
  * @param dispatch dispatch
  */
-const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) =>
+const mapDispatchToProps = (dispatch: Dispatch<Action<AnyActionType>>) =>
   bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
 
 export default withTranslation(["workspace", "users", "common"])(
