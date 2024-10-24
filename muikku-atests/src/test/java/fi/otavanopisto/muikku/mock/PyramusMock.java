@@ -249,7 +249,6 @@ public class PyramusMock {
             }
           }
         }
-//        TODO: jatka tästä keskiviikkona
         
         if(pmock.courseStudents.containsKey(courseId)){
           pmock.courseStudents.get(courseId).add(courseStudent);
@@ -928,10 +927,10 @@ public class PyramusMock {
         assessmentRequests.add(assessmentRequest);
         
         stubFor(put(urlEqualTo(String.format("/1/courses/%d/courseStudents/%d/assessmentRequest/lock", courseId, courseStudentId)))
-            .willReturn(aResponse()
-              .withHeader("Content-Type", "application/json")
-              .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
-              .withStatus(200)));
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
+            .withStatus(200)));
         
         return this;
       }
@@ -954,9 +953,10 @@ public class PyramusMock {
             compositeGrades.add(new CompositeGrade(grade.getId(), grade.getName()));          
           }
           compositeGradingScales.add(new CompositeGradingScale(
-              gradingScale.getId(),
-              gradingScale.getName(),
-              compositeGrades));
+            gradingScale.getId(),
+            gradingScale.getName(),
+            compositeGrades)
+          );
         }
         
         stubFor(get(urlEqualTo("/1/composite/gradingScales/"))
@@ -977,23 +977,42 @@ public class PyramusMock {
         assessmentRequest.setCourseStudentId(courseStudentId);
         assessmentRequest.setAssessmentRequestDate(Date.from(courseAssessmentRequest.getCreated().toInstant()));
         assessmentRequest.setCourseEnrollmentDate(Date.from(enrollmemnt.toInstant()));
-        assessmentRequest.setEvaluationDate(null);
+        if(handled) {
+          assessmentRequest.setEvaluationDate(Date.from(date.toInstant()));          
+        }else {
+          assessmentRequest.setEvaluationDate(null);
+        }
         assessmentRequest.setCourseId(courseId);
         assessmentRequest.setCourseName(course.getName());
         assessmentRequest.setCourseNameExtension(course.getNameExtension());
         assessmentRequest.setFirstName(courseStudent.getFirstName());
         assessmentRequest.setLastName(courseStudent.getLastName());
         assessmentRequest.setStudyProgramme("Test Study Programme");
-        assessmentRequest.setUserId(courseStudent.getId());
-        assessmentRequest.setLocked(courseAssessmentRequest.getLocked());
-                
-        if(pmock.compositeCourseAssessmentRequests.containsKey(courseId)){
+        assessmentRequest.setUserId(studentId);
+        assessmentRequest.setLocked(locked);
+
+        
+        List<CompositeAssessmentRequest> existingRequests = pmock.compositeCourseAssessmentRequests.get(courseId);
+        List<CompositeAssessmentRequest> toRemove = new ArrayList<>();
+        if(existingRequests != null) {
+          for (CompositeAssessmentRequest compositeAssessmentRequest : existingRequests) {
+            Long cStudentId = compositeAssessmentRequest.getCourseStudentId();
+            if(cStudentId.equals(courseStudentId)) {
+              toRemove.add(compositeAssessmentRequest);
+            }
+          }
+          if(!toRemove.isEmpty()) {
+            for (CompositeAssessmentRequest compositeAssessmentRequest : toRemove) {
+              pmock.compositeCourseAssessmentRequests.get(courseId).remove(compositeAssessmentRequest);
+            }            
+          }
           pmock.compositeCourseAssessmentRequests.get(courseId).add(assessmentRequest);
-        }else{
+        }else {
           ArrayList<CompositeAssessmentRequest> assessmentRequests = new ArrayList<>();
           assessmentRequests.add(assessmentRequest);
-          pmock.compositeCourseAssessmentRequests.put(courseId, assessmentRequests);
+          pmock.compositeCourseAssessmentRequests.put(courseId, assessmentRequests);          
         }
+        
         return this;
       }
       
@@ -1005,7 +1024,7 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(pmock.compositeCourseAssessmentRequests.get(courseId)))
               .withStatus(200)));
         }
-
+// TODO: Näkyykö nämä oikeasti?
         return this;
       }
       
@@ -1031,8 +1050,8 @@ public class PyramusMock {
         assessmentRequest.setFirstName(courseStudent.getFirstName());
         assessmentRequest.setLastName(courseStudent.getLastName());
         assessmentRequest.setStudyProgramme("Test Study Programme");
-        assessmentRequest.setUserId(courseStudent.getId());
-        assessmentRequest.setLocked(false);
+        assessmentRequest.setUserId(studentId);
+        assessmentRequest.setLocked(locked);
         List<CompositeAssessmentRequest> existingRequests = pmock.compositeStaffAssessmentRequests.get(staffMemberId);
         List<CompositeAssessmentRequest> toRemove = new ArrayList<>();
         if(existingRequests != null) {
