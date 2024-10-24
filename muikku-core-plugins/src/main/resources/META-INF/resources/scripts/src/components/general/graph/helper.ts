@@ -8,14 +8,16 @@ import { MainChartData, SeriesConfig } from "./types";
  * @param {ActivityLogEntry[]} activityLogs - Array of activity log entries
  * @param {WorkspaceDataType[]} workspaces - Array of workspace data
  * @param {number[]} visibleWorkspaceIds - Array of visible workspace IDs
+ * @param {Map<string, MainChartData>} initialMap - Map of initial date and its data
  * @returns {MainChartData[]} Processed chart data
  */
 export const processChartData = (
   activityLogs: ActivityLogEntry[],
   workspaces: WorkspaceDataType[],
-  visibleWorkspaceIds: number[]
+  visibleWorkspaceIds: number[],
+  initialMap: Map<string, MainChartData>
 ) => {
-  const chartDataMap = new Map<string, MainChartData>();
+  const chartDataMap = new Map<string, MainChartData>(initialMap);
   if (activityLogs) {
     activityLogs.forEach((log) => {
       const date = log.timestamp.toISOString().slice(0, 10);

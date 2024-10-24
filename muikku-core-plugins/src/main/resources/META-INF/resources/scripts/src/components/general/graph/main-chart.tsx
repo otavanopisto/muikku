@@ -3,7 +3,7 @@ import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 // eslint-disable-next-line camelcase
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { MainChartFilter } from "./types";
+import { MainChartData, MainChartFilter } from "./types";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { ActivityLogEntry } from "~/generated/client";
 import { useTranslation } from "react-i18next";
@@ -71,7 +71,19 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
     const chartData = processChartData(
       activityLogs,
       workspaces,
-      workspaces.map((workspace) => workspace.id)
+      workspaces.map((workspace) => workspace.id),
+      new Map<string, MainChartData>([
+        [
+          new Date().toISOString().slice(0, 10),
+          {
+            SESSION_LOGGEDIN: 0,
+            WORKSPACE_VISIT: 0,
+            MATERIAL_EXERCISEDONE: 0,
+            MATERIAL_ASSIGNMENTDONE: 0,
+            FORUM_NEWMESSAGE: 0,
+          },
+        ],
+      ])
     );
 
     chart.data = chartData;
@@ -400,7 +412,19 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
         chart.data = processChartData(
           activityLogs,
           workspaces,
-          updatedVisibleWorkspaceData
+          updatedVisibleWorkspaceData,
+          new Map<string, MainChartData>([
+            [
+              new Date().toISOString().slice(0, 10),
+              {
+                SESSION_LOGGEDIN: 0,
+                WORKSPACE_VISIT: 0,
+                MATERIAL_EXERCISEDONE: 0,
+                MATERIAL_ASSIGNMENTDONE: 0,
+                FORUM_NEWMESSAGE: 0,
+              },
+            ],
+          ])
         );
       }
     },
@@ -426,7 +450,23 @@ const MainChart: React.FC<MainChartProps> = ({ activityLogs, workspaces }) => {
     // Update chart data
     const chart = chartRef.current;
     if (chart) {
-      chart.data = processChartData(activityLogs, workspaces, workspaceIds);
+      chart.data = processChartData(
+        activityLogs,
+        workspaces,
+        workspaceIds,
+        new Map<string, MainChartData>([
+          [
+            new Date().toISOString().slice(0, 10),
+            {
+              SESSION_LOGGEDIN: 0,
+              WORKSPACE_VISIT: 0,
+              MATERIAL_EXERCISEDONE: 0,
+              MATERIAL_ASSIGNMENTDONE: 0,
+              FORUM_NEWMESSAGE: 0,
+            },
+          ],
+        ])
+      );
     }
   }, [visibleWorkspaceData, workspaces, activityLogs]);
 
