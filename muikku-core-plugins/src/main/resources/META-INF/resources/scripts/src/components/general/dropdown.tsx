@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-find-dom-node */
 /* eslint-disable react/no-string-refs */
 
@@ -122,6 +123,10 @@ export default class Dropdown extends React.Component<
   private dropdownRef: React.RefObject<HTMLDivElement>;
   private arrowRef: React.RefObject<HTMLSpanElement>;
 
+  static defaultProps = {
+    closeOnOutsideClick: true,
+  };
+
   /**
    * constructor
    * @param props props
@@ -155,11 +160,37 @@ export default class Dropdown extends React.Component<
   }
 
   /**
+   * handleOutsideClick
+   * @param event event
+   */
+  handleOutsideClick = (event: MouseEvent) => {
+    if (
+      this.dropdownRef.current &&
+      !this.dropdownRef.current.contains(event.target as Node)
+    ) {
+      this.close();
+    }
+  };
+
+  /**
    * componentDidMount
    */
   componentDidMount(): void {
     this.props.persistent &&
       window.addEventListener("scroll", this.handleScroll);
+
+    if (this.props.closeOnOutsideClick) {
+      document.addEventListener("mousedown", this.handleOutsideClick);
+    }
+
+    let element = this.activatorRef.current;
+    if (!(element instanceof HTMLElement)) {
+      element = findDOMNode(element) as HTMLElement;
+    }
+
+    if (element) {
+      element.addEventListener("keydown", this.handleActivatorKeyDown as any);
+    }
   }
 
   /**
@@ -169,6 +200,22 @@ export default class Dropdown extends React.Component<
     this.isUnmounted = true;
     this.props.persistent &&
       window.removeEventListener("scroll", this.handleScroll);
+
+    if (this.props.closeOnOutsideClick) {
+      document.removeEventListener("mousedown", this.handleOutsideClick);
+    }
+
+    let element = this.activatorRef.current;
+    if (!(element instanceof HTMLElement)) {
+      element = findDOMNode(element) as HTMLElement;
+    }
+
+    if (element) {
+      element.removeEventListener(
+        "keydown",
+        this.handleActivatorKeyDown as any
+      );
+    }
   }
 
   /**
@@ -504,12 +551,35 @@ export default class Dropdown extends React.Component<
   }
 
   /**
+   * handleActivatorClick
+   * @param event event
+   */
+  handleActivatorClick = (event: React.MouseEvent) => {
+    if (this.state.visible) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.close();
+    }
+  };
+
+  /**
+   * handleActivatorKeyDown
+   * @param event event
+   */
+  handleActivatorKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Escape" && this.state.visible) {
+      event.preventDefault();
+      this.close();
+    }
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
     const {
-      closeOnOutsideClick = true,
+      closeOnOutsideClick,
       closeOnClick = false,
       persistent,
       openByHoverIsClickToo,
@@ -520,8 +590,17 @@ export default class Dropdown extends React.Component<
 
     let elementCloned: React.ReactElement<any> = React.cloneElement(
       children as any,
-      { ref: this.activatorRef }
+      {
+        ref: this.activatorRef,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onClick: (e: React.MouseEvent) => {
+          this.handleActivatorClick(e);
+          if (onClick) onClick();
+        },
+        onKeyDown: this.handleActivatorKeyDown,
+      }
     );
+
     const portalProps: any = {};
     if (!openByHover) {
       portalProps.openByClickOn = elementCloned;
@@ -529,7 +608,11 @@ export default class Dropdown extends React.Component<
       if (onClick) {
         elementCloned = React.cloneElement(children as any, {
           ref: this.activatorRef,
-          onClick: onClick,
+          // eslint-disable-next-line jsdoc/require-jsdoc
+          onClick: (e: React.MouseEvent) => {
+            this.handleActivatorClick(e);
+            if (onClick) onClick();
+          },
           id: this.id + "-button",
           role: "combobox",
           "aria-autocomplete": "list",
@@ -557,6 +640,7 @@ export default class Dropdown extends React.Component<
             onClose={this.onClose}
             onWrapperKeyDown={this.onKeyDown}
             beforeClose={this.beforeClose}
+            closeOnOutsideClick={false} // Disable Portal's built-in outside click handling
           >
             <Provider store={store}>
               <div
