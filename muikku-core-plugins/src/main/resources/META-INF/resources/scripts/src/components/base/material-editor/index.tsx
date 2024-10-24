@@ -284,6 +284,7 @@ class MaterialEditor extends React.Component<
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
+    this.updateMaxPoints = this.updateMaxPoints.bind(this);
     this.updateTitleLanguage = this.updateTitleLanguage.bind(this);
     this.close = this.close.bind(this);
     this.publish = this.publish.bind(this);
@@ -459,6 +460,22 @@ class MaterialEditor extends React.Component<
       isDraft: true,
     });
   }
+
+  /**
+   * updateMaxPoints
+   * @param e e
+   */
+  updateMaxPoints = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        // With two decimal places
+        maxPoints: parseFloat(e.target.value),
+      },
+      isDraft: true,
+    });
+  };
 
   /**
    * updateContent
@@ -833,7 +850,7 @@ class MaterialEditor extends React.Component<
 
     const assignmentPageType = "material-editor-" + materialPageType;
 
-    const comparerPoints = [
+    const comparerPoints: (keyof MaterialContentNodeWithIdAndLogic)[] = [
       "assignmentType",
       "correctAnswers",
       "hidden",
@@ -845,18 +862,15 @@ class MaterialEditor extends React.Component<
       "type",
       "viewRestrict",
       "titleLanguage",
+      "maxPoints",
     ];
 
     let canPublish = false;
     for (const point of comparerPoints) {
       if (
         !equals(
-          this.props.editorState.currentNodeValue[
-            point as keyof MaterialContentNodeWithIdAndLogic
-          ],
-          this.props.editorState.currentDraftNodeValue[
-            point as keyof MaterialContentNodeWithIdAndLogic
-          ]
+          this.props.editorState.currentNodeValue[point],
+          this.props.editorState.currentDraftNodeValue[point]
         )
       ) {
         canPublish = true;
@@ -1240,6 +1254,28 @@ class MaterialEditor extends React.Component<
                         </option>
                       ))}
                     </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="material-editor__sub-section">
+              <h3 className="material-editor__sub-title">Maksimipisteet</h3>
+              <div className="material-editor__select-locale-container">
+                <div className="form__row">
+                  <div className="form-element">
+                    <input
+                      className="form-element__input form-element__input--material-editor-title"
+                      value={
+                        this.props.editorState.currentDraftNodeValue
+                          .maxPoints || 0
+                      }
+                      type="number"
+                      step="0.5"
+                      min="0"
+                      onChange={this.updateMaxPoints}
+                      placeholder="0,00"
+                    />
                   </div>
                 </div>
               </div>
