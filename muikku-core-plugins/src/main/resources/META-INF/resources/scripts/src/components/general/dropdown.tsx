@@ -592,11 +592,6 @@ export default class Dropdown extends React.Component<
       children as any,
       {
         ref: this.activatorRef,
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        onClick: (e: React.MouseEvent) => {
-          this.handleActivatorClick(e);
-          if (onClick) onClick();
-        },
         onKeyDown: this.handleActivatorKeyDown,
       }
     );
