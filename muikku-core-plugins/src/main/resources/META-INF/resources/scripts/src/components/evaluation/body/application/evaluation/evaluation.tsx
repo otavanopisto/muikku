@@ -428,6 +428,62 @@ export class Evaluation extends React.Component<
   };
 
   /**
+   * Creates an array of assignment info objects
+   * @returns Array of assignment info objects
+   */
+  createAssignmentInfoArray = (): Array<{
+    title: string;
+    grade?: string | null;
+    points?: number;
+    maxPoints?: number;
+  }> => {
+    const { evaluationCompositeReplies, evaluationCurrentStudentAssigments } =
+      this.props.evaluation;
+
+    if (
+      !evaluationCurrentStudentAssigments.data ||
+      !evaluationCompositeReplies.data
+    ) {
+      return [];
+    }
+
+    const assignmentInfoArray: Array<{
+      title: string;
+      grade?: string | null;
+      points?: number | null;
+      maxPoints?: number | null;
+    }> = [];
+
+    // Iterate through all assigments and find composite reply pair for each
+    evaluationCurrentStudentAssigments.data.assigments.forEach((a) => {
+      const compositeReply = evaluationCompositeReplies.data.find(
+        (r) => r.workspaceMaterialId === a.id
+      );
+
+      const assignmentInfo: {
+        title: string;
+        grade?: string | null;
+        points?: number | null;
+        maxPoints?: number | null;
+      } = {
+        title: a.title,
+        grade: compositeReply?.evaluationInfo?.grade || null,
+        points: null,
+        maxPoints: null,
+      };
+
+      if (a.maxPoints) {
+        assignmentInfo.maxPoints = a.maxPoints;
+        assignmentInfo.points = compositeReply?.evaluationInfo?.points || 0;
+      }
+
+      assignmentInfoArray.push(assignmentInfo);
+    });
+
+    return assignmentInfoArray;
+  };
+
+  /**
    * Component render method
    *
    * @returns JSX.Element
@@ -642,6 +698,8 @@ export class Evaluation extends React.Component<
       } as WorkspaceDataType);
     }
 
+    const assignmentInfoArray = this.createAssignmentInfoArray();
+
     return (
       <div className="evaluation-modal">
         <div
@@ -768,6 +826,7 @@ export class Evaluation extends React.Component<
                             editorLabel={t("labels.literalEvaluation", {
                               ns: "evaluation",
                             })}
+                            assignmentInfoArray={assignmentInfoArray}
                             workspaceSubjectToBeEvaluatedIdentifier={
                               subject.identifier
                             }
@@ -785,6 +844,7 @@ export class Evaluation extends React.Component<
                                       subject.identifier
                                     )
                             )}
+                            //assignmentInfoArray={assignmentInfoArray}
                           />
                         </SlideDrawer>
                         <SlideDrawer
@@ -835,6 +895,7 @@ export class Evaluation extends React.Component<
                           editorLabel={t("labels.literalEvaluation", {
                             ns: "evaluation",
                           })}
+                          assignmentInfoArray={assignmentInfoArray}
                           selectedAssessment={this.props.selectedAssessment}
                           workspaceSubjectToBeEvaluatedIdentifier={
                             subjectToBeEvaluated.identifier
@@ -842,6 +903,7 @@ export class Evaluation extends React.Component<
                           onClose={this.handleCloseWorkspaceEvaluationDrawer}
                           type={edit ? "edit" : "new"}
                           onSuccesfulSave={this.handleOpenArchiveStudentDialog}
+                          //assignmentInfoArray={assignmentInfoArray}
                         />
                       </SlideDrawer>
                     </div>

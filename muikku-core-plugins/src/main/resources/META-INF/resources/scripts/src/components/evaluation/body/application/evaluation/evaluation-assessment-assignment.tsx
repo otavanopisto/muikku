@@ -359,39 +359,36 @@ class EvaluationAssessmentAssignment extends React.Component<
     if (compositeReply) {
       const { evaluationInfo } = compositeReply;
 
-      /**
-       * Checking if assigments is submitted at all.
-       * Its date string
-       */
+      // Checking if assigments is submitted at all.
+      // Its date string
       const hasSubmitted = compositeReply.submitted;
 
-      /**
-       * Checking if its evaluated with grade
-       */
+      // Checking if its evaluated with grade
       const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
 
-      /**
-       * Needs supplementation
-       */
+      // Needs supplementation
       const needsSupplementation =
         evaluationInfo && evaluationInfo.type === "INCOMPLETE";
 
-      /**
-       * If evaluation is given as supplementation request and student
-       * cancels and makes changes to answers and submits again
-       */
+      // If evaluation is given as supplementation request and student
+      // cancels and makes changes to answers and submits again
       const supplementationDone =
         compositeReply.state === "SUBMITTED" && needsSupplementation;
 
-      /**
-       * Evaluation date if evaluated
-       */
+      // Evaluation date if evaluated
       const evaluationDate = evaluationInfo && evaluationInfo.date;
 
-      /**
-       * Grade class mod
-       */
+      // Grade class mod
       const assignmentGradeClassMod = this.assigmentGradeClass(compositeReply);
+
+      // Points and max points object
+      const pointsAndMaxPoints = {
+        points: this.props.compositeReply.evaluationInfo?.points,
+        maxPoints: this.props.assigment.maxPoints,
+        show:
+          this.props.compositeReply.evaluationInfo?.points !== undefined &&
+          this.props.assigment.maxPoints !== undefined,
+      };
 
       return (
         <div className="evaluation-modal__item-meta">
@@ -435,6 +432,17 @@ class EvaluationAssessmentAssignment extends React.Component<
                 className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
               >
                 {evaluationInfo.grade}
+              </span>
+            </div>
+          )}
+
+          {pointsAndMaxPoints.show && (
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
+                Pisteet
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {pointsAndMaxPoints.points} / {pointsAndMaxPoints.maxPoints}
               </span>
             </div>
           )}

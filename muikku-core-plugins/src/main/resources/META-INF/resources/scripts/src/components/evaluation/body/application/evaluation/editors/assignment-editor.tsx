@@ -72,6 +72,7 @@ interface AssignmentEditorState {
   locked: boolean;
   activeGradeSystems: EvaluationGradeScale[];
   showAudioAssessmentWarningOnClose: boolean;
+  points: string;
 }
 
 /**
@@ -104,7 +105,12 @@ class AssignmentEditor extends SessionStateComponent<
   constructor(props: AssignmentEditorProps) {
     super(props, `assignment-editor`);
 
-    const { materialEvaluation, compositeReplies, selectedAssessment } = props;
+    const {
+      materialEvaluation,
+      compositeReplies,
+      selectedAssessment,
+      materialAssignment,
+    } = props;
     const { evaluationGradeSystem } = props.evaluations;
 
     const activeGradeSystems = evaluationGradeSystem.filter(
@@ -131,7 +137,7 @@ class AssignmentEditor extends SessionStateComponent<
       grade = "";
     }
 
-    const draftId = `${selectedAssessment.userEntityId}-${props.materialAssignment.id}`;
+    const draftId = `${selectedAssessment.userEntityId}-${materialAssignment.id}`;
 
     const { evaluationInfo } = compositeReplies;
 
@@ -145,6 +151,7 @@ class AssignmentEditor extends SessionStateComponent<
               : "GRADED",
           grade: grade,
           draftId,
+          points: "",
         },
         draftId
       ),
@@ -387,6 +394,7 @@ class AssignmentEditor extends SessionStateComponent<
         verbalAssessment: this.state.literalEvaluation,
         assessmentDate: new Date().getTime(),
         audioAssessments: audioAssessments,
+        points: parseFloat(this.state.points),
       },
       materialId: this.props.materialAssignment.materialId,
       defaultGrade,
@@ -483,6 +491,23 @@ class AssignmentEditor extends SessionStateComponent<
       records: records,
       showAudioAssessmentWarningOnClose: true,
     });
+  };
+
+  /**
+   * handlePointsChange
+   * @param e e
+   */
+  handlePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const regex = /^\d*(\.\d{0,2})?$/;
+
+    if (regex.test(e.target.value)) {
+      this.setStateAndStore(
+        {
+          points: e.target.value,
+        },
+        this.state.draftId
+      );
+    }
   };
 
   /**
@@ -601,6 +626,36 @@ class AssignmentEditor extends SessionStateComponent<
               </select>
             </div>
           </div>
+          {/* New form element for points if maxPoints is set. */}
+          {this.props.materialAssignment.maxPoints && (
+            <div className="form-element">
+              <label htmlFor="assignmentEvaluationPoints">Pisteet</label>
+
+              <div className="evaluation-modal__evaluate-drawer-row-data">
+                <input
+                  id="assignmentEvaluationPoints"
+                  type="text"
+                  className="form-element__input"
+                  value={this.state.points}
+                  onChange={this.handlePointsChange}
+                  disabled={
+                    this.state.assignmentEvaluationType === "INCOMPLETE"
+                  }
+                  min="0"
+                  max={this.props.materialAssignment.maxPoints}
+                />
+                <span className="form-element__input-addon">/</span>
+                <input
+                  id="assignmentEvaluationPoints"
+                  type="text"
+                  className="form-element__input"
+                  value={this.props.materialAssignment.maxPoints}
+                  readOnly
+                  disabled
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="form__buttons form__buttons--evaluation">

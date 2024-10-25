@@ -671,7 +671,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           }
 
           let newPath = data.material.path;
-          let fields = [
+          let fields: (keyof MaterialContentNodeWithIdAndLogic)[] = [
             "materialId",
             "parentId",
             "nextSiblingId",
@@ -681,6 +681,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             "path",
             "title",
             "titleLanguage",
+            "maxPoints",
           ];
 
           if (data.material.type === "folder") {
@@ -703,15 +704,15 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
 
           fields.forEach((field) => {
             if (
-              typeof (data.update as any)[field] !== "undefined" &&
-              (data.material as any)[field] !== (data.update as any)[field]
+              typeof data.update[field] !== "undefined" &&
+              data.material[field] !== data.update[field]
             ) {
               changed = true;
             }
             result[field] =
-              typeof (data.update as any)[field] !== "undefined"
-                ? (data.update as any)[field]
-                : (data.material as any)[field];
+              typeof data.update[field] !== "undefined"
+                ? data.update[field]
+                : data.material[field];
           });
 
           if (changed) {
