@@ -615,7 +615,8 @@ public class EvaluationController {
 
     WorkspaceMaterialReplyState state = null;
     switch (evaluationType) {
-      case ASSESSMENT:
+      case GRADED:
+      case POINTS:
         // Null grade is translated to passed as it's likely to be an exercise or interim evaluation
         state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
       break;
@@ -784,7 +785,8 @@ public class EvaluationController {
 
     WorkspaceMaterialReplyState state = null;
     switch (evaluationType) {
-      case ASSESSMENT:
+      case GRADED:
+      case POINTS:
         // Null grade is translated to passed as it's likely to be an exercise evaluation
         state = (grade == null || grade.isPassingGrade()) ? WorkspaceMaterialReplyState.PASSED : WorkspaceMaterialReplyState.FAILED;
       break;
@@ -815,8 +817,8 @@ public class EvaluationController {
       List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = workspaceMaterialEvaluationAudioClipDAO.listByEvaluation(workspaceMaterialEvaluation);
 
       WorkspaceMaterialEvaluationType evaluationType = workspaceMaterialEvaluation.getEvaluationType();
-      RestAssignmentEvaluationType type = evaluationType == WorkspaceMaterialEvaluationType.ASSESSMENT
-          ? RestAssignmentEvaluationType.PASSED : RestAssignmentEvaluationType.INCOMPLETE;
+      RestAssignmentEvaluationType type = evaluationType == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST
+          ? RestAssignmentEvaluationType.INCOMPLETE : RestAssignmentEvaluationType.PASSED;
 
       RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
       evaluation.setId(workspaceMaterialEvaluation.getId());
@@ -826,7 +828,7 @@ public class EvaluationController {
       evaluation.setText(workspaceMaterialEvaluation.getVerbalAssessment());
       evaluation.setPoints(workspaceMaterialEvaluation.getPoints());
       // Only assessments have grading info
-      if (evaluationType == WorkspaceMaterialEvaluationType.ASSESSMENT) {
+      if (evaluationType == WorkspaceMaterialEvaluationType.GRADED) {
         GradingScale gradingScale = gradingController.findGradingScale(
             workspaceMaterialEvaluation.getGradingScaleSchoolDataSource(), workspaceMaterialEvaluation.getGradingScaleIdentifier());
         if (gradingScale != null) {
