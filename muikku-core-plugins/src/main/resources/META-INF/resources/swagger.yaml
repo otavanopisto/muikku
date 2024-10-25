@@ -14527,6 +14527,21 @@ components:
           description: State of the material assignment
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
 
+    MaterialEvaluationGradeType:
+      description: Material evaluation grade type enum
+      type: string
+      enum:
+        - PASSED
+        - INCOMPLETE
+        - FAILED
+
+    MaterialEvaluationType:
+      description: Material evaluation type enum
+      type: string
+      enum:
+        - ASSESSMENT
+        - SUPPLEMENTATIONREQUEST
+
     MaterialEvaluationInfo:
       type: object
       description: Evaluation info of the material assignments
@@ -14544,11 +14559,11 @@ components:
           type: integer
           format: int64
         type:
-          description: Type of the evaluation
-          $ref: "#/components/schemas/MaterialCompositeReplyStateType"
+          description: Type of grade given
+          $ref: "#/components/schemas/MaterialEvaluationGradeType"
         evaluationType:
           description: Type of the evaluation
-          type: string
+          $ref: "#/components/schemas/MaterialEvaluationType"
         text:
           description: Verbal assessment of the student's material assignment
           type: string
