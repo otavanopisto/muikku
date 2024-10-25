@@ -46,7 +46,6 @@ import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceJournalFeedback;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
@@ -544,13 +543,6 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.ASSESSMENT && workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
-      // Grade is required for evaluated assignments, but not required for exercises
-      if (payload.getGradingScaleIdentifier() == null || payload.getGradeIdentifier() == null) {
-        return Response.status(Status.BAD_REQUEST).build();
-      }
-    }
-    
     // Grade
     
     SchoolDataIdentifier gradingScaleIdentifier = payload.getGradingScaleIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradingScaleIdentifier()) : null;
@@ -645,13 +637,6 @@ public class EvaluationRESTService extends PluginRESTService {
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
       return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.ASSESSMENT && workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
-      // Grade is required for evaluated assignments, but not required for exercises
-      if (payload.getGradingScaleIdentifier() == null || payload.getGradeIdentifier() == null) {
-        return Response.status(Status.BAD_REQUEST).build();
-      }
     }
     
     // Find Workspace material evaluation for update
