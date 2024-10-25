@@ -27,6 +27,15 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import MApi from "~/api/api";
 import { BilledPrice } from "~/generated/client";
+import {
+  ScrollableTableWrapper,
+  Table,
+  TableHead,
+  Tbody,
+  Td,
+  Th,
+  Tr,
+} from "~/components/general/table";
 
 /**
  * WorkspaceEditorProps
@@ -36,6 +45,12 @@ interface WorkspaceEditorProps extends WithTranslation {
   evaluations: EvaluationState;
   locale: LocaleState;
   selectedAssessment: EvaluationAssessmentRequest;
+  assignmentInfoArray: {
+    title: string;
+    grade?: string | null;
+    points?: number;
+    maxPoints?: number;
+  }[];
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
@@ -838,14 +853,35 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const { t } = this.props;
-
+    const { t, assignmentInfoArray } = this.props;
     const { existingBilledPriceObject, activeGradeSystems } = this.state;
 
     const options = this.renderSelectOptions();
 
     const billingPriceDisabled =
       existingBilledPriceObject && !existingBilledPriceObject.editable;
+
+    // Calculate sum of points
+    const pointsSum = assignmentInfoArray.reduce(
+      (sum, assignment) => sum + (assignment.points || 0),
+      0
+    );
+
+    // Calculate sum of max points
+    const pointsMaxSum = assignmentInfoArray.reduce(
+      (sum, assignment) => sum + (assignment.maxPoints || 0),
+      0
+    );
+
+    // Calculate average of grades
+    const gradesAverage =
+      assignmentInfoArray.reduce((sum, assignment) => {
+        const grade = parseFloat(assignment.grade);
+        return isNaN(grade) ? sum : sum + grade;
+      }, 0) /
+      assignmentInfoArray.filter(
+        (assignment) => !isNaN(parseFloat(assignment.grade))
+      ).length;
 
     /**
      * Grading scale and grade options.
@@ -883,6 +919,71 @@ class WorkspaceEditor extends SessionStateComponent<
 
     return (
       <div className="form" role="form">
+        <div className="form__row">
+          <details className="details">
+            <summary className="details__summary">
+              Arvioitavien tehtävien pisteet ja arvosanat
+            </summary>
+            <div className="details__content">
+              <ScrollableTableWrapper>
+                <Table>
+                  <TableHead modifiers={["sticky"]}>
+                    <Tr>
+                      <Th>Tehtävän nimi</Th>
+                      <Th>Pisteet</Th>
+                      <Th>Arvosana</Th>
+                    </Tr>
+                  </TableHead>
+                  <Tbody>
+                    {assignmentInfoArray.map((assignment, index) => (
+                      <Tr key={index}>
+                        <Td modifiers={["centered"]}>{assignment.title}</Td>
+                        <Td modifiers={["centered"]}>
+                          {assignment.maxPoints === null
+                            ? "Ei asetettu"
+                            : assignment.points !== null &&
+                              assignment.maxPoints !== null
+                            ? `${assignment.points}/${assignment.maxPoints}`
+                            : "Ei arvioitu"}
+                        </Td>
+                        <Td modifiers={["centered"]}>
+                          {assignment.grade || "Ei arvioitu"}
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </ScrollableTableWrapper>
+
+              <Table>
+                <TableHead>
+                  <Tr>
+                    <Th></Th>
+                    <Th>Yhteensä</Th>
+                    <Th>Keskiarvo</Th>
+                  </Tr>
+                </TableHead>
+                <Tbody>
+                  <Tr>
+                    <Td modifiers={["centered"]}></Td>
+                    <Td modifiers={["centered"]}>
+                      {isNaN(pointsSum) ? "Ei asetettu" : pointsSum.toFixed(2)}/
+                      {isNaN(pointsMaxSum)
+                        ? "Ei asetettu"
+                        : pointsMaxSum.toFixed(2)}
+                    </Td>
+                    <Td modifiers={["centered"]}>
+                      {isNaN(gradesAverage)
+                        ? "Ei asetettu"
+                        : gradesAverage.toFixed(2)}
+                    </Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+            </div>
+          </details>
+        </div>
+
         <div className="form__row">
           <div className="form-element">
             {this.props.editorLabel && <label>{this.props.editorLabel}</label>}
