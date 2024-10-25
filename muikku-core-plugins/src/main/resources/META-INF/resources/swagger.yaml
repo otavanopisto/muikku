@@ -14539,7 +14539,7 @@ components:
       description: Material evaluation type enum
       type: string
       enum:
-        - ASSESSMENT
+        - GRADED
         - SUPPLEMENTATIONREQUEST
 
     MaterialEvaluationInfo:
