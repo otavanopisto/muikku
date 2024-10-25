@@ -14540,6 +14540,7 @@ components:
       type: string
       enum:
         - GRADED
+        - POINTS
         - SUPPLEMENTATIONREQUEST
 
     MaterialEvaluationInfo:
