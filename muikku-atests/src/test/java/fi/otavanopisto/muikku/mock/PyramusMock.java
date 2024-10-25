@@ -922,10 +922,7 @@ public class PyramusMock {
       }
 
       public Builder mockAssessmentRequestLocking(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, boolean locked, OffsetDateTime date) throws JsonProcessingException {
-//        List<CourseAssessmentRequest> assessmentRequests = new ArrayList<CourseAssessmentRequest>();
         CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled, locked);
-//        assessmentRequests.add(assessmentRequest);
-//                                              /courses/courses/%d/courseStudents/%d/assessmentRequest/lock
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d/courseStudents/%d/assessmentRequest/lock", courseId, courseStudentId)))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
@@ -1032,7 +1029,6 @@ public class PyramusMock {
           Course course, MockStudent courseStudent, Long staffMemberId, OffsetDateTime date, boolean passing) {
         OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled, locked);
-//      TODO: These should probs have ids
         CompositeAssessmentRequest assessmentRequest = new CompositeAssessmentRequest();
         assessmentRequest.setId(Long.parseLong(courseId + "" + studentId));
         assessmentRequest.setCourseStudentId(courseStudentId);
@@ -1274,13 +1270,6 @@ public class PyramusMock {
             .withStatus(204)));
         return this;
       }
-      
-//    Maybe?
-//    CourseAssessment cAss = new fi.otavanopisto.pyramus.rest.model.CourseAssessment(null, courseStudent.getId(), 1l, 1l, staffMember.getId(), null, "<p>Test evaluation.</p>\n", Boolean.TRUE);
-//    verify(postRequestedFor(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
-//      .withHeader("Content-Type", equalTo("application/json"))
-//      .withRequestBody(equalToJson(pmock.objectMapper.writeValueAsString(cAss), wiremock.org.skyscreamer.jsonassert.JSONCompareMode.LENIENT)));
-//      waitForPresent(".notification-queue-item-success"); 
       
       public Builder mockLogin(MockLoggable loggable) throws JsonProcessingException {
         stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
