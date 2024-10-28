@@ -85,12 +85,10 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
           Aikaisemmat opinnot
         </legend>
 
-        <div className="hops-container__row">
-          <PreviousStudies
-            previousStudies={form.previousEducations}
-            onPreviousStudiesChange={handlePreviousStudiesChange}
-          />
-        </div>
+        <PreviousStudies
+          previousStudies={form.previousEducations}
+          onPreviousStudiesChange={handlePreviousStudiesChange}
+        />
       </fieldset>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader hops-container__subheader--required">
@@ -126,7 +124,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
             <Textarea
               id="studiedLanguagesOther"
               label="Muu kielitaito (esim. ulkomailla hankittu osaaminen):"
-              className="form-element__textarea form-element__textarea--resize__vertically"
+              className="hops__textarea"
               disabled={disabled}
               onChange={handleTextAreaChange("studiedLanguagesOther")}
               value={form.studiedLanguagesOther}
@@ -138,7 +136,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
             <Textarea
               id="additionalLanguageLearningInfo"
               label="Haluan kertoa kielenopiskeluvalmiuksistani myös:"
-              className="form-element__textarea form-element__textarea--resize__vertically"
+              className="hops__textarea"
               disabled={disabled}
               onChange={handleTextAreaChange("languageLearningSkills")}
               value={form.languageLearningSkills}

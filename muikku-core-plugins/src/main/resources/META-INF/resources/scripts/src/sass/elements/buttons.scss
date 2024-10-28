@@ -2283,9 +2283,7 @@
   }
 }
 
-.button--add-matriculation-row,
-.button--add-hops-row,
-.button--add-pedagogy-row,
+.button--add-extra-row,
 .button--load-all-hops-events,
 .button--back-to-hops-start {
   background: $color-default;
@@ -2306,7 +2304,7 @@
   }
 }
 
-.button--remove-matriculation-row,
+.button--remove-extra-row,
 .button--remove-hops-row,
 .button--remove-pedagogy-row {
   background: transparent;

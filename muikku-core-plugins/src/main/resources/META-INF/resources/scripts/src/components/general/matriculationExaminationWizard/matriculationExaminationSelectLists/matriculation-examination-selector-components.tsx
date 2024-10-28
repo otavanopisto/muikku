@@ -174,7 +174,7 @@ export const MatriculationExaminationEnrolledInputGroup: React.FC<
           <Button
             aria-labelledby="removeMatriculationRowLabelEnrolled"
             icon="trash"
-            buttonModifiers={"remove-matriculation-row"}
+            buttonModifiers={"remove-extra-row"}
             onClick={onClickDeleteRow(index)}
           ></Button>
         </div>
@@ -333,7 +333,7 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<
           <Button
             aria-labelledby="removeMatriculationRowLabelFinished"
             icon="trash"
-            buttonModifiers={"remove-matriculation-row"}
+            buttonModifiers={"remove-extra-row"}
             onClick={onClickDeleteRow(index)}
           ></Button>
         </div>
@@ -445,7 +445,7 @@ export const MatriculationExaminationPlannedInputGroup: React.FC<
           <Button
             aria-labelledby="removeMatriculationRowLabelPlanned"
             icon="trash"
-            buttonModifiers={"remove-matriculation-row"}
+            buttonModifiers={"remove-extra-row"}
             onClick={onClickDeleteRow(index)}
           ></Button>
         </div>

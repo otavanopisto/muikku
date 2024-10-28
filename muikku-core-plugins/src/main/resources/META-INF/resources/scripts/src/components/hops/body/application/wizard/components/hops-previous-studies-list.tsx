@@ -72,11 +72,7 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
   return (
     <>
       {previousStudies.map((study, index) => (
-        <div
-          key={index}
-          className="hops-container__section"
-          style={{ width: "100%" }}
-        >
+        <React.Fragment key={index}>
           <div className="hops-container__row">
             <div className="hops__form-element-container">
               <label htmlFor={`studyType-${index}`} className="hops__label">
@@ -116,17 +112,25 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
               </select>
             </div>
 
-            {!study.hardCoded && (
-              <div className="hops__form-element-container">
-                <Button
-                  onClick={() => deleteStudy(index)}
-                  className="hops__delete-button"
-                  aria-label={`Delete study ${index + 1}`}
-                >
-                  Delete
-                </Button>
-              </div>
-            )}
+            <div className="hops__form-element-container hops__form-element-container--button">
+              {!study.hardCoded && (
+                <>
+                  <label
+                    id="removeHopsRowPrevStudies"
+                    className="visually-hidden"
+                  >
+                    Poista
+                  </label>
+
+                  <Button
+                    onClick={() => deleteStudy(index)}
+                    icon="trash"
+                    buttonModifiers={"remove-extra-row"}
+                    aria-labelledby="removeHopsRowPrevStudies"
+                  ></Button>
+                </>
+              )}
+            </div>
           </div>
           {study.type !== "" && study.type !== "upper secondary education" && (
             <div className="hops-container__row">
@@ -140,19 +144,17 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
               />
             </div>
           )}
-        </div>
+        </React.Fragment>
       ))}
 
-      <div
-        className="hops-container__row hops-container__row--remove-row-action"
-        style={{
-          justifyContent: "flex-start",
-        }}
-      >
-        <label id={`removePedagogyRowLabel`} className="visually-hidden">
+      <div className="hops-container__row">
+        <Button
+          buttonModifiers={["button-has-icon", "add-extra-row"]}
+          icon="plus"
+          onClick={addStudy}
+        >
           Lisää uusi opinto
-        </label>
-        <Button onClick={addStudy}>Lisää uusi opinto</Button>
+        </Button>
       </div>
     </>
   );

@@ -309,7 +309,7 @@ class HopsStartingLevel extends React.Component<
               {!this.props.disabled ? (
                 <div className="hops-container__row">
                   <Button
-                    buttonModifiers={["add-hops-row"]}
+                    buttonModifiers={["add-extra-row"]}
                     onClick={this.handleAddNewCustomLngClick}
                     icon="plus"
                   >

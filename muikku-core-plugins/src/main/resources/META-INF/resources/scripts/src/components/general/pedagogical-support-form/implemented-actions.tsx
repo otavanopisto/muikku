@@ -198,7 +198,7 @@ export const AddNewActionsBox: React.FC<AddNewActionsBoxProps> = (props) => {
   return (
     <div className="hops-container__row">
       <Button
-        buttonModifiers={"add-pedagogy-row"}
+        buttonModifiers={"add-extra-row"}
         onClick={onClick}
         icon="plus"
         disabled={disabled}

@@ -344,7 +344,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
               {t("actions.remove")}
             </label>
             <Button
-              buttonModifiers={["button-has-icon", "remove-matriculation-row"]}
+              buttonModifiers={["button-has-icon", "remove-extra-row"]}
               onClick={handleMatriculationSubjectRemove(index)}
               icon="trash"
               aria-labelledby="removeMatriculationRowLabelSubject"
@@ -362,7 +362,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
         <div className="form__row">
           <div className="form__buttons">
             <Button
-              buttonModifiers={["button-has-icon", "add-matriculation-row"]}
+              buttonModifiers={["button-has-icon", "add-extra-row"]}
               onClick={handleMatriculationSubjectAdd}
               icon="plus"
             >

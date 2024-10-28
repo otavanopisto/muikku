@@ -245,7 +245,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
             {!disabled ? (
               <div className="hops-container__row">
                 <Button
-                  buttonModifiers={["add-hops-row"]}
+                  buttonModifiers={["add-extra-row"]}
                   onClick={handleAddNewCustomLngClick}
                   icon="plus"
                 >
