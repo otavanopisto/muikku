@@ -28,6 +28,7 @@ import { AnyActionType } from "~/actions";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
 import { MaterialCompositeReply } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { MaterialLoaderPoints } from "~/components/base/material-loader/points";
 
 /**
  * WorkspaceMaterialProps
@@ -195,6 +196,7 @@ class WorkspaceMaterial extends React.Component<
                     ></div>
                     <MaterialLoaderDate {...props} {...state} />
                     <MaterialLoaderGrade {...props} {...state} />
+                    <MaterialLoaderPoints {...props} {...state} />
                     <MaterialLoaderAssesment {...props} {...state} />
                   </div>
                 ) : null}

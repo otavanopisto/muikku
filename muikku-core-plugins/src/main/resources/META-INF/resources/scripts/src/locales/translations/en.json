@@ -1821,6 +1821,7 @@
       "permission": "Permission",
       "permission_WORKSPACE_SIGNUP": "Sign up",
       "pickTemplate": "Select template {{stepInfo}}",
+      "points": "Points",
       "producer": "Producer",
       "producers": "Producers",
       "progress": "Progress",
