@@ -34,6 +34,7 @@ import {
   WorkspaceMaterial,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
+import { NumberFormatValues, NumericFormat } from "react-number-format";
 
 /**
  * AssignmentEditorProps
@@ -73,7 +74,7 @@ interface AssignmentEditorState {
   locked: boolean;
   activeGradeSystems: EvaluationGradeScale[];
   showAudioAssessmentWarningOnClose: boolean;
-  points: string;
+  points: number; // Changed from string to number
 }
 
 /**
@@ -124,7 +125,7 @@ class AssignmentEditor extends SessionStateComponent<
 
     // Default values
     let grade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
-    let points = "0";
+    let points = 0;
     let literalEvaluation = "";
     let evaluationType: EvaluationType = "GRADED";
     let records: RecordValue[] = [];
@@ -151,7 +152,7 @@ class AssignmentEditor extends SessionStateComponent<
       else if (evaluationInfo.evaluationType === "POINTS") {
         evaluationType = "POINTS";
         // points is old evaluation value
-        points = evaluationInfo.points.toString();
+        points = evaluationInfo.points;
       }
       // If evaluation type is supplementation request
       else if (evaluationInfo.evaluationType === "SUPPLEMENTATIONREQUEST") {
@@ -219,7 +220,7 @@ class AssignmentEditor extends SessionStateComponent<
 
     // Default values
     let grade = `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`;
-    let points = "0";
+    let points = 0;
     let literalEvaluation = "";
     let evaluationType: EvaluationType = "GRADED";
     let records: RecordValue[] = [];
@@ -245,7 +246,7 @@ class AssignmentEditor extends SessionStateComponent<
       else if (evaluationInfo.evaluationType === "POINTS") {
         evaluationType = "POINTS";
         // points is old evaluation value
-        points = evaluationInfo.points.toString();
+        points = evaluationInfo.points;
       }
       // If evaluation type is supplementation request
       else if (evaluationInfo.evaluationType === "SUPPLEMENTATIONREQUEST") {
@@ -423,7 +424,7 @@ class AssignmentEditor extends SessionStateComponent<
         verbalAssessment: this.state.literalEvaluation,
         assessmentDate: new Date().getTime(),
         audioAssessments: audioAssessments,
-        points: parseFloat(this.state.points),
+        points: this.state.points,
       },
       materialId: this.props.materialAssignment.materialId,
       defaultGrade,
@@ -523,20 +524,28 @@ class AssignmentEditor extends SessionStateComponent<
   };
 
   /**
-   * handlePointsChange
-   * @param e e
+   * handlePointsValueChange
+   * @param values NumericFormat values object
    */
-  handlePointsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const regex = /^\d*(\.\d{0,2})?$/;
+  handlePointsValueChange = (values: NumberFormatValues) => {
+    this.setStateAndStore(
+      {
+        points: values.floatValue || 0,
+      },
+      this.state.draftId
+    );
+  };
 
-    if (regex.test(e.target.value)) {
-      this.setStateAndStore(
-        {
-          points: e.target.value,
-        },
-        this.state.draftId
-      );
+  /**
+   * isAllowedPoints
+   * @param values NumberFormatValues
+   */
+  isAllowedPoints = (values: NumberFormatValues) => {
+    const maxPoints = this.props.materialAssignment.maxPoints;
+    if (!maxPoints) {
+      return true;
     }
+    return values.floatValue <= maxPoints;
   };
 
   /**
@@ -679,20 +688,20 @@ class AssignmentEditor extends SessionStateComponent<
               <label htmlFor="assignmentEvaluationPoints">Pisteet</label>
 
               <div className="evaluation-modal__evaluate-drawer-row-data">
-                <input
+                <NumericFormat
                   id="assignmentEvaluationPoints"
-                  type="text"
                   className="form-element__input"
                   value={this.state.points}
-                  onChange={this.handlePointsChange}
-                  min="0"
-                  max={this.props.materialAssignment.maxPoints}
+                  decimalScale={2}
+                  decimalSeparator=","
+                  allowNegative={false}
+                  onValueChange={this.handlePointsValueChange}
+                  isAllowed={this.isAllowedPoints}
                 />
                 {this.props.materialAssignment.maxPoints && (
                   <>
                     <span className="form-element__input-addon">/</span>
                     <input
-                      id="assignmentEvaluationPoints"
                       type="text"
                       className="form-element__input"
                       value={this.props.materialAssignment.maxPoints}

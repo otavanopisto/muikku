@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { localize } from "~/locales/i18n";
 
 type MaterialLoaderPointsProps = MaterialLoaderProps;
 
@@ -30,7 +31,9 @@ export function MaterialLoaderPoints(props: MaterialLoaderPointsProps) {
       </span>
       <span className="material-page__assignment-assessment-points-data">
         {" "}
-        {maxPoints ? `${points}/${maxPoints}` : points}
+        {maxPoints
+          ? `${localize.number(points)}/${localize.number(maxPoints)}`
+          : localize.number(points)}
       </span>
     </div>
   );

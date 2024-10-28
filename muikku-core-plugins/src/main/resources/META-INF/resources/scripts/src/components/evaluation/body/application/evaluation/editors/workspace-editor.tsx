@@ -36,6 +36,7 @@ import {
   Th,
   Tr,
 } from "~/components/general/table";
+import { localize } from "~/locales/i18n";
 
 /**
  * WorkspaceEditorProps
@@ -934,9 +935,11 @@ class WorkspaceEditor extends SessionStateComponent<
                         <Td modifiers={["centered"]}>{assignment.title}</Td>
                         <Td modifiers={["centered"]}>
                           {assignment.maxPoints === null
-                            ? assignment.points || "-"
+                            ? localize.number(assignment.points) || "-"
                             : assignment.points
-                            ? `${assignment.points}/${assignment.maxPoints}`
+                            ? `${localize.number(
+                                assignment.points
+                              )}/${localize.number(assignment.maxPoints)}`
                             : "-"}
                         </Td>
                         <Td modifiers={["centered"]}>
@@ -960,10 +963,18 @@ class WorkspaceEditor extends SessionStateComponent<
                   <Tr>
                     <Td modifiers={["centered"]}></Td>
                     <Td modifiers={["centered"]}>
-                      {isNaN(pointsSum) ? "-" : pointsSum.toFixed(2)}
+                      {isNaN(pointsSum)
+                        ? "-"
+                        : localize.number(pointsSum, {
+                            maximumFractionDigits: 2,
+                          })}
                     </Td>
                     <Td modifiers={["centered"]}>
-                      {isNaN(gradesAverage) ? "-" : gradesAverage.toFixed(2)}
+                      {isNaN(gradesAverage)
+                        ? "-"
+                        : localize.number(gradesAverage, {
+                            maximumFractionDigits: 2,
+                          })}
                     </Td>
                   </Tr>
                 </Tbody>

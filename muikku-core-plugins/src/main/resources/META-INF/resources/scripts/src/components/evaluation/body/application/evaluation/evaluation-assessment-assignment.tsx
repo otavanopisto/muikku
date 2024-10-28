@@ -441,8 +441,10 @@ class EvaluationAssessmentAssignment extends React.Component<
               </span>
               <span className="evaluation-modal__item-meta-item-data">
                 {!pointsAndMaxPoints.maxPoints
-                  ? pointsAndMaxPoints.points
-                  : `${pointsAndMaxPoints.points}/${pointsAndMaxPoints.maxPoints}`}
+                  ? localize.number(pointsAndMaxPoints.points)
+                  : `${localize.number(
+                      pointsAndMaxPoints.points
+                    )}/${localize.number(pointsAndMaxPoints.maxPoints)}`}
               </span>
             </div>
           )}
