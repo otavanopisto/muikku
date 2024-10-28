@@ -11,15 +11,31 @@ type MaterialLoaderPointsProps = MaterialLoaderProps;
  * @param props props
  */
 export function MaterialLoaderPoints(props: MaterialLoaderPointsProps) {
-  const { t } = useTranslation(["materials", "workspace", "common"]);
+  const { t } = useTranslation(["workspace"]);
 
+  // If evaluation is not for points, return null
+  if (
+    props.compositeReplies &&
+    props.compositeReplies.evaluationInfo.evaluationType !== "POINTS"
+  ) {
+    return null;
+  }
+
+  // Points from evaluationInfo
   const points =
     props.compositeReplies &&
     props.compositeReplies.evaluationInfo &&
     props.compositeReplies.evaluationInfo.points;
 
-  const maxPoints = props.material && props.material.maxPoints;
+  // maxPoints is either from material or from assignment depending on use case
+  // in the future hopefully we can use only one source of truth for points
+  const maxPoints =
+    (props.material && props.material.maxPoints) ||
+    (props.material &&
+      props.material.assignment &&
+      props.material.assignment.maxPoints);
 
+  // If there are no points, return null
   if (!points) {
     return null;
   }

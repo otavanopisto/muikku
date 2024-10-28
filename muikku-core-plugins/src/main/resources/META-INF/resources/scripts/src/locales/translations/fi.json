@@ -2196,6 +2196,7 @@
     "wcag": {
       "evaluationAssessmentFailed": "Hylätty arviointi",
       "evaluationAssessmentPassed": "Hyväksytty arviointi",
+      "evaluationAssessmentPoints": "Arviointi pisteillä",
       "evaluationAssessmentIncomplete": "Täydennettävä arviointi",
       "evaluationAssessmentUnassessed": "Arvioimaton",
       "evalRequestLockSwitch": "Arviointipyynnön lukitseminen"

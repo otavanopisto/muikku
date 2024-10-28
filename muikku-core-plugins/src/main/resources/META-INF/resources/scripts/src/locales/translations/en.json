@@ -2196,6 +2196,7 @@
     "wcag": {
       "evaluationAssessmentFailed": "Failed assessment",
       "evaluationAssessmentPassed": "Passed assessment",
+      "evaluationAssessmentPoints": "Assessment with points",
       "evaluationAssessmentIncomplete": "Incomplete assessment",
       "evaluationAssessmentUnassessed": "Unassessed assessment",
       "evalRequestLockSwitch": "Evaluation request locking"

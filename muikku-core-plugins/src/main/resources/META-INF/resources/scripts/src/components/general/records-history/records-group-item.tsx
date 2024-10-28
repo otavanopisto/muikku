@@ -15,6 +15,7 @@ import ActivityIndicator from "./activity-indicator";
 import { RecordWorkspaceActivityByLine } from "./types";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { getAssessmentData } from "~/helper-functions/shared";
+import { useWorkspacePoints } from "~/hooks/useWorkspacePoints";
 
 /**
  * RecordsGroupItemProps
@@ -43,6 +44,13 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   ]);
 
   const [showE, setShowE] = React.useState(false);
+
+  const { points, isPointsLoading } = useWorkspacePoints({
+    workspaceId: credit.activity.id,
+    userEntityId,
+    enabled: showE, // Only load data when expanded
+    displayNotification: undefined,
+  });
 
   /**
    * Renders assessment information block per subject
@@ -162,6 +170,20 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                         : a.grade}
                     </span>
                   </div>
+
+                  {!isPointsLoading && points !== undefined && (
+                    <div className="workspace-assessment__points">
+                      <span className="workspace-assessment__points-label">
+                        {t("labels.points", {
+                          ns: "workspace",
+                        })}
+                        :
+                      </span>
+                      <span className="workspace-assessment__points-data">
+                        {localize.number(points)}
+                      </span>
+                    </div>
+                  )}
 
                   <div className="workspace-assessment__literal">
                     <div className="workspace-assessment__literal-label">
