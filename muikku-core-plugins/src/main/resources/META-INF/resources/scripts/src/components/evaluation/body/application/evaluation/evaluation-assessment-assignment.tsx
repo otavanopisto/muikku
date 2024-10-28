@@ -385,9 +385,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       const pointsAndMaxPoints = {
         points: this.props.compositeReply.evaluationInfo?.points,
         maxPoints: this.props.assigment.maxPoints,
-        show:
-          this.props.compositeReply.evaluationInfo?.points !== undefined &&
-          this.props.assigment.maxPoints !== undefined,
+        show: this.props.compositeReply.evaluationInfo?.points !== undefined,
       };
 
       return (
@@ -442,7 +440,9 @@ class EvaluationAssessmentAssignment extends React.Component<
                 Pisteet
               </span>
               <span className="evaluation-modal__item-meta-item-data">
-                {pointsAndMaxPoints.points} / {pointsAndMaxPoints.maxPoints}
+                {!pointsAndMaxPoints.maxPoints
+                  ? pointsAndMaxPoints.points
+                  : `${pointsAndMaxPoints.points}/${pointsAndMaxPoints.maxPoints}`}
               </span>
             </div>
           )}

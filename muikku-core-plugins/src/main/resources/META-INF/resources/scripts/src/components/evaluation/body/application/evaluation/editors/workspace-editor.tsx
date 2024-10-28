@@ -867,12 +867,6 @@ class WorkspaceEditor extends SessionStateComponent<
       0
     );
 
-    // Calculate sum of max points
-    const pointsMaxSum = assignmentInfoArray.reduce(
-      (sum, assignment) => sum + (assignment.maxPoints || 0),
-      0
-    );
-
     // Calculate average of grades
     const gradesAverage =
       assignmentInfoArray.reduce((sum, assignment) => {
@@ -940,14 +934,13 @@ class WorkspaceEditor extends SessionStateComponent<
                         <Td modifiers={["centered"]}>{assignment.title}</Td>
                         <Td modifiers={["centered"]}>
                           {assignment.maxPoints === null
-                            ? "Ei asetettu"
-                            : assignment.points !== null &&
-                              assignment.maxPoints !== null
+                            ? assignment.points || "-"
+                            : assignment.points
                             ? `${assignment.points}/${assignment.maxPoints}`
-                            : "Ei arvioitu"}
+                            : "-"}
                         </Td>
                         <Td modifiers={["centered"]}>
-                          {assignment.grade || "Ei arvioitu"}
+                          {assignment.grade || "-"}
                         </Td>
                       </Tr>
                     ))}
@@ -967,15 +960,10 @@ class WorkspaceEditor extends SessionStateComponent<
                   <Tr>
                     <Td modifiers={["centered"]}></Td>
                     <Td modifiers={["centered"]}>
-                      {isNaN(pointsSum) ? "Ei asetettu" : pointsSum.toFixed(2)}/
-                      {isNaN(pointsMaxSum)
-                        ? "Ei asetettu"
-                        : pointsMaxSum.toFixed(2)}
+                      {isNaN(pointsSum) ? "-" : pointsSum.toFixed(2)}
                     </Td>
                     <Td modifiers={["centered"]}>
-                      {isNaN(gradesAverage)
-                        ? "Ei asetettu"
-                        : gradesAverage.toFixed(2)}
+                      {isNaN(gradesAverage) ? "-" : gradesAverage.toFixed(2)}
                     </Td>
                   </Tr>
                 </Tbody>

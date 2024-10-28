@@ -13682,8 +13682,10 @@ components:
 
     EvaluationType:
       type: string
+      description: Evaluation type enum
       enum:
-        - ASSESSMENT
+        - GRADED
+        - POINTS
         - SUPPLEMENTATIONREQUEST
 
     FeedEntry:
@@ -14535,14 +14537,6 @@ components:
         - INCOMPLETE
         - FAILED
 
-    MaterialEvaluationType:
-      description: Material evaluation type enum
-      type: string
-      enum:
-        - GRADED
-        - POINTS
-        - SUPPLEMENTATIONREQUEST
-
     MaterialEvaluationInfo:
       type: object
       description: Evaluation info of the material assignments
@@ -14564,7 +14558,7 @@ components:
           $ref: "#/components/schemas/MaterialEvaluationGradeType"
         evaluationType:
           description: Type of the evaluation
-          $ref: "#/components/schemas/MaterialEvaluationType"
+          $ref: "#/components/schemas/EvaluationType"
         text:
           description: Verbal assessment of the student's material assignment
           type: string

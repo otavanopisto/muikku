@@ -460,24 +460,30 @@ export class Evaluation extends React.Component<
         (r) => r.workspaceMaterialId === a.id
       );
 
-      const assignmentInfo: {
-        title: string;
-        grade?: string | null;
-        points?: number | null;
-        maxPoints?: number | null;
-      } = {
-        title: a.title,
-        grade: compositeReply?.evaluationInfo?.grade || null,
-        points: null,
-        maxPoints: null,
-      };
+      let grade = compositeReply?.evaluationInfo?.grade || null;
 
-      if (a.maxPoints) {
-        assignmentInfo.maxPoints = a.maxPoints;
-        assignmentInfo.points = compositeReply?.evaluationInfo?.points || 0;
+      if (
+        compositeReply?.evaluationInfo?.evaluationType ===
+        "SUPPLEMENTATIONREQUEST"
+      ) {
+        grade = "T";
       }
 
-      assignmentInfoArray.push(assignmentInfo);
+      if (a.maxPoints) {
+        assignmentInfoArray.push({
+          title: a.title,
+          grade: grade,
+          points: compositeReply?.evaluationInfo?.points || 0,
+          maxPoints: a.maxPoints,
+        });
+      } else {
+        assignmentInfoArray.push({
+          title: a.title,
+          grade: grade,
+          points: compositeReply?.evaluationInfo?.points || null,
+          maxPoints: null,
+        });
+      }
     });
 
     return assignmentInfoArray;
