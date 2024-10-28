@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>alter table PedagogyForm drop index UKenshdnwk7b1y9lpoess2ldhu7;</sql>
+  <sql>alter table PedagogyForm add column userEntityId bigint not null;</sql>
+  <sql>
+    update PedagogyForm as pfa,
+    (select id,studentIdentifier from PedagogyForm) as pfb
+    set pfa.userEntityId=(select userEntity_id from UserSchoolDataIdentifier where identifier=substring(pfb.studentIdentifier, 9))
+    where pfa.id=pfb.id;
+  </sql>  
+  <sql>alter table PedagogyForm drop column studentIdentifier;</sql>
+  <sql>alter table PedagogyForm add constraint UKbohjjgguxiicxhwep123jh6lj unique (userEntityId);</sql>
+
+</update> 

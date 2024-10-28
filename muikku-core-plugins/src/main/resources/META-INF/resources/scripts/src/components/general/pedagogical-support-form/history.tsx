@@ -1,4 +1,3 @@
-import moment from "moment";
 import * as React from "react";
 import Avatar from "~/components/general/avatar";
 import { PedagogyHistoryEntry } from "~/generated/client";
@@ -6,6 +5,7 @@ import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/hops.scss";
 import { formFieldsWithTranslation } from "./helpers";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * HopsHistoryProps
@@ -35,7 +35,7 @@ interface HistoryEntryItemProps {
  */
 export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan"]);
-  const { status, historyEntry } = props;
+  const { historyEntry } = props;
 
   const editedFields =
     historyEntry?.editedFields?.map((field) => (
@@ -65,7 +65,7 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
               : "muokkasi pedagogisen tuen suunnitelmaa"}
           </span>
           <span className="hops-container__history-event-date">
-            {moment(historyEntry.date).format("l")}
+            {localize.date(historyEntry.date)}
           </span>
         </div>
 

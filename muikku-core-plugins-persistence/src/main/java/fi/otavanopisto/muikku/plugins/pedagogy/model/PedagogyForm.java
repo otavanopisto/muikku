@@ -10,27 +10,18 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(
     uniqueConstraints = @UniqueConstraint(
-        columnNames = { "studentIdentifier" }
+        columnNames = { "userEntityId" }
     )
 )
 public class PedagogyForm {
 
   public Long getId() {
     return id;
-  }
-
-  public String getStudentIdentifier() {
-    return studentIdentifier;
-  }
-
-  public void setStudentIdentifier(String studentIdentifier) {
-    this.studentIdentifier = studentIdentifier;
   }
 
   public String getFormData() {
@@ -49,14 +40,21 @@ public class PedagogyForm {
     this.state = state;
   }
   
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotNull
-  @NotEmpty
-  @Column(nullable = false)
-  private String studentIdentifier;
+  @Column (nullable = false)
+  private Long userEntityId;
 
   @Lob
   @NotNull
