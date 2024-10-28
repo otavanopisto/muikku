@@ -530,7 +530,7 @@ class AssignmentEditor extends SessionStateComponent<
   handlePointsValueChange = (values: NumberFormatValues) => {
     this.setStateAndStore(
       {
-        points: values.floatValue || 0,
+        points: values.floatValue,
       },
       this.state.draftId
     );
@@ -542,10 +542,24 @@ class AssignmentEditor extends SessionStateComponent<
    */
   isAllowedPoints = (values: NumberFormatValues) => {
     const maxPoints = this.props.materialAssignment.maxPoints;
-    if (!maxPoints) {
+    if (!maxPoints || !values.floatValue) {
       return true;
     }
+
     return values.floatValue <= maxPoints;
+  };
+
+  /**
+   * formIsInValid
+   */
+  formIsInValid = () => {
+    const { evaluationType, points } = this.state;
+
+    if (evaluationType === "POINTS" && points === undefined) {
+      return true;
+    }
+
+    return false;
   };
 
   /**
@@ -719,7 +733,11 @@ class AssignmentEditor extends SessionStateComponent<
           <Button
             buttonModifiers="dialog-execute"
             onClick={this.handleSaveAssignment}
-            disabled={this.state.locked || this.props.isRecording}
+            disabled={
+              this.state.locked ||
+              this.props.isRecording ||
+              this.formIsInValid()
+            }
           >
             {t("actions.save")}
           </Button>
