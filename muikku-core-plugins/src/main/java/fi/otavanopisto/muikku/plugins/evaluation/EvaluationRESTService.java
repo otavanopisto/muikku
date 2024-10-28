@@ -549,6 +549,33 @@ public class EvaluationRESTService extends PluginRESTService {
     GradingScale gradingScale = gradingScaleIdentifier != null ? gradingController.findGradingScale(gradingScaleIdentifier) : null;
     SchoolDataIdentifier gradeIdentifier = payload.getGradeIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradeIdentifier()) : null;
     GradingScaleItem gradingScaleItem = (gradingScale != null && gradeIdentifier != null) ? gradingController.findGradingScaleItem(gradingScale, gradeIdentifier) : null;
+    
+    // Payload evaluation
+    
+    Double points;
+    switch (payload.getEvaluationType()) {
+    case GRADED:
+      // Exercise assignments can be evaluated without a grade, evaluated assignments cannot
+      if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED && (gradingScale == null || gradingScaleItem == null)) {
+        return Response.status(Status.BAD_REQUEST).entity("Evaluated assignment lacks grade").build();
+      }
+      points = null;
+      break;
+    case POINTS:
+      // Exercise assignments can be evaluated without points, evaluated assignments cannot
+      if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED && payload.getPoints() ==  null) {
+        return Response.status(Status.BAD_REQUEST).entity("Evaluated assignment lacks points").build();
+      }
+      points = payload.getPoints();
+      gradingScale = null;
+      gradingScaleItem = null;
+      break;
+    default:
+      points = null;
+      gradingScale = null;
+      gradingScaleItem = null;
+      break;
+    }
 
     // Assessor
     
@@ -566,7 +593,7 @@ public class EvaluationRESTService extends PluginRESTService {
         assessor,
         payload.getAssessmentDate(),
         payload.getVerbalAssessment(),
-        payload.getPoints(),
+        points,
         payload.getEvaluationType());
     
     evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
@@ -653,6 +680,33 @@ public class EvaluationRESTService extends PluginRESTService {
     SchoolDataIdentifier gradeIdentifier = payload.getGradeIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradeIdentifier()) : null;
     GradingScaleItem gradingScaleItem = (gradingScale != null && gradeIdentifier != null) ? gradingController.findGradingScaleItem(gradingScale, gradeIdentifier) : null;
 
+    // Payload evaluation
+    
+    Double points;
+    switch (payload.getEvaluationType()) {
+    case GRADED:
+      // Exercise assignments can be evaluated without a grade, evaluated assignments cannot
+      if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED && (gradingScale == null || gradingScaleItem == null)) {
+        return Response.status(Status.BAD_REQUEST).entity("Evaluated assignment lacks grade").build();
+      }
+      points = null;
+      break;
+    case POINTS:
+      // Exercise assignments can be evaluated without points, evaluated assignments cannot
+      if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED && payload.getPoints() ==  null) {
+        return Response.status(Status.BAD_REQUEST).entity("Evaluated assignment lacks points").build();
+      }
+      points = payload.getPoints();
+      gradingScale = null;
+      gradingScaleItem = null;
+      break;
+    default:
+      points = null;
+      gradingScale = null;
+      gradingScaleItem = null;
+      break;
+    }
+
     // Assessor
     
     SchoolDataIdentifier assessorIdentifier = SchoolDataIdentifier.fromId(payload.getAssessorIdentifier());
@@ -668,7 +722,7 @@ public class EvaluationRESTService extends PluginRESTService {
         assessor,
         payload.getAssessmentDate(),
         payload.getVerbalAssessment(),
-        payload.getPoints(),
+        points,
         payload.getEvaluationType());
     
     evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
