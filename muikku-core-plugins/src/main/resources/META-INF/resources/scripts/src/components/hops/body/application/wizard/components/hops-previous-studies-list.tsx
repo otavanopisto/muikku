@@ -134,14 +134,18 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
           </div>
           {study.type !== "" && study.type !== "upper secondary education" && (
             <div className="hops-container__row">
-              <Textarea
-                id={`moreInfo-${index}`}
-                className="form-element__textarea form-element__textarea--resize__vertically"
-                value={study.moreInfo}
-                label="Lisätietoja"
-                onChange={(e) => updateStudy(index, "moreInfo", e.target.value)}
-                placeholder="Tell us more"
-              />
+              <div className="hops__form-element-container">
+                <Textarea
+                  id={`moreInfo-${index}`}
+                  className="hops__textarea"
+                  value={study.moreInfo}
+                  label="Lisätietoja"
+                  onChange={(e) =>
+                    updateStudy(index, "moreInfo", e.target.value)
+                  }
+                  placeholder="Tell us more"
+                />
+              </div>
             </div>
           )}
         </React.Fragment>
