@@ -6,8 +6,8 @@ import {
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { ButtonPill } from "~/components/general/button";
 import AnimateHeight from "react-animate-height";
 import SlideDrawer from "./slide-drawer";
@@ -658,7 +658,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ updateOpenedAssignmentEvaluation }, dispatch);
 }
 

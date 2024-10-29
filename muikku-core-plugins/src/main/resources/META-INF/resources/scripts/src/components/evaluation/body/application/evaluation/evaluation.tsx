@@ -1,7 +1,7 @@
 import * as React from "react";
 import SlideDrawer from "./slide-drawer";
 import EvaluationEventContentCard from "./evaluation-event-content-card";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { StateType } from "~/reducers/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
@@ -11,7 +11,7 @@ import WorkspaceEditor from "./editors/workspace-editor";
 import SupplementationEditor from "./editors/supplementation-editor";
 import { StatusType } from "~/reducers/base/status";
 import ArchiveDialog from "../../../dialogs/archive";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import Button from "~/components/general/button";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import {
@@ -1018,7 +1018,7 @@ function mapStateToProps(state: StateType) {
  *
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadEvaluationAssessmentRequestsFromServer,

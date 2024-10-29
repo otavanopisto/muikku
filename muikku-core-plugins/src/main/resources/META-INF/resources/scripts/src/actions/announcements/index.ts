@@ -15,9 +15,8 @@ import {
   GetAnnouncementsRequest,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch } from "react-redux";
 import moment from "moment";
-
+import { Action, Dispatch } from "redux";
 export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_STATE",
   AnnouncementsStateType
@@ -156,7 +155,7 @@ export interface CreateAnnouncementTriggerType {
  * @param announcement announcement
  */
 function validateAnnouncement(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType,
   announcement: CreateAnnouncementRequest
 ) {
@@ -239,7 +238,7 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
   workspaceId
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -337,7 +336,7 @@ const removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerTyp
 const updateAnnouncement: UpdateAnnouncementTriggerType =
   function updateAnnouncement(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -417,7 +416,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
 const deleteAnnouncement: DeleteAnnouncementTriggerType =
   function deleteAnnouncement(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       try {
@@ -447,7 +446,7 @@ const deleteAnnouncement: DeleteAnnouncementTriggerType =
 const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
   function deleteSelectedAnnouncements() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -491,7 +490,7 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
 const createAnnouncement: CreateAnnouncementTriggerType =
   function createAnnouncement(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -557,7 +556,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
     callback
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       try {

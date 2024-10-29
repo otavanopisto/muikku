@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/activity-badge.scss";
 import "~/sass/elements/empty.scss";
@@ -14,6 +14,7 @@ import RecordsGroup from "./records-group/records-group";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 /**
  * RecordsProps
@@ -145,7 +146,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 export default withTranslation(["studies"])(

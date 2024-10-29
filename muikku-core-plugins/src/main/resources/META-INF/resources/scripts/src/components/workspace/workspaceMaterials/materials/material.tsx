@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 
 import MaterialLoader from "~/components/base/material-loader";
 import {
@@ -12,7 +12,7 @@ import {
   setCurrentWorkspace,
   SetCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
@@ -226,7 +226,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 

@@ -111,7 +111,7 @@ class Pager extends React.Component<PagerProps, PagerState> {
                 page === this.props.current ? "pager__item--current" : ""
               }`}
               onClick={this.props.onClick.bind(null, page)}
-              arial-label={
+              aria-label={
                 page === this.props.current
                   ? this.props.t("wcag.currentPage", { ns: "paging" })
                   : this.props.t("wcag.goToPage", { ns: "paging" })

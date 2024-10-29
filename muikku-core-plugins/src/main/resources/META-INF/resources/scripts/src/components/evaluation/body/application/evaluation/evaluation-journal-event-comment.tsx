@@ -2,7 +2,6 @@ import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { StateType } from "~/reducers";
-import { Dispatch } from "redux";
 import Link from "~/components/general/link";
 import { AnyActionType } from "~/actions";
 import {
@@ -10,6 +9,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { connect } from "react-redux";
+import { Action, Dispatch } from "redux";
 import { StatusType } from "~/reducers/base/status";
 import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
 import { WorkspaceJournalComment } from "~/generated/client";
@@ -142,7 +142,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return { displayNotification };
 }
 

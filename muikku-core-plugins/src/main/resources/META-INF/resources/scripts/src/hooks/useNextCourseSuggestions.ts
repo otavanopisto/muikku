@@ -119,7 +119,7 @@ export const useNextCourseSuggestions = (
               (sNext) =>
                 suggestedNextIdList.find((id) => id === sNext.id) !== undefined
             )
-            .map((s) => ({ ...s, suggestedAsNext: true } as SuggestedCourse))
+            .map((s) => ({ ...s, suggestedAsNext: true }) as SuggestedCourse)
             .sort((a, b) => a.name.localeCompare(b.name));
 
           // Here merge two previous arrays and return it

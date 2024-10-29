@@ -6,7 +6,7 @@ import {
   CeeposPayStatusCodeType,
 } from "~/reducers/main-function/ceepos";
 import i18n from "~/locales/i18n";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import MApi, { isMApiError } from "~/api/api";
 import { CeeposOrder } from "~/generated/client";
 
@@ -37,7 +37,7 @@ export type UPDATE_CEEPOS_PAY_STATUS = SpecificActionType<
 const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
   function loadCeeposPurchase(orderId) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const ceeposApi = MApi.getCeeposApi();
@@ -94,7 +94,7 @@ const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
 const loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType =
   function loadCeeposPurchase(orderId) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const ceeposApi = MApi.getCeeposApi();

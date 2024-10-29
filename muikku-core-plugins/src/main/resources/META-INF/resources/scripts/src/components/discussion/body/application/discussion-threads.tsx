@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { getName } from "~/util/modifiers";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
@@ -23,7 +23,7 @@ import Avatar from "~/components/general/avatar";
 import PagerV2 from "~/components/general/pagerV2";
 import { AnyActionType } from "~/actions/index";
 import { IconButton } from "~/components/general/button";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   subscribeDiscussionThread,
   unsubscribeDiscussionThread,
@@ -386,7 +386,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       subscribeDiscussionThread,

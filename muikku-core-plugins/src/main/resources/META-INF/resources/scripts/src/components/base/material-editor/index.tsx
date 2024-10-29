@@ -1,8 +1,8 @@
 import * as React from "react";
 import "~/sass/elements/material-editor.scss";
 import "~/sass/elements/form.scss";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import Link from "~/components/general/link";
 import {
@@ -377,12 +377,12 @@ class MaterialEditor extends React.Component<
           MaterialViewRestriction.None
             ? MaterialViewRestriction.WorkspaceMembers
             : this.props.editorState.currentDraftNodeValue.viewRestrict ===
-              MaterialViewRestriction.WorkspaceMembers
-            ? MaterialViewRestriction.LoggedIn
-            : this.props.editorState.currentDraftNodeValue.viewRestrict ===
-              MaterialViewRestriction.LoggedIn
-            ? MaterialViewRestriction.None
-            : MaterialViewRestriction.None,
+                MaterialViewRestriction.WorkspaceMembers
+              ? MaterialViewRestriction.LoggedIn
+              : this.props.editorState.currentDraftNodeValue.viewRestrict ===
+                  MaterialViewRestriction.LoggedIn
+                ? MaterialViewRestriction.None
+                : MaterialViewRestriction.None,
       },
       isDraft: true,
     });
@@ -421,9 +421,9 @@ class MaterialEditor extends React.Component<
             "ALWAYS"
             ? "ON_REQUEST"
             : this.props.editorState.currentDraftNodeValue.correctAnswers ===
-              "ON_REQUEST"
-            ? "NEVER"
-            : "ALWAYS",
+                "ON_REQUEST"
+              ? "NEVER"
+              : "ALWAYS",
       },
       isDraft: true,
     });
@@ -930,9 +930,9 @@ class MaterialEditor extends React.Component<
       this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
         ? "always-show"
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
-          "ON_REQUEST"
-        ? "on-request"
-        : "never-show";
+            "ON_REQUEST"
+          ? "on-request"
+          : "never-show";
 
     const correctAnswersModifiers = [
       "material-editor-change-answer-reveal-type",
@@ -945,9 +945,9 @@ class MaterialEditor extends React.Component<
       this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
         ? t("labels.showAnswersAlways", { ns: "materials" })
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
-          "ON_REQUEST"
-        ? t("labels.showAnswersOnRequest", { ns: "materials" })
-        : t("labels.showAnswersNever", { ns: "materials" });
+            "ON_REQUEST"
+          ? t("labels.showAnswersOnRequest", { ns: "materials" })
+          : t("labels.showAnswersNever", { ns: "materials" });
 
     const canRestrictViewLocale = this.buildRestrictViewLocale(
       this.props.editorState.currentDraftNodeValue.viewRestrict
@@ -1368,7 +1368,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,

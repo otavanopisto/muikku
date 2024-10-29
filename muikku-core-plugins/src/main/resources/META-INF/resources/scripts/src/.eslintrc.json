@@ -57,6 +57,7 @@
         "args": "none"
       }
     ],
+    "@typescript-eslint/no-explicit-any": 1,
     "@typescript-eslint/no-empty-interface": 0,
     "no-unused-vars": "off",
     "no-var": 1,
@@ -64,6 +65,7 @@
     "jsdoc/require-param-type": 0,
     "jsdoc/require-returns-type": 0,
     "jsdoc/require-returns": 0,
+    "jsdoc/tag-lines": 0,
     "jsdoc/require-jsdoc": [
       1,
       {

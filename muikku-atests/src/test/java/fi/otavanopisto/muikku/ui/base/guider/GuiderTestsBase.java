@@ -285,7 +285,7 @@ public class GuiderTestsBase extends AbstractUITest {
         mockBuilder
           .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, date)
           .mockCompositeGradingScales()
-          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
+          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, false)
           .mockCompositeCourseAssessmentRequests()
           .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
           .mockStaffCompositeCourseAssessmentRequests();

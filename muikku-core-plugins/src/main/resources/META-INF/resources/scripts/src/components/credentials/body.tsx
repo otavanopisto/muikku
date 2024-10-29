@@ -1,10 +1,12 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { CredentialsState } from "~/reducers/base/credentials";
 import ReturnCredentials from "./body/return-credentials";
 import CredentialsContainer from "./body/credentials-container";
 import CredentialsHero from "./body/credentials-hero";
 import { StateType } from "~/reducers";
+import { Action, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 
 /**
  * CredentialsBodyProps
@@ -54,7 +56,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

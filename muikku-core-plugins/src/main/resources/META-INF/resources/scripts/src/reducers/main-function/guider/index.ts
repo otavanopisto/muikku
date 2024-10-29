@@ -170,8 +170,8 @@ function sortLabels(labelA: UserFlag, labelB: UserFlag) {
   return labelAUpperCase < labelBUpperCase
     ? -1
     : labelAUpperCase > labelBUpperCase
-    ? 1
-    : 0;
+      ? 1
+      : 0;
 }
 /**
  * Sort for ceepos orders
