@@ -46,6 +46,7 @@ import {
   MaterialAssigmentType,
   MaterialViewRestriction,
 } from "~/generated/client";
+import { NumberFormatValues, NumericFormat } from "react-number-format";
 
 /**
  * MaterialEditorProps
@@ -463,15 +464,15 @@ class MaterialEditor extends React.Component<
 
   /**
    * updateMaxPoints
-   * @param e e
+   * @param values values
    */
-  updateMaxPoints = (e: React.ChangeEvent<HTMLInputElement>) => {
+  updateMaxPoints = (values: NumberFormatValues) => {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.editorState.currentNodeWorkspace,
       material: this.props.editorState.currentDraftNodeValue,
       update: {
         // With two decimal places
-        maxPoints: parseFloat(e.target.value),
+        maxPoints: values.floatValue,
       },
       isDraft: true,
     });
@@ -1264,17 +1265,15 @@ class MaterialEditor extends React.Component<
               <div className="material-editor__select-locale-container">
                 <div className="form__row">
                   <div className="form-element">
-                    <input
+                    <NumericFormat
                       className="form-element__input form-element__input--material-editor-title"
                       value={
-                        this.props.editorState.currentDraftNodeValue
-                          .maxPoints || 0
+                        this.props.editorState.currentDraftNodeValue.maxPoints
                       }
-                      type="number"
-                      step="0.5"
-                      min="0"
-                      onChange={this.updateMaxPoints}
-                      placeholder="0,00"
+                      decimalScale={2}
+                      decimalSeparator=","
+                      allowNegative={false}
+                      onValueChange={this.updateMaxPoints}
                     />
                   </div>
                 </div>

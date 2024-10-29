@@ -703,16 +703,12 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           let changed = false;
 
           fields.forEach((field) => {
-            if (
-              typeof data.update[field] !== "undefined" &&
-              data.material[field] !== data.update[field]
-            ) {
+            if (data.material[field] !== data.update[field]) {
               changed = true;
+              result[field] = data.update[field];
+            } else {
+              result[field] = data.material[field];
             }
-            result[field] =
-              typeof data.update[field] !== "undefined"
-                ? data.update[field]
-                : data.material[field];
           });
 
           if (changed) {
