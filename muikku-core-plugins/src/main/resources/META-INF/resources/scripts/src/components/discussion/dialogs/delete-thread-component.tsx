@@ -2,8 +2,8 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
@@ -165,7 +165,7 @@ class DiscussionDeleteThreadComponent extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { deleteCurrentDiscussionThread, deleteDiscussionThreadReplyFromCurrent },
     dispatch

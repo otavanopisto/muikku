@@ -619,6 +619,17 @@
   margin: 10px 5px 20px;
 }
 
+.hops-container__activity-progressbar-line-wrapper {
+  width: 100%;
+}
+
+.hops-container__activity-progressbar-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .hops-container__activity-progressbar {
   align-items: flex-start;
   display: flex;

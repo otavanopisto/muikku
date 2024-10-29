@@ -79,7 +79,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
    * @param index index
    */
   const handleListItemFocus =
-    (index: number) => (e: React.FocusEvent<HTMLDivElement, Element>) => {
+    (index: number) => (e: React.FocusEvent<HTMLDivElement>) => {
       if (itemFocusIndexRef.current !== index) {
         itemFocusIndexRef.current = index;
       }

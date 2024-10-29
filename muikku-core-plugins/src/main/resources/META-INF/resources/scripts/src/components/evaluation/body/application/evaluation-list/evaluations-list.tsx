@@ -1,9 +1,9 @@
 import * as React from "react";
 import EvaluationCard from "./evaluation-card";
 import { EvaluationSort } from "~/@types/evaluation";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { StateType } from "~/reducers/index";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { SortBy, EvaluationImportantStatus } from "~/@types/evaluation";
 import {
@@ -501,7 +501,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       setSelectedWorkspaceId,

@@ -2037,7 +2037,6 @@
       "sizeTooLarge": "File size is too large. Largest allowed file size is 10MB.",
       "createErrror": "Saving the file failed",
       "removeError": "Deleting the file failed",
-      "uploading": "Uploading: {{progress}} %",
       "uploadSuccess": "Uploading the file succeeded"
     }
   },

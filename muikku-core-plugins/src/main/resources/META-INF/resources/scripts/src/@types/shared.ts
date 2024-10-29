@@ -90,7 +90,7 @@ export interface ExaminationInformation extends MatriculationExamEnrollment {
 export function isOfStatus<
   GenericType extends string,
   MatriculationExamAttendance extends { status: GenericType },
-  SpecificType extends GenericType
+  SpecificType extends GenericType,
 >(val: SpecificType) {
   return (
     obj: MatriculationExamAttendance

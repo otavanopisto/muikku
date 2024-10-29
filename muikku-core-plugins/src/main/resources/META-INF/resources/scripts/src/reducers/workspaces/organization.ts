@@ -6,9 +6,12 @@ import { Reducer } from "redux";
  * initialOrganizationWorkspacesState
  */
 const initialOrganizationWorkspacesState: WorkspacesState = {
+  materialsAreDisabled: false,
+  workspaceIsBeingEvaluated: false,
   availableWorkspaces: [],
   templateWorkspaces: [],
   currentWorkspace: null,
+  settings: null,
   availableFilters: {
     educationTypes: [],
     curriculums: [],

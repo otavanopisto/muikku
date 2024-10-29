@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
@@ -19,6 +19,7 @@ import Background from "./application/background/background";
 import { HopsState } from "~/reducers/hops";
 import { useState, useCallback } from "react";
 import OngoingWarningDialog from "./application/wizard/dialog/ongoing-edit-warning";
+import { Action, Dispatch } from "redux";
 
 /**
  * Represents the possible tabs in the HOPS application.
@@ -196,7 +197,7 @@ function mapStateToProps(state: StateType) {
  * Maps dispatch functions to component props
  * @param dispatch - The Redux dispatch function
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

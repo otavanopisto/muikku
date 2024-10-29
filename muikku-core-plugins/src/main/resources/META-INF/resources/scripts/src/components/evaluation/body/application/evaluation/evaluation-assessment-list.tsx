@@ -1,9 +1,9 @@
 import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
-import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
+import { Action, Dispatch } from "redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import Link from "~/components/general/link";
 import { WorkspaceDataType } from "~/reducers/workspaces";
@@ -253,7 +253,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

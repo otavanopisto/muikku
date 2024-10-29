@@ -1,7 +1,7 @@
 import actions from "../../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
   HopsHistoryEntry,
@@ -268,7 +268,7 @@ export interface SaveHopsFormTriggerType {
 const loadMatriculationData: LoadMatriculationDataTriggerType =
   function loadMatriculationData(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -521,7 +521,7 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
 const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
   function cancelMatriculationExam(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -566,7 +566,7 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
 const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
   function loadMatriculationExamHistoryTriggerType(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -629,7 +629,7 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
 const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
   function saveMatriculationPlan(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -785,7 +785,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
 const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType =
   function updateMatriculationExamination(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -852,7 +852,9 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
  */
 const resetMatriculationData: ResetMatriculationDataTriggerType =
   function resetMatriculationData() {
-    return (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+    return (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
       dispatch({
         type: "HOPS_RESET_DATA",
         payload: undefined,

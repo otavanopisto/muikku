@@ -11,7 +11,7 @@ import {
   updateProfileAddress,
   UpdateProfileAddressTriggerType,
 } from "~/actions/main-function/profile";
-import { bindActionCreators, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -600,7 +600,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       saveProfileProperty,
