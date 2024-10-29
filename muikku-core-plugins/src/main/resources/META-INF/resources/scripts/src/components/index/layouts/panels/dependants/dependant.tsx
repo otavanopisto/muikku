@@ -2,8 +2,8 @@ import * as React from "react"; // React
 import "~/sass/elements/dependant.scss"; // Styles
 import { useTranslation } from "react-i18next"; // Translation
 import { localize } from "~/locales/i18n";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import {
   loadDependantWorkspaces,
@@ -143,7 +143,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ loadDependantWorkspaces }, dispatch);
 }
 

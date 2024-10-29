@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
@@ -17,6 +17,7 @@ import ApplicationList, {
 import { AnnouncementsState } from "~/reducers/announcements";
 import { UserIndexState } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions/index";
+import { Action, Dispatch } from "redux";
 
 /**
  * MessageViewProps
@@ -132,7 +133,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

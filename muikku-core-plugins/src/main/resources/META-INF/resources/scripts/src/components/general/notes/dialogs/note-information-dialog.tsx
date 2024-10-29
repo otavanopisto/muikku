@@ -29,7 +29,8 @@ const NoteInformationDialog: React.FC<NoteInformationDialogProps> = (props) => {
    */
   const content = (closeDialog: () => never) => (
     <NotesListItem
-      {...item}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      {...(item as any)}
       containerModifier={["dialog-information"]}
       openInformationToDialog={false}
     />

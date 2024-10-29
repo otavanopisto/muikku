@@ -1,9 +1,8 @@
-import moment from "moment";
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import WorkspaceJournalCommentEditor from "./editors/workspace-journal-comment-editor";
 // eslint-disable-next-line camelcase
@@ -16,7 +15,7 @@ import {
   ApplicationListItemBody,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
@@ -176,7 +175,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       updatedWorkspaceJournalComment,

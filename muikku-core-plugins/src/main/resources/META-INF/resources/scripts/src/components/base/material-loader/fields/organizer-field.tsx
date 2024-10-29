@@ -449,7 +449,7 @@ class OrganizerField extends React.Component<
    * @param index index
    */
   handleTermBlur =
-    (index: number) => (e: React.FocusEvent<HTMLSpanElement, Element>) => {
+    (index: number) => (e: React.FocusEvent<HTMLSpanElement>) => {
       this.termRefs[index].setAttribute("tabindex", "-1");
     };
 
@@ -458,7 +458,7 @@ class OrganizerField extends React.Component<
    * @param index index
    */
   handleCategoryListBlur =
-    (index: number) => (e: React.FocusEvent<HTMLSpanElement, Element>) => {
+    (index: number) => (e: React.FocusEvent<HTMLSpanElement>) => {
       this.categoriesRefs[index].setAttribute("tabindex", "-1");
     };
 
@@ -469,7 +469,7 @@ class OrganizerField extends React.Component<
    */
   handleCategoryTermBlur =
     (categoryId: string, termIndex: number) =>
-    (e: React.FocusEvent<HTMLSpanElement, Element>) => {
+    (e: React.FocusEvent<HTMLSpanElement>) => {
       this.categoryListRefs[categoryId][termIndex].setAttribute(
         "tabindex",
         "-1"

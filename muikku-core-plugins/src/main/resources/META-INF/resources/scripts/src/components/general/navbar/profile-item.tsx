@@ -1,10 +1,10 @@
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { StatusType } from "~/reducers/base/status";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import { logout, LogoutTriggerType } from "~/actions/base/status";
 import "~/sass/elements/link.scss";
@@ -44,7 +44,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
     if (!this.props.status.loggedIn) {
       return null;
     }
-    const items: Array<any> = [
+    const items = [
       {
         icon: "user",
         text: this.props.t("labels.personalInfo"),
@@ -82,21 +82,10 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
     return (
       <Dropdown
         modifier="profile"
-        items={items.map((item) => (closeDropdown: () => any) => (
-          <Link
-            href={item.href}
-            to={item.to ? item.href : null}
-            className={`link link--full link--profile-dropdown`}
-            onClick={(...args: any[]) => {
-              closeDropdown();
-              item.onClick && item.onClick(...args);
-            }}
-            openInNewTab={item.openInNewTab}
-          >
-            <span className={`link__icon icon-${item.icon}`}></span>
-            <span>{item.text}</span>
-          </Link>
-        ))}
+        items={items.map(
+          (item) => (closeDropdown: () => any) =>
+            this.renderProfileLink(item, closeDropdown)
+        )}
       >
         <Link
           className="button-pill button-pill--profile"
@@ -124,6 +113,28 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
       </Dropdown>
     );
   }
+
+  /**
+   * Renders profile link
+   * @param item item
+   * @param closeDropdown closeDropdown
+   * @returns React.ReactNode
+   */
+  renderProfileLink = (item: any, closeDropdown: () => any) => (
+    <Link
+      href={item.href}
+      to={item.to ? item.href : null}
+      className="link link--full link--profile-dropdown"
+      onClick={(...args: any[]) => {
+        closeDropdown();
+        item.onClick && item.onClick(...args);
+      }}
+      openInNewTab={item.openInNewTab}
+    >
+      <span className={`link__icon icon-${item.icon}`}></span>
+      <span>{item.text}</span>
+    </Link>
+  );
 }
 
 /**
@@ -142,7 +153,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ logout, openReadingRuler }, dispatch);
 }
 

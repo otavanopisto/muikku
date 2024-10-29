@@ -1,10 +1,10 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import Usergroup from "./usergroups/usergroup";
 import { WorkspacesStateType } from "~/reducers/workspaces";
 import {
@@ -113,7 +113,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ loadMoreUserGroups }, dispatch);
 }
 

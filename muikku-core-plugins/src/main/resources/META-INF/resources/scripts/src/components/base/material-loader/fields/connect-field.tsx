@@ -551,7 +551,7 @@ class ConnectField extends React.Component<
    */
   handleFocusBlur =
     (index: number, counterpart: boolean) =>
-    (e: React.FocusEvent<HTMLElement, Element>) => {
+    (e: React.FocusEvent<HTMLSpanElement>) => {
       if (counterpart) {
         this.counterpartRefs[index].setAttribute("tabindex", "-1");
       } else {

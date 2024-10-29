@@ -1,9 +1,5 @@
 import * as React from "react";
 import { RecordValue } from "~/@types/recorder";
-import { StateType } from "~/reducers/index";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions/index";
-import { bindActionCreators } from "redux";
 import Record from "./record";
 
 /**

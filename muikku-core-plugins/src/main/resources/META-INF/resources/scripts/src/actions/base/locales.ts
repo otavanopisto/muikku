@@ -1,4 +1,4 @@
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { LocaleType } from "~/reducers/base/locales";
 import notificationActions from "~/actions/base/notifications";
@@ -35,7 +35,9 @@ export interface LoadLocaleTriggerType {
  * @param data locale
  */
 const setLocale: SetLocaleTriggerType = function setLocale(data) {
-  return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+  ) => {
     const meApi = MApi.getMeApi();
 
     try {
@@ -68,7 +70,9 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
  * loadLocale
  */
 const loadLocale: LoadLocaleTriggerType = function loadLocale() {
-  return async (dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>) => {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+  ) => {
     const meApi = MApi.getMeApi();
 
     try {

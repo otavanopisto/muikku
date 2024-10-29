@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import * as queryString from "query-string";
 import GuiderToolbarLabels from "./toolbar/labels";
 import "~/sass/elements/link.scss";
@@ -26,7 +26,7 @@ import {
   toggleAllStudents,
   ToggleAllStudentsTriggerType,
 } from "~/actions/main-function/guider";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { turnSelectedUsersToContacts } from "~/util/users";
@@ -272,7 +272,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       removeFromGuiderSelectedStudents,

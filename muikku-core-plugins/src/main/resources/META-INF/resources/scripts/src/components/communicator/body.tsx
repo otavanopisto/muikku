@@ -5,7 +5,7 @@
  */
 
 import MainFunctionNavbar from "~/components/base/main-function/navbar";
-import Application from "./body/application";
+import Application, { CommunicatorApplicationRef } from "./body/application";
 import Aside from "./body/aside";
 
 import * as React from "react";
@@ -15,19 +15,18 @@ import { useTranslation } from "react-i18next";
  * CommunicatorBody
  */
 const CommunicatorBody = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ref = React.useRef<any>();
-
+  const ref = React.useRef<CommunicatorApplicationRef>(null);
   const { t } = useTranslation("common");
 
   /**
    * openSignatureDialog
    */
   const openSignatureDialog = () => {
-    ref.current && ref.current.getWrappedInstance().openDialogSignature();
+    ref.current?.openDialogSignature();
   };
 
   const aside = <Aside openSignatureDialog={openSignatureDialog} />;
+
   return (
     <div>
       <MainFunctionNavbar

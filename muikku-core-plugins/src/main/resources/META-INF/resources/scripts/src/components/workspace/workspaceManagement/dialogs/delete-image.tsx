@@ -1,6 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
 import Button from "~/components/general/button";
@@ -8,7 +8,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   updateCurrentWorkspaceImagesB64,
   UpdateCurrentWorkspaceImagesB64TriggerType,
@@ -134,7 +134,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { displayNotification, updateCurrentWorkspaceImagesB64 },
     dispatch
