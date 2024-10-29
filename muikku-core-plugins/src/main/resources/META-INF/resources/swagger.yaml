@@ -11300,6 +11300,9 @@ components:
               historyDetails:
                 description: Hops history details.
                 type: string
+              historyChanges:
+                description: Hops history changes.
+                type: string
 
     HopsHistoryEntryUpdateRequestBody:
       required: true
@@ -11312,6 +11315,8 @@ components:
               - details
             properties:
               details:
+                type: string
+              changes:
                 type: string
 
     HopsGoalsUpdateRequestBody:

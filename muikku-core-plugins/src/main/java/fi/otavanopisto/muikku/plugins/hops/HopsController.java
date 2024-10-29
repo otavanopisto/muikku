@@ -152,15 +152,15 @@ public class HopsController {
     return canSignUp;
   }
   
-  public Hops createHops(String studentIdentifier, String formData, String historyDetails) {
+  public Hops createHops(String studentIdentifier, String formData, String historyDetails, String historyChanges) {
     Hops hops = hopsDAO.create(studentIdentifier, formData);
-    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails);
+    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails, historyChanges);
     return hops;
   }
 
-  public Hops updateHops(Hops hops, String studentIdentifier, String formData, String historyDetails) {
+  public Hops updateHops(Hops hops, String studentIdentifier, String formData, String historyDetails, String historyChanges) {
     hopsDAO.updateFormData(hops, formData);
-    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails);
+    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails, historyChanges);
     return hops;
   }
   
@@ -168,8 +168,8 @@ public class HopsController {
     return hopsHistoryDAO.findById(id);
   }
   
-  public HopsHistory updateHopsHistoryDetails(HopsHistory history, String details) {
-    hopsHistoryDAO.update(history, details);
+  public HopsHistory updateHopsHistoryDetails(HopsHistory history, String details, String changes) {
+    hopsHistoryDAO.update(history, details, changes);
     return history;
   }
   

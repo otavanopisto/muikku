@@ -199,10 +199,10 @@ public class HopsRestService {
 
     Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
     if (hops == null) {
-      hops = hopsController.createHops(studentIdentifier, formData, payload.getHistoryDetails());
+      hops = hopsController.createHops(studentIdentifier, formData, payload.getHistoryDetails(), payload.getHistoryChanges());
     }
     else {
-      hops = hopsController.updateHops(hops, studentIdentifier, formData, payload.getHistoryDetails());
+      hops = hopsController.updateHops(hops, studentIdentifier, formData, payload.getHistoryDetails(), payload.getHistoryChanges());
     }
 
     return Response.ok(payload.getFormData()).build();
@@ -464,7 +464,7 @@ public class HopsRestService {
       return Response.status(Status.FORBIDDEN).entity("You can modify only your own history details").build();
     }
 
-    HopsHistory updatedHistory = hopsController.updateHopsHistoryDetails(history, hopsHistory.getDetails());
+    HopsHistory updatedHistory = hopsController.updateHopsHistoryDetails(history, hopsHistory.getDetails(), hopsHistory.getChanges());
 
     HistoryItem historyItem = new HistoryItem();
     historyItem.setDate(updatedHistory.getDate());
