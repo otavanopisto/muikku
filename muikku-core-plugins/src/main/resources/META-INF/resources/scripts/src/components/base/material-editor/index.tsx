@@ -1261,7 +1261,9 @@ class MaterialEditor extends React.Component<
             </div>
 
             <div className="material-editor__sub-section">
-              <h3 className="material-editor__sub-title">Maksimipisteet</h3>
+              <h3 className="material-editor__sub-title">
+                {this.props.i18n.t("labels.pointsMax", { ns: "workspace" })}
+              </h3>
               <div className="material-editor__select-locale-container">
                 <div className="form__row">
                   <div className="form-element">

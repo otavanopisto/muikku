@@ -699,7 +699,9 @@ class AssignmentEditor extends SessionStateComponent<
         {this.state.evaluationType === "POINTS" && (
           <div className="form__row">
             <div className="form-element">
-              <label htmlFor="assignmentEvaluationPoints">Pisteet</label>
+              <label htmlFor="assignmentEvaluationPoints">
+                {t("labels.points", { ns: "workspace" })}
+              </label>
 
               <div className="evaluation-modal__evaluate-drawer-row-data">
                 <NumericFormat

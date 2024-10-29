@@ -41,7 +41,7 @@ const workspaceApi = MApi.getWorkspaceApi();
  */
 export const useWorkspaceAssignmentInfo = (props: UseWorkspacePointsProps) => {
   const { workspaceId, userEntityId, enabled, displayNotification } = props;
-  const { t } = useTranslation(["studies", "common"]);
+  const { t } = useTranslation(["evaluation", "common"]);
 
   const [workspaceAssignmentInfoState, setWorkspaceAssignmentInfoState] =
     React.useState(initialWorkspaceAssignmentInfoState);
@@ -117,8 +117,8 @@ export const useWorkspaceAssignmentInfo = (props: UseWorkspacePointsProps) => {
 
           displayNotification(
             `${t("notifications.loadError", {
-              ns: "studies",
-              context: "workspaceCompositeReplies",
+              ns: "evaluation",
+              context: "assignmentData",
             })}, ${err.message}`,
             "error"
           );

@@ -10,6 +10,7 @@ import {
   Tr,
 } from "~/components/general/table";
 import { AssignmentInfo } from "./helper";
+import { useTranslation } from "react-i18next";
 
 /**
  * Assignment details props
@@ -25,6 +26,8 @@ interface AssignmentDetailsProps {
  */
 const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
   const { assignmentInfoList } = props;
+
+  const { t } = useTranslation(["workspace"]);
 
   // Check if any of the assignments have point value
   // If so, we need to calculate summary
@@ -54,16 +57,16 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
     <div className="form__row">
       <details className="details">
         <summary className="details__summary">
-          Arvioitavien tehtävien pisteet ja arvosanat
+          {t("labels.assignmentDetailsTitle", { ns: "workspace" })}
         </summary>
         <div className="details__content">
           <ScrollableTableWrapper>
             <Table>
               <TableHead modifiers={["sticky"]}>
                 <Tr>
-                  <Th>Tehtävän nimi</Th>
-                  <Th>Pisteet</Th>
-                  <Th>Arvosana</Th>
+                  <Th>{t("labels.assignmentTitle", { ns: "workspace" })}</Th>
+                  <Th>{t("labels.points", { ns: "workspace" })}</Th>
+                  <Th>{t("labels.grade", { ns: "workspace" })}</Th>
                 </Tr>
               </TableHead>
               <Tbody>
@@ -101,8 +104,8 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
             <TableHead>
               <Tr>
                 <Th></Th>
-                <Th>Yhteensä</Th>
-                <Th>Keskiarvo</Th>
+                <Th>{t("labels.pointsSummary", { ns: "workspace" })}</Th>
+                <Th>{t("labels.gradesAverage", { ns: "workspace" })}</Th>
               </Tr>
             </TableHead>
             <Tbody>

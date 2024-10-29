@@ -437,7 +437,7 @@ class EvaluationAssessmentAssignment extends React.Component<
           {pointsAndMaxPoints.show && (
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
-                Pisteet
+                {t("labels.points", { ns: "workspace" })}
               </span>
               <span className="evaluation-modal__item-meta-item-data">
                 {!pointsAndMaxPoints.maxPoints

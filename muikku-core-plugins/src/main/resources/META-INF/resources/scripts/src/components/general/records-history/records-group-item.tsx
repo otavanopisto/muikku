@@ -34,7 +34,8 @@ interface RecordsGroupItemProps {
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const { credit, isCombinationWorkspace } = props;
 
-  const { identifier, userEntityId } = useRecordsInfoContext();
+  const { identifier, userEntityId, displayNotification } =
+    useRecordsInfoContext();
 
   const { t } = useTranslation([
     "studies",
@@ -50,7 +51,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
     workspaceId: credit.activity.id,
     userEntityId,
     enabled: showE, // Only load data when expanded
-    displayNotification: undefined,
+    displayNotification,
   });
 
   /**
@@ -134,7 +135,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               !assessmentIsInterim
             ) {
               return (
-                <>
+                <div key={subjectData.identifier}>
                   {/*
                    * If it's first assessment element, show loader until assignment info is loaded and then show assignment details if available
                    * This is to avoid showing multiple assignment details components as one assignment details is for whole workspace
@@ -148,7 +149,6 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     </div>
                   )}
                   <div
-                    key={subjectData.identifier}
                     className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
                   >
                     <div
@@ -199,7 +199,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                       ></div>
                     </div>
                   </div>
-                </>
+                </div>
               );
             } else {
               return (

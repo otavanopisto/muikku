@@ -20,6 +20,10 @@ import RecordsGroup from "~/components/general/records-history/records-group";
 import MainChart from "~/components/general/graph/main-chart";
 import { breakpoints } from "~/util/breakpoints";
 import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 
 type studyHistoryAside = "history" | "library";
 
@@ -29,6 +33,7 @@ type studyHistoryAside = "history" | "library";
 interface StudyHistoryProps {
   guider: GuiderState;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -51,7 +56,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     return null;
   }
 
-  const { addFileToCurrentStudent } = props;
+  const { addFileToCurrentStudent, displayNotification } = props;
   const {
     activityLogs,
     pastStudies,
@@ -152,6 +157,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       value={{
         identifier: basic.id,
         userEntityId: basic.userEntityId,
+        displayNotification,
       }}
     >
       <ApplicationSubPanel>
@@ -242,7 +248,10 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ addFileToCurrentStudent }, dispatch);
+  return bindActionCreators(
+    { addFileToCurrentStudent, displayNotification },
+    dispatch
+  );
 }
 
 /**
