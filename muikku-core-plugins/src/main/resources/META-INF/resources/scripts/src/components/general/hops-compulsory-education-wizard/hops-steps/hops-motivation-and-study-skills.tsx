@@ -162,7 +162,9 @@ class HopsMotivationAndStudySkills extends React.Component<
             sinua opiskelussa:
           </legend>
 
-          <span>Tähdellä (*) merkityt kentät ovat pakollisia.</span>
+          <span className="hops-container__fieldset-description">
+            Tähdellä (*) merkityt kentät ovat pakollisia.
+          </span>
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
@@ -301,7 +303,9 @@ class HopsMotivationAndStudySkills extends React.Component<
             opettajien lisäksi?
           </legend>
 
-          <span>Tähdellä (*) merkityt kentät ovat pakollisia.</span>
+          <span className="hops-container__fieldset-description">
+            Tähdellä (*) merkityt kentät ovat pakollisia.
+          </span>
 
           <div className="hops-container__row">
             <div className="hops__form-element-container hops__form-element-container--single-row">
@@ -405,7 +409,9 @@ class HopsMotivationAndStudySkills extends React.Component<
             opiskelijana:
           </legend>
 
-          <span>Tähdellä (*) merkityt kentät ovat pakollisia.</span>
+          <span className="hops-container__fieldset-description">
+            Tähdellä (*) merkityt kentät ovat pakollisia.
+          </span>
 
           <div className="hops-container__row">
             <div className="hops-container__table-container">
