@@ -15,7 +15,8 @@ import ActivityIndicator from "./activity-indicator";
 import { RecordWorkspaceActivityByLine } from "./types";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { getAssessmentData } from "~/helper-functions/shared";
-import { useWorkspacePoints } from "~/hooks/useWorkspacePoints";
+import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
+import AssignmentDetails from "~/components/general/assignment-info-details";
 
 /**
  * RecordsGroupItemProps
@@ -45,7 +46,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
   const [showE, setShowE] = React.useState(false);
 
-  const { points, isPointsLoading } = useWorkspacePoints({
+  const { assignmentInfo, assignmentInfoLoading } = useWorkspaceAssignmentInfo({
     workspaceId: credit.activity.id,
     userEntityId,
     enabled: showE, // Only load data when expanded
@@ -61,7 +62,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
     return (
       <>
-        {credit.activity.assessmentStates.map((a) => {
+        {credit.activity.assessmentStates.map((a, i) => {
           const {
             evalStateClassName,
             evalStateIcon,
@@ -133,72 +134,72 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               !assessmentIsInterim
             ) {
               return (
-                <div
-                  key={subjectData.identifier}
-                  className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-                >
+                <>
+                  {/*
+                   * If it's first assessment element, show loader until assignment info is loaded and then show assignment details if available
+                   * This is to avoid showing multiple assignment details components as one assignment details is for whole workspace
+                   */}
+                  {i === 0 && assignmentInfoLoading && (
+                    <div className="loader-empty" />
+                  )}
+                  {i === 0 && assignmentInfo.length > 0 && (
+                    <div className="form__row">
+                      <AssignmentDetails assignmentInfoList={assignmentInfo} />
+                    </div>
+                  )}
                   <div
-                    className={`workspace-assessment__icon ${evalStateIcon}`}
-                  ></div>
-                  <div className="workspace-assessment__subject">
-                    <span className="workspace-assessment__subject-data">
-                      {subjectCodeString}
-                    </span>
-                  </div>
+                    key={subjectData.identifier}
+                    className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
+                  >
+                    <div
+                      className={`workspace-assessment__icon ${evalStateIcon}`}
+                    ></div>
+                    <div className="workspace-assessment__subject">
+                      <span className="workspace-assessment__subject-data">
+                        {subjectCodeString}
+                      </span>
+                    </div>
 
-                  <div className="workspace-assessment__date">
-                    <span className="workspace-assessment__date-label">
-                      {t("labels.date")}:
-                    </span>
+                    <div className="workspace-assessment__date">
+                      <span className="workspace-assessment__date-label">
+                        {t("labels.date")}:
+                      </span>
 
-                    <span className="workspace-assessment__date-data">
-                      {localize.date(a.date)}
-                    </span>
-                  </div>
-                  <div className="workspace-assessment__grade">
-                    <span className="workspace-assessment__grade-label">
-                      {t("labels.grade", {
-                        ns: "workspace",
-                      })}
-                      :
-                    </span>
-                    <span className="workspace-assessment__grade-data">
-                      {assessmentIsIncomplete
-                        ? t("labels.incomplete", {
-                            ns: "workspace",
-                          })
-                        : a.grade}
-                    </span>
-                  </div>
-
-                  {!isPointsLoading && points !== undefined && (
-                    <div className="workspace-assessment__points">
-                      <span className="workspace-assessment__points-label">
-                        {t("labels.points", {
+                      <span className="workspace-assessment__date-data">
+                        {localize.date(a.date)}
+                      </span>
+                    </div>
+                    <div className="workspace-assessment__grade">
+                      <span className="workspace-assessment__grade-label">
+                        {t("labels.grade", {
                           ns: "workspace",
                         })}
                         :
                       </span>
-                      <span className="workspace-assessment__points-data">
-                        {localize.number(points)}
+                      <span className="workspace-assessment__grade-data">
+                        {assessmentIsIncomplete
+                          ? t("labels.incomplete", {
+                              ns: "workspace",
+                            })
+                          : a.grade}
                       </span>
                     </div>
-                  )}
 
-                  <div className="workspace-assessment__literal">
-                    <div className="workspace-assessment__literal-label">
-                      {t("labels.evaluation", {
-                        ns: "evaluation",
-                        context: "literal",
-                      })}
-                      :
+                    <div className="workspace-assessment__literal">
+                      <div className="workspace-assessment__literal-label">
+                        {t("labels.evaluation", {
+                          ns: "evaluation",
+                          context: "literal",
+                        })}
+                        :
+                      </div>
+                      <div
+                        className="workspace-assessment__literal-data rich-text"
+                        dangerouslySetInnerHTML={{ __html: literalAssessment }}
+                      ></div>
                     </div>
-                    <div
-                      className="workspace-assessment__literal-data rich-text"
-                      dangerouslySetInnerHTML={{ __html: literalAssessment }}
-                    ></div>
                   </div>
-                </div>
+                </>
               );
             } else {
               return (

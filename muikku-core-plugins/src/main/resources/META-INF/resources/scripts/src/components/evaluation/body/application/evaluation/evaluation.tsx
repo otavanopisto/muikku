@@ -33,6 +33,7 @@ import {
   MaterialCompositeReply,
 } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { createAssignmentInfoArray } from "~/helper-functions/assignmentInfo";
 
 /**
  * EvaluationDrawerProps
@@ -428,68 +429,6 @@ export class Evaluation extends React.Component<
   };
 
   /**
-   * Creates an array of assignment info objects
-   * @returns Array of assignment info objects
-   */
-  createAssignmentInfoArray = (): Array<{
-    title: string;
-    grade?: string | null;
-    points?: number;
-    maxPoints?: number;
-  }> => {
-    const { evaluationCompositeReplies, evaluationCurrentStudentAssigments } =
-      this.props.evaluation;
-
-    if (
-      !evaluationCurrentStudentAssigments.data ||
-      !evaluationCompositeReplies.data
-    ) {
-      return [];
-    }
-
-    const assignmentInfoArray: Array<{
-      title: string;
-      grade?: string | null;
-      points?: number | null;
-      maxPoints?: number | null;
-    }> = [];
-
-    // Iterate through all assigments and find composite reply pair for each
-    evaluationCurrentStudentAssigments.data.assigments.forEach((a) => {
-      const compositeReply = evaluationCompositeReplies.data.find(
-        (r) => r.workspaceMaterialId === a.id
-      );
-
-      let grade = compositeReply?.evaluationInfo?.grade || null;
-
-      if (
-        compositeReply?.evaluationInfo?.evaluationType ===
-        "SUPPLEMENTATIONREQUEST"
-      ) {
-        grade = "T";
-      }
-
-      if (a.maxPoints) {
-        assignmentInfoArray.push({
-          title: a.title,
-          grade: grade,
-          points: compositeReply?.evaluationInfo?.points || 0,
-          maxPoints: a.maxPoints,
-        });
-      } else {
-        assignmentInfoArray.push({
-          title: a.title,
-          grade: grade,
-          points: compositeReply?.evaluationInfo?.points || null,
-          maxPoints: null,
-        });
-      }
-    });
-
-    return assignmentInfoArray;
-  };
-
-  /**
    * Component render method
    *
    * @returns JSX.Element
@@ -704,7 +643,10 @@ export class Evaluation extends React.Component<
       } as WorkspaceDataType);
     }
 
-    const assignmentInfoArray = this.createAssignmentInfoArray();
+    const assignmentInfoArray = createAssignmentInfoArray(
+      this.props.evaluation.evaluationCompositeReplies?.data,
+      this.props.evaluation.evaluationCurrentStudentAssigments?.data?.assigments
+    );
 
     return (
       <div className="evaluation-modal">

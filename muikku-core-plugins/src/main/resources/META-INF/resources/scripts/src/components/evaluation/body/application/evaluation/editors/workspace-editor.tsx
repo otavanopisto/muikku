@@ -27,16 +27,7 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import MApi from "~/api/api";
 import { BilledPrice } from "~/generated/client";
-import {
-  ScrollableTableWrapper,
-  Table,
-  TableHead,
-  Tbody,
-  Td,
-  Th,
-  Tr,
-} from "~/components/general/table";
-import { localize } from "~/locales/i18n";
+import AssignmentDetails from "~/components/general/assignment-info-details";
 
 /**
  * WorkspaceEditorProps
@@ -862,22 +853,6 @@ class WorkspaceEditor extends SessionStateComponent<
     const billingPriceDisabled =
       existingBilledPriceObject && !existingBilledPriceObject.editable;
 
-    // Calculate sum of points
-    const pointsSum = assignmentInfoArray.reduce(
-      (sum, assignment) => sum + (assignment.points || 0),
-      0
-    );
-
-    // Calculate average of grades
-    const gradesAverage =
-      assignmentInfoArray.reduce((sum, assignment) => {
-        const grade = parseFloat(assignment.grade);
-        return isNaN(grade) ? sum : sum + grade;
-      }, 0) /
-      assignmentInfoArray.filter(
-        (assignment) => !isNaN(parseFloat(assignment.grade))
-      ).length;
-
     /**
      * Grading scale and grade options.
      */
@@ -915,72 +890,7 @@ class WorkspaceEditor extends SessionStateComponent<
     return (
       <div className="form" role="form">
         <div className="form__row">
-          <details className="details">
-            <summary className="details__summary">
-              Arvioitavien tehtävien pisteet ja arvosanat
-            </summary>
-            <div className="details__content">
-              <ScrollableTableWrapper>
-                <Table>
-                  <TableHead modifiers={["sticky"]}>
-                    <Tr>
-                      <Th>Tehtävän nimi</Th>
-                      <Th>Pisteet</Th>
-                      <Th>Arvosana</Th>
-                    </Tr>
-                  </TableHead>
-                  <Tbody>
-                    {assignmentInfoArray.map((assignment, index) => (
-                      <Tr key={index}>
-                        <Td modifiers={["centered"]}>{assignment.title}</Td>
-                        <Td modifiers={["centered"]}>
-                          {assignment.maxPoints === null
-                            ? localize.number(assignment.points) || "-"
-                            : assignment.points
-                            ? `${localize.number(
-                                assignment.points
-                              )}/${localize.number(assignment.maxPoints)}`
-                            : "-"}
-                        </Td>
-                        <Td modifiers={["centered"]}>
-                          {assignment.grade || "-"}
-                        </Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              </ScrollableTableWrapper>
-
-              <Table>
-                <TableHead>
-                  <Tr>
-                    <Th></Th>
-                    <Th>Yhteensä</Th>
-                    <Th>Keskiarvo</Th>
-                  </Tr>
-                </TableHead>
-                <Tbody>
-                  <Tr>
-                    <Td modifiers={["centered"]}></Td>
-                    <Td modifiers={["centered"]}>
-                      {isNaN(pointsSum)
-                        ? "-"
-                        : localize.number(pointsSum, {
-                            maximumFractionDigits: 2,
-                          })}
-                    </Td>
-                    <Td modifiers={["centered"]}>
-                      {isNaN(gradesAverage)
-                        ? "-"
-                        : localize.number(gradesAverage, {
-                            maximumFractionDigits: 2,
-                          })}
-                    </Td>
-                  </Tr>
-                </Tbody>
-              </Table>
-            </div>
-          </details>
+          <AssignmentDetails assignmentInfoList={assignmentInfoArray} />
         </div>
 
         <div className="form__row">

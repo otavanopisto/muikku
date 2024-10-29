@@ -2,7 +2,8 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
-import { MaterialCompositeReply } from "~/generated/client";
+import { MaterialCompositeReply, WorkspaceMaterial } from "~/generated/client";
+import { createAssignmentInfoArray } from "~/helper-functions/assignmentInfo";
 
 /**
  * UseWorkspacePointsProps
@@ -17,17 +18,19 @@ interface UseWorkspacePointsProps {
 /**
  * UseFollowUpGoalsState
  */
-export interface CompositeReplyState {
-  isPointsLoading: boolean;
+export interface WorkspaceAssignmentInfoState {
+  assignmentInfoLoading: boolean;
   compositeReplies: MaterialCompositeReply[];
+  assignments: WorkspaceMaterial[];
 }
 
 /**
  * Intial state
  */
-const initialCompositeReplyState: CompositeReplyState = {
-  isPointsLoading: false,
+const initialWorkspaceAssignmentInfoState: WorkspaceAssignmentInfoState = {
+  assignmentInfoLoading: false,
   compositeReplies: [],
+  assignments: [],
 };
 
 const workspaceApi = MApi.getWorkspaceApi();
@@ -36,20 +39,19 @@ const workspaceApi = MApi.getWorkspaceApi();
  * useWorkspacePoints
  * @param props UseWorkspacePointsProps
  */
-export const useWorkspacePoints = (props: UseWorkspacePointsProps) => {
+export const useWorkspaceAssignmentInfo = (props: UseWorkspacePointsProps) => {
   const { workspaceId, userEntityId, enabled, displayNotification } = props;
   const { t } = useTranslation(["studies", "common"]);
 
-  const [compositeReplyData, setCompositeReplyData] = React.useState(
-    initialCompositeReplyState
-  );
+  const [workspaceAssignmentInfoState, setWorkspaceAssignmentInfoState] =
+    React.useState(initialWorkspaceAssignmentInfoState);
 
   // Add ref to track if data was already loaded
   const wasLoaded = React.useRef(false);
 
   React.useEffect(() => {
     // Skip if not enabled or if already loaded
-    if (compositeReplyData.isPointsLoading || !enabled || wasLoaded.current) {
+    if (!enabled || wasLoaded.current) {
       return;
     }
 
@@ -69,9 +71,9 @@ export const useWorkspacePoints = (props: UseWorkspacePointsProps) => {
       workspaceId: number
     ) => {
       if (!isCancelled) {
-        setCompositeReplyData((compositeReplyData) => ({
-          ...compositeReplyData,
-          isLoading: true,
+        setWorkspaceAssignmentInfoState((workspaceAssignmentInfoState) => ({
+          ...workspaceAssignmentInfoState,
+          assignmentInfoLoading: true,
         }));
       }
 
@@ -79,7 +81,7 @@ export const useWorkspacePoints = (props: UseWorkspacePointsProps) => {
         /**
          * Loaded and filtered student activity
          */
-        const [compositeReplies] = await Promise.all([
+        const [compositeReplies, assignments] = await Promise.all([
           (async () => {
             const compositeRepliesList =
               await workspaceApi.getWorkspaceCompositeReplies({
@@ -89,13 +91,22 @@ export const useWorkspacePoints = (props: UseWorkspacePointsProps) => {
 
             return compositeRepliesList;
           })(),
+          (async () => {
+            const assignments = await workspaceApi.getWorkspaceMaterials({
+              workspaceEntityId: workspaceId,
+              assignmentType: "EVALUATED",
+            });
+
+            return assignments;
+          })(),
         ]);
 
         if (!isCancelled) {
-          setCompositeReplyData((compositeReplyData) => ({
-            ...compositeReplyData,
+          setWorkspaceAssignmentInfoState((workspaceAssignmentInfoState) => ({
+            ...workspaceAssignmentInfoState,
             compositeReplies: compositeReplies,
-            isLoading: false,
+            assignments: assignments,
+            assignmentInfoLoading: false,
           }));
         }
       } catch (err) {
@@ -111,9 +122,9 @@ export const useWorkspacePoints = (props: UseWorkspacePointsProps) => {
             })}, ${err.message}`,
             "error"
           );
-          setCompositeReplyData((compositeReplyData) => ({
-            ...compositeReplyData,
-            isLoading: false,
+          setWorkspaceAssignmentInfoState((workspaceAssignmentInfoState) => ({
+            ...workspaceAssignmentInfoState,
+            assignmentInfoLoading: false,
           }));
         }
       }
@@ -124,31 +135,18 @@ export const useWorkspacePoints = (props: UseWorkspacePointsProps) => {
     return () => {
       isCancelled = true;
     };
-  }, [
-    workspaceId,
-    displayNotification,
-    t,
-    userEntityId,
-    enabled,
-    compositeReplyData.isPointsLoading,
-  ]);
+  }, [workspaceId, displayNotification, t, userEntityId, enabled]);
 
-  const { compositeReplies, isPointsLoading } = compositeReplyData;
+  const { compositeReplies, assignments, assignmentInfoLoading } =
+    workspaceAssignmentInfoState;
 
-  const points = useMemo(() => {
-    if (isPointsLoading) {
-      return undefined;
-    }
-
-    return compositeReplies.reduce<number | undefined>((acc, curr) => {
-      const currentPoints = curr.evaluationInfo?.points;
-      if (currentPoints === undefined) return acc;
-      return (acc ?? 0) + currentPoints;
-    }, undefined);
-  }, [compositeReplies, isPointsLoading]);
+  const assignmentInfo = useMemo(
+    () => createAssignmentInfoArray(compositeReplies, assignments),
+    [compositeReplies, assignments]
+  );
 
   return {
-    points,
-    isPointsLoading,
+    assignmentInfo,
+    assignmentInfoLoading,
   };
 };
