@@ -453,6 +453,7 @@ public class HopsRestService {
     historyItem.setModifierId(userEntity.getId());
     historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
     historyItem.setDetails(updatedHistory.getDetails());
+    historyItem.setChanges(updatedHistory.getChanges());
 
     return Response.ok(historyItem).build();
   }
@@ -1051,6 +1052,7 @@ public class HopsRestService {
     historyItem.setDate(historyEntry.getDate());
     historyItem.setId(historyEntry.getId());
     historyItem.setDetails(historyEntry.getDetails());
+    historyItem.setChanges(historyEntry.getChanges());
 
     if (userMap != null && userMap.containsKey(historyEntry.getModifier())) {
       UserBasicInfo basicInfo = userMap.get(historyEntry.getModifier());
