@@ -5,6 +5,8 @@ import Button from "~/components/general/button";
 import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
 import HopsHistory from "../../history";
 import { LoadMoreHopsFormHistoryTriggerType } from "~/actions/main-function/hops/";
+import { useRef } from "react";
+import { useEffect } from "react";
 
 /**
  * Props for the HopsStudentHopsInformation component
@@ -44,12 +46,20 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
     allHopsEventsLoaded,
     loadMoreHopsEvents,
   } = props;
+
+  const myRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    window.dispatchEvent(new Event("resize"));
+    myRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
   if (loading) {
     return <div className="loader-empty" />;
   }
 
   return (
-    <section className="hops-container">
+    <section className="hops-container" ref={myRef}>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">Perustiedot</legend>
 
