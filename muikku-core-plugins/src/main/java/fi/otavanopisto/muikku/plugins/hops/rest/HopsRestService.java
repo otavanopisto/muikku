@@ -206,7 +206,7 @@ public class HopsRestService {
       historyItem = hopsController.updateHops(hops, studentIdentifier, formData, payload.getHistoryDetails(), payload.getHistoryChanges());
     }
 
-    HopsWithLatestChange hopsWithChange = new HopsWithLatestChange(formData, toRestModel(historyItem, Collections.emptyMap()));
+    HopsWithLatestChange hopsWithChange = new HopsWithLatestChange(formData, toRestModel(historyItem, null));
     return Response.ok(hopsWithChange).build();
   }
 
@@ -1074,7 +1074,9 @@ public class HopsRestService {
         userDetails.setId(userEntity.getId());
         userDetails.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
 
-        userMap.put(historyEntry.getModifier(), userDetails);
+        if (userMap != null) {
+          userMap.put(historyEntry.getModifier(), userDetails);
+        }
 
       }
     }
