@@ -55,7 +55,7 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
 
   return (
     <div className="form__row">
-      <details className="details">
+      <details className="details details--evaluation">
         <summary className="details__summary">
           {t("labels.assignmentDetailsTitle", { ns: "workspace" })}
         </summary>
