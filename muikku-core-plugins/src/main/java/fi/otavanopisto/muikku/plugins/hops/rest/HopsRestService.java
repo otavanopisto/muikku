@@ -1052,8 +1052,9 @@ public class HopsRestService {
     historyItem.setId(historyEntry.getId());
     historyItem.setDetails(historyEntry.getDetails());
 
-    if (userMap.containsKey(historyEntry.getModifier())) {
-      historyItem.setModifier(userMap.get(historyEntry.getModifier()).getFirstName() + " " + userMap.get(historyEntry.getModifier()).getLastName());
+    if (userMap != null && userMap.containsKey(historyEntry.getModifier())) {
+      UserBasicInfo basicInfo = userMap.get(historyEntry.getModifier());
+      historyItem.setModifier(String.format("%s %s", basicInfo.getFirstName(), basicInfo.getLastName()));
       historyItem.setModifierId(userMap.get(historyEntry.getModifier()).getId());
       historyItem.setModifierHasImage(userMap.get(historyEntry.getModifier()).isHasImage());
     }
