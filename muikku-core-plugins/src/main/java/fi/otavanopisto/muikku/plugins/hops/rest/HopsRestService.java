@@ -198,14 +198,16 @@ public class HopsRestService {
     // Create or update
 
     Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
+    HopsHistory historyItem;
     if (hops == null) {
-      hops = hopsController.createHops(studentIdentifier, formData, payload.getHistoryDetails(), payload.getHistoryChanges());
+      historyItem = hopsController.createHops(studentIdentifier, formData, payload.getHistoryDetails(), payload.getHistoryChanges());
     }
     else {
-      hops = hopsController.updateHops(hops, studentIdentifier, formData, payload.getHistoryDetails(), payload.getHistoryChanges());
+      historyItem = hopsController.updateHops(hops, studentIdentifier, formData, payload.getHistoryDetails(), payload.getHistoryChanges());
     }
 
-    return Response.ok(payload.getFormData()).build();
+    HopsWithLatestChange hopsWithChange = new HopsWithLatestChange(formData, toRestModel(historyItem, Collections.emptyMap()));
+    return Response.ok(hopsWithChange).build();
   }
 
   @GET
@@ -397,38 +399,7 @@ public class HopsRestService {
 
     List<HistoryItem> historyItems = new ArrayList<>();
     for (HopsHistory historyEntry : history) {
-      HistoryItem historyItem = new HistoryItem();
-      historyItem.setDate(historyEntry.getDate());
-      historyItem.setId(historyEntry.getId());
-      historyItem.setDetails(historyEntry.getDetails());
-
-      if (userMap.containsKey(historyEntry.getModifier())) {
-        historyItem.setModifier(userMap.get(historyEntry.getModifier()).getFirstName() + " " + userMap.get(historyEntry.getModifier()).getLastName());
-        historyItem.setModifierId(userMap.get(historyEntry.getModifier()).getId());
-        historyItem.setModifierHasImage(userMap.get(historyEntry.getModifier()).isHasImage());
-      }
-      else {
-        SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(historyEntry.getModifier());
-        UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
-        UserEntityName userEntityName = userEntityController.getName(sdi, false);
-
-        if (userEntity != null && userEntityName != null) {
-          UserBasicInfo userDetails = new UserBasicInfo();
-
-          historyItem.setModifier(userEntityName.getDisplayName());
-          historyItem.setModifierId(userEntity.getId());
-          historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
-
-          userDetails.setFirstName(userEntityName.getFirstName());
-          userDetails.setLastName(userEntityName.getLastName());
-          userDetails.setId(userEntity.getId());
-          userDetails.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
-
-          userMap.put(historyEntry.getModifier(), userDetails);
-
-        }
-      }
-      historyItems.add(historyItem);
+      historyItems.add(toRestModel(historyEntry, userMap));
     }
 
     historyItems.sort(Comparator.comparing(HistoryItem::getDate).reversed());
@@ -1074,4 +1045,41 @@ public class HopsRestService {
     return Response.ok(userSchoolDataController.listStudentAlternativeStudyOptions(studentIdentifier)).build();
 
   }
+  
+  private HistoryItem toRestModel(HopsHistory historyEntry, Map<String, UserBasicInfo> userMap) {
+    HistoryItem historyItem = new HistoryItem();
+    historyItem.setDate(historyEntry.getDate());
+    historyItem.setId(historyEntry.getId());
+    historyItem.setDetails(historyEntry.getDetails());
+
+    if (userMap.containsKey(historyEntry.getModifier())) {
+      historyItem.setModifier(userMap.get(historyEntry.getModifier()).getFirstName() + " " + userMap.get(historyEntry.getModifier()).getLastName());
+      historyItem.setModifierId(userMap.get(historyEntry.getModifier()).getId());
+      historyItem.setModifierHasImage(userMap.get(historyEntry.getModifier()).isHasImage());
+    }
+    else {
+      SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(historyEntry.getModifier());
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
+      UserEntityName userEntityName = userEntityController.getName(sdi, false);
+
+      if (userEntity != null && userEntityName != null) {
+        UserBasicInfo userDetails = new UserBasicInfo();
+
+        historyItem.setModifier(userEntityName.getDisplayName());
+        historyItem.setModifierId(userEntity.getId());
+        historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
+
+        userDetails.setFirstName(userEntityName.getFirstName());
+        userDetails.setLastName(userEntityName.getLastName());
+        userDetails.setId(userEntity.getId());
+        userDetails.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
+
+        userMap.put(historyEntry.getModifier(), userDetails);
+
+      }
+    }
+    return historyItem;
+  }
+  
+  
 }
