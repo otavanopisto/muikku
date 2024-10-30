@@ -19,8 +19,8 @@ interface HopsStudentHopsInformationProps {
   educationalLevel: string;
   /** An array of guidance counselor names */
   guidanceCounselors: string[];
-  /** Indicates if all HOPS events have been loaded */
-  allHopsEventsLoaded: boolean;
+  /** Indicates if there are more HOPS history entries to load */
+  canLoadMoreHistory: boolean;
   /** The function to load more HOPS events */
   loadMoreHopsEvents: LoadMoreHopsFormHistoryTriggerType;
 }
@@ -43,7 +43,7 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
     studentName,
     educationalLevel,
     guidanceCounselors,
-    allHopsEventsLoaded,
+    canLoadMoreHistory,
     loadMoreHopsEvents,
   } = props;
   const myRef = useRef<HTMLDivElement>(null);
@@ -118,7 +118,7 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
           <div className="hops-container__row">
             <Button
               buttonModifiers={["load-all-hops-events"]}
-              disabled={allHopsEventsLoaded}
+              disabled={canLoadMoreHistory}
               onClick={() => loadMoreHopsEvents({})}
             >
               Lataa kaikki

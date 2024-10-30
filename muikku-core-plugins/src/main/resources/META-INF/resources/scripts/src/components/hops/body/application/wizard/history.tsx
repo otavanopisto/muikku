@@ -11,6 +11,12 @@ import { StateType } from "~/reducers";
 import { ReducerStateType } from "~/reducers/hops";
 import { localize } from "~/locales/i18n";
 import EditHopsEventDescriptionDialog from "./dialog/edit-hops-event";
+import { HopsFormType } from "~/@types/hops";
+import {
+  compulsoryStudiesFieldsTranslation,
+  secondaryStudiesFieldsTranslation,
+} from "./helpers";
+import { useTranslation } from "react-i18next";
 
 /**
  * HopsHistoryProps
@@ -18,6 +24,7 @@ import EditHopsEventDescriptionDialog from "./dialog/edit-hops-event";
 interface HopsHistoryProps {
   // Redux state variables
   status: StatusType;
+  formType: HopsFormType;
   formHistory: HopsHistoryEntry[];
   formHistoryStatus: ReducerStateType;
 }
@@ -27,7 +34,8 @@ interface HopsHistoryProps {
  * @param props props
  */
 const HopsHistory: React.FC<HopsHistoryProps> = (props) => {
-  const { status, formHistory, formHistoryStatus } = props;
+  const { status, formHistory, formHistoryStatus, formType } = props;
+  const isGuidanceCouncler = false;
 
   return (
     <div className="hops-container__history">
@@ -37,7 +45,8 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => {
         return (
           <HopsHistoryEvent
             key={i}
-            showEdit={isMe}
+            showEdit={isMe && isGuidanceCouncler}
+            formType={formType}
             historyEntry={item}
             status={status}
           />
@@ -60,6 +69,7 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => {
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
+    formType: state.hopsNew.hopsForm.type,
     formHistory: state.hopsNew.hopsFormHistory,
     formHistoryStatus: state.hopsNew.hopsFormHistoryStatus,
   };
@@ -83,6 +93,7 @@ interface HopsHistoryEventProps {
   historyEntry: HopsHistoryEntry;
   showEdit: boolean;
   status: StatusType;
+  formType: HopsFormType;
 }
 
 /**
@@ -90,68 +101,82 @@ interface HopsHistoryEventProps {
  * @param props props
  */
 const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
-  const { historyEntry, showEdit, status } = props;
+  const { historyEntry, showEdit, status, formType } = props;
+
+  const { t } = useTranslation(["common"]);
 
   const viewingOwnHistorEvent = status.userId === historyEntry.modifierId;
 
+  const listOfChanges = historyEntry?.changes?.split(",") || [];
+
+  const translatedFields =
+    formType === "compulsory"
+      ? compulsoryStudiesFieldsTranslation(t)
+      : secondaryStudiesFieldsTranslation(t);
+
+  const editedFields =
+    listOfChanges.length > 0
+      ? listOfChanges.map((field) => (
+          <li key={field} style={{ display: "list-item" }}>
+            <span>{translatedFields[field]}</span>
+          </li>
+        ))
+      : null;
+
   return (
-    <>
-      {viewingOwnHistorEvent ? (
-        <div className="hops-container__history-event hops-container__history-event--created-by-me">
-          <div className="hops-container__history-event-primary">
-            <span className="hops-container__history-event-text">
-              Muokkasit HOPS:ia
-            </span>
-            <span className="hops-container__history-event-date">
-              {localize.date(historyEntry.date)}
-            </span>
-            {showEdit && (
-              <span className="hops-container__history-event-action">
-                <EditHopsEventDescriptionDialog historyEntry={historyEntry}>
-                  <IconButton
-                    buttonModifiers={["edit-hops-history-event-description"]}
-                    icon="pencil"
-                  />
-                </EditHopsEventDescriptionDialog>
-              </span>
-            )}
-          </div>
+    <div className="hops-container__history-event hops-container__history-event--created-by-other">
+      <div className="hops-container__history-event-primary">
+        <span className="hops-container__history-event-author">
+          <Avatar
+            id={historyEntry.modifierId}
+            firstName={historyEntry.modifier}
+            hasImage={historyEntry.modifierHasImage}
+            size="small"
+          />
+          <span className="hops-container__history-event-author-name">
+            {historyEntry.modifier}
+          </span>
+        </span>
+        <span className="hops-container__history-event-text">
+          {viewingOwnHistorEvent
+            ? "muokkasit HOPS:ia"
+            : `${historyEntry.modifier} muokkasi HOPS:ia`}
+        </span>
 
-          {historyEntry.details && (
-            <div className="hops-container__history-event-secondary">
-              <span>{historyEntry.details}</span>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="hops-container__history-event hops-container__history-event--created-by-other">
-          <div className="hops-container__history-event-primary">
-            <span className="hops-container__history-event-author">
-              <Avatar
-                id={historyEntry.modifierId}
-                firstName={historyEntry.modifier}
-                hasImage={historyEntry.modifierHasImage}
-                size="small"
+        <span className="hops-container__history-event-date">
+          {localize.date(historyEntry.date)}
+        </span>
+
+        {showEdit && (
+          <span className="hops-container__history-event-action">
+            <EditHopsEventDescriptionDialog historyEntry={historyEntry}>
+              <IconButton
+                buttonModifiers={["edit-hops-history-event-description"]}
+                icon="pencil"
               />
-              <span className="hops-container__history-event-author-name">
-                {historyEntry.modifier}
-              </span>
-            </span>
-            <span className="hops-container__history-event-text">
-              muokkasi HOPS:ia
-            </span>
-            <span className="hops-container__history-event-date">
-              {localize.date(historyEntry.date)}
-            </span>
-          </div>
+            </EditHopsEventDescriptionDialog>
+          </span>
+        )}
+      </div>
 
-          {historyEntry.details && (
-            <div className="hops-container__history-event-secondary">
-              <span>{historyEntry.details}</span>
-            </div>
-          )}
+      {historyEntry.details && (
+        <div className="hops-container__history-event-secondary">
+          <span>{historyEntry.details}</span>
         </div>
       )}
-    </>
+
+      {editedFields && (
+        <div className="hops-container__history-event-secondary">
+          <details className="details">
+            <summary className="details__summary">
+              {t("labels.editedFields", { ns: "pedagogySupportPlan" })}
+            </summary>
+            <div className="details__content">
+              <ul>{editedFields}</ul>
+            </div>
+          </details>
+        </div>
+      )}
+    </div>
   );
 };

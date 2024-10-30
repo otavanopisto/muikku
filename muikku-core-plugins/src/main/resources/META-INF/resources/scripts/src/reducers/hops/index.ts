@@ -115,7 +115,7 @@ export interface HopsState {
   // HOPS FORM HISTORY
   hopsFormHistoryStatus: ReducerStateType;
   hopsFormHistory: HopsHistoryEntry[] | null;
-  hopsFormHistoryLoadedAll: boolean;
+  hopsFormCanLoadMoreHistory: boolean;
 }
 
 const initialHopsState: HopsState = {
@@ -143,7 +143,7 @@ const initialHopsState: HopsState = {
   hopsForm: null,
   hopsFormHistoryStatus: "IDLE",
   hopsFormHistory: null,
-  hopsFormHistoryLoadedAll: false,
+  hopsFormCanLoadMoreHistory: true,
 };
 
 /**
@@ -376,9 +376,10 @@ export const hopsNew: Reducer<HopsState> = (
         hopsFormHistoryStatus: action.payload.status,
         hopsFormHistory:
           state.hopsFormHistory && action.payload.data
-            ? [...state.hopsFormHistory, ...action.payload.data]
+            ? action.payload.appendPosition === "start"
+              ? [...action.payload.data, ...state.hopsFormHistory]
+              : [...state.hopsFormHistory, ...action.payload.data]
             : state.hopsFormHistory,
-        hopsFormHistoryLoadedAll: true,
       };
 
     case "HOPS_FORM_HISTORY_ENTRY_UPDATE":
@@ -389,6 +390,12 @@ export const hopsNew: Reducer<HopsState> = (
               entry.id === action.payload.data.id ? action.payload.data : entry
             )
           : null,
+      };
+
+    case "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY":
+      return {
+        ...state,
+        hopsFormCanLoadMoreHistory: action.payload,
       };
 
     case "HOPS_FORM_SAVE":

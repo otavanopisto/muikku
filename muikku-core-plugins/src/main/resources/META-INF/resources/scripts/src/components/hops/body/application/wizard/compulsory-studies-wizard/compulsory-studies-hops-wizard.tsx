@@ -26,6 +26,9 @@ import {
   LoadMoreHopsFormHistoryTriggerType,
   loadMoreHopsFormHistory,
 } from "~/actions/main-function/hops/";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
+import { compulsoryStudiesFieldsTranslation } from "../helpers";
 
 /**
  * Props for the CompulsoryStudiesHopsWizard component
@@ -35,8 +38,8 @@ interface CompulsoryStudiesHopsWizardProps {
   form: CompulsoryStudiesHops;
   /** Information about the student */
   studentInfo: StudentInfo;
-  /** Boolean indicating if all Hops events are loaded */
-  allHopsEventsLoaded: boolean;
+  /** Whether the HOPS form can load more history */
+  hopsFormCanLoadMoreHistory: boolean;
   /** Function to handle unsaved changes */
   onHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
   /** Redux thunk function to save the HOPS form */
@@ -60,7 +63,7 @@ const CompulsoryStudiesHopsWizard: React.FC<
   const {
     form,
     studentInfo,
-    allHopsEventsLoaded,
+    hopsFormCanLoadMoreHistory,
     onHasUnsavedChanges,
     saveHopsForm,
     loadMoreHopsFormHistory,
@@ -73,6 +76,7 @@ const CompulsoryStudiesHopsWizard: React.FC<
   const [isFormSaveDialogOpen, setIsFormSaveDialogOpen] =
     useState<boolean>(false);
   const [hopsUpdateDetails, setHopsUpdateDetails] = useState<string>("");
+  const [changedFields, setChangedFields] = useState<string[]>([]);
 
   React.useEffect(() => {
     if (_.isEqual(form, localForm)) {
@@ -86,9 +90,37 @@ const CompulsoryStudiesHopsWizard: React.FC<
    * Handles changes to the form data
    * @param updatedForm - The updated form data
    */
-  const handleFormChange = (updatedForm: CompulsoryStudiesHops) => {
-    setLocalForm((previousForm) => ({ ...previousForm, ...updatedForm }));
-  };
+  const handleFormChange = React.useCallback(
+    (updatedForm: CompulsoryStudiesHops) => {
+      // Get old values from data
+      const oldDataForm = {
+        ...form,
+      };
+
+      const changedValuesComparedToPrevious = Object.keys(updatedForm).filter(
+        (key: keyof CompulsoryStudiesHops) => {
+          if (typeof updatedForm[key] !== "object") {
+            return updatedForm[key] !== oldDataForm[key];
+          }
+        }
+      );
+
+      const previousStudiesHasChanged = !_.isEqual(
+        updatedForm.previousLanguageExperience,
+        oldDataForm.previousLanguageExperience
+      );
+
+      if (previousStudiesHasChanged) {
+        changedValuesComparedToPrevious.push("previousLanguageExperience");
+      }
+
+      unstable_batchedUpdates(() => {
+        setChangedFields(changedValuesComparedToPrevious);
+        setLocalForm((previousForm) => ({ ...previousForm, ...updatedForm }));
+      });
+    },
+    [form]
+  );
 
   /**
    * Opens the save dialog
@@ -101,7 +133,11 @@ const CompulsoryStudiesHopsWizard: React.FC<
    * Handles the form submission
    */
   const handleFormSubmitClick = () => {
-    saveHopsForm({ form: localForm, details: hopsUpdateDetails });
+    saveHopsForm({
+      form: localForm,
+      details: hopsUpdateDetails,
+      fields: changedFields.length > 0 ? changedFields.join(",") : undefined,
+    });
   };
 
   /**
@@ -133,7 +169,7 @@ const CompulsoryStudiesHopsWizard: React.FC<
               studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
               educationalLevel={studentInfo.studyProgrammeEducationType}
               guidanceCounselors={studentInfo.counselorList}
-              allHopsEventsLoaded={allHopsEventsLoaded}
+              canLoadMoreHistory={hopsFormCanLoadMoreHistory}
               loadMoreHopsEvents={loadMoreHopsFormHistory}
             />
           </AnimatedStep>
@@ -159,7 +195,8 @@ const CompulsoryStudiesHopsWizard: React.FC<
       },
     ],
     [
-      allHopsEventsLoaded,
+      hopsFormCanLoadMoreHistory,
+      handleFormChange,
       loadMoreHopsFormHistory,
       localForm,
       studentInfo.counselorList,
@@ -200,6 +237,23 @@ const CompulsoryStudiesHopsWizard: React.FC<
           isOpen={isFormSaveDialogOpen}
           content={
             <div className="hops-container__row">
+              {changedFields.length > 0 && (
+                <div className="hops__form-element-container">
+                  <h4>
+                    {t("labels.editedFields", {
+                      ns: "pedagogySupportPlan",
+                    })}
+                  </h4>
+                  <ul>
+                    {changedFields.map((fieldKey, i) => (
+                      <li key={fieldKey} style={{ display: "list-item" }}>
+                        {compulsoryStudiesFieldsTranslation(t)[fieldKey]}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               <div className="hops__form-element-container">
                 <Textarea
                   id="hopsUpdateDetailsExplanation"
@@ -228,7 +282,7 @@ function mapStateToProps(state: StateType) {
   return {
     form: state.hopsNew.hopsForm,
     studentInfo: state.hopsNew.studentInfo,
-    allHopsEventsLoaded: state.hopsNew.hopsFormHistoryLoadedAll,
+    hopsFormCanLoadMoreHistory: state.hopsNew.hopsFormCanLoadMoreHistory,
   };
 }
 

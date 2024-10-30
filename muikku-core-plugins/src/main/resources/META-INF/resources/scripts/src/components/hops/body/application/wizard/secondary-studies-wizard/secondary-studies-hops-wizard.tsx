@@ -26,6 +26,7 @@ import {
 } from "~/actions/main-function/hops/";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import { secondaryStudiesFieldsTranslation } from "../helpers";
 
 /**
  * Props for the CompulsoryStudiesHopsWizard component
@@ -35,8 +36,8 @@ interface SecondaryStudiesHopsWizardProps {
   form: SecondaryStudiesHops;
   /** Information about the student */
   studentInfo: StudentInfo;
-  /** Indicates if all HOPS events have been loaded */
-  allHopsEventsLoaded: boolean;
+  /** Whether the HOPS form can load more history */
+  hopsFormCanLoadMoreHistory: boolean;
   /** Function to handle unsaved changes */
   onHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
   /** Redux thunk function to save the HOPS form */
@@ -57,7 +58,7 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   const {
     form,
     studentInfo,
-    allHopsEventsLoaded,
+    hopsFormCanLoadMoreHistory,
     onHasUnsavedChanges,
     saveHopsForm,
     loadMoreHopsFormHistory,
@@ -162,7 +163,7 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
               studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
               educationalLevel={studentInfo.studyProgrammeEducationType}
               guidanceCounselors={studentInfo.counselorList}
-              allHopsEventsLoaded={allHopsEventsLoaded}
+              canLoadMoreHistory={hopsFormCanLoadMoreHistory}
               loadMoreHopsEvents={loadMoreHopsFormHistory}
             />
           </AnimatedStep>
@@ -188,7 +189,7 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
       },
     ],
     [
-      allHopsEventsLoaded,
+      hopsFormCanLoadMoreHistory,
       handleFormChange,
       loadMoreHopsFormHistory,
       localForm,
@@ -227,6 +228,22 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
           isOpen={isFormSaveDialogOpen}
           content={
             <div className="hops-container__row">
+              {changedFields.length > 0 && (
+                <div className="hops__form-element-container">
+                  <h4>
+                    {t("labels.editedFields", {
+                      ns: "pedagogySupportPlan",
+                    })}
+                  </h4>
+                  <ul>
+                    {changedFields.map((fieldKey, i) => (
+                      <li key={fieldKey} style={{ display: "list-item" }}>
+                        {secondaryStudiesFieldsTranslation(t)[fieldKey]}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div className="hops__form-element-container">
                 <Textarea
                   id="hopsUpdateDetailsExplanation"
@@ -255,7 +272,7 @@ function mapStateToProps(state: StateType) {
   return {
     form: state.hopsNew.hopsForm,
     studentInfo: state.hopsNew.studentInfo,
-    allHopsEventsLoaded: state.hopsNew.hopsFormHistoryLoadedAll,
+    hopsFormCanLoadMoreHistory: state.hopsNew.hopsFormCanLoadMoreHistory,
   };
 }
 

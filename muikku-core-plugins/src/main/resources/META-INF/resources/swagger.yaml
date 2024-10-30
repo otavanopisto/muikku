@@ -5288,7 +5288,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnyValue"
+                $ref: "#/components/schemas/HopsFormSaveResponse"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -13847,6 +13847,7 @@ components:
       required:
         - id
         - details
+        - changes
         - date
         - modifier
         - modifierId
@@ -13858,6 +13859,8 @@ components:
         details:
           type: string
           nullable: true
+        changes:
+          type: string
         date:
           type: string
           format: date-time
@@ -18004,6 +18007,17 @@ components:
         canSignup:
           description: If the user can signup
           type: boolean
+
+    HopsFormSaveResponse:
+      type: object
+      required:
+        - formData
+        - latestChange
+      properties:
+        formData:
+          $ref: "#/components/schemas/AnyValue"
+        latestChange:
+          $ref: "#/components/schemas/HopsHistoryEntry"
 
     ErrorModel:
       type: object

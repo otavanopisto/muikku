@@ -157,7 +157,16 @@ export type HOPS_FORM_HISTORY_ENTRY_UPDATE = SpecificActionType<
 // Add this new action type
 export type HOPS_FORM_HISTORY_APPEND = SpecificActionType<
   "HOPS_FORM_HISTORY_APPEND",
-  { status: ReducerStateType; data?: HopsHistoryEntry[] | null }
+  {
+    status: ReducerStateType;
+    data?: HopsHistoryEntry[] | null;
+    appendPosition?: "start" | "end";
+  }
+>;
+
+export type HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY = SpecificActionType<
+  "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY",
+  boolean
 >;
 
 // Add this new action type
@@ -1062,11 +1071,23 @@ const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
       try {
         const hopsFormHistoryData = await hopsApi.getStudentHopsHistoryEntries({
           studentIdentifier,
+          maxResults: 6,
         });
+
+        // Update the state with the first 5 entries
+        const updatedToState = hopsFormHistoryData.slice(undefined, 5);
 
         dispatch({
           type: "HOPS_FORM_HISTORY_UPDATE",
-          payload: { status: "READY", data: hopsFormHistoryData },
+          payload: { status: "READY", data: updatedToState },
+        });
+
+        // Check if there are more history entries to load
+        const canLoadMoreHistory = hopsFormHistoryData.length === 6;
+
+        dispatch({
+          type: "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY",
+          payload: canLoadMoreHistory,
         });
       } catch (err) {
         if (!isMApiError(err)) {
@@ -1226,18 +1247,27 @@ const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
     });
 
     try {
-      const savedFormData: HopsForm = await hopsApi.saveStudentHops({
+      const savedFormData = await hopsApi.saveStudentHops({
         studentIdentifier,
         saveStudentHopsRequest: {
           formData: JSON.stringify(data.form),
           historyDetails: data.details,
-          historyChanges: "",
+          historyChanges: data.fields,
         },
       });
 
       dispatch({
         type: "HOPS_FORM_SAVE",
-        payload: { status: "READY", data: savedFormData },
+        payload: { status: "READY", data: savedFormData.formData },
+      });
+
+      dispatch({
+        type: "HOPS_FORM_HISTORY_APPEND",
+        payload: {
+          status: "READY",
+          data: [savedFormData.latestChange],
+          appendPosition: "start",
+        },
       });
 
       dispatch(
