@@ -5,7 +5,7 @@ import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
 import { Textarea } from "../components/text-area";
 import { HopsHistoryEntry } from "~/generated/client";
-import { bindActionCreators, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
@@ -52,13 +52,11 @@ const EditHopsEventDescriptionDialog: React.FC<
   const handleSaveClick =
     (closePortal: () => void) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      updateHopsFormHistoryEntry(
-        historyEntry.id,
-        { details: description },
-        () => {
-          closePortal();
-        }
-      );
+      updateHopsFormHistoryEntry({
+        entryId: historyEntry.id,
+        updatedEntry: { details: description },
+        onSuccess: closePortal,
+      });
     };
 
   /**
@@ -141,7 +139,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - The Redux dispatch function
  * @returns An object with the mapped dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       updateHopsFormHistoryEntry,

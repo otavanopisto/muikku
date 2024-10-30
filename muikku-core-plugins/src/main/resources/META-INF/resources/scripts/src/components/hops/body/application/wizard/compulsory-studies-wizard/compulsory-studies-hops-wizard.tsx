@@ -2,7 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
 import { Textarea } from "~/components/general/hops-compulsory-education-wizard/text-area";
@@ -237,7 +237,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - The Redux dispatch function
  * @returns An object with the mapped dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { saveHopsForm, loadMoreHopsFormHistory },
     dispatch

@@ -5,7 +5,7 @@ import { IconButton } from "~/components/general/button";
 import "~/sass/elements/hops.scss";
 import { HopsHistoryEntry } from "~/generated/client";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
+import { Action, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { ReducerStateType } from "~/reducers/hops";
@@ -70,7 +70,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - The Redux dispatch function
  * @returns An object with the mapped dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

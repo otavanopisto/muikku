@@ -8,7 +8,7 @@ import { useWizard } from "~/components/general/wizard/hooks/useWizard";
 import { Step1, Step2, Step3 } from "./steps";
 import HopsWizardFooter from "../hops-wizard-footer";
 import HopsWizardHeader from "../hops-wizard-header";
-import { bindActionCreators, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { SecondaryStudiesHops } from "~/@types/hops";
@@ -230,7 +230,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - The Redux dispatch function
  * @returns An object with the mapped dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { saveHopsForm, loadMoreHopsFormHistory },
     dispatch

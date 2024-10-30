@@ -870,7 +870,7 @@ const resetMatriculationData: ResetMatriculationDataTriggerType =
 const loadStudentHopsForm: LoadStudentHopsFormTriggerType =
   function loadStudentHopsForm(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -973,7 +973,7 @@ const loadStudentInfo: LoadStudentInfoTriggerType = function loadStudentInfo(
   data
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -1031,7 +1031,7 @@ const loadStudentInfo: LoadStudentInfoTriggerType = function loadStudentInfo(
 const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
   function loadHopsFormHistory(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1089,7 +1089,7 @@ const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
 const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
   function updateHopsFormHistoryEntry(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1147,7 +1147,7 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
 const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
   function loadMoreHopsFormHistory(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1203,7 +1203,7 @@ const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
  */
 const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const state = getState();
