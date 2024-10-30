@@ -7,10 +7,7 @@ import {
   InputRow,
 } from "~/components/general/hops-compulsory-education-wizard/hops-input-table";
 import { Textarea } from "~/components/general/hops-compulsory-education-wizard/text-area";
-import {
-  CompulsoryStudiesHops,
-  HopsMotivationAndStudyCompulsoryStudies,
-} from "~/@types/hops";
+import { CompulsoryStudiesHops } from "~/@types/hops";
 
 /**
  * Props for the HopsMotivationAndStudySkills component
@@ -58,17 +55,11 @@ const HopsMotivationAndStudySkills: React.FC<
    * @returns Event handler function
    */
   const handleTextareaChange =
-    (name: keyof HopsMotivationAndStudyCompulsoryStudies) =>
+    (name: keyof CompulsoryStudiesHops) =>
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       onFormChange({
         ...form,
-        motivationAndStudy: {
-          ...form.motivationAndStudy,
-          [name]: {
-            ...form.motivationAndStudy[name],
-            [e.currentTarget.name]: e.currentTarget.value,
-          },
-        },
+        [name]: e.currentTarget.value,
       });
     };
 
@@ -78,17 +69,11 @@ const HopsMotivationAndStudySkills: React.FC<
    * @returns Event handler function
    */
   const handleScaleRangeChange =
-    (name: keyof HopsMotivationAndStudyCompulsoryStudies) =>
+    (name: keyof CompulsoryStudiesHops) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onFormChange({
         ...form,
-        motivationAndStudy: {
-          ...form.motivationAndStudy,
-          [name]: {
-            ...form.motivationAndStudy[name],
-            [e.currentTarget.name]: parseInt(e.currentTarget.value),
-          },
-        },
+        [name]: parseInt(e.currentTarget.value),
       });
     };
 
@@ -98,22 +83,13 @@ const HopsMotivationAndStudySkills: React.FC<
    * @returns Event handler function
    */
   const handleCheckboxItemChange =
-    (name: keyof HopsMotivationAndStudyCompulsoryStudies) =>
+    (name: keyof CompulsoryStudiesHops) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onFormChange({
         ...form,
-        motivationAndStudy: {
-          ...form.motivationAndStudy,
-          [name]: {
-            ...form.motivationAndStudy[name],
-            [e.target.name]: e.target.checked,
-          },
-        },
+        [name]: e.target.checked,
       });
     };
-
-  const { wayToLearn, studySupport, selfImageAsStudent } =
-    form.motivationAndStudy;
 
   return (
     <div className="hops-container" ref={myRef}>
@@ -136,10 +112,12 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Oppimateriaalin lukeminen"
-                selectedValue={wayToLearn.byReadingMaterials}
+                selectedValue={form.byReadingMaterials}
                 groupName="byReadingMaterials"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("wayToLearn")}
+                onInputGroupChange={handleScaleRangeChange(
+                  "byReadingMaterials"
+                )}
                 required
               />
               <InputRow
@@ -148,10 +126,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Muistiinpanojen tekeminen (esim. miellekartat)"
-                selectedValue={wayToLearn.byTakingNotes}
+                selectedValue={form.byTakingNotes}
                 groupName="byTakingNotes"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("wayToLearn")}
+                onInputGroupChange={handleScaleRangeChange("byTakingNotes")}
                 required
               />
               <InputRow
@@ -160,10 +138,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Tehtävien tekeminen"
-                selectedValue={wayToLearn.byDoingExercises}
+                selectedValue={form.byDoingExercises}
                 groupName="byDoingExercises"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("wayToLearn")}
+                onInputGroupChange={handleScaleRangeChange("byDoingExercises")}
                 required
               />
               <InputRow
@@ -172,10 +150,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Asian ulkoa opetteleminen"
-                selectedValue={wayToLearn.byMemorizing}
+                selectedValue={form.byMemorizing}
                 groupName="byMemorizing"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("wayToLearn")}
+                onInputGroupChange={handleScaleRangeChange("byMemorizing")}
                 required
               />
               <InputRow
@@ -184,10 +162,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Videoiden katsominen"
-                selectedValue={wayToLearn.byWatchingVideos}
+                selectedValue={form.byWatchingVideos}
                 groupName="byWatchingVideos"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("wayToLearn")}
+                onInputGroupChange={handleScaleRangeChange("byWatchingVideos")}
                 required
               />
               <InputRow
@@ -196,10 +174,12 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Opetuksen kuunteleminen"
-                selectedValue={wayToLearn.byListeningTeaching}
+                selectedValue={form.byListeningTeaching}
                 groupName="byListeningTeaching"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("wayToLearn")}
+                onInputGroupChange={handleScaleRangeChange(
+                  "byListeningTeaching"
+                )}
                 required
               />
               <InputRow
@@ -208,10 +188,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Asian selittäminen toiselle"
-                selectedValue={wayToLearn.byExplaining}
+                selectedValue={form.byExplaining}
                 groupName="byExplaining"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("wayToLearn")}
+                onInputGroupChange={handleScaleRangeChange("byExplaining")}
                 required
               />
               <InputRow
@@ -220,10 +200,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Muiden kanssa keskusteleminen"
-                selectedValue={wayToLearn.byDiscussing}
+                selectedValue={form.byDiscussing}
                 groupName="byDiscussing"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("wayToLearn")}
+                onInputGroupChange={handleScaleRangeChange("byDiscussing")}
                 required
               />
               <InputRow
@@ -232,10 +212,12 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Toisen tekemisen tai käytännön esimerkkien seuraaminen"
-                selectedValue={wayToLearn.byWatchingOrDoingExamples}
+                selectedValue={form.byWatchingOrDoingExamples}
                 groupName="byWatchingOrDoingExamples"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("wayToLearn")}
+                onInputGroupChange={handleScaleRangeChange(
+                  "byWatchingOrDoingExamples"
+                )}
                 required
               />
               <EmptyRow colSpan={5} modifiers={["empty", "question-table"]} />
@@ -249,10 +231,10 @@ const HopsMotivationAndStudySkills: React.FC<
               id="wayToLearnSomeOtherWayExplanation"
               label="Jos haluat, voit kertoa tarkemmin itsellesi sopivista opiskelutavoista:"
               name="someOtherWay"
-              value={wayToLearn.someOtherWay}
+              value={form.someOtherWay}
               className="hops__textarea"
               disabled={disabled}
-              onChange={handleTextareaChange("wayToLearn")}
+              onChange={handleTextareaChange("someOtherWay")}
             />
           </div>
         </div>
@@ -275,8 +257,8 @@ const HopsMotivationAndStudySkills: React.FC<
               type="checkbox"
               name="fromFamilyMember"
               className="hops__input"
-              checked={!!studySupport.fromFamilyMember}
-              onChange={handleCheckboxItemChange("studySupport")}
+              checked={!!form.fromFamilyMember}
+              onChange={handleCheckboxItemChange("fromFamilyMember")}
               disabled={disabled}
             ></input>
             <label htmlFor="fromFamilyMember" className="hops__label">
@@ -291,8 +273,8 @@ const HopsMotivationAndStudySkills: React.FC<
               type="checkbox"
               name="fromFriend"
               className="hops__input"
-              checked={!!studySupport.fromFriend}
-              onChange={handleCheckboxItemChange("studySupport")}
+              checked={!!form.fromFriend}
+              onChange={handleCheckboxItemChange("fromFriend")}
               disabled={disabled}
             ></input>
             <label htmlFor="fromFriend" className="hops__label">
@@ -307,8 +289,8 @@ const HopsMotivationAndStudySkills: React.FC<
               type="checkbox"
               name="fromSupportPerson"
               className="hops__input"
-              checked={!!studySupport.fromSupportPerson}
-              onChange={handleCheckboxItemChange("studySupport")}
+              checked={!!form.fromSupportPerson}
+              onChange={handleCheckboxItemChange("fromSupportPerson")}
               disabled={disabled}
             ></input>
             <label htmlFor="fromSupportPerson" className="hops__label">
@@ -323,8 +305,8 @@ const HopsMotivationAndStudySkills: React.FC<
               type="checkbox"
               name="noSupport"
               className="hops__input"
-              checked={!!studySupport.noSupport}
-              onChange={handleCheckboxItemChange("studySupport")}
+              checked={!!form.noSupport}
+              onChange={handleCheckboxItemChange("noSupport")}
               disabled={disabled}
             ></input>
             <label htmlFor="noSupport" className="hops__label">
@@ -339,8 +321,8 @@ const HopsMotivationAndStudySkills: React.FC<
               type="checkbox"
               name="somethingElse"
               className="hops__input"
-              checked={!!studySupport.somethingElse}
-              onChange={handleCheckboxItemChange("studySupport")}
+              checked={!!form.studySupportSomethingElse}
+              onChange={handleCheckboxItemChange("studySupportSomethingElse")}
               disabled={disabled}
             ></input>
             <label htmlFor="somethingElse" className="hops__label">
@@ -349,16 +331,16 @@ const HopsMotivationAndStudySkills: React.FC<
           </div>
         </div>
 
-        <AnimateHeight height={studySupport.somethingElse ? "auto" : 0}>
+        <AnimateHeight height={form.studySupportSomethingElse ? "auto" : 0}>
           <div className="hops__form-element-container">
             <Textarea
               id="somethingElseStudySupportExplanation"
               label="Kerro tarkemmin"
-              name="somethingElseWhat"
-              value={studySupport.somethingElseWhat}
+              name="studySupportSomethingElseWhat"
+              value={form.studySupportSomethingElseWhat}
               className="hops__textarea"
               disabled={disabled}
-              onChange={handleTextareaChange("studySupport")}
+              onChange={handleTextareaChange("studySupportSomethingElseWhat")}
             />
           </div>
         </AnimateHeight>
@@ -383,12 +365,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Opiskeleminen on minusta mukavaa"
-                selectedValue={selfImageAsStudent.likeStudying}
+                selectedValue={form.likeStudying}
                 groupName="likeStudying"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
-                )}
+                onInputGroupChange={handleScaleRangeChange("likeStudying")}
                 required
               />
               <InputRow
@@ -397,12 +377,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Minulla on tavoitteita opinnoilleni"
-                selectedValue={selfImageAsStudent.haveGoals}
+                selectedValue={form.haveGoals}
                 groupName="haveGoals"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
-                )}
+                onInputGroupChange={handleScaleRangeChange("haveGoals")}
                 required
               />
               <InputRow
@@ -411,11 +389,11 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Olen valmis tekemään töitä saavuttaakseni tavoitteeni"
-                selectedValue={selfImageAsStudent.readyToAchieveGoals}
+                selectedValue={form.readyToAchieveGoals}
                 groupName="readyToAchieveGoals"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
+                  "readyToAchieveGoals"
                 )}
                 required
               />
@@ -425,12 +403,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Teen aina aloittamani työt loppuun"
-                selectedValue={selfImageAsStudent.alwaysFinishJobs}
+                selectedValue={form.alwaysFinishJobs}
                 groupName="alwaysFinishJobs"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
-                )}
+                onInputGroupChange={handleScaleRangeChange("alwaysFinishJobs")}
                 required
               />
               <InputRow
@@ -439,12 +415,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Teen annetut tehtävät sovitussa aikataulussa"
-                selectedValue={selfImageAsStudent.bePedantic}
+                selectedValue={form.bePedantic}
                 groupName="bePedantic"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
-                )}
+                onInputGroupChange={handleScaleRangeChange("bePedantic")}
                 required
               />
               <InputRow
@@ -453,11 +427,11 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Ajatukseni ei lähde harhailemaan, kun opiskelen"
-                selectedValue={selfImageAsStudent.studyingConcentration}
+                selectedValue={form.studyingConcentration}
                 groupName="studyingConcentration"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
+                  "studyingConcentration"
                 )}
                 required
               />
@@ -467,12 +441,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Pystyn työskentelemään, vaikka ympärilläni olisi häiriöitä"
-                selectedValue={selfImageAsStudent.affectedByNoise}
+                selectedValue={form.affectedByNoise}
                 groupName="affectedByNoise"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
-                )}
+                onInputGroupChange={handleScaleRangeChange("affectedByNoise")}
                 required
               />
               <InputRow
@@ -481,11 +453,11 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Pystyn seuraamaan ohjeita ja toimimaan niiden mukaisesti"
-                selectedValue={selfImageAsStudent.canFollowInstructions}
+                selectedValue={form.canFollowInstructions}
                 groupName="canFollowInstructions"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
+                  "canFollowInstructions"
                 )}
                 required
               />
@@ -495,11 +467,11 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Osaan arvioida, missä olen onnistunut ja missä epäonnistunut"
-                selectedValue={selfImageAsStudent.canEvaluateOwnWork}
+                selectedValue={form.canEvaluateOwnWork}
                 groupName="canEvaluateOwnWork"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
+                  "canEvaluateOwnWork"
                 )}
                 required
               />
@@ -509,12 +481,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Otan mielelläni vastaan myös korjaavaa palautetta"
-                selectedValue={selfImageAsStudent.canTakeFeedback}
+                selectedValue={form.canTakeFeedback}
                 groupName="canTakeFeedback"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
-                )}
+                onInputGroupChange={handleScaleRangeChange("canTakeFeedback")}
                 required
               />
               <InputRow
@@ -523,13 +493,11 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Osaan käyttää tietokoneella yleisimpiä sovelluksia kuten internet-selainta ja sähköpostia"
-                selectedValue={
-                  selfImageAsStudent.canUseBasicComputerFunctionalities
-                }
+                selectedValue={form.canUseBasicComputerFunctionalities}
                 groupName="canUseBasicComputerFunctionalities"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange(
-                  "selfImageAsStudent"
+                  "canUseBasicComputerFunctionalities"
                 )}
                 required
               />
@@ -543,11 +511,11 @@ const HopsMotivationAndStudySkills: React.FC<
             <Textarea
               id="somethingElseSelfImageAsStudentExplanation"
               label="Jos haluat, voit kertoa tarkemmin sinusta opiskelijana:"
-              name="somethingElse"
-              value={selfImageAsStudent.somethingElse}
+              name="selfImageSomethingElse"
+              value={form.selfImageSomethingElse}
               className="hops__textarea"
               disabled={disabled}
-              onChange={handleTextareaChange("selfImageAsStudent")}
+              onChange={handleTextareaChange("selfImageSomethingElse")}
             />
           </div>
         </div>
@@ -558,10 +526,10 @@ const HopsMotivationAndStudySkills: React.FC<
               id="wishesForTeachersAndSupervisors"
               label="Millaista tukea toivot Nettiperuskoulun ohjaajalta ja opettajilta?"
               name="wishesForTeachersAndSupervisors"
-              value={selfImageAsStudent.wishesForTeachersAndSupervisors}
+              value={form.wishesForTeachersAndSupervisors}
               className="hops__textarea"
               disabled={disabled}
-              onChange={handleTextareaChange("selfImageAsStudent")}
+              onChange={handleTextareaChange("wishesForTeachersAndSupervisors")}
             />
           </div>
         </div>

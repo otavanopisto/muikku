@@ -8,10 +8,7 @@ import {
   LanguageGradeRow,
 } from "../../components/hops-language-grade-table";
 import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
-import {
-  CompulsoryStudiesHops,
-  HopsStartingLevelCompulsoryStudies,
-} from "~/@types/hops";
+import { CompulsoryStudiesHops } from "~/@types/hops";
 
 /**
  * Props for the HopsStartingLevel component
@@ -37,7 +34,6 @@ const disabled = false;
  */
 const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
   const { form, onFormChange } = props;
-  const { startingLevel } = form;
   const myRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,28 +52,25 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
 
   /**
    * Handles changes in select inputs
-   * @param {keyof HopsStartingLevelCompulsoryStudies} name - The name of the field to update
+   * @param {keyof CompulsoryStudiesHops} name - The name of the field to update
    * @returns - Event handler function
    */
   const handleSelectsChange =
-    (name: keyof HopsStartingLevelCompulsoryStudies) =>
+    (name: keyof CompulsoryStudiesHops) =>
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       updateLocalForm({ [name]: e.currentTarget.value });
     };
 
   /**
    * Handles changes in text inputs
-   * @param {keyof HopsStartingLevelCompulsoryStudies} name - The name of the field to update
+   * @param {keyof CompulsoryStudiesHops} name - The name of the field to update
    * @returns - Event handler function
    */
   const handleTextAreaChange =
-    (name: keyof HopsStartingLevelCompulsoryStudies) =>
+    (name: keyof CompulsoryStudiesHops) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       updateLocalForm({
-        startingLevel: {
-          ...startingLevel,
-          [name]: e.currentTarget.value,
-        },
+        [name]: e.currentTarget.value,
       });
     };
 
@@ -86,14 +79,11 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
    */
   const handleAddNewCustomLngClick = () => {
     const updatedLngGrades = [
-      ...startingLevel.previousLanguageExperience,
+      ...form.previousLanguageExperience,
       { name: "", grade: undefined, hardCoded: false },
     ];
     updateLocalForm({
-      startingLevel: {
-        ...startingLevel,
-        previousLanguageExperience: updatedLngGrades,
-      },
+      previousLanguageExperience: updatedLngGrades,
     });
   };
 
@@ -102,13 +92,10 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
    * @param {number} index - The index of the language to delete
    */
   const handleDeleteCustomLngClick = (index: number) => {
-    const updatedLngGrades = [...startingLevel.previousLanguageExperience];
+    const updatedLngGrades = [...form.previousLanguageExperience];
     updatedLngGrades.splice(index, 1);
     updateLocalForm({
-      startingLevel: {
-        ...startingLevel,
-        previousLanguageExperience: updatedLngGrades,
-      },
+      previousLanguageExperience: updatedLngGrades,
     });
   };
 
@@ -118,13 +105,10 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
    * @param {number} index - The index of the language to update
    */
   const handleCustomLngChange = (updatedLng: LanguageGrade, index: number) => {
-    const updatedLngGrades = [...startingLevel.previousLanguageExperience];
+    const updatedLngGrades = [...form.previousLanguageExperience];
     updatedLngGrades[index] = { ...updatedLng };
     updateLocalForm({
-      startingLevel: {
-        ...startingLevel,
-        previousLanguageExperience: updatedLngGrades,
-      },
+      previousLanguageExperience: updatedLngGrades,
     });
   };
 
@@ -148,7 +132,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
             <select
               id="previousEducation"
               className="hops__select"
-              value={startingLevel.previousEducation}
+              value={form.previousEducation}
               onChange={handleSelectsChange("previousEducation")}
               disabled={false}
             >
@@ -161,14 +145,14 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
             </select>
           </div>
 
-          {startingLevel.previousEducation === Education.SOMETHING_ELSE ? (
+          {form.previousEducation === Education.SOMETHING_ELSE ? (
             <div className="hops__form-element-container">
               <TextField
                 id="previousEducationElse"
                 label="Mikä?"
                 className="hops__input"
                 onChange={handleTextAreaChange("previousEducationElse")}
-                value={startingLevel.previousEducationElse}
+                value={form.previousEducationElse}
                 disabled={disabled}
               />
             </div>
@@ -182,7 +166,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
               label="Opintoihin käytetyt vuodet?"
               className="hops__input"
               onChange={handleTextAreaChange("previousYearsUsedInStudies")}
-              value={startingLevel.previousYearsUsedInStudies}
+              value={form.previousYearsUsedInStudies}
               disabled={disabled}
             />
           </div>
@@ -196,7 +180,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
             <select
               id="previousWorkExperience"
               className="hops__select"
-              value={startingLevel.previousWorkExperience}
+              value={form.previousWorkExperience}
               onChange={handleSelectsChange("previousWorkExperience")}
               disabled={disabled}
             >
@@ -215,7 +199,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
               label="Miltä alalta työkokemuksesi on?"
               className="hops__input"
               onChange={handleTextAreaChange("previousWorkExperienceField")}
-              value={startingLevel.previousWorkExperienceField}
+              value={form.previousWorkExperienceField}
               disabled={disabled}
             />
           </div>
@@ -233,7 +217,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
         <div className="hops-container__row">
           <div className="hops-container__table-container">
             <HopsLanguageGradeTable usePlace={"studies"}>
-              {startingLevel.previousLanguageExperience.map((lngG, index) => (
+              {form.previousLanguageExperience.map((lngG, index) => (
                 <LanguageGradeRow
                   key={index}
                   index={index}

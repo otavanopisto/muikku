@@ -39,7 +39,7 @@ const HopsMotivationAndStudySkills: React.FC<
 > = (props) => {
   const { onFormChange, form } = props;
 
-  const { selfAssessment, moreAboutSelfAssessment } = form;
+  const { moreAboutSelfAssessment } = form;
   const myRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -95,10 +95,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Suhtaudun opiskeluun myönteisesti."
-                selectedValue={selfAssessment.positiveAttitude}
+                selectedValue={form.positiveAttitude}
                 groupName="positiveAttitude"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("selfAssessment")}
+                onInputGroupChange={handleScaleRangeChange("positiveAttitude")}
                 required
               />
               <InputRow
@@ -107,10 +107,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Olen valmis asettamaan tavoitteita opinnoilleni."
-                selectedValue={selfAssessment.goalSetting}
+                selectedValue={form.goalSetting}
                 groupName="goalSetting"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("selfAssessment")}
+                onInputGroupChange={handleScaleRangeChange("goalSetting")}
                 required
               />
               <InputRow
@@ -119,10 +119,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Olen motivoitunut tekemään töitä saavuttaakseni tavoitteeni."
-                selectedValue={selfAssessment.goalMotivation}
+                selectedValue={form.goalMotivation}
                 groupName="goalMotivation"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("selfAssessment")}
+                onInputGroupChange={handleScaleRangeChange("goalMotivation")}
                 required
               />
               <InputRow
@@ -131,10 +131,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Pyrin tekemään tehtävät sovitussa aikataulussa."
-                selectedValue={selfAssessment.taskCompletion}
+                selectedValue={form.taskCompletion}
                 groupName="taskCompletion"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("selfAssessment")}
+                onInputGroupChange={handleScaleRangeChange("taskCompletion")}
                 required
               />
               <InputRow
@@ -143,10 +143,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Pystyn keskittymään opiskeluun riittävän hyvin."
-                selectedValue={selfAssessment.focusAbility}
+                selectedValue={form.focusAbility}
                 groupName="focusAbility"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("selfAssessment")}
+                onInputGroupChange={handleScaleRangeChange("focusAbility")}
                 required
               />
               <InputRow
@@ -155,10 +155,12 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Pystyn seuraamaan ohjeita ja toimimaan niiden mukaisesti."
-                selectedValue={selfAssessment.followInstructions}
+                selectedValue={form.followInstructions}
                 groupName="followInstructions"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("selfAssessment")}
+                onInputGroupChange={handleScaleRangeChange(
+                  "followInstructions"
+                )}
                 required
               />
               <InputRow
@@ -167,7 +169,7 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Osaan arvioida, mikä on mennyt hyvin ja missä voin vielä kehittyä."
-                selectedValue={selfAssessment.selfAssessment}
+                selectedValue={form.selfAssessment}
                 groupName="selfAssessment"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("selfAssessment")}
@@ -179,10 +181,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Osaan ottaa vastaan opintoihin liittyvää palautetta."
-                selectedValue={selfAssessment.receiveFeedback}
+                selectedValue={form.receiveFeedback}
                 groupName="receiveFeedback"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("selfAssessment")}
+                onInputGroupChange={handleScaleRangeChange("receiveFeedback")}
                 required
               />
               <InputRow
@@ -191,10 +193,10 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Minulla on hyvät tietotekniikan käyttötaidot opiskelua varten."
-                selectedValue={selfAssessment.itSkills}
+                selectedValue={form.itSkills}
                 groupName="itSkills"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("selfAssessment")}
+                onInputGroupChange={handleScaleRangeChange("itSkills")}
                 required
               />
               <InputRow
@@ -203,10 +205,12 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleLength={5}
                 labelOnSeparateRow={true}
                 label="Minulla on riittävät opiskelutaidot itsenäiseen verkko-opiskeluun."
-                selectedValue={selfAssessment.independentLearningSkills}
+                selectedValue={form.independentLearningSkills}
                 groupName="independentLearningSkills"
                 disabled={disabled}
-                onInputGroupChange={handleScaleRangeChange("selfAssessment")}
+                onInputGroupChange={handleScaleRangeChange(
+                  "independentLearningSkills"
+                )}
                 required
               />
               <EmptyRow colSpan={5} modifiers={["empty", "question-table"]} />

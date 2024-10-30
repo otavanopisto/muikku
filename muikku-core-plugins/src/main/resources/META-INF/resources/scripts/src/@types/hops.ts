@@ -162,11 +162,9 @@ export interface HopsMotivationAndStudyCompulsoryStudies {
 }
 
 /**
- * CompulsoryStudiesHops
+ * CompulsoryStudiesHopsOld
  */
-export interface CompulsoryStudiesHops {
-  type: "compulsory";
-
+export interface CompulsoryStudiesHopsOld {
   // Previous education and language skills
   startingLevel: HopsStartingLevelCompulsoryStudies;
   // Self assessment
@@ -174,9 +172,140 @@ export interface CompulsoryStudiesHops {
 }
 
 /**
- * SelfAssessmentSecondaryStudies
+ * Current HopsForm for compulsory studies. Note that this is same as CompulsoryStudiesHopsOld
+ * but with some changes in structure to make it more similar to SecondaryStudiesHops and easier to handle.
  */
-interface SelfAssessmentSecondaryStudies {
+export interface CompulsoryStudiesHops {
+  type: "compulsory";
+
+  // Previous education and language skills
+  previousEducation: string;
+  previousEducationElse?: string;
+  previousWorkExperience: string;
+  previousWorkExperienceField: string;
+  previousYearsUsedInStudies: string;
+  previousLanguageExperience: LanguageGrade[];
+
+  // --Way to learn related questions
+  /**
+   * "By reading learning materials"
+   */
+  byReadingMaterials?: number;
+  /**
+   * "By taking notes (e.g., mind maps)"
+   */
+  byTakingNotes?: number;
+  /**
+   * "By doing exercises"
+   */
+  byDoingExercises?: number;
+  /**
+   * "By memorizing"
+   */
+  byMemorizing?: number;
+  /**
+   * "By watching videos"
+   */
+  byWatchingVideos?: number;
+  /**
+   * "By listening to lessons"
+   */
+  byListeningTeaching?: number;
+  /**
+   * "By explaining the subject to someone else"
+   */
+  byExplaining?: number;
+  /**
+   * "By discussing with others"
+   */
+  byDiscussing?: number;
+  /**
+   * "By watching or doing examples"
+   */
+  byWatchingOrDoingExamples?: number;
+  /**
+   * "Some other way"
+   */
+  someOtherWay?: string;
+
+  // --Study support related questions
+  fromFamilyMember?: boolean;
+  fromFriend?: boolean;
+  fromSupportPerson?: boolean;
+  noSupport?: boolean;
+  studySupportSomethingElse?: boolean;
+  studySupportSomethingElseWhat?: string;
+
+  // --Self image related questions
+  /**
+   * "I find studying enjoyable."
+   */
+  likeStudying?: number;
+  /**
+   * "I have goals for my studies."
+   */
+  haveGoals?: number;
+  /**
+   * "I am ready to achieve my goals."
+   */
+  readyToAchieveGoals?: number;
+  /**
+   * "I always finish the tasks I start."
+   */
+  alwaysFinishJobs?: number;
+  /**
+   * "I am pedantic."
+   */
+  bePedantic?: number;
+  /**
+   * "My mind doesn’t wander when I study."
+   */
+  studyingConcentration?: number;
+  /**
+   * "I can work even if there are distractions around me."
+   */
+  affectedByNoise?: number;
+  /**
+   * "I can follow instructions and act accordingly."
+   */
+  canFollowInstructions?: number;
+  /**
+   * "I can assess what has gone well and where I can still improve."
+   */
+  canEvaluateOwnWork?: number;
+  /**
+   * "I am able to receive feedback related to my studies."
+   */
+  canTakeFeedback?: number;
+  /**
+   * "I have basic computer skills for studying."
+   */
+  canUseBasicComputerFunctionalities?: number;
+  /**
+   * "Something else"
+   */
+  selfImageSomethingElse?: number;
+  /**
+   * "Wishes for teachers and supervisors"
+   */
+  wishesForTeachersAndSupervisors?: number;
+}
+
+/**
+ * SecondaryStudiesHops
+ */
+export interface SecondaryStudiesHops {
+  type: "secondary";
+
+  // Previous education and language skills
+  previousEducations: PreviousStudiesEntry[];
+  previousEducationInfo?: string;
+  nativeLanguage: string;
+  studiedLanguagesAtSchool: string;
+  studiedLanguagesOther: string;
+  languageLearningSkills: string;
+
+  // --Self assessment related questions
   /**
    * "I have a positive attitude toward studying."
    */
@@ -217,24 +346,9 @@ interface SelfAssessmentSecondaryStudies {
    * I have sufficient study skills for independent online learning.
    */
   independentLearningSkills?: number;
-}
-
-/**
- * SecondaryStudiesHops
- */
-export interface SecondaryStudiesHops {
-  type: "secondary";
-
-  // Previous education and language skills
-  previousEducations: PreviousStudiesEntry[];
-  previousEducationInfo?: string;
-  nativeLanguage: string;
-  studiedLanguagesAtSchool: string;
-  studiedLanguagesOther: string;
-  languageLearningSkills: string;
-
-  // Self assessment
-  selfAssessment: SelfAssessmentSecondaryStudies;
+  /**
+   * "More about self assessment"
+   */
   moreAboutSelfAssessment?: string;
 }
 
@@ -261,7 +375,6 @@ export function initializeSecondaryStudiesHops(): SecondaryStudiesHops {
     studiedLanguagesAtSchool: "",
     studiedLanguagesOther: "",
     languageLearningSkills: "",
-    selfAssessment: {},
   };
 }
 
@@ -271,32 +384,100 @@ export function initializeSecondaryStudiesHops(): SecondaryStudiesHops {
 export function initializeCompulsoryStudiesHops(): CompulsoryStudiesHops {
   return {
     type: "compulsory",
-    startingLevel: {
-      previousEducation: "",
-      previousEducationElse: "",
-      previousWorkExperience: "",
-      previousWorkExperienceField: "",
-      previousYearsUsedInStudies: "",
-      previousLanguageExperience: [
-        {
-          name: "suomi",
-          hardCoded: true,
-        },
-        {
-          name: "ruotsi",
-          hardCoded: true,
-        },
-        {
-          name: "englanti",
-          hardCoded: true,
-        },
-      ],
-    },
-    motivationAndStudy: {
-      wayToLearn: {},
-      studySupport: {},
-      selfImageAsStudent: {},
-    },
+    previousEducation: "",
+    previousEducationElse: "",
+    previousWorkExperience: "",
+    previousWorkExperienceField: "",
+    previousYearsUsedInStudies: "",
+    previousLanguageExperience: [
+      {
+        name: "suomi",
+        hardCoded: true,
+      },
+      {
+        name: "ruotsi",
+        hardCoded: true,
+      },
+      {
+        name: "englanti",
+        hardCoded: true,
+      },
+    ],
+  };
+}
+
+/**
+ * Helper function to initialize a CompulsoryStudiesHops object from old structure
+ * @param oldForm CompulsoryStudiesHopsOld - the old form structure to convert
+ */
+export function initializeCompulsoryStudiesHopsFromOld(
+  oldForm: CompulsoryStudiesHopsOld
+): CompulsoryStudiesHops {
+  return {
+    type: "compulsory",
+    // Starting level data
+    previousEducation: oldForm.startingLevel.previousEducation,
+    previousEducationElse: oldForm.startingLevel.previousEducationElse,
+    previousWorkExperience: oldForm.startingLevel.previousWorkExperience,
+    previousWorkExperienceField:
+      oldForm.startingLevel.previousWorkExperienceField,
+    previousYearsUsedInStudies:
+      oldForm.startingLevel.previousYearsUsedInStudies,
+    previousLanguageExperience:
+      oldForm.startingLevel.previousLanguageExperience,
+
+    // Way to learn data
+    byReadingMaterials:
+      oldForm.motivationAndStudy.wayToLearn.byReadingMaterials,
+    byTakingNotes: oldForm.motivationAndStudy.wayToLearn.byTakingNotes,
+    byDoingExercises: oldForm.motivationAndStudy.wayToLearn.byDoingExercises,
+    byMemorizing: oldForm.motivationAndStudy.wayToLearn.byMemorizing,
+    byWatchingVideos: oldForm.motivationAndStudy.wayToLearn.byWatchingVideos,
+    byListeningTeaching:
+      oldForm.motivationAndStudy.wayToLearn.byListeningTeaching,
+    byExplaining: oldForm.motivationAndStudy.wayToLearn.byExplaining,
+    byDiscussing: oldForm.motivationAndStudy.wayToLearn.byDiscussing,
+    byWatchingOrDoingExamples:
+      oldForm.motivationAndStudy.wayToLearn.byWatchingOrDoingExamples,
+    someOtherWay: oldForm.motivationAndStudy.wayToLearn.someOtherWay,
+
+    // Study support data
+    fromFamilyMember: oldForm.motivationAndStudy.studySupport.fromFamilyMember,
+    fromFriend: oldForm.motivationAndStudy.studySupport.fromFriend,
+    fromSupportPerson:
+      oldForm.motivationAndStudy.studySupport.fromSupportPerson,
+    noSupport: oldForm.motivationAndStudy.studySupport.noSupport,
+    studySupportSomethingElse:
+      oldForm.motivationAndStudy.studySupport.somethingElse,
+    studySupportSomethingElseWhat:
+      oldForm.motivationAndStudy.studySupport.somethingElseWhat,
+
+    // Self image data
+    likeStudying: oldForm.motivationAndStudy.selfImageAsStudent.likeStudying,
+    haveGoals: oldForm.motivationAndStudy.selfImageAsStudent.haveGoals,
+    readyToAchieveGoals:
+      oldForm.motivationAndStudy.selfImageAsStudent.readyToAchieveGoals,
+    alwaysFinishJobs:
+      oldForm.motivationAndStudy.selfImageAsStudent.alwaysFinishJobs,
+    bePedantic: oldForm.motivationAndStudy.selfImageAsStudent.bePedantic,
+    studyingConcentration:
+      oldForm.motivationAndStudy.selfImageAsStudent.studyingConcentration,
+    affectedByNoise:
+      oldForm.motivationAndStudy.selfImageAsStudent.affectedByNoise,
+    canFollowInstructions:
+      oldForm.motivationAndStudy.selfImageAsStudent.canFollowInstructions,
+    canEvaluateOwnWork:
+      oldForm.motivationAndStudy.selfImageAsStudent.canEvaluateOwnWork,
+    canTakeFeedback:
+      oldForm.motivationAndStudy.selfImageAsStudent.canTakeFeedback,
+    canUseBasicComputerFunctionalities:
+      oldForm.motivationAndStudy.selfImageAsStudent
+        .canUseBasicComputerFunctionalities,
+    selfImageSomethingElse:
+      oldForm.motivationAndStudy.selfImageAsStudent.somethingElse,
+    wishesForTeachersAndSupervisors:
+      oldForm.motivationAndStudy.selfImageAsStudent
+        .wishesForTeachersAndSupervisors,
   };
 }
 
@@ -317,6 +498,17 @@ export const isCompulsoryStudiesHops = (
 export const isSecondaryStudiesHops = (
   form: HopsForm
 ): form is SecondaryStudiesHops => form.type === "secondary";
+
+/**
+ * Checks if the form uses the old CompulsoryStudiesHops structure
+ * @param form any object to check
+ * @returns boolean
+ */
+export const isCompulsoryStudiesHopsOld = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: any
+): form is CompulsoryStudiesHopsOld =>
+  form.startingLevel !== undefined || form.motivationAndStudy !== undefined;
 
 /**
  * HopsForm

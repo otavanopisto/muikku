@@ -25,7 +25,9 @@ import { OPS2021SubjectCodesInOrder } from "~/mock/mock-data";
 import {
   HopsForm,
   initializeCompulsoryStudiesHops,
+  initializeCompulsoryStudiesHopsFromOld,
   initializeSecondaryStudiesHops,
+  isCompulsoryStudiesHopsOld,
 } from "~/@types/hops";
 
 // Api instances
@@ -256,6 +258,7 @@ export interface SaveHopsFormTriggerType {
   (data: {
     form: HopsForm;
     details?: string;
+    fields?: string;
     onSuccess?: () => void;
   }): AnyActionType;
 }
@@ -929,11 +932,19 @@ const loadStudentHopsForm: LoadStudentHopsFormTriggerType =
               ...hopsFormData,
             };
           } else {
-            initializedHopsFormData = {
-              type: "compulsory",
-              ...initializeCompulsoryStudiesHops(),
-              ...hopsFormData,
-            };
+            if (isCompulsoryStudiesHopsOld(hopsFormData)) {
+              initializedHopsFormData = {
+                type: "compulsory",
+                ...initializeCompulsoryStudiesHops(),
+                ...initializeCompulsoryStudiesHopsFromOld(hopsFormData),
+              };
+            } else {
+              initializedHopsFormData = {
+                type: "compulsory",
+                ...initializeCompulsoryStudiesHops(),
+                ...hopsFormData,
+              };
+            }
           }
         }
 
@@ -1215,20 +1226,18 @@ const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
     });
 
     try {
-      // Assuming there's an API endpoint to save/update HOPS form
-      const savedFormData = await hopsApi.saveStudentHops({
+      const savedFormData: HopsForm = await hopsApi.saveStudentHops({
         studentIdentifier,
         saveStudentHopsRequest: {
           formData: JSON.stringify(data.form),
           historyDetails: data.details,
+          historyChanges: "",
         },
       });
 
-      const parsedFormData = JSON.parse(savedFormData) as HopsForm;
-
       dispatch({
         type: "HOPS_FORM_SAVE",
-        payload: { status: "READY", data: parsedFormData },
+        payload: { status: "READY", data: savedFormData },
       });
 
       dispatch(

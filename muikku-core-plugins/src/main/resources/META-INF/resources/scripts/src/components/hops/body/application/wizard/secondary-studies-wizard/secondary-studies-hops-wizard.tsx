@@ -1,10 +1,8 @@
 import { AnimatePresence } from "framer-motion";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import Wizard, { WizardStep } from "~/components/general/wizard";
 import { WizardProvider } from "~/components/general/wizard/context/wizard-context";
 import { useWizard } from "~/components/general/wizard/hooks/useWizard";
-
-// Import your step components here
 import { Step1, Step2, Step3 } from "./steps";
 import HopsWizardFooter from "../hops-wizard-footer";
 import HopsWizardHeader from "../hops-wizard-header";
@@ -26,6 +24,8 @@ import {
   LoadMoreHopsFormHistoryTriggerType,
   loadMoreHopsFormHistory,
 } from "~/actions/main-function/hops/";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 
 /**
  * Props for the CompulsoryStudiesHopsWizard component
@@ -70,6 +70,7 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   const [isFormSaveDialogOpen, setIsFormSaveDialogOpen] =
     useState<boolean>(false);
   const [hopsUpdateDetails, setHopsUpdateDetails] = useState<string>("");
+  const [changedFields, setChangedFields] = useState<string[]>([]);
 
   React.useEffect(() => {
     if (_.isEqual(form, localForm)) {
@@ -83,9 +84,37 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
    * Handles changes to the form data
    * @param updatedForm - The updated form data
    */
-  const handleFormChange = (updatedForm: SecondaryStudiesHops) => {
-    setLocalForm((previousForm) => ({ ...previousForm, ...updatedForm }));
-  };
+  const handleFormChange = useCallback(
+    (updatedForm: SecondaryStudiesHops) => {
+      // Get old values from data
+      const oldDataForm = {
+        ...form,
+      };
+
+      const changedValuesComparedToPrevious = Object.keys(updatedForm).filter(
+        (key: keyof SecondaryStudiesHops) => {
+          if (typeof updatedForm[key] !== "object") {
+            return updatedForm[key] !== oldDataForm[key];
+          }
+        }
+      );
+
+      const previousStudiesHasChanged = !_.isEqual(
+        updatedForm.previousEducations,
+        oldDataForm.previousEducations
+      );
+
+      if (previousStudiesHasChanged) {
+        changedValuesComparedToPrevious.push("previousEducations");
+      }
+
+      unstable_batchedUpdates(() => {
+        setChangedFields(changedValuesComparedToPrevious);
+        setLocalForm((previousForm) => ({ ...previousForm, ...updatedForm }));
+      });
+    },
+    [form]
+  );
 
   /**
    * Opens the save dialog
@@ -98,7 +127,11 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
    * Handles the form submission
    */
   const handleFormSubmitClick = () => {
-    saveHopsForm({ form: localForm, details: hopsUpdateDetails });
+    saveHopsForm({
+      form: localForm,
+      details: hopsUpdateDetails,
+      fields: changedFields.length > 0 ? changedFields.join(",") : undefined,
+    });
   };
 
   /**
@@ -156,6 +189,7 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
     ],
     [
       allHopsEventsLoaded,
+      handleFormChange,
       loadMoreHopsFormHistory,
       localForm,
       studentInfo.counselorList,
