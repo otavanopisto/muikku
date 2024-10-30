@@ -15,6 +15,8 @@ export enum LanguageGradeEnum {
   NOT_STUDIED = "NOT_STUDIED",
 }
 
+export type HopsFormType = "compulsory" | "secondary";
+
 export type HopsUsePlace = "guider" | "studies" | "guardian";
 
 /**
@@ -176,7 +178,7 @@ export interface CompulsoryStudiesHopsOld {
  * but with some changes in structure to make it more similar to SecondaryStudiesHops and easier to handle.
  */
 export interface CompulsoryStudiesHops {
-  type: "compulsory";
+  type: HopsFormType;
 
   // Previous education and language skills
   previousEducation: string;
@@ -295,7 +297,7 @@ export interface CompulsoryStudiesHops {
  * SecondaryStudiesHops
  */
 export interface SecondaryStudiesHops {
-  type: "secondary";
+  type: HopsFormType;
 
   // Previous education and language skills
   previousEducations: PreviousStudiesEntry[];
