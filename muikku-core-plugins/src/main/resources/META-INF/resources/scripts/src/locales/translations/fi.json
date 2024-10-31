@@ -11,6 +11,7 @@
       "close": "Sulje",
       "closeAll": "Sulje kaikki",
       "closePDF": "Sulje PDF",
+      "continue": "Jatka",
       "comment": "Kommentoi",
       "confirmCancel": "Kyllä, peruuta",
       "confirmSave": "Olen varma",
@@ -643,6 +644,7 @@
       "retake": "Uusiminen",
       "hopsBackground": "Taustatiedot",
       "hopsMatriculation": "Ylioppilastutkinto",
+      "hopsFormWarningTitle": "Varoitus",
       "hopsFormBasicInfoName": "Nimi:",
       "hopsFormBasicInfoEducationLevel": "Koulutusaste",
       "hopsFormBasicInfoCouncelor": "Ohjaaja",
@@ -809,6 +811,7 @@
       "matriculationSubjects": "Aineet:"
     },
     "content": {
+      "hopsFormUnsavedChanges": "Olet muokkannut HOPS:ia. Jos siirryt pois sivulta menetät kaikki tekemäsi tallentamattomat muutokset.",
       "matriculationChangeLogEmpty": "Ei tapahtumahistoriaa ilmoittautumiselle.",
       "matriculationChangeLogUpdate": "päivitti lomaketta.",
       "matriculationChangeLogStateChanged": "muutti lomakkeen tilaa.",

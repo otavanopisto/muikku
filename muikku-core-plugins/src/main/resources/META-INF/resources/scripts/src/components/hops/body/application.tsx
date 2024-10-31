@@ -54,6 +54,29 @@ const HopsApplication = (props: HopsApplicationProps) => {
     hash?: string | Tab;
   } | null>(null);
 
+  // Add useEffect to handle beforeunload event
+  useEffect(() => {
+    /**
+     * Handles the beforeunload event to prevent the user from leaving the page
+     * with unsaved changes.
+     *
+     * @param e - The beforeunload event
+     * @returns - Returns an empty string to allow the user to leave the page
+     */
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = ""; // For Chrome
+        return ""; // For other browsers
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [hasUnsavedChanges]);
+
   /**
    * Handles the tab change after confirming unsaved changes.
    *
@@ -167,35 +190,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
     }
   };
 
-  // Add useEffect to handle beforeunload event
-  useEffect(() => {
-    /**
-     * Handles the beforeunload event to prevent the user from leaving the page
-     * with unsaved changes.
-     *
-     * @param e - The beforeunload event
-     * @returns - Returns an empty string to allow the user to leave the page
-     */
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = ""; // This is required for Chrome
-        return ""; // This is required for other browsers
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [hasUnsavedChanges]);
-
   return (
     <UseCaseContextProvider value="STUDENT">
       <Prompt
         when={hasUnsavedChanges}
-        message="Olet muokkannut HOPS:ia. Jos siirryt pois sivulta menetät kaikki
-          tekemäsi tallentamattomat muutokset. Haluatko jatkaa?"
+        message={t("content.hopsFormUnsavedChanges", { ns: "hops_new" })}
       />
       <ApplicationPanel
         title="HOPS"
