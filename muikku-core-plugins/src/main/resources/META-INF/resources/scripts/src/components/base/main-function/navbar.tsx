@@ -114,7 +114,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/hops",
         icon: "compass",
         to: true,
-        condition: true,
+        condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW,
       },
       {
         modifier: "hops",

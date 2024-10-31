@@ -10,41 +10,139 @@ export const compulsoryStudiesFieldsTranslation = (
 ): {
   [key: string]: string;
 } => ({
-  previousEducation: "previousEducation",
-  previousEducationElse: "previousEducationElse",
-  previousWorkExperience: "previousWorkExperience",
-  previousWorkExperienceField: "previousWorkExperienceField",
-  previousYearsUsedInStudies: "previousYearsUsedInStudies",
-  previousLanguageExperience: "previousLanguageExperience",
-  byReadingMaterials: "byReadingMaterials",
-  byTakingNotes: "byTakingNotes",
-  byDoingExercises: "byDoingExercises",
-  byMemorizing: "byMemorizing",
-  byWatchingVideos: "byWatchingVideos",
-  byListeningTeaching: "byListeningTeaching",
-  byExplaining: "byExplaining",
-  byDiscussing: "byDiscussing",
-  byWatchingOrDoingExamples: "byWatchingOrDoingExamples",
-  someOtherWay: "someOtherWay",
-  fromFamilyMember: "fromFamilyMember",
-  fromFriend: "fromFriend",
-  fromSupportPerson: "fromSupportPerson",
-  noSupport: "noSupport",
-  studySupportSomethingElse: "studySupportSomethingElse",
-  studySupportSomethingElseWhat: "studySupportSomethingElseWhat",
-  likeStudying: "likeStudying",
-  haveGoals: "haveGoals",
-  readyToAchieveGoals: "readyToAchieveGoals",
-  alwaysFinishJobs: "alwaysFinishJobs",
-  bePedantic: "bePedantic",
-  studyingConcentration: "studyingConcentration",
-  affectedByNoise: "affectedByNoise",
-  canFollowInstructions: "canFollowInstructions",
-  canEvaluateOwnWork: "canEvaluateOwnWork",
-  canTakeFeedback: "canTakeFeedback",
-  canUseBasicComputerFunctionalities: "canUseBasicComputerFunctionalities",
-  selfImageSomethingElse: "selfImageSomethingElse",
-  wishesForTeachersAndSupervisors: "wishesForTeachersAndSupervisors",
+  previousEducation: t("labels.hopsCompulsoryPreviousEducation", {
+    ns: "hops_new",
+  }),
+  previousEducationElse: `${t("labels.hopsCompulsoryPreviousEducationElse", {
+    ns: "hops_new",
+  })} (${t("labels.hopsCompulsoryPreviousEducation", {
+    ns: "hops_new",
+  })})`,
+  previousWorkExperience: t("labels.hopsCompulsoryPreviousWorkExperience", {
+    ns: "hops_new",
+  }),
+  previousWorkExperienceField: t(
+    "labels.hopsCompulsoryPreviousWorkExperienceField",
+    {
+      ns: "hops_new",
+    }
+  ),
+  previousYearsUsedInStudies: t(
+    "labels.hopsCompulsoryPreviousYearsUsedInStudies",
+    {
+      ns: "hops_new",
+    }
+  ),
+  previousLanguageExperience: t(
+    "labels.hopsCompulsoryPreviousLanguageExperience",
+    {
+      ns: "hops_new",
+    }
+  ),
+  byReadingMaterials: t("labels.hopsCompulsoryByReadingMaterials", {
+    ns: "hops_new",
+  }),
+  byTakingNotes: t("labels.hopsCompulsoryByTakingNotes", {
+    ns: "hops_new",
+  }),
+  byDoingExercises: t("labels.hopsCompulsoryByDoingExercises", {
+    ns: "hops_new",
+  }),
+  byMemorizing: t("labels.hopsCompulsoryByMemorizing", {
+    ns: "hops_new",
+  }),
+  byWatchingVideos: t("labels.hopsCompulsoryByWatchingVideos", {
+    ns: "hops_new",
+  }),
+  byListeningTeaching: t("labels.hopsCompulsoryByListeningTeaching", {
+    ns: "hops_new",
+  }),
+  byExplaining: t("labels.hopsCompulsoryByExplaining", {
+    ns: "hops_new",
+  }),
+  byDiscussing: t("labels.hopsCompulsoryByDiscussing", {
+    ns: "hops_new",
+  }),
+  byWatchingOrDoingExamples: t(
+    "labels.hopsCompulsoryByWatchingOrDoingExamples",
+    {
+      ns: "hops_new",
+    }
+  ),
+  someOtherWay: t("labels.hopsCompulsorySomeOtherWay", {
+    ns: "hops_new",
+  }),
+  fromFamilyMember: t("labels.hopsCompulsoryFromFamilyMember", {
+    ns: "hops_new",
+  }),
+  fromFriend: t("labels.hopsCompulsoryFromFriend", {
+    ns: "hops_new",
+  }),
+  fromSupportPerson: t("labels.hopsCompulsoryFromSupportPerson", {
+    ns: "hops_new",
+  }),
+  noSupport: t("labels.hopsCompulsoryNoSupport", {
+    ns: "hops_new",
+  }),
+  studySupportSomethingElse: t(
+    "labels.hopsCompulsoryStudySupportSomethingElse",
+    {
+      ns: "hops_new",
+      context: "edited",
+    }
+  ),
+  studySupportSomethingElseWhat: t(
+    "labels.hopsCompulsoryStudySupportSomethingElseWhat",
+    {
+      ns: "hops_new",
+      context: "edited",
+    }
+  ),
+  likeStudying: t("labels.hopsCompulsoryLikeStudying", {
+    ns: "hops_new",
+  }),
+  haveGoals: t("labels.hopsCompulsoryHaveGoals", {
+    ns: "hops_new",
+  }),
+  readyToAchieveGoals: t("labels.hopsCompulsoryReadyToAchieveGoals", {
+    ns: "hops_new",
+  }),
+  alwaysFinishJobs: t("labels.hopsCompulsoryAlwaysFinishJobs", {
+    ns: "hops_new",
+  }),
+  bePedantic: t("labels.hopsCompulsoryBePedantic", {
+    ns: "hops_new",
+  }),
+  studyingConcentration: t("labels.hopsCompulsoryStudyingConcentration", {
+    ns: "hops_new",
+  }),
+  affectedByNoise: t("labels.hopsCompulsoryAffectedByNoise", {
+    ns: "hops_new",
+  }),
+  canFollowInstructions: t("labels.hopsCompulsoryCanFollowInstructions", {
+    ns: "hops_new",
+  }),
+  canEvaluateOwnWork: t("labels.hopsCompulsoryCanEvaluateOwnWork", {
+    ns: "hops_new",
+  }),
+  canTakeFeedback: t("labels.hopsCompulsoryCanTakeFeedback", {
+    ns: "hops_new",
+  }),
+  canUseBasicComputerFunctionalities: t(
+    "labels.hopsCompulsoryCanUseBasicComputerFunctionalities",
+    {
+      ns: "hops_new",
+    }
+  ),
+  selfImageSomethingElse: t("labels.hopsCompulsorySelfImageSomethingElse", {
+    ns: "hops_new",
+  }),
+  wishesForTeachersAndSupervisors: t(
+    "labels.hopsCompulsoryWishesForTeachersAndSupervisors",
+    {
+      ns: "hops_new",
+    }
+  ),
 });
 
 /**
@@ -55,21 +153,55 @@ export const compulsoryStudiesFieldsTranslation = (
 export const secondaryStudiesFieldsTranslation = (
   t: TFunction
 ): { [key: string]: string } => ({
-  previousEducation: "previousEducation",
-  previousEducationInfo: "previousEducationInfo",
-  nativeLanguage: "nativeLanguage",
-  studiedLanguagesAtSchool: "studiedLanguagesAtSchool",
-  studiedLanguagesOther: "studiedLanguagesOther",
-  languageLearningSkills: "languageLearningSkills",
-  positiveAttitude: "positiveAttitude",
-  goalSetting: "goalSetting",
-  goalMotivation: "goalMotivation",
-  taskCompletion: "taskCompletion",
-  focusAbility: "focusAbility",
-  followInstructions: "followInstructions",
-  selfAssessment: "selfAssessment",
-  receiveFeedback: "receiveFeedback",
-  itSkills: "itSkills",
-  independentLearningSkills: "independentLearningSkills",
-  moreAboutSelfAssessment: "moreAboutSelfAssessment",
+  previousEducation: t("labels.hopsSecondaryPreviousEducation", {
+    ns: "hops_new",
+  }),
+  nativeLanguage: t("labels.hopsSecondaryNativeLanguage", {
+    ns: "hops_new",
+  }),
+  studiedLanguagesAtSchool: t("labels.hopsSecondaryStudiedLanguagesAtSchool", {
+    ns: "hops_new",
+  }),
+  studiedLanguagesOther: t("labels.hopsSecondaryStudiedLanguagesOther", {
+    ns: "hops_new",
+  }),
+  languageLearningSkills: t("labels.hopsSecondaryLanguageLearningSkills", {
+    ns: "hops_new",
+  }),
+  positiveAttitude: t("labels.hopsSecondaryPositiveAttitude", {
+    ns: "hops_new",
+  }),
+  goalSetting: t("labels.hopsSecondaryGoalSetting", {
+    ns: "hops_new",
+  }),
+  goalMotivation: t("labels.hopsSecondaryGoalMotivation", {
+    ns: "hops_new",
+  }),
+  taskCompletion: t("labels.hopsSecondaryTaskCompletion", {
+    ns: "hops_new",
+  }),
+  focusAbility: t("labels.hopsSecondaryFocusAbility", {
+    ns: "hops_new",
+  }),
+  followInstructions: t("labels.hopsSecondaryFollowInstructions", {
+    ns: "hops_new",
+  }),
+  selfAssessment: t("labels.hopsSecondarySelfAssessment", {
+    ns: "hops_new",
+  }),
+  receiveFeedback: t("labels.hopsSecondaryReceiveFeedback", {
+    ns: "hops_new",
+  }),
+  itSkills: t("labels.hopsSecondaryItSkills", {
+    ns: "hops_new",
+  }),
+  independentLearningSkills: t(
+    "labels.hopsSecondaryIndependentLearningSkills",
+    {
+      ns: "hops_new",
+    }
+  ),
+  moreAboutSelfAssessment: t("labels.hopsSecondaryMoreAboutSelfAssessment", {
+    ns: "hops_new",
+  }),
 });

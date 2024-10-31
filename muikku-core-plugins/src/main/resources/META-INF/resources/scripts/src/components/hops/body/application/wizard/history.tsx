@@ -139,8 +139,8 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
         </span>
         <span className="hops-container__history-event-text">
           {viewingOwnHistorEvent
-            ? "muokkasit HOPS:ia"
-            : `${historyEntry.modifier} muokkasi HOPS:ia`}
+            ? t("labels.hopsFormHistoryEditedByYou", { ns: "hops_new" })
+            : t("labels.hopsFormHistoryEditedByCounselor", { ns: "hops_new" })}
         </span>
 
         <span className="hops-container__history-event-date">
@@ -169,7 +169,7 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
         <div className="hops-container__history-event-secondary">
           <details className="details">
             <summary className="details__summary">
-              {t("labels.editedFields", { ns: "pedagogySupportPlan" })}
+              {t("labels.hopsFormHistoryEditedFields", { ns: "hops_new" })}
             </summary>
             <div className="details__content">
               <ul>{editedFields}</ul>

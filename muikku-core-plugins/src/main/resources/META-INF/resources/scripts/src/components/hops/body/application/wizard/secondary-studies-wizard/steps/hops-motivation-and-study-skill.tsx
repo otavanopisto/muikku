@@ -7,6 +7,7 @@ import {
 } from "~/components/general/hops-compulsory-education-wizard/hops-input-table";
 import { Textarea } from "~/components/general/hops-compulsory-education-wizard/text-area";
 import { SecondaryStudiesHops } from "~/@types/hops";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the HopsMotivationAndStudySkills component.
@@ -38,6 +39,8 @@ const HopsMotivationAndStudySkills: React.FC<
   HopsMotivationAndStudySkillsProps
 > = (props) => {
   const { onFormChange, form } = props;
+
+  const { t } = useTranslation(["hops_new"]);
 
   const { moreAboutSelfAssessment } = form;
   const myRef = useRef<HTMLDivElement>(null);
@@ -78,12 +81,15 @@ const HopsMotivationAndStudySkills: React.FC<
     <div className="hops-container" ref={myRef}>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader hops-container__subheader--required">
-          Arvioi, miten hyvin tai huonosti seuraavat opiskelutavat auttavat
-          sinua opiskelussa:
+          {t("labels.hopsSecondarySelfAssessmentTitle1", {
+            ns: "hops_new",
+          })}
         </legend>
 
         <span className="hops-container__fieldset-description">
-          Tähdellä (*) merkityt kentät ovat pakollisia.
+          {t("labels.hopsFormFieldsRequired", {
+            ns: "hops_new",
+          })}
         </span>
 
         <div className="hops-container__row">
@@ -94,7 +100,9 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleInterval={1}
                 scaleLength={5}
                 labelOnSeparateRow={true}
-                label="Suhtaudun opiskeluun myönteisesti."
+                label={t("labels.hopsSecondaryPositiveAttitude", {
+                  ns: "hops_new",
+                })}
                 selectedValue={form.positiveAttitude}
                 groupName="positiveAttitude"
                 disabled={disabled}
@@ -106,7 +114,9 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleInterval={1}
                 scaleLength={5}
                 labelOnSeparateRow={true}
-                label="Olen valmis asettamaan tavoitteita opinnoilleni."
+                label={t("labels.hopsSecondaryGoalSetting", {
+                  ns: "hops_new",
+                })}
                 selectedValue={form.goalSetting}
                 groupName="goalSetting"
                 disabled={disabled}
@@ -118,7 +128,9 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleInterval={1}
                 scaleLength={5}
                 labelOnSeparateRow={true}
-                label="Olen motivoitunut tekemään töitä saavuttaakseni tavoitteeni."
+                label={t("labels.hopsSecondaryGoalMotivation", {
+                  ns: "hops_new",
+                })}
                 selectedValue={form.goalMotivation}
                 groupName="goalMotivation"
                 disabled={disabled}
@@ -130,7 +142,9 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleInterval={1}
                 scaleLength={5}
                 labelOnSeparateRow={true}
-                label="Pyrin tekemään tehtävät sovitussa aikataulussa."
+                label={t("labels.hopsSecondaryTaskCompletion", {
+                  ns: "hops_new",
+                })}
                 selectedValue={form.taskCompletion}
                 groupName="taskCompletion"
                 disabled={disabled}
@@ -142,7 +156,9 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleInterval={1}
                 scaleLength={5}
                 labelOnSeparateRow={true}
-                label="Pystyn keskittymään opiskeluun riittävän hyvin."
+                label={t("labels.hopsSecondaryFocusAbility", {
+                  ns: "hops_new",
+                })}
                 selectedValue={form.focusAbility}
                 groupName="focusAbility"
                 disabled={disabled}
@@ -154,7 +170,9 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleInterval={1}
                 scaleLength={5}
                 labelOnSeparateRow={true}
-                label="Pystyn seuraamaan ohjeita ja toimimaan niiden mukaisesti."
+                label={t("labels.hopsSecondaryFollowInstructions", {
+                  ns: "hops_new",
+                })}
                 selectedValue={form.followInstructions}
                 groupName="followInstructions"
                 disabled={disabled}
@@ -168,7 +186,9 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleInterval={1}
                 scaleLength={5}
                 labelOnSeparateRow={true}
-                label="Osaan arvioida, mikä on mennyt hyvin ja missä voin vielä kehittyä."
+                label={t("labels.hopsSecondarySelfAssessment", {
+                  ns: "hops_new",
+                })}
                 selectedValue={form.selfAssessment}
                 groupName="selfAssessment"
                 disabled={disabled}
@@ -180,7 +200,9 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleInterval={1}
                 scaleLength={5}
                 labelOnSeparateRow={true}
-                label="Osaan ottaa vastaan opintoihin liittyvää palautetta."
+                label={t("labels.hopsSecondaryReceiveFeedback", {
+                  ns: "hops_new",
+                })}
                 selectedValue={form.receiveFeedback}
                 groupName="receiveFeedback"
                 disabled={disabled}
@@ -192,7 +214,9 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleInterval={1}
                 scaleLength={5}
                 labelOnSeparateRow={true}
-                label="Minulla on hyvät tietotekniikan käyttötaidot opiskelua varten."
+                label={t("labels.hopsSecondaryItSkills", {
+                  ns: "hops_new",
+                })}
                 selectedValue={form.itSkills}
                 groupName="itSkills"
                 disabled={disabled}
@@ -204,7 +228,9 @@ const HopsMotivationAndStudySkills: React.FC<
                 scaleInterval={1}
                 scaleLength={5}
                 labelOnSeparateRow={true}
-                label="Minulla on riittävät opiskelutaidot itsenäiseen verkko-opiskeluun."
+                label={t("labels.hopsSecondaryIndependentLearningSkills", {
+                  ns: "hops_new",
+                })}
                 selectedValue={form.independentLearningSkills}
                 groupName="independentLearningSkills"
                 disabled={disabled}
@@ -222,7 +248,9 @@ const HopsMotivationAndStudySkills: React.FC<
           <div className="hops__form-element-container">
             <Textarea
               id="selfAssessmentSomeOtherWayExplanation"
-              label="Jos haluat, voit kertoa tarkemmin itsellesi sopivista opiskelutavoista:"
+              label={t("labels.hopsSecondaryMoreAboutSelfAssessment", {
+                ns: "hops_new",
+              })}
               name="moreAboutSelfAssessment"
               value={moreAboutSelfAssessment}
               className="hops__textarea"

@@ -301,7 +301,6 @@ export interface SecondaryStudiesHops {
 
   // Previous education and language skills
   previousEducations: PreviousStudiesEntry[];
-  previousEducationInfo?: string;
   nativeLanguage: string;
   studiedLanguagesAtSchool: string;
   studiedLanguagesOther: string;

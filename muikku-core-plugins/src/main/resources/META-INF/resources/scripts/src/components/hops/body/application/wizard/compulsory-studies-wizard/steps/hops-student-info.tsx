@@ -7,6 +7,7 @@ import HopsHistory from "../../history";
 import { LoadMoreHopsFormHistoryTriggerType } from "~/actions/main-function/hops/";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the HopsStudentHopsInformation component
@@ -47,6 +48,8 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
     loadMoreHopsEvents,
   } = props;
 
+  const { t } = useTranslation("hops_new");
+
   const myRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,13 +64,15 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
   return (
     <section className="hops-container" ref={myRef}>
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Perustiedot</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.hopsFormInfoTitle", { ns: "hops_new" })}
+        </legend>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
               id="studentName"
-              label="Nimi:"
+              label={t("labels.hopsFormBasicInfoName", { ns: "hops_new" })}
               type="text"
               placeholder="Nimi"
               value={studentName}
@@ -80,7 +85,9 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
           <div className="hops__form-element-container">
             <TextField
               id="educationLevel"
-              label="Koulutusaste:"
+              label={t("labels.hopsFormBasicInfoEducationLevel", {
+                ns: "hops_new",
+              })}
               type="text"
               placeholder="Koulutusaste"
               value={educationalLevel}
@@ -93,14 +100,18 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
           <div className="hops__form-element-container">
             <TextField
               id="guidanceCouselor"
-              label="Ohjaaja:"
+              label={t("labels.hopsFormBasicInfoCouncelor", {
+                ns: "hops_new",
+              })}
               type="text"
               placeholder="Ohjaaja"
               value={
                 guidanceCounselors !== undefined &&
                 guidanceCounselors.length > 0
                   ? guidanceCounselors.join(", ")
-                  : "Ei ohjaaja"
+                  : t("labels.hopsFormBasicInfoCouncelor_no", {
+                      ns: "hops_new",
+                    })
               }
               disabled
               className="hops__input"
@@ -110,7 +121,9 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
       </fieldset>
 
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Muokkaushistoria</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.hopsFormHistory", { ns: "hops_new" })}
+        </legend>
         <div className="hops-container__info">
           <HopsHistory />
           <div className="hops-container__row">
@@ -119,7 +132,7 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
               disabled={canLoadMoreHistory}
               onClick={() => loadMoreHopsEvents({})}
             >
-              Lataa kaikki
+              {t("actions.loadAll", { ns: "hops_new" })}
             </Button>
           </div>
         </div>

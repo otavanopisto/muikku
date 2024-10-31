@@ -4,6 +4,7 @@ import { TextField } from "~/components/general/hops-compulsory-education-wizard
 import PreviousStudies from "../../components/hops-previous-studies-list";
 import { PreviousStudiesEntry, SecondaryStudiesHops } from "~/@types/hops";
 import { Textarea } from "../../components/text-area";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the HopsStartingLevel component
@@ -25,6 +26,7 @@ const disabled = false;
  */
 const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
   const { form, onFormChange } = props;
+  const { t } = useTranslation("hops_new");
   const myRef = useRef<HTMLDivElement>(null);
 
   /**
@@ -82,7 +84,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
     <div className="hops-container" ref={myRef}>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          Aikaisemmat opinnot
+          {t("labels.hopsSecondaryEntryAssessmentTitle1", {
+            ns: "hops_new",
+          })}
         </legend>
 
         <PreviousStudies
@@ -92,14 +96,18 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
       </fieldset>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader hops-container__subheader--required">
-          Kielitaito
+          {t("labels.hopsSecondaryEntryAssessmentTitle2", {
+            ns: "hops_new",
+          })}
         </legend>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <TextField
               id="nativeLanguage"
-              label="Väestörekisteriin merkitty äidinkieli"
+              label={t("labels.hopsSecondaryNativeLanguage", {
+                ns: "hops_new",
+              })}
               className="hops__input"
               onChange={handleTextFieldChange("nativeLanguage")}
               value={form.nativeLanguage}
@@ -111,7 +119,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="studiedLanguagesAtSchool"
-              label="Muut koulussa opiskellut kielet:"
+              label={t("labels.hopsSecondaryStudiedLanguagesAtSchool", {
+                ns: "hops_new",
+              })}
               className="hops__input"
               onChange={handleTextFieldChange("studiedLanguagesAtSchool")}
               value={form.studiedLanguagesAtSchool}
@@ -123,7 +133,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
           <div className="hops__form-element-container">
             <Textarea
               id="studiedLanguagesOther"
-              label="Muu kielitaito (esim. ulkomailla hankittu osaaminen):"
+              label={t("labels.hopsSecondaryStudiedLanguagesOther", {
+                ns: "hops_new",
+              })}
               className="hops__textarea"
               disabled={disabled}
               onChange={handleTextAreaChange("studiedLanguagesOther")}
@@ -135,7 +147,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
           <div className="hops__form-element-container">
             <Textarea
               id="additionalLanguageLearningInfo"
-              label="Haluan kertoa kielenopiskeluvalmiuksistani myös:"
+              label={t("labels.hopsSecondaryLanguageLearningSkills", {
+                ns: "hops_new",
+              })}
               className="hops__textarea"
               disabled={disabled}
               onChange={handleTextAreaChange("languageLearningSkills")}

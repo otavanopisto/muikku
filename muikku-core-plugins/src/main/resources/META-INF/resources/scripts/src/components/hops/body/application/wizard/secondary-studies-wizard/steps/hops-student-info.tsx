@@ -7,6 +7,7 @@ import HopsHistory from "../../history";
 import { LoadMoreHopsFormHistoryTriggerType } from "~/actions/main-function/hops/";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the HopsStudentHopsInformation component
@@ -46,6 +47,9 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
     canLoadMoreHistory,
     loadMoreHopsEvents,
   } = props;
+
+  const { t } = useTranslation("hops_new");
+
   const myRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,7 +65,9 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
     <section className="hops-container" ref={myRef}>
       {/* Basic Information Fieldset */}
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Perustiedot</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.hopsFormInfoTitle", { ns: "hops_new" })}
+        </legend>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
@@ -112,7 +118,9 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
       </fieldset>
 
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">Muokkaushistoria</legend>
+        <legend className="hops-container__subheader">
+          {t("labels.hopsFormHistory", { ns: "hops_new" })}
+        </legend>
         <div className="hops-container__info">
           <HopsHistory />
           <div className="hops-container__row">
@@ -121,7 +129,7 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
               disabled={canLoadMoreHistory}
               onClick={() => loadMoreHopsEvents({})}
             >
-              Lataa kaikki
+              {t("actions.loadAll", { ns: "hops_new" })}
             </Button>
           </div>
         </div>

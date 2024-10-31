@@ -2,6 +2,7 @@ import React from "react";
 import Button from "~/components/general/button";
 import { Textarea } from "./text-area";
 import { PreviousStudiesEntry } from "~/@types/hops";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the HopsPreviousStudiesList component
@@ -21,20 +22,62 @@ interface HopsPreviousStudiesListProps {
 const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
   const { onPreviousStudiesChange, previousStudies } = props;
 
+  const { t } = useTranslation(["hops_new"]);
+
   /** Available study type options */
   const studyTypeOptions = [
-    "upper secondary education",
-    "vocational studies",
-    "other studies",
+    {
+      value: "upper_secondary_education",
+      label: t("labels.hopsSecondaryPreviousEducationStudyTypeOption1", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "vocational_studies",
+      label: t("labels.hopsSecondaryPreviousEducationStudyTypeOption2", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "other_studies",
+      label: t("labels.hopsSecondaryPreviousEducationStudyTypeOption3", {
+        ns: "hops_new",
+      }),
+    },
   ];
 
   /** Available duration options */
   const durationOptions = [
-    "less than 1 year",
-    "1–2 years",
-    "2–3 years",
-    "3–4 years",
-    "more than 4 years",
+    {
+      value: "<1",
+      label: t("labels.hopsSecondaryPreviousEducationStudyDurationOption1", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "1-2",
+      label: t("labels.hopsSecondaryPreviousEducationStudyDurationOption2", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "2-3",
+      label: t("labels.hopsSecondaryPreviousEducationStudyDurationOption3", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "3-4",
+      label: t("labels.hopsSecondaryPreviousEducationStudyDurationOption4", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: ">4",
+      label: t("labels.hopsSecondaryPreviousEducationStudyDurationOption5", {
+        ns: "hops_new",
+      }),
+    },
   ];
 
   /**
@@ -84,10 +127,14 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
                 value={study.type}
                 onChange={(e) => updateStudy(index, "type", e.target.value)}
               >
-                <option value="">Select Study Type</option>
+                <option value="">
+                  {t("labels.hopsSecondaryPreviousEducationStudyTypeOption0", {
+                    ns: "hops_new",
+                  })}
+                </option>
                 {studyTypeOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
@@ -103,10 +150,15 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
                 value={study.duration}
                 onChange={(e) => updateStudy(index, "duration", e.target.value)}
               >
-                <option value="">Select Duration</option>
+                <option value="">
+                  {t(
+                    "labels.hopsSecondaryPreviousEducationStudyDurationOption0",
+                    { ns: "hops_new" }
+                  )}
+                </option>
                 {durationOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
@@ -119,7 +171,7 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
                     id="removeHopsRowPrevStudies"
                     className="visually-hidden"
                   >
-                    Poista
+                    {t("labels.remove")}
                   </label>
 
                   <Button
@@ -139,11 +191,16 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
                   id={`moreInfo-${index}`}
                   className="hops__textarea"
                   value={study.moreInfo}
-                  label="Lisätietoja"
+                  label={t("labels.hopsSecondaryPreviousEducationMoreInfo", {
+                    ns: "hops_new",
+                  })}
                   onChange={(e) =>
                     updateStudy(index, "moreInfo", e.target.value)
                   }
-                  placeholder="Tell us more"
+                  placeholder={t(
+                    "labels.hopsSecondaryPreviousEducationMoreInfoPlaceholder",
+                    { ns: "hops_new" }
+                  )}
                 />
               </div>
             </div>
@@ -157,7 +214,9 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
           icon="plus"
           onClick={addStudy}
         >
-          Lisää uusi opinto
+          {t("actions.addNewStudy", {
+            ns: "hops_new",
+          })}
         </Button>
       </div>
     </>

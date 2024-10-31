@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Table,
   TableHead,
@@ -52,6 +53,8 @@ interface HopsInputTableProps {
 export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
   const { children, usePlace } = props;
 
+  const { t } = useTranslation(["hops_new"]);
+
   const uTableHeadModifiers = [];
 
   if (usePlace === "studies" || usePlace === "guardian") {
@@ -64,17 +67,34 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
     <>
       <div className="hops-container__table-container-descriptions">
         <div className="hops-container__table-description-item">
-          1 = Erittäin hyvin
-        </div>
-        <div className="hops-container__table-description-item">2 = Hyvin</div>
-        <div className="hops-container__table-description-item">
-          3 = Ei hyvin eikä huonosti
-        </div>
-        <div className="hops-container__table-description-item">
-          4 = Huonosti
+          {t("labels.hopsFormSelfAssessmentLevel1", {
+            ns: "hops_new",
+            context: "description",
+          })}
         </div>
         <div className="hops-container__table-description-item">
-          5 = Erittäin huonosti
+          {t("labels.hopsFormSelfAssessmentLevel2_description", {
+            ns: "hops_new",
+            context: "description",
+          })}
+        </div>
+        <div className="hops-container__table-description-item">
+          {t("labels.hopsFormSelfAssessmentLevel3_description", {
+            ns: "hops_new",
+            context: "description",
+          })}
+        </div>
+        <div className="hops-container__table-description-item">
+          {t("labels.hopsFormSelfAssessmentLevel4_description", {
+            ns: "hops_new",
+            context: "description",
+          })}
+        </div>
+        <div className="hops-container__table-description-item">
+          {t("labels.hopsFormSelfAssessmentLevel5_description", {
+            ns: "hops_new",
+            context: "description",
+          })}
         </div>
       </div>
       <Table modifiers={["question-table"]}>
@@ -82,7 +102,9 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
           <Tr>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
-                Erittäin hyvin
+                {t("labels.hopsFormSelfAssessmentLevel1", {
+                  ns: "hops_new",
+                })}
               </span>
               <span className="hops-container__table-head-container hops-container__table-head-description--short">
                 1
@@ -90,7 +112,9 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
             </Th>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
-                Hyvin
+                {t("labels.hopsFormSelfAssessmentLevel2", {
+                  ns: "hops_new",
+                })}
               </span>
               <span className="hops-container__table-head-container hops-container__table-head-description--short">
                 2
@@ -98,7 +122,9 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
             </Th>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
-                Ei hyvin eikä huonosti
+                {t("labels.hopsFormSelfAssessmentLevel3", {
+                  ns: "hops_new",
+                })}
               </span>
               <span className="hops-container__table-head-container hops-container__table-head-description--short">
                 3
@@ -106,7 +132,9 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
             </Th>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
-                Huonosti
+                {t("labels.hopsFormSelfAssessmentLevel4", {
+                  ns: "hops_new",
+                })}
               </span>
               <span className="hops-container__table-head-container hops-container__table-head-description--short">
                 4
@@ -114,7 +142,9 @@ export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
             </Th>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
-                Erittäin huonosti
+                {t("labels.hopsFormSelfAssessmentLevel5", {
+                  ns: "hops_new",
+                })}
               </span>
               <span className="hops-container__table-head-container hops-container__table-head-description--short">
                 5

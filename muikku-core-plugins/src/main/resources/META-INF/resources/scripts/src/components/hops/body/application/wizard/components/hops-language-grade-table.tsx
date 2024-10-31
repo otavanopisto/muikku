@@ -11,6 +11,7 @@ import {
 import { LanguageGrade, LanguageGradeEnum } from "~/@types/shared";
 import "~/sass/elements/wcag.scss";
 import { HopsUsePlace } from "~/@types/hops";
+import { useTranslation } from "react-i18next";
 
 /**
  * LanguageGradeTableProps
@@ -28,6 +29,7 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
   props
 ) => {
   const { children, usePlace } = props;
+  const { t } = useTranslation(["hops_new", "common"]);
 
   const uTableHeadModifiers = ["language-table"];
 
@@ -41,17 +43,29 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
     <>
       <div className="hops-container__table-container-descriptions">
         <div className="hops-container__table-description-item">
-          1 = Äidinkieli
+          {t("labels.hopsCompulsoryLanguageTableSkillLevel1", {
+            ns: "hops_new",
+            context: "description",
+          })}
         </div>
         <div className="hops-container__table-description-item">
-          2 = Erinomainen / Kiitettävä
+          {t("labels.hopsCompulsoryLanguageTableSkillLevel2", {
+            ns: "hops_new",
+            context: "description",
+          })}
         </div>
         <div className="hops-container__table-description-item">3 = Hyvä</div>
         <div className="hops-container__table-description-item">
-          4 = Tyydyttävä / Alkeet
+          {t("labels.hopsCompulsoryLanguageTableSkillLevel4", {
+            ns: "hops_new",
+            context: "description",
+          })}
         </div>
         <div className="hops-container__table-description-item">
-          5 = En ole opiskellut
+          {t("labels.hopsCompulsoryLanguageTableSkillLevel5", {
+            ns: "hops_new",
+            context: "description",
+          })}
         </div>
       </div>
       <Table modifiers={["language-table"]}>
@@ -60,7 +74,9 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
             <Th modifiers={["centered", "language"]}>Kieli</Th>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
-                Äidinkieli
+                {t("labels.hopsCompulsoryLanguageTableSkillLevel1", {
+                  ns: "hops_new",
+                })}
               </span>
               <span className="hops-container__table-head-container hops-container__table-head-description--short">
                 1
@@ -68,7 +84,9 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
             </Th>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
-                Erinomainen / Kiitettävä
+                {t("labels.hopsCompulsoryLanguageTableSkillLevel2", {
+                  ns: "hops_new",
+                })}
               </span>
               <span className="hops-container__table-head-container hops-container__table-head-description--short">
                 2
@@ -76,7 +94,9 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
             </Th>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
-                Hyvä
+                {t("labels.hopsCompulsoryLanguageTableSkillLevel3", {
+                  ns: "hops_new",
+                })}
               </span>
               <span className="hops-container__table-head-container hops-container__table-head-description--short">
                 3
@@ -84,7 +104,9 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
             </Th>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
-                Tyydyttävä / Alkeet
+                {t("labels.hopsCompulsoryLanguageTableSkillLevel4", {
+                  ns: "hops_new",
+                })}
               </span>
               <span className="hops-container__table-head-container hops-container__table-head-description--short">
                 4
@@ -92,7 +114,9 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
             </Th>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
-                En ole opiskellut
+                {t("labels.hopsCompulsoryLanguageTableSkillLevel5", {
+                  ns: "hops_new",
+                })}
               </span>
               <span className="hops-container__table-head-container hops-container__table-head-description--short">
                 5
@@ -135,6 +159,8 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
   onLanguageRowChange,
   disabled,
 }) => {
+  const { t } = useTranslation(["hops_new", "common"]);
+
   /**
    * Handles language name changes
    *
@@ -253,7 +279,7 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
               id={`removeLanguageRowLabel${index}`}
               className="visually-hidden"
             >
-              Poista
+              {t("actions.remove")}
             </label>
             <Button
               aria-labelledby={`removeLanguageRowLabel${index}`}

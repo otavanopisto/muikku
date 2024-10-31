@@ -156,7 +156,7 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
     () => [
       {
         index: 0,
-        name: "Perustiedot",
+        name: t("labels.hopsFormInfoTitle", { ns: "hops_new" }),
         component: (
           <AnimatedStep previousStep={previousStep}>
             <Step1
@@ -171,7 +171,7 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
       },
       {
         index: 1,
-        name: "Osaamisen ja lähtötason arvointi",
+        name: t("labels.hopsFormEntryLevelAssessmentTitle", { ns: "hops_new" }),
         component: (
           <AnimatedStep previousStep={previousStep}>
             <Step2 form={localForm} onFormChange={handleFormChange} />
@@ -180,7 +180,9 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
       },
       {
         index: 2,
-        name: "Opiskelutaidot ja motivaatio",
+        name: t("labels.hopsFormStudySkillsAndMotivationTitle", {
+          ns: "hops_new",
+        }),
         component: (
           <AnimatedStep previousStep={previousStep}>
             <Step3 form={localForm} onFormChange={handleFormChange} />
@@ -189,14 +191,15 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
       },
     ],
     [
-      hopsFormCanLoadMoreHistory,
-      handleFormChange,
-      loadMoreHopsFormHistory,
-      localForm,
-      studentInfo.counselorList,
+      t,
       studentInfo.firstName,
       studentInfo.lastName,
       studentInfo.studyProgrammeEducationType,
+      studentInfo.counselorList,
+      hopsFormCanLoadMoreHistory,
+      loadMoreHopsFormHistory,
+      localForm,
+      handleFormChange,
     ]
   );
 

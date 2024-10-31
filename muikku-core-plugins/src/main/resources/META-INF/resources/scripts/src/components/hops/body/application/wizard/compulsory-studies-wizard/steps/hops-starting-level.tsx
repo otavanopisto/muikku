@@ -9,6 +9,7 @@ import {
 } from "../../components/hops-language-grade-table";
 import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
 import { CompulsoryStudiesHops } from "~/@types/hops";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the HopsStartingLevel component
@@ -35,6 +36,8 @@ const disabled = false;
 const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
   const { form, onFormChange } = props;
   const myRef = useRef<HTMLDivElement>(null);
+
+  const { t } = useTranslation("hops_new");
 
   useEffect(() => {
     window.dispatchEvent(new Event("resize"));
@@ -121,13 +124,17 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
     <div className="hops-container" ref={myRef}>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          Aikaisemmat opinnot ja työkokemus
+          {t("labels.hopsCompulsoryEntryAssessmentTitle1", {
+            ns: "hops_new",
+          })}
         </legend>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <label htmlFor="previousEducation" className="hops__label">
-              Aiempi koulutus
+              {t("labels.hopsCompulsoryPreviousEducation", {
+                ns: "hops_new",
+              })}
             </label>
             <select
               id="previousEducation"
@@ -136,12 +143,26 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
               onChange={handleSelectsChange("previousEducation")}
               disabled={false}
             >
-              <option value={Education.COMPULSORY_SCHOOL}>perusopetus</option>
-              <option value={Education.VOCATIONAL_SCHOOL}>ammattiopisto</option>
-              <option value={Education.NO_PREVIOUS_EDUCATION}>
-                ei aiempaa koulutusta
+              <option value={Education.COMPULSORY_SCHOOL}>
+                {t("labels.hopsCompulsoryPreviousEducationOption1", {
+                  ns: "hops_new",
+                })}
               </option>
-              <option value={Education.SOMETHING_ELSE}>joku muu</option>
+              <option value={Education.VOCATIONAL_SCHOOL}>
+                {t("labels.hopsCompulsoryPreviousEducationOption2", {
+                  ns: "hops_new",
+                })}
+              </option>
+              <option value={Education.NO_PREVIOUS_EDUCATION}>
+                {t("labels.hopsCompulsoryPreviousEducationOption3", {
+                  ns: "hops_new",
+                })}
+              </option>
+              <option value={Education.SOMETHING_ELSE}>
+                {t("labels.hopsCompulsoryPreviousEducationOption4", {
+                  ns: "hops_new",
+                })}
+              </option>
             </select>
           </div>
 
@@ -149,7 +170,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
             <div className="hops__form-element-container">
               <TextField
                 id="previousEducationElse"
-                label="Mikä?"
+                label={t("labels.hopsCompulsoryPreviousEducationElse", {
+                  ns: "hops_new",
+                })}
                 className="hops__input"
                 onChange={handleTextAreaChange("previousEducationElse")}
                 value={form.previousEducationElse}
@@ -163,7 +186,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="previousYearsUsedInStudies"
-              label="Opintoihin käytetyt vuodet?"
+              label={t("labels.hopsCompulsoryPreviousYearsUsedInStudies", {
+                ns: "hops_new",
+              })}
               className="hops__input"
               onChange={handleTextAreaChange("previousYearsUsedInStudies")}
               value={form.previousYearsUsedInStudies}
@@ -175,7 +200,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <label htmlFor="previousWorkExperience" className="hops__label">
-              Työkokemus:
+              {t("labels.hopsCompulsoryPreviousWorkExperience", {
+                ns: "hops_new",
+              })}
             </label>
             <select
               id="previousWorkExperience"
@@ -184,10 +211,26 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
               onChange={handleSelectsChange("previousWorkExperience")}
               disabled={disabled}
             >
-              <option value="0-5">0-5 vuotta</option>
-              <option value="6-10">6-10 vuotta</option>
-              <option value="11-15">11-15 vuotta</option>
-              <option value=">16">yli 16 vuotta</option>
+              <option value="0-5">
+                {t("labels.hopsCompulsoryPreviousWorkExperienceOption1", {
+                  ns: "hops_new",
+                })}
+              </option>
+              <option value="6-10">
+                {t("labels.hopsCompulsoryPreviousWorkExperienceOption2", {
+                  ns: "hops_new",
+                })}
+              </option>
+              <option value="11-15">
+                {t("labels.hopsCompulsoryPreviousWorkExperienceOption3", {
+                  ns: "hops_new",
+                })}
+              </option>
+              <option value=">16">
+                {t("labels.hopsCompulsoryPreviousWorkExperienceOption4", {
+                  ns: "hops_new",
+                })}
+              </option>
             </select>
           </div>
         </div>
@@ -196,7 +239,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
           <div className="hops__form-element-container">
             <TextField
               id="previousWorkExperienceField"
-              label="Miltä alalta työkokemuksesi on?"
+              label={t("labels.hopsCompulsoryPreviousWorkExperienceField", {
+                ns: "hops_new",
+              })}
               className="hops__input"
               onChange={handleTextAreaChange("previousWorkExperienceField")}
               value={form.previousWorkExperienceField}
@@ -207,11 +252,15 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
       </fieldset>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader hops-container__subheader--required">
-          Kielitaito
+          {t("labels.hopsCompulsoryEntryAssessmentTitle2", {
+            ns: "hops_new",
+          })}
         </legend>
 
         <span className="hops-container__fieldset-description">
-          Tähdellä (*) merkityt kentät ovat pakollisia.
+          {t("labels.hopsFormFieldsRequired", {
+            ns: "hops_new",
+          })}
         </span>
 
         <div className="hops-container__row">
@@ -235,7 +284,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
                   onClick={handleAddNewCustomLngClick}
                   icon="plus"
                 >
-                  Lisää kieli
+                  {t("actions.addNewLng", {
+                    ns: "hops_new",
+                  })}
                 </Button>
               </div>
             ) : null}
