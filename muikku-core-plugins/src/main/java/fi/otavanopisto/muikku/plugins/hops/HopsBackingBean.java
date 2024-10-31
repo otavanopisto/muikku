@@ -36,6 +36,7 @@ public class HopsBackingBean {
     }
     
     User user = userController.findUserByIdentifier(sessionController.getLoggedUser());
+    // StudyProgramme > StudyProgrammeCategory > EducationType > Code (^^;)
     if (user == null || (!StringUtils.equals("lukio", user.getStudyProgrammeEducationType()) && !StringUtils.equals("peruskoulu", user.getStudyProgrammeEducationType()))) {
       return NavigationRules.ACCESS_DENIED;
     }
