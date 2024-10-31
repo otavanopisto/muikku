@@ -1,5 +1,6 @@
 import Navbar from "~/components/general/navbar";
 import Link from "~/components/general/link";
+import { Link as RouterLink } from "react-router-dom";
 import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
 import * as React from "react";
@@ -372,18 +373,9 @@ class WorkspaceNavbar extends React.Component<
                 modifier: item.modifier,
                 item: (
                   <Dropdown openByHover key={item.text} content={item.text}>
-                    <Link
+                    <RouterLink
                       tabIndex={this.props.activeTrail == item.trail ? 0 : null}
-                      as={this.props.activeTrail == item.trail ? "span" : null}
-                      openInNewTab={item.openInNewTab}
-                      href={
-                        this.props.activeTrail !== item.trail ? item.href : null
-                      }
-                      to={
-                        item.to && this.props.activeTrail !== item.trail
-                          ? item.href
-                          : null
-                      }
+                      to={item.href}
                       className={`link link--icon link--full link--workspace-navbar ${
                         this.props.activeTrail === item.trail ? "active" : ""
                       }`}
@@ -400,7 +392,7 @@ class WorkspaceNavbar extends React.Component<
                           {item.badge >= 100 ? "99+" : item.badge}
                         </span>
                       ) : null}
-                    </Link>
+                    </RouterLink>
                   </Dropdown>
                 ),
               };
@@ -429,16 +421,9 @@ class WorkspaceNavbar extends React.Component<
                 return null;
               }
               return (
-                <Link
+                <RouterLink
                   key={item.modifier}
-                  href={
-                    this.props.activeTrail !== item.trail ? item.href : null
-                  }
-                  to={
-                    item.to && this.props.activeTrail !== item.trail
-                      ? item.href
-                      : null
-                  }
+                  to={item.href}
                   className={`link link--full link--menu ${
                     this.props.activeTrail === item.trail ? "active" : ""
                   }`}
@@ -452,7 +437,7 @@ class WorkspaceNavbar extends React.Component<
                     </span>
                   ) : null}
                   <span className="link--menu-text">{item.text}</span>
-                </Link>
+                </RouterLink>
               );
             })
             .filter((item) => !!item)
