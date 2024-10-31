@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Notifications from "../components/base/notifications";
 import DisconnectedWarningDialog from "../components/base/disconnect-warning";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
 import { StateType } from "~/reducers";
@@ -1168,60 +1168,61 @@ export default class Workspace extends React.Component<
   render() {
     return (
       <ReadspeakerProvider>
-        <BrowserRouter>
-          <div id="root">
-            <WindowContextProvider>
-              <ChatWebsocketContextProvider websocket={this.props.websocket}>
-                <Chat />
-              </ChatWebsocketContextProvider>
-              <Notifications></Notifications>
-              <DisconnectedWarningDialog />
-              <EasyToUseFunctions />
-
-              <Route
-                exact
-                path="/workspace/:workspaceUrl/"
-                render={this.renderWorkspaceHome}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/help"
-                render={this.renderWorkspaceHelp}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/discussions"
-                render={this.renderWorkspaceDiscussions}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/announcements"
-                render={this.renderWorkspaceAnnouncements}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/announcer"
-                render={this.renderWorkspaceAnnouncer}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/materials"
-                render={this.renderWorkspaceMaterials}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/users"
-                render={this.renderWorkspaceUsers}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/journal"
-                render={this.renderWorkspaceJournal}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/workspace-management"
-                render={this.renderWorkspaceManagement}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/evaluation"
-                render={this.renderWorkspaceEvaluation}
-              />
-            </WindowContextProvider>
-          </div>
-        </BrowserRouter>
+        <div id="root">
+          <WindowContextProvider>
+            <ChatWebsocketContextProvider websocket={this.props.websocket}>
+              <Chat />
+            </ChatWebsocketContextProvider>
+            <Notifications></Notifications>
+            <DisconnectedWarningDialog />
+            <EasyToUseFunctions />
+            <BrowserRouter>
+              <Switch>
+                <Route
+                  exact
+                  path="/workspace/:workspaceUrl/"
+                  render={this.renderWorkspaceHome}
+                />
+                <Route
+                  path="/workspace/:workspaceUrl/help"
+                  render={this.renderWorkspaceHelp}
+                />
+                <Route
+                  path="/workspace/:workspaceUrl/discussions"
+                  render={this.renderWorkspaceDiscussions}
+                />
+                <Route
+                  path="/workspace/:workspaceUrl/announcements"
+                  render={this.renderWorkspaceAnnouncements}
+                />
+                <Route
+                  path="/workspace/:workspaceUrl/announcer"
+                  render={this.renderWorkspaceAnnouncer}
+                />
+                <Route
+                  path="/workspace/:workspaceUrl/materials"
+                  render={this.renderWorkspaceMaterials}
+                />
+                <Route
+                  path="/workspace/:workspaceUrl/users"
+                  render={this.renderWorkspaceUsers}
+                />
+                <Route
+                  path="/workspace/:workspaceUrl/journal"
+                  render={this.renderWorkspaceJournal}
+                />
+                <Route
+                  path="/workspace/:workspaceUrl/workspace-management"
+                  render={this.renderWorkspaceManagement}
+                />
+                <Route
+                  path="/workspace/:workspaceUrl/evaluation"
+                  render={this.renderWorkspaceEvaluation}
+                />
+              </Switch>
+            </BrowserRouter>
+          </WindowContextProvider>
+        </div>
       </ReadspeakerProvider>
     );
   }
