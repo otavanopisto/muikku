@@ -74,7 +74,6 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
               id="studentName"
               label={t("labels.hopsFormBasicInfoName", { ns: "hops_new" })}
               type="text"
-              placeholder="Nimi"
               value={studentName}
               disabled
               className="hops__input"
@@ -89,7 +88,6 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
                 ns: "hops_new",
               })}
               type="text"
-              placeholder="Koulutusaste"
               value={educationalLevel}
               disabled
               className="hops__input"
@@ -104,7 +102,6 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
                 ns: "hops_new",
               })}
               type="text"
-              placeholder="Ohjaaja"
               value={
                 guidanceCounselors !== undefined &&
                 guidanceCounselors.length > 0
