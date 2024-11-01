@@ -124,7 +124,11 @@ export type HOPS_RESET_DATA = SpecificActionType<"HOPS_RESET_DATA", undefined>;
  * loadExamDataTriggerType
  */
 export interface LoadMatriculationDataTriggerType {
-  (userIdentifier?: string): AnyActionType;
+  (data: {
+    userIdentifier?: string;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
@@ -138,21 +142,33 @@ export interface ResetMatriculationDataTriggerType {
  * verifyMatriculationEligibilityTriggerType
  */
 export interface VerifyMatriculationExamTriggerType {
-  (examId: number): AnyActionType;
+  (data: {
+    examId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
  * LoadMatriculationExamHistoryTriggerType
  */
 export interface LoadMatriculationExamHistoryTriggerType {
-  (examId: number, userIdentifier?: string): AnyActionType;
+  (data: {
+    examId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
  * SaveMatriculationPlanTriggerType
  */
 export interface SaveMatriculationPlanTriggerType {
-  (plan: MatriculationPlan): AnyActionType;
+  (data: {
+    plan: MatriculationPlan;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
@@ -169,14 +185,15 @@ export interface UpdateMatriculationExaminationTriggerType {
 /**
  * Load matriculation exam data thunk
  *
- * @param userIdentifier userIdentifier
+ * @param data data
  */
 const loadMatriculationData: LoadMatriculationDataTriggerType =
-  function loadMatriculationData(userIdentifier) {
+  function loadMatriculationData(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const { userIdentifier } = data;
       const state = getState();
 
       const studentIdentifier = userIdentifier
@@ -422,14 +439,15 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
 
 /**
  * Verify matriculation exam
- * @param examId examId
+ * @param data data
  */
 const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
-  function cancelMatriculationExam(examId) {
+  function cancelMatriculationExam(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const { examId } = data;
       const state = getState();
       const studentIdentifier = state.hopsNew.currentStudentIdentifier;
 
@@ -467,15 +485,16 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
 
 /**
  * Load matriculation exam history
- * @param examId examId
- * @param userIdentifier userIdentifier
+ * @param data data
  */
 const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
-  function loadMatriculationExamHistoryTriggerType(examId, userIdentifier) {
+  function loadMatriculationExamHistoryTriggerType(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const { examId } = data;
+
       const state = getState();
       const studentIdentifier = state.hopsNew.currentStudentIdentifier;
 
@@ -531,14 +550,15 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
 
 /**
  * saveMatriculationPlan
- * @param plan plan
+ * @param data data
  */
 const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
-  function saveMatriculationPlan(plan) {
+  function saveMatriculationPlan(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const { plan } = data;
       const state = getState();
       const studentIdentifier = state.hopsNew.currentStudentIdentifier;
 

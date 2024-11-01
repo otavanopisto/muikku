@@ -177,7 +177,7 @@ class GuardianHopsApplication extends React.Component<
     window.location.hash = option.value;
 
     this.props.resetMatriculationData();
-    this.props.loadMatriculationData(option.value);
+    this.props.loadMatriculationData({ userIdentifier: option.value });
 
     this.setState({
       activeTab: "MATRICULATION",
