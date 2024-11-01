@@ -585,7 +585,7 @@ const MandatorySelect: React.FC<MandatorySelectProps> = (props) => {
         disabled={selectProps.disabled}
         className="matriculation__select"
       >
-        <option>Valitse...</option>
+        <option value="">Valitse...</option>
         <option value="true">Pakollinen</option>
         <option value="false">Ylimääräinen</option>
       </select>
@@ -675,7 +675,7 @@ const GradeSelect: React.FC<GradeSelectProps> = (props) => {
         disabled={selectProps.disabled}
         className="matriculation__select"
       >
-        <option>{t(`labels.select`)}...</option>
+        <option value="">{t(`labels.select`)}...</option>
         {Object.keys(EXAMINATION_GRADES_MAP).map((subjectCode, index) => {
           const subjectName = EXAMINATION_GRADES_MAP[subjectCode];
 
@@ -730,7 +730,7 @@ const FundingSelect: React.FC<FundingSelectProps> = (props) => {
       >
         {isSucceedBefore ? (
           <>
-            <option>{t(`labels.select`)}...</option>
+            <option value="">{t(`labels.select`)}...</option>
             <option value={MatriculationExamFundingType.SelfFunded}>
               {t(`matriculationExamFundings.SELF_FUNDED`, { ns: "hops_new" })}
             </option>
@@ -739,7 +739,7 @@ const FundingSelect: React.FC<FundingSelectProps> = (props) => {
 
         {isFailedBefore ? (
           <>
-            <option>{t(`labels.select`)}...</option>
+            <option value="">{t(`labels.select`)}...</option>
             <option value={MatriculationExamFundingType.SelfFunded}>
               {t(`matriculationExamFundings.SELF_FUNDED`, {
                 ns: "hops_new",
@@ -757,7 +757,7 @@ const FundingSelect: React.FC<FundingSelectProps> = (props) => {
 
         {!isFailedBefore && !isSucceedBefore ? (
           <>
-            <option>{t(`labels.select`)}...</option>
+            <option value="">{t(`labels.select`)}...</option>
             <option value={MatriculationExamFundingType.SelfFunded}>
               {t(`matriculationExamFundings.SELF_FUNDED`, {
                 ns: "hops_new",
