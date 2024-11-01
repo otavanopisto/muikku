@@ -71,7 +71,11 @@ export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
       <Table modifiers={["language-table"]}>
         <TableHead modifiers={uTableHeadModifiers}>
           <Tr modifiers={["language-table"]}>
-            <Th modifiers={["centered", "language"]}>Kieli</Th>
+            <Th modifiers={["centered", "language"]}>
+              {t("labels.hopsCompulsoryLanguageTableLang", {
+                ns: "hops_new",
+              })}
+            </Th>
             <Th modifiers={["centered"]}>
               <span className="hops-container__table-head-container hops-container__table-head-description--long">
                 {t("labels.hopsCompulsoryLanguageTableSkillLevel1", {
@@ -197,7 +201,6 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
               type="text"
               value={lng.name}
               onChange={handleOtherLngChange}
-              placeholder="Kieli"
               className="hops__input hops__input--inside-table"
               disabled={disabled}
               style={{ textAlign: "center" }}
