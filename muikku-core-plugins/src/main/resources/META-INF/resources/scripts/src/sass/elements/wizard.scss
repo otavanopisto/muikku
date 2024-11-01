@@ -173,6 +173,10 @@
     overflow: auto;
   }
 
+  .wizard__footer {
+    padding: 20px 0 0;
+  }
+
   ol.progtrckr li {
     cursor: default;
   }
@@ -200,6 +204,7 @@
   align-items: center;
   display: flex;
   justify-content: center;
+  padding: 10px;
 
   > * {
     margin: 0 5px;
