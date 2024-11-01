@@ -2,7 +2,7 @@
 import * as React from "react";
 import { createContext } from "react";
 
-export type MatriculationRole = "STUDENT" | "GUARDIAN";
+export type MatriculationRole = "STUDENT" | "GUARDIAN" | "GUIDANCE_COUNSELOR";
 
 const UseCaseContext = createContext<MatriculationRole | undefined>(undefined);
 

@@ -36,6 +36,7 @@ import UpperSecondaryPedagogicalSupportWizardForm, {
   UPPERSECONDARY_PEDAGOGYFORM,
 } from "~/components/general/pedagogical-support-form";
 import { PedagogyFormAccess } from "~/generated/client";
+import HopsApplication from "./student/hops/hops";
 
 export type tabs =
   | "STUDIES"
@@ -44,6 +45,11 @@ export type tabs =
   | "STUDY_HISTORY"
   | "PEDAGOGICAL_SUPPORT"
   | "HOPS";
+
+/**
+ * Dialog view modes
+ */
+type DialogViewMode = "TABS" | "HOPS_VIEW";
 
 /**
  * StudentDialogProps
@@ -96,6 +102,16 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
 
   /** HOPS edit mode state */
   const [editHops, setEditHops] = React.useState(false);
+
+  /** Current view mode state */
+  const [viewMode, setViewMode] = React.useState<DialogViewMode>("TABS");
+
+  /**
+   * Toggles between HOPS and regular view
+   */
+  const toggleViewMode = () => {
+    setViewMode((prevMode) => (prevMode === "TABS" ? "HOPS_VIEW" : "TABS"));
+  };
 
   /**
    * Handles changes to the HOPS phase select dropdown
@@ -279,14 +295,17 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
    * Content
    * @returns JSX.Element
    */
-  const content = () => (
-    <Tabs
-      modifier="guider-student"
-      tabs={tabs}
-      activeTab={activeTab}
-      onTabChange={onTabChange}
-    ></Tabs>
-  );
+  const content = () =>
+    viewMode === "TABS" ? (
+      <Tabs
+        modifier="guider-student"
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={onTabChange}
+      />
+    ) : (
+      <HopsApplication studentIdentifier={student.basic.id} />
+    );
 
   const studyProgrammeName = student.basic && student.basic.studyProgrammeName;
   const dialogTitle = (
@@ -297,6 +316,13 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
       <DialogTitleItem modifier="studyprogramme">
         {"(" + studyProgrammeName + ")"}
       </DialogTitleItem>
+      {guider.currentStudent?.hopsAvailable && (
+        <DialogTitleItem modifier="hops-toggle">
+          <Button icon="compass" onClick={toggleViewMode}>
+            HOPS
+          </Button>
+        </DialogTitleItem>
+      )}
     </DialogTitleContainer>
   );
 

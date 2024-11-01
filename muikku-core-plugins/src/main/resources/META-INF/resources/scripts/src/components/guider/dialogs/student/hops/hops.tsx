@@ -2,8 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "~/reducers";
-import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
-import { HOPSState } from "../../../reducers/main-function/hops";
+import ApplicationPanelBody from "~/components/general/application-panel/components/application-panel-body";
 import { Tab } from "~/components/general/tabs";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
@@ -14,9 +13,14 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { useTranslation } from "react-i18next";
-import Matriculation from "./application/matriculation/matriculation";
+import Matriculation from "~/components/hops/body/application/matriculation/matriculation";
 import { UseCaseContextProvider } from "~/context/use-case-context";
-import { Action, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import {
+  LoadMatriculationDataTriggerType,
+  loadMatriculationData,
+} from "~/actions/main-function/hops/";
+import { HopsState } from "~/reducers/hops";
 
 /**
  * StudiesTab
@@ -27,37 +31,38 @@ type HopsTab = "MATRICULATION";
  * HopsApplicationProps
  */
 interface HopsApplicationProps {
-  hops: HOPSState;
-  showTitle?: boolean;
+  hops: HopsState;
+  studentIdentifier: string;
+  loadMatriculationData: LoadMatriculationDataTriggerType;
 }
-
-const defaultProps: Partial<HopsApplicationProps> = {
-  showTitle: true,
-};
 
 /**
  * HopsApplication
  * @param props props
  */
 const HopsApplication = (props: HopsApplicationProps) => {
-  const { showTitle } = { ...defaultProps, ...props };
+  const { studentIdentifier, loadMatriculationData, hops } = props;
+
   const [activeTab, setActiveTab] = React.useState<HopsTab>("MATRICULATION");
   const { t } = useTranslation(["studies", "common", "hops_new"]);
+
+  // Load matriculation data if it is not already loaded
+  React.useEffect(() => {
+    if (
+      hops.hopsMatriculationStatus !== "LOADING" &&
+      hops.hopsMatriculationStatus !== "READY"
+    ) {
+      loadMatriculationData({
+        userIdentifier: studentIdentifier,
+      });
+    }
+  }, [hops.hopsMatriculationStatus, loadMatriculationData, studentIdentifier]);
 
   /**
    * onTabChange
    * @param id id
-   * @param hash hash
    */
-  const onTabChange = (id: "MATRICULATION", hash?: string | Tab) => {
-    if (hash) {
-      if (typeof hash === "string" || hash instanceof String) {
-        window.location.hash = hash as string;
-      } else if (typeof hash === "object" && hash !== null) {
-        window.location.hash = hash.hash;
-      }
-    }
-
+  const onTabChange = (id: HopsTab) => {
     setActiveTab(id);
   };
 
@@ -76,9 +81,9 @@ const HopsApplication = (props: HopsApplicationProps) => {
   ];
 
   return (
-    <UseCaseContextProvider value="STUDENT">
+    <UseCaseContextProvider value="GUIDANCE_COUNSELOR">
       <ApplicationPanel
-        title={showTitle ? "HOPS" : undefined}
+        modifier="guider-student-hops"
         onTabChange={onTabChange}
         activeTab={activeTab}
         panelTabs={panelTabs}
@@ -93,7 +98,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    hops: state.hops,
+    hops: state.hopsNew,
   };
 }
 
@@ -102,7 +107,12 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return {};
+  return bindActionCreators(
+    {
+      loadMatriculationData,
+    },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HopsApplication);
