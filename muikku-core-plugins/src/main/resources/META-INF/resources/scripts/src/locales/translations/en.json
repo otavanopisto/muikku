@@ -11,6 +11,7 @@
       "close": "Close",
       "closeAll": "Close all",
       "closePDF": "Close PDF",
+      "continue": "Continue",
       "comment": "Comment",
       "confirmCancel": "Yes, cancel",
       "confirmSave": "I am sure",
@@ -643,6 +644,7 @@
       "retake": "Retake",
       "hopsBackground": "Background",
       "hopsMatriculation": "Matriculation examination",
+      "hopsFormWarningTitle": "Warning",
       "hopsFormBasicInfoName": "Name:",
       "hopsFormBasicInfoEducationLevel": "Level of education:",
       "hopsFormBasicInfoCouncelor": "Study advisor:",
@@ -810,6 +812,7 @@
       "matriculationSubjects": "Subjects:"
     },
     "content": {
+      "hopsFormUnsavedChanges": "You have made changes to HOPS. If you leave the page, you will lose all unsaved changes.",
       "matriculationChangeLogEmpty": "No history available for this examination at the moment.",
       "matriculationChangeLogUpdate": "updated the registration.",
       "matriculationChangeLogStateChanged": "changed the status of the registration.",

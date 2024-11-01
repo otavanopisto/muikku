@@ -3,6 +3,7 @@ import React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the EditHopsEventDescriptionDialog component
@@ -21,6 +22,8 @@ interface OngoingWarningDialogProps {
  */
 const OngoingWarningDialog: React.FC<OngoingWarningDialogProps> = (props) => {
   const { isOpen, onConfirm, onCancel, children } = props;
+
+  const { t } = useTranslation(["hops_new", "common"]);
 
   /**
    * Handles the save button click
@@ -51,10 +54,7 @@ const OngoingWarningDialog: React.FC<OngoingWarningDialogProps> = (props) => {
   const dialogContent = () => (
     <div className="hops-container__row">
       <div className="hops__form-element-container">
-        <p>
-          Olet muokkannut HOPS:ia. Jos siirryt pois sivulta menetät kaikki
-          tekemäsi muutokset. Haluatko jatkaa?
-        </p>
+        <p>{t("content.hopsFormUnsavedChanges", { ns: "hops_new" })}</p>
       </div>
     </div>
   );
@@ -70,13 +70,13 @@ const OngoingWarningDialog: React.FC<OngoingWarningDialogProps> = (props) => {
         buttonModifiers={["standard-ok", "fatal"]}
         onClick={handleConfirmClick(closePortal)}
       >
-        Ok
+        {t("actions.continue")}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
         onClick={handleCancelClick(closePortal)}
       >
-        Peruuta
+        {t("actions.cancel")}
       </Button>
     </div>
   );
@@ -85,7 +85,7 @@ const OngoingWarningDialog: React.FC<OngoingWarningDialogProps> = (props) => {
     <Dialog
       modifier="confirm-remove-answer-dialog"
       disableScroll={true}
-      title="Tapahtuman kuvaus"
+      title={t("labels.hopsFormWarningTitle", { ns: "hops_new" })}
       content={dialogContent}
       footer={footer}
       closeOnOverlayClick={false}

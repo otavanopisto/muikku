@@ -17,9 +17,10 @@ import Matriculation from "./application/matriculation/matriculation";
 import { UseCaseContextProvider } from "~/context/use-case-context";
 import Background from "./application/background/background";
 import { HopsState } from "~/reducers/hops";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import OngoingWarningDialog from "./application/wizard/dialog/ongoing-edit-warning";
 import { Action, Dispatch } from "redux";
+import { Prompt } from "react-router-dom";
 
 /**
  * Represents the possible tabs in the HOPS application.
@@ -52,6 +53,29 @@ const HopsApplication = (props: HopsApplicationProps) => {
     id: HopsTab;
     hash?: string | Tab;
   } | null>(null);
+
+  // Add useEffect to handle beforeunload event
+  useEffect(() => {
+    /**
+     * Handles the beforeunload event to prevent the user from leaving the page
+     * with unsaved changes.
+     *
+     * @param e - The beforeunload event
+     * @returns - Returns an empty string to allow the user to leave the page
+     */
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = ""; // For Chrome
+        return ""; // For other browsers
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [hasUnsavedChanges]);
 
   /**
    * Handles the tab change after confirming unsaved changes.
@@ -97,11 +121,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
    */
   const handleConfirmTabChange = useCallback(() => {
     if (pendingTabChange) {
-      handleTabChange(pendingTabChange.id, pendingTabChange.hash);
+      handleContinueTabChange(pendingTabChange.id, pendingTabChange.hash);
     }
     setIsWarningDialogOpen(false);
     setPendingTabChange(null);
-  }, [pendingTabChange, handleTabChange]);
+  }, [pendingTabChange, handleContinueTabChange]);
 
   /**
    * Cancels the pending tab change and closes the warning dialog.
@@ -168,6 +192,10 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   return (
     <UseCaseContextProvider value="STUDENT">
+      <Prompt
+        when={hasUnsavedChanges}
+        message={t("content.hopsFormUnsavedChanges", { ns: "hops_new" })}
+      />
       <ApplicationPanel
         title="HOPS"
         onTabChange={handleTabChange}
