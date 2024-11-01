@@ -157,7 +157,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     const succesfulFinishedExams: string[] = [];
 
     examinationInformation.finishedAttendances.forEach((item) => {
-      if (EXAMINATION_SUCCESS_GRADES_MAP.includes(item.grade)) {
+      // Because there is a case where examination is not yet graded
+      // before next enrollment period starts, we need to include UNKNOWN
+      // to the list of succesful grades to be able to continue with the enrollment
+      if ([...EXAMINATION_SUCCESS_GRADES_MAP, "UNKNOWN"].includes(item.grade)) {
         succesfulFinishedExams.push(item.subject);
       }
     });
