@@ -487,6 +487,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
       if (attendance.subject === "") {
         return true;
       }
+
+      if (compulsoryEducationEligible && attendance.funding === undefined) {
+        return true;
+      }
     }
     for (const attendance of examinationInformation.finishedAttendances) {
       if (
@@ -494,6 +498,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         attendance.subject === "" ||
         attendance.grade === ""
       ) {
+        return true;
+      }
+
+      if (compulsoryEducationEligible && attendance.funding === undefined) {
         return true;
       }
     }
@@ -504,6 +512,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     }
     return false;
   }, [
+    compulsoryEducationEligible,
     examinationInformation.enrolledAttendances,
     examinationInformation.finishedAttendances,
     examinationInformation.plannedAttendances,

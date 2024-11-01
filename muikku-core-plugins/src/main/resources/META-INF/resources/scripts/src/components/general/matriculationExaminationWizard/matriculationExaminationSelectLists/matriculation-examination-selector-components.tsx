@@ -146,13 +146,15 @@ export const MatriculationExaminationEnrolledInputGroup: React.FC<
           <FundingSelect
             i={index}
             disabled={readOnly}
-            value={subject.funding}
+            value={subject.funding || ""}
             isFailedBefore={isFailedBefore}
             isSucceedBefore={isSucceedBefore}
             onChange={(e) =>
               onSubjectGroupChange(
                 "funding",
-                e.target.value as MatriculationExamFundingType,
+                e.target.value === ""
+                  ? undefined
+                  : (e.target.value as MatriculationExamFundingType),
                 index
               )
             }
@@ -307,11 +309,13 @@ export const MatriculationExaminationFinishedInputGroup: React.FC<
           <FundingSelect
             i={index}
             disabled={readOnly}
-            value={subject.funding}
+            value={subject.funding || ""}
             onChange={(e) =>
               onSubjectGroupChange(
                 "funding",
-                e.target.value as MatriculationExamFundingType,
+                e.target.value === ""
+                  ? undefined
+                  : (e.target.value as MatriculationExamFundingType),
                 index
               )
             }
