@@ -26,8 +26,6 @@ interface HopsStudentHopsInformationProps {
   loadMoreHopsEvents: LoadMoreHopsFormHistoryTriggerType;
 }
 
-const loading = false;
-
 /**
  * HopsStudentHopsInformation component
  *
@@ -56,10 +54,6 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
     window.dispatchEvent(new Event("resize"));
     myRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
-
-  if (loading) {
-    return <div className="loader-empty" />;
-  }
 
   return (
     <section className="hops-container" ref={myRef}>
@@ -110,8 +104,8 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
                 guidanceCounselors.length > 0
                   ? guidanceCounselors.join(", ")
                   : t("labels.hopsFormBasicInfoCouncelor_no", {
-                    ns: "hops_new",
-                  })
+                      ns: "hops_new",
+                    })
               }
               disabled
               className="hops__input"

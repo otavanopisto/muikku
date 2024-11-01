@@ -239,9 +239,7 @@ export default class MainFunction extends React.Component<
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [identifier, tab] = hashArray;
 
-      if (identifier) {
-        this.loadHopsData(tab, identifier);
-      }
+      this.loadHopsData(tab, identifier);
     } else if (window.location.pathname.includes("/guardian")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
       const [identifier, tab] = hashArray;
@@ -368,7 +366,7 @@ export default class MainFunction extends React.Component<
     );
 
     // Load matriculation data if in Matriculation tab
-    if (givenLocation === "matriculation" || !givenLocation) {
+    if (givenLocation === "matriculation") {
       this.props.store.dispatch(
         loadMatriculationData({ userIdentifier: userId }) as Action
       );
@@ -1050,12 +1048,8 @@ export default class MainFunction extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      // If there's an identifier, we can load records data, otherwise it's done in the hash change
-      if (identifier) {
-        this.props.store.dispatch(
-          loadMatriculationData({ userIdentifier: identifier }) as Action
-        );
-      }
+      // If there's an identifier, we can load hops data, otherwise it's done in the hash change
+      this.loadHopsData(tab, identifier);
     }
     return <GuardianHopsBody />;
   }

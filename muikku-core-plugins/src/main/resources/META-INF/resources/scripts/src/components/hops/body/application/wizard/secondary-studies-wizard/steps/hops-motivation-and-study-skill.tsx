@@ -8,6 +8,7 @@ import {
 import { Textarea } from "~/components/general/hops-compulsory-education-wizard/text-area";
 import { SecondaryStudiesHops } from "~/@types/hops";
 import { useTranslation } from "react-i18next";
+import { useUseCaseContext } from "~/context/use-case-context";
 
 /**
  * Props for the HopsMotivationAndStudySkills component.
@@ -24,8 +25,6 @@ interface HopsMotivationAndStudySkillsProps {
   form: SecondaryStudiesHops;
 }
 
-const disabled = false;
-
 /**
  * HopsMotivationAndStudySkills component
  *
@@ -39,6 +38,9 @@ const HopsMotivationAndStudySkills: React.FC<
   HopsMotivationAndStudySkillsProps
 > = (props) => {
   const { onFormChange, form } = props;
+
+  const useCase = useUseCaseContext();
+  const disabled = useCase === "GUARDIAN";
 
   const { t } = useTranslation(["hops_new"]);
 

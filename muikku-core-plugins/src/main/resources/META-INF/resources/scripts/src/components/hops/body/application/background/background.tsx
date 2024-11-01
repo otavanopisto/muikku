@@ -12,7 +12,7 @@ import SecondaryStudiesHopsWizard from "../wizard/secondary-studies-wizard/secon
  */
 interface BackgroundProps {
   hops: HopsState;
-  onHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
+  onHasUnsavedChanges?: (hasUnsavedChanges: boolean) => void;
 }
 
 /**

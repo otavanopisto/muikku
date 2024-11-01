@@ -185,7 +185,7 @@ export interface LoadMatriculationDataTriggerType {
 /**
  * resetMatriculationDataTriggerType
  */
-export interface ResetMatriculationDataTriggerType {
+export interface ResetHopsDataTriggerType {
   (): AnyActionType;
 }
 
@@ -860,19 +860,18 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
   };
 
 /**
- * resetMatriculationData
+ * resetHopsData
  */
-const resetMatriculationData: ResetMatriculationDataTriggerType =
-  function resetMatriculationData() {
-    return (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
-      dispatch({
-        type: "HOPS_RESET_DATA",
-        payload: undefined,
-      });
-    };
+const resetHopsData: ResetHopsDataTriggerType = function resetHopsData() {
+  return (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+  ) => {
+    dispatch({
+      type: "HOPS_RESET_DATA",
+      payload: undefined,
+    });
   };
+};
 
 /**
  * Load student HOPS form data thunk
@@ -1308,7 +1307,7 @@ export {
   loadMatriculationExamHistory,
   saveMatriculationPlan,
   updateMatriculationExamination,
-  resetMatriculationData,
+  resetHopsData,
   loadStudentHopsForm,
   loadStudentInfo,
   loadHopsFormHistory,
