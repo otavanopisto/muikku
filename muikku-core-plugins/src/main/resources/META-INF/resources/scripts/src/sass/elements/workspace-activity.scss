@@ -58,6 +58,11 @@
   max-width: 100%;
 }
 
+.workspace-activity__progressbar-circle-wrapper {
+  align-items: center;
+  display: flex;
+}
+
 .workspace-activity__progressbar-circle {
   line-height: 1;
   margin: 0 5px;

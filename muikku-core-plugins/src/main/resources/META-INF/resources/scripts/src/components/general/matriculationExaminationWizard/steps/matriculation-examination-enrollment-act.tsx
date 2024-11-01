@@ -26,7 +26,7 @@ const MatriculationExaminationEnrollmentAct = () => {
    * @param value value
    */
   const handleExaminationInformationChange = <
-    T extends keyof ExaminationInformation
+    T extends keyof ExaminationInformation,
   >(
     key: T,
     value: ExaminationInformation[T]

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/no-find-dom-node */
 /* eslint-disable react/no-string-refs */
 
@@ -18,6 +19,7 @@ import { findDOMNode } from "react-dom";
 import $ from "~/lib/jquery";
 import "~/sass/elements/dropdown.scss";
 import { v4 as uuidv4 } from "uuid";
+import { Provider, ReactReduxContext } from "react-redux";
 
 /**
  * itemType2
@@ -115,6 +117,16 @@ export default class Dropdown extends React.Component<
   private isUnmounted = false;
   private originalPositionTop: number;
 
+  // New ref declarations
+  private activatorRef: React.RefObject<HTMLElement>;
+  private portalRef: React.RefObject<Portal>;
+  private dropdownRef: React.RefObject<HTMLDivElement>;
+  private arrowRef: React.RefObject<HTMLSpanElement>;
+
+  static defaultProps = {
+    closeOnOutsideClick: true,
+  };
+
   /**
    * constructor
    * @param props props
@@ -139,7 +151,26 @@ export default class Dropdown extends React.Component<
       forcedWidth: null,
       visible: false,
     };
+
+    // Initialize refs
+    this.activatorRef = React.createRef();
+    this.portalRef = React.createRef();
+    this.dropdownRef = React.createRef();
+    this.arrowRef = React.createRef();
   }
+
+  /**
+   * handleOutsideClick
+   * @param event event
+   */
+  handleOutsideClick = (event: MouseEvent) => {
+    if (
+      this.dropdownRef.current &&
+      !this.dropdownRef.current.contains(event.target as Node)
+    ) {
+      this.close();
+    }
+  };
 
   /**
    * componentDidMount
@@ -147,6 +178,19 @@ export default class Dropdown extends React.Component<
   componentDidMount(): void {
     this.props.persistent &&
       window.addEventListener("scroll", this.handleScroll);
+
+    if (this.props.closeOnOutsideClick) {
+      document.addEventListener("mousedown", this.handleOutsideClick);
+    }
+
+    let element = this.activatorRef.current;
+    if (!(element instanceof HTMLElement)) {
+      element = findDOMNode(element) as HTMLElement;
+    }
+
+    if (element) {
+      element.addEventListener("keydown", this.handleActivatorKeyDown as any);
+    }
   }
 
   /**
@@ -156,6 +200,22 @@ export default class Dropdown extends React.Component<
     this.isUnmounted = true;
     this.props.persistent &&
       window.removeEventListener("scroll", this.handleScroll);
+
+    if (this.props.closeOnOutsideClick) {
+      document.removeEventListener("mousedown", this.handleOutsideClick);
+    }
+
+    let element = this.activatorRef.current;
+    if (!(element instanceof HTMLElement)) {
+      element = findDOMNode(element) as HTMLElement;
+    }
+
+    if (element) {
+      element.removeEventListener(
+        "keydown",
+        this.handleActivatorKeyDown as any
+      );
+    }
   }
 
   /**
@@ -167,13 +227,13 @@ export default class Dropdown extends React.Component<
       return;
     }
 
-    let activator: any = this.refs["activator"];
+    let activator = this.activatorRef.current;
     if (!(activator instanceof HTMLElement)) {
-      activator = findDOMNode(activator);
+      activator = findDOMNode(activator) as HTMLElement;
     }
 
     const $target = $(activator);
-    const $dropdown = $(this.refs["dropdown"]);
+    const $dropdown = $(this.dropdownRef.current);
     const position = activator.getBoundingClientRect();
     const windowHeight = $(window).height();
     const spaceLeftInTop = position.top;
@@ -246,14 +306,14 @@ export default class Dropdown extends React.Component<
       return;
     }
 
-    let activator: any = this.refs["activator"];
+    let activator = this.activatorRef.current;
     if (!(activator instanceof HTMLElement)) {
-      activator = findDOMNode(activator);
+      activator = findDOMNode(activator) as HTMLElement;
     }
 
     const $target = $(activator);
-    const $arrow = $(this.refs["arrow"]);
-    const $dropdown = $(this.refs["dropdown"]);
+    const $arrow = $(this.arrowRef.current);
+    const $dropdown = $(this.dropdownRef.current);
     const position = activator.getBoundingClientRect();
     const windowWidth = $(window).width();
     const windowHeight = $(window).height();
@@ -400,7 +460,7 @@ export default class Dropdown extends React.Component<
    * close
    */
   close() {
-    (this.refs["portal"] as Portal).closePortal();
+    this.portalRef.current?.closePortal();
   }
 
   /**
@@ -431,7 +491,7 @@ export default class Dropdown extends React.Component<
     }
 
     if (e.key === "Tab") {
-      let element = this.refs["activator"] as any;
+      let element = this.activatorRef.current;
       if (!(element instanceof HTMLElement)) {
         element = findDOMNode(element) as any;
       }
@@ -474,7 +534,7 @@ export default class Dropdown extends React.Component<
     const id = this.id + "-item-" + n;
     let element = document.querySelector("#" + id) as HTMLElement;
     if (n === -1 && !element) {
-      element = this.refs["activator"] as any;
+      element = this.activatorRef.current;
       if (!(element instanceof HTMLElement)) {
         element = findDOMNode(element) as any;
       }
@@ -491,12 +551,35 @@ export default class Dropdown extends React.Component<
   }
 
   /**
+   * handleActivatorClick
+   * @param event event
+   */
+  handleActivatorClick = (event: React.MouseEvent) => {
+    if (this.state.visible) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.close();
+    }
+  };
+
+  /**
+   * handleActivatorKeyDown
+   * @param event event
+   */
+  handleActivatorKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Escape" && this.state.visible) {
+      event.preventDefault();
+      this.close();
+    }
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
     const {
-      closeOnOutsideClick = true,
+      closeOnOutsideClick,
       closeOnClick = false,
       persistent,
       openByHoverIsClickToo,
@@ -507,16 +590,24 @@ export default class Dropdown extends React.Component<
 
     let elementCloned: React.ReactElement<any> = React.cloneElement(
       children as any,
-      { ref: "activator" }
+      {
+        ref: this.activatorRef,
+        onKeyDown: this.handleActivatorKeyDown,
+      }
     );
+
     const portalProps: any = {};
     if (!openByHover) {
       portalProps.openByClickOn = elementCloned;
     } else {
       if (onClick) {
         elementCloned = React.cloneElement(children as any, {
-          ref: "activator",
-          onClick: onClick,
+          ref: this.activatorRef,
+          // eslint-disable-next-line jsdoc/require-jsdoc
+          onClick: (e: React.MouseEvent) => {
+            this.handleActivatorClick(e);
+            if (onClick) onClick();
+          },
           id: this.id + "-button",
           role: "combobox",
           "aria-autocomplete": "list",
@@ -535,62 +626,77 @@ export default class Dropdown extends React.Component<
     portalProps.closeOnClick = closeOnClick;
 
     return (
-      <Portal
-        ref="portal"
-        {...portalProps}
-        onOpen={this.onOpen}
-        onClose={this.onClose}
-        onWrapperKeyDown={this.onKeyDown}
-        beforeClose={this.beforeClose}
-      >
-        <div
-          ref="dropdown"
-          id={this.id + "-menu"}
-          style={{
-            position: "fixed",
-            top: this.state.top,
-            left: this.state.left,
-            width: this.state.forcedWidth,
-          }}
-          className={`dropdown ${
-            this.props.modifier ? "dropdown--" + this.props.modifier : ""
-          } ${this.state.visible ? "visible" : ""}`}
-        >
-          <span
-            className="dropdown__arrow"
-            ref="arrow"
-            style={{
-              left: this.state.arrowLeft,
-              right: this.state.arrowRight,
-              top: this.state.arrowTop,
-              transform: this.state.reverseArrow ? "scaleY(-1)" : "",
-            }}
-          ></span>
-          {(this.props.content || this.props.items) && (
-            // We use tooltipId prop here so we can attach tooltip's trigger button's [aria-describedby] attibute directly to the content of the tooltip
-            <div className="dropdown__container" id={this.props.tooltipId}>
-              {this.props.content ? this.props.content : null}
-              {this.props.items
-                ? this.props.items.map((item, index) => {
-                    const element = React.cloneElement(
-                      typeof item === "function" ? item(this.close) : item,
-                      {
-                        id: this.id + "-item-" + index,
-                        onKeyDown: this.onItemKeyDown,
-                      }
-                    );
+      <ReactReduxContext.Consumer>
+        {({ store }) => (
+          <Portal
+            ref={this.portalRef}
+            {...portalProps}
+            onOpen={this.onOpen}
+            onClose={this.onClose}
+            onWrapperKeyDown={this.onKeyDown}
+            beforeClose={this.beforeClose}
+            closeOnOutsideClick={false} // Disable Portal's built-in outside click handling
+          >
+            <Provider store={store}>
+              <div
+                ref={this.dropdownRef}
+                id={this.id + "-menu"}
+                style={{
+                  position: "fixed",
+                  top: this.state.top,
+                  left: this.state.left,
+                  width: this.state.forcedWidth,
+                }}
+                className={`dropdown ${
+                  this.props.modifier ? "dropdown--" + this.props.modifier : ""
+                } ${this.state.visible ? "visible" : ""}`}
+              >
+                <span
+                  className="dropdown__arrow"
+                  ref={this.arrowRef}
+                  style={{
+                    left: this.state.arrowLeft,
+                    right: this.state.arrowRight,
+                    top: this.state.arrowTop,
+                    transform: this.state.reverseArrow ? "scaleY(-1)" : "",
+                  }}
+                ></span>
+                {(this.props.content || this.props.items) && (
+                  // We use tooltipId prop here so we can attach tooltip's trigger button's [aria-describedby] attibute directly to the content of the tooltip
+                  <div
+                    className="dropdown__container"
+                    id={this.props.tooltipId}
+                  >
+                    {this.props.content ? this.props.content : null}
+                    {this.props.items
+                      ? this.props.items.map((item, index) => {
+                          const element = React.cloneElement(
+                            typeof item === "function"
+                              ? item(this.close)
+                              : item,
+                            {
+                              id: this.id + "-item-" + index,
+                              onKeyDown: this.onItemKeyDown,
+                            }
+                          );
 
-                    return (
-                      <div className="dropdown__container-item" key={index}>
-                        {element}
-                      </div>
-                    );
-                  })
-                : null}
-            </div>
-          )}
-        </div>
-      </Portal>
+                          return (
+                            <div
+                              className="dropdown__container-item"
+                              key={index}
+                            >
+                              {element}
+                            </div>
+                          );
+                        })
+                      : null}
+                  </div>
+                )}
+              </div>
+            </Provider>
+          </Portal>
+        )}
+      </ReactReduxContext.Consumer>
     );
   }
 }

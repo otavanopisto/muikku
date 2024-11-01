@@ -2036,7 +2036,6 @@
       "sizeTooLarge": "Tiedoston koko on liian suuri. Suurin sallittu tiedostokoko on 10 Mt",
       "createErrror": "Tiedoston tallennus epäonnistui",
       "removeError": "Tiedoston poisto epäonnistui",
-      "uploading": "Lähetetään tiedostoa {{progress}} %",
       "uploadSuccess": "Tiedoston lähetys onnistui"
     }
   },

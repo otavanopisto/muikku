@@ -98,7 +98,7 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder
           .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, date)
           .mockCompositeGradingScales()
-          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, date)
+          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, date, true)
           .mockCompositeCourseAssessmentRequests()
           .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, false, course1, student, admin.getId(), date, true)
           .mockStaffCompositeCourseAssessmentRequests()
@@ -182,7 +182,7 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder
         .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, course1, student, date)
+        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, course1, student, date, false)
         .mockCompositeCourseAssessmentRequests()
         .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), date, false)
         .mockStaffCompositeCourseAssessmentRequests();

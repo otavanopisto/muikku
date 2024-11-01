@@ -16,9 +16,8 @@ import {
 } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   UpdateAssignmentStateTriggerType,
   updateAssignmentState,
@@ -41,6 +40,7 @@ import {
 import { MaterialCompositeReply } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import MApi from "~/api/api";
+import { connect } from "react-redux";
 
 /* i18n.t("", { ns: "materials" }); */
 
@@ -737,7 +737,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       updateAssignmentState,

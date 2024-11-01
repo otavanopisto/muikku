@@ -157,7 +157,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     const succesfulFinishedExams: string[] = [];
 
     examinationInformation.finishedAttendances.forEach((item) => {
-      if (EXAMINATION_SUCCESS_GRADES_MAP.includes(item.grade)) {
+      // Because there is a case where examination is not yet graded
+      // before next enrollment period starts, we need to include UNKNOWN
+      // to the list of succesful grades to be able to continue with the enrollment
+      if ([...EXAMINATION_SUCCESS_GRADES_MAP, "UNKNOWN"].includes(item.grade)) {
         succesfulFinishedExams.push(item.subject);
       }
     });
@@ -484,6 +487,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
       if (attendance.subject === "") {
         return true;
       }
+
+      if (compulsoryEducationEligible && attendance.funding === undefined) {
+        return true;
+      }
     }
     for (const attendance of examinationInformation.finishedAttendances) {
       if (
@@ -491,6 +498,10 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         attendance.subject === "" ||
         attendance.grade === ""
       ) {
+        return true;
+      }
+
+      if (compulsoryEducationEligible && attendance.funding === undefined) {
         return true;
       }
     }
@@ -501,6 +512,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
     }
     return false;
   }, [
+    compulsoryEducationEligible,
     examinationInformation.enrolledAttendances,
     examinationInformation.finishedAttendances,
     examinationInformation.plannedAttendances,
@@ -806,7 +818,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
    * @param value value
    */
   const handleExaminationInformationChange = <
-    T extends keyof ExaminationInformation
+    T extends keyof ExaminationInformation,
   >(
     key: T,
     value: ExaminationInformation[T]

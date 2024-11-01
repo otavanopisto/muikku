@@ -18,7 +18,6 @@ import { guider } from "./main-function/guider";
 import { profile } from "./main-function/profile";
 import { records } from "~/reducers/main-function/records";
 import { hops } from "~/reducers/main-function/hops";
-import { yo, eligibilitySubjects } from "~/reducers/main-function/records/yo";
 import { summary } from "~/reducers/main-function/records/summary";
 import { organizationSummary } from "~/reducers/organization/summary";
 import { combineReducers } from "redux";
@@ -35,7 +34,6 @@ export default combineReducers({
   dependants,
   discussion,
   easyToUse,
-  eligibilitySubjects,
   evaluations,
   guider,
   hops,
@@ -55,6 +53,5 @@ export default combineReducers({
   userSelect,
   websocket,
   workspaces,
-  yo,
   hopsNew,
 });

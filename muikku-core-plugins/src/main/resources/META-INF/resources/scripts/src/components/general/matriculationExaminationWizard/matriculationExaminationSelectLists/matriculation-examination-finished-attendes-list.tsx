@@ -62,7 +62,7 @@ export const MatriculationExaminationFinishedAttendesList: React.FC<
    * @param index index
    */
   const handleMatriculationExaminationSubjectGroupChange = <
-    T extends keyof MatriculationExamFinishedSubject
+    T extends keyof MatriculationExamFinishedSubject,
   >(
     key: T,
     value: MatriculationExamFinishedSubject[T],

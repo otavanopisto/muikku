@@ -5,7 +5,7 @@ import notificationActions from "~/actions/base/notifications";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError } from "~/api/api";
 import { Credentials } from "~/generated/client";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 
 export type LOAD_CREDENTIALS = SpecificActionType<
   "LOAD_CREDENTIALS",
@@ -38,7 +38,7 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
   secret
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const credentialsApi = MApi.getCredentialsApi();
@@ -83,7 +83,7 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
 const updateCredentials: UpdateCredentialsTriggerType =
   function updateCredentials(credentials) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const credentialsApi = MApi.getCredentialsApi();

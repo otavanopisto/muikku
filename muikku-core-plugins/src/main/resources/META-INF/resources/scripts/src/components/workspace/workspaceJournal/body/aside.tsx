@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
@@ -9,7 +9,7 @@ import Navigation, {
 } from "~/components/general/navigation";
 import { WorkspaceDataType } from "~/reducers/workspaces/index";
 import { StatusType } from "~/reducers/base/status";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { loadStudentsOfWorkspace } from "~/actions/workspaces";
 import { LoadUsersOfWorkspaceTriggerType } from "~/actions/workspaces/index";
 import { AnyActionType } from "~/actions";
@@ -216,7 +216,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadStudents: loadStudentsOfWorkspace,

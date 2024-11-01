@@ -7,7 +7,7 @@ import {
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 import { ActivityLogEntry, ActivityLogType } from "~/generated/client";
 
@@ -34,7 +34,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
   studentIdentifier
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const recordsApi = MApi.getRecordsApi();
@@ -89,8 +89,8 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
           param.type == "MATERIAL_ASSIGNMENTDONE"
             ? assignmentsDone.push(param.type)
             : param.type == "EVALUATION_GOTPASSED"
-            ? coursesDone.push(param.type)
-            : null;
+              ? coursesDone.push(param.type)
+              : null;
         });
       });
 
