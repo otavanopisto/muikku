@@ -54,6 +54,16 @@ const HopsApplication = (props: HopsApplicationProps) => {
     hash?: string | Tab;
   } | null>(null);
 
+  // Add new useEffect for handling initial URL hash
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash === "matriculation") {
+      setActiveTab("MATRICULATION");
+    } else if (hash === "background") {
+      setActiveTab("BACKGROUND");
+    }
+  }, []); // Run only on mount
+
   // Add useEffect to handle beforeunload event
   useEffect(() => {
     /**

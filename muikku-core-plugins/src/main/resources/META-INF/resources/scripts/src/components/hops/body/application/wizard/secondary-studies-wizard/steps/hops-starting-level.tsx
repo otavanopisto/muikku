@@ -5,6 +5,7 @@ import PreviousStudies from "../../components/hops-previous-studies-list";
 import { PreviousStudiesEntry, SecondaryStudiesHops } from "~/@types/hops";
 import { Textarea } from "../../components/text-area";
 import { useTranslation } from "react-i18next";
+import { useUseCaseContext } from "~/context/use-case-context";
 
 /**
  * Props for the HopsStartingLevel component
@@ -13,9 +14,6 @@ interface HopsStartingLevelProps {
   form: SecondaryStudiesHops;
   onFormChange: (form: SecondaryStudiesHops) => void;
 }
-
-// TODO: Consider making this a prop or state variable
-const disabled = false;
 
 /**
  * HopsStartingLevel Component
@@ -28,6 +26,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
   const { form, onFormChange } = props;
   const { t } = useTranslation("hops_new");
   const myRef = useRef<HTMLDivElement>(null);
+
+  const useCase = useUseCaseContext();
+  const disabled = useCase === "GUARDIAN";
 
   /**
    * Effect to resize window and scroll into view on component mount
@@ -90,6 +91,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
         </legend>
 
         <PreviousStudies
+          disabled={disabled}
           previousStudies={form.previousEducations}
           onPreviousStudiesChange={handlePreviousStudiesChange}
         />

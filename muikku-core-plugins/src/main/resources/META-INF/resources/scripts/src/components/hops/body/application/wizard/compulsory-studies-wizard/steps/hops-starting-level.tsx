@@ -10,6 +10,7 @@ import {
 import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
 import { CompulsoryStudiesHops } from "~/@types/hops";
 import { useTranslation } from "react-i18next";
+import { useUseCaseContext } from "~/context/use-case-context";
 
 /**
  * Props for the HopsStartingLevel component
@@ -20,8 +21,6 @@ interface HopsStartingLevelProps {
   /** Callback function to update the form state */
   onFormChange: (form: CompulsoryStudiesHops) => void;
 }
-
-const disabled = false;
 
 /**
  * HopsStartingLevel Component
@@ -38,6 +37,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
   const myRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation("hops_new");
+
+  const useCase = useUseCaseContext();
+  const disabled = useCase === "GUARDIAN";
 
   useEffect(() => {
     window.dispatchEvent(new Event("resize"));
@@ -141,7 +143,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
               className="hops__select"
               value={form.previousEducation}
               onChange={handleSelectsChange("previousEducation")}
-              disabled={false}
+              disabled={disabled}
             >
               <option value={Education.COMPULSORY_SCHOOL}>
                 {t("labels.hopsCompulsoryPreviousEducationOption1", {

@@ -26,8 +26,6 @@ interface HopsStudentHopsInformationProps {
   loadMoreHopsEvents: LoadMoreHopsFormHistoryTriggerType;
 }
 
-const loading = false;
-
 /**
  * HopsStudentHopsInformation component
  *
@@ -56,10 +54,6 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
     window.dispatchEvent(new Event("resize"));
     myRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
-
-  if (loading) {
-    return <div className="loader-empty" />;
-  }
 
   return (
     <section className="hops-container" ref={myRef}>

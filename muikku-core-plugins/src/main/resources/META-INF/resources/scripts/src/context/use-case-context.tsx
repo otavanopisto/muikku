@@ -2,15 +2,15 @@
 import * as React from "react";
 import { createContext } from "react";
 
-export type MatriculationRole = "STUDENT" | "GUARDIAN";
+export type HopsUseCase = "STUDENT" | "GUARDIAN";
 
-const UseCaseContext = createContext<MatriculationRole | undefined>(undefined);
+const UseCaseContext = createContext<HopsUseCase | undefined>(undefined);
 
 /**
  * Window context provider props
  */
 interface WindowContextProviderProps {
-  value: MatriculationRole;
+  value: HopsUseCase;
   children: React.ReactNode;
 }
 

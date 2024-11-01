@@ -22,10 +22,15 @@ import { UseCaseContextProvider } from "~/context/use-case-context";
 import {
   loadMatriculationData,
   LoadMatriculationDataTriggerType,
-  resetMatriculationData,
-  ResetMatriculationDataTriggerType,
+  resetHopsData,
+  ResetHopsDataTriggerType,
+  loadStudentHopsForm,
+  LoadStudentHopsFormTriggerType,
+  loadHopsFormHistory,
+  LoadHopsFormHistoryTriggerType,
 } from "~/actions/main-function/hops/";
 import { Action, bindActionCreators, Dispatch } from "redux";
+import Background from "~/components/hops/body/application/background/background";
 
 const UPPERSECONDARY_PROGRAMMES = [
   "Nettilukio",
@@ -39,7 +44,7 @@ const UPPERSECONDARY_PROGRAMMES = [
 /**
  * StudiesTab
  */
-type HopsTab = "MATRICULATION";
+type HopsTab = "MATRICULATION" | "BACKGROUND";
 
 /**
  * HopsApplicationProps
@@ -47,7 +52,9 @@ type HopsTab = "MATRICULATION";
 interface GuardianHopsApplicationProps extends WithTranslation {
   dependants: DependantsState;
   loadMatriculationData: LoadMatriculationDataTriggerType;
-  resetMatriculationData: ResetMatriculationDataTriggerType;
+  loadStudentHopsForm: LoadStudentHopsFormTriggerType;
+  loadHopsFormHistory: LoadHopsFormHistoryTriggerType;
+  resetHopsData: ResetHopsDataTriggerType;
 }
 
 /**
@@ -74,7 +81,7 @@ class GuardianHopsApplication extends React.Component<
     super(props);
 
     this.state = {
-      activeTab: "MATRICULATION",
+      activeTab: "BACKGROUND",
       selectedDependantIdentifier: this.getCurrentDependantIdentifier(),
     };
   }
@@ -108,15 +115,21 @@ class GuardianHopsApplication extends React.Component<
      * opened tab again
      */
     switch (tab) {
-      case "MATRICULATION":
+      case "matriculation":
         this.setState({
           activeTab: "MATRICULATION",
         });
         break;
 
+      case "background":
+        this.setState({
+          activeTab: "BACKGROUND",
+        });
+        break;
+
       default:
         this.setState({
-          activeTab: "MATRICULATION",
+          activeTab: "BACKGROUND",
         });
         break;
     }
@@ -144,6 +157,9 @@ class GuardianHopsApplication extends React.Component<
     switch (tab.id) {
       case "MATRICULATION":
         return UPPERSECONDARY_PROGRAMMES.includes(selectUserStudyProgramme);
+
+      case "BACKGROUND":
+        return true;
     }
 
     return false;
@@ -154,7 +170,7 @@ class GuardianHopsApplication extends React.Component<
    * @param id id
    * @param hash hash
    */
-  handleTabChange = (id: "MATRICULATION", hash?: string | Tab) => {
+  handleTabChange = (id: HopsTab, hash?: string | Tab) => {
     if (hash) {
       const user = window.location.hash.replace("#", "").split("/")[0];
       if (typeof hash === "string" || hash instanceof String) {
@@ -170,17 +186,18 @@ class GuardianHopsApplication extends React.Component<
   };
 
   /**
-   * handleSelectChange
+   * Handles change of dependant. Resets data and loads new data for HOPS form and history by default.
    * @param option selectedOptions
    */
   handleDependantSelectChange = async (option: OptionDefault<string>) => {
     window.location.hash = option.value;
 
-    this.props.resetMatriculationData();
-    this.props.loadMatriculationData({ userIdentifier: option.value });
+    this.props.resetHopsData();
+    this.props.loadStudentHopsForm({ userIdentifier: option.value });
+    this.props.loadHopsFormHistory({ userIdentifier: option.value });
 
     this.setState({
-      activeTab: "MATRICULATION",
+      activeTab: "BACKGROUND",
       selectedDependantIdentifier: option.value,
     });
   };
@@ -192,14 +209,10 @@ class GuardianHopsApplication extends React.Component<
   render() {
     // Filter dependants to only show upper secondary dependants
     const dependants = this.props.dependants
-      ? this.props.dependants.list
-          .filter((d) =>
-            UPPERSECONDARY_PROGRAMMES.includes(d.studyProgrammeName)
-          )
-          .map((d) => ({
-            label: getName(d, true),
-            value: d.identifier,
-          }))
+      ? this.props.dependants.list.map((d) => ({
+          label: getName(d, true),
+          value: d.identifier,
+        }))
       : [];
 
     const selectedDependant = dependants.find(
@@ -224,6 +237,17 @@ class GuardianHopsApplication extends React.Component<
       );
 
     let panelTabs: Tab[] = [
+      {
+        id: "BACKGROUND",
+        name: this.props.t("labels.hopsBackground", { ns: "hops_new" }),
+        hash: "background",
+        type: "background",
+        component: (
+          <ApplicationPanelBody modifier="tabs">
+            <Background />
+          </ApplicationPanelBody>
+        ),
+      },
       {
         id: "MATRICULATION",
         name: this.props.t("labels.hopsMatriculation", { ns: "hops_new" }),
@@ -269,7 +293,12 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { loadMatriculationData, resetMatriculationData },
+    {
+      loadMatriculationData,
+      loadStudentHopsForm,
+      loadHopsFormHistory,
+      resetHopsData,
+    },
     dispatch
   );
 }

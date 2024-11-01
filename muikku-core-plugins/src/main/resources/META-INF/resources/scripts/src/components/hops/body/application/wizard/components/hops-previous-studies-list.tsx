@@ -8,6 +8,8 @@ import { useTranslation } from "react-i18next";
  * Props for the HopsPreviousStudiesList component
  */
 interface HopsPreviousStudiesListProps {
+  /** Indicates if the component is disabled */
+  disabled: boolean;
   /** Callback function to update the previous studies list */
   onPreviousStudiesChange: (previousStudies: PreviousStudiesEntry[]) => void;
   /** Array of previous studies entries */
@@ -20,7 +22,7 @@ interface HopsPreviousStudiesListProps {
  * @param {HopsPreviousStudiesListProps} props - The component props
  */
 const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
-  const { onPreviousStudiesChange, previousStudies } = props;
+  const { disabled, onPreviousStudiesChange, previousStudies } = props;
 
   const { t } = useTranslation(["hops_new"]);
 
@@ -126,6 +128,7 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
                 className="hops__select"
                 value={study.type}
                 onChange={(e) => updateStudy(index, "type", e.target.value)}
+                disabled={disabled}
               >
                 <option value="">
                   {t("labels.hopsSecondaryPreviousEducationStudyTypeOption0", {
@@ -149,6 +152,7 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
                 className="hops__select"
                 value={study.duration}
                 onChange={(e) => updateStudy(index, "duration", e.target.value)}
+                disabled={disabled}
               >
                 <option value="">
                   {t(
@@ -179,6 +183,7 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
                     icon="trash"
                     buttonModifiers={"remove-extra-row"}
                     aria-labelledby="removeHopsRowPrevStudies"
+                    disabled={disabled}
                   ></Button>
                 </>
               )}
@@ -197,6 +202,7 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
                   onChange={(e) =>
                     updateStudy(index, "moreInfo", e.target.value)
                   }
+                  disabled={disabled}
                   placeholder={t(
                     "labels.hopsSecondaryPreviousEducationMoreInfoPlaceholder",
                     { ns: "hops_new" }
@@ -213,6 +219,7 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
           buttonModifiers={["button-has-icon", "add-extra-row"]}
           icon="plus"
           onClick={addStudy}
+          disabled={disabled}
         >
           {t("actions.addNewStudy", {
             ns: "hops_new",

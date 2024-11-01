@@ -39,7 +39,7 @@ interface SecondaryStudiesHopsWizardProps {
   /** Whether the HOPS form can load more history */
   hopsFormCanLoadMoreHistory: boolean;
   /** Function to handle unsaved changes */
-  onHasUnsavedChanges: (hasUnsavedChanges: boolean) => void;
+  onHasUnsavedChanges?: (hasUnsavedChanges: boolean) => void;
   /** Redux thunk function to save the HOPS form */
   saveHopsForm: SaveHopsFormTriggerType;
   /** Redux thunk function to load more HOPS form history */
@@ -74,6 +74,10 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   const [changedFields, setChangedFields] = useState<string[]>([]);
 
   React.useEffect(() => {
+    if (!onHasUnsavedChanges) {
+      return;
+    }
+
     if (_.isEqual(form, localForm)) {
       onHasUnsavedChanges(false);
     } else {

@@ -331,6 +331,11 @@ export const hopsNew: Reducer<HopsState> = (
       return {
         ...state,
         hopsMatriculationStatus: "IDLE",
+        hopsFormStatus: "IDLE",
+        hopsFormHistoryStatus: "IDLE",
+        hopsForm: null,
+        hopsFormHistory: null,
+        hopsFormCanLoadMoreHistory: true,
         hopsMatriculation: {
           exams: [],
           pastExams: [],
