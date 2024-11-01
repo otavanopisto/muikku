@@ -67,9 +67,8 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
           <div className="hops__form-element-container">
             <TextField
               id="studentName"
-              label="Nimi:"
+              label={t("labels.hopsFormBasicInfoName", { ns: "hops_new" })}
               type="text"
-              placeholder="Nimi"
               value={studentName}
               disabled
               className="hops__input"
@@ -81,9 +80,10 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
           <div className="hops__form-element-container">
             <TextField
               id="educationLevel"
-              label="Koulutusaste:"
+              label={t("labels.hopsFormBasicInfoEducationLevel", {
+                ns: "hops_new",
+              })}
               type="text"
-              placeholder="Koulutusaste"
               value={educationalLevel}
               disabled
               className="hops__input"
@@ -95,14 +95,17 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
           <div className="hops__form-element-container">
             <TextField
               id="guidanceCouselor"
-              label="Ohjaaja:"
+              label={t("labels.hopsFormBasicInfoCouncelor", {
+                ns: "hops_new",
+              })}
               type="text"
-              placeholder="Ohjaaja"
               value={
                 guidanceCounselors !== undefined &&
                 guidanceCounselors.length > 0
                   ? guidanceCounselors.join(", ")
-                  : "Ei ohjaaja"
+                  : t("labels.hopsFormBasicInfoCouncelor_no", {
+                      ns: "hops_new",
+                    })
               }
               disabled
               className="hops__input"

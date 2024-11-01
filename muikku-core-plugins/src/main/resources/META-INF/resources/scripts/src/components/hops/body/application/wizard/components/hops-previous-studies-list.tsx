@@ -121,7 +121,9 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
           <div className="hops-container__row">
             <div className="hops__form-element-container">
               <label htmlFor={`studyType-${index}`} className="hops__label">
-                Opintojen tyyppi
+                {t("labels.hopsSecondaryPreviousEducationStudyType", {
+                  ns: "hops_new",
+                })}
               </label>
               <select
                 id={`studyType-${index}`}
@@ -145,7 +147,9 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
 
             <div className="hops__form-element-container">
               <label htmlFor={`duration-${index}`} className="hops__label">
-                Opintojen kesto
+                {t("labels.hopsSecondaryPreviousEducationStudyDuration", {
+                  ns: "hops_new",
+                })}
               </label>
               <select
                 id={`duration-${index}`}
@@ -203,10 +207,6 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
                     updateStudy(index, "moreInfo", e.target.value)
                   }
                   disabled={disabled}
-                  placeholder={t(
-                    "labels.hopsSecondaryPreviousEducationMoreInfoPlaceholder",
-                    { ns: "hops_new" }
-                  )}
                 />
               </div>
             </div>
