@@ -307,21 +307,29 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
         {"(" + studyProgrammeName + ")"}
       </DialogTitleItem>
       {/* Hops toggle. Currently available only for uppersecondary school */}
-      {guider.currentStudent.hops && guider.currentStudent.hops.optedIn && (
-        <DialogTitleItem modifier="hops-toggle">
-          <Button
-            className={
-              viewMode === "HOPS_VIEW"
-                ? "button--primary active"
-                : "button--primary"
-            }
-            icon="compass"
-            onClick={toggleViewMode}
-          >
-            HOPS
-          </Button>
-        </DialogTitleItem>
-      )}
+      {student.basic &&
+        [
+          "Nettilukio",
+          "Aikuislukio",
+          "Nettilukio/yksityisopiskelu (aineopintoina)",
+          "Aineopiskelu/yo-tutkinto",
+          "Aineopiskelu/lukio",
+          "Aineopiskelu/lukio (oppivelvolliset)",
+        ].includes(student.basic.studyProgrammeName) && (
+          <DialogTitleItem modifier="hops-toggle">
+            <Button
+              className={
+                viewMode === "HOPS_VIEW"
+                  ? "button--primary active"
+                  : "button--primary"
+              }
+              icon="compass"
+              onClick={toggleViewMode}
+            >
+              HOPS
+            </Button>
+          </DialogTitleItem>
+        )}
     </DialogTitleContainer>
   );
 
