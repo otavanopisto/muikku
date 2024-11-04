@@ -465,7 +465,7 @@ public class MatriculationRESTService {
     }
 
     SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    if (!loggedUserIdentifier.equals(studentIdentifier)) {
+    if (!loggedUserIdentifier.equals(studentIdentifier) && !userSchoolDataController.amICounselor(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
