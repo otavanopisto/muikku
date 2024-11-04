@@ -56,6 +56,7 @@ import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationEligibilities;
@@ -109,6 +110,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private UserController userController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
 
   @Inject
   private EvaluationController evaluationController;
@@ -465,7 +469,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid student identifier").build();
     }
 
-    if (!identifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), identifier)) {
+    if (!identifier.equals(sessionController.getLoggedUser()) && !userSchoolDataController.amICounselor(identifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), identifier)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 

@@ -47,6 +47,7 @@ import fi.otavanopisto.muikku.schooldata.MatriculationExamListFilter;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
@@ -103,10 +104,13 @@ public class MatriculationRESTService {
   private UserGroupGuidanceController userGroupGuidanceController;
   
   @Inject
+  private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @GET
-  @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   @Path("/students/{STUDENTIDENTIFIER}/exams")
   public Response listStudentsExams(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("filter") @DefaultValue("ALL") MatriculationExamListFilter filter) {
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
@@ -114,7 +118,7 @@ public class MatriculationRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
     }
     
-    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userSchoolDataController.amICounselor(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
@@ -161,7 +165,7 @@ public class MatriculationRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
     }
     
-    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userSchoolDataController.amICounselor(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
@@ -420,7 +424,7 @@ public class MatriculationRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
     }
     
-    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userSchoolDataController.amICounselor(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
 
@@ -518,7 +522,7 @@ public class MatriculationRESTService {
     }
 
     SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    if (!studentIdentifier.equals(loggedUserIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+    if (!studentIdentifier.equals(loggedUserIdentifier) && !userSchoolDataController.amICounselor(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
