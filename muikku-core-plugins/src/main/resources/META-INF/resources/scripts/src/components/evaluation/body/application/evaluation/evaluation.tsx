@@ -33,7 +33,7 @@ import {
   MaterialCompositeReply,
 } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { createAssignmentInfoArray } from "~/helper-functions/assignmentInfo";
+import { createAssignmentInfoArray } from "~/components/general/assignment-info-details/helper";
 
 /**
  * EvaluationDrawerProps

@@ -2,8 +2,8 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
+import { createAssignmentInfoArray } from "~/components/general/assignment-info-details/helper";
 import { MaterialCompositeReply, WorkspaceMaterial } from "~/generated/client";
-import { createAssignmentInfoArray } from "~/helper-functions/assignmentInfo";
 
 /**
  * UseWorkspacePointsProps
