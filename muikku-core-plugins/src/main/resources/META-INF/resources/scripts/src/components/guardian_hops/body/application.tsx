@@ -18,7 +18,6 @@ import { DependantsState } from "~/reducers/main-function/dependants";
 import Select from "react-select";
 import { getName } from "~/util/modifiers";
 import { OptionDefault } from "~/components/general/react-select/types";
-import { UseCaseContextProvider } from "~/context/use-case-context";
 import {
   loadMatriculationData,
   LoadMatriculationDataTriggerType,
@@ -26,6 +25,7 @@ import {
   ResetMatriculationDataTriggerType,
 } from "~/actions/main-function/hops/";
 import { Action, bindActionCreators, Dispatch } from "redux";
+import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 
 const UPPERSECONDARY_PROGRAMMES = [
   "Nettilukio",
@@ -85,9 +85,11 @@ class GuardianHopsApplication extends React.Component<
   async componentDidUpdate() {
     if (!window.location.hash && this.props.dependants.state === "READY") {
       // Dependants are loaded, but there's none selected, we pick the first one
-
-      const selectedDependantIdentifier =
-        this.props.dependants.list[0].identifier;
+      // that has an upper secondary programme
+      const selectedDependantIdentifier = this.props.dependants.list.find(
+        (dependant) =>
+          UPPERSECONDARY_PROGRAMMES.includes(dependant.studyProgrammeName)
+      )?.identifier;
       window.location.hash = selectedDependantIdentifier;
 
       this.setState({
@@ -108,7 +110,7 @@ class GuardianHopsApplication extends React.Component<
      * opened tab again
      */
     switch (tab) {
-      case "MATRICULATION":
+      case "matriculation":
         this.setState({
           activeTab: "MATRICULATION",
         });
@@ -199,6 +201,7 @@ class GuardianHopsApplication extends React.Component<
           .map((d) => ({
             label: getName(d, true),
             value: d.identifier,
+            ...d,
           }))
       : [];
 
@@ -240,7 +243,13 @@ class GuardianHopsApplication extends React.Component<
     panelTabs = panelTabs.filter(this.isVisible);
 
     return (
-      <UseCaseContextProvider value="GUARDIAN">
+      <HopsBasicInfoProvider
+        useCase="GUARDIAN"
+        studentInfo={{
+          id: selectedDependant?.identifier || "",
+          studyStartDate: selectedDependant?.studyStartDate || new Date(),
+        }}
+      >
         <ApplicationPanel
           title="HOPS"
           onTabChange={this.handleTabChange}
@@ -248,7 +257,7 @@ class GuardianHopsApplication extends React.Component<
           panelTabs={panelTabs}
           panelOptions={dependantSelect}
         />
-      </UseCaseContextProvider>
+      </HopsBasicInfoProvider>
     );
   }
 }

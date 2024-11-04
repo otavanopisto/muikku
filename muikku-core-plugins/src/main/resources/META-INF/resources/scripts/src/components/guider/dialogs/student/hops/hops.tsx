@@ -14,13 +14,14 @@ import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { useTranslation } from "react-i18next";
 import Matriculation from "~/components/hops/body/application/matriculation/matriculation";
-import { UseCaseContextProvider } from "~/context/use-case-context";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   LoadMatriculationDataTriggerType,
   loadMatriculationData,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
+import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
+import { Student } from "~/generated/client";
 
 /**
  * StudiesTab
@@ -32,6 +33,7 @@ type HopsTab = "MATRICULATION";
  */
 interface HopsApplicationProps {
   hops: HopsState;
+  studentInfo: Student;
   studentIdentifier: string;
   loadMatriculationData: LoadMatriculationDataTriggerType;
 }
@@ -41,7 +43,7 @@ interface HopsApplicationProps {
  * @param props props
  */
 const HopsApplication = (props: HopsApplicationProps) => {
-  const { studentIdentifier, loadMatriculationData, hops } = props;
+  const { studentIdentifier, loadMatriculationData, hops, studentInfo } = props;
 
   const [activeTab, setActiveTab] = React.useState<HopsTab>("MATRICULATION");
   const { t } = useTranslation(["studies", "common", "hops_new"]);
@@ -81,14 +83,20 @@ const HopsApplication = (props: HopsApplicationProps) => {
   ];
 
   return (
-    <UseCaseContextProvider value="GUIDANCE_COUNSELOR">
+    <HopsBasicInfoProvider
+      useCase="GUIDANCE_COUNSELOR"
+      studentInfo={{
+        id: studentInfo.id,
+        studyStartDate: studentInfo.studyStartDate,
+      }}
+    >
       <ApplicationPanel
         modifier="guider-student-hops"
         onTabChange={onTabChange}
         activeTab={activeTab}
         panelTabs={panelTabs}
       />
-    </UseCaseContextProvider>
+    </HopsBasicInfoProvider>
   );
 };
 
@@ -99,6 +107,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
 function mapStateToProps(state: StateType) {
   return {
     hops: state.hopsNew,
+    studentInfo: state.guider.currentStudent.basic,
   };
 }
 

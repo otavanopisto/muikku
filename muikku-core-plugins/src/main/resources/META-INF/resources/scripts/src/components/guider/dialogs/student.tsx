@@ -17,7 +17,6 @@ import {
 } from "~/reducers/main-function/guider";
 import StateOfStudies from "./student/tabs/state-of-studies";
 import StudyHistory from "./student/tabs/study-history";
-import StudyPlan from "./student/tabs/study-plan";
 import GuidanceRelation from "./student/tabs/guidance-relation";
 import {
   loadStudentHistory,
@@ -280,15 +279,6 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
         ),
       });
     }
-    // If student has HOPS, specifically for uppersecondary school
-    else if (guider.currentStudent.hops && guider.currentStudent.hops.optedIn) {
-      tabs.splice(1, 0, {
-        id: "HOPS",
-        name: "Hops",
-        type: "guider-student",
-        component: <StudyPlan />,
-      });
-    }
   }
 
   /**
@@ -316,9 +306,18 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
       <DialogTitleItem modifier="studyprogramme">
         {"(" + studyProgrammeName + ")"}
       </DialogTitleItem>
-      {guider.currentStudent?.hopsAvailable && (
+      {/* Hops toggle. Currently available only for uppersecondary school */}
+      {guider.currentStudent.hops && guider.currentStudent.hops.optedIn && (
         <DialogTitleItem modifier="hops-toggle">
-          <Button icon="compass" onClick={toggleViewMode}>
+          <Button
+            className={
+              viewMode === "HOPS_VIEW"
+                ? "button--primary active"
+                : "button--primary"
+            }
+            icon="compass"
+            onClick={toggleViewMode}
+          >
             HOPS
           </Button>
         </DialogTitleItem>

@@ -4,13 +4,13 @@ import { connect } from "react-redux";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 import {
   MatriculationExamTerm,
   MatriculationSubject,
 } from "~/generated/client";
 import { getNextTermsOptionsByDate } from "~/helper-functions/matriculation-functions";
 import { StateType } from "~/reducers";
-import { StatusType } from "~/reducers/base/status";
 
 const FINNISH_LANUGAGES = ["ÄI", "S2"];
 
@@ -54,7 +54,6 @@ const GENERAL_STUDIES_SUBJECTS = [
  * MatriculationSubjectsListProps
  */
 interface MatriculationSubjectsListProps {
-  status: StatusType;
   disabled: boolean;
   subjects: MatriculationSubject[];
   selectedSubjects: SelectedMatriculationSubject[];
@@ -81,10 +80,11 @@ export interface SelectedMatriculationSubject {
  * @param props props
  */
 const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
-  const { onSubjectsChange, selectedSubjects, subjects, status, disabled } =
-    props;
+  const { onSubjectsChange, selectedSubjects, subjects, disabled } = props;
   const [selectedSubjects2, setSelectedSubjects2] =
     React.useState<SelectedMatriculationSubject[]>(selectedSubjects);
+
+  const { studentInfo } = useHopsBasicInfo();
 
   const { t } = useTranslation(["hops_new", "studies", "guider", "common"]);
 
@@ -244,10 +244,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
       </option>
     ));
 
-  const termOptions = getNextTermsOptionsByDate(
-    status.profile.studyStartDate,
-    t
-  );
+  const termOptions = getNextTermsOptionsByDate(studentInfo.studyStartDate, t);
 
   const matriculationSubjectInputs = selectedSubjects2.map((subject, index) => (
     <div className="form__row" key={index}>
@@ -380,9 +377,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    status: state.status,
-  };
+  return {};
 }
 
 /**

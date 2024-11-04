@@ -15,8 +15,9 @@ import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { useTranslation } from "react-i18next";
 import Matriculation from "./application/matriculation/matriculation";
-import { UseCaseContextProvider } from "~/context/use-case-context";
 import { Action, Dispatch } from "redux";
+import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * StudiesTab
@@ -28,6 +29,7 @@ type HopsTab = "MATRICULATION";
  */
 interface HopsApplicationProps {
   hops: HOPSState;
+  status: StatusType;
   showTitle?: boolean;
 }
 
@@ -40,7 +42,7 @@ const defaultProps: Partial<HopsApplicationProps> = {
  * @param props props
  */
 const HopsApplication = (props: HopsApplicationProps) => {
-  const { showTitle } = { ...defaultProps, ...props };
+  const { showTitle, status } = { ...defaultProps, ...props };
   const [activeTab, setActiveTab] = React.useState<HopsTab>("MATRICULATION");
   const { t } = useTranslation(["studies", "common", "hops_new"]);
 
@@ -76,14 +78,20 @@ const HopsApplication = (props: HopsApplicationProps) => {
   ];
 
   return (
-    <UseCaseContextProvider value="STUDENT">
+    <HopsBasicInfoProvider
+      useCase="STUDENT"
+      studentInfo={{
+        id: status.userSchoolDataIdentifier,
+        studyStartDate: new Date(status.profile.studyStartDate),
+      }}
+    >
       <ApplicationPanel
         title={showTitle ? "HOPS" : undefined}
         onTabChange={onTabChange}
         activeTab={activeTab}
         panelTabs={panelTabs}
       />
-    </UseCaseContextProvider>
+    </HopsBasicInfoProvider>
   );
 };
 
@@ -94,6 +102,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
 function mapStateToProps(state: StateType) {
   return {
     hops: state.hops,
+    status: state.status,
   };
 }
 

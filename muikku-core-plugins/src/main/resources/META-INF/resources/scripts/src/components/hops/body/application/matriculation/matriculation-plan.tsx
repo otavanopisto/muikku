@@ -20,7 +20,7 @@ import {
 } from "../../../../../actions/main-function/hops/index";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import { useUseCaseContext } from "~/context/use-case-context";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * MatriculationPlanProps
@@ -40,7 +40,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
 
   const { t } = useTranslation(["hops_new", "guider", "common"]);
 
-  const useCase = useUseCaseContext();
+  const { useCase } = useHopsBasicInfo();
 
   const [matriculationPlan, setMatriculationPlan] =
     React.useState<MatriculationPlan>({
