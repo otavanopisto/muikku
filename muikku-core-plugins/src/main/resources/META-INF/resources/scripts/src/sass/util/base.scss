@@ -122,6 +122,11 @@ details {
   }
 }
 
+.details--evaluation {
+  border-color: $taskfield-border-color;
+  border-width: 2px;
+}
+
 .details__content {
   font-weight: 300;
   padding: 5px 10px;

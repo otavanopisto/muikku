@@ -653,7 +653,9 @@ class AssignmentEditor extends SessionStateComponent<
                   checked={this.state.evaluationType === "POINTS"}
                   onChange={this.handleAssignmentEvaluationChange}
                 />
-                <label htmlFor="assignmentEvaluationTypePOINTS">Pisteet</label>
+                <label htmlFor="assignmentEvaluationTypePOINTS">
+                  {t("labels.points", { ns: "workspace" })}
+                </label>
               </div>
               <div className="form-element form-element--checkbox-radiobutton">
                 <input
@@ -698,17 +700,18 @@ class AssignmentEditor extends SessionStateComponent<
         {/* Show points form element if evaluationType is POINTS */}
         {this.state.evaluationType === "POINTS" && (
           <div className="form__row">
-            <div className="form-element">
-              <label htmlFor="assignmentEvaluationPoints">
+            <fieldset className="form__fieldset">
+              <legend className="form__legend">
                 {t("labels.points", { ns: "workspace" })}
-              </label>
+              </legend>
 
-              <div className="evaluation-modal__evaluate-drawer-row-data">
+              <div className="form__fieldset-content form__fieldset-content--horizontal">
                 <NumericFormat
                   id="assignmentEvaluationPoints"
-                  className="form-element__input"
+                  className="form-element__input form-element__input--content-centered"
                   value={this.state.points}
                   decimalScale={2}
+                  size={2}
                   decimalSeparator=","
                   allowNegative={false}
                   onValueChange={this.handlePointsValueChange}
@@ -716,18 +719,14 @@ class AssignmentEditor extends SessionStateComponent<
                 />
                 {this.props.materialAssignment.maxPoints && (
                   <>
-                    <span className="form-element__input-addon">/</span>
-                    <input
-                      type="text"
-                      className="form-element__input"
-                      value={this.props.materialAssignment.maxPoints}
-                      readOnly
-                      disabled
-                    />
+                    <span className="form-element__divider">/</span>
+                    <span className="form-element__description-chip">
+                      {this.props.materialAssignment.maxPoints}
+                    </span>
                   </>
                 )}
               </div>
-            </div>
+            </fieldset>
           </div>
         )}
 

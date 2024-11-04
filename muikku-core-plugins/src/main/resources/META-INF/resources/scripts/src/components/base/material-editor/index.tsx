@@ -1133,7 +1133,7 @@ class MaterialEditor extends React.Component<
                             ns: "workspace",
                           })}
                         </option>
-                        {languageOptions.map((language) => (
+                        {languageOptions.map((language: string) => (
                           <option key={language} value={language}>
                             {this.props.i18n.t("labels.language", {
                               context: language,
@@ -1246,7 +1246,7 @@ class MaterialEditor extends React.Component<
                           ns: "workspace",
                         })}
                       </option>
-                      {languageOptions.map((language) => (
+                      {languageOptions.map((language: string) => (
                         <option key={language} value={language}>
                           {this.props.i18n.t("labels.language", {
                             context: language,
@@ -1268,7 +1268,7 @@ class MaterialEditor extends React.Component<
                 <div className="form__row">
                   <div className="form-element">
                     <NumericFormat
-                      className="form-element__input form-element__input--material-editor-title"
+                      className="form-element__input form-element__input--material-editor-assignment-points"
                       value={
                         this.props.editorState.currentDraftNodeValue.maxPoints
                       }
