@@ -29,6 +29,7 @@ import {
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { compulsoryStudiesFieldsTranslation } from "../helpers";
+import { useUseCaseContext } from "~/context/use-case-context";
 
 /**
  * Props for the CompulsoryStudiesHopsWizard component
@@ -71,6 +72,8 @@ const CompulsoryStudiesHopsWizard: React.FC<
   const previousStep = React.useRef<number>(0);
 
   const { t } = useTranslation(["common"]);
+
+  const useCase = useUseCaseContext();
 
   const [localForm, setLocalForm] = useState<CompulsoryStudiesHops>(form);
   const [isFormSaveDialogOpen, setIsFormSaveDialogOpen] =
@@ -227,13 +230,15 @@ const CompulsoryStudiesHopsWizard: React.FC<
             footer={
               <HopsWizardFooter
                 externalContentRight={
-                  <Button
-                    buttonModifiers={["info"]}
-                    onClick={handleOpenSaveDialog}
-                    disabled={_.isEqual(form, localForm)}
-                  >
-                    {t("actions.save", { ns: "common" })}
-                  </Button>
+                  useCase !== "GUARDIAN" && (
+                    <Button
+                      buttonModifiers={["info"]}
+                      onClick={handleOpenSaveDialog}
+                      disabled={_.isEqual(form, localForm)}
+                    >
+                      {t("actions.save", { ns: "common" })}
+                    </Button>
+                  )
                 }
               />
             }
