@@ -1,0 +1,72 @@
+package fi.otavanopisto.muikku.plugins.notes;
+
+import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
+
+public class NoteReceiverRestModel {
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public Long getNoteId() {
+    return noteId;
+  }
+
+  public void setNoteId(Long noteId) {
+    this.noteId = noteId;
+  }
+
+  public Boolean getPinned() {
+    return pinned;
+  }
+
+  public void setPinned(Boolean pinned) {
+    this.pinned = pinned;
+  }
+
+  public Long getRecipient() {
+    return recipient;
+  }
+
+  public void setRecipient(Long recipient) {
+    this.recipient = recipient;
+  }
+
+  public NoteStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(NoteStatus status) {
+    this.status = status;
+  }
+
+  public Long getUserGroupId() {
+    return userGroupId;
+  }
+
+  public void setUserGroupId(Long userGroupId) {
+    this.userGroupId = userGroupId;
+  }
+
+  public String getUserGroupName() {
+    return userGroupName;
+  }
+
+  public void setUserGroupName(String userGroupName) {
+    this.userGroupName = userGroupName;
+  }
+
+  private Long id;
+  private Long noteId;
+  private Boolean pinned;
+  private Long recipient;
+  private NoteStatus status;
+  private Long userGroupId;
+  private String userGroupName;
+  
+
+}

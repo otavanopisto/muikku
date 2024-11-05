@@ -55,22 +55,6 @@ public class Note {
     this.priority = priority;
   }
 
-  public Boolean getPinned() {
-    return pinned;
-  }
-
-  public void setPinned(Boolean pinned) {
-    this.pinned = pinned;
-  }
-
-  public Long getOwner() {
-    return owner;
-  }
-
-  public void setOwner(Long owner) {
-    this.owner = owner;
-  }
-
   public Long getCreator() {
     return creator;
   }
@@ -127,14 +111,6 @@ public class Note {
     this.dueDate = dueDate;
   }
   
-  public NoteStatus getStatus() {
-    return status;
-  }
-  
-  public void setStatus(NoteStatus status) {
-    this.status = status;
-  }
-  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -152,14 +128,6 @@ public class Note {
   @Enumerated (EnumType.STRING)
   @Column (nullable = false)
   private NotePriority priority;
-  
-  @Column (nullable=false)
-  private Boolean pinned;
-  
-  @NotNull
-  @Column (nullable=false)
-  private Long owner;
-  
   
   @Column (nullable=false)
   private Long creator;
@@ -186,11 +154,6 @@ public class Note {
   
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date dueDate;
-  
-  @NotNull
-  @Column (nullable=false)
-  @Enumerated (EnumType.STRING)
-  private NoteStatus status;
 }
 
   

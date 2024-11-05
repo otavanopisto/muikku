@@ -1,10 +1,9 @@
 package fi.otavanopisto.muikku.plugins.notes;
 
 import java.util.Date;
-
+import java.util.List;
 
 import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 
 public class NoteRestModel {
@@ -48,23 +47,7 @@ public class NoteRestModel {
   public void setPriority(NotePriority priority) {
     this.priority = priority;
   }
-
-  public Boolean getPinned() {
-    return pinned;
-  }
-
-  public void setPinned(Boolean pinned) {
-    this.pinned = pinned;
-  }
-
-  public Long getOwner() {
-    return owner;
-  }
-
-  public void setOwner(Long owner) {
-    this.owner = owner;
-  }
-
+  
   public Long getCreator() {
     return creator;
   }
@@ -105,14 +88,6 @@ public class NoteRestModel {
     this.dueDate = dueDate;
   }
 
-  public NoteStatus getStatus() {
-    return status;
-  }
-
-  public void setStatus(NoteStatus status) {
-    this.status = status;
-  }
-
   public Boolean getIsArchived() {
     return isArchived;
   }
@@ -121,19 +96,25 @@ public class NoteRestModel {
     this.isArchived = isArchived;
   }
 
+  public List<NoteReceiverRestModel> getRecipients() {
+    return recipients;
+  }
+
+  public void setRecipients(List<NoteReceiverRestModel> recipients) {
+    this.recipients = recipients;
+  }
+
   private Long id;
   private String title;
   private String description;
   private NoteType type;
   private NotePriority priority;
-  private Boolean pinned;
-  private Long owner;
   private Long creator;
   private String creatorName;
   private Date created;
   private Date startDate;
   private Date dueDate;
-  private NoteStatus status;
   private Boolean isArchived;
+  private List<NoteReceiverRestModel> recipients;
 
 }

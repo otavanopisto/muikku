@@ -8,10 +8,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
-import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
+import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver;
+import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver_;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteType;
 import fi.otavanopisto.muikku.plugins.notes.model.Note_;
 
@@ -19,14 +21,12 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   
   private static final long serialVersionUID = 1265008061182482207L;
 
-  public Note create(String title, String description, NoteType type, NotePriority priority, Boolean pinned, Long owner, Long creator, Long lastModifier,Date startDate, Date dueDate, NoteStatus status, Boolean archived){
+  public Note create(String title, String description, NoteType type, NotePriority priority, Long creator, Long lastModifier,Date startDate, Date dueDate, Boolean archived){
     Note note = new Note();
     note.setTitle(title);
     note.setDescription(description);
     note.setType(type);
     note.setPriority(priority);
-    note.setPinned(pinned);
-    note.setOwner(owner);
     note.setCreator(creator);
     note.setCreated(new Date());
     note.setLastModifier(lastModifier);
@@ -34,41 +34,20 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     note.setArchived(archived);
     note.setStartDate(startDate);
     note.setDueDate(dueDate);
-    note.setStatus(status);
     return persist(note);
   }
   
-  public Note update(Note note, String title, String description, NotePriority priority, Boolean pinned, Long lastModifier, Date startDate, Date dueDate, NoteStatus status, Boolean archived){
+  public Note update(Note note, String title, String description, NotePriority priority, Long lastModifier, Date startDate, Date dueDate, Boolean archived){
     note.setTitle(title);
     note.setDescription(description);
     note.setPriority(priority);
-    note.setPinned(pinned);
     note.setLastModifier(lastModifier);
     note.setLastModified(new Date());
     note.setStartDate(startDate);
     note.setDueDate(dueDate);
-    note.setStatus(status);
     note.setArchived(archived);
     return persist(note);
   }
-  
-  public List<Note> listByOwnerAndArchived(Long owner, boolean archived){
-    
-    EntityManager entityManager = getEntityManager(); 
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<Note> criteria = criteriaBuilder.createQuery(Note.class);
-    
-    Root<Note> root = criteria.from(Note.class);
-    criteria.select(root);
-    criteria.where(criteriaBuilder.and(
-      criteriaBuilder.equal(root.get(Note_.owner), owner),
-      criteriaBuilder.equal(root.get(Note_.archived), archived)
-    ));
-    
-    return entityManager.createQuery(criteria).getResultList();
-  }
-  
   
   public Note setArchived(Note note, Boolean archived) {
     note.setArchived(archived);
@@ -93,4 +72,40 @@ public class NoteDAO extends CorePluginsDAO<Note> {
 
     return getSingleResult(entityManager.createQuery(criteria));
   }
+  
+  public List<Note> listByReceiver(UserEntity recipient){
+    
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Note> criteria = criteriaBuilder.createQuery(Note.class);
+    Root<NoteReceiver> root = criteria.from(NoteReceiver.class);
+    
+    criteria.select(root.get(NoteReceiver_.note));
+    criteria.where(
+        criteriaBuilder.equal(root.get(NoteReceiver_.recipient), recipient.getId())
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<Note> listByCreator(UserEntity creator, boolean archived){
+  
+  EntityManager entityManager = getEntityManager(); 
+  
+  CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+  CriteriaQuery<Note> criteria = criteriaBuilder.createQuery(Note.class);
+  Root<Note> root = criteria.from(Note.class);
+  
+  criteria.select(root);
+  criteria.where(
+      criteriaBuilder.and(
+      criteriaBuilder.equal(root.get(Note_.creator), creator.getId()),
+      criteriaBuilder.equal(root.get(Note_.archived), archived)
+      )
+  );
+  
+  return entityManager.createQuery(criteria).getResultList();
+}
+  
 }
