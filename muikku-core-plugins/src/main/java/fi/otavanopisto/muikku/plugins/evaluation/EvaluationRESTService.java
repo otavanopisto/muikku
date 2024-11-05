@@ -1304,6 +1304,16 @@ public class EvaluationRESTService extends PluginRESTService {
             Boolean.FALSE,
             Boolean.FALSE);
         for (SupplementationRequest supplementationRequest : supplementationRequests) {
+          
+          // #7198: Some assessment requests from Pyramus might already have been overridden into supplementation requests, so we skip duplicates here
+          
+          RestAssessmentRequest existingEntry = restAssessmentRequests.stream().filter(
+              raq -> StringUtils.equals(raq.getState(), WorkspaceAssessmentState.INCOMPLETE) &&
+              supplementationRequest.getId().equals(raq.getId())).findFirst().orElse(null);
+          if (existingEntry != null) {
+            continue;
+          }
+          
           RestAssessmentRequest request = toRestAssessmentRequest(supplementationRequest, workspaceCache); 
           if (request != null) {
             restAssessmentRequests.add(request);
@@ -1767,6 +1777,7 @@ public class EvaluationRESTService extends PluginRESTService {
         graded = Boolean.FALSE;
         passing = Boolean.FALSE;
         evaluationDate = supplementationRequest.getRequestDate();
+        restAssessmentRequest.setId(supplementationRequest.getId());
         restAssessmentRequest.setState(WorkspaceAssessmentState.INCOMPLETE);
         resolvedState = true;
       }
