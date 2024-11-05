@@ -10,10 +10,6 @@
         recipientGroup_id bigint,
         primary key (id)
     );</sql>
-  <sql>create table NoteReceiverGroup (
-       id bigint not null auto_increment,
-        primary key (id)
-    );</sql>
   <sql>insert into NoteReceiver (noteId, recipient, pinned, status)
        select id, owner, pinned, status
        from Note;</sql>
