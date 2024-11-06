@@ -688,7 +688,7 @@
                       <MYSQL_DATABASE>testdb</MYSQL_DATABASE>
                     </env>
                     <wait>
-                      <log>MySQL init process done. Ready for start up.</log>
+                      <log>Ready for start up.</log>
                       <time>80000</time>
                     </wait>
                     <ports>
@@ -1170,7 +1170,7 @@
                       <MYSQL_DATABASE>testdb</MYSQL_DATABASE>
                     </env>
                     <wait>
-                      <log>MySQL init process done. Ready for start up.</log>
+                      <log>Ready for start up.</log>
                       <time>80000</time>
                     </wait>
                     <ports>
