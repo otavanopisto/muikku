@@ -679,7 +679,7 @@
               <images>
                 <image>
                   <alias>mysql</alias>
-                  <name>mysql:5.6</name>
+                  <name>mysql:5.7</name>
                   <run>
                     <env>
                       <MYSQL_USER>sa</MYSQL_USER>
@@ -1161,7 +1161,7 @@
               <images>
                 <image>
                   <alias>mysql</alias>
-                  <name>mysql:5.6</name>
+                  <name>mysql:5.7</name>
                   <run>
                     <env>
                       <MYSQL_USER>sa</MYSQL_USER>
