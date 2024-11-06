@@ -12,6 +12,7 @@ import {
   MatriculationSubject,
 } from "~/generated/client";
 import {
+  HopsEditingState,
   MatriculationEligibilityWithAbistatus,
   MatriculationSubjectWithEligibility,
   ReducerStateType,
@@ -20,6 +21,7 @@ import i18n from "~/locales/i18n";
 import { abistatus } from "~/helper-functions/abistatus";
 import { displayNotification } from "~/actions/base/notifications";
 import { OPS2021SubjectCodesInOrder } from "~/mock/mock-data";
+import _ from "lodash";
 
 // Api instances
 const recordsApi = MApi.getRecordsApi();
@@ -119,6 +121,39 @@ export type HOPS_UPDATE_CURRENTSTUDENT_STUDYPROGRAM = SpecificActionType<
 >;
 
 export type HOPS_RESET_DATA = SpecificActionType<"HOPS_RESET_DATA", undefined>;
+
+// Add new action type
+export type HOPS_CHANGE_MODE = SpecificActionType<
+  "HOPS_CHANGE_MODE",
+  "READ" | "EDIT"
+>;
+
+// Add new action type
+export type HOPS_UPDATE_EDITING = SpecificActionType<
+  "HOPS_UPDATE_EDITING",
+  Partial<HopsEditingState>
+>;
+
+/**
+ * UpdateHopsEditingTriggerType
+ */
+export interface UpdateHopsEditingTriggerType {
+  (data: { updates: Partial<HopsEditingState> }): AnyActionType;
+}
+
+/**
+ * StartEditingTriggerType
+ */
+export interface StartEditingTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * EndEditingTriggerType
+ */
+export interface EndEditingTriggerType {
+  (): AnyActionType;
+}
 
 /**
  * loadExamDataTriggerType
@@ -789,6 +824,91 @@ const resetMatriculationData: ResetMatriculationDataTriggerType =
     };
   };
 
+/**
+ * Change HOPS mode between READ and EDIT
+ */
+const startEditing: StartEditingTriggerType = function startEditing() {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+
+    // Check matriculation data
+    if (state.hopsNew.hopsMatriculationStatus !== "READY") {
+      dispatch(
+        loadMatriculationData({
+          userIdentifier: state.hopsNew.currentStudentIdentifier,
+        })
+      );
+    }
+
+    if (state.hopsNew.hopsBackgroundStatus !== "READY") {
+      // TODO: Load background data
+    }
+
+    if (state.hopsNew.hopsStudyPlanStatus !== "READY") {
+      // TODO: Load study plan data
+    }
+
+    if (state.hopsNew.hopsCareerPlanStatus !== "READY") {
+      // TODO: Load career plan data
+    }
+
+    // Change mode after ensuring data is loaded
+    dispatch({
+      type: "HOPS_CHANGE_MODE",
+      payload: "EDIT",
+    });
+  };
+};
+
+/**
+ * End editing
+ */
+const endEditing: EndEditingTriggerType = function endEditing() {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+
+    const matriculationPlanHasChanges = !_.isEqual(
+      state.hopsNew.hopsMatriculation.plan,
+      state.hopsNew.hopsEditing.matriculationPlan
+    );
+
+    if (matriculationPlanHasChanges) {
+      dispatch(
+        saveMatriculationPlan({
+          plan: state.hopsNew.hopsEditing.matriculationPlan,
+        })
+      );
+    }
+
+    dispatch({
+      type: "HOPS_CHANGE_MODE",
+      payload: "READ",
+    });
+  };
+};
+
+/**
+ * Update HOPS editing state
+ * @param data Data containing partial updates to apply to editing state
+ */
+const updateHopsEditing: UpdateHopsEditingTriggerType =
+  function updateHopsEditing(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      dispatch({
+        type: "HOPS_UPDATE_EDITING",
+        payload: data.updates,
+      });
+    };
+  };
+
 export {
   loadMatriculationData,
   verifyMatriculationExam,
@@ -796,4 +916,7 @@ export {
   saveMatriculationPlan,
   updateMatriculationExamination,
   resetMatriculationData,
+  startEditing,
+  endEditing,
+  updateHopsEditing,
 };

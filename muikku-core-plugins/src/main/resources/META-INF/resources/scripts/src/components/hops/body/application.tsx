@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
-import { HOPSState } from "../../../reducers/main-function/hops";
 import { Tab } from "~/components/general/tabs";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
@@ -15,9 +14,17 @@ import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { useTranslation } from "react-i18next";
 import Matriculation from "./application/matriculation/matriculation";
-import { Action, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import { StatusType } from "~/reducers/base/status";
+import {
+  StartEditingTriggerType,
+  startEditing,
+  EndEditingTriggerType,
+  endEditing,
+} from "~/actions/main-function/hops/";
+import { HopsState } from "~/reducers/hops";
+import Button from "~/components/general/button";
 
 /**
  * StudiesTab
@@ -28,9 +35,11 @@ type HopsTab = "MATRICULATION";
  * HopsApplicationProps
  */
 interface HopsApplicationProps {
-  hops: HOPSState;
+  hops: HopsState;
   status: StatusType;
   showTitle?: boolean;
+  startEditing: StartEditingTriggerType;
+  endEditing: EndEditingTriggerType;
 }
 
 const defaultProps: Partial<HopsApplicationProps> = {
@@ -42,7 +51,10 @@ const defaultProps: Partial<HopsApplicationProps> = {
  * @param props props
  */
 const HopsApplication = (props: HopsApplicationProps) => {
-  const { showTitle, status } = { ...defaultProps, ...props };
+  const { showTitle, status, hops, startEditing, endEditing } = {
+    ...defaultProps,
+    ...props,
+  };
   const [activeTab, setActiveTab] = React.useState<HopsTab>("MATRICULATION");
   const { t } = useTranslation(["studies", "common", "hops_new"]);
 
@@ -61,6 +73,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
     }
 
     setActiveTab(id);
+  };
+
+  /**
+   * handleModeChangeClick
+   */
+  const handleModeChangeClick = () => {
+    if (hops.hopsMode === "READ") {
+      startEditing();
+    } else {
+      endEditing();
+    }
   };
 
   const panelTabs: Tab[] = [
@@ -87,6 +110,18 @@ const HopsApplication = (props: HopsApplicationProps) => {
     >
       <ApplicationPanel
         title={showTitle ? "HOPS" : undefined}
+        panelOptions={
+          <div className="button-row">
+            <Button
+              className={`button ${hops.hopsMode === "READ" ? "button--primary" : "button--primary active"}`}
+              onClick={handleModeChangeClick}
+            >
+              {hops.hopsMode === "READ"
+                ? t("actions.editingStart", { ns: "hops_new" })
+                : t("actions.editingEnd", { ns: "hops_new" })}
+            </Button>
+          </div>
+        }
         onTabChange={onTabChange}
         activeTab={activeTab}
         panelTabs={panelTabs}
@@ -101,7 +136,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    hops: state.hops,
+    hops: state.hopsNew,
     status: state.status,
   };
 }
@@ -111,7 +146,13 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return {};
+  return bindActionCreators(
+    {
+      startEditing,
+      endEditing,
+    },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HopsApplication);

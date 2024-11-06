@@ -626,6 +626,8 @@
     "actions": {
       "addNewRow": "Lisää uusi rivi",
       "confirmRegistration": "Vahvista ilmoittautuminen",
+      "editingStart": "Aloita muokkaus",
+      "editingEnd": "Päätä muokkaus",
       "showSummary": "Näytä yhteenveto",
       "showOldSummary": "Näytä vanha yhteenveto",
       "showChangeLog": "Näytä ilmoittautumisen muutoshistoria",

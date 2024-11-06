@@ -18,10 +18,15 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   LoadMatriculationDataTriggerType,
   loadMatriculationData,
+  StartEditingTriggerType,
+  startEditing,
+  endEditing,
+  EndEditingTriggerType,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import { Student } from "~/generated/client";
+import Button from "~/components/general/button";
 
 /**
  * StudiesTab
@@ -36,6 +41,8 @@ interface HopsApplicationProps {
   studentInfo: Student;
   studentIdentifier: string;
   loadMatriculationData: LoadMatriculationDataTriggerType;
+  startEditing: StartEditingTriggerType;
+  endEditing: EndEditingTriggerType;
 }
 
 /**
@@ -43,7 +50,14 @@ interface HopsApplicationProps {
  * @param props props
  */
 const HopsApplication = (props: HopsApplicationProps) => {
-  const { studentIdentifier, loadMatriculationData, hops, studentInfo } = props;
+  const {
+    studentIdentifier,
+    loadMatriculationData,
+    startEditing,
+    endEditing,
+    hops,
+    studentInfo,
+  } = props;
 
   const [activeTab, setActiveTab] = React.useState<HopsTab>("MATRICULATION");
   const { t } = useTranslation(["studies", "common", "hops_new"]);
@@ -68,6 +82,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
     setActiveTab(id);
   };
 
+  /**
+   * handleEditClick
+   */
+  const handleModeChangeClick = () => {
+    if (hops.hopsMode === "READ") {
+      startEditing();
+    } else {
+      endEditing();
+    }
+  };
+
   const panelTabs: Tab[] = [
     {
       id: "MATRICULATION",
@@ -90,6 +115,16 @@ const HopsApplication = (props: HopsApplicationProps) => {
         studyStartDate: studentInfo.studyStartDate,
       }}
     >
+      <div className="button-row">
+        <Button
+          className={`button ${hops.hopsMode === "READ" ? "button--primary" : "button--primary active"}`}
+          onClick={handleModeChangeClick}
+        >
+          {hops.hopsMode === "READ"
+            ? t("actions.editingStart", { ns: "hops_new" })
+            : t("actions.editingEnd", { ns: "hops_new" })}
+        </Button>
+      </div>
       <ApplicationPanel
         modifier="guider-student-hops"
         onTabChange={onTabChange}
@@ -119,6 +154,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadMatriculationData,
+      startEditing,
+      endEditing,
     },
     dispatch
   );

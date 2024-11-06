@@ -78,6 +78,19 @@ interface hopsMatriculation {
 interface HopsCareerPlanState {}
 
 /**
+ * HopsMode type
+ */
+export type HopsMode = "READ" | "EDIT";
+
+/**
+ * HopsEditingState
+ */
+export interface HopsEditingState {
+  readyToEdit: boolean;
+  matriculationPlan: MatriculationPlan | null;
+}
+
+/**
  * HopsState
  */
 export interface HopsState {
@@ -100,14 +113,20 @@ export interface HopsState {
   // HOPS CAREER PLAN
   hopsCareerPlanStatus: ReducerStateType;
   hopsCareerPlanState: HopsCareerPlanState;
+
+  // HOPS MODE
+  hopsMode: HopsMode;
+
+  // HOPS EDITING STATE
+  hopsEditing: HopsEditingState;
 }
 
 const initialHopsState: HopsState = {
   currentStudentIdentifier: null,
   currentStudentStudyProgramme: null,
-  hopsBackgroundStatus: "IDLE",
+  hopsBackgroundStatus: "READY",
   hopsBackgroundState: {},
-  hopsStudyPlanStatus: "IDLE",
+  hopsStudyPlanStatus: "READY",
   hopsStudyPlanState: {},
   hopsMatriculationStatus: "IDLE",
   hopsMatriculation: {
@@ -119,8 +138,13 @@ const initialHopsState: HopsState = {
     plan: null,
     results: [],
   },
-  hopsCareerPlanStatus: "IDLE",
+  hopsCareerPlanStatus: "READY",
   hopsCareerPlanState: {},
+  hopsMode: "READ",
+  hopsEditing: {
+    readyToEdit: false,
+    matriculationPlan: null,
+  },
 };
 
 /**
@@ -144,6 +168,14 @@ export const hopsNew: Reducer<HopsState> = (
       return {
         ...state,
         hopsMatriculationStatus: action.payload,
+        hopsEditing: {
+          ...state.hopsEditing,
+          readyToEdit:
+            action.payload === "READY" &&
+            state.hopsCareerPlanStatus === "READY" &&
+            state.hopsStudyPlanStatus === "READY" &&
+            state.hopsBackgroundStatus === "READY",
+        },
       };
 
     case "HOPS_MATRICULATION_UPDATE_EXAMS":
@@ -281,6 +313,10 @@ export const hopsNew: Reducer<HopsState> = (
           ...state.hopsMatriculation,
           plan: action.payload,
         },
+        hopsEditing: {
+          ...state.hopsEditing,
+          matriculationPlan: action.payload,
+        },
       };
     }
 
@@ -324,6 +360,21 @@ export const hopsNew: Reducer<HopsState> = (
       return {
         ...state,
         currentStudentStudyProgramme: action.payload,
+      };
+
+    case "HOPS_CHANGE_MODE":
+      return {
+        ...state,
+        hopsMode: action.payload,
+      };
+
+    case "HOPS_UPDATE_EDITING":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          ...action.payload,
+        },
       };
 
     default:

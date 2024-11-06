@@ -626,6 +626,8 @@
     "actions": {
       "addNewRow": "Add new row",
       "confirmRegistration": "Confirm registration",
+      "editingStart": "Start editing",
+      "editingEnd": "End editing",
       "showSummary": "Show summary",
       "showOldSummary": "Show old summary",
       "showChangeLog": "Show registration change history",
