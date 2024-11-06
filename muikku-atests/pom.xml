@@ -230,7 +230,7 @@
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
         <it.database.name>testdb</it.database.name>
-        <it.jdbc.driver>com.mysql.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.driver>com.mysql.cj.jdbc.Driver</it.jdbc.driver>
         <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
@@ -278,8 +278,8 @@
               <verbose>true</verbose>
               <images>
                 <image>
-                  <alias>mysql</alias>
-                  <name>mysql:5.7</name>
+                  <alias>mariadb</alias>
+                  <name>mariadb</name>
                   <run>
                     <env>
                       <MYSQL_USER>sa</MYSQL_USER>
@@ -288,7 +288,7 @@
                       <MYSQL_DATABASE>testdb</MYSQL_DATABASE>
                     </env>
                     <wait>
-                      <log>MySQL init process done. Ready for start up.</log>
+                      <log>Ready for start up.</log>
                       <time>80000</time>
                     </wait>
                     <ports>
@@ -632,7 +632,7 @@
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
         <it.database.name>testdb</it.database.name>
-        <it.jdbc.driver>com.mysql.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.driver>com.mysql.cj.jdbc.Driver</it.jdbc.driver>
         <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
@@ -678,8 +678,8 @@
               <verbose>true</verbose>
               <images>
                 <image>
-                  <alias>mysql</alias>
-                  <name>mysql:5.7</name>
+                  <alias>mariadb</alias>
+                  <name>mariadb</name>
                   <run>
                     <env>
                       <MYSQL_USER>sa</MYSQL_USER>
@@ -1106,7 +1106,7 @@
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
         <it.database.name>testdb</it.database.name>
-        <it.jdbc.driver>com.mysql.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.driver>com.mysql.cj.jdbc.Driver</it.jdbc.driver>
         <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
@@ -1160,8 +1160,8 @@
               <verbose>true</verbose>
               <images>
                 <image>
-                  <alias>mysql</alias>
-                  <name>mysql:5.7</name>
+                  <alias>mariadb</alias>
+                  <name>mariadb</name>
                   <run>
                     <env>
                       <MYSQL_USER>sa</MYSQL_USER>
