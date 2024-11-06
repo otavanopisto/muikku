@@ -250,7 +250,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
   );
 
   const matriculationSubjectInputs = selectedSubjects2.map((subject, index) => (
-    <div className="form__row" key={index}>
+    <div className="form__row form__row--matriculation-plan" key={index}>
       <div className="form-element__dropdown-selection-container form-element__dropdown-selection-container--nowrap">
         <label
           htmlFor={`matriculationSubject` + index}
