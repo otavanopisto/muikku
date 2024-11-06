@@ -27,18 +27,24 @@ import { HopsState } from "~/reducers/hops";
 import Button from "~/components/general/button";
 
 /**
- * StudiesTab
+ * Represents the available tabs in the HOPS application.
+ * Currently only supports matriculation.
  */
 type HopsTab = "MATRICULATION";
 
 /**
- * HopsApplicationProps
+ * Props for the HopsApplication component.
  */
 interface HopsApplicationProps {
+  /** The current state of the HOPS application */
   hops: HopsState;
+  /** The current status information including user data */
   status: StatusType;
+  /** Whether to show the HOPS title in the panel */
   showTitle?: boolean;
+  /** Function to trigger edit mode */
   startEditing: StartEditingTriggerType;
+  /** Function to exit edit mode */
   endEditing: EndEditingTriggerType;
 }
 
@@ -47,8 +53,10 @@ const defaultProps: Partial<HopsApplicationProps> = {
 };
 
 /**
- * HopsApplication
- * @param props props
+ * Renders the HOPS (Personal Study Plan) application interface.
+ * Provides functionality to view and edit matriculation details.
+ * @param props - Component props
+ * @returns The rendered HopsApplication component
  */
 const HopsApplication = (props: HopsApplicationProps) => {
   const { showTitle, status, hops, startEditing, endEditing } = {
@@ -59,11 +67,12 @@ const HopsApplication = (props: HopsApplicationProps) => {
   const { t } = useTranslation(["studies", "common", "hops_new"]);
 
   /**
-   * onTabChange
-   * @param id id
-   * @param hash hash
+   * Handles tab changes in the application panel.
+   * Updates the URL hash and active tab state.
+   * @param id - The ID of the tab to switch to
+   * @param hash - Optional hash or Tab object for URL updating
    */
-  const onTabChange = (id: "MATRICULATION", hash?: string | Tab) => {
+  const onTabChange = (id: HopsTab, hash?: string | Tab) => {
     if (hash) {
       if (typeof hash === "string" || hash instanceof String) {
         window.location.hash = hash as string;
@@ -76,7 +85,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   };
 
   /**
-   * handleModeChangeClick
+   * Toggles between read and edit modes.
    */
   const handleModeChangeClick = () => {
     if (hops.hopsMode === "READ") {
@@ -104,7 +113,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     <HopsBasicInfoProvider
       useCase="STUDENT"
       studentInfo={{
-        id: status.userSchoolDataIdentifier,
+        identifier: status.userSchoolDataIdentifier,
         studyStartDate: new Date(status.profile.studyStartDate),
       }}
     >
@@ -131,8 +140,9 @@ const HopsApplication = (props: HopsApplicationProps) => {
 };
 
 /**
- * mapStateToProps
- * @param state state
+ * Maps Redux state to component props.
+ * @param state - The Redux state
+ * @returns The props derived from state
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -142,8 +152,9 @@ function mapStateToProps(state: StateType) {
 }
 
 /**
- * mapDispatchToProps
- * @param dispatch dispatch
+ * Maps Redux dispatch actions to component props.
+ * @param dispatch - The Redux dispatch function
+ * @returns The mapped action creators
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(

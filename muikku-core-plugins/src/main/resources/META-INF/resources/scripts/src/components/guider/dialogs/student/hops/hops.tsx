@@ -29,25 +29,35 @@ import { Student } from "~/generated/client";
 import Button from "~/components/general/button";
 
 /**
- * StudiesTab
+ * Represents the available tabs in the HOPS application
+ * Currently only supports matriculation tab
  */
 type HopsTab = "MATRICULATION";
 
 /**
- * HopsApplicationProps
+ * Props interface for the HopsApplication component
  */
 interface HopsApplicationProps {
+  /** The current state of the HOPS application */
   hops: HopsState;
+  /** Information about the current student */
   studentInfo: Student;
+  /** Unique identifier for the student */
   studentIdentifier: string;
+  /** Function to load matriculation data */
   loadMatriculationData: LoadMatriculationDataTriggerType;
+  /** Function to enable editing mode */
   startEditing: StartEditingTriggerType;
+  /** Function to disable editing mode */
   endEditing: EndEditingTriggerType;
 }
 
 /**
- * HopsApplication
- * @param props props
+ * HopsApplication component handles the display and management of HOPS (Personal Study Plan) information
+ * for a student, including matriculation data and editing capabilities.
+ *
+ * @param props - Component props
+ * @returns  Rendered HopsApplication component
  */
 const HopsApplication = (props: HopsApplicationProps) => {
   const {
@@ -75,15 +85,15 @@ const HopsApplication = (props: HopsApplicationProps) => {
   }, [hops.hopsMatriculationStatus, loadMatriculationData, studentIdentifier]);
 
   /**
-   * onTabChange
-   * @param id id
+   * Handles tab changes in the application panel
+   * @param {HopsTab} id - The ID of the tab to switch to
    */
   const onTabChange = (id: HopsTab) => {
     setActiveTab(id);
   };
 
   /**
-   * handleEditClick
+   * Toggles between read and edit modes for the HOPS application
    */
   const handleModeChangeClick = () => {
     if (hops.hopsMode === "READ") {
@@ -111,7 +121,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     <HopsBasicInfoProvider
       useCase="GUIDANCE_COUNSELOR"
       studentInfo={{
-        id: studentInfo.id,
+        identifier: studentInfo.id,
         studyStartDate: studentInfo.studyStartDate,
       }}
     >
@@ -136,8 +146,9 @@ const HopsApplication = (props: HopsApplicationProps) => {
 };
 
 /**
- * mapStateToProps
- * @param state state
+ * Maps Redux state to component props
+ * @param state - The current Redux state
+ * @returns Mapped props
  */
 function mapStateToProps(state: StateType) {
   return {
@@ -147,8 +158,9 @@ function mapStateToProps(state: StateType) {
 }
 
 /**
- * mapDispatchToProps
- * @param dispatch dispatch
+ * Maps Redux dispatch actions to component props
+ * @param dispatch - The Redux dispatch function
+ * @returns Mapped action creators
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(

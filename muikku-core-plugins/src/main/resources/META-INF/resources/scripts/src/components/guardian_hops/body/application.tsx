@@ -246,7 +246,7 @@ class GuardianHopsApplication extends React.Component<
       <HopsBasicInfoProvider
         useCase="GUARDIAN"
         studentInfo={{
-          id: selectedDependant?.identifier || "",
+          identifier: selectedDependant?.identifier || "",
           studyStartDate: selectedDependant?.studyStartDate || new Date(),
         }}
       >
