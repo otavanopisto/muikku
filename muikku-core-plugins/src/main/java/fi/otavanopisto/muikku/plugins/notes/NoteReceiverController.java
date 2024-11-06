@@ -43,5 +43,9 @@ public class NoteReceiverController {
   public NoteReceiver findByRecipientIdAndNote(Long id, Note note) {
     return noteRecipientDAO.findByRecipientIdAndNote(id, note);
   }
+  
+  public void deleteRecipient(NoteReceiver noteReceiver) {
+    noteRecipientDAO.deleteReceiver(noteReceiver);
+  }
 
 }

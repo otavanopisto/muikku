@@ -85,7 +85,7 @@ public List<NoteReceiver> listByNoteAndRecipientGroup(Long note, Note recipientG
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
-public List<NoteReceiver> listByReceiver(Long recipient){
+  public List<NoteReceiver> listByReceiver(Long recipient){
     
     EntityManager entityManager = getEntityManager(); 
     
@@ -99,5 +99,9 @@ public List<NoteReceiver> listByReceiver(Long recipient){
     ));
     
     return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public void deleteReceiver(NoteReceiver noteReceiver) {
+    super.delete(noteReceiver);
   }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -508,4 +509,34 @@ public class NotesRESTService extends PluginRESTService {
     return Response.ok(noteRestModel).build();
 
   }
+  
+  //mApi() call (notes.note.recipient.delete(noteId, recipientId))
+ // In this case, archiving means permanent deletion. Once deleted, the data cannot be restored.
+ @DELETE
+ @Path ("/note/{NOTEID}/recipient/{RECIPIENTID}/delete")
+ @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+ public Response deleteReceiver(@PathParam ("NOTEID") Long noteId, @PathParam ("RECEIVERID") Long receiverId) {
+   Note note = notesController.findNoteById(noteId);
+   
+   if (note == null) {
+     return Response.status(Status.NOT_FOUND).entity(String.format("Note (%d) not found", noteId)).build();
+   }
+   
+   NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(receiverId, note);
+
+   if (receiver == null) {
+     return Response.status(Status.NOT_FOUND).entity(String.format("Note recipient (%d) not found", receiverId)).build();
+   }
+   
+   // Users can only delete recipients from their own notes.
+   if (!note.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
+     return Response.status(Status.FORBIDDEN).build(); 
+   }
+
+   noteReceiverController.deleteRecipient(receiver);
+   
+   return Response.status(Status.NO_CONTENT).build();
+
+ }
+  
 } 
