@@ -6453,7 +6453,7 @@ paths:
   /rest/notes/note:
     post:
       operationId: createNote
-      summary: Creates and returns created note
+      summary: Creates and returns created note with recipient(s)
       tags:
         - Notes
       requestBody:
@@ -6469,6 +6469,8 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+
+  
 
   /rest/notes/note/{noteId}:
     put:
@@ -6493,6 +6495,42 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Note"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+          
+  /rest/notes/{noteId}/receiver/{recipientId}:
+    put:
+      operationId: updateNoteReceiver
+      summary: Updates and returns note receiver
+      tags:
+        - Notes
+      parameters:
+        - name: noteId
+          in: path
+          description: Note id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: recipientId
+          in: path
+          description: Recipient id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/NoteReceiverUpdateRequestBody"
+      responses:
+        "200":
+          description: Note recipient updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NoteReceiver"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6524,16 +6562,16 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/notes/owner/{ownerId}:
+  /rest/notes/recipient/{recipientId}:
     get:
-      operationId: getNotes
-      summary: Returns notes with given owner id and optional archived flag
+      operationId: getNotesByRecipient
+      summary: Returns notes with given recipient id and optional archived flag
       tags:
         - Notes
       parameters:
-        - name: ownerId
+        - name: recipientId
           in: path
-          description: owner id
+          description: recipient id
           required: true
           schema:
             type: integer
@@ -6553,6 +6591,69 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Note"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/notes/creator/{creatorId}:
+    get:
+      operationId: getNotesByCreator
+      summary: Returns notes with given creator id and optional archived flag
+      tags:
+        - Notes
+      parameters:
+        - name: creatorId
+          in: path
+          description: creator id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: listArchived
+          in: query
+          description: List archived
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: Notes returned successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NoteSortedList"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+  
+  /rest/notes/note/{noteId}/recipient/{recipientId}:
+    delete:
+      operationId: deleteNoteRecipient
+      summary: Delete note recipient
+      tags:
+        - Notes
+      parameters:
+        - name: noteId
+          in: path
+          description: Note id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: recipientId
+          in: path
+          description: Recipient id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Note recipient deleted successfully
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11504,7 +11605,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/LocalizationLocale"
-
+    
     NoteCreateRequestBody:
       required: true
       description: NoteCreateRequestBody object
@@ -11513,36 +11614,17 @@ components:
           schema:
             type: object
             required:
-              - title
-              - description
-              - type
-              - priority
-              - pinned
-              - owner
-              - startDate
-              - dueDate
+              - note
+              - receiver
+              - recipients
             properties:
-              title:
-                type: string
-              description:
-                type: string
-              type:
-                $ref: "#/components/schemas/NoteCreationType"
-              priority:
-                $ref: "#/components/schemas/NotePriorityType"
-              pinned:
-                type: boolean
-              owner:
-                type: integer
-                format: int64
-              startDate:
-                type: string
-                format: date-time
-                nullable: true
-              dueDate:
-                type: string
-                format: date-time
-                nullable: true
+              note:
+                $ref: "#/components/schemas/Note"
+              noteReceiver:
+                $ref: "#/components/schemas/NoteCreationReceiver"
+              recipientList:
+                $ref: "#/components/schemas/NoteRecipientList"
+    
 
     NoteUpdateRequestBody:
       required: true
@@ -11576,6 +11658,22 @@ components:
                 type: string
                 format: date-time
                 nullable: true
+              status:
+                $ref: "#/components/schemas/NoteStatusType"
+    
+    NoteReceiverUpdateRequestBody:
+      required: true
+      description: NoteReceiverUpdateRequestBody object
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - pinned
+              - status
+            properties:
+              pinned:
+                type: boolean
               status:
                 $ref: "#/components/schemas/NoteStatusType"
 
@@ -15245,6 +15343,7 @@ components:
         - startDate
         - dueDate
         - status
+        - recipients
       properties:
         id:
           type: integer
@@ -15257,15 +15356,10 @@ components:
           $ref: "#/components/schemas/NoteCreationType"
         priority:
           $ref: "#/components/schemas/NotePriorityType"
-        pinned:
-          type: boolean
         isActive:
           type: boolean
         isArchived:
           type: boolean
-        owner:
-          type: integer
-          format: int64
         creator:
           type: integer
           format: int64
@@ -15282,8 +15376,80 @@ components:
           type: string
           format: date-time
           nullable: true
+        recipients:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteReceiver"
+    
+    NoteSortedList:
+      type: object
+      description: A NoteSortedList object where private notes and multi-user notes are organized into separate lists
+      required:
+        - privateNotes
+        - multiUserNotes
+      properties:
+        privateNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Note"
+        multiUserNotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Note"
+
+    NoteCreationReceiver:
+      type: object
+      description: NoteReceiver object
+      required:
+        - pinned
+        - status
+      properties:
+        pinned:
+          type: boolean
         status:
           $ref: "#/components/schemas/NoteStatusType"
+    
+    NoteReceiver:
+      type: object
+      description: NoteReceiver object
+      required:
+        - id
+        - pinned
+        - recipient
+        - status
+        - userGroup
+      properties:
+        id:
+          type: integer
+          format: int64
+        pinned:
+          type: boolean
+        recipient:
+          type: integer
+          format: int64
+        status:
+          $ref: "#/components/schemas/NoteStatusType"
+        userGroup:
+          type: integer
+          format: int64
+
+    NoteRecipientList:
+      type: object
+      description: NoteRecipientList
+      required:
+        - recipientIds
+        - recipientGroupIds
+      properties:
+        recipientIds:
+          description: The list of userEntityIds
+          type: array
+          items:
+            type: integer
+        recipientGroupIds:
+          description: The list of studentGroupIds
+          type: array
+          items:
+            type: integer
 
     NoteCreationType:
       description: NoteCreationType enum type

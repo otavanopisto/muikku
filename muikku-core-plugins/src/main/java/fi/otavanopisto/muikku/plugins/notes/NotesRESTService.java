@@ -341,11 +341,11 @@ public class NotesRESTService extends PluginRESTService {
     return restModel;
   }
   
-  //mApi() call (mApi().notes.owner.read(owner))
+  //mApi() call (mApi().notes.recipient.read(owner))
   @GET
-  @Path("/recipient/{RECIPIENT}")
+  @Path("/recipient/{RECIPIENTID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listNotesByRecipient(@PathParam("RECIPIENT") Long recipient, @QueryParam("listArchived") @DefaultValue ("false") Boolean listArchived) {
+  public Response listNotesByRecipient(@PathParam("RECIPIENTID") Long recipient, @QueryParam("listArchived") @DefaultValue ("false") Boolean listArchived) {
 
     UserEntity recipientEntity = userEntityController.findUserEntityById(recipient);
     
@@ -513,7 +513,7 @@ public class NotesRESTService extends PluginRESTService {
   //mApi() call (notes.note.recipient.delete(noteId, recipientId))
  // In this case, archiving means permanent deletion. Once deleted, the data cannot be restored.
  @DELETE
- @Path ("/note/{NOTEID}/recipient/{RECIPIENTID}/delete")
+ @Path ("/note/{NOTEID}/recipient/{RECIPIENTID}")
  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
  public Response deleteReceiver(@PathParam ("NOTEID") Long noteId, @PathParam ("RECEIVERID") Long receiverId) {
    Note note = notesController.findNoteById(noteId);
