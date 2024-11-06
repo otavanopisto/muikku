@@ -1,7 +1,7 @@
 import * as React from "react";
 import { DiscussionState } from "~/reducers/discussion";
 import { localize } from "~/locales/i18n";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
@@ -25,7 +25,7 @@ import DiscussionThreadReply from "./discussion-thread-reply";
 import ModifyThreadDrawer from "./modify-thread-drawer";
 import PagerV2 from "~/components/general/pagerV2";
 import { AnyActionType } from "~/actions/index";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   SubscribeDiscussionThread,
   subscribeDiscussionThread,
@@ -555,7 +555,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       subscribeDiscussionThread,

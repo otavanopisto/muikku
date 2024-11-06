@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import NewThread from "../dialogs/new-thread";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import HoverButton from "~/components/general/hover-button";
@@ -13,6 +13,7 @@ import "~/sass/elements/link.scss";
 import { AnyActionType } from "../../../actions/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import DiscussionSubscriptions from "./application/discussion-subscriptions";
+import { Action, Dispatch } from "redux";
 
 /**
  * DiscussionApplicationState
@@ -107,7 +108,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

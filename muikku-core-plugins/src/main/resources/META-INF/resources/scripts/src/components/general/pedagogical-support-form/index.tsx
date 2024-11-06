@@ -6,7 +6,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { PDFViewer } from "@react-pdf/renderer";
@@ -23,6 +23,7 @@ import "~/sass/elements/pedagogy.scss";
 import PedagogyToolbar from "./pedagogy-toolbar";
 import { UserRole } from "~/@types/pedagogy-form";
 import { useTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 // Visibility settings which study programmes have access to the form
 export const UPPERSECONDARY_PEDAGOGYFORM = [
@@ -36,7 +37,7 @@ export const UPPERSECONDARY_PEDAGOGYFORM = [
  */
 interface UpperSecondaryPedagogicalSupportWizardFormmProps {
   userRole: UserRole;
-  studentId: string;
+  studentUserEntityId: number;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -52,7 +53,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
 > = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan"]);
   const usePedagogyValues = usePedagogy(
-    props.studentId,
+    props.studentUserEntityId,
     props.displayNotification
   );
   const { loading, data } = usePedagogyValues;
@@ -202,7 +203,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {
     displayNotification,
   };

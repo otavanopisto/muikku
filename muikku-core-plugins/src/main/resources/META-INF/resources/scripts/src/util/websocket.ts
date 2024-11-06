@@ -5,9 +5,8 @@
  */
 
 import actions from "../actions/base/notifications";
-import { Store } from "react-redux";
 import $ from "~/lib/jquery";
-import { Action } from "redux";
+import { Action, Store } from "redux";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import i18n from "~/locales/i18n";
 

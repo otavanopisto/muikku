@@ -44,7 +44,7 @@ export const useCanSignUp = (workspaceId: number) => {
       try {
         const canSignUp = await checkSignUpStatus();
 
-        setCanSignUp(canSignUp);
+        setCanSignUp(canSignUp.canSignup);
         setLoadingCanSignUp(false);
       } catch (error) {
         setServerError(error);

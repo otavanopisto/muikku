@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.240-SNAPSHOT</version>
+    <version>1.1.243-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -275,7 +275,7 @@
           </filesets>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-processor-plugin</artifactId>
@@ -322,8 +322,8 @@
             </goals>
             <phase>generate-resources</phase>
             <configuration>
-              <nodeVersion>v14.18.1</nodeVersion>
-              <npmVersion>8.1.0</npmVersion>
+              <nodeVersion>v20.11.1</nodeVersion>
+              <npmVersion>10.2.4</npmVersion>
             </configuration>
           </execution>
           <execution>

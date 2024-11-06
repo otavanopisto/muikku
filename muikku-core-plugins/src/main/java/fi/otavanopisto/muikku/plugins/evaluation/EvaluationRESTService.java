@@ -1774,7 +1774,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     // Note: Id is not set because CompositeAssessmentRequest from Pyramus does not have it. Might need refactoring in the future.
     
-    restAssessmentRequest.setIdentifier(compositeAssessmentRequest.getIdentifier().toId());
+    restAssessmentRequest.setIdentifier(compositeAssessmentRequest.getIdentifier() == null ? null : compositeAssessmentRequest.getIdentifier().toId());
     restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
     restAssessmentRequest.setWorkspaceUserIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toId());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
@@ -1825,7 +1825,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    boolean hasPedagogyForm = pedagogyController.hasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     return restAssessmentRequest;
   }
@@ -1899,7 +1899,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    boolean hasPedagogyForm = pedagogyController.hasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     
     return restAssessmentRequest;
@@ -1939,12 +1939,19 @@ public class EvaluationRESTService extends PluginRESTService {
       assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(
           userEntity.getId(), replyStates, evaluatedAssignments);
     }
+    
+    WorkspaceAssessmentRequest war = assessmentRequestController.findLatestAssessmentRequestByWorkspaceAndStudent(
+        workspaceEntity.schoolDataIdentifier(),
+        userEntity.defaultSchoolDataIdentifier());
 
     RestAssessmentRequest restAssessmentRequest = new RestAssessmentRequest();
     restAssessmentRequest.setId(supplementationRequest.getId());
     restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity.getId());
     restAssessmentRequest.setWorkspaceUserIdentifier(workspaceUserEntity.getIdentifier());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
+    if (war != null) {
+      restAssessmentRequest.setAssessmentRequestDate(war.getDate());
+    }
     restAssessmentRequest.setEvaluationDate(supplementationRequest.getRequestDate());
     restAssessmentRequest.setAssignmentsDone(assignmentsDone);
     restAssessmentRequest.setAssignmentsTotal(assignmentsTotal);
@@ -1973,7 +1980,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .map(workspaceSubject -> workspaceRestModels.toRestModel(workspaceSubject))
         .collect(Collectors.toList());
     restAssessmentRequest.setSubjects(subjects);
-    boolean hasPedagogyForm = pedagogyController.getHasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().defaultSchoolDataIdentifier().toId());
+    boolean hasPedagogyForm = pedagogyController.hasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
     
     return restAssessmentRequest;

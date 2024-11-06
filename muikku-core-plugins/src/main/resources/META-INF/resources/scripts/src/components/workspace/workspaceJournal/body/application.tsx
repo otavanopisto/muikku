@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import HoverButton from "~/components/general/hover-button";
 import Toolbar from "./application/workspace-journals-toolbar";
@@ -13,7 +13,7 @@ import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { getName } from "~/util/modifiers";
 import Button from "~/components/general/button";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import NewJournal from "~/components/workspace/workspaceJournal/dialogs/new-edit-journal";
 import { AnyActionType } from "~/actions";
 import {
@@ -116,7 +116,7 @@ class WorkspaceJournalApplication extends React.Component<
             ({
               value: student,
               label: getName(student, true),
-            } as JournalStudentFilterOption)
+            }) as JournalStudentFilterOption
         );
 
       const allOptions = [
@@ -205,7 +205,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { loadCurrentWorkspaceJournalsFromServer },
     dispatch

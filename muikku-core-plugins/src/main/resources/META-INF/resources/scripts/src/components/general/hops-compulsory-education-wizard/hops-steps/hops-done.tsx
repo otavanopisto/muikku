@@ -103,7 +103,7 @@ class HopsDone extends React.Component<HopsDoneProps, HopsDonePropsState> {
       SAVING_DRAFT: null,
       DRAFT_SAVED: null,
       undefined: null,
-    }[saveState]);
+    })[saveState];
 
   /**
    * Component render method

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import UserPanel from "~/components/general/user-panel";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { UsersState } from "~/reducers/main-function/users";
 import {
   LoadUsersTriggerType,
@@ -119,7 +119,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ loadStudents, loadStaff }, dispatch);
 }
 

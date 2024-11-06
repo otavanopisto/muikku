@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
@@ -16,7 +16,7 @@ import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
 import DeleteJournal from "~/components/workspace/workspaceJournal/dialogs/delete-journal";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   SetCurrentJournalTriggerType,
   setCurrentJournal,
@@ -248,7 +248,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ setCurrentJournal }, dispatch);
 }
 

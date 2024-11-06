@@ -9,10 +9,10 @@ import {
   WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { ReducerStateType } from "~/reducers/workspaces/journals";
-import { Dispatch } from "react";
 import i18n from "~/locales/i18n";
 import { loadWorkspaceJournalFeedback } from "./journals";
 import MApi, { isMApiError } from "~/api/api";
+import { Action, Dispatch } from "redux";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
@@ -32,7 +32,7 @@ export async function loadWorkspacesHelper(
   initial: boolean,
   refresh: boolean,
   loadOrganizationWorkspaces: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
   const state: StateType = getState();
@@ -256,7 +256,7 @@ export async function loadWorkspacesHelper(
 export async function loadCurrentWorkspaceJournalsHelper(
   userEntityId: number | null,
   initial: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
   const workspaceApi = MApi.getWorkspaceApi();

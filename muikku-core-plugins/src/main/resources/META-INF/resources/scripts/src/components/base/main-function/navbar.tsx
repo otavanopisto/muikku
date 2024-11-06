@@ -4,7 +4,7 @@ import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
 import Dropdown from "~/components/general/dropdown";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
@@ -12,6 +12,7 @@ import "~/sass/elements/indicator.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { Dependant } from "~/reducers/main-function/dependants";
+import { Action, Dispatch } from "redux";
 
 /**
  * ItemDataElement
@@ -271,7 +272,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) => ({});
+const mapDispatchToProps = (dispatch: Dispatch<Action<AnyActionType>>) => ({});
 
 export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(MainFunctionNavbar)

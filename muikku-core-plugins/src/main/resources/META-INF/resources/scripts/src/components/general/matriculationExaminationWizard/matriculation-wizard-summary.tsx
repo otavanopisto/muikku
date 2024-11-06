@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Step4 } from "./steps";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import "~/sass/elements/wizard.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/matriculation.scss";
@@ -9,7 +9,7 @@ import { useMatriculation } from "./hooks/use-matriculation";
 import { MatriculationFormType } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
 import { HopsState } from "~/reducers/hops";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
@@ -71,7 +71,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
