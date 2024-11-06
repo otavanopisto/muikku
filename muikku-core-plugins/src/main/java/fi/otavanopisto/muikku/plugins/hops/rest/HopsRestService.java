@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.hops.rest;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -41,6 +40,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
+import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
@@ -48,7 +48,6 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
-import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -109,7 +108,7 @@ public class HopsRestService {
   private CourseMetaController courseMetaController;
 
   @Inject
-  private WebSocketMessenger webSocketMessenger;
+  private HopsWebsocketMessenger hopsWebSocketMessenger;
 
   @Inject
   private WorkspaceEntityFileController workspaceEntityFileController;
@@ -159,6 +158,8 @@ public class HopsRestService {
         }
       }
     }
+    
+    hopsWebSocketMessenger.registerUser(studentIdentifierStr, sessionController.getLoggedUserEntity().getId());
 
     Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifierStr);
     return hops == null ? Response.noContent().build() : Response.ok(hops.getFormData()).build();
@@ -260,15 +261,6 @@ public class HopsRestService {
       logger.log(Level.WARNING, String.format("Failed to deserialize %s", goals));
     }
 
-    // Get recipients for websocket
-
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
-
-    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
-
-    recipients.add(studentEntity);
-
     // Create or update
 
     HopsGoals hopsGoals = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifier);
@@ -278,7 +270,9 @@ public class HopsRestService {
     else {
       hopsGoals = hopsController.updateHopsGoals(hopsGoals, studentIdentifier, goals);
     }
-    webSocketMessenger.sendMessage("hops:hops-goals", goals, recipients);
+
+    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:hops-goals", goals);
+    
     return Response.ok(goals).build();
   }
 
@@ -684,9 +678,6 @@ public class HopsRestService {
       workspaceEntity = workspaceEntityController.findWorkspaceEntityById(payload.getCourseId());
     }
 
-    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
-    UserEntity counselorEntity = sessionController.getLoggedUserEntity();
-
     if (hopsSuggestion == null || !hopsSuggestion.getWorkspaceEntityId().equals(payload.getCourseId())) { // create new suggestion
       if (workspaceEntity == null) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Workspace entity %d not found", payload.getId())).build();
@@ -712,8 +703,16 @@ public class HopsRestService {
       item.setCourseNumber(hopsSuggestion.getCourseNumber());
       item.setCreated(hopsSuggestion.getCreated());
       item.setSubject(hopsSuggestion.getSubject());
-
-      webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
+      
+      ObjectMapper mapper = new ObjectMapper();
+      String strMessage = null;
+      try {
+        strMessage = mapper.writeValueAsString(item);
+        hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:workspace-suggested", strMessage);
+      }
+      catch (Exception e) {
+        logger.warning("Unable to serialize websocket message");
+      }
 
       return Response.ok(item).build();
 
@@ -736,7 +735,15 @@ public class HopsRestService {
       item.setCreated(hopsSuggestion.getCreated());
       item.setSubject(hopsSuggestion.getSubject());
 
-      webSocketMessenger.sendMessage("hops:workspace-suggested", item, Arrays.asList(studentEntity, counselorEntity));
+      ObjectMapper mapper = new ObjectMapper();
+      String strMessage = null;
+      try {
+        strMessage = mapper.writeValueAsString(item);
+        hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:workspace-suggested", strMessage);
+      }
+      catch (Exception e) {
+        logger.warning("Unable to serialize websocket message");
+      }
 
       return Response.ok(item).build();
     }
@@ -758,11 +765,15 @@ public class HopsRestService {
     }
     hopsController.unsuggestWorkspace(studentIdentifier, payload.getSubject(), payload.getCourseNumber(), payload.getCourseId());
 
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
-    UserEntity counselorEntity = sessionController.getLoggedUserEntity();
-
-    webSocketMessenger.sendMessage("hops:workspace-suggested", payload, Arrays.asList(studentEntity, counselorEntity));
+    ObjectMapper mapper = new ObjectMapper();
+    String strMessage = null;
+    try {
+      strMessage = mapper.writeValueAsString(payload);
+      hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:workspace-suggested", strMessage);
+    }
+    catch (Exception e) {
+      logger.warning("Unable to serialize websocket message");
+    }
 
     return Response.noContent().build();
   }
@@ -792,21 +803,23 @@ public class HopsRestService {
       }
     }
     
-    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
-
-    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
-
-    recipients.add(studentEntity);
     HopsOptionalSuggestion hopsOptionalSuggestion = hopsController.findOptionalSuggestionByStudentIdentifier(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
-
 
     if (hopsOptionalSuggestion == null) {
       hopsOptionalSuggestion = hopsController.createOptionalSuggestion(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
-
       HopsOptionalSuggestionRestModel hopsOptionalSuggestionRestModel = new HopsOptionalSuggestionRestModel();
       hopsOptionalSuggestionRestModel.setCourseNumber(hopsOptionalSuggestion.getCourseNumber());
       hopsOptionalSuggestionRestModel.setSubject(hopsOptionalSuggestion.getSubject());
-      webSocketMessenger.sendMessage("hops:optionalsuggestion-updated", hopsOptionalSuggestionRestModel, recipients);
+
+      ObjectMapper mapper = new ObjectMapper();
+      String strMessage = null;
+      try {
+        strMessage = mapper.writeValueAsString(hopsOptionalSuggestionRestModel);
+        hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:optionalsuggestion-updated", strMessage);
+      }
+      catch (Exception e) {
+        logger.warning("Unable to serialize websocket message");
+      }
 
       return Response.ok(hopsOptionalSuggestionRestModel).build();
     }
@@ -815,7 +828,16 @@ public class HopsRestService {
       HopsOptionalSuggestionRestModel hopsOptionalSuggestionRestModel = new HopsOptionalSuggestionRestModel();
       hopsOptionalSuggestionRestModel.setCourseNumber(hopsOptionalSuggestion.getCourseNumber());
       hopsOptionalSuggestionRestModel.setSubject(hopsOptionalSuggestion.getSubject());
-      webSocketMessenger.sendMessage("hops:optionalsuggestion-updated", hopsOptionalSuggestionRestModel, recipients);
+
+      ObjectMapper mapper = new ObjectMapper();
+      String strMessage = null;
+      try {
+        strMessage = mapper.writeValueAsString(hopsOptionalSuggestionRestModel);
+        hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:optionalsuggestion-updated", strMessage);
+      }
+      catch (Exception e) {
+        logger.warning("Unable to serialize websocket message");
+      }
 
       return Response.noContent().build();
     }
@@ -857,22 +879,23 @@ public class HopsRestService {
     
     // Create or remove
 
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
-
-    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
-
-    recipients.add(studentEntity);
     HopsStudentChoice hopsStudentChoice = hopsController.findStudentChoiceByStudentIdentifier(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
-
-
     if (hopsStudentChoice == null) {
       hopsStudentChoice = hopsController.createStudentChoice(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
 
       StudentChoiceRestModel studentChoiceRestModel = new StudentChoiceRestModel();
       studentChoiceRestModel.setCourseNumber(hopsStudentChoice.getCourseNumber());
       studentChoiceRestModel.setSubject(hopsStudentChoice.getSubject());
-      webSocketMessenger.sendMessage("hops:studentchoice-updated", studentChoiceRestModel, recipients);
+
+      ObjectMapper mapper = new ObjectMapper();
+      String strMessage = null;
+      try {
+        strMessage = mapper.writeValueAsString(studentChoiceRestModel);
+        hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:studentchoice-updated", strMessage);
+      }
+      catch (Exception e) {
+        logger.warning("Unable to serialize websocket message");
+      }
 
       return Response.ok(hopsStudentChoice).build();
     }
@@ -881,7 +904,16 @@ public class HopsRestService {
       StudentChoiceRestModel studentChoiceRestModel = new StudentChoiceRestModel();
       studentChoiceRestModel.setCourseNumber(hopsStudentChoice.getCourseNumber());
       studentChoiceRestModel.setSubject(hopsStudentChoice.getSubject());
-      webSocketMessenger.sendMessage("hops:studentchoice-updated", studentChoiceRestModel, recipients);
+
+      ObjectMapper mapper = new ObjectMapper();
+      String strMessage = null;
+      try {
+        strMessage = mapper.writeValueAsString(studentChoiceRestModel);
+        hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:studentchoice-updated", strMessage);
+      }
+      catch (Exception e) {
+        logger.warning("Unable to serialize websocket message");
+      }
 
       return Response.noContent().build();
     }
@@ -1004,21 +1036,21 @@ public class HopsRestService {
       hopsStudyHours = hopsController.updateHopsStudyHours(hopsStudyHours, studentIdentifier, hours);
     }
 
-    // Recipients for websocket
-
-    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
-
-    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
-
-    recipients.add(studentEntity);
-
     StudyHoursRestModel studyHoursRestModel = new StudyHoursRestModel();
     studyHoursRestModel.setId(hopsStudyHours.getId());
     studyHoursRestModel.setStudentIdentifier(hopsStudyHours.getStudentIdentifier());
     studyHoursRestModel.setStudyHours(hopsStudyHours.getStudyHours());
+    
+    ObjectMapper mapper = new ObjectMapper();
+    String strMessage = null;
+    try {
+      strMessage = mapper.writeValueAsString(studyHoursRestModel);
+      hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:studyhours", strMessage);
+    }
+    catch (Exception e) {
+      logger.warning("Unable to serialize websocket message");
+    }
 
-    webSocketMessenger.sendMessage("hops:studyhours", studyHoursRestModel, recipients);
     return Response.ok(hopsStudyHours).build();
   }
 
