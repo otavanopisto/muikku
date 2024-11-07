@@ -34,7 +34,7 @@ public class HopsWebsocketMessenger {
     }
   }
   
-  public void sendMessage(String studentIdentifier, String eventType, String data) {
+  public void sendMessage(String studentIdentifier, String eventType, Object data) {
     Set<Long> userIds = hopsUsers.get(studentIdentifier);
     if (userIds != null && !userIds.isEmpty()) {
       webSocketMessenger.sendMessage(eventType, data, userIds);
