@@ -789,13 +789,11 @@
             <artifactId>hibernate53-ddl-maven-plugin</artifactId>
             <version>2.5.0</version>
             <dependencies>
-              <dependency>
 <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
-                <dependency>
-                  <groupId>org.mariadb.jdbc</groupId>
-                  <artifactId>mariadb-java-client</artifactId>
-                  <version>${mariadb-java-client.version}</version>
-                </dependency>
+              <dependency>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>${mariadb-java-client.version}</version>
               </dependency>
             </dependencies>
             <configuration>
