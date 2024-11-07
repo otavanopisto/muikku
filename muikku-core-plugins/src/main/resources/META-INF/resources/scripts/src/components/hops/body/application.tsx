@@ -109,6 +109,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
     },
   ];
 
+  const editingDisabled =
+    (status.userId !== hops.hopsLocked?.userEntityId &&
+      hops.hopsLocked?.locked) ||
+    false;
+
   return (
     <HopsBasicInfoProvider
       useCase="STUDENT"
@@ -124,6 +129,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
             <Button
               className={`button ${hops.hopsMode === "READ" ? "button--primary" : "button--primary active"}`}
               onClick={handleModeChangeClick}
+              disabled={editingDisabled}
             >
               {hops.hopsMode === "READ"
                 ? t("actions.editingStart", { ns: "hops_new" })

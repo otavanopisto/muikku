@@ -4,6 +4,7 @@ import { StateType } from "~/reducers";
 import { Dispatch, Action } from "redux";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
+  HopsLocked,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
   MatriculationExamStudentStatus,
@@ -13,6 +14,7 @@ import {
 } from "~/generated/client";
 import {
   HopsEditingState,
+  HopsMode,
   MatriculationEligibilityWithAbistatus,
   MatriculationSubjectWithEligibility,
   ReducerStateType,
@@ -24,6 +26,7 @@ import { OPS2021SubjectCodesInOrder } from "~/mock/mock-data";
 import _ from "lodash";
 
 // Api instances
+const hopsApi = MApi.getHopsApi();
 const recordsApi = MApi.getRecordsApi();
 const matriculationApi = MApi.getMatriculationApi();
 
@@ -123,9 +126,11 @@ export type HOPS_UPDATE_CURRENTSTUDENT_STUDYPROGRAM = SpecificActionType<
 export type HOPS_RESET_DATA = SpecificActionType<"HOPS_RESET_DATA", undefined>;
 
 // Add new action type
-export type HOPS_CHANGE_MODE = SpecificActionType<
-  "HOPS_CHANGE_MODE",
-  "READ" | "EDIT"
+export type HOPS_CHANGE_MODE = SpecificActionType<"HOPS_CHANGE_MODE", HopsMode>;
+
+export type HOPS_UPDATE_LOCKED = SpecificActionType<
+  "HOPS_UPDATE_LOCKED",
+  HopsLocked
 >;
 
 // Add new action type
@@ -258,6 +263,18 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
       });
 
       try {
+        // For now we get locked status information from the Hops API here
+        // and later after other hops functions are implemented we will
+        // move this to hops thunk specifically
+        const hopsLocked = await hopsApi.getStudentHopsLock({
+          studentIdentifier,
+        });
+
+        dispatch({
+          type: "HOPS_UPDATE_LOCKED",
+          payload: hopsLocked,
+        });
+
         const matriculationPlan =
           await matriculationApi.getStudentMatriculationPlan({
             studentIdentifier,
@@ -825,7 +842,7 @@ const resetMatriculationData: ResetMatriculationDataTriggerType =
   };
 
 /**
- * Change HOPS mode between READ and EDIT
+ * Start editing. Locks the HOPS for editing for other users.
  */
 const startEditing: StartEditingTriggerType = function startEditing() {
   return async (
@@ -855,6 +872,18 @@ const startEditing: StartEditingTriggerType = function startEditing() {
       // TODO: Load career plan data
     }
 
+    const hopsLocked = await hopsApi.updateStudentHopsLock({
+      studentIdentifier: state.hopsNew.currentStudentIdentifier,
+      updateStudentHopsLockRequest: {
+        locked: true,
+      },
+    });
+
+    dispatch({
+      type: "HOPS_UPDATE_LOCKED",
+      payload: hopsLocked,
+    });
+
     // Change mode after ensuring data is loaded
     dispatch({
       type: "HOPS_CHANGE_MODE",
@@ -864,7 +893,7 @@ const startEditing: StartEditingTriggerType = function startEditing() {
 };
 
 /**
- * End editing
+ * End editing. Saves possible changes and unlocks the HOPS for editing for other users.
  */
 const endEditing: EndEditingTriggerType = function endEditing() {
   return async (
@@ -885,6 +914,18 @@ const endEditing: EndEditingTriggerType = function endEditing() {
         })
       );
     }
+
+    const hopsLocked = await hopsApi.updateStudentHopsLock({
+      studentIdentifier: state.hopsNew.currentStudentIdentifier,
+      updateStudentHopsLockRequest: {
+        locked: false,
+      },
+    });
+
+    dispatch({
+      type: "HOPS_UPDATE_LOCKED",
+      payload: hopsLocked,
+    });
 
     dispatch({
       type: "HOPS_CHANGE_MODE",

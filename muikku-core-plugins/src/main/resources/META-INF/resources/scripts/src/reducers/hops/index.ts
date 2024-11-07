@@ -1,6 +1,7 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import {
+  HopsLocked,
   MatriculationEligibilityStatus,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
@@ -117,6 +118,9 @@ export interface HopsState {
   // HOPS MODE
   hopsMode: HopsMode;
 
+  // HOPS LOCKED STATE
+  hopsLocked: HopsLocked | null;
+
   // HOPS EDITING STATE
   hopsEditing: HopsEditingState;
 }
@@ -141,6 +145,7 @@ const initialHopsState: HopsState = {
   hopsCareerPlanStatus: "READY",
   hopsCareerPlanState: {},
   hopsMode: "READ",
+  hopsLocked: null,
   hopsEditing: {
     readyToEdit: false,
     matriculationPlan: null,
@@ -375,6 +380,12 @@ export const hopsNew: Reducer<HopsState> = (
           ...state.hopsEditing,
           ...action.payload,
         },
+      };
+
+    case "HOPS_UPDATE_LOCKED":
+      return {
+        ...state,
+        hopsLocked: action.payload,
       };
 
     default:

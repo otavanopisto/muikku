@@ -27,6 +27,7 @@ import { HopsState } from "~/reducers/hops";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import { Student } from "~/generated/client";
 import Button from "~/components/general/button";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * Represents the available tabs in the HOPS application
@@ -40,6 +41,8 @@ type HopsTab = "MATRICULATION";
 interface HopsApplicationProps {
   /** The current state of the HOPS application */
   hops: HopsState;
+  /** The current state of the status application */
+  status: StatusType;
   /** Information about the current student */
   studentInfo: Student;
   /** Unique identifier for the student */
@@ -66,6 +69,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     startEditing,
     endEditing,
     hops,
+    status,
     studentInfo,
   } = props;
 
@@ -117,6 +121,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
     },
   ];
 
+  const editingDisabled =
+    (status.userId !== hops.hopsLocked?.userEntityId &&
+      hops.hopsLocked?.locked) ||
+    false;
+
   return (
     <HopsBasicInfoProvider
       useCase="GUIDANCE_COUNSELOR"
@@ -129,6 +138,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
         <Button
           className={`button ${hops.hopsMode === "READ" ? "button--primary" : "button--primary active"}`}
           onClick={handleModeChangeClick}
+          disabled={editingDisabled}
         >
           {hops.hopsMode === "READ"
             ? t("actions.editingStart", { ns: "hops_new" })
@@ -153,6 +163,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
 function mapStateToProps(state: StateType) {
   return {
     hops: state.hopsNew,
+    status: state.status,
     studentInfo: state.guider.currentStudent.basic,
   };
 }
