@@ -46,6 +46,7 @@ import {
   MaterialAssigmentType,
   MaterialViewRestriction,
 } from "~/generated/client";
+import { NumberFormatValues, NumericFormat } from "react-number-format";
 
 /**
  * MaterialEditorProps
@@ -284,6 +285,7 @@ class MaterialEditor extends React.Component<
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
+    this.updateMaxPoints = this.updateMaxPoints.bind(this);
     this.updateTitleLanguage = this.updateTitleLanguage.bind(this);
     this.close = this.close.bind(this);
     this.publish = this.publish.bind(this);
@@ -459,6 +461,22 @@ class MaterialEditor extends React.Component<
       isDraft: true,
     });
   }
+
+  /**
+   * updateMaxPoints
+   * @param values values
+   */
+  updateMaxPoints = (values: NumberFormatValues) => {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        // With two decimal places
+        maxPoints: values.floatValue,
+      },
+      isDraft: true,
+    });
+  };
 
   /**
    * updateContent
@@ -833,7 +851,7 @@ class MaterialEditor extends React.Component<
 
     const assignmentPageType = "material-editor-" + materialPageType;
 
-    const comparerPoints = [
+    const comparerPoints: (keyof MaterialContentNodeWithIdAndLogic)[] = [
       "assignmentType",
       "correctAnswers",
       "hidden",
@@ -845,18 +863,15 @@ class MaterialEditor extends React.Component<
       "type",
       "viewRestrict",
       "titleLanguage",
+      "maxPoints",
     ];
 
     let canPublish = false;
     for (const point of comparerPoints) {
       if (
         !equals(
-          this.props.editorState.currentNodeValue[
-            point as keyof MaterialContentNodeWithIdAndLogic
-          ],
-          this.props.editorState.currentDraftNodeValue[
-            point as keyof MaterialContentNodeWithIdAndLogic
-          ]
+          this.props.editorState.currentNodeValue[point],
+          this.props.editorState.currentDraftNodeValue[point]
         )
       ) {
         canPublish = true;
@@ -1118,7 +1133,7 @@ class MaterialEditor extends React.Component<
                             ns: "workspace",
                           })}
                         </option>
-                        {languageOptions.map((language) => (
+                        {languageOptions.map((language: string) => (
                           <option key={language} value={language}>
                             {this.props.i18n.t("labels.language", {
                               context: language,
@@ -1231,7 +1246,7 @@ class MaterialEditor extends React.Component<
                           ns: "workspace",
                         })}
                       </option>
-                      {languageOptions.map((language) => (
+                      {languageOptions.map((language: string) => (
                         <option key={language} value={language}>
                           {this.props.i18n.t("labels.language", {
                             context: language,
@@ -1240,6 +1255,28 @@ class MaterialEditor extends React.Component<
                         </option>
                       ))}
                     </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="material-editor__sub-section">
+              <h3 className="material-editor__sub-title">
+                {this.props.i18n.t("labels.pointsMax", { ns: "workspace" })}
+              </h3>
+              <div className="material-editor__select-locale-container">
+                <div className="form__row">
+                  <div className="form-element">
+                    <NumericFormat
+                      className="form-element__input form-element__input--material-editor-assignment-points"
+                      value={
+                        this.props.editorState.currentDraftNodeValue.maxPoints
+                      }
+                      decimalScale={2}
+                      decimalSeparator=","
+                      allowNegative={false}
+                      onValueChange={this.updateMaxPoints}
+                    />
                   </div>
                 </div>
               </div>

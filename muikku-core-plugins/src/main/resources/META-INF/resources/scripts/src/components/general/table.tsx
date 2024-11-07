@@ -40,6 +40,37 @@ export const Table: React.FC<TableProps> = (props) => {
 };
 
 /**
+ * ScrollableTableWrapperProps
+ */
+interface ScrollableTableWrapperProps {
+  children: React.ReactNode;
+  modifiers?: string[];
+}
+
+/**
+ * ScrollableTableWrapper
+ * @param props props
+ * @returns JSX.Element
+ */
+export const ScrollableTableWrapper: React.FC<ScrollableTableWrapperProps> = (
+  props
+) => {
+  const { children, modifiers } = props;
+
+  return (
+    <div
+      className={`table__scrollable-wrapper ${
+        modifiers
+          ? modifiers.map((m) => `table__scrollable-wrapper--${m}`).join(" ")
+          : ""
+      }`}
+    >
+      {children}
+    </div>
+  );
+};
+
+/**
  * TableHeaderProps
  */
 interface TableHeaderProps
