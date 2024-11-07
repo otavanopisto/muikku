@@ -7,7 +7,15 @@ public class RestAssessment {
   public RestAssessment() {
   }
 
-  public RestAssessment(String identifier, String assessorIdentifier, String gradingScaleIdentifier, String gradeIdentifier, String verbalAssessment, Date assessmentDate, Boolean passing) {
+  public RestAssessment(
+      String identifier,
+      String assessorIdentifier,
+      String gradingScaleIdentifier,
+      String gradeIdentifier,
+      String verbalAssessment,
+      Date assessmentDate,
+      Boolean passing,
+      Double points) {
     this.identifier = identifier;
     this.assessorIdentifier = assessorIdentifier;
     this.gradingScaleIdentifier = gradingScaleIdentifier;
@@ -15,6 +23,7 @@ public class RestAssessment {
     this.verbalAssessment = verbalAssessment;
     this.assessmentDate = assessmentDate;
     this.passing = passing;
+    this.points = points;
   }
 
   public String getIdentifier() {
@@ -73,6 +82,14 @@ public class RestAssessment {
     this.passing = passing;
   }
 
+  public Double getPoints() {
+    return points;
+  }
+
+  public void setPoints(Double points) {
+    this.points = points;
+  }
+
   private String identifier;
   private String assessorIdentifier;
   private String gradingScaleIdentifier;
@@ -80,5 +97,6 @@ public class RestAssessment {
   private String verbalAssessment;
   private Date assessmentDate;
   private Boolean passing;
+  private Double points;
 
 }

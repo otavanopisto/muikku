@@ -10957,6 +10957,9 @@ components:
               assessmentDate:
                 description: Unix timestamp
                 type: integer
+              points:
+                type: number
+                format: dobule
               audioAssessments:
                 type: array
                 items:
@@ -10994,6 +10997,9 @@ components:
               assessmentDate:
                 description: Unix timestamp
                 type: integer
+              points:
+                type: number
+                format: dobule
               audioAssessments:
                 type: array
                 items:
@@ -13742,8 +13748,10 @@ components:
 
     EvaluationType:
       type: string
+      description: Evaluation type enum
       enum:
-        - ASSESSMENT
+        - GRADED
+        - POINTS
         - SUPPLEMENTATIONREQUEST
 
     FeedEntry:
@@ -14603,6 +14611,14 @@ components:
           description: State of the material assignment
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
 
+    MaterialEvaluationGradeType:
+      description: Material evaluation grade type enum
+      type: string
+      enum:
+        - PASSED
+        - INCOMPLETE
+        - FAILED
+
     MaterialEvaluationInfo:
       type: object
       description: Evaluation info of the material assignments
@@ -14620,11 +14636,11 @@ components:
           type: integer
           format: int64
         type:
-          description: Type of the evaluation
-          $ref: "#/components/schemas/MaterialCompositeReplyStateType"
+          description: Type of grade given
+          $ref: "#/components/schemas/MaterialEvaluationGradeType"
         evaluationType:
           description: Type of the evaluation
-          type: string
+          $ref: "#/components/schemas/EvaluationType"
         text:
           description: Verbal assessment of the student's material assignment
           type: string
@@ -14637,6 +14653,11 @@ components:
           description: Date when the evaluation was done
           type: string
           format: date-time
+        points:
+          description: Points given for the assignment
+          type: number
+          format: double
+          nullable: true
         audioAssessments:
           description: Audio assessments of the material
           type: array
@@ -15011,6 +15032,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MaterialProducer"
+        maxPoints:
+          type: number
+          format: double
 
     Message:
       type: object
@@ -17733,6 +17757,9 @@ components:
         titleLanguage:
           description: The language of the material
           $ref: "#/components/schemas/Language"
+        maxPoints:
+          type: number
+          format: double
 
     WorkspaceFolder:
       type: object
