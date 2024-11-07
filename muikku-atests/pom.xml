@@ -230,7 +230,7 @@
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
         <it.database.name>testdb</it.database.name>
-        <it.jdbc.driver>com.mysql.cj.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.driver>com.mysql.jdbc.Driver</it.jdbc.driver>
         <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
@@ -632,7 +632,7 @@
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
         <it.database.name>testdb</it.database.name>
-        <it.jdbc.driver>com.mysql.cj.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.driver>com.mysql.jdbc.Driver</it.jdbc.driver>
         <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
@@ -1106,7 +1106,7 @@
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
         <it.database.name>testdb</it.database.name>
-        <it.jdbc.driver>com.mysql.cj.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.driver>com.mysql.jdbc.Driver</it.jdbc.driver>
         <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
