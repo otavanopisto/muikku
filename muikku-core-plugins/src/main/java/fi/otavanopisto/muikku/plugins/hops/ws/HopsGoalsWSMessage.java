@@ -1,14 +1,8 @@
 package fi.otavanopisto.muikku.plugins.hops.ws;
 
-public class HopsGoalsWSMessage {
+import fi.otavanopisto.muikku.plugins.hops.rest.HopsGoalsRestModel;
 
-  public String getGoals() {
-    return goals;
-  }
-
-  public void setGoals(String goals) {
-    this.goals = goals;
-  }
+public class HopsGoalsWSMessage extends HopsGoalsRestModel {
 
   public String getStudentIdentifier() {
     return studentIdentifier;
@@ -18,7 +12,6 @@ public class HopsGoalsWSMessage {
     this.studentIdentifier = studentIdentifier;
   }
 
-  private String goals;
   private String studentIdentifier;
 
 }

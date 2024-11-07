@@ -325,14 +325,24 @@ public class HopsRestService {
       }
     }
 
-    HopsGoals hops = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifierStr);
-    return hops == null ? Response.noContent().build() : Response.ok(hops.getGoals()).build();
+    HopsGoals goals = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifierStr);
+    if (goals == null || StringUtils.isEmpty(goals.getGoals())) {
+      return Response.noContent().build();
+    }
+    else {
+      try {
+        return Response.ok(new ObjectMapper().readValue(goals.getGoals(), HopsGoalsRestModel.class)).build();
+      }
+      catch (Exception e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Cannot deserialize goals").build();
+      }
+    }
   }
 
   @POST
   @Path("/student/{STUDENTIDENTIFIER}/hopsGoals")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createOrUpdateHopsGoals(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, String goals) {
+  public Response createOrUpdateHopsGoals(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, HopsGoalsRestModel payload) {
 
     // Access check
     if(!hopsController.isHopsAvailable(studentIdentifier)) {
@@ -345,33 +355,35 @@ public class HopsRestService {
       }
     }
 
-    // Validate JSON
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      objectMapper.readTree(goals);
-    }
-    catch (IOException e) {
-      logger.log(Level.WARNING, String.format("Failed to deserialize %s", goals));
-    }
-
     // Create or update
 
-    HopsGoals hopsGoals = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifier);
-    if (hopsGoals == null) {
-      hopsGoals = hopsController.createHopsGoals(studentIdentifier, goals);
+    try {
+      HopsGoals hopsGoals = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifier);
+      if (hopsGoals == null) {
+        hopsGoals = hopsController.createHopsGoals(studentIdentifier, new ObjectMapper().writeValueAsString(payload));
+      }
+      else {
+        hopsGoals = hopsController.updateHopsGoals(hopsGoals, studentIdentifier, new ObjectMapper().writeValueAsString(payload));
+      }
     }
-    else {
-      hopsGoals = hopsController.updateHopsGoals(hopsGoals, studentIdentifier, goals);
+    catch (Exception e) {
+      logger.log(Level.SEVERE, "Error serializing HOPS goals", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error serializing HOPS goals").build();
     }
 
     HopsGoalsWSMessage msg = new HopsGoalsWSMessage();
-    msg.setGoals(goals);
+    msg.setFollowUpGoal(payload.getFollowUpGoal());
+    msg.setFollowUpPlanExtraInfo(payload.getFollowUpPlanExtraInfo());
+    msg.setFollowUpStudies(payload.getFollowUpStudies());
+    msg.setFollowUpStudiesElse(payload.getFollowUpStudiesElse());
+    msg.setGraduationGoal(payload.getGraduationGoal());
+    msg.setStudySector(payload.getStudySector());
+    msg.setStudySectorElse(payload.getStudySectorElse());
     msg.setStudentIdentifier(studentIdentifier);
     
     hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:hops-goals", msg);
     
-    return Response.ok(goals).build();
+    return Response.ok(payload).build();
   }
 
   @GET
