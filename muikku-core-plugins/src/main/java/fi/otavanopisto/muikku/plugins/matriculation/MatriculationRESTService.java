@@ -33,6 +33,8 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
+import fi.otavanopisto.muikku.plugins.hops.ws.HopsMatriculationPlanWSMessage;
 import fi.otavanopisto.muikku.plugins.matriculation.dao.SavedMatriculationEnrollmentDAO;
 import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
@@ -108,6 +110,9 @@ public class MatriculationRESTService {
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  private HopsWebsocketMessenger hopsWebSocketMessenger;
 
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -481,6 +486,12 @@ public class MatriculationRESTService {
       logger.log(Level.SEVERE, "Error serializing matriculation plan", e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error serializing matriculation plan").build();
     }
+    
+    HopsMatriculationPlanWSMessage msg = new HopsMatriculationPlanWSMessage();
+    msg.setGoalMatriculationExam(model.getGoalMatriculationExam());
+    msg.setPlannedSubjects(model.getPlannedSubjects());
+    msg.setStudentIdentifier(studentIdentifierParam);
+    hopsWebSocketMessenger.sendMessage(studentIdentifierParam, "hops:matriculationplan-updated", msg);
 
     return Response.ok().entity(model).build();
   }
