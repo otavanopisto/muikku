@@ -7,8 +7,16 @@ public class RestWorkspaceAssessment extends RestAssessment {
   public RestWorkspaceAssessment() {
   }
 
-  public RestWorkspaceAssessment(String identifier, String workspaceSubjectIdentifier, String assessorIdentifier, String gradingScaleIdentifier, String gradeIdentifier, String verbalAssessment, Date assessmentDate, Boolean passing) {
-    super(identifier, assessorIdentifier, gradingScaleIdentifier, gradeIdentifier, verbalAssessment, assessmentDate, passing);
+  public RestWorkspaceAssessment(
+      String identifier,
+      String workspaceSubjectIdentifier,
+      String assessorIdentifier,
+      String gradingScaleIdentifier,
+      String gradeIdentifier,
+      String verbalAssessment,
+      Date assessmentDate,
+      Boolean passing) {
+    super(identifier, assessorIdentifier, gradingScaleIdentifier, gradeIdentifier, verbalAssessment, assessmentDate, passing, null);
     this.workspaceSubjectIdentifier = workspaceSubjectIdentifier;
   }
 

@@ -27,6 +27,7 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import MApi from "~/api/api";
 import { BilledPrice } from "~/generated/client";
+import AssignmentDetails from "~/components/general/assignment-info-details";
 
 /**
  * WorkspaceEditorProps
@@ -36,6 +37,12 @@ interface WorkspaceEditorProps extends WithTranslation {
   evaluations: EvaluationState;
   locale: LocaleState;
   selectedAssessment: EvaluationAssessmentRequest;
+  assignmentInfoArray: {
+    title: string;
+    grade?: string | null;
+    points?: number;
+    maxPoints?: number;
+  }[];
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
@@ -838,8 +845,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const { t } = this.props;
-
+    const { t, assignmentInfoArray } = this.props;
     const { existingBilledPriceObject, activeGradeSystems } = this.state;
 
     const options = this.renderSelectOptions();
@@ -883,6 +889,10 @@ class WorkspaceEditor extends SessionStateComponent<
 
     return (
       <div className="form" role="form">
+        <div className="form__row">
+          <AssignmentDetails assignmentInfoList={assignmentInfoArray} />
+        </div>
+
         <div className="form__row">
           <div className="form-element">
             {this.props.editorLabel && <label>{this.props.editorLabel}</label>}

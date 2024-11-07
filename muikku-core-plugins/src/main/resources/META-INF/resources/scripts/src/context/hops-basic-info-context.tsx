@@ -8,7 +8,7 @@ export type UseCase = "STUDENT" | "GUARDIAN" | "GUIDANCE_COUNSELOR";
  */
 interface StudentBasicInfo {
   /** Unique identifier for the student */
-  id: string;
+  identifier: string;
   /** Student's study start date */
   studyStartDate: Date;
 }

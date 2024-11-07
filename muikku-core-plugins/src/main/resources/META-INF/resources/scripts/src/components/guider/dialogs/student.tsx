@@ -36,6 +36,8 @@ import UpperSecondaryPedagogicalSupportWizardForm, {
 } from "~/components/general/pedagogical-support-form";
 import { PedagogyFormAccess } from "~/generated/client";
 import HopsApplication from "./student/hops/hops";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 
 export type tabs =
   | "STUDIES"
@@ -154,10 +156,13 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
 
   /**
    * Handles dialog close
-   * Resets active tab to Studies and calls onClose callback
+   * Resets active tab to Studies and view mode to TABS and calls onClose callback
    */
   const closeDialog = () => {
-    setActiveTab("STUDIES");
+    unstable_batchedUpdates(() => {
+      setActiveTab("STUDIES");
+      setViewMode("TABS");
+    });
     onClose && onClose();
   };
 
@@ -285,17 +290,21 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
    * Content
    * @returns JSX.Element
    */
-  const content = () =>
-    viewMode === "TABS" ? (
-      <Tabs
-        modifier="guider-student"
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={onTabChange}
-      />
-    ) : (
-      <HopsApplication studentIdentifier={student.basic.id} />
-    );
+  const content = () => {
+    if (viewMode === "TABS") {
+      return (
+        <Tabs
+          modifier="guider-student"
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={onTabChange}
+        />
+      );
+    } else if (guider.currentStudent && guider.currentStudent.basic) {
+      return <HopsApplication studentIdentifier={student.basic.id} />;
+    }
+    return null;
+  };
 
   const studyProgrammeName = student.basic && student.basic.studyProgrammeName;
   const dialogTitle = (

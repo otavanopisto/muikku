@@ -626,6 +626,8 @@
     "actions": {
       "addNewRow": "Lisää uusi rivi",
       "confirmRegistration": "Vahvista ilmoittautuminen",
+      "editingStart": "Aloita muokkaus",
+      "editingEnd": "Päätä muokkaus",
       "showSummary": "Näytä yhteenveto",
       "showOldSummary": "Näytä vanha yhteenveto",
       "showChangeLog": "Näytä ilmoittautumisen muutoshistoria",
@@ -1735,6 +1737,8 @@
       "activateSignupMessage": "Aktivoi ilmoittautumisviesti",
       "addingDetails": "Lisätään tietoja kurssille",
       "additionalInfo": "Lisätiedot",
+      "assignmentTitle": "Tehtävän nimi",
+      "assignmentDetailsTitle": "Arvioitavien tehtävien pisteet ja arvosanat",
       "away": "Poissa",
       "basicInfo": "Perustiedot",
       "beginAndEndDate": "Alku- ja loppupäivämäärä",
@@ -1780,6 +1784,7 @@
       "failed": "Keskeytynyt",
       "goto": "Siirry kurssille",
       "grade": "Arvosana",
+      "gradesAverage": "Keskiarvo",
       "hasEvaluationFee": "Kurssi on maksullinen",
       "home": "Kurssin etusivu",
       "incomplete": "Täydennettävä",
@@ -1821,6 +1826,9 @@
       "permission": "Oikeus",
       "permission_WORKSPACE_SIGNUP": "Ilmoittautuminen",
       "pickTemplate": "Valitse kurssipohja - {{stepInfo}}",
+      "points": "Pisteet",
+      "pointsMax": "Maksimipisteet",
+      "pointsSummary": "Yhteensä",
       "producer": "Kurssin tuottaja",
       "producers": "Kurssin tuottajat",
       "progress": "Edistyminen",
@@ -2194,6 +2202,7 @@
     "wcag": {
       "evaluationAssessmentFailed": "Hylätty arviointi",
       "evaluationAssessmentPassed": "Hyväksytty arviointi",
+      "evaluationAssessmentPoints": "Arviointi pisteillä",
       "evaluationAssessmentIncomplete": "Täydennettävä arviointi",
       "evaluationAssessmentUnassessed": "Arvioimaton",
       "evalRequestLockSwitch": "Arviointipyynnön lukitseminen"

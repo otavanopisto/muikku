@@ -15,12 +15,9 @@ import MatriculationSubjectsList, {
   SelectedMatriculationSubject,
 } from "./components/matriculation-subjects-list";
 import {
-  SaveMatriculationPlanTriggerType,
-  saveMatriculationPlan,
-} from "../../../../../actions/main-function/hops/index";
-// eslint-disable-next-line camelcase
-import { unstable_batchedUpdates } from "react-dom";
-import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
+  UpdateHopsEditingTriggerType,
+  updateHopsEditing,
+} from "~/actions/main-function/hops/";
 
 /**
  * MatriculationPlanProps
@@ -28,7 +25,7 @@ import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 interface MatriculationPlanProps {
   hops: HopsState;
   plan: MatriculationPlan;
-  saveMatriculationPlan: SaveMatriculationPlanTriggerType;
+  updateHopsEditing: UpdateHopsEditingTriggerType;
 }
 
 /**
@@ -36,19 +33,9 @@ interface MatriculationPlanProps {
  * @param props props
  */
 const MatriculationPlan = (props: MatriculationPlanProps) => {
-  const { plan, hops, saveMatriculationPlan } = props;
+  const { plan, hops, updateHopsEditing } = props;
 
   const { t } = useTranslation(["hops_new", "guider", "common"]);
-
-  const { useCase } = useHopsBasicInfo();
-
-  const [matriculationPlan, setMatriculationPlan] =
-    React.useState<MatriculationPlan>({
-      goalMatriculationExam: false,
-      plannedSubjects: [],
-    });
-
-  const draftTimer = React.useRef<NodeJS.Timeout | undefined>(undefined);
 
   // Memoized selected subjects
   const selectedSubjects = React.useMemo(() => {
@@ -62,54 +49,6 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
     );
   }, [plan]);
 
-  // Set initial values and update when plan changes
-  React.useEffect(() => {
-    if (!plan) {
-      return;
-    }
-
-    unstable_batchedUpdates(() => {
-      setMatriculationPlan(plan);
-    });
-  }, [plan]);
-
-  /**
-   * Saves plan after delay (1s)
-   *
-   * @param matriculationPlan examination
-   * @param selectedSubjects selected subjects
-   */
-  const savePlanAfterDelay = React.useCallback(
-    (
-      matriculationPlan: MatriculationPlan,
-      selectedSubjects: SelectedMatriculationSubject[]
-    ) => {
-      if (draftTimer.current) {
-        clearTimeout(draftTimer.current);
-        draftTimer.current = undefined;
-      }
-
-      draftTimer.current = setTimeout(() => {
-        // Filter entries that contains empty values and
-        // convert rest selected subjects to MatriculationPlanSubject
-        const convertedList = selectedSubjects.map<MatriculationPlanSubject>(
-          (subject) => ({
-            subject: subject.subjectCode,
-            term: subject.term.substring(0, 6) as MatriculationExamTerm,
-            year: parseInt(subject.term.substring(6)),
-          })
-        );
-        saveMatriculationPlan({
-          plan: {
-            ...matriculationPlan,
-            plannedSubjects: convertedList,
-          },
-        });
-      }, 1000);
-    },
-    [saveMatriculationPlan]
-  );
-
   /**
    * Handles checkbox change
    *
@@ -117,12 +56,15 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
    */
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updateMatriculationPlan = {
-      ...matriculationPlan,
+      ...plan,
       goalMatriculationExam: event.target.checked,
     };
 
-    savePlanAfterDelay(updateMatriculationPlan, selectedSubjects);
-    setMatriculationPlan(updateMatriculationPlan);
+    updateHopsEditing({
+      updates: {
+        matriculationPlan: updateMatriculationPlan,
+      },
+    });
   };
 
   /**
@@ -132,12 +74,27 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
    */
   const handleMatriculationSubjectsChange = React.useCallback(
     (selectSubjects: SelectedMatriculationSubject[]) => {
-      savePlanAfterDelay(matriculationPlan, selectSubjects);
+      const convertedList = selectSubjects.map<MatriculationPlanSubject>(
+        (subject) => ({
+          subject: subject.subjectCode,
+          term: subject.term.substring(0, 6) as MatriculationExamTerm,
+          year: parseInt(subject.term.substring(6)),
+        })
+      );
+
+      updateHopsEditing({
+        updates: {
+          matriculationPlan: {
+            ...plan,
+            plannedSubjects: convertedList,
+          },
+        },
+      });
     },
-    [matriculationPlan, savePlanAfterDelay]
+    [plan, updateHopsEditing]
   );
 
-  if (hops.hopsMatriculationStatus !== "READY" || matriculationPlan === null) {
+  if (hops.hopsMatriculationStatus !== "READY" || plan === null) {
     return <div className="loader-empty" />;
   }
 
@@ -159,9 +116,9 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
                     <input
                       id={"goalMatriculationExam"}
                       type="checkbox"
-                      checked={matriculationPlan.goalMatriculationExam}
+                      checked={plan.goalMatriculationExam}
                       onChange={handleCheckboxChange}
-                      disabled={useCase === "GUARDIAN"}
+                      disabled={hops.hopsMode === "READ"}
                     />
                     <label htmlFor="goalMatriculationExam">
                       {t("content.matriculationPlanTarget", { ns: "hops_new" })}
@@ -179,7 +136,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
                   })}
                 </div>
                 <MatriculationSubjectsList
-                  disabled={useCase === "GUARDIAN"}
+                  disabled={hops.hopsMode === "READ"}
                   subjects={hops.hopsMatriculation.subjects}
                   selectedSubjects={selectedSubjects}
                   onSubjectsChange={handleMatriculationSubjectsChange}
@@ -260,7 +217,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ saveMatriculationPlan }, dispatch);
+  return bindActionCreators({ updateHopsEditing }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MatriculationPlan);
