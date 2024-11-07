@@ -40,6 +40,14 @@ public class WorkspaceMaterial extends WorkspaceNode {
   public void setCorrectAnswers(WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
     this.correctAnswers = correctAnswers;
   }
+  
+  public Double getMaxPoints() {
+    return maxPoints;
+  }
+
+  public void setMaxPoints(Double maxPoints) {
+    this.maxPoints = maxPoints;
+  }
 
   @NotNull
   @Column(nullable = false)
@@ -50,5 +58,8 @@ public class WorkspaceMaterial extends WorkspaceNode {
   
   @Enumerated (EnumType.STRING)
   private WorkspaceMaterialCorrectAnswersDisplay correctAnswers;
+
+  @Column
+  private Double maxPoints;
   
 }
