@@ -18,7 +18,7 @@
     <!-- Selenium -->
     <selenium-java.version>4.1.3</selenium-java.version>
     <wiremock.version>2.6.0</wiremock.version>
-    <mysql-connector-java.version>9.1.0</mysql-connector-java.version>
+    <mariadb-java-client.version>3.5.0</mariadb-java-client.version>
     <wildfly-download-url>https://github.com/wildfly/wildfly/releases/download/26.1.2.Final/wildfly-26.1.2.Final.zip</wildfly-download-url>
   </properties>
 
@@ -230,8 +230,8 @@
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
         <it.database.name>testdb</it.database.name>
-        <it.jdbc.driver>com.mysql.cj.jdbc.Driver</it.jdbc.driver>
-        <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
+        <it.jdbc.driver>org.mariadb.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.url>jdbc:mariadb://127.0.0.1:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
         <it.jdbc.password>sa</it.jdbc.password>
@@ -252,11 +252,11 @@
       </properties>
 
       <dependencies>
-<!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
+<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
         <dependency>
-          <groupId>com.mysql</groupId>
-          <artifactId>mysql-connector-j</artifactId>
-          <version>${mysql-connector-java.version}</version>
+          <groupId>org.mariadb.jdbc</groupId>
+          <artifactId>mariadb-java-client</artifactId>
+          <version>${mariadb-java-client.version}</version>
         </dependency>
       </dependencies>
 
@@ -390,11 +390,11 @@
             <artifactId>hibernate53-ddl-maven-plugin</artifactId>
             <version>2.5.0</version>
             <dependencies>
-<!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
+<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
               <dependency>
-                <groupId>com.mysql</groupId>
-                <artifactId>mysql-connector-j</artifactId>
-                <version>${mysql-connector-java.version}</version>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>${mariadb-java-client.version}</version>
               </dependency>
             </dependencies>
             <configuration>
@@ -461,11 +461,11 @@
 
             <dependencies>
               <!-- specify the dependent jdbc driver here -->
-<!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
+<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
               <dependency>
-                <groupId>com.mysql</groupId>
-                <artifactId>mysql-connector-j</artifactId>
-                <version>${mysql-connector-java.version}</version>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>${mariadb-java-client.version}</version>
               </dependency>
             </dependencies>
             <!-- common configuration shared by all executions -->
@@ -509,9 +509,10 @@
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
                 <dependencies>
+<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
                   <dependency>
-                    <groupId>com.mysql</groupId>
-                    <artifactId>mysql-connector-j</artifactId>
+                    <groupId>org.mariadb.jdbc</groupId>
+                    <artifactId>mariadb-java-client</artifactId>
                   </dependency>
                 </dependencies>
               </container>
@@ -634,8 +635,8 @@
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
         <it.database.name>testdb</it.database.name>
-        <it.jdbc.driver>com.mysql.cj.jdbc.Driver</it.jdbc.driver>
-        <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
+        <it.jdbc.driver>org.mariadb.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.url>jdbc:mariadb://127.0.0.1:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
         <it.jdbc.password>sa</it.jdbc.password>
@@ -653,11 +654,11 @@
       </properties>
 
       <dependencies>
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
         <dependency>
-          <groupId>com.mysql</groupId>
-          <artifactId>mysql-connector-j</artifactId>
-          <version>${mysql-connector-java.version}</version>
+          <groupId>org.mariadb.jdbc</groupId>
+          <artifactId>mariadb-java-client</artifactId>
+          <version>${mariadb-java-client.version}</version>
         </dependency>
       </dependencies>
       
@@ -789,9 +790,12 @@
             <version>2.5.0</version>
             <dependencies>
               <dependency>
-                <groupId>com.mysql</groupId>
-                <artifactId>mysql-connector-j</artifactId>
-                <version>${mysql-connector-java.version}</version>
+<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
+                <dependency>
+                  <groupId>org.mariadb.jdbc</groupId>
+                  <artifactId>mariadb-java-client</artifactId>
+                  <version>${mariadb-java-client.version}</version>
+                </dependency>
               </dependency>
             </dependencies>
             <configuration>
@@ -859,10 +863,11 @@
 
             <dependencies>
               <!-- specify the dependent jdbc driver here -->
+<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
               <dependency>
-                <groupId>com.mysql</groupId>
-                <artifactId>mysql-connector-j</artifactId>
-                <version>${mysql-connector-java.version}</version>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>${mariadb-java-client.version}</version>
               </dependency>
             </dependencies>
             <!-- common configuration shared by all executions -->
@@ -906,9 +911,10 @@
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
                 <dependencies>
+<!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
                   <dependency>
-                    <groupId>com.mysql</groupId>
-                    <artifactId>mysql-connector-j</artifactId>
+                    <groupId>org.mariadb.jdbc</groupId>
+                    <artifactId>mariadb-java-client</artifactId>
                   </dependency>
                 </dependencies>
               </container>
