@@ -244,7 +244,7 @@ class GuardianHopsApplication extends React.Component<
     panelTabs = panelTabs.filter(this.isVisible);
 
     return (
-      <WebsocketWatcher>
+      <WebsocketWatcher studentIdentifier={selectedDependant?.identifier}>
         <HopsBasicInfoProvider
           useCase="GUARDIAN"
           studentInfo={{
