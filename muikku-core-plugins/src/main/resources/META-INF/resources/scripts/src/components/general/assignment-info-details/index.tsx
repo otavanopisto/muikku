@@ -71,8 +71,8 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
               </TableHead>
               <Tbody>
                 {assignmentInfoList.map((assignment, index) => {
-                  let pointsToShow = "-";
-                  let gradeToShow = "-";
+                  let pointsToShow = "—";
+                  let gradeToShow = "—";
 
                   if (assignment.points !== null) {
                     pointsToShow = localize.number(assignment.points);
@@ -116,11 +116,11 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
                     ? localize.number(pointsSum, {
                         maximumFractionDigits: 2,
                       })
-                    : "-"}
+                    : "—"}
                 </Td>
                 <Td modifiers={["centered"]}>
                   {isNaN(gradesAverage)
-                    ? "-"
+                    ? "—"
                     : localize.number(gradesAverage, {
                         maximumFractionDigits: 2,
                       })}
