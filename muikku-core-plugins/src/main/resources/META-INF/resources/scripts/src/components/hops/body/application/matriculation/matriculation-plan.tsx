@@ -25,6 +25,7 @@ import {
 interface MatriculationPlanProps {
   hops: HopsState;
   plan: MatriculationPlan;
+  editingPlan: MatriculationPlan;
   updateHopsEditing: UpdateHopsEditingTriggerType;
 }
 
@@ -33,21 +34,30 @@ interface MatriculationPlanProps {
  * @param props props
  */
 const MatriculationPlan = (props: MatriculationPlanProps) => {
-  const { plan, hops, updateHopsEditing } = props;
+  const { plan, editingPlan, hops, updateHopsEditing } = props;
 
   const { t } = useTranslation(["hops_new", "guider", "common"]);
 
   // Memoized selected subjects
   const selectedSubjects = React.useMemo(() => {
-    if (!plan) return [];
+    if (!plan || !editingPlan) return [];
 
-    return plan.plannedSubjects.map<SelectedMatriculationSubject>(
-      (subject) => ({
-        subjectCode: subject.subject,
-        term: subject.term ? `${subject.term}${subject.year}` : "",
-      })
-    );
-  }, [plan]);
+    if (hops.hopsMode === "READ") {
+      return plan.plannedSubjects.map<SelectedMatriculationSubject>(
+        (subject) => ({
+          subjectCode: subject.subject,
+          term: subject.term ? `${subject.term}${subject.year}` : "",
+        })
+      );
+    } else {
+      return editingPlan.plannedSubjects.map<SelectedMatriculationSubject>(
+        (subject) => ({
+          subjectCode: subject.subject,
+          term: subject.term ? `${subject.term}${subject.year}` : "",
+        })
+      );
+    }
+  }, [plan, editingPlan, hops.hopsMode]);
 
   /**
    * Handles checkbox change
@@ -56,7 +66,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
    */
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updateMatriculationPlan = {
-      ...plan,
+      ...editingPlan,
       goalMatriculationExam: event.target.checked,
     };
 
@@ -85,16 +95,20 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
       updateHopsEditing({
         updates: {
           matriculationPlan: {
-            ...plan,
+            ...editingPlan,
             plannedSubjects: convertedList,
           },
         },
       });
     },
-    [plan, updateHopsEditing]
+    [editingPlan, updateHopsEditing]
   );
 
-  if (hops.hopsMatriculationStatus !== "READY" || plan === null) {
+  if (
+    hops.hopsMatriculationStatus !== "READY" ||
+    plan === null ||
+    editingPlan === null
+  ) {
     return <div className="loader-empty" />;
   }
 
@@ -116,7 +130,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
                     <input
                       id={"goalMatriculationExam"}
                       type="checkbox"
-                      checked={plan.goalMatriculationExam}
+                      checked={editingPlan.goalMatriculationExam}
                       onChange={handleCheckboxChange}
                       disabled={hops.hopsMode === "READ"}
                     />
@@ -209,6 +223,7 @@ function mapStateToProps(state: StateType) {
   return {
     hops: state.hopsNew,
     plan: state.hopsNew.hopsMatriculation.plan,
+    editingPlan: state.hopsNew.hopsEditing.matriculationPlan,
   };
 }
 

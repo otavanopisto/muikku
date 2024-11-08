@@ -26,6 +26,7 @@ import {
 } from "~/actions/main-function/hops/";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
+import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
 
 const UPPERSECONDARY_PROGRAMMES = [
   "Nettilukio",
@@ -243,21 +244,23 @@ class GuardianHopsApplication extends React.Component<
     panelTabs = panelTabs.filter(this.isVisible);
 
     return (
-      <HopsBasicInfoProvider
-        useCase="GUARDIAN"
-        studentInfo={{
-          identifier: selectedDependant?.identifier || "",
-          studyStartDate: selectedDependant?.studyStartDate || new Date(),
-        }}
-      >
-        <ApplicationPanel
-          title="HOPS"
-          onTabChange={this.handleTabChange}
-          activeTab={this.state.activeTab}
-          panelTabs={panelTabs}
-          panelOptions={dependantSelect}
-        />
-      </HopsBasicInfoProvider>
+      <WebsocketWatcher>
+        <HopsBasicInfoProvider
+          useCase="GUARDIAN"
+          studentInfo={{
+            identifier: selectedDependant?.identifier || "",
+            studyStartDate: selectedDependant?.studyStartDate || new Date(),
+          }}
+        >
+          <ApplicationPanel
+            title="HOPS"
+            onTabChange={this.handleTabChange}
+            activeTab={this.state.activeTab}
+            panelTabs={panelTabs}
+            panelOptions={dependantSelect}
+          />
+        </HopsBasicInfoProvider>
+      </WebsocketWatcher>
     );
   }
 }

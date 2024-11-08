@@ -626,6 +626,7 @@
     "actions": {
       "addNewRow": "Add new row",
       "confirmRegistration": "Confirm registration",
+      "continue": "Continue",
       "editingStart": "Start editing",
       "editingEnd": "End editing",
       "showSummary": "Show summary",
@@ -640,6 +641,7 @@
       "grade": "Grade:",
       "grades": "Grades",
       "retake": "Retake",
+      "hopsPendingChangesTitle": "Unsaved changes",
       "hopsMatriculation": "Matriculation examination",
       "matriculationFormStudentInfoTitle": "Student Information",
       "matriculationFormRegistrationTitle": "Registration",
@@ -693,6 +695,7 @@
       "matriculationSubjects": "Subjects:"
     },
     "content": {
+      "hopsPendingChangesWarning": "You have unsaved changes. Do you want to discard the changes?",
       "matriculationChangeLogEmpty": "No history available for this examination at the moment.",
       "matriculationChangeLogUpdate": "updated the registration.",
       "matriculationChangeLogStateChanged": "changed the status of the registration.",

@@ -22,12 +22,17 @@ import {
   startEditing,
   endEditing,
   EndEditingTriggerType,
+  CancelEditingTriggerType,
+  cancelEditing,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import { Student } from "~/generated/client";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
+import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
+import _ from "lodash";
+import PendingChangesWarningDialog from "~/components/hops/dialogs/pending-changes-warning";
 
 /**
  * Represents the available tabs in the HOPS application
@@ -53,6 +58,8 @@ interface HopsApplicationProps {
   startEditing: StartEditingTriggerType;
   /** Function to disable editing mode */
   endEditing: EndEditingTriggerType;
+  /** Function to cancel editing */
+  cancelEditing: CancelEditingTriggerType;
 }
 
 /**
@@ -68,12 +75,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
     loadMatriculationData,
     startEditing,
     endEditing,
+    cancelEditing,
     hops,
     status,
     studentInfo,
   } = props;
 
   const [activeTab, setActiveTab] = React.useState<HopsTab>("MATRICULATION");
+  const [
+    isPendingChangesWarningDialogOpen,
+    setIsPendingChangesWarningDialogOpen,
+  ] = React.useState(false);
   const { t } = useTranslation(["studies", "common", "hops_new"]);
 
   // Load matriculation data if it is not already loaded
@@ -107,6 +119,35 @@ const HopsApplication = (props: HopsApplicationProps) => {
     }
   };
 
+  /**
+   * Opens the pending changes warning dialog
+   */
+  const handleOpenPendingChangesWarningDialog = () => {
+    setIsPendingChangesWarningDialogOpen(true);
+  };
+
+  /**
+   * Handles the confirm button click in the pending changes warning dialog
+   */
+  const handlePendingChangesWarningDialogConfirm = () => {
+    cancelEditing();
+    setIsPendingChangesWarningDialogOpen(false);
+  };
+
+  /**
+   * Handles the cancel button click in the pending changes warning dialog
+   */
+  const handlePendingChangesWarningDialogCancel = () => {
+    setIsPendingChangesWarningDialogOpen(false);
+  };
+
+  /**
+   * Cancels editing and returns to read mode
+   */
+  const handleCancelClick = () => {
+    cancelEditing();
+  };
+
   const panelTabs: Tab[] = [
     {
       id: "MATRICULATION",
@@ -121,37 +162,92 @@ const HopsApplication = (props: HopsApplicationProps) => {
     },
   ];
 
-  const editingDisabled =
-    (status.userId !== hops.hopsLocked?.userEntityId &&
-      hops.hopsLocked?.locked) ||
-    false;
+  const updatedMatriculationPlan = {
+    ...hops.hopsEditing.matriculationPlan,
+    plannedSubjects: hops.hopsEditing.matriculationPlan.plannedSubjects.filter(
+      (subject) => subject.subject
+    ),
+  };
+
+  const hopsHasChanges = !_.isEqual(
+    hops.hopsMatriculation.plan,
+    updatedMatriculationPlan
+  );
+
+  let editingDisabled = false;
+
+  if (
+    status.userId !== hops.hopsLocked?.userEntityId &&
+    hops.hopsLocked?.locked
+  ) {
+    editingDisabled = true;
+  }
 
   return (
-    <HopsBasicInfoProvider
-      useCase="GUIDANCE_COUNSELOR"
-      studentInfo={{
-        identifier: studentInfo.id,
-        studyStartDate: studentInfo.studyStartDate,
-      }}
-    >
-      <div className="button-row">
-        <Button
-          className={`button ${hops.hopsMode === "READ" ? "button--primary" : "button--primary active"}`}
-          onClick={handleModeChangeClick}
-          disabled={editingDisabled}
-        >
-          {hops.hopsMode === "READ"
-            ? t("actions.editingStart", { ns: "hops_new" })
-            : t("actions.editingEnd", { ns: "hops_new" })}
-        </Button>
-      </div>
-      <ApplicationPanel
-        modifier="guider-student-hops"
-        onTabChange={onTabChange}
-        activeTab={activeTab}
-        panelTabs={panelTabs}
-      />
-    </HopsBasicInfoProvider>
+    <WebsocketWatcher studentIdentifier={studentIdentifier}>
+      <HopsBasicInfoProvider
+        useCase="GUIDANCE_COUNSELOR"
+        studentInfo={{
+          identifier: studentInfo.id,
+          studyStartDate: studentInfo.studyStartDate,
+        }}
+      >
+        <div className="hops-edit__button-row">
+          {hops.hopsMode === "READ" ? (
+            <Button
+              onClick={handleModeChangeClick}
+              disabled={editingDisabled}
+              buttonModifiers={[
+                "primary",
+                "standard-ok",
+                "standard-fit-content",
+              ]}
+            >
+              {t("actions.editingStart", { ns: "hops_new" })}
+            </Button>
+          ) : (
+            <Button
+              onClick={handleModeChangeClick}
+              disabled={!hopsHasChanges}
+              buttonModifiers={[
+                "primary",
+                "standard-ok",
+                "standard-fit-content",
+              ]}
+            >
+              {t("actions.editingEnd", { ns: "hops_new" })}
+            </Button>
+          )}
+          {hops.hopsMode === "EDIT" && (
+            <Button
+              buttonModifiers={[
+                "cancel",
+                "standard-cancel",
+                "standard-fit-content",
+              ]}
+              onClick={
+                hopsHasChanges
+                  ? handleOpenPendingChangesWarningDialog
+                  : handleCancelClick
+              }
+            >
+              {t("actions.cancel", { ns: "common" })}
+            </Button>
+          )}
+        </div>
+        <ApplicationPanel
+          modifier="guider-student-hops"
+          onTabChange={onTabChange}
+          activeTab={activeTab}
+          panelTabs={panelTabs}
+        />
+        <PendingChangesWarningDialog
+          isOpen={isPendingChangesWarningDialogOpen}
+          onConfirm={handlePendingChangesWarningDialogConfirm}
+          onCancel={handlePendingChangesWarningDialogCancel}
+        />
+      </HopsBasicInfoProvider>
+    </WebsocketWatcher>
   );
 };
 
@@ -179,6 +275,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       loadMatriculationData,
       startEditing,
       endEditing,
+      cancelEditing,
     },
     dispatch
   );

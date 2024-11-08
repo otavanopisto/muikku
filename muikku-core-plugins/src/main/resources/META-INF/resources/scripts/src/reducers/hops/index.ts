@@ -148,7 +148,10 @@ const initialHopsState: HopsState = {
   hopsLocked: null,
   hopsEditing: {
     readyToEdit: false,
-    matriculationPlan: null,
+    matriculationPlan: {
+      plannedSubjects: [],
+      goalMatriculationExam: false,
+    },
   },
 };
 
@@ -358,6 +361,14 @@ export const hopsNew: Reducer<HopsState> = (
           plan: null,
           results: [],
         },
+        hopsEditing: {
+          ...state.hopsEditing,
+          readyToEdit: false,
+          matriculationPlan: {
+            plannedSubjects: [],
+            goalMatriculationExam: false,
+          },
+        },
       };
     }
 
@@ -379,6 +390,16 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           ...action.payload,
+        },
+      };
+
+    case "HOPS_CANCEL_EDITING":
+      return {
+        ...state,
+        hopsMode: "READ",
+        hopsEditing: {
+          ...state.hopsEditing,
+          matriculationPlan: state.hopsMatriculation.plan,
         },
       };
 

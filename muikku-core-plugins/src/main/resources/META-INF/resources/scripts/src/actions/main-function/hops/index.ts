@@ -128,6 +128,11 @@ export type HOPS_RESET_DATA = SpecificActionType<"HOPS_RESET_DATA", undefined>;
 // Add new action type
 export type HOPS_CHANGE_MODE = SpecificActionType<"HOPS_CHANGE_MODE", HopsMode>;
 
+export type HOPS_CANCEL_EDITING = SpecificActionType<
+  "HOPS_CANCEL_EDITING",
+  undefined
+>;
+
 export type HOPS_UPDATE_LOCKED = SpecificActionType<
   "HOPS_UPDATE_LOCKED",
   HopsLocked
@@ -157,6 +162,13 @@ export interface StartEditingTriggerType {
  * EndEditingTriggerType
  */
 export interface EndEditingTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * CancelEditingTriggerType
+ */
+export interface CancelEditingTriggerType {
   (): AnyActionType;
 }
 
@@ -223,6 +235,25 @@ export interface UpdateMatriculationExaminationTriggerType {
 }
 
 /**
+ * UpdateMatriculationPlanTriggerType
+ */
+export interface UpdateMatriculationPlanTriggerType {
+  (data: {
+    plan: MatriculationPlan;
+    studentIdentifier: string;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * UpdateHopsLockedTriggerType
+ */
+export interface UpdateHopsLockedTriggerType {
+  (data: { locked: HopsLocked; studentIdentifier: string }): AnyActionType;
+}
+
+/**
  * Load matriculation exam data thunk
  *
  * @param data data
@@ -263,6 +294,11 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
       });
 
       try {
+        // NOTE: This is for registering websocket events and will be refactored when actual HOPS form is implemented
+        await hopsApi.getStudentHops({
+          studentIdentifier,
+        });
+
         // For now we get locked status information from the Hops API here
         // and later after other hops functions are implemented we will
         // move this to hops thunk specifically
@@ -464,6 +500,15 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
               }
             })
           );
+        }
+
+        // Check if the current user is the same as the user who has locked the Hops
+        // Meaning that the current user is the one who is editing
+        if (state.status.userId === hopsLocked.userEntityId) {
+          dispatch({
+            type: "HOPS_CHANGE_MODE",
+            payload: "EDIT",
+          });
         }
 
         // All done
@@ -902,15 +947,26 @@ const endEditing: EndEditingTriggerType = function endEditing() {
   ) => {
     const state = getState();
 
+    // Filter out empty subjects
+    const updatedPlan = {
+      ...state.hopsNew.hopsEditing.matriculationPlan,
+      plannedSubjects:
+        state.hopsNew.hopsEditing.matriculationPlan.plannedSubjects.filter(
+          (subject) => subject.subject
+        ),
+    };
+
+    // Check if the matriculation plan has changes
+    // specifically after filtering out empty subjects
     const matriculationPlanHasChanges = !_.isEqual(
       state.hopsNew.hopsMatriculation.plan,
-      state.hopsNew.hopsEditing.matriculationPlan
+      updatedPlan
     );
 
     if (matriculationPlanHasChanges) {
       dispatch(
         saveMatriculationPlan({
-          plan: state.hopsNew.hopsEditing.matriculationPlan,
+          plan: updatedPlan,
         })
       );
     }
@@ -935,6 +991,35 @@ const endEditing: EndEditingTriggerType = function endEditing() {
 };
 
 /**
+ * Cancel editing. Discards any changes and returns to read mode.
+ */
+const cancelEditing: CancelEditingTriggerType = function cancelEditing() {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+
+    const hopsLocked = await hopsApi.updateStudentHopsLock({
+      studentIdentifier: state.hopsNew.currentStudentIdentifier,
+      updateStudentHopsLockRequest: {
+        locked: false,
+      },
+    });
+
+    dispatch({
+      type: "HOPS_UPDATE_LOCKED",
+      payload: hopsLocked,
+    });
+
+    dispatch({
+      type: "HOPS_CANCEL_EDITING",
+      payload: undefined,
+    });
+  };
+};
+
+/**
  * Update HOPS editing state
  * @param data Data containing partial updates to apply to editing state
  */
@@ -950,6 +1035,195 @@ const updateHopsEditing: UpdateHopsEditingTriggerType =
     };
   };
 
+/**
+ * Update matriculation plan
+ * @param data Data containing partial updates to apply to matriculation plan
+ */
+const updateMatriculationPlan: UpdateMatriculationPlanTriggerType =
+  function updateMatriculationPlan(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const { plan, studentIdentifier } = data;
+
+      // matriculation data is not ready aka not loaded, do nothing
+      if (state.hopsNew.hopsMatriculationStatus !== "READY") {
+        return;
+      }
+
+      try {
+        // Calculate which subjects need eligibility updates
+        const loadEligibilityForNewSubjects: MatriculationSubject[] = [];
+        const deleteEligibilityForFollowingSubjects: MatriculationSubject[] =
+          [];
+
+        // Check for removed subjects
+        state.hopsNew.hopsMatriculation.plan.plannedSubjects.forEach((s) => {
+          const match = plan.plannedSubjects.find(
+            (ns) => ns.subject === s.subject
+          );
+          if (!match) {
+            const subject = state.hopsNew.hopsMatriculation.subjects.find(
+              (sub) => sub.code === s.subject
+            );
+            deleteEligibilityForFollowingSubjects.push(subject);
+          }
+        });
+
+        // Check for new subjects
+        plan.plannedSubjects.forEach((s) => {
+          const match =
+            state.hopsNew.hopsMatriculation.plan.plannedSubjects.find(
+              (ns) => ns.subject === s.subject
+            );
+          if (!match) {
+            const subject = state.hopsNew.hopsMatriculation.subjects.find(
+              (sub) => sub.code === s.subject
+            );
+            loadEligibilityForNewSubjects.push(subject);
+          }
+        });
+
+        // Start with current eligibility list
+        let updatedListOfEligibility = [
+          ...state.hopsNew.hopsMatriculation.subjectsWithEligibility,
+        ];
+
+        // Remove subjects no longer in plan
+        deleteEligibilityForFollowingSubjects.forEach((s) => {
+          const index = updatedListOfEligibility.findIndex(
+            (el) => el.subject.code === s.code
+          );
+          if (index !== -1) {
+            updatedListOfEligibility.splice(index, 1);
+          }
+        });
+
+        // Load eligibility for new subjects
+        if (loadEligibilityForNewSubjects.length) {
+          const newSubjectEligibilityDataArray =
+            await Promise.all<MatriculationSubjectWithEligibility>(
+              loadEligibilityForNewSubjects.map(async (s) => {
+                const subjectEligibility =
+                  await matriculationApi.getMatriculationSubjectEligibility({
+                    studentIdentifier,
+                    subjectCode: s.subjectCode,
+                  });
+                return {
+                  ...subjectEligibility,
+                  subject: s,
+                };
+              })
+            );
+          updatedListOfEligibility = [
+            ...updatedListOfEligibility,
+            ...newSubjectEligibilityDataArray,
+          ];
+        }
+
+        // Sort by OPS order
+        updatedListOfEligibility = updatedListOfEligibility.sort(
+          (a, b) =>
+            OPS2021SubjectCodesInOrder.indexOf(a.subject.subjectCode) -
+            OPS2021SubjectCodesInOrder.indexOf(b.subject.subjectCode)
+        );
+
+        // Calculate new abistatus
+        const abistatusData = abistatus(
+          updatedListOfEligibility,
+          state.hopsNew.hopsMatriculation.eligibility.credits,
+          state.hopsNew.hopsMatriculation.eligibility.creditsRequired
+        );
+
+        // Create final eligibility object
+        const eligibilityWithAbistatus: MatriculationEligibilityWithAbistatus =
+          {
+            ...abistatusData,
+            personHasCourseAssessments:
+              state.hopsNew.hopsMatriculation.eligibility
+                .personHasCourseAssessments,
+          };
+
+        // Dispatch updates
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_PLAN",
+          payload: plan,
+        });
+
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
+          payload: updatedListOfEligibility,
+        });
+
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_ELIGIBILITY",
+          payload: eligibilityWithAbistatus,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(i18n.t("notifications.updateError"), "error")
+        );
+      }
+    };
+  };
+
+/**
+ * Update Hops locked
+ * @param data Data containing partial updates to apply to Hops locked
+ */
+const updateHopsLocked: UpdateHopsLockedTriggerType = function updateHopsLocked(
+  data
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const { locked } = data;
+
+    const state = getState();
+
+    // Hops locked is not loaded, do nothing
+    if (state.hopsNew.hopsLocked === null) {
+      return;
+    }
+
+    // Check if the current user is the same as the user who has locked the Hops
+    // Meaning that the current user is the one who is editing
+    if (
+      locked.locked &&
+      state.status.userId === locked.userEntityId &&
+      state.hopsNew.hopsMode !== "EDIT"
+    ) {
+      dispatch({
+        type: "HOPS_CHANGE_MODE",
+        payload: "EDIT",
+      });
+    }
+    // Check if current user is not same as the user who has locked the Hops
+    // And that the Hops is not already in read mode
+    else if (
+      locked.locked &&
+      state.status.userId !== locked.userEntityId &&
+      state.hopsNew.hopsMode !== "READ"
+    ) {
+      dispatch({
+        type: "HOPS_CHANGE_MODE",
+        payload: "READ",
+      });
+    }
+
+    dispatch({
+      type: "HOPS_UPDATE_LOCKED",
+      payload: locked,
+    });
+  };
+};
+
 export {
   loadMatriculationData,
   verifyMatriculationExam,
@@ -959,5 +1233,8 @@ export {
   resetMatriculationData,
   startEditing,
   endEditing,
+  cancelEditing,
   updateHopsEditing,
+  updateMatriculationPlan,
+  updateHopsLocked,
 };
