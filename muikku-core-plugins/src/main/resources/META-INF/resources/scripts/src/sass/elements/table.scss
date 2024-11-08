@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .table__scrollable-wrapper {
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: auto;
 
   .table {
@@ -19,6 +19,13 @@
     .table__head {
       top: 0;
     }
+  }
+}
+
+.table--assignment-points {
+  .table__data,
+  .table__head {
+    height: 30px;
   }
 }
 
@@ -122,9 +129,19 @@
   }
 }
 
+.table__head--left,
+.table__data--left {
+  text-align: left;
+}
+
 .table__head--centered,
 .table__data--centered {
   text-align: center;
+}
+
+.table__head--right,
+.table__data--right {
+  text-align: right;
 }
 
 .table__data {
