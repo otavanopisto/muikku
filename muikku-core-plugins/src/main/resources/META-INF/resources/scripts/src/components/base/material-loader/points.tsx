@@ -48,7 +48,7 @@ export function MaterialLoaderPoints(props: MaterialLoaderPointsProps) {
       <span className="material-page__assignment-assessment-points-data">
         {" "}
         {maxPoints
-          ? `${localize.number(points)}/${localize.number(maxPoints)}`
+          ? `${localize.number(points)} / ${localize.number(maxPoints)}`
           : localize.number(points)}
       </span>
     </div>
