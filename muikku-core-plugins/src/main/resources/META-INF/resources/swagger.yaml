@@ -11615,8 +11615,8 @@ components:
             type: object
             required:
               - note
-              - receiver
-              - recipients
+              - noteReceiver
+              - recipientList
             properties:
               note:
                 $ref: "#/components/schemas/NoteCreationObject"
@@ -11637,10 +11637,8 @@ components:
               - title
               - description
               - priority
-              - pinned
               - startDate
               - dueDate
-              - status
             properties:
               title:
                 type: string
@@ -11648,8 +11646,6 @@ components:
                 type: string
               priority:
                 $ref: "#/components/schemas/NotePriorityType"
-              pinned:
-                type: boolean
               startDate:
                 type: string
                 format: date-time
@@ -11658,8 +11654,6 @@ components:
                 type: string
                 format: date-time
                 nullable: true
-              status:
-                $ref: "#/components/schemas/NoteStatusType"
     
     NoteReceiverUpdateRequestBody:
       required: true
@@ -15328,7 +15322,6 @@ components:
       type: object
       description: Note object
       required:
-        - id
         - title
         - description
         - type
@@ -15384,14 +15377,10 @@ components:
       description: Note object
       required:
         - title
-        - description
         - type
         - priority
-        - isActive
-        - isArchived
         - startDate
         - dueDate
-        - recipients
       properties:
         id:
           type: integer
@@ -15461,8 +15450,6 @@ components:
       type: object
       description: NoteReceiver object
       required:
-        - id
-        - noteId
         - pinned
         - recipient
         - status
