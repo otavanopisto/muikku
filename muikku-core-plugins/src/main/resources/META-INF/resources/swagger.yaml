@@ -15462,12 +15462,16 @@ components:
       description: NoteReceiver object
       required:
         - id
+        - noteId
         - pinned
         - recipient
         - status
         - userGroup
       properties:
         id:
+          type: integer
+          format: int64
+        noteId:
           type: integer
           format: int64
         pinned:
