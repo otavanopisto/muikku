@@ -38,30 +38,42 @@ export const createAssignmentInfoArray = (
       (r) => r.workspaceMaterialId === a.id
     );
 
-    let grade = compositeReply?.evaluationInfo?.grade || null;
+    const newAssignmentInfo: AssignmentInfo = {
+      title: a.title,
+      grade: null,
+      points: null,
+      maxPoints: null,
+    };
 
-    if (
-      compositeReply?.evaluationInfo?.evaluationType ===
-      "SUPPLEMENTATIONREQUEST"
-    ) {
-      grade = "T";
+    if (!compositeReply || !compositeReply.evaluationInfo) {
+      assignmentInfoArray.push(newAssignmentInfo);
+      return;
     }
 
-    if (a.maxPoints && a.maxPoints !== null) {
-      assignmentInfoArray.push({
-        title: a.title,
-        grade: grade,
-        points: compositeReply?.evaluationInfo?.points || 0,
-        maxPoints: a.maxPoints,
-      });
-    } else {
-      assignmentInfoArray.push({
-        title: a.title,
-        grade: grade,
-        points: compositeReply?.evaluationInfo?.points || null,
-        maxPoints: null,
-      });
+    switch (compositeReply.evaluationInfo.evaluationType) {
+      case "GRADED":
+        newAssignmentInfo.grade = compositeReply?.evaluationInfo?.grade || null;
+        break;
+      case "SUPPLEMENTATIONREQUEST":
+        newAssignmentInfo.grade = "T";
+        break;
+
+      case "POINTS":
+        if (a.maxPoints && a.maxPoints !== null) {
+          newAssignmentInfo.points =
+            compositeReply?.evaluationInfo?.points || 0;
+          newAssignmentInfo.maxPoints = a.maxPoints;
+        } else {
+          newAssignmentInfo.points =
+            compositeReply?.evaluationInfo?.points || null;
+          newAssignmentInfo.maxPoints = null;
+        }
+        break;
+      default:
+        break;
     }
+
+    assignmentInfoArray.push(newAssignmentInfo);
   });
 
   return assignmentInfoArray;
