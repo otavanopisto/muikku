@@ -9,7 +9,7 @@ import {
 } from "~/reducers/main-function/records";
 import i18n from "~/locales/i18n";
 import { UserFile } from "~/generated/client";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import { WorkspaceActivityInfo } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import {
@@ -67,7 +67,7 @@ export interface SetLocationToYoInTranscriptOfRecordsTriggerType {
  * UpdateAllStudentUsersAndSetViewToRecordsTriggerType
  */
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
-  (): AnyActionType;
+  (userIdentifier?: string): AnyActionType;
 }
 
 /**
@@ -100,14 +100,17 @@ export interface UpdateTranscriptOfRecordsFilesTriggerType {
 
 /**
  * updateAllStudentUsersAndSetViewToRecords
+ * @param userIdentifier user muikku Identifier
  */
 const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToRecordsTriggerType =
-  function updateAllStudentUsersAndSetViewToRecords() {
+  function updateAllStudentUsersAndSetViewToRecords(userIdentifier) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const meApi = MApi.getMeApi();
       const recordsApi = MApi.getRecordsApi();
+      const userDataStatus = getState().records.userDataStatus;
 
       try {
         dispatch({
@@ -119,7 +122,7 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
           payload: <TranscriptOfRecordLocationType>"records",
         });
 
-        if (getState().records.userDataStatus !== "WAIT") {
+        if (userDataStatus === "READY") {
           return;
         }
 
@@ -129,10 +132,27 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
         });
 
         //OK let me try to explain this :<
+        // we have an identifier given, we work out the user id from that
+
+        let dependantIdentifier = getState().dependants.list.find(
+          (dependant) => dependant.identifier === userIdentifier
+        )?.identifier;
+
+        // if the dependants aren't loaded yet, we load them here, because we must have the id
+
+        if (userIdentifier && !dependantIdentifier) {
+          const dependants = await meApi.getGuardiansDependents();
+
+          dependantIdentifier = dependants.find(
+            (dependant) => dependant.identifier === userIdentifier
+          )?.identifier;
+        }
 
         //We get the current used id this user is supposedly a student
-        const studentIdentifier: string =
-          getState().status.userSchoolDataIdentifier;
+
+        const studentIdentifier: string = dependantIdentifier
+          ? dependantIdentifier
+          : getState().status.userSchoolDataIdentifier;
 
         //we get the users that represent that studentIdentifier
         let users = await recordsApi.getStudents({
@@ -364,7 +384,7 @@ const setLocationToInfoInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRec
 const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType =
   function updateTranscriptOfRecordsFiles() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();

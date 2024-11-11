@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import {
   displayNotification,
@@ -11,6 +11,7 @@ import { useSuggestionList } from "./hooks/useSuggestedList";
 import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
 import { Course } from "~/@types/shared";
 import { useTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 /**
  * SuggestionListProps
@@ -193,7 +194,7 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return { displayNotification };
 }
 

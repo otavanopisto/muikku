@@ -1,11 +1,11 @@
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const ProgressBarCircle = require("react-progress-bar.js").Circle;
 import "~/sass/elements/workspace-activity.scss";
 import "~/sass/elements/wcag.scss";
 import { WorkspaceActivity } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { buildStyles, CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 /**
  * ProgressDataProps
@@ -130,35 +130,25 @@ class ProgressData extends React.Component<
               }
             >
               <div tabIndex={0}>
-                <ProgressBarCircle
-                  containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
-                  options={{
-                    strokeWidth: 10,
-                    duration: 0,
-                    color: "#ce01bd",
-                    trailColor: "#ebebeb",
-                    easing: "easeInOut",
-                    trailWidth: 10,
-                    svgStyle: {
-                      flexBasis: "25px",
-                      flexGrow: "0",
-                      flexShrink: "0",
-                      height: "25px",
-                    },
-                    text: {
-                      style: null,
-                      className:
-                        "workspace-activity__progressbar-label workspace-activity__progressbar-label--assignment  workspace-activity__progressbar-label--workspace",
-                      value:
-                        evaluablesDone +
-                        "/" +
-                        this.props.activity.evaluablesTotal,
-                    },
-                  }}
-                  progress={
-                    evaluablesDone / this.props.activity.evaluablesTotal
-                  }
-                />
+                <div className="workspace-activity__progressbar-circle-wrapper">
+                  <CircularProgressbar
+                    value={evaluablesDone / this.props.activity.evaluablesTotal}
+                    maxValue={this.props.activity.evaluablesTotal}
+                    strokeWidth={10}
+                    styles={{
+                      ...buildStyles({
+                        // Colors
+                        pathColor: `#ce01bd`,
+                        trailColor: "#ebebeb",
+                        backgroundColor: "#3e98c7",
+                      }),
+                    }}
+                    className="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
+                  />
+                  <div className="workspace-activity__progressbar-label workspace-activity__progressbar-label--assignment  workspace-activity__progressbar-label--workspace">
+                    {`${evaluablesDone} / ${this.props.activity.evaluablesTotal}`}
+                  </div>
+                </div>
               </div>
             </Dropdown>
           ) : null}
@@ -189,36 +179,26 @@ class ProgressData extends React.Component<
               }
             >
               <div tabIndex={0}>
-                <ProgressBarCircle
-                  containerClassName="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
-                  options={{
-                    strokeWidth: 10,
-                    duration: 0,
-                    color: "#ff9900",
-                    trailColor: "#ebebeb",
-                    easing: "easeInOut",
-                    trailWidth: 10,
-                    svgStyle: {
-                      flexBasis: "25px",
-                      flexGrow: "0",
-                      flexShrink: "0",
-                      height: "25px",
-                    },
-                    text: {
-                      style: null,
-                      className:
-                        "workspace-activity__progressbar-label workspace-activity__progressbar-label--exercise workspace-activity__progressbar-label--workspace",
-                      value:
-                        this.props.activity.exercisesAnswered +
-                        "/" +
-                        this.props.activity.exercisesTotal,
-                    },
-                  }}
-                  progress={
-                    this.props.activity.exercisesAnswered /
-                    this.props.activity.exercisesTotal
-                  }
-                />
+                <div className="workspace-activity__progressbar-circle-wrapper">
+                  <CircularProgressbar
+                    className="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
+                    value={
+                      this.props.activity.exercisesAnswered /
+                      this.props.activity.exercisesTotal
+                    }
+                    maxValue={this.props.activity.exercisesTotal}
+                    strokeWidth={10}
+                    styles={buildStyles({
+                      // Colors
+                      pathColor: "#ff9900",
+                      trailColor: "#ebebeb",
+                      backgroundColor: "#3e98c7",
+                    })}
+                  />
+                  <div className="workspace-activity__progressbar-label workspace-activity__progressbar-label--exercise workspace-activity__progressbar-label--workspace">
+                    {`${this.props.activity.exercisesAnswered} / ${this.props.activity.exercisesTotal}`}
+                  </div>
+                </div>
               </div>
             </Dropdown>
           ) : null}

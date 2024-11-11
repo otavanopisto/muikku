@@ -21,7 +21,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.codec.binary.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,7 +34,6 @@ import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
-import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.plugins.worklist.WorklistController;
@@ -147,10 +146,9 @@ public class WhoAmIRESTService extends AbstractRESTService {
     // Response
     
     User user = userIdentifier == null ? null : userController.findUserByIdentifier(userIdentifier);
-    
-    String organizationIdentifier = user == null ? null : user.getOrganizationIdentifier().toId();
-    String defaultOrganizationIdentifier = systemSettingsController.getSetting("defaultOrganization");
-    boolean isDefaultOrganization = user == null ? false : StringUtils.equals(organizationIdentifier,  defaultOrganizationIdentifier);
+
+    SchoolDataIdentifier organizationIdentifier = user == null ? null : user.getOrganizationIdentifier();
+    boolean isDefaultOrganization = user == null ? false : systemSettingsController.isDefaultOrganization(organizationIdentifier);
     boolean hasImage = userEntity == null ? false : userEntityFileController.hasProfilePicture(userEntity);
     
     // Study dates
@@ -165,9 +163,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
     
     if (user != null) {
       if (user.getCurriculumIdentifier() != null) {
-        SchoolDataIdentifier curriculumId = user.getCurriculumIdentifier();
-      
-        Curriculum curriculum = courseMetaController.findCurriculum(curriculumId.getDataSource(), curriculumId.getIdentifier());
+        Curriculum curriculum = courseMetaController.findCurriculum(user.getCurriculumIdentifier());
         curriculumName = curriculum == null ? null : curriculum.getName();
       }
     }
@@ -221,16 +217,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
     /**
      * Chat
      */
-
-    // Chat available in environment
-    boolean chatAvailable = chatController.isChatAvailable();
-    /// Chat active for current user
-    boolean chatActive = false;
-    
-    if (userIdentifier != null && chatAvailable) {
-      UserChatSettings userChatSettings = sessionController.isLoggedIn() ? chatController.findUserChatSettings(sessionController.getLoggedUserEntity()) : null;
-      chatActive = userChatSettings != null;
-    }
+    boolean chatAvailable = chatController.isChatEnabled(sessionController.getLoggedUserEntity());
 
     /**
      * Worklist
@@ -242,11 +229,16 @@ public class WhoAmIRESTService extends AbstractRESTService {
      */
     boolean environmentForumAvailable = forumController.isEnvironmentForumActive() && sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM);
 
+    /*
+     * Hops - the NEW Hops view availability
+     */
+    boolean hopsAvailable = user != null && StringUtils.equals("lukio", user.getStudyProgrammeEducationType());
+    
     UserWhoAmIInfoServices services = new UserWhoAmIInfoServices(
         chatAvailable,
-        chatActive,
         worklistAvailable,
-        environmentForumAvailable
+        environmentForumAvailable,
+        hopsAvailable
     );
     
     // Result object
@@ -262,7 +254,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
         user == null ? false : user.getHasEvaluationFees(),
         user == null || user.getCurriculumIdentifier() == null ? null : user.getCurriculumIdentifier().toId(),
         curriculumName,
-        organizationIdentifier,
+        organizationIdentifier != null ? organizationIdentifier.toId() : null,
         isDefaultOrganization,
         currentUserSession.isActive(),
         permissionSet,

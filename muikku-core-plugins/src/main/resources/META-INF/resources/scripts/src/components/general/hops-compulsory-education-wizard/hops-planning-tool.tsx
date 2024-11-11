@@ -8,7 +8,7 @@ import {
   SKILL_AND_ART_SUBJECTS,
 } from "../../../hooks/useStudentActivity";
 import { StateType } from "reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { WebsocketStateType } from "../../../reducers/util/websocket";
 import {
   displayNotification,
@@ -24,12 +24,10 @@ import { useStudyProgressContextState } from "../study-progress/context";
 import StudyProgress from "../study-progress";
 import { schoolCourseTableCompulsory2018 } from "~/mock/mock-data";
 import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const ProgressBarCircle = require("react-progress-bar.js").Circle;
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const ProgressBarLine = require("react-progress-bar.js").Line;
-
+import { Action, Dispatch } from "redux";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import ProgressBar from "@ramonak/react-progress-bar";
+import "react-circular-progressbar/dist/styles.css";
 /**
  * StudyToolProps
  */
@@ -671,33 +669,20 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 </div>
               }
             >
-              <div tabIndex={0}>
-                <ProgressBarLine
-                  containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--line"
-                  options={{
-                    strokeWidth: 1,
-                    duration: 1000,
-                    color: "#24c118",
-                    trailColor: "#ffffff",
-                    trailWidth: 1,
-                    svgStyle: {
-                      width: "100%",
-                      height: "20px",
-                      borderRadius: "10px",
-                    },
-                    initialAnimate: true,
-                    text: {
-                      style: {
-                        color: "#ffffff",
-                        position: "absolute",
-                        left: 0,
-                      },
-                      className:
-                        "hops-container__activity-label hops-container__activity-label--progressbar-line",
-                    },
-                  }}
-                  text={`${Math.round(proggressOfStudies * 100)}%`}
-                  progress={proggressOfStudies > 1 ? 1 : proggressOfStudies}
+              <div
+                tabIndex={0}
+                className="hops-container__activity-progressbar-line-wrapper"
+              >
+                <ProgressBar
+                  completed={
+                    proggressOfStudies > 1 ? 100 : proggressOfStudies * 100
+                  }
+                  maxCompleted={100}
+                  customLabel={`${Math.round(proggressOfStudies * 100)}%`}
+                  labelAlignment="left"
+                  bgColor="#24c118"
+                  baseBgColor="#ffffff"
+                  height="20px"
                 />
               </div>
             </Dropdown>
@@ -708,34 +693,37 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
               <h3 className="hops-container__subheader hops-container__subheader--activity-title">
                 Suoritetut pakolliset opinnot:
               </h3>
-              <ProgressBarCircle
-                containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
-                options={{
-                  strokeWidth: 13,
-                  duration: 1000,
-                  color: "#24c118",
-                  trailColor: "#ffffff",
-                  easing: "easeInOut",
-                  trailWidth: 15,
-                  initialAnimate: true,
-                  svgStyle: {
-                    flexBasis: "72px",
-                    flexGrow: "0",
-                    flexShrink: "0",
-                    height: "72px",
-                    margin: "4px",
-                  },
-                  text: {
-                    style: null,
-                    className:
-                      "hops-container__activity-label hops-container__activity-label--progressbar-circle",
-                  },
-                }}
-                text={`${updatedCompletedMandatoryCourses} / ${numberOfMandatoryCoursesInTotal}`}
-                progress={
-                  mandatoryCourseProggress > 1 ? 1 : mandatoryCourseProggress
-                }
-              />
+
+              <div className="hops-container__activity-progressbar-wrapper">
+                <CircularProgressbar
+                  value={
+                    mandatoryCourseProggress > 1
+                      ? 100
+                      : mandatoryCourseProggress * 100
+                  }
+                  maxValue={100}
+                  strokeWidth={13}
+                  styles={{
+                    ...buildStyles({
+                      // Colors
+                      pathColor: `#24c118`,
+                      trailColor: "#ffffff",
+                      backgroundColor: "#3e98c7",
+                    }),
+                    root: {
+                      flexBasis: "72px",
+                      flexGrow: 0,
+                      flexShrink: "0",
+                      height: "72px",
+                      margin: "4px",
+                    },
+                  }}
+                  className="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
+                />
+                <div className="hops-container__activity-label hops-container__activity-label--progressbar-circle">
+                  {`${updatedCompletedMandatoryCourses} / ${numberOfMandatoryCoursesInTotal}`}
+                </div>
+              </div>
             </div>
 
             <div className="hops__form-element-container hops__form-element-container--progressbar">
@@ -743,34 +731,36 @@ const HopsPlanningTool: React.FC<HopsPlanningToolProps> = (props) => {
                 Suoritetut valinnaisopinnot:
               </h3>
 
-              <ProgressBarCircle
-                containerClassName="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
-                options={{
-                  strokeWidth: 13,
-                  duration: 1000,
-                  color: "#24c118",
-                  trailColor: "#ffffff",
-                  easing: "easeInOut",
-                  trailWidth: 15,
-                  svgStyle: {
-                    flexBasis: "72px",
-                    flexGrow: "0",
-                    flexShrink: "0",
-                    height: "72px",
-                    margin: "4px",
-                  },
-                  text: {
-                    style: null,
-                    className:
-                      "hops-container__activity-label hops-container__activity-label--progressbar-circle",
-                  },
-                }}
-                text={`
-                    ${updatedCompletedOptionalCourses} / ${neededOptionalStudies}`}
-                progress={
-                  optionalCourseProggress > 1 ? 1 : optionalCourseProggress
-                }
-              />
+              <div className="hops-container__activity-progressbar-wrapper">
+                <CircularProgressbar
+                  value={
+                    optionalCourseProggress > 1
+                      ? 100
+                      : optionalCourseProggress * 100
+                  }
+                  maxValue={100}
+                  strokeWidth={13}
+                  styles={{
+                    ...buildStyles({
+                      // Colors
+                      pathColor: `#24c118`,
+                      trailColor: "#ffffff",
+                      backgroundColor: "#3e98c7",
+                    }),
+                    root: {
+                      flexBasis: "72px",
+                      flexGrow: 0,
+                      flexShrink: "0",
+                      height: "72px",
+                      margin: "4px",
+                    },
+                  }}
+                  className="hops-container__activity-progressbar hops-container__activity-progressbar--circle"
+                />
+                <div className="hops-container__activity-label hops-container__activity-label--progressbar-circle">
+                  {`${updatedCompletedOptionalCourses} / ${neededOptionalStudies}`}
+                </div>
+              </div>
             </div>
 
             <div className="hops__form-element-container hops__form-element-container--progressbar">
@@ -836,7 +826,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return { displayNotification };
 }
 

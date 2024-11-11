@@ -48,7 +48,7 @@ export class Localize {
   }
 
   /**
-   * getter function for language
+   * Setter function for language
    */
   get language(): string {
     return this.lang.toLowerCase();
@@ -134,6 +134,16 @@ export class Localize {
     unit?: moment.unitOfTime.DurationConstructor
   ) {
     return moment.duration(inp, unit);
+  }
+
+  /**
+   * Formats a number according to the locale conventions
+   * @param value number to format
+   * @param options formatting options (optional)
+   * @returns formatted number string
+   */
+  number(value: number, options: Intl.NumberFormatOptions = {}) {
+    return new Intl.NumberFormat(this.language, options).format(value);
   }
 }
 

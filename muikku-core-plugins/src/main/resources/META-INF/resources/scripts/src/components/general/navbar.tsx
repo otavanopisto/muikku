@@ -5,6 +5,7 @@ import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
 import "~/sass/elements/navbar.scss";
 import { WithTranslation, withTranslation } from "react-i18next";
+import Link from "~/components/general/link";
 
 /**
  * NavbarProps
@@ -42,6 +43,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
     super(props);
     this.openMenu = this.openMenu.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
+    this.handleOpenMenuKeyDown = this.handleOpenMenuKeyDown.bind(this);
     this.state = {
       isMenuOpen: false,
     };
@@ -63,6 +65,17 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
     this.setState({
       isMenuOpen: false,
     });
+  }
+
+  /**
+   * handleKeyDown
+   * @param e e
+   */
+  handleOpenMenuKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      this.openMenu();
+    }
   }
 
   /**
@@ -108,16 +121,20 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
                 className={`navbar__item navbar__item--menu-button`}
                 role="none"
               >
-                <span
+                <Link
+                  tabIndex={0}
                   className={`link link--icon link--full ${
                     this.props.modifier ? "link--" + this.props.modifier : ""
                   }`}
                   onClick={this.openMenu}
+                  onKeyDown={this.handleOpenMenuKeyDown}
                   role="menuitem"
-                  aria-hidden="true"
+                  aria-label={this.props.i18n.t("wcag.openMainNavigation")}
+                  aria-haspopup="menu"
+                  aria-expanded={this.state.isMenuOpen}
                 >
                   <span className="link__icon icon-navicon"></span>
-                </span>
+                </Link>
               </li>
               {this.props.navbarItems
                 .map((item, index) => {

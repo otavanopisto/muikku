@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.users;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,6 +54,9 @@ public class UserEntityController implements Serializable {
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  private UserProfilePictureController userProfilePictureController;
 
   @Inject
   private UserEntityDAO userEntityDAO;
@@ -271,29 +273,91 @@ public class UserEntityController implements Serializable {
     return userEntities.values();
   }
 
-  public List<String> listUserEntityIdentifiersByDataSource(SchoolDataSource dataSource) {
-    List<String> result = new ArrayList<>();
-
-    List<UserSchoolDataIdentifier> identifiers = listUserSchoolDataIdentifiersByDataSource(dataSource);
-    for (UserSchoolDataIdentifier indentifier : identifiers) {
-      result.add(indentifier.getIdentifier());
-    }
-
-    return result;
-  }
-
-  public List<String> listUserEntityIdentifiersByDataSource(String dataSource) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
-    if (schoolDataSource == null) {
-      logger.severe("Could not find school data source: " + dataSource);
-      return null;
-    } else {
-      return listUserEntityIdentifiersByDataSource(schoolDataSource);
-    }
+  public boolean hasProfilePicture(UserEntity userEntity) {
+    return userProfilePictureController.hasProfilePicture(userEntity);
   }
   
-  public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByDataSource(SchoolDataSource dataSource) {
-    return userSchoolDataIdentifierDAO.listByDataSourceAndArchived(dataSource, Boolean.FALSE);
+  /**
+   * Returns true if given UserEntity is an active user. Essentially
+   * checks if the default UserSchoolDataIdentifier of the UserEntity
+   * is active or not.
+   * 
+   * @param userEntity UserEntity
+   * @return true if userEntity is an active user
+   * @throws IllegalArgumentException if userEntity is null
+   */
+  public boolean isActiveUserEntity(UserEntity userEntity) throws IllegalArgumentException {
+    if (userEntity == null) {
+      throw new IllegalArgumentException("UserEntity was not specified");
+    }
+    
+    if (Boolean.TRUE.equals(userEntity.getArchived())) {
+      // Archived UserEntity can never be active
+      return false;
+    }
+
+    // Find the currently active UserSchoolDataIdentifier
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier());
+    
+    // findUserSchoolDataIdentifierBySchoolDataIdentifier returns only unarchived UserSchoolDataIdentifiers, so if we get null, return false.
+    return userSchoolDataIdentifier != null ? isActiveUserSchoolDataIdentifier(userSchoolDataIdentifier) : false;
+  }
+  
+  /**
+   * Returns true if the given UserSchoolDataIdentifier is considered to be active.
+   * 
+   * Requirements:
+   * - UserSchoolDataIdentifier cannot be archived
+   * - UserEntity the UserSchoolDataIdentifier points to must exist and cannot be archived
+   * - The given UserSchoolDataIdentifier must be the default identifier of the UserEntity
+   * 
+   * @param userSchoolDataIdentifier
+   * @return true if userSchoolDataIdentifier is considered to be active
+   * @throws IllegalArgumentException if userSchoolDataIdentifier is null
+   */
+  public boolean isActiveUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    if (userSchoolDataIdentifier == null) {
+      throw new IllegalArgumentException("UserSchoolDataIdentifier was not specified");
+    }
+    
+    UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
+    
+    // Return false if userEntity is missing or either are archived
+    if (Boolean.TRUE.equals(userSchoolDataIdentifier.getArchived()) || userEntity == null || Boolean.TRUE.equals(userEntity.getArchived())) {
+      return false;
+    }
+
+    // Return false if identifier is not default identifier
+    if (!userSchoolDataIdentifier.schoolDataIdentifier().equals(userEntity.defaultSchoolDataIdentifier())) {
+      return false;
+    }
+    
+    EnvironmentRoleArchetype[] staffRoles = {
+        EnvironmentRoleArchetype.ADMINISTRATOR, 
+        EnvironmentRoleArchetype.MANAGER, 
+        EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+        EnvironmentRoleArchetype.STUDY_GUIDER,
+        EnvironmentRoleArchetype.TEACHER
+    };
+    
+    if (!userSchoolDataIdentifier.hasAnyRole(staffRoles)) {
+      SearchProvider searchProvider = getProvider("elastic-search");
+      if (searchProvider != null) {
+        SearchResult searchResult = searchProvider.findUser(userSchoolDataIdentifier.schoolDataIdentifier(), false);
+        return searchResult.getTotalHitCount() > 0;
+      }
+    }
+    
+    return true;
+  }
+  
+  private SearchProvider getProvider(String name) {
+    for (SearchProvider searchProvider : searchProviders) {
+      if (name.equals(searchProvider.getName())) {
+        return searchProvider;
+      }
+    }
+    return null;
   }
 
   public boolean isStudent(UserEntity userEntity) {

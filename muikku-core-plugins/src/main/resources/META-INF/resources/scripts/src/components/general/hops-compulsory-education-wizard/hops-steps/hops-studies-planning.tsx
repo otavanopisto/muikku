@@ -5,7 +5,7 @@ import { HopsBaseProps, HopsUser } from "..";
 import { HopsStudyPeriodPlan } from "~/@types/shared";
 import HopsPeriodPlan from "../hops-period-plan";
 import { FollowUpProvider } from "../context/follow-up-context";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import {
@@ -14,6 +14,7 @@ import {
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { HopsGoals } from "~/generated/client";
+import { Action, Dispatch } from "redux";
 
 /**
  * StudiesPlanningProps
@@ -187,7 +188,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return { displayNotification };
 }
 

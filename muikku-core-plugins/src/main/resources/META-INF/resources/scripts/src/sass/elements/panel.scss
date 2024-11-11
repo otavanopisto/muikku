@@ -14,6 +14,20 @@
   min-width: 0;
 }
 
+.panel-group--dependants {
+  order: 1;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 100%;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 66.66%;
+    flex-flow: row wrap;
+    flex-grow: 1;
+  }
+}
+
 .panel-group--studies {
   order: 1;
 
@@ -236,6 +250,11 @@
   color: $color-index-text-for-panels-title-wall-icon-color;
 }
 
+.panel__header-icon--dependants {
+  background-color: $color-index-text-for-panels-title-dependants-icon-background;
+  color: $color-index-text-for-panels-title-dependants-icon-color;
+}
+
 .panel__header-icon--continue-studies {
   background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
   color: $color-index-text-for-panels-title-continue-studies-icon-color;
@@ -269,6 +288,21 @@
 .panel__header-icon--studies-ended {
   background-color: $color-info;
   color: $color-default;
+}
+
+.panel__header-icon--workspace-evaluation {
+  background-color: $color-workspace-text-for-panels-title-teachers-icon-background;
+  color: $color-workspace-text-for-panels-title-teachers-icon-color;
+
+  &.STATE-passed {
+    background-color: $color-passed;
+    color: $color-default;
+  }
+
+  &.STATE-incomplete {
+    background-color: $color-incomplete;
+    color: $color-default;
+  }
 }
 
 .panel__header-icon--workspace-teachers {
@@ -313,6 +347,10 @@
   }
 }
 
+.panel__header-icon-text {
+  font-family: $system-font-family;
+}
+
 .panel__body {
   @include text;
 
@@ -355,7 +393,8 @@
   margin: 0 5px;
 }
 
-.panel__body-text { // This is for direct text content inside of panel_body
+.panel__body-text {
+  // This is for direct text content inside of panel_body
   font-weight: 400;
   line-height: 1.5rem;
 }

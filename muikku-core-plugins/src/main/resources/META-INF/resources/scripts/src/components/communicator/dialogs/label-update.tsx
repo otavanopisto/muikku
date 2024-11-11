@@ -10,8 +10,8 @@ import {
   MessagesState,
   MessagesNavigationItem,
 } from "~/reducers/main-function/messages";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { ChromePicker, ColorState } from "react-color";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
@@ -85,7 +85,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line camelcase
@@ -346,7 +346,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { updateMessagesNavigationLabel, removeMessagesNavigationLabel },
     dispatch

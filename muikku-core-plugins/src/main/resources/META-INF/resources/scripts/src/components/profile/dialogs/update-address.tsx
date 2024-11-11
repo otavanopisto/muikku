@@ -1,6 +1,7 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
+import { Action, Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -16,6 +17,7 @@ import {
   UpdateProfileAddressTriggerType,
 } from "~/actions/main-function/profile";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AnyActionType } from "~/actions";
 
 /**
  * UpdateAddressDialogProps
@@ -69,7 +71,7 @@ class UpdateAddressDialog extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line camelcase
@@ -274,7 +276,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<void>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { displayNotification, updateProfileAddress },
     dispatch

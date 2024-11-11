@@ -6,8 +6,8 @@ import { MATHJAXSRC } from "~/lib/mathjax";
 import SessionStateComponent from "../session-state-component";
 import Button from "../button";
 import { StateType } from "~/reducers";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceDataType } from "~/reducers/workspaces";
@@ -461,7 +461,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       saveNewNotebookEntry,

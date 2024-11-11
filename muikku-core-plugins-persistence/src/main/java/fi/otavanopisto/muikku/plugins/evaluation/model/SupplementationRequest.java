@@ -71,6 +71,14 @@ public class SupplementationRequest {
     this.requestText = requestText;
   }
 
+  public Boolean getHandled() {
+    return handled;
+  }
+
+  public void setHandled(Boolean handled) {
+    this.handled = handled;
+  }
+
   public Boolean getArchived() {
     return archived;
   }
@@ -110,6 +118,10 @@ public class SupplementationRequest {
 
   @Lob
   private String requestText;
+
+  @NotNull
+  @Column(nullable = false)
+  private Boolean handled;
 
   @NotNull
   @Column(nullable = false)

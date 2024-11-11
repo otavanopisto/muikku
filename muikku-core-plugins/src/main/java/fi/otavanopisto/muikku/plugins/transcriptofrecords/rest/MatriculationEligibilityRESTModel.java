@@ -32,7 +32,14 @@ public class MatriculationEligibilityRESTModel {
   public void setCoursesRequired(int coursesRequired) {
     this.coursesRequired = coursesRequired;
   }
+  public boolean isPersonHasCourseAssessments() {
+    return personHasCourseAssessments;
+  }
+  public void setPersonHasCourseAssessments(boolean personHasCourseAssessments) {
+    this.personHasCourseAssessments = personHasCourseAssessments;
+  }
   private MatriculationExamEligibilityStatus status;
+  private boolean personHasCourseAssessments;
   private int coursesCompleted;
   private int coursesRequired;
   private double creditPoints;

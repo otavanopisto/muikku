@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import { StateType } from "~/reducers";
 import EvaluationToolbar from "./application/toolbar";
@@ -10,7 +10,7 @@ import {
   SetEvaluationSelectedWorkspace,
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import EvaluationSorters from "./application/evaluation-list/evaluation-sorters";
 import { WorkspaceDataType } from "../../../reducers/workspaces/index";
 import { AnyActionType } from "~/actions";
@@ -21,6 +21,7 @@ import {
 } from "~/components/general/react-select/types";
 import Select from "react-select";
 import "~/sass/elements/react-select-override.scss";
+import ApplicationSubPanel from "~/components/general/application-sub-panel";
 
 /**
  * EvaluationApplicationProps
@@ -113,7 +114,7 @@ class EvaluationApplication extends React.Component<
             ? `${wItem.name} (${wItem.nameExtension})`
             : wItem.name,
           value: wItem.id,
-        } as OptionDefault<number>)
+        }) as OptionDefault<number>
     );
 
     const groupedOptions: (
@@ -171,9 +172,62 @@ class EvaluationApplication extends React.Component<
         toolbar={toolBar}
       >
         <EvaluationSorters />
-        <div className="evaluation-cards-wrapper">
-          <EvaluationList />
-        </div>
+
+        {selectedOptions.value === "" ? (
+          <>
+            <ApplicationSubPanel modifier="evaluation-cards">
+              <ApplicationSubPanel.Header>
+                Arviointipyynnöt
+              </ApplicationSubPanel.Header>
+              <ApplicationSubPanel.Body>
+                <div className="evaluation-cards-wrapper">
+                  <EvaluationList
+                    filterByStates={["pending", "pending_fail", "pending_pass"]}
+                    emptyMessage="Arviointipyyntöjä ei löytynyt"
+                    emptySearchMessage="Hakuehdoilla ei löytynyt arviointipyyntöjä"
+                  />
+                </div>
+              </ApplicationSubPanel.Body>
+            </ApplicationSubPanel>
+
+            <ApplicationSubPanel modifier="evaluation-cards">
+              <ApplicationSubPanel.Header>
+                Välipalautepyynnöt
+              </ApplicationSubPanel.Header>
+              <ApplicationSubPanel.Body>
+                <div className="evaluation-cards-wrapper">
+                  <EvaluationList
+                    filterByStates={["interim_evaluation_request"]}
+                    emptyMessage="Välipalautepyyntöjä ei löytynyt"
+                    emptySearchMessage="Hakuehdoilla ei löytynyt välipalautepyyntöjä"
+                  />
+                </div>
+              </ApplicationSubPanel.Body>
+            </ApplicationSubPanel>
+
+            <ApplicationSubPanel modifier="evaluation-cards">
+              <ApplicationSubPanel.Header>
+                Täydennyspyynnöt (opettajan opiskelijalle laittamat)
+              </ApplicationSubPanel.Header>
+              <ApplicationSubPanel.Body>
+                <div className="evaluation-cards-wrapper">
+                  <EvaluationList
+                    filterByStates={["incomplete"]}
+                    emptyMessage="Täydennyspyyntöjä ei löytynyt"
+                    emptySearchMessage="Hakuehdoilla ei löytynyt täydennyspyyntöjä"
+                  />
+                </div>
+              </ApplicationSubPanel.Body>
+            </ApplicationSubPanel>
+          </>
+        ) : (
+          <div className="evaluation-cards-wrapper">
+            <EvaluationList
+              emptyMessage="Kurssikohtaisia arviointitapahtumia ei löytynyt"
+              emptySearchMessage="Suodattimilla ei löytynyt arviointitapahtumia"
+            />
+          </div>
+        )}
       </ApplicationPanel>
     );
   }
@@ -197,7 +251,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
 }
 

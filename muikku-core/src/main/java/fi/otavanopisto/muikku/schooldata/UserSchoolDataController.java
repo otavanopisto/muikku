@@ -4,28 +4,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
-import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
-import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
+import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentCourseStats;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
-import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -37,6 +35,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriod;
 import fi.otavanopisto.muikku.schooldata.payload.CredentialResetPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
+import fi.otavanopisto.muikku.schooldata.payload.StudentCardRESTModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupMembersPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentGroupPayload;
 import fi.otavanopisto.muikku.schooldata.payload.StudentPayload;
@@ -53,14 +52,8 @@ public class UserSchoolDataController {
   // TODO: Events
 
   @Inject
-  private Logger logger;
-
-  @Inject
   @Any
   private Instance<UserSchoolDataBridge> userBridges;
-
-  @Inject
-  private UserSchoolDataIdentifierDAO userSchoolDataIdentifierDAO;
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
@@ -117,6 +110,10 @@ public class UserSchoolDataController {
 
   public BridgeResponse<StudentContactLogEntryRestModel> createStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, StudentContactLogEntryRestModel payload) {
     return getUserBridge(dataSource).createStudentContactLogEntry(userIdentifier,payload);
+  }
+  
+  public BridgeResponse<StudentContactLogWithRecipientsRestModel> createMultipleStudentContactLogEntries(String dataSource, List<SchoolDataIdentifier> recipientList, StudentContactLogEntryRestModel payload) {
+    return getUserBridge(dataSource).createMultipleStudentContactLogEntries(recipientList, payload);
   }
 
   public BridgeResponse<StudentContactLogEntryRestModel> updateStudentContactLogEntry(String dataSource, SchoolDataIdentifier userIdentifier, Long contactLogEntryId, StudentContactLogEntryRestModel payload) {
@@ -191,37 +188,6 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).findActiveUser(identifier);
   }
 
-  public List<User> listUsers() {
-    // TODO: This method WILL cause performance problems, replace with something more sensible
-
-    List<User> result = new ArrayList<User>();
-
-    for (UserSchoolDataBridge userBridge : getUserBridges()) {
-      try {
-        result.addAll(userBridge.listUsers());
-      } catch (SchoolDataBridgeInternalException e) {
-        logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing users", e);
-      }
-    }
-
-    return result;
-  }
-
-  public List<User> listUsersByEntity(UserEntity userEntity) {
-    List<User> result = new ArrayList<>();
-
-    List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierDAO.listByUserEntityAndArchived(userEntity, Boolean.FALSE);
-    for (UserSchoolDataIdentifier identifier : identifiers) {
-      UserSchoolDataBridge userBridge = getUserBridge(identifier.getDataSource());
-      User user = findUserByIdentifier(userBridge, identifier.getIdentifier());
-      if (user != null) {
-        result.add(user);
-      }
-    }
-
-    return result;
-  }
-
   public List<User> listUsersByEmail(String email) {
     List<User> result = new ArrayList<User>();
 
@@ -259,17 +225,6 @@ public class UserSchoolDataController {
 
   /* User Entity */
 
-  public UserEntity findUserEntity(User user) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(schoolDataSource, user.getIdentifier(), Boolean.FALSE);
-    return userSchoolDataIdentifier == null ? null : userSchoolDataIdentifier.getUserEntity();
-  }
-
-  public UserEntity findUserEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(dataSource, identifier, Boolean.FALSE);
-    return userSchoolDataIdentifier == null ? null : userSchoolDataIdentifier.getUserEntity();
-  }
-
   public String findUserSsn(SchoolDataIdentifier userIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
     if (schoolDataSource == null) {
@@ -280,24 +235,12 @@ public class UserSchoolDataController {
 
   /* User Emails */
 
-  public List<UserEmail> listUserEmails(User user) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    if (schoolDataSource == null) {
-      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
-    }
-    return getUserBridge(schoolDataSource).listUserEmailsByUserIdentifier(user.getIdentifier());
-  }
-
   public List<UserEmail> listUserEmails(SchoolDataIdentifier userIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
     }
     return getUserBridge(schoolDataSource).listUserEmailsByUserIdentifier(userIdentifier.getIdentifier());
-  }
-
-  public UserEmail findUserEmail(SchoolDataSource schoolDataSource, String identifier) {
-    return getUserBridge(schoolDataSource).findUserEmail(identifier);
   }
 
   /* User properties */
@@ -366,18 +309,6 @@ public class UserSchoolDataController {
 
   /* Group users */
 
-  public GroupUser findGroupUser(SchoolDataSource schoolDataSource, String groupIdentifier, String identifier) {
-    return getUserBridge(schoolDataSource).findGroupUser(groupIdentifier, identifier);
-  }
-
-  public List<GroupUser> listGroupUsersByGroup(UserGroup userGroup){
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userGroup.getSchoolDataSource());
-    if (schoolDataSource == null) {
-      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userGroup.getSchoolDataSource()));
-    }
-    return getUserBridge(schoolDataSource).listGroupUsersByGroup(userGroup.getIdentifier());
-  }
-
   public List<GroupUser> listGroupUsersByGroupAndType(UserGroup userGroup, GroupUserType type){
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userGroup.getSchoolDataSource());
     if (schoolDataSource == null) {
@@ -439,22 +370,6 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).listStudentStudyPeriods(userIdentifier);
   }
 
-  /**
-   * Returns student eligibility to participate matriculation exams
-   *
-   * @param studentIdentifier student identifier
-   * @param subjectCode subject code
-   * @return student eligibility to participate matriculation exams
-   */
-  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
-    if (schoolDataSource == null) {
-      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
-    }
-
-    return getUserBridge(schoolDataSource).getStudentMatriculationEligibility(studentIdentifier, subjectCode);
-  }
-
   private UserSchoolDataBridge getUserBridge(SchoolDataSource schoolDataSource) {
     return getUserBridge(schoolDataSource.getIdentifier());
   }
@@ -468,10 +383,6 @@ public class UserSchoolDataController {
       }
     }
     throw new SchoolDataBridgeInternalException(String.format("No UserBridge for data source %s", schoolDataSourceIdentifier));
-  }
-
-  private User findUserByIdentifier(UserSchoolDataBridge userBridge, String identifier) {
-    return userBridge.findUser(identifier);
   }
 
   private List<UserSchoolDataBridge> getUserBridges() {
@@ -556,6 +467,42 @@ public class UserSchoolDataController {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
     }
     return getUserBridge(schoolDataSource).listStudentSpecEdTeachers(studentIdentifier, includeGuidanceCouncelors, onlyMessageReceivers);
+  }
+  
+  public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(guardianUserIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", guardianUserIdentifier.getDataSource()));
+    }
+    
+    return getUserBridge(schoolDataSource).listGuardiansDependents(guardianUserIdentifier);
+  }
+
+  public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(guardianUserIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", guardianUserIdentifier.getDataSource()));
+    }
+
+    return getUserBridge(schoolDataSource).listGuardiansDependentsWorkspaces(guardianUserIdentifier, studentIdentifier);
+  }
+
+  public StudentCard getStudentCard(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+ 
+    return getUserBridge(schoolDataSource).getStudentCard(studentIdentifier.getIdentifier());
+  }
+  
+  public BridgeResponse<StudentCardRESTModel> updateActive(SchoolDataIdentifier studentIdentifier, Boolean active) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+ 
+    return getUserBridge(schoolDataSource).updateActive(studentIdentifier.getIdentifier(), active);
   }
 
 }

@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import {
   editContactLogEvent,
@@ -196,7 +196,10 @@ class EditContactLogEventEvent extends SessionStateComponent<
             >
               {contactTypesArray.map((contactType) => (
                 <option key={contactType} value={contactType}>
-                  {this.props.i18n.t("labels.type", { context: contactType })}
+                  {this.props.i18n.t("labels.type", {
+                    ns: "messaging",
+                    context: contactType,
+                  })}
                 </option>
               ))}
             </select>
@@ -282,7 +285,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ editContactLogEvent }, dispatch);
 }
 

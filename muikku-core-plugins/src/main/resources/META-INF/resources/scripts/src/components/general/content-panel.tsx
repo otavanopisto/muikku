@@ -5,14 +5,16 @@
  */
 
 import * as React from "react";
+import { WithTranslation } from "react-i18next";
 import $ from "~/lib/jquery";
 import "~/sass/elements/content-panel.scss";
 import "~/sass/elements/loaders.scss";
+import { IconButton } from "~/components/general/button";
 
 /**
  * ContentPanelProps
  */
-interface ContentPanelProps {
+interface ContentPanelProps extends WithTranslation {
   modifier: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   title?: React.ReactElement<any> | string;
@@ -55,7 +57,7 @@ export default class ContentPanel extends React.Component<
   ContentPanelProps,
   ContentPanelState
 > {
-  private myRef = React.createRef<HTMLDivElement>();
+  myRef = React.createRef<HTMLDivElement>();
 
   private touchCordX: number;
   private touchCordY: number;
@@ -216,6 +218,45 @@ export default class ContentPanel extends React.Component<
   }
 
   /**
+   * handleNavigationButtonKeyDown
+   * @param e e
+   */
+  handleNavigationOpenKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      this.openNavigation();
+    }
+  };
+
+  /**
+   * handleNavigationButtonKeyDown
+   * @param e e
+   */
+  handleNavigationCloseKeyDown = (
+    e: React.KeyboardEvent<HTMLAnchorElement>
+  ) => {
+    if (e.key === "Enter" || e.key === " ") {
+      this.closeNavigation();
+    }
+  };
+
+  /**
+   * handleNavigationButtonKeyDown
+   * @param e e
+   */
+  handleNavigationKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    e.stopPropagation();
+    const isOverlay = e.target === e.currentTarget;
+
+    if (!isOverlay) {
+      return;
+    }
+
+    if (e.key === "Enter" || e.key === " ") {
+      this.closeNavigation();
+    }
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
@@ -240,6 +281,13 @@ export default class ContentPanel extends React.Component<
                 <div
                   className="content-panel__navigation-open"
                   onClick={this.openNavigation}
+                  onKeyDown={this.handleNavigationOpenKeyDown}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={this.props.t("labels.tableOfContents", {
+                    ns: "materials",
+                  })}
+                  aria-hidden={!this.state.open}
                 >
                   <span className="icon-arrow-left"></span>
                 </div>
@@ -255,6 +303,7 @@ export default class ContentPanel extends React.Component<
                     this.state.dragging ? "dragging" : ""
                   }`}
                   onClick={this.closeNavigationByOverlay}
+                  onKeyDown={this.handleNavigationKeyDown}
                 >
                   <div
                     className="content-panel__navigation-content"
@@ -262,6 +311,16 @@ export default class ContentPanel extends React.Component<
                       right: this.state.drag !== null ? -this.state.drag : null,
                     }}
                   >
+                    <div className="content-panel__navigation-close">
+                      <IconButton
+                        icon="cross"
+                        onClick={this.closeNavigation}
+                        onKeyDown={this.handleNavigationCloseKeyDown}
+                        aria-label={this.props.t("wcag.closeContentPanel", {
+                          ns: "workspace",
+                        })}
+                      />
+                    </div>
                     {this.props.navigation}
                   </div>
                 </nav>
@@ -284,6 +343,7 @@ export default class ContentPanel extends React.Component<
  */
 interface ContentPanelItemProps {
   id?: string;
+  scrollMarginTopOffset?: number;
 }
 
 /**
@@ -307,7 +367,16 @@ export class ContentPanelItem extends React.Component<
    */
   render() {
     return (
-      <div id={this.props.id} ref="component" className="content-panel__item">
+      <div
+        id={this.props.id}
+        ref="component"
+        className="content-panel__item"
+        style={
+          this.props.scrollMarginTopOffset && {
+            scrollMarginTop: `${this.props.scrollMarginTopOffset}px`,
+          }
+        }
+      >
         {this.props.children}
       </div>
     );

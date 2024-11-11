@@ -37,6 +37,7 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForElementToBePresent(By.className("hero__workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.className("hero__workspace-title")).size() > 0;
       assertTrue(elementExists);
@@ -55,6 +56,7 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .link--workspace-navbar .icon-home");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .link--workspace-navbar .icon-home")).size() > 0;
 
@@ -74,6 +76,7 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .icon-question");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-question")).size() > 0;
 
@@ -93,6 +96,7 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .icon-leanpub");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-leanpub")).size() > 0;
       assertTrue(elementExists);
@@ -111,6 +115,7 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .icon-bubbles");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-bubbles")).size() > 0;
       assertTrue(elementExists);
@@ -129,6 +134,7 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .icon-users");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-users")).size() > 0;
       assertTrue(elementExists);
@@ -147,6 +153,7 @@ public class CourseTestsBase extends AbstractUITest {
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForElementToAppear(".hero__workspace-title", 10, 1000);
       waitForPresent(".navbar .navbar__item .icon-book");
       boolean elementExists = getWebDriver().findElements(By.cssSelector(".navbar .navbar__item .icon-book")).size() > 0;
       assertTrue(elementExists);

@@ -53,11 +53,13 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
-import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
@@ -75,20 +77,19 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
+import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivity;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityCurriculum;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivitySubject;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.IndexedWorkspace;
@@ -194,6 +195,9 @@ public class GuiderRESTService extends PluginRESTService {
   private WorkspaceUserEntityIdFinder workspaceUserEntityIdFinder;
 
   @Inject
+  private WorkspaceSignupMessageController workspaceSignupMessageController;
+
+  @Inject
   private LocaleController localeController;
 
   @Inject
@@ -218,14 +222,17 @@ public class GuiderRESTService extends PluginRESTService {
   private WebSocketMessenger webSocketMessenger;
   
   @Inject
-  private GuiderController guiderController;
+  private CourseMetaController courseMetaController;
   
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private UserRecipientController userRecipientController;
 
   @GET
   @Path("/students")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response searchStudents(
       @QueryParam("q") String searchString,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
@@ -238,10 +245,6 @@ public class GuiderRESTService extends PluginRESTService {
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
       @QueryParam("flags") Long[] flagIds,
       @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
 
     if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_VIEW)) {
       return Response.status(Status.FORBIDDEN).build();
@@ -495,7 +498,7 @@ public class GuiderRESTService extends PluginRESTService {
             userEntity.getId(),
             restFlags,
             organizationEntity == null ? null : toRestModel(organizationEntity),
-            pedagogyController.getHasPedagogyForm(studentIdentifier.toId())
+            pedagogyController.hasPedagogyForm(userEntity.getId())
           ));
         }
       }
@@ -506,12 +509,8 @@ public class GuiderRESTService extends PluginRESTService {
 
   @GET
   @Path("/students/{ID}")
-  @RESTPermit (handling = Handling.INLINE)
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response findStudent(@Context Request request, @PathParam("ID") String id) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
     if (!sessionController.hasEnvironmentPermission(GuiderPermissions.GUIDER_VIEW)) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -581,8 +580,8 @@ public class GuiderRESTService extends PluginRESTService {
         null,
         organizationRESTModel,
         user.getMatriculationEligibility(),
-        pedagogyController.getHasPedagogyForm(studentIdentifier.toId()),
-        user.getCurriculumIdentifier() != null ? guiderController.getCurriculumName(user.getCurriculumIdentifier()) : null
+        userEntity == null ? false : pedagogyController.hasPedagogyForm(userEntity.getId()),
+        user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null
         
     );
 
@@ -698,111 +697,11 @@ public class GuiderRESTService extends PluginRESTService {
 
     // Activity data
 
-    WorkspaceActivityInfo activityInfo = evaluationController.listWorkspaceActivities(
-        studentIdentifier,
-        workspaceIdentifier,
-        includeTransferCredits,
+    WorkspaceActivityInfo activityInfo = evaluationController.getWorkspaceActivityInfoWithSummary(
+        studentIdentifier, 
+        workspaceIdentifier, 
+        includeTransferCredits, 
         includeAssignmentStatistics);
-    
-    Integer allCourseCredits = 0;
-    Integer mandatoryCourseCredits = 0;
-    boolean showCredits = false;
-    
-    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
-    
-    // Find student's curriculum to tell whether the score will be shown to the user
-    
-    String curriculumName = guiderController.getCurriculumName(user.getCurriculumIdentifier());
-    
-    if (curriculumName != null && curriculumName.equals("OPS 2021") && (activityInfo.getLineCategory() != null && activityInfo.getLineCategory().equals("Lukio"))) {
-      showCredits = true;
-    }
-
-    // Education type mapping
-    
-    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
-    
-    SearchProvider searchProvider = getProvider("elastic-search");
-    
-    if (showCredits) {
-      for (WorkspaceActivity activity : activityInfo.getActivities()) {
-        
-        List<WorkspaceAssessmentState> assessmentStatesList = activity.getAssessmentStates();
-        
-        if (!assessmentStatesList.isEmpty()) {
-          for (WorkspaceAssessmentState assessmentState : assessmentStatesList) {
-            
-            if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
-              for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
-                
-                // Check for courses that contains multiple coursemodules. WorkspaceActivitySubjectIdentifier should match assessmentState's workspaceSubjectIdentifier
-                if (activity.getId() != null) {
-                  if (!assessmentState.getWorkspaceSubjectIdentifier().equals(workspaceActivitySubject.getIdentifier())) {
-                    continue;
-                  }
-                }
-                
-                if (workspaceActivitySubject.getCourseLengthSymbol().equals("op")) {
-                  for (WorkspaceActivityCurriculum curriculum : activity.getCurriculums()) {
-                    if (curriculum.getName().equals("OPS 2021")) {
-                      int units = workspaceActivitySubject.getCourseLength().intValue();
-                      
-                      // All completed courses
-                      allCourseCredits = Integer.sum(units, allCourseCredits);
-                      
-                      // Mandatority for transferred courses
-                      // Transferred courses doesn't have ids or identifiers so that's why these need to get separately
-                      if (activity.getId() == null && assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
-                        Mandatority mandatority = activity.getMandatority();
-                        if (mandatority != null && mandatority == Mandatority.MANDATORY) {
-                          mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
-                       }
-                      }
-                      
-                      // Search for finding out course mandaority
-                      
-                      if (searchProvider != null && activity.getId() != null) {
-                        
-                        WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(activity.getId());
-                        workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-                        SearchResult sr = searchProvider.findWorkspace(workspaceIdentifier);
-                        
-                        List<Map<String, Object>> results = sr.getResults();
-                        for (Map<String, Object> result : results) {
-                          
-                          String educationTypeId = (String) result.get("educationTypeIdentifier");
-    
-                          Mandatority mandatority = null;
-    
-                          if (StringUtils.isNotBlank(educationTypeId)) {
-                            SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
-                                                        
-                            mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
-                                ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
-                            
-                          }
-                          if (mandatority != null) {
-                            if (mandatority == Mandatority.MANDATORY) {
-                              mandatoryCourseCredits = Integer.sum(units, mandatoryCourseCredits);
-                            }
-                            activity.setMandatority(mandatority);
-                          }
-                        }
-                      } 
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    
-    activityInfo.setCompletedCourseCredits(allCourseCredits);
-    activityInfo.setMandatoryCourseCredits(mandatoryCourseCredits);
-    activityInfo.setShowCredits(showCredits);
-    
     return Response.ok(activityInfo).build();
   }
 
@@ -961,6 +860,98 @@ public class GuiderRESTService extends PluginRESTService {
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
 
     BridgeResponse<StudentContactLogEntryRestModel> response = userSchoolDataController.createStudentContactLogEntry(dataSource, userEntity.defaultSchoolDataIdentifier(), payload);
+    if (response.ok()) {
+      return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
+    }
+    else {
+      return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
+    }
+  }
+  
+  @POST
+  @Path("/students/contactLogEntries/batch")
+  @RESTPermit (GuiderPermissions.ACCESS_CONTACT_LOG)
+  public Response createMultipleStudentContactLogEntries(fi.otavanopisto.muikku.plugins.guider.StudentContactLogEntriesWithRecipientsRestModel payload) {
+    
+    if (payload == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+      
+    String dataSource = sessionController.getLoggedUserSchoolDataSource();
+
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
+    List<UserEntity> recipientList = new ArrayList<UserEntity>();
+
+    RecipientListRESTModel recipientPayload = payload.getRecipients();
+    
+    if (recipientPayload != null) {
+      for (Long recipientId : recipientPayload.getRecipientIds()) {
+        UserEntity recipient = userEntityController.findUserEntityById(recipientId);
+        
+        if (recipient != null) {
+          recipientList.add(recipient);
+        } else {
+          return Response.status(Status.BAD_REQUEST).build();
+        }
+      }
+    }
+    
+    List<UserGroupEntity> userGroupRecipients = null;
+    List<WorkspaceEntity> workspaceStudentRecipients = null;
+    UserGroupEntity group = null;
+    
+    // user groups
+    if (!CollectionUtils.isEmpty(recipientPayload.getRecipientGroupIds())) {
+      userGroupRecipients = new ArrayList<UserGroupEntity>();
+      
+      for (Long groupId : recipientPayload.getRecipientGroupIds()) {
+        group = userGroupEntityController.findUserGroupEntityById(groupId);
+        userGroupRecipients.add(group);
+      }
+    }
+    
+    // Workspace members
+    WorkspaceEntity workspaceEntity = null;
+    if (!CollectionUtils.isEmpty(recipientPayload.getRecipientStudentsWorkspaceIds())) {
+      workspaceStudentRecipients = new ArrayList<WorkspaceEntity>();
+      
+      for (Long workspaceId : recipientPayload.getRecipientStudentsWorkspaceIds()) {
+        workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+  
+        if (sessionController.hasPermission(GuiderPermissions.ACCESS_CONTACT_LOG_FOR_WORKSPACES, workspaceEntity))
+          workspaceStudentRecipients.add(workspaceEntity);
+        else
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+    }
+    
+    // The recipients of contact log entries are always only students
+    List<EnvironmentRoleArchetype> roles = new ArrayList<EnvironmentRoleArchetype>();
+    roles.add(EnvironmentRoleArchetype.STUDENT);
+    
+    // Filter recipients
+    UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
+        userEntity, recipientList, userGroupRecipients, workspaceStudentRecipients, null, roles);
+
+
+    if (!prepareRecipientList.hasRecipients()) {
+      return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
+    }
+    
+    Set<Long> recipientIds = prepareRecipientList.getRecipientIds();
+    List<SchoolDataIdentifier> recipients = new ArrayList<>();
+    
+    
+    // Change list of userEntities to list of ids to make it easier to export the list to Pyramus.
+    if (!recipientIds.isEmpty()) {
+      for (Long recipientId : recipientIds) {
+        UserEntity userEntity2 = userEntityController.findUserEntityById(recipientId);
+        recipients.add(userEntity2.defaultSchoolDataIdentifier());
+      }
+    }
+    
+    BridgeResponse<StudentContactLogWithRecipientsRestModel> response = userSchoolDataController.createMultipleStudentContactLogEntries(dataSource, recipients, payload.getContactLogEntry());
     if (response.ok()) {
       return Response.status(response.getStatusCode()).entity(response.getEntity()).build();
     }
@@ -1261,6 +1252,21 @@ public class GuiderRESTService extends PluginRESTService {
     }
     workspaceController.createWorkspaceUserSignup(workspaceEntity, studentEntity, new Date(), entity.getMessage());
 
+    /**
+     * Send workspace signup message to student
+     */
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+    WorkspaceSignupMessage signupMessage = workspaceSignupMessageController.sendApplicableSignupMessage(userSchoolDataIdentifier, workspaceEntity);
+    String studentsSignupMessageSentNotification = signupMessage != null
+        ? localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.studentMessageSent")
+        : localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.studentMessageNotSent");
+    if (signupMessage != null) {
+      studentsSignupMessageSentNotification = MessageFormat.format(studentsSignupMessageSentNotification, signupMessage.getCaption(), signupMessage.getContent());
+    }
+
+    /**
+     * Setup the message which goes to the teachers
+     */
     String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.caption");
     caption = MessageFormat.format(caption, loggedUserEntityName.getDisplayName(), studentName.getDisplayNameWithLine(), workspaceName);
 
@@ -1274,18 +1280,33 @@ public class GuiderRESTService extends PluginRESTService {
     String contentStudent;
     if (StringUtils.isEmpty(entity.getMessage())) {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.content");
-      content = MessageFormat.format(content, loggedUserEntityName.getDisplayName(), studentLink, workspaceLink);
-      
+      content = MessageFormat.format(
+          content,
+          loggedUserEntityName.getDisplayName(),
+          studentLink,
+          workspaceLink,
+          studentsSignupMessageSentNotification);
       contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentStudent");
-      contentStudent = MessageFormat.format(contentStudent, loggedUserEntityName.getDisplayName(), workspaceLink);
-    } else {
+      contentStudent = MessageFormat.format(
+          contentStudent,
+          loggedUserEntityName.getDisplayName(),
+          workspaceLink);
+    }
+    else {
       content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessage");
-      String blockquoteMessage = String.format("<blockquote>%s</blockquote>", entity.getMessage());
-      content = MessageFormat.format(content, loggedUserEntityName.getDisplayName(), studentLink, workspaceLink, blockquoteMessage);
-      
+      content = MessageFormat.format(
+          content,
+          loggedUserEntityName.getDisplayName(),
+          studentLink,
+          workspaceLink,
+          StringUtils.replace(entity.getMessage(), "\n", "<br/>"),
+          studentsSignupMessageSentNotification);
       contentStudent = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.counselor.contentwmessageStudent");
-      contentStudent = MessageFormat.format(contentStudent, loggedUserEntityName.getDisplayName(), workspaceLink, blockquoteMessage);
-
+      contentStudent = MessageFormat.format(
+          contentStudent,
+          loggedUserEntityName.getDisplayName(),
+          workspaceLink,
+          StringUtils.replace(entity.getMessage(), "\n", "<br/>"));
     }
 
     for (MessagingWidget messagingWidget : messagingWidgets) {

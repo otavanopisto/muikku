@@ -6,17 +6,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumThread;
-import fi.otavanopisto.muikku.plugins.forum.wall.ForumThreadSubscription;
 
 public class ForumThreadSubscriptionDAO extends CorePluginsDAO<ForumThreadSubscription> {
 
-	private static final long serialVersionUID = 2496199219925814980L;
+  private static final long serialVersionUID = 2496199219925814980L;
 
-	public ForumThreadSubscription create(UserEntity user, ForumThread forumThread) {
-	  ForumThreadSubscription forumSubscription = new ForumThreadSubscription();
+  public ForumThreadSubscription create(UserEntity user, ForumThread forumThread) {
+    ForumThreadSubscription forumSubscription = new ForumThreadSubscription();
     
     forumSubscription.setUser(user.getId());
     forumSubscription.setForumThread(forumThread);

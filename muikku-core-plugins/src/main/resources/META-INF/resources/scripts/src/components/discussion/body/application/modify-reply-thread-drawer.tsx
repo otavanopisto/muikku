@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import {
   modifyReplyFromCurrentThread,
@@ -83,10 +83,10 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ModifyThreadReplyDrawerProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: ModifyThreadReplyDrawerProps) {
     if (nextProps.reply.id !== this.props.reply.id) {
       this.setState(
         this.getRecoverStoredState(
@@ -226,7 +226,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ modifyReplyFromCurrentThread }, dispatch);
 }
 

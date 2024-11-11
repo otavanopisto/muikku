@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
@@ -52,17 +52,13 @@ class EvaluationSorters extends React.Component<
   handleClickSorter =
     (sortBy: SortBy) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      /**
-       * Checking whether sorting workspace or all values
-       */
+      // Checking whether sorting workspace or all values
       const sortKey = this.props.evaluations.selectedWorkspaceId
         ? "evaluation-workspace-sort"
         : "evaluation-default-sort";
 
       if (this.props.evaluations.evaluationSort.value === sortBy) {
-        /**
-         * If same sort is clicked again, set sort to no-sort
-         */
+        // If same sort is clicked again, set sort to no-sort
         const sortFunction: EvaluationSort = {
           key: sortKey,
           value: "no-sort",
@@ -70,9 +66,7 @@ class EvaluationSorters extends React.Component<
 
         this.props.updateEvaluationSortFunctionToServer({ sortFunction });
       } else {
-        /**
-         * Otherwise select clicked new sort
-         */
+        // Otherwise select clicked new sort
         const sortFunction: EvaluationSort = {
           key: sortKey,
           value: sortBy,
@@ -260,7 +254,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ updateEvaluationSortFunctionToServer }, dispatch);
 }
 

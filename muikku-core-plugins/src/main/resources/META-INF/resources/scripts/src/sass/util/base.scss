@@ -1,6 +1,7 @@
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/vars";
+@import "../base/breakpoints";
 @import "../base/print";
 
 *,
@@ -20,8 +21,21 @@ body {
   background-color: $color-default-body;
   overflow-y: auto;
 
-  &.using-mouse :focus {
+  // Custom focus borders for every interactive element when using keyboard
+  :focus-visible {
+    outline: $color-outline solid 2px;
+    outline-offset: -2px;
+  }
+
+  // Removing focus borders from every interactive elements which does not have focus defined when using mouse
+  &.using-mouse :focus-visible:not(:focus) {
     outline: none;
+  }
+
+  &.using-mouse {
+    .button-icon--back-to-toc {
+      display: none;
+    }
   }
 }
 
@@ -53,4 +67,71 @@ dd {
 // Standard
 ::placeholder {
   font-style: italic;
+}
+
+details {
+  background: $color-default;
+  border: 1px solid lighten($color-info, 40%);
+  border-radius: 10px;
+  margin: 10px 0;
+  max-width: 100%;
+  width: 100%;
+
+  &[open] {
+    summary {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+
+      &::after {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+
+  summary {
+    align-items: center;
+    background: $color-default-lighter-generic-background;
+    border-radius: 10px;
+    color: $color-default-contrast;
+    cursor: pointer;
+    display: flex;
+    flex-flow: row nowrap;
+    font-weight: 400;
+    justify-content: flex-start;
+    padding: 10px;
+    text-align: left;
+
+    &::after {
+      align-items: center;
+      color: $color-info;
+      content: "\f104";
+      cursor: pointer;
+      display: flex;
+      flex-basis: 1.5rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+      font-family: "muikku";
+      height: 1.5rem;
+      justify-content: center;
+      margin: 0 0 0 auto;
+      transform: rotate(0deg);
+      transform-origin: 50% 50%;
+      transition: 0.2s;
+      width: 1.5rem;
+    }
+  }
+}
+
+.details--evaluation {
+  border-color: $taskfield-border-color;
+  border-width: 2px;
+}
+
+.details__content {
+  font-weight: 300;
+  padding: 5px 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px 15px;
+  }
 }

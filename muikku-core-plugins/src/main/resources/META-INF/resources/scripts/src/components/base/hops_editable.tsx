@@ -1,14 +1,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
-import MatriculationSubjectsList from "../records/body/application/matriculation-subjects/matriculation-subjects-list";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wcag.scss";
 import { HopsUppersecondary } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { Action, Dispatch } from "redux";
 
 /**
  * HopsProps
@@ -48,7 +47,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line camelcase
@@ -168,57 +167,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
               })}
             </div>
           </div>
-          <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
-            <div className="application-sub-panel__item-title">
-              {t("content.targetMatriculationExam", { ns: "hops" })}
-            </div>
-            <div className="application-sub-panel__item-data">
-              {["yes", "no", "maybe"].map((option) => {
-                const onEvent = this.set.bind(
-                  this,
-                  "goalMatriculationExam",
-                  option
-                );
-                return (
-                  <div
-                    className="form-element form-element--checkbox-radiobutton"
-                    key={option}
-                  >
-                    <input
-                      id={"goalMatriculationExam" + option}
-                      type="radio"
-                      value={option}
-                      checked={this.state.hops.goalMatriculationExam === option}
-                      onChange={onEvent}
-                    />
-                    <label
-                      htmlFor={"goalMatriculationExam" + option}
-                      onClick={onEvent}
-                    >
-                      {valueToLanguageString[option]}
-                    </label>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          {this.state.hops.goalMatriculationExam === "yes" && (
-            <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
-              <div className="application-sub-panel__item-title">
-                {t("content.matriculationSubjectsGoal", { ns: "hops" })}
-              </div>
-              <div className="application-sub-panel__item-data">
-                <MatriculationSubjectsList
-                  initialMatriculationSubjects={
-                    this.state.hops.studentMatriculationSubjects
-                  }
-                  onMatriculationSubjectsChange={
-                    this.onMatriculationSubjectsChange
-                  }
-                />
-              </div>
-            </div>
-          )}
+
           <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
             <div className="application-sub-panel__item-title form-element">
               {t("content.iHave", { ns: "hops" })}
@@ -581,7 +530,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

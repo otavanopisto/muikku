@@ -29,7 +29,6 @@
 .tabs--workspace-materials {
   height: 100%;
   margin: 0;
-  padding: 1px 0 0;
 }
 
 .tabs__header-actions {
@@ -124,13 +123,22 @@
   user-select: none;
   z-index: 1;
 
+  &:first-child {
+    margin: 2px 2px 2px 0;
+  }
+
+  &:last-child {
+    margin: 2px 0 2px 2px;
+  }
+
   &.active {
     background: $color-tab-focus-background;
     border-left: 1px solid $color-tab-border;
     border-right: 1px solid $color-tab-border;
     border-top: 1px solid $color-tab-border;
     color: $color-tab-focus-font;
-    padding: 11px 10px 10px;
+    min-height: 2.25rem;
+    padding: 10px;
     z-index: 3;
   }
 
@@ -202,7 +210,11 @@
   left: 0;
   position: absolute;
   right: 0;
-  top: calc(2.25rem + 1px); // Same value as .tabs__tab-labels height + one pixel for the border
+  top: calc(4.25rem + 1px); // Same value as .tabs__tab-labels + content-panel close height + one pixel for the border
+
+  @include breakpoint($breakpoint-desktop) {
+    top: calc(2.25rem + 1px); // Same value as .tabs__tab-labels height + one pixel for the border
+  }
 }
 
 .tabs__tab-data--guider-student {

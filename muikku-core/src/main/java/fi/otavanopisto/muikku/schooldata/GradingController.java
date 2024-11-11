@@ -13,11 +13,7 @@ import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.dao.grading.GradingScaleEntityDAO;
-import fi.otavanopisto.muikku.dao.grading.GradingScaleItemEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
-import fi.otavanopisto.muikku.model.grading.GradingScaleEntity;
-import fi.otavanopisto.muikku.model.grading.GradingScaleItemEntity;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
@@ -38,12 +34,6 @@ public class GradingController {
   @Inject
   private GradingSchoolDataController gradingSchoolDataController;
 
-  @Inject
-  private GradingScaleEntityDAO gradingScaleEntityDAO;
-  
-  @Inject
-  private GradingScaleItemEntityDAO gradingScaleItemEntityDAO;
-  
   /* Workspace activity */
   
   public WorkspaceActivityInfo listWorkspaceActivities(String schoolDataSource, String studentIdentifier, String workspaceIdentifier, boolean includeTransferCredits) {
@@ -56,39 +46,7 @@ public class GradingController {
     return gradingSchoolDataController.listCompositeGradingScales();
   }
 
-  /* GradingScaleEntity */
-
-  public GradingScaleEntity findGradingScaleEntityById(Long id) {
-    return gradingScaleEntityDAO.findById(id);
-  }
-  
-  public GradingScaleEntity findGradingScaleEntityById(SchoolDataSource schoolDataSource, String identifier) {
-    return gradingScaleEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
-  }
-  
-  public List<GradingScaleEntity> listGradingScaleEntities() {
-    return gradingScaleEntityDAO.listAll();
-  }
-
-  /* GradingScaleItemEntity */
-
-  public GradingScaleItemEntity findGradingScaleItemEntityById(Long id) {
-    return gradingScaleItemEntityDAO.findById(id);
-  }
-  
-  public GradingScaleItemEntity findGradingScaleItemEntityById(SchoolDataSource schoolDataSource, String identifier) {
-    return gradingScaleItemEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
-  }
-  
-  public List<GradingScaleItemEntity> listGradingScaleItemEntities() {
-    return gradingScaleItemEntityDAO.listAll();
-  }
-
   /* GradingScale */
-
-  public GradingScale findGradingScale(GradingScaleEntity entity) {
-    return gradingSchoolDataController.findGradingScale(entity.getDataSource(), entity.getIdentifier());
-  }
 
   public GradingScale findGradingScale(String schoolDataSource, String identifier) {
     return gradingSchoolDataController.findGradingScale(schoolDataSource, identifier);
@@ -104,10 +62,6 @@ public class GradingController {
   
   /* GradingScaleItem */
 
-  public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, GradingScaleItemEntity entity) {
-    return gradingSchoolDataController.findGradingScaleItem(entity.getDataSource(), gradingScale, entity.getIdentifier());
-  }
-  
   public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, String schoolDataSource, String identifier) {
     return gradingSchoolDataController.findGradingScaleItem(schoolDataSource, gradingScale, identifier);
   }
@@ -236,7 +190,8 @@ public class GradingController {
           latestRequest.getRequestText(),
           latestRequest.getDate(),
           latestRequest.getArchived(),
-          Boolean.FALSE); // not handled
+          Boolean.FALSE, // not handled
+          latestRequest.getLocked());
     }
   }
 
@@ -298,7 +253,7 @@ public class GradingController {
   }
   
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
-      String workspaceIdentifier, String studentIdentifier, String requestText, Date date, Boolean archived, Boolean handled) {
+      String workspaceIdentifier, String studentIdentifier, String requestText, Date date, Boolean archived, Boolean handled, Boolean locked) {
     return gradingSchoolDataController.updateWorkspaceAssessmentRequest(
         schoolDataSource,
         identifier,
@@ -309,7 +264,20 @@ public class GradingController {
         requestText,
         date,
         archived,
-        handled);
+        handled,
+        locked);
+  }
+  
+  public WorkspaceAssessmentRequest updateWorkspaceAssessmentLock(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
+      String workspaceIdentifier, String studentIdentifier, boolean locked) {
+    return gradingSchoolDataController.updateWorkspaceAssessmentRequestLock(
+        schoolDataSource,
+        identifier,
+        workspaceUserIdentifier,
+        workspaceUserSchoolDataSource,
+        workspaceIdentifier,
+        studentIdentifier,
+        locked);
   }
 
   public void deleteWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceIdentifier, String studentIdentifier) {

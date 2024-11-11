@@ -9,12 +9,14 @@ import {
 import Button from "~/components/general/button";
 import WorkspaceAssignmentsAndDiaryDialog from "~/components/general/records-history/dialogs/workspace-assignments-and-diaries";
 import { localize } from "~/locales/i18n";
-import { WorkspaceAssessmentState } from "~/generated/client";
 import AssessmentRequestIndicator from "./assessment-request-indicator";
 import RecordsAssessmentIndicator from "./records-assessment-indicator";
 import ActivityIndicator from "./activity-indicator";
 import { RecordWorkspaceActivityByLine } from "./types";
 import { useRecordsInfoContext } from "./context/records-info-context";
+import { getAssessmentData } from "~/helper-functions/shared";
+import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
+import AssignmentDetails from "~/components/general/assignment-info-details";
 
 /**
  * RecordsGroupItemProps
@@ -32,7 +34,8 @@ interface RecordsGroupItemProps {
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const { credit, isCombinationWorkspace } = props;
 
-  const { identifier, userEntityId } = useRecordsInfoContext();
+  const { identifier, userEntityId, displayNotification } =
+    useRecordsInfoContext();
 
   const { t } = useTranslation([
     "studies",
@@ -44,69 +47,12 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
   const [showE, setShowE] = React.useState(false);
 
-  /**
-   * getAssessmentData
-   * @param assessment assessment
-   */
-  const getAssessmentData = (assessment: WorkspaceAssessmentState) => {
-    let evalStateClassName = "";
-    let evalStateIcon = "";
-    let assessmentIsPending = false;
-    let assessmentIsIncomplete = false;
-    let assessmentIsUnassessed = false;
-    let assessmentIsInterim = false;
-
-    switch (assessment.state) {
-      case "pass":
-        evalStateClassName = "workspace-assessment--passed";
-        evalStateIcon = "icon-thumb-up";
-        break;
-      case "pending":
-      case "pending_pass":
-      case "pending_fail":
-        evalStateClassName = "workspace-assessment--pending";
-        evalStateIcon = "icon-assessment-pending";
-        assessmentIsPending = true;
-        break;
-      case "fail":
-        evalStateClassName = "workspace-assessment--failed";
-        evalStateIcon = "icon-thumb-down";
-        break;
-      case "incomplete":
-        evalStateClassName = "workspace-assessment--incomplete";
-        assessmentIsIncomplete = true;
-        break;
-
-      case "interim_evaluation_request":
-        assessmentIsPending = true;
-        assessmentIsInterim = true;
-        evalStateClassName = "workspace-assessment--interim-evaluation-request";
-        evalStateIcon = "icon-assessment-pending";
-        break;
-      case "interim_evaluation":
-        assessmentIsInterim = true;
-        evalStateClassName = "workspace-assessment--interim-evaluation";
-        evalStateIcon = "icon-thumb-up";
-        break;
-
-      case "unassessed":
-      default:
-        assessmentIsUnassessed = true;
-    }
-
-    const literalAssessment =
-      assessment && assessment.text ? assessment.text : null;
-
-    return {
-      evalStateClassName,
-      evalStateIcon,
-      assessmentIsPending,
-      assessmentIsUnassessed,
-      assessmentIsIncomplete,
-      assessmentIsInterim,
-      literalAssessment,
-    };
-  };
+  const { assignmentInfo, assignmentInfoLoading } = useWorkspaceAssignmentInfo({
+    workspaceId: credit.activity.id,
+    userEntityId,
+    enabled: showE, // Only load data when expanded
+    displayNotification,
+  });
 
   /**
    * Renders assessment information block per subject
@@ -117,7 +63,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
     return (
       <>
-        {credit.activity.assessmentStates.map((a) => {
+        {credit.activity.assessmentStates.map((a, i) => {
           const {
             evalStateClassName,
             evalStateIcon,
@@ -130,7 +76,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
           // Find subject data, that contains basic information about that subject
           const subjectData = credit.activity.subjects.find(
-            (s) => s.identifier === a.workspaceSubjectIdentifier
+            (s) => s.identifier === a.subject.identifier
           );
 
           // If not found, return nothing
@@ -148,7 +94,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           if (assessmentIsInterim) {
             return (
               <div
-                key={a.workspaceSubjectIdentifier}
+                key={subjectData.identifier}
                 className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
               >
                 <div
@@ -189,64 +135,76 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
               !assessmentIsInterim
             ) {
               return (
-                <div
-                  key={a.workspaceSubjectIdentifier}
-                  className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
-                >
-                  <div
-                    className={`workspace-assessment__icon ${evalStateIcon}`}
-                  ></div>
-                  <div className="workspace-assessment__subject">
-                    <span className="workspace-assessment__subject-data">
-                      {subjectCodeString}
-                    </span>
-                  </div>
-
-                  <div className="workspace-assessment__date">
-                    <span className="workspace-assessment__date-label">
-                      {t("labels.date")}:
-                    </span>
-
-                    <span className="workspace-assessment__date-data">
-                      {localize.date(a.date)}
-                    </span>
-                  </div>
-
-                  <div className="workspace-assessment__grade">
-                    <span className="workspace-assessment__grade-label">
-                      {t("labels.grade", {
-                        ns: "workspace",
-                      })}
-                      :
-                    </span>
-                    <span className="workspace-assessment__grade-data">
-                      {assessmentIsIncomplete
-                        ? t("labels.incomplete", {
-                            ns: "workspace",
-                          })
-                        : a.grade}
-                    </span>
-                  </div>
-
-                  <div className="workspace-assessment__literal">
-                    <div className="workspace-assessment__literal-label">
-                      {t("labels.evaluation", {
-                        ns: "evaluation",
-                        context: "literal",
-                      })}
-                      :
+                <div key={subjectData.identifier}>
+                  {/*
+                   * If it's first assessment element, show loader until assignment info is loaded and then show assignment details if available
+                   * This is to avoid showing multiple assignment details components as one assignment details is for whole workspace
+                   */}
+                  {i === 0 && assignmentInfoLoading && (
+                    <div className="loader-empty" />
+                  )}
+                  {i === 0 && assignmentInfo.length > 0 && (
+                    <div className="form__row">
+                      <AssignmentDetails assignmentInfoList={assignmentInfo} />
                     </div>
+                  )}
+                  <div
+                    className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
+                  >
                     <div
-                      className="workspace-assessment__literal-data rich-text"
-                      dangerouslySetInnerHTML={{ __html: literalAssessment }}
+                      className={`workspace-assessment__icon ${evalStateIcon}`}
                     ></div>
+                    <div className="workspace-assessment__subject">
+                      <span className="workspace-assessment__subject-data">
+                        {subjectCodeString}
+                      </span>
+                    </div>
+
+                    <div className="workspace-assessment__date">
+                      <span className="workspace-assessment__date-label">
+                        {t("labels.date")}:
+                      </span>
+
+                      <span className="workspace-assessment__date-data">
+                        {localize.date(a.date)}
+                      </span>
+                    </div>
+                    <div className="workspace-assessment__grade">
+                      <span className="workspace-assessment__grade-label">
+                        {t("labels.grade", {
+                          ns: "workspace",
+                        })}
+                        :
+                      </span>
+                      <span className="workspace-assessment__grade-data">
+                        {assessmentIsIncomplete
+                          ? t("labels.incomplete", {
+                              ns: "workspace",
+                            })
+                          : a.grade}
+                      </span>
+                    </div>
+
+                    <div className="workspace-assessment__literal">
+                      <div className="workspace-assessment__literal-label">
+                        {t("labels.evaluation", {
+                          ns: "evaluation",
+                          context: "literal",
+                        })}
+                        :
+                      </div>
+                      <div
+                        className="workspace-assessment__literal-data rich-text"
+                        dangerouslySetInnerHTML={{ __html: literalAssessment }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
               );
             } else {
               return (
                 <div
-                  key={a.workspaceSubjectIdentifier}
+                  key={subjectData.identifier}
                   className={`workspace-assessment workspace-assessment--studies-details ${evalStateClassName}`}
                 >
                   <div
@@ -288,19 +246,42 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
     setShowE((showE) => !showE);
   };
 
+  /**
+   * handleMaterialKeyUp
+   * @param e e
+   */
+  const handleShowEvaluationKeyDown = (
+    e: React.KeyboardEvent<HTMLDivElement>
+  ) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setShowE((showE) => !showE);
+    }
+  };
+
   const animateOpen = showE ? "auto" : 0;
 
   return (
-    <ApplicationListItem
-      key={credit.activity.id}
-      className="course course--studies"
-    >
+    <ApplicationListItem className="course course--studies" tabIndex={-1}>
       <ApplicationListItemHeader
-        key={credit.activity.id}
-        onClick={handleShowEvaluationClick}
         modifiers={
           isCombinationWorkspace ? ["course", "combination-course"] : ["course"]
         }
+        onClick={handleShowEvaluationClick}
+        onKeyDown={handleShowEvaluationKeyDown}
+        role="button"
+        aria-label={
+          showE
+            ? t("wcag.collapseRecordInfo", {
+                ns: "studies",
+              })
+            : t("wcag.expandRecordInfo", {
+                ns: "studies",
+              })
+        }
+        aria-expanded={showE}
+        aria-controls={"record" + credit.activity.id}
+        tabIndex={0}
       >
         <span className="application-list__header-icon icon-books"></span>
         <div className="application-list__header-primary">
@@ -358,7 +339,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
              * Find subject data, that contains basic information about that subject
              */
             const subjectData = credit.activity.subjects.find(
-              (s) => s.identifier === a.workspaceSubjectIdentifier
+              (s) => s.identifier === a.subject.identifier
             );
 
             /**
@@ -376,7 +357,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
             return (
               <div
-                key={a.workspaceSubjectIdentifier}
+                key={subjectData.identifier}
                 className="application-list__item-content-single-item"
               >
                 <span className="application-list__item-content-single-item-primary">
@@ -394,7 +375,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
           })}
         </ApplicationListItemContentContainer>
       ) : null}
-      <AnimateHeight height={animateOpen}>
+      <AnimateHeight height={animateOpen} id={"record" + credit.activity.id}>
         {renderAssessmentsInformations()}
       </AnimateHeight>
     </ApplicationListItem>

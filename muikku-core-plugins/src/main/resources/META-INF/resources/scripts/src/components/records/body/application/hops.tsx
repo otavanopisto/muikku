@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/form.scss";
@@ -8,7 +8,7 @@ import "~/sass/elements/empty.scss";
 import { RecordsType } from "~/reducers/main-function/records";
 import HopsGraph from "~/components/base/hops_editable";
 import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { HOPSState } from "~/reducers/main-function/hops";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
@@ -86,7 +86,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       return (
         <div className="empty">
           <span>
-            {this.props.t("content.hopsNotActivatedByCouncelor", {
+            {this.props.t("content.hopsNotActivatedByCounselor", {
               ns: "hops",
             })}
           </span>
@@ -153,7 +153,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ setHopsTo }, dispatch);
 }
 

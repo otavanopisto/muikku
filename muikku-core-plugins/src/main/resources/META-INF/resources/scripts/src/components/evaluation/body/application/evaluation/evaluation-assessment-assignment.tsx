@@ -6,8 +6,8 @@ import {
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
 import { AnyActionType } from "~/actions/index";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { ButtonPill } from "~/components/general/button";
 import AnimateHeight from "react-animate-height";
 import SlideDrawer from "./slide-drawer";
@@ -359,39 +359,34 @@ class EvaluationAssessmentAssignment extends React.Component<
     if (compositeReply) {
       const { evaluationInfo } = compositeReply;
 
-      /**
-       * Checking if assigments is submitted at all.
-       * Its date string
-       */
+      // Checking if assigments is submitted at all.
+      // Its date string
       const hasSubmitted = compositeReply.submitted;
 
-      /**
-       * Checking if its evaluated with grade
-       */
+      // Checking if its evaluated with grade
       const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
 
-      /**
-       * Needs supplementation
-       */
+      // Needs supplementation
       const needsSupplementation =
         evaluationInfo && evaluationInfo.type === "INCOMPLETE";
 
-      /**
-       * If evaluation is given as supplementation request and student
-       * cancels and makes changes to answers and submits again
-       */
+      // If evaluation is given as supplementation request and student
+      // cancels and makes changes to answers and submits again
       const supplementationDone =
         compositeReply.state === "SUBMITTED" && needsSupplementation;
 
-      /**
-       * Evaluation date if evaluated
-       */
+      // Evaluation date if evaluated
       const evaluationDate = evaluationInfo && evaluationInfo.date;
 
-      /**
-       * Grade class mod
-       */
+      // Grade class mod
       const assignmentGradeClassMod = this.assigmentGradeClass(compositeReply);
+
+      // Points and max points object
+      const pointsAndMaxPoints = {
+        points: this.props.compositeReply.evaluationInfo?.points,
+        maxPoints: this.props.assigment.maxPoints,
+        show: this.props.compositeReply.evaluationInfo?.points !== undefined,
+      };
 
       return (
         <div className="evaluation-modal__item-meta">
@@ -435,6 +430,21 @@ class EvaluationAssessmentAssignment extends React.Component<
                 className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assignmentGradeClassMod}`}
               >
                 {evaluationInfo.grade}
+              </span>
+            </div>
+          )}
+
+          {pointsAndMaxPoints.show && (
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
+                {t("labels.points", { ns: "workspace" })}
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {!pointsAndMaxPoints.maxPoints
+                  ? localize.number(pointsAndMaxPoints.points)
+                  : `${localize.number(
+                      pointsAndMaxPoints.points
+                    )}/${localize.number(pointsAndMaxPoints.maxPoints)}`}
               </span>
             </div>
           )}
@@ -648,7 +658,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ updateOpenedAssignmentEvaluation }, dispatch);
 }
 

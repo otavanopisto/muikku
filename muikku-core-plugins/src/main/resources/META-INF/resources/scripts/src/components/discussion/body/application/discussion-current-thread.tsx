@@ -1,7 +1,7 @@
 import * as React from "react";
 import { DiscussionState } from "~/reducers/discussion";
 import { localize } from "~/locales/i18n";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
@@ -25,7 +25,7 @@ import DiscussionThreadReply from "./discussion-thread-reply";
 import ModifyThreadDrawer from "./modify-thread-drawer";
 import PagerV2 from "~/components/general/pagerV2";
 import { AnyActionType } from "~/actions/index";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   SubscribeDiscussionThread,
   subscribeDiscussionThread,
@@ -197,6 +197,29 @@ class DiscussionCurrentThread extends React.Component<
     };
 
   /**
+   * handleSubscribeOrUnsubscribeKeyDown
+   * @param thread thread
+   * @param isSubscribed isSubscribed
+   */
+  handleSubscribeOrUnsubscribeKeyDown =
+    (thread: DiscussionThread, isSubscribed: boolean) =>
+    (e: React.KeyboardEvent<HTMLAnchorElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        if (isSubscribed) {
+          this.props.unsubscribeDiscussionThread({
+            areaId: thread.forumAreaId,
+            threadId: thread.id,
+          });
+        } else {
+          this.props.subscribeDiscussionThread({
+            areaId: thread.forumAreaId,
+            threadId: thread.id,
+          });
+        }
+      }
+    };
+
+  /**
    * render
    * @returns JSX.Element or null
    */
@@ -241,6 +264,7 @@ class DiscussionCurrentThread extends React.Component<
           avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {
             ns: "messaging",
           })}
+          avatarAriaHidden={true}
         />
       );
     }
@@ -291,41 +315,39 @@ class DiscussionCurrentThread extends React.Component<
               {this.props.discussion.current.title}
             </span>
             <span className="application-list__title-aside">
-              {isSubscribed ? (
-                <Dropdown
-                  openByHover
-                  modifier="discussion-tooltip"
-                  content={this.props.i18n.t("labels.unsubscribe", {
-                    ns: "messaging",
-                  })}
-                >
-                  <IconButton
-                    icon="bookmark-full"
-                    onClick={this.handleSubscribeOrUnsubscribeClick(
-                      this.props.discussion.current,
-                      true
-                    )}
-                    buttonModifiers={["discussion-action-active"]}
-                  />
-                </Dropdown>
-              ) : (
-                <Dropdown
-                  openByHover
-                  modifier="discussion-tooltip"
-                  content={this.props.i18n.t("labels.subscribe", {
-                    ns: "messaging",
-                  })}
-                >
-                  <IconButton
-                    icon="bookmark-empty"
-                    onClick={this.handleSubscribeOrUnsubscribeClick(
-                      this.props.discussion.current,
-                      false
-                    )}
-                    buttonModifiers={["discussion-action"]}
-                  />
-                </Dropdown>
-              )}
+              <Dropdown
+                openByHover
+                modifier="discussion-tooltip"
+                content={
+                  isSubscribed
+                    ? this.props.i18n.t("labels.unsubscribe", {
+                        ns: "messaging",
+                      })
+                    : this.props.i18n.t("labels.subscribe", {
+                        ns: "messaging",
+                      })
+                }
+              >
+                <IconButton
+                  as="div"
+                  role="button"
+                  aria-pressed={isSubscribed}
+                  icon={isSubscribed ? "bookmark-full" : "bookmark-empty"}
+                  onClick={this.handleSubscribeOrUnsubscribeClick(
+                    this.props.discussion.current,
+                    isSubscribed
+                  )}
+                  onKeyDown={this.handleSubscribeOrUnsubscribeKeyDown(
+                    this.props.discussion.current,
+                    isSubscribed
+                  )}
+                  buttonModifiers={
+                    isSubscribed
+                      ? ["discussion-action-active"]
+                      : ["discussion-action"]
+                  }
+                />
+              </Dropdown>
             </span>
           </h2>
         }
@@ -533,7 +555,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       subscribeDiscussionThread,

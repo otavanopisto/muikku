@@ -18,10 +18,6 @@ import { DiscussionState } from "./discussion";
 import { UserIndexState } from "./user-index";
 import { GuiderState } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
-import {
-  MatriculationState,
-  MatriculationSubjectEligibilityState,
-} from "./main-function/records/yo";
 import { RecordsType } from "./main-function/records";
 import { ErrorType } from "./base/error";
 import { ProfileState } from "./main-function/profile";
@@ -31,6 +27,8 @@ import { CeeposState } from "./main-function/ceepos";
 import { JournalsState } from "./workspaces/journals";
 import { ContactsState } from "./base/contacts";
 import { NoteBookState } from "./notebook/notebook";
+import { DependantsState } from "./main-function/dependants";
+import { HopsState } from "./hops";
 
 /**
  * StateType
@@ -40,16 +38,14 @@ export interface StateType {
   locales: LocaleState;
   status: StatusType;
   contacts: ContactsState;
-  title: string;
   websocket?: WebsocketStateType;
-  yo?: MatriculationState;
-  eligibilitySubjects?: MatriculationSubjectEligibilityState;
   credentials?: CredentialsState;
   announcements?: AnnouncementsState;
   hops?: HOPSState;
   summary?: SummaryType;
   studyprogrammes?: StudyprogrammeTypes;
   messages?: MessagesState;
+  dependants: DependantsState;
   userIndex?: UserIndexState;
   userSelect?: UsersSelectState;
   userGroups?: UserGroupsState;
@@ -67,4 +63,5 @@ export interface StateType {
   easyToUse?: EasyToUseFunctionState;
   journals?: JournalsState;
   notebook?: NoteBookState;
+  hopsNew?: HopsState;
 }

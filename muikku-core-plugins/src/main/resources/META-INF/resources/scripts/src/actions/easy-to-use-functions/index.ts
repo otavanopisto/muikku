@@ -1,4 +1,4 @@
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { EasyToUseToolType } from "~/reducers/easy-to-use-functions";
@@ -27,7 +27,7 @@ export interface CloseReadingRuler {
  */
 const openReadingRuler: OpenReadingRuler = function openReadingRuler() {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     dispatch({
@@ -42,7 +42,7 @@ const openReadingRuler: OpenReadingRuler = function openReadingRuler() {
  */
 const closeReadingRuler: CloseReadingRuler = function closeReadingRuler() {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     dispatch({

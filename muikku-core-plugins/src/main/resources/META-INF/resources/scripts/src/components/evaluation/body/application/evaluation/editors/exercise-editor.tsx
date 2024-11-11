@@ -4,8 +4,8 @@ import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
 import CKEditor from "~/components/general/ckeditor";
 import Button from "~/components/general/button";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import { StateType } from "reducers";
@@ -231,7 +231,7 @@ class ExerciseEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
-        evaluationType: "ASSESSMENT",
+        evaluationType: "GRADED",
         assessorIdentifier: this.props.status.userSchoolDataIdentifier,
         gradingScaleIdentifier: null,
         gradeIdentifier: null,
@@ -389,7 +389,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { updateCurrentStudentCompositeRepliesData, displayNotification },
     dispatch

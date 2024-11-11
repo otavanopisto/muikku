@@ -6,8 +6,8 @@ import {
 } from "~/actions/base/notifications";
 import Tabs, { Tab } from "~/components/general/tabs";
 import { useNotesItem } from "./hooks/useNotesItems";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import NotesItemList from "./notes-item-list";
 import { ButtonPill } from "~/components/general/button";
@@ -130,6 +130,7 @@ const Notes: React.FC<NotesProps> = (props) => {
                 <ButtonPill
                   buttonModifiers={["add-note", "within-content"]}
                   icon="plus"
+                  aria-label={t("wcag.createNewNote")}
                 />
               </NotesItemNew>
             </div>
@@ -175,7 +176,8 @@ const Notes: React.FC<NotesProps> = (props) => {
                 <ButtonPill
                   buttonModifiers={["add-note", "within-content"]}
                   icon="plus"
-                  disabled={true}
+                  aria-label={t("wcag.createNewNote")}
+                  disabled
                 />
               </NotesItemNew>
             </div>
@@ -213,7 +215,7 @@ const Notes: React.FC<NotesProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

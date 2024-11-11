@@ -6,7 +6,8 @@
 
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
+import { Action, Dispatch } from "redux";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
@@ -15,7 +16,11 @@ import {
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
-import TocTopic, { Toc, TocElement } from "~/components/general/toc";
+import TocTopic, {
+  Toc,
+  TocElement,
+  TocTopicRef,
+} from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
 import { repairContentNodes } from "~/util/modifiers";
@@ -27,11 +32,15 @@ import {
   setWholeWorkspaceHelp,
   updateWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
-import {
-  MaterialContentNode,
-  MaterialViewRestriction,
-} from "~/generated/client";
+import { MaterialViewRestriction } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+
+/**
+ * TocElementRef
+ */
+interface TocElementRef {
+  [key: string]: HTMLAnchorElement[];
+}
 
 /**
  * ContentProps
@@ -56,32 +65,14 @@ interface ContentState {
 }
 
 /**
- * isScrolledIntoView
- * @param el el
- */
-function isScrolledIntoView(el: HTMLElement) {
-  const rect = el.getBoundingClientRect();
-  const elemTop = rect.top;
-  const elemBottom = rect.bottom;
-
-  const element = document.querySelector(
-    ".content-panel__navigation"
-  ) as HTMLElement;
-
-  if (element) {
-    const isVisible =
-      elemTop < window.innerHeight - 100 &&
-      elemBottom >= element.offsetTop + 50;
-    return isVisible;
-  } else {
-    return true;
-  }
-}
-
-/**
  * ContentComponent
  */
 class ContentComponent extends React.Component<ContentProps, ContentState> {
+  private topicRefs: TocTopicRef[];
+  private elementRefs: TocElementRef;
+
+  private tocElementFocusIndexRef: number;
+
   /**
    * constructor
    * @param props props
@@ -99,45 +90,36 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
       this.onInteractionBetweenSections.bind(this);
     this.onInteractionBetweenSubnodes =
       this.onInteractionBetweenSubnodes.bind(this);
+
+    this.topicRefs = [];
+    this.elementRefs = props.materials.reduce<TocElementRef>((acc, node) => {
+      acc[`s-${node.workspaceMaterialId}`] = [];
+      return acc;
+    }, {});
+
+    this.tocElementFocusIndexRef = 0;
   }
 
   /**
-   * componentDidUpdate
-   * @param prevProps prevProps
-   */
-  componentDidUpdate(prevProps: ContentProps) {
-    if (prevProps.activeNodeId !== this.props.activeNodeId) {
-      this.refresh();
-    }
-  }
-
-  /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps: ContentProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: ContentProps) {
+    // If materials have changed, specifically length, reset elementRefs
+    if (this.props.materials.length !== nextProps.materials.length) {
+      this.elementRefs = nextProps.materials.reduce<TocElementRef>(
+        (acc, node) => {
+          acc[`s-${node.workspaceMaterialId}`] = [];
+          return acc;
+        },
+        {}
+      );
+    }
+
     this.setState({
       materials: nextProps.materials,
     });
-  }
-
-  /**
-   *  refresh
-   * @param props props
-   */
-  refresh(props: ContentProps = this.props) {
-    const tocElement = this.refs[props.activeNodeId] as TocElement;
-    if (tocElement) {
-      const element = tocElement.getElement();
-      if (!isScrolledIntoView(element)) {
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: "start",
-        });
-      }
-    }
   }
 
   /**
@@ -405,6 +387,124 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
   };
 
   /**
+   * Sets ref to topic
+   * @param index index
+   */
+  handleCallbackTocTopicRef = (index: number) => (ref: TocTopicRef) => {
+    this.topicRefs[index] = ref;
+  };
+
+  /**
+   * Sets ref to element
+   * @param parentIdentifier parentIdentifier
+   * @param index index
+   */
+  handleCallbackTocElementRef =
+    (parentIdentifier: string, index: number) => (ref: HTMLAnchorElement) => {
+      this.elementRefs[parentIdentifier][index] = ref;
+    };
+
+  /**
+   * Handle keydown event on toc topic
+   * @param topicIdentifier topicIdentifier
+   */
+  handleTocTopicTitleKeyDown =
+    (topicIdentifier: string) => (e: React.KeyboardEvent) => {
+      // Change focus to first element in topic
+      if (e.key === "ArrowDown") {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.tocElementFocusIndexRef = 0;
+
+        // Check if there are any elements in topic top focus
+        if (this.elementRefs[topicIdentifier].length > 0) {
+          this.elementRefs[topicIdentifier][
+            this.tocElementFocusIndexRef
+          ].setAttribute("tabindex", "0");
+          this.elementRefs[topicIdentifier][
+            this.tocElementFocusIndexRef
+          ].focus();
+        }
+      }
+    };
+
+  /**
+   * Handles keydown event on toc element
+   * @param parentNodeIdentifier parentNodeIdentifier
+   */
+  handleTocElementKeyDown =
+    (parentNodeIdentifier: string) => (e: React.KeyboardEvent) => {
+      /**
+       * elementFocusChange
+       * @param operation operation
+       */
+      const elementFocusChange = (operation: "decrement" | "increment") => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (operation === "decrement") {
+          this.tocElementFocusIndexRef--;
+        } else {
+          this.tocElementFocusIndexRef++;
+        }
+
+        if (this.tocElementFocusIndexRef < 0) {
+          this.tocElementFocusIndexRef =
+            this.elementRefs[parentNodeIdentifier].length - 1;
+        } else if (
+          this.tocElementFocusIndexRef >
+          this.elementRefs[parentNodeIdentifier].length - 1
+        ) {
+          this.tocElementFocusIndexRef = 0;
+        }
+
+        this.elementRefs[parentNodeIdentifier][
+          this.tocElementFocusIndexRef
+        ].setAttribute("tabindex", "0");
+        this.elementRefs[parentNodeIdentifier][
+          this.tocElementFocusIndexRef
+        ].focus();
+      };
+
+      if (e.key === "ArrowUp") {
+        elementFocusChange("decrement");
+      }
+
+      if (e.key === "ArrowDown") {
+        elementFocusChange("increment");
+      }
+    };
+
+  /**
+   * Handle blur event on toc element
+   * @param parentNodeIdentifier parentNodeIdentifier
+   * @param elementIndex elementIndex
+   */
+  handleTocElementBlur =
+    (parentNodeIdentifier: string, elementIndex: number) =>
+    (e: React.FocusEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      this.elementRefs[parentNodeIdentifier][elementIndex].setAttribute(
+        "tabindex",
+        "-1"
+      );
+    };
+
+  /**
+   * Handle focus event on toc element
+   * @param elementIndex elementIndex
+   */
+  handleTocElementFocus = (elementIndex: number) => (e: React.FocusEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.tocElementFocusIndexRef = elementIndex;
+  };
+
+  /**
    * render
    */
   render() {
@@ -456,7 +556,12 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
           const topic = (
             <TocTopic
-              topicId={node.workspaceMaterialId}
+              ref={this.handleCallbackTocTopicRef(nodeIndex)}
+              topicId={
+                this.props.status.loggedIn
+                  ? `tocTopic-${node.workspaceMaterialId}_${this.props.status.userId}`
+                  : `tocTopic-${node.workspaceMaterialId}`
+              }
               isActive={this.isSectionActive(node)}
               name={node.title}
               isHidden={node.hidden}
@@ -469,11 +574,14 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
               modifiers={classModifier}
               iconAfter={icon}
               iconAfterTitle={iconTitle}
+              onTitleKeyDown={this.handleTocTopicTitleKeyDown(
+                `s-${node.workspaceMaterialId}`
+              )}
               language={node.titleLanguage || this.props.workspace.language}
             >
               {!isTocTopicViewRestrictedFromUser &&
                 node.children
-                  .map((subnode) => {
+                  .map((subnode, subNodeIndex) => {
                     // Boolean if there is view Restriction for toc element
                     const isTocElementViewRestricted =
                       subnode.viewRestrict ===
@@ -488,8 +596,8 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                     const modifier = isAssignment
                       ? "assignment"
                       : isExercise
-                      ? "exercise"
-                      : null;
+                        ? "exercise"
+                        : null;
 
                     const icon: string =
                       isTocElementViewRestricted &&
@@ -519,8 +627,13 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
 
                     const pageElement = (
                       <TocElement
+                        id={`tocElement-${subnode.workspaceMaterialId}`}
                         modifier={modifier}
-                        ref={subnode.workspaceMaterialId + ""}
+                        tabIndex={-1}
+                        ref={this.handleCallbackTocElementRef(
+                          `s-${node.workspaceMaterialId}`,
+                          subNodeIndex
+                        )}
                         key={subnode.workspaceMaterialId}
                         isActive={
                           this.props.activeNodeId ===
@@ -528,7 +641,6 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                         }
                         className={className}
                         isHidden={subnode.hidden || node.hidden}
-                        disableScroll
                         iconAfter={icon}
                         iconAfterTitle={iconTitle}
                         hash={
@@ -536,7 +648,15 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
                             ? null
                             : "p-" + subnode.workspaceMaterialId
                         }
-                        language={
+                        onKeyDown={this.handleTocElementKeyDown(
+                          `s-${node.workspaceMaterialId}`
+                        )}
+                        onBlur={this.handleTocElementBlur(
+                          `s-${node.workspaceMaterialId}`,
+                          subNodeIndex
+                        )}
+                        onFocus={this.handleTocElementFocus(subNodeIndex)}
+                        lang={
                           subnode.titleLanguage ||
                           node.titleLanguage ||
                           this.props.workspace.language
@@ -635,7 +755,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { updateWorkspaceMaterialContentNode, setWholeWorkspaceHelp },
     dispatch
@@ -647,5 +767,5 @@ const componentWithTranslation = withTranslation(["workspace", "common"], {
 })(ContentComponent);
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true,
+  forwardRef: true,
 })(componentWithTranslation);

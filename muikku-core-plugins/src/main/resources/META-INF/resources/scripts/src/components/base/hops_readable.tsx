@@ -1,12 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import { AnyActionType } from "~/actions";
 import { HopsUppersecondary } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { StatusType } from "~/reducers/base/status";
+import { Action, Dispatch } from "redux";
 
 /**
  * HopsProps
@@ -41,11 +41,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps: HopsProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: HopsProps) {
     const nextData = nextProps.data || nextProps.defaultData;
     if (nextData !== this.state.hops) {
       this.setState({ hops: nextData });
@@ -192,8 +192,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.german
                 ? "-"
                 : this.state.hops.german
-                ? t("labels.yes")
-                : t("labels.yes")}
+                  ? t("labels.yes")
+                  : t("labels.yes")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
@@ -204,8 +204,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.french
                 ? "-"
                 : this.state.hops.french
-                ? t("labels.yes")
-                : t("labels.yes")}
+                  ? t("labels.yes")
+                  : t("labels.yes")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
@@ -216,8 +216,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.italian
                 ? "-"
                 : this.state.hops.italian
-                ? t("labels.yes")
-                : t("labels.yes")}
+                  ? t("labels.yes")
+                  : t("labels.yes")}
             </span>
           </div>
           <div className="application-sub-panel__item-data">
@@ -228,8 +228,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
               {!this.state.hops.spanish
                 ? "-"
                 : this.state.hops.spanish
-                ? t("labels.yes")
-                : t("labels.yes")}
+                  ? t("labels.yes")
+                  : t("labels.yes")}
             </span>
           </div>
         </div>
@@ -303,7 +303,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

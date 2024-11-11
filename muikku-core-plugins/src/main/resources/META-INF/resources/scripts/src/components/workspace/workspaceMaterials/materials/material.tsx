@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 
 import MaterialLoader from "~/components/base/material-loader";
 import {
@@ -12,7 +12,7 @@ import {
   setCurrentWorkspace,
   SetCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
@@ -26,11 +26,9 @@ import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
-import {
-  MaterialCompositeReply,
-  WorkspaceAssessmentStateType,
-} from "~/generated/client";
+import { MaterialCompositeReply } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { MaterialLoaderPoints } from "~/components/base/material-loader/points";
 
 /**
  * WorkspaceMaterialProps
@@ -38,6 +36,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface WorkspaceMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
+  materialsAreDisabled: boolean;
   materialContentNode: MaterialContentNodeWithIdAndLogic;
   folder: MaterialContentNodeWithIdAndLogic;
   compositeReplies: MaterialCompositeReply;
@@ -45,6 +44,7 @@ interface WorkspaceMaterialProps extends WithTranslation {
   showEvenIfHidden: boolean;
   workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
+  anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
 }
 
@@ -127,40 +127,6 @@ class WorkspaceMaterial extends React.Component<
       }
     }
 
-    let isDisabled = false;
-
-    // Values to indicate pending state
-    const pendingValues: WorkspaceAssessmentStateType[] = [
-      "pending",
-      "pending_fail",
-      "pending_pass",
-    ];
-
-    if (this.props.workspace.activity) {
-      // Get the number of modules
-      const valueToCheck =
-        this.props.workspace.activity.assessmentStates.length;
-      let passValueCount = 0;
-
-      this.props.workspace.activity.assessmentStates.forEach((activity) => {
-        // Check if any of the modules are in pending state
-        if (pendingValues.includes(activity.state)) {
-          isDisabled = true;
-        }
-        // Check if module is passed and increment counter
-        if (activity.state === "pass") {
-          passValueCount++;
-        }
-      });
-
-      // there must be at least one assessmentState and
-      // If all modules are passed, materials are disabled.
-      // This is to prevent students from changing their answers after passing grades are given
-      if (valueToCheck > 0 && passValueCount === valueToCheck) {
-        isDisabled = true;
-      }
-    }
-
     return (
       <LazyLoader
         useChildrenAsLazy={true}
@@ -185,12 +151,17 @@ class WorkspaceMaterial extends React.Component<
             material={this.props.materialContentNode}
             workspace={this.props.workspace}
             compositeReplies={this.props.compositeReplies}
-            answerable={this.props.status.loggedIn && !isDisabled}
-            readOnly={!this.props.status.loggedIn || isDisabled}
+            answerable={
+              this.props.status.loggedIn && !this.props.materialsAreDisabled
+            }
+            readOnly={
+              !this.props.status.loggedIn || this.props.materialsAreDisabled
+            }
             onAssignmentStateModified={this.updateWorkspaceActivity}
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
             readspeakerComponent={this.props.readspeakerComponent}
+            anchorElement={this.props.anchorItem}
           >
             {(props, state, stateConfiguration) => (
               <div>
@@ -225,6 +196,7 @@ class WorkspaceMaterial extends React.Component<
                     ></div>
                     <MaterialLoaderDate {...props} {...state} />
                     <MaterialLoaderGrade {...props} {...state} />
+                    <MaterialLoaderPoints {...props} {...state} />
                     <MaterialLoaderAssesment {...props} {...state} />
                   </div>
                 ) : null}
@@ -246,6 +218,7 @@ function mapStateToProps(state: StateType) {
   return {
     workspaceEditMode: state.workspaces.editMode,
     status: state.status,
+    materialsAreDisabled: state.workspaces.materialsAreDisabled,
   };
 }
 
@@ -253,7 +226,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 

@@ -2,6 +2,9 @@ package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
 public class WorkspaceLengthUnitRestModel {
 
+  public WorkspaceLengthUnitRestModel() {
+  }
+  
   public WorkspaceLengthUnitRestModel(String identifier, String symbol, String name) {
     this.identifier = identifier;
     this.symbol = symbol;

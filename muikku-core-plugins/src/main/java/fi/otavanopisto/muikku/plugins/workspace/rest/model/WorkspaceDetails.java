@@ -85,4 +85,5 @@ public class WorkspaceDetails {
   private Long rootFolderId;
   private Long helpFolderId;
   private Long indexFolderId;
+
 }

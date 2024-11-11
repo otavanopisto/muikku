@@ -131,10 +131,6 @@
   margin-bottom: 10px;
 }
 
-.env-dialog__row--new-contact-event {
-  display: flex;
-}
-
 .env-dialog__row--ckeditor {
   display: flex;
   flex-basis: auto;
@@ -170,7 +166,8 @@
 }
 
 // This encapsulates dates fields that appear on the same row
-.env-dialog__row--dates {
+.env-dialog__row--dates,
+.env-dialog__row--new-contact-event {
   display: flex;
   flex-direction: row nowrap;
 
@@ -188,6 +185,12 @@
 
   @include breakpoint($breakpoint-pad) {
     flex-direction: initial;
+  }
+}
+
+.env-dialog__row--new-contact-event {
+  .env-dialog__form-element-container {
+    flex-grow: 1;
   }
 }
 
@@ -296,6 +299,8 @@
   @include breakpoint($breakpoint-pad) {
     height: $input-height-desktop;
   }
+
+  @include form-focus;
 }
 
 .env-dialog__input:disabled {
@@ -362,6 +367,8 @@
     font-size: $text-desktop-font-size;
     height: $select-height-desktop;
   }
+
+  @include form-focus;
 }
 
 .env-dialog__textarea {
@@ -378,6 +385,8 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+
+  @include form-focus;
 }
 
 // "Non-dialog", used within context

@@ -81,7 +81,7 @@ export default [
       { character: "∢", latexCommand: "\\sphericalangle", popular: true },
       { character: "|", latexCommand: "\\mid", popular: true }, // \pipe,
       { character: "‖", latexCommand: "\\parallel", popular: true },
-      { character: "⇌", latexCommand: "\\xrightleftharpoons", noWrite: true },
+      { character: "⇌" },
       { character: "⇅" },
       { character: "∠", latexCommand: "\\angle" },
       { character: "↑", latexCommand: "\\uparrow" },

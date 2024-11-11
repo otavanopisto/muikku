@@ -4,13 +4,15 @@ import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
 import Dropdown from "~/components/general/dropdown";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { Dependant } from "~/reducers/main-function/dependants";
+import { Action, Dispatch } from "redux";
 
 /**
  * ItemDataElement
@@ -37,6 +39,7 @@ interface MainFunctionNavbarProps extends WithTranslation {
   status: StatusType;
   messageCount: number;
   title: string;
+  dependants: Dependant[];
 }
 
 /**
@@ -105,6 +108,33 @@ class MainFunctionNavbar extends React.Component<
         condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW,
       },
       {
+        modifier: "hops",
+        trail: "hops",
+        text: "Hops",
+        href: "/hops",
+        icon: "compass",
+        to: true,
+        condition: this.props.status.services.hops.isAvailable,
+      },
+      {
+        modifier: "hops",
+        trail: "guardian_hops",
+        text: "Hops",
+        href: "/guardian_hops",
+        icon: "compass",
+        to: true,
+        condition: this.props.status.permissions.GUARDIAN_VIEW,
+      },
+      {
+        modifier: "guardian",
+        trail: "guardian",
+        text: t("labels.dependant", { count: this.props.dependants.length }),
+        href: "/guardian",
+        icon: "users",
+        to: true,
+        condition: this.props.status.permissions.GUARDIAN_VIEW,
+      },
+      {
         modifier: "announcer",
         trail: "announcer",
         text: t("labels.announcer"),
@@ -132,8 +162,6 @@ class MainFunctionNavbar extends React.Component<
         condition: this.props.status.permissions.ORGANIZATION_VIEW,
       },
     ];
-
-    t("labels.forgotPasswordLink");
 
     return (
       <Navbar
@@ -236,7 +264,7 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     messageCount: state.messages.unreadThreadCount,
-    title: state.title,
+    dependants: (state.dependants && state.dependants.list) || [],
   };
 }
 
@@ -244,7 +272,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) => ({});
+const mapDispatchToProps = (dispatch: Dispatch<Action<AnyActionType>>) => ({});
 
 export default withTranslation(["common"])(
   connect(mapStateToProps, mapDispatchToProps)(MainFunctionNavbar)

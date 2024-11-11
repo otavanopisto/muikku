@@ -8,8 +8,10 @@ import "~/sass/elements/ordered-container.scss";
 import "~/sass/elements/panel.scss";
 
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { ErrorType } from "~/reducers/base/error";
+import { Action, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 
 /**
  * ErrorBodyProps
@@ -33,7 +35,7 @@ class ErrorBody extends React.Component<ErrorBodyProps, ErrorBodyState> {
   render() {
     return (
       <div>
-        <MainFunctionNavbar />
+        <MainFunctionNavbar title={this.props.error.title} />
         <ScreenContainer viewModifiers="error">
           <div className="panel panel--error">
             <div className="panel__header">
@@ -66,7 +68,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

@@ -16,9 +16,8 @@ import {
 } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   UpdateAssignmentStateTriggerType,
   updateAssignmentState,
@@ -41,6 +40,7 @@ import {
 import { MaterialCompositeReply } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import MApi from "~/api/api";
+import { connect } from "react-redux";
 
 /* i18n.t("", { ns: "materials" }); */
 
@@ -58,7 +58,7 @@ const STATES = [
     "button-class": "muikku-submit-exercise",
 
     //This is what by default appears on the button
-    "button-text": "actions.send",
+    "button-text": "actions.send_exercise",
 
     //Buttons are not disabled
     "button-disabled": false,
@@ -71,7 +71,21 @@ const STATES = [
   },
   {
     "assignment-type": "EXERCISE",
-    state: ["SUBMITTED", "PASSED", "FAILED", "INCOMPLETE"],
+    state: ["SUBMITTED"],
+
+    //With this property active whenever in this state the answers will be checked
+    "checks-answers": true,
+    "displays-hide-show-answers-on-request-button-if-allowed": true,
+    "button-class": "muikku-submit-exercise",
+    "button-text": "actions.cancel_exercise",
+    "button-disabled": false,
+    "success-state": "ANSWERED",
+    //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
+    "modify-state": "ANSWERED",
+  },
+  {
+    "assignment-type": "EXERCISE",
+    state: ["PASSED", "FAILED", "INCOMPLETE"],
 
     //With this property active whenever in this state the answers will be checked
     "checks-answers": true,
@@ -87,7 +101,7 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: ["UNANSWERED", "ANSWERED"],
     "button-class": "muikku-submit-assignment",
-    "button-text": "actions.send",
+    "button-text": "actions.send_assignment",
     //Represents a message that will be shown once the state changes to the success state
     "success-text": "notifications.assignmentSubmitted",
     "button-disabled": false,
@@ -266,6 +280,7 @@ export interface MaterialLoaderProps {
   answersVisible?: boolean;
   isViewRestricted?: boolean;
   readspeakerComponent?: JSX.Element;
+  anchorElement?: JSX.Element;
 
   children?: (
     props: MaterialLoaderProps,
@@ -407,11 +422,12 @@ class MaterialLoader extends React.Component<
     this.create();
   }
   /**
-   * componentWillUpdate
+   * UNSAFE_componentWillUpdate
    * @param nextProps nextProps
    * @param nextState nextState
    */
-  componentWillUpdate(
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillUpdate(
     nextProps: MaterialLoaderProps,
     nextState: MaterialLoaderState
   ) {
@@ -721,7 +737,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       updateAssignmentState,

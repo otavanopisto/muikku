@@ -19,6 +19,7 @@ public class PyramusIdentifierMapper {
   
   private static final String STUDENT_PREFIX = "STUDENT-";
   private static final String STAFF_PREFIX = "STAFF-";
+  private static final String STUDENTPARENT_PREFIX = "STUDENTPARENT-";
   private static final String WORKSPACE_STUDENT_PREFIX = "STUDENT-";
   private static final String WORKSPACE_STAFF_PREFIX = "STAFF-";
   private static final String ENVIRONMENT_ROLE_PREFIX = "ENV-";
@@ -42,6 +43,10 @@ public class PyramusIdentifierMapper {
   
   public String getWorkspaceStudentIdentifier(Long id) {
     return WORKSPACE_STUDENT_PREFIX + id.toString();
+  }
+  
+  public SchoolDataIdentifier getAssessmentRequestIdentifier(Long id) {
+    return id == null ? null : new SchoolDataIdentifier(id.toString(), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
   
   public SchoolDataIdentifier getGradeIdentifier(Long gradeId) {
@@ -79,6 +84,24 @@ public class PyramusIdentifierMapper {
     
     return null;
   }
+
+  public PyramusUserType getIdentifierUserType(SchoolDataIdentifier identifier) {
+    return getIdentifierUserType(identifier.getIdentifier());
+  }
+  
+  public PyramusUserType getIdentifierUserType(String identifier) {
+    if (StringUtils.startsWith(identifier, STUDENT_PREFIX)) {
+      return PyramusUserType.STUDENT;
+    }
+    if (StringUtils.startsWith(identifier, STAFF_PREFIX)) {
+      return PyramusUserType.STAFFMEMBER;
+    }
+    if (StringUtils.startsWith(identifier, STUDENTPARENT_PREFIX)) {
+      return PyramusUserType.STUDENTPARENT;
+    }
+    
+    return null;
+  }
   
   public SchoolDataIdentifier getStaffIdentifier(Long id) {
     return new SchoolDataIdentifier(STAFF_PREFIX + id.toString(), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
@@ -91,7 +114,19 @@ public class PyramusIdentifierMapper {
     
     return null;
   }
+
+  public SchoolDataIdentifier getStudentParentIdentifier(Long id) {
+    return new SchoolDataIdentifier(STUDENTPARENT_PREFIX + id.toString(), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+  }
   
+  public Long getStudentParentId(String identifier) {
+    if (StringUtils.startsWith(identifier, STUDENTPARENT_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(identifier, STUDENTPARENT_PREFIX.length()));
+    }
+    
+    return null;
+  }
+
   public boolean isStudentIdentifier(String identifier) {
     return StringUtils.startsWith(identifier, STUDENT_PREFIX);
   }

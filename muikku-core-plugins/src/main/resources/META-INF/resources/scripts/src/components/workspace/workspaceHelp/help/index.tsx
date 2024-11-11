@@ -7,7 +7,7 @@
 
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
@@ -20,7 +20,7 @@ import HelpMaterial from "./help-material-page";
 import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { Redirect } from "react-router-dom";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -35,6 +35,7 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MaterialViewRestriction } from "~/generated/client";
 import ReadSpeakerReader from "~/components/general/readspeaker";
+import { BackToToc } from "~/components/general/toc";
 
 /**
  * HelpMaterialsProps
@@ -49,8 +50,6 @@ interface HelpMaterialsProps extends WithTranslation {
   workspaceEditMode: WorkspaceEditModeStateType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (activeNodeId: number) => any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onOpenNavigation: () => any;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -71,6 +70,8 @@ const DEFAULT_OFFSET = 67;
  */
 class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
+  private contentPanelRef = React.createRef<ContentPanel>();
+
   /**
    * constructor
    * @param props props
@@ -83,7 +84,6 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       redirect: null,
     };
 
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.startupEditor = this.startupEditor.bind(this);
@@ -121,7 +121,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   UNSAFE_componentWillReceiveProps(nextProps: HelpMaterialsProps) {
@@ -161,7 +161,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     const { t } = this.props;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const materialManagementItemsOptions: Array<any> = [
+    const materialManagementItemsOptions = [
       {
         icon: "plus",
         text: t("labels.create_chapter", { ns: "materials" }),
@@ -344,13 +344,6 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   }
 
   /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    this.props.onOpenNavigation();
-  }
-
-  /**
    * onScroll
    */
   onScroll() {
@@ -450,6 +443,57 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   };
 
   /**
+   * renderDropdownItem
+   * @param item Dropdown item
+   * @param closeDropdown Function to close the dropdown
+   * @returns Rendered dropdown item
+   */
+  renderDropdownItem = (item: any, closeDropdown: () => void) => {
+    if (item.file) {
+      return (
+        <label
+          htmlFor="baseFileInput"
+          className={`link link--full link--material-management-dropdown`}
+        >
+          <input
+            type="file"
+            id="baseFileInput"
+            onChange={(e) => {
+              closeDropdown();
+              item.onChange && item.onChange(e);
+            }}
+          />
+          <span className={`link__icon icon-${item.icon}`}></span>
+          <span>{item.text}</span>
+        </label>
+      );
+    }
+    return (
+      <Link
+        className={`link link--full link--material-management-dropdown`}
+        onClick={() => {
+          closeDropdown();
+          item.onClick && item.onClick();
+        }}
+      >
+        <span className={`link__icon icon-${item.icon}`}></span>
+        <span>{item.text}</span>
+      </Link>
+    );
+  };
+
+  /**
+   * renderDropdownItems
+   * @param items Array of dropdown items
+   * @returns Array of rendered dropdown items
+   */
+  renderDropdownItems = (items: any[]) =>
+    items.map(
+      (item) => (closeDropdown: () => void) =>
+        this.renderDropdownItem(item, closeDropdown)
+    );
+
+  /**
    * render
    */
   render() {
@@ -526,44 +570,14 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown
             modifier="material-management"
-            items={this.getMaterialsOptionListDropdown(
-              section,
-              nextSection,
-              null,
-              true
-            ).map((item) => (closeDropdown: () => void) => {
-              if (item.file) {
-                return (
-                  <label
-                    htmlFor="baseFileInput"
-                    className={`link link--full link--material-management-dropdown`}
-                  >
-                    <input
-                      type="file"
-                      id="baseFileInput"
-                      onChange={(e) => {
-                        closeDropdown();
-                        item.onChange && item.onChange(e);
-                      }}
-                    />
-                    <span className={`link__icon icon-${item.icon}`}></span>
-                    <span>{item.text}</span>
-                  </label>
-                );
-              }
-              return (
-                <Link
-                  className={`link link--full link--material-management-dropdown`}
-                  onClick={() => {
-                    closeDropdown();
-                    item.onClick && item.onClick();
-                  }}
-                >
-                  <span className={`link__icon icon-${item.icon}`}></span>
-                  <span>{item.text}</span>
-                </Link>
-              );
-            })}
+            items={this.renderDropdownItems(
+              this.getMaterialsOptionListDropdown(
+                section,
+                nextSection,
+                null,
+                true
+              )
+            )}
           >
             <ButtonPill
               buttonModifiers="material-management-master"
@@ -601,46 +615,14 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               >
                 <Dropdown
                   modifier="material-management"
-                  items={this.getMaterialsOptionListDropdown(
-                    section,
-                    nextSection,
-                    nextSibling,
-                    false
-                  ).map((item) => (closeDropdown: () => void) => {
-                    if (item.file) {
-                      return (
-                        <label
-                          htmlFor={node.workspaceMaterialId + "-input"}
-                          className={`link link--full link--material-management-dropdown`}
-                        >
-                          <input
-                            type="file"
-                            id={node.workspaceMaterialId + "-input"}
-                            onChange={(e) => {
-                              closeDropdown();
-                              item.onChange && item.onChange(e);
-                            }}
-                          />
-                          <span
-                            className={`link__icon icon-${item.icon}`}
-                          ></span>
-                          <span>{item.text}</span>
-                        </label>
-                      );
-                    }
-                    return (
-                      <Link
-                        className={`link link--full link--material-management-dropdown`}
-                        onClick={() => {
-                          closeDropdown();
-                          item.onClick && item.onClick();
-                        }}
-                      >
-                        <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{item.text}</span>
-                      </Link>
-                    );
-                  })}
+                  items={this.renderDropdownItems(
+                    this.getMaterialsOptionListDropdown(
+                      section,
+                      nextSection,
+                      nextSibling,
+                      false
+                    )
+                  )}
                 >
                   <ButtonPill
                     buttonModifiers="material-management-master"
@@ -667,14 +649,14 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             let contentToRead = [
               ...this.props.materials
                 .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
-                .map((section) => `sectionId${section.workspaceMaterialId}`),
+                .map((section) => `s-${section.workspaceMaterialId}`),
             ];
 
             if (pageI !== 0) {
               contentToRead = [
                 ...section.children
                   .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
-                  .map((page) => `pageId${page.workspaceMaterialId}`),
+                  .map((page) => `p-${page.workspaceMaterialId}`),
                 ...contentToRead,
               ];
             }
@@ -694,7 +676,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           const material =
             !this.props.workspace || (!isEditable && node.hidden) ? null : (
               <ContentPanelItem
-                id={`pageId${node.workspaceMaterialId}`}
+                id={`p-${node.workspaceMaterialId}`}
                 ref={node.workspaceMaterialId + ""}
                 key={node.workspaceMaterialId + ""}
               >
@@ -712,6 +694,15 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   workspace={this.props.workspace}
                   isViewRestricted={false}
                   readspeakerComponent={readSpeakerComponent}
+                  anchorItem={
+                    <BackToToc
+                      tocElementId={`tocElement-${node.workspaceMaterialId}`}
+                      openToc={
+                        this.contentPanelRef.current &&
+                        this.contentPanelRef.current.openNavigation
+                      }
+                    />
+                  }
                 />
               </ContentPanelItem>
             );
@@ -728,7 +719,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
-          id={`sectionId${section.workspaceMaterialId}`}
+          id={`s-${section.workspaceMaterialId}`}
         >
           <div
             id={"s-" + section.workspaceMaterialId}
@@ -780,6 +771,17 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               lang={section.titleLanguage || this.props.workspace.language}
             >
               {section.title}
+              <BackToToc
+                tocElementId={
+                  this.props.status.loggedIn
+                    ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                    : `tocTopic-${section.workspaceMaterialId}`
+                }
+                openToc={
+                  this.contentPanelRef.current &&
+                  this.contentPanelRef.current.openNavigation
+                }
+              />
             </div>
           </h2>
 
@@ -800,17 +802,19 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
     return (
       <ContentPanel
-        onOpenNavigation={this.onOpenNavigation}
         modifier="workspace-instructions"
         navigation={this.props.navigation}
         title={t("labels.instructions", { ns: "workspace" })}
-        ref="content-panel"
         readspeakerComponent={
           <ReadSpeakerReader
             readParameterType="readid"
             readParameters={readSpeakerParameters}
           />
         }
+        t={t}
+        i18n={this.props.i18n}
+        tReady={this.props.tReady}
+        ref={this.contentPanelRef}
       >
         {results}
         {emptyMessage}
@@ -838,7 +842,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,
@@ -857,5 +861,5 @@ const componentWithTranslation = withTranslation(
 )(Help);
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true,
+  forwardRef: true,
 })(componentWithTranslation);

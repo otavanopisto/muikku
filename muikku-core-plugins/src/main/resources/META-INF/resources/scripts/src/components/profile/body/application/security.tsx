@@ -8,7 +8,7 @@ import {
   loadProfileUsername,
   LoadProfileUsernameTriggerType,
 } from "~/actions/main-function/profile";
-import { bindActionCreators, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -62,7 +62,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line camelcase
@@ -301,7 +301,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { displayNotification, loadProfileUsername },
     dispatch

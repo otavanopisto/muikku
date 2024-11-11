@@ -1,7 +1,7 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
@@ -29,11 +29,10 @@ import { withTranslation, WithTranslation } from "react-i18next";
 /**
  * ArchiveDialogProps
  */
-interface ArchiveDialogProps
-  extends EvaluationAssessmentRequest,
-    WithTranslation {
+interface ArchiveDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
+  evaluationAssessmentRequest: EvaluationAssessmentRequest;
   place: "card" | "modal";
   isOpen?: boolean;
   onClose?: () => void;
@@ -79,7 +78,9 @@ class ArchiveDialog extends React.Component<
    * deleteRequest
    */
   archiveStudent() {
-    const { workspaceUserEntityId, workspaceEntityId, onClose } = this.props;
+    const { onClose } = this.props;
+    const { workspaceUserEntityId, workspaceEntityId } =
+      this.props.evaluationAssessmentRequest;
 
     this.props.archiveStudent({
       workspaceEntityId,
@@ -107,7 +108,7 @@ class ArchiveDialog extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const { firstName, lastName } = this.props;
+    const { firstName, lastName } = this.props.evaluationAssessmentRequest;
 
     const studentNameString = `${lastName}, ${firstName}`;
 
@@ -182,7 +183,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       archiveStudent,

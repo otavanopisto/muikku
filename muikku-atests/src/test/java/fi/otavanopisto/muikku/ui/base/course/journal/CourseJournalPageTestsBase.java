@@ -3,9 +3,9 @@ package fi.otavanopisto.muikku.ui.base.course.journal;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+
 import org.junit.Test;
 
 import fi.otavanopisto.muikku.TestUtilities;

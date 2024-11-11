@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import EnvironmentDialog from "~/components/general/environment-dialog";
@@ -92,7 +92,7 @@ class NewEditAnnouncement extends SessionStateComponent<
               ({
                 type: "workspace",
                 value: w,
-              } as ContactRecipientType)
+              }) as ContactRecipientType
           )
           .concat(
             props.announcement.userGroupEntityIds
@@ -102,7 +102,7 @@ class NewEditAnnouncement extends SessionStateComponent<
                   ({
                     type: "usergroup",
                     value: props.userIndex.groups[id],
-                  } as ContactRecipientType)
+                  }) as ContactRecipientType
               ) as any
           )
       : this.getPredefinedWorkspaceByIdToConcat(props);
@@ -130,10 +130,10 @@ class NewEditAnnouncement extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: NewEditAnnouncementProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: NewEditAnnouncementProps) {
     if (
       (this.props.announcement &&
         nextProps.announcement &&
@@ -150,7 +150,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             ({
               type: "workspace",
               value: w,
-            } as ContactRecipientType)
+            }) as ContactRecipientType
         )
         .concat(
           nextProps.announcement.userGroupEntityIds
@@ -160,7 +160,7 @@ class NewEditAnnouncement extends SessionStateComponent<
                 ({
                   type: "usergroup",
                   value: nextProps.userIndex.groups[id],
-                } as ContactRecipientType)
+                }) as ContactRecipientType
             ) as any
         );
 
@@ -298,7 +298,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             ({
               type: "workspace",
               value: w,
-            } as ContactRecipientType)
+            }) as ContactRecipientType
         );
       this.setStateAndClear(
         {
@@ -704,7 +704,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { createAnnouncement, updateAnnouncement, displayNotification },
     dispatch

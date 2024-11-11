@@ -1,13 +1,12 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { StateType } from "~/reducers";
+import { connect } from "react-redux";
 import "~/sass/elements/buttons.scss";
 import {
   deleteProfileImage,
   DeleteProfileImageTriggerType,
 } from "~/actions/main-function/profile";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -103,7 +102,7 @@ class DeleteImageDialog extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ deleteProfileImage }, dispatch);
 }
 

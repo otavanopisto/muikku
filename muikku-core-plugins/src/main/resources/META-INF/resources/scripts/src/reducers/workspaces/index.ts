@@ -5,10 +5,8 @@ import {
   ActivityLogEntry,
   AssessmentRequest,
   WorkspaceAdditionalInfo,
-  WorkspaceChatStatus,
   WorkspaceDetails,
   WorkspaceMaterialProducer,
-  WorkspaceSignupGroup,
   WorkspaceActivity,
   Curriculum,
   EducationType,
@@ -28,6 +26,7 @@ import {
   MaterialEvaluation,
   WorkspaceAccess,
   WorkspaceMandatority,
+  WorkspaceSettings,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -105,10 +104,10 @@ export interface WorkspaceDataType {
   numVisits: number;
   published: boolean;
   urlName: string;
-  chatStatus?: WorkspaceChatStatus;
+  organizationEntityId: number;
   //These are usually part of the workspace but don't appear in certain occassions
   //Usually available if internally loaded
-  access?: WorkspaceAccess;
+  access?: WorkspaceAccess; // This exists in settings
   //These appear in certain circumstances
   //this one is actually also available in the current workspace in workspace/
   isCourseMember?: boolean;
@@ -120,6 +119,7 @@ export interface WorkspaceDataType {
   subjects?: WorkspaceSubject[];
 
   //These are optional addons, and are usually not available
+  settings?: WorkspaceSettings;
   activity?: WorkspaceActivity;
   studentActivity?: WorkspaceActivity;
   forumStatistics?: DiscussionWorkspaceStatistic;
@@ -136,7 +136,6 @@ export interface WorkspaceDataType {
   inactiveStudents?: WorkspaceStudentSearchResult;
   studentsSelect?: UserSelectType;
   details?: WorkspaceDetails;
-  permissions?: WorkspaceSignupGroup[];
   mandatority?: WorkspaceMandatority | null;
 
   // These are only in organizationlistings
@@ -301,9 +300,14 @@ export interface WorkspacesState {
   types?: WorkspaceType[];
   hasMore: boolean;
   toolbarLock: boolean;
+  settings: WorkspaceSettings;
 
   // Workspace material editor and boolean to indicate if edit mode is active
   editMode?: WorkspaceEditModeStateType;
+  // Whether workspace materials are disabled (e.g. being evaluated or all modules are in pass state)
+  materialsAreDisabled: boolean;
+  // Whether workspace is being evaluated (affects whether active assement request can be cancelled)
+  workspaceIsBeingEvaluated: boolean;
   materialEditor?: WorkspaceMaterialEditorType;
   materialExtraTools?: WorkspaceMaterialExtraTools;
 }
@@ -343,6 +347,7 @@ const initialWorkspacesState: WorkspacesState = {
   types: null,
   hasMore: false,
   toolbarLock: false,
+  settings: null,
   editMode: {
     active: false,
     available: false,
@@ -377,6 +382,8 @@ const initialWorkspacesState: WorkspacesState = {
   materialExtraTools: {
     opened: false,
   },
+  materialsAreDisabled: false,
+  workspaceIsBeingEvaluated: false,
 };
 
 /**
@@ -400,10 +407,25 @@ export const workspaces: Reducer<WorkspacesState> = (
     case "UPDATE_LAST_WORKSPACES":
       return { ...state, lastWorkspaces: action.payload };
 
-    case "SET_CURRENT_WORKSPACE":
-      return { ...state, currentWorkspace: action.payload };
+    case "UPDATE_MATERIALS_ARE_DISABLED":
+      return {
+        ...state,
+        materialsAreDisabled: action.payload,
+      };
 
-    case "UPDATE_CURRENT_WORKSPACE_ACTIVITY": {
+    case "UPDATE_WORKSPACE_IS_BEING_EVALUATED":
+      return {
+        ...state,
+        workspaceIsBeingEvaluated: action.payload,
+      };
+
+    case "SET_CURRENT_WORKSPACE":
+      return {
+        ...state,
+        currentWorkspace: action.payload,
+      };
+
+    case "UPDATE_CURRENT_WORKSPACE_ACTIVITY":
       return {
         ...state,
         currentWorkspace: {
@@ -411,9 +433,8 @@ export const workspaces: Reducer<WorkspacesState> = (
           activity: action.payload,
         },
       };
-    }
 
-    case "UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS": {
+    case "UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS":
       return {
         ...state,
         currentWorkspace: {
@@ -421,7 +442,6 @@ export const workspaces: Reducer<WorkspacesState> = (
           assessmentRequests: action.payload,
         },
       };
-    }
 
     case "UPDATE_CURRENT_WORKSPACE_INTERIM_EVALUATION_REQUESTS": {
       return {
@@ -473,7 +493,6 @@ export const workspaces: Reducer<WorkspacesState> = (
 
     case "UPDATE_WORKSPACES_STATE":
       return { ...state, state: action.payload };
-
     case "UPDATE_WORKSPACE": {
       let newCurrent = state.currentWorkspace;
       if (newCurrent && newCurrent.id === action.payload.original.id) {

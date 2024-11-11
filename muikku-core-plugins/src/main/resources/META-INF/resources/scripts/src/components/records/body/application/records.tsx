@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import "~/sass/elements/course.scss";
 import "~/sass/elements/activity-badge.scss";
 import "~/sass/elements/empty.scss";
@@ -19,6 +19,11 @@ import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { withTranslation, WithTranslation } from "react-i18next";
 import RecordsGroup from "~/components/general/records-history/records-group";
 import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 
 /**
  * RecordsProps
@@ -26,6 +31,7 @@ import { RecordsInfoProvider } from "~/components/general/records-history/contex
 interface RecordsProps extends WithTranslation {
   records: RecordsType;
   status: StatusType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -93,6 +99,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         value={{
           identifier: this.props.status.userSchoolDataIdentifier,
           userEntityId: this.props.status.userId,
+          displayNotification: this.props.displayNotification,
         }}
       >
         <ApplicationSubPanel>
@@ -185,9 +192,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators({ displayNotification }, dispatch);
 }
+
 export default withTranslation(["studies"])(
   connect(mapStateToProps, mapDispatchToProps)(Records)
 );

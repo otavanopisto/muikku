@@ -1,0 +1,24 @@
+name: Stylelint Code Quality Review
+on:
+  pull_request:
+    branches: devel
+jobs:
+  stylelint:
+    name: stylelint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.11.1
+
+      - name: Running Stylelint Code Quality Review
+        uses: xt0rted/stylelint-problem-matcher@v1
+      - run: npm ci
+        working-directory: "muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src"
+
+      - run: npm run stylelint
+        working-directory: "muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src"

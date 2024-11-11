@@ -70,7 +70,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
    * @param value value
    */
   const handleSupportActionChange = <
-    T extends keyof SupportActionImplementation
+    T extends keyof SupportActionImplementation,
   >(
     index: number,
     key: T,
@@ -116,7 +116,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
 
         <ImplementedActionsList>
           {implementedActions}
-          {userRole !== "STUDENT" && (
+          {userRole !== "STUDENT" && userRole !== "STUDENT_PARENT" && (
             <AddNewActionsBox
               onClick={handleAddNewSupportAction}
               disabled={!editIsActive}

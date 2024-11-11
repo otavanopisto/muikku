@@ -1,7 +1,7 @@
 import * as React from "react";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import Dropdown from "~/components/general/dropdown";
-import WorkspaceChart from "./workspace/workspace-chart";
+import WorkspaceChart from "~/components/general/graph/workspace-chart";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import "~/sass/elements/course.scss";
@@ -173,7 +173,7 @@ class StudentWorkspace extends React.Component<
            * Find subject data, that contains basic information about that subject
            */
           const subjectData = workspace.subjects.find(
-            (s) => s.identifier === a.workspaceSubjectIdentifier
+            (s) => s.identifier === a.subject.identifier
           );
 
           /**
@@ -192,7 +192,7 @@ class StudentWorkspace extends React.Component<
           return (
             <div
               className="application-list__item-content-single-item"
-              key={a.workspaceSubjectIdentifier}
+              key={a.subject.identifier}
             >
               <span className="application-list__item-content-single-item-primary">
                 {codeSubjectString}
@@ -222,7 +222,7 @@ class StudentWorkspace extends React.Component<
              * Find subject data, that contains basic information about that subject
              */
             const subjectData = workspace.subjects.find(
-              (s) => s.identifier === a.workspaceSubjectIdentifier
+              (s) => s.identifier === a.subject.identifier
             );
 
             /**
@@ -248,7 +248,7 @@ class StudentWorkspace extends React.Component<
 
             return (
               <span
-                key={a.workspaceSubjectIdentifier}
+                key={a.subject.identifier}
                 className="application-sub-panel__single-entry"
               >
                 {isCombinationWorkspace && `(${subjectData.subject.code}) `}

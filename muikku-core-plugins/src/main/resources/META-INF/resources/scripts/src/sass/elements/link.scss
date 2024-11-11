@@ -498,6 +498,14 @@
   }
 }
 
+.link--workspace-is-being-evaluated {
+  cursor: not-allowed;
+
+  &::before {
+    background: $color-default-contrast;
+  }
+}
+
 .link--evaluation {
   font-size: 0.825rem;
   text-decoration: underline;

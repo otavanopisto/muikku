@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Dialog, { DialogRow } from "~/components/general/dialog";
 import {
   FormActionsElement,
@@ -13,7 +13,7 @@ import {
 } from "~/actions/main-function/users";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
 import { User, Role } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -187,6 +187,8 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             label={t("labels.role", { ns: "users" })}
             updateField={this.updateField}
+            // TODO: Rooleja voi olla useita, käyttöliittymä pitäisi päivittää vastaamaan sitä
+            //       joskin voi olla edelleen paras, että käyttäjälle valitaan muikussa vain yksi rooli
             //TODO value={this.props.data.role}
           >
             <option value="MANAGER">
@@ -274,7 +276,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ updateStaffmember }, dispatch);
 }
 

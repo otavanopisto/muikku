@@ -111,6 +111,32 @@ public class PyramusSchoolDataEntityFactory {
         studyProgrammeIdentifiers);
   }
 
+  public User createEntity(fi.otavanopisto.pyramus.rest.model.StudentParent studentParent) {
+    SchoolDataIdentifier organizationIdentifier = identifierMapper.getOrganizationIdentifier(studentParent.getOrganizationId());
+    return new PyramusUser(
+        identifierMapper.getStudentParentIdentifier(studentParent.getId()).getIdentifier(),
+        studentParent.getFirstName(),
+        studentParent.getLastName(),
+        null,
+        StringUtils.join(studentParent.getFirstName(), " ", studentParent.getLastName()),
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        organizationIdentifier,
+        null, // studyStartDate
+        null, // studyEndDate
+        null, //studyTimeEnded
+        false, // evaluationFees
+        false, // hidden
+        false, // matriculationEligibility
+        new HashSet<>());
+  }
+
   public List<User> createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember... staffMembers) {
     List<User> result = new ArrayList<>();
 
@@ -139,7 +165,8 @@ public class PyramusSchoolDataEntityFactory {
     return new PyramusStudentGuidanceRelation(
         guidanceRelation.isSpecEdTeacher(),
         guidanceRelation.isGuidanceCounselor(),
-        guidanceRelation.isCourseTeacher());
+        guidanceRelation.isCourseTeacher(),
+        guidanceRelation.isStudentParent());
   }
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.Student student, fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme,
@@ -431,6 +458,7 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
     return new PyramusCompositeAssessmentRequest(
+      assessmentRequest.getId() == null ? null : identifierMapper.getAssessmentRequestIdentifier(assessmentRequest.getId()).getIdentifier(),
       identifierMapper.getWorkspaceStudentIdentifier(assessmentRequest.getCourseStudentId()),
       assessmentRequest.getUserId() == null ? null : identifierMapper.getStudentIdentifier(assessmentRequest.getUserId()).getIdentifier(),
       assessmentRequest.getFirstName(),
@@ -442,7 +470,8 @@ public class PyramusSchoolDataEntityFactory {
       assessmentRequest.getCourseEnrollmentDate(),
       assessmentRequest.getAssessmentRequestDate(),
       assessmentRequest.getEvaluationDate(),
-      assessmentRequest.getPassing());
+      assessmentRequest.getPassing(),
+      assessmentRequest.getLocked());
   }
 
   public WorkspaceAssessmentRequest createEntity(CourseAssessmentRequest courseAssessmentRequest) {
@@ -458,7 +487,8 @@ public class PyramusSchoolDataEntityFactory {
     
     return new PyramusWorkspaceAssessmentRequest(courseAssessmentRequest.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
-        courseAssessmentRequest.getRequestText(), created, courseAssessmentRequest.getArchived(), courseAssessmentRequest.getHandled());
+        courseAssessmentRequest.getRequestText(), created, courseAssessmentRequest.getArchived(),
+        courseAssessmentRequest.getHandled(), courseAssessmentRequest.getLocked());
   }
 
   public List<WorkspaceAssessmentRequest> createEntity(CourseAssessmentRequest... courseAssessmentRequests) {
@@ -501,6 +531,18 @@ public class PyramusSchoolDataEntityFactory {
   public GroupUser createEntity(StudentGroupUser studentGroupUser) {
     return new PyramusGroupUser(identifierMapper.getStudentGroupStaffMemberIdentifier(studentGroupUser.getId()),
         identifierMapper.getStaffIdentifier(studentGroupUser.getStaffMemberId()).getIdentifier());
+  }
+  
+  public PyramusStudentCard createEntity(fi.otavanopisto.pyramus.rest.model.StudentCard studentCard) {
+    return new PyramusStudentCard(
+        studentCard.getId(), 
+        studentCard.getUserEntityId(), 
+        studentCard.getFirstName(), 
+        studentCard.getLastName(), 
+        studentCard.getStudyProgramme(), 
+        studentCard.getExpiryDate(), 
+        studentCard.getActivity().name(), 
+        studentCard.getType().name());
   }
 
   public List<GroupUser> createEntities(StudentGroupStudent... studentGroupStudents) {
@@ -558,6 +600,8 @@ public class PyramusSchoolDataEntityFactory {
       return EnvironmentRoleArchetype.STUDY_GUIDER;
     case STUDY_PROGRAMME_LEADER:
       return EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER;
+    case STUDENT_PARENT:
+      return EnvironmentRoleArchetype.STUDENT_PARENT;
     default:
       return EnvironmentRoleArchetype.CUSTOM;
     }

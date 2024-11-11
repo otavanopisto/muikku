@@ -7,7 +7,7 @@
 
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
@@ -23,7 +23,7 @@ import WorkspaceMaterial from "./material";
 import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { Redirect } from "react-router-dom";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -45,9 +45,9 @@ import {
 } from "~/actions/base/notifications";
 import {
   MaterialCompositeReply,
-  MaterialContentNode,
   MaterialViewRestriction,
 } from "~/generated/client";
+import { BackToToc } from "~/components/general/toc";
 
 /**
  * WorkspaceMaterialsProps
@@ -63,8 +63,6 @@ interface WorkspaceMaterialsProps extends WithTranslation {
   workspaceEditMode: WorkspaceEditModeStateType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (activeNodeId: number) => any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onOpenNavigation: () => any;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -90,6 +88,8 @@ class WorkspaceMaterials extends React.Component<
   WorkspaceMaterialsState
 > {
   private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
+  private contentPanelRef = React.createRef<ContentPanel>();
+
   /**
    * constructor
    * @param props props
@@ -102,7 +102,6 @@ class WorkspaceMaterials extends React.Component<
       redirect: null,
     };
 
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.startupEditor = this.startupEditor.bind(this);
@@ -140,7 +139,7 @@ class WorkspaceMaterials extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   UNSAFE_componentWillReceiveProps(nextProps: WorkspaceMaterialsProps) {
@@ -370,13 +369,6 @@ class WorkspaceMaterials extends React.Component<
   };
 
   /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    this.props.onOpenNavigation();
-  }
-
-  /**
    * onScroll
    */
   onScroll() {
@@ -485,6 +477,57 @@ class WorkspaceMaterials extends React.Component<
   };
 
   /**
+   * renderDropdownItem
+   * @param item Dropdown item
+   * @param closeDropdown Function to close the dropdown
+   * @returns Rendered dropdown item
+   */
+  renderDropdownItem = (item: any, closeDropdown: () => void) => {
+    if (item.file) {
+      return (
+        <label
+          htmlFor="baseFileInput"
+          className={`link link--full link--material-management-dropdown`}
+        >
+          <input
+            type="file"
+            id="baseFileInput"
+            onChange={(e) => {
+              closeDropdown();
+              item.onChange && item.onChange(e);
+            }}
+          />
+          <span className={`link__icon icon-${item.icon}`}></span>
+          <span>{item.text}</span>
+        </label>
+      );
+    }
+    return (
+      <Link
+        className={`link link--full link--material-management-dropdown`}
+        onClick={() => {
+          closeDropdown();
+          item.onClick && item.onClick();
+        }}
+      >
+        <span className={`link__icon icon-${item.icon}`}></span>
+        <span>{item.text}</span>
+      </Link>
+    );
+  };
+
+  /**
+   * renderDropdownItems
+   * @param items Array of dropdown items
+   * @returns Array of rendered dropdown items
+   */
+  renderDropdownItems = (items: any[]) =>
+    items.map(
+      (item) => (closeDropdown: () => void) =>
+        this.renderDropdownItem(item, closeDropdown)
+    );
+
+  /**
    * render
    */
   render() {
@@ -564,44 +607,14 @@ class WorkspaceMaterials extends React.Component<
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown
             modifier="material-management"
-            items={this.getMaterialsOptionListDropdown(
-              section,
-              nextSection,
-              null,
-              true
-            ).map((item) => (closeDropdown: () => void) => {
-              if (item.file) {
-                return (
-                  <label
-                    htmlFor="baseFileInput"
-                    className={`link link--full link--material-management-dropdown`}
-                  >
-                    <input
-                      type="file"
-                      id="baseFileInput"
-                      onChange={(e) => {
-                        closeDropdown();
-                        item.onChange && item.onChange(e);
-                      }}
-                    />
-                    <span className={`link__icon icon-${item.icon}`}></span>
-                    <span>{item.text}</span>
-                  </label>
-                );
-              }
-              return (
-                <Link
-                  className={`link link--full link--material-management-dropdown`}
-                  onClick={() => {
-                    closeDropdown();
-                    item.onClick && item.onClick();
-                  }}
-                >
-                  <span className={`link__icon icon-${item.icon}`}></span>
-                  <span>{item.text}</span>
-                </Link>
-              );
-            })}
+            items={this.renderDropdownItems(
+              this.getMaterialsOptionListDropdown(
+                section,
+                nextSection,
+                null,
+                true
+              )
+            )}
           >
             <ButtonPill
               buttonModifiers="material-management-master"
@@ -639,46 +652,14 @@ class WorkspaceMaterials extends React.Component<
               >
                 <Dropdown
                   modifier="material-management"
-                  items={this.getMaterialsOptionListDropdown(
-                    section,
-                    nextSection,
-                    nextSibling,
-                    false
-                  ).map((item) => (closeDropdown: () => void) => {
-                    if (item.file) {
-                      return (
-                        <label
-                          htmlFor={node.workspaceMaterialId + "-input"}
-                          className={`link link--full link--material-management-dropdown`}
-                        >
-                          <input
-                            type="file"
-                            id={node.workspaceMaterialId + "-input"}
-                            onChange={(e) => {
-                              closeDropdown();
-                              item.onChange && item.onChange(e);
-                            }}
-                          />
-                          <span
-                            className={`link__icon icon-${item.icon}`}
-                          ></span>
-                          <span>{item.text}</span>
-                        </label>
-                      );
-                    }
-                    return (
-                      <Link
-                        className={`link link--full link--material-management-dropdown`}
-                        onClick={() => {
-                          closeDropdown();
-                          item.onClick && item.onClick();
-                        }}
-                      >
-                        <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{item.text}</span>
-                      </Link>
-                    );
-                  })}
+                  items={this.renderDropdownItems(
+                    this.getMaterialsOptionListDropdown(
+                      section,
+                      nextSection,
+                      nextSibling,
+                      false
+                    )
+                  )}
                 >
                   <ButtonPill
                     buttonModifiers="material-management-master"
@@ -730,14 +711,14 @@ class WorkspaceMaterials extends React.Component<
             let contentToRead = [
               ...this.props.materials
                 .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
-                .map((section) => `sectionId${section.workspaceMaterialId}`),
+                .map((section) => `s-${section.workspaceMaterialId}`),
             ];
 
             if (pageI !== 0) {
               contentToRead = [
                 ...section.children
                   .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
-                  .map((page) => `pageId${page.workspaceMaterialId}`),
+                  .map((page) => `p-${page.workspaceMaterialId}`),
                 ...contentToRead,
               ];
             }
@@ -759,17 +740,11 @@ class WorkspaceMaterials extends React.Component<
             !this.props.materialReplies ||
             (!isEditable && node.hidden && !showEvenIfHidden) ? null : (
               <ContentPanelItem
-                id={`pageId${node.workspaceMaterialId}`}
+                id={`p-${node.workspaceMaterialId}`}
                 ref={node.workspaceMaterialId + ""}
                 key={node.workspaceMaterialId + ""}
+                scrollMarginTopOffset={this.state.defaultOffset}
               >
-                <div
-                  id={"p-" + node.workspaceMaterialId}
-                  style={{
-                    transform:
-                      "translateY(" + -this.state.defaultOffset + "px)",
-                  }}
-                />
                 {/*TOP OF THE PAGE*/}
                 <WorkspaceMaterial
                   folder={section}
@@ -779,6 +754,15 @@ class WorkspaceMaterials extends React.Component<
                   isViewRestricted={false}
                   showEvenIfHidden={showEvenIfHidden}
                   readspeakerComponent={readSpeakerComponent}
+                  anchorItem={
+                    <BackToToc
+                      tocElementId={`tocElement-${node.workspaceMaterialId}`}
+                      openToc={
+                        this.contentPanelRef.current &&
+                        this.contentPanelRef.current.openNavigation
+                      }
+                    />
+                  }
                 />
               </ContentPanelItem>
             );
@@ -795,15 +779,11 @@ class WorkspaceMaterials extends React.Component<
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
-          id={`sectionId${section.workspaceMaterialId}`}
+          id={`s-${section.workspaceMaterialId}`}
+          style={{
+            scrollMarginTop: this.state.defaultOffset + "px",
+          }}
         >
-          <div
-            id={"s-" + section.workspaceMaterialId}
-            style={{
-              transform: "translateY(" + -this.state.defaultOffset + "px)",
-            }}
-          />
-
           {/*TOP OF THE CHAPTER*/}
           <h2
             className={`content-panel__chapter-title ${
@@ -848,6 +828,17 @@ class WorkspaceMaterials extends React.Component<
               lang={section.titleLanguage || this.props.workspace.language}
             >
               {section.title}
+              <BackToToc
+                tocElementId={
+                  this.props.status.loggedIn
+                    ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                    : `tocTopic-${section.workspaceMaterialId}`
+                }
+                openToc={
+                  this.contentPanelRef.current &&
+                  this.contentPanelRef.current.openNavigation
+                }
+              />
             </div>
           </h2>
 
@@ -878,7 +869,6 @@ class WorkspaceMaterials extends React.Component<
     return (
       <ContentPanel
         aside={progressData}
-        onOpenNavigation={this.onOpenNavigation}
         modifier="workspace-materials"
         navigation={this.props.navigation}
         title={t("labels.materials", { ns: "materials" })}
@@ -888,7 +878,10 @@ class WorkspaceMaterials extends React.Component<
             readParameters={readSpeakerParameters}
           />
         }
-        ref="content-panel"
+        t={t}
+        i18n={this.props.i18n}
+        tReady={this.props.tReady}
+        ref={this.contentPanelRef}
       >
         {results}
         {emptyMessage}
@@ -917,7 +910,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,
@@ -938,5 +931,5 @@ const componentWithTranslation = withTranslation(
 )(WorkspaceMaterials);
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true,
+  forwardRef: true,
 })(componentWithTranslation);

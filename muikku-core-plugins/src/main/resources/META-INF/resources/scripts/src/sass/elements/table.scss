@@ -3,6 +3,25 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.table__scrollable-wrapper {
+  max-height: 400px;
+  overflow-y: auto;
+
+  .table {
+    position: relative;
+  }
+
+  .table__thead--sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    .table__head {
+      top: 0;
+    }
+  }
+}
+
 .table {
   border-collapse: separate;
   border-spacing: 0;

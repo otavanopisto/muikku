@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/evaluation.scss";
 import { ButtonPill } from "~/components/general/button";
@@ -9,7 +9,7 @@ import {
   ApplicationPanelToolbarActionsMain,
 } from "~/components/general/application-panel/application-panel";
 import { SearchFormElement } from "~/components/general/form-element";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { EvaluationFilters } from "~/@types/evaluation";
 import {
@@ -84,15 +84,17 @@ class EvaluationToolbar extends React.Component<
     const { t } = this.props;
 
     const checkboxes = [
-      <div key="evaluated" className="filter-item">
+      <div key="interimRequest" className="filter-item">
         <input
-          onChange={this.handleCheckboxClick("evaluated")}
-          checked={this.props.evaluations.evaluationFilters.evaluated}
+          onChange={this.handleCheckboxClick("interimRequest")}
+          checked={this.props.evaluations.evaluationFilters.interimRequest}
           type="checkbox"
-          id="filterEvaluated"
+          id="filterNotEvaluated"
         />
-        <label htmlFor="filterEvaluated">
-          {t("labels.evaluated", { ns: "evaluation" })}
+        <label htmlFor="filterNotEvaluated">
+          {t("labels.interimEvaluationFilter2", {
+            ns: "evaluation",
+          })}
         </label>
       </div>,
       <div key="requestEvaluation" className="filter-item">
@@ -119,6 +121,31 @@ class EvaluationToolbar extends React.Component<
           {t("labels.withSupplementationRequest", { ns: "evaluation" })}
         </label>
       </div>,
+      <div key="interimEvaluation" className="filter-item">
+        <input
+          onChange={this.handleCheckboxClick("interimEvaluation")}
+          checked={this.props.evaluations.evaluationFilters.interimEvaluation}
+          type="checkbox"
+          id="filterNotEvaluated"
+        />
+        <label htmlFor="filterNotEvaluated">
+          {t("labels.interimEvaluationFilter1", {
+            ns: "evaluation",
+          })}
+        </label>
+      </div>,
+      <div key="evaluated" className="filter-item">
+        <input
+          onChange={this.handleCheckboxClick("evaluated")}
+          checked={this.props.evaluations.evaluationFilters.evaluated}
+          type="checkbox"
+          id="filterEvaluated"
+        />
+        <label htmlFor="filterEvaluated">
+          {t("labels.evaluated", { ns: "evaluation" })}
+        </label>
+      </div>,
+
       <div key="noevaluation" className="filter-item">
         <input
           onChange={this.handleCheckboxClick("notEvaluated")}
@@ -167,7 +194,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { updateEvaluationSearch, setEvaluationFilters },
     dispatch

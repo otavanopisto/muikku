@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import MaterialLoader from "~/components/base/material-loader";
 import {
   MaterialContentNodeWithIdAndLogic,
@@ -11,7 +11,7 @@ import {
   setCurrentWorkspace,
   SetCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
@@ -23,7 +23,6 @@ import { MaterialLoaderDate } from "~/components/base/material-loader/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
-import { MaterialContentNode } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -37,6 +36,7 @@ interface HelpMaterialProps extends WithTranslation {
   isViewRestricted: boolean;
   workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
+  anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
 }
 
@@ -112,6 +112,7 @@ class WorkspaceMaterial extends React.Component<
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
             readspeakerComponent={this.props.readspeakerComponent}
+            anchorElement={this.props.anchorItem}
           >
             {(props, state, stateConfiguration) => (
               <div>
@@ -161,7 +162,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 

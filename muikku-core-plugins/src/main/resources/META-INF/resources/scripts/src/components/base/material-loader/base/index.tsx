@@ -27,10 +27,7 @@ import Table from "~/components/base/material-loader/static/table";
 import MathJAX from "~/components/base/material-loader/static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
-import {
-  MaterialCompositeReply,
-  MaterialContentNode,
-} from "~/generated/client";
+import { MaterialCompositeReply } from "~/generated/client";
 
 //These are all our supported objects as for now
 const objects: { [key: string]: any } = {
@@ -109,6 +106,7 @@ interface BaseProps {
   onAnswerCheckableChange: (status: boolean) => any;
   usedAs: UsedAs;
   invisible: boolean;
+  answerRegistry?: { [name: string]: any };
 }
 
 /**
@@ -276,10 +274,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   }
 
   /**
-   * componentWillReceiveProps - To update everything if we get a brand new html we unmount and remount
+   * UNSAFE_componentWillReceiveProps - To update everything if we get a brand new html we unmount and remount
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: BaseProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: BaseProps) {
     if (nextProps.material.html !== this.props.material.html) {
       const elements = preprocessor(
         $(nextProps.material.html)
@@ -328,9 +326,10 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     }
   }
   /**
-   * componentWillMount
+   * UNSAFE_componentWillMount
    */
-  componentWillMount() {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillMount() {
     // When we mount we need to register the websocket event for the answer saved
     if (this.props.websocketState.websocket) {
       this.props.websocketState.websocket.addEventCallback(
@@ -606,6 +605,89 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     const invisible = this.props.invisible;
 
     const processingRules: HTMLToReactComponentRule[] = [
+      {
+        /**
+         * shouldProcessHTMLElement method for "contains inccorrect excercises" div style box
+         * @param tagname tagname
+         * @param element element
+         * @returns boolean
+         */
+        shouldProcessHTMLElement: (tagname, element) =>
+          tagname === "div" &&
+          element.getAttribute("data-show") !== null &&
+          element.getAttribute("data-name") ===
+            "excercises-incorrect-style-box",
+
+        /**
+         * processingFunction for "contains inccorrect excercises" div style box
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         */
+        preprocessReactProperties: (tag, props, children, element) => {
+          // prerequisites for showing the box
+          if (this.props.checkAnswers && this.props.answerRegistry) {
+            // We get the correct answers
+            const correctAnswers = Object.keys(
+              this.props.answerRegistry
+            ).filter((key) => this.props.answerRegistry[key]).length;
+
+            // And the total answers
+            const totalAnswers = Object.keys(this.props.answerRegistry).length;
+
+            // If there are incorrect answers
+            if (correctAnswers !== totalAnswers) {
+              props["data-show"] = "true";
+            } else {
+              props["data-show"] = "false";
+            }
+          } else {
+            props["data-show"] = "false";
+          }
+        },
+      },
+      {
+        /**
+         * shouldProcessHTMLElement method for "all excercises correct" div style box
+         * @param tagname tagname
+         * @param element element
+         * @returns boolean
+         */
+        shouldProcessHTMLElement: (tagname, element) =>
+          tagname === "div" &&
+          element.getAttribute("data-show") !== null &&
+          element.getAttribute("data-name") === "excercises-correct-style-box",
+
+        /**
+         * processingFunction for "all excercises correct" div style box
+         * @param tag tag
+         * @param props props
+         * @param children children
+         * @param element element
+         */
+        preprocessReactProperties: (tag, props, children, element) => {
+          // prerequisites for showing the box
+          if (this.props.checkAnswers && this.props.answerRegistry) {
+            // We get the correct answers
+            const correctAnswers = Object.keys(
+              this.props.answerRegistry
+            ).filter((key) => this.props.answerRegistry[key]).length;
+
+            // And the total answers
+            const totalAnswers = Object.keys(this.props.answerRegistry).length;
+
+            // If all answers are correct
+            if (correctAnswers === totalAnswers) {
+              props["data-show"] = "true";
+            } else {
+              props["data-show"] = "false";
+            }
+          } else {
+            props["data-show"] = "false";
+          }
+        },
+      },
       {
         /**
          * shouldProcessHTMLElement

@@ -81,6 +81,11 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     children,
   } = props;
 
+  // Get ref callback, to get the ref of the tab buttons for keyboard navigation by index
+  const getRef = useGetRef<HTMLButtonElement>();
+  // Focus index for keyboard navigation
+  const focusRefIndex = React.useRef<number>(0);
+
   const { t } = useTranslation("common");
 
   /**
@@ -93,15 +98,37 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     };
 
   /**
-   * Handles tab key up
-   * @param tab tab
+   * Handles key down
+   * @param e e
    */
-  const handleTabKeyUp =
-    (tab: Tab) => (e: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (e.key === "Enter") {
-        onTabChange(tab.id, tab.hash);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault();
+    }
+
+    // Set the previous focused tab to -1
+    getRef(focusRefIndex.current)?.current.setAttribute("tabindex", "-1");
+
+    if (e.key === "ArrowRight") {
+      focusRefIndex.current++;
+
+      // Jump to the first tab if the last tab is focused and the right arrow key is pressed
+      if (focusRefIndex.current >= tabs.length) {
+        focusRefIndex.current = 0;
       }
-    };
+    } else if (e.key === "ArrowLeft") {
+      focusRefIndex.current--;
+
+      // Jump to the last tab if the first tab is focused and the left arrow key is pressed
+      if (focusRefIndex.current < 0) {
+        focusRefIndex.current = tabs.length - 1;
+      }
+    }
+    // Set the new tab to be focusable and focus it
+    getRef(focusRefIndex.current)?.current.setAttribute("tabindex", "0");
+    getRef(focusRefIndex.current)?.current.focus();
+  };
 
   // Swiper a11y config
   const a11yConfig = {
@@ -156,6 +183,7 @@ export const Tabs: React.FC<TabsProps> = (props) => {
       ) : (
         <div className="tabs__tab-data-container tabs__tab-data-container--desktop-tabs">
           <div
+            role="tablist"
             className={`tabs__tab-labels ${
               modifier ? "tabs__tab-labels--" + modifier : ""
             }`}
@@ -163,12 +191,14 @@ export const Tabs: React.FC<TabsProps> = (props) => {
             {tabs.map((tab, i) => (
               <button
                 key={tab.id}
+                ref={getRef(i)}
                 id={"tabControl-" + tab.id}
                 aria-controls={"tabPanel-" + tab.id}
                 role="tab"
                 aria-selected={tab.id === activeTab}
                 onClick={handleTabClick(tab)}
-                onKeyUp={handleTabKeyUp(tab)}
+                onKeyDown={handleKeyDown}
+                tabIndex={tab.id === activeTab ? 0 : -1}
                 className={`tabs__tab ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
@@ -368,6 +398,20 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
         </>
       )}
     </div>
+  );
+};
+
+/**
+ * useGetRef
+ * @returns calback to get ref
+ */
+const useGetRef = <T,>() => {
+  const refs = React.useRef<{
+    [key: number]: React.RefObject<T>;
+  }>({});
+  return React.useCallback(
+    (idx: number) => (refs.current[idx] ??= React.createRef()),
+    [refs]
   );
 };
 

@@ -51,10 +51,10 @@ export default class Autocomplete extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: AutocompleteProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: AutocompleteProps) {
     if (nextProps.opened && !this.props.opened) {
       const autocomplete: HTMLDivElement = this.refs[
         "autocomplete"

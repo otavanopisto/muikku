@@ -1,9 +1,7 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 
 /**

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { PDFViewer } from "@react-pdf/renderer";
@@ -12,10 +12,7 @@ import {
 } from "~/reducers/workspaces";
 import TableOfContentPDF from "./table-of-content-pdf";
 import { StatusType } from "~/reducers/base/status";
-import {
-  MaterialCompositeReply,
-  MaterialContentNode,
-} from "~/generated/client";
+import { MaterialCompositeReply } from "~/generated/client";
 
 /**
  * NoteBookPDFProps
@@ -103,7 +100,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({}, dispatch);
 }
 

@@ -9,7 +9,7 @@ import {
 } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 
 //HELPERS
@@ -25,7 +25,7 @@ const MAX_LOADED_AT_ONCE = 25;
 export async function loadStudentsHelper(
   filters: GuiderActiveFiltersType | null,
   initial: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   getState: () => StateType
 ) {
   dispatch({
@@ -34,7 +34,6 @@ export async function loadStudentsHelper(
   });
 
   const guiderApi = MApi.getGuiderApi();
-
   const state = getState();
   const guider: GuiderState = state.guider;
   const flagOwnerIdentifier: string = state.status.userSchoolDataIdentifier;

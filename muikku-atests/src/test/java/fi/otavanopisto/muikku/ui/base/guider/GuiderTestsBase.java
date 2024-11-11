@@ -46,6 +46,7 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
+import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
 
 public class GuiderTestsBase extends AbstractUITest {
   
@@ -152,7 +153,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockLogin(admin)
     .addCourse(course1)
     .mockStudentCourseStats(student.getId(), 25)
-    .mockMatriculationEligibility(false)
+    .mockMatriculationEligibility(student.getId(), false)
     .build();
     login();
     
@@ -214,9 +215,13 @@ public class GuiderTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
-      Long courseId = 6l;    
+      Long courseId = course1.getId();
+      Double price = 0d;
+      CourseAssessmentPrice courseBasePrice = new CourseAssessmentPrice(price);
+      
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+      
       OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
@@ -224,11 +229,12 @@ public class GuiderTestsBase extends AbstractUITest {
       OffsetDateTime signupEnd = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end, signupStart, signupEnd);
       
-      MockCourseStudent courseStudent = new MockCourseStudent(7l, course1, student.getId(), new ArrayList<>());
-      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      MockCourseStudent courseStudent = new MockCourseStudent(7l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
       mockBuilder
-        .addCourseStaffMember(courseId, courseStaffMember)
-        .addCourseStudent(courseId, courseStudent)
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .addCourseStudent(course1.getId(), courseStudent)
+        .mockEmptyStudyActivity()
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -245,10 +251,10 @@ public class GuiderTestsBase extends AbstractUITest {
       
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         selectFinnishLocale();
-        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "");
-        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input");
-        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .material-page__textfield input", "field value");
+        waitForVisible(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        assertValue(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "");
+        waitAndClick(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input");
+        waitAndSendKeys(".content-panel__container .content-panel__body .content-panel__item .material-page--assignment .textfield input", "field value");
         waitForVisible(".material-page__field-answer-synchronizer--saved");
         waitAndClick(".button--muikku-submit-assignment");
 
@@ -277,11 +283,11 @@ public class GuiderTestsBase extends AbstractUITest {
         .build();
         
         mockBuilder
-          .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
+          .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, date)
           .mockCompositeGradingScales()
-          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
+          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, false)
           .mockCompositeCourseAssessmentRequests()
-          .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
+          .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
           .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
@@ -289,9 +295,9 @@ public class GuiderTestsBase extends AbstractUITest {
         login();
         
         mockBuilder
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, true)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, true)
         .mockStaffCompositeCourseAssessmentRequests()
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date);
+        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, false, date);
       
         // First test the course listing in the "situation"-tab
         mockBuilder.mockCourseAssessments(course1, courseStudent, admin);          
@@ -783,7 +789,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockLogin(admin)
     .addCourse(course1)
     .mockStudentCourseStats(student.getId(), 25)
-    .mockMatriculationEligibility(false)
+    .mockMatriculationEligibility(student.getId(), false)
     .mockEmptyStudyActivity()
     .build();
     login();
