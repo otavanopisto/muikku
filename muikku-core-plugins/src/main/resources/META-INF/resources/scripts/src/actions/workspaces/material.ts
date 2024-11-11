@@ -1125,6 +1125,22 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
 
       try {
         if (data.material.type === "folder") {
+          // Check if folder has child nodes, if so, we cannot delete it
+          // and just give a notification and end the function
+          if (data.material.children && data.material.children.length) {
+            // ERROR section has child nodes
+            dispatch(
+              displayNotification(
+                i18n.t("content.sectionRemoveDenied", { ns: "materials" }),
+                "error"
+              )
+            );
+
+            data.fail && data.fail();
+
+            return;
+          }
+
           await workspaceApi.deleteWorkspaceFolder({
             workspaceId: data.workspace.id,
             workspaceFolderId: data.material.workspaceMaterialId,
@@ -1155,7 +1171,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
 
         // If conditional here relyis boolean value of removeAnswers
         // we need to check that removeAnswers value really exists
-        if (data.removeAnswers && !data.removeAnswers && isResponseError(err)) {
+        if (data.removeAnswers === undefined && isResponseError(err)) {
           const errorObject = await err.response.json();
           try {
             if (errorObject.reason === "CONTAINS_ANSWERS") {
@@ -1173,25 +1189,13 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         }
 
         data.fail && data.fail();
-        if (!showRemoveAnswersDialogForDelete && isResponseError(err)) {
-          if (data.material.children && data.material.children.length) {
-            // ERROR section has child nodes
 
-            dispatch(
-              displayNotification(
-                i18n.t("content.sectionRemoveDenied", { ns: "materials" }),
-                "error"
-              )
-            );
-          }
-        } else {
-          dispatch(
-            displayNotification(
-              i18n.t("notifications.removeError", { ns: "materials" }),
-              "error"
-            )
-          );
-        }
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.removeError", { ns: "materials" }),
+            "error"
+          )
+        );
       }
     };
   };
