@@ -11619,7 +11619,7 @@ components:
               - recipients
             properties:
               note:
-                $ref: "#/components/schemas/Note"
+                $ref: "#/components/schemas/NoteCreationObject"
               noteReceiver:
                 $ref: "#/components/schemas/NoteCreationReceiver"
               recipientList:
@@ -15333,16 +15333,64 @@ components:
         - description
         - type
         - priority
-        - pinned
         - isActive
         - isArchived
-        - owner
         - creator
         - creatorName
         - created
         - startDate
         - dueDate
-        - status
+        - recipients
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          $ref: "#/components/schemas/NoteCreationType"
+        priority:
+          $ref: "#/components/schemas/NotePriorityType"
+        isActive:
+          type: boolean
+        isArchived:
+          type: boolean
+        creator:
+          type: integer
+          format: int64
+        creatorName:
+          type: string
+        created:
+          type: string
+          format: date-time
+        startDate:
+          type: string
+          format: date-time
+          nullable: true
+        dueDate:
+          type: string
+          format: date-time
+          nullable: true
+        recipients:
+          type: array
+          items:
+            $ref: "#/components/schemas/NoteReceiver"
+
+            
+    NoteCreationObject:
+      type: object
+      description: Note object
+      required:
+        - title
+        - description
+        - type
+        - priority
+        - isActive
+        - isArchived
+        - startDate
+        - dueDate
         - recipients
       properties:
         id:
@@ -15414,12 +15462,16 @@ components:
       description: NoteReceiver object
       required:
         - id
+        - noteId
         - pinned
         - recipient
         - status
         - userGroup
       properties:
         id:
+          type: integer
+          format: int64
+        noteId:
           type: integer
           format: int64
         pinned:
