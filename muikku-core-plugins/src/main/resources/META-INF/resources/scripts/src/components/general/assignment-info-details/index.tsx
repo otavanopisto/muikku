@@ -61,18 +61,20 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
         </summary>
         <div className="details__content">
           <ScrollableTableWrapper>
-            <Table>
+            <Table modifiers={["assignment-points"]}>
               <TableHead modifiers={["sticky"]}>
                 <Tr>
-                  <Th>{t("labels.assignmentTitle", { ns: "workspace" })}</Th>
-                  <Th>{t("labels.points", { ns: "workspace" })}</Th>
+                  <Th modifiers={["left"]}>
+                    {t("labels.assignmentTitle", { ns: "workspace" })}
+                  </Th>
                   <Th>{t("labels.grade", { ns: "workspace" })}</Th>
+                  <Th>{t("labels.points", { ns: "workspace" })}</Th>
                 </Tr>
               </TableHead>
               <Tbody>
                 {assignmentInfoList.map((assignment, index) => {
-                  let pointsToShow = "—";
-                  let gradeToShow = "—";
+                  let pointsToShow = "–";
+                  let gradeToShow = "–";
 
                   if (assignment.points !== null) {
                     pointsToShow = localize.number(assignment.points);
@@ -90,9 +92,9 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
 
                   return (
                     <Tr key={index}>
-                      <Td modifiers={["centered"]}>{assignment.title}</Td>
-                      <Td modifiers={["centered"]}>{pointsToShow}</Td>
+                      <Td>{assignment.title}</Td>
                       <Td modifiers={["centered"]}>{gradeToShow}</Td>
+                      <Td modifiers={["centered"]}>{pointsToShow}</Td>
                     </Tr>
                   );
                 })}
@@ -100,30 +102,30 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
             </Table>
           </ScrollableTableWrapper>
 
-          <Table>
+          <Table modifiers={["assignment-points"]}>
             <TableHead>
               <Tr>
                 <Th></Th>
-                <Th>{t("labels.pointsSummary", { ns: "workspace" })}</Th>
                 <Th>{t("labels.gradesAverage", { ns: "workspace" })}</Th>
+                <Th>{t("labels.pointsSummary", { ns: "workspace" })}</Th>
               </Tr>
             </TableHead>
             <Tbody>
               <Tr>
                 <Td modifiers={["centered"]}></Td>
                 <Td modifiers={["centered"]}>
-                  {pointsSum
-                    ? localize.number(pointsSum, {
-                        maximumFractionDigits: 2,
-                      })
-                    : "—"}
-                </Td>
-                <Td modifiers={["centered"]}>
                   {isNaN(gradesAverage)
                     ? "—"
                     : localize.number(gradesAverage, {
                         maximumFractionDigits: 2,
                       })}
+                </Td>
+                <Td modifiers={["centered"]}>
+                  {pointsSum
+                    ? localize.number(pointsSum, {
+                        maximumFractionDigits: 2,
+                      })
+                    : "—"}
                 </Td>
               </Tr>
             </Tbody>
