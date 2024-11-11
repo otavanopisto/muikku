@@ -1169,23 +1169,26 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
 
         let showRemoveAnswersDialogForDelete = false;
 
-        // If conditional here relyis boolean value of removeAnswers
-        // we need to check that removeAnswers value really exists
+        // we need to check that removeAnswers value is undefined
+        // specifically for this error, because it's the only way to
         if (data.removeAnswers === undefined && isResponseError(err)) {
           const errorObject = await err.response.json();
-          try {
-            if (errorObject.reason === "CONTAINS_ANSWERS") {
-              showRemoveAnswersDialogForDelete = true;
-              const currentEditorState = getState().workspaces.materialEditor;
-              dispatch(
-                setWorkspaceMaterialEditorState({
-                  ...currentEditorState,
-                  showRemoveAnswersDialogForDelete,
-                })
-              );
-            }
-            // eslint-disable-next-line no-empty
-          } catch (e) {}
+          // If the error reason is "CONTAINS_ANSWERS" we need to show the remove answers dialog
+          // and end the function, so we don't display the error notification
+          if (errorObject.reason === "CONTAINS_ANSWERS") {
+            showRemoveAnswersDialogForDelete = true;
+            const currentEditorState = getState().workspaces.materialEditor;
+            dispatch(
+              setWorkspaceMaterialEditorState({
+                ...currentEditorState,
+                showRemoveAnswersDialogForDelete,
+              })
+            );
+
+            data.fail && data.fail();
+            return;
+          }
+          // eslint-disable-next-line no-empty
         }
 
         data.fail && data.fail();
