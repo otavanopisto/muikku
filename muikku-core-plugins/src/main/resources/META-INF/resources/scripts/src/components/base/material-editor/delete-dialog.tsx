@@ -14,7 +14,6 @@ import {
   DeleteWorkspaceMaterialContentNodeTriggerType,
   deleteWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
-import { MaterialContentNode } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**

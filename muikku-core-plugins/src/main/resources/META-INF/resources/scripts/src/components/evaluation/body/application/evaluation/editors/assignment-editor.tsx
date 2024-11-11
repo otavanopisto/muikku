@@ -35,6 +35,7 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
+import { localize } from "~/locales/i18n";
 
 /**
  * AssignmentEditorProps
@@ -721,7 +722,7 @@ class AssignmentEditor extends SessionStateComponent<
                   <>
                     <span className="form-element__divider">/</span>
                     <span className="form-element__description-chip">
-                      {this.props.materialAssignment.maxPoints}
+                      {localize.number(this.props.materialAssignment.maxPoints)}
                     </span>
                   </>
                 )}
