@@ -17,7 +17,7 @@ import { Action, Dispatch } from "redux";
  * SuggestionListProps
  */
 interface HopsSuggestionListProps {
-  user: "supervisor" | "student";
+  user: "supervisor" | "student" | "guardian";
   studentId: string;
   studentsUserEntityId: number;
   course: Course;

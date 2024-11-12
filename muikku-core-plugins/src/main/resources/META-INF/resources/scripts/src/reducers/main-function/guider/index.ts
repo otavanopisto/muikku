@@ -1,6 +1,6 @@
 import { ActionType } from "~/actions";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { LoadingState } from "~/@types/shared";
+import { LoadingState, StudentActivityByStatus } from "~/@types/shared";
 import { Reducer } from "redux";
 import {
   ContactLog,
@@ -19,6 +19,9 @@ import {
   PedagogyFormAccess,
   HopsUppersecondary,
   ActivityLogEntry,
+  WorkspaceSuggestion,
+  StudentCourseChoice,
+  OptionalCourseSuggestion,
 } from "~/generated/client";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
@@ -78,6 +81,19 @@ export interface PedagogyFormAvailability {
 }
 
 /**
+ * GuiderStudentStudyProgress
+ */
+export interface GuiderStudentStudyProgress extends StudentActivityByStatus {
+  signUpDialog?: {
+    studentEntityId: number;
+    suggestion: WorkspaceSuggestion;
+  };
+  studentChoices: StudentCourseChoice[];
+  supervisorOptionalSuggestions: OptionalCourseSuggestion[];
+  options: string[];
+}
+
+/**
  * GuiderStudentUserProfileType
  */
 export interface GuiderStudentUserProfileType {
@@ -112,6 +128,7 @@ export interface GuiderStudentUserProfileType {
   hopsPhase?: string;
   hopsAvailable: boolean;
   pedagogyFormAvailable: PedagogyFormAccess;
+  studyProgress: GuiderStudentStudyProgress;
 }
 
 /**
@@ -244,6 +261,18 @@ const initialGuiderState: GuiderState = {
       completedCourseCredits: 0,
       mandatoryCourseCredits: 0,
       showCredits: false,
+    },
+    studyProgress: {
+      onGoingList: [],
+      transferedList: [],
+      gradedList: [],
+      suggestedNextList: [],
+      skillsAndArt: {},
+      otherLanguageSubjects: {},
+      otherSubjects: {},
+      supervisorOptionalSuggestions: [],
+      studentChoices: [],
+      options: [],
     },
   },
 };

@@ -38,9 +38,9 @@ import {
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
-import StudyProgress from "~/components/general/study-progress";
-import StudyProgressContextProvider from "~/components/general/study-progress/context";
 import { withTranslation, WithTranslation } from "react-i18next";
+import StudyProgressWatcher from "./study-progress/study-progress-watcher";
+import ProgressGuiderStateOfStudies from "./study-progress";
 
 /**
  * StateOfStudiesProps
@@ -410,7 +410,7 @@ class StateOfStudies extends React.Component<
                     ns: "guider",
                   })}
                 </ApplicationSubPanel.Header>
-                <ApplicationSubPanel.Body>
+                {/* <ApplicationSubPanel.Body>
                   <StudyProgressContextProvider
                     user="supervisor"
                     useCase="state-of-studies"
@@ -431,6 +431,29 @@ class StateOfStudies extends React.Component<
                       editMode={true}
                     />
                   </StudyProgressContextProvider>
+                </ApplicationSubPanel.Body> */}
+
+                <ApplicationSubPanel.Body>
+                  <StudyProgressWatcher>
+                    <ProgressGuiderStateOfStudies
+                      studentIdentifier={
+                        this.props.guider.currentStudent.basic.id
+                      }
+                      studentUserEntityId={
+                        this.props.guider.currentStudent.basic.userEntityId
+                      }
+                      curriculumName={
+                        this.props.guider.currentStudent.basic.curriculumName
+                      }
+                      studyProgrammeName={
+                        this.props.guider.currentStudent.basic
+                          .studyProgrammeName
+                      }
+                      studyProgress={
+                        this.props.guider.currentStudent.studyProgress
+                      }
+                    />
+                  </StudyProgressWatcher>
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>

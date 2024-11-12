@@ -6,6 +6,7 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderState,
+  GuiderStudentStudyProgress,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
 import { UserFileType } from "reducers/user-index";
@@ -31,6 +32,13 @@ import {
   RecordWorkspaceActivitiesWithLineCategory,
   RecordWorkspaceActivityByLine,
 } from "~/components/general/records-history/types";
+import {
+  filterActivity,
+  filterActivityBySubjects,
+  LANGUAGE_SUBJECTS_CS,
+  OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+  SKILL_AND_ART_SUBJECTS_CS,
+} from "~/helper-functions/study-matrix";
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -165,6 +173,11 @@ export type TOGGLE_ALL_STUDENTS = SpecificActionType<
 export type DELETE_CONTACT_EVENT = SpecificActionType<
   "DELETE_CONTACT_EVENT",
   number
+>;
+
+export type GUIDER_UPDATE_STUDENT_STUDY_PROGRESS = SpecificActionType<
+  "GUIDER_UPDATE_STUDENT_STUDY_PROGRESS",
+  GuiderStudentStudyProgress
 >;
 
 export type DELETE_CONTACT_EVENT_COMMENT = SpecificActionType<
@@ -447,6 +460,13 @@ export interface ToggleAllStudentsTriggerType {
 }
 
 /**
+ * UpdateStudyProgressTriggerType action creator type
+ */
+export interface UpdateStudyProgressTriggerType {
+  (data: { updatedStudyProgress: GuiderStudentStudyProgress }): AnyActionType;
+}
+
+/**
  * toggleAllStudents thunk action creator
  * @returns a thunk function for toggling all students selection
  */
@@ -653,6 +673,50 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         payload: <GuiderCurrentStudentStateType>"LOADING",
       });
 
+      /**
+       * Study progress promise
+       */
+      const studyProgressPromise = async () => {
+        const studentActivity = await hopsApi.getStudentStudyActivity({
+          studentIdentifier: id,
+        });
+
+        const studentOptions = await hopsApi.getStudentAlternativeStudyOptions({
+          studentIdentifier: id,
+        });
+
+        const skillAndArtCourses = filterActivityBySubjects(
+          SKILL_AND_ART_SUBJECTS_CS,
+          studentActivity
+        );
+
+        const otherLanguageSubjects = filterActivityBySubjects(
+          LANGUAGE_SUBJECTS_CS,
+          studentActivity
+        );
+
+        const otherSubjects = filterActivityBySubjects(
+          OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+          studentActivity
+        );
+
+        const studentActivityByStatus = filterActivity(studentActivity);
+
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "studyProgress",
+            value: {
+              skillsAndArt: skillAndArtCourses,
+              otherLanguageSubjects: otherLanguageSubjects,
+              otherSubjects: otherSubjects,
+              ...studentActivityByStatus,
+              options: studentOptions,
+            },
+          },
+        });
+      };
+
       await Promise.all([
         guiderApi
           .getGuiderStudent({
@@ -717,6 +781,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 });
               });
           }),
+
+        studyProgressPromise(),
 
         usergroupApi
           .getUsergroups({ userIdentifier: id })
@@ -2527,6 +2593,27 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
     };
   };
 
+/**
+ * updateStudyProgress thunk action creator
+ * @param data data object
+ * @returns a thunk function to update the study progress
+ */
+const updateStudyProgress: UpdateStudyProgressTriggerType =
+  function updateStudyProgress(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: data.updatedStudyProgress,
+        },
+      });
+    };
+  };
+
 export {
   loadStudents,
   loadMoreStudents,
@@ -2561,4 +2648,5 @@ export {
   doOrderForCurrentStudent,
   deleteOrderFromCurrentStudent,
   completeOrderFromCurrentStudent,
+  updateStudyProgress,
 };
