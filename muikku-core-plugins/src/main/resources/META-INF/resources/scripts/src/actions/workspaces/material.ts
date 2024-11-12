@@ -1127,7 +1127,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
         if (data.material.type === "folder") {
           // Check if folder has child nodes, if so, we cannot delete it
           // and just give a notification and end the function
-          if (data.material.children && data.material.children.length) {
+          if (data.material.children?.length) {
             // ERROR section has child nodes
             dispatch(
               displayNotification(
