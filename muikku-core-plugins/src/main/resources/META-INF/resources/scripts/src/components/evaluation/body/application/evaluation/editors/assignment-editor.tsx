@@ -538,19 +538,6 @@ class AssignmentEditor extends SessionStateComponent<
   };
 
   /**
-   * isAllowedPoints
-   * @param values NumberFormatValues
-   */
-  isAllowedPoints = (values: NumberFormatValues) => {
-    const maxPoints = this.props.materialAssignment.maxPoints;
-    if (!maxPoints || !values.floatValue) {
-      return true;
-    }
-
-    return values.floatValue <= maxPoints;
-  };
-
-  /**
    * formIsInValid
    */
   formIsInValid = () => {
@@ -716,7 +703,6 @@ class AssignmentEditor extends SessionStateComponent<
                   decimalSeparator=","
                   allowNegative={false}
                   onValueChange={this.handlePointsValueChange}
-                  isAllowed={this.isAllowedPoints}
                 />
                 {this.props.materialAssignment.maxPoints && (
                   <>
