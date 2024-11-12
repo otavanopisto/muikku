@@ -24,7 +24,8 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
   private static final long serialVersionUID = -1777382212388116832L;
 
   public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String title, String urlName, Integer orderNumber,
-      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers, WorkspaceLanguage language) {
+      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
+      WorkspaceLanguage language, Double maxPoints) {
 
     WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
     workspaceMaterial.setParent(parent);
@@ -36,6 +37,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     workspaceMaterial.setCorrectAnswers(correctAnswers);
     workspaceMaterial.setTitle(title);
     workspaceMaterial.setLanguage(language);
+    workspaceMaterial.setMaxPoints(maxPoints);
 
     return persist(workspaceMaterial);
   }
@@ -165,6 +167,11 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 
   public WorkspaceMaterial updateCorrectAnswers(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
     workspaceMaterial.setCorrectAnswers(correctAnswers);
+    return persist(workspaceMaterial);
+  }
+
+  public WorkspaceMaterial updateMaxPoints(WorkspaceMaterial workspaceMaterial, Double maxPoints) {
+    workspaceMaterial.setMaxPoints(maxPoints);
     return persist(workspaceMaterial);
   }
 

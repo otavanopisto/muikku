@@ -23,6 +23,7 @@ import {
   MaterialCompositeReply,
 } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { MaterialLoaderPoints } from "~/components/base/material-loader/points";
 
 /**
  * MaterialProps
@@ -111,7 +112,27 @@ class Material extends React.Component<MaterialProps, MaterialState> {
     const { compositeReply, t } = this.props;
 
     if (compositeReply && compositeReply.evaluationInfo) {
-      switch (compositeReply.state) {
+      if (compositeReply.evaluationInfo.evaluationType === "POINTS") {
+        return (
+          <Dropdown
+            openByHover
+            content={
+              <span>{localize.date(compositeReply.evaluationInfo.date)}</span>
+            }
+          >
+            <span
+              aria-label={t("wcag.evaluationAssessmentPassed", {
+                ns: "evaluation",
+              })}
+              className={`application-list__indicator-badge application-list__indicator-badge--task ${this.checkIndicatorClassModifier()}`}
+            >
+              {compositeReply.evaluationInfo.points}
+            </span>
+          </Dropdown>
+        );
+      }
+
+      switch (compositeReply.evaluationInfo.type) {
         case "PASSED":
           return (
             <Dropdown
@@ -176,7 +197,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
               })}
               className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
             >
-              N
+              –
             </span>
           );
       }
@@ -189,7 +210,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
         })}
         className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
       >
-        N
+        –
       </span>
     );
   };
@@ -280,6 +301,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
                         ></div>
                         <MaterialLoaderDate {...props} {...state} />
                         <MaterialLoaderGrade {...props} {...state} />
+                        <MaterialLoaderPoints {...props} {...state} />
                         <MaterialLoaderAssesment {...props} {...state} />
                       </div>
                     )}

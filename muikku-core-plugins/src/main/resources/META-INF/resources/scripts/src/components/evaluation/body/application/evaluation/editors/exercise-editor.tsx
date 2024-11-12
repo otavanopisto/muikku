@@ -231,7 +231,7 @@ class ExerciseEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
-        evaluationType: "ASSESSMENT",
+        evaluationType: "GRADED",
         assessorIdentifier: this.props.status.userSchoolDataIdentifier,
         gradingScaleIdentifier: null,
         gradeIdentifier: null,

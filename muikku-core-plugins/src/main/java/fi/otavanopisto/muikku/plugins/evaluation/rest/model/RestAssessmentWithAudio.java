@@ -10,8 +10,10 @@ public class RestAssessmentWithAudio extends RestAssessment {
   public RestAssessmentWithAudio() {
   }
 
-  public RestAssessmentWithAudio(String identifier, String assessorIdentifier, String gradingScaleIdentifier, String gradeIdentifier, String verbalAssessment, Date assessmentDate, Boolean passing, WorkspaceMaterialEvaluationType evaluationType, List<RestAssignmentEvaluationAudioClip> audioAssessments) {
-    super(identifier, assessorIdentifier, gradingScaleIdentifier, gradeIdentifier, verbalAssessment, assessmentDate, passing);
+  public RestAssessmentWithAudio(String identifier, String assessorIdentifier, String gradingScaleIdentifier, String gradeIdentifier,
+      String verbalAssessment, Date assessmentDate, Boolean passing, Double points, WorkspaceMaterialEvaluationType evaluationType,
+      List<RestAssignmentEvaluationAudioClip> audioAssessments) {
+    super(identifier, assessorIdentifier, gradingScaleIdentifier, gradeIdentifier, verbalAssessment, assessmentDate, passing, points);
     this.evaluationType = evaluationType;
     this.audioAssessments = audioAssessments;
   }

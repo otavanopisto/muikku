@@ -120,6 +120,14 @@ public class WorkspaceMaterialEvaluation {
     this.evaluationType = evaluationType;
   }
 
+  public Double getPoints() {
+    return points;
+  }
+
+  public void setPoints(Double points) {
+    this.points = points;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -155,6 +163,9 @@ public class WorkspaceMaterialEvaluation {
 
   @Lob
   private String verbalAssessment;
+  
+  @Column
+  private Double points;
   
   @Column (nullable = false)
   @Enumerated (EnumType.STRING)
