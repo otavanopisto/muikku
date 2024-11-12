@@ -444,7 +444,7 @@ class EvaluationAssessmentAssignment extends React.Component<
                   ? localize.number(pointsAndMaxPoints.points)
                   : `${localize.number(
                       pointsAndMaxPoints.points
-                    )}/${localize.number(pointsAndMaxPoints.maxPoints)}`}
+                    )} / ${localize.number(pointsAndMaxPoints.maxPoints)}`}
               </span>
             </div>
           )}

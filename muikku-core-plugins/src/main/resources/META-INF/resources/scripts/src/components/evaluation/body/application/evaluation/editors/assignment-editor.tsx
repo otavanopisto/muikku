@@ -35,6 +35,7 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
+import { localize } from "~/locales/i18n";
 
 /**
  * AssignmentEditorProps
@@ -537,19 +538,6 @@ class AssignmentEditor extends SessionStateComponent<
   };
 
   /**
-   * isAllowedPoints
-   * @param values NumberFormatValues
-   */
-  isAllowedPoints = (values: NumberFormatValues) => {
-    const maxPoints = this.props.materialAssignment.maxPoints;
-    if (!maxPoints || !values.floatValue) {
-      return true;
-    }
-
-    return values.floatValue <= maxPoints;
-  };
-
-  /**
    * formIsInValid
    */
   formIsInValid = () => {
@@ -715,13 +703,12 @@ class AssignmentEditor extends SessionStateComponent<
                   decimalSeparator=","
                   allowNegative={false}
                   onValueChange={this.handlePointsValueChange}
-                  isAllowed={this.isAllowedPoints}
                 />
                 {this.props.materialAssignment.maxPoints && (
                   <>
                     <span className="form-element__divider">/</span>
                     <span className="form-element__description-chip">
-                      {this.props.materialAssignment.maxPoints}
+                      {localize.number(this.props.materialAssignment.maxPoints)}
                     </span>
                   </>
                 )}
