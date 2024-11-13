@@ -12047,6 +12047,11 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
 
     WorkspaceStudentUpdateRequestBody:
       required: true
