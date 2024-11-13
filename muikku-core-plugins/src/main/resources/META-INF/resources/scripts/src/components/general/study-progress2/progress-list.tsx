@@ -33,8 +33,7 @@ export interface ProgressListProps extends StudentActivityByStatus {
   curriculumName: string;
   studyProgrammeName: string;
   studentOptions: string[];
-  renderMandatoryCourseItem?: (params: RenderItemParams) => JSX.Element;
-  renderOptionalCourseItem?: (params: RenderItemParams) => JSX.Element;
+  renderCourseItem?: (params: RenderItemParams) => JSX.Element;
 }
 
 /**
@@ -53,8 +52,7 @@ export const ProgressList: React.FC<ProgressListContentProps> = (props) => {
     matrix,
     studyProgrammeName,
     studentOptions,
-    renderMandatoryCourseItem,
-    renderOptionalCourseItem,
+    renderCourseItem,
   } = props;
 
   const { t } = useTranslation("studyMatrix");
@@ -84,8 +82,8 @@ export const ProgressList: React.FC<ProgressListContentProps> = (props) => {
 
       if (course.mandatory) {
         listItemIndicatormodifiers.push("MANDATORY");
-        return renderMandatoryCourseItem ? (
-          renderMandatoryCourseItem({
+        return renderCourseItem ? (
+          renderCourseItem({
             subject: sSubject,
             course,
             listItemModifiers: listItemIndicatormodifiers,
@@ -100,8 +98,8 @@ export const ProgressList: React.FC<ProgressListContentProps> = (props) => {
       }
 
       listItemIndicatormodifiers.push("OPTIONAL");
-      return renderOptionalCourseItem ? (
-        renderOptionalCourseItem({
+      return renderCourseItem ? (
+        renderCourseItem({
           subject: sSubject,
           course,
           listItemModifiers: listItemIndicatormodifiers,

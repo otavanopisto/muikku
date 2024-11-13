@@ -14,7 +14,7 @@ import { Action, Dispatch } from "redux";
 /**
  * SuggestionItemContext
  */
-interface SuggestionItemContext {
+export interface SuggestionItemContext {
   suggestionList: WorkspaceSuggestion[];
   handleSuggestionNextClick: (
     params: UpdateSuggestionParams

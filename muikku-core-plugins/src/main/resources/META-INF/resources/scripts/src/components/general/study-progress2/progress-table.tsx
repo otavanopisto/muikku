@@ -10,6 +10,15 @@ import { filterMatrix, showSubject } from "~/helper-functions/study-matrix";
 import { useTranslation } from "react-i18next";
 
 /**
+ * RenderItemParams
+ */
+export interface RenderItemParams {
+  subject: SchoolSubject;
+  course: Course;
+  tdModifiers: string[];
+}
+
+/**
  * CourseTableProps
  */
 export interface ProgressTableProps extends StudentActivityByStatus {
@@ -20,16 +29,7 @@ export interface ProgressTableProps extends StudentActivityByStatus {
   curriculumName: string;
   studyProgrammeName: string;
   studentOptions: string[];
-  renderMandatoryCourseCell?: (params: {
-    subject: SchoolSubject;
-    course: Course;
-    tdModifiers: string[];
-  }) => JSX.Element;
-  renderOptionalCourseCell?: (params: {
-    subject: SchoolSubject;
-    course: Course;
-    tdModifiers: string[];
-  }) => JSX.Element;
+  renderCourseCell?: (params: RenderItemParams) => JSX.Element;
   renderEmptyCell?: (params: {
     index: number;
     modifiers: string[];
@@ -55,8 +55,7 @@ export const ProgressTableContent: React.FC<ProgressTableContentProps> = (
     currentMaxCourses,
     studyProgrammeName,
     studentOptions,
-    renderMandatoryCourseCell,
-    renderOptionalCourseCell,
+    renderCourseCell,
     renderEmptyCell,
   } = props;
 
@@ -113,8 +112,8 @@ export const ProgressTableContent: React.FC<ProgressTableContentProps> = (
 
         if (course.mandatory) {
           modifiers.push("MANDATORY");
-          return renderMandatoryCourseCell ? (
-            renderMandatoryCourseCell({
+          return renderCourseCell ? (
+            renderCourseCell({
               subject: sSubject,
               course,
               tdModifiers: modifiers,
@@ -145,8 +144,8 @@ export const ProgressTableContent: React.FC<ProgressTableContentProps> = (
         }
 
         modifiers.push("OPTIONAL");
-        return renderOptionalCourseCell ? (
-          renderOptionalCourseCell({
+        return renderCourseCell ? (
+          renderCourseCell({
             subject: sSubject,
             course,
             tdModifiers: modifiers,
