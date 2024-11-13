@@ -78,6 +78,7 @@ class WorkspaceSignupDialog extends React.Component<
         nameExtension: workspaceSignUpDetails.nameExtension,
         urlName: workspaceSignUpDetails.urlName,
       },
+      redirectOnSuccess: this.props.redirectOnSuccess,
       /**
        * success
        */

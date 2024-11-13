@@ -1085,6 +1085,8 @@ export interface SignupIntoWorkspaceTriggerType {
     success: () => void;
     fail: () => void;
     workspace: WorkspaceSignUpDetails;
+    message?: string;
+    redirectOnSuccess?: boolean;
   }): AnyActionType;
 }
 
@@ -1357,13 +1359,7 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
  */
 const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
   function signupIntoWorkspace(data) {
-    const {
-      workspace,
-      message,
-      success,
-      fail,
-      redirectOnSuccess = true,
-    } = data;
+    const { workspace, message, success, fail, redirectOnSuccess } = data;
 
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
@@ -1374,11 +1370,14 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
       try {
         await coursepickerApi.workspaceSignUp({
           workspaceId: data.workspace.id,
+          workspaceSignUpRequest: {
+            message,
+          },
         });
 
         if (redirectOnSuccess) {
           window.location.href = `${getState().status.contextPath}/workspace/${
-            data.workspace.urlName
+            workspace.urlName
           }`;
         }
 

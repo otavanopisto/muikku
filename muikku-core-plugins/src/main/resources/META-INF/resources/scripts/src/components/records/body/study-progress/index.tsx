@@ -139,7 +139,7 @@ const ProgressStudySummary: React.FC<ProgressStudySummaryProps> = (props) => {
           }
         }
         onClose={() => setWorkspaceToSignUp(null)}
-        redirectOnSuccess={false}
+        redirectOnSuccess
       />
     </>
   );
