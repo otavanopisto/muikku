@@ -19,7 +19,6 @@ import {
   PedagogyFormAccess,
   HopsUppersecondary,
   ActivityLogEntry,
-  WorkspaceSuggestion,
   StudentCourseChoice,
   OptionalCourseSuggestion,
 } from "~/generated/client";
@@ -84,10 +83,6 @@ export interface PedagogyFormAvailability {
  * GuiderStudentStudyProgress
  */
 export interface GuiderStudentStudyProgress extends StudentActivityByStatus {
-  signUpDialog?: {
-    studentEntityId: number;
-    suggestion: WorkspaceSuggestion;
-  };
   studentChoices: StudentCourseChoice[];
   supervisorOptionalSuggestions: OptionalCourseSuggestion[];
   options: string[];

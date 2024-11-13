@@ -3,6 +3,7 @@ import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   SummaryDataType,
   SummaryStatusType,
+  SummaryStudyProgress,
 } from "~/reducers/main-function/records/summary";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
@@ -10,6 +11,13 @@ import MApi, { isMApiError } from "~/api/api";
 import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 import { ActivityLogEntry, ActivityLogType } from "~/generated/client";
+import { SKILL_AND_ART_SUBJECTS_CS } from "~/helper-functions/study-matrix";
+import {
+  filterActivityBySubjects,
+  LANGUAGE_SUBJECTS_CS,
+  OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+} from "~/helper-functions/study-matrix";
+import { filterActivity } from "~/helper-functions/study-matrix";
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -25,6 +33,15 @@ export type UPDATE_STUDIES_SUMMARY_STATUS = SpecificActionType<
 export interface UpdateSummaryTriggerType {
   (studentIdentifier?: string): AnyActionType;
 }
+
+/**
+ * UpdateStudyProgressTriggerType
+ */
+export interface UpdateStudyProgressTriggerType {
+  (data: { studyProgress: SummaryStudyProgress }): AnyActionType;
+}
+
+const hopsApi = MApi.getHopsApi();
 
 /**
  * UpdateSummaryTriggerType
@@ -137,6 +154,53 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
         ]);
       }
 
+      /**
+       * Study progress promise
+       */
+      const studyProgressPromise = async () => {
+        const studentActivity = await hopsApi.getStudentStudyActivity({
+          studentIdentifier: pyramusIdentifier,
+        });
+
+        const studentOptions = await hopsApi.getStudentAlternativeStudyOptions({
+          studentIdentifier: pyramusIdentifier,
+        });
+
+        const skillAndArtCourses = filterActivityBySubjects(
+          SKILL_AND_ART_SUBJECTS_CS,
+          studentActivity
+        );
+
+        const otherLanguageSubjects = filterActivityBySubjects(
+          LANGUAGE_SUBJECTS_CS,
+          studentActivity
+        );
+
+        const otherSubjects = filterActivityBySubjects(
+          OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+          studentActivity
+        );
+
+        const studentActivityByStatus = filterActivity(studentActivity);
+
+        const studyProgress: SummaryStudyProgress = {
+          skillsAndArt: skillAndArtCourses,
+          otherLanguageSubjects: otherLanguageSubjects,
+          otherSubjects: otherSubjects,
+          gradedList: studentActivityByStatus.gradedList,
+          onGoingList: studentActivityByStatus.onGoingList,
+          suggestedNextList: studentActivityByStatus.suggestedNextList,
+          transferedList: studentActivityByStatus.transferedList,
+          studentChoices: [],
+          supervisorOptionalSuggestions: [],
+          options: studentOptions,
+        };
+
+        return studyProgress;
+      };
+
+      const studyProgress = await studyProgressPromise();
+
       const graphData = {
         activity: activityLogsHash.general,
         workspaces: workspaces,
@@ -150,6 +214,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
         coursesDone: coursesDone.length,
         graphData: graphData,
         studentsDetails: studentsDetails,
+        studyProgress: studyProgress,
       };
 
       dispatch({
@@ -178,5 +243,27 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
   };
 };
 
-export default { updateSummary };
-export { updateSummary };
+/**
+ * UpdateStudyProgressTriggerType
+ * @param data data
+ */
+const updateStudyProgress: UpdateStudyProgressTriggerType =
+  function updateStudyProgress(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { studyProgress } = data;
+
+      dispatch({
+        type: "UPDATE_STUDIES_SUMMARY",
+        payload: {
+          ...getState().summary.data,
+          studyProgress: studyProgress,
+        },
+      });
+    };
+  };
+
+export default { updateSummary, updateStudyProgress };
+export { updateSummary, updateStudyProgress };

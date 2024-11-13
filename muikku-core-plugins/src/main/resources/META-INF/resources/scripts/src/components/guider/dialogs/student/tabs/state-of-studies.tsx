@@ -410,28 +410,6 @@ class StateOfStudies extends React.Component<
                     ns: "guider",
                   })}
                 </ApplicationSubPanel.Header>
-                {/* <ApplicationSubPanel.Body>
-                  <StudyProgressContextProvider
-                    user="supervisor"
-                    useCase="state-of-studies"
-                    studentId={this.props.guider.currentStudent.basic.id}
-                    studentUserEntityId={
-                      this.props.guider.currentStudent.basic.userEntityId
-                    }
-                    dataToLoad={["studentActivity"]}
-                  >
-                    <StudyProgress
-                      curriculumName={
-                        this.props.guider.currentStudent.basic.curriculumName
-                      }
-                      studyProgrammeName={
-                        this.props.guider.currentStudent.basic
-                          .studyProgrammeName
-                      }
-                      editMode={true}
-                    />
-                  </StudyProgressContextProvider>
-                </ApplicationSubPanel.Body> */}
 
                 <ApplicationSubPanel.Body>
                   <StudyProgressWatcher>

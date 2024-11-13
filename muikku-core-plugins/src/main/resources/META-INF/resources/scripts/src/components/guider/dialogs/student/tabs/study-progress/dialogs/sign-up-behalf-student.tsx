@@ -15,12 +15,12 @@ import {
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { WorkspaceSuggestion } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
-import { withTranslation, WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 /**
  * SaveExtraDetailsDialogProps
  */
-interface SignUpBehalfOfStudentDialogProps extends WithTranslation {
+interface SignUpBehalfOfStudentDialogProps {
   isOpen: boolean;
   /**
    * Entity id of the student.
@@ -36,186 +36,146 @@ interface SignUpBehalfOfStudentDialogProps extends WithTranslation {
   onClose: () => void;
 }
 
-/**
- * SaveExtraDetailsDialogState
- */
-interface SignUpBehalfOfStudentDialogState {
-  message: string;
-  disabled: boolean;
-}
-
 const guiderApi = MApi.getGuiderApi();
 
 /**
- * SaveExtraDetailsDialog
+ * SignUpBehalfOfStudentDialog
+ * @param props props
+ * @returns JSX.Element
  */
-class SignUpBehalfOfStudentDialog extends React.Component<
-  SignUpBehalfOfStudentDialogProps,
-  SignUpBehalfOfStudentDialogState
-> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: SignUpBehalfOfStudentDialogProps) {
-    super(props);
-    this.state = {
-      message: "",
-      disabled: false,
-    };
+const SignUpBehalfOfStudentDialog: React.FC<
+  SignUpBehalfOfStudentDialogProps
+> = (props) => {
+  const { isOpen, studentEntityId, workspaceSuggestion, children, onClose } =
+    props;
 
-    this.handleApplyClick = this.handleApplyClick.bind(this);
-    this.handleCloseClick = this.handleCloseClick.bind(this);
-  }
+  const [message, setMessage] = React.useState("");
+  const [disabled, setDisabled] = React.useState(false);
+
+  const { t } = useTranslation(["studyMatrix"]);
 
   /**
    * Handles message change
-   *
    * @param e e
    */
-  handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    this.setState({ message: e.target.value });
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value);
   };
 
   /**
-   * Handle apply click
-   *
+   * Handles apply click
    * @param closeDialog closeDialog
    */
-  async handleApplyClick(closeDialog: () => void) {
-    this.setState({
-      disabled: true,
-    });
+  const handleApplyClick = async (closeDialog: () => void) => {
+    setDisabled(true);
 
     try {
       await guiderApi.signupStudentToWorkspace({
-        studentId: this.props.studentEntityId,
-        workspaceId: this.props.workspaceSuggestion.id,
+        studentId: studentEntityId,
+        workspaceId: workspaceSuggestion.id,
         signupStudentToWorkspaceRequest: {
-          message: this.state.message,
+          message,
         },
       });
 
-      this.setState(
-        {
-          disabled: false,
-        },
-        () => {
-          this.props.onClose();
-          closeDialog();
-        }
-      );
+      setDisabled(false);
+      onClose();
+      closeDialog();
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;
       }
 
-      // TODO: lokalisointi
       displayNotification(
-        this.props.t("notifications.signUpError", { ns: "studyMatrix" }),
+        t("notifications.signUpError", { ns: "studyMatrix" }),
         "error"
       );
 
-      this.setState({
-        disabled: false,
-      });
+      setDisabled(false);
     }
-  }
+  };
 
   /**
-   * Handle close click
-   *
+   * Handles close click
    * @param closeDialog closeDialog
    */
-  handleCloseClick(closeDialog: () => void) {
-    this.props.onClose();
+  const handleCloseClick = (closeDialog: () => void) => {
+    onClose();
     closeDialog();
+  };
+
+  if (!studentEntityId || !workspaceSuggestion) {
+    return null;
+  }
+
+  let workspaceName = workspaceSuggestion.name;
+  if (workspaceSuggestion.nameExtension) {
+    workspaceName += ` (${workspaceSuggestion.nameExtension})`;
   }
 
   /**
-   * Component render method
-   *
-   * @returns JSX.Element
+   * Handles content
+   * @param closeDialog closeDialog
    */
-  render() {
-    if (!this.props.studentEntityId || !this.props.workspaceSuggestion) {
-      return null;
-    }
-
-    // Workspace name
-    let workspaceName = this.props.workspaceSuggestion.name;
-
-    // + with extension if it exists
-    if (this.props.workspaceSuggestion.nameExtension) {
-      workspaceName += ` (${this.props.workspaceSuggestion.nameExtension})`;
-    }
-
-    /**
-     * Dialog content
-     *
-     * @param closeDialog closeDialog
-     * @returns JSX.Element
-     */
-    const content = (closeDialog: () => void) => (
-      <div>
-        <div className="dialog__content-row">
-          {this.props.t("labels.signUpStudentToWorkspace", {
-            ns: "studyMatrix",
-            workspaceName: workspaceName,
-          })}
-        </div>
-        <div className="form-element dialog__content-row">
-          <label htmlFor="signUpMessage">
-            {this.props.t("labels.signUpMessage", { ns: "studyMatrix" })}
-          </label>
-          <textarea
-            id="signUpMessage"
-            className="form-element__textarea"
-            value={this.state.message}
-            onChange={this.handleMessageChange}
-          />
-        </div>
+  const content = (closeDialog: () => void) => (
+    <div>
+      <div className="dialog__content-row">
+        {t("labels.signUpStudentToWorkspace", {
+          ns: "studyMatrix",
+          workspaceName: workspaceName,
+        })}
       </div>
-    );
-
-    /**
-     * footer
-     * @param closeDialog closeDialog
-     */
-    const footer = (closeDialog: () => void) => (
-      <div className="dialog__button-set">
-        <Button
-          buttonModifiers={["standard-ok", "execute"]}
-          onClick={this.handleApplyClick.bind(this, closeDialog)}
-          disabled={this.state.disabled}
-        >
-          {this.props.t("actions.signUpStudent", { ns: "studyMatrix" })}
-        </Button>
-        <Button
-          buttonModifiers={["standard-cancel", "cancel"]}
-          onClick={this.handleCloseClick.bind(this, closeDialog)}
-          disabled={this.state.disabled}
-        >
-          {this.props.t("actions.cancel")}
-        </Button>
+      <div className="form-element dialog__content-row">
+        <label htmlFor="signUpMessage">
+          {t("labels.signUpMessage", { ns: "studyMatrix" })}
+        </label>
+        <textarea
+          id="signUpMessage"
+          className="form-element__textarea"
+          value={message}
+          onChange={handleMessageChange}
+        />
       </div>
-    );
+    </div>
+  );
 
-    return (
-      <Dialog
-        modifier="workspace-signup-dialog"
-        title={this.props.t("labels.signUpStudent", { ns: "studyMatrix" })}
-        isOpen={this.props.isOpen}
-        disableScroll={true}
-        content={content}
-        footer={footer}
-        closeOnOverlayClick={false}
+  /**
+   * Handles footer
+   * @param closeDialog closeDialog
+   */
+  const footer = (closeDialog: () => void) => (
+    <div className="dialog__button-set">
+      <Button
+        buttonModifiers={["standard-ok", "execute"]}
+        onClick={() => handleApplyClick(closeDialog)}
+        disabled={disabled}
       >
-        {this.props.children}
-      </Dialog>
-    );
-  }
-}
+        {t("actions.signUpStudent", { ns: "studyMatrix" })}
+      </Button>
+      <Button
+        buttonModifiers={["standard-cancel", "cancel"]}
+        onClick={() => handleCloseClick(closeDialog)}
+        disabled={disabled}
+      >
+        {t("actions.cancel")}
+      </Button>
+    </div>
+  );
+
+  return (
+    <Dialog
+      modifier="workspace-signup-dialog"
+      title={t("labels.signUpStudent", { ns: "studyMatrix" })}
+      isOpen={isOpen}
+      disableScroll={true}
+      content={content}
+      footer={footer}
+      closeOnOverlayClick={false}
+    >
+      {children}
+    </Dialog>
+  );
+};
 
 /**
  * mapStateToProps
@@ -233,6 +193,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default withTranslation(["studyMatrix"])(
-  connect(mapStateToProps, mapDispatchToProps)(SignUpBehalfOfStudentDialog)
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SignUpBehalfOfStudentDialog);
