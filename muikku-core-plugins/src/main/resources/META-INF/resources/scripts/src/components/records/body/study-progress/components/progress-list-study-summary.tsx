@@ -16,7 +16,9 @@ import { useTranslation } from "react-i18next";
 import { WorkspaceSuggestion } from "~/generated/client";
 
 /**
- * GuiderStateOfStudiesListProps
+ * Component that displays a summary of a student's study progress in a list format.
+ * It shows courses with their status (ongoing, graded, transferred) and provides
+ * signup options for available course implementations.
  */
 interface ProgressListStudySummaryProps
   extends Omit<
@@ -25,13 +27,16 @@ interface ProgressListStudySummaryProps
     | "renderOptionalCourseItemContent"
     | "matrix"
   > {
+  /** Callback function triggered when a student signs up for a course workspace */
   onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * HopsPlanningList
- * @param props props
- * @returns JSX.Element
+ * Component that renders a list of courses with their progress status and available
+ * course implementations. Each course can be clicked to show a dropdown with more
+ * details and signup options.
+ *
+ * @param props - Component properties
  */
 const ProgressListStudySummary: React.FC<ProgressListStudySummaryProps> = (
   props
@@ -144,17 +149,23 @@ const ProgressListStudySummary: React.FC<ProgressListStudySummaryProps> = (
 };
 
 /**
- * SuggestionListContentProps
+ * Component that displays a single course implementation suggestion with
+ * options to view the workspace or sign up for the course.
+ *
  */
 interface SuggestionListContentProps {
+  /** The workspace suggestion data */
   suggestion: WorkspaceSuggestion;
+  /** Callback function triggered when signing up for a course */
   onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * SuggestionListContent
- * @param props props
- * @returns JSX.Element
+ * Renders a course implementation suggestion with its name and action buttons.
+ * If the course allows signup, it displays buttons to check out the workspace
+ * or sign up for the course.
+ *
+ * @param props - Component properties
  */
 const SuggestionListContent = (props: SuggestionListContentProps) => {
   const { suggestion, onSignUp } = props;

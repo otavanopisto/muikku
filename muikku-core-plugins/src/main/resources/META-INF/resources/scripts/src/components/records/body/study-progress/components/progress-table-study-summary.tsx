@@ -17,7 +17,8 @@ import {
 } from "~/helper-functions/study-matrix";
 
 /**
- * GuiderStateOfStudiesTableProps
+ * Props interface for the ProgressTableStudySummary component.
+ * Extends ProgressTableProps but omits specific properties while adding onSignUp functionality.
  */
 interface ProgressTableStudySummaryProps
   extends Omit<
@@ -27,13 +28,15 @@ interface ProgressTableStudySummaryProps
     | "currentMaxCourses"
     | "matrix"
   > {
+  /** Callback function to handle student sign-up for a workspace */
   onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * GuiderStateOfStudiesTable
- * @param props props
- * @returns JSX.Element
+ * Component that displays a summary table of a student's study progress.
+ * Shows courses, their status, and available workspace suggestions for enrollment.
+ *
+ * @param props - Component properties
  */
 const ProgressTableStudySummary: React.FC<ProgressTableStudySummaryProps> = (
   props
@@ -161,17 +164,20 @@ const ProgressTableStudySummary: React.FC<ProgressTableStudySummaryProps> = (
 };
 
 /**
- * SuggestionListContentProps
+ * Props interface for the SuggestionListContent component
+ * @interface SuggestionListContentProps
  */
 interface SuggestionListContentProps {
+  /** Workspace suggestion data */
   suggestion: WorkspaceSuggestion;
+  /** Callback function when user signs up for a workspace */
   onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * SuggestionListContent
- * @param props props
- * @returns JSX.Element
+ * Component that renders the content of a workspace suggestion including name and action buttons.
+ *
+ * @param props - Component properties
  */
 const SuggestionListContent = (props: SuggestionListContentProps) => {
   const { suggestion, onSignUp } = props;

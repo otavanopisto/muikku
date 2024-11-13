@@ -15,7 +15,7 @@ import {
 } from "~/@types/shared";
 
 /**
- * RenderItemParams
+ * Interface for parameters passed to the course item renderer
  */
 export interface RenderItemParams {
   subject: SchoolSubject;
@@ -24,7 +24,7 @@ export interface RenderItemParams {
 }
 
 /**
- * ProgressListProps
+ * Props for the ProgressList component
  */
 export interface ProgressListProps extends StudentActivityByStatus {
   matrix: SchoolSubject[] | null;
@@ -42,9 +42,10 @@ export interface ProgressListProps extends StudentActivityByStatus {
 interface ProgressListContentProps extends ProgressListProps {}
 
 /**
- * ProgressList. Renders courses as a list
- * @param props props
- * @returns JSX.Element
+ * Component that displays a list of courses organized by subject
+ * Supports both mandatory and optional courses with custom rendering capabilities
+ * @param props - Component props
+ * @returns Rendered list of courses
  */
 export const ProgressList: React.FC<ProgressListContentProps> = (props) => {
   const {
@@ -137,7 +138,10 @@ export const ProgressList: React.FC<ProgressListContentProps> = (props) => {
 };
 
 /**
- * DefaultCourseItemProps
+ * Props for the DefaultCourseItem component
+ * @interface DefaultCourseItemProps
+ * @property {Course} course - The course to be displayed
+ * @property {string[]} indicatorModifiers - Array of CSS modifiers for the course indicator
  */
 interface DefaultCourseItemProps {
   course: Course;
@@ -145,9 +149,10 @@ interface DefaultCourseItemProps {
 }
 
 /**
- * Default course item implementation
- * @param props props
- * @returns JSX.Element
+ * Default implementation of a course item in the progress list
+ * Displays course number and name with optional indicator for non-mandatory courses
+ * @param props - Component props
+ * @returns Rendered course item
  */
 const DefaultCourseItem = (props: DefaultCourseItemProps) => {
   const { course, indicatorModifiers } = props;

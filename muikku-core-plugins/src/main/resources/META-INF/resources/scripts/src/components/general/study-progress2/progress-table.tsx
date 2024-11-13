@@ -10,7 +10,7 @@ import { filterMatrix, showSubject } from "~/helper-functions/study-matrix";
 import { useTranslation } from "react-i18next";
 
 /**
- * RenderItemParams
+ * Interface for parameters used when rendering individual course items in the progress table
  */
 export interface RenderItemParams {
   subject: SchoolSubject;
@@ -19,7 +19,7 @@ export interface RenderItemParams {
 }
 
 /**
- * CourseTableProps
+ * Props for the Progress Table component
  */
 export interface ProgressTableProps extends StudentActivityByStatus {
   matrix: SchoolSubject[] | null;
@@ -37,19 +37,15 @@ export interface ProgressTableProps extends StudentActivityByStatus {
 }
 
 /**
- * ProgressTableContentProps
- */
-interface ProgressTableContentProps extends ProgressTableProps {}
-
-/**
- * CourseTable. Renders courses as table
+ * Progress Table Content component - Renders a table showing course progress
+ * This component displays courses in a matrix format, with subjects as rows
+ * and course numbers as columns. Each cell can represent either a mandatory
+ * or optional course, or be empty.
  *
- * @param props props
- * @returns JSX.Element
+ * @param props - Component props
+ * @returns Rendered table content or empty state message
  */
-export const ProgressTableContent: React.FC<ProgressTableContentProps> = (
-  props
-) => {
+export const ProgressTableContent: React.FC<ProgressTableProps> = (props) => {
   const {
     matrix,
     currentMaxCourses,
@@ -195,18 +191,23 @@ export const ProgressTableContent: React.FC<ProgressTableContentProps> = (
 };
 
 /**
- * ProgressTableBodyProps
+ * Props for the Progress Table Body component
  */
 interface ProgressTableBodyProps {
+  /** Optional title for the table body section */
   title?: string;
+  /** Maximum number of courses to display */
   currentMaxCourses?: number;
+  /** Child elements to render within the table body */
   children: React.ReactNode;
 }
 
 /**
- * ProgressTableBody
- * @param props props
- * @returns JSX.Element
+ * Progress Table Body component - Renders the body section of the progress table
+ * Provides structure for the table content and optionally displays a title row
+ *
+ * @param props - Component props
+ * @returns Rendered table body
  */
 export const ProgressTableBody: React.FC<ProgressTableBodyProps> = (props) => {
   const { currentMaxCourses, title, children } = props;
