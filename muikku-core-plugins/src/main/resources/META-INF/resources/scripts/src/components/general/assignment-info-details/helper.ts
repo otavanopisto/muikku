@@ -32,11 +32,38 @@ export const createAssignmentInfoArray = (
     maxPoints?: number | null;
   }> = [];
 
+  // Use only evaluated assignments
+  const evaluatedAssignments = assignments.filter(
+    (a) => a.assignmentType === "EVALUATED"
+  );
+
   // Iterate through all assigments and find composite reply pair for each
-  assignments.forEach((a) => {
+  evaluatedAssignments.forEach((a) => {
     const compositeReply = compositeReplies.find(
       (r) => r.workspaceMaterialId === a.id
     );
+
+    let doNotInclude = a.hidden;
+
+    // If assignment is hidden and composite reply is found and it has been submitted or answered
+    // then assignment should be included
+    if (
+      doNotInclude &&
+      compositeReply &&
+      (compositeReply.submitted !== null ||
+        compositeReply.state === "ANSWERED" ||
+        compositeReply.state === "SUBMITTED" ||
+        compositeReply.state === "WITHDRAWN" ||
+        compositeReply.state === "PASSED" ||
+        compositeReply.state === "FAILED" ||
+        compositeReply.state === "INCOMPLETE")
+    ) {
+      doNotInclude = false;
+    }
+
+    if (doNotInclude) {
+      return;
+    }
 
     const newAssignmentInfo: AssignmentInfo = {
       title: a.title,
