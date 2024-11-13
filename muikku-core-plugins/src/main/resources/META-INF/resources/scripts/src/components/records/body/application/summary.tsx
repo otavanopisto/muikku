@@ -30,8 +30,6 @@ import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgrammeAndCurriculum } from "~/components/general/carousel/hooks/use-course-carousel";
-import StudyProgressContextProvider from "~/components/general/study-progress/context";
-import StudyProgress from "~/components/general/study-progress";
 import ProgressStudySummary from "../study-progress";
 import StudyProgressWatcher from "../study-progress/study-progress-watcher";
 
@@ -319,21 +317,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                     }
                   /> */}
                 </div>
-                <StudyProgressContextProvider
-                  user="student"
-                  useCase="state-of-studies"
-                  studentId={this.props.status.userSchoolDataIdentifier}
-                  studentUserEntityId={this.props.status.userId}
-                  dataToLoad={["studentActivity"]}
-                >
-                  <StudyProgress
-                    curriculumName={this.props.status.profile.curriculumName}
-                    studyProgrammeName={
-                      this.props.status.profile.studyProgrammeName
-                    }
-                    editMode={false}
-                  />
-                </StudyProgressContextProvider>
 
                 <StudyProgressWatcher>
                   <ProgressStudySummary
