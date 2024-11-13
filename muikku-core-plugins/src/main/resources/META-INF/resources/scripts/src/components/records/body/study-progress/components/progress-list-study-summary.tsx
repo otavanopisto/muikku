@@ -208,8 +208,6 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
       )}
     </div>
   );
-
-  return <></>;
 };
 
 export default ProgressListStudySummary;
