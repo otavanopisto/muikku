@@ -23,15 +23,7 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 public class CourseMaterialsManagementTestsBase extends AbstractUITest{
 
   @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.EDGE,
-      TestEnvironments.Browser.CHROME_HEADLESS
-    }
-  )
-  public void materialManagementAddChapterTest() throws Exception {
+  public void materialManagementAddChapter() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
@@ -63,7 +55,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         sleep(500);
         waitAndClick(".button-pill--material-page-close-editor");
         waitForNotVisible(".tabs--material-editor");
-        assertText(".content-panel__chapter-title ", "Test title");
+        assertText(".content-panel__chapter-title ", "Test title");        
       } finally {
         deleteWorkspace(workspace.getId());
       }
@@ -326,7 +318,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
       TestEnvironments.Browser.CHROME_HEADLESS,
     }
   )
-  public void courseMaterialCKEditorTest() throws Exception {
+  public void courseMaterialAddAndDeletePageTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     try {
@@ -369,7 +361,14 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         waitForNotVisible(".material-editor--visible");
         waitForPresent(".material-page__content.rich-text p");
         String actualContent = getElementText(".material-page__content.rich-text p");
-        assertEquals(contentInput, actualContent);        
+        assertText(".material-page__title.material-page__title--theory", "Test page title");
+        assertEquals(contentInput, actualContent);
+        
+        waitAndClick(".material-page--theory .material-admin-panel--page-functions .icon-pencil");
+        waitAndClick(".button-pill--material-editor-delete-page");
+        waitAndClick(".button--standard-ok");
+        assertNotPresent(".material-page__title.material-page__title--theory");
+        assertNotPresent(".material-page__content.rich-text");
       } finally {
         deleteWorkspaces();
       }
