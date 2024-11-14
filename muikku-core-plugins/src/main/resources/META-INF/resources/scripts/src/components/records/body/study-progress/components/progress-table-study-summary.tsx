@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import {
-  ProgressTableContent,
+  OPSCourseTableContent,
   ProgressTableProps,
   RenderItemParams,
-} from "~/components/general/study-progress2/progress-table";
-import SuggestionList from "~/components/general/study-progress2/suggestion-list";
+} from "~/components/general/OPS-matrix/OPS-course-table";
+import SuggestionList from "~/components/general/suggestion-list/suggestion-list";
 import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
 import { WorkspaceSuggestion } from "~/generated/client";
 import {
@@ -153,7 +153,7 @@ const ProgressTableStudySummary: React.FC<ProgressTableStudySummaryProps> = (
           </Th>
         </Tr>
       </TableHead>
-      <ProgressTableContent
+      <OPSCourseTableContent
         {...props}
         matrix={matrix}
         currentMaxCourses={currentMaxCourses}

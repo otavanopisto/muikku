@@ -10,14 +10,18 @@ import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
-import { ActivityLogEntry, ActivityLogType } from "~/generated/client";
-import { SKILL_AND_ART_SUBJECTS_CS } from "~/helper-functions/study-matrix";
+import {
+  ActivityLogEntry,
+  ActivityLogType,
+  StudentStudyActivity,
+} from "~/generated/client";
 import {
   filterActivityBySubjects,
   LANGUAGE_SUBJECTS_CS,
   OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+  SKILL_AND_ART_SUBJECTS_CS,
+  filterActivity,
 } from "~/helper-functions/study-matrix";
-import { filterActivity } from "~/helper-functions/study-matrix";
 
 export type UPDATE_STUDIES_SUMMARY = SpecificActionType<
   "UPDATE_STUDIES_SUMMARY",
@@ -39,6 +43,22 @@ export interface UpdateSummaryTriggerType {
  */
 export interface UpdateStudyProgressTriggerType {
   (data: { studyProgress: SummaryStudyProgress }): AnyActionType;
+}
+
+/**
+ * StudyProgressSuggestedNextWebsocketType
+ */
+export interface RecordsSummarySuggestedNextWebsocketType {
+  (data: { websocketData: StudentStudyActivity }): AnyActionType;
+}
+
+/**
+ * StudyProgressWorkspaceSignupWebsocketMsgType
+ */
+export interface RecordsSummaryWorkspaceSignupWebsocketType {
+  (data: {
+    websocketData: StudentStudyActivity | StudentStudyActivity[];
+  }): AnyActionType;
 }
 
 const hopsApi = MApi.getHopsApi();
@@ -244,16 +264,49 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
 };
 
 /**
- * UpdateStudyProgressTriggerType
+ * RecordsSummarySuggestedNextWebsocketType
  * @param data data
  */
-const updateStudyProgress: UpdateStudyProgressTriggerType =
-  function updateStudyProgress(data) {
+const recordsSummarySuggestedNextWebsocket: RecordsSummarySuggestedNextWebsocketType =
+  function recordsSummarySuggestedNextWebsocket(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const { studyProgress } = data;
+      const state = getState();
+      const summaryData = state.summary?.data;
+
+      if (!summaryData) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { suggestedNextList } = summaryData.studyProgress;
+
+      const updatedSuggestedNextList: StudentStudyActivity[] = [].concat(
+        suggestedNextList
+      );
+
+      // If course id is null, meaning that delete existing activity course by
+      // finding that specific course with subject code and course number and splice it out
+      const indexOfCourse = updatedSuggestedNextList.findIndex(
+        (item) =>
+          item.courseId === websocketData.courseId &&
+          websocketData.subject === item.subject
+      );
+
+      if (indexOfCourse !== -1) {
+        updatedSuggestedNextList.splice(indexOfCourse, 1);
+      } else {
+        // Add new
+        updatedSuggestedNextList.push(websocketData);
+      }
+
+      const studyProgress: SummaryStudyProgress = {
+        ...summaryData.studyProgress,
+        suggestedNextList: updatedSuggestedNextList,
+      };
 
       dispatch({
         type: "UPDATE_STUDIES_SUMMARY",
@@ -265,5 +318,71 @@ const updateStudyProgress: UpdateStudyProgressTriggerType =
     };
   };
 
-export default { updateSummary, updateStudyProgress };
-export { updateSummary, updateStudyProgress };
+/**
+ * RecordsSummaryWorkspaceSignupWebsocketType
+ * @param data data
+ */
+const recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebsocketType =
+  function recordsSummaryWorkspaceSignupWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const summaryData = state.summary?.data;
+
+      if (!summaryData) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { studyProgress } = summaryData;
+      const { suggestedNextList, onGoingList, gradedList, transferedList } =
+        studyProgress;
+
+      // Combine all course lists and filter out the updated course
+      let allCourses = [
+        ...onGoingList,
+        ...gradedList,
+        ...transferedList,
+        ...suggestedNextList,
+      ];
+      const courseIdToFilter = Array.isArray(websocketData)
+        ? websocketData[0].courseId
+        : websocketData.courseId;
+      allCourses = allCourses.filter(
+        (item) => item.courseId !== courseIdToFilter
+      );
+
+      // Add the new course(s)
+      allCourses = allCourses.concat(websocketData);
+
+      // Get filtered course lists
+      const categorizedCourses = {
+        ...filterActivity(allCourses), // This adds suggestedNextList, onGoingList, gradedList, transferedList
+      };
+
+      dispatch({
+        type: "UPDATE_STUDIES_SUMMARY",
+        payload: {
+          ...getState().summary.data,
+          studyProgress: {
+            ...studyProgress,
+            ...categorizedCourses,
+          },
+        },
+      });
+    };
+  };
+
+export default {
+  updateSummary,
+  recordsSummarySuggestedNextWebsocket,
+  recordsSummaryWorkspaceSignupWebsocket,
+};
+export {
+  updateSummary,
+  recordsSummarySuggestedNextWebsocket,
+  recordsSummaryWorkspaceSignupWebsocket,
+};

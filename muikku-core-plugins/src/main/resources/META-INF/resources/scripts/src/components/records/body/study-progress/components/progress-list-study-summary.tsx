@@ -6,12 +6,12 @@ import {
   compulsoryOrUpperSecondary,
   getCourseInfo,
 } from "~/helper-functions/study-matrix";
-import ProgressList, {
+import OPSCourseList, {
   ProgressListProps,
   RenderItemParams,
-} from "~/components/general/study-progress2/progress-list";
+} from "~/components/general/OPS-matrix/OPS-course-list";
 import Button from "~/components/general/button";
-import SuggestionList from "~/components/general/study-progress2/suggestion-list";
+import SuggestionList from "~/components/general/suggestion-list/suggestion-list";
 import { useTranslation } from "react-i18next";
 import { WorkspaceSuggestion } from "~/generated/client";
 
@@ -140,11 +140,11 @@ const ProgressListStudySummary: React.FC<ProgressListStudySummaryProps> = (
   };
 
   return (
-    <ProgressList
+    <OPSCourseList
       {...props}
       matrix={matrix}
       renderCourseItem={renderCourseItem}
-    ></ProgressList>
+    ></OPSCourseList>
   );
 };
 

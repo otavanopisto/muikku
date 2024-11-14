@@ -31,7 +31,6 @@ import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgrammeAndCurriculum } from "~/components/general/carousel/hooks/use-course-carousel";
 import ProgressStudySummary from "../study-progress";
-import StudyProgressWatcher from "../study-progress/study-progress-watcher";
 
 /**
  * SummaryProps
@@ -318,19 +317,15 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   /> */}
                 </div>
 
-                <StudyProgressWatcher>
-                  <ProgressStudySummary
-                    curriculumName={this.props.status.profile.curriculumName}
-                    studyProgrammeName={
-                      this.props.status.profile.studyProgrammeName
-                    }
-                    studentIdentifier={
-                      this.props.status.userSchoolDataIdentifier
-                    }
-                    studentUserEntityId={this.props.status.userId}
-                    studyProgress={this.props.summary.data.studyProgress}
-                  />
-                </StudyProgressWatcher>
+                <ProgressStudySummary
+                  curriculumName={this.props.status.profile.curriculumName}
+                  studyProgrammeName={
+                    this.props.status.profile.studyProgrammeName
+                  }
+                  studentIdentifier={this.props.status.userSchoolDataIdentifier}
+                  studentUserEntityId={this.props.status.userId}
+                  studyProgress={this.props.summary.data.studyProgress}
+                />
               </div>
 
               {carouselMatrixByStudyProgrammeAndCurriculum(

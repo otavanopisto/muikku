@@ -25,6 +25,7 @@ import {
   UserStudentFlag,
   UserFlag,
   UserGroup,
+  StudentStudyActivity,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -460,10 +461,19 @@ export interface ToggleAllStudentsTriggerType {
 }
 
 /**
- * UpdateStudyProgressTriggerType action creator type
+ * StudyProgressSuggestedNextWebsocketType
  */
-export interface UpdateStudyProgressTriggerType {
-  (data: { updatedStudyProgress: GuiderStudentStudyProgress }): AnyActionType;
+export interface GuiderStudyProgressSuggestedNextWebsocketType {
+  (data: { websocketData: StudentStudyActivity }): AnyActionType;
+}
+
+/**
+ * StudyProgressWorkspaceSignupWebsocketMsgType
+ */
+export interface GuiderStudyProgressWorkspaceSignupWebsocketType {
+  (data: {
+    websocketData: StudentStudyActivity | StudentStudyActivity[];
+  }): AnyActionType;
 }
 
 /**
@@ -2594,21 +2604,116 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
   };
 
 /**
- * updateStudyProgress thunk action creator
- * @param data data object
- * @returns a thunk function to update the study progress
+ * GuiderStudyProgressSuggestedNextWebsocketType
+ * @param data data
  */
-const updateStudyProgress: UpdateStudyProgressTriggerType =
-  function updateStudyProgress(data) {
+const guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNextWebsocketType =
+  function guiderStudyProgressSuggestedNextWebsocket(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { suggestedNextList } = currentStudent.studyProgress;
+
+      const updatedSuggestedNextList: StudentStudyActivity[] = [].concat(
+        suggestedNextList
+      );
+
+      // If course id is null, meaning that delete existing activity course by
+      // finding that specific course with subject code and course number and splice it out
+      const indexOfCourse = updatedSuggestedNextList.findIndex(
+        (item) =>
+          item.courseId === websocketData.courseId &&
+          websocketData.subject === item.subject
+      );
+
+      if (indexOfCourse !== -1) {
+        updatedSuggestedNextList.splice(indexOfCourse, 1);
+      } else {
+        // Add new
+        updatedSuggestedNextList.push(websocketData);
+      }
+
+      const studyProgress: GuiderStudentStudyProgress = {
+        ...state.guider.currentStudent.studyProgress,
+        suggestedNextList: updatedSuggestedNextList,
+      };
+
       dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_PROP",
         payload: {
           property: "studyProgress",
-          value: data.updatedStudyProgress,
+          value: {
+            ...studyProgress,
+            suggestedNextList: updatedSuggestedNextList,
+          },
+        },
+      });
+    };
+  };
+
+/**
+ * RecordsSummaryWorkspaceSignupWebsocketType
+ * @param data data
+ */
+const guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceSignupWebsocketType =
+  function guiderStudyProgressWorkspaceSignupWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { studyProgress } = currentStudent;
+      const { suggestedNextList, onGoingList, gradedList, transferedList } =
+        studyProgress;
+
+      // Combine all course lists and filter out the updated course
+      let allCourses = [
+        ...onGoingList,
+        ...gradedList,
+        ...transferedList,
+        ...suggestedNextList,
+      ];
+      const courseIdToFilter = Array.isArray(websocketData)
+        ? websocketData[0].courseId
+        : websocketData.courseId;
+      allCourses = allCourses.filter(
+        (item) => item.courseId !== courseIdToFilter
+      );
+
+      // Add the new course(s)
+      allCourses = allCourses.concat(websocketData);
+
+      // Get filtered course lists
+      const categorizedCourses = {
+        ...filterActivity(allCourses), // This adds suggestedNextList, onGoingList, gradedList, transferedList
+      };
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: {
+            ...studyProgress,
+            ...categorizedCourses,
+          },
         },
       });
     };
@@ -2648,5 +2753,6 @@ export {
   doOrderForCurrentStudent,
   deleteOrderFromCurrentStudent,
   completeOrderFromCurrentStudent,
-  updateStudyProgress,
+  guiderStudyProgressSuggestedNextWebsocket,
+  guiderStudyProgressWorkspaceSignupWebsocket,
 };

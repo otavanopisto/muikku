@@ -37,7 +37,7 @@ export interface ProgressTableProps extends StudentActivityByStatus {
 }
 
 /**
- * Progress Table Content component - Renders a table showing course progress
+ * OPS course table content component - Renders a table showing course progress
  * This component displays courses in a matrix format, with subjects as rows
  * and course numbers as columns. Each cell can represent either a mandatory
  * or optional course, or be empty.
@@ -45,7 +45,7 @@ export interface ProgressTableProps extends StudentActivityByStatus {
  * @param props - Component props
  * @returns Rendered table content or empty state message
  */
-export const ProgressTableContent: React.FC<ProgressTableProps> = (props) => {
+export const OPSCourseTableContent: React.FC<ProgressTableProps> = (props) => {
   const {
     matrix,
     currentMaxCourses,
