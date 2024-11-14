@@ -42,10 +42,39 @@ interface StudyProgressWebsocketWatcherProps {
 }
 
 /**
+ * Custom hook to watch websocket events
+ * @param eventName event name
+ * @param websocket websocket
+ * @param handlers handlers that receive data from websocket
+ */
+function useWebsocketEvent<T>(
+  eventName: string,
+  websocket: WebsocketStateType["websocket"],
+  handlers: Array<(data: T) => void>
+) {
+  React.useEffect(() => {
+    /**
+     * onAnswerSavedAtServer
+     * @param data data
+     */
+    const onAnswerSavedAtServer = (data: T) => {
+      handlers.forEach((handler) => handler(data));
+    };
+
+    websocket.addEventCallback(eventName, onAnswerSavedAtServer);
+
+    return () => {
+      websocket.removeEventCallback(eventName, onAnswerSavedAtServer);
+    };
+  }, [eventName, handlers, websocket]);
+}
+
+/**
  * Component to watch websocket events for study progress
  * and update the redux state accordingly:
  * - hops:workspace-suggested
  * - hops:workspace-signup
+ * - hops:alternative-study-options
  * @param props props
  * @returns JSX.Element
  */
@@ -64,108 +93,42 @@ const StudyProgressWebsocketWatcher = (
   } = props;
 
   // hops:workspace-suggested watcher
-  React.useEffect(() => {
-    /**
-     * Websocket event callback to handle answer from server when
-     * something is saved/changed. Data is passed to redux actions
-     * @param data Websocket data
-     */
-    const onAnswerSavedAtServer = (data: StudentStudyActivity) => {
-      recordsSummarySuggestedNextWebsocket({
-        websocketData: data,
-      });
-      guiderStudyProgressSuggestedNextWebsocket({
-        websocketData: data,
-      });
-    };
-
-    // Adding event callback to handle changes when ever
-    // there has happened some changes with that message
-    websocketState.websocket.addEventCallback(
-      "hops:workspace-suggested",
-      onAnswerSavedAtServer
-    );
-
-    return () => {
-      // Remove callback when unmounting
-      websocketState.websocket.removeEventCallback(
-        "hops:workspace-suggested",
-        onAnswerSavedAtServer
-      );
-    };
-  }, [
-    recordsSummarySuggestedNextWebsocket,
-    guiderStudyProgressSuggestedNextWebsocket,
+  useWebsocketEvent<StudentStudyActivity>(
+    "hops:workspace-suggested",
     websocketState.websocket,
-  ]);
+    [
+      (data) => recordsSummarySuggestedNextWebsocket({ websocketData: data }),
+      (data) =>
+        guiderStudyProgressSuggestedNextWebsocket({ websocketData: data }),
+    ]
+  );
 
   // hops:workspace-signup watcher
-  React.useEffect(() => {
-    /**
-     * Websocket event callback to handle answer from server when
-     * something is saved/changed. Data is passed to redux actions
-     * @param data Websocket data
-     */
-    const onAnswerSavedAtServer = (
-      data: StudentStudyActivity | StudentStudyActivity[]
-    ) => {
-      recordsSummaryWorkspaceSignupWebsocket({
-        websocketData: data,
-      });
-      guiderStudyProgressWorkspaceSignupWebsocket({
-        websocketData: data,
-      });
-    };
-
-    websocketState.websocket.addEventCallback(
-      "hops:workspace-signup",
-      onAnswerSavedAtServer
-    );
-
-    return () => {
-      websocketState.websocket.removeEventCallback(
-        "hops:workspace-signup",
-        onAnswerSavedAtServer
-      );
-    };
-  }, [
-    recordsSummaryWorkspaceSignupWebsocket,
-    guiderStudyProgressWorkspaceSignupWebsocket,
+  useWebsocketEvent<StudentStudyActivity | StudentStudyActivity[]>(
+    "hops:workspace-signup",
     websocketState.websocket,
-  ]);
+    [
+      (data) => recordsSummaryWorkspaceSignupWebsocket({ websocketData: data }),
+      (data) =>
+        guiderStudyProgressWorkspaceSignupWebsocket({ websocketData: data }),
+    ]
+  );
 
   // hops:alternative-study-options watcher
-  React.useEffect(() => {
-    /**
-     * Websocket event callback to handle answer from server when
-     * something is saved/changed. Data is passed to redux actions
-     * @param data Websocket data
-     */
-    const onAnswerSavedAtServer = (data: string[]) => {
-      recordsSummaryAlternativeStudyOptionsWebsocket({
-        websocketData: data,
-      });
-      guiderStudyProgressAlternativeStudyOptionsWebsocket({
-        websocketData: data,
-      });
-    };
-
-    websocketState.websocket.addEventCallback(
-      "hops:alternative-study-options",
-      onAnswerSavedAtServer
-    );
-
-    return () => {
-      websocketState.websocket.removeEventCallback(
-        "hops:alternative-study-options",
-        onAnswerSavedAtServer
-      );
-    };
-  }, [
-    guiderStudyProgressAlternativeStudyOptionsWebsocket,
-    recordsSummaryAlternativeStudyOptionsWebsocket,
+  useWebsocketEvent<string[]>(
+    "hops:alternative-study-options",
     websocketState.websocket,
-  ]);
+    [
+      (data) =>
+        recordsSummaryAlternativeStudyOptionsWebsocket({
+          websocketData: data,
+        }),
+      (data) =>
+        guiderStudyProgressAlternativeStudyOptionsWebsocket({
+          websocketData: data,
+        }),
+    ]
+  );
 
   return <>{children}</>;
 };
