@@ -310,14 +310,6 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
   }  
 
   @Test
-  @TestEnvironments (
-    browsers = {
-      TestEnvironments.Browser.CHROME,
-      TestEnvironments.Browser.FIREFOX,
-      TestEnvironments.Browser.SAFARI,
-      TestEnvironments.Browser.CHROME_HEADLESS,
-    }
-  )
   public void courseMaterialAddAndDeletePageTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
@@ -364,9 +356,12 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         assertText(".material-page__title.material-page__title--theory", "Test page title");
         assertEquals(contentInput, actualContent);
         
-        waitAndClick(".material-page--theory .material-admin-panel--page-functions .icon-pencil");
+        waitAndClickAndConfirm(".material-page--theory .material-admin-panel--page-functions .icon-pencil", ".material-editor--visible .form-element__input--material-editor-title", 5, 3000);
         waitAndClick(".button-pill--material-editor-delete-page");
         waitAndClick(".button--standard-ok");
+        sleep(1000);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+        waitForPresent("#editingMasterSwitch");
         assertNotPresent(".material-page__title.material-page__title--theory");
         assertNotPresent(".material-page__content.rich-text");
       } finally {
