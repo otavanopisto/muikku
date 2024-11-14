@@ -468,12 +468,19 @@ export interface GuiderStudyProgressSuggestedNextWebsocketType {
 }
 
 /**
- * StudyProgressWorkspaceSignupWebsocketMsgType
+ * GuiderStudyProgressWorkspaceSignupWebsocketType
  */
 export interface GuiderStudyProgressWorkspaceSignupWebsocketType {
   (data: {
     websocketData: StudentStudyActivity | StudentStudyActivity[];
   }): AnyActionType;
+}
+
+/**
+ * GuiderStudyProgressAlternativeStudyOptionsWebsocketType
+ */
+export interface GuiderStudyProgressAlternativeStudyOptionsWebsocketType {
+  (data: { websocketData: string[] }): AnyActionType;
 }
 
 /**
@@ -2719,6 +2726,37 @@ const guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceS
     };
   };
 
+/**
+ * GuiderStudyProgressAlternativeStudyOptionsWebsocketType
+ * @param data data
+ */
+const guiderStudyProgressAlternativeStudyOptionsWebsocket: GuiderStudyProgressAlternativeStudyOptionsWebsocketType =
+  function guiderStudyProgressAlternativeStudyOptionsWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { studyProgress } = currentStudent;
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: { ...studyProgress, options: websocketData },
+        },
+      });
+    };
+  };
+
 export {
   loadStudents,
   loadMoreStudents,
@@ -2755,4 +2793,5 @@ export {
   completeOrderFromCurrentStudent,
   guiderStudyProgressSuggestedNextWebsocket,
   guiderStudyProgressWorkspaceSignupWebsocket,
+  guiderStudyProgressAlternativeStudyOptionsWebsocket,
 };

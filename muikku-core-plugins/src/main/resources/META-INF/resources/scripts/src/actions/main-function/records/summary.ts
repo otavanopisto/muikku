@@ -61,6 +61,13 @@ export interface RecordsSummaryWorkspaceSignupWebsocketType {
   }): AnyActionType;
 }
 
+/**
+ * RecordsSummaryAlternativeStudyOptionsWebsocketType
+ */
+export interface RecordsSummaryAlternativeStudyOptionsWebsocketType {
+  (data: { websocketData: string[] }): AnyActionType;
+}
+
 const hopsApi = MApi.getHopsApi();
 
 /**
@@ -376,13 +383,44 @@ const recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebso
     };
   };
 
+/**
+ * recordsSummaryAlternativeStudyOptionsWebsocket
+ * @param data data
+ */
+const recordsSummaryAlternativeStudyOptionsWebsocket: RecordsSummaryAlternativeStudyOptionsWebsocketType =
+  function recordsSummaryAlternativeStudyOptionsWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const summaryData = state.summary?.data;
+
+      if (!summaryData) {
+        return null;
+      }
+
+      const { studyProgress } = summaryData;
+
+      dispatch({
+        type: "UPDATE_STUDIES_SUMMARY",
+        payload: {
+          ...getState().summary.data,
+          studyProgress: { ...studyProgress, options: data.websocketData },
+        },
+      });
+    };
+  };
+
 export default {
   updateSummary,
   recordsSummarySuggestedNextWebsocket,
   recordsSummaryWorkspaceSignupWebsocket,
+  recordsSummaryAlternativeStudyOptionsWebsocket,
 };
 export {
   updateSummary,
   recordsSummarySuggestedNextWebsocket,
   recordsSummaryWorkspaceSignupWebsocket,
+  recordsSummaryAlternativeStudyOptionsWebsocket,
 };
