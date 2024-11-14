@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
 import { WorkspaceSuggestion } from "~/generated/client";
 import { SummaryStudyProgress } from "~/reducers/main-function/records/summary";
-import ProgressListStudySummary from "./components/progress-list-study-summary";
-import ProgressTableStudySummary from "./components/progress-table-study-summary";
+import ProgressList from "./components/progress-list";
+import ProgressTable from "./components/progress-table";
 /**
- * ProgressStudySummaryProps
+ * StudyProgressProps
  */
-interface ProgressStudySummaryProps {
+interface StudyProgressProps {
   studentIdentifier: string;
   studentUserEntityId: number;
   studyProgrammeName: string;
@@ -17,11 +17,11 @@ interface ProgressStudySummaryProps {
 }
 
 /**
- * ProgressStudySummary
+ * StudyProgress
  * @param props props
  * @returns JSX.Element
  */
-const ProgressStudySummary: React.FC<ProgressStudySummaryProps> = (props) => {
+const StudyProgress: React.FC<StudyProgressProps> = (props) => {
   const {
     studentIdentifier,
     studentUserEntityId,
@@ -90,7 +90,7 @@ const ProgressStudySummary: React.FC<ProgressStudySummaryProps> = (props) => {
 
       <div className="hops__form-element-container hops__form-element-container--pad-upforwards swiper-no-swiping">
         <div className="list">
-          <ProgressTableStudySummary
+          <ProgressTable
             studentIdentifier={studentIdentifier}
             studentUserEntityId={studentUserEntityId}
             studyProgrammeName={studyProgrammeName}
@@ -110,7 +110,7 @@ const ProgressStudySummary: React.FC<ProgressStudySummaryProps> = (props) => {
 
       <div className="hops__form-element-container hops__form-element-container--mobile swiper-no-swiping">
         <div className="table">
-          <ProgressListStudySummary
+          <ProgressList
             studentIdentifier={studentIdentifier}
             studentUserEntityId={studentUserEntityId}
             curriculumName={curriculumName}
@@ -145,4 +145,4 @@ const ProgressStudySummary: React.FC<ProgressStudySummaryProps> = (props) => {
   );
 };
 
-export default ProgressStudySummary;
+export default StudyProgress;

@@ -4,12 +4,14 @@ import Button from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import {
   OPSCourseTableContent,
-  ProgressTableProps,
+  OPSCourseTableProps,
   RenderItemParams,
 } from "~/components/general/OPS-matrix/OPS-course-table";
-import SuggestionList from "~/components/general/suggestion-list/suggestion-list";
+import SuggestionList, {
+  SuggestionItemContext,
+} from "~/components/general/suggestion-list/suggestion-list";
 import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
-import { WorkspaceSuggestion } from "~/generated/client";
+import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
 import {
   compulsoryOrUpperSecondary,
   getCourseInfo,
@@ -17,30 +19,25 @@ import {
 } from "~/helper-functions/study-matrix";
 
 /**
- * Props interface for the ProgressTableStudySummary component.
- * Extends ProgressTableProps but omits specific properties while adding onSignUp functionality.
+ * GuiderStateOfStudiesTableProps
  */
-interface ProgressTableStudySummaryProps
+interface ProgressTableProps
   extends Omit<
-    ProgressTableProps,
+    OPSCourseTableProps,
     | "renderMandatoryCourseCellContent"
     | "renderOptionalCourseCellContent"
     | "currentMaxCourses"
     | "matrix"
   > {
-  /** Callback function to handle student sign-up for a workspace */
-  onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
+  onSignUpBehalf?: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * Component that displays a summary table of a student's study progress.
- * Shows courses, their status, and available workspace suggestions for enrollment.
- *
- * @param props - Component properties
+ * GuiderStateOfStudiesTable
+ * @param props props
+ * @returns JSX.Element
  */
-const ProgressTableStudySummary: React.FC<ProgressTableStudySummaryProps> = (
-  props
-) => {
+const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   const {
     studentIdentifier,
     studentUserEntityId,
@@ -48,7 +45,7 @@ const ProgressTableStudySummary: React.FC<ProgressTableStudySummaryProps> = (
     transferedList,
     gradedList,
     onGoingList,
-    onSignUp,
+    onSignUpBehalf,
   } = props;
 
   const { t } = useTranslation(["studyMatrix"]);
@@ -68,7 +65,7 @@ const ProgressTableStudySummary: React.FC<ProgressTableStudySummaryProps> = (
   const renderCourseCell = (params: RenderItemParams) => {
     const { subject, course, tdModifiers } = params;
 
-    const { modifiers, canBeSelected } = getCourseInfo(
+    const { modifiers, courseSuggestions, canBeSelected } = getCourseInfo(
       tdModifiers,
       subject,
       course,
@@ -103,7 +100,9 @@ const ProgressTableStudySummary: React.FC<ProgressTableStudySummaryProps> = (
             <SuggestionListContent
               key={suggestion.id}
               suggestion={suggestion}
-              onSignUp={onSignUp}
+              suggestedCourses={courseSuggestions}
+              suggestionContext={context}
+              onSignUpBehalf={onSignUpBehalf}
             />
           ));
         }}
@@ -164,35 +163,51 @@ const ProgressTableStudySummary: React.FC<ProgressTableStudySummaryProps> = (
 };
 
 /**
- * Props interface for the SuggestionListContent component
- * @interface SuggestionListContentProps
+ * SuggestionListContentProps
  */
 interface SuggestionListContentProps {
-  /** Workspace suggestion data */
   suggestion: WorkspaceSuggestion;
-  /** Callback function when user signs up for a workspace */
-  onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
+  suggestedCourses: StudentStudyActivity[];
+  suggestionContext: SuggestionItemContext;
+  onSignUpBehalf: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * Component that renders the content of a workspace suggestion including name and action buttons.
- *
- * @param props - Component properties
+ * SuggestionListContent
+ * @param props props
+ * @returns JSX.Element
  */
 const SuggestionListContent = (props: SuggestionListContentProps) => {
-  const { suggestion, onSignUp } = props;
+  const { suggestion, suggestedCourses, suggestionContext, onSignUpBehalf } =
+    props;
 
-  const { t } = useTranslation(["workspace"]);
+  const { t } = useTranslation(["studyMatrix"]);
 
   /**
-   * Handles sign up click
+   * handleSignUpBehalf
    * @param e e
    */
-  const handleSignUpClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    onSignUp(suggestion);
+  const handleSignUpBehalf = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    onSignUpBehalf && onSignUpBehalf(suggestion);
   };
 
+  // By default "add" action
+  let suggestionNextActionType: "add" | "remove" = "add";
+
+  // Check if the suggestion is already in the courseSuggestions list
+  const suggestedCourse = suggestedCourses.find(
+    (sCourse) => sCourse.courseId === suggestion.id
+  );
+
+  // and the status is SUGGESTED_NEXT
+  if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
+    // then the action is "remove"
+    suggestionNextActionType = "remove";
+  }
+
   let name = suggestion.name;
+
+  // Add name extension if it exists
   if (suggestion.nameExtension) {
     name += ` (${suggestion.nameExtension})`;
   }
@@ -203,31 +218,40 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
       className="hops-container__study-tool-dropdow-suggestion-subsection"
     >
       <div className="hops-container__study-tool-dropdow-title">{name}</div>
+
+      <Button
+        buttonModifiers={[
+          "guider-hops-studytool",
+          "guider-hops-studytool-next",
+        ]}
+        onClick={suggestionContext.handleSuggestionNextClick({
+          actionType: suggestionNextActionType,
+          courseNumber: suggestionContext.course.courseNumber,
+          subjectCode: suggestionContext.subjectCode,
+          courseId: suggestion.id,
+          studentId: suggestionContext.studentId,
+        })}
+      >
+        {suggestionNextActionType === "remove"
+          ? t("actions.suggested", { ns: "studyMatrix" })
+          : t("actions.suggestToNext", { ns: "studyMatrix" })}
+      </Button>
+
       {suggestion.canSignup && (
-        <>
-          <Button
-            buttonModifiers={[
-              "guider-hops-studytool",
-              "guider-hops-studytool-next",
-            ]}
-            href={`/workspace/${suggestion.urlName}`}
-            openInNewTab="_blank"
-          >
-            {t("actions.checkOut", { ns: "workspace" })}
-          </Button>
-          <Button
-            buttonModifiers={[
-              "guider-hops-studytool",
-              "guider-hops-studytool-next",
-            ]}
-            onClick={handleSignUpClick}
-          >
-            {t("actions.signUp", { ns: "workspace" })}
-          </Button>
-        </>
+        <Button
+          buttonModifiers={[
+            "guider-hops-studytool",
+            "guider-hops-studytool-next",
+          ]}
+          onClick={handleSignUpBehalf}
+        >
+          {t("actions.signupStudentToWorkspace", {
+            ns: "studyMatrix",
+          })}
+        </Button>
       )}
     </div>
   );
 };
 
-export default ProgressTableStudySummary;
+export default ProgressTable;

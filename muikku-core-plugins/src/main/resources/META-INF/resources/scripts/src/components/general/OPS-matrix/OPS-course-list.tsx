@@ -26,7 +26,7 @@ export interface RenderItemParams {
 /**
  * Props for the OPSCourseList component
  */
-export interface ProgressListProps extends StudentActivityByStatus {
+export interface OPSCourseListProps extends StudentActivityByStatus {
   matrix: SchoolSubject[] | null;
   studentIdentifier: string;
   studentUserEntityId: number;
@@ -37,17 +37,12 @@ export interface ProgressListProps extends StudentActivityByStatus {
 }
 
 /**
- * ProgressListContentProps
- */
-interface ProgressListContentProps extends ProgressListProps {}
-
-/**
  * OPS course list component - Displays a list of courses organized by subject
  * Supports both mandatory and optional courses with custom rendering capabilities
  * @param props - Component props
  * @returns Rendered list of courses
  */
-export const OPSCourseList: React.FC<ProgressListContentProps> = (props) => {
+export const OPSCourseList: React.FC<OPSCourseListProps> = (props) => {
   const {
     children,
     matrix,

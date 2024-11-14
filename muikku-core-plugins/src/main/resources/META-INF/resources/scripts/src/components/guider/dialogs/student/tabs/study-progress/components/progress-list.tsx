@@ -1,55 +1,50 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import Button from "~/components/general/button";
+import * as React from "react";
+//import { useTranslation } from "react-i18next";
 import Dropdown from "~/components/general/dropdown";
-import {
-  OPSCourseTableContent,
-  ProgressTableProps,
-  RenderItemParams,
-} from "~/components/general/OPS-matrix/OPS-course-table";
-import SuggestionList, {
-  SuggestionItemContext,
-} from "~/components/general/suggestion-list/suggestion-list";
-import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
-import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
+import { ListItem, ListItemIndicator } from "~/components/general/list";
 import {
   compulsoryOrUpperSecondary,
   getCourseInfo,
-  getHighestCourseNumber,
 } from "~/helper-functions/study-matrix";
+import OPSCourseList, {
+  OPSCourseListProps,
+  RenderItemParams,
+} from "~/components/general/OPS-matrix/OPS-course-list";
+import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
+import Button from "~/components/general/button";
+import SuggestionList, {
+  SuggestionItemContext,
+} from "~/components/general/suggestion-list/suggestion-list";
+import { useTranslation } from "react-i18next";
 
 /**
- * GuiderStateOfStudiesTableProps
+ * StateOfStudiesProgressListProps
  */
-interface GuiderStateOfStudiesTableProps
+interface ProgressListProps
   extends Omit<
-    ProgressTableProps,
-    | "renderMandatoryCourseCellContent"
-    | "renderOptionalCourseCellContent"
-    | "currentMaxCourses"
+    OPSCourseListProps,
+    | "renderMandatoryCourseItemContent"
+    | "renderOptionalCourseItemContent"
     | "matrix"
   > {
   onSignUpBehalf?: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * GuiderStateOfStudiesTable
+ * HopsPlanningList
  * @param props props
  * @returns JSX.Element
  */
-const GuiderStateOfStudiesTable: React.FC<GuiderStateOfStudiesTableProps> = (
-  props
-) => {
+const ProgressList: React.FC<ProgressListProps> = (props) => {
   const {
-    studentIdentifier,
-    studentUserEntityId,
     suggestedNextList,
     transferedList,
     gradedList,
     onGoingList,
+    studentIdentifier,
+    studentUserEntityId,
     onSignUpBehalf,
   } = props;
-
   const { t } = useTranslation(["studyMatrix"]);
 
   const matrix = compulsoryOrUpperSecondary(
@@ -57,18 +52,16 @@ const GuiderStateOfStudiesTable: React.FC<GuiderStateOfStudiesTableProps> = (
     props.curriculumName
   );
 
-  const currentMaxCourses = getHighestCourseNumber(matrix);
-
   /**
-   * renderCourseCell
+   * Render optional course item content
    * @param params params
    * @returns JSX.Element
    */
-  const renderCourseCell = (params: RenderItemParams) => {
-    const { subject, course, tdModifiers } = params;
+  const renderCourseItem = (params: RenderItemParams) => {
+    const { subject, course, listItemModifiers } = params;
 
     const { modifiers, courseSuggestions, canBeSelected } = getCourseInfo(
-      tdModifiers,
+      listItemModifiers,
       subject,
       course,
       suggestedNextList,
@@ -115,52 +108,40 @@ const GuiderStateOfStudiesTable: React.FC<GuiderStateOfStudiesTableProps> = (
       subject.subjectCode + course.courseNumber + " - " + course.name;
 
     return (
-      <Td
+      <ListItem
         key={`${subject.subjectCode}-${course.courseNumber}`}
-        modifiers={modifiers}
+        modifiers={["course"]}
       >
-        <Dropdown
-          content={
-            <div className="hops-container__study-tool-dropdown-container">
-              <div className="hops-container__study-tool-dropdow-title">
-                {course.mandatory
-                  ? courseDropdownName
-                  : `${courseDropdownName}*`}
+        <ListItemIndicator modifiers={modifiers}>
+          <Dropdown
+            content={
+              <div className="hops-container__study-tool-dropdown-container">
+                <div className="hops-container__study-tool-dropdow-title">
+                  {course.mandatory
+                    ? courseDropdownName
+                    : `${courseDropdownName}*`}
+                </div>
+                {canBeSelected && suggestionList}
               </div>
-              {canBeSelected && suggestionList}
-            </div>
-          }
-        >
-          <span
-            tabIndex={0}
-            className="table__data-content-wrapper table__data-content-wrapper--course"
+            }
           >
-            {course.mandatory ? course.courseNumber : `${course.courseNumber}*`}
-          </span>
-        </Dropdown>
-      </Td>
+            <span tabIndex={0} className="list__indicator-data-wapper">
+              {course.mandatory
+                ? course.courseNumber
+                : `${course.courseNumber}*`}
+            </span>
+          </Dropdown>
+        </ListItemIndicator>
+      </ListItem>
     );
   };
 
   return (
-    <Table modifiers={["course"]}>
-      <TableHead modifiers={["course", "sticky-inside-dialog"]}>
-        <Tr modifiers={["course"]}>
-          <Th modifiers={["subject"]}>
-            {t("labels.schoolSubject", { ns: "studyMatrix" })}
-          </Th>
-          <Th colSpan={currentMaxCourses}>
-            {t("labels.courses", { ns: "studyMatrix" })}
-          </Th>
-        </Tr>
-      </TableHead>
-      <OPSCourseTableContent
-        {...props}
-        matrix={matrix}
-        currentMaxCourses={currentMaxCourses}
-        renderCourseCell={renderCourseCell}
-      />
-    </Table>
+    <OPSCourseList
+      {...props}
+      matrix={matrix}
+      renderCourseItem={renderCourseItem}
+    ></OPSCourseList>
   );
 };
 
@@ -186,7 +167,7 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
   const { t } = useTranslation(["studyMatrix"]);
 
   /**
-   * handleSignUpBehalf
+   * Handles sign up behalf click
    * @param e e
    */
   const handleSignUpBehalf = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -256,4 +237,4 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
   );
 };
 
-export default GuiderStateOfStudiesTable;
+export default ProgressList;

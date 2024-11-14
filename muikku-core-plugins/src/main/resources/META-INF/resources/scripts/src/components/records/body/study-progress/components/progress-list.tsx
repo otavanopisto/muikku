@@ -7,37 +7,38 @@ import {
   getCourseInfo,
 } from "~/helper-functions/study-matrix";
 import OPSCourseList, {
-  ProgressListProps,
+  OPSCourseListProps,
   RenderItemParams,
 } from "~/components/general/OPS-matrix/OPS-course-list";
-import { StudentStudyActivity, WorkspaceSuggestion } from "~/generated/client";
 import Button from "~/components/general/button";
-import SuggestionList, {
-  SuggestionItemContext,
-} from "~/components/general/suggestion-list/suggestion-list";
+import SuggestionList from "~/components/general/suggestion-list/suggestion-list";
 import { useTranslation } from "react-i18next";
+import { WorkspaceSuggestion } from "~/generated/client";
 
 /**
- * GuiderStateOfStudiesListProps
+ * Component that displays a summary of a student's study progress in a list format.
+ * It shows courses with their status (ongoing, graded, transferred) and provides
+ * signup options for available course implementations.
  */
-interface GuiderStateOfStudiesListProps
+interface ProgressListProps
   extends Omit<
-    ProgressListProps,
+    OPSCourseListProps,
     | "renderMandatoryCourseItemContent"
     | "renderOptionalCourseItemContent"
     | "matrix"
   > {
-  onSignUpBehalf?: (workspaceToSignUp: WorkspaceSuggestion) => void;
+  /** Callback function triggered when a student signs up for a course workspace */
+  onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * HopsPlanningList
- * @param props props
- * @returns JSX.Element
+ * Component that renders a list of courses with their progress status and available
+ * course implementations. Each course can be clicked to show a dropdown with more
+ * details and signup options.
+ *
+ * @param props - Component properties
  */
-const GuiderStateOfStudiesList: React.FC<GuiderStateOfStudiesListProps> = (
-  props
-) => {
+const ProgressList: React.FC<ProgressListProps> = (props) => {
   const {
     suggestedNextList,
     transferedList,
@@ -45,9 +46,9 @@ const GuiderStateOfStudiesList: React.FC<GuiderStateOfStudiesListProps> = (
     onGoingList,
     studentIdentifier,
     studentUserEntityId,
-    onSignUpBehalf,
+    onSignUp,
   } = props;
-  const { t } = useTranslation(["studyMatrix"]);
+  const { t } = useTranslation(["studyMatrix", "workspace"]);
 
   const matrix = compulsoryOrUpperSecondary(
     props.studyProgrammeName,
@@ -62,7 +63,7 @@ const GuiderStateOfStudiesList: React.FC<GuiderStateOfStudiesListProps> = (
   const renderCourseItem = (params: RenderItemParams) => {
     const { subject, course, listItemModifiers } = params;
 
-    const { modifiers, courseSuggestions, canBeSelected } = getCourseInfo(
+    const { modifiers, canBeSelected } = getCourseInfo(
       listItemModifiers,
       subject,
       course,
@@ -97,9 +98,7 @@ const GuiderStateOfStudiesList: React.FC<GuiderStateOfStudiesListProps> = (
             <SuggestionListContent
               key={suggestion.id}
               suggestion={suggestion}
-              suggestedCourses={courseSuggestions}
-              suggestionContext={context}
-              onSignUpBehalf={onSignUpBehalf}
+              onSignUp={onSignUp}
             />
           ));
         }}
@@ -148,47 +147,36 @@ const GuiderStateOfStudiesList: React.FC<GuiderStateOfStudiesListProps> = (
 };
 
 /**
- * SuggestionListContentProps
+ * Component that displays a single course implementation suggestion with
+ * options to view the workspace or sign up for the course.
+ *
  */
 interface SuggestionListContentProps {
+  /** The workspace suggestion data */
   suggestion: WorkspaceSuggestion;
-  suggestedCourses: StudentStudyActivity[];
-  suggestionContext: SuggestionItemContext;
-  onSignUpBehalf: (workspaceToSignUp: WorkspaceSuggestion) => void;
+  /** Callback function triggered when signing up for a course */
+  onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * SuggestionListContent
- * @param props props
- * @returns JSX.Element
+ * Renders a course implementation suggestion with its name and action buttons.
+ * If the course allows signup, it displays buttons to check out the workspace
+ * or sign up for the course.
+ *
+ * @param props - Component properties
  */
 const SuggestionListContent = (props: SuggestionListContentProps) => {
-  const { suggestion, suggestedCourses, suggestionContext, onSignUpBehalf } =
-    props;
+  const { suggestion, onSignUp } = props;
 
-  const { t } = useTranslation(["studyMatrix"]);
+  const { t } = useTranslation(["workspace"]);
 
   /**
-   * Handles sign up behalf click
+   * Handles sign up click
    * @param e e
    */
-  const handleSignUpBehalf = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    onSignUpBehalf && onSignUpBehalf(suggestion);
+  const handleSignUpClick = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    onSignUp(suggestion);
   };
-
-  // By default "add" action
-  let suggestionNextActionType: "add" | "remove" = "add";
-
-  // Check if the suggestion is already in the courseSuggestions list
-  const suggestedCourse = suggestedCourses.find(
-    (sCourse) => sCourse.courseId === suggestion.id
-  );
-
-  // and the status is SUGGESTED_NEXT
-  if (suggestedCourse && suggestedCourse.status === "SUGGESTED_NEXT") {
-    // then the action is "remove"
-    suggestionNextActionType = "remove";
-  }
 
   let name = suggestion.name;
 
@@ -204,39 +192,31 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
     >
       <div className="hops-container__study-tool-dropdow-title">{name}</div>
 
-      <Button
-        buttonModifiers={[
-          "guider-hops-studytool",
-          "guider-hops-studytool-next",
-        ]}
-        onClick={suggestionContext.handleSuggestionNextClick({
-          actionType: suggestionNextActionType,
-          courseNumber: suggestionContext.course.courseNumber,
-          subjectCode: suggestionContext.subjectCode,
-          courseId: suggestion.id,
-          studentId: suggestionContext.studentId,
-        })}
-      >
-        {suggestionNextActionType === "remove"
-          ? t("actions.suggested", { ns: "studyMatrix" })
-          : t("actions.suggestToNext", { ns: "studyMatrix" })}
-      </Button>
-
       {suggestion.canSignup && (
-        <Button
-          buttonModifiers={[
-            "guider-hops-studytool",
-            "guider-hops-studytool-next",
-          ]}
-          onClick={handleSignUpBehalf}
-        >
-          {t("actions.signupStudentToWorkspace", {
-            ns: "studyMatrix",
-          })}
-        </Button>
+        <>
+          <Button
+            buttonModifiers={[
+              "guider-hops-studytool",
+              "guider-hops-studytool-next",
+            ]}
+            href={`/workspace/${suggestion.urlName}`}
+            openInNewTab="_blank"
+          >
+            {t("actions.checkOut", { ns: "workspace" })}
+          </Button>
+          <Button
+            buttonModifiers={[
+              "guider-hops-studytool",
+              "guider-hops-studytool-next",
+            ]}
+            onClick={handleSignUpClick}
+          >
+            {t("actions.signUp", { ns: "workspace" })}
+          </Button>
+        </>
       )}
     </div>
   );
 };
 
-export default GuiderStateOfStudiesList;
+export default ProgressList;

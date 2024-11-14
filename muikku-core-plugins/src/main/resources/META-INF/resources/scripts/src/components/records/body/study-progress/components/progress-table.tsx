@@ -1,72 +1,73 @@
-import * as React from "react";
-//import { useTranslation } from "react-i18next";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import Button from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
-import { ListItem, ListItemIndicator } from "~/components/general/list";
+import {
+  OPSCourseTableContent,
+  OPSCourseTableProps,
+  RenderItemParams,
+} from "~/components/general/OPS-matrix/OPS-course-table";
+import SuggestionList from "~/components/general/suggestion-list/suggestion-list";
+import { Table, TableHead, Td, Th, Tr } from "~/components/general/table";
+import { WorkspaceSuggestion } from "~/generated/client";
 import {
   compulsoryOrUpperSecondary,
   getCourseInfo,
+  getHighestCourseNumber,
 } from "~/helper-functions/study-matrix";
-import OPSCourseList, {
-  ProgressListProps,
-  RenderItemParams,
-} from "~/components/general/OPS-matrix/OPS-course-list";
-import Button from "~/components/general/button";
-import SuggestionList from "~/components/general/suggestion-list/suggestion-list";
-import { useTranslation } from "react-i18next";
-import { WorkspaceSuggestion } from "~/generated/client";
 
 /**
- * Component that displays a summary of a student's study progress in a list format.
- * It shows courses with their status (ongoing, graded, transferred) and provides
- * signup options for available course implementations.
+ * Props interface for the ProgressTableStudySummary component.
+ * Extends ProgressTableProps but omits specific properties while adding onSignUp functionality.
  */
-interface ProgressListStudySummaryProps
+interface ProgressTableProps
   extends Omit<
-    ProgressListProps,
-    | "renderMandatoryCourseItemContent"
-    | "renderOptionalCourseItemContent"
+    OPSCourseTableProps,
+    | "renderMandatoryCourseCellContent"
+    | "renderOptionalCourseCellContent"
+    | "currentMaxCourses"
     | "matrix"
   > {
-  /** Callback function triggered when a student signs up for a course workspace */
+  /** Callback function to handle student sign-up for a workspace */
   onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * Component that renders a list of courses with their progress status and available
- * course implementations. Each course can be clicked to show a dropdown with more
- * details and signup options.
+ * Component that displays a summary table of a student's study progress.
+ * Shows courses, their status, and available workspace suggestions for enrollment.
  *
  * @param props - Component properties
  */
-const ProgressListStudySummary: React.FC<ProgressListStudySummaryProps> = (
-  props
-) => {
+const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   const {
+    studentIdentifier,
+    studentUserEntityId,
     suggestedNextList,
     transferedList,
     gradedList,
     onGoingList,
-    studentIdentifier,
-    studentUserEntityId,
     onSignUp,
   } = props;
-  const { t } = useTranslation(["studyMatrix", "workspace"]);
+
+  const { t } = useTranslation(["studyMatrix"]);
 
   const matrix = compulsoryOrUpperSecondary(
     props.studyProgrammeName,
     props.curriculumName
   );
 
+  const currentMaxCourses = getHighestCourseNumber(matrix);
+
   /**
-   * Render optional course item content
+   * renderCourseCell
    * @param params params
    * @returns JSX.Element
    */
-  const renderCourseItem = (params: RenderItemParams) => {
-    const { subject, course, listItemModifiers } = params;
+  const renderCourseCell = (params: RenderItemParams) => {
+    const { subject, course, tdModifiers } = params;
 
     const { modifiers, canBeSelected } = getCourseInfo(
-      listItemModifiers,
+      tdModifiers,
       subject,
       course,
       suggestedNextList,
@@ -111,59 +112,68 @@ const ProgressListStudySummary: React.FC<ProgressListStudySummaryProps> = (
       subject.subjectCode + course.courseNumber + " - " + course.name;
 
     return (
-      <ListItem
+      <Td
         key={`${subject.subjectCode}-${course.courseNumber}`}
-        modifiers={["course"]}
+        modifiers={modifiers}
       >
-        <ListItemIndicator modifiers={modifiers}>
-          <Dropdown
-            content={
-              <div className="hops-container__study-tool-dropdown-container">
-                <div className="hops-container__study-tool-dropdow-title">
-                  {course.mandatory
-                    ? courseDropdownName
-                    : `${courseDropdownName}*`}
-                </div>
-                {canBeSelected && suggestionList}
+        <Dropdown
+          content={
+            <div className="hops-container__study-tool-dropdown-container">
+              <div className="hops-container__study-tool-dropdow-title">
+                {course.mandatory
+                  ? courseDropdownName
+                  : `${courseDropdownName}*`}
               </div>
-            }
+              {canBeSelected && suggestionList}
+            </div>
+          }
+        >
+          <span
+            tabIndex={0}
+            className="table__data-content-wrapper table__data-content-wrapper--course"
           >
-            <span tabIndex={0} className="list__indicator-data-wapper">
-              {course.mandatory
-                ? course.courseNumber
-                : `${course.courseNumber}*`}
-            </span>
-          </Dropdown>
-        </ListItemIndicator>
-      </ListItem>
+            {course.mandatory ? course.courseNumber : `${course.courseNumber}*`}
+          </span>
+        </Dropdown>
+      </Td>
     );
   };
 
   return (
-    <OPSCourseList
-      {...props}
-      matrix={matrix}
-      renderCourseItem={renderCourseItem}
-    ></OPSCourseList>
+    <Table modifiers={["course"]}>
+      <TableHead modifiers={["course", "sticky-inside-dialog"]}>
+        <Tr modifiers={["course"]}>
+          <Th modifiers={["subject"]}>
+            {t("labels.schoolSubject", { ns: "studyMatrix" })}
+          </Th>
+          <Th colSpan={currentMaxCourses}>
+            {t("labels.courses", { ns: "studyMatrix" })}
+          </Th>
+        </Tr>
+      </TableHead>
+      <OPSCourseTableContent
+        {...props}
+        matrix={matrix}
+        currentMaxCourses={currentMaxCourses}
+        renderCourseCell={renderCourseCell}
+      />
+    </Table>
   );
 };
 
 /**
- * Component that displays a single course implementation suggestion with
- * options to view the workspace or sign up for the course.
- *
+ * Props interface for the SuggestionListContent component
+ * @interface SuggestionListContentProps
  */
 interface SuggestionListContentProps {
-  /** The workspace suggestion data */
+  /** Workspace suggestion data */
   suggestion: WorkspaceSuggestion;
-  /** Callback function triggered when signing up for a course */
+  /** Callback function when user signs up for a workspace */
   onSignUp: (workspaceToSignUp: WorkspaceSuggestion) => void;
 }
 
 /**
- * Renders a course implementation suggestion with its name and action buttons.
- * If the course allows signup, it displays buttons to check out the workspace
- * or sign up for the course.
+ * Component that renders the content of a workspace suggestion including name and action buttons.
  *
  * @param props - Component properties
  */
@@ -181,8 +191,6 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
   };
 
   let name = suggestion.name;
-
-  // Add name extension if it exists
   if (suggestion.nameExtension) {
     name += ` (${suggestion.nameExtension})`;
   }
@@ -193,7 +201,6 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
       className="hops-container__study-tool-dropdow-suggestion-subsection"
     >
       <div className="hops-container__study-tool-dropdow-title">{name}</div>
-
       {suggestion.canSignup && (
         <>
           <Button
@@ -221,4 +228,4 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
   );
 };
 
-export default ProgressListStudySummary;
+export default ProgressTable;

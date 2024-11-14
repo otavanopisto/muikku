@@ -30,7 +30,7 @@ import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgrammeAndCurriculum } from "~/components/general/carousel/hooks/use-course-carousel";
-import ProgressStudySummary from "../study-progress";
+import StudyProgress from "../study-progress";
 
 /**
  * SummaryProps
@@ -317,7 +317,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   /> */}
                 </div>
 
-                <ProgressStudySummary
+                <StudyProgress
                   curriculumName={this.props.status.profile.curriculumName}
                   studyProgrammeName={
                     this.props.status.profile.studyProgrammeName

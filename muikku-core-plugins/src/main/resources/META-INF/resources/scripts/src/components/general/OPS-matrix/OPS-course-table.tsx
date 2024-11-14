@@ -21,7 +21,7 @@ export interface RenderItemParams {
 /**
  * Props for the Progress Table component
  */
-export interface ProgressTableProps extends StudentActivityByStatus {
+export interface OPSCourseTableProps extends StudentActivityByStatus {
   matrix: SchoolSubject[] | null;
   studentIdentifier: string;
   studentUserEntityId: number;
@@ -45,7 +45,7 @@ export interface ProgressTableProps extends StudentActivityByStatus {
  * @param props - Component props
  * @returns Rendered table content or empty state message
  */
-export const OPSCourseTableContent: React.FC<ProgressTableProps> = (props) => {
+export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
   const {
     matrix,
     currentMaxCourses,

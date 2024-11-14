@@ -1,16 +1,16 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { GuiderStudentStudyProgress } from "~/reducers/main-function/guider";
-import GuiderStateOfStudiesList from "./components/progress-list-state-of-studies";
+import ProgressList from "./components/progress-list";
 import SignUpBehalfStudentDialog from "./dialogs/sign-up-behalf-student";
-import GuiderStateOfStudiesTable from "./components/progress-table-state-of-studies";
+import ProgressTable from "./components/progress-table";
 import { useState } from "react";
 import { WorkspaceSuggestion } from "~/generated/client";
 
 /**
  * ProgressHopsPlanningProps
  */
-interface ProgressGuiderStateOfStudiesProps {
+interface StudyProgressProps {
   studentIdentifier: string;
   studentUserEntityId: number;
   studyProgrammeName: string;
@@ -19,13 +19,11 @@ interface ProgressGuiderStateOfStudiesProps {
 }
 
 /**
- * ProgressGuiderStateOfStudies
+ * StudyProgress
  * @param props props
  * @returns JSX.Element
  */
-const ProgressGuiderStateOfStudies: React.FC<
-  ProgressGuiderStateOfStudiesProps
-> = (props) => {
+const StudyProgress: React.FC<StudyProgressProps> = (props) => {
   const {
     studentIdentifier,
     studentUserEntityId,
@@ -94,7 +92,7 @@ const ProgressGuiderStateOfStudies: React.FC<
 
       <div className="hops__form-element-container hops__form-element-container--pad-upforwards swiper-no-swiping">
         <div className="list">
-          <GuiderStateOfStudiesTable
+          <ProgressTable
             studentIdentifier={studentIdentifier}
             studentUserEntityId={studentUserEntityId}
             studyProgrammeName={studyProgrammeName}
@@ -114,7 +112,7 @@ const ProgressGuiderStateOfStudies: React.FC<
 
       <div className="hops__form-element-container hops__form-element-container--mobile swiper-no-swiping">
         <div className="table">
-          <GuiderStateOfStudiesList
+          <ProgressList
             studentIdentifier={studentIdentifier}
             studentUserEntityId={studentUserEntityId}
             curriculumName={curriculumName}
@@ -142,4 +140,4 @@ const ProgressGuiderStateOfStudies: React.FC<
   );
 };
 
-export default ProgressGuiderStateOfStudies;
+export default StudyProgress;

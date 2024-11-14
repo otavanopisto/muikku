@@ -39,7 +39,7 @@ import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
-import ProgressGuiderStateOfStudies from "./study-progress";
+import StudyProgress from "./study-progress";
 
 /**
  * StateOfStudiesProps
@@ -411,7 +411,7 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Header>
 
                 <ApplicationSubPanel.Body>
-                  <ProgressGuiderStateOfStudies
+                  <StudyProgress
                     studentIdentifier={
                       this.props.guider.currentStudent.basic.id
                     }
