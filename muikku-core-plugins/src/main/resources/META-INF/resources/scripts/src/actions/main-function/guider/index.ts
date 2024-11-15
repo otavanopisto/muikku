@@ -461,14 +461,14 @@ export interface ToggleAllStudentsTriggerType {
 }
 
 /**
- * StudyProgressSuggestedNextWebsocketType
+ * Interface for the suggested next websocket thunk action creator
  */
 export interface GuiderStudyProgressSuggestedNextWebsocketType {
   (data: { websocketData: StudentStudyActivity }): AnyActionType;
 }
 
 /**
- * GuiderStudyProgressWorkspaceSignupWebsocketType
+ * Interface for the workspace signup websocket thunk action creator
  */
 export interface GuiderStudyProgressWorkspaceSignupWebsocketType {
   (data: {
@@ -477,7 +477,7 @@ export interface GuiderStudyProgressWorkspaceSignupWebsocketType {
 }
 
 /**
- * GuiderStudyProgressAlternativeStudyOptionsWebsocketType
+ * Interface for the alternative study options websocket thunk action creator
  */
 export interface GuiderStudyProgressAlternativeStudyOptionsWebsocketType {
   (data: { websocketData: string[] }): AnyActionType;
@@ -2611,7 +2611,7 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
   };
 
 /**
- * GuiderStudyProgressSuggestedNextWebsocketType
+ * Thunk action creator for the suggested next websocket
  * @param data data
  */
 const guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNextWebsocketType =
@@ -2669,7 +2669,7 @@ const guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNex
   };
 
 /**
- * RecordsSummaryWorkspaceSignupWebsocketType
+ * Thunk action creator for the workspace signup websocket
  * @param data data
  */
 const guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceSignupWebsocketType =
@@ -2727,7 +2727,7 @@ const guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceS
   };
 
 /**
- * GuiderStudyProgressAlternativeStudyOptionsWebsocketType
+ * Thunk action creator for the alternative study options websocket
  * @param data data
  */
 const guiderStudyProgressAlternativeStudyOptionsWebsocket: GuiderStudyProgressAlternativeStudyOptionsWebsocketType =

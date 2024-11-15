@@ -46,14 +46,14 @@ export interface UpdateStudyProgressTriggerType {
 }
 
 /**
- * StudyProgressSuggestedNextWebsocketType
+ * Interface for the suggested next websocket thunk action creator
  */
 export interface RecordsSummarySuggestedNextWebsocketType {
   (data: { websocketData: StudentStudyActivity }): AnyActionType;
 }
 
 /**
- * StudyProgressWorkspaceSignupWebsocketMsgType
+ * Interface for the workspace signup websocket thunk action creator
  */
 export interface RecordsSummaryWorkspaceSignupWebsocketType {
   (data: {
@@ -62,7 +62,7 @@ export interface RecordsSummaryWorkspaceSignupWebsocketType {
 }
 
 /**
- * RecordsSummaryAlternativeStudyOptionsWebsocketType
+ * Interface for the alternative study options websocket thunk action creator
  */
 export interface RecordsSummaryAlternativeStudyOptionsWebsocketType {
   (data: { websocketData: string[] }): AnyActionType;
@@ -271,7 +271,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
 };
 
 /**
- * RecordsSummarySuggestedNextWebsocketType
+ * Thunk action creator for the suggested next websocket
  * @param data data
  */
 const recordsSummarySuggestedNextWebsocket: RecordsSummarySuggestedNextWebsocketType =
@@ -326,7 +326,7 @@ const recordsSummarySuggestedNextWebsocket: RecordsSummarySuggestedNextWebsocket
   };
 
 /**
- * RecordsSummaryWorkspaceSignupWebsocketType
+ * Thunk action creator for the workspace signup websocket
  * @param data data
  */
 const recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebsocketType =
@@ -384,7 +384,7 @@ const recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebso
   };
 
 /**
- * recordsSummaryAlternativeStudyOptionsWebsocket
+ * Thunk action creator for the alternative study options websocket
  * @param data data
  */
 const recordsSummaryAlternativeStudyOptionsWebsocket: RecordsSummaryAlternativeStudyOptionsWebsocketType =
