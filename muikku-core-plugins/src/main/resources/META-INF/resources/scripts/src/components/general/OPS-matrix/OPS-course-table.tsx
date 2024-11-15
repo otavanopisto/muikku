@@ -185,15 +185,15 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
 
   return (
     <>
-      <ProgressTableBody>{renderRows}</ProgressTableBody>
+      <OPSCourseTableBody>{renderRows}</OPSCourseTableBody>
     </>
   );
 };
 
 /**
- * Props for the Progress Table Body component
+ * Props for the OPS Course Table Body component
  */
-interface ProgressTableBodyProps {
+interface OPSCourseTableBodyProps {
   /** Optional title for the table body section */
   title?: string;
   /** Maximum number of courses to display */
@@ -203,13 +203,15 @@ interface ProgressTableBodyProps {
 }
 
 /**
- * Progress Table Body component - Renders the body section of the progress table
+ * OPS Course Table Body component - Renders the body section of the OPS course table
  * Provides structure for the table content and optionally displays a title row
  *
  * @param props - Component props
  * @returns Rendered table body
  */
-export const ProgressTableBody: React.FC<ProgressTableBodyProps> = (props) => {
+export const OPSCourseTableBody: React.FC<OPSCourseTableBodyProps> = (
+  props
+) => {
   const { currentMaxCourses, title, children } = props;
   return (
     <Tbody>
