@@ -123,7 +123,7 @@ public class NotesRESTService extends PluginRESTService {
    
    if (recipientPayload != null) {
      
-     // Student creates own notes
+     // Note creation by student
      if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
        // Students can create notes only for themselves, so there should be only one receiver in the payload
        if (recipientPayload.getRecipientIds().size() != 1) {
@@ -138,7 +138,7 @@ public class NotesRESTService extends PluginRESTService {
        newReceiver = noteReceiverController.createNoteRecipient(pinned, sessionController.getLoggedUserEntity().getId(), newNote, null);
        receiverList.add(toRestModel(newReceiver));
        
-     } else {
+     } else { // Note creation by staff
        for (Long recipientId : recipientPayload.getRecipientIds()) {
          UserEntity recipient = userEntityController.findUserEntityById(recipientId);
          
@@ -215,16 +215,14 @@ public class NotesRESTService extends PluginRESTService {
  }
   
   //mApi() call (mApi().notes.note.update(noteId, noteRestModel)
-  // Editable fields are title, description, priority, pinned, dueDate & status)
+  // Editable fields are title, description, priority, startDate, dueDate)
   @PUT
   @Path ("/note/{NOTEID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateNote(@PathParam ("NOTEID") Long noteId, NoteRestModel restModel) {
+  public Response updateNote(@PathParam ("NOTEID") Long noteId, NoteRestModel payload) {
     
     Note note = notesController.findNoteById(noteId);
-    
-    NoteReceiver noteReceiver = noteReceiverController.findByRecipientIdAndNote(sessionController.getLoggedUserEntity().getId(), note);
-    
+   
     if (note == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
@@ -237,12 +235,8 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    // Student can edit only 'pinned' field if note is created by someone else
-    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && sessionController.getLoggedUserEntity().getId().equals(noteReceiver.getRecipient()) && !creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-      updatedNote = notesController.updateNote(note, note.getTitle(), note.getDescription(), note.getPriority(), note.getStartDate(), note.getDueDate());
-    } // Otherwise editing happens only if logged user equals with creator
-    else if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
-      updatedNote = notesController.updateNote(note, restModel.getTitle(), restModel.getDescription(), restModel.getPriority(), restModel.getStartDate(), restModel.getDueDate());
+    if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
+      updatedNote = notesController.updateNote(note, payload.getTitle(), payload.getDescription(), payload.getPriority(), payload.getStartDate(), payload.getDueDate());
     } 
     else {
       return Response.status(Status.BAD_REQUEST).build();
@@ -341,7 +335,6 @@ public class NotesRESTService extends PluginRESTService {
     return restModel;
   }
   
-  //mApi() call (mApi().notes.recipient.read(owner))
   @GET
   @Path("/recipient/{RECIPIENTID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -424,12 +417,11 @@ public class NotesRESTService extends PluginRESTService {
 
     NoteSortedListRestModel notesListSorted = new NoteSortedListRestModel();
 
-    // Lists for private notes and multi user notes
+    // Separated lists for private notes and multiuser notes
     List<NoteRestModel> notesListMulti = new ArrayList<NoteRestModel>();
     List<NoteRestModel> notesListSingle = new ArrayList<NoteRestModel>();
 
     OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);
-
 
     for (Note note : notes) {
       UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
