@@ -157,6 +157,7 @@ class WorkspaceMaterials extends React.Component<
       workspace: this.props.workspace,
       material: section,
       update: {
+        ...section,
         hidden: !section.hidden,
       },
       isDraft: false,
