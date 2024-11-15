@@ -382,6 +382,25 @@ legend {
   margin: 10px 0 0;
 }
 
+.form-element__description-chip {
+  align-items: center;
+  background: $color-disabled-background;
+  border-color: $color-disabled-background;
+  border-radius: 2px;
+  display: flex;
+  font-size: $text-mobile-font-size;
+  height: $input-height-mobile;
+  justify-content: center;
+  margin: 0 5px;
+  padding: 0 10px;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    height: $input-height-desktop;
+  }
+}
+
 // TEXTFIELD
 .form-element__input {
   @include prefix(
@@ -399,6 +418,7 @@ legend {
   height: $input-height-mobile;
   padding: 0 10px;
   resize: none;
+  width: auto;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -416,8 +436,17 @@ legend {
   @include form-focus;
 }
 
-.form-element__input--note-title {
+.form-element__input--note-title,
+.form-element__input--material-editor-assignment-points {
   width: 100%;
+}
+
+.form-element__input--content-centered {
+  text-align: center;
+}
+
+.form-element__divider {
+  margin: 0 5px;
 }
 
 .form-element__input--material-editor-title {

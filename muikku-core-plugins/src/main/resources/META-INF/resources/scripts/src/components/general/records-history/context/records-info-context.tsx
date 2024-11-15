@@ -1,4 +1,5 @@
 import * as React from "react";
+import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 
 /**
  * RecordsInfo
@@ -12,6 +13,10 @@ interface RecordsInfo {
    * Users entity id
    */
   userEntityId: number;
+  /**
+   * Display notification trigger
+   */
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**

@@ -274,7 +274,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
         verbalAssessment: this.state.literalEvaluation,
         assessmentDate: new Date().getTime(),
         audioAssessments: this.state.audioAssessments,
-        evaluationType: "ASSESSMENT",
+        evaluationType: "GRADED",
       },
       materialId: this.props.materialAssignment.materialId,
     });

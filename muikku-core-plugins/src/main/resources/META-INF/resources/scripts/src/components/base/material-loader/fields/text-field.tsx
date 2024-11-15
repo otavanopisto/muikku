@@ -429,7 +429,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
       );
     }
 
-    let component: React.ReactNode;
+    let component: React.ReactElement;
     if (this.props.content.autogrow) {
       component = (
         <AutosizeInput
