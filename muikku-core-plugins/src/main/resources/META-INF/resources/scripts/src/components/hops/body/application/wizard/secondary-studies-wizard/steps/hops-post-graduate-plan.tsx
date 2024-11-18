@@ -247,12 +247,6 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
           Opintomenestykseni tukena urasuunnittelussa
         </legend>
 
-        <div className="hops-container__fieldset-description">
-          Kirjaa tähän ajatuksiasi siitä, mitä kohti haluat suunnata. Näiden
-          pohdintojen avulla voit hahmottaa, millaiset opinnot ja työtehtävät
-          sopisivat sinulle.
-        </div>
-
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <Textarea
