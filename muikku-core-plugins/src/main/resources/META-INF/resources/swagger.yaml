@@ -6470,8 +6470,6 @@ paths:
         "500":
           description: Internal server error
 
-  
-
   /rest/notes/note/{noteId}:
     put:
       operationId: updateNote
@@ -6500,7 +6498,6 @@ paths:
         "500":
           description: Internal server error
 
-          
   /rest/notes/{noteId}/receiver/{recipientId}:
     put:
       operationId: updateNoteReceiver
@@ -6629,7 +6626,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-  
+
   /rest/notes/note/{noteId}/recipient/{recipientId}:
     delete:
       operationId: deleteNoteRecipient
@@ -11605,7 +11602,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/LocalizationLocale"
-    
+
     NoteCreateRequestBody:
       required: true
       description: NoteCreateRequestBody object
@@ -11616,15 +11613,14 @@ components:
             required:
               - note
               - noteReceiver
-              - recipientList
+              - recipients
             properties:
               note:
                 $ref: "#/components/schemas/NoteCreationObject"
               noteReceiver:
                 $ref: "#/components/schemas/NoteCreationReceiver"
-              recipientList:
+              recipients:
                 $ref: "#/components/schemas/NoteRecipientList"
-    
 
     NoteUpdateRequestBody:
       required: true
@@ -11654,7 +11650,7 @@ components:
                 type: string
                 format: date-time
                 nullable: true
-    
+
     NoteReceiverUpdateRequestBody:
       required: true
       description: NoteReceiverUpdateRequestBody object
@@ -15371,7 +15367,6 @@ components:
           items:
             $ref: "#/components/schemas/NoteReceiver"
 
-            
     NoteCreationObject:
       type: object
       description: Note object
@@ -15382,9 +15377,6 @@ components:
         - startDate
         - dueDate
       properties:
-        id:
-          type: integer
-          format: int64
         title:
           type: string
         description:
@@ -15393,18 +15385,6 @@ components:
           $ref: "#/components/schemas/NoteCreationType"
         priority:
           $ref: "#/components/schemas/NotePriorityType"
-        isActive:
-          type: boolean
-        isArchived:
-          type: boolean
-        creator:
-          type: integer
-          format: int64
-        creatorName:
-          type: string
-        created:
-          type: string
-          format: date-time
         startDate:
           type: string
           format: date-time
@@ -15413,11 +15393,7 @@ components:
           type: string
           format: date-time
           nullable: true
-        recipients:
-          type: array
-          items:
-            $ref: "#/components/schemas/NoteReceiver"
-    
+
     NoteSortedList:
       type: object
       description: A NoteSortedList object where private notes and multi-user notes are organized into separate lists
@@ -15445,7 +15421,7 @@ components:
           type: boolean
         status:
           $ref: "#/components/schemas/NoteStatusType"
-    
+
     NoteReceiver:
       type: object
       description: NoteReceiver object
@@ -15455,12 +15431,6 @@ components:
         - status
         - userGroup
       properties:
-        id:
-          type: integer
-          format: int64
-        noteId:
-          type: integer
-          format: int64
         pinned:
           type: boolean
         recipient:

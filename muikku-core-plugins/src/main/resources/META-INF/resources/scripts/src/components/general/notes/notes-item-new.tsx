@@ -9,7 +9,11 @@ import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { CreateNoteRequest, NotePriorityType } from "~/generated/client";
+import {
+  CreateNoteRequest,
+  NoteCreationObject,
+  NotePriorityType,
+} from "~/generated/client";
 
 /**
  * NotesItemNewProps
@@ -53,14 +57,22 @@ class NotesItemNew extends SessionStateComponent<
     this.state = {
       locked: false,
       notesItem: {
-        title: "",
-        description: "",
-        type: "MANUAL",
-        priority: "NORMAL",
-        pinned: false,
-        owner: props.newNoteOwnerId,
-        startDate: null,
-        dueDate: null,
+        noteReceiver: {
+          pinned: false,
+          status: "ONGOING",
+        },
+        recipients: {
+          recipientIds: [props.newNoteOwnerId ? props.newNoteOwnerId : null],
+          recipientGroupIds: [],
+        },
+        note: {
+          title: "",
+          description: "",
+          type: "MANUAL",
+          priority: "NORMAL",
+          startDate: null,
+          dueDate: null,
+        },
       },
     };
   }
@@ -70,15 +82,26 @@ class NotesItemNew extends SessionStateComponent<
    */
   clearUp() {
     this.setState({
+      locked: false,
       notesItem: {
-        title: "",
-        description: "",
-        type: "MANUAL",
-        priority: "NORMAL",
-        pinned: false,
-        owner: this.props.newNoteOwnerId,
-        startDate: null,
-        dueDate: null,
+        noteReceiver: {
+          pinned: false,
+          status: "ONGOING",
+        },
+        recipients: {
+          recipientIds: [
+            this.props.newNoteOwnerId ? this.props.newNoteOwnerId : null,
+          ],
+          recipientGroupIds: [],
+        },
+        note: {
+          title: "",
+          description: "",
+          type: "MANUAL",
+          priority: "NORMAL",
+          startDate: null,
+          dueDate: null,
+        },
       },
     });
   }
@@ -100,16 +123,16 @@ class NotesItemNew extends SessionStateComponent<
    * @param key name of updated property
    * @param value of updated property
    */
-  handleNotesItemChange = <T extends keyof CreateNoteRequest>(
+  handleNotesItemChange = <T extends keyof NoteCreationObject>(
     key: T,
-    value: CreateNoteRequest[T]
+    value: NoteCreationObject[T]
   ) => {
-    const updateNotesItem = { ...this.state.notesItem };
+    const updateNotesItem = { ...this.state.notesItem.note };
 
     updateNotesItem[key] = value;
 
     this.setState({
-      notesItem: updateNotesItem,
+      notesItem: { ...this.state.notesItem, note: updateNotesItem },
     });
   };
 
@@ -133,7 +156,7 @@ class NotesItemNew extends SessionStateComponent<
             onChange={(e) =>
               this.handleNotesItemChange("title", e.currentTarget.value)
             }
-            value={this.state.notesItem.title}
+            value={this.state.notesItem.note.title}
           />
         </div>
 
@@ -149,8 +172,9 @@ class NotesItemNew extends SessionStateComponent<
                 e.target.value as NotePriorityType
               )
             }
-            value={this.state.notesItem.priority}
+            value={this.state.notesItem.note.priority}
           >
+            ,
             <option value={NotePriorityType.High}>
               {this.props.i18n.t("labels.priority", {
                 ns: "tasks",
@@ -180,8 +204,8 @@ class NotesItemNew extends SessionStateComponent<
           <DatePicker
             className="env-dialog__input"
             selected={
-              this.state.notesItem.startDate
-                ? this.state.notesItem.startDate
+              this.state.notesItem.note.startDate
+                ? this.state.notesItem.note.startDate
                 : undefined
             }
             onChange={(date, e) =>
@@ -190,7 +214,7 @@ class NotesItemNew extends SessionStateComponent<
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={new Date()}
-            maxDate={this.state.notesItem.dueDate}
+            maxDate={this.state.notesItem.note.dueDate}
           />
         </div>
         <div className="env-dialog__form-element-container">
@@ -200,16 +224,16 @@ class NotesItemNew extends SessionStateComponent<
           <DatePicker
             className="env-dialog__input"
             selected={
-              this.state.notesItem.dueDate
-                ? this.state.notesItem.dueDate
+              this.state.notesItem.note.dueDate
+                ? this.state.notesItem.note.dueDate
                 : undefined
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={
-              this.state.notesItem.startDate !== null
-                ? this.state.notesItem.startDate
+              this.state.notesItem.note.startDate !== null
+                ? this.state.notesItem.note.startDate
                 : new Date()
             }
           />
@@ -223,7 +247,7 @@ class NotesItemNew extends SessionStateComponent<
           <CKEditor
             onChange={(e) => this.handleNotesItemChange("description", e)}
           >
-            {this.state.notesItem.description}
+            {this.state.notesItem.note.description}
           </CKEditor>
         </div>
       </div>,
@@ -252,7 +276,7 @@ class NotesItemNew extends SessionStateComponent<
         title={this.props.i18n.t("labels.create", { ns: "tasks" })}
         content={content}
         footer={footer}
-        onOpen={this.clearUp}
+        // onOpen={this.clearUp}
       >
         {this.props.children}
       </EnvironmentDialog>

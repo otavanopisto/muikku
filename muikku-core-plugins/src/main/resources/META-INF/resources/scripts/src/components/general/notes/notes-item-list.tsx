@@ -1,6 +1,11 @@
 import * as React from "react";
 import { NotesLocation, NotesItemFilters } from "~/@types/notes";
-import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
+import {
+  Note,
+  NoteStatusType,
+  UpdateNoteRequest,
+  NoteReceiver,
+} from "~/generated/client";
 import { sortNotesItemsBy } from "./helpers/filters";
 import NotesListItem from "./notes-item-list-item";
 import NotesItemListWithoutAnimation from "./notes-list-test";
@@ -137,7 +142,11 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
             onFocus={handleListItemFocus(i)}
             onKeyDown={handleListItemKeyDown}
             loggedUserIsCreator={j.creator === userId}
-            loggedUserIsOwner={j.owner === userId}
+            loggedUserIsOwner={
+              !!j.recipients.find(
+                (recipient: NoteReceiver) => recipient.id === userId
+              )
+            }
             onPinNotesItemClick={onPinNotesItemClick}
             onArchiveClick={onArchiveClick}
             onUpdateNotesItemStatus={onUpdateNotesItemStatus}

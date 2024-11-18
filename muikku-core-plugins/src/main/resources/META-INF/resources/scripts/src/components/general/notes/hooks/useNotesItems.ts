@@ -54,15 +54,14 @@ export const useNotesItem = (
         const [loadedNotesItemList, loadedArchivedNotesItemList] =
           await Promise.all([
             (async () => {
-              const notesItems = await notesApi.getNotes({
-                ownerId: studentId,
+              const notesItems = await notesApi.getNotesByRecipient({
+                recipientId: studentId,
               });
-
               return notesItems;
             })(),
             (async () => {
-              const notesItemsArchived = await notesApi.getNotes({
-                ownerId: studentId,
+              const notesItemsArchived = await notesApi.getNotesByRecipient({
+                recipientId: studentId,
                 listArchived: true,
               });
 
