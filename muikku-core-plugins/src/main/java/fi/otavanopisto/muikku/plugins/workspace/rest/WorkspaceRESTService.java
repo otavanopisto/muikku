@@ -2970,6 +2970,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (StringUtils.isEmpty(restFolder.getTitle())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing title").build();
     }
+    if (restFolder.getParentId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing parent folder").build();
+    }
 
     // Actual update
 
@@ -3055,6 +3058,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     if (StringUtils.isEmpty(restWorkspaceMaterial.getTitle())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing title").build();
+    }
+    if (restWorkspaceMaterial.getParentId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing parent folder").build();
     }
 
     // Actual update
