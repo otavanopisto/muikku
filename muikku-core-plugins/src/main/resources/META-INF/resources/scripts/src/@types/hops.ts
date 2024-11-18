@@ -180,6 +180,7 @@ export interface CompulsoryStudiesHopsOld {
 export interface CompulsoryStudiesHops {
   type: HopsFormType;
 
+  // BACKGROUND START
   // Previous education and language skills
   previousEducation: string;
   previousEducationElse?: string;
@@ -291,6 +292,34 @@ export interface CompulsoryStudiesHops {
    * "Wishes for teachers and supervisors"
    */
   wishesForTeachersAndSupervisors?: number;
+  // BACKGROUND END
+
+  // POST GRADUATE PLAN START
+  /**
+   * What are you going to do after Nettiperuskoulu?
+   */
+  whatNext?: WhatNext;
+  /**
+   * What next post graduate -> Where are you going to apply?
+   */
+  postGraduateStudies?: PostGraduateStudies;
+  /**
+   * If you chose something else, please tell us more
+   */
+  postGraduateStudiesElse?: string;
+  /**
+   * Vocational post graduate -> What are you going to study?
+   */
+  vocationalPostGraduateStudySector?: VocationalStudySector;
+  /**
+   * If you chose something else, please tell us more
+   */
+  vocationalPostGraduateStudySectorElse?: string;
+  /**
+   * You can tell us more about your future plans
+   */
+  futurePlans?: string;
+  // POST GRADUATE PLAN END
 }
 
 /**
@@ -299,6 +328,7 @@ export interface CompulsoryStudiesHops {
 export interface SecondaryStudiesHops {
   type: HopsFormType;
 
+  // BACKGROUND START
   // Previous education and language skills
   previousEducations: PreviousStudiesEntry[];
   nativeLanguage: string;
@@ -351,7 +381,112 @@ export interface SecondaryStudiesHops {
    * "More about self assessment"
    */
   moreAboutSelfAssessment?: string;
+  // BACKGROUND END
+
+  // POST GRADUATE PLAN START
+  /**
+   * What are you going to do after Nettilukio
+   */
+  whatNext: WhatNext[];
+  whatNextElse?: string;
+  postGraduateStudies: PostGraduateStudies[];
+  postGraduateStudiesElse?: string;
+  workExperience: string;
+  internships: string;
+  hobbies: string;
+  otherSkills: string;
+  /**
+   * I am interested in the following things
+   */
+  interestedIn: string;
+  /**
+   * I'm good at these things
+   */
+  goodAt: string;
+  /**
+   * Things that are important to me in my future work are
+   */
+  importantInFutureWork: string;
+  /**
+   * I have been successful in these subjects during high school
+   */
+  successfulDuringHighSchool: string;
+  /**
+   * I have had challenges in these subjects during high school
+   */
+  challengesDuringHighSchool: string;
+  /**
+   * I am interested in the following fields of study
+   */
+  interestedInFieldsOfStudy: string;
+  /**
+   * Where you can study the fields that interest you
+   */
+  whereCanStudyFieldsOfInterest: string;
+  /**
+   * On what basis do you make your postgraduate study plan and career choice?
+   */
+  basisForPostgraduateStudyAndCareerChoice: string;
+  /**
+   * Comments from the study guide
+   */
+  postGraduateGuidanceCouncelorComments: string;
+  // POST GRADUATE PLAN END
 }
+
+export type WhatNext =
+  | "WORKING_LIFE"
+  | "POSTGRADUATE_STUDIES"
+  | "ELSE"
+  | "DONT_KNOW";
+
+export const whatNext = {
+  workingLife: "WORKING_LIFE",
+  postGraduateStudies: "POSTGRADUATE_STUDIES",
+  else: "ELSE",
+  dontKnow: "DONT_KNOW",
+};
+
+type PostGraduateStudies =
+  | "APPRENTICESHIP_TRAINING"
+  | "VOCATIONAL_SCHOOL"
+  | "UPPER_SECONDARY_SCHOOL"
+  | "UNIVERSITY"
+  | "UNIVERSITY_OF_APPLIED_SCIENCES"
+  | "SECONDARY_SCHOOL"
+  | "ELSE";
+
+export const postGraduateStudies = {
+  apprenticeshipTraining: "APPRENTICESHIP_TRAINING",
+  vocationalSchool: "VOCATIONAL_SCHOOL",
+  upperSecondarySchool: "UPPER_SECONDARY_SCHOOL",
+  university: "UNIVERSITY",
+  universityOfAppliedSciences: "UNIVERSITY_OF_APPLIED_SCIENCES",
+  secondarySchool: "SECONDARY_SCHOOL",
+  else: "ELSE",
+};
+
+/**
+ * StudySector
+ */
+export type VocationalStudySector =
+  | "SOCIAL_HEALT_SECTOR"
+  | "TRADE_SECTOR"
+  | "TRANSPORT_SECTOR"
+  | "EDUCATION_SECTOR"
+  | "INDUSTRY_SECTOR"
+  | "ART_SECTOR"
+  | "SOMETHING_ELSE";
+
+export const vocationalStudySector = {
+  socialHealthSector: "SOCIAL_HEALT_SECTOR",
+  tradeSector: "TRADE_SECTOR",
+  transportSector: "TRANSPORT_SECTOR",
+  educationSector: "EDUCATION_SECTOR",
+  industrySector: "INDUSTRY_SECTOR",
+  artSector: "ART_SECTOR",
+  else: "SOMETHING_ELSE",
+};
 
 /**
  * PreviousStudiesEntry
@@ -376,6 +511,21 @@ export function initializeSecondaryStudiesHops(): SecondaryStudiesHops {
     studiedLanguagesAtSchool: "",
     studiedLanguagesOther: "",
     languageLearningSkills: "",
+    whatNext: [],
+    postGraduateStudies: [],
+    workExperience: "",
+    internships: "",
+    hobbies: "",
+    otherSkills: "",
+    interestedIn: "",
+    goodAt: "",
+    importantInFutureWork: "",
+    successfulDuringHighSchool: "",
+    challengesDuringHighSchool: "",
+    interestedInFieldsOfStudy: "",
+    whereCanStudyFieldsOfInterest: "",
+    basisForPostgraduateStudyAndCareerChoice: "",
+    postGraduateGuidanceCouncelorComments: "",
   };
 }
 

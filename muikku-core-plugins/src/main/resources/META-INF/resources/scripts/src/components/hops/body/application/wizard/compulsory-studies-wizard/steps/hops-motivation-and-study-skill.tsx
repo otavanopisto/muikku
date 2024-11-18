@@ -106,11 +106,11 @@ const HopsMotivationAndStudySkills: React.FC<
           })}
         </legend>
 
-        <span className="hops-container__fieldset-description">
+        <div className="hops-container__fieldset-description">
           {t("labels.hopsFormFieldsRequired", {
             ns: "hops_new",
           })}
-        </span>
+        </div>
 
         <div className="hops-container__row">
           <div className="hops-container__table-container">
@@ -276,11 +276,11 @@ const HopsMotivationAndStudySkills: React.FC<
           })}
         </legend>
 
-        <span className="hops-container__fieldset-description">
+        <div className="hops-container__fieldset-description">
           {t("labels.hopsFormFieldsRequired", {
             ns: "hops_new",
           })}
-        </span>
+        </div>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container hops__form-element-container--single-row">
@@ -397,11 +397,11 @@ const HopsMotivationAndStudySkills: React.FC<
           })}
         </legend>
 
-        <span className="hops-container__fieldset-description">
+        <div className="hops-container__fieldset-description">
           {t("labels.hopsFormFieldsRequired", {
             ns: "hops_new",
           })}
-        </span>
+        </div>
 
         <div className="hops-container__row">
           <div className="hops-container__table-container">

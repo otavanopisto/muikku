@@ -97,7 +97,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
         />
       </fieldset>
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader hops-container__subheader--required">
+        <legend className="hops-container__subheader">
           {t("labels.hopsSecondaryEntryAssessmentTitle2", {
             ns: "hops_new",
           })}

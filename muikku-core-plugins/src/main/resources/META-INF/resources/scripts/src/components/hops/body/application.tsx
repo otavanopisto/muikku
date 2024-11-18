@@ -21,11 +21,12 @@ import { useState, useCallback, useEffect } from "react";
 import OngoingWarningDialog from "./application/wizard/dialog/ongoing-edit-warning";
 import { Action, Dispatch } from "redux";
 import { Prompt } from "react-router-dom";
+import Postgraduate from "./application/postgraduate/postgraduate";
 
 /**
  * Represents the possible tabs in the HOPS application.
  */
-type HopsTab = "MATRICULATION" | "BACKGROUND";
+type HopsTab = "MATRICULATION" | "BACKGROUND" | "POSTGRADUATE";
 
 /**
  * Props for the HopsApplication component.
@@ -180,6 +181,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
         </ApplicationPanelBody>
       ),
     },
+    {
+      id: "POSTGRADUATE",
+      name: t("labels.hopsPostgraduate", { ns: "hops_new" }),
+      hash: "postgraduate",
+      type: "postgraduate",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <Postgraduate />
+        </ApplicationPanelBody>
+      ),
+    },
   ];
 
   /**
@@ -191,6 +203,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   const isVisible = (tab: Tab) => {
     switch (tab.id) {
       case "BACKGROUND":
+      case "POSTGRADUATE":
         return true;
       case "MATRICULATION":
         return (

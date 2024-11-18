@@ -82,17 +82,17 @@ const HopsMotivationAndStudySkills: React.FC<
   return (
     <div className="hops-container" ref={myRef}>
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader hops-container__subheader--required">
+        <legend className="hops-container__subheader">
           {t("labels.hopsSecondarySelfAssessmentTitle1", {
             ns: "hops_new",
           })}
         </legend>
 
-        <span className="hops-container__fieldset-description">
+        <div className="hops-container__fieldset-description">
           {t("labels.hopsFormFieldsRequired", {
             ns: "hops_new",
           })}
-        </span>
+        </div>
 
         <div className="hops-container__row">
           <div className="hops-container__table-container">

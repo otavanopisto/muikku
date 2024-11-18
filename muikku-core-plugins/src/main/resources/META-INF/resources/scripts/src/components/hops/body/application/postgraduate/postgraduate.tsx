@@ -10,7 +10,7 @@ import SecondaryStudiesHopsWizard from "../wizard/secondary-studies-wizard/secon
 /**
  * BackgroundProps
  */
-interface BackgroundProps {
+interface PostgraduateProps {
   hops: HopsState;
   onHasUnsavedChanges?: (hasUnsavedChanges: boolean) => void;
 }
@@ -19,7 +19,7 @@ interface BackgroundProps {
  * Background component
  * @param props props
  */
-const Background = (props: BackgroundProps) => {
+const Postgraduate = (props: PostgraduateProps) => {
   const { hops, onHasUnsavedChanges } = props;
 
   if (!hops.studentInfo || !hops.hopsForm) {
@@ -29,7 +29,7 @@ const Background = (props: BackgroundProps) => {
   if (hops.studentInfo.studyProgrammeEducationType === "peruskoulu") {
     return (
       <CompulsoryStudiesHopsWizard
-        formType="BACKGROUND"
+        formType="POST_GRADUATE_PLAN"
         onHasUnsavedChanges={onHasUnsavedChanges}
       />
     );
@@ -37,7 +37,7 @@ const Background = (props: BackgroundProps) => {
 
   return (
     <SecondaryStudiesHopsWizard
-      formType="BACKGROUND"
+      formType="POST_GRADUATE_PLAN"
       onHasUnsavedChanges={onHasUnsavedChanges}
     />
   );
@@ -61,4 +61,4 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Background);
+export default connect(mapStateToProps, mapDispatchToProps)(Postgraduate);

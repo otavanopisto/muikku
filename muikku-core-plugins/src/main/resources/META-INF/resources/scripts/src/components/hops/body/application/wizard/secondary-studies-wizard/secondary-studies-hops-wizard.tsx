@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import Wizard, { WizardStep } from "~/components/general/wizard";
 import { WizardProvider } from "~/components/general/wizard/context/wizard-context";
 import { useWizard } from "~/components/general/wizard/hooks/useWizard";
-import { Step1, Step2, Step3 } from "./steps";
+import { Step1, Step2, Step3, Step4 } from "./steps";
 import HopsWizardFooter from "../hops-wizard-footer";
 import HopsWizardHeader from "../hops-wizard-header";
 import { Action, bindActionCreators, Dispatch } from "redux";
@@ -29,10 +29,13 @@ import { unstable_batchedUpdates } from "react-dom";
 import { secondaryStudiesFieldsTranslation } from "../helpers";
 import { useUseCaseContext } from "~/context/use-case-context";
 
+type FormType = "BACKGROUND" | "POST_GRADUATE_PLAN";
+
 /**
  * Props for the CompulsoryStudiesHopsWizard component
  */
 interface SecondaryStudiesHopsWizardProps {
+  formType: FormType;
   /** The form data for compulsory studies HOPS */
   form: SecondaryStudiesHops;
   /** Information about the student */
@@ -57,6 +60,7 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   props
 ) => {
   const {
+    formType,
     form,
     studentInfo,
     hopsFormCanLoadMoreHistory,
@@ -160,44 +164,62 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   };
 
   const steps: WizardStep[] = useMemo(
-    () => [
-      {
-        index: 0,
-        name: t("labels.hopsFormInfoTitle", { ns: "hops_new" }),
-        component: (
-          <AnimatedStep previousStep={previousStep}>
-            <Step1
-              studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
-              educationalLevel={studentInfo.studyProgrammeEducationType}
-              guidanceCounselors={studentInfo.counselorList}
-              canLoadMoreHistory={hopsFormCanLoadMoreHistory}
-              loadMoreHopsEvents={loadMoreHopsFormHistory}
-            />
-          </AnimatedStep>
-        ),
-      },
-      {
-        index: 1,
-        name: t("labels.hopsFormEntryLevelAssessmentTitle", { ns: "hops_new" }),
-        component: (
-          <AnimatedStep previousStep={previousStep}>
-            <Step2 form={localForm} onFormChange={handleFormChange} />
-          </AnimatedStep>
-        ),
-      },
-      {
-        index: 2,
-        name: t("labels.hopsFormStudySkillsAndMotivationTitle", {
-          ns: "hops_new",
-        }),
-        component: (
-          <AnimatedStep previousStep={previousStep}>
-            <Step3 form={localForm} onFormChange={handleFormChange} />
-          </AnimatedStep>
-        ),
-      },
-    ],
+    () =>
+      formType === "BACKGROUND"
+        ? [
+            {
+              index: 0,
+              name: t("labels.hopsFormInfoTitle", { ns: "hops_new" }),
+              component: (
+                <AnimatedStep previousStep={previousStep}>
+                  <Step1
+                    studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
+                    educationalLevel={studentInfo.studyProgrammeEducationType}
+                    guidanceCounselors={studentInfo.counselorList}
+                    canLoadMoreHistory={hopsFormCanLoadMoreHistory}
+                    loadMoreHopsEvents={loadMoreHopsFormHistory}
+                  />
+                </AnimatedStep>
+              ),
+            },
+            {
+              index: 1,
+              name: t("labels.hopsFormEntryLevelAssessmentTitle", {
+                ns: "hops_new",
+              }),
+              component: (
+                <AnimatedStep previousStep={previousStep}>
+                  <Step2 form={localForm} onFormChange={handleFormChange} />
+                </AnimatedStep>
+              ),
+            },
+            {
+              index: 2,
+              name: t("labels.hopsFormStudySkillsAndMotivationTitle", {
+                ns: "hops_new",
+              }),
+              component: (
+                <AnimatedStep previousStep={previousStep}>
+                  <Step3 form={localForm} onFormChange={handleFormChange} />
+                </AnimatedStep>
+              ),
+            },
+          ]
+        : [
+            {
+              index: 0,
+              name: t("labels.hopsFormPostgraduatePlanTitle", {
+                ns: "hops_new",
+              }),
+              component: (
+                <AnimatedStep previousStep={previousStep}>
+                  <Step4 form={localForm} onFormChange={handleFormChange} />
+                </AnimatedStep>
+              ),
+            },
+          ],
     [
+      formType,
       t,
       studentInfo.firstName,
       studentInfo.lastName,
