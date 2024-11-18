@@ -9,7 +9,7 @@ public class WorkspaceMaterial {
   public WorkspaceMaterial() {
   }
 
-  public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, Boolean hidden,
+  public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, boolean hidden,
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       String path, String title, WorkspaceLanguage titleLanguage, Double maxPoints) {
     super();
@@ -58,11 +58,11 @@ public class WorkspaceMaterial {
     this.nextSiblingId = nextSiblingId;
   }
   
-  public Boolean getHidden() {
+  public boolean getHidden() {
     return hidden;
   }
 
-  public void setHidden(Boolean hidden) {
+  public void setHidden(boolean hidden) {
     this.hidden = hidden;
   }
   
@@ -122,7 +122,7 @@ public class WorkspaceMaterial {
   private Long materialId;
   private Long parentId;
   private Long nextSiblingId;
-  private Boolean hidden;
+  private boolean hidden;
   private WorkspaceMaterialAssignmentType assignmentType;
   private WorkspaceMaterialCorrectAnswersDisplay correctAnswers;
   private String path;
