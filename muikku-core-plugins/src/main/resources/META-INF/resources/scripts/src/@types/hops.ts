@@ -488,16 +488,6 @@ export type VocationalStudySector =
   | "ART_SECTOR"
   | "SOMETHING_ELSE";
 
-export const vocationalStudySector = {
-  socialHealthSector: "SOCIAL_HEALT_SECTOR",
-  tradeSector: "TRADE_SECTOR",
-  transportSector: "TRANSPORT_SECTOR",
-  educationSector: "EDUCATION_SECTOR",
-  industrySector: "INDUSTRY_SECTOR",
-  artSector: "ART_SECTOR",
-  else: "SOMETHING_ELSE",
-};
-
 /**
  * PreviousStudiesEntry
  */

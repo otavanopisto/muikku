@@ -2,12 +2,7 @@ import React, { useEffect, useRef } from "react";
 import "~/sass/elements/hops.scss";
 import { TextField } from "../../components/text-field";
 import { Textarea } from "../../components/text-area";
-import {
-  CompulsoryStudiesHops,
-  postGraduateStudies,
-  vocationalStudySector,
-  whatNext,
-} from "~/@types/hops";
+import { CompulsoryStudiesHops } from "~/@types/hops";
 import { useTranslation } from "react-i18next";
 import { useUseCaseContext } from "~/context/use-case-context";
 import AnimateHeight from "react-animate-height";
@@ -92,45 +87,109 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
     };
 
   // What next options
-  const whatNextOptions = [
-    { value: whatNext.postGraduateStudies, label: "Aion opiskella" },
-    { value: whatNext.workingLife, label: "Aion mennä töihin" },
-    { value: whatNext.dontKnow, label: "En tiedä" },
+  const whatNextOptions: {
+    value: CompulsoryStudiesHops["whatNext"];
+    label: string;
+  }[] = [
+    {
+      value: "POSTGRADUATE_STUDIES",
+      label: t("labels.hopsFormPostgraduateWhatNextOption2", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "WORKING_LIFE",
+      label: t("labels.hopsFormPostgraduateWhatNextOption1", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "DONT_KNOW",
+      label: t("labels.hopsFormPostgraduateWhatNextOption4", {
+        ns: "hops_new",
+      }),
+    },
   ];
 
   // Postgraduate studies options
-  const postGraduateStudiesOptions = [
-    { value: "", label: "Valitse..." },
+  const postGraduateStudiesOptions: {
+    value: CompulsoryStudiesHops["postGraduateStudies"];
+    label: string;
+  }[] = [
     {
-      value: postGraduateStudies.vocationalSchool,
-      label: "Ammatillinen toinen aste",
+      value: "VOCATIONAL_SCHOOL",
+      label: t("labels.hopsFormPostgraduateStudiesOption2", {
+        ns: "hops_new",
+      }),
     },
     {
-      value: postGraduateStudies.upperSecondarySchool,
-      label: "Lukio",
+      value: "UPPER_SECONDARY_SCHOOL",
+      label: t("labels.hopsFormPostgraduateStudiesOption3", {
+        ns: "hops_new",
+      }),
     },
-    { value: postGraduateStudies.else, label: "Joku muu" },
+    {
+      value: "ELSE",
+      label: t("labels.hopsFormPostgraduateStudiesOption7", {
+        ns: "hops_new",
+      }),
+    },
   ];
 
   // Vocational study sector options
-  const vocationalStudySectorOptions = [
+  const vocationalStudySectorOptions: {
+    value: CompulsoryStudiesHops["vocationalPostGraduateStudySector"];
+    label: string;
+  }[] = [
     {
-      value: vocationalStudySector.socialHealthSector,
-      label: "Sosiaali ja terveysala",
+      value: "SOCIAL_HEALT_SECTOR",
+      label: t("labels.hopsFormStudySectorSocialAndHealth", {
+        ns: "hops_new",
+      }),
     },
-    { value: vocationalStudySector.tradeSector, label: "Kauppa" },
-    { value: vocationalStudySector.transportSector, label: "Liikenne" },
-    { value: vocationalStudySector.educationSector, label: "Kasvatusala" },
-    { value: vocationalStudySector.industrySector, label: "Teollisuus" },
-    { value: vocationalStudySector.artSector, label: "Taide" },
-    { value: vocationalStudySector.else, label: "Joku muu" },
+    {
+      value: "TRADE_SECTOR",
+      label: t("labels.hopsFormStudySectorTrade", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "TRANSPORT_SECTOR",
+      label: t("labels.hopsFormStudySectorTransport", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "EDUCATION_SECTOR",
+      label: t("labels.hopsFormStudySectorEducation", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "INDUSTRY_SECTOR",
+      label: t("labels.hopsFormStudySectorIndustry", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "ART_SECTOR",
+      label: t("labels.hopsFormStudySectorArts", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      value: "SOMETHING_ELSE",
+      label: t("labels.hopsFormStudySectorElse", {
+        ns: "hops_new",
+      }),
+    },
   ];
 
   return (
     <div className="hops-container" ref={myRef}>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          {t("labels.hopsCompulsoryEntryAssessmentTitle1", {
+          {t("labels.hopsCompulsoryPostgraduateSubTitle1", {
             ns: "hops_new",
           })}
         </legend>
@@ -147,7 +206,9 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
               disabled={disabled}
               onChange={handleSelectsChange("whatNext")}
             >
-              <option value="">Valitse...</option>
+              <option value="">
+                {t("labels.hopsSelect", { ns: "hops_new" })}
+              </option>
               {whatNextOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -174,7 +235,9 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                 disabled={disabled}
                 onChange={handleSelectsChange("postGraduateStudies")}
               >
-                <option value="">Valitse...</option>
+                <option value="">
+                  {t("labels.hopsSelect", { ns: "hops_new" })}
+                </option>
                 {postGraduateStudiesOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -190,7 +253,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
               <div className="hops__form-element-container">
                 <TextField
                   id="followUpStudiesElse"
-                  label="Kerro tarkemmin"
+                  label={t("labels.hopsTellMore", { ns: "hops_new" })}
                   defaultValue={form.postGraduateStudiesElse}
                   disabled={disabled}
                   onChange={handleTextfieldChange("postGraduateStudiesElse")}
@@ -223,7 +286,9 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                   "vocationalPostGraduateStudySector"
                 )}
               >
-                <option value="">Valitse...</option>
+                <option value="">
+                  {t("labels.hopsSelect", { ns: "hops_new" })}
+                </option>
                 {vocationalStudySectorOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -244,7 +309,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
               <div className="hops__form-element-container">
                 <TextField
                   id="studySectorElse"
-                  label="Kerro tarkemmin"
+                  label={t("labels.hopsTellMore", { ns: "hops_new" })}
                   defaultValue={form.vocationalPostGraduateStudySectorElse}
                   disabled={disabled}
                   onChange={handleTextfieldChange(
@@ -260,7 +325,9 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
           <div className="hops__form-element-container">
             <Textarea
               id="followUpStudiesElse"
-              label="Voit kertoa tarkemmin jatkosuunnitelmistasi"
+              label={t("labels.hopsCompulsoryTellMoreFuturePlan", {
+                ns: "hops_new",
+              })}
               className="hops__textarea"
               defaultValue={form.futurePlans}
               disabled={disabled}
