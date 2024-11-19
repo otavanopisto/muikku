@@ -323,11 +323,20 @@ public class NotesRESTService extends PluginRESTService {
         groupName = usergroup.getName();
       }
     }
+    String recipientName = null;
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(noteReceiver.getRecipient());
+    
+    if (userEntity != null) {
+      recipientName = userEntityController.getName(userEntity, true).getDisplayName();
+    }
+    
     NoteReceiverRestModel restModel = new NoteReceiverRestModel();
     restModel.setId(noteReceiver.getId());
     restModel.setNoteId(noteReceiver.getNote().getId());
     restModel.setPinned(noteReceiver.getPinned());
     restModel.setRecipient(noteReceiver.getRecipient());
+    restModel.setRecipientName(recipientName);
     restModel.setStatus(noteReceiver.getStatus());
     restModel.setUserGroupId(noteReceiver.getRecipientGroup());
     restModel.setUserGroupName(groupName);

@@ -36,6 +36,14 @@ public class NoteReceiverRestModel {
     this.recipient = recipient;
   }
 
+  public String getRecipientName() {
+    return recipientName;
+  }
+
+  public void setRecipientName(String recipientName) {
+    this.recipientName = recipientName;
+  }
+
   public NoteStatus getStatus() {
     return status;
   }
@@ -64,6 +72,7 @@ public class NoteReceiverRestModel {
   private Long noteId;
   private Boolean pinned;
   private Long recipient;
+  private String recipientName;
   private NoteStatus status;
   private Long userGroupId;
   private String userGroupName;
