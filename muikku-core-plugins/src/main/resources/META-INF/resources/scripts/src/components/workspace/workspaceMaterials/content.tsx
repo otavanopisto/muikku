@@ -198,6 +198,7 @@ class ContentComponent extends SessionStateComponent<
         workspace: this.props.workspace,
         material,
         update: {
+          ...material,
           parentId: update.parentId,
           nextSiblingId: update.nextSiblingId,
         },
@@ -297,6 +298,7 @@ class ContentComponent extends SessionStateComponent<
         workspace: this.props.workspace,
         material,
         update: {
+          ...material,
           parentId: update.parentId,
           nextSiblingId: update.nextSiblingId,
         },
