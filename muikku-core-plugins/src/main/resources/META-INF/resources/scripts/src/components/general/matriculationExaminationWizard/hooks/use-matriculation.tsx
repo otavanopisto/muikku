@@ -59,7 +59,7 @@ export const useMatriculation = (
       postalCode: "",
       studentIdentifier: "",
       guidanceCounselor: "",
-      locality: "Mikkeli",
+      locality: "",
       completedCreditPointsCount: 0,
     },
     examinationInformation: {

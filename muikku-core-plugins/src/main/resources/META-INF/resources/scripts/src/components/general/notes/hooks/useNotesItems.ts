@@ -65,7 +65,7 @@ export const useNotesItem = (
                 listArchived: true,
               });
 
-              return notesItemsArchived;
+              return notesItemsArchived.filter((note) => note.isArchived);
             })(),
             sleepPromise,
           ]);

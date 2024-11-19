@@ -33,6 +33,7 @@ import {
   MaterialCompositeReply,
 } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { createAssignmentInfoArray } from "~/components/general/assignment-info-details/helper";
 
 /**
  * EvaluationDrawerProps
@@ -642,6 +643,11 @@ export class Evaluation extends React.Component<
       } as WorkspaceDataType);
     }
 
+    const assignmentInfoArray = createAssignmentInfoArray(
+      this.props.evaluation.evaluationCompositeReplies?.data,
+      this.props.evaluation.evaluationCurrentStudentAssigments?.data?.assigments
+    );
+
     return (
       <div className="evaluation-modal">
         <div
@@ -768,6 +774,7 @@ export class Evaluation extends React.Component<
                             editorLabel={t("labels.literalEvaluation", {
                               ns: "evaluation",
                             })}
+                            assignmentInfoArray={assignmentInfoArray}
                             workspaceSubjectToBeEvaluatedIdentifier={
                               subject.identifier
                             }
@@ -785,6 +792,7 @@ export class Evaluation extends React.Component<
                                       subject.identifier
                                     )
                             )}
+                            //assignmentInfoArray={assignmentInfoArray}
                           />
                         </SlideDrawer>
                         <SlideDrawer
@@ -835,6 +843,7 @@ export class Evaluation extends React.Component<
                           editorLabel={t("labels.literalEvaluation", {
                             ns: "evaluation",
                           })}
+                          assignmentInfoArray={assignmentInfoArray}
                           selectedAssessment={this.props.selectedAssessment}
                           workspaceSubjectToBeEvaluatedIdentifier={
                             subjectToBeEvaluated.identifier
@@ -842,6 +851,7 @@ export class Evaluation extends React.Component<
                           onClose={this.handleCloseWorkspaceEvaluationDrawer}
                           type={edit ? "edit" : "new"}
                           onSuccesfulSave={this.handleOpenArchiveStudentDialog}
+                          //assignmentInfoArray={assignmentInfoArray}
                         />
                       </SlideDrawer>
                     </div>

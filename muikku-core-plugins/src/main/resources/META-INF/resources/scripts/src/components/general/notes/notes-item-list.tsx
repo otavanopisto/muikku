@@ -143,9 +143,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
             onKeyDown={handleListItemKeyDown}
             loggedUserIsCreator={j.creator === userId}
             loggedUserIsOwner={
-              !!j.recipients.find(
-                (recipient: NoteReceiver) => recipient.id === userId
-              )
+              !!j.recipients.find((receiver) => receiver.recipient === userId)
             }
             onPinNotesItemClick={onPinNotesItemClick}
             onArchiveClick={onArchiveClick}

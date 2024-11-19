@@ -33,6 +33,7 @@ export interface NotesListItemProps
   active?: boolean;
   loggedUserIsCreator?: boolean;
   loggedUserIsOwner?: boolean;
+  specificRecipient?: number;
   onArchiveClick?: (notesItemId: number) => void;
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
@@ -79,6 +80,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       archived,
       openInformationToDialog,
       containerModifier,
+      specificRecipient,
       ...restProps
     } = props;
 
@@ -96,7 +98,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const { t } = useTranslation("tasks");
     const overdue = isOverdue(dueDate);
     const updatedModifiers = [];
-
+    const recipientId = specificRecipient
+      ? specificRecipient
+      : recipients[0].recipient;
+    const currentRecipient = recipients.find(
+      (r) => r.recipient === recipientId
+    );
     React.useImperativeHandle(
       outerRef,
       () => innerRef.current && innerRef.current,
@@ -256,7 +263,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      */
     const renderStatus = () => {
       const statuses: JSX.Element[] = [];
-
+      const { status } = currentRecipient;
       if (overdue && status !== "APPROVED") {
         statuses.push(
           <div
@@ -318,7 +325,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
 
       if (loggedUserIsOwner) {
-        const { status } = recipients[0];
+        const { status } = currentRecipient;
         if (status === "ONGOING") {
           items = [
             {
@@ -364,45 +371,38 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         }
       } else if (loggedUserIsCreator && !loggedUserIsOwner) {
         // This must display all of the recipients statuses if this is not a selected recipient
-        recipients.map((recipient) => {
-          if (status === "ONGOING") {
-            return;
-          }
-          if (status === "APPROVAL_PENDING") {
-            items = [
-              {
-                id: "recipient" + recipient.id,
-                text: recipient.id,
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
-              },
+        const { status } = currentRecipient;
 
-              {
-                id: "task-item-approve",
-                text: t("actions.approve"),
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
-              },
-              {
-                id: "task-item-incomplete",
-                text: t("actions.incomplete"),
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
-              },
-            ];
-          }
-          if (status === "APPROVED") {
-            items = [
-              {
-                id: "task-item-incomplete",
-                text: t("actions.incomplete"),
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                onClick: () =>
-                  handleUpdateNotesItemStatusClick("APPROVAL_PENDING"),
-              },
-            ];
-          }
-        });
+        if (status === "ONGOING") {
+          return;
+        }
+        if (status === "APPROVAL_PENDING") {
+          items = [
+            {
+              id: "task-item-approve",
+              text: t("actions.approve"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
+            },
+            {
+              id: "task-item-incomplete",
+              text: t("actions.incomplete"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
+            },
+          ];
+        }
+        if (status === "APPROVED") {
+          items = [
+            {
+              id: "task-item-incomplete",
+              text: t("actions.incomplete"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () =>
+                handleUpdateNotesItemStatusClick("APPROVAL_PENDING"),
+            },
+          ];
+        }
       }
 
       /**
@@ -467,7 +467,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           {loggedUserIsOwner && onPinNotesItemClick && (
             <IconButton
               onClick={handleNotesItemPinClick}
-              icon={notesItem.pinned ? "star-full" : "star-empty"}
+              icon={currentRecipient.pinned ? "star-full" : "star-empty"}
               buttonModifiers={["notes-action", "notes-pin"]}
             />
           )}
