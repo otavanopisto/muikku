@@ -9,9 +9,9 @@ public class WorkspaceMaterial {
   public WorkspaceMaterial() {
   }
 
-  public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, Boolean hidden,
+  public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, boolean hidden,
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
-      String path, String title, WorkspaceLanguage titleLanguage) {
+      String path, String title, WorkspaceLanguage titleLanguage, Double maxPoints) {
     super();
     this.id = id;
     this.materialId = materialId;
@@ -23,6 +23,7 @@ public class WorkspaceMaterial {
     this.path = path;
     this.title = title;
     this.titleLanguage = titleLanguage;
+    this.maxPoints = maxPoints;
   }
   
   public Long getId() {
@@ -57,11 +58,11 @@ public class WorkspaceMaterial {
     this.nextSiblingId = nextSiblingId;
   }
   
-  public Boolean getHidden() {
+  public boolean getHidden() {
     return hidden;
   }
 
-  public void setHidden(Boolean hidden) {
+  public void setHidden(boolean hidden) {
     this.hidden = hidden;
   }
   
@@ -108,14 +109,25 @@ public class WorkspaceMaterial {
   }
 
 
+  public Double getMaxPoints() {
+    return maxPoints;
+  }
+
+  public void setMaxPoints(Double maxPoints) {
+    this.maxPoints = maxPoints;
+  }
+
+
   private Long id;
   private Long materialId;
   private Long parentId;
   private Long nextSiblingId;
-  private Boolean hidden;
+  private boolean hidden;
   private WorkspaceMaterialAssignmentType assignmentType;
   private WorkspaceMaterialCorrectAnswersDisplay correctAnswers;
   private String path;
   private String title;
   private WorkspaceLanguage titleLanguage;
+  private Double maxPoints;
+  
 }

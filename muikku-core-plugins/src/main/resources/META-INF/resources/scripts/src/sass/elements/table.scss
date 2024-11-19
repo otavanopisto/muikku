@@ -3,6 +3,32 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.table__scrollable-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+
+  .table {
+    position: relative;
+  }
+
+  .table__thead--sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    .table__head {
+      top: 0;
+    }
+  }
+}
+
+.table--assignment-points {
+  .table__data,
+  .table__head {
+    height: 30px;
+  }
+}
+
 .table {
   border-collapse: separate;
   border-spacing: 0;
@@ -103,9 +129,19 @@
   }
 }
 
+.table__head--left,
+.table__data--left {
+  text-align: left;
+}
+
 .table__head--centered,
 .table__data--centered {
   text-align: center;
+}
+
+.table__head--right,
+.table__data--right {
+  text-align: right;
 }
 
 .table__data {

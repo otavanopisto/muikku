@@ -671,7 +671,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           }
 
           let newPath = data.material.path;
-          let fields = [
+          let fields: (keyof MaterialContentNodeWithIdAndLogic)[] = [
             "materialId",
             "parentId",
             "nextSiblingId",
@@ -681,6 +681,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             "path",
             "title",
             "titleLanguage",
+            "maxPoints",
           ];
 
           if (data.material.type === "folder") {
@@ -702,16 +703,12 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           let changed = false;
 
           fields.forEach((field) => {
-            if (
-              typeof (data.update as any)[field] !== "undefined" &&
-              (data.material as any)[field] !== (data.update as any)[field]
-            ) {
+            if (data.material[field] !== data.update[field]) {
               changed = true;
+              result[field] = data.update[field];
+            } else {
+              result[field] = data.material[field];
             }
-            result[field] =
-              typeof (data.update as any)[field] !== "undefined"
-                ? (data.update as any)[field]
-                : (data.material as any)[field];
           });
 
           if (changed) {
@@ -1128,6 +1125,22 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
 
       try {
         if (data.material.type === "folder") {
+          // Check if folder has child nodes, if so, we cannot delete it
+          // and just give a notification and end the function
+          if (data.material.children?.length) {
+            // ERROR section has child nodes
+            dispatch(
+              displayNotification(
+                i18n.t("content.sectionRemoveDenied", { ns: "materials" }),
+                "error"
+              )
+            );
+
+            data.fail && data.fail();
+
+            return;
+          }
+
           await workspaceApi.deleteWorkspaceFolder({
             workspaceId: data.workspace.id,
             workspaceFolderId: data.material.workspaceMaterialId,
@@ -1156,45 +1169,36 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
 
         let showRemoveAnswersDialogForDelete = false;
 
-        // If conditional here relyis boolean value of removeAnswers
-        // we need to check that removeAnswers value really exists
-        if (data.removeAnswers && !data.removeAnswers && isResponseError(err)) {
+        // we need to check that removeAnswers value is undefined
+        // specifically for this error, because it's the only way to
+        if (data.removeAnswers === undefined && isResponseError(err)) {
           const errorObject = await err.response.json();
-          try {
-            if (errorObject.reason === "CONTAINS_ANSWERS") {
-              showRemoveAnswersDialogForDelete = true;
-              const currentEditorState = getState().workspaces.materialEditor;
-              dispatch(
-                setWorkspaceMaterialEditorState({
-                  ...currentEditorState,
-                  showRemoveAnswersDialogForDelete,
-                })
-              );
-            }
-            // eslint-disable-next-line no-empty
-          } catch (e) {}
+          // If the error reason is "CONTAINS_ANSWERS" we need to show the remove answers dialog
+          // and end the function, so we don't display the error notification
+          if (errorObject.reason === "CONTAINS_ANSWERS") {
+            showRemoveAnswersDialogForDelete = true;
+            const currentEditorState = getState().workspaces.materialEditor;
+            dispatch(
+              setWorkspaceMaterialEditorState({
+                ...currentEditorState,
+                showRemoveAnswersDialogForDelete,
+              })
+            );
+
+            data.fail && data.fail();
+            return;
+          }
+          // eslint-disable-next-line no-empty
         }
 
         data.fail && data.fail();
-        if (!showRemoveAnswersDialogForDelete && isResponseError(err)) {
-          if (data.material.children && data.material.children.length) {
-            // ERROR section has child nodes
 
-            dispatch(
-              displayNotification(
-                i18n.t("content.sectionRemoveDenied", { ns: "materials" }),
-                "error"
-              )
-            );
-          }
-        } else {
-          dispatch(
-            displayNotification(
-              i18n.t("notifications.removeError", { ns: "materials" }),
-              "error"
-            )
-          );
-        }
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.removeError", { ns: "materials" }),
+            "error"
+          )
+        );
       }
     };
   };

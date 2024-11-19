@@ -546,7 +546,8 @@ mark[data-muikku-word-definition] {
   background: lighten($color-incomplete, 45%);
   border-left-color: $color-incomplete;
 
-  .material-page__assignment-assessment-grade-data {
+  .material-page__assignment-assessment-grade-data,
+  .material-page__assignment-assessment-points-data {
     background: $color-incomplete;
   }
 
@@ -559,7 +560,8 @@ mark[data-muikku-word-definition] {
   background: lighten($color-passed, 55%);
   border-left-color: $color-passed;
 
-  .material-page__assignment-assessment-grade-data {
+  .material-page__assignment-assessment-grade-data,
+  .material-page__assignment-assessment-points-data {
     background: $color-passed;
   }
 
@@ -572,7 +574,8 @@ mark[data-muikku-word-definition] {
   background: lighten($color-failed, 45%);
   border-left-color: $color-failed;
 
-  .material-page__assignment-assessment-grade-data {
+  .material-page__assignment-assessment-grade-data,
+  .material-page__assignment-assessment-points-data {
     background: $color-failed;
   }
 
@@ -585,7 +588,8 @@ mark[data-muikku-word-definition] {
   background: lighten($color-withdrawn, 45%);
   border-left-color: $color-withdrawn;
 
-  .material-page__assignment-assessment-grade-data {
+  .material-page__assignment-assessment-grade-data,
+  .material-page__assignment-assessment-points-data {
     background: $color-withdrawn;
   }
 
@@ -613,7 +617,8 @@ mark[data-muikku-word-definition] {
   line-height: 1.375rem;
 }
 
-.material-page__assignment-assessment-grade {
+.material-page__assignment-assessment-grade,
+.material-page__assignment-assessment-points {
   @include assessment-text;
 
   align-items: center;
@@ -625,19 +630,22 @@ mark[data-muikku-word-definition] {
   margin: 0 0 10px;
 }
 
-.material-page__assignment-assessment-grade-label {
+.material-page__assignment-assessment-grade-label,
+.material-page__assignment-assessment-points-label {
   font-weight: 600;
   padding: 0 10px 0 0;
 }
 
-.material-page__assignment-assessment-grade-data {
+.material-page__assignment-assessment-grade-data,
+.material-page__assignment-assessment-points-data {
   border-radius: 3px;
   color: $color-default;
   line-height: 1;
   padding: 5px 8px;
 }
 
-.material-page__assignment-assessment-grade-data--incomplete {
+.material-page__assignment-assessment-grade-data--incomplete,
+  .material-page__assignment-assessment-points-data--incomplete {
   font-size: 0.625rem;
   text-transform: uppercase;
 }

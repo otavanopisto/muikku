@@ -144,8 +144,8 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
    * @param e e
    */
   handleWrapperClick(e: Event) {
-    e.preventDefault();
-    e.stopPropagation();
+    e && e.preventDefault();
+    e && e.stopPropagation();
     if (this.state.active) {
       if (this.props.closeOnClick) {
         this.closePortal();

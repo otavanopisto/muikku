@@ -46,7 +46,6 @@ import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceJournalFeedback;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
@@ -514,7 +513,11 @@ public class EvaluationRESTService extends PluginRESTService {
   @POST
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createWorkspaceMaterialAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, RestAssessmentWithAudio payload) {
+  public Response createWorkspaceMaterialAssessment(
+      @PathParam("WORKSPACEENTITYID") Long workspaceEntityId,
+      @PathParam("USERENTITYID") Long userEntityId,
+      @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId,
+      RestAssessmentWithAudio payload) {
     if (payload == null || payload.getEvaluationType() == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
@@ -540,19 +543,39 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.ASSESSMENT && workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
-      // Grade is required for evaluated assignments, but not required for exercises
-      if (payload.getGradingScaleIdentifier() == null || payload.getGradeIdentifier() == null) {
-        return Response.status(Status.BAD_REQUEST).build();
-      }
-    }
-    
     // Grade
     
     SchoolDataIdentifier gradingScaleIdentifier = payload.getGradingScaleIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradingScaleIdentifier()) : null;
     GradingScale gradingScale = gradingScaleIdentifier != null ? gradingController.findGradingScale(gradingScaleIdentifier) : null;
     SchoolDataIdentifier gradeIdentifier = payload.getGradeIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradeIdentifier()) : null;
     GradingScaleItem gradingScaleItem = (gradingScale != null && gradeIdentifier != null) ? gradingController.findGradingScaleItem(gradingScale, gradeIdentifier) : null;
+    
+    // Payload evaluation
+    
+    Double points;
+    switch (payload.getEvaluationType()) {
+    case GRADED:
+      // Exercise assignments can be evaluated without a grade, evaluated assignments cannot
+      if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED && (gradingScale == null || gradingScaleItem == null)) {
+        return Response.status(Status.BAD_REQUEST).entity("Evaluated assignment lacks grade").build();
+      }
+      points = null;
+      break;
+    case POINTS:
+      // Exercise assignments can be evaluated without points, evaluated assignments cannot
+      if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED && payload.getPoints() ==  null) {
+        return Response.status(Status.BAD_REQUEST).entity("Evaluated assignment lacks points").build();
+      }
+      points = payload.getPoints();
+      gradingScale = null;
+      gradingScaleItem = null;
+      break;
+    default:
+      points = null;
+      gradingScale = null;
+      gradingScaleItem = null;
+      break;
+    }
 
     // Assessor
     
@@ -570,6 +593,7 @@ public class EvaluationRESTService extends PluginRESTService {
         assessor,
         payload.getAssessmentDate(),
         payload.getVerbalAssessment(),
+        points,
         payload.getEvaluationType());
     
     evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
@@ -601,6 +625,7 @@ public class EvaluationRESTService extends PluginRESTService {
         workspaceMaterialEvaluation.getVerbalAssessment(),
         workspaceMaterialEvaluation.getEvaluated(),
         gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
+        workspaceMaterialEvaluation.getPoints(),
         workspaceMaterialEvaluation.getEvaluationType(),
         audioAssessments);
     return Response.ok(restAssessment).build();
@@ -641,13 +666,6 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.ASSESSMENT && workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
-      // Grade is required for evaluated assignments, but not required for exercises
-      if (payload.getGradingScaleIdentifier() == null || payload.getGradeIdentifier() == null) {
-        return Response.status(Status.BAD_REQUEST).build();
-      }
-    }
-    
     // Find Workspace material evaluation for update
     
     WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluation(assessmentId);
@@ -661,6 +679,33 @@ public class EvaluationRESTService extends PluginRESTService {
     GradingScale gradingScale = gradingScaleIdentifier != null ? gradingController.findGradingScale(gradingScaleIdentifier) : null;
     SchoolDataIdentifier gradeIdentifier = payload.getGradeIdentifier() != null ? SchoolDataIdentifier.fromId(payload.getGradeIdentifier()) : null;
     GradingScaleItem gradingScaleItem = (gradingScale != null && gradeIdentifier != null) ? gradingController.findGradingScaleItem(gradingScale, gradeIdentifier) : null;
+
+    // Payload evaluation
+    
+    Double points;
+    switch (payload.getEvaluationType()) {
+    case GRADED:
+      // Exercise assignments can be evaluated without a grade, evaluated assignments cannot
+      if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED && (gradingScale == null || gradingScaleItem == null)) {
+        return Response.status(Status.BAD_REQUEST).entity("Evaluated assignment lacks grade").build();
+      }
+      points = null;
+      break;
+    case POINTS:
+      // Exercise assignments can be evaluated without points, evaluated assignments cannot
+      if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED && payload.getPoints() ==  null) {
+        return Response.status(Status.BAD_REQUEST).entity("Evaluated assignment lacks points").build();
+      }
+      points = payload.getPoints();
+      gradingScale = null;
+      gradingScaleItem = null;
+      break;
+    default:
+      points = null;
+      gradingScale = null;
+      gradingScaleItem = null;
+      break;
+    }
 
     // Assessor
     
@@ -677,6 +722,7 @@ public class EvaluationRESTService extends PluginRESTService {
         assessor,
         payload.getAssessmentDate(),
         payload.getVerbalAssessment(),
+        points,
         payload.getEvaluationType());
     
     evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
@@ -708,6 +754,7 @@ public class EvaluationRESTService extends PluginRESTService {
         workspaceMaterialEvaluation.getVerbalAssessment(),
         workspaceMaterialEvaluation.getEvaluated(),
         gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
+        workspaceMaterialEvaluation.getPoints(),
         workspaceMaterialEvaluation.getEvaluationType(),
         audioAssessments);
     return Response.ok(restAssessment).build();
