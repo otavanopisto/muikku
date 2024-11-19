@@ -1,9 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import "~/sass/elements/hops.scss";
-import { SecondaryStudiesHops, WhatNext } from "~/@types/hops";
+import {
+  PostGraduateStudies,
+  SecondaryStudiesHops,
+  WhatNext,
+} from "~/@types/hops";
 import { useTranslation } from "react-i18next";
 import { useUseCaseContext } from "~/context/use-case-context";
 import { Textarea } from "../../components/text-area";
+import AnimateHeight from "react-animate-height";
 
 /**
  * Props for the HopsStartingLevel component
@@ -54,10 +59,57 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
   ) => {
     const value = event.target.value as WhatNext;
 
+    const updatedForm = { ...form };
+
+    // If the value is already in the array, remove it
     if (form.whatNext.includes(value)) {
-      updateLocalForm({ whatNext: form.whatNext.filter((v) => v !== value) });
+      // If the value is "ELSE" is removed, clear the whatNextElse field
+      if (value === "ELSE") {
+        updatedForm.whatNextElse = "";
+      }
+      // If the value is "POSTGRADUATE_STUDIES" is removed, clear the postGraduateStudies field
+      if (value === "POSTGRADUATE_STUDIES") {
+        updatedForm.postGraduateStudies = [];
+        updatedForm.postGraduateStudiesElse = "";
+      }
+
+      updatedForm.whatNext = form.whatNext.filter((v) => v !== value);
+
+      updateLocalForm(updatedForm);
     } else {
-      updateLocalForm({ whatNext: [...form.whatNext, value] });
+      updatedForm.whatNext = [...form.whatNext, value];
+
+      updateLocalForm(updatedForm);
+    }
+  };
+
+  /**
+   * Handles post-graduate studies checkbox change
+   * @param event event
+   */
+  const handlePostGraduateStudiesCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value as PostGraduateStudies;
+
+    const updatedForm = { ...form };
+
+    // If the value is already in the array, remove it
+    if (form.postGraduateStudies.includes(value)) {
+      // If the value is "ELSE" is removed, clear the postGraduateElse field
+      if (value === "ELSE") {
+        updatedForm.postGraduateStudiesElse = "";
+      }
+
+      updatedForm.postGraduateStudies = form.postGraduateStudies.filter(
+        (v) => v !== value
+      );
+
+      updateLocalForm(updatedForm);
+    } else {
+      updatedForm.postGraduateStudies = [...form.postGraduateStudies, value];
+
+      updateLocalForm(updatedForm);
     }
   };
 
@@ -81,22 +133,57 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
     {
       id: "postgraduateStudies",
       value: "POSTGRADUATE_STUDIES",
-      label: "haen jatko-opintoihin",
+      label: t("labels.hopsFormPostgraduateWhatNextOption2", {
+        ns: "hops_new",
+      }),
     },
     {
       id: "workingLife",
       value: "WORKING_LIFE",
-      label: "teen töitä",
-    },
-    {
-      id: "else",
-      value: "ELSE",
-      label: "jotain muuta, mitä",
+      label: t("labels.hopsFormPostgraduateWhatNextOption1", {
+        ns: "hops_new",
+      }),
     },
     {
       id: "dontKnow",
       value: "DONT_KNOW",
-      label: "en tiedä vielä",
+      label: t("labels.hopsFormPostgraduateWhatNextOption4", {
+        ns: "hops_new",
+      }),
+    },
+    {
+      id: "else",
+      value: "ELSE",
+      label: t("labels.hopsFormPostgraduateWhatNextOption3", {
+        ns: "hops_new",
+      }),
+    },
+  ];
+
+  const postGraduateStudiesCheckboxItems: {
+    id: string;
+    value: SecondaryStudiesHops["postGraduateStudies"][number];
+    label: string;
+  }[] = [
+    {
+      id: "university",
+      value: "UNIVERSITY",
+      label: t("labels.hopsFormPostgraduateStudiesOption4", { ns: "hops_new" }),
+    },
+    {
+      id: "vocationalInstitute",
+      value: "UNIVERSITY_OF_APPLIED_SCIENCES",
+      label: t("labels.hopsFormPostgraduateStudiesOption5", { ns: "hops_new" }),
+    },
+    {
+      id: "vocationalSchool",
+      value: "VOCATIONAL_SCHOOL",
+      label: t("labels.hopsFormPostgraduateStudiesOption2", { ns: "hops_new" }),
+    },
+    {
+      id: "else",
+      value: "ELSE",
+      label: t("labels.hopsFormPostgraduateStudiesOption7", { ns: "hops_new" }),
     },
   ];
 
@@ -104,7 +191,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
     <div className="hops-container" ref={myRef}>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          Mitä aiot tehdä Nettilukion jälkeen:
+          {t("labels.hopsSecondaryPostgraduateSubTitle1", { ns: "hops_new" })}
         </legend>
 
         {whatNextCheckboxItems.map((item) => (
@@ -123,52 +210,118 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                 {item.label}
               </label>
             </div>
+
+            {item.value === "ELSE" && (
+              <AnimateHeight
+                height={form.whatNext.includes("ELSE") ? "auto" : 0}
+                contentClassName="hops-animate__height-wrapper"
+                className="hops-container__row hops-container__row--dependant-of-above"
+              >
+                <div className="hops-container__row">
+                  <div className="hops__form-element-container">
+                    <Textarea
+                      id="whatNextElse"
+                      label={t("labels.hopsSecondaryWhatNextElse", {
+                        ns: "hops_new",
+                      })}
+                      className="hops__textarea"
+                      value={form.whatNextElse}
+                      onChange={handleTextareaChange("whatNextElse")}
+                      disabled={disabled}
+                    />
+                  </div>
+                </div>
+              </AnimateHeight>
+            )}
+
+            {item.value === "POSTGRADUATE_STUDIES" && (
+              <AnimateHeight
+                height={
+                  form.whatNext.includes("POSTGRADUATE_STUDIES") ? "auto" : 0
+                }
+                contentClassName="hops-animate__height-wrapper"
+                className="hops-container__row hops-container__row--dependant-of-above"
+              >
+                {postGraduateStudiesCheckboxItems.map((item) => (
+                  <>
+                    <div key={item.id} className="hops-container__row">
+                      <div className="hops__form-element-container hops__form-element-container--single-row">
+                        <input
+                          id={item.id}
+                          type="checkbox"
+                          className="hops__input"
+                          value={item.value}
+                          checked={form.postGraduateStudies.includes(
+                            item.value
+                          )}
+                          onChange={handlePostGraduateStudiesCheckboxChange}
+                          disabled={disabled}
+                        ></input>
+                        <label htmlFor={item.id} className="hops__label">
+                          {item.label}
+                        </label>
+                      </div>
+                    </div>
+
+                    {item.value === "ELSE" && (
+                      <AnimateHeight
+                        height={
+                          form.postGraduateStudies.includes("ELSE") ? "auto" : 0
+                        }
+                        contentClassName="hops-animate__height-wrapper"
+                        className="hops-container__row hops-container__row--dependant-of-above"
+                      >
+                        <div key={item.id} className="hops-container__row">
+                          <div className="hops__form-element-container">
+                            <Textarea
+                              id="postGraduateStudiesElse"
+                              label={t(
+                                "labels.hopsSecondaryPostGraduateStudiesElse",
+                                {
+                                  ns: "hops_new",
+                                }
+                              )}
+                              className="hops__textarea"
+                              value={form.postGraduateStudiesElse}
+                              onChange={handleTextareaChange(
+                                "postGraduateStudiesElse"
+                              )}
+                              disabled={disabled}
+                            />
+                          </div>
+                        </div>
+                      </AnimateHeight>
+                    )}
+                  </>
+                ))}
+              </AnimateHeight>
+            )}
           </div>
         ))}
       </fieldset>
 
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          Kokemukset ja osaaminen – pohja tulevaisuudelle
+          {t("labels.hopsSecondaryPostgraduateSubTitle2", { ns: "hops_new" })}
         </legend>
 
         <div className="hops-container__fieldset-description">
-          Tulevaisuuden suunnitelmasi rakentuvat sekä kiinnostustesi että
-          osaamisesi pohjalta. Kirjaa tähän taitosi ja kokemuksesi, jotka voivat
-          auttaa suunnitelmiesi selkeyttämisessä. Voit miettiä esimerkiksi
-          seuraavia kysymyksiä:
+          {t("content.hopsSecondaryPostgraduateSubTitle2Content", {
+            ns: "hops_new",
+          })}
         </div>
-
-        <ul className="hops-container__list">
-          <li>Mitä taitoja olet kehittänyt harrastuksissa tai työelämässä?</li>
-          <li>
-            Millaisia taitoja olet jo kehittänyt, ja miten ne ovat auttaneet
-            sinua koulussa tai muissa tehtävissä?
-          </li>
-          <li>
-            Miten voisit hyödyntää nykyisiä vahvuuksiasi tulevassa työelämässä?
-          </li>
-        </ul>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <Textarea
               id="workExperience"
-              label="Työkokemus"
+              label={t("labels.hopsSecondaryWorkExperienceAndIntership", {
+                ns: "hops_new",
+              })}
               className="hops__textarea"
-              value={form.workExperience}
-              onChange={handleTextareaChange("workExperience")}
-            />
-          </div>
-        </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="internships"
-              label="Työharjoittelut"
-              className="hops__textarea"
-              value={form.internships}
-              onChange={handleTextareaChange("internships")}
+              value={form.workExperienceAndInternships}
+              onChange={handleTextareaChange("workExperienceAndInternships")}
+              disabled={disabled}
             />
           </div>
         </div>
@@ -176,10 +329,11 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
           <div className="hops__form-element-container">
             <Textarea
               id="hobbies"
-              label="Harrastukset: Mitä harrastuksia sinulla on? Mitä taitoja ne ovat opettaneet?"
+              label={t("labels.hopsSecondaryHobbies", { ns: "hops_new" })}
               className="hops__textarea"
               value={form.hobbies}
               onChange={handleTextareaChange("hobbies")}
+              disabled={disabled}
             />
           </div>
         </div>
@@ -187,10 +341,25 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
           <div className="hops__form-element-container">
             <Textarea
               id="otherSkills"
-              label="Muu osaaminen: (kielitaito, tekniset taidot, vuorovaikutustaidot jne.)"
+              label={t("labels.hopsSecondaryOtherSkills", { ns: "hops_new" })}
               className="hops__textarea"
               value={form.otherSkills}
               onChange={handleTextareaChange("otherSkills")}
+              disabled={disabled}
+            />
+          </div>
+        </div>
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <Textarea
+              id="skillsFromHobbiesAndWorklife"
+              label={t("labels.hopsSecondarySkillsFromHobbiesAndWorklife", {
+                ns: "hops_new",
+              })}
+              className="hops__textarea"
+              value={form.skillsFromHobbiesAndWorklife}
+              onChange={handleTextareaChange("skillsFromHobbiesAndWorklife")}
+              disabled={disabled}
             />
           </div>
         </div>
@@ -198,63 +367,20 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
 
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          Kiinnostukset ja tavoitteet
-        </legend>
-
-        <div className="hops-container__fieldset-description">
-          Kirjaa tähän ajatuksiasi siitä, mitä kohti haluat suunnata. Näiden
-          pohdintojen avulla voit hahmottaa, millaiset opinnot ja työtehtävät
-          sopisivat sinulle.
-        </div>
-
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="interestedIn"
-              label="Minua kiinnostavat seuraavat asiat"
-              className="hops__textarea"
-              value={form.interestedIn}
-              onChange={handleTextareaChange("interestedIn")}
-            />
-          </div>
-        </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="goodAt"
-              label="Olen hyvä näissä asioissa"
-              className="hops__textarea"
-              value={form.goodAt}
-              onChange={handleTextareaChange("goodAt")}
-            />
-          </div>
-        </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="importantInFutureWork"
-              label="Minulle tärkeitä asioita tulevassa työssäni ovat"
-              className="hops__textarea"
-              value={form.importantInFutureWork}
-              onChange={handleTextareaChange("importantInFutureWork")}
-            />
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">
-          Opintomenestykseni tukena urasuunnittelussa
+          {t("labels.hopsSecondaryPostgraduateSubTitle3", { ns: "hops_new" })}
         </legend>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
             <Textarea
               id="successfulDuringHighSchool"
-              label="Näissä oppiaineissa ja asioissa olen menestynyt lukioaikana"
+              label={t("labels.hopsSecondarySuccesfullDuringHighSchool", {
+                ns: "hops_new",
+              })}
               className="hops__textarea"
               value={form.successfulDuringHighSchool}
               onChange={handleTextareaChange("successfulDuringHighSchool")}
+              disabled={disabled}
             />
           </div>
         </div>
@@ -262,10 +388,64 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
           <div className="hops__form-element-container">
             <Textarea
               id="challengesDuringHighSchool"
-              label="Näissä oppiaineissa ja asioissa minulla on ollut haasteita"
+              label={t("labels.hopsSecondaryChallangesDuringHighSchool", {
+                ns: "hops_new",
+              })}
               className="hops__textarea"
               value={form.challengesDuringHighSchool}
               onChange={handleTextareaChange("challengesDuringHighSchool")}
+              disabled={disabled}
+            />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset className="hops-container__fieldset">
+        <legend className="hops-container__subheader">
+          {t("labels.hopsSecondaryPostgraduateSubTitle4", { ns: "hops_new" })}
+        </legend>
+
+        <div className="hops-container__fieldset-description">
+          {t("content.hopsSecondaryPostgraduateSubTitle4Content", {
+            ns: "hops_new",
+          })}
+        </div>
+
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <Textarea
+              id="interestedIn"
+              label={t("labels.hopsSecondaryInterestedIn", { ns: "hops_new" })}
+              className="hops__textarea"
+              value={form.interestedIn}
+              onChange={handleTextareaChange("interestedIn")}
+              disabled={disabled}
+            />
+          </div>
+        </div>
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <Textarea
+              id="goodAt"
+              label={t("labels.hopsSecondaryAmGood", { ns: "hops_new" })}
+              className="hops__textarea"
+              value={form.goodAt}
+              onChange={handleTextareaChange("goodAt")}
+              disabled={disabled}
+            />
+          </div>
+        </div>
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <Textarea
+              id="importantInFutureWork"
+              label={t("labels.hopsSecondaryImportantInFutureWork", {
+                ns: "hops_new",
+              })}
+              className="hops__textarea"
+              value={form.importantInFutureWork}
+              onChange={handleTextareaChange("importantInFutureWork")}
+              disabled={disabled}
             />
           </div>
         </div>

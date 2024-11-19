@@ -391,10 +391,16 @@ export interface SecondaryStudiesHops {
   whatNextElse?: string;
   postGraduateStudies: PostGraduateStudies[];
   postGraduateStudiesElse?: string;
-  workExperience: string;
-  internships: string;
+  /**
+   * Work experience and internships
+   */
+  workExperienceAndInternships: string;
   hobbies: string;
   otherSkills: string;
+  /**
+   * Skills learned from hobbies and work experience
+   */
+  skillsFromHobbiesAndWorklife: string;
   /**
    * I am interested in the following things
    */
@@ -428,6 +434,10 @@ export interface SecondaryStudiesHops {
    */
   basisForPostgraduateStudyAndCareerChoice: string;
   /**
+   * What kind of things are you thinking about in your postgraduate studies? Where to get with your study guide?
+   */
+  thingsMakesYouThink: string;
+  /**
    * Comments from the study guide
    */
   postGraduateGuidanceCouncelorComments: string;
@@ -447,7 +457,7 @@ export const whatNext = {
   dontKnow: "DONT_KNOW",
 };
 
-type PostGraduateStudies =
+export type PostGraduateStudies =
   | "APPRENTICESHIP_TRAINING"
   | "VOCATIONAL_SCHOOL"
   | "UPPER_SECONDARY_SCHOOL"
@@ -513,10 +523,10 @@ export function initializeSecondaryStudiesHops(): SecondaryStudiesHops {
     languageLearningSkills: "",
     whatNext: [],
     postGraduateStudies: [],
-    workExperience: "",
-    internships: "",
+    workExperienceAndInternships: "",
     hobbies: "",
     otherSkills: "",
+    skillsFromHobbiesAndWorklife: "",
     interestedIn: "",
     goodAt: "",
     importantInFutureWork: "",
@@ -525,6 +535,7 @@ export function initializeSecondaryStudiesHops(): SecondaryStudiesHops {
     interestedInFieldsOfStudy: "",
     whereCanStudyFieldsOfInterest: "",
     basisForPostgraduateStudyAndCareerChoice: "",
+    thingsMakesYouThink: "",
     postGraduateGuidanceCouncelorComments: "",
   };
 }
