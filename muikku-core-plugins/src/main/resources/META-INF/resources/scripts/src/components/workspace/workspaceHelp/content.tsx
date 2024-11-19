@@ -104,7 +104,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
    * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  // eslint-disable-next-line react/no-deprecated
+  // eslint-disable-next-line react/no-deprecated, camelcase
   UNSAFE_componentWillReceiveProps(nextProps: ContentProps) {
     // If materials have changed, specifically length, reset elementRefs
     if (this.props.materials.length !== nextProps.materials.length) {
@@ -151,6 +151,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           workspace: this.props.workspace,
           material,
           update: {
+            ...material,
             parentId: update.parentId,
             nextSiblingId: update.nextSiblingId,
           },
@@ -236,6 +237,7 @@ class ContentComponent extends React.Component<ContentProps, ContentState> {
           workspace: this.props.workspace,
           material,
           update: {
+            ...material,
             parentId: update.parentId,
             nextSiblingId: update.nextSiblingId,
           },
