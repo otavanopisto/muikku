@@ -98,7 +98,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const { t } = useTranslation("tasks");
     const overdue = isOverdue(dueDate);
     const updatedModifiers = [];
-
+    const recipientId = specificRecipient
+      ? specificRecipient
+      : recipients[0].recipient;
+    const currentRecipient = recipients.find(
+      (r) => r.recipient === recipientId
+    );
     React.useImperativeHandle(
       outerRef,
       () => innerRef.current && innerRef.current,
@@ -258,9 +263,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      */
     const renderStatus = () => {
       const statuses: JSX.Element[] = [];
-      const { status } = specificRecipient
-        ? recipients.find((r) => r.id === specificRecipient)
-        : recipients[0];
+      const { status } = currentRecipient;
       if (overdue && status !== "APPROVED") {
         statuses.push(
           <div
@@ -322,7 +325,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
 
       if (loggedUserIsOwner) {
-        const { status } = recipients[0];
+        const { status } = currentRecipient;
         if (status === "ONGOING") {
           items = [
             {
@@ -368,11 +371,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         }
       } else if (loggedUserIsCreator && !loggedUserIsOwner) {
         // This must display all of the recipients statuses if this is not a selected recipient
-        const status = specificRecipient
-          ? recipients.find(
-              (recipient) => recipient.recipient === specificRecipient
-            ).status
-          : recipients[0].status;
+        const { status } = currentRecipient;
 
         if (status === "ONGOING") {
           return;
@@ -468,7 +467,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           {loggedUserIsOwner && onPinNotesItemClick && (
             <IconButton
               onClick={handleNotesItemPinClick}
-              icon={notesItem.pinned ? "star-full" : "star-empty"}
+              icon={currentRecipient.pinned ? "star-full" : "star-empty"}
               buttonModifiers={["notes-action", "notes-pin"]}
             />
           )}
