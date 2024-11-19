@@ -33,6 +33,7 @@ export interface NotesListItemProps
   active?: boolean;
   loggedUserIsCreator?: boolean;
   loggedUserIsOwner?: boolean;
+  specificRecipient?: number;
   onArchiveClick?: (notesItemId: number) => void;
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
@@ -79,6 +80,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       archived,
       openInformationToDialog,
       containerModifier,
+      specificRecipient,
       ...restProps
     } = props;
 
@@ -256,7 +258,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      */
     const renderStatus = () => {
       const statuses: JSX.Element[] = [];
-
+      const { status } = specificRecipient
+        ? recipients.find((r) => r.id === specificRecipient)
+        : recipients[0];
       if (overdue && status !== "APPROVED") {
         statuses.push(
           <div
@@ -364,45 +368,42 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         }
       } else if (loggedUserIsCreator && !loggedUserIsOwner) {
         // This must display all of the recipients statuses if this is not a selected recipient
-        recipients.map((recipient) => {
-          if (status === "ONGOING") {
-            return;
-          }
-          if (status === "APPROVAL_PENDING") {
-            items = [
-              {
-                id: "recipient" + recipient.id,
-                text: recipient.id,
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
-              },
+        const status = specificRecipient
+          ? recipients.find(
+              (recipient) => recipient.recipient === specificRecipient
+            ).status
+          : recipients[0].status;
 
-              {
-                id: "task-item-approve",
-                text: t("actions.approve"),
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
-              },
-              {
-                id: "task-item-incomplete",
-                text: t("actions.incomplete"),
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
-              },
-            ];
-          }
-          if (status === "APPROVED") {
-            items = [
-              {
-                id: "task-item-incomplete",
-                text: t("actions.incomplete"),
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                onClick: () =>
-                  handleUpdateNotesItemStatusClick("APPROVAL_PENDING"),
-              },
-            ];
-          }
-        });
+        if (status === "ONGOING") {
+          return;
+        }
+        if (status === "APPROVAL_PENDING") {
+          items = [
+            {
+              id: "task-item-approve",
+              text: t("actions.approve"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
+            },
+            {
+              id: "task-item-incomplete",
+              text: t("actions.incomplete"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
+            },
+          ];
+        }
+        if (status === "APPROVED") {
+          items = [
+            {
+              id: "task-item-incomplete",
+              text: t("actions.incomplete"),
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClick: () =>
+                handleUpdateNotesItemStatusClick("APPROVAL_PENDING"),
+            },
+          ];
+        }
       }
 
       /**
