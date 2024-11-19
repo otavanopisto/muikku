@@ -10,6 +10,8 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
+import fi.otavanopisto.muikku.plugins.forum.model.ForumMessage_;
+import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea_;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver;
@@ -81,12 +83,13 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     CriteriaQuery<Note> criteria = criteriaBuilder.createQuery(Note.class);
     Root<NoteReceiver> root = criteria.from(NoteReceiver.class);
     Root<Note> root2 = criteria.from(Note.class);
-    
+
     criteria.select(root.get(NoteReceiver_.note));
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(NoteReceiver_.recipient), recipient.getId()),
-            criteriaBuilder.equal(root2.get(Note_.archived), archived)
+          criteriaBuilder.equal(root.get(NoteReceiver_.recipient), recipient.getId()),
+          criteriaBuilder.equal(root2.get(Note_.id), root.get(NoteReceiver_.note)),
+          criteriaBuilder.equal(root2.get(Note_.archived), archived)
         )
     );
     
