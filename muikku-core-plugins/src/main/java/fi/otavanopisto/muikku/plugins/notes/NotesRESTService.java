@@ -355,7 +355,7 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    List<Note> notes = notesController.listByReceiver(recipientEntity);
+    List<Note> notes = notesController.listByReceiver(recipientEntity, listArchived);
 
     List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
     OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);

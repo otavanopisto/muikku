@@ -73,17 +73,21 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
-  public List<Note> listByReceiver(UserEntity recipient){
+  public List<Note> listByReceiver(UserEntity recipient, boolean archived){
     
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Note> criteria = criteriaBuilder.createQuery(Note.class);
     Root<NoteReceiver> root = criteria.from(NoteReceiver.class);
+    Root<Note> root2 = criteria.from(Note.class);
     
     criteria.select(root.get(NoteReceiver_.note));
     criteria.where(
-        criteriaBuilder.equal(root.get(NoteReceiver_.recipient), recipient.getId())
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(NoteReceiver_.recipient), recipient.getId()),
+            criteriaBuilder.equal(root2.get(Note_.archived), archived)
+        )
     );
     
     return entityManager.createQuery(criteria).getResultList();
