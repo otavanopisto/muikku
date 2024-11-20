@@ -14994,9 +14994,9 @@ components:
         recipients:
           type: array
           items:
-            $ref: "#/components/schemas/MessageRecipient"
+            $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         sender:
-          $ref: "#/components/schemas/User"
+          $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         tags:
           $ref: "#/components/schemas/AnyValue"
         userGroupRecipients:
@@ -15044,7 +15044,7 @@ components:
         created:
           type: string
         sender:
-          $ref: "#/components/schemas/User"
+          $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         tags:
           $ref: "#/components/schemas/AnyValue"
         unreadMessagesInThread:
@@ -15060,7 +15060,7 @@ components:
         recipients:
           type: array
           items:
-            $ref: "#/components/schemas/MessageRecipient"
+            $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         userGroupRecipients:
           type: array
           items:
@@ -15120,6 +15120,7 @@ components:
           type: integer
           format: int64
 
+# NOT USED ???
     MessageRecipient:
       type: object
       description: Message recipient object
@@ -15214,26 +15215,13 @@ components:
                 type: integer
                 format: int64
         sender:
-          type: object
-          properties:
-            userEntityId:
-              type: integer
-              format: int64
-            firstName:
-              type: string
-            lastName:
-              type: string
-            nickName:
-              type: string
-            studyProgrammeName:
-              type: string
-              nullable: true
+          $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         tags:
           $ref: "#/components/schemas/AnyValue"
         recipients:
           type: array
           items:
-            $ref: "#/components/schemas/MessageRecipient"
+            $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         userGroupRecipients:
           type: array
           items:
@@ -16283,6 +16271,8 @@ components:
           type: string
         hasImage:
           type: boolean
+        email:
+          type: string
         curriculumIdentifier:
           type: string
         studyProgrammeIdentifier:
@@ -16295,11 +16285,34 @@ components:
             $ref: "#/components/schemas/Role"
         ssn:
           type: string
-        email:
-          type: string
         userEntityId:
           type: integer
           format: int64
+        archived:
+          type: boolean
+        studiesEnded:
+          type: boolean
+
+    CommunicatorUserBasicInfo:
+      type: object
+      description: User object
+      required:
+        - userEntityId
+        - firstName
+      properties:
+        userEntityId:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        nickName:
+          type: string
+          nullable: true
+        studyProgrammeName:
+          type: string
+          nullable: true
         archived:
           type: boolean
         studiesEnded:
