@@ -7751,7 +7751,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/UserStaffCreatePayload"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7780,7 +7780,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserStaff"
+                $ref: "#/components/schemas/UserStaffCreatePayload"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11801,55 +11801,13 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            description: UserStaffCreateRequestBody object
-            required:
-              - firstName
-              - lastName
-              - email
-            properties:
-              firstName:
-                type: string
-              lastName:
-                type: string
-              email:
-                type: string
-              studyProgrammeIdentifier:
-                type: string
-              roles:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Role"
-              ssn:
-                type: string
+            $ref: "#/components/schemas/UserStaffCreatePayload"
 
     UserStaffUpdateRequestBody:
       content:
         application/json:
           schema:
-            type: object
-            description: UserStaffUpdateRequestBody object
-            required:
-              - firstName
-              - lastName
-              - identifier
-              - email
-            properties:
-              firstName:
-                type: string
-              lastName:
-                type: string
-              identifier:
-                type: integer
-                format: int64
-              email:
-                type: string
-              role:
-                type: string
-              studyProgrammeIdentifier:
-                type: string
-              ssn:
-                type: string
+            $ref: "#/components/schemas/UserStaffCreatePayload"
 
     UserStudentCreateRequestBody:
       content:
@@ -15120,34 +15078,6 @@ components:
           type: integer
           format: int64
 
-# NOT USED ???
-    MessageRecipient:
-      type: object
-      description: Message recipient object
-      required:
-        - userEntityId
-        - communicatorMessageId
-        - firstName
-      properties:
-        userEntityId:
-          type: integer
-          format: int64
-        communicatorMessageId:
-          type: integer
-          format: int64
-        firstName:
-          type: string
-        lastName:
-          type: string
-          nullable: true
-        nickname:
-          type: string
-          nullable: true
-        archived:
-          type: boolean
-        studiesEnded:
-          type: boolean
-
     MessageRecipientWorkspace:
       type: object
       description: RecipientWorkspace object
@@ -16125,37 +16055,6 @@ components:
         active:
           type: boolean
 
-    UserStaff:
-      type: object
-      description: UserStaff object
-      required:
-        - id
-        - email
-        - firstName
-        - lastName
-        - properties
-        - userEntityId
-        - hasImage
-        - role
-      properties:
-        id:
-          type: string
-        email:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        properties:
-          $ref: "#/components/schemas/AnyValue"
-        userEntityId:
-          type: integer
-          format: int64
-        hasImage:
-          type: boolean
-        role:
-          $ref: "#/components/schemas/Role"
-
     UserGroup:
       type: object
       description: UserGroup object
@@ -16259,7 +16158,7 @@ components:
         results:
           type: array
           items:
-            $ref: "#/components/schemas/UserStaff"
+            $ref: "#/components/schemas/StaffMember"
         totalHitCount:
           type: integer
         firstResult:
@@ -16361,7 +16260,13 @@ components:
       description: StaffMember object
       required:
         - id
+        - userEntityId
         - firstName
+        - lastName
+        - email
+        - properties
+        - hasImage
+        - roles
       properties:
         id:
           type: string
@@ -16374,18 +16279,41 @@ components:
           type: string
         email:
           type: string
+          nullable: true
         properties:
           type: object
           additionalProperties:
             type: string
         organization:
           $ref: "#/components/schemas/Organization"
+          nullable: true
         roles:
           type: array
           items:
             $ref: "#/components/schemas/Role"
         hasImage:
           type: boolean
+
+    UserStaffCreatePayload:
+      type: object
+      description: UserStaffCreatePayload object
+      required:
+        - firstName
+        - lastName
+        - email
+      properties:
+        identifier:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
 
     UserGuardiansDependant:
       type: object
