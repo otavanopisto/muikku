@@ -10,6 +10,8 @@ import {
   NoteStatusType,
   CreateNoteRequest,
   UpdateNoteRequest,
+  UpdateNoteReceiverRequest,
+  NoteReceiver,
 } from "~/generated/client";
 
 /**
@@ -406,38 +408,59 @@ export const useNotesItem = (
   };
   /**
    * changenotesItemStatus
-   * @param notesItemId notesItemId
-   * @param newStatus newStatus
-   * @param onSuccess onSuccess
+    @param noteId id of the note,
+    @param newReceiverStatus new status for the recipient,
+    @param recipientId recipient id,
+    @param onSuccess callback function
    */
   const updateNotesItemStatus = async (
-    notesItemId: number,
-    newStatus: NoteStatusType,
+    noteId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    recipientId: number,
     onSuccess?: () => void
   ) => {
     try {
       const indexOfNotesItem = notesItems.notesItemList.findIndex(
-        (j) => j.id === notesItemId
+        (j) => j.id === noteId
       );
-
+      t;
       const notesItemToUpdate = notesItems.notesItemList[indexOfNotesItem];
 
-      notesItemToUpdate.status = newStatus;
-
       // Updating and getting updated notesItem
-      const updatedNotesItem = await notesApi.updateNote({
-        noteId: notesItemId,
-        updateNoteRequest: notesItemToUpdate,
+      const updatedNoteReceiver = await notesApi.updateNoteReceiver({
+        updateNoteReceiverRequest: newReceiverStatus,
+        noteId,
+        recipientId,
       });
 
-      // Initializing list
-      const updatedNotesItemList = [...notesItems.notesItemList];
+      // Make copies of the existing lists
+      const noteListUpdate = [...notesItems.notesItemList];
+      const noteRecipientsListUpdate = [...notesItemToUpdate.recipients];
 
-      updatedNotesItemList.splice(indexOfNotesItem, 1, updatedNotesItem);
+      // Find the index of the recipient that was updated
+      const recipientToUpdateIndex = noteRecipientsListUpdate.findIndex(
+        (r) => r.recipient === recipientId
+      );
+
+      // Splice out the old recipient and replace with the updated one
+      noteRecipientsListUpdate.splice(
+        recipientToUpdateIndex,
+        1,
+        updatedNoteReceiver
+      );
+
+      // Create a new notesItem object with the updated recipient list
+      const updatedNotesItem = {
+        ...notesItemToUpdate,
+        recipients: noteRecipientsListUpdate,
+      };
+
+      // Splice out the old notesItem and replace with the updated one
+      noteListUpdate.splice(indexOfNotesItem, 1, updatedNotesItem);
 
       setNotesItem((notesItems) => ({
         ...notesItems,
-        notesItemList: setToDefaultSortingOrder(updatedNotesItemList),
+        notesItemList: setToDefaultSortingOrder(noteListUpdate),
         isUpdatingList: false,
       }));
 
@@ -511,14 +534,17 @@ export const useNotesItem = (
 
     /**
      * updateNotesItemStatus
-     * @param notesItemId notesItemId
-     * @param notesItemStatus notesItemStatus
-     * @param onSuccess onSuccess
+    @param noteId id of the note,
+    @param newReceiverStatus new status for the recipient,
+    @param recipientId recipient id,
+    @param onSuccess callback function
      */
     updateNotesItemStatus: (
-      notesItemId: number,
-      notesItemStatus: NoteStatusType,
+      noteId: number,
+      newReceiverStatus: UpdateNoteReceiverRequest,
+      recipientId: number,
       onSuccess?: () => void
-    ) => updateNotesItemStatus(notesItemId, notesItemStatus, onSuccess),
+    ) =>
+      updateNotesItemStatus(noteId, newReceiverStatus, recipientId, onSuccess),
   };
 };

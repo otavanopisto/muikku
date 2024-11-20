@@ -5,6 +5,7 @@ import {
   NoteStatusType,
   UpdateNoteRequest,
   NoteReceiver,
+  UpdateNoteReceiverRequest,
 } from "~/generated/client";
 import { sortNotesItemsBy } from "./helpers/filters";
 import NotesListItem from "./notes-item-list-item";
@@ -26,8 +27,10 @@ interface NotesItemListContentProps {
     updateNoteRequest: UpdateNoteRequest
   ) => void;
   onUpdateNotesItemStatus?: (
-    notesItemId: number,
-    newStatus: NoteStatusType
+    noteId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    recipientId: number,
+    onSuccess?: () => void
   ) => void;
   onNotesItemSaveUpdateClick?: (
     notesItemId: number,

@@ -7,7 +7,12 @@ import NotesItemEdit from "./notes-item-edit";
 import NoteInformationDialog from "./dialogs/note-information-dialog";
 import { isOverdue } from "~/helper-functions/dates";
 import { useTranslation } from "react-i18next";
-import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
+import {
+  Note,
+  NoteStatusType,
+  UpdateNoteRequest,
+  UpdateNoteReceiverRequest,
+} from "~/generated/client";
 
 /**
  * DropdownItem
@@ -41,8 +46,10 @@ export interface NotesListItemProps
     updateNoteRequest: UpdateNoteRequest
   ) => void;
   onUpdateNotesItemStatus?: (
-    notesItemId: number,
-    newStatus: NoteStatusType
+    noteId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    recipientId: number,
+    onSuccess?: () => void
   ) => void;
   onNotesItemSaveUpdateClick?: (
     notesItemId: number,
@@ -167,8 +174,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * @param newStatus newStatus
      */
     const handleUpdateNotesItemStatusClick = (newStatus: NoteStatusType) => {
+      const newReceiverStatus: UpdateNoteReceiverRequest = {
+        ...currentRecipient,
+        status: newStatus,
+      };
       if (onUpdateNotesItemStatus) {
-        onUpdateNotesItemStatus(id, newStatus);
+        onUpdateNotesItemStatus(id, newReceiverStatus, recipientId);
 
         if (innerRef.current) {
           innerRef.current.focus();
