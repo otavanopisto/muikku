@@ -4937,7 +4937,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Student"
+                  $ref: "#/components/schemas/FlaggedStudent"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4963,7 +4963,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Student"
+                $ref: "#/components/schemas/GuiderStudent"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6583,8 +6583,8 @@ paths:
   /rest/organizationUserManagement/staffMembers:
     get:
       operationId: getOrganizationStaffMembers
-      summary: Get staff member
-      description: Get staff member
+      summary: Search staff members
+      description: Search staff members
       tags:
         - Organization
       parameters:
@@ -6624,7 +6624,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserSearchResult"
+                $ref: "#/components/schemas/OrganizationStaffMemberSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6669,7 +6669,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserSearchResult"
+                $ref: "#/components/schemas/OrganizationStudentSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -15668,22 +15668,18 @@ components:
         - hasImage
         - updatedByStudent
         - userEntityId
-        - matriculationEligibility
         - ceeposLine
-        - flags
         - hasPedagogyForm
-        - curriculumName
         - curriculumIdentifier
+        - studyProgrammeIdentifier
         - studyProgrammeName
         - studyStartDate
         - studyEndDate
         - studyTimeEnd
         - lastLogin
+        - organization
       properties:
         curriculumIdentifier:
-          type: string
-          nullable: true
-        curriculumName:
           type: string
           nullable: true
         email:
@@ -15715,6 +15711,8 @@ components:
           nullable: true
           type: string
           format: date-time
+        studyProgrammeIdentifier:
+          type: string
         studyProgrammeName:
           type: string
         studyStartDate:
@@ -15734,18 +15732,41 @@ components:
         userEntityId:
           type: integer
           format: int64
-        matriculationEligibility:
-          type: boolean
         ceeposLine:
           type: string
           nullable: true
-        flags:
-          nullable: true
-          type: array
-          items:
-            $ref: "#/components/schemas/UserStudentFlag"
         hasPedagogyForm:
           type: boolean
+        organization:
+          $ref: "#/components/schemas/Organization"
+          nullable: true
+
+    FlaggedStudent:
+      allOf:
+        - $ref: "#/components/schemas/Student"
+        - type: object
+          required:
+            - flags
+          properties:
+            flags:
+              nullable: true
+              type: array
+              items:
+                $ref: "#/components/schemas/UserStudentFlag"
+                
+    GuiderStudent:
+      allOf:
+        - $ref: "#/components/schemas/FlaggedStudent"
+        - type: object
+          required:
+            - curriculumName
+            - matriculationEligibility
+          properties:
+            curriculumName:
+              type: string
+              nullable: true
+            matriculationEligibility:
+              type: boolean
 
     StudentInfo:
       type: object
@@ -15895,8 +15916,8 @@ components:
         username:
           type: string
 
-    UserSearchResult:
-      description: StaffSearchResult object. Holding the search results of staff search and the total hit count.
+    OrganizationStaffMemberSearchResult:
+      description: OrganizationStaffMemberSearchResult object. Holding the search results of staff search and the total hit count.
       type: object
       required:
         - results
@@ -15906,7 +15927,24 @@ components:
         results:
           type: array
           items:
-            $ref: "#/components/schemas/User"
+            $ref: "#/components/schemas/StaffMember"
+        totalHitCount:
+          type: integer
+        firstResult:
+          type: integer
+
+    OrganizationStudentSearchResult:
+      description: OrganizationStudentSearchResult object. Holding the search results of student search and the total hit count.
+      type: object
+      required:
+        - results
+        - totalHitCount
+        - firstResult
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Student"
         totalHitCount:
           type: integer
         firstResult:
@@ -16316,6 +16354,37 @@ components:
         archived:
           type: boolean
         studiesEnded:
+          type: boolean
+
+    StaffMember:
+      type: object
+      description: StaffMember object
+      required:
+        - id
+        - firstName
+      properties:
+        id:
+          type: string
+        userEntityId:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+        organization:
+          $ref: "#/components/schemas/Organization"
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
+        hasImage:
           type: boolean
 
     UserGuardiansDependant:
