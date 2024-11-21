@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import Wizard, { WizardStep } from "~/components/general/wizard";
 import { WizardProvider } from "~/components/general/wizard/context/wizard-context";
 import { useWizard } from "~/components/general/wizard/hooks/useWizard";
-import { Step1, Step2, Step3, Step4, Step5 } from "./steps";
+import { Step1, Step2, Step3, Step4 } from "./steps";
 import HopsWizardFooter from "../hops-wizard-footer";
 import HopsWizardHeader from "../hops-wizard-header";
 import { Action, bindActionCreators, Dispatch } from "redux";
@@ -214,17 +214,6 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
               component: (
                 <AnimatedStep previousStep={previousStep}>
                   <Step4 form={localForm} onFormChange={handleFormChange} />
-                </AnimatedStep>
-              ),
-            },
-            {
-              index: 1,
-              name: t("labels.hopsFormPostgraduatePlanningTitle", {
-                ns: "hops_new",
-              }),
-              component: (
-                <AnimatedStep previousStep={previousStep}>
-                  <Step5 form={localForm} onFormChange={handleFormChange} />
                 </AnimatedStep>
               ),
             },
