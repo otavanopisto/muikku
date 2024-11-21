@@ -159,7 +159,6 @@ public class LanguageProfileRestService {
   private LanguageProfileRestModel toRestModel(LanguageProfile languageProfile) {
     LanguageProfileRestModel model = new LanguageProfileRestModel();
     model.setFormData(languageProfile.getFormData());
-    model.setId(languageProfile.getId());
     model.setLastModified(languageProfile.getLastModified());
     return model;
   }

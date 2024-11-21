@@ -4,14 +4,6 @@ import java.util.Date;
 
 public class LanguageProfileRestModel {
 
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
   public String getFormData() {
     return formData;
   }
@@ -28,7 +20,6 @@ public class LanguageProfileRestModel {
     this.lastModified = lastModified;
   }
 
-  private Long id;
   private String formData;
   private Date lastModified;
 

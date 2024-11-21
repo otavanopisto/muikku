@@ -14979,10 +14979,6 @@ components:
       required:
         - formData
       properties:
-        id:
-          description: The id of the language profile
-          type: integer
-          format: int64
         formData:
           description: Language profile form data as json
           type: string
