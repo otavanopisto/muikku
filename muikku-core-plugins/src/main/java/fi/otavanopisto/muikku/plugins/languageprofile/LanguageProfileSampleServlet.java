@@ -212,11 +212,17 @@ public class LanguageProfileSampleServlet extends HttpServlet {
     input = filePart.getInputStream();
     try {
       String fileUuid = UUID.randomUUID().toString();
+      if (StringUtils.isEmpty(fileName)) {
+        fileName = fileUuid;
+      }
       java.io.File sampleFile = Paths.get(userFolder.getPath(), fileUuid).toFile();
       if (sampleFile.exists()) {
         throw new IOException(String.format("File %s already exists", sampleFile.getPath()));
       }
       FileUtils.copyInputStreamToFile(input, sampleFile);
+      if (StringUtils.isEmpty(contentType)) {
+        contentType = Files.probeContentType(sampleFile.toPath());
+      }
       
       LanguageProfileSample sample = languageProfileController.createSample(profile, language, type, fileUuid, fileName, contentType);
       LanguageProfileSampleRestModel model = new LanguageProfileSampleRestModel();
