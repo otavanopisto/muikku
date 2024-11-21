@@ -5,15 +5,26 @@ import User from "~/components/general/user";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationList from "~/components/general/application-list";
 import "~/sass/elements/application-list.scss";
-import { UserSearchResultWithExtraProperties } from "~/reducers/main-function/users";
 import PagerV2 from "~/components/general/pagerV2";
-import { Role } from "~/generated/client";
+import {
+  instanceOfStaffMember,
+  instanceOfStudent,
+  Role,
+  StaffMember,
+  Student,
+} from "~/generated/client";
+import {
+  UserStaffSearchResultWithExtraProperties,
+  UserStudentSearchResultWithExtraProperties,
+} from "~/reducers/main-function/users";
 
 /**
  * UserPanelProps
  */
 interface UserPanelProps {
-  users: UserSearchResultWithExtraProperties;
+  users:
+    | UserStudentSearchResultWithExtraProperties
+    | UserStaffSearchResultWithExtraProperties;
   usersPerPage?: number;
   searchString?: string | null;
   pageChange?: (q: string, first: number, last: number) => any;
@@ -29,6 +40,13 @@ interface UserPanelState {
   currentPage: number;
   pages: number;
 }
+
+/**
+ * Type guard for Student
+ * @param user user
+ */
+const isStudent = (user: Student | StaffMember): user is Student =>
+  instanceOfStudent(user);
 
 /**
  * UserPanel
@@ -110,22 +128,14 @@ export default class UserPanel extends React.Component<
             <ApplicationList>
               {this.props.users &&
                 results.map((user) => {
-                  const data = {
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    id: user.id,
-                    roles: user.roles ? user.roles : [Role.Student],
-                    studyProgrammeIdentifier: user.studyProgrammeIdentifier,
-                  };
-                  const actions = data.roles.includes(Role.Student) ? (
+                  const actions = isStudent(user) ? (
                     <div>
-                      <StudentDialog data={data}>
+                      <StudentDialog data={user}>
                         <span className="icon-pencil"></span>
                       </StudentDialog>
                     </div>
-                  ) : data.roles.includes(Role.Administrator) ||
-                    data.roles.includes(Role.StudyProgrammeLeader) ? (
+                  ) : user.roles.includes(Role.Administrator) ||
+                    user.roles.includes(Role.StudyProgrammeLeader) ? (
                     /*
                      * TODO does this need the title-attribute? .. title={data.roles}
                      */
@@ -134,7 +144,7 @@ export default class UserPanel extends React.Component<
                     </div>
                   ) : (
                     <div>
-                      <StaffDialog data={data}>
+                      <StaffDialog data={user}>
                         <span className="icon-pencil"></span>
                       </StaffDialog>
                     </div>

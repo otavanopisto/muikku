@@ -49,7 +49,7 @@ import moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import {
-  UserStaff,
+  StaffMember,
   UserStaffSearchResult,
   WorkspaceAccess,
   WorkspaceStudentSearchResult,
@@ -524,7 +524,7 @@ class OrganizationEditWorkspace extends React.Component<
    * turnStaffToSelectItems
    * @param users users
    */
-  turnStaffToSelectItems(users: UserStaff[]) {
+  turnStaffToSelectItems(users: StaffMember[]) {
     const selectItems: SelectItem[] = [];
 
     for (let i = 0; i < users.length; i++) {
@@ -799,6 +799,7 @@ class OrganizationEditWorkspace extends React.Component<
         );
       case 2: {
         const students = this.props.users.students.map((student) => ({
+          // Note that the id is actually identifier format. Something to be aware of.
           id: student.id,
           label: student.firstName + " " + student.lastName,
           icon: "user",
@@ -812,7 +813,7 @@ class OrganizationEditWorkspace extends React.Component<
           type: "student-group",
         }));
 
-        const allItems = students.concat(groups);
+        const allItems = [...students, ...groups];
         return (
           <form>
             <DialogRow>

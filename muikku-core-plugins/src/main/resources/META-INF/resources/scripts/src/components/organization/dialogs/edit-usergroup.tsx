@@ -36,11 +36,13 @@ import {
 } from "~/reducers/main-function/users";
 import { TagItem } from "~/components/general/tag-input";
 import {
+  OrganizationStaffMemberSearchResult,
+  OrganizationStudentSearchResult,
+  StaffMember,
+  Student,
   UpdateUsergroupAddUsersRequest,
   UpdateUsergroupRemoveUsersRequest,
-  User,
   UserGroup,
-  UserSearchResult,
 } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
@@ -235,7 +237,11 @@ class OrganizationEditUsergroup extends React.Component<
        * success
        * @param users users
        */
-      success: (users: UserSearchResult) => {
+      success: (
+        users:
+          | OrganizationStaffMemberSearchResult
+          | OrganizationStudentSearchResult
+      ) => {
         this.setState({
           pages: {
             ...this.state.pages,
@@ -250,7 +256,7 @@ class OrganizationEditUsergroup extends React.Component<
    * turnUsersToSelectItems
    * @param users users
    */
-  turnUsersToSelectItems(users: User[]) {
+  turnUsersToSelectItems(users: Student[] | StaffMember[]) {
     const selectItems: SelectItem[] = [];
 
     for (let i = 0; i < users.length; i++) {

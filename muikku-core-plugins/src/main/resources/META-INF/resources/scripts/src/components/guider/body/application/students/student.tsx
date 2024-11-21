@@ -14,7 +14,7 @@ import {
   ApplicationListItemHeader,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
-import { Student } from "~/generated/client";
+import { FlaggedStudent, Student } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import Dropdown from "~/components/general/dropdown";
 
@@ -24,7 +24,7 @@ type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
  * StudentProps
  */
 interface StudentProps extends WithTranslation<"common"> {
-  student: Student;
+  student: FlaggedStudent;
   checkbox: React.ReactElement<HTMLInputElement>;
   index: number;
   status: StatusType;
