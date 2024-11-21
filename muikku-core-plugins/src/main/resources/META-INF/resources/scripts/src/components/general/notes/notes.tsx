@@ -63,7 +63,6 @@ const Notes: React.FC<NotesProps> = (props) => {
     archiveNotesItem,
     returnArchivedNotesItem,
     updateNotesItemStatus,
-    pinNotesItem,
   } = useNotesItem(studentId, displayNotification);
 
   const [activeNoteFilters, setActiveNoteFilters] =
@@ -147,7 +146,7 @@ const Notes: React.FC<NotesProps> = (props) => {
             notesItems={notesItems.notesItemList}
             userId={userId}
             usePlace={usePlace}
-            onPinNotesItemClick={pinNotesItem}
+            onPinNotesItemClick={updateNotesItemStatus}
             onArchiveClick={archiveNotesItem}
             onUpdateNotesItemStatus={updateNotesItemStatus}
             onNotesItemSaveUpdateClick={updateNotesItem}

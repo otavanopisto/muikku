@@ -42,8 +42,9 @@ export interface NotesListItemProps
   onArchiveClick?: (notesItemId: number) => void;
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
-    notesItemId: number,
-    updateNoteRequest: UpdateNoteRequest
+    noteId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    recipientId: number
   ) => void;
   onUpdateNotesItemStatus?: (
     noteId: number,
@@ -130,7 +131,13 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     ) => {
       e.stopPropagation();
 
-      onPinNotesItemClick(id, notesItem);
+      const newReceiverStatus: UpdateNoteReceiverRequest = {
+        ...currentRecipient,
+        pinned: !currentRecipient.pinned,
+      };
+      if (onUpdateNotesItemStatus) {
+        onUpdateNotesItemStatus(id, newReceiverStatus, recipientId);
+      }
     };
 
     /**

@@ -246,52 +246,52 @@ export const useNotesItem = (
    * @param updateNoteRequest updateNoteRequest
    * @param onSuccess onSuccess
    */
-  const pinNotesItem = async (
-    notesItemId: number,
-    updateNoteRequest: UpdateNoteRequest,
-    onSuccess?: () => void
-  ) => {
-    setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
+  // const pinNotesItem = async (
+  //   notesItemId: number,
+  //   updateNoteRequest: UpdateNoteRequest,
+  //   onSuccess?: () => void
+  // ) => {
+  //   setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
 
-    // Creating notesItem object where pinned property has changed
-    const notesItemToPin = {
-      ...updateNoteRequest,
-      pinned: !updateNoteRequest.pinned,
-    };
+  //   // Creating notesItem object where pinned property has changed
+  //   const notesItemToPin = {
+  //     ...updateNoteRequest,
+  //     pinned: !updateNoteRequest.pinned,
+  //   };
 
-    try {
-      // Updating and getting updated noteItem
-      const updatedNotesItem = await notesApi.updateNote({
-        noteId: notesItemId,
-        updateNoteRequest: notesItemToPin,
-      });
+  //   try {
+  //     // Updating and getting updated noteItem
+  //     const updatedNotesItem = await notesApi.updateNote({
+  //       noteId: notesItemId,
+  //       updateNoteRequest: notesItemToPin,
+  //     });
 
-      // Initializing list
-      const updatedNotesItemList = [...notesItems.notesItemList];
+  //     // Initializing list
+  //     const updatedNotesItemList = [...notesItems.notesItemList];
 
-      // Finding index of notesItem which got updated
-      const indexOfOldNote = updatedNotesItemList.findIndex(
-        (j) => j.id === notesItemId
-      );
+  //     // Finding index of notesItem which got updated
+  //     const indexOfOldNote = updatedNotesItemList.findIndex(
+  //       (j) => j.id === notesItemId
+  //     );
 
-      // Splice it out and replace with updated one
-      updatedNotesItemList.splice(indexOfOldNote, 1, updatedNotesItem);
+  //     // Splice it out and replace with updated one
+  //     updatedNotesItemList.splice(indexOfOldNote, 1, updatedNotesItem);
 
-      setNotesItem((notesItems) => ({
-        ...notesItems,
-        notesItemList: setToDefaultSortingOrder(updatedNotesItemList),
-        isUpdatingList: false,
-      }));
+  //     setNotesItem((notesItems) => ({
+  //       ...notesItems,
+  //       notesItemList: setToDefaultSortingOrder(updatedNotesItemList),
+  //       isUpdatingList: false,
+  //     }));
 
-      onSuccess && onSuccess();
-    } catch (err) {
-      displayNotification(t("notifications.pinError", { error: err }), "error");
-      setNotesItem((notesItems) => ({
-        ...notesItems,
-        isUpdatingList: false,
-      }));
-    }
-  };
+  //     onSuccess && onSuccess();
+  //   } catch (err) {
+  //     displayNotification(t("notifications.pinError", { error: err }), "error");
+  //     setNotesItem((notesItems) => ({
+  //       ...notesItems,
+  //       isUpdatingList: false,
+  //     }));
+  //   }
+  // };
 
   /**
    * Archives one notesItem
@@ -519,18 +519,6 @@ export const useNotesItem = (
      */
     returnArchivedNotesItem: (notesItemId: number, onSuccess?: () => void) =>
       returnArchivedNotesItem(notesItemId, onSuccess),
-
-    /**
-     * pinNotesItem
-     * @param notesItemId notesItemId
-     * @param updateNoteRequest updateNoteRequest
-     * @param onSuccess onSuccess
-     */
-    pinNotesItem: (
-      notesItemId: number,
-      updateNoteRequest: UpdateNoteRequest,
-      onSuccess?: () => void
-    ) => pinNotesItem(notesItemId, updateNoteRequest, onSuccess),
 
     /**
      * updateNotesItemStatus

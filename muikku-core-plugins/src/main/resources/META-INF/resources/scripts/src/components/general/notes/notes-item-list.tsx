@@ -23,8 +23,9 @@ interface NotesItemListContentProps {
   onArchiveClick?: (notesItemd: number) => void;
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
-    notesItemId: number,
-    updateNoteRequest: UpdateNoteRequest
+    noteId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    recipientId: number
   ) => void;
   onUpdateNotesItemStatus?: (
     noteId: number,
