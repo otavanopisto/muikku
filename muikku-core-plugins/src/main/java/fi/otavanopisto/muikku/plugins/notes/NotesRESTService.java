@@ -34,6 +34,7 @@ import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.guider.RecipientListRESTModel;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver;
+import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -284,9 +285,19 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    // Student can edit only 'pinned' field if note is created by someone else
+    // Student can edit only 'pinned' (+ status between APPROVAL_PENDING and ONGOING) field if note is created by someone else
     if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && !creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-      updatedNoteReceiver = noteReceiverController.updateNoteRecipient(noteReceiver, payload.getPinned(), noteReceiver.getStatus());
+      NoteStatus status = noteReceiver.getStatus();
+      if (noteReceiver.getStatus() != payload.getStatus()) {
+        if (noteReceiver.getStatus() == NoteStatus.ONGOING) {
+          status = NoteStatus.APPROVAL_PENDING;
+        }
+        
+        if (noteReceiver.getStatus() == NoteStatus.APPROVAL_PENDING) {
+          status = NoteStatus.ONGOING;
+        }
+      }
+      updatedNoteReceiver = noteReceiverController.updateNoteRecipient(noteReceiver, payload.getPinned(), status);
     } // Otherwise editing happens only if logged user equals with creator
     else if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
       updatedNoteReceiver = noteReceiverController.updateNoteRecipient(noteReceiver, payload.getPinned(), payload.getStatus());
