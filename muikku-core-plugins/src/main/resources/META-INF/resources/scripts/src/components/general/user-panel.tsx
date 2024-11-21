@@ -7,7 +7,6 @@ import ApplicationList from "~/components/general/application-list";
 import "~/sass/elements/application-list.scss";
 import PagerV2 from "~/components/general/pagerV2";
 import {
-  instanceOfStaffMember,
   instanceOfStudent,
   Role,
   StaffMember,
