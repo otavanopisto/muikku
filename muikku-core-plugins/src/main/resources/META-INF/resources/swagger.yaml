@@ -5809,6 +5809,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - name: language
+          in: query
+          description: Sample language
+          schema:
+            type: string
       responses:
         "200":
           description: Language profile samples

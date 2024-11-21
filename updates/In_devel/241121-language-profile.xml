@@ -25,11 +25,19 @@
     );
   </sql>  
   <sql>
+    alter table LanguageProfile 
+       add constraint UKthdikrx7n5sxlfi7wsmt3y99s unique (userEntityId);
+  </sql>
+  <sql>
     alter table LanguageProfileSample 
       add constraint FK6e783sv9m8vujh7atilkocfti 
       foreign key (languageProfile_id) 
       references LanguageProfile (id);
-  </sql>  
-  <!-- <sql>insert into SystemSetting (settingKey, settingValue) values ("languageProfile.uploadBasePath", "/storage/muikku/languageprofile");</sql> -->  
+  </sql>
+  <!--  
+  <sql>
+    insert into SystemSetting (settingKey, settingValue) values ("languageProfile.uploadBasePath", "/storage/muikku/languageprofile");
+  </sql>
+   -->  
 
 </update> 
