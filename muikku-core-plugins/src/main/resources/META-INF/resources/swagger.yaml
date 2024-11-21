@@ -16210,25 +16210,6 @@ components:
           type: boolean
         email:
           type: string
-        curriculumIdentifier:
-          type: string
-        studyProgrammeIdentifier:
-          type: string
-        organizationIdentifier:
-          type: string
-        roles:
-          type: array
-          items:
-            $ref: "#/components/schemas/Role"
-        ssn:
-          type: string
-        userEntityId:
-          type: integer
-          format: int64
-        archived:
-          type: boolean
-        studiesEnded:
-          type: boolean
 
     CommunicatorUserBasicInfo:
       type: object
