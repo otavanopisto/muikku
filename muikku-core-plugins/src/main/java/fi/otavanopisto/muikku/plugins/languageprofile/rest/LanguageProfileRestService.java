@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -35,6 +36,20 @@ public class LanguageProfileRestService {
   
   @Inject
   private LanguageProfileController languageProfileController;
+
+  @GET
+  @Path("/user/{USERENTITYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getLanguageProfile(@PathParam("USERENTITYID") Long userEntityId) {
+    
+    // TODO Permissions
+
+    LanguageProfile languageProfile = languageProfileController.findByUserEntityId(userEntityId);
+    if (languageProfile == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(toRestModel(languageProfile)).build();
+  }
 
   @POST
   @Path("/user/{USERENTITYID}")
@@ -94,6 +109,31 @@ public class LanguageProfileRestService {
     return Response.ok().entity(toRestModel(sample)).build();
   }
   
+  @PUT
+  @Path("/user/{USERENTITYID}/samples/{SAMPLEID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateTextSample(@PathParam("USERENTITYID") Long userEntityId, @PathParam("SAMPLEID") Long sampleId, LanguageProfileSampleRestModel payload) {
+    
+    // TODO Permissions
+    
+    LanguageProfile profile = languageProfileController.findByUserEntityId(userEntityId);
+    if (profile == null) {
+      return Response.status(Status.NOT_FOUND).entity("LanguageProfile not found").build();
+    }
+    LanguageProfileSample sample = languageProfileController.findSampleById(sampleId);
+    if (sample == null) {
+      return Response.status(Status.NOT_FOUND).entity("LanguageProfile not found").build();
+    }
+    if (!profile.getId().equals(sample.getLanguageProfile().getId())) {
+      return Response.status(Status.BAD_REQUEST).entity("Profile sample mismatch").build();
+    }
+    if (sample.getType() != LanguageProfileSampleType.TEXT) {
+      return Response.status(Status.BAD_REQUEST).entity("Sample is not of type TEXT").build();
+    }
+    sample = languageProfileController.updateSample(sample, payload.getValue());
+    return Response.ok().entity(toRestModel(sample)).build();
+  }
+
   @DELETE
   @Path("/user/{USERENTITYID}/samples/{SAMPLEID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)

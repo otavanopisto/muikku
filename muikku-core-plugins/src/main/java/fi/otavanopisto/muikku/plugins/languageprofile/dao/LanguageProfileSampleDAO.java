@@ -41,6 +41,11 @@ public class LanguageProfileSampleDAO  extends CorePluginsDAO<LanguageProfileSam
     return persist(languageProfileSample);
   }
   
+  public LanguageProfileSample updateValue(LanguageProfileSample languageProfileSample, String value) {
+    languageProfileSample.setValue(value);
+    return persist(languageProfileSample);
+  }
+  
   public void delete(LanguageProfileSample languageProfileSample) {
     super.delete(languageProfileSample);
   }

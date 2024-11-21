@@ -38,6 +38,10 @@ public class LanguageProfileController {
   public LanguageProfileSample createSample(LanguageProfile languageProfile, String language, LanguageProfileSampleType type, String value) {
     return languageProfileSampleDAO.create(languageProfile, language, type, value, "text/html");
   }
+  
+  public LanguageProfileSample updateSample(LanguageProfileSample languageProfileSample, String value) {
+    return languageProfileSampleDAO.updateValue(languageProfileSample, value);
+  }
 
   public LanguageProfile update(LanguageProfile languageProfile, String formData) {
     return languageProfileDAO.update(languageProfile, formData);
