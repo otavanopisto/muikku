@@ -7757,19 +7757,18 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/user/staffMembers/{staffMemberId}:
+  /rest/user/staffMembers/{staffMemberIdentifier}:
     put:
       operationId: updateStaffMember
       summary: Update staff member
       description: Update staff member
       parameters:
-        - name: staffMemberId
+        - name: staffMemberIdentifier
           in: path
-          description: Staff member id
+          description: Staff member identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       tags:
         - User
       requestBody:
@@ -7921,7 +7920,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/user/students/{studentId}/basicInfo:
+  /rest/user/students/{studentIdentifier}/basicInfo:
     put:
       operationId: updateStudentBasicInfo
       summary: Update student basic info
@@ -7929,13 +7928,12 @@ paths:
       tags:
         - User
       parameters:
-        - name: studentId
+        - name: studentIdentifier
           in: path
-          description: Student id
+          description: Student identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       requestBody:
         $ref: "#/components/requestBodies/UserStudentBasicInfoUpdateRequestBody"
       responses:
@@ -11854,8 +11852,7 @@ components:
               - email
             properties:
               identifier:
-                type: integer
-                format: int64
+                type: string
               firstName:
                 type: string
               lastName:
@@ -15619,6 +15616,7 @@ components:
         hasImage:
           type: boolean
         id:
+          description: The "identifier" of the student. Form "PYRAMUS-X" despite name refrencing to integer
           type: string
         language:
           nullable: true
@@ -15683,7 +15681,7 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/UserStudentFlag"
-                
+
     GuiderStudent:
       allOf:
         - $ref: "#/components/schemas/FlaggedStudent"
@@ -16269,6 +16267,7 @@ components:
         - roles
       properties:
         id:
+          description: Staff member identifier. Format is PYRAMUS-STAFF-XX even if id refers to number
           type: string
         userEntityId:
           type: integer
