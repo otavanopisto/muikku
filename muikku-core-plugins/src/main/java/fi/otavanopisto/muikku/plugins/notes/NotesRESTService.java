@@ -243,6 +243,17 @@ public class NotesRESTService extends PluginRESTService {
     }
     NoteRestModel updatedRestModel = toRestModel(updatedNote);
     
+    List<NoteReceiverRestModel> recipientsRest = new ArrayList<NoteReceiverRestModel>();
+    List<NoteReceiver> recipients = noteReceiverController.listByNote(note);
+    
+    for (NoteReceiver recipient : recipients) {
+      NoteReceiverRestModel recipientRest = toRestModel(recipient);
+      
+      recipientsRest.add(recipientRest);
+    }
+    
+    updatedRestModel.setRecipients(recipientsRest);
+    
     return Response.ok(updatedRestModel).build();
   }
   
@@ -283,6 +294,7 @@ public class NotesRESTService extends PluginRESTService {
     else {
       return Response.status(Status.BAD_REQUEST).build();
     }
+    
     NoteReceiverRestModel restModel = toRestModel(updatedNoteReceiver);
     
     return Response.ok(restModel).build();
