@@ -530,6 +530,16 @@ public class NotesRESTService extends PluginRESTService {
     }
 
     NoteRestModel noteRestModel = toRestModel(notesController.toggleArchived(note));
+    
+    List<NoteReceiverRestModel> recipientsRest = new ArrayList<NoteReceiverRestModel>();
+    for (NoteReceiver recipient : recipients) {
+      NoteReceiverRestModel recipientRest = toRestModel(recipient);
+      
+      recipientsRest.add(recipientRest);
+    }
+    
+    noteRestModel.setRecipients(recipientsRest);
+    
     return Response.ok(noteRestModel).build();
 
   }
