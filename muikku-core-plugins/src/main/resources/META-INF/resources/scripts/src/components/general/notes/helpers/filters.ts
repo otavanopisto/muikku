@@ -33,7 +33,11 @@ export const sortByPinned = (notesItemList: Note[]) => {
   const nonPinnedList: Note[] = [];
 
   notesItemList.map((j) => {
-    if (j.pinned) {
+    // With the new data structure, we need to check if any of the recipients have pinned.
+    // For a student, there's only one recipient,
+    // but this will also work for staff roles if needed
+    const hasPinned = j.recipients.some((r) => r.pinned);
+    if (hasPinned) {
       pinnedList.push(j);
     } else {
       nonPinnedList.push(j);

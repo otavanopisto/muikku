@@ -1,12 +1,12 @@
 import * as React from "react";
 import { IconButton } from "~/components/general/button";
 import Link from "~/components/general/link";
-import moment from "moment";
 import Dropdown from "~/components/general/dropdown";
 import NotesItemEdit from "./notes-item-edit";
 import NoteInformationDialog from "./dialogs/note-information-dialog";
 import { isOverdue } from "~/helper-functions/dates";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 import {
   Note,
   NoteStatusType,
@@ -222,7 +222,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
     }
 
-    if (overdue && status !== "APPROVED") {
+    if (overdue && currentRecipient.status !== "APPROVED") {
       updatedModifiers.push("overdue");
     }
 
@@ -247,7 +247,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-date">
-              {moment(startDate).format("l")} - {moment(dueDate).format("l")}
+              {localize.date(startDate)} - {localize.date(dueDate)}
             </span>
           </span>
         );
@@ -256,7 +256,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-date">
-              {moment(startDate).format("l")}
+              {localize.date(startDate)}
             </span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
           </span>
@@ -267,7 +267,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
             <span className="notes__item-dates-date">
-              {moment(dueDate).format("l")}
+              {localize.date(dueDate)}
             </span>
           </span>
         );
