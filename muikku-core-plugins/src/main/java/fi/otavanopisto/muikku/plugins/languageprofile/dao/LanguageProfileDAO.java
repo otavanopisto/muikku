@@ -29,6 +29,11 @@ public class LanguageProfileDAO  extends CorePluginsDAO<LanguageProfile> {
     return persist(languageProfile);
   }
 
+  public LanguageProfile updateLastModified(LanguageProfile languageProfile, Date lastModified) {
+    languageProfile.setLastModified(lastModified);
+    return persist(languageProfile);
+  }
+
   public LanguageProfile findByUserEntityId(Long userEntityId) {
     EntityManager entityManager = getEntityManager();
     

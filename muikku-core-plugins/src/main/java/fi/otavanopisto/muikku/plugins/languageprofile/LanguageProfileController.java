@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.languageprofile;
 
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,15 +33,21 @@ public class LanguageProfileController {
   }
   
   public LanguageProfileSample createSample(LanguageProfile languageProfile, String language, LanguageProfileSampleType type, String fileId, String fileName, String contentType) {
-    return languageProfileSampleDAO.create(languageProfile, language, type, fileId, fileName, contentType);
+    LanguageProfileSample sample = languageProfileSampleDAO.create(languageProfile, language, type, fileId, fileName, contentType);
+    languageProfileDAO.updateLastModified(languageProfile, sample.getLastModified());
+    return sample;
   }
 
   public LanguageProfileSample createSample(LanguageProfile languageProfile, String language, LanguageProfileSampleType type, String value) {
-    return languageProfileSampleDAO.create(languageProfile, language, type, value, "text/html");
+    LanguageProfileSample sample = languageProfileSampleDAO.create(languageProfile, language, type, value, "text/html");
+    languageProfileDAO.updateLastModified(languageProfile, sample.getLastModified());
+    return sample;
   }
   
   public LanguageProfileSample updateSample(LanguageProfileSample languageProfileSample, String value) {
-    return languageProfileSampleDAO.updateValue(languageProfileSample, value);
+    languageProfileSample = languageProfileSampleDAO.updateValue(languageProfileSample, value);
+    languageProfileDAO.updateLastModified(languageProfileSample.getLanguageProfile(), languageProfileSample.getLastModified());
+    return languageProfileSample;
   }
 
   public LanguageProfile update(LanguageProfile languageProfile, String formData) {
@@ -68,6 +75,7 @@ public class LanguageProfileController {
       }
     }
     languageProfileSampleDAO.delete(sample);
+    languageProfileDAO.updateLastModified(sample.getLanguageProfile(), new Date());
   }
 
 }
