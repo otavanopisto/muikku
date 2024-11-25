@@ -5,8 +5,8 @@ import MApi, { isMApiError } from "~/api/api";
 import { useWindowContext } from "~/context/window-context";
 import { ChatActivity, ChatMessage } from "~/generated/client";
 import i18n from "~/locales/i18n";
+import { NotificationSettings } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
-import { NotificationSettings } from "./useChatNotificationSettings";
 
 const chatApi = MApi.getChatApi();
 
@@ -55,10 +55,56 @@ function useChatActivity(
    * @param targetIdentifier target identifier
    */
   const shouldPlaySound = React.useCallback(
-    (targetIdentifier: string) =>
-      targetIdentifier === currentUserIdentifier ||
-      targetIdentifier.startsWith("room-"),
-    [currentUserIdentifier]
+    (targetIdentifier: string) => {
+      // If notifications are disabled, don't play sound
+      if (!notificationSettings.notificationsEnabled) {
+        return false;
+      }
+
+      // If private messages are enabled, play sound if target identifier is current user identifier
+      if (
+        notificationSettings.privateMessagesEnabled &&
+        targetIdentifier === currentUserIdentifier
+      ) {
+        // If target identifier is the active discussion or current user and browser is visible and focused, play sound
+        if (
+          [activeDiscussionIdentifier, currentUserIdentifier].includes(
+            targetIdentifier
+          ) &&
+          !browserIsVisibleAndFocused
+        ) {
+          return true;
+        }
+
+        // If target identifier is the active discussion (current and target user as this is two way communication), don't play sound
+        return ![activeDiscussionIdentifier, currentUserIdentifier].includes(
+          targetIdentifier
+        );
+      }
+
+      // If target identifier is in public or private room enabled list, play sound
+      if (
+        [
+          ...notificationSettings.publicRoomEnabled,
+          ...notificationSettings.privateRoomEnabled,
+        ].includes(targetIdentifier)
+      ) {
+        // If target identifier is the active discussion, don't play sound
+        return targetIdentifier !== activeDiscussionIdentifier;
+      }
+
+      // Default false
+      return false;
+    },
+    [
+      activeDiscussionIdentifier,
+      browserIsVisibleAndFocused,
+      currentUserIdentifier,
+      notificationSettings.notificationsEnabled,
+      notificationSettings.privateMessagesEnabled,
+      notificationSettings.privateRoomEnabled,
+      notificationSettings.publicRoomEnabled,
+    ]
   );
 
   // Initial fetch
@@ -109,6 +155,9 @@ function useChatActivity(
 
           if (shouldPlaySound(dataTyped.targetIdentifier)) {
             playMessageSound();
+          } else {
+            // eslint-disable-next-line no-console
+            console.log("No sound notification");
           }
 
           // Room activities
