@@ -10,6 +10,7 @@ import {
   ChatRoomFilter,
   ChatUserFilter,
   filterRooms,
+  getRoomSettingsKey,
   sortRoomsAplhabetically,
 } from "./chat-helpers";
 import ChatRoomEditAndInfoDialog from "./dialogs/chat-room-edit-info-dialog";
@@ -469,6 +470,7 @@ function ChatOverviewRoomsList() {
     openDiscussion,
     openDeleteRoomDialog,
     chatPermissions,
+    notificationSettings,
   } = useChatContext();
 
   const { t } = useTranslation("chat");
@@ -525,7 +527,7 @@ function ChatOverviewRoomsList() {
       >
         <OverviewListItemContent>{room.name}</OverviewListItemContent>
 
-        {chatPermissions.canManagePublicRooms && room.type === "PUBLIC" && (
+        {room.type === "PUBLIC" && chatPermissions.canManagePublicRooms ? (
           <OverviewListItemActions>
             <div className="chat__button-wrapper">
               <ChatRoomEditAndInfoDialog room={room} defaults="edit">
@@ -551,8 +553,15 @@ function ChatOverviewRoomsList() {
                 />
               </Dropdown>
             </div>
+            {notificationSettings.notificationsEnabled && (
+              <ToggleRoomNotificationsButton room={room} />
+            )}
           </OverviewListItemActions>
-        )}
+        ) : notificationSettings.notificationsEnabled ? (
+          <OverviewListItemActions>
+            <ToggleRoomNotificationsButton room={room} />
+          </OverviewListItemActions>
+        ) : null}
       </OverviewListItem>
     ));
   };
@@ -567,6 +576,62 @@ function ChatOverviewRoomsList() {
     >
       {renderContent()}
     </OverviewList>
+  );
+}
+
+/**
+ * ToggleRoomNotificationsButtonProps
+ */
+interface ToggleRoomNotificationsButtonProps {
+  room: ChatRoom;
+}
+
+/**
+ * ToggleRoomNotificationsButton
+ * @param props props
+ * @returns JSX.Element
+ */
+function ToggleRoomNotificationsButton(
+  props: ToggleRoomNotificationsButtonProps
+) {
+  const { room } = props;
+  const { toggleRoomNotificationsImmediate, notificationSettings } =
+    useChatContext();
+  const { t } = useTranslation("chat");
+
+  /**
+   * Handles toggle notifications
+   * @param e event
+   */
+  const handleToggleNotifications = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    toggleRoomNotificationsImmediate(
+      room.identifier,
+      room.type === "WORKSPACE"
+    );
+  };
+
+  // TODO: for style indicator
+  const notificationsEnabled = notificationSettings[
+    `${getRoomSettingsKey(room.type === "WORKSPACE")}Enabled`
+  ].includes(room.identifier);
+
+  return (
+    <div className="chat__button-wrapper">
+      <Dropdown
+        alignSelfVertically="top"
+        openByHover
+        content={<p>{t("actions.muteRoom", { ns: "chat" })}</p>}
+      >
+        <IconButton
+          icon="eye"
+          buttonModifiers={["chat"]}
+          onClick={handleToggleNotifications}
+        />
+      </Dropdown>
+    </div>
   );
 }
 

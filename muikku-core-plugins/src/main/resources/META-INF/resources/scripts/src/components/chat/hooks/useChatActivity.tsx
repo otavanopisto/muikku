@@ -6,18 +6,23 @@ import { useWindowContext } from "~/context/window-context";
 import { ChatActivity, ChatMessage } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
+import { NotificationSettings } from "./useChatNotificationSettings";
 
 const chatApi = MApi.getChatApi();
+
+const messageSound = new Audio("/sounds/Muikku_Lyhyt_Variaatio2.mp3");
 
 /**
  * Custom hook for chat activity
  * @param activeDiscussionIdentifier active identifier
  * @param currentUserIdentifier current user identifier
+ * @param notificationSettings notification settings
  * @param displayNotification display notification
  */
 function useChatActivity(
   activeDiscussionIdentifier: string,
   currentUserIdentifier: string,
+  notificationSettings: NotificationSettings,
   displayNotification: DisplayNotificationTriggerType
 ) {
   const websocket = useChatWebsocketContext();
@@ -32,6 +37,29 @@ function useChatActivity(
   const browserIsVisibleAndFocused = useWindowContext();
 
   const minimized = useReadLocalStorage<boolean>("chat-minimized");
+
+  /**
+   * Plays message sound
+   */
+  const playMessageSound = React.useCallback(() => {
+    // eslint-disable-next-line no-console
+    console.log("Playing message sound", messageSound);
+    messageSound.play().catch((err) => {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to play message sound:", err);
+    });
+  }, []);
+
+  /**
+   * Checks if sound should be played
+   * @param targetIdentifier target identifier
+   */
+  const shouldPlaySound = React.useCallback(
+    (targetIdentifier: string) =>
+      targetIdentifier === currentUserIdentifier ||
+      targetIdentifier.startsWith("room-"),
+    [currentUserIdentifier]
+  );
 
   // Initial fetch
   React.useEffect(() => {
@@ -78,6 +106,10 @@ function useChatActivity(
       if (componentMounted.current) {
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
+
+          if (shouldPlaySound(dataTyped.targetIdentifier)) {
+            playMessageSound();
+          }
 
           // Room activities
           if (dataTyped.targetIdentifier.startsWith("room-")) {
@@ -200,6 +232,8 @@ function useChatActivity(
     browserIsVisibleAndFocused,
     currentUserIdentifier,
     minimized,
+    playMessageSound,
+    shouldPlaySound,
     websocket,
   ]);
 

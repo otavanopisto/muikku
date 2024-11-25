@@ -23,6 +23,7 @@ import useChatActivity from "./useChatActivity";
 import { breakpoints } from "~/util/breakpoints";
 import { useLocalStorage } from "usehooks-ts";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import useChatNotificationSettings from "./useChatNotificationSettings";
 
 export type UseChat = ReturnType<typeof useChat>;
 
@@ -59,6 +60,14 @@ function useChat(
     updateRoomFilters,
   } = useRooms(displayNotification);
 
+  const {
+    notificationSettings,
+    toggleRoomNotificationsImmediate,
+    saveNotificationSettingsChanges,
+    updateNotificationSettings,
+    resetNotificationSettingsChanges,
+  } = useChatNotificationSettings(currentUser.id, displayNotification);
+
   const chatViews = useViews({
     views: chatControllerViews,
   });
@@ -76,6 +85,7 @@ function useChat(
   } = useChatActivity(
     activeDiscussionIdentifier,
     currentUser.identifier,
+    notificationSettings,
     displayNotification
   );
 
@@ -498,6 +508,11 @@ function useChat(
     userFilters,
     userToBeBlocked,
     userToBeUnblocked,
+    notificationSettings,
+    saveNotificationSettingsChanges,
+    toggleRoomNotificationsImmediate,
+    updateNotificationSettings,
+    resetNotificationSettingsChanges,
   };
 }
 

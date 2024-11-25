@@ -301,8 +301,12 @@ interface ChatRoomPanelProps extends ChatPanelProps {
 function ChatRoomPanel(props: ChatRoomPanelProps) {
   const { targetRoom } = props;
 
-  const { markMsgsAsRead } = useChatContext();
-
+  const {
+    notificationSettings,
+    markMsgsAsRead,
+    toggleRoomNotificationsImmediate,
+  } = useChatContext();
+  const { t } = useTranslation("chat");
   // Discussion instance to handle instance changes
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
@@ -438,6 +442,16 @@ function ChatRoomPanel(props: ChatRoomPanelProps) {
     setMsgToEdited(msg);
   };
 
+  /**
+   * Handles toggle notifications.
+   */
+  const handleToggleNotifications = () => {
+    toggleRoomNotificationsImmediate(
+      targetRoom.identifier,
+      targetRoom.type === "WORKSPACE"
+    );
+  };
+
   return (
     <div className="chat__discussion-panel">
       <div className="chat__discussion-panel-header">
@@ -449,6 +463,21 @@ function ChatRoomPanel(props: ChatRoomPanelProps) {
         <div className="chat__discussion-panel-header-description">
           {targetRoom.description}
         </div>
+        {notificationSettings.notificationsEnabled && (
+          <div className="chat__button-wrapper">
+            <Dropdown
+              alignSelfVertically="top"
+              openByHover
+              content={<p>{t("actions.muteRoom", { ns: "chat" })}</p>}
+            >
+              <IconButton
+                icon="eye"
+                buttonModifiers={["chat"]}
+                onClick={handleToggleNotifications}
+              />
+            </Dropdown>
+          </div>
+        )}
       </div>
 
       <div className="chat__discussion-panel-body" ref={contentRef}>

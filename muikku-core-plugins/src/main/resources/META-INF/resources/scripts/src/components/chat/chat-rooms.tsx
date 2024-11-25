@@ -89,7 +89,7 @@ function PublicRoomsList(props: PublicRoomsListProps) {
   } = useChatContext();
 
   /**
-   * handleRoomItemClick
+   * Handles room item click
    * @param identifier identifier
    */
   const handleRoomItemClick = (identifier: string) => {
