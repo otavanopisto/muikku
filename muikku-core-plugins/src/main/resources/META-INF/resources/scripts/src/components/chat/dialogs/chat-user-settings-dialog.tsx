@@ -1,4 +1,8 @@
-import { DialogRow } from "~/components/general/dialog";
+import {
+  DialogRow,
+  DialogColumn,
+  DialogColumnContainer,
+} from "~/components/general/dialog";
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
@@ -12,6 +16,7 @@ import Select from "react-select";
 import { useChatContext } from "../context/chat-context";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import Button from "~/components/general/button";
+import Link from "~/components/general/link";
 import ChatDialog from "./chat-dialog";
 import { ChatUserVisibilityEnum } from "~/generated/client";
 // eslint-disable-next-line camelcase
@@ -253,163 +258,185 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
    * @param closeDialog closeDialog
    */
   const content = (closeDialog: () => void) => (
-    <div>
-      <DialogRow>
-        <div className="form-element">
-          <label className="chat__label" htmlFor="chatNickName">
-            {t("labels.nick", {
-              ns: "chat",
-            })}
-          </label>
-          <input
-            id="chatNickName"
-            type="text"
-            className="chat__textfield"
-            value={currentNickValue}
-            onChange={handleUserNameChange}
-            disabled={disabled}
-          />
-        </div>
-      </DialogRow>
-      <DialogRow>
-        <div className="form-element">
-          <label className="chat__label" htmlFor="selectVisibility">
-            {t("labels.selectVisibility", {
-              ns: "chat",
-            })}
-          </label>
-          <Select<ChatSettingVisibilityOption>
-            id="selectVisibility"
-            className="react-select-override react-select-override--chat"
-            classNamePrefix="react-select-override"
-            isDisabled={disabled}
-            value={selectedValue}
-            options={selectValues}
-            onChange={handleSelectChange}
-            styles={{
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              container: (baseStyles, state) => ({
-                ...baseStyles,
-                width: "100%",
-              }),
-            }}
-          />
-        </div>
-      </DialogRow>
-      <DialogRow>
-        <div className="form-element">
-          <label className="chat__label chat__label--checkbox">
-            {t("labels.chatNotifications", {
-              ns: "chat",
-            })}
-          </label>
-          <input
-            type="checkbox"
-            checked={notificationSettings.notificationsEnabled}
-            onChange={handleToggleGlobalNotifications}
-            disabled={disabled}
-          />
-        </div>
-      </DialogRow>
-      <DialogRow>
-        <div className="form-element">
-          <label className="chat__label chat__label--checkbox">
-            {t("labels.privateMessageNotifications", {
-              ns: "chat",
-            })}
-          </label>
-          <input
-            type="checkbox"
-            checked={notificationSettings.privateMessagesEnabled}
-            onChange={handleTogglePrivateMessages}
-            disabled={disabled}
-          />
-        </div>
-      </DialogRow>
-      <DialogRow>
-        <div className="form-element">
-          {t("labels.rooms_public", {
-            ns: "chat",
-          })}
-          <Button
-            buttonModifiers={["link"]}
-            onClick={handleToggleAllPublicRoomNotifications}
-            disabled={disabled}
-          >
-            {allPublicRoomsEnabled
-              ? t("actions.unselectAll", {
-                  ns: "chat",
-                })
-              : t("actions.selectAll", {
-                  ns: "chat",
-                })}
-          </Button>
-        </div>
-      </DialogRow>
-
-      {roomsPublic.map((room) => (
-        <DialogRow key={room.identifier}>
+    <DialogColumnContainer>
+      <DialogColumn>
+        <DialogRow>
           <div className="form-element">
-            <label
-              key={room.identifier}
-              className="chat__label chat__label--checkbox"
-            >
-              {room.name}
+            <label className="chat__label" htmlFor="chatNickName">
+              {t("labels.nick", {
+                ns: "chat",
+              })}
             </label>
             <input
-              type="checkbox"
-              checked={notificationSettings.publicRoomEnabled.includes(
-                room.identifier
-              )}
-              onChange={handleToggleRoomNotifications(room.identifier, false)}
+              id="chatNickName"
+              type="text"
+              className="chat__textfield"
+              value={currentNickValue}
+              onChange={handleUserNameChange}
               disabled={disabled}
             />
           </div>
         </DialogRow>
-      ))}
-
-      <DialogRow>
-        <div className="form-element">
-          {t("labels.rooms_workspace", {
-            ns: "chat",
-          })}
-          <Button
-            buttonModifiers={["link"]}
-            onClick={handleToggleAllPrivateRoomNotifications}
-            disabled={disabled}
-          >
-            {allPrivateRoomsEnabled
-              ? t("actions.unselectAll", {
-                  ns: "chat",
-                })
-              : t("actions.selectAll", {
-                  ns: "chat",
-                })}
-          </Button>
-        </div>
-      </DialogRow>
-
-      {roomsPrivate.map((room) => (
-        <DialogRow key={room.identifier}>
+        <DialogRow>
           <div className="form-element">
-            <label
-              key={room.identifier}
-              className="chat__label chat__label--checkbox"
-            >
-              {room.name}
+            <label className="chat__label" htmlFor="selectVisibility">
+              {t("labels.selectVisibility", {
+                ns: "chat",
+              })}
             </label>
-            <input
-              type="checkbox"
-              checked={notificationSettings.privateRoomEnabled.includes(
-                room.identifier
-              )}
-              onChange={handleToggleRoomNotifications(room.identifier, true)}
-              disabled={disabled}
+            <Select<ChatSettingVisibilityOption>
+              id="selectVisibility"
+              className="react-select-override react-select-override--chat"
+              classNamePrefix="react-select-override"
+              isDisabled={disabled}
+              value={selectedValue}
+              options={selectValues}
+              onChange={handleSelectChange}
+              styles={{
+                // eslint-disable-next-line jsdoc/require-jsdoc
+                container: (baseStyles, state) => ({
+                  ...baseStyles,
+                  width: "100%",
+                }),
+              }}
             />
           </div>
         </DialogRow>
-      ))}
-    </div>
+      </DialogColumn>
+
+      <DialogColumn>
+        <DialogRow>
+          <div className="form-element form-element--chat form-element--checkbox-radiobutton">
+            <input
+              type="checkbox"
+              checked={notificationSettings.notificationsEnabled}
+              onChange={handleToggleGlobalNotifications}
+              disabled={disabled}
+              id="chatNotificationsEnabled"
+            />
+            <label
+              htmlFor="chatNotificationsEnabled"
+              className="chat__label chat__label--checkbox"
+            >
+              {t("labels.chatNotifications", {
+                ns: "chat",
+                context: "sound",
+              })}
+            </label>
+          </div>
+        </DialogRow>
+        <DialogRow>
+          <div className="form-element form-element--chat form-element--checkbox-radiobutton">
+            <input
+              type="checkbox"
+              checked={notificationSettings.privateMessagesEnabled}
+              onChange={handleTogglePrivateMessages}
+              disabled={disabled}
+              id="chatPrivateMessagesEnabled"
+            />
+            <label
+              htmlFor="chatPrivateMessagesEnabled"
+              className="chat__label chat__label--checkbox"
+            >
+              {t("labels.privateMessageNotifications", {
+                ns: "chat",
+              })}
+            </label>
+          </div>
+        </DialogRow>
+        <DialogRow>
+          <div className="form-element form-element--chat form-element--chat-settings-subheader">
+            <span className="chat__rooms-category-title chat__rooms-category-title--settings">
+              {t("labels.rooms_public", {
+                ns: "chat",
+              })}
+            </span>
+            <Link
+              className="link link--chat"
+              onClick={handleToggleAllPublicRoomNotifications}
+              disabled={disabled}
+            >
+              {allPublicRoomsEnabled
+                ? t("actions.unselectAll", {
+                    ns: "chat",
+                  })
+                : t("actions.selectAll", {
+                    ns: "chat",
+                  })}
+            </Link>
+          </div>
+        </DialogRow>
+
+        {roomsPublic.map((room) => (
+          <DialogRow key={room.identifier}>
+            <div className="form-element form-element--chat form-element--checkbox-radiobutton">
+              <input
+                type="checkbox"
+                checked={notificationSettings.publicRoomEnabled.includes(
+                  room.identifier
+                )}
+                onChange={handleToggleRoomNotifications(room.identifier, false)}
+                disabled={disabled}
+                id={`chatPublicRoomNotification` + room.identifier}
+              />
+              <label
+                key={room.identifier}
+                htmlFor={`chatPublicRoomNotification` + room.identifier}
+                className="chat__label chat__label--checkbox"
+              >
+                {room.name}
+              </label>
+            </div>
+          </DialogRow>
+        ))}
+
+        <DialogRow>
+          <div className="form-element form-element--chat-settings-subheader">
+            <span className="chat__rooms-category-title chat__rooms-category-title--settings">
+              {t("labels.rooms_workspace", {
+                ns: "chat",
+              })}
+            </span>
+            <Link
+              className="link link--chat"
+              onClick={handleToggleAllPrivateRoomNotifications}
+              disabled={disabled}
+            >
+              {allPrivateRoomsEnabled
+                ? t("actions.unselectAll", {
+                    ns: "chat",
+                  })
+                : t("actions.selectAll", {
+                    ns: "chat",
+                  })}
+            </Link>
+          </div>
+        </DialogRow>
+
+        {roomsPrivate.map((room) => (
+          <DialogRow key={room.identifier}>
+            <div className="form-element form-element--chat form-element--checkbox-radiobutton">
+              <input
+                type="checkbox"
+                checked={notificationSettings.privateRoomEnabled.includes(
+                  room.identifier
+                )}
+                onChange={handleToggleRoomNotifications(room.identifier, true)}
+                disabled={disabled}
+                id={`chatPrivateRoomNotifications` + room.identifier}
+              />
+              <label
+                key={room.identifier}
+                htmlFor={`chatPrivateRoomNotifications` + room.identifier}
+                className="chat__label chat__label--checkbox"
+              >
+                {room.name}
+              </label>
+            </div>
+          </DialogRow>
+        ))}
+      </DialogColumn>
+    </DialogColumnContainer>
   );
 
   /**

@@ -208,6 +208,25 @@ legend {
   }
 }
 
+.form-element--chat {
+  input[type="checkbox"] {
+    border: solid 2px $color-chat-primary;
+  }
+
+  input[type="radio"] {
+    border: solid 2px $color-chat-primary;
+  }
+
+  input:checked {
+    background-color: $color-chat-primary;
+    border: solid 2px $color-chat-primary;
+  }
+
+  input:checked::after {
+    color: $color-default;
+  }
+}
+
 .form-element--new-label {
   width: 100%;
 
@@ -249,6 +268,13 @@ legend {
     font-weight: 400;
     padding: 0;
   }
+}
+
+.form-element--chat-settings-subheader {
+  align-items: center;
+  column-gap: 10px;
+  display: flex;
+  margin: 15px 0 0;
 }
 
 .form-element--edit-label {

@@ -120,6 +120,14 @@
   }
 }
 
+.dialog__window--chat {
+  max-height: calc(100% - 20px);
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 700px;
+  }
+}
+
 .dialog__window--pedagogy-form-pdf {
   height: 100%;
   max-width: unset;
@@ -187,10 +195,6 @@
       height: 420px;
     }
   }
-}
-
-.dialog__window--local {
-  max-height: calc(100% - 10px);
 }
 
 .dialog__window--wizard,
@@ -517,6 +521,34 @@
 // Descrease top and bottom padding in chat's dialogs as they have white background
 .dialog__content--chat {
   padding: 10px 20px;
+}
+
+.dialog__content-column-container {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 20px 30px;
+  justify-content: flex-start;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+}
+
+.dialog__content-column {
+  align-items: flex-start;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-flow: column nowrap;
+  flex-shrink: 1;
+  justify-content: flex-start;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    width: auto;
+    max-width: 50%;
+  }
 }
 
 .dialog__content-row {

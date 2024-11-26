@@ -268,11 +268,11 @@
     border-radius: 100%;
     content: " ";
     display: block;
-    height: 3px;
-    left: 0;
+    height: 4px;
+    left: -2px;
     position: absolute;
     top: calc(50% - 1px);
-    width: 3px;
+    width: 4px;
   }
 }
 
@@ -596,12 +596,18 @@
 // Category title for guidance counselors and active discussions / public and course rooms
 .chat__rooms-category-title,
 .chat__users-category-title {
-  font-size: 0.75rem;
-  margin: 0 5px;
+  font-size: 0.825rem;
+  font-weight: 600;
   overflow: hidden;
+  padding: 5px 10px;
   text-overflow: ellipsis;
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+.chat__rooms-category-title--settings {
+  line-height: 1;
+  padding: 0;
 }
 
 // Container for single chat user, also acts as a trigger to open private chat. Contains close private discussion button
