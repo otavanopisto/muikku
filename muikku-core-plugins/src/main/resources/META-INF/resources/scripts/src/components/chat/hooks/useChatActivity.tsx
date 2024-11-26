@@ -7,6 +7,7 @@ import { ChatActivity, ChatMessage } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { NotificationSettings } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
+import { useDocumentTitle } from "./useDocumentTitle";
 
 const chatApi = MApi.getChatApi();
 
@@ -38,13 +39,15 @@ function useChatActivity(
 
   const minimized = useReadLocalStorage<boolean>("chat-minimized");
 
+  const { setTitle, resetTitle } = useDocumentTitle();
+  const [hasUnreadMessages, setHasUnreadMessages] = React.useState(false);
+
   /**
    * Plays message sound
    */
   const playMessageSound = React.useCallback(() => {
-    // eslint-disable-next-line no-console
-    console.log("Playing message sound", messageSound);
     messageSound.play().catch((err) => {
+      // Either display notification or log error
       // eslint-disable-next-line no-console
       console.warn("Failed to play message sound:", err);
     });
@@ -144,6 +147,30 @@ function useChatActivity(
   }, [displayNotification]);
 
   React.useEffect(() => {
+    let titleInterval: NodeJS.Timeout;
+
+    if (hasUnreadMessages && !browserIsVisibleAndFocused) {
+      titleInterval = setInterval(() => {
+        setTitle((prevTitle) =>
+          prevTitle ===
+          `🔔 ${i18n.t("notifications.newMessage", { ns: "chat" })}`
+            ? document.title
+            : `🔔 ${i18n.t("notifications.newMessage", { ns: "chat" })}`
+        );
+      }, 1000);
+    } else {
+      resetTitle();
+    }
+
+    return () => {
+      if (titleInterval) {
+        clearInterval(titleInterval);
+        resetTitle();
+      }
+    };
+  }, [hasUnreadMessages, browserIsVisibleAndFocused, setTitle, resetTitle]);
+
+  React.useEffect(() => {
     /**
      * Handles new message sent event
      * @param data data
@@ -159,6 +186,8 @@ function useChatActivity(
             // eslint-disable-next-line no-console
             console.log("No sound notification");
           }
+
+          let showFavIconMsg = false;
 
           // Room activities
           if (dataTyped.targetIdentifier.startsWith("room-")) {
@@ -182,6 +211,11 @@ function useChatActivity(
                   updatedList[index].unreadMessages++;
                 }
 
+                // If browser is not visible and focused, show fav icon message
+                if (!browserIsVisibleAndFocused) {
+                  showFavIconMsg = true;
+                }
+
                 return updatedList;
               }
 
@@ -190,6 +224,11 @@ function useChatActivity(
                 latestMessage: new Date(dataTyped.sentDateTime),
                 unreadMessages: 1,
               };
+
+              // If browser is not visible and focused, show fav icon message
+              if (!browserIsVisibleAndFocused) {
+                showFavIconMsg = true;
+              }
 
               if (
                 browserIsVisibleAndFocused &&
@@ -236,6 +275,11 @@ function useChatActivity(
                   updatedList[index].unreadMessages++;
                 }
 
+                // If browser is not visible and focused, show fav icon message
+                if (!browserIsVisibleAndFocused) {
+                  showFavIconMsg = true;
+                }
+
                 return updatedList;
               }
 
@@ -252,6 +296,11 @@ function useChatActivity(
                 newActivity.targetIdentifier = dataTyped.targetIdentifier;
               }
 
+              // If browser is not visible and focused, show fav icon message
+              if (!browserIsVisibleAndFocused) {
+                showFavIconMsg = true;
+              }
+
               // If browser is visible and
               // this is the active discussion, keep unread messages as 0
               if (
@@ -263,6 +312,9 @@ function useChatActivity(
 
               return [...prev, newActivity];
             });
+          }
+          if (showFavIconMsg) {
+            setHasUnreadMessages(true);
           }
         }
       }
@@ -350,6 +402,8 @@ function useChatActivity(
             return prev;
           });
         }
+
+        setHasUnreadMessages(false);
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;
@@ -368,6 +422,7 @@ function useChatActivity(
       chatRoomsActivities,
       chatUsersActivities,
       displayNotification,
+      setHasUnreadMessages,
     ]
   );
 

@@ -2557,6 +2557,7 @@
       "loadError_discussionMessages": "Chat-keskustelun viestien lataaminen epäonnistui",
       "loadError_blockedUsers": "Chatin estettyjen käyttäjien lataaminen epäonnistui",
       "loadError_councelors": "Chatin ohjaajien lataaminen epäonnistui",
+      "newMessage": "Uusi viesti!",
       "postError": "",
       "postError_message": "Viestin lähettäminen epäonnistui",
       "postError_room": "Huoneen luonti epäonnistui",
