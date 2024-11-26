@@ -86,6 +86,7 @@ function useChat(
     activeDiscussionIdentifier,
     currentUser.identifier,
     notificationSettings,
+    rooms,
     displayNotification
   );
 

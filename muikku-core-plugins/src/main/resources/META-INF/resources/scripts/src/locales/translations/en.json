@@ -2558,6 +2558,8 @@
       "loadError_discussionMessages": "Failed to load chat messages",
       "loadError_blockedUsers": "Failed to load blocked users",
       "loadError_councelors": "Failed to load guidance counselors",
+      "newMessage": "New message! From {{nick}}",
+      "newMessage_room": "New message! From {{nick}} in {{roomName}}",
       "postError": "",
       "postError_message": "Failed to send the message",
       "postError_room": "Failed to create the chat room",

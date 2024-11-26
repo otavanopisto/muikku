@@ -3,10 +3,11 @@ import { useReadLocalStorage } from "usehooks-ts";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
 import { useWindowContext } from "~/context/window-context";
-import { ChatActivity, ChatMessage } from "~/generated/client";
+import { ChatActivity, ChatMessage, ChatRoom } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { NotificationSettings } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
+import { useDocumentTitle } from "./useDocumentTitle";
 
 const chatApi = MApi.getChatApi();
 
@@ -17,12 +18,14 @@ const messageSound = new Audio("/sounds/Muikku_Lyhyt_Variaatio2.mp3");
  * @param activeDiscussionIdentifier active identifier
  * @param currentUserIdentifier current user identifier
  * @param notificationSettings notification settings
+ * @param rooms rooms
  * @param displayNotification display notification
  */
 function useChatActivity(
   activeDiscussionIdentifier: string,
   currentUserIdentifier: string,
   notificationSettings: NotificationSettings,
+  rooms: ChatRoom[],
   displayNotification: DisplayNotificationTriggerType
 ) {
   const websocket = useChatWebsocketContext();
@@ -38,48 +41,54 @@ function useChatActivity(
 
   const minimized = useReadLocalStorage<boolean>("chat-minimized");
 
+  const { setTitle, resetTitle } = useDocumentTitle();
+  const [newMsgNotification, setNewMsgNotification] =
+    React.useState<ChatMessage | null>(null);
+
   /**
    * Plays message sound
    */
   const playMessageSound = React.useCallback(() => {
-    // eslint-disable-next-line no-console
-    console.log("Playing message sound", messageSound);
     messageSound.play().catch((err) => {
+      // Either display notification or log error
       // eslint-disable-next-line no-console
       console.warn("Failed to play message sound:", err);
     });
   }, []);
 
   /**
-   * Checks if sound should be played
-   * @param targetIdentifier target identifier
+   * Checks if sound and tab notification should be given
+   * @param chatMessage chat message
    */
-  const shouldPlaySound = React.useCallback(
-    (targetIdentifier: string) => {
+  const shouldGiveNotification = React.useCallback(
+    (chatMessage: ChatMessage) => {
+      const notifications: {
+        soundNotification: boolean;
+        newMsgTabNotification: ChatMessage | null;
+      } = {
+        soundNotification: false,
+        newMsgTabNotification: null,
+      };
+
       // If notifications are disabled, don't play sound
       if (!notificationSettings.notificationsEnabled) {
-        return false;
+        return notifications;
       }
 
       // If private messages are enabled, play sound if target identifier is current user identifier
       if (
         notificationSettings.privateMessagesEnabled &&
-        targetIdentifier === currentUserIdentifier
+        chatMessage.targetIdentifier === currentUserIdentifier
       ) {
-        // If target identifier is the active discussion or current user and browser is visible and focused, play sound
-        if (
-          [activeDiscussionIdentifier, currentUserIdentifier].includes(
-            targetIdentifier
-          ) &&
-          !browserIsVisibleAndFocused
-        ) {
-          return true;
-        }
-
+        // If browser is not visible and focused, show tab notification
+        notifications.newMsgTabNotification = !browserIsVisibleAndFocused
+          ? chatMessage
+          : null;
         // If target identifier is the active discussion (current and target user as this is two way communication), don't play sound
-        return ![activeDiscussionIdentifier, currentUserIdentifier].includes(
-          targetIdentifier
-        );
+        notifications.soundNotification =
+          ![activeDiscussionIdentifier, currentUserIdentifier].includes(
+            chatMessage.targetIdentifier
+          ) || !browserIsVisibleAndFocused;
       }
 
       // If target identifier is in public or private room enabled list, play sound
@@ -87,14 +96,20 @@ function useChatActivity(
         [
           ...notificationSettings.publicRoomEnabled,
           ...notificationSettings.privateRoomEnabled,
-        ].includes(targetIdentifier)
+        ].includes(chatMessage.targetIdentifier)
       ) {
+        // If browser is not visible and focused, show tab notification
+        notifications.newMsgTabNotification = !browserIsVisibleAndFocused
+          ? chatMessage
+          : null;
         // If target identifier is the active discussion, don't play sound
-        return targetIdentifier !== activeDiscussionIdentifier;
+        notifications.soundNotification =
+          chatMessage.targetIdentifier !== activeDiscussionIdentifier ||
+          !browserIsVisibleAndFocused;
       }
 
       // Default false
-      return false;
+      return notifications;
     },
     [
       activeDiscussionIdentifier,
@@ -144,6 +159,63 @@ function useChatActivity(
   }, [displayNotification]);
 
   React.useEffect(() => {
+    if (!browserIsVisibleAndFocused && newMsgNotification) {
+      if (newMsgNotification.targetIdentifier.startsWith("room-")) {
+        const room = rooms.find(
+          (room) => room.identifier === newMsgNotification.targetIdentifier
+        );
+
+        if (!room) {
+          return;
+        }
+
+        setTitle((prevTitle) =>
+          prevTitle ===
+          `🔔 ${i18n.t("notifications.newMessage_room", {
+            ns: "chat",
+            nick: newMsgNotification.nick,
+            roomName: room.name,
+            context: "room",
+          })}`
+            ? document.title
+            : `🔔 ${i18n.t("notifications.newMessage_room", {
+                ns: "chat",
+                nick: newMsgNotification.nick,
+                roomName: room.name,
+                context: "room",
+              })}`
+        );
+      } else {
+        setTitle((prevTitle) =>
+          prevTitle ===
+          `🔔 ${i18n.t("notifications.newMessage", {
+            ns: "chat",
+            nick: newMsgNotification.nick,
+          })}`
+            ? document.title
+            : `🔔 ${i18n.t("notifications.newMessage", {
+                ns: "chat",
+                nick: newMsgNotification.nick,
+              })}`
+        );
+      }
+    } else if (browserIsVisibleAndFocused) {
+      setNewMsgNotification(null);
+      resetTitle();
+    }
+
+    return () => {
+      resetTitle();
+    };
+  }, [
+    newMsgNotification,
+    browserIsVisibleAndFocused,
+    setTitle,
+    resetTitle,
+    rooms,
+  ]);
+
+  React.useEffect(() => {
     /**
      * Handles new message sent event
      * @param data data
@@ -153,11 +225,11 @@ function useChatActivity(
         if (typeof data === "string") {
           const dataTyped: ChatMessage = JSON.parse(data);
 
-          if (shouldPlaySound(dataTyped.targetIdentifier)) {
+          const notifications = shouldGiveNotification(dataTyped);
+
+          // Play sound if logic shouldGiveNotification returns true
+          if (notifications.soundNotification) {
             playMessageSound();
-          } else {
-            // eslint-disable-next-line no-console
-            console.log("No sound notification");
           }
 
           // Room activities
@@ -264,6 +336,7 @@ function useChatActivity(
               return [...prev, newActivity];
             });
           }
+          setNewMsgNotification(notifications.newMsgTabNotification);
         }
       }
     };
@@ -282,7 +355,7 @@ function useChatActivity(
     currentUserIdentifier,
     minimized,
     playMessageSound,
-    shouldPlaySound,
+    shouldGiveNotification,
     websocket,
   ]);
 
