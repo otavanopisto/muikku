@@ -14,9 +14,12 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
-import { User } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import {
+  Student,
+  UpdateStudentBasicInfoOperationRequest,
+} from "~/generated/client";
 
 /**
  * OrganizationUserProps
@@ -25,7 +28,7 @@ interface OrganizationUserProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   status: StatusType;
-  data: User;
+  data: Student;
   studyprogrammes: StudyprogrammeTypes;
   updateStudent: UpdateStudentTriggerType;
 }
@@ -34,9 +37,7 @@ interface OrganizationUserProps extends WithTranslation {
  * OrganizationUserState
  */
 interface OrganizationUserState {
-  user: {
-    [field: string]: string;
-  };
+  user: Partial<Student>;
   locked: boolean;
   editUser: boolean;
   firstNameValid: number;
@@ -61,12 +62,10 @@ class OrganizationUser extends React.Component<
     super(props);
     this.state = {
       user: {
-        role: "STUDENT",
         studyProgrammeIdentifier: this.props.data.studyProgrammeIdentifier,
         firstName: this.props.data.firstName,
         lastName: this.props.data.lastName,
         email: this.props.data.email,
-        SSN: this.props.data.ssn,
       },
       locked: false,
       editUser: false,
@@ -152,17 +151,19 @@ class OrganizationUser extends React.Component<
     // SSN for user is optional at this point, so we don't validate. Only we do is set it to "" if it's not a valid SSN
 
     if (valid) {
-      const data = {
-        firstName: this.state.user.firstName,
-        identifier: this.props.data.id,
-        lastName: this.state.user.lastName,
-        email: this.state.user.email,
-        ssn: this.state.user.ssn,
-        studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier,
+      const data: UpdateStudentBasicInfoOperationRequest = {
+        studentIdentifier: this.props.data.id,
+        updateStudentBasicInfoRequest: {
+          firstName: this.state.user.firstName,
+          identifier: this.props.data.id,
+          lastName: this.state.user.lastName,
+          email: this.state.user.email,
+          studyProgrammeIdentifier: this.state.user.studyProgrammeIdentifier,
+        },
       };
 
       this.props.updateStudent({
-        student: data,
+        updateRequest: data,
         /**
          * success
          */
