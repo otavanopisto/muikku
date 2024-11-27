@@ -150,6 +150,17 @@ legend {
 }
 
 // FORM ELEMENTS
+.form-switch-element {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0 10px;
+
+  label {
+    font-weight: 400;
+  }
+}
+
 .form-element {
   width: auto;
 
@@ -181,6 +192,11 @@ legend {
     margin-right: 5px;
     padding: 0;
     width: 1rem;
+
+    &[disabled] {
+      color: $color-disabled;
+      border: 2px solid lighten($color-disabled, 20%);
+    }
   }
 
   input[type="radio"] {
@@ -193,6 +209,11 @@ legend {
     justify-content: center;
     margin-right: 5px;
     width: 1rem;
+
+    &[disabled] {
+      color: $color-disabled;
+      border: 2px solid lighten($color-disabled, 20%);
+    }
   }
 
   input:checked {
@@ -268,13 +289,6 @@ legend {
     font-weight: 400;
     padding: 0;
   }
-}
-
-.form-element--chat-settings-subheader {
-  align-items: center;
-  column-gap: 10px;
-  display: flex;
-  margin: 15px 0 0;
 }
 
 .form-element--edit-label {
