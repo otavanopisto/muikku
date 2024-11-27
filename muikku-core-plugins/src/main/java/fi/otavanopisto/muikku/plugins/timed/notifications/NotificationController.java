@@ -69,7 +69,7 @@ public class NotificationController {
     );
 
     // List only guidance counselors that receive messages
-    List<UserEntity> guidanceCounselors = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier, recipientRoles, true);
+    List<UserEntity> guidanceCounselors = userGroupGuidanceController.getGuidanceCounselorUserEntities(studentIdentifier, recipientRoles, true);
     List<String> guidanceCouncelorEmails = new ArrayList<>();
     for (UserEntity guidanceCounselor : guidanceCounselors) {
       String guidanceCounselorEmail = userEmailEntityController.getUserDefaultEmailAddress(guidanceCounselor, false);

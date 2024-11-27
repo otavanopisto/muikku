@@ -10,8 +10,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
@@ -31,7 +29,6 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudentGroupUser;
-import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class ToRTestsBase extends AbstractUITest {
@@ -316,7 +313,7 @@ public class ToRTestsBase extends AbstractUITest {
   public void studiesSummaryTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(5l, 5l, "Studentos", "Tester", "studento@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111195-1252", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    student.addCounselor(new StudentGroupUser(1l, 1l));
+    student.addCounselor(new StudentGroupUser(1l, 1l, false, false, false));
     Builder mockBuilder = mocker();
     
     try{

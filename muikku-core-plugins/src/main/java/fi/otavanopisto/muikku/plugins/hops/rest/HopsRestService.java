@@ -265,7 +265,7 @@ public class HopsRestService {
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
-    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
+    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselorUserEntities(schoolDataIdentifier, false);
 
     recipients.add(studentEntity);
 
@@ -794,7 +794,7 @@ public class HopsRestService {
     
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
-    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
+    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselorUserEntities(schoolDataIdentifier, false);
 
     recipients.add(studentEntity);
     HopsOptionalSuggestion hopsOptionalSuggestion = hopsController.findOptionalSuggestionByStudentIdentifier(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
@@ -860,7 +860,7 @@ public class HopsRestService {
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
-    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
+    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselorUserEntities(schoolDataIdentifier, false);
 
     recipients.add(studentEntity);
     HopsStudentChoice hopsStudentChoice = hopsController.findStudentChoiceByStudentIdentifier(studentIdentifier, payload.getSubject(), payload.getCourseNumber());
@@ -939,7 +939,7 @@ public class HopsRestService {
     
     List<String> counselorList = new ArrayList<>();
 
-    List<UserEntity> counselorEntities = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier, false);
+    List<UserEntity> counselorEntities = userGroupGuidanceController.getGuidanceCounselorUserEntities(studentIdentifier, false);
     for (UserEntity counselorEntity : counselorEntities) {
       UserEntityName counselorName = userEntityController.getName(counselorEntity, false);
       if (counselorName != null) {
@@ -1009,7 +1009,7 @@ public class HopsRestService {
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
     UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
-    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(schoolDataIdentifier, false);
+    List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselorUserEntities(schoolDataIdentifier, false);
 
     recipients.add(studentEntity);
 
