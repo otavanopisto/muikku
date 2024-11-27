@@ -10,6 +10,8 @@ import {
   NoteStatusType,
   CreateNoteRequest,
   UpdateNoteRequest,
+  UpdateNoteReceiverRequest,
+  NoteReceiver,
 } from "~/generated/client";
 
 /**
@@ -54,19 +56,18 @@ export const useNotesItem = (
         const [loadedNotesItemList, loadedArchivedNotesItemList] =
           await Promise.all([
             (async () => {
-              const notesItems = await notesApi.getNotes({
-                ownerId: studentId,
+              const notesItems = await notesApi.getNotesByRecipient({
+                recipientId: studentId,
               });
-
               return notesItems;
             })(),
             (async () => {
-              const notesItemsArchived = await notesApi.getNotes({
-                ownerId: studentId,
+              const notesItemsArchived = await notesApi.getNotesByRecipient({
+                recipientId: studentId,
                 listArchived: true,
               });
 
-              return notesItemsArchived;
+              return notesItemsArchived.filter((note) => note.isArchived);
             })(),
             sleepPromise,
           ]);
@@ -245,52 +246,52 @@ export const useNotesItem = (
    * @param updateNoteRequest updateNoteRequest
    * @param onSuccess onSuccess
    */
-  const pinNotesItem = async (
-    notesItemId: number,
-    updateNoteRequest: UpdateNoteRequest,
-    onSuccess?: () => void
-  ) => {
-    setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
+  // const pinNotesItem = async (
+  //   notesItemId: number,
+  //   updateNoteRequest: UpdateNoteRequest,
+  //   onSuccess?: () => void
+  // ) => {
+  //   setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
 
-    // Creating notesItem object where pinned property has changed
-    const notesItemToPin = {
-      ...updateNoteRequest,
-      pinned: !updateNoteRequest.pinned,
-    };
+  //   // Creating notesItem object where pinned property has changed
+  //   const notesItemToPin = {
+  //     ...updateNoteRequest,
+  //     pinned: !updateNoteRequest.pinned,
+  //   };
 
-    try {
-      // Updating and getting updated noteItem
-      const updatedNotesItem = await notesApi.updateNote({
-        noteId: notesItemId,
-        updateNoteRequest: notesItemToPin,
-      });
+  //   try {
+  //     // Updating and getting updated noteItem
+  //     const updatedNotesItem = await notesApi.updateNote({
+  //       noteId: notesItemId,
+  //       updateNoteRequest: notesItemToPin,
+  //     });
 
-      // Initializing list
-      const updatedNotesItemList = [...notesItems.notesItemList];
+  //     // Initializing list
+  //     const updatedNotesItemList = [...notesItems.notesItemList];
 
-      // Finding index of notesItem which got updated
-      const indexOfOldNote = updatedNotesItemList.findIndex(
-        (j) => j.id === notesItemId
-      );
+  //     // Finding index of notesItem which got updated
+  //     const indexOfOldNote = updatedNotesItemList.findIndex(
+  //       (j) => j.id === notesItemId
+  //     );
 
-      // Splice it out and replace with updated one
-      updatedNotesItemList.splice(indexOfOldNote, 1, updatedNotesItem);
+  //     // Splice it out and replace with updated one
+  //     updatedNotesItemList.splice(indexOfOldNote, 1, updatedNotesItem);
 
-      setNotesItem((notesItems) => ({
-        ...notesItems,
-        notesItemList: setToDefaultSortingOrder(updatedNotesItemList),
-        isUpdatingList: false,
-      }));
+  //     setNotesItem((notesItems) => ({
+  //       ...notesItems,
+  //       notesItemList: setToDefaultSortingOrder(updatedNotesItemList),
+  //       isUpdatingList: false,
+  //     }));
 
-      onSuccess && onSuccess();
-    } catch (err) {
-      displayNotification(t("notifications.pinError", { error: err }), "error");
-      setNotesItem((notesItems) => ({
-        ...notesItems,
-        isUpdatingList: false,
-      }));
-    }
-  };
+  //     onSuccess && onSuccess();
+  //   } catch (err) {
+  //     displayNotification(t("notifications.pinError", { error: err }), "error");
+  //     setNotesItem((notesItems) => ({
+  //       ...notesItems,
+  //       isUpdatingList: false,
+  //     }));
+  //   }
+  // };
 
   /**
    * Archives one notesItem
@@ -407,38 +408,59 @@ export const useNotesItem = (
   };
   /**
    * changenotesItemStatus
-   * @param notesItemId notesItemId
-   * @param newStatus newStatus
-   * @param onSuccess onSuccess
+    @param noteId id of the note,
+    @param newReceiverStatus new status for the recipient,
+    @param recipientId recipient id,
+    @param onSuccess callback function
    */
   const updateNotesItemStatus = async (
-    notesItemId: number,
-    newStatus: NoteStatusType,
+    noteId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    recipientId: number,
     onSuccess?: () => void
   ) => {
     try {
       const indexOfNotesItem = notesItems.notesItemList.findIndex(
-        (j) => j.id === notesItemId
+        (j) => j.id === noteId
       );
-
+      t;
       const notesItemToUpdate = notesItems.notesItemList[indexOfNotesItem];
 
-      notesItemToUpdate.status = newStatus;
-
       // Updating and getting updated notesItem
-      const updatedNotesItem = await notesApi.updateNote({
-        noteId: notesItemId,
-        updateNoteRequest: notesItemToUpdate,
+      const updatedNoteReceiver = await notesApi.updateNoteReceiver({
+        updateNoteReceiverRequest: newReceiverStatus,
+        noteId,
+        recipientId,
       });
 
-      // Initializing list
-      const updatedNotesItemList = [...notesItems.notesItemList];
+      // Make copies of the existing lists
+      const noteListUpdate = [...notesItems.notesItemList];
+      const noteRecipientsListUpdate = [...notesItemToUpdate.recipients];
 
-      updatedNotesItemList.splice(indexOfNotesItem, 1, updatedNotesItem);
+      // Find the index of the recipient that was updated
+      const recipientToUpdateIndex = noteRecipientsListUpdate.findIndex(
+        (r) => r.recipient === recipientId
+      );
+
+      // Splice out the old recipient and replace with the updated one
+      noteRecipientsListUpdate.splice(
+        recipientToUpdateIndex,
+        1,
+        updatedNoteReceiver
+      );
+
+      // Create a new notesItem object with the updated recipient list
+      const updatedNotesItem = {
+        ...notesItemToUpdate,
+        recipients: noteRecipientsListUpdate,
+      };
+
+      // Splice out the old notesItem and replace with the updated one
+      noteListUpdate.splice(indexOfNotesItem, 1, updatedNotesItem);
 
       setNotesItem((notesItems) => ({
         ...notesItems,
-        notesItemList: setToDefaultSortingOrder(updatedNotesItemList),
+        notesItemList: setToDefaultSortingOrder(noteListUpdate),
         isUpdatingList: false,
       }));
 
@@ -499,27 +521,18 @@ export const useNotesItem = (
       returnArchivedNotesItem(notesItemId, onSuccess),
 
     /**
-     * pinNotesItem
-     * @param notesItemId notesItemId
-     * @param updateNoteRequest updateNoteRequest
-     * @param onSuccess onSuccess
-     */
-    pinNotesItem: (
-      notesItemId: number,
-      updateNoteRequest: UpdateNoteRequest,
-      onSuccess?: () => void
-    ) => pinNotesItem(notesItemId, updateNoteRequest, onSuccess),
-
-    /**
      * updateNotesItemStatus
-     * @param notesItemId notesItemId
-     * @param notesItemStatus notesItemStatus
-     * @param onSuccess onSuccess
+    @param noteId id of the note,
+    @param newReceiverStatus new status for the recipient,
+    @param recipientId recipient id,
+    @param onSuccess callback function
      */
     updateNotesItemStatus: (
-      notesItemId: number,
-      notesItemStatus: NoteStatusType,
+      noteId: number,
+      newReceiverStatus: UpdateNoteReceiverRequest,
+      recipientId: number,
       onSuccess?: () => void
-    ) => updateNotesItemStatus(notesItemId, notesItemStatus, onSuccess),
+    ) =>
+      updateNotesItemStatus(noteId, newReceiverStatus, recipientId, onSuccess),
   };
 };

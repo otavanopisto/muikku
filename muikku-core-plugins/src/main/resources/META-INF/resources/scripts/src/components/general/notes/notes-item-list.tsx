@@ -1,6 +1,12 @@
 import * as React from "react";
 import { NotesLocation, NotesItemFilters } from "~/@types/notes";
-import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
+import {
+  Note,
+  NoteStatusType,
+  UpdateNoteRequest,
+  NoteReceiver,
+  UpdateNoteReceiverRequest,
+} from "~/generated/client";
 import { sortNotesItemsBy } from "./helpers/filters";
 import NotesListItem from "./notes-item-list-item";
 import NotesItemListWithoutAnimation from "./notes-list-test";
@@ -17,12 +23,15 @@ interface NotesItemListContentProps {
   onArchiveClick?: (notesItemd: number) => void;
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
-    notesItemId: number,
-    updateNoteRequest: UpdateNoteRequest
+    noteId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    recipientId: number
   ) => void;
   onUpdateNotesItemStatus?: (
-    notesItemId: number,
-    newStatus: NoteStatusType
+    noteId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    recipientId: number,
+    onSuccess?: () => void
   ) => void;
   onNotesItemSaveUpdateClick?: (
     notesItemId: number,
@@ -137,7 +146,9 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
             onFocus={handleListItemFocus(i)}
             onKeyDown={handleListItemKeyDown}
             loggedUserIsCreator={j.creator === userId}
-            loggedUserIsOwner={j.owner === userId}
+            loggedUserIsOwner={
+              !!j.recipients.find((receiver) => receiver.recipient === userId)
+            }
             onPinNotesItemClick={onPinNotesItemClick}
             onArchiveClick={onArchiveClick}
             onUpdateNotesItemStatus={onUpdateNotesItemStatus}

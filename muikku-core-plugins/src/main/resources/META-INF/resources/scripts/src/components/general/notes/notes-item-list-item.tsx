@@ -1,13 +1,18 @@
 import * as React from "react";
 import { IconButton } from "~/components/general/button";
 import Link from "~/components/general/link";
-import moment from "moment";
 import Dropdown from "~/components/general/dropdown";
 import NotesItemEdit from "./notes-item-edit";
 import NoteInformationDialog from "./dialogs/note-information-dialog";
 import { isOverdue } from "~/helper-functions/dates";
 import { useTranslation } from "react-i18next";
-import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
+import { localize } from "~/locales/i18n";
+import {
+  Note,
+  NoteStatusType,
+  UpdateNoteRequest,
+  UpdateNoteReceiverRequest,
+} from "~/generated/client";
 
 /**
  * DropdownItem
@@ -33,15 +38,19 @@ export interface NotesListItemProps
   active?: boolean;
   loggedUserIsCreator?: boolean;
   loggedUserIsOwner?: boolean;
+  specificRecipient?: number;
   onArchiveClick?: (notesItemId: number) => void;
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
-    notesItemId: number,
-    updateNoteRequest: UpdateNoteRequest
+    noteId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    recipientId: number
   ) => void;
   onUpdateNotesItemStatus?: (
-    notesItemId: number,
-    newStatus: NoteStatusType
+    noteId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    recipientId: number,
+    onSuccess?: () => void
   ) => void;
   onNotesItemSaveUpdateClick?: (
     notesItemId: number,
@@ -79,6 +88,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       archived,
       openInformationToDialog,
       containerModifier,
+      specificRecipient,
       ...restProps
     } = props;
 
@@ -90,13 +100,18 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       description,
       startDate,
       dueDate,
-      status,
+      recipients,
     } = notesItem;
 
     const { t } = useTranslation("tasks");
     const overdue = isOverdue(dueDate);
     const updatedModifiers = [];
-
+    const recipientId = specificRecipient
+      ? specificRecipient
+      : recipients[0].recipient;
+    const currentRecipient = recipients.find(
+      (r) => r.recipient === recipientId
+    );
     React.useImperativeHandle(
       outerRef,
       () => innerRef.current && innerRef.current,
@@ -116,7 +131,13 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     ) => {
       e.stopPropagation();
 
-      onPinNotesItemClick(id, notesItem);
+      const newReceiverStatus: UpdateNoteReceiverRequest = {
+        ...currentRecipient,
+        pinned: !currentRecipient.pinned,
+      };
+      if (onUpdateNotesItemStatus) {
+        onUpdateNotesItemStatus(id, newReceiverStatus, recipientId);
+      }
     };
 
     /**
@@ -160,8 +181,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * @param newStatus newStatus
      */
     const handleUpdateNotesItemStatusClick = (newStatus: NoteStatusType) => {
+      const newReceiverStatus: UpdateNoteReceiverRequest = {
+        ...currentRecipient,
+        status: newStatus,
+      };
       if (onUpdateNotesItemStatus) {
-        onUpdateNotesItemStatus(id, newStatus);
+        onUpdateNotesItemStatus(id, newReceiverStatus, recipientId);
 
         if (innerRef.current) {
           innerRef.current.focus();
@@ -197,7 +222,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
     }
 
-    if (overdue && status !== "APPROVED") {
+    if (overdue && currentRecipient.status !== "APPROVED") {
       updatedModifiers.push("overdue");
     }
 
@@ -222,7 +247,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-date">
-              {moment(startDate).format("l")} - {moment(dueDate).format("l")}
+              {localize.date(startDate)} - {localize.date(dueDate)}
             </span>
           </span>
         );
@@ -231,7 +256,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-date">
-              {moment(startDate).format("l")}
+              {localize.date(startDate)}
             </span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
           </span>
@@ -242,7 +267,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
             <span className="notes__item-dates-date">
-              {moment(dueDate).format("l")}
+              {localize.date(dueDate)}
             </span>
           </span>
         );
@@ -256,7 +281,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      */
     const renderStatus = () => {
       const statuses: JSX.Element[] = [];
-
+      const { status } = currentRecipient;
       if (overdue && status !== "APPROVED") {
         statuses.push(
           <div
@@ -318,6 +343,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
 
       if (loggedUserIsOwner) {
+        const { status } = currentRecipient;
         if (status === "ONGOING") {
           items = [
             {
@@ -362,6 +388,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           ];
         }
       } else if (loggedUserIsCreator && !loggedUserIsOwner) {
+        // This must display all of the recipients statuses if this is not a selected recipient
+        const { status } = currentRecipient;
+
         if (status === "ONGOING") {
           return;
         }
@@ -456,7 +485,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           {loggedUserIsOwner && onPinNotesItemClick && (
             <IconButton
               onClick={handleNotesItemPinClick}
-              icon={notesItem.pinned ? "star-full" : "star-empty"}
+              icon={currentRecipient.pinned ? "star-full" : "star-empty"}
               buttonModifiers={["notes-action", "notes-pin"]}
             />
           )}

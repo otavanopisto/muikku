@@ -37,11 +37,12 @@ export const useOnGoingNotes = (
      */
     const loadNotes = async () => {
       try {
-        const notesItems = await notesApi.getNotes({
-          ownerId: userId,
+        const notesItems = await notesApi.getNotesByRecipient({
+          recipientId: userId,
         });
-
-        setNotes(notesItems.filter((note) => note.status === "ONGOING"));
+        setNotes(
+          notesItems.filter((note) => note.recipients[0].status === "ONGOING")
+        );
       } catch (err) {
         displayNotification(
           t("notifications.loadError", { error: err }),
@@ -66,9 +67,8 @@ export const useOnGoingNotes = (
 
       const notesItemToUpdate = notes[indexOfNotesItem];
 
-      notesItemToUpdate.status = newStatus;
+      notesItemToUpdate.recipients[0].status = newStatus;
 
-      // Updating
       await notesApi.updateNote({
         noteId,
         updateNoteRequest: notesItemToUpdate,
