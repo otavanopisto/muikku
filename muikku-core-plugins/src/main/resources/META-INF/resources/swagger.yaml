@@ -10904,7 +10904,7 @@ components:
                 type: integer
               points:
                 type: number
-                format: dobule
+                format: double
               audioAssessments:
                 type: array
                 items:
@@ -10944,7 +10944,7 @@ components:
                 type: integer
               points:
                 type: number
-                format: dobule
+                format: double
               audioAssessments:
                 type: array
                 items:
@@ -12071,10 +12071,10 @@ components:
               description:
                 type: string
               price:
-                type: integer
+                type: number
                 format: double
               factor:
-                type: integer
+                type: number
                 format: double
               billingNumber:
                 type: integer
@@ -14268,7 +14268,8 @@ components:
           type: string
         completedCreditPointsCount:
           description: Number of completed credit points
-          type: double
+          type: number
+          format: double
 
     MatriculationAttendanceStatusType:
       type: string
