@@ -1,4 +1,6 @@
 import * as React from "react";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 import { useReadLocalStorage } from "usehooks-ts";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
@@ -45,6 +47,13 @@ function useChatActivity(
   const [newMsgNotification, setNewMsgNotification] =
     React.useState<ChatMessage | null>(null);
 
+  React.useCallback(
+    () => () => {
+      componentMounted.current = false;
+    },
+    []
+  );
+
   /**
    * Plays message sound
    */
@@ -57,59 +66,44 @@ function useChatActivity(
   }, []);
 
   /**
-   * Checks if sound and tab notification should be given
+   * Should give notification. Checks if specific notification settings are enabled
+   * and conditions are met for giving a notification.
    * @param chatMessage chat message
    */
   const shouldGiveNotification = React.useCallback(
     (chatMessage: ChatMessage) => {
-      const notifications: {
-        soundNotification: boolean;
-        newMsgTabNotification: ChatMessage | null;
-      } = {
-        soundNotification: false,
-        newMsgTabNotification: null,
-      };
-
-      // If notifications are disabled, don't play sound
       if (!notificationSettings.notificationsEnabled) {
-        return notifications;
+        return { soundNotification: false, newMsgTabNotification: null };
       }
 
-      // If private messages are enabled, play sound if target identifier is current user identifier
-      if (
-        notificationSettings.privateMessagesEnabled &&
-        chatMessage.targetIdentifier === currentUserIdentifier
-      ) {
-        // If browser is not visible and focused, show tab notification
-        notifications.newMsgTabNotification = !browserIsVisibleAndFocused
-          ? chatMessage
-          : null;
-        // If target identifier is the active discussion (current and target user as this is two way communication), don't play sound
-        notifications.soundNotification =
-          ![activeDiscussionIdentifier, currentUserIdentifier].includes(
-            chatMessage.targetIdentifier
-          ) || !browserIsVisibleAndFocused;
-      }
+      // Check if the message is directed to the current user
+      const isTargetUser =
+        chatMessage.targetIdentifier === currentUserIdentifier;
 
-      // If target identifier is in public or private room enabled list, play sound
-      if (
-        [
-          ...notificationSettings.publicRoomEnabled,
-          ...notificationSettings.privateRoomEnabled,
-        ].includes(chatMessage.targetIdentifier)
-      ) {
-        // If browser is not visible and focused, show tab notification
-        notifications.newMsgTabNotification = !browserIsVisibleAndFocused
-          ? chatMessage
-          : null;
-        // If target identifier is the active discussion, don't play sound
-        notifications.soundNotification =
-          chatMessage.targetIdentifier !== activeDiscussionIdentifier ||
-          !browserIsVisibleAndFocused;
-      }
+      // Check if the message is the active discussion
+      const isActiveDiscussion =
+        chatMessage.targetIdentifier === activeDiscussionIdentifier;
 
-      // Default false
-      return notifications;
+      // Check if the notification settings are enabled for the room of the message
+      const isEnabledRoom = [
+        ...notificationSettings.publicRoomEnabled,
+        ...notificationSettings.privateRoomEnabled,
+      ].includes(chatMessage.targetIdentifier);
+
+      // Check if the message should be notified
+      const shouldNotify =
+        (isTargetUser && notificationSettings.privateMessagesEnabled) ||
+        isEnabledRoom;
+
+      const showTabNotification = shouldNotify && !browserIsVisibleAndFocused;
+
+      const playSoundNotification =
+        shouldNotify && (!isActiveDiscussion || !browserIsVisibleAndFocused);
+
+      return {
+        soundNotification: playSoundNotification,
+        newMsgTabNotification: showTabNotification ? chatMessage : null,
+      };
     },
     [
       activeDiscussionIdentifier,
@@ -120,6 +114,46 @@ function useChatActivity(
       notificationSettings.privateRoomEnabled,
       notificationSettings.publicRoomEnabled,
     ]
+  );
+
+  /**
+   * Updates the activity list
+   * @param activities previous activity list
+   * @param targetId target identifier
+   * @param messageDate message date
+   */
+  const updateActivity = React.useCallback(
+    (activities: ChatActivity[], targetId: string, messageDate: Date) => {
+      const index = activities.findIndex(
+        (activity) => activity.targetIdentifier === targetId
+      );
+      const isActive =
+        browserIsVisibleAndFocused &&
+        targetId === activeDiscussionIdentifier &&
+        !minimized;
+
+      // If the activity already exists, update it
+      if (index !== -1) {
+        const updatedList = [...activities];
+        updatedList[index] = {
+          ...updatedList[index],
+          latestMessage: messageDate,
+          unreadMessages: isActive ? 0 : updatedList[index].unreadMessages + 1,
+        };
+        return updatedList;
+      }
+
+      // Otherwise add a new activity
+      return [
+        ...activities,
+        {
+          targetIdentifier: targetId,
+          latestMessage: messageDate,
+          unreadMessages: isActive ? 0 : 1,
+        },
+      ];
+    },
+    [activeDiscussionIdentifier, browserIsVisibleAndFocused, minimized]
   );
 
   // Initial fetch
@@ -139,8 +173,12 @@ function useChatActivity(
           activity.targetIdentifier.startsWith("room-")
         );
 
-        setChatUsersActivities(userActivities);
-        setChatRoomsActivities(roomActivities);
+        unstable_batchedUpdates(() => {
+          if (componentMounted.current) {
+            setChatUsersActivities(userActivities);
+            setChatRoomsActivities(roomActivities);
+          }
+        });
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;
@@ -158,6 +196,7 @@ function useChatActivity(
     fetchChatActivity();
   }, [displayNotification]);
 
+  // Document title handling
   React.useEffect(() => {
     if (!browserIsVisibleAndFocused && newMsgNotification) {
       if (newMsgNotification.targetIdentifier.startsWith("room-")) {
@@ -169,34 +208,20 @@ function useChatActivity(
           return;
         }
 
-        setTitle((prevTitle) =>
-          prevTitle ===
+        setTitle(
           `🔔 ${i18n.t("notifications.newMessage_room", {
             ns: "chat",
             nick: newMsgNotification.nick,
             roomName: room.name,
             context: "room",
           })}`
-            ? document.title
-            : `🔔 ${i18n.t("notifications.newMessage_room", {
-                ns: "chat",
-                nick: newMsgNotification.nick,
-                roomName: room.name,
-                context: "room",
-              })}`
         );
       } else {
-        setTitle((prevTitle) =>
-          prevTitle ===
+        setTitle(
           `🔔 ${i18n.t("notifications.newMessage", {
             ns: "chat",
             nick: newMsgNotification.nick,
           })}`
-            ? document.title
-            : `🔔 ${i18n.t("notifications.newMessage", {
-                ns: "chat",
-                nick: newMsgNotification.nick,
-              })}`
         );
       }
     } else if (browserIsVisibleAndFocused) {
@@ -215,140 +240,46 @@ function useChatActivity(
     rooms,
   ]);
 
+  // New message websocket handling
   React.useEffect(() => {
     /**
-     * Handles new message sent event
+     * Simplified message handling
      * @param data data
      */
-    const onNewMsgSentUpdateActivity = (data: unknown) => {
-      if (componentMounted.current) {
-        if (typeof data === "string") {
-          const dataTyped: ChatMessage = JSON.parse(data);
+    const handleNewMessage = (data: unknown) => {
+      if (typeof data !== "string") return;
 
-          const notifications = shouldGiveNotification(dataTyped);
+      const message: ChatMessage = JSON.parse(data);
+      const notifications = shouldGiveNotification(message);
 
-          // Play sound if logic shouldGiveNotification returns true
-          if (notifications.soundNotification) {
-            playMessageSound();
-          }
-
-          // Room activities
-          if (dataTyped.targetIdentifier.startsWith("room-")) {
-            setChatRoomsActivities((prev) => {
-              const index = prev.findIndex(
-                (activity) =>
-                  activity.targetIdentifier === dataTyped.targetIdentifier
-              );
-
-              if (index !== -1) {
-                const updatedList = [...prev];
-                updatedList[index].latestMessage = new Date(
-                  dataTyped.sentDateTime
-                );
-
-                if (
-                  !browserIsVisibleAndFocused ||
-                  minimized ||
-                  dataTyped.targetIdentifier !== activeDiscussionIdentifier
-                ) {
-                  updatedList[index].unreadMessages++;
-                }
-
-                return updatedList;
-              }
-
-              const newActivity: ChatActivity = {
-                targetIdentifier: dataTyped.targetIdentifier,
-                latestMessage: new Date(dataTyped.sentDateTime),
-                unreadMessages: 1,
-              };
-
-              if (
-                browserIsVisibleAndFocused &&
-                dataTyped.targetIdentifier === activeDiscussionIdentifier
-              ) {
-                newActivity.unreadMessages = 0;
-              }
-
-              return prev;
-            });
-          } else {
-            // User activities
-            setChatUsersActivities((prev) => {
-              const sourceIdentifier = `user-${dataTyped.sourceUserEntityId}`;
-
-              // Try to find the activity in the list using the source identifier or the target identifier
-              // If the current user is the source, use the target identifier
-              // else use the source identifier
-              const index =
-                currentUserIdentifier === sourceIdentifier
-                  ? prev.findIndex(
-                      (activity) =>
-                        activity.targetIdentifier === dataTyped.targetIdentifier
-                    )
-                  : prev.findIndex(
-                      (activity) =>
-                        activity.targetIdentifier === sourceIdentifier
-                    );
-
-              // If activity already exists, update the latest message date
-              if (index !== -1) {
-                const updatedList = [...prev];
-                updatedList[index].latestMessage = new Date(
-                  dataTyped.sentDateTime
-                );
-
-                // If discussion is not active, increment unread messages
-                if (
-                  !browserIsVisibleAndFocused ||
-                  minimized ||
-                  (sourceIdentifier !== activeDiscussionIdentifier &&
-                    dataTyped.targetIdentifier !== activeDiscussionIdentifier)
-                ) {
-                  updatedList[index].unreadMessages++;
-                }
-
-                return updatedList;
-              }
-
-              // If activity doesn't exist, create a new one and add it to the list with unread messages set to 1
-              const newActivity: ChatActivity = {
-                targetIdentifier: `user-${dataTyped.sourceUserEntityId}`,
-                latestMessage: new Date(dataTyped.sentDateTime),
-                unreadMessages: 1,
-              };
-
-              // By default new activity target identifier is the source identifier
-              // If the current user is the source, use the target identifier
-              if (dataTyped.targetIdentifier !== currentUserIdentifier) {
-                newActivity.targetIdentifier = dataTyped.targetIdentifier;
-              }
-
-              // If browser is visible and
-              // this is the active discussion, keep unread messages as 0
-              if (
-                browserIsVisibleAndFocused &&
-                dataTyped.targetIdentifier === activeDiscussionIdentifier
-              ) {
-                newActivity.unreadMessages = 0;
-              }
-
-              return [...prev, newActivity];
-            });
-          }
-          setNewMsgNotification(notifications.newMsgTabNotification);
-        }
+      if (notifications.soundNotification) {
+        // eslint-disable-next-line no-console
+        messageSound.play().catch(console.warn);
       }
+
+      const targetId = message.targetIdentifier;
+      const messageDate = new Date(message.sentDateTime);
+
+      if (targetId.startsWith("room-")) {
+        setChatRoomsActivities((prev) =>
+          updateActivity(prev, targetId, messageDate)
+        );
+      } else {
+        const userTargetId =
+          currentUserIdentifier === `user-${message.sourceUserEntityId}`
+            ? message.targetIdentifier
+            : `user-${message.sourceUserEntityId}`;
+        setChatUsersActivities((prev) =>
+          updateActivity(prev, userTargetId, messageDate)
+        );
+      }
+
+      setNewMsgNotification(notifications.newMsgTabNotification);
     };
 
-    websocket.addEventCallback("chat:message-sent", onNewMsgSentUpdateActivity);
-
-    return () => {
-      websocket.removeEventCallback(
-        "chat:message-sent",
-        onNewMsgSentUpdateActivity
-      );
-    };
+    websocket.addEventCallback("chat:message-sent", handleNewMessage);
+    return () =>
+      websocket.removeEventCallback("chat:message-sent", handleNewMessage);
   }, [
     activeDiscussionIdentifier,
     browserIsVisibleAndFocused,
@@ -356,6 +287,7 @@ function useChatActivity(
     minimized,
     playMessageSound,
     shouldGiveNotification,
+    updateActivity,
     websocket,
   ]);
 
