@@ -337,13 +337,13 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
           </div>
         </DialogRow>
         <DialogRow>
-          <div className="form-element form-element--chat">
+          {/* <div className="form-element form-element--chat">
             <label className="chat__label">
               {t("labels.chatSoundNotificationSettings", {
                 ns: "chat",
               })}
             </label>
-          </div>
+          </div> */}
 
           <div className="form-element form-element--chat form-element--checkbox-radiobutton">
             <input

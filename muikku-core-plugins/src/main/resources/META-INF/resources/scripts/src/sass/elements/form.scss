@@ -196,6 +196,11 @@ legend {
     &[disabled] {
       color: $color-disabled;
       border: 2px solid lighten($color-disabled, 20%);
+
+      &:checked {
+        background-color: $color-disabled;
+        border: 2px solid lighten($color-disabled, 20%);
+      }
     }
   }
 
@@ -213,6 +218,11 @@ legend {
     &[disabled] {
       color: $color-disabled;
       border: 2px solid lighten($color-disabled, 20%);
+
+      &:checked {
+        background-color: $color-disabled;
+        border: 2px solid $color-disabled;
+      }
     }
   }
 
