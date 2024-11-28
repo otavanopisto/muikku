@@ -13,7 +13,7 @@ import { useDocumentTitle } from "./useDocumentTitle";
 
 const chatApi = MApi.getChatApi();
 
-const messageSound = new Audio("/sounds/chat_merkkiaani1.mp3");
+const messageSound = new Audio("/sounds/chat-message-alert.mp3");
 
 /**
  * Custom hook for chat activity
