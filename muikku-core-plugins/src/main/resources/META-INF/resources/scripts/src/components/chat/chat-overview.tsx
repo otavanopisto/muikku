@@ -620,17 +620,31 @@ function ToggleRoomNotificationsButton(
 
   return (
     <div className="chat__button-wrapper">
-      <Dropdown
-        alignSelfVertically="top"
-        openByHover
-        content={<p>{t("actions.muteRoom", { ns: "chat" })}</p>}
-      >
-        <IconButton
-          icon="eye"
-          buttonModifiers={["chat"]}
-          onClick={handleToggleNotifications}
-        />
-      </Dropdown>
+      {notificationSettings.publicRoomEnabled.includes(room.identifier) ? (
+        <Dropdown
+          alignSelfVertically="top"
+          openByHover
+          content={<p>{t("actions.muteRoomSounds", { ns: "chat" })}</p>}
+        >
+          <IconButton
+            icon="sounds_on"
+            buttonModifiers={["chat"]}
+            onClick={handleToggleNotifications}
+          />
+        </Dropdown>
+      ) : (
+        <Dropdown
+          alignSelfVertically="top"
+          openByHover
+          content={<p>{t("actions.activateRoomSounds", { ns: "chat" })}</p>}
+        >
+          <IconButton
+            icon="sounds_off"
+            buttonModifiers={["chat"]}
+            onClick={handleToggleNotifications}
+          />
+        </Dropdown>
+      )}
     </div>
   );
 }

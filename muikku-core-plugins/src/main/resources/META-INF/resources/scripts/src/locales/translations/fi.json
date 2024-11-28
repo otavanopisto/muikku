@@ -2479,6 +2479,7 @@
   },
   "chat": {
     "actions": {
+      "activateRoomSounds": "Aktivoi huoneen ääni-ilmoitukset",
       "addRoom": "Lisää uusi huone",
       "blockUser": "Estä käyttäjä",
       "chatSettings": "Chatin asetukset",
@@ -2488,7 +2489,7 @@
       "deleteMessage": "Poista viesti",
       "editMessage": "Muokkaa viestiä",
       "minMaxPanel": "Pienennä/Suurenna paneeli",
-      "muteRoom": "Hiljennä huone",
+      "muteRoomSounds": "Hiljennä huone",
       "unBlockUser": "Poista esto",
       "fullscreenMode": "Kokoruututila",
       "exitFullscreenMode": "Poistu kokoruututilasta",

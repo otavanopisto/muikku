@@ -2479,6 +2479,7 @@
   },
   "chat": {
     "actions": {
+      "activateRoomSounds": "Activate room's sound alerts",
       "addRoom": "Add New Room",
       "blockUser": "Block User",
       "chatSettings": "Chat Settings",
@@ -2488,7 +2489,7 @@
       "deleteMessage": "Delete Message",
       "editMessage": "Edit Message",
       "minMaxPanel": "Minimize/Maximize Panel",
-      "muteRoom": "Mute Room",
+      "muteRoomSounds": "Mute Room",
       "unBlockUser": "Unblock User",
       "fullscreenMode": "Fullscreen Mode",
       "exitFullscreenMode": "Exit Fullscreen Mode",
