@@ -613,14 +613,13 @@ function ToggleRoomNotificationsButton(
     );
   };
 
-  // TODO: for style indicator
-  const notificationsEnabled = notificationSettings[
+  const roomNotificationsEnabled = notificationSettings[
     `${getRoomSettingsKey(room.type === "WORKSPACE")}Enabled`
   ].includes(room.identifier);
 
   return (
     <div className="chat__button-wrapper">
-      {notificationSettings.publicRoomEnabled.includes(room.identifier) ? (
+      {roomNotificationsEnabled ? (
         <Dropdown
           alignSelfVertically="top"
           openByHover

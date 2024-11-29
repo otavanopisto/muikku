@@ -12,6 +12,7 @@ import { useWindowContext } from "~/context/window-context";
 import { useIntersectionObserver } from "usehooks-ts";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
+import { getRoomSettingsKey } from "./chat-helpers";
 
 /**
  * ChatPanelProps
@@ -452,6 +453,10 @@ function ChatRoomPanel(props: ChatRoomPanelProps) {
     );
   };
 
+  const roomNotificationsEnabled = notificationSettings[
+    `${getRoomSettingsKey(targetRoom.type === "WORKSPACE")}Enabled`
+  ].includes(targetRoom.identifier);
+
   return (
     <div className="chat__discussion-panel">
       <div className="chat__discussion-panel-header">
@@ -465,9 +470,7 @@ function ChatRoomPanel(props: ChatRoomPanelProps) {
         </div>
         {notificationSettings.notificationsEnabled && (
           <div className="chat__button-wrapper">
-            {notificationSettings.publicRoomEnabled.includes(
-              props.targetRoom.identifier
-            ) ? (
+            {roomNotificationsEnabled ? (
               <Dropdown
                 alignSelfVertically="top"
                 openByHover
