@@ -178,8 +178,7 @@ import {
   DELETE_CONTACT_EVENT,
   DELETE_CONTACT_EVENT_COMMENT,
   UPDATE_NOTES_STATUS,
-  UPDATE_NOTES,
-  ADD_NOTE,
+  LOAD_NOTES,
 } from "./main-function/guider";
 import {
   UPDATE_RECORDS_ALL_STUDENT_USERS_DATA,
@@ -616,7 +615,6 @@ export type ActionType =
   | UPDATE_MATERIALS_ARE_DISABLED
   | UPDATE_WORKSPACE_IS_BEING_EVALUATED
   | UPDATE_NOTES_STATUS
-  | UPDATE_NOTES
-  | ADD_NOTE;
+  | LOAD_NOTES;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

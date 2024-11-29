@@ -39,9 +39,7 @@ export type UPDATE_NOTES_STATUS = SpecificActionType<
   "UPDATE_NOTES_STATUS",
   LoadingState
 >;
-export type UPDATE_NOTES = SpecificActionType<"UPDATE_NOTES", NoteSortedList>;
-
-export type ADD_NOTE = SpecificActionType<"ADD_NOTE", Note>;
+export type LOAD_NOTES = SpecificActionType<"LOAD_NOTES", NoteSortedList>;
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -521,7 +519,7 @@ const loadNotes: LoadNotesTriggerType = function loadNotes(
         creatorId,
         listArchived,
       });
-      dispatch({ type: "UPDATE_NOTES", payload: notes });
+      dispatch({ type: "LOAD_NOTES", payload: notes });
       dispatch({ type: "UPDATE_NOTES_STATUS", payload: "READY" });
     } catch (err) {
       if (!isMApiError(err)) {

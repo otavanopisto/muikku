@@ -308,18 +308,11 @@ export const guider: Reducer<GuiderState> = (
       return { ...state, notes };
     }
 
-    // TODO: this should be "LOAD_NOTES"
-    case "UPDATE_NOTES": {
+    case "LOAD_NOTES": {
       const notes = { ...state.notes };
       notes.notes = action.payload;
       return { ...state, notes };
     }
-    case "ADD_NOTE": {
-      const notes = { ...state.notes };
-      // notes.notes = {...notes.notes, action.payload};
-      return { ...state, notes };
-    }
-
     case "ADD_TO_GUIDER_SELECTED_STUDENTS": {
       const student: Student = action.payload;
 
