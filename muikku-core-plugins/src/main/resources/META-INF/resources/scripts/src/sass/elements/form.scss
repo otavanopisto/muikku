@@ -194,8 +194,8 @@ legend {
     width: 1rem;
 
     &[disabled] {
-      color: $color-disabled;
       border: 2px solid lighten($color-disabled, 20%);
+      color: $color-disabled;
 
       &:checked {
         background-color: $color-disabled;
@@ -216,8 +216,8 @@ legend {
     width: 1rem;
 
     &[disabled] {
-      color: $color-disabled;
       border: 2px solid lighten($color-disabled, 20%);
+      color: $color-disabled;
 
       &:checked {
         background-color: $color-disabled;

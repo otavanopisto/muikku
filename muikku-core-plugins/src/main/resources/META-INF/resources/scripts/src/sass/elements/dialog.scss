@@ -539,15 +539,15 @@
   align-items: flex-start;
   display: flex;
   flex-basis: auto;
-  flex-grow: 1;
   flex-flow: column nowrap;
+  flex-grow: 1;
   flex-shrink: 1;
   justify-content: flex-start;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
-    width: auto;
     max-width: 50%;
+    width: auto;
   }
 }
 
