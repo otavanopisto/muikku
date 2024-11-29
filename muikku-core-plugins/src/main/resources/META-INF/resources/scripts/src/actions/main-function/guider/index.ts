@@ -24,6 +24,9 @@ import {
   UserStudentFlag,
   UserFlag,
   UserGroup,
+  NoteSortedList,
+  CreateNoteRequest,
+  Note,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -31,6 +34,14 @@ import {
   RecordWorkspaceActivitiesWithLineCategory,
   RecordWorkspaceActivityByLine,
 } from "~/components/general/records-history/types";
+
+export type UPDATE_NOTES_STATUS = SpecificActionType<
+  "UPDATE_NOTES_STATUS",
+  LoadingState
+>;
+export type UPDATE_NOTES = SpecificActionType<"UPDATE_NOTES", NoteSortedList>;
+
+export type ADD_NOTE = SpecificActionType<"ADD_NOTE", Note>;
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -447,6 +458,20 @@ export interface ToggleAllStudentsTriggerType {
 }
 
 /**
+ * LoadNotesTriggerType
+ */
+export interface LoadNotesTriggerType {
+  (userId: number, listArchived: boolean): AnyActionType;
+}
+
+/**
+ * LoadNotesTriggerType
+ */
+export interface CreateNoteTriggerType {
+  (request: CreateNoteRequest, success?: () => void): AnyActionType;
+}
+
+/**
  * toggleAllStudents thunk action creator
  * @returns a thunk function for toggling all students selection
  */
@@ -472,6 +497,90 @@ const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
   };
 
 /**
+ * loadNotes
+ *
+ * @param userId userId
+ * @param listArchived listArchived
+ */
+const loadNotes: LoadNotesTriggerType = function loadNotes(
+  creatorId,
+  listArchived
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    try {
+      // Lets not load something that is already loaded
+      if (getState().guider.notes.state === "READY") {
+        return;
+      }
+      dispatch({ type: "UPDATE_NOTES_STATUS", payload: "LOADING" });
+      const NotesApi = MApi.getNotesApi();
+      const notes = await NotesApi.getNotesByCreator({
+        creatorId,
+        listArchived,
+      });
+      dispatch({ type: "UPDATE_NOTES", payload: notes });
+      dispatch({ type: "UPDATE_NOTES_STATUS", payload: "READY" });
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+      dispatch({ type: "UPDATE_NOTES_STATUS", payload: "ERROR" });
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.createError", {
+            ns: "users",
+            error: err,
+            context: "student",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * loadNotes
+ *
+ * @param userId userId
+ * @param listArchived listArchived
+ */
+const createNote: CreateNoteTriggerType = function createNote(
+  createNoteRequest: CreateNoteRequest,
+  onSuccess?: () => void
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const notesApi = MApi.getNotesApi();
+    const userId = getState().status.userId;
+    try {
+      // Creating and getting created notesItem
+      await notesApi.createNote({
+        createNoteRequest,
+      });
+      loadNotes(userId, false);
+      onSuccess && onSuccess();
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.createSuccess"),
+          "success"
+        )
+      );
+    } catch (err) {
+      notificationActions.displayNotification(
+        i18n.t("notifications.createError", { error: err }),
+        "error"
+      );
+    }
+  };
+};
+
+/**
  * removeFileFromCurrentStudent thunk action creator
  * @param file file to be removed
  * @returns a thunk function for removing a file from a student
@@ -483,7 +592,6 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
-
       try {
         await guiderApi.deleteGuiderFile({
           fileId: file.id,
@@ -506,6 +614,7 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
       }
     };
   };
+
 /**
  * loadStudents thunk action creator
  * @param filters filters to be applied
@@ -2528,6 +2637,8 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
   };
 
 export {
+  loadNotes,
+  createNote,
   loadStudents,
   loadMoreStudents,
   loadStudent,

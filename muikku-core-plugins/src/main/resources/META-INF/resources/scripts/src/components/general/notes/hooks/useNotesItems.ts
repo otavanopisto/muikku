@@ -46,26 +46,18 @@ export const useNotesItem = (
      * loadNotesItemListData
      * @param byCreator if should load by creator
      */
-    const loadNotesItemListData = async (byCreator?: boolean) => {
+    const loadNotesItemListData = async () => {
       setNotesItem((notesItem) => ({ ...notesItem, isLoadingList: true }));
 
       try {
-        const archivedNotes: Note[] = [];
-        const activeNotes: Note[] = [];
-
-        await Promise.all([
-          notesApi
-            .getNotesByRecipient({
-              recipientId: studentId,
-              listArchived: true,
-            })
-            .then((notes) => {
-              notes.forEach((note) => {
-                note.isArchived
-                  ? archivedNotes.push(note)
-                  : activeNotes.push(note);
-              });
-            }),
+        const [liveNotes, archivedNotes] = await Promise.all([
+          notesApi.getNotesByRecipient({
+            recipientId: studentId,
+          }),
+          notesApi.getNotesByRecipient({
+            recipientId: studentId,
+            listArchived: true,
+          }),
           // Sleeper to delay data fetching if it happens faster than 1s
           sleep(1000),
         ]);
@@ -74,7 +66,7 @@ export const useNotesItem = (
           setNotesItem((notesItems) => ({
             ...notesItems,
             isLoadingList: false,
-            notesItemList: setToDefaultSortingOrder(activeNotes),
+            notesItemList: setToDefaultSortingOrder(liveNotes),
             notesArchivedItemList: setToDefaultSortingOrder(archivedNotes),
           }));
         }
@@ -313,8 +305,7 @@ export const useNotesItem = (
       // Initializing list
       const updatedNotesItemList = [...notesItems.notesItemList];
       const updatedNotesArchivedItemList = [
-        ...notesItems.notesArc,
-        hivedItemList,
+        ...notesItems.notesArchivedItemList,
       ];
 
       // Finding index of notesItem that was just updated

@@ -123,7 +123,7 @@ const Notes: React.FC<NotesProps> = (props) => {
           <NotesToolbar>
             <div className="notes__toolbar-section">
               <NotesItemNew
-                newNoteOwnerId={studentId}
+                newNoteRecipientId={studentId}
                 onNotesItemSaveClick={createNotesItem}
               >
                 <ButtonPill
@@ -169,7 +169,7 @@ const Notes: React.FC<NotesProps> = (props) => {
           <NotesToolbar>
             <div className="notes__toolbar-section">
               <NotesItemNew
-                newNoteOwnerId={studentId}
+                newNoteRecipientId={studentId}
                 onNotesItemSaveClick={createNotesItem}
               >
                 <ButtonPill
