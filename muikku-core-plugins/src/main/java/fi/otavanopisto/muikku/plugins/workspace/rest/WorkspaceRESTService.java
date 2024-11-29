@@ -76,7 +76,6 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
@@ -90,7 +89,6 @@ import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
@@ -2939,13 +2937,14 @@ public class WorkspaceRESTService extends PluginRESTService {
       fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder restFolder) {
 
     if (restFolder == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.BAD_REQUEST).entity("Missing payload").build();
     }
 
     // Workspace
+
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.BAD_REQUEST).entity("Workspace not found").build();
     }
 
     if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
@@ -2953,30 +2952,41 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     // WorkspaceFolder
+
     WorkspaceFolder workspaceFolder = workspaceMaterialController.findWorkspaceFolderById(restFolder.getId());
     if (workspaceFolder == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.BAD_REQUEST).entity("Folder not found").build();
     }
 
     // Workspace folder belongs to workspace check
 
     Long folderWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceFolder);
     if (!folderWorkspaceEntityId.equals(workspaceEntityId)) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.BAD_REQUEST).entity("Workspace mismatch").build();
+    }
+    
+    // Payload validation
+    
+    if (StringUtils.isEmpty(restFolder.getTitle())) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing title").build();
+    }
+    if (restFolder.getParentId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing parent folder").build();
     }
 
     // Actual update
 
     WorkspaceNode parentNode = restFolder.getParentId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getParentId());
     WorkspaceNode nextSibling = restFolder.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getNextSiblingId());
-    Boolean hidden = restFolder.getHidden();
-    String title = restFolder.getTitle();
-    MaterialViewRestrict viewRestrict = restFolder.getViewRestrict();
-
-    WorkspaceLanguage titleLanguage = restFolder.getTitleLanguage();
-
-
-    workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden, viewRestrict, titleLanguage);
+    workspaceFolder = workspaceMaterialController.updateWorkspaceFolder(
+        workspaceFolder,
+        restFolder.getTitle(),
+        parentNode,
+        nextSibling,
+        restFolder.getHidden(),
+        restFolder.getViewRestrict(),
+        restFolder.getTitleLanguage());
+   
     return Response.ok(createRestModel(workspaceFolder)).build();
   }
 
@@ -3023,7 +3033,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.BAD_REQUEST).entity("Workspace not found").build();
     }
 
     if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
@@ -3034,14 +3044,23 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(restWorkspaceMaterial.getId());
     if (workspaceMaterial == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.BAD_REQUEST).entity("Workspace material not found").build();
     }
 
     // Workspace material belongs to workspace check
 
     Long materialWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceMaterial);
     if (!materialWorkspaceEntityId.equals(workspaceEntityId)) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.BAD_REQUEST).entity("Workspace mismatch").build();
+    }
+    
+    // Payload validation
+    
+    if (StringUtils.isEmpty(restWorkspaceMaterial.getTitle())) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing title").build();
+    }
+    if (restWorkspaceMaterial.getParentId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing parent folder").build();
     }
 
     // Actual update
@@ -3050,10 +3069,17 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode parentNode = workspaceMaterialController.findWorkspaceNodeById(restWorkspaceMaterial.getParentId());
     WorkspaceNode nextSibling = restWorkspaceMaterial.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restWorkspaceMaterial.getNextSiblingId());
     boolean titleChanged = !StringUtils.equals(restWorkspaceMaterial.getTitle(), workspaceMaterial.getTitle());
-    Boolean hidden = restWorkspaceMaterial.getHidden();
-    WorkspaceNode workspaceNode = workspaceMaterialController.updateWorkspaceNode(workspaceMaterial, materialId, parentNode, nextSibling, hidden,
-        restWorkspaceMaterial.getAssignmentType(), restWorkspaceMaterial.getCorrectAnswers(), restWorkspaceMaterial.getTitle(),
-        restWorkspaceMaterial.getTitleLanguage(), restWorkspaceMaterial.getMaxPoints());
+    WorkspaceNode workspaceNode = workspaceMaterialController.updateWorkspaceNode(
+        workspaceMaterial,
+        materialId,
+        parentNode,
+        nextSibling,
+        restWorkspaceMaterial.getHidden(),
+        restWorkspaceMaterial.getAssignmentType(),
+        restWorkspaceMaterial.getCorrectAnswers(),
+        restWorkspaceMaterial.getTitle(),
+        restWorkspaceMaterial.getTitleLanguage(),
+        restWorkspaceMaterial.getMaxPoints());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
 
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles

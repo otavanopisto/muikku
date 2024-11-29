@@ -126,7 +126,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
               })}
               className={`application-list__indicator-badge application-list__indicator-badge--task ${this.checkIndicatorClassModifier()}`}
             >
-              P
+              {compositeReply.evaluationInfo.points}
             </span>
           </Dropdown>
         );
@@ -197,7 +197,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
               })}
               className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
             >
-              N
+              –
             </span>
           );
       }
@@ -210,7 +210,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
         })}
         className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}
       >
-        N
+        –
       </span>
     );
   };
