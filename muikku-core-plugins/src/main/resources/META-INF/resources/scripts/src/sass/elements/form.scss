@@ -199,7 +199,7 @@ legend {
 
       &:checked {
         background-color: $color-disabled;
-        border: 2px solid lighten($color-disabled, 20%);
+        border: 2px solid $color-disabled;
       }
     }
   }
