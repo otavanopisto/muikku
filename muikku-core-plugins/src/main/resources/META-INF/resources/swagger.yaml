@@ -15778,6 +15778,16 @@ components:
               nullable: true
             matriculationEligibility:
               type: boolean
+            permissions:
+              type: object
+              required:
+                - canViewDetails
+                - canEdit
+              properties:
+                canViewDetails:
+                  type: boolean
+                canEdit:
+                  type: boolean
 
     StudentInfo:
       type: object
