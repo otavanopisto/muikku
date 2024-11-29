@@ -33,7 +33,7 @@ class FrontpageFooter extends React.Component<WithTranslation> {
             </p>
             <p className="footer__subitem footer__subitem--privacy-policy">
               <a
-                href="https://drive.google.com/file/d/1rcKBLel8fXZdwiqgBcZdu4MKTRHeyEHy/view?usp=sharing"
+                href="https://drive.google.com/file/d/1oInmHuCFM33niWgaLMVBBkJIGIlNt8eF/view?usp=drive_link"
                 target="_blank"
                 className="link link--privacy-policy"
                 rel="noreferrer"
