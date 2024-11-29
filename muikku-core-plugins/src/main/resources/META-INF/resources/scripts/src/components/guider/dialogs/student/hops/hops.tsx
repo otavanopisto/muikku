@@ -27,12 +27,12 @@ import {
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
-import { Student } from "~/generated/client";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
 import _ from "lodash";
 import PendingChangesWarningDialog from "~/components/hops/dialogs/pending-changes-warning";
+import { GuiderStudent } from "~/generated/client";
 
 /**
  * Represents the available tabs in the HOPS application
@@ -49,7 +49,7 @@ interface HopsApplicationProps {
   /** The current state of the status application */
   status: StatusType;
   /** Information about the current student */
-  studentInfo: Student;
+  studentInfo: GuiderStudent;
   /** Unique identifier for the student */
   studentIdentifier: string;
   /** Function to load matriculation data */
@@ -148,19 +148,35 @@ const HopsApplication = (props: HopsApplicationProps) => {
     cancelEditing();
   };
 
-  const panelTabs: Tab[] = [
-    {
-      id: "MATRICULATION",
-      name: t("labels.hopsMatriculation", { ns: "hops_new" }),
-      hash: "matriculation",
-      type: "matriculation",
-      component: (
-        <ApplicationPanelBody modifier="tabs">
-          <Matriculation />
-        </ApplicationPanelBody>
-      ),
-    },
-  ];
+  // Note canViewDetails lets the user view other hops tabs than matriculation and study plan
+  // These are not implemented yet, but this is reserved for future use
+  const panelTabs: Tab[] = studentInfo.permissions.canViewDetails
+    ? [
+        {
+          id: "MATRICULATION",
+          name: t("labels.hopsMatriculation", { ns: "hops_new" }),
+          hash: "matriculation",
+          type: "matriculation",
+          component: (
+            <ApplicationPanelBody modifier="tabs">
+              <Matriculation />
+            </ApplicationPanelBody>
+          ),
+        },
+      ]
+    : [
+        {
+          id: "MATRICULATION",
+          name: t("labels.hopsMatriculation", { ns: "hops_new" }),
+          hash: "matriculation",
+          type: "matriculation",
+          component: (
+            <ApplicationPanelBody modifier="tabs">
+              <Matriculation />
+            </ApplicationPanelBody>
+          ),
+        },
+      ];
 
   const updatedMatriculationPlan = {
     ...hops.hopsEditing.matriculationPlan,
@@ -192,49 +208,51 @@ const HopsApplication = (props: HopsApplicationProps) => {
           studyStartDate: studentInfo.studyStartDate,
         }}
       >
-        <div className="hops-edit__button-row">
-          {hops.hopsMode === "READ" ? (
-            <Button
-              onClick={handleModeChangeClick}
-              disabled={editingDisabled}
-              buttonModifiers={[
-                "primary",
-                "standard-ok",
-                "standard-fit-content",
-              ]}
-            >
-              {t("actions.editingStart", { ns: "hops_new" })}
-            </Button>
-          ) : (
-            <Button
-              onClick={handleModeChangeClick}
-              disabled={!hopsHasChanges}
-              buttonModifiers={[
-                "primary",
-                "standard-ok",
-                "standard-fit-content",
-              ]}
-            >
-              {t("actions.editingEnd", { ns: "hops_new" })}
-            </Button>
-          )}
-          {hops.hopsMode === "EDIT" && (
-            <Button
-              buttonModifiers={[
-                "cancel",
-                "standard-cancel",
-                "standard-fit-content",
-              ]}
-              onClick={
-                hopsHasChanges
-                  ? handleOpenPendingChangesWarningDialog
-                  : handleCancelClick
-              }
-            >
-              {t("actions.cancel", { ns: "common" })}
-            </Button>
-          )}
-        </div>
+        {studentInfo.permissions.canEdit && (
+          <div className="hops-edit__button-row">
+            {hops.hopsMode === "READ" ? (
+              <Button
+                onClick={handleModeChangeClick}
+                disabled={editingDisabled}
+                buttonModifiers={[
+                  "primary",
+                  "standard-ok",
+                  "standard-fit-content",
+                ]}
+              >
+                {t("actions.editingStart", { ns: "hops_new" })}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleModeChangeClick}
+                disabled={!hopsHasChanges}
+                buttonModifiers={[
+                  "primary",
+                  "standard-ok",
+                  "standard-fit-content",
+                ]}
+              >
+                {t("actions.editingEnd", { ns: "hops_new" })}
+              </Button>
+            )}
+            {hops.hopsMode === "EDIT" && (
+              <Button
+                buttonModifiers={[
+                  "cancel",
+                  "standard-cancel",
+                  "standard-fit-content",
+                ]}
+                onClick={
+                  hopsHasChanges
+                    ? handleOpenPendingChangesWarningDialog
+                    : handleCancelClick
+                }
+              >
+                {t("actions.cancel", { ns: "common" })}
+              </Button>
+            )}
+          </div>
+        )}
         <ApplicationPanel
           modifier="guider-student-hops"
           onTabChange={onTabChange}
