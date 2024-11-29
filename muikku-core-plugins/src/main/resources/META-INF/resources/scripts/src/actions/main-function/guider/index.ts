@@ -26,7 +26,6 @@ import {
   UserGroup,
   NoteSortedList,
   CreateNoteRequest,
-  Note,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
