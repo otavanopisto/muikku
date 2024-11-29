@@ -28,6 +28,7 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
+import fi.otavanopisto.muikku.rest.model.HopsStudentPermissionsRestModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -295,4 +296,71 @@ public class HopsController {
     }
   }
   
+
+  /**
+   * Returns true if currently logged in user can view the hops of 
+   * given student.
+   * 
+   * @param studentIdentifier for which student the permission is checked for
+   * @return true if user has permission, false otherwise
+   */
+  public boolean canViewHops(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return true;
+    }
+    
+    return userSchoolDataController.amICounselor(studentIdentifier)
+        || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)
+        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+  }
+
+  /**
+   * Returns true if currently logged in user can view the hops details of 
+   * given student.
+   * 
+   * @param studentIdentifier for which student the permission is checked for
+   * @return true if user has permission, false otherwise
+   */
+  public boolean canViewHopsDetails(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return true;
+    }
+    
+    boolean isGuidanceCounselor = userSchoolDataController.amICounselor(studentIdentifier);
+    return isGuidanceCounselor || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+  }
+
+  /**
+   * Returns true if currently logged in user can modify the hops of 
+   * given student.
+   * 
+   * @param studentIdentifier for which student the permission is checked for
+   * @return true if user has permission, false otherwise
+   */
+  public boolean canModifyHops(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return true;
+    }
+    
+    boolean isGuidanceCounselor = userSchoolDataController.amICounselor(studentIdentifier);
+    return isGuidanceCounselor || sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR);
+  }
+
+  /**
+   * Returns a permission rest model for frontend for currently
+   * logged in user.
+   * 
+   * @param studentIdentifier for which student the permissions are for
+   * @return a permission rest model
+   */
+  public HopsStudentPermissionsRestModel getHOPSStudentPermissions(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return new HopsStudentPermissionsRestModel(true, true);
+    }
+    
+    boolean isGuidanceCounselor = userSchoolDataController.amICounselor(studentIdentifier);
+    boolean canViewDetails = isGuidanceCounselor || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+    boolean canEdit = isGuidanceCounselor || sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR);
+    return new HopsStudentPermissionsRestModel(canViewDetails, canEdit);
+  }
 }

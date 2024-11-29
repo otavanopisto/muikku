@@ -61,6 +61,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
@@ -78,7 +79,6 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
-import fi.otavanopisto.muikku.rest.model.GuiderStudentPermissionsRestModel;
 import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -89,7 +89,6 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
-import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
@@ -231,6 +230,9 @@ public class GuiderRESTService extends PluginRESTService {
   
   @Inject
   private UserRecipientController userRecipientController;
+
+  @Inject
+  private HopsController hopsController;
 
   @GET
   @Path("/students")
@@ -584,7 +586,7 @@ public class GuiderRESTService extends PluginRESTService {
         user.getMatriculationEligibility(),
         userEntity == null ? false : pedagogyController.hasPedagogyForm(userEntity.getId()),
         user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null,
-        getGuiderStudentPermissions(studentIdentifier)
+        hopsController.getHOPSStudentPermissions(studentIdentifier)
     );
 
     return Response
@@ -592,18 +594,6 @@ public class GuiderRESTService extends PluginRESTService {
         .cacheControl(cacheControl)
         .tag(tag)
         .build();
-  }
-
-  private GuiderStudentPermissionsRestModel getGuiderStudentPermissions(SchoolDataIdentifier studentIdentifier) {
-    boolean isOwner = sessionController.getLoggedUser().equals(studentIdentifier);
-    if (isOwner) {
-      return new GuiderStudentPermissionsRestModel(true, true);
-    }
-    
-    StudentGuidanceRelation guidanceRelation = userController.getGuidanceRelation(studentIdentifier);
-    boolean canViewDetails = isOwner || guidanceRelation.isGuidanceCounselor() || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
-    boolean canEdit = isOwner || guidanceRelation.isGuidanceCounselor() || sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR);
-    return new GuiderStudentPermissionsRestModel(canViewDetails, canEdit);
   }
 
   @GET

@@ -13,7 +13,7 @@ public class GuiderStudentRestModel extends FlaggedStudentRestModel {
       String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, Date lastLogin,
       String curriculumIdentifier, boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
       OrganizationRESTModel organization, boolean matriculationEligibility, Boolean hasPedagogyForm, String curriculumName,
-      GuiderStudentPermissionsRestModel permissions) {
+      HopsStudentPermissionsRestModel permissions) {
     super(id, firstName, lastName, nickName, studyProgrammeName, studyProgrammeIdentifier, hasImage, nationality, language, municipality,
         school, email, studyStartDate, studyEndDate, studyTimeEnd, lastLogin,
         curriculumIdentifier, updatedByStudent, userEntityId, flags, organization, hasPedagogyForm);
@@ -38,15 +38,15 @@ public class GuiderStudentRestModel extends FlaggedStudentRestModel {
     this.curriculumName = curriculumName;
   }
 
-  public GuiderStudentPermissionsRestModel getPermissions() {
+  public HopsStudentPermissionsRestModel getPermissions() {
     return permissions;
   }
 
-  public void setPermissions(GuiderStudentPermissionsRestModel permissions) {
+  public void setPermissions(HopsStudentPermissionsRestModel permissions) {
     this.permissions = permissions;
   }
 
   private boolean matriculationEligibility;
   private String curriculumName;
-  private GuiderStudentPermissionsRestModel permissions;
+  private HopsStudentPermissionsRestModel permissions;
 }

@@ -1,11 +1,11 @@
 package fi.otavanopisto.muikku.rest.model;
 
-public class GuiderStudentPermissionsRestModel {
+public class HopsStudentPermissionsRestModel {
 
-  public GuiderStudentPermissionsRestModel() {
+  public HopsStudentPermissionsRestModel() {
   }
 
-  public GuiderStudentPermissionsRestModel(boolean canViewDetails, boolean canEdit) {
+  public HopsStudentPermissionsRestModel(boolean canViewDetails, boolean canEdit) {
     this.canViewDetails = canViewDetails;
     this.canEdit = canEdit;
   }
