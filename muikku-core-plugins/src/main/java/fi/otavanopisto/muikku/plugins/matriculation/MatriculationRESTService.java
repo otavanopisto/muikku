@@ -489,15 +489,9 @@ public class MatriculationRESTService {
   @Path("/students/{STUDENTIDENTIFIER}/matriculationEligibility")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response findMatriculationEligibility(
-      @PathParam("STUDENTIDENTIFIER") String studentIdentifierParam,
+      @PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier,
       @QueryParam ("subjectCode") String subjectCode) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    if (!studentIdentifier.equals(loggedUserIdentifier) && !userSchoolDataController.amICounselor(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+    if (!hopsController.canViewHops(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
