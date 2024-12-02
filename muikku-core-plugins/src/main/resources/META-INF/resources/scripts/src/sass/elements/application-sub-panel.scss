@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .application-sub-panel {
-  border-bottom: 1px solid $color-subpanel-border;
+  // border-bottom: 1px solid $color-subpanel-border;
   margin: 0 0 30px;
   width: 100%;
 
@@ -36,14 +36,6 @@
 
 .application-sub-panel--guidance-relation-guidance-events {
   flex-basis: 100%;
-}
-
-.application-sub-panel--sub-tabs {
-  padding: 0 0 30px;
-
-  &:last-child {
-    padding: 0;
-  }
 }
 
 .application-sub-panel--header-main {
