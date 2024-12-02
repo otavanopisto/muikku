@@ -296,10 +296,10 @@ public class HopsController {
     }
   }
   
-
   /**
-   * Returns true if currently logged in user can view the hops of 
-   * given student.
+   * Returns true if currently logged in user can view the regular hops tabs
+   * of given student. The regular tabs are the planning tab and the matriculation
+   * tab. The other two tabs are covered as "details" tabs.
    * 
    * @param studentIdentifier for which student the permission is checked for
    * @return true if user has permission, false otherwise
@@ -311,7 +311,8 @@ public class HopsController {
     
     return userSchoolDataController.amICounselor(studentIdentifier)
         || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)
-        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)
+        || workspaceEntityController.isWorkspaceTeacherOfStudent(sessionController.getLoggedUser(), studentIdentifier);
   }
 
   /**
@@ -326,8 +327,8 @@ public class HopsController {
       return true;
     }
     
-    boolean isGuidanceCounselor = userSchoolDataController.amICounselor(studentIdentifier);
-    return isGuidanceCounselor || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+    return userSchoolDataController.amICounselor(studentIdentifier)
+        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
   }
 
   /**
