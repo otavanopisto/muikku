@@ -130,6 +130,14 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             })}
           </div>
           <div className="application-sub-panel__body">
+            <div
+              className="application-sub-panel__description"
+              dangerouslySetInnerHTML={{
+                __html: t("content.counselorsDescription", {
+                  ns: "studies",
+                }),
+              }}
+            ></div>
             <div className="item-list item-list--student-counselors">
               {this.props.contacts.counselors.list.length > 0 ? (
                 this.props.contacts.counselors.list.map((counselor) => {
@@ -225,14 +233,19 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                               },
                             ]}
                           >
-                            <Link
-                              tabIndex={0}
-                              className="link link--application-list"
-                            >
-                              {t("labels.send", {
+                            <ButtonPill
+                              icon="envelope"
+                              aria-label={t("labels.send", {
                                 ns: "messaging",
                               })}
-                            </Link>
+                              title={t("labels.send", {
+                                ns: "messaging",
+                              })}
+                              buttonModifiers={[
+                                "new-message",
+                                "new-message-to-staff",
+                              ]}
+                            ></ButtonPill>
                           </CommunicatorNewMessage>
                           {counselor.properties["profile-phone"] &&
                           counselor.properties["profile-whatsapp"] ? (

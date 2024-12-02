@@ -486,6 +486,7 @@
       "completedWorkspaces": "kurssia",
       "completedWorkspaces_matriculation": "abistatukseen vaadittavaa kurssia.",
       "completedWorkspaces_lastMonth": "kurssia viimeisen kuukauden aikana.",
+      "counselorsDescription": "<b>Ryhmänohjaaja</b> seuraa opintojen etenemistä ja neuvoo yleisissä opiskeluun liittyvissä asioissa. <b>Opinto-ohjaaja</b> auttaa opiskelu- ja ylioppilastutkintosuunnitelmaan, opiskelutaitoihin sekä jatko-opintojen suunnitteluun liittyvissä asioissa.",
       "empty": "$t(common:content.empty)",
       "empty_counselors": "Sinulla ei ole ohjaajia",
       "empty_studyTime": "Ei asetettu",
