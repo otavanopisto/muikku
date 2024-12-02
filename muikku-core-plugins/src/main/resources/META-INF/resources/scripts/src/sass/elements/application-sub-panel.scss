@@ -315,6 +315,25 @@
   margin: 0 0 10px;
 }
 
+// Multicolumn subpanel
+.application-sub-panel__body--multicolumn {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0 20px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+
+  // Multricolumn subpanel item
+  .application-sub-panel__item--multicolumn {
+    flex-basis: 50%;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
 // Subpanel body
 .application-sub-panel__body--yo-status-incomplete {
   border-left: 4px solid $color-sub-panel-status-incomplete-border;
@@ -787,6 +806,7 @@
 
 .application-sub-panel__item--counselors {
   align-items: start;
+  flex-flow: column nowrap;
 }
 
 .application-sub-panel__item--guider-student {
@@ -1026,6 +1046,12 @@
     flex-basis: 250px;
     margin: 0 10px 5px 0;
   }
+}
+
+.application-sub-panel__item-title--counselors {
+  flex-basis: auto;
+  font-weight: 600;
+  width: 100%,
 }
 
 .application-sub-panel__item-title--organization-summary,
