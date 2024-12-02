@@ -50,7 +50,6 @@ import fi.otavanopisto.muikku.schooldata.MatriculationExamListFilter;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
@@ -105,9 +104,6 @@ public class MatriculationRESTService {
   
   @Inject
   private UserGroupGuidanceController userGroupGuidanceController;
-  
-  @Inject
-  private UserSchoolDataController userSchoolDataController;
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -448,18 +444,12 @@ public class MatriculationRESTService {
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   @Path("/students/{STUDENTIDENTIFIER}/plan")
-  public Response updateStudentsMatriculationPlan(@PathParam("STUDENTIDENTIFIER") String studentIdentifierParam, MatriculationPlanRESTModel model) {
+  public Response updateStudentsMatriculationPlan(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier, MatriculationPlanRESTModel model) {
     if (model == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing payload").build();
     }
 
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    if (!loggedUserIdentifier.equals(studentIdentifier) && !userSchoolDataController.amICounselor(studentIdentifier)) {
+    if (!hopsController.canModifyHops(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
@@ -479,8 +469,8 @@ public class MatriculationRESTService {
     HopsMatriculationPlanWSMessage msg = new HopsMatriculationPlanWSMessage();
     msg.setGoalMatriculationExam(model.getGoalMatriculationExam());
     msg.setPlannedSubjects(model.getPlannedSubjects());
-    msg.setStudentIdentifier(studentIdentifierParam);
-    hopsWebSocketMessenger.sendMessage(studentIdentifierParam, "hops:matriculationplan-updated", msg);
+    msg.setStudentIdentifier(studentIdentifier.toId());
+    hopsWebSocketMessenger.sendMessage(studentIdentifier.toId(), "hops:matriculationplan-updated", msg);
 
     return Response.ok().entity(model).build();
   }

@@ -343,8 +343,8 @@ public class HopsController {
       return true;
     }
     
-    boolean isGuidanceCounselor = userSchoolDataController.amICounselor(studentIdentifier);
-    return isGuidanceCounselor || sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR);
+    return userSchoolDataController.amICounselor(studentIdentifier) 
+        || sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR);
   }
 
   /**
