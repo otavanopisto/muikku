@@ -124,20 +124,29 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
 
       const studentCounselors = (
         <div className="application-sub-panel">
-          <div className="application-sub-panel__header">
+          <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
             {t("labels.counselors", {
               ns: "users",
             })}
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: t("content.counselorsDescription", {
+                      ns: "studies",
+                    }),
+                  }}
+                />
+              }
+            />
           </div>
           <div className="application-sub-panel__body">
-            <div
-              className="application-sub-panel__description"
-              dangerouslySetInnerHTML={{
-                __html: t("content.counselorsDescription", {
-                  ns: "studies",
-                }),
-              }}
-            ></div>
             <div className="item-list item-list--student-counselors">
               {this.props.contacts.counselors.list.length > 0 ? (
                 this.props.contacts.counselors.list.map((counselor) => {

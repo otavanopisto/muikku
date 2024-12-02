@@ -486,7 +486,7 @@
       "completedWorkspaces": "courses",
       "completedWorkspaces_matriculation": "courses for the Abi status",
       "completedWorkspaces_lastMonth": "courses during the last month",
-      "counselorsDescription": "The <b>group advisor</b> monitors the progress of studies and provides guidance on general study-related matters. The <b>guidance counselor</b> assists with study and matriculation examination plans, study skills, and planning further studies.",
+      "counselorsDescription": "<p>The <b>group advisor</b> monitors the progress of studies and provides guidance on general study-related matters.</p><p>The <b>guidance counselor</b> assists with study and matriculation examination plans, study skills, and planning further studies.</p>",
       "empty": "$t(common:content.empty)",
       "empty_counselors": "You have no counselors",
       "empty_records": "No records",
