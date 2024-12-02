@@ -41,6 +41,7 @@ interface NotesItemNewProps extends WithTranslation {
  */
 interface NotesItemNewState {
   notesItem: CreateNoteRequest;
+  recipients: ContactRecipientType[];
   locked: boolean;
 }
 
@@ -62,6 +63,7 @@ class NotesItemNew extends SessionStateComponent<
 
     this.state = {
       locked: false,
+      recipients: [],
       notesItem: {
         noteReceiver: {
           pinned: false,
@@ -147,6 +149,10 @@ class NotesItemNew extends SessionStateComponent<
     });
   };
 
+  /**
+   * handleRecipientsChange
+   * @param recipients recipients
+   */
   handleRecipientsChange = (recipients: ContactRecipientType[]) => {
     const recipientIds = recipients
       .filter((recipient) => recipient.type == "user")
@@ -157,6 +163,7 @@ class NotesItemNew extends SessionStateComponent<
       .map((recipient) => recipient.value.id);
 
     this.setState({
+      recipients,
       notesItem: {
         ...this.state.notesItem,
         recipients: {
@@ -166,6 +173,7 @@ class NotesItemNew extends SessionStateComponent<
       },
     });
   };
+
   /**
    * render
    */
@@ -176,7 +184,7 @@ class NotesItemNew extends SessionStateComponent<
      */
     const content = (closeDialog: () => never) => [
       <>
-        {this.props.newNoteRecipientId && !this.props.loaders ? null : (
+        {!this.props.newNoteRecipientId && this.props.loaders && (
           <div className="env-dialog__form-element-container">
             <InputContactsAutofill
               identifier="communicatorRecipients"
@@ -193,8 +201,8 @@ class NotesItemNew extends SessionStateComponent<
                 ns: "messaging",
                 count: 0,
               })}
-              selectedItems={[]}
-              onChange={() => {}}
+              selectedItems={this.state.recipients}
+              onChange={this.handleRecipientsChange}
               autofocus={false}
             />
           </div>
