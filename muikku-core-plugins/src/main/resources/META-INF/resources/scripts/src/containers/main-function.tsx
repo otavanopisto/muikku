@@ -357,7 +357,9 @@ export default class MainFunction extends React.Component<
     const givenLocation = tab;
 
     if (givenLocation === "matriculation" || !givenLocation) {
-      this.props.store.dispatch(loadMatriculationData(userId) as Action);
+      this.props.store.dispatch(
+        loadMatriculationData({ userIdentifier: userId }) as Action
+      );
     }
   }
 
@@ -1038,7 +1040,9 @@ export default class MainFunction extends React.Component<
 
       // If there's an identifier, we can load records data, otherwise it's done in the hash change
       if (identifier) {
-        this.props.store.dispatch(loadMatriculationData(identifier) as Action);
+        this.props.store.dispatch(
+          loadMatriculationData({ userIdentifier: identifier }) as Action
+        );
       }
     }
     return <GuardianHopsBody />;

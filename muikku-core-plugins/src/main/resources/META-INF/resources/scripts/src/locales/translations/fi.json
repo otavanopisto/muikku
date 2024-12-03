@@ -626,6 +626,9 @@
     "actions": {
       "addNewRow": "Lisää uusi rivi",
       "confirmRegistration": "Vahvista ilmoittautuminen",
+      "continue": "Jatka",
+      "editingStart": "Aloita muokkaus",
+      "editingEnd": "Päätä muokkaus",
       "showSummary": "Näytä yhteenveto",
       "showOldSummary": "Näytä vanha yhteenveto",
       "showChangeLog": "Näytä ilmoittautumisen muutoshistoria",
@@ -638,6 +641,7 @@
       "grade": "Arvosana:",
       "grades": "Arvosanat",
       "retake": "Uusiminen",
+      "hopsPendingChangesTitle": "Tallentamattomia muutoksia",
       "hopsMatriculation": "Ylioppilastutkinto",
       "matriculationFormStudentInfoTitle": "Opiskelijatiedot",
       "matriculationFormRegistrationTitle": "Ilmoittautuminen",
@@ -691,6 +695,7 @@
       "matriculationSubjects": "Aineet:"
     },
     "content": {
+      "hopsPendingChangesWarning": "Sinulla on tallentamattomia muutoksia. Haluatko peruuttaa muokkaukset?",
       "matriculationChangeLogEmpty": "Ei tapahtumahistoriaa ilmoittautumiselle.",
       "matriculationChangeLogUpdate": "päivitti lomaketta.",
       "matriculationChangeLogStateChanged": "muutti lomakkeen tilaa.",

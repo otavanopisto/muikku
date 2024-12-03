@@ -535,6 +535,24 @@
   }
 }
 
+.button--primary {
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  display: inline-flex;
+  height: $button-primary-height;
+  width: fit-content;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-primary-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-primary-background, 20%);
+  }
+}
+
 .button--primary-function {
   display: none;
 
@@ -646,6 +664,10 @@
   @include breakpoint($breakpoint-desktop) {
     order: 2;
   }
+}
+
+.button--standard-fit-content {
+  width: fit-content;
 }
 
 .button--contact-teacher {

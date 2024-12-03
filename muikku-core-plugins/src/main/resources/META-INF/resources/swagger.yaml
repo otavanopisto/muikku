@@ -5294,6 +5294,59 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/hops/student/{studentIdentifier}/lock:
+    get:
+      operationId: getStudentHopsLock
+      summary: Get student hops locked status information
+      description: Get student hops locked status with information about who locked it
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Hops lock with information about who locked it
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HopsLocked"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    put:
+      operationId: updateStudentHopsLock
+      summary: Update student hops lock
+      description: Update student hops lock
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/HopsUpdateLockRequestBody"
+      responses:
+        "200":
+          description: Student hops locked successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HopsLocked"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/hops/student/{studentIdentifier}/alternativeStudyOptions:
     get:
       operationId: getStudentAlternativeStudyOptions
@@ -11305,6 +11358,19 @@ components:
                 description: Hops history details.
                 type: string
 
+    HopsUpdateLockRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: HopsLockRequestBody object
+            required:
+              - locked
+            properties:
+              locked:
+                type: boolean
+
     HopsHistoryEntryUpdateRequestBody:
       required: true
       content:
@@ -13799,6 +13865,22 @@ components:
         assessmentrequest:
           type: string
 
+    HopsLocked:
+      type: object
+      description: Gives information about whether the Hops is locked and who locked it.
+      required:
+        - locked
+        - userEntityId
+        - userName
+      properties:
+        locked:
+          type: boolean
+        userEntityId:
+          type: integer
+          format: int64
+        userName:
+          type: string
+
     HopsHistoryEntry:
       type: object
       description: HopsHistoryEntry object
@@ -15696,6 +15778,16 @@ components:
               nullable: true
             matriculationEligibility:
               type: boolean
+            permissions:
+              type: object
+              required:
+                - canViewDetails
+                - canEdit
+              properties:
+                canViewDetails:
+                  type: boolean
+                canEdit:
+                  type: boolean
 
     StudentInfo:
       type: object
