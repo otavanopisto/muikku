@@ -53,7 +53,7 @@ class FrontpageFooter extends React.Component<WithTranslation> {
             </p>
             <p className="footer__subitem footer__subitem--accessibility-statement">
               <a
-                href="https://docs.google.com/document/d/1EXS3TroGTNAq9N8bV1pK6W2byKntZpHudBHH3NBGgXY/edit?usp=sharing"
+                href="https://drive.google.com/file/d/1oInmHuCFM33niWgaLMVBBkJIGIlNt8eF/view?usp=drive_link"
                 target="_blank"
                 className="link link--accessibility-statement"
                 rel="noreferrer"

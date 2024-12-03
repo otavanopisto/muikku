@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { MatriculationExamWithHistory } from "~/reducers/hops";
-import { useUseCaseContext } from "~/context/use-case-context";
 import {
   MatriculationExamStudentStatus,
   MatriculationExam,
@@ -15,6 +14,7 @@ import ApplicationSubPanel, {
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import { localize } from "~/locales/i18n";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * MatriculationEnrollmentProps
@@ -59,7 +59,7 @@ const MatriculationEnrollmentLink = (
   const { exam } = props;
 
   const { t } = useTranslation(["hops_new", "common"]);
-  const useCase = useUseCaseContext();
+  const { useCase } = useHopsBasicInfo();
 
   return (
     <div className="application-sub-panel__notification-item">
@@ -74,7 +74,12 @@ const MatriculationEnrollmentLink = (
           compulsoryEducationEligible={exam.compulsoryEducationEligible}
           formType="initial"
         >
-          <Button buttonModifiers={["info"]} disabled={useCase === "GUARDIAN"}>
+          <Button
+            buttonModifiers={["info"]}
+            disabled={
+              useCase === "GUARDIAN" || useCase === "GUIDANCE_COUNSELOR"
+            }
+          >
             {t("actions.signUp", {
               ns: "hops_new",
               dueDate: localize.date(new Date(exam.ends)),
@@ -104,7 +109,7 @@ const MatriculationSubmittedEnrollment = (
 ) => {
   const { exam, past } = props;
 
-  const useCase = useUseCaseContext();
+  const { useCase } = useHopsBasicInfo();
 
   const { t } = useTranslation(["hops_new", "common"]);
 
@@ -130,7 +135,7 @@ const MatriculationSubmittedEnrollment = (
       );
     }
 
-    if (useCase === "GUARDIAN") {
+    if (useCase === "GUARDIAN" || useCase === "GUIDANCE_COUNSELOR") {
       // Guardians can only view the summary
       switch (exam.studentStatus) {
         case MatriculationExamStudentStatus.Pending:

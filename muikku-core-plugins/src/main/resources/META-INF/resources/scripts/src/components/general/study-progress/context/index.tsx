@@ -455,7 +455,9 @@ const StudyProgressContextProvider = (
      * something is saved/changed
      * @param data Websocket data
      */
-    const onAnswerSavedAtServer = (data: StudentCourseChoice) => {
+    const onAnswerSavedAtServer = (
+      data: StudentCourseChoice & { studentIdentifier: string }
+    ) => {
       const { supervisorOptionalSuggestions, ...oldOtherValues } = ref.current;
 
       const arrayOfStudentChoices = supervisorOptionalSuggestions;
@@ -503,7 +505,9 @@ const StudyProgressContextProvider = (
      * something is saved/changed
      * @param data Websocket data
      */
-    const onAnswerSavedAtServer = (data: StudentCourseChoice) => {
+    const onAnswerSavedAtServer = (
+      data: StudentCourseChoice & { studentIdentifier: string }
+    ) => {
       const { studentChoices } = ref.current;
 
       const arrayOfStudentChoices = studentChoices;
@@ -551,7 +555,9 @@ const StudyProgressContextProvider = (
      * something is saved/changed
      * @param data Websocket data
      */
-    const onAnswerSavedAtServer = (data: StudentStudyActivity) => {
+    const onAnswerSavedAtServer = (
+      data: StudentStudyActivity & { studentIdentifier: string }
+    ) => {
       const { suggestedNextList, onGoingList, gradedList, transferedList } =
         ref.current;
 

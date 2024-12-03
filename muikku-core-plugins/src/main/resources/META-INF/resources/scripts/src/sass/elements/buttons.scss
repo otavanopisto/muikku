@@ -535,6 +535,24 @@
   }
 }
 
+.button--primary {
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  display: inline-flex;
+  height: $button-primary-height;
+  width: fit-content;
+
+  &:hover,
+  &.hover {
+    background-color: darken($color-button-primary-background, 10%);
+  }
+
+  &:active,
+  &.active {
+    background-color: darken($color-button-primary-background, 20%);
+  }
+}
+
 .button--primary-function {
   display: none;
 
@@ -646,6 +664,10 @@
   @include breakpoint($breakpoint-desktop) {
     order: 2;
   }
+}
+
+.button--standard-fit-content {
+  width: fit-content;
 }
 
 .button--contact-teacher {
@@ -2097,6 +2119,24 @@
 
 .button-pill--signup-switch {
   margin: 0 20px;
+}
+
+.button-pill--chat-sound-switch {
+  margin: 0;
+
+  &.button-pill--switch-horizontal-active {
+    background: lighten($color-chat-primary, 30%);
+    border-color: lighten($color-chat-primary, 30%);
+    box-shadow: 0 0 0 1px $color-chat-primary;
+
+    &::after {
+      background: $color-chat-primary;
+    }
+
+    &:hover {
+      background: lighten($color-chat-primary, 30%);
+    }
+  }
 }
 
 // Teacher's Worklist

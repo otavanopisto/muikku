@@ -626,6 +626,9 @@
     "actions": {
       "addNewRow": "Add new row",
       "confirmRegistration": "Confirm registration",
+      "continue": "Continue",
+      "editingStart": "Start editing",
+      "editingEnd": "End editing",
       "showSummary": "Show summary",
       "showOldSummary": "Show old summary",
       "showChangeLog": "Show registration change history",
@@ -638,6 +641,7 @@
       "grade": "Grade:",
       "grades": "Grades",
       "retake": "Retake",
+      "hopsPendingChangesTitle": "Unsaved changes",
       "hopsMatriculation": "Matriculation examination",
       "matriculationFormStudentInfoTitle": "Student Information",
       "matriculationFormRegistrationTitle": "Registration",
@@ -691,6 +695,7 @@
       "matriculationSubjects": "Subjects:"
     },
     "content": {
+      "hopsPendingChangesWarning": "You have unsaved changes. Do you want to discard the changes?",
       "matriculationChangeLogEmpty": "No history available for this examination at the moment.",
       "matriculationChangeLogUpdate": "updated the registration.",
       "matriculationChangeLogStateChanged": "changed the status of the registration.",
@@ -2479,6 +2484,7 @@
   },
   "chat": {
     "actions": {
+      "activateRoomSounds": "Activate room's sound alerts",
       "addRoom": "Add New Room",
       "blockUser": "Block User",
       "chatSettings": "Chat Settings",
@@ -2488,17 +2494,25 @@
       "deleteMessage": "Delete Message",
       "editMessage": "Edit Message",
       "minMaxPanel": "Minimize/Maximize Panel",
+      "muteRoomSounds": "Mute Room",
       "unBlockUser": "Unblock User",
       "fullscreenMode": "Fullscreen Mode",
       "exitFullscreenMode": "Exit Fullscreen Mode",
       "detachWindow": "Detach Window",
-      "attachWindow": "Attach Window"
+      "attachWindow": "Attach Window",
+      "selectAll": "Select all",
+      "unselectAll": "Unselect all"
     },
     "labels": {
       "blocked": "Blocked",
       "blockedUsers": "Blocked users",
       "blockingUser": "Blocking user",
       "chatSettings": "Chat settings",
+      "chatSoundNotifications": "Sound notifications",
+      "chatSoundNotificationsOff": "Off",
+      "chatSoundNotificationsOn": "On",
+      "chatSoundNotificationSettings": "Sound notification settings",
+      "chatSoundPivateMessageNotifications": "Private message sound notifications",
       "councelors": "Guidance councelors",
       "createNewRoom": "Add new room",
       "dashboard": "Dashboard",
@@ -2552,6 +2566,8 @@
       "loadError_discussionMessages": "Failed to load chat messages",
       "loadError_blockedUsers": "Failed to load blocked users",
       "loadError_councelors": "Failed to load guidance counselors",
+      "newMessage": "New message! From {{nick}}",
+      "newMessage_room": "New message! From {{nick}} in {{roomName}}",
       "postError": "",
       "postError_message": "Failed to send the message",
       "postError_room": "Failed to create the chat room",
