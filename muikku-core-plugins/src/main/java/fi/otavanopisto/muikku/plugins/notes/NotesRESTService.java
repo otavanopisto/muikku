@@ -48,251 +48,264 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @RequestScoped
 @Stateful
 @Produces("application/json")
-@Path ("/notes")
+@Path("/notes")
 @RestCatchSchoolDataExceptions
 public class NotesRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 6610657511716011677L;
-  
-  private static final int NOTES_FROM_THE_TIME = NumberUtils.createInteger(System.getProperty("muikku.notes.notesfromthetime", "14"));
-  
+
+  private static final int NOTES_FROM_THE_TIME = NumberUtils
+      .createInteger(System.getProperty("muikku.notes.notesfromthetime", "14"));
+
   @Inject
   private NotesController notesController;
-  
+
   @Inject
   private SessionController sessionController;
 
   @Inject
   private UserEntityController userEntityController;
-  
+
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-  
+
   @Inject
   private NoteReceiverController noteReceiverController;
-  
+
   @Inject
   private UserGroupEntityController userGroupEntityController;
-  
+
   @Inject
   private UserRecipientController userRecipientController;
-  
+
   @Inject
   private UserGroupController userGroupController;
-  
 
-//mApi() call (mApi().notes.note.create(noteRestModelWithRecipients)
-//
-//  noteRestModelWithRecipients{
-//    "recipients": {
-//        "recipientIds": [],
-//        "recipientGroupIds": [3]
-//    },
-//    "note": {
-//        "title": "<p>Ryhmälappu</p>",
-//        "description": "Tämä menee ryhmälle!",
-//        "startDate": "2024-12-11T10:15:30+01:00",
-//        "dueDate": "2025-01-01T10:15:30+01:00",
-//        "priority": "HIGH",
-//        "type": "MANUAL"
-//    },
-//    "noteReceiver":{
-//        "pinned": "false"
-//    }
-//}
- 
- @POST
- @Path("/note")
- @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
- public Response createNote(NoteWithRecipientsRestModel payload) {
-   
-   NoteRestModel note = payload.getNote();
-   
-   Note newNote = null;
-   NoteReceiver newReceiver = null;
-   List<NoteReceiverRestModel> receiverList = new ArrayList<NoteReceiverRestModel>();
+  // mApi() call (mApi().notes.note.create(noteRestModelWithRecipients)
+  //
+  // noteRestModelWithRecipients{
+  // "recipients": {
+  // "recipientIds": [],
+  // "recipientGroupIds": [3]
+  // },
+  // "note": {
+  // "title": "<p>Ryhmälappu</p>",
+  // "description": "Tämä menee ryhmälle!",
+  // "startDate": "2024-12-11T10:15:30+01:00",
+  // "dueDate": "2025-01-01T10:15:30+01:00",
+  // "priority": "HIGH",
+  // "type": "MANUAL"
+  // },
+  // "noteReceiver":{
+  // "pinned": "false"
+  // }
+  // }
 
-   Boolean pinned = payload.getNoteReceiver().getPinned();
-   
-   UserEntity userEntity = sessionController.getLoggedUserEntity();
+  @POST
+  @Path("/note")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createNote(NoteWithRecipientsRestModel payload) {
 
-   // Recipient handling
-   
-   List<UserEntity> recipientList = new ArrayList<UserEntity>();
+    NoteRestModel note = payload.getNote();
 
-   RecipientListRESTModel recipientPayload = payload.getRecipients();
-   
-   if (recipientPayload != null) {
-     
-     // Note creation by student
-     if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-       // Students can create notes only for themselves, so there should be only one receiver in the payload
-       if (recipientPayload.getRecipientIds().size() != 1) {
-         return Response.status(Status.BAD_REQUEST).build();
-       }
-       
-       if (recipientPayload.getRecipientIds().get(0) != sessionController.getLoggedUserEntity().getId()) {
-         return Response.status(Status.BAD_REQUEST).entity("Student and note recipient does not match").build();
-       }
-       newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getStartDate(), note.getDueDate());
-       
-       newReceiver = noteReceiverController.createNoteRecipient(pinned, sessionController.getLoggedUserEntity().getId(), newNote, null);
-       receiverList.add(toRestModel(newReceiver));
-       
-     } else { // Note creation by staff
-       for (Long recipientId : recipientPayload.getRecipientIds()) {
-         UserEntity recipient = userEntityController.findUserEntityById(recipientId);
-         
-         if (recipient != null) {
-           recipientList.add(recipient);
-         } else {
-           return Response.status(Status.BAD_REQUEST).build();
-         }
-       }
-     }
-     
-     List<UserGroupEntity> userGroupRecipients = null;
-     UserGroupEntity group = null;
-     
-     if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-       // user groups
-       if (!CollectionUtils.isEmpty(recipientPayload.getRecipientGroupIds())) {
-         userGroupRecipients = new ArrayList<UserGroupEntity>();
-         
-         for (Long groupId : recipientPayload.getRecipientGroupIds()) {
-           group = userGroupEntityController.findUserGroupEntityById(groupId);
-           userGroupRecipients.add(group);
-         }
-       }
-     
-       // The recipients of notes are always only students
-       List<EnvironmentRoleArchetype> roles = new ArrayList<EnvironmentRoleArchetype>();
-       roles.add(EnvironmentRoleArchetype.STUDENT);
-       
-       // Filter recipients
-       UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
-           userEntity, recipientList, userGroupRecipients, null, null, roles);
-   
-   
-       if (!prepareRecipientList.hasRecipients()) {
-         return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
-       }
-       
-       newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(), note.getStartDate(), note.getDueDate());
-       
-       // userRecipients
-       
-       for (UserEntity userRecipient : prepareRecipientList.getUserRecipients()) {
-         newReceiver = noteReceiverController.createNoteRecipient(pinned, userRecipient.getId(), newNote, null);
-         receiverList.add(toRestModel(newReceiver));
-       }
-       
-       // User groups
-       for (UserGroupEntity userGroup : prepareRecipientList.getUserGroups()) {
-         prepareRecipientList.getUserGroupRecipients(userGroup);
-         
-         List<UserGroupUserEntity> ugue = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroup);
-         
-         for (UserGroupUserEntity userGroupUserEntity : ugue) {
-           
-           if (userGroupUserEntity != null) {
-             UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
-             
-             UserEntity groupRecipientEntity = userSchoolDataIdentifier.getUserEntity();
-             
-             newReceiver = noteReceiverController.createNoteRecipient(pinned, groupRecipientEntity.getId(), newNote, userGroupUserEntity.getUserGroupEntity().getId());
-             receiverList.add(toRestModel(newReceiver));
-           }
-         }
-       }
-       
-     }
-   }
-   
-   NoteRestModel noteRest = toRestModel(newNote);
-   noteRest.setRecipients(receiverList);
-   
-   return Response.ok(noteRest).build();
- }
-  
-  //mApi() call (mApi().notes.note.update(noteId, noteRestModel)
+    Note newNote = null;
+    NoteReceiver newReceiver = null;
+    List<NoteReceiverRestModel> receiverList = new ArrayList<NoteReceiverRestModel>();
+
+    Boolean pinned = payload.getNoteReceiver().getPinned();
+
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+
+    // Recipient handling
+
+    List<UserEntity> recipientList = new ArrayList<UserEntity>();
+
+    RecipientListRESTModel recipientPayload = payload.getRecipients();
+
+    if (recipientPayload != null) {
+
+      // Note creation by student
+      if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+        // Students can create notes only for themselves, so there should be only one
+        // receiver in the payload
+        if (recipientPayload.getRecipientIds().size() != 1) {
+          return Response.status(Status.BAD_REQUEST).build();
+        }
+
+        if (recipientPayload.getRecipientIds().get(0) != sessionController.getLoggedUserEntity().getId()) {
+          return Response.status(Status.BAD_REQUEST).entity("Student and note recipient does not match").build();
+        }
+        newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(),
+            note.getStartDate(), note.getDueDate());
+
+        newReceiver = noteReceiverController.createNoteRecipient(pinned,
+            sessionController.getLoggedUserEntity().getId(), newNote, null);
+        receiverList.add(toRestModel(newReceiver));
+
+      }
+      else { // Note creation by staff
+        for (Long recipientId : recipientPayload.getRecipientIds()) {
+          UserEntity recipient = userEntityController.findUserEntityById(recipientId);
+
+          if (recipient != null) {
+            recipientList.add(recipient);
+          }
+          else {
+            return Response.status(Status.BAD_REQUEST).build();
+          }
+        }
+      }
+
+      List<UserGroupEntity> userGroupRecipients = null;
+      UserGroupEntity group = null;
+
+      if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+        // user groups
+        if (!CollectionUtils.isEmpty(recipientPayload.getRecipientGroupIds())) {
+          userGroupRecipients = new ArrayList<UserGroupEntity>();
+
+          for (Long groupId : recipientPayload.getRecipientGroupIds()) {
+            group = userGroupEntityController.findUserGroupEntityById(groupId);
+            userGroupRecipients.add(group);
+          }
+        }
+
+        // The recipients of notes are always only students
+        List<EnvironmentRoleArchetype> roles = new ArrayList<EnvironmentRoleArchetype>();
+        roles.add(EnvironmentRoleArchetype.STUDENT);
+
+        // Filter recipients
+        UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(userEntity, recipientList,
+            userGroupRecipients, null, null, roles);
+
+        if (!prepareRecipientList.hasRecipients()) {
+          return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
+        }
+
+        newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(),
+            note.getStartDate(), note.getDueDate());
+
+        // userRecipients
+
+        for (UserEntity userRecipient : prepareRecipientList.getUserRecipients()) {
+          newReceiver = noteReceiverController.createNoteRecipient(pinned, userRecipient.getId(), newNote, null);
+          receiverList.add(toRestModel(newReceiver));
+        }
+
+        // User groups
+        for (UserGroupEntity userGroup : prepareRecipientList.getUserGroups()) {
+          prepareRecipientList.getUserGroupRecipients(userGroup);
+
+          List<UserGroupUserEntity> ugue = userGroupEntityController
+              .listUserGroupUserEntitiesByUserGroupEntity(userGroup);
+
+          for (UserGroupUserEntity userGroupUserEntity : ugue) {
+
+            if (userGroupUserEntity != null) {
+              UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
+
+              UserEntity groupRecipientEntity = userSchoolDataIdentifier.getUserEntity();
+
+              newReceiver = noteReceiverController.createNoteRecipient(pinned, groupRecipientEntity.getId(), newNote,
+                  userGroupUserEntity.getUserGroupEntity().getId());
+              receiverList.add(toRestModel(newReceiver));
+            }
+          }
+        }
+
+      }
+    }
+
+    NoteRestModel noteRest = toRestModel(newNote);
+    noteRest.setRecipients(receiverList);
+
+    return Response.ok(noteRest).build();
+  }
+
+  // mApi() call (mApi().notes.note.update(noteId, noteRestModel)
   // Editable fields are title, description, priority, startDate, dueDate)
   @PUT
-  @Path ("/note/{NOTEID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateNote(@PathParam ("NOTEID") Long noteId, NoteRestModel payload) {
-    
+  @Path("/note/{NOTEID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateNote(@PathParam("NOTEID") Long noteId, NoteRestModel payload) {
+
     Note note = notesController.findNoteById(noteId);
-   
+
     if (note == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
     UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
-    UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(creator);
+    UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController
+        .findUserSchoolDataIdentifierByUserEntity(creator);
     Note updatedNote = null;
-    
+
     if (creatorUSDI == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
+
     if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
-      updatedNote = notesController.updateNote(note, payload.getTitle(), payload.getDescription(), payload.getPriority(), payload.getStartDate(), payload.getDueDate());
-    } 
+      updatedNote = notesController.updateNote(note, payload.getTitle(), payload.getDescription(),
+          payload.getPriority(), payload.getStartDate(), payload.getDueDate());
+    }
     else {
       return Response.status(Status.BAD_REQUEST).build();
     }
     NoteRestModel updatedRestModel = toRestModel(updatedNote);
-    
+
     List<NoteReceiverRestModel> recipientsRest = new ArrayList<NoteReceiverRestModel>();
     List<NoteReceiver> recipients = noteReceiverController.listByNote(note);
-    
+
     for (NoteReceiver recipient : recipients) {
       NoteReceiverRestModel recipientRest = toRestModel(recipient);
-      
+
       recipientsRest.add(recipientRest);
     }
-    
+
     updatedRestModel.setRecipients(recipientsRest);
-    
+
     return Response.ok(updatedRestModel).build();
   }
-  
-  //mApi() call (mApi().notes.note.update(noteId, noteRestModel)
+
+  // mApi() call (mApi().notes.note.update(noteId, noteRestModel)
   // Editable fields are title, description, priority, dueDate)
   @PUT
-  @Path ("/note/{NOTEID}/receiver/{NOTERECEIVERID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateNoteReceiver(@PathParam ("NOTEID") Long noteId, @PathParam ("NOTERECEIVERID") Long receiverId, NoteReceiverRestModel payload) {
-    
+  @Path("/note/{NOTEID}/receiver/{NOTERECEIVERID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateNoteReceiver(@PathParam("NOTEID") Long noteId, @PathParam("NOTERECEIVERID") Long receiverId,
+      NoteReceiverRestModel payload) {
+
     Note note = notesController.findNoteById(noteId);
-    
+
     if (note == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
     NoteReceiver noteReceiver = noteReceiverController.findByRecipientIdAndNote(receiverId, note);
-    
+
     if (noteReceiver == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
     UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
-    UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(creator);
+    UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController
+        .findUserSchoolDataIdentifierByUserEntity(creator);
     NoteReceiver updatedNoteReceiver = null;
-    
+
     if (creatorUSDI == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
-    // Student can edit only 'pinned' (+ status between APPROVAL_PENDING and ONGOING) field if note is created by someone else
-    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && !creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+
+    // Student can edit only 'pinned' (+ status between APPROVAL_PENDING and
+    // ONGOING) field if note is created by someone else
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
+        && !creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       NoteStatus status = noteReceiver.getStatus();
       if (noteReceiver.getStatus() != payload.getStatus()) {
         if (noteReceiver.getStatus() == NoteStatus.ONGOING) {
           status = NoteStatus.APPROVAL_PENDING;
         }
-        
+
         if (noteReceiver.getStatus() == NoteStatus.APPROVAL_PENDING) {
           status = NoteStatus.ONGOING;
         }
@@ -300,24 +313,23 @@ public class NotesRESTService extends PluginRESTService {
       updatedNoteReceiver = noteReceiverController.updateNoteRecipient(noteReceiver, payload.getPinned(), status);
     } // Otherwise editing happens only if logged user equals with creator
     else if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
-      updatedNoteReceiver = noteReceiverController.updateNoteRecipient(noteReceiver, payload.getPinned(), payload.getStatus());
-    } 
+      updatedNoteReceiver = noteReceiverController.updateNoteRecipient(noteReceiver, payload.getPinned(),
+          payload.getStatus());
+    }
     else {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
+
     NoteReceiverRestModel restModel = toRestModel(updatedNoteReceiver);
-    
+
     return Response.ok(restModel).build();
   }
-  
-  
-  
+
   private NoteRestModel toRestModel(Note note) {
-    
+
     UserEntity userEntity = userEntityController.findUserEntityById(note.getCreator());
     String creatorName = userEntityController.getName(userEntity, true).getDisplayNameWithLine();
-    
+
     NoteRestModel restModel = new NoteRestModel();
     restModel.setId(note.getId());
     restModel.setTitle(note.getTitle());
@@ -333,27 +345,28 @@ public class NotesRESTService extends PluginRESTService {
 
     return restModel;
   }
-  
+
   private NoteReceiverRestModel toRestModel(NoteReceiver noteReceiver) {
     String groupName = null;
-    
+
     if (noteReceiver.getRecipientGroup() != null) {
-      UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(noteReceiver.getRecipientGroup());
-    
+      UserGroupEntity userGroupEntity = userGroupEntityController
+          .findUserGroupEntityById(noteReceiver.getRecipientGroup());
+
       if (userGroupEntity != null) {
         UserGroup usergroup = userGroupController.findUserGroup(userGroupEntity);
-        
+
         groupName = usergroup.getName();
       }
     }
     String recipientName = null;
-    
+
     UserEntity userEntity = userEntityController.findUserEntityById(noteReceiver.getRecipient());
-    
+
     if (userEntity != null) {
       recipientName = userEntityController.getName(userEntity, true).getDisplayName();
     }
-    
+
     NoteReceiverRestModel restModel = new NoteReceiverRestModel();
     restModel.setId(noteReceiver.getId());
     restModel.setNoteId(noteReceiver.getNote().getId());
@@ -366,31 +379,34 @@ public class NotesRESTService extends PluginRESTService {
 
     return restModel;
   }
-  
+
   @GET
   @Path("/recipient/{RECIPIENTID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listNotesByRecipient(@PathParam("RECIPIENTID") Long recipient, @QueryParam("listArchived") @DefaultValue ("false") Boolean listArchived) {
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listNotesByRecipient(@PathParam("RECIPIENTID") Long recipient,
+      @QueryParam("listArchived") @DefaultValue("false") Boolean listArchived) {
 
     UserEntity recipientEntity = userEntityController.findUserEntityById(recipient);
-    
+
     if (recipientEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
+
     List<Note> notes = notesController.listByReceiver(recipientEntity, listArchived);
 
     List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
     OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);
-    
-    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && !recipient.equals(sessionController.getLoggedUserEntity().getId())) {
+
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
+        && !recipient.equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
     for (Note note : notes) {
       UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
-      UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(creator);
-      
+      UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController
+          .findUserSchoolDataIdentifierByUserEntity(creator);
+
       if (creatorUSDI == null) {
         return Response.status(Status.BAD_REQUEST).build();
       }
@@ -399,66 +415,65 @@ public class NotesRESTService extends PluginRESTService {
       if (Boolean.TRUE.equals(listArchived) && note.getLastModified().before(Date.from(inLastTwoWeeks.toInstant()))) {
         continue;
       }
-      
-      // Do not return students' personal notes to staff 
-      if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+
+      // Do not return students' personal notes to staff
+      if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
+          && creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
         continue;
       }
 
       // recipients
-      
+
       NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(recipient, note);
-      
+
       if (receiver == null) {
-        return Response.status(Status.NOT_FOUND).entity(String.format("Recipient (%d) not found", sessionController.getLoggedUserEntity().getId())).build();
+        return Response.status(Status.NOT_FOUND)
+            .entity(String.format("Recipient (%d) not found", sessionController.getLoggedUserEntity().getId())).build();
       }
-      
+
       List<NoteReceiverRestModel> recipientListRest = new ArrayList<NoteReceiverRestModel>();
       NoteRestModel noteRest = toRestModel(note);
-      
+
       NoteReceiverRestModel recipientRest = toRestModel(receiver);
-        
+
       recipientListRest.add(recipientRest);
       noteRest.setRecipients(recipientListRest);
-      
+
       notesList.add(noteRest);
     }
-    
+
     return Response.ok(notesList).build();
   }
-  
-  //mApi() call (mApi().notes.owner.read(owner))
+
   @GET
   @Path("/creator/{CREATORID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listNotesByCreator(@PathParam("CREATORID") Long creatorId, @QueryParam("listArchived") @DefaultValue ("false") Boolean listArchived) {
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listNotesByCreator(@PathParam("CREATORID") Long creatorId,
+      @QueryParam("listArchived") @DefaultValue("false") Boolean listArchived) {
 
     UserEntity userEntity = userEntityController.findUserEntityById(creatorId);
-    
+
     if (userEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
+
     // Users can only list notes created by themselves
     if (!userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
+
     // List notes by creator
     List<Note> notes = notesController.listByCreator(userEntity, listArchived);
 
-    NoteSortedListRestModel notesListSorted = new NoteSortedListRestModel();
-
-    // Separated lists for private notes and multiuser notes
-    List<NoteRestModel> notesListMulti = new ArrayList<NoteRestModel>();
-    List<NoteRestModel> notesListSingle = new ArrayList<NoteRestModel>();
+    List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
 
     OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);
 
     for (Note note : notes) {
       UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
-      UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(creator);
-      
+      UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController
+          .findUserSchoolDataIdentifierByUserEntity(creator);
+
       if (creatorUSDI == null) {
         return Response.status(Status.BAD_REQUEST).build();
       }
@@ -467,60 +482,57 @@ public class NotesRESTService extends PluginRESTService {
       if (Boolean.TRUE.equals(listArchived) && note.getLastModified().before(Date.from(inLastTwoWeeks.toInstant()))) {
         continue;
       }
-      
-      // Do not return students' personal notes to staff 
-      if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+
+      // Do not return students' personal notes to staff
+      if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
+          && creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
         continue;
       }
-      
+
       // recipients
-      
+
       List<NoteReceiver> recipients = noteReceiverController.listByNote(note);
       List<NoteReceiverRestModel> recipientListRest = new ArrayList<NoteReceiverRestModel>();
       NoteRestModel noteRest = toRestModel(note);
-      
+
       for (NoteReceiver recipient : recipients) {
         NoteReceiverRestModel recipientRest = toRestModel(recipient);
-        
+
         recipientListRest.add(recipientRest);
       }
       noteRest.setRecipients(recipientListRest);
-      
-      if (recipientListRest.size() == 1) {
-        notesListSingle.add(noteRest);
-      } else {
-        notesListMulti.add(noteRest);
-      }
-      notesListSorted.setPrivateNotes(notesListSingle);
-      notesListSorted.setMultiUserNotes(notesListMulti);
+
+      notesList.add(noteRest);
     }
-    
-    return Response.ok(notesListSorted).build();
+
+    return Response.ok(notesList).build();
   }
-  
+
   // mApi() call (mApi().notes.note.toggleArchived.update(noteId))
-  // In this case archiving means moving note to 'trash'. So it's only update method and user can restore the note.
+  // In this case archiving means moving note to 'trash'. So it's only update
+  // method and user can restore the note.
   @PUT
-  @Path ("/note/{NOTEID}/toggleArchived")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response toggleArchived(@PathParam ("NOTEID") Long noteId) {
+  @Path("/note/{NOTEID}/toggleArchived")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response toggleArchived(@PathParam("NOTEID") Long noteId) {
     Note note = notesController.findNoteById(noteId);
-    
+
     if (note == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Note (%d) not found", noteId)).build();
     }
-    
+
     // Students can only archive their own notes
-    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && !note.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
-      return Response.status(Status.FORBIDDEN).build(); 
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
+        && !note.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
     }
-    
+
     List<NoteReceiver> recipients = noteReceiverController.listByNote(note);
     NoteReceiver receiver = null;
-    
+
     // Archiving is only allowed if you're the creator or owner of the note
     if ((!sessionController.getLoggedUserEntity().getId().equals(note.getCreator()))) {
-      
+
       if (recipients.size() == 1) {
         receiver = recipients.get(0);
       }
@@ -530,47 +542,49 @@ public class NotesRESTService extends PluginRESTService {
     }
 
     NoteRestModel noteRestModel = toRestModel(notesController.toggleArchived(note));
-    
+
     List<NoteReceiverRestModel> recipientsRest = new ArrayList<NoteReceiverRestModel>();
     for (NoteReceiver recipient : recipients) {
       NoteReceiverRestModel recipientRest = toRestModel(recipient);
-      
+
       recipientsRest.add(recipientRest);
     }
-    
+
     noteRestModel.setRecipients(recipientsRest);
-    
+
     return Response.ok(noteRestModel).build();
 
   }
-  
-  //mApi() call (notes.note.recipient.delete(noteId, recipientId))
-  // In this case, archiving means permanent deletion. Once deleted, the data cannot be restored.
+
+  // mApi() call (notes.note.recipient.delete(noteId, recipientId))
+  // In this case, archiving means permanent deletion. Once deleted, the data
+  // cannot be restored.
   @DELETE
-  @Path ("/note/{NOTEID}/recipient/{RECIPIENTID}")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response deleteReceiver(@PathParam ("NOTEID") Long noteId, @PathParam ("RECEIVERID") Long receiverId) {
+  @Path("/note/{NOTEID}/recipient/{RECIPIENTID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteReceiver(@PathParam("NOTEID") Long noteId, @PathParam("RECEIVERID") Long receiverId) {
     Note note = notesController.findNoteById(noteId);
-    
+
     if (note == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Note (%d) not found", noteId)).build();
     }
-    
+
     NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(receiverId, note);
-    
+
     if (receiver == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Note recipient (%d) not found", receiverId)).build();
+      return Response.status(Status.NOT_FOUND).entity(String.format("Note recipient (%d) not found", receiverId))
+          .build();
     }
-    
+
     // Users can only delete recipients from their own notes.
     if (!note.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
-      return Response.status(Status.FORBIDDEN).build(); 
+      return Response.status(Status.FORBIDDEN).build();
     }
-    
+
     noteReceiverController.deleteRecipient(receiver);
-    
+
     return Response.status(Status.NO_CONTENT).build();
-    
+
   }
-  
-} 
+
+}
