@@ -2479,6 +2479,7 @@
   },
   "chat": {
     "actions": {
+      "activateRoomSounds": "Aktivoi huoneen ääni-ilmoitukset",
       "addRoom": "Lisää uusi huone",
       "blockUser": "Estä käyttäjä",
       "chatSettings": "Chatin asetukset",
@@ -2488,17 +2489,25 @@
       "deleteMessage": "Poista viesti",
       "editMessage": "Muokkaa viestiä",
       "minMaxPanel": "Pienennä/Suurenna paneeli",
+      "muteRoomSounds": "Hiljennä huone",
       "unBlockUser": "Poista esto",
       "fullscreenMode": "Kokoruututila",
       "exitFullscreenMode": "Poistu kokoruututilasta",
       "detachWindow": "Irrota ikkuna",
-      "attachWindow": "Kiinnitä ikkuna"
+      "attachWindow": "Kiinnitä ikkuna",
+      "selectAll": "Valitse kaikki",
+      "unselectAll": "Poista valinnat"
     },
     "labels": {
       "blocked": "Estetyt",
       "blockedUsers": "Estetyt käyttäjät",
       "blockingUser": "Käyttäjän estäminen",
       "chatSettings": "Chat-asetukset",
+      "chatSoundNotifications": "Ääni-ilmoitukset",
+      "chatSoundNotificationsOff": "Pois päältä",
+      "chatSoundNotificationsOn": "Päällä",
+      "chatSoundNotificationSettings": "Ääni-ilmoitusten asetukset",
+      "chatSoundPivateMessageNotifications": "Ääni-ilmoitukset yksityisviesteistä",
       "councelors": "Ohjaajat",
       "createNewRoom": "Luo uusi huone",
       "dashboard": "Etusivu",
@@ -2510,6 +2519,7 @@
       "gone": "Poistunut",
       "nick": "Nimimerkki",
       "people": "Käyttäjät",
+
       "roomDetails": "Huoneen tiedot",
       "rooms": "Huoneet",
       "rooms_public": "Julkiset huoneet",
@@ -2552,6 +2562,8 @@
       "loadError_discussionMessages": "Chat-keskustelun viestien lataaminen epäonnistui",
       "loadError_blockedUsers": "Chatin estettyjen käyttäjien lataaminen epäonnistui",
       "loadError_councelors": "Chatin ohjaajien lataaminen epäonnistui",
+      "newMessage": "Uusi viesti! Käyttäjältä {{nick}}",
+      "newMessage_room": "Uusi viesti! Käyttäjältä {{nick}} huoneessa {{roomName}}",
       "postError": "",
       "postError_message": "Viestin lähettäminen epäonnistui",
       "postError_room": "Huoneen luonti epäonnistui",

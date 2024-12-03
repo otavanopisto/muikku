@@ -2099,6 +2099,24 @@
   margin: 0 20px;
 }
 
+.button-pill--chat-sound-switch {
+  margin: 0;
+
+  &.button-pill--switch-horizontal-active {
+    background: lighten($color-chat-primary, 30%);
+    border-color: lighten($color-chat-primary, 30%);
+    box-shadow: 0 0 0 1px $color-chat-primary;
+
+    &::after {
+      background: $color-chat-primary;
+    }
+
+    &:hover {
+      background: lighten($color-chat-primary, 30%);
+    }
+  }
+}
+
 // Teacher's Worklist
 .button-pill--expand-worklist {
   background: transparent;
