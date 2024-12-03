@@ -121,17 +121,6 @@
   }
 }
 
-// Component's body which is used inside sub-tabs
-.application-panel__body--sub-tabs {
-  border: 0;
-  box-shadow: none;
-
-  @include breakpoint($breakpoint-pad) {
-    border: 1px solid $color-tab-border;
-    border-top: 0;
-  }
-}
-
 // Component's actions row that has .application-panel__actions-aside and .application-panel__actions-main as childs
 .application-panel__actions {
   background: $color-default;
@@ -257,10 +246,6 @@
 
 .application-panel__content--tabs {
   padding: 1rem 0 0;
-}
-
-.application-panel__content--sub-tabs {
-  padding: 10px 0 0;
 }
 
 // Component's content header (h2 level header)

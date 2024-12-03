@@ -806,7 +806,7 @@ class OrganizationEditUsergroup extends React.Component<
                   : 0
               }
               identifier={"userGroup" + this.props.usergroup.id + "Staff"}
-              allTabTitle={t("labels.groupCounselors", { ns: "users" })}
+              allTabTitle={t("labels.counselors", { ns: "users" })}
               removeTabTitle={t("labels.counselorsToRemove", { ns: "users" })}
               onEmptyTitle={t("content.notFound", { ns: "users" })}
               searchValue={
