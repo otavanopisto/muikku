@@ -6619,9 +6619,8 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/NoteSortedList"
+                type: object
+                $ref: "#/components/schemas/NoteSortedList"
         "400":
           description: Invalid request was sent to the server
         "500":

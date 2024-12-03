@@ -2,6 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Students from "./application/students";
+import Notes from "./application/tasks";
 import Toolbar from "./application/toolbar";
 import { withTranslation, WithTranslation } from "react-i18next";
 import Select from "react-select";
@@ -68,7 +69,7 @@ class GuiderApplication extends React.Component<
       case "students":
         return <Students />;
       case "tasks":
-        return null;
+        return <Notes />;
       default:
         return null;
     }

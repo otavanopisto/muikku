@@ -32,8 +32,6 @@ class NavigationAside extends React.Component<
   NavigationProps,
   NavigationState
 > {
-  // static contextType = GuiderContext;
-
   /**
    * render
    */

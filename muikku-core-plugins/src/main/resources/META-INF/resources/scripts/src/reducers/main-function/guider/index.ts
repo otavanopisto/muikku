@@ -19,6 +19,7 @@ import {
   PedagogyFormAccess,
   HopsUppersecondary,
   ActivityLogEntry,
+  NoteSortedList,
 } from "~/generated/client";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
@@ -36,8 +37,13 @@ export type GuiderStudentsStateType =
   | "LOADING_MORE"
   | "ERROR"
   | "READY";
+
 export type GuiderCurrentStudentStateType = "LOADING" | "ERROR" | "READY";
 
+export type GuiderNotes = {
+  state: LoadingState;
+  notes: NoteSortedList;
+};
 /**
  * GuiderActiveFiltersType
  */
@@ -120,6 +126,8 @@ export interface GuiderStudentUserProfileType {
 export interface GuiderState {
   students: Student[];
   studentsState: GuiderStudentsStateType;
+  notes: GuiderNotes;
+  noteState: LoadingState;
   activeFilters: GuiderActiveFiltersType;
   availablePurchaseProducts: CeeposPurchaseProduct[];
   availableFilters: GuiderFiltersType;
@@ -193,6 +201,14 @@ function sortOrders(a: CeeposOrder, b: CeeposOrder) {
 const initialGuiderState: GuiderState = {
   studentsState: "LOADING",
   currentStudentState: "LOADING",
+  noteState: "WAITING",
+  notes: {
+    state: "WAITING",
+    notes: {
+      privateNotes: [],
+      multiUserNotes: [],
+    },
+  },
   availableFilters: {
     labels: [],
     workspaces: [],
@@ -285,6 +301,24 @@ export const guider: Reducer<GuiderState> = (
         ...state,
         studentsState: action.payload,
       };
+
+    case "UPDATE_NOTES_STATUS": {
+      const notes = { ...state.notes };
+      notes.state = action.payload;
+      return { ...state, notes };
+    }
+
+    // TODO: this should be "LOAD_NOTES"
+    case "UPDATE_NOTES": {
+      const notes = { ...state.notes };
+      notes.notes = action.payload;
+      return { ...state, notes };
+    }
+    case "ADD_NOTE": {
+      const notes = { ...state.notes };
+      // notes.notes = {...notes.notes, action.payload};
+      return { ...state, notes };
+    }
 
     case "ADD_TO_GUIDER_SELECTED_STUDENTS": {
       const student: Student = action.payload;

@@ -14,20 +14,26 @@ import {
   NoteCreationObject,
   NotePriorityType,
 } from "~/generated/client";
+import InputContactsAutofill, {
+  InputContactsAutofillLoaders,
+} from "~/components/base/input-contacts-autofill";
+import { ContactRecipientType } from "~/reducers/user-index";
 
 /**
  * NotesItemNewProps
  */
 interface NotesItemNewProps extends WithTranslation {
   /**
-   * Id of note owner (recipient)
+   * Id of note recipient
+   * if this in not given there will be a recipient field
    */
-  newNoteOwnerId: number;
+  newNoteRecipientId?: number;
+  loaders?: () => InputContactsAutofillLoaders;
   children: React.ReactElement;
   onNotesItemSaveClick?: (
     newNotesItem: CreateNoteRequest,
     onSuccess?: () => void
-  ) => Promise<void>;
+  ) => Promise<void> | void;
 }
 
 /**
@@ -62,7 +68,10 @@ class NotesItemNew extends SessionStateComponent<
           status: "ONGOING",
         },
         recipients: {
-          recipientIds: [props.newNoteOwnerId ? props.newNoteOwnerId : null],
+          recipientIds: props.newNoteRecipientId
+            ? [props.newNoteRecipientId]
+            : [],
+
           recipientGroupIds: [],
         },
         note: {
@@ -90,7 +99,9 @@ class NotesItemNew extends SessionStateComponent<
         },
         recipients: {
           recipientIds: [
-            this.props.newNoteOwnerId ? this.props.newNoteOwnerId : null,
+            this.props.newNoteRecipientId
+              ? this.props.newNoteRecipientId
+              : null,
           ],
           recipientGroupIds: [],
         },
@@ -136,6 +147,25 @@ class NotesItemNew extends SessionStateComponent<
     });
   };
 
+  handleRecipientsChange = (recipients: ContactRecipientType[]) => {
+    const recipientIds = recipients
+      .filter((recipient) => recipient.type == "user")
+      .map((recipient) => recipient.value.id);
+
+    const recipientGroupIds = recipients
+      .filter((recipient) => recipient.type === "usergroup")
+      .map((recipient) => recipient.value.id);
+
+    this.setState({
+      notesItem: {
+        ...this.state.notesItem,
+        recipients: {
+          recipientIds: recipientIds,
+          recipientGroupIds: recipientGroupIds,
+        },
+      },
+    });
+  };
   /**
    * render
    */
@@ -145,6 +175,31 @@ class NotesItemNew extends SessionStateComponent<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => never) => [
+      <>
+        {this.props.newNoteRecipientId && !this.props.loaders ? null : (
+          <div className="env-dialog__form-element-container">
+            <InputContactsAutofill
+              identifier="communicatorRecipients"
+              modifier="new-message"
+              key="new-message-1"
+              showFullNames={true}
+              loaders={this.props.loaders()}
+              hasWorkspacePermission={false}
+              hasGroupPermission={true}
+              placeholder={this.props.t("labels.search", {
+                context: "recipients",
+              })}
+              label={this.props.t("labels.recipients", {
+                ns: "messaging",
+                count: 0,
+              })}
+              selectedItems={[]}
+              onChange={() => {}}
+              autofocus={false}
+            />
+          </div>
+        )}
+      </>,
       <div key="new-note-1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">

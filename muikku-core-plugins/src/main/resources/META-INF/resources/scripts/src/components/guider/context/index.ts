@@ -7,11 +7,9 @@ export interface ContextProps {
 }
 export const GuiderContext = React.createContext<ContextProps>({
   view: "students",
-
   setView:
     /**
      * setView
-     * @param staff
      */
-    (staff) => {},
+    () => {},
 });
