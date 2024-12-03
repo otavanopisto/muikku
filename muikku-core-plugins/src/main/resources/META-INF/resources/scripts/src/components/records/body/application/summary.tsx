@@ -31,7 +31,6 @@ import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { carouselMatrixByStudyProgrammeAndCurriculum } from "~/components/general/carousel/hooks/use-course-carousel";
-import Link from "~/components/general/link";
 
 /**
  * SummaryProps
