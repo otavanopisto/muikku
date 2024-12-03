@@ -12,7 +12,6 @@ import {
   EducationType,
   Organization,
   WorkspaceOrganization,
-  UserStaff,
   UserStaffSearchResult,
   WorkspaceStudentSearchResult,
   WorkspaceType,
@@ -27,6 +26,7 @@ import {
   WorkspaceAccess,
   WorkspaceMandatority,
   WorkspaceSettings,
+  StaffMember,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -139,7 +139,7 @@ export interface WorkspaceDataType {
   mandatority?: WorkspaceMandatority | null;
 
   // These are only in organizationlistings
-  teachers?: UserStaff[];
+  teachers?: StaffMember[];
   studentCount?: number;
 }
 

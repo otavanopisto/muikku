@@ -4937,7 +4937,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Student"
+                  $ref: "#/components/schemas/FlaggedStudent"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -4963,7 +4963,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Student"
+                $ref: "#/components/schemas/GuiderStudent"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -5289,6 +5289,59 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HopsFormSaveResponse"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/hops/student/{studentIdentifier}/lock:
+    get:
+      operationId: getStudentHopsLock
+      summary: Get student hops locked status information
+      description: Get student hops locked status with information about who locked it
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Hops lock with information about who locked it
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HopsLocked"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    put:
+      operationId: updateStudentHopsLock
+      summary: Update student hops lock
+      description: Update student hops lock
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/HopsUpdateLockRequestBody"
+      responses:
+        "200":
+          description: Student hops locked successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HopsLocked"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6583,8 +6636,8 @@ paths:
   /rest/organizationUserManagement/staffMembers:
     get:
       operationId: getOrganizationStaffMembers
-      summary: Get staff member
-      description: Get staff member
+      summary: Search staff members
+      description: Search staff members
       tags:
         - Organization
       parameters:
@@ -6624,7 +6677,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserSearchResult"
+                $ref: "#/components/schemas/OrganizationStaffMemberSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -6669,7 +6722,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserSearchResult"
+                $ref: "#/components/schemas/OrganizationStudentSearchResult"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7751,25 +7804,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/UserStaffCreatePayload"
         "400":
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
 
-  /rest/user/staffMembers/{staffMemberId}:
+  /rest/user/staffMembers/{staffMemberIdentifier}:
     put:
       operationId: updateStaffMember
       summary: Update staff member
       description: Update staff member
       parameters:
-        - name: staffMemberId
+        - name: staffMemberIdentifier
           in: path
-          description: Staff member id
+          description: Staff member identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       tags:
         - User
       requestBody:
@@ -7780,7 +7832,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserStaff"
+                $ref: "#/components/schemas/UserStaffCreatePayload"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -7921,7 +7973,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/user/students/{studentId}/basicInfo:
+  /rest/user/students/{studentIdentifier}/basicInfo:
     put:
       operationId: updateStudentBasicInfo
       summary: Update student basic info
@@ -7929,13 +7981,12 @@ paths:
       tags:
         - User
       parameters:
-        - name: studentId
+        - name: studentIdentifier
           in: path
-          description: Student id
+          description: Student identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       requestBody:
         $ref: "#/components/requestBodies/UserStudentBasicInfoUpdateRequestBody"
       responses:
@@ -10906,7 +10957,7 @@ components:
                 type: integer
               points:
                 type: number
-                format: dobule
+                format: double
               audioAssessments:
                 type: array
                 items:
@@ -10946,7 +10997,7 @@ components:
                 type: integer
               points:
                 type: number
-                format: dobule
+                format: double
               audioAssessments:
                 type: array
                 items:
@@ -11309,6 +11360,19 @@ components:
               historyChanges:
                 description: Hops history changes.
                 type: string
+
+    HopsUpdateLockRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: HopsLockRequestBody object
+            required:
+              - locked
+            properties:
+              locked:
+                type: boolean
 
     HopsHistoryEntryUpdateRequestBody:
       required: true
@@ -11806,55 +11870,13 @@ components:
       content:
         application/json:
           schema:
-            type: object
-            description: UserStaffCreateRequestBody object
-            required:
-              - firstName
-              - lastName
-              - email
-            properties:
-              firstName:
-                type: string
-              lastName:
-                type: string
-              email:
-                type: string
-              studyProgrammeIdentifier:
-                type: string
-              roles:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Role"
-              ssn:
-                type: string
+            $ref: "#/components/schemas/UserStaffCreatePayload"
 
     UserStaffUpdateRequestBody:
       content:
         application/json:
           schema:
-            type: object
-            description: UserStaffUpdateRequestBody object
-            required:
-              - firstName
-              - lastName
-              - identifier
-              - email
-            properties:
-              firstName:
-                type: string
-              lastName:
-                type: string
-              identifier:
-                type: integer
-                format: int64
-              email:
-                type: string
-              role:
-                type: string
-              studyProgrammeIdentifier:
-                type: string
-              ssn:
-                type: string
+            $ref: "#/components/schemas/UserStaffCreatePayload"
 
     UserStudentCreateRequestBody:
       content:
@@ -11901,8 +11923,7 @@ components:
               - email
             properties:
               identifier:
-                type: integer
-                format: int64
+                type: string
               firstName:
                 type: string
               lastName:
@@ -12121,10 +12142,10 @@ components:
               description:
                 type: string
               price:
-                type: integer
+                type: number
                 format: double
               factor:
-                type: integer
+                type: number
                 format: double
               billingNumber:
                 type: integer
@@ -13849,6 +13870,22 @@ components:
         assessmentrequest:
           type: string
 
+    HopsLocked:
+      type: object
+      description: Gives information about whether the Hops is locked and who locked it.
+      required:
+        - locked
+        - userEntityId
+        - userName
+      properties:
+        locked:
+          type: boolean
+        userEntityId:
+          type: integer
+          format: int64
+        userName:
+          type: string
+
     HopsHistoryEntry:
       type: object
       description: HopsHistoryEntry object
@@ -14321,7 +14358,8 @@ components:
           type: string
         completedCreditPointsCount:
           description: Number of completed credit points
-          type: double
+          type: number
+          format: double
 
     MatriculationAttendanceStatusType:
       type: string
@@ -15002,9 +15040,9 @@ components:
         recipients:
           type: array
           items:
-            $ref: "#/components/schemas/MessageRecipient"
+            $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         sender:
-          $ref: "#/components/schemas/User"
+          $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         tags:
           $ref: "#/components/schemas/AnyValue"
         userGroupRecipients:
@@ -15052,7 +15090,7 @@ components:
         created:
           type: string
         sender:
-          $ref: "#/components/schemas/User"
+          $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         tags:
           $ref: "#/components/schemas/AnyValue"
         unreadMessagesInThread:
@@ -15068,7 +15106,7 @@ components:
         recipients:
           type: array
           items:
-            $ref: "#/components/schemas/MessageRecipient"
+            $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         userGroupRecipients:
           type: array
           items:
@@ -15127,33 +15165,6 @@ components:
         userEntityId:
           type: integer
           format: int64
-
-    MessageRecipient:
-      type: object
-      description: Message recipient object
-      required:
-        - userEntityId
-        - communicatorMessageId
-        - firstName
-      properties:
-        userEntityId:
-          type: integer
-          format: int64
-        communicatorMessageId:
-          type: integer
-          format: int64
-        firstName:
-          type: string
-        lastName:
-          type: string
-          nullable: true
-        nickname:
-          type: string
-          nullable: true
-        archived:
-          type: boolean
-        studiesEnded:
-          type: boolean
 
     MessageRecipientWorkspace:
       type: object
@@ -15222,26 +15233,13 @@ components:
                 type: integer
                 format: int64
         sender:
-          type: object
-          properties:
-            userEntityId:
-              type: integer
-              format: int64
-            firstName:
-              type: string
-            lastName:
-              type: string
-            nickName:
-              type: string
-            studyProgrammeName:
-              type: string
-              nullable: true
+          $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         tags:
           $ref: "#/components/schemas/AnyValue"
         recipients:
           type: array
           items:
-            $ref: "#/components/schemas/MessageRecipient"
+            $ref: "#/components/schemas/CommunicatorUserBasicInfo"
         userGroupRecipients:
           type: array
           items:
@@ -15688,22 +15686,18 @@ components:
         - hasImage
         - updatedByStudent
         - userEntityId
-        - matriculationEligibility
         - ceeposLine
-        - flags
         - hasPedagogyForm
-        - curriculumName
         - curriculumIdentifier
+        - studyProgrammeIdentifier
         - studyProgrammeName
         - studyStartDate
         - studyEndDate
         - studyTimeEnd
         - lastLogin
+        - organization
       properties:
         curriculumIdentifier:
-          type: string
-          nullable: true
-        curriculumName:
           type: string
           nullable: true
         email:
@@ -15713,6 +15707,7 @@ components:
         hasImage:
           type: boolean
         id:
+          description: The "identifier" of the student. Form "PYRAMUS-X" despite name refrencing to integer
           type: string
         language:
           nullable: true
@@ -15735,6 +15730,8 @@ components:
           nullable: true
           type: string
           format: date-time
+        studyProgrammeIdentifier:
+          type: string
         studyProgrammeName:
           type: string
         studyStartDate:
@@ -15754,18 +15751,51 @@ components:
         userEntityId:
           type: integer
           format: int64
-        matriculationEligibility:
-          type: boolean
         ceeposLine:
           type: string
           nullable: true
-        flags:
-          nullable: true
-          type: array
-          items:
-            $ref: "#/components/schemas/UserStudentFlag"
         hasPedagogyForm:
           type: boolean
+        organization:
+          $ref: "#/components/schemas/Organization"
+          nullable: true
+
+    FlaggedStudent:
+      allOf:
+        - $ref: "#/components/schemas/Student"
+        - type: object
+          required:
+            - flags
+          properties:
+            flags:
+              nullable: true
+              type: array
+              items:
+                $ref: "#/components/schemas/UserStudentFlag"
+
+    GuiderStudent:
+      allOf:
+        - $ref: "#/components/schemas/FlaggedStudent"
+        - type: object
+          required:
+            - curriculumName
+            - matriculationEligibility
+          properties:
+            curriculumName:
+              type: string
+              nullable: true
+            matriculationEligibility:
+              type: boolean
+            permissions:
+              type: object
+              required:
+                - canViewDetails
+                - canEdit
+              properties:
+                canViewDetails:
+                  type: boolean
+                canEdit:
+                  type: boolean
 
     StudentInfo:
       type: object
@@ -15915,8 +15945,8 @@ components:
         username:
           type: string
 
-    UserSearchResult:
-      description: StaffSearchResult object. Holding the search results of staff search and the total hit count.
+    OrganizationStaffMemberSearchResult:
+      description: OrganizationStaffMemberSearchResult object. Holding the search results of staff search and the total hit count.
       type: object
       required:
         - results
@@ -15926,7 +15956,24 @@ components:
         results:
           type: array
           items:
-            $ref: "#/components/schemas/User"
+            $ref: "#/components/schemas/StaffMember"
+        totalHitCount:
+          type: integer
+        firstResult:
+          type: integer
+
+    OrganizationStudentSearchResult:
+      description: OrganizationStudentSearchResult object. Holding the search results of student search and the total hit count.
+      type: object
+      required:
+        - results
+        - totalHitCount
+        - firstResult
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/Student"
         totalHitCount:
           type: integer
         firstResult:
@@ -16107,37 +16154,6 @@ components:
         active:
           type: boolean
 
-    UserStaff:
-      type: object
-      description: UserStaff object
-      required:
-        - id
-        - email
-        - firstName
-        - lastName
-        - properties
-        - userEntityId
-        - hasImage
-        - role
-      properties:
-        id:
-          type: string
-        email:
-          type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        properties:
-          $ref: "#/components/schemas/AnyValue"
-        userEntityId:
-          type: integer
-          format: int64
-        hasImage:
-          type: boolean
-        role:
-          $ref: "#/components/schemas/Role"
-
     UserGroup:
       type: object
       description: UserGroup object
@@ -16241,7 +16257,7 @@ components:
         results:
           type: array
           items:
-            $ref: "#/components/schemas/UserStaff"
+            $ref: "#/components/schemas/StaffMember"
         totalHitCount:
           type: integer
         firstResult:
@@ -16291,27 +16307,94 @@ components:
           type: string
         hasImage:
           type: boolean
-        curriculumIdentifier:
+        email:
           type: string
-        studyProgrammeIdentifier:
+
+    CommunicatorUserBasicInfo:
+      type: object
+      description: User object
+      required:
+        - userEntityId
+        - firstName
+      properties:
+        userEntityId:
+          type: integer
+          format: int64
+        firstName:
           type: string
-        organizationIdentifier:
+        lastName:
+          type: string
+        nickName:
+          type: string
+          nullable: true
+        studyProgrammeName:
+          type: string
+          nullable: true
+        archived:
+          type: boolean
+        studiesEnded:
+          type: boolean
+
+    StaffMember:
+      type: object
+      description: StaffMember object
+      required:
+        - id
+        - userEntityId
+        - firstName
+        - lastName
+        - email
+        - properties
+        - hasImage
+        - roles
+      properties:
+        id:
+          description: Staff member identifier. Format is PYRAMUS-STAFF-XX even if id refers to number
+          type: string
+        userEntityId:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          nullable: true
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+        organization:
+          $ref: "#/components/schemas/Organization"
+          nullable: true
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Role"
+        hasImage:
+          type: boolean
+
+    UserStaffCreatePayload:
+      type: object
+      description: UserStaffCreatePayload object
+      required:
+        - firstName
+        - lastName
+        - email
+      properties:
+        identifier:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
           type: string
         roles:
           type: array
           items:
             $ref: "#/components/schemas/Role"
-        ssn:
-          type: string
-        email:
-          type: string
-        userEntityId:
-          type: integer
-          format: int64
-        archived:
-          type: boolean
-        studiesEnded:
-          type: boolean
 
     UserGuardiansDependant:
       type: object

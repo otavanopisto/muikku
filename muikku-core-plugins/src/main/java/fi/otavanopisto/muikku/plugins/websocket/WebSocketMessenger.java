@@ -53,7 +53,7 @@ public class WebSocketMessenger {
     return ticket;
   }
   
-  public void sendMessage(String eventType, String data, Set<Long> recipients) {
+  public void sendMessage(String eventType, Object data, Set<Long> recipients) {
     WebSocketMessage message = new WebSocketMessage(eventType, data);
     ObjectMapper mapper = new ObjectMapper();
     String strMessage = null;

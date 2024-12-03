@@ -8,7 +8,8 @@ import {
   StudyprogrammeStatusType,
   UserPayloadType,
   UsergroupPayloadType,
-  UserSearchResultWithExtraProperties,
+  UserStudentSearchResultWithExtraProperties,
+  UserStaffSearchResultWithExtraProperties,
 } from "reducers/main-function/users";
 import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
@@ -18,15 +19,15 @@ import {
   CreateStaffMemberRequest,
   CreateStudentRequest,
   CreateUsergroupRequest,
+  StaffMember,
+  Student,
   StudyProgramme,
   UpdateStaffMemberRequest,
-  UpdateStudentBasicInfoRequest,
+  UpdateStudentBasicInfoOperationRequest,
   UpdateUsergroupAddUsersRequest,
   UpdateUsergroupRemoveUsersRequest,
   UpdateUsergroupRequest,
-  User,
   UserGroup,
-  UserSearchResult,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 
@@ -44,11 +45,11 @@ export type UPDATE_HAS_MORE_USERGROUPS = SpecificActionType<
 >;
 export type UPDATE_STUDENT_USERS = SpecificActionType<
   "UPDATE_STUDENT_USERS",
-  UserSearchResultWithExtraProperties
+  UserStudentSearchResultWithExtraProperties
 >;
 export type UPDATE_STAFF_USERS = SpecificActionType<
   "UPDATE_STAFF_USERS",
-  UserSearchResultWithExtraProperties
+  UserStaffSearchResultWithExtraProperties
 >;
 export type LOAD_MORE_USER_GROUPS = SpecificActionType<
   "LOAD_MORE_USER_GROUPS",
@@ -64,11 +65,11 @@ export type UPDATE_CURRENT_USER_GROUP = SpecificActionType<
 >;
 export type UPDATE_STUDENT_SELECTOR = SpecificActionType<
   "UPDATE_STUDENT_SELECTOR",
-  User[]
+  Student[]
 >;
 export type UPDATE_STAFF_SELECTOR = SpecificActionType<
   "UPDATE_STAFF_SELECTOR",
-  User[]
+  StaffMember[]
 >;
 export type UPDATE_GROUP_SELECTOR = SpecificActionType<
   "UPDATE_GROUP_SELECTOR",
@@ -107,7 +108,7 @@ export interface CreateStudentTriggerType {
  */
 export interface CreateStaffmemberTriggerType {
   (data: {
-    staffmember: CreateStaffMemberRequest;
+    createRequest: CreateStaffMemberRequest;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -118,7 +119,7 @@ export interface CreateStaffmemberTriggerType {
  */
 export interface UpdateStudentTriggerType {
   (data: {
-    student: UpdateStudentBasicInfoRequest;
+    updateRequest: UpdateStudentBasicInfoOperationRequest;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -129,7 +130,7 @@ export interface UpdateStudentTriggerType {
  */
 export interface UpdateStaffmemberTriggerType {
   (data: {
-    staffmember: UpdateStaffMemberRequest;
+    updateRequest: UpdateStaffMemberRequest;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -175,7 +176,11 @@ export interface LoadStudyprogrammesTriggerType {
 export interface LoadUsersTriggerType {
   (data: {
     payload: UserPayloadType;
-    success?: (result: UserSearchResult) => any;
+    success?: (
+      result:
+        | UserStudentSearchResultWithExtraProperties
+        | UserStaffSearchResultWithExtraProperties
+    ) => any;
     fail?: () => any;
   }): AnyActionType;
 }
@@ -186,7 +191,11 @@ export interface LoadUsersTriggerType {
 export interface LoadUsergroupsTriggerType {
   (data: {
     payload: UsergroupPayloadType;
-    success?: (result: UserSearchResult) => any;
+    success?: (
+      result:
+        | UserStudentSearchResultWithExtraProperties
+        | UserStaffSearchResultWithExtraProperties
+    ) => any;
     fail?: () => any;
   }): AnyActionType;
 }
@@ -280,10 +289,7 @@ const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
     const organizationApi = MApi.getOrganizationApi();
 
     try {
-      await userApi.updateStudentBasicInfo({
-        studentId: data.student.identifier,
-        updateStudentBasicInfoRequest: data.student,
-      });
+      await userApi.updateStudentBasicInfo(data.updateRequest);
 
       dispatch(
         notificationActions.displayNotification(
@@ -335,9 +341,7 @@ const createStaffmember: CreateStaffmemberTriggerType =
       const organizationApi = MApi.getOrganizationApi();
 
       try {
-        await userApi.createStaffMember({
-          createStaffMemberRequest: data.staffmember,
-        });
+        await userApi.createStaffMember(data.createRequest);
 
         dispatch(
           notificationActions.displayNotification(
@@ -391,10 +395,7 @@ const updateStaffmember: UpdateStaffmemberTriggerType =
       const organizationApi = MApi.getOrganizationApi();
 
       try {
-        await userApi.updateStaffMember({
-          staffMemberId: data.staffmember.identifier,
-          updateStaffMemberRequest: data.staffmember,
-        });
+        await userApi.updateStaffMember(data.updateRequest);
 
         dispatch(
           notificationActions.displayNotification(

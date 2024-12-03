@@ -18,7 +18,6 @@ import { DependantsState } from "~/reducers/main-function/dependants";
 import Select from "react-select";
 import { getName } from "~/util/modifiers";
 import { OptionDefault } from "~/components/general/react-select/types";
-import { UseCaseContextProvider } from "~/context/use-case-context";
 import {
   loadMatriculationData,
   LoadMatriculationDataTriggerType,
@@ -31,6 +30,8 @@ import {
 } from "~/actions/main-function/hops/";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import Background from "~/components/hops/body/application/background/background";
+import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
+import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
 
 const UPPERSECONDARY_PROGRAMMES = [
   "Nettilukio",
@@ -92,9 +93,11 @@ class GuardianHopsApplication extends React.Component<
   async componentDidUpdate() {
     if (!window.location.hash && this.props.dependants.state === "READY") {
       // Dependants are loaded, but there's none selected, we pick the first one
-
-      const selectedDependantIdentifier =
-        this.props.dependants.list[0].identifier;
+      // that has an upper secondary programme
+      const selectedDependantIdentifier = this.props.dependants.list.find(
+        (dependant) =>
+          UPPERSECONDARY_PROGRAMMES.includes(dependant.studyProgrammeName)
+      )?.identifier;
       window.location.hash = selectedDependantIdentifier;
 
       this.setState({
@@ -195,6 +198,7 @@ class GuardianHopsApplication extends React.Component<
     this.props.resetHopsData();
     this.props.loadStudentHopsForm({ userIdentifier: option.value });
     this.props.loadHopsFormHistory({ userIdentifier: option.value });
+    this.props.loadMatriculationData({ userIdentifier: option.value });
 
     this.setState({
       activeTab: "BACKGROUND",
@@ -209,10 +213,15 @@ class GuardianHopsApplication extends React.Component<
   render() {
     // Filter dependants to only show upper secondary dependants
     const dependants = this.props.dependants
-      ? this.props.dependants.list.map((d) => ({
-          label: getName(d, true),
-          value: d.identifier,
-        }))
+      ? this.props.dependants.list
+          .filter((d) =>
+            UPPERSECONDARY_PROGRAMMES.includes(d.studyProgrammeName)
+          )
+          .map((d) => ({
+            label: getName(d, true),
+            value: d.identifier,
+            ...d,
+          }))
       : [];
 
     const selectedDependant = dependants.find(
@@ -264,15 +273,23 @@ class GuardianHopsApplication extends React.Component<
     panelTabs = panelTabs.filter(this.isVisible);
 
     return (
-      <UseCaseContextProvider value="GUARDIAN">
-        <ApplicationPanel
-          title="HOPS"
-          onTabChange={this.handleTabChange}
-          activeTab={this.state.activeTab}
-          panelTabs={panelTabs}
-          panelOptions={dependantSelect}
-        />
-      </UseCaseContextProvider>
+      <WebsocketWatcher studentIdentifier={selectedDependant?.identifier}>
+        <HopsBasicInfoProvider
+          useCase="GUARDIAN"
+          studentInfo={{
+            identifier: selectedDependant?.identifier || "",
+            studyStartDate: selectedDependant?.studyStartDate || new Date(),
+          }}
+        >
+          <ApplicationPanel
+            title="HOPS"
+            onTabChange={this.handleTabChange}
+            activeTab={this.state.activeTab}
+            panelTabs={panelTabs}
+            panelOptions={dependantSelect}
+          />
+        </HopsBasicInfoProvider>
+      </WebsocketWatcher>
     );
   }
 }

@@ -307,7 +307,11 @@ class WorkspaceNavbar extends React.Component<
     const assessmentRequestMenuItem = assessmentRequestItem ? (
       <Link
         key="link--assessment-request"
-        onClick={this.onRequestEvaluationOrCancel.bind(this, canCancelRequest)}
+        onClick={this.onRequestEvaluationOrCancel.bind(
+          this,
+          canCancelRequest,
+          this.props.workspaceIsBeingEvaluated
+        )}
         className="link link--full link--menu link--assessment-request"
       >
         <span

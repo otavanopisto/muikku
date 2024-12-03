@@ -249,6 +249,74 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
 }
 
 /**
+ * DialogColumnContainerProps
+ */
+interface DialogColumnContainerProps {
+  modifier?: string;
+}
+
+/**
+ * DialogColumnContainer
+ * @param props DialogColumnContainerProps
+ * @returns  JSX.Element
+ */
+export const DialogColumnContainer: React.FC<DialogColumnContainerProps> = (
+  props
+) => (
+  <div
+    className={`dialog__content-column-container${
+      props.modifier
+        ? "dialog__content-column-container--" + props.modifier
+        : ""
+    }`}
+  >
+    {props.children}
+  </div>
+);
+
+/**
+ * DialogColumnProps
+ */
+interface DialogColumnProps {
+  modifiers?: string | Array<string>;
+}
+
+/**
+ * DialogColumnState
+ */
+interface DialogColumnState {}
+
+/**
+ * DialogColumn
+ */
+export class DialogColumn extends React.Component<
+  DialogColumnProps,
+  DialogColumnState
+> {
+  /**
+   * render
+   * @returns JSX.Element
+   */
+  render() {
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
+    return (
+      <div
+        className={`dialog__content-column ${
+          this.props.modifiers
+            ? modifiers.map((m) => `dialog__content-column--${m}`).join(" ")
+            : ""
+        }`}
+      >
+        {this.props.children}
+      </div>
+    );
+  }
+}
+
+/**
  * DialogRowProps
  */
 interface DialogRowProps {

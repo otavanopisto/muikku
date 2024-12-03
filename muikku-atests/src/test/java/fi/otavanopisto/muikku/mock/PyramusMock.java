@@ -722,6 +722,15 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder mockIAmCounselor() throws Exception {
+        stubFor(get(urlMatching(String.format("/1/students/students/.*/amICounselor")))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(true))
+                .withStatus(200)));
+        return this;
+      }
+      
       public Builder mockPersons() throws Exception {
         List<String> payloads = new ArrayList<>();
         for (Person person : pmock.persons) {

@@ -4,13 +4,13 @@ import { connect } from "react-redux";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import Button from "~/components/general/button";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 import {
   MatriculationExamTerm,
   MatriculationSubject,
 } from "~/generated/client";
 import { getNextTermsOptionsByDate } from "~/helper-functions/matriculation-functions";
 import { StateType } from "~/reducers";
-import { StatusType } from "~/reducers/base/status";
 
 const FINNISH_LANUGAGES = ["ÄI", "S2"];
 
@@ -54,7 +54,6 @@ const GENERAL_STUDIES_SUBJECTS = [
  * MatriculationSubjectsListProps
  */
 interface MatriculationSubjectsListProps {
-  status: StatusType;
   disabled: boolean;
   subjects: MatriculationSubject[];
   selectedSubjects: SelectedMatriculationSubject[];
@@ -81,10 +80,9 @@ export interface SelectedMatriculationSubject {
  * @param props props
  */
 const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
-  const { onSubjectsChange, selectedSubjects, subjects, status, disabled } =
-    props;
-  const [selectedSubjects2, setSelectedSubjects2] =
-    React.useState<SelectedMatriculationSubject[]>(selectedSubjects);
+  const { onSubjectsChange, selectedSubjects, subjects, disabled } = props;
+
+  const { studentInfo } = useHopsBasicInfo();
 
   const { t } = useTranslation(["hops_new", "studies", "guider", "common"]);
 
@@ -123,15 +121,15 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
       return;
     }
     // Filter out empty values from input array
-    onSubjectsChange(selectedSubjects.filter((s) => s.subjectCode));
+    onSubjectsChange(selectedSubjects);
   };
 
   /**
    * Event handler for handling matriculation subject additions
    */
   const handleMatriculationSubjectAdd = () => {
-    const updatedList = [...selectedSubjects2, { subjectCode: "", term: "" }];
-    setSelectedSubjects2(updatedList);
+    const updatedList = [...selectedSubjects, { subjectCode: "", term: "" }];
+    notifyMatriculationSubjectChange(updatedList);
   };
 
   /**
@@ -141,10 +139,9 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    */
   const handleMatriculationSubjectRemove =
     (index: number) => (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      const updatedList = [...selectedSubjects2];
+      const updatedList = [...selectedSubjects];
       updatedList.splice(index, 1);
       notifyMatriculationSubjectChange(updatedList);
-      setSelectedSubjects2(updatedList);
     };
 
   /**
@@ -155,10 +152,9 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
   const handleMatriculationSubjectChange =
     (index: number) => (e: React.ChangeEvent<HTMLSelectElement>) => {
       const { value } = e.target;
-      const updatedList = [...selectedSubjects2];
+      const updatedList = [...selectedSubjects];
       updatedList[index].subjectCode = value;
       notifyMatriculationSubjectChange(updatedList);
-      setSelectedSubjects2(updatedList);
     };
 
   /**
@@ -169,10 +165,9 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
   const handleMatriculationSubjectTermChange =
     (index: number) => (e: React.ChangeEvent<HTMLSelectElement>) => {
       const { value } = e.target;
-      const updatedList = [...selectedSubjects2];
+      const updatedList = [...selectedSubjects];
       updatedList[index].term = value;
       notifyMatriculationSubjectChange(updatedList);
-      setSelectedSubjects2(updatedList);
     };
 
   /**
@@ -244,13 +239,10 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
       </option>
     ));
 
-  const termOptions = getNextTermsOptionsByDate(
-    status.profile.studyStartDate,
-    t
-  );
+  const termOptions = getNextTermsOptionsByDate(studentInfo.studyStartDate, t);
 
-  const matriculationSubjectInputs = selectedSubjects2.map((subject, index) => (
-    <div className="form__row form__row--matriculation-plan" key={index}>
+  const matriculationSubjectInputs = selectedSubjects.map((subject, index) => (
+    <div className="form__row" key={index}>
       <div className="form-element__dropdown-selection-container form-element__dropdown-selection-container--nowrap">
         <label
           htmlFor={`matriculationSubject` + index}
@@ -380,9 +372,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
  * @param state state
  */
 function mapStateToProps(state: StateType) {
-  return {
-    status: state.status,
-  };
+  return {};
 }
 
 /**

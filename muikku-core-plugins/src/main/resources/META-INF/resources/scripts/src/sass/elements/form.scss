@@ -154,6 +154,17 @@ legend {
 }
 
 // FORM ELEMENTS
+.form-switch-element {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0 10px;
+
+  label {
+    font-weight: 400;
+  }
+}
+
 .form-element {
   width: auto;
 
@@ -185,6 +196,16 @@ legend {
     margin-right: 5px;
     padding: 0;
     width: 1rem;
+
+    &[disabled] {
+      border: 2px solid lighten($color-disabled, 20%);
+      color: $color-disabled;
+
+      &:checked {
+        background-color: $color-disabled;
+        border: 2px solid $color-disabled;
+      }
+    }
   }
 
   input[type="radio"] {
@@ -197,6 +218,16 @@ legend {
     justify-content: center;
     margin-right: 5px;
     width: 1rem;
+
+    &[disabled] {
+      border: 2px solid lighten($color-disabled, 20%);
+      color: $color-disabled;
+
+      &:checked {
+        background-color: $color-disabled;
+        border: 2px solid $color-disabled;
+      }
+    }
   }
 
   input:checked {
@@ -209,6 +240,25 @@ legend {
     content: "\e639";
     font-family: "muikku";
     font-size: 0.875rem;
+  }
+}
+
+.form-element--chat {
+  input[type="checkbox"] {
+    border: solid 2px $color-chat-primary;
+  }
+
+  input[type="radio"] {
+    border: solid 2px $color-chat-primary;
+  }
+
+  input:checked {
+    background-color: $color-chat-primary;
+    border: solid 2px $color-chat-primary;
+  }
+
+  input:checked::after {
+    color: $color-default;
   }
 }
 

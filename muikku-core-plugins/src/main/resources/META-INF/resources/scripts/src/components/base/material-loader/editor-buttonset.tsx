@@ -21,6 +21,7 @@ function toggleVisiblePageStatus(props: EditorButtonSetProps) {
     workspace: props.workspace,
     material: props.material,
     update: {
+      ...props.material,
       hidden: !props.material.hidden,
     },
     isDraft: false,
