@@ -122,7 +122,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
       );
 
       const studentCounselors = (
-        <div className="application-sub-panel">
+        <div className="application-sub-panel application-sub-panel--counselors">
           <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
             {t("labels.counselors", {
               ns: "users",
