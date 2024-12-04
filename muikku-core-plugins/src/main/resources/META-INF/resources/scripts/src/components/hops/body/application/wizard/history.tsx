@@ -40,7 +40,7 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => {
   const { useCase } = useHopsBasicInfo();
 
   // Accessible only from Guider
-  const showEditButton = useCase === "GUIDANCE_COUNSELOR";
+  const showEditButton = useCase === "GUIDER";
 
   return (
     <div className="hops-container__history">
@@ -146,7 +146,7 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
         <span className="hops-container__history-event-text">
           {viewingOwnHistorEvent
             ? t("labels.hopsFormHistoryEditedByYou", { ns: "hops_new" })
-            : t("labels.hopsFormHistoryEditedByCounselor", { ns: "hops_new" })}
+            : t("labels.hopsFormHistoryEditedByOther", { ns: "hops_new" })}
         </span>
 
         <span className="hops-container__history-event-date">

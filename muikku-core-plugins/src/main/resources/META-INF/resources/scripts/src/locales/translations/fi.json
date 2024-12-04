@@ -659,7 +659,7 @@
       "hopsFormHistory": "Muokkaushistoria",
       "hopsFormHistoryEditedFields": "Muokatut kentät",
       "hopsFormHistoryEditedByYou": "muokkasit HOPS:ia",
-      "hopsFormHistoryEditedByCounselor": "ohjaaja muokkasi HOPS:ia",
+      "hopsFormHistoryEditedByOther": "muokkasi HOPS:ia",
       "hopsFormInfoTitle": "Perustiedot",
       "hopsFormEntryLevelAssessmentTitle": "Osaamisen ja lähtötason arviointi",
       "hopsFormStudySkillsAndMotivationTitle": "Opiskelutaidot ja motivaatio",

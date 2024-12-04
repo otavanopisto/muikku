@@ -239,28 +239,28 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                 contentClassName="hops-animate__height-wrapper"
                 className="hops-container__row hops-container__row--dependant-of-above"
               >
-                {postGraduateStudiesCheckboxItems.map((item) => (
-                  <>
-                    <div key={item.id} className="hops-container__row">
+                {postGraduateStudiesCheckboxItems.map((pItem) => (
+                  <React.Fragment key={pItem.id}>
+                    <div className="hops-container__row">
                       <div className="hops__form-element-container hops__form-element-container--single-row">
                         <input
-                          id={item.id}
+                          id={pItem.id}
                           type="checkbox"
                           className="hops__input"
-                          value={item.value}
+                          value={pItem.value}
                           checked={form.postGraduateStudies.includes(
-                            item.value
+                            pItem.value
                           )}
                           onChange={handlePostGraduateStudiesCheckboxChange}
                           disabled={disabled}
                         ></input>
-                        <label htmlFor={item.id} className="hops__label">
-                          {item.label}
+                        <label htmlFor={pItem.id} className="hops__label">
+                          {pItem.label}
                         </label>
                       </div>
                     </div>
 
-                    {item.value === "ELSE" && (
+                    {pItem.value === "ELSE" && (
                       <AnimateHeight
                         height={
                           form.postGraduateStudies.includes("ELSE") ? "auto" : 0
@@ -268,7 +268,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                         contentClassName="hops-animate__height-wrapper"
                         className="hops-container__row hops-container__row--dependant-of-above"
                       >
-                        <div key={item.id} className="hops-container__row">
+                        <div className="hops-container__row">
                           <div className="hops__form-element-container">
                             <Textarea
                               id="postGraduateStudiesElse"
@@ -289,7 +289,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                         </div>
                       </AnimateHeight>
                     )}
-                  </>
+                  </React.Fragment>
                 ))}
               </AnimateHeight>
             )}
