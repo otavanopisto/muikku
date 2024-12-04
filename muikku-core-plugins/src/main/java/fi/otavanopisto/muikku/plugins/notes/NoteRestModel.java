@@ -104,6 +104,14 @@ public class NoteRestModel {
     this.recipients = recipients;
   }
 
+  public Boolean getMultiUserNote() {
+    return multiUserNote;
+  }
+
+  public void setMultiUserNote(Boolean multiUserNote) {
+    this.multiUserNote = multiUserNote;
+  }
+
   private Long id;
   private String title;
   private String description;
@@ -116,5 +124,6 @@ public class NoteRestModel {
   private Date dueDate;
   private Boolean isArchived;
   private List<NoteReceiverRestModel> recipients;
+  private Boolean multiUserNote;
 
 }

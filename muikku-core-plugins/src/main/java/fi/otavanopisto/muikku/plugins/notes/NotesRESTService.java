@@ -114,11 +114,7 @@ public class NotesRESTService extends PluginRESTService {
 
     Boolean pinned = payload.getNoteReceiver().getPinned();
 
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-
     // Recipient handling
-
-    List<UserEntity> recipientList = new ArrayList<UserEntity>();
 
     RecipientListRESTModel recipientPayload = payload.getRecipients();
 
@@ -144,41 +140,9 @@ public class NotesRESTService extends PluginRESTService {
 
       }
       else { // Note creation by staff
-        for (Long recipientId : recipientPayload.getRecipientIds()) {
-          UserEntity recipient = userEntityController.findUserEntityById(recipientId);
+        UserRecipientList prepareRecipientList = prepareRecipientList(recipientPayload);
 
-          if (recipient != null) {
-            recipientList.add(recipient);
-          }
-          else {
-            return Response.status(Status.BAD_REQUEST).build();
-          }
-        }
-      }
-
-      List<UserGroupEntity> userGroupRecipients = null;
-      UserGroupEntity group = null;
-
-      if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-        // user groups
-        if (!CollectionUtils.isEmpty(recipientPayload.getRecipientGroupIds())) {
-          userGroupRecipients = new ArrayList<UserGroupEntity>();
-
-          for (Long groupId : recipientPayload.getRecipientGroupIds()) {
-            group = userGroupEntityController.findUserGroupEntityById(groupId);
-            userGroupRecipients.add(group);
-          }
-        }
-
-        // The recipients of notes are always only students
-        List<EnvironmentRoleArchetype> roles = new ArrayList<EnvironmentRoleArchetype>();
-        roles.add(EnvironmentRoleArchetype.STUDENT);
-
-        // Filter recipients
-        UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(userEntity, recipientList,
-            userGroupRecipients, null, null, roles);
-
-        if (!prepareRecipientList.hasRecipients()) {
+        if (prepareRecipientList == null || !prepareRecipientList.hasRecipients()) {
           return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
         }
 
@@ -218,8 +182,49 @@ public class NotesRESTService extends PluginRESTService {
 
     NoteRestModel noteRest = toRestModel(newNote);
     noteRest.setRecipients(receiverList);
+    noteRest.setMultiUserNote(receiverList.size() > 1);
 
     return Response.ok(noteRest).build();
+  }
+
+  private UserRecipientList prepareRecipientList(RecipientListRESTModel recipientPayload) {
+
+    if (recipientPayload != null) {
+      List<UserEntity> recipientList = new ArrayList<UserEntity>();
+
+      for (Long recipientId : recipientPayload.getRecipientIds()) {
+        UserEntity recipient = userEntityController.findUserEntityById(recipientId);
+
+        if (recipient != null) {
+          recipientList.add(recipient);
+        }
+      }
+
+      List<UserGroupEntity> userGroupRecipients = null;
+      UserGroupEntity group = null;
+
+      // user groups
+      if (!CollectionUtils.isEmpty(recipientPayload.getRecipientGroupIds())) {
+        userGroupRecipients = new ArrayList<UserGroupEntity>();
+
+        for (Long groupId : recipientPayload.getRecipientGroupIds()) {
+          group = userGroupEntityController.findUserGroupEntityById(groupId);
+          userGroupRecipients.add(group);
+        }
+      }
+
+      // The recipients of notes are always only students
+      List<EnvironmentRoleArchetype> roles = new ArrayList<EnvironmentRoleArchetype>();
+      roles.add(EnvironmentRoleArchetype.STUDENT);
+
+      // Filter recipients
+      UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
+          sessionController.getLoggedUserEntity(), recipientList, userGroupRecipients, null, null, roles);
+
+      return prepareRecipientList;
+    }
+
+    return null;
   }
 
   // mApi() call (mApi().notes.note.update(noteId, noteRestModel)
@@ -227,7 +232,7 @@ public class NotesRESTService extends PluginRESTService {
   @PUT
   @Path("/note/{NOTEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateNote(@PathParam("NOTEID") Long noteId, NoteRestModel payload) {
+  public Response updateNote(@PathParam("NOTEID") Long noteId, NoteWithRecipientsRestModel payload) {
 
     Note note = notesController.findNoteById(noteId);
 
@@ -243,14 +248,63 @@ public class NotesRESTService extends PluginRESTService {
     if (creatorUSDI == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
+    NoteRestModel notePayload = payload.getNote();
 
     if (sessionController.getLoggedUserEntity().getId().equals(note.getCreator())) {
-      updatedNote = notesController.updateNote(note, payload.getTitle(), payload.getDescription(),
-          payload.getPriority(), payload.getStartDate(), payload.getDueDate());
+      updatedNote = notesController.updateNote(note, notePayload.getTitle(), notePayload.getDescription(),
+          notePayload.getPriority(), notePayload.getStartDate(), notePayload.getDueDate());
     }
     else {
       return Response.status(Status.BAD_REQUEST).build();
     }
+
+    // Add recipients
+
+    if (payload.getRecipients() != null) {
+      UserRecipientList prepareRecipientList = prepareRecipientList(payload.getRecipients());
+
+      if (prepareRecipientList == null || !prepareRecipientList.hasRecipients()) {
+        return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
+      }
+
+      // userRecipients
+
+      for (UserEntity userRecipient : prepareRecipientList.getUserRecipients()) {
+
+        NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(userRecipient.getId(), updatedNote);
+
+        if (receiver == null) {
+          noteReceiverController.createNoteRecipient(false, userRecipient.getId(), updatedNote, null);
+        }
+      }
+
+      // User groups
+      for (UserGroupEntity userGroup : prepareRecipientList.getUserGroups()) {
+        prepareRecipientList.getUserGroupRecipients(userGroup);
+
+        List<UserGroupUserEntity> ugue = userGroupEntityController
+            .listUserGroupUserEntitiesByUserGroupEntity(userGroup);
+
+        for (UserGroupUserEntity userGroupUserEntity : ugue) {
+
+          if (userGroupUserEntity != null) {
+            UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
+
+            UserEntity groupRecipientEntity = userSchoolDataIdentifier.getUserEntity();
+
+            NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(groupRecipientEntity.getId(),
+                updatedNote);
+
+            if (receiver == null) {
+              noteReceiverController.createNoteRecipient(false, groupRecipientEntity.getId(), updatedNote,
+                  userGroupUserEntity.getUserGroupEntity().getId());
+            }
+          }
+        }
+      }
+    }
+
+    // To rest model
     NoteRestModel updatedRestModel = toRestModel(updatedNote);
 
     List<NoteReceiverRestModel> recipientsRest = new ArrayList<NoteReceiverRestModel>();
@@ -263,6 +317,7 @@ public class NotesRESTService extends PluginRESTService {
     }
 
     updatedRestModel.setRecipients(recipientsRest);
+    updatedRestModel.setMultiUserNote(recipientsRest.size() > 1);
 
     return Response.ok(updatedRestModel).build();
   }
@@ -438,6 +493,7 @@ public class NotesRESTService extends PluginRESTService {
 
       recipientListRest.add(recipientRest);
       noteRest.setRecipients(recipientListRest);
+      noteRest.setMultiUserNote(noteReceiverController.isMultiUserNote(note));
 
       notesList.add(noteRest);
     }
@@ -501,6 +557,7 @@ public class NotesRESTService extends PluginRESTService {
         recipientListRest.add(recipientRest);
       }
       noteRest.setRecipients(recipientListRest);
+      noteRest.setMultiUserNote(recipientListRest.size() > 1);
 
       notesList.add(noteRest);
     }
@@ -551,6 +608,7 @@ public class NotesRESTService extends PluginRESTService {
     }
 
     noteRestModel.setRecipients(recipientsRest);
+    noteRestModel.setMultiUserNote(recipientsRest.size() > 1);
 
     return Response.ok(noteRestModel).build();
 
