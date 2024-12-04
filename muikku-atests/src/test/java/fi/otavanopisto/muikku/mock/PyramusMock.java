@@ -282,7 +282,7 @@ public class PyramusMock {
       }
       
       public Builder addStaffMemberToStudentGroup(Long userGroupId, MockStaffMember staffMember) {
-        StudentGroupUser studentGroupUser = new StudentGroupUser(staffMember.getId(), staffMember.getId());
+        StudentGroupUser studentGroupUser = new StudentGroupUser(staffMember.getId(), staffMember.getId(), false, false, false);
           if(pmock.studentGroupUsers.containsKey(userGroupId)){
             pmock.studentGroupUsers.get(userGroupId).add(studentGroupUser);
           }else{

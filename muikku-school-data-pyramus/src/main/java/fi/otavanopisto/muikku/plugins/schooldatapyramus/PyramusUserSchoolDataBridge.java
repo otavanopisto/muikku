@@ -49,6 +49,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
@@ -913,7 +914,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           case STUDENT:
             return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/students", userGroupId), StudentGroupStudent[].class));
           case STAFF_MEMBER:
-            return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/staffmembers", userGroupId), StudentGroupUser[].class));
+            return entityFactory.createEntities(GroupUser.class, pyramusClient.get(String.format("/students/studentGroups/%d/staffmembers", userGroupId), StudentGroupUser[].class));
           }
         }
       break;
@@ -927,7 +928,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
+  public List<GroupStaffMember> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
     Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
     
     String path = String.format("/students/students/%d/guidanceCounselors", pyramusStudentId);
@@ -935,7 +936,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       path += "?onlyMessageRecipients=" + onlyMessageReceivers.toString().toLowerCase();
     }
     
-    return entityFactory.createEntities(pyramusClient.get(path, StudentGroupUser[].class));
+    return entityFactory.createEntities(GroupStaffMember.class, pyramusClient.get(path, StudentGroupUser[].class));
   }
   
   @Override

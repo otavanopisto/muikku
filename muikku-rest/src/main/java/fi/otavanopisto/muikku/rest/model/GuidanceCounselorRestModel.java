@@ -8,7 +8,7 @@ public class GuidanceCounselorRestModel {
   }
 
   public GuidanceCounselorRestModel(String id, Long userEntityId, String firstName, String lastName, String email,
-      Map<String, String> properties, boolean hasImage) {
+      Map<String, String> properties, boolean hasImage, boolean groupAdvisor, boolean studyAdvisor) {
     super();
     this.id = id;
     this.userEntityId = userEntityId;
@@ -17,6 +17,8 @@ public class GuidanceCounselorRestModel {
     this.email = email;
     this.properties = properties;
     this.hasImage = hasImage;
+    this.groupAdvisor = groupAdvisor;
+    this.studyAdvisor = studyAdvisor;
   }
 
   public String getId() {
@@ -67,12 +69,28 @@ public class GuidanceCounselorRestModel {
     this.properties = properties;
   }
 
-  public Boolean getHasImage() {
+  public boolean getHasImage() {
     return hasImage;
   }
 
-  public void setHasImage(Boolean hasImage) {
+  public void setHasImage(boolean hasImage) {
     this.hasImage = hasImage;
+  }
+
+  public boolean isGroupAdvisor() {
+    return groupAdvisor;
+  }
+
+  public void setGroupAdvisor(boolean groupAdvisor) {
+    this.groupAdvisor = groupAdvisor;
+  }
+
+  public boolean isStudyAdvisor() {
+    return studyAdvisor;
+  }
+
+  public void setStudyAdvisor(boolean studyAdvisor) {
+    this.studyAdvisor = studyAdvisor;
   }
 
   private String id;
@@ -81,5 +99,7 @@ public class GuidanceCounselorRestModel {
   private String lastName;
   private String email;
   private Map<String, String> properties;
-  private Boolean hasImage;
+  private boolean hasImage;
+  private boolean groupAdvisor;
+  private boolean studyAdvisor;
 }
