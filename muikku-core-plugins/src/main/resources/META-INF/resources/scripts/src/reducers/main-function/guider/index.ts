@@ -19,7 +19,7 @@ import {
   PedagogyFormAccess,
   HopsUppersecondary,
   ActivityLogEntry,
-  NoteSortedList,
+  Note,
 } from "~/generated/client";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
@@ -42,7 +42,7 @@ export type GuiderCurrentStudentStateType = "LOADING" | "ERROR" | "READY";
 
 export type GuiderNotes = {
   state: LoadingState;
-  notes: NoteSortedList;
+  list: Note[];
 };
 /**
  * GuiderActiveFiltersType
@@ -204,10 +204,7 @@ const initialGuiderState: GuiderState = {
   noteState: "WAITING",
   notes: {
     state: "WAITING",
-    notes: {
-      privateNotes: [],
-      multiUserNotes: [],
-    },
+    list: [],
   },
   availableFilters: {
     labels: [],
@@ -308,17 +305,18 @@ export const guider: Reducer<GuiderState> = (
       return { ...state, notes };
     }
 
-    // TODO: this should be "LOAD_NOTES"
-    case "UPDATE_NOTES": {
+    case "LOAD_NOTES": {
       const notes = { ...state.notes };
-      notes.notes = action.payload;
+      notes.list = action.payload;
       return { ...state, notes };
     }
-    case "ADD_NOTE": {
-      const notes = { ...state.notes };
-      // notes.notes = {...notes.notes, action.payload};
-      return { ...state, notes };
-    }
+
+    // case "ADD_NOTE": {
+    //   const notes = { ...state.notes };
+
+    //   notes.notes = action.payload;
+    //   return { ...state, notes };
+    // }
 
     case "ADD_TO_GUIDER_SELECTED_STUDENTS": {
       const student: Student = action.payload;

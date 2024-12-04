@@ -25,8 +25,9 @@ import {
   UserFlag,
   UserGroup,
   NoteSortedList,
-  CreateNoteRequest,
   Note,
+  CreateNoteRequest,
+  UpdateNoteRequest,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -39,9 +40,7 @@ export type UPDATE_NOTES_STATUS = SpecificActionType<
   "UPDATE_NOTES_STATUS",
   LoadingState
 >;
-export type UPDATE_NOTES = SpecificActionType<"UPDATE_NOTES", NoteSortedList>;
-
-export type ADD_NOTE = SpecificActionType<"ADD_NOTE", Note>;
+export type LOAD_NOTES = SpecificActionType<"LOAD_NOTES", Note[]>;
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -465,10 +464,21 @@ export interface LoadNotesTriggerType {
 }
 
 /**
- * LoadNotesTriggerType
+ * CreateNoteTriggerType
  */
 export interface CreateNoteTriggerType {
   (request: CreateNoteRequest, success?: () => void): AnyActionType;
+}
+
+/**
+ * CreateNoteTriggerType
+ */
+export interface UpdateNoteTriggerType {
+  (
+    noteId: number,
+    request: UpdateNoteRequest,
+    success?: () => void
+  ): AnyActionType;
 }
 
 /**
@@ -499,7 +509,7 @@ const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
 /**
  * loadNotes
  *
- * @param userId userId
+ * @param creatorId userId
  * @param listArchived listArchived
  */
 const loadNotes: LoadNotesTriggerType = function loadNotes(
@@ -521,7 +531,7 @@ const loadNotes: LoadNotesTriggerType = function loadNotes(
         creatorId,
         listArchived,
       });
-      dispatch({ type: "UPDATE_NOTES", payload: notes });
+      dispatch({ type: "LOAD_NOTES", payload: notes });
       dispatch({ type: "UPDATE_NOTES_STATUS", payload: "READY" });
     } catch (err) {
       if (!isMApiError(err)) {
@@ -543,10 +553,10 @@ const loadNotes: LoadNotesTriggerType = function loadNotes(
 };
 
 /**
- * loadNotes
+ * createNote thunk action creator
  *
- * @param userId userId
- * @param listArchived listArchived
+ * @param createNoteRequest createNoteRequest
+ * @param onSuccess onSuccess
  */
 const createNote: CreateNoteTriggerType = function createNote(
   createNoteRequest: CreateNoteRequest,
@@ -557,13 +567,11 @@ const createNote: CreateNoteTriggerType = function createNote(
     getState: () => StateType
   ) => {
     const notesApi = MApi.getNotesApi();
-    const userId = getState().status.userId;
     try {
       // Creating and getting created notesItem
       await notesApi.createNote({
         createNoteRequest,
       });
-      loadNotes(userId, false);
       onSuccess && onSuccess();
       dispatch(
         notificationActions.displayNotification(
@@ -574,6 +582,45 @@ const createNote: CreateNoteTriggerType = function createNote(
     } catch (err) {
       notificationActions.displayNotification(
         i18n.t("notifications.createError", { error: err }),
+        "error"
+      );
+    }
+  };
+};
+
+/**
+ * updateNote thunk action creator
+ *
+ * @param noteId noteId
+ * @param updateNoteRequest createNoteRequest
+ * @param onSuccess onSuccess
+ */
+const updateNote: UpdateNoteTriggerType = function updateNote(
+  noteId: number,
+  updateNoteRequest: UpdateNoteRequest,
+  onSuccess?: () => void
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const notesApi = MApi.getNotesApi();
+    try {
+      // Creating and getting created notesItem
+      const updatedNote = await notesApi.updateNote({
+        noteId,
+        updateNoteRequest,
+      });
+      onSuccess && onSuccess();
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.updateSuccess"),
+          "success"
+        )
+      );
+    } catch (err) {
+      notificationActions.displayNotification(
+        i18n.t("notifications.updateError", { error: err }),
         "error"
       );
     }
@@ -2639,6 +2686,7 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
 export {
   loadNotes,
   createNote,
+  updateNote,
   loadStudents,
   loadMoreStudents,
   loadStudent,

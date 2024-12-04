@@ -10,13 +10,14 @@ import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Note, NotePriorityType, UpdateNoteRequest } from "~/generated/client";
-
+import { ContactRecipientType } from "~/reducers/user-index";
 /**
  * NotesItemEditProps
  */
 interface NotesItemEditProps extends WithTranslation {
   selectedNotesItem?: Note;
   children: React.ReactElement;
+  recipients?: ContactRecipientType[];
   onNotesItemSaveUpdateClick?: (
     journalId: number,
     updateNoteRequest: UpdateNoteRequest,
@@ -28,6 +29,7 @@ interface NotesItemEditProps extends WithTranslation {
  * NotesItemEditState
  */
 interface NotesItemEditState {
+  recipients: ContactRecipientType[];
   notesItem: UpdateNoteRequest;
   locked: boolean;
 }
@@ -50,6 +52,7 @@ class NotesItemEdit extends SessionStateComponent<
 
     this.state = {
       locked: false,
+      recipients: [],
       notesItem: props.selectedNotesItem,
     };
   }

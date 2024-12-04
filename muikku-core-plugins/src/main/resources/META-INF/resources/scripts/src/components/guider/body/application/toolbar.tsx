@@ -35,7 +35,7 @@ import { turnSelectedUsersToContacts } from "~/util/users";
 import { GuiderContext } from "../../context";
 import NotesItemNew from "~/components/general/notes//notes-item-new";
 import { CreateNoteRequest } from "~/generated/client";
-import {ContactRecipientType} from "~/reducers/user-index";
+import { ContactRecipientType } from "~/reducers/user-index";
 /**
  * GuiderToolbarProps
  */
@@ -172,8 +172,8 @@ class GuiderToolbar extends React.Component<
    * @param request
    * @param onSuccess
    */
-  handleNoteCreation = (request: CreateNoteRequest, onSuccess: () => void) => {
-    this.props.createNote(request, onSuccess);
+  handleNoteCreation = (request: CreateNoteRequest) => {
+    this.props.createNote(request);
   };
   /**
    * Removes a user from redux state when the user is removed from a new message dialog on a contacts change
