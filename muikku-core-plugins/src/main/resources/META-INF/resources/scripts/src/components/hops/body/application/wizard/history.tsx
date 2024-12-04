@@ -17,6 +17,7 @@ import {
   secondaryStudiesFieldsTranslation,
 } from "./helpers";
 import { useTranslation } from "react-i18next";
+import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 
 /**
  * HopsHistoryProps
@@ -35,7 +36,11 @@ interface HopsHistoryProps {
  */
 const HopsHistory: React.FC<HopsHistoryProps> = (props) => {
   const { status, formHistory, formHistoryStatus, formType } = props;
-  const isGuidanceCouncler = false;
+
+  const { useCase } = useHopsBasicInfo();
+
+  // Accessible only from Guider
+  const showEditButton = useCase === "GUIDANCE_COUNSELOR";
 
   return (
     <div className="hops-container__history">
@@ -45,7 +50,7 @@ const HopsHistory: React.FC<HopsHistoryProps> = (props) => {
         return (
           <HopsHistoryEvent
             key={i}
-            showEdit={isMe && isGuidanceCouncler}
+            showEdit={isMe && showEditButton}
             formType={formType}
             historyEntry={item}
             status={status}
