@@ -20,8 +20,8 @@ import {
   loadMatriculationData,
   StartEditingTriggerType,
   startEditing,
-  endEditing,
-  EndEditingTriggerType,
+  saveHops,
+  SaveHopsTriggerType,
   CancelEditingTriggerType,
   cancelEditing,
 } from "~/actions/main-function/hops/";
@@ -57,7 +57,7 @@ interface HopsApplicationProps {
   /** Function to enable editing mode */
   startEditing: StartEditingTriggerType;
   /** Function to disable editing mode */
-  endEditing: EndEditingTriggerType;
+  saveHops: SaveHopsTriggerType;
   /** Function to cancel editing */
   cancelEditing: CancelEditingTriggerType;
 }
@@ -74,7 +74,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     studentIdentifier,
     loadMatriculationData,
     startEditing,
-    endEditing,
+    saveHops,
     cancelEditing,
     hops,
     status,
@@ -115,7 +115,9 @@ const HopsApplication = (props: HopsApplicationProps) => {
     if (hops.hopsMode === "READ") {
       startEditing();
     } else {
-      endEditing();
+      saveHops({
+        details: "",
+      });
     }
   };
 
@@ -292,7 +294,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
     {
       loadMatriculationData,
       startEditing,
-      endEditing,
+      saveHops,
       cancelEditing,
     },
     dispatch

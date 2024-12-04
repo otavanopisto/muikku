@@ -10,12 +10,12 @@ import {
 import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
 import { CompulsoryStudiesHops } from "~/@types/hops";
 import { useTranslation } from "react-i18next";
-import { useUseCaseContext } from "~/context/use-case-context";
 
 /**
  * Props for the HopsStartingLevel component
  */
 interface HopsStartingLevelProps {
+  disabled: boolean;
   /** The current form state */
   form: CompulsoryStudiesHops;
   /** Callback function to update the form state */
@@ -33,13 +33,10 @@ interface HopsStartingLevelProps {
  * @returns The rendered component
  */
 const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
-  const { form, onFormChange } = props;
+  const { form, disabled, onFormChange } = props;
   const myRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation("hops_new");
-
-  const useCase = useUseCaseContext();
-  const disabled = useCase === "GUARDIAN";
 
   useEffect(() => {
     window.dispatchEvent(new Event("resize"));

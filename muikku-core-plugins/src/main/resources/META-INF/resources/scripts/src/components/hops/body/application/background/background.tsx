@@ -20,27 +20,17 @@ interface BackgroundProps {
  * @param props props
  */
 const Background = (props: BackgroundProps) => {
-  const { hops, onHasUnsavedChanges } = props;
+  const { hops } = props;
 
   if (!hops.studentInfo || !hops.hopsForm) {
     return null;
   }
 
   if (hops.studentInfo.studyProgrammeEducationType === "peruskoulu") {
-    return (
-      <CompulsoryStudiesHopsWizard
-        formType="BACKGROUND"
-        onHasUnsavedChanges={onHasUnsavedChanges}
-      />
-    );
+    return <CompulsoryStudiesHopsWizard formType="BACKGROUND" />;
   }
 
-  return (
-    <SecondaryStudiesHopsWizard
-      formType="BACKGROUND"
-      onHasUnsavedChanges={onHasUnsavedChanges}
-    />
-  );
+  return <SecondaryStudiesHopsWizard formType="BACKGROUND" />;
 };
 
 /**

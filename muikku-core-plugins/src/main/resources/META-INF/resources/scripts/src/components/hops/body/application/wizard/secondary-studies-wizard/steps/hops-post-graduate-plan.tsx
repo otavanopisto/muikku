@@ -6,7 +6,6 @@ import {
   WhatNext,
 } from "~/@types/hops";
 import { useTranslation } from "react-i18next";
-import { useUseCaseContext } from "~/context/use-case-context";
 import { Textarea } from "../../components/text-area";
 import AnimateHeight from "react-animate-height";
 
@@ -14,6 +13,7 @@ import AnimateHeight from "react-animate-height";
  * Props for the HopsStartingLevel component
  */
 interface HopsPostGraduatePlanProps {
+  disabled: boolean;
   form: SecondaryStudiesHops;
   onFormChange: (form: SecondaryStudiesHops) => void;
 }
@@ -26,12 +26,9 @@ interface HopsPostGraduatePlanProps {
  * for secondary studies, including previous education and language skills.
  */
 const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
-  const { form, onFormChange } = props;
+  const { form, disabled, onFormChange } = props;
   const { t } = useTranslation(["hops_new"]);
   const myRef = useRef<HTMLDivElement>(null);
-
-  const useCase = useUseCaseContext();
-  const disabled = useCase === "GUARDIAN";
 
   /**
    * Effect to resize window and scroll into view on component mount

@@ -39,8 +39,8 @@ import HopsApplication from "./student/hops/hops";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
-  ResetMatriculationDataTriggerType,
-  resetMatriculationData,
+  ResetHopsDataTriggerType,
+  resetHopsData,
 } from "~/actions/main-function/hops/";
 
 export type tabs =
@@ -70,7 +70,7 @@ interface StudentDialogProps extends WithTranslation<["common"]> {
   loadStudentHistory: LoadStudentTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
   updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
-  resetMatriculationData: ResetMatriculationDataTriggerType;
+  resetHopsData: ResetHopsDataTriggerType;
 }
 
 /**
@@ -96,7 +96,7 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
     loadStudentHistory,
     loadStudentContactLogs,
     updateCurrentStudentHopsPhase,
-    resetMatriculationData,
+    resetHopsData,
     i18n,
     t,
   } = props;
@@ -169,7 +169,7 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
       setActiveTab("STUDIES");
       setViewMode("TABS");
     });
-    resetMatriculationData();
+    resetHopsData();
     onClose && onClose();
   };
 
@@ -388,7 +388,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       loadStudentHistory,
       loadStudentContactLogs,
       updateCurrentStudentHopsPhase,
-      resetMatriculationData,
+      resetHopsData,
     },
     dispatch
   );

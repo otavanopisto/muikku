@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import Wizard, { WizardStep } from "~/components/general/wizard";
 import { WizardProvider } from "~/components/general/wizard/context/wizard-context";
 import { useWizard } from "~/components/general/wizard/hooks/useWizard";
@@ -10,24 +10,17 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { SecondaryStudiesHops } from "~/@types/hops";
-import { StudentInfo } from "~/generated/client";
 import AnimatedStep from "~/components/general/wizard/AnimateStep";
 import { connect } from "react-redux";
-import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
-import NewHopsEventDescriptionDialog from "../dialog/new-hops-event";
-import { Textarea } from "../components/text-area";
-import _ from "lodash";
 import {
-  SaveHopsFormTriggerType,
-  saveHopsForm,
   LoadMoreHopsFormHistoryTriggerType,
   loadMoreHopsFormHistory,
+  updateHopsEditing,
+  UpdateHopsEditingTriggerType,
 } from "~/actions/main-function/hops/";
 // eslint-disable-next-line camelcase
-import { unstable_batchedUpdates } from "react-dom";
-import { secondaryStudiesFieldsTranslation } from "../helpers";
-import { useUseCaseContext } from "~/context/use-case-context";
+import { HopsState } from "~/reducers/hops";
 
 type FormType = "BACKGROUND" | "POST_GRADUATE_PLAN";
 
@@ -35,17 +28,15 @@ type FormType = "BACKGROUND" | "POST_GRADUATE_PLAN";
  * Props for the CompulsoryStudiesHopsWizard component
  */
 interface SecondaryStudiesHopsWizardProps {
+  hops: HopsState;
+  /** The form data for secondary studies HOPS */
   formType: FormType;
-  /** The form data for compulsory studies HOPS */
-  form: SecondaryStudiesHops;
-  /** Information about the student */
-  studentInfo: StudentInfo;
   /** Whether the HOPS form can load more history */
   hopsFormCanLoadMoreHistory: boolean;
   /** Function to handle unsaved changes */
   onHasUnsavedChanges?: (hasUnsavedChanges: boolean) => void;
-  /** Redux thunk function to save the HOPS form */
-  saveHopsForm: SaveHopsFormTriggerType;
+  /** Function to update the HOPS editing state */
+  updateHopsEditing: UpdateHopsEditingTriggerType;
   /** Redux thunk function to load more HOPS form history */
   loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType;
 }
@@ -60,37 +51,27 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   props
 ) => {
   const {
+    hops,
     formType,
-    form,
-    studentInfo,
     hopsFormCanLoadMoreHistory,
-    onHasUnsavedChanges,
-    saveHopsForm,
+    updateHopsEditing,
     loadMoreHopsFormHistory,
   } = props;
   const previousStep = React.useRef<number>(0);
 
   const { t } = useTranslation(["common"]);
 
-  const useCase = useUseCaseContext();
-
-  const [localForm, setLocalForm] = useState<SecondaryStudiesHops>(form);
-  const [isFormSaveDialogOpen, setIsFormSaveDialogOpen] =
-    useState<boolean>(false);
-  const [hopsUpdateDetails, setHopsUpdateDetails] = useState<string>("");
-  const [changedFields, setChangedFields] = useState<string[]>([]);
-
-  React.useEffect(() => {
-    if (!onHasUnsavedChanges) {
-      return;
+  const formData = useMemo(() => {
+    if (!hops.hopsForm || !hops.hopsEditing.hopsForm) {
+      return null;
     }
 
-    if (_.isEqual(form, localForm)) {
-      onHasUnsavedChanges(false);
-    } else {
-      onHasUnsavedChanges(true);
+    if (hops.hopsMode === "READ") {
+      return hops.hopsForm as SecondaryStudiesHops;
     }
-  }, [form, localForm, onHasUnsavedChanges]);
+
+    return hops.hopsEditing.hopsForm as SecondaryStudiesHops;
+  }, [hops]);
 
   /**
    * Handles changes to the form data
@@ -98,70 +79,14 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
    */
   const handleFormChange = useCallback(
     (updatedForm: SecondaryStudiesHops) => {
-      // Get old values from data
-      const oldDataForm = {
-        ...form,
-      };
-
-      const changedValuesComparedToPrevious = Object.keys(updatedForm).filter(
-        (key: keyof SecondaryStudiesHops) => {
-          if (typeof updatedForm[key] !== "object") {
-            return updatedForm[key] !== oldDataForm[key];
-          }
-        }
-      );
-
-      const previousStudiesHasChanged = !_.isEqual(
-        updatedForm.previousEducations,
-        oldDataForm.previousEducations
-      );
-
-      if (previousStudiesHasChanged) {
-        changedValuesComparedToPrevious.push("previousEducations");
-      }
-
-      unstable_batchedUpdates(() => {
-        setChangedFields(changedValuesComparedToPrevious);
-        setLocalForm((previousForm) => ({ ...previousForm, ...updatedForm }));
+      updateHopsEditing({
+        updates: {
+          hopsForm: updatedForm,
+        },
       });
     },
-    [form]
+    [updateHopsEditing]
   );
-
-  /**
-   * Opens the save dialog
-   */
-  const handleOpenSaveDialog = () => {
-    setIsFormSaveDialogOpen(true);
-  };
-
-  /**
-   * Handles the form submission
-   */
-  const handleFormSubmitClick = () => {
-    saveHopsForm({
-      form: localForm,
-      details: hopsUpdateDetails,
-      fields: changedFields.length > 0 ? changedFields.join(",") : undefined,
-    });
-  };
-
-  /**
-   * Cancels the save operation and closes the dialog
-   */
-  const handleCancelSaveClick = () => {
-    setIsFormSaveDialogOpen(false);
-  };
-
-  /**
-   * Handles changes to the HOPS update details
-   * @param event - The change event from the textarea
-   */
-  const handleHopsUpdateDetailsChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setHopsUpdateDetails(event.target.value);
-  };
 
   const steps: WizardStep[] = useMemo(
     () =>
@@ -173,9 +98,11 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
               component: (
                 <AnimatedStep previousStep={previousStep}>
                   <Step1
-                    studentName={`${studentInfo.firstName} ${studentInfo.lastName}`}
-                    educationalLevel={studentInfo.studyProgrammeEducationType}
-                    guidanceCounselors={studentInfo.counselorList}
+                    studentName={`${hops.studentInfo.firstName} ${hops.studentInfo.lastName}`}
+                    educationalLevel={
+                      hops.studentInfo.studyProgrammeEducationType
+                    }
+                    guidanceCounselors={hops.studentInfo.counselorList}
                     canLoadMoreHistory={hopsFormCanLoadMoreHistory}
                     loadMoreHopsEvents={loadMoreHopsFormHistory}
                   />
@@ -189,7 +116,11 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
               }),
               component: (
                 <AnimatedStep previousStep={previousStep}>
-                  <Step2 form={localForm} onFormChange={handleFormChange} />
+                  <Step2
+                    disabled={hops.hopsMode === "READ"}
+                    form={formData}
+                    onFormChange={handleFormChange}
+                  />
                 </AnimatedStep>
               ),
             },
@@ -200,7 +131,11 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
               }),
               component: (
                 <AnimatedStep previousStep={previousStep}>
-                  <Step3 form={localForm} onFormChange={handleFormChange} />
+                  <Step3
+                    disabled={hops.hopsMode === "READ"}
+                    form={formData}
+                    onFormChange={handleFormChange}
+                  />
                 </AnimatedStep>
               ),
             },
@@ -213,7 +148,11 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
               }),
               component: (
                 <AnimatedStep previousStep={previousStep}>
-                  <Step4 form={localForm} onFormChange={handleFormChange} />
+                  <Step4
+                    disabled={hops.hopsMode === "READ"}
+                    form={formData}
+                    onFormChange={handleFormChange}
+                  />
                 </AnimatedStep>
               ),
             },
@@ -221,13 +160,10 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
     [
       formType,
       t,
-      studentInfo.firstName,
-      studentInfo.lastName,
-      studentInfo.studyProgrammeEducationType,
-      studentInfo.counselorList,
+      hops,
       hopsFormCanLoadMoreHistory,
       loadMoreHopsFormHistory,
-      localForm,
+      formData,
       handleFormChange,
     ]
   );
@@ -240,58 +176,10 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
         <div className="hops-form__container">
           <Wizard
             header={<HopsWizardHeader />}
-            footer={
-              <HopsWizardFooter
-                externalContentRight={
-                  useCase !== "GUARDIAN" && (
-                    <Button
-                      buttonModifiers={["info"]}
-                      onClick={handleOpenSaveDialog}
-                      disabled={_.isEqual(form, localForm)}
-                    >
-                      {t("actions.save", { ns: "common" })}
-                    </Button>
-                  )
-                }
-              />
-            }
+            footer={<HopsWizardFooter />}
             wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
           />
         </div>
-        <NewHopsEventDescriptionDialog
-          isOpen={isFormSaveDialogOpen}
-          content={
-            <div className="hops-container__row">
-              {changedFields.length > 0 && (
-                <div className="hops__form-element-container">
-                  <h4>
-                    {t("labels.editedFields", {
-                      ns: "pedagogySupportPlan",
-                    })}
-                  </h4>
-                  <ul>
-                    {changedFields.map((fieldKey, i) => (
-                      <li key={fieldKey} style={{ display: "list-item" }}>
-                        {secondaryStudiesFieldsTranslation(t)[fieldKey]}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div className="hops__form-element-container">
-                <Textarea
-                  id="hopsUpdateDetailsExplanation"
-                  label="Vapaa kuvaus tapahtuman muutoksista"
-                  className="form-element__textarea form-element__textarea--resize__vertically"
-                  onChange={handleHopsUpdateDetailsChange}
-                  value={hopsUpdateDetails}
-                />
-              </div>
-            </div>
-          }
-          onSaveClick={handleFormSubmitClick}
-          onCancelClick={handleCancelSaveClick}
-        />
       </div>
     </WizardProvider>
   );
@@ -304,7 +192,9 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
+    hops: state.hopsNew,
     form: state.hopsNew.hopsForm,
+    editingForm: state.hopsNew.hopsEditing.hopsForm,
     studentInfo: state.hopsNew.studentInfo,
     hopsFormCanLoadMoreHistory: state.hopsNew.hopsFormCanLoadMoreHistory,
   };
@@ -317,7 +207,7 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { saveHopsForm, loadMoreHopsFormHistory },
+    { updateHopsEditing, loadMoreHopsFormHistory },
     dispatch
   );
 }

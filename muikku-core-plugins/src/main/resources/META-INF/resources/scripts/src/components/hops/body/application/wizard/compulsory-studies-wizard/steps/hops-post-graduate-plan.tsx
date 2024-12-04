@@ -4,13 +4,13 @@ import { TextField } from "../../components/text-field";
 import { Textarea } from "../../components/text-area";
 import { CompulsoryStudiesHops } from "~/@types/hops";
 import { useTranslation } from "react-i18next";
-import { useUseCaseContext } from "~/context/use-case-context";
 import AnimateHeight from "react-animate-height";
 
 /**
  * Props for the HopsPostGraduatePlan component
  */
 interface HopsPostGraduatePlanProps {
+  disabled: boolean;
   /** The current form state */
   form: CompulsoryStudiesHops;
   /** Callback function to update the form state */
@@ -26,13 +26,10 @@ interface HopsPostGraduatePlanProps {
  * @returns The rendered component
  */
 const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
-  const { form, onFormChange } = props;
+  const { form, disabled, onFormChange } = props;
   const myRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation("hops_new");
-
-  const useCase = useUseCaseContext();
-  const disabled = useCase === "GUARDIAN";
 
   useEffect(() => {
     window.dispatchEvent(new Event("resize"));

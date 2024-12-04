@@ -107,7 +107,8 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
 
   const viewingOwnHistorEvent = status.userId === historyEntry.modifierId;
 
-  const listOfChanges = historyEntry?.changes?.split(",") || [];
+  const listOfChanges =
+    (historyEntry?.changes !== "" && historyEntry?.changes?.split(",")) || [];
 
   const translatedFields =
     formType === "compulsory"

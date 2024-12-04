@@ -1,4 +1,12 @@
 import { TFunction } from "i18next";
+import _ from "lodash";
+import {
+  CompulsoryStudiesHops,
+  isSecondaryStudiesHops,
+  SecondaryStudiesHops,
+} from "~/@types/hops";
+import { isCompulsoryStudiesHops } from "~/@types/hops";
+import { HopsForm } from "~/@types/hops";
 
 /**
  * CompulsoryStudiesFieldsTranslation. Returns the translation for the compulsory studies fields
@@ -143,6 +151,21 @@ export const compulsoryStudiesFieldsTranslation = (
       ns: "hops_new",
     }
   ),
+  whatNext: t("labels.hopsCompulsoryWhatNext", {
+    ns: "hops_new",
+  }),
+  postGraduateStudies: t("labels.hopsCompulsoryWhereApply", {
+    ns: "hops_new",
+  }),
+  vocationalPostGraduateStudySector: t(
+    "labels.hopsCompulsoryVocationalSector",
+    {
+      ns: "hops_new",
+    }
+  ),
+  futurePlans: t("labels.hopsCompulsoryTellMoreFuturePlan", {
+    ns: "hops_new",
+  }),
 });
 
 /**
@@ -204,4 +227,153 @@ export const secondaryStudiesFieldsTranslation = (
   moreAboutSelfAssessment: t("labels.hopsSecondaryMoreAboutSelfAssessment", {
     ns: "hops_new",
   }),
+  whatNext: t("labels.hopsSecondaryPostgraduateSubTitle1", {
+    ns: "hops_new",
+  }),
+  whatNextElse: t("labels.hopsSecondaryWhatNextElse", {
+    ns: "hops_new",
+  }),
+  workExperienceAndInternships: t(
+    "labels.hopsSecondaryWorkExperienceAndIntership",
+    {
+      ns: "hops_new",
+    }
+  ),
+  hobbies: t("labels.hopsSecondaryHobbies", {
+    ns: "hops_new",
+  }),
+  otherSkills: t("labels.hopsSecondaryOtherSkills", {
+    ns: "hops_new",
+  }),
+  skillsFromHobbiesAndWorklife: t(
+    "labels.hopsSecondarySkillsFromHobbiesAndWorklife",
+    {
+      ns: "hops_new",
+    }
+  ),
+  interestedIn: t("labels.hopsSecondaryInterestedIn", {
+    ns: "hops_new",
+  }),
+  goodAt: t("labels.hopsSecondaryAmGood", {
+    ns: "hops_new",
+  }),
+  importantInFutureWork: t("labels.hopsSecondaryImportantInFutureWork", {
+    ns: "hops_new",
+  }),
+  successfulDuringHighSchool: t(
+    "labels.hopsSecondarySuccesfullDuringHighSchool",
+    {
+      ns: "hops_new",
+    }
+  ),
+  challengesDuringHighSchool: t(
+    "labels.hopsSecondaryChallangesDuringHighSchool",
+    {
+      ns: "hops_new",
+    }
+  ),
+  interestedInFieldsOfStudy: t(
+    "labels.hopsSecondaryInterestedInFieldsOfStudy",
+    {
+      ns: "hops_new",
+    }
+  ),
+  whereCanStudyFieldsOfInterest: t(
+    "labels.hopsSecondaryWhereCanStudyFieldsOfInterest",
+    {
+      ns: "hops_new",
+    }
+  ),
+  basisForPostgraduateStudyAndCareerChoice: t(
+    "labels.hopsSecondaryBasisForPostgraduateStudyAndCareerChoice",
+    {
+      ns: "hops_new",
+    }
+  ),
+  thingsMakesYouThink: t("labels.hopsSecondaryThingsMakesYouThink", {
+    ns: "hops_new",
+  }),
+  postGraduateGuidanceCouncelorComments: t(
+    "labels.hopsSecondaryPostGraduateGuidanceCouncelorComments",
+    {
+      ns: "hops_new",
+    }
+  ),
 });
+
+/**
+ * Get the edited fields
+ * @param oldValues old values
+ * @param newValues new values
+ * @returns string[]
+ */
+export const getEditedHopsFields = (
+  oldValues: HopsForm,
+  newValues: HopsForm
+) => {
+  let changedValuesComparedToPrevious: string[] = [];
+
+  // Compulsory studies
+  if (
+    isCompulsoryStudiesHops(oldValues) &&
+    isCompulsoryStudiesHops(newValues)
+  ) {
+    // Get the changed fields by comparing the old and new values
+    changedValuesComparedToPrevious = Object.keys(newValues).filter(
+      (key: keyof CompulsoryStudiesHops) => {
+        if (typeof oldValues[key] !== "object") {
+          return oldValues[key] !== newValues[key];
+        }
+      }
+    );
+
+    // Check if the previous language experience has changed
+    const previousLanguageExperienceHasChanged = !_.isEqual(
+      newValues.previousLanguageExperience,
+      oldValues.previousLanguageExperience
+    );
+
+    // If the previous language experience has changed, add it to the changed fields
+    if (previousLanguageExperienceHasChanged) {
+      changedValuesComparedToPrevious.push("previousLanguageExperience");
+    }
+  }
+  // Secondary studies
+  else if (
+    isSecondaryStudiesHops(oldValues) &&
+    isSecondaryStudiesHops(newValues)
+  ) {
+    // Get the changed fields by comparing the old and new values
+    changedValuesComparedToPrevious = Object.keys(newValues).filter(
+      (key: keyof SecondaryStudiesHops) => {
+        if (typeof oldValues[key] !== "object") {
+          return oldValues[key] !== newValues[key];
+        }
+      }
+    );
+
+    // Check if the previous studies have changed
+    const previousStudiesHasChanged = !_.isEqual(
+      newValues.previousEducations,
+      oldValues.previousEducations
+    );
+
+    // Check if the what next has changed
+    const whatNextHasChanged = !_.isEqual(
+      newValues.whatNext,
+      oldValues.whatNext
+    );
+
+    // If the previous studies have changed, add it to the changed fields
+    if (previousStudiesHasChanged) {
+      changedValuesComparedToPrevious.push("previousEducations");
+    }
+
+    // If the what next has changed, add it to the changed fields
+    if (whatNextHasChanged) {
+      changedValuesComparedToPrevious.push("whatNext");
+    }
+  }
+
+  return changedValuesComparedToPrevious;
+};

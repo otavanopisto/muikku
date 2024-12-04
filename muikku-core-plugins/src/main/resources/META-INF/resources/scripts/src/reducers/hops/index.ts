@@ -30,11 +30,6 @@ export interface MatriculationSubjectWithEligibilityStatus {
 export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
 
 /**
- * HopsBackgroundState
- */
-interface HopsBackgroundState {}
-
-/**
  * HopsStudyPlanState
  */
 interface HopsStudyPlanState {}
@@ -77,11 +72,6 @@ interface hopsMatriculation {
 }
 
 /**
- * HopsCareerPlanState
- */
-interface HopsCareerPlanState {}
-
-/**
  * HopsMode type
  */
 export type HopsMode = "READ" | "EDIT";
@@ -91,6 +81,7 @@ export type HopsMode = "READ" | "EDIT";
  */
 export interface HopsEditingState {
   readyToEdit: boolean;
+  hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
 }
 
@@ -102,10 +93,6 @@ export interface HopsState {
   currentStudentIdentifier: string | null;
   currentStudentStudyProgramme: string | null;
 
-  // HOPS BACKGROUND
-  hopsBackgroundStatus: ReducerStateType;
-  hopsBackgroundState: HopsBackgroundState;
-
   // HOPS STUDY PLAN
   hopsStudyPlanStatus: ReducerStateType;
   hopsStudyPlanState: HopsStudyPlanState;
@@ -113,10 +100,6 @@ export interface HopsState {
   // HOPS EXAMINATION
   hopsMatriculationStatus: ReducerStateType;
   hopsMatriculation: hopsMatriculation;
-
-  // HOPS CAREER PLAN
-  hopsCareerPlanStatus: ReducerStateType;
-  hopsCareerPlanState: HopsCareerPlanState;
 
   // STUDENT INFO
   studentInfoStatus: ReducerStateType;
@@ -143,8 +126,6 @@ export interface HopsState {
 const initialHopsState: HopsState = {
   currentStudentIdentifier: null,
   currentStudentStudyProgramme: null,
-  hopsBackgroundStatus: "READY",
-  hopsBackgroundState: {},
   hopsStudyPlanStatus: "READY",
   hopsStudyPlanState: {},
   hopsMatriculationStatus: "IDLE",
@@ -157,8 +138,6 @@ const initialHopsState: HopsState = {
     plan: null,
     results: [],
   },
-  hopsCareerPlanStatus: "READY",
-  hopsCareerPlanState: {},
   studentInfoStatus: "IDLE",
   studentInfo: null,
   hopsFormStatus: "IDLE",
@@ -170,6 +149,7 @@ const initialHopsState: HopsState = {
   hopsLocked: null,
   hopsEditing: {
     readyToEdit: false,
+    hopsForm: null,
     matriculationPlan: {
       plannedSubjects: [],
       goalMatriculationExam: false,
@@ -201,10 +181,7 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           readyToEdit:
-            action.payload === "READY" &&
-            state.hopsCareerPlanStatus === "READY" &&
-            state.hopsStudyPlanStatus === "READY" &&
-            state.hopsBackgroundStatus === "READY",
+            action.payload === "READY" && state.hopsStudyPlanStatus === "READY",
         },
       };
 
@@ -391,6 +368,7 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           readyToEdit: false,
+          hopsForm: null,
           matriculationPlan: {
             plannedSubjects: [],
             goalMatriculationExam: false,
@@ -410,6 +388,10 @@ export const hopsNew: Reducer<HopsState> = (
         ...state,
         hopsFormStatus: action.payload.status,
         hopsForm: action.payload.data,
+        hopsEditing: {
+          ...state.hopsEditing,
+          hopsForm: action.payload.data,
+        },
       };
 
     case "HOPS_STUDENT_INFO_UPDATE":
@@ -457,8 +439,13 @@ export const hopsNew: Reducer<HopsState> = (
     case "HOPS_FORM_SAVE":
       return {
         ...state,
-        hopsFormStatus: action.payload.status,
-        hopsForm: action.payload.data,
+        hopsForm: action.payload,
+      };
+
+    case "HOPS_FORM_STATUS_UPDATE":
+      return {
+        ...state,
+        hopsFormStatus: action.payload,
       };
 
     case "HOPS_CHANGE_MODE":
@@ -482,6 +469,7 @@ export const hopsNew: Reducer<HopsState> = (
         hopsMode: "READ",
         hopsEditing: {
           ...state.hopsEditing,
+          hopsForm: state.hopsForm,
           matriculationPlan: state.hopsMatriculation.plan,
         },
       };
