@@ -29,7 +29,6 @@ import {
   LoadHopsFormHistoryTriggerType,
 } from "~/actions/main-function/hops/";
 import { Action, bindActionCreators, Dispatch } from "redux";
-import Background from "~/components/hops/body/application/background/background";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
 
@@ -43,12 +42,12 @@ const UPPERSECONDARY_PROGRAMMES = [
 ];
 
 /**
- * StudiesTab
+ * GuardianHopsTab. Restricted to only MATRICULATION tab and upcoming STUDYPLAN tab.
  */
-type HopsTab = "MATRICULATION" | "BACKGROUND";
+type GuardianHopsTab = "MATRICULATION";
 
 /**
- * HopsApplicationProps
+ * GuardianHopsApplicationProps
  */
 interface GuardianHopsApplicationProps extends WithTranslation {
   dependants: DependantsState;
@@ -62,7 +61,7 @@ interface GuardianHopsApplicationProps extends WithTranslation {
  * GuardianHopsApplicationState
  */
 interface GuardianHopsApplicationState {
-  activeTab: HopsTab;
+  activeTab: GuardianHopsTab;
   selectedDependantIdentifier: string;
 }
 
@@ -82,7 +81,7 @@ class GuardianHopsApplication extends React.Component<
     super(props);
 
     this.state = {
-      activeTab: "BACKGROUND",
+      activeTab: "MATRICULATION",
       selectedDependantIdentifier: this.getCurrentDependantIdentifier(),
     };
   }
@@ -124,15 +123,9 @@ class GuardianHopsApplication extends React.Component<
         });
         break;
 
-      case "background":
-        this.setState({
-          activeTab: "BACKGROUND",
-        });
-        break;
-
       default:
         this.setState({
-          activeTab: "BACKGROUND",
+          activeTab: "MATRICULATION",
         });
         break;
     }
@@ -161,11 +154,9 @@ class GuardianHopsApplication extends React.Component<
       case "MATRICULATION":
         return UPPERSECONDARY_PROGRAMMES.includes(selectUserStudyProgramme);
 
-      case "BACKGROUND":
-        return true;
+      default:
+        return false;
     }
-
-    return false;
   };
 
   /**
@@ -173,7 +164,7 @@ class GuardianHopsApplication extends React.Component<
    * @param id id
    * @param hash hash
    */
-  handleTabChange = (id: HopsTab, hash?: string | Tab) => {
+  handleTabChange = (id: GuardianHopsTab, hash?: string | Tab) => {
     if (hash) {
       const user = window.location.hash.replace("#", "").split("/")[0];
       if (typeof hash === "string" || hash instanceof String) {
@@ -196,12 +187,10 @@ class GuardianHopsApplication extends React.Component<
     window.location.hash = option.value;
 
     this.props.resetHopsData();
-    this.props.loadStudentHopsForm({ userIdentifier: option.value });
-    this.props.loadHopsFormHistory({ userIdentifier: option.value });
     this.props.loadMatriculationData({ userIdentifier: option.value });
 
     this.setState({
-      activeTab: "BACKGROUND",
+      activeTab: "MATRICULATION",
       selectedDependantIdentifier: option.value,
     });
   };
@@ -246,17 +235,6 @@ class GuardianHopsApplication extends React.Component<
       );
 
     let panelTabs: Tab[] = [
-      {
-        id: "BACKGROUND",
-        name: this.props.t("labels.hopsBackground", { ns: "hops_new" }),
-        hash: "background",
-        type: "background",
-        component: (
-          <ApplicationPanelBody modifier="tabs">
-            <Background />
-          </ApplicationPanelBody>
-        ),
-      },
       {
         id: "MATRICULATION",
         name: this.props.t("labels.hopsMatriculation", { ns: "hops_new" }),

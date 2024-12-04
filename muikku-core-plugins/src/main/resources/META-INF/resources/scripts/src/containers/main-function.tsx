@@ -118,11 +118,7 @@ import { Announcement, UserWhoAmI } from "~/generated/client";
 import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
-import {
-  loadHopsFormHistory,
-  loadMatriculationData,
-  loadStudentHopsForm,
-} from "~/actions/main-function/hops/";
+import { loadMatriculationData } from "~/actions/main-function/hops/";
 import GuardianHopsBody from "~/components/guardian_hops/body";
 
 /**
@@ -358,15 +354,8 @@ export default class MainFunction extends React.Component<
   loadHopsData(tab: string, userId?: string) {
     const givenLocation = tab;
 
-    this.props.store.dispatch(
-      loadStudentHopsForm({ userIdentifier: userId }) as Action
-    );
-    this.props.store.dispatch(
-      loadHopsFormHistory({ userIdentifier: userId }) as Action
-    );
-
     // Load matriculation data if in Matriculation tab
-    if (givenLocation === "matriculation") {
+    if (givenLocation === "matriculation" || !givenLocation) {
       this.props.store.dispatch(
         loadMatriculationData({ userIdentifier: userId }) as Action
       );
