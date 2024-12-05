@@ -96,6 +96,10 @@ const HopsApplication = (props: HopsApplicationProps) => {
   ] = React.useState(false);
   const [pendingDetailsContent, setPendingDetailsContent] = useState("");
 
+  // Note that this component is used by student, thats why
+  // we need to check the study programme name from profile
+  const studyProgrammeName = status.profile.studyProgrammeName;
+
   // Add new useEffect for handling initial URL hash
   useEffect(() => {
     const hash = window.location.hash.replace("#", "");
@@ -216,6 +220,32 @@ const HopsApplication = (props: HopsApplicationProps) => {
    */
   const handleOpenPendingChangesDetailsDialog = () => {
     setIsPendingChangesDetailsDialogOpen(true);
+  };
+
+  /**
+   * Checks if the tab is visible.
+   * - Background and Postgraduate tabs are visible for all students
+   * - Matriculation tab is visible if the study programme name is included in the list
+   * @param tab - The tab to check
+   * @returns boolean
+   */
+  const isVisible = (tab: string) => {
+    switch (tab) {
+      case "BACKGROUND":
+      case "POSTGRADUATE":
+        return true;
+      case "MATRICULATION":
+        return [
+          "Nettilukio",
+          "Aikuislukio",
+          "Nettilukio/yksityisopiskelu (aineopintoina)",
+          "Aineopiskelu/yo-tutkinto",
+          "Aineopiskelu/lukio",
+          "Aineopiskelu/lukio (oppivelvolliset)",
+        ].includes(studyProgrammeName);
+      default:
+        return false;
+    }
   };
 
   const panelTabs: Tab[] = [
@@ -347,7 +377,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
           }
           onTabChange={onTabChange}
           activeTab={activeTab}
-          panelTabs={panelTabs}
+          panelTabs={panelTabs.filter((tab) => isVisible(tab.id))}
         />
         <PendingChangesWarningDialog
           isOpen={isPendingChangesWarningDialogOpen}

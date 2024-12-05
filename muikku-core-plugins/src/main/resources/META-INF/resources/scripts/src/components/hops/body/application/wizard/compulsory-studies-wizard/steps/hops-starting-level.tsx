@@ -174,7 +174,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
                 })}
                 className="hops__input"
                 onChange={handleTextAreaChange("previousEducationElse")}
-                value={form.previousEducationElse}
+                value={form.previousEducationElse || ""}
                 disabled={disabled}
               />
             </div>

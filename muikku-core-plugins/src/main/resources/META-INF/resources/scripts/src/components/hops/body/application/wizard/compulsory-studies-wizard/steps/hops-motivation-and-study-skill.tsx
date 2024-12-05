@@ -257,7 +257,7 @@ const HopsMotivationAndStudySkills: React.FC<
                 ns: "hops_new",
               })}
               name="someOtherWay"
-              value={form.someOtherWay}
+              value={form.someOtherWay || ""}
               className="hops__textarea"
               disabled={disabled}
               onChange={handleTextareaChange("someOtherWay")}
@@ -378,7 +378,7 @@ const HopsMotivationAndStudySkills: React.FC<
                 ns: "hops_new",
               })}
               name="studySupportSomethingElseWhat"
-              value={form.studySupportSomethingElseWhat}
+              value={form.studySupportSomethingElseWhat || ""}
               className="hops__textarea"
               disabled={disabled}
               onChange={handleTextareaChange("studySupportSomethingElseWhat")}
@@ -583,7 +583,7 @@ const HopsMotivationAndStudySkills: React.FC<
                 ns: "hops_new",
               })}
               name="selfImageSomethingElse"
-              value={form.selfImageSomethingElse}
+              value={form.selfImageSomethingElse || ""}
               className="hops__textarea"
               disabled={disabled}
               onChange={handleTextareaChange("selfImageSomethingElse")}
@@ -599,7 +599,7 @@ const HopsMotivationAndStudySkills: React.FC<
                 ns: "hops_new",
               })}
               name="wishesForTeachersAndSupervisors"
-              value={form.wishesForTeachersAndSupervisors}
+              value={form.wishesForTeachersAndSupervisors || ""}
               className="hops__textarea"
               disabled={disabled}
               onChange={handleTextareaChange("wishesForTeachersAndSupervisors")}

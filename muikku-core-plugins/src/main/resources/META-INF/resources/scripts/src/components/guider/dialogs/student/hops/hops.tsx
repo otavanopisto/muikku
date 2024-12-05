@@ -124,6 +124,9 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   const { t } = useTranslation(["studies", "common", "hops_new"]);
 
+  // Get the study programme name from the student info
+  const studyProgrammeName = studentInfo.studyProgrammeName;
+
   // Load data on demand depending on the active tab
   React.useEffect(() => {
     // Always load the locked status if it is not already loaded
@@ -251,57 +254,69 @@ const HopsApplication = (props: HopsApplicationProps) => {
     setIsPendingChangesDetailsDialogOpen(true);
   };
 
-  // Note canViewDetails lets the user view other hops tabs than matriculation and study plan
-  // These are not implemented yet, but this is reserved for future use
-  const panelTabs: Tab[] = studentInfo.permissions.canViewDetails
-    ? [
-        {
-          id: "BACKGROUND",
-          name: t("labels.hopsBackground", { ns: "hops_new" }),
-          hash: "background",
-          type: "background",
-          component: (
-            <ApplicationPanelBody modifier="tabs">
-              <Background />
-            </ApplicationPanelBody>
-          ),
-        },
-        {
-          id: "MATRICULATION",
-          name: t("labels.hopsMatriculation", { ns: "hops_new" }),
-          hash: "matriculation",
-          type: "matriculation",
-          component: (
-            <ApplicationPanelBody modifier="tabs">
-              <Matriculation />
-            </ApplicationPanelBody>
-          ),
-        },
-        {
-          id: "POSTGRADUATE",
-          name: t("labels.hopsPostgraduate", { ns: "hops_new" }),
-          hash: "postgraduate",
-          type: "postgraduate",
-          component: (
-            <ApplicationPanelBody modifier="tabs">
-              <Postgraduate />
-            </ApplicationPanelBody>
-          ),
-        },
-      ]
-    : [
-        {
-          id: "MATRICULATION",
-          name: t("labels.hopsMatriculation", { ns: "hops_new" }),
-          hash: "matriculation",
-          type: "matriculation",
-          component: (
-            <ApplicationPanelBody modifier="tabs">
-              <Matriculation />
-            </ApplicationPanelBody>
-          ),
-        },
-      ];
+  /**
+   * Checks if the tab is visible.
+   * - Background and Postgraduate tabs are visible if the user has permission to view details
+   * - Matriculation tab is visible if the study programme name is included in the list
+   *
+   * @param tab - The tab to check
+   * @returns boolean
+   */
+  const isVisible = (tab: string) => {
+    switch (tab) {
+      case "BACKGROUND":
+      case "POSTGRADUATE":
+        return studentInfo.permissions.canViewDetails;
+
+      case "MATRICULATION":
+        return [
+          "Nettilukio",
+          "Aikuislukio",
+          "Nettilukio/yksityisopiskelu (aineopintoina)",
+          "Aineopiskelu/yo-tutkinto",
+          "Aineopiskelu/lukio",
+          "Aineopiskelu/lukio (oppivelvolliset)",
+        ].includes(studyProgrammeName);
+      default:
+        return true;
+    }
+  };
+
+  const panelTabs: Tab[] = [
+    {
+      id: "BACKGROUND",
+      name: t("labels.hopsBackground", { ns: "hops_new" }),
+      hash: "background",
+      type: "background",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <Background />
+        </ApplicationPanelBody>
+      ),
+    },
+    {
+      id: "MATRICULATION",
+      name: t("labels.hopsMatriculation", { ns: "hops_new" }),
+      hash: "matriculation",
+      type: "matriculation",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <Matriculation />
+        </ApplicationPanelBody>
+      ),
+    },
+    {
+      id: "POSTGRADUATE",
+      name: t("labels.hopsPostgraduate", { ns: "hops_new" }),
+      hash: "postgraduate",
+      type: "postgraduate",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <Postgraduate />
+        </ApplicationPanelBody>
+      ),
+    },
+  ];
 
   const updatedMatriculationPlan = {
     ...hops.hopsEditing.matriculationPlan,
@@ -396,7 +411,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
           modifier="guider-student-hops"
           onTabChange={onTabChange}
           activeTab={activeTab}
-          panelTabs={panelTabs}
+          panelTabs={panelTabs.filter((tab) => isVisible(tab.id))}
         />
         <PendingChangesWarningDialog
           isOpen={isPendingChangesWarningDialogOpen}

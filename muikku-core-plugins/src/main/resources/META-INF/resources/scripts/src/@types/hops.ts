@@ -537,7 +537,6 @@ export function initializeCompulsoryStudiesHops(): CompulsoryStudiesHops {
   return {
     type: "compulsory",
     previousEducation: "",
-    previousEducationElse: "",
     previousWorkExperience: "",
     previousWorkExperienceField: "",
     previousYearsUsedInStudies: "",

@@ -251,7 +251,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                 <TextField
                   id="followUpStudiesElse"
                   label={t("labels.hopsTellMore", { ns: "hops_new" })}
-                  defaultValue={form.postGraduateStudiesElse}
+                  value={form.postGraduateStudiesElse || ""}
                   disabled={disabled}
                   onChange={handleTextfieldChange("postGraduateStudiesElse")}
                 />
@@ -307,7 +307,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                 <TextField
                   id="studySectorElse"
                   label={t("labels.hopsTellMore", { ns: "hops_new" })}
-                  defaultValue={form.vocationalPostGraduateStudySectorElse}
+                  value={form.vocationalPostGraduateStudySectorElse || ""}
                   disabled={disabled}
                   onChange={handleTextfieldChange(
                     "vocationalPostGraduateStudySectorElse"
@@ -326,7 +326,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                 ns: "hops_new",
               })}
               className="hops__textarea"
-              defaultValue={form.futurePlans}
+              value={form.futurePlans || ""}
               disabled={disabled}
               onChange={handleTextareaChange("futurePlans")}
             />

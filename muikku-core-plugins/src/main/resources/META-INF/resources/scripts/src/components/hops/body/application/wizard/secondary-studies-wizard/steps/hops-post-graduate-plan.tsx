@@ -222,7 +222,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                         ns: "hops_new",
                       })}
                       className="hops__textarea"
-                      value={form.whatNextElse}
+                      value={form.whatNextElse || ""}
                       onChange={handleTextareaChange("whatNextElse")}
                       disabled={disabled}
                     />
@@ -279,7 +279,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
                                 }
                               )}
                               className="hops__textarea"
-                              value={form.postGraduateStudiesElse}
+                              value={form.postGraduateStudiesElse || ""}
                               onChange={handleTextareaChange(
                                 "postGraduateStudiesElse"
                               )}
