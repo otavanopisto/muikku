@@ -120,7 +120,7 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
           <div className="hops-container__row">
             <Button
               buttonModifiers={["load-all-hops-events"]}
-              disabled={canLoadMoreHistory}
+              disabled={!canLoadMoreHistory}
               onClick={() => loadMoreHopsEvents({})}
             >
               {t("actions.loadAll", { ns: "hops_new" })}

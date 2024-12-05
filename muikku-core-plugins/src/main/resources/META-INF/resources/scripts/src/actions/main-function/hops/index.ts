@@ -1558,7 +1558,9 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.status.userSchoolDataIdentifier;
+      const studentIdentifier =
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
 
       dispatch({
         type: "HOPS_FORM_HISTORY_ENTRY_UPDATE",
@@ -1636,7 +1638,7 @@ const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
         });
 
         // Update the state with the first 5 entries
-        const updatedToState = hopsFormHistoryData.slice(undefined, 5);
+        const updatedToState = hopsFormHistoryData.slice(0, 5);
 
         dispatch({
           type: "HOPS_FORM_HISTORY_UPDATE",
@@ -1644,7 +1646,7 @@ const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
         });
 
         // Check if there are more history entries to load
-        const canLoadMoreHistory = hopsFormHistoryData.length === 6;
+        const canLoadMoreHistory = hopsFormHistoryData.length > 5;
 
         dispatch({
           type: "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY",
@@ -1688,7 +1690,8 @@ const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
 
       const studentIdentifier = data.userIdentifier
         ? data.userIdentifier
-        : state.status.userSchoolDataIdentifier;
+        : state.hopsNew.currentStudentIdentifier ||
+          state.status.userSchoolDataIdentifier;
 
       dispatch({
         type: "HOPS_FORM_HISTORY_APPEND",
@@ -1745,7 +1748,9 @@ const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
     getState: () => StateType
   ) => {
     const state = getState();
-    const studentIdentifier = state.status.userSchoolDataIdentifier;
+    const studentIdentifier =
+      state.hopsNew.currentStudentIdentifier ||
+      state.status.userSchoolDataIdentifier;
 
     dispatch({
       type: "HOPS_FORM_STATUS_UPDATE",

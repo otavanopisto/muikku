@@ -80,28 +80,6 @@ const CompulsoryStudiesHopsWizard: React.FC<
    */
   const handleFormChange = React.useCallback(
     (updatedForm: CompulsoryStudiesHops) => {
-      // Get old values from data
-      /* const oldDataForm = {
-        ...(hops.hopsEditing.hopsForm as CompulsoryStudiesHops),
-      };
-
-      const changedValuesComparedToPrevious = Object.keys(updatedForm).filter(
-        (key: keyof CompulsoryStudiesHops) => {
-          if (typeof updatedForm[key] !== "object") {
-            return updatedForm[key] !== oldDataForm[key];
-          }
-        }
-      );
-
-      const previousStudiesHasChanged = !_.isEqual(
-        updatedForm.previousLanguageExperience,
-        oldDataForm.previousLanguageExperience
-      );
-
-      if (previousStudiesHasChanged) {
-        changedValuesComparedToPrevious.push("previousLanguageExperience");
-      }
- */
       updateHopsEditing({
         updates: {
           hopsForm: updatedForm,
