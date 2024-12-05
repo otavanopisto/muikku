@@ -28,8 +28,6 @@ import {
   loadStudentHopsForm,
   LoadHopsFormHistoryTriggerType,
   loadHopsFormHistory,
-  LoadHopsLockedTriggerType,
-  loadHopsLocked,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
@@ -70,8 +68,6 @@ interface HopsApplicationProps {
   studentInfo: GuiderStudent;
   /** Unique identifier for the student */
   studentIdentifier: string;
-  /** Function to load HOPS locked status */
-  loadHopsLocked: LoadHopsLockedTriggerType;
   /** Function to load student HOPS form data */
   loadStudentHopsForm: LoadStudentHopsFormTriggerType;
   /** Function to load HOPS form history data */
@@ -102,7 +98,6 @@ const HopsApplication = (props: HopsApplicationProps) => {
     startEditing,
     saveHops,
     cancelEditing,
-    loadHopsLocked,
     hops,
     status,
     studentInfo,
@@ -129,14 +124,6 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   // Load data on demand depending on the active tab
   React.useEffect(() => {
-    // Always load the locked status if it is not already loaded
-    if (
-      hops.hopsLockedStatus !== "LOADING" &&
-      hops.hopsLockedStatus !== "READY"
-    ) {
-      loadHopsLocked({ userIdentifier: studentIdentifier });
-    }
-
     // On background or postgraduate tabs,
     if (activeTab === "BACKGROUND" || activeTab === "POSTGRADUATE") {
       // Load the HOPS form history if it is not already loaded
@@ -175,7 +162,6 @@ const HopsApplication = (props: HopsApplicationProps) => {
     studentIdentifier,
     hops.hopsFormHistoryStatus,
     hops.hopsLockedStatus,
-    loadHopsLocked,
   ]);
 
   /**
@@ -483,7 +469,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       startEditing,
       saveHops,
       cancelEditing,
-      loadHopsLocked,
     },
     dispatch
   );

@@ -40,24 +40,49 @@ const hopsApi = MApi.getHopsApi();
 const recordsApi = MApi.getRecordsApi();
 const matriculationApi = MApi.getMatriculationApi();
 
-// HOPS BACKGROUND ACTIONS TYPES
+// HOPS FORM ACTIONS TYPES
+export type HOPS_FORM_HISTORY_UPDATE = SpecificActionType<
+  "HOPS_FORM_HISTORY_UPDATE",
+  { status: ReducerStateType; data: HopsHistoryEntry[] | null }
+>;
 
-export type HOPS_BACKGROUND_UPDATE_STATUS = SpecificActionType<
-  "HOPS_BACKGROUND_UPDATE_STATUS",
+export type HOPS_FORM_HISTORY_ENTRY_UPDATE = SpecificActionType<
+  "HOPS_FORM_HISTORY_ENTRY_UPDATE",
+  { status: ReducerStateType; data: HopsHistoryEntry }
+>;
+
+export type HOPS_FORM_HISTORY_APPEND = SpecificActionType<
+  "HOPS_FORM_HISTORY_APPEND",
+  {
+    status: ReducerStateType;
+    data?: HopsHistoryEntry[] | null;
+    appendPosition?: "start" | "end";
+  }
+>;
+
+export type HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY = SpecificActionType<
+  "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY",
+  boolean
+>;
+
+export type HOPS_FORM_STATUS_UPDATE = SpecificActionType<
+  "HOPS_FORM_STATUS_UPDATE",
   ReducerStateType
 >;
+
+export type HOPS_FORM_UPDATE = SpecificActionType<
+  "HOPS_FORM_UPDATE",
+  { status: ReducerStateType; data: HopsForm | null }
+>;
+
+export type HOPS_FORM_SAVE = SpecificActionType<"HOPS_FORM_SAVE", HopsForm>;
+
+export type HOPS_CHANGE_MODE = SpecificActionType<"HOPS_CHANGE_MODE", HopsMode>;
 
 // HOPS STUDY PLAN ACTIONS TYPES
 
 export type HOPS_STUDYPLAN_UPDATE_STATUS = SpecificActionType<
   "HOPS_STUDYPLAN_UPDATE_STATUS",
-  ReducerStateType
->;
-
-// HOPS CAREER PLAN ACTIONS TYPES
-
-export type HOPS_CAREERPLAN_UPDATE_STATUS = SpecificActionType<
-  "HOPS_CAREERPLAN_UPDATE_STATUS",
   ReducerStateType
 >;
 
@@ -123,6 +148,8 @@ export type HOPS_MATRICULATION_UPDATE_RESULTS = SpecificActionType<
   MatriculationResults[]
 >;
 
+// HOPS OTHER ACTIONS TYPES
+
 export type HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER = SpecificActionType<
   "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER",
   string
@@ -135,53 +162,10 @@ export type HOPS_UPDATE_CURRENTSTUDENT_STUDYPROGRAM = SpecificActionType<
 
 export type HOPS_RESET_DATA = SpecificActionType<"HOPS_RESET_DATA", undefined>;
 
-// New action type for updating HOPS form status and data
-export type HOPS_FORM_UPDATE = SpecificActionType<
-  "HOPS_FORM_UPDATE",
-  { status: ReducerStateType; data: HopsForm | null }
->;
-
-// New action type for updating student info status and data
 export type HOPS_STUDENT_INFO_UPDATE = SpecificActionType<
   "HOPS_STUDENT_INFO_UPDATE",
   { status: ReducerStateType; data: StudentInfo | null }
 >;
-
-// Add this new action type
-export type HOPS_FORM_HISTORY_UPDATE = SpecificActionType<
-  "HOPS_FORM_HISTORY_UPDATE",
-  { status: ReducerStateType; data: HopsHistoryEntry[] | null }
->;
-
-// Add this new action type
-export type HOPS_FORM_HISTORY_ENTRY_UPDATE = SpecificActionType<
-  "HOPS_FORM_HISTORY_ENTRY_UPDATE",
-  { status: ReducerStateType; data: HopsHistoryEntry }
->;
-
-// Add this new action type
-export type HOPS_FORM_HISTORY_APPEND = SpecificActionType<
-  "HOPS_FORM_HISTORY_APPEND",
-  {
-    status: ReducerStateType;
-    data?: HopsHistoryEntry[] | null;
-    appendPosition?: "start" | "end";
-  }
->;
-
-export type HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY = SpecificActionType<
-  "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY",
-  boolean
->;
-
-export type HOPS_FORM_STATUS_UPDATE = SpecificActionType<
-  "HOPS_FORM_STATUS_UPDATE",
-  ReducerStateType
->;
-
-export type HOPS_FORM_SAVE = SpecificActionType<"HOPS_FORM_SAVE", HopsForm>;
-
-export type HOPS_CHANGE_MODE = SpecificActionType<"HOPS_CHANGE_MODE", HopsMode>;
 
 export type HOPS_CANCEL_EDITING = SpecificActionType<
   "HOPS_CANCEL_EDITING",
@@ -198,10 +182,15 @@ export type HOPS_UPDATE_LOCKED_STATUS = SpecificActionType<
   ReducerStateType
 >;
 
-// Add new action type
 export type HOPS_UPDATE_EDITING = SpecificActionType<
   "HOPS_UPDATE_EDITING",
   Partial<HopsEditingState>
+>;
+
+export type HOPS_INITIALIZE = SpecificActionType<"HOPS_INITIALIZE", boolean>;
+export type HOPS_INITIALIZE_STATUS = SpecificActionType<
+  "HOPS_INITIALIZE_STATUS",
+  ReducerStateType
 >;
 
 /**
@@ -365,9 +354,9 @@ export interface UpdateHopsLockedTriggerType {
 }
 
 /**
- * LoadHopsLockedTriggerType
+ * InitializeHopsLockedTriggerType
  */
-export interface LoadHopsLockedTriggerType {
+export interface InitializeHopsTriggerType {
   (data: { userIdentifier: string }): AnyActionType;
 }
 
@@ -1817,14 +1806,16 @@ const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
 };
 
 /**
- * Load HOPS locked status thunk
+ * Initialize HOPS data thunk. This is used to load all necessary data for HOPS.
+ * Important thing is that hops locked status is loaded first, as it triggers
+ * loading of other data based on if current user is editing or not.
  * @param data data
  */
-const loadHopsLocked: LoadHopsLockedTriggerType = function loadHopsLocked(
+const initializeHops: InitializeHopsTriggerType = function initializeHops(
   data
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -1855,6 +1846,11 @@ const loadHopsLocked: LoadHopsLockedTriggerType = function loadHopsLocked(
         payload: hopsLocked,
       });
 
+      dispatch({
+        type: "HOPS_UPDATE_LOCKED_STATUS",
+        payload: "READY",
+      });
+
       // Check if the current user is the same as the user who has locked the Hops
       // Meaning that the current user is the one who is editing
       if (state.status.userId === hopsLocked.userEntityId) {
@@ -1862,12 +1858,27 @@ const loadHopsLocked: LoadHopsLockedTriggerType = function loadHopsLocked(
           type: "HOPS_CHANGE_MODE",
           payload: "EDIT",
         });
-      }
 
-      dispatch({
-        type: "HOPS_UPDATE_LOCKED_STATUS",
-        payload: "READY",
-      });
+        const promises = [];
+
+        // Because user is editing, we need to load all necessary data
+        promises.push(
+          dispatch(loadHopsFormHistory({ userIdentifier: studentIdentifier }))
+        );
+        promises.push(
+          dispatch(
+            loadStudentHopsForm({
+              userIdentifier: studentIdentifier,
+            })
+          )
+        );
+
+        promises.push(
+          dispatch(loadMatriculationData({ userIdentifier: studentIdentifier }))
+        );
+
+        await Promise.all(promises);
+      }
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;
@@ -1900,5 +1911,5 @@ export {
   updateHopsFormHistoryEntry,
   loadMoreHopsFormHistory,
   saveHopsForm,
-  loadHopsLocked,
+  initializeHops,
 };

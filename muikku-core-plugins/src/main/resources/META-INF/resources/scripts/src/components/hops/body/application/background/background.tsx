@@ -22,7 +22,7 @@ interface BackgroundProps {
 const Background = (props: BackgroundProps) => {
   const { hops } = props;
 
-  if (!hops.studentInfo || !hops.hopsForm) {
+  if (!hops.studentInfo || !hops.hopsForm || !hops.hopsFormHistory) {
     return null;
   }
 

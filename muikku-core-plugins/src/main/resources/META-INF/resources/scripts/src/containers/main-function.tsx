@@ -117,8 +117,8 @@ import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
 import {
+  initializeHops,
   loadHopsFormHistory,
-  loadHopsLocked,
   loadMatriculationData,
   loadStudentHopsForm,
 } from "~/actions/main-function/hops/";
@@ -281,9 +281,9 @@ export default class MainFunction extends React.Component<
         ) as Action
       );
 
-      // Load HOPS locked status
+      // Initialize Hops
       this.props.store.dispatch(
-        loadHopsLocked({
+        initializeHops({
           userIdentifier: decodeURIComponent(
             window.location.hash.split("/")[1]
           ).split('"')[0],
@@ -310,6 +310,11 @@ export default class MainFunction extends React.Component<
     this.props.store.dispatch(loadStudents(filters) as Action);
     if (originalData.c) {
       this.props.store.dispatch(loadStudent(originalData.c) as Action);
+      this.props.store.dispatch(
+        initializeHops({
+          userIdentifier: originalData.c,
+        }) as Action
+      );
     }
   }
 
@@ -361,10 +366,7 @@ export default class MainFunction extends React.Component<
 
     // Load HOPS locked status and HOPS form history always
     this.props.store.dispatch(
-      loadHopsLocked({ userIdentifier: userId }) as Action
-    );
-    this.props.store.dispatch(
-      loadHopsFormHistory({ userIdentifier: userId }) as Action
+      initializeHops({ userIdentifier: userId }) as Action
     );
 
     // Other things are loaded in demand depending on the location
@@ -373,6 +375,11 @@ export default class MainFunction extends React.Component<
       givenLocation === "postgraduate" ||
       !givenLocation
     ) {
+      // Load HOPS form history
+      this.props.store.dispatch(
+        loadHopsFormHistory({ userIdentifier: userId }) as Action
+      );
+
       // Load HOPS form
       this.props.store.dispatch(
         loadStudentHopsForm({ userIdentifier: userId }) as Action
