@@ -4,10 +4,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
@@ -21,6 +24,8 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 
 public class UserGroupEntityController {
 
@@ -41,6 +46,29 @@ public class UserGroupEntityController {
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
+  
+  public UserGroupEntityName getName(UserGroupEntity userGroupEntity) {
+    if (!searchProviders.isUnsatisfied()) {
+      SearchProvider searchProvider = searchProviders.get();
+    
+      SearchResult searchResult = searchProvider.findUserGroup(userGroupEntity.schoolDataIdentifier());
+      if (searchResult.getTotalHitCount() == 1) {
+        List<Map<String, Object>> results = searchResult.getResults();
+        Map<String, Object> match = results.get(0);
+        return new UserGroupEntityName((String) match.get("name"), (Boolean) match.get("isGuidanceGroup"));
+      }
+      else {
+        throw new RuntimeException(String.format("Search provider couldn't find a unique user group. %d results.", searchResult.getTotalHitCount()));
+      }
+    }
+    else {
+      throw new RuntimeException("Search provider is not present in application.");
+    }
+  }
   
   public UserGroupEntity createUserGroupEntity(String dataSource, String identifier, OrganizationEntity organization) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);

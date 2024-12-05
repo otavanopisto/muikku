@@ -128,7 +128,9 @@ export const useSupervisorOptionalSuggestions = (
      * something is saved/changed
      * @param data Websocket data
      */
-    const onAnswerSavedAtServer = (data: StudentCourseChoice) => {
+    const onAnswerSavedAtServer = (
+      data: StudentCourseChoice & { studentIdentifier: string }
+    ) => {
       const { supervisorOptionalSuggestions } = ref.current;
 
       const arrayOfStudentChoices = supervisorOptionalSuggestions;

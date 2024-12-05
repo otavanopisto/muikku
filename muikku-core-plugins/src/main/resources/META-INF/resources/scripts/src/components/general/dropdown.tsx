@@ -31,7 +31,7 @@ type itemType2 = (closeDropdown: () => any) => any;
  */
 export interface DropdownProps {
   modifier?: string;
-  children?: React.ReactNode;
+  children: React.ReactElement;
   /**
    * Using item list as content
    */
@@ -122,6 +122,8 @@ export default class Dropdown extends React.Component<
   private portalRef: React.RefObject<Portal>;
   private dropdownRef: React.RefObject<HTMLDivElement>;
   private arrowRef: React.RefObject<HTMLSpanElement>;
+
+  private hoverTimeout: NodeJS.Timeout | null = null;
 
   static defaultProps = {
     closeOnOutsideClick: true,
@@ -215,6 +217,10 @@ export default class Dropdown extends React.Component<
         "keydown",
         this.handleActivatorKeyDown as any
       );
+    }
+
+    if (this.hoverTimeout) {
+      clearTimeout(this.hoverTimeout);
     }
   }
 
@@ -574,39 +580,84 @@ export default class Dropdown extends React.Component<
   };
 
   /**
+   * handleMouseEnter
+   */
+  handleMouseEnter = () => {
+    if (this.hoverTimeout) {
+      clearTimeout(this.hoverTimeout);
+      this.hoverTimeout = null;
+    }
+    if (!this.state.visible) {
+      this.portalRef.current?.openPortal();
+    }
+  };
+
+  /**
+   * handleMouseLeave
+   */
+  handleMouseLeave = () => {
+    if (this.hoverTimeout) {
+      clearTimeout(this.hoverTimeout);
+    }
+    this.hoverTimeout = setTimeout(() => {
+      if (this.state.visible) {
+        this.close();
+      }
+    }, 150); // Small delay to prevent flickering when moving between elements
+  };
+
+  /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
-    const {
-      closeOnOutsideClick,
-      closeOnClick = false,
-      persistent,
-      openByHoverIsClickToo,
-      children,
-      openByHover,
-      onClick,
-    } = this.props;
+    const { children, openByHover } = this.props;
 
-    let elementCloned: React.ReactElement<any> = React.cloneElement(
-      children as any,
-      {
+    let elementCloned = children;
+
+    if (openByHover) {
+      const childProps = {
         ref: this.activatorRef,
-        onKeyDown: this.handleActivatorKeyDown,
-      }
-    );
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onClick: (e: React.MouseEvent) => {
+          // Preserve the original onClick handler from the child
+          if (children.props.onClick) {
+            children.props.onClick(e);
+          }
+        },
+        onMouseEnter: this.handleMouseEnter,
+        onMouseLeave: this.handleMouseLeave,
+        id: this.id + "-button",
+        role: "combobox",
+        "aria-autocomplete": "list",
+        "aria-owns": this.id + "-menu",
+        "aria-haspopup": true,
+        "aria-expanded": this.state.visible,
+      };
+
+      elementCloned = React.cloneElement(children, childProps);
+    } else {
+      elementCloned = React.cloneElement(children as React.ReactElement, {
+        ref: this.activatorRef,
+        id: this.id + "-button",
+        role: "combobox",
+        "aria-autocomplete": "list",
+        "aria-owns": this.id + "-menu",
+        "aria-haspopup": true,
+        "aria-expanded": this.state.visible,
+      });
+    }
 
     const portalProps: any = {};
     if (!openByHover) {
       portalProps.openByClickOn = elementCloned;
     } else {
-      if (onClick) {
+      if (this.props.onClick) {
         elementCloned = React.cloneElement(children as any, {
           ref: this.activatorRef,
           // eslint-disable-next-line jsdoc/require-jsdoc
           onClick: (e: React.MouseEvent) => {
-            this.handleActivatorClick(e);
-            if (onClick) onClick();
+            if (this.props.onClick) this.props.onClick();
           },
           id: this.id + "-button",
           role: "combobox",
@@ -617,13 +668,13 @@ export default class Dropdown extends React.Component<
         });
       }
       portalProps.openByHoverOn = elementCloned;
-      portalProps.openByHoverIsClickToo = openByHoverIsClickToo;
+      portalProps.openByHoverIsClickToo = this.props.openByHoverIsClickToo;
     }
 
     portalProps.closeOnEsc = true;
-    portalProps.closeOnOutsideClick = closeOnOutsideClick;
-    portalProps.closeOnScroll = !persistent;
-    portalProps.closeOnClick = closeOnClick;
+    portalProps.closeOnOutsideClick = this.props.closeOnOutsideClick;
+    portalProps.closeOnScroll = !this.props.persistent;
+    portalProps.closeOnClick = this.props.closeOnClick;
 
     return (
       <ReactReduxContext.Consumer>
@@ -662,7 +713,6 @@ export default class Dropdown extends React.Component<
                   }}
                 ></span>
                 {(this.props.content || this.props.items) && (
-                  // We use tooltipId prop here so we can attach tooltip's trigger button's [aria-describedby] attibute directly to the content of the tooltip
                   <div
                     className="dropdown__container"
                     id={this.props.tooltipId}
@@ -670,22 +720,23 @@ export default class Dropdown extends React.Component<
                     {this.props.content ? this.props.content : null}
                     {this.props.items
                       ? this.props.items.map((item, index) => {
-                          const element = React.cloneElement(
+                          const itemContent =
                             typeof item === "function"
-                              ? item(this.close)
-                              : item,
-                            {
-                              id: this.id + "-item-" + index,
-                              onKeyDown: this.onItemKeyDown,
-                            }
-                          );
+                              ? item(this.close) // Pass the close function to the item renderer
+                              : item;
 
                           return (
                             <div
                               className="dropdown__container-item"
                               key={index}
                             >
-                              {element}
+                              {React.cloneElement(
+                                itemContent as React.ReactElement,
+                                {
+                                  id: this.id + "-item-" + index,
+                                  onKeyDown: this.onItemKeyDown,
+                                }
+                              )}
                             </div>
                           );
                         })

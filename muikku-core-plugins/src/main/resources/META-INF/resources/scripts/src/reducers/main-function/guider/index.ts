@@ -4,7 +4,8 @@ import { LoadingState, StudentActivityByStatus } from "~/@types/shared";
 import { Reducer } from "redux";
 import {
   ContactLog,
-  Student,
+  GuiderStudent,
+  FlaggedStudent,
   GuiderStudentNotification,
   UserFile,
   UserStudentFlag,
@@ -98,7 +99,7 @@ export interface GuiderStudentUserProfileType {
   pastWorkspacesState: LoadingState;
   activityLogState: LoadingState;
   pedagogyFormState: LoadingState;
-  basic: Student;
+  basic: GuiderStudent;
   labels: UserStudentFlag[];
   files: UserFile[];
   emails: UserStudentEmail[];
@@ -130,7 +131,7 @@ export interface GuiderStudentUserProfileType {
  * GuiderState
  */
 export interface GuiderState {
-  students: Student[];
+  students: FlaggedStudent[];
   studentsState: GuiderStudentsStateType;
   activeFilters: GuiderActiveFiltersType;
   availablePurchaseProducts: CeeposPurchaseProduct[];
@@ -139,7 +140,7 @@ export interface GuiderState {
   toolbarLock: boolean;
   currentStudent: GuiderStudentUserProfileType | null;
   currentStudentState: GuiderCurrentStudentStateType;
-  selectedStudents: Student[];
+  selectedStudents: FlaggedStudent[];
   selectedStudentsIds: Array<string>;
   toggleAllStudentsActive: boolean;
 }
@@ -148,14 +149,14 @@ export interface GuiderState {
  * GuiderStatePatch
  */
 export interface GuiderStatePatch {
-  students?: Student[];
+  students?: FlaggedStudent[];
   studentsState?: GuiderStudentsStateType;
   activeFilters?: GuiderActiveFiltersType;
   availableFilters?: GuiderFiltersType;
   hasMore?: boolean;
   toolbarLock?: boolean;
   currentStudent?: GuiderStudentUserProfileType;
-  selectedStudents?: Student[];
+  selectedStudents?: FlaggedStudent[];
   selectedStudentsIds?: Array<string>;
   currentState?: GuiderCurrentStudentStateType;
 }
@@ -311,7 +312,7 @@ export const guider: Reducer<GuiderState> = (
       };
 
     case "ADD_TO_GUIDER_SELECTED_STUDENTS": {
-      const student: Student = action.payload;
+      const student = action.payload;
 
       return {
         ...state,
@@ -320,7 +321,7 @@ export const guider: Reducer<GuiderState> = (
       };
     }
     case "REMOVE_FROM_GUIDER_SELECTED_STUDENTS": {
-      const student: Student = action.payload;
+      const student = action.payload;
 
       return {
         ...state,
@@ -365,7 +366,7 @@ export const guider: Reducer<GuiderState> = (
       }
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
             flags: student.flags.concat([action.payload.label]),
@@ -394,7 +395,7 @@ export const guider: Reducer<GuiderState> = (
       }
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
             flags: student.flags.filter(
@@ -426,7 +427,7 @@ export const guider: Reducer<GuiderState> = (
       };
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         return Object.assign({}, student, {
           flags: student.flags.map(mapFnStudentLabel),
         });
@@ -456,7 +457,7 @@ export const guider: Reducer<GuiderState> = (
       };
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         return Object.assign({}, student, {
           flags: student.flags.filter(filterFnStudentLabel),
         });

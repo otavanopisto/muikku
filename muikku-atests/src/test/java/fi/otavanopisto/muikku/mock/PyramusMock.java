@@ -282,7 +282,7 @@ public class PyramusMock {
       }
       
       public Builder addStaffMemberToStudentGroup(Long userGroupId, MockStaffMember staffMember) {
-        StudentGroupUser studentGroupUser = new StudentGroupUser(staffMember.getId(), staffMember.getId());
+        StudentGroupUser studentGroupUser = new StudentGroupUser(staffMember.getId(), staffMember.getId(), false, false, false);
           if(pmock.studentGroupUsers.containsKey(userGroupId)){
             pmock.studentGroupUsers.get(userGroupId).add(studentGroupUser);
           }else{
@@ -719,6 +719,15 @@ public class PyramusMock {
           TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         }
         
+        return this;
+      }
+      
+      public Builder mockIAmCounselor() throws Exception {
+        stubFor(get(urlMatching(String.format("/1/students/students/.*/amICounselor")))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(pmock.objectMapper.writeValueAsString(true))
+                .withStatus(200)));
         return this;
       }
       

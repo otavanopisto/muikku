@@ -17,6 +17,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -314,8 +316,29 @@ public class WorkspaceEntityController {
     return educationTypeMapping;
   }
   
-  public List<WorkspaceEntity> listCommonWorkspaces (UserSchoolDataIdentifier teacher, UserSchoolDataIdentifier student){
+  public List<WorkspaceEntity> listCommonWorkspaces(UserSchoolDataIdentifier teacher, UserSchoolDataIdentifier student){
     return workspaceEntityDAO.listCommonWorkspaces(teacher, student);
   }
   
+  /**
+   * Returns true if the two users share common workspaces. The first parameter
+   * is assumed to be a workspace staff member f.ex. a teacher and the second
+   * a workspace student.
+   * 
+   * @param teacherIdentifier Staff member's identifier
+   * @param studentIdentifier Student's identifier
+   * @return true if they share a workspace
+   */
+  public boolean isWorkspaceTeacherOfStudent(SchoolDataIdentifier teacherIdentifier, SchoolDataIdentifier studentIdentifier) {
+    UserSchoolDataIdentifier teacherUSDI = userSchoolDataIdentifierDAO.findBySchoolDataIdentifier(teacherIdentifier);
+    UserSchoolDataIdentifier studentUSDI = userSchoolDataIdentifierDAO.findBySchoolDataIdentifier(studentIdentifier);
+    
+    if (teacherUSDI != null && studentUSDI != null) {
+      return CollectionUtils.isNotEmpty(workspaceEntityDAO.listCommonWorkspaces(teacherUSDI, studentUSDI));
+    }
+    else {
+      return false;
+    }
+  }
+
 }

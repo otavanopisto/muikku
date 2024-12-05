@@ -1,10 +1,12 @@
 import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import {
-  UserSearchResult,
-  User,
   UserGroup,
   StudyProgramme,
+  OrganizationStaffMemberSearchResult,
+  OrganizationStudentSearchResult,
+  Student,
+  StaffMember,
 } from "~/generated/client";
 
 export type UserStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
@@ -67,9 +69,18 @@ export interface StudyprogrammeType {
 }
 
 /**
- * UserPanelUsersType
+ * UserStudentSearchResultWithExtraProperties
  */
-export interface UserSearchResultWithExtraProperties extends UserSearchResult {
+export interface UserStudentSearchResultWithExtraProperties
+  extends OrganizationStudentSearchResult {
+  searchString?: string;
+}
+
+/**
+ * UserStaffSearchResultWithExtraProperties
+ */
+export interface UserStaffSearchResultWithExtraProperties
+  extends OrganizationStaffMemberSearchResult {
   searchString?: string;
 }
 
@@ -78,8 +89,8 @@ export interface UserSearchResultWithExtraProperties extends UserSearchResult {
  */
 export interface CurrentUserGroupType {
   id: number | null;
-  students: UserSearchResult;
-  staff: UserSearchResult;
+  students: OrganizationStudentSearchResult;
+  staff: OrganizationStaffMemberSearchResult;
 }
 
 export type CurrentUserGroupUpdateType = Partial<CurrentUserGroupType>;
@@ -88,8 +99,8 @@ export type CurrentUserGroupUpdateType = Partial<CurrentUserGroupType>;
  * UsersSelectState
  */
 export interface UsersSelectState {
-  students: User[];
-  staff: User[];
+  students: Student[];
+  staff: StaffMember[];
   userGroups: UserGroup[];
 }
 
@@ -98,8 +109,8 @@ export interface UsersSelectState {
  * Object that combines the results of the student and staff search
  */
 export interface UsersState {
-  students?: UserSearchResultWithExtraProperties;
-  staff?: UserSearchResultWithExtraProperties;
+  students?: UserStudentSearchResultWithExtraProperties;
+  staff?: UserStaffSearchResultWithExtraProperties;
 }
 
 /**

@@ -21,11 +21,11 @@ import {
   CeeposPurchaseProduct,
   ContactLog,
   ContactType,
-  Student,
   UserStudentFlag,
   UserFlag,
   UserGroup,
   StudentStudyActivity,
+  FlaggedStudent,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -55,11 +55,11 @@ export type UPDATE_GUIDER_STATE = SpecificActionType<
 >;
 export type ADD_TO_GUIDER_SELECTED_STUDENTS = SpecificActionType<
   "ADD_TO_GUIDER_SELECTED_STUDENTS",
-  Student
+  FlaggedStudent
 >;
 export type REMOVE_FROM_GUIDER_SELECTED_STUDENTS = SpecificActionType<
   "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
-  Student
+  FlaggedStudent
 >;
 export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT",
@@ -321,14 +321,14 @@ export interface EditContactLogEventCommentTriggerType {
  * AddToGuiderSelectedStudentsTriggerType action creator type
  */
 export interface AddToGuiderSelectedStudentsTriggerType {
-  (student: Student): AnyActionType;
+  (student: FlaggedStudent): AnyActionType;
 }
 
 /**
  * RemoveFromGuiderSelectedStudentsTriggerType action creator type
  */
 export interface RemoveFromGuiderSelectedStudentsTriggerType {
-  (student: Student): AnyActionType;
+  (student: FlaggedStudent): AnyActionType;
 }
 
 /**
@@ -1992,7 +1992,7 @@ const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
  * @param getState getstate method
  */
 async function removeLabelFromUserUtil(
-  student: Student,
+  student: FlaggedStudent,
   flags: UserStudentFlag[],
   label: UserFlag,
   dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
@@ -2040,7 +2040,7 @@ async function removeLabelFromUserUtil(
  * @param getState getstate method
  */
 async function addLabelToUserUtil(
-  student: Student,
+  student: FlaggedStudent,
   flags: UserStudentFlag[],
   label: UserFlag,
   dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
@@ -2140,7 +2140,7 @@ const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
       getState: () => StateType
     ) => {
       const guider: GuiderState = getState().guider;
-      guider.selectedStudents.forEach((student: Student) => {
+      guider.selectedStudents.forEach((student) => {
         addLabelToUserUtil(student, student.flags, label, dispatch, getState);
       });
     };
@@ -2157,7 +2157,7 @@ const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrig
       getState: () => StateType
     ) => {
       const guider: GuiderState = getState().guider;
-      guider.selectedStudents.forEach((student: Student) => {
+      guider.selectedStudents.forEach((student) => {
         removeLabelFromUserUtil(
           student,
           student.flags,

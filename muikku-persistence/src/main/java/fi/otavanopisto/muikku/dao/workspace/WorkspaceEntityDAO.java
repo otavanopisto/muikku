@@ -2,16 +2,21 @@ package fi.otavanopisto.muikku.dao.workspace;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity_;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity_;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity_;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
@@ -261,21 +266,28 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<WorkspaceEntity> criteria = criteriaBuilder.createQuery(WorkspaceEntity.class);
-        Root<WorkspaceUserEntity> teacherRoot = criteria.from(WorkspaceUserEntity.class);
-        Root<WorkspaceUserEntity> studentRoot = criteria.from(WorkspaceUserEntity.class);
-        
-        criteria.select(teacherRoot.get(WorkspaceUserEntity_.workspaceEntity));
-        criteria.where(
-          criteriaBuilder.and(
-            criteriaBuilder.equal(teacherRoot.get(WorkspaceUserEntity_.userSchoolDataIdentifier), teacher),
-            criteriaBuilder.equal(studentRoot.get(WorkspaceUserEntity_.userSchoolDataIdentifier), student),
-            criteriaBuilder.equal(studentRoot.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
-            criteriaBuilder.equal(teacherRoot.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
-            criteriaBuilder.equal(teacherRoot.get(WorkspaceUserEntity_.workspaceEntity), studentRoot.get(WorkspaceUserEntity_.workspaceEntity))
-          ) 
-        );
-        
-        return entityManager.createQuery(criteria).getResultList();
-     }
+    Root<WorkspaceUserEntity> teacherRoot = criteria.from(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> studentRoot = criteria.from(WorkspaceUserEntity.class);
+
+    Join<WorkspaceUserEntity, WorkspaceRoleEntity> teacherRole = teacherRoot.join(WorkspaceUserEntity_.workspaceUserRole);
+    Join<WorkspaceUserEntity, WorkspaceRoleEntity> studentRole = studentRoot.join(WorkspaceUserEntity_.workspaceUserRole);
+
+    EnumSet<WorkspaceRoleArchetype> teacherRoles = EnumSet.of(WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.TUTOR, WorkspaceRoleArchetype.ORGANIZER);
+    
+    criteria.select(teacherRoot.get(WorkspaceUserEntity_.workspaceEntity));
+    criteria.where(
+      criteriaBuilder.and(
+        teacherRole.get(WorkspaceRoleEntity_.archetype).in(teacherRoles),
+        criteriaBuilder.equal(studentRole.get(WorkspaceRoleEntity_.archetype), WorkspaceRoleArchetype.STUDENT),
+        criteriaBuilder.equal(teacherRoot.get(WorkspaceUserEntity_.userSchoolDataIdentifier), teacher),
+        criteriaBuilder.equal(studentRoot.get(WorkspaceUserEntity_.userSchoolDataIdentifier), student),
+        criteriaBuilder.equal(studentRoot.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
+        criteriaBuilder.equal(teacherRoot.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
+        criteriaBuilder.equal(teacherRoot.get(WorkspaceUserEntity_.workspaceEntity), studentRoot.get(WorkspaceUserEntity_.workspaceEntity))
+      ) 
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
 }

@@ -120,6 +120,14 @@
   }
 }
 
+.dialog__window--chat {
+  max-height: calc(100% - 20px);
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 700px;
+  }
+}
+
 .dialog__window--pedagogy-form-pdf {
   height: 100%;
   max-width: unset;
@@ -187,10 +195,6 @@
       height: 420px;
     }
   }
-}
-
-.dialog__window--local {
-  max-height: calc(100% - 10px);
 }
 
 .dialog__window--wizard,
@@ -453,6 +457,7 @@
 }
 
 .dialog__title-sub-container {
+  align-items: center;
   display: flex;
 }
 
@@ -460,6 +465,12 @@
   &:not(:first-child) {
     margin-left: 10px;
   }
+}
+
+.dialog__title-item--hops-toggle {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
 }
 
 .dialog__title-item--studyprogramme {
@@ -519,8 +530,36 @@
   padding: 10px 20px;
 }
 
+.dialog__content-column-container {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 20px 30px;
+  justify-content: flex-start;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+}
+
+.dialog__content-column {
+  align-items: flex-start;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-start;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 50%;
+    width: auto;
+  }
+}
+
 .dialog__content-row {
-  margin: 0 0 10px;
+  margin: 0 0 15px;
   width: 100%;
 
   &:last-child {
