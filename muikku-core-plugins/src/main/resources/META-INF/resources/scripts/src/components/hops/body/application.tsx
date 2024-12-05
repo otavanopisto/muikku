@@ -35,7 +35,7 @@ import Background from "./application/background/background";
 import Postgraduate from "./application/postgraduate/postgraduate";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import NewHopsEventDescriptionDialog from "~/components/general/hops-compulsory-education-wizard/dialogs/new-hops-event-description-dialog";
+import NewHopsEventDescriptionDialog from "../dialogs/new-hops-event-description-dialog";
 import {
   compulsoryStudiesFieldsTranslation,
   getEditedHopsFields,

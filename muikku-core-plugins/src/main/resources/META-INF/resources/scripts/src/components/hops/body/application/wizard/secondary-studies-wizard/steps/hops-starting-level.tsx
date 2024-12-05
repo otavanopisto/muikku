@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import "~/sass/elements/hops.scss";
-import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
 import PreviousStudies from "../../components/hops-previous-studies-list";
 import { PreviousStudiesEntry, SecondaryStudiesHops } from "~/@types/hops";
 import { Textarea } from "../../components/text-area";
+import { TextField } from "../../components/text-field";
 import { useTranslation } from "react-i18next";
 
 /**

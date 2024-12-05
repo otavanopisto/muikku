@@ -75,14 +75,12 @@ import GuardianBody from "../components/guardian/body";
 import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
-  setLocationToHopsInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
   setLocationToPedagogyFormInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
-import { updateHops } from "~/actions/main-function/hops";
 import { updateStatistics } from "~/actions/main-function/records/statistics";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
@@ -336,11 +334,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords(userId) as Action
       );
-    } else if (givenLocation === "hops") {
-      this.props.store.dispatch(
-        setLocationToHopsInTranscriptOfRecords() as Action
-      );
-      this.props.store.dispatch(updateHops(null, userId) as Action);
     } else if (givenLocation === "pedagogy-form") {
       this.props.store.dispatch(
         setLocationToPedagogyFormInTranscriptOfRecords() as Action
@@ -356,8 +349,6 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(updateSummary(userId) as Action);
     }
-    // Hops needs to be loaded for correct tabs to be seen
-    this.props.store.dispatch(updateHops(null, userId) as Action);
   }
 
   /**

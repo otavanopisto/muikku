@@ -2,7 +2,7 @@ import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import Button from "~/components/general/button";
-import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
+import { TextField } from "../../components/text-field";
 import HopsHistory from "../../history";
 import { LoadMoreHopsFormHistoryTriggerType } from "~/actions/main-function/hops/";
 import { useRef } from "react";

@@ -7,7 +7,7 @@ import {
   HopsLanguageGradeTable,
   LanguageGradeRow,
 } from "../../components/hops-language-grade-table";
-import { TextField } from "~/components/general/hops-compulsory-education-wizard/text-field";
+import { TextField } from "../../components/text-field";
 import { CompulsoryStudiesHops } from "~/@types/hops";
 import { useTranslation } from "react-i18next";
 

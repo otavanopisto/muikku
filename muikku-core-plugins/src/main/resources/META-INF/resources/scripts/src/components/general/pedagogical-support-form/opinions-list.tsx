@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Opinion, OpinionType } from "~/@types/pedagogy-form";
-import { TextField } from "../hops-compulsory-education-wizard/text-field";
+import { TextField } from "./components/textfield";
 import CKEditor from "../ckeditor";
 import Button from "../button";
 import CkeditorLoaderContent from "../../base/ckeditor-loader/content";

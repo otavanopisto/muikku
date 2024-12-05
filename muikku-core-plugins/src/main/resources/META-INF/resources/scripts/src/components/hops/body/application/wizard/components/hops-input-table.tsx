@@ -11,7 +11,6 @@ import {
 } from "~/components/general/table";
 
 import "~/sass/elements/wcag.scss";
-import { HopsUsePlace } from "./index";
 
 /**
  * createArrayOfNumberIntervals
@@ -42,7 +41,7 @@ const createArrayOfNumberIntervals = (
  * QuestionGradeTableProps
  */
 interface HopsInputTableProps {
-  usePlace: HopsUsePlace;
+  usePlace: "studies" | "guardian";
 }
 
 /**

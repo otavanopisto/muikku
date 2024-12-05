@@ -7,7 +7,8 @@ import Button from "~/components/general/button";
 /**
  * MatriculationExaminationWizardDialogProps
  */
-interface EditHopsEventDescriptionDialogProps {
+interface NewHopsEventDescriptionDialogProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   isOpen: boolean;
   content: JSX.Element;
@@ -18,18 +19,24 @@ interface EditHopsEventDescriptionDialogProps {
 /**
  * MatriculationExaminationWizardDialogState
  */
-interface EditHopsEventDescriptionDialogState {
-  scale: number;
-  angle: number;
-}
+interface NewHopsEventDescriptionDialogState {}
 
 /**
  * MatriculationExaminationWizardDialog
  */
-class EditHopsEventDescriptionDialog extends React.Component<
-  EditHopsEventDescriptionDialogProps,
-  EditHopsEventDescriptionDialogState
+class NewHopsEventDescriptionDialog extends React.Component<
+  NewHopsEventDescriptionDialogProps,
+  NewHopsEventDescriptionDialogState
 > {
+  /**
+   * Constructor method
+   *
+   * @param props props
+   */
+  constructor(props: NewHopsEventDescriptionDialogProps) {
+    super(props);
+  }
+
   /**
    * Component render method
    * @returns JSX.Element
@@ -40,19 +47,19 @@ class EditHopsEventDescriptionDialog extends React.Component<
      * @param closeDialog closeDialog
      * @returns JSX.Element
      */
-    const content = (closeDialog: () => any) => this.props.content;
+    const content = (closeDialog: () => void) => this.props.content;
 
     /**
      * footer
      * @param closeDialog closeDialog
      */
-    const footer = (closeDialog: () => any) => (
+    const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
           buttonModifiers={["standard-ok", "fatal"]}
           onClick={this.props.onSaveClick}
         >
-          Päivitä
+          Ok
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
@@ -67,7 +74,7 @@ class EditHopsEventDescriptionDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
-        title="Päivityksen kuvaus"
+        title="Muokkaa kuvausta"
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}
@@ -79,4 +86,4 @@ class EditHopsEventDescriptionDialog extends React.Component<
   }
 }
 
-export default EditHopsEventDescriptionDialog;
+export default NewHopsEventDescriptionDialog;

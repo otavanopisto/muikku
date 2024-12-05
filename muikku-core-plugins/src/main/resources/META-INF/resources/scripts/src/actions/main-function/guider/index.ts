@@ -394,13 +394,6 @@ export interface UpdateGuiderFilterLabelTriggerType {
 }
 
 /**
- * UpdateCurrentStudentHopsPhaseTriggerType action creator type
- */
-export interface UpdateCurrentStudentHopsPhaseTriggerType {
-  (data: { value: string }): AnyActionType;
-}
-
-/**
  * RemoveGuiderFilterLabelTriggerType action creator type
  */
 export interface RemoveGuiderFilterLabelTriggerType {
@@ -1855,52 +1848,6 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
   };
 
 /**
- *
- * Updates and return hops phase for current student
- *
- * @param data data
- */
-const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
-  function updateCurrentStudentHopsPhase(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const userApi = MApi.getUserApi();
-
-      try {
-        const properties = await userApi.setUserProperty({
-          setUserPropertyRequest: {
-            key: "hopsPhase",
-            value: data.value,
-            userEntityId: getState().guider.currentStudent.basic.userEntityId,
-          },
-        });
-
-        dispatch({
-          type: "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
-          payload: {
-            property: "hopsPhase",
-            value: properties.value,
-          },
-        });
-
-        dispatch(
-          notificationActions.displayNotification(
-            "HOPS-vaiheen päivittäminen onnistui.",
-            "success"
-          )
-        );
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-        dispatch(notificationActions.displayNotification(err.message, "error"));
-      }
-    };
-  };
-
-/**
  * removeLabelFromUserUtil utility function
  * @param student student
  * @param flags student flags
@@ -2551,7 +2498,6 @@ export {
   removeFileFromCurrentStudent,
   updateLabelFilters,
   updateWorkspaceFilters,
-  updateCurrentStudentHopsPhase,
   createGuiderFilterLabel,
   updateGuiderFilterLabel,
   removeGuiderFilterLabel,

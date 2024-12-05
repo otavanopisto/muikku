@@ -31,10 +31,6 @@ import ApplicationSubPanel, {
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import Avatar from "~/components/general/avatar";
-import {
-  UpdateCurrentStudentHopsPhaseTriggerType,
-  updateCurrentStudentHopsPhase,
-} from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
@@ -48,7 +44,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface StateOfStudiesProps extends WithTranslation {
   guider: GuiderState;
   status: StatusType;
-  updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -71,15 +66,6 @@ class StateOfStudies extends React.Component<
   constructor(props: StateOfStudiesProps) {
     super(props);
   }
-  /**
-   * handleHopsPhaseChange
-   * @param e e
-   */
-  handleHopsPhaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.updateCurrentStudentHopsPhase({
-      value: e.currentTarget.value,
-    });
-  };
 
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   /**
@@ -495,7 +481,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       displayNotification,
-      updateCurrentStudentHopsPhase,
     },
     dispatch
   );

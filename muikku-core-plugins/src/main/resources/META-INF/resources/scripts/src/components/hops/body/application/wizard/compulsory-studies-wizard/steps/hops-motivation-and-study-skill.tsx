@@ -5,8 +5,8 @@ import {
   EmptyRow,
   HopsInputTable,
   InputRow,
-} from "~/components/general/hops-compulsory-education-wizard/hops-input-table";
-import { Textarea } from "~/components/general/hops-compulsory-education-wizard/text-area";
+} from "../../components/hops-input-table";
+import { Textarea } from "../../components/text-area";
 import { CompulsoryStudiesHops } from "~/@types/hops";
 import { useTranslation } from "react-i18next";
 
