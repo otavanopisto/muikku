@@ -87,6 +87,7 @@ public class UserIndexer {
         indexedUser.setLanguage(user.getLanguage());
         indexedUser.setMunicipality(user.getMunicipality());
         indexedUser.setSchool(user.getSchool());
+        indexedUser.setU18Compulsory(userController.isUnder18CompulsoryEducationStudent(userIdentifier));
 
         // TODO: we have only one role here but a user(entity) can have several roles via several userschooldataidentifiers
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());

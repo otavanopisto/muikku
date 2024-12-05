@@ -564,4 +564,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 
+  @Override
+  public boolean isUnder18CompulsoryEducationStudent(SchoolDataIdentifier studentIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
 }

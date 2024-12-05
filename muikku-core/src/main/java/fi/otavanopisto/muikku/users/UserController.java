@@ -117,6 +117,17 @@ public class UserController {
     return userSchoolDataController.listStudentStudyPeriods(userIdentifier);
   }
   
+  /**
+   * Return true, if the given student is under 18 years old and
+   * part of compulsory education system.
+   * 
+   * @param studentIdentifier student's identifier
+   * @return true if yes, otherwise default to false
+   */
+  public boolean isUnder18CompulsoryEducationStudent(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.isUnder18CompulsoryEducationStudent(studentIdentifier);
+  }
+  
   public String findUserSsn(User user) {
     return findUserSsn(new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource()));
   }

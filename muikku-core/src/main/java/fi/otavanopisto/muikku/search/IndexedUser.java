@@ -285,6 +285,14 @@ public class IndexedUser {
     this.roles = roles;
   }
 
+  public boolean isU18Compulsory() {
+    return u18Compulsory;
+  }
+
+  public void setU18Compulsory(boolean u18Compulsory) {
+    this.u18Compulsory = u18Compulsory;
+  }
+
   private String identifier;
   private String schoolDataSource;
   private String firstName;
@@ -301,6 +309,7 @@ public class IndexedUser {
   private OffsetDateTime studyTimeEnd;
   private boolean hidden;
   private boolean evaluationFees;
+  private boolean u18Compulsory;
   private SchoolDataIdentifier curriculumIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;

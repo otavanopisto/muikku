@@ -370,6 +370,21 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).listStudentStudyPeriods(userIdentifier);
   }
 
+  /**
+   * Return true, if the given student is under 18 years old and
+   * part of compulsory education system.
+   * 
+   * @param studentIdentifier student's identifier
+   * @return true if yes, otherwise default to false
+   */
+  public boolean isUnder18CompulsoryEducationStudent(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).isUnder18CompulsoryEducationStudent(studentIdentifier);
+  }
+
   private UserSchoolDataBridge getUserBridge(SchoolDataSource schoolDataSource) {
     return getUserBridge(schoolDataSource.getIdentifier());
   }

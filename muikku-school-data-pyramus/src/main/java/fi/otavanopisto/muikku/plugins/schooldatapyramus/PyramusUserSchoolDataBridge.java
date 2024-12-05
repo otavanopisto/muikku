@@ -2,10 +2,12 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -329,9 +331,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
 
       if (student.getPersonId() != null) {
-        Person person = pyramusClient.get(
-            "/persons/persons/" + student.getPersonId(),
-            Person.class);
+        Person person = findPyramusPerson(student.getPersonId());
         if (person != null) {
           hidden = person.getSecureInfo() != null ? person.getSecureInfo() : false;
         }
@@ -356,7 +356,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           hidden,
           curriculumIdentifier,
           organizationIdentifier,
-          student.getMatriculationEligibility() != null ? student.getMatriculationEligibility().isUpperSecondarySchoolCurriculum() : false));
+          student.getMatriculationEligibility() != null ? student.getMatriculationEligibility().isUpperSecondarySchoolCurriculum() : false
+        )
+      );
     }
 
     return users;
@@ -1304,10 +1306,87 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return Collections.emptyList();
   }
 
+  @Override
+  public boolean isUnder18CompulsoryEducationStudent(SchoolDataIdentifier studentIdentifier) {
+    PyramusUserType userType = identifierMapper.getIdentifierUserType(studentIdentifier);
+
+    // This method may be called for non-students, just return false
+    if (userType != PyramusUserType.STUDENT) {
+      return false;
+    }
+    
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    
+    Student student = findPyramusStudent(pyramusStudentId);
+    if (student.getPersonId() != null) {
+      Person person = findPyramusPerson(student.getPersonId());
+      if (person != null) {
+        // Birthday is null or the student is over 18 years old - return false
+        if (person.getBirthday() == null || person.getBirthday().plusYears(18).isBefore(OffsetDateTime.now())) {
+          return false;
+        }
+
+        StudentStudyPeriod[] studyPeriods = listStudentStudyPeriods(pyramusStudentId);
+        if (ArrayUtils.isNotEmpty(studyPeriods)) {
+          EnumSet<StudentStudyPeriodType> states = EnumSet.of(
+              StudentStudyPeriodType.COMPULSORY_EDUCATION, 
+              StudentStudyPeriodType.NON_COMPULSORY_EDUCATION, 
+              StudentStudyPeriodType.EXTENDED_COMPULSORY_EDUCATION
+          );
+          LocalDate now = LocalDate.now();
+          LocalDate date = null;
+          StudentStudyPeriodType state = null;
+
+          /*
+           * Loop through study periods and for the periods
+           * that are active, check that they are one of the
+           * states that correspond to the compulsory state.
+           * After the loop is done, we should have the state
+           * in state variable that is the currently active one.
+           */
+          for (StudentStudyPeriod studyPeriod : studyPeriods) {
+            if (states.contains(studyPeriod.getType()) && isActiveStudyPeriod(studyPeriod, now)) {
+              if (date == null || studyPeriod.getBegin().isAfter(date)) {
+                date = studyPeriod.getBegin();
+                state = studyPeriod.getType();
+              }
+            }
+          }
+          
+          EnumSet<StudentStudyPeriodType> activeStates = EnumSet.of(
+              StudentStudyPeriodType.COMPULSORY_EDUCATION, 
+              StudentStudyPeriodType.EXTENDED_COMPULSORY_EDUCATION
+          );
+          if (activeStates.contains(state)) {
+            return true;
+          }
+        }
+      }
+    }
+    
+    return false;
+  }
+
   private StudentStudyPeriod[] listStudentStudyPeriods(Long pyramusStudentId) {
     return pyramusClient.get(String.format("/students/students/%d/studyPeriods", pyramusStudentId), StudentStudyPeriod[].class);
   }
 
+  /**
+   * Returns true if the given period is active at given date.
+   * 
+   * @param period period
+   * @param atDate date
+   * @return true if the period is considered active at given date
+   */
+  private boolean isActiveStudyPeriod(StudentStudyPeriod period, LocalDate atDate) {
+    LocalDate begin = period.getBegin();
+    LocalDate end = period.getEnd();
+
+    return
+        (begin == null || begin.equals(atDate) || begin.isBefore(atDate)) &&
+        (end == null || end.equals(atDate) || end.isAfter(atDate));
+  }
+  
   private Long toUserEntityId(Long pyramusStaffMemberId) {
     SchoolDataIdentifier identifier = identifierMapper.getStaffIdentifier(pyramusStaffMemberId);
 
@@ -1829,4 +1908,5 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     
     return result;
   }
+
 }

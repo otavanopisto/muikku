@@ -15758,12 +15758,16 @@ components:
         - type: object
           required:
             - flags
+            - u18Compulsory
           properties:
             flags:
               nullable: true
               type: array
               items:
                 $ref: "#/components/schemas/UserStudentFlag"
+            u18Compulsory:
+              description: Is the student under 18yo and part of the compulsory education system
+              type: boolean
 
     GuiderStudent:
       allOf:

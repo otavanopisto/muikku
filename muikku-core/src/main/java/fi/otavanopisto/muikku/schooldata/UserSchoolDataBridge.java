@@ -280,4 +280,13 @@ public interface UserSchoolDataBridge {
    */
   public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier);
 
+  /**
+   * Return true, if the given student is under 18 years old and
+   * part of compulsory education system.
+   * 
+   * @param studentIdentifier student's identifier
+   * @return true if yes, otherwise default to false
+   */
+  public boolean isUnder18CompulsoryEducationStudent(SchoolDataIdentifier studentIdentifier);
+
 }
