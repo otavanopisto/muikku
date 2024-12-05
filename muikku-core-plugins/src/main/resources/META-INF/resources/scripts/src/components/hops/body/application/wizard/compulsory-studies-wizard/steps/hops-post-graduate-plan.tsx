@@ -306,7 +306,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
               <div className="hops__form-element-container">
                 <TextField
                   id="studySectorElse"
-                  label={t("labels.hopsTellMore", { ns: "hops_new" })}
+                  label={`${t("labels.hopsTellMore", { ns: "hops_new" })}:`}
                   value={form.vocationalPostGraduateStudySectorElse || ""}
                   disabled={disabled}
                   onChange={handleTextfieldChange(
