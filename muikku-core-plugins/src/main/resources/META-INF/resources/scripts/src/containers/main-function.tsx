@@ -118,7 +118,12 @@ import { Announcement, UserWhoAmI } from "~/generated/client";
 import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
-import { loadMatriculationData } from "~/actions/main-function/hops/";
+import {
+  loadHopsFormHistory,
+  loadHopsLocked,
+  loadMatriculationData,
+  loadStudentHopsForm,
+} from "~/actions/main-function/hops/";
 import GuardianHopsBody from "~/components/guardian_hops/body";
 
 /**
@@ -277,6 +282,15 @@ export default class MainFunction extends React.Component<
           decodeURIComponent(window.location.hash.split("/")[1]).split('"')[0]
         ) as Action
       );
+
+      // Load HOPS locked status
+      this.props.store.dispatch(
+        loadHopsLocked({
+          userIdentifier: decodeURIComponent(
+            window.location.hash.split("/")[1]
+          ).split('"')[0],
+        }) as Action
+      );
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -354,8 +368,27 @@ export default class MainFunction extends React.Component<
   loadHopsData(tab: string, userId?: string) {
     const givenLocation = tab;
 
-    // Load matriculation data if in Matriculation tab
-    if (givenLocation === "matriculation" || !givenLocation) {
+    // Load HOPS locked status and HOPS form history always
+    this.props.store.dispatch(
+      loadHopsLocked({ userIdentifier: userId }) as Action
+    );
+    this.props.store.dispatch(
+      loadHopsFormHistory({ userIdentifier: userId }) as Action
+    );
+
+    // Other things are loaded in demand depending on the location
+    if (
+      givenLocation === "background" ||
+      givenLocation === "postgraduate" ||
+      !givenLocation
+    ) {
+      // Load HOPS form
+      this.props.store.dispatch(
+        loadStudentHopsForm({ userIdentifier: userId }) as Action
+      );
+    }
+
+    if (givenLocation === "matriculation") {
       this.props.store.dispatch(
         loadMatriculationData({ userIdentifier: userId }) as Action
       );

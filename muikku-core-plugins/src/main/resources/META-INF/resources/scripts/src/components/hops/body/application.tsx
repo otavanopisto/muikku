@@ -103,6 +103,8 @@ const HopsApplication = (props: HopsApplicationProps) => {
       setActiveTab("MATRICULATION");
     } else if (hash === "background") {
       setActiveTab("BACKGROUND");
+    } else if (hash === "postgraduate") {
+      setActiveTab("POSTGRADUATE");
     }
   }, []); // Run only on mount
 

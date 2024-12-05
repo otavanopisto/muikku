@@ -28,6 +28,8 @@ import {
   loadStudentHopsForm,
   LoadHopsFormHistoryTriggerType,
   loadHopsFormHistory,
+  LoadHopsLockedTriggerType,
+  loadHopsLocked,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
@@ -68,6 +70,8 @@ interface HopsApplicationProps {
   studentInfo: GuiderStudent;
   /** Unique identifier for the student */
   studentIdentifier: string;
+  /** Function to load HOPS locked status */
+  loadHopsLocked: LoadHopsLockedTriggerType;
   /** Function to load student HOPS form data */
   loadStudentHopsForm: LoadStudentHopsFormTriggerType;
   /** Function to load HOPS form history data */
@@ -98,11 +102,13 @@ const HopsApplication = (props: HopsApplicationProps) => {
     startEditing,
     saveHops,
     cancelEditing,
+    loadHopsLocked,
     hops,
     status,
     studentInfo,
   } = props;
 
+  // Set the initial active tab based on the user's permissions
   const [activeTab, setActiveTab] = React.useState<HopsTab>(
     studentInfo.permissions.canViewDetails ? "BACKGROUND" : "MATRICULATION"
   );
@@ -118,23 +124,36 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   const { t } = useTranslation(["studies", "common", "hops_new"]);
 
-  // Load student HOPS form data if it is not already loaded
+  // Load data on demand depending on the active tab
   React.useEffect(() => {
+    // Always load the locked status if it is not already loaded
     if (
-      (activeTab === "BACKGROUND" || activeTab === "POSTGRADUATE") &&
-      hops.hopsFormHistoryStatus !== "LOADING" &&
-      hops.hopsFormHistoryStatus !== "READY"
+      hops.hopsLockedStatus !== "LOADING" &&
+      hops.hopsLockedStatus !== "READY"
     ) {
-      loadHopsFormHistory({ userIdentifier: studentIdentifier });
+      loadHopsLocked({ userIdentifier: studentIdentifier });
     }
 
-    if (
-      (activeTab === "BACKGROUND" || activeTab === "POSTGRADUATE") &&
-      hops.hopsFormStatus !== "LOADING" &&
-      hops.hopsFormStatus !== "READY"
-    ) {
-      loadStudentHopsForm({ userIdentifier: studentIdentifier });
-    } else if (
+    // On background or postgraduate tabs,
+    if (activeTab === "BACKGROUND" || activeTab === "POSTGRADUATE") {
+      // Load the HOPS form history if it is not already loaded
+      if (
+        hops.hopsFormHistoryStatus !== "LOADING" &&
+        hops.hopsFormHistoryStatus !== "READY"
+      ) {
+        loadHopsFormHistory({ userIdentifier: studentIdentifier });
+      }
+
+      // Load the HOPS form if it is not already loaded
+      if (
+        hops.hopsFormStatus !== "LOADING" &&
+        hops.hopsFormStatus !== "READY"
+      ) {
+        loadStudentHopsForm({ userIdentifier: studentIdentifier });
+      }
+    }
+    // On Matriculation tab,
+    else if (
       activeTab === "MATRICULATION" &&
       hops.hopsMatriculationStatus !== "LOADING" &&
       hops.hopsMatriculationStatus !== "READY"
@@ -152,6 +171,8 @@ const HopsApplication = (props: HopsApplicationProps) => {
     loadHopsFormHistory,
     studentIdentifier,
     hops.hopsFormHistoryStatus,
+    hops.hopsLockedStatus,
+    loadHopsLocked,
   ]);
 
   /**
@@ -447,6 +468,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       startEditing,
       saveHops,
       cancelEditing,
+      loadHopsLocked,
     },
     dispatch
   );

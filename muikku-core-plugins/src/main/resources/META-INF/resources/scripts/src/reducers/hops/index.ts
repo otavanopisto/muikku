@@ -118,6 +118,7 @@ export interface HopsState {
 
   // HOPS LOCKED STATE
   hopsLocked: HopsLocked | null;
+  hopsLockedStatus: ReducerStateType;
 
   // HOPS EDITING STATE
   hopsEditing: HopsEditingState;
@@ -147,6 +148,7 @@ const initialHopsState: HopsState = {
   hopsFormCanLoadMoreHistory: true,
   hopsMode: "READ",
   hopsLocked: null,
+  hopsLockedStatus: "IDLE",
   hopsEditing: {
     readyToEdit: false,
     hopsForm: null,
@@ -478,6 +480,12 @@ export const hopsNew: Reducer<HopsState> = (
       return {
         ...state,
         hopsLocked: action.payload,
+      };
+
+    case "HOPS_UPDATE_LOCKED_STATUS":
+      return {
+        ...state,
+        hopsLockedStatus: action.payload,
       };
 
     default:

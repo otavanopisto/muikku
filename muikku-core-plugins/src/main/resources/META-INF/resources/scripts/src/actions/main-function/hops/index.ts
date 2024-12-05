@@ -179,9 +179,8 @@ export type HOPS_FORM_STATUS_UPDATE = SpecificActionType<
   ReducerStateType
 >;
 
-// Add this new action type
 export type HOPS_FORM_SAVE = SpecificActionType<"HOPS_FORM_SAVE", HopsForm>;
-// Add new action type
+
 export type HOPS_CHANGE_MODE = SpecificActionType<"HOPS_CHANGE_MODE", HopsMode>;
 
 export type HOPS_CANCEL_EDITING = SpecificActionType<
@@ -192,6 +191,11 @@ export type HOPS_CANCEL_EDITING = SpecificActionType<
 export type HOPS_UPDATE_LOCKED = SpecificActionType<
   "HOPS_UPDATE_LOCKED",
   HopsLocked
+>;
+
+export type HOPS_UPDATE_LOCKED_STATUS = SpecificActionType<
+  "HOPS_UPDATE_LOCKED_STATUS",
+  ReducerStateType
 >;
 
 // Add new action type
@@ -361,6 +365,13 @@ export interface UpdateHopsLockedTriggerType {
 }
 
 /**
+ * LoadHopsLockedTriggerType
+ */
+export interface LoadHopsLockedTriggerType {
+  (data: { userIdentifier: string }): AnyActionType;
+}
+
+/**
  * Load matriculation exam data thunk
  *
  * @param data data
@@ -403,18 +414,6 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
         // NOTE: This is for registering websocket events and will be refactored when actual HOPS form is implemented
         await hopsApi.getStudentHops({
           studentIdentifier,
-        });
-
-        // For now we get locked status information from the Hops API here
-        // and later after other hops functions are implemented we will
-        // move this to hops thunk specifically
-        const hopsLocked = await hopsApi.getStudentHopsLock({
-          studentIdentifier,
-        });
-
-        dispatch({
-          type: "HOPS_UPDATE_LOCKED",
-          payload: hopsLocked,
         });
 
         const matriculationPlan =
@@ -606,15 +605,6 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
               }
             })
           );
-        }
-
-        // Check if the current user is the same as the user who has locked the Hops
-        // Meaning that the current user is the one who is editing
-        if (state.status.userId === hopsLocked.userEntityId) {
-          dispatch({
-            type: "HOPS_CHANGE_MODE",
-            payload: "EDIT",
-          });
         }
 
         // All done
@@ -1821,6 +1811,71 @@ const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
   };
 };
 
+/**
+ * Load HOPS locked status thunk
+ * @param data data
+ */
+const loadHopsLocked: LoadHopsLockedTriggerType = function loadHopsLocked(
+  data
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+    const studentIdentifier = data.userIdentifier
+      ? data.userIdentifier
+      : state.status.userSchoolDataIdentifier;
+
+    // If the student identifier has changed, update it
+    if (state.hopsNew.currentStudentIdentifier !== studentIdentifier) {
+      dispatch({
+        type: "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER",
+        payload: studentIdentifier,
+      });
+    }
+
+    dispatch({
+      type: "HOPS_UPDATE_LOCKED_STATUS",
+      payload: "LOADING",
+    });
+
+    try {
+      const hopsLocked = await hopsApi.getStudentHopsLock({
+        studentIdentifier,
+      });
+
+      dispatch({
+        type: "HOPS_UPDATE_LOCKED",
+        payload: hopsLocked,
+      });
+
+      // Check if the current user is the same as the user who has locked the Hops
+      // Meaning that the current user is the one who is editing
+      if (state.status.userId === hopsLocked.userEntityId) {
+        dispatch({
+          type: "HOPS_CHANGE_MODE",
+          payload: "EDIT",
+        });
+      }
+
+      dispatch({
+        type: "HOPS_UPDATE_LOCKED_STATUS",
+        payload: "READY",
+      });
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      dispatch({
+        type: "HOPS_UPDATE_LOCKED_STATUS",
+        payload: "ERROR",
+      });
+    }
+  };
+};
+
 export {
   loadMatriculationData,
   verifyMatriculationExam,
@@ -1840,4 +1895,5 @@ export {
   updateHopsFormHistoryEntry,
   loadMoreHopsFormHistory,
   saveHopsForm,
+  loadHopsLocked,
 };
