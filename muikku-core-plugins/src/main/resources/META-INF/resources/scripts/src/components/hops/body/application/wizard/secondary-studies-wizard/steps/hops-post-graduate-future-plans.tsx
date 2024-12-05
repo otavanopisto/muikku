@@ -12,20 +12,22 @@ import AnimateHeight from "react-animate-height";
 /**
  * Props for the HopsStartingLevel component
  */
-interface HopsPostGraduatePlanProps {
+interface HopsPostGraduateFuturePlansProps {
   disabled: boolean;
   form: SecondaryStudiesHops;
   onFormChange: (form: SecondaryStudiesHops) => void;
 }
 
 /**
- * HopsPostGraduatePlan Component
+ * HopsPostGraduateFuturePlans Component
  * @param props props
  *
  * This component renders a form for capturing the post-graduate plan information
  * for secondary studies, including previous education and language skills.
  */
-const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
+const HopsPostGraduateFuturePlans: React.FC<
+  HopsPostGraduateFuturePlansProps
+> = (props) => {
   const { form, disabled, onFormChange } = props;
   const { t } = useTranslation(["hops_new"]);
   const myRef = useRef<HTMLDivElement>(null);
@@ -180,7 +182,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
     {
       id: "postGraduateStudies-else",
       value: "ELSE",
-      label: t("labels.hopsFormPostgraduateStudiesOption7", { ns: "hops_new" }),
+      label: t("labels.hopsFormPostgraduateStudiesOption6", { ns: "hops_new" }),
     },
   ];
 
@@ -312,9 +314,9 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
           <div className="hops__form-element-container">
             <Textarea
               id="workExperience"
-              label={t("labels.hopsSecondaryWorkExperienceAndIntership", {
+              label={`${t("labels.hopsSecondaryWorkExperienceAndIntership", {
                 ns: "hops_new",
-              })}
+              })}:`}
               className="hops__textarea"
               value={form.workExperienceAndInternships}
               onChange={handleTextareaChange("workExperienceAndInternships")}
@@ -326,7 +328,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
           <div className="hops__form-element-container">
             <Textarea
               id="hobbies"
-              label={t("labels.hopsSecondaryHobbies", { ns: "hops_new" })}
+              label={`${t("labels.hopsSecondaryHobbies", { ns: "hops_new" })}:`}
               className="hops__textarea"
               value={form.hobbies}
               onChange={handleTextareaChange("hobbies")}
@@ -338,7 +340,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
           <div className="hops__form-element-container">
             <Textarea
               id="otherSkills"
-              label={t("labels.hopsSecondaryOtherSkills", { ns: "hops_new" })}
+              label={`${t("labels.hopsSecondaryOtherSkills", { ns: "hops_new" })}:`}
               className="hops__textarea"
               value={form.otherSkills}
               onChange={handleTextareaChange("otherSkills")}
@@ -361,187 +363,8 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
           </div>
         </div>
       </fieldset>
-
-      <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">
-          {t("labels.hopsSecondaryPostgraduateSubTitle3", { ns: "hops_new" })}
-        </legend>
-
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="successfulDuringHighSchool"
-              label={t("labels.hopsSecondarySuccesfullDuringHighSchool", {
-                ns: "hops_new",
-              })}
-              className="hops__textarea"
-              value={form.successfulDuringHighSchool}
-              onChange={handleTextareaChange("successfulDuringHighSchool")}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="challengesDuringHighSchool"
-              label={t("labels.hopsSecondaryChallangesDuringHighSchool", {
-                ns: "hops_new",
-              })}
-              className="hops__textarea"
-              value={form.challengesDuringHighSchool}
-              onChange={handleTextareaChange("challengesDuringHighSchool")}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">
-          {t("labels.hopsSecondaryPostgraduateSubTitle4", { ns: "hops_new" })}
-        </legend>
-
-        <div className="hops-container__fieldset-description">
-          {t("content.hopsSecondaryPostgraduateSubTitle4Content", {
-            ns: "hops_new",
-          })}
-        </div>
-
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="interestedIn"
-              label={t("labels.hopsSecondaryInterestedIn", { ns: "hops_new" })}
-              className="hops__textarea"
-              value={form.interestedIn}
-              onChange={handleTextareaChange("interestedIn")}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="goodAt"
-              label={t("labels.hopsSecondaryAmGood", { ns: "hops_new" })}
-              className="hops__textarea"
-              value={form.goodAt}
-              onChange={handleTextareaChange("goodAt")}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="importantInFutureWork"
-              label={t("labels.hopsSecondaryImportantInFutureWork", {
-                ns: "hops_new",
-              })}
-              className="hops__textarea"
-              value={form.importantInFutureWork}
-              onChange={handleTextareaChange("importantInFutureWork")}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader">
-          {t("labels.hopsSecondaryPostgraduateSubTitle5", { ns: "hops_new" })}
-        </legend>
-
-        <div className="hops-container__fieldset-description">
-          {t("content.hopsSecondaryPostgraduateSubTitle5Content", {
-            ns: "hops_new",
-          })}
-        </div>
-
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="interestedInFieldsOfStudy"
-              label={t("labels.hopsSecondaryInterestedInFieldsOfStudy", {
-                ns: "hops_new",
-              })}
-              className="hops__textarea"
-              value={form.interestedInFieldsOfStudy}
-              onChange={handleTextareaChange("interestedInFieldsOfStudy")}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="whereCanStudyFieldsOfInterest"
-              label={t("labels.hopsSecondaryWhereCanStudyFieldsOfInterest", {
-                ns: "hops_new",
-              })}
-              className="hops__textarea"
-              value={form.whereCanStudyFieldsOfInterest}
-              onChange={handleTextareaChange("whereCanStudyFieldsOfInterest")}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="basisForPostgraduateStudyAndCareerChoice"
-              label={t(
-                "labels.hopsSecondaryBasisForPostgraduateStudyAndCareerChoice",
-                {
-                  ns: "hops_new",
-                }
-              )}
-              className="hops__textarea"
-              value={form.basisForPostgraduateStudyAndCareerChoice}
-              onChange={handleTextareaChange(
-                "basisForPostgraduateStudyAndCareerChoice"
-              )}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="thingsMakesYouThink"
-              label={t("labels.hopsSecondaryThingsMakesYouThink", {
-                ns: "hops_new",
-              })}
-              className="hops__textarea"
-              value={form.thingsMakesYouThink}
-              onChange={handleTextareaChange("thingsMakesYouThink")}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <Textarea
-              id="postGraduateGuidanceCouncelorComments"
-              label={t(
-                "labels.hopsSecondaryPostGraduateGuidanceCouncelorComments",
-                {
-                  ns: "hops_new",
-                }
-              )}
-              className="hops__textarea"
-              value={form.postGraduateGuidanceCouncelorComments}
-              onChange={handleTextareaChange(
-                "postGraduateGuidanceCouncelorComments"
-              )}
-              disabled={disabled}
-            />
-          </div>
-        </div>
-      </fieldset>
     </div>
   );
 };
 
-export default HopsPostGraduatePlan;
+export default HopsPostGraduateFuturePlans;

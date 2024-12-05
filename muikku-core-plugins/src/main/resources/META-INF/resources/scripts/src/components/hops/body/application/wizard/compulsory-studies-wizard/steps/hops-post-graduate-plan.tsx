@@ -127,7 +127,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
     },
     {
       value: "ELSE",
-      label: t("labels.hopsFormPostgraduateStudiesOption7", {
+      label: t("labels.hopsFormPostgraduateStudiesOption6", {
         ns: "hops_new",
       }),
     },

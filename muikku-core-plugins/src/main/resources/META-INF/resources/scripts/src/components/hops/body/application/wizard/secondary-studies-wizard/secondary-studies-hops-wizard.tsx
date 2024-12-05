@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from "react";
 import Wizard, { WizardStep } from "~/components/general/wizard";
 import { WizardProvider } from "~/components/general/wizard/context/wizard-context";
 import { useWizard } from "~/components/general/wizard/hooks/useWizard";
-import { Step1, Step2, Step3, Step4 } from "./steps";
+import { Step1, Step2, Step3, Step4, Step6, Step5 } from "./steps";
 import HopsWizardFooter from "../hops-wizard-footer";
 import HopsWizardHeader from "../hops-wizard-header";
 import { Action, bindActionCreators, Dispatch } from "redux";
@@ -143,12 +143,42 @@ const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
         : [
             {
               index: 0,
-              name: t("labels.hopsFormPostgraduatePlanTitle", {
+              name: t("labels.hopsFormPostgraduateFuturePlansTitle", {
                 ns: "hops_new",
               }),
               component: (
                 <AnimatedStep previousStep={previousStep}>
                   <Step4
+                    disabled={hops.hopsMode === "READ"}
+                    form={formData}
+                    onFormChange={handleFormChange}
+                  />
+                </AnimatedStep>
+              ),
+            },
+            {
+              index: 1,
+              name: t("labels.hopsFormPostgraduateStrengthsAndGoalsTitle", {
+                ns: "hops_new",
+              }),
+              component: (
+                <AnimatedStep previousStep={previousStep}>
+                  <Step5
+                    disabled={hops.hopsMode === "READ"}
+                    form={formData}
+                    onFormChange={handleFormChange}
+                  />
+                </AnimatedStep>
+              ),
+            },
+            {
+              index: 2,
+              name: t("labels.hopsFormPostgraduateFurtherStudies", {
+                ns: "hops_new",
+              }),
+              component: (
+                <AnimatedStep previousStep={previousStep}>
+                  <Step6
                     disabled={hops.hopsMode === "READ"}
                     form={formData}
                     onFormChange={handleFormChange}
