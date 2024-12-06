@@ -5,6 +5,7 @@ import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
 import { Tab } from "~/components/general/tabs";
 import { AnyActionType } from "~/actions";
+import "~/sass/elements/hops.scss";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/assignment.scss";
@@ -30,12 +31,13 @@ import Button from "~/components/general/button";
 import WebsocketWatcher from "./application/helper/websocket-watcher";
 import _ from "lodash";
 import PendingChangesWarningDialog from "../dialogs/pending-changes-warning";
+import StudyPlan from "./application/study-planing/study-plan";
 
 /**
  * Represents the available tabs in the HOPS application.
  * Currently only supports matriculation.
  */
-type HopsTab = "MATRICULATION";
+type HopsTab = "MATRICULATION" | "STUDYPLAN";
 
 /**
  * Props for the HopsApplication component.
@@ -144,6 +146,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
       component: (
         <ApplicationPanelBody modifier="tabs">
           <Matriculation />
+        </ApplicationPanelBody>
+      ),
+    },
+    {
+      id: "STUDYPLAN",
+      name: "Opintojen suunnittelu",
+      hash: "studyplan",
+      type: "studyplan",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <StudyPlan />
         </ApplicationPanelBody>
       ),
     },
