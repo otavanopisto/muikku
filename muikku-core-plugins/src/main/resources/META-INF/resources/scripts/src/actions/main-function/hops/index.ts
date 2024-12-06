@@ -43,12 +43,12 @@ const matriculationApi = MApi.getMatriculationApi();
 // HOPS FORM ACTIONS TYPES
 export type HOPS_FORM_HISTORY_UPDATE = SpecificActionType<
   "HOPS_FORM_HISTORY_UPDATE",
-  { status: ReducerStateType; data: HopsHistoryEntry[] | null }
+  { status: ReducerStateType; data?: HopsHistoryEntry[] | null }
 >;
 
 export type HOPS_FORM_HISTORY_ENTRY_UPDATE = SpecificActionType<
   "HOPS_FORM_HISTORY_ENTRY_UPDATE",
-  { status: ReducerStateType; data: HopsHistoryEntry }
+  { status: ReducerStateType; data?: HopsHistoryEntry | null }
 >;
 
 export type HOPS_FORM_HISTORY_APPEND = SpecificActionType<
@@ -65,17 +65,10 @@ export type HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY = SpecificActionType<
   boolean
 >;
 
-export type HOPS_FORM_STATUS_UPDATE = SpecificActionType<
-  "HOPS_FORM_STATUS_UPDATE",
-  ReducerStateType
->;
-
 export type HOPS_FORM_UPDATE = SpecificActionType<
   "HOPS_FORM_UPDATE",
-  { status: ReducerStateType; data: HopsForm | null }
+  { status: ReducerStateType; data?: HopsForm | null }
 >;
-
-export type HOPS_FORM_SAVE = SpecificActionType<"HOPS_FORM_SAVE", HopsForm>;
 
 export type HOPS_CHANGE_MODE = SpecificActionType<"HOPS_CHANGE_MODE", HopsMode>;
 
@@ -164,7 +157,7 @@ export type HOPS_RESET_DATA = SpecificActionType<"HOPS_RESET_DATA", undefined>;
 
 export type HOPS_STUDENT_INFO_UPDATE = SpecificActionType<
   "HOPS_STUDENT_INFO_UPDATE",
-  { status: ReducerStateType; data: StudentInfo | null }
+  { status: ReducerStateType; data?: StudentInfo | null }
 >;
 
 export type HOPS_CANCEL_EDITING = SpecificActionType<
@@ -174,23 +167,12 @@ export type HOPS_CANCEL_EDITING = SpecificActionType<
 
 export type HOPS_UPDATE_LOCKED = SpecificActionType<
   "HOPS_UPDATE_LOCKED",
-  HopsLocked
->;
-
-export type HOPS_UPDATE_LOCKED_STATUS = SpecificActionType<
-  "HOPS_UPDATE_LOCKED_STATUS",
-  ReducerStateType
+  { status: ReducerStateType; data?: HopsLocked | null }
 >;
 
 export type HOPS_UPDATE_EDITING = SpecificActionType<
   "HOPS_UPDATE_EDITING",
   Partial<HopsEditingState>
->;
-
-export type HOPS_INITIALIZE = SpecificActionType<"HOPS_INITIALIZE", boolean>;
-export type HOPS_INITIALIZE_STATUS = SpecificActionType<
-  "HOPS_INITIALIZE_STATUS",
-  ReducerStateType
 >;
 
 /**
@@ -295,13 +277,6 @@ export interface LoadStudentHopsFormTriggerType {
 }
 
 /**
- * LoadStudentInfoTriggerType
- */
-export interface LoadStudentInfoTriggerType {
-  (data: { userIdentifier?: string }): AnyActionType;
-}
-
-/**
  * Trigger type for loading HOPS form history
  */
 export interface LoadHopsFormHistoryTriggerType {
@@ -350,7 +325,7 @@ export interface SaveHopsFormTriggerType {
  * UpdateHopsLockedTriggerType
  */
 export interface UpdateHopsLockedTriggerType {
-  (data: { locked: HopsLocked; studentIdentifier: string }): AnyActionType;
+  (data: { locked: HopsLocked }): AnyActionType;
 }
 
 /**
@@ -373,9 +348,16 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
     ) => {
       const state = getState();
 
-      const studentIdentifier = data.userIdentifier
-        ? data.userIdentifier
-        : state.status.userSchoolDataIdentifier;
+      // Student identifier is either user identifier from props or current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        data.userIdentifier ||
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       if (state.hopsNew.hopsMatriculationStatus === "READY") {
         return;
@@ -630,7 +612,16 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+
+      // Student identifier is either current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       try {
         await matriculationApi.setStudentExamEnrollmentState({
@@ -675,7 +666,16 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+
+      // Student identifier is either current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       dispatch({
         type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY_STATUS",
@@ -738,7 +738,16 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+
+      // Student identifier is either current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       try {
         await matriculationApi.setStudentMatriculationPlan({
@@ -894,7 +903,14 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+      const studentIdentifier =
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       try {
         // Load the updated exam enrollment
@@ -978,9 +994,15 @@ const loadStudentHopsForm: LoadStudentHopsFormTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = data.userIdentifier
-        ? data.userIdentifier
-        : state.status.userSchoolDataIdentifier;
+      const studentIdentifier =
+        data.userIdentifier ||
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       if (state.hopsNew.hopsFormStatus === "READY") {
         return;
@@ -996,10 +1018,15 @@ const loadStudentHopsForm: LoadStudentHopsFormTriggerType =
 
       dispatch({
         type: "HOPS_FORM_UPDATE",
-        payload: { status: "LOADING", data: null },
+        payload: { status: "LOADING" },
       });
 
       try {
+        dispatch({
+          type: "HOPS_STUDENT_INFO_UPDATE",
+          payload: { status: "LOADING" },
+        });
+
         // Student info is needed for HOPS form
         const studentInfoData = await hopsApi.getStudentInfo({
           studentIdentifier,
@@ -1129,7 +1156,7 @@ const startEditing: StartEditingTriggerType = function startEditing() {
 
       dispatch({
         type: "HOPS_UPDATE_LOCKED",
-        payload: hopsLocked,
+        payload: { status: "READY", data: hopsLocked },
       });
 
       // Change mode after ensuring data is at least loading and hops is locked
@@ -1164,7 +1191,7 @@ const cancelEditing: CancelEditingTriggerType = function cancelEditing() {
 
     dispatch({
       type: "HOPS_UPDATE_LOCKED",
-      payload: hopsLocked,
+      payload: { status: "READY", data: hopsLocked },
     });
 
     dispatch({
@@ -1254,7 +1281,7 @@ const saveHops: SaveHopsTriggerType = function saveHops(data) {
 
       dispatch({
         type: "HOPS_UPDATE_LOCKED",
-        payload: hopsLocked,
+        payload: { status: "READY", data: hopsLocked },
       });
 
       dispatch({
@@ -1299,6 +1326,11 @@ const updateMatriculationPlan: UpdateMatriculationPlanTriggerType =
     ) => {
       const state = getState();
       const { plan, studentIdentifier } = data;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       // matriculation data is not ready aka not loaded, do nothing
       if (state.hopsNew.hopsMatriculationStatus !== "READY") {
@@ -1471,67 +1503,8 @@ const updateHopsLocked: UpdateHopsLockedTriggerType = function updateHopsLocked(
 
     dispatch({
       type: "HOPS_UPDATE_LOCKED",
-      payload: locked,
+      payload: { status: "READY", data: locked },
     });
-  };
-};
-
-/**
- * Load student info data thunk
- *
- * @param data data
- */
-const loadStudentInfo: LoadStudentInfoTriggerType = function loadStudentInfo(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
-    const state = getState();
-    const studentIdentifier = data.userIdentifier
-      ? data.userIdentifier
-      : state.status.userSchoolDataIdentifier;
-
-    if (state.hopsNew.studentInfoStatus === "READY") {
-      return;
-    }
-
-    dispatch({
-      type: "HOPS_STUDENT_INFO_UPDATE",
-      payload: { status: "LOADING", data: null },
-    });
-
-    try {
-      // Assuming there's an API endpoint to fetch student info
-      const studentInfoData = await hopsApi.getStudentInfo({
-        studentIdentifier,
-      });
-
-      dispatch({
-        type: "HOPS_STUDENT_INFO_UPDATE",
-        payload: { status: "READY", data: studentInfoData },
-      });
-    } catch (err) {
-      if (!isMApiError(err)) {
-        throw err;
-      }
-
-      dispatch({
-        type: "HOPS_STUDENT_INFO_UPDATE",
-        payload: { status: "ERROR", data: null },
-      });
-
-      dispatch(
-        actions.displayNotification(
-          i18n.t("notifications.loadError", {
-            ns: "studies",
-            context: "studentInfo",
-          }),
-          "error"
-        )
-      );
-    }
   };
 };
 
@@ -1547,13 +1520,20 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
+
+      // Student identifier is either current student identifier or user school data identifier from current user
       const studentIdentifier =
         state.hopsNew.currentStudentIdentifier ||
         state.status.userSchoolDataIdentifier;
 
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
+
       dispatch({
         type: "HOPS_FORM_HISTORY_ENTRY_UPDATE",
-        payload: { status: "LOADING", data: null },
+        payload: { status: "LOADING" },
       });
 
       try {
@@ -1579,7 +1559,7 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
 
         dispatch({
           type: "HOPS_FORM_HISTORY_ENTRY_UPDATE",
-          payload: { status: "ERROR", data: null },
+          payload: { status: "ERROR" },
         });
 
         dispatch(
@@ -1607,9 +1587,17 @@ const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = data.userIdentifier
-        ? data.userIdentifier
-        : state.status.userSchoolDataIdentifier;
+
+      // Student identifier is either user identifier from props or user school data identifier from current user
+      const studentIdentifier =
+        data.userIdentifier ||
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       if (state.hopsNew.hopsFormHistoryStatus === "READY") {
         return;
@@ -1617,7 +1605,7 @@ const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
 
       dispatch({
         type: "HOPS_FORM_HISTORY_UPDATE",
-        payload: { status: "LOADING", data: null },
+        payload: { status: "LOADING" },
       });
 
       try {
@@ -1648,7 +1636,7 @@ const loadHopsFormHistory: LoadHopsFormHistoryTriggerType =
 
         dispatch({
           type: "HOPS_FORM_HISTORY_UPDATE",
-          payload: { status: "ERROR", data: null },
+          payload: { status: "ERROR" },
         });
 
         dispatch(
@@ -1677,10 +1665,16 @@ const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
     ) => {
       const state = getState();
 
-      const studentIdentifier = data.userIdentifier
-        ? data.userIdentifier
-        : state.hopsNew.currentStudentIdentifier ||
-          state.status.userSchoolDataIdentifier;
+      // Student identifier is either user identifier from props or current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        data.userIdentifier ||
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       dispatch({
         type: "HOPS_FORM_HISTORY_APPEND",
@@ -1711,7 +1705,7 @@ const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
 
         dispatch({
           type: "HOPS_FORM_HISTORY_APPEND",
-          payload: { status: "ERROR", data: null },
+          payload: { status: "ERROR" },
         });
 
         dispatch(
@@ -1737,13 +1731,20 @@ const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
     getState: () => StateType
   ) => {
     const state = getState();
+
+    // Student identifier is either current student identifier or user school data identifier from current user
     const studentIdentifier =
       state.hopsNew.currentStudentIdentifier ||
       state.status.userSchoolDataIdentifier;
 
+    // Only PYRAMUS students are supported
+    if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+      throw new Error("Invalid student identifier");
+    }
+
     dispatch({
-      type: "HOPS_FORM_STATUS_UPDATE",
-      payload: "LOADING",
+      type: "HOPS_FORM_UPDATE",
+      payload: { status: "LOADING" },
     });
 
     try {
@@ -1757,13 +1758,8 @@ const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
       });
 
       dispatch({
-        type: "HOPS_FORM_SAVE",
-        payload: JSON.parse(savedFormData.formData),
-      });
-
-      dispatch({
-        type: "HOPS_FORM_STATUS_UPDATE",
-        payload: "READY",
+        type: "HOPS_FORM_UPDATE",
+        payload: { status: "READY", data: JSON.parse(savedFormData.formData) },
       });
 
       dispatch({
@@ -1789,8 +1785,8 @@ const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
       }
 
       dispatch({
-        type: "HOPS_FORM_STATUS_UPDATE",
-        payload: "ERROR",
+        type: "HOPS_FORM_UPDATE",
+        payload: { status: "ERROR" },
       });
 
       dispatch(
@@ -1819,9 +1815,17 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
     getState: () => StateType
   ) => {
     const state = getState();
-    const studentIdentifier = data.userIdentifier
-      ? data.userIdentifier
-      : state.status.userSchoolDataIdentifier;
+
+    // Student identifier is either user identifier from props or current student identifier or user school data identifier from current user
+    const studentIdentifier =
+      data.userIdentifier ||
+      state.hopsNew.currentStudentIdentifier ||
+      state.status.userSchoolDataIdentifier;
+
+    // Only PYRAMUS students are supported
+    if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+      throw new Error("Invalid student identifier");
+    }
 
     // If the student identifier has changed, update it
     if (state.hopsNew.currentStudentIdentifier !== studentIdentifier) {
@@ -1832,8 +1836,8 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
     }
 
     dispatch({
-      type: "HOPS_UPDATE_LOCKED_STATUS",
-      payload: "LOADING",
+      type: "HOPS_UPDATE_LOCKED",
+      payload: { status: "LOADING" },
     });
 
     try {
@@ -1843,12 +1847,7 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
 
       dispatch({
         type: "HOPS_UPDATE_LOCKED",
-        payload: hopsLocked,
-      });
-
-      dispatch({
-        type: "HOPS_UPDATE_LOCKED_STATUS",
-        payload: "READY",
+        payload: { status: "READY", data: hopsLocked },
       });
 
       // Check if the current user is the same as the user who has locked the Hops
@@ -1885,31 +1884,30 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
       }
 
       dispatch({
-        type: "HOPS_UPDATE_LOCKED_STATUS",
-        payload: "ERROR",
+        type: "HOPS_UPDATE_LOCKED",
+        payload: { status: "ERROR" },
       });
     }
   };
 };
 
 export {
-  loadMatriculationData,
-  verifyMatriculationExam,
-  loadMatriculationExamHistory,
-  saveMatriculationPlan,
-  updateMatriculationExamination,
   startEditing,
-  saveHops,
   cancelEditing,
-  updateHopsEditing,
-  updateMatriculationPlan,
-  updateHopsLocked,
-  resetHopsData,
-  loadStudentHopsForm,
-  loadStudentInfo,
-  loadHopsFormHistory,
-  updateHopsFormHistoryEntry,
-  loadMoreHopsFormHistory,
-  saveHopsForm,
   initializeHops,
+  loadHopsFormHistory,
+  loadMatriculationData,
+  loadMatriculationExamHistory,
+  loadMoreHopsFormHistory,
+  loadStudentHopsForm,
+  resetHopsData,
+  saveHops,
+  saveHopsForm,
+  saveMatriculationPlan,
+  updateHopsEditing,
+  updateHopsFormHistoryEntry,
+  updateHopsLocked,
+  updateMatriculationExamination,
+  updateMatriculationPlan,
+  verifyMatriculationExam,
 };

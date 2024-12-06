@@ -90,8 +90,8 @@ export interface HopsEditingState {
  */
 export interface HopsState {
   // CURRENT STUDENT IDENTIFIER
-  currentStudentIdentifier: string | null;
-  currentStudentStudyProgramme: string | null;
+  currentStudentIdentifier?: string;
+  currentStudentStudyProgramme?: string;
 
   // HOPS STUDY PLAN
   hopsStudyPlanStatus: ReducerStateType;
@@ -125,8 +125,6 @@ export interface HopsState {
 }
 
 const initialHopsState: HopsState = {
-  currentStudentIdentifier: null,
-  currentStudentStudyProgramme: null,
   hopsStudyPlanStatus: "READY",
   hopsStudyPlanState: {},
   hopsMatriculationStatus: "IDLE",
@@ -358,6 +356,10 @@ export const hopsNew: Reducer<HopsState> = (
         hopsForm: null,
         hopsFormHistory: null,
         hopsFormCanLoadMoreHistory: true,
+        hopsLocked: null,
+        hopsLockedStatus: "IDLE",
+        studentInfo: null,
+        studentInfoStatus: "IDLE",
         hopsMatriculation: {
           exams: [],
           pastExams: [],
@@ -389,10 +391,10 @@ export const hopsNew: Reducer<HopsState> = (
       return {
         ...state,
         hopsFormStatus: action.payload.status,
-        hopsForm: action.payload.data,
+        hopsForm: action.payload.data || state.hopsForm,
         hopsEditing: {
           ...state.hopsEditing,
-          hopsForm: action.payload.data,
+          hopsForm: action.payload.data || state.hopsForm,
         },
       };
 
@@ -400,14 +402,14 @@ export const hopsNew: Reducer<HopsState> = (
       return {
         ...state,
         studentInfoStatus: action.payload.status,
-        studentInfo: action.payload.data,
+        studentInfo: action.payload.data || state.studentInfo,
       };
 
     case "HOPS_FORM_HISTORY_UPDATE":
       return {
         ...state,
         hopsFormHistoryStatus: action.payload.status,
-        hopsFormHistory: action.payload.data,
+        hopsFormHistory: action.payload.data || state.hopsFormHistory,
       };
 
     case "HOPS_FORM_HISTORY_APPEND":
@@ -429,25 +431,13 @@ export const hopsNew: Reducer<HopsState> = (
           ? state.hopsFormHistory.map((entry) =>
               entry.id === action.payload.data.id ? action.payload.data : entry
             )
-          : null,
+          : state.hopsFormHistory,
       };
 
     case "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY":
       return {
         ...state,
         hopsFormCanLoadMoreHistory: action.payload,
-      };
-
-    case "HOPS_FORM_SAVE":
-      return {
-        ...state,
-        hopsForm: action.payload,
-      };
-
-    case "HOPS_FORM_STATUS_UPDATE":
-      return {
-        ...state,
-        hopsFormStatus: action.payload,
       };
 
     case "HOPS_CHANGE_MODE":
@@ -479,13 +469,8 @@ export const hopsNew: Reducer<HopsState> = (
     case "HOPS_UPDATE_LOCKED":
       return {
         ...state,
-        hopsLocked: action.payload,
-      };
-
-    case "HOPS_UPDATE_LOCKED_STATUS":
-      return {
-        ...state,
-        hopsLockedStatus: action.payload,
+        hopsLocked: action.payload.data || state.hopsLocked,
+        hopsLockedStatus: action.payload.status,
       };
 
     default:

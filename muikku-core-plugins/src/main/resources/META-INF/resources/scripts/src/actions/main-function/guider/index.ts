@@ -620,7 +620,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
-    const hopsApi = MApi.getHopsApi();
     const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
@@ -664,37 +663,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             ) {
               dispatch(updateAvailablePurchaseProducts());
             }
-
-            // After basic data is loaded, check if current user of guider has permissions
-            // to see/use current student hops
-            hopsApi
-              .isHopsAvailable({
-                studentIdentifier: id,
-              })
-              .then(async (hopsAvailable) => {
-                dispatch({
-                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                  payload: {
-                    property: "hopsAvailable",
-                    value: hopsAvailable,
-                  },
-                });
-
-                // after basic data is loaded and hops availability checked, then check if hopsPhase property
-                // is used and what values it contains
-                const hopsPhase = await userApi.getUserProperties({
-                  userEntityId: student.userEntityId,
-                  properties: "hopsPhase",
-                });
-
-                dispatch({
-                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                  payload: {
-                    property: "hopsPhase",
-                    value: hopsPhase[0].value,
-                  },
-                });
-              });
 
             pedagogyApi
               .getPedagogyFormAccess({

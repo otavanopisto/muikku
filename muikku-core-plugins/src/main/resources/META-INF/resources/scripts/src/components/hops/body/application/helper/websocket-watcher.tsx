@@ -103,7 +103,6 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
 
       updateHopsLocked({
         locked,
-        studentIdentifier,
       });
     };
 
