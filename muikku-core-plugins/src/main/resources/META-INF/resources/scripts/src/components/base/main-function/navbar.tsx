@@ -12,7 +12,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { Dependant } from "~/reducers/main-function/dependants";
 import { Action, Dispatch } from "redux";
-import { Link as RouterLink } from "react-router-dom";
 import Link from "~/components/general/link";
 
 /**
@@ -178,8 +177,17 @@ class MainFunctionNavbar extends React.Component<
             modifier: item.modifier,
             item: (
               <Dropdown openByHover key={item.text + i} content={item.text}>
-                <RouterLink
-                  to={item.href}
+                <Link
+                  openInNewTab={item.openInNewTab}
+                  as={this.props.activeTrail == item.trail ? "span" : null}
+                  href={
+                    this.props.activeTrail !== item.trail ? item.href : null
+                  }
+                  to={
+                    item.to && this.props.activeTrail !== item.trail
+                      ? item.href
+                      : null
+                  }
                   className={`link link--icon link--full link--main-function-navbar ${
                     this.props.activeTrail === item.trail ? "active" : ""
                   }`}
@@ -189,7 +197,6 @@ class MainFunctionNavbar extends React.Component<
                       : item.text
                   }
                   role="menuitem"
-                  target={item.openInNewTab ? "_blank" : undefined}
                 >
                   <span className={`link__icon icon-${item.icon}`} />
                   {item.badge ? (
@@ -197,7 +204,7 @@ class MainFunctionNavbar extends React.Component<
                       {item.badge >= 100 ? "99+" : item.badge}
                     </span>
                   ) : null}
-                </RouterLink>
+                </Link>
               </Dropdown>
             ),
           };
@@ -223,9 +230,11 @@ class MainFunctionNavbar extends React.Component<
             return null;
           }
           return (
-            <RouterLink
+            <Link
               key={item.modifier}
-              to={item.href}
+              openInNewTab={item.openInNewTab}
+              to={item.to ? item.href : null}
+              href={item.href}
               className={`menu__item-link ${
                 this.props.activeTrail === item.trail ? "active" : ""
               }`}
@@ -239,7 +248,7 @@ class MainFunctionNavbar extends React.Component<
                 </span>
               ) : null}
               <span className="menu__item-link-text">{item.text}</span>
-            </RouterLink>
+            </Link>
           );
         })}
       />
