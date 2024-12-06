@@ -871,6 +871,7 @@
       "hopsSecondaryPostgraduateSubTitle4Content": "Write down your thoughts about the direction you want to take. These reflections can help you identify the types of studies and jobs that suit you.",
       "hopsSecondaryPostgraduateSubTitle5Content": "Explore the fields where you could study topics that interest you and identify the institutions offering the best opportunities in those areas.",
       "hopsPendingChangesWarning": "You have unsaved changes. Do you want to discard the changes?",
+      "hopsPendingEditingWarning": "HOPS is its editing mode. If you leave the page, you will lose all unsaved changes. Other users cannot edit HOPS while you have reserved HOPS for editing.",
       "matriculationChangeLogEmpty": "No history available for this examination at the moment.",
       "matriculationChangeLogUpdate": "updated the registration.",
       "matriculationChangeLogStateChanged": "changed the status of the registration.",

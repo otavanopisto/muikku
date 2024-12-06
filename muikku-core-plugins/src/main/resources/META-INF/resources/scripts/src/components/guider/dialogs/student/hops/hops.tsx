@@ -52,7 +52,6 @@ import { Textarea } from "~/components/hops/body/application/wizard/components/t
 
 /**
  * Represents the available tabs in the HOPS application
- * Currently only supports matriculation tab
  */
 type HopsTab = "MATRICULATION" | "BACKGROUND" | "POSTGRADUATE";
 

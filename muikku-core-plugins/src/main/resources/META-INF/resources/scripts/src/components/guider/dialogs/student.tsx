@@ -26,7 +26,7 @@ import {
 } from "~/actions/main-function/guider";
 import { getName } from "~/util/modifiers";
 import Button from "~/components/general/button";
-import { withTranslation, WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm, {
   UPPERSECONDARY_PEDAGOGYFORM,
 } from "~/components/general/pedagogical-support-form";
@@ -38,6 +38,7 @@ import {
   ResetHopsDataTriggerType,
   resetHopsData,
 } from "~/actions/main-function/hops/";
+import { HopsState } from "~/reducers/hops";
 
 export type tabs =
   | "STUDIES"
@@ -54,11 +55,12 @@ type DialogViewMode = "TABS" | "HOPS_VIEW";
 /**
  * StudentDialogProps
  */
-interface StudentDialogProps extends WithTranslation<["common"]> {
+interface StudentDialogProps {
   isOpen?: boolean;
   student: GuiderStudentUserProfileType;
   guider: GuiderState;
   currentStudentStatus: GuiderCurrentStudentStateType;
+  hops: HopsState;
   onClose?: () => void;
   onOpen?: () => void;
   status: StatusType;
@@ -90,9 +92,9 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
     loadStudentHistory,
     loadStudentContactLogs,
     resetHopsData,
-    i18n,
-    t,
   } = props;
+
+  const { t } = useTranslation(["common"]);
 
   /** Number of contact logs to display per page */
   const contactLogsPerPage = 10;
@@ -152,19 +154,19 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
   const tabs = [
     {
       id: "STUDIES",
-      name: i18n.t("labels.situation", { ns: "guider" }),
+      name: t("labels.situation", { ns: "guider" }),
       type: "guider-student",
       component: <StateOfStudies />,
     },
     {
       id: "GUIDANCE_RELATIONS",
-      name: i18n.t("labels.relations", { ns: "guider" }),
+      name: t("labels.relations", { ns: "guider" }),
       type: "guider-student",
       component: <GuidanceRelation contactLogsPerPage={contactLogsPerPage} />,
     },
     {
       id: "STUDY_HISTORY",
-      name: i18n.t("labels.studyHistory", { ns: "guider" }),
+      name: t("labels.studyHistory", { ns: "guider" }),
       type: "guider-student",
       component: <StudyHistory />,
     },
@@ -198,21 +200,25 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
    * Content
    * @returns JSX.Element
    */
-  const content = () => {
-    if (viewMode === "TABS") {
-      return (
+  const content = () => (
+    <>
+      {viewMode === "TABS" ? (
         <Tabs
           modifier="guider-student"
           tabs={tabs}
           activeTab={activeTab}
           onTabChange={onTabChange}
         />
-      );
-    } else if (guider.currentStudent && guider.currentStudent.basic) {
-      return <HopsApplication studentIdentifier={student.basic.id} />;
-    }
-    return null;
-  };
+      ) : guider.currentStudent && guider.currentStudent.basic ? (
+        <HopsApplication studentIdentifier={student.basic.id} />
+      ) : null}
+      {/* <HopsPendingEditing
+        isOpen={isHopsEditModeWarningOpen}
+        onConfirm={closeDialog}
+        onCancel={handleHopsEditModeWarningClose}
+      /> */}
+    </>
+  );
 
   const studyProgrammeName = student.basic && student.basic.studyProgrammeName;
   const dialogTitle = (
@@ -266,6 +272,7 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     currentStudentStatus: state.guider.currentStudentState,
     guider: state.guider,
+    hops: state.hopsNew,
   };
 }
 
@@ -308,6 +315,4 @@ const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAccess) => {
   }
 };
 
-export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(StudentDialog)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(StudentDialog);

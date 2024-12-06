@@ -871,6 +871,7 @@
       "hopsSecondaryPostgraduateSubTitle4Content": "Kirjaa ajatuksiasi siitä, mitä kohti haluat suunnata. Näiden pohdintojen avulla voit hahmottaa, millaiset opinnot ja työtehtävät sopisivat sinulle.",
       "hopsSecondaryPostgraduateSubTitle5Content": "Selvitä, millä aloilla voisit opiskella sinua kiinnostavia aiheita ja mitkä oppilaitokset tarjoavat niihin parhaita mahdollisuuksia.",
       "hopsPendingChangesWarning": "Sinulla on tallentamattomia muutoksia. Haluatko peruuttaa muokkaukset?",
+      "hopsPendingEditingWarning": "HOPS:sin muokkaus tila on aktiivinen. Mikäli poistut sivulta mahdolliset tallentamattomat muutokset menetetään. Lisäksi muut henkilöt eivät voi muokata HOPS:sia mikäli muokkaus tilaa ei päätetä.",
       "matriculationChangeLogEmpty": "Ei tapahtumahistoriaa ilmoittautumiselle.",
       "matriculationChangeLogUpdate": "päivitti lomaketta.",
       "matriculationChangeLogStateChanged": "muutti lomakkeen tilaa.",
