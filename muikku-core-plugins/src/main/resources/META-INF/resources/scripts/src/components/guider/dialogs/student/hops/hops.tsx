@@ -122,6 +122,31 @@ const HopsApplication = (props: HopsApplicationProps) => {
   // Get the study programme name from the student info
   const studyProgrammeName = studentInfo.studyProgrammeName;
 
+  // Check if the HOPS form has changes
+  const hopsFormHasChanges = React.useMemo(
+    () => !_.isEqual(hops.hopsForm, hops.hopsEditing.hopsForm),
+    [hops.hopsForm, hops.hopsEditing.hopsForm]
+  );
+
+  // Check if the matriculation plan has changes
+  const hopsMatriculationHasChanges = React.useMemo(() => {
+    const updatedMatriculationPlan = {
+      ...hops.hopsEditing.matriculationPlan,
+      plannedSubjects:
+        hops.hopsEditing.matriculationPlan.plannedSubjects.filter(
+          (subject) => subject.subject
+        ),
+    };
+
+    return !_.isEqual(hops.hopsMatriculation.plan, updatedMatriculationPlan);
+  }, [hops.hopsEditing.matriculationPlan, hops.hopsMatriculation.plan]);
+
+  // Check if any of the HOPS data has changes
+  const hopsHasChanges = React.useMemo(
+    () => hopsMatriculationHasChanges || hopsFormHasChanges,
+    [hopsFormHasChanges, hopsMatriculationHasChanges]
+  );
+
   // Load data on demand depending on the active tab
   React.useEffect(() => {
     // On background or postgraduate tabs,
@@ -163,6 +188,29 @@ const HopsApplication = (props: HopsApplicationProps) => {
     hops.hopsFormHistoryStatus,
     hops.hopsLockedStatus,
   ]);
+
+  // Add useEffect to handle beforeunload event
+  React.useEffect(() => {
+    /**
+     * Handles the beforeunload event to prevent the user from leaving the page
+     * with unsaved changes.
+     *
+     * @param e - The beforeunload event
+     * @returns - Returns an empty string to allow the user to leave the page
+     */
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hopsHasChanges) {
+        e.preventDefault();
+        e.returnValue = ""; // For Chrome
+        return ""; // For other browsers
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [hopsHasChanges]);
 
   /**
    * Handles tab changes in the application panel
@@ -304,31 +352,9 @@ const HopsApplication = (props: HopsApplicationProps) => {
     },
   ];
 
-  const updatedMatriculationPlan = {
-    ...hops.hopsEditing.matriculationPlan,
-    plannedSubjects: hops.hopsEditing.matriculationPlan.plannedSubjects.filter(
-      (subject) => subject.subject
-    ),
-  };
-
-  // Check if the matriculation plan has changes
-  const hopsMatriculationHasChanges = !_.isEqual(
-    hops.hopsMatriculation.plan,
-    updatedMatriculationPlan
-  );
-
-  // Check if the HOPS form has changes
-  const hopsFormHasChanges = !_.isEqual(
-    hops.hopsForm,
-    hops.hopsEditing.hopsForm
-  );
-
   const changedFields = hopsFormHasChanges
     ? getEditedHopsFields(hops.hopsForm, hops.hopsEditing.hopsForm)
     : [];
-
-  // Check if any of the HOPS data has changes
-  const hopsHasChanges = hopsMatriculationHasChanges || hopsFormHasChanges;
 
   let editingDisabled = false;
 

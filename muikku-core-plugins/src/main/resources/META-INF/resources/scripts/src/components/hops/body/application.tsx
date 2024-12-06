@@ -89,7 +89,6 @@ const HopsApplication = (props: HopsApplicationProps) => {
     setIsPendingChangesWarningDialogOpen,
   ] = React.useState(false);
   const { t } = useTranslation(["studies", "common", "hops_new"]);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [
     isPendingChangesDetailsDialogOpen,
     setIsPendingChangesDetailsDialogOpen,
@@ -99,6 +98,31 @@ const HopsApplication = (props: HopsApplicationProps) => {
   // Note that this component is used by student, thats why
   // we need to check the study programme name from profile
   const studyProgrammeName = status.profile.studyProgrammeName;
+
+  // Check if the HOPS form has changes
+  const hopsFormHasChanges = React.useMemo(
+    () => !_.isEqual(hops.hopsForm, hops.hopsEditing.hopsForm),
+    [hops.hopsForm, hops.hopsEditing.hopsForm]
+  );
+
+  // Check if the matriculation plan has changes
+  const hopsMatriculationHasChanges = React.useMemo(() => {
+    const updatedMatriculationPlan = {
+      ...hops.hopsEditing.matriculationPlan,
+      plannedSubjects:
+        hops.hopsEditing.matriculationPlan.plannedSubjects.filter(
+          (subject) => subject.subject
+        ),
+    };
+
+    return !_.isEqual(hops.hopsMatriculation.plan, updatedMatriculationPlan);
+  }, [hops.hopsEditing.matriculationPlan, hops.hopsMatriculation.plan]);
+
+  // Check if any of the HOPS data has changes
+  const hopsHasChanges = React.useMemo(
+    () => hopsMatriculationHasChanges || hopsFormHasChanges,
+    [hopsFormHasChanges, hopsMatriculationHasChanges]
+  );
 
   // Add new useEffect for handling initial URL hash
   useEffect(() => {
@@ -122,7 +146,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
      * @returns - Returns an empty string to allow the user to leave the page
      */
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hasUnsavedChanges) {
+      if (hopsHasChanges) {
         e.preventDefault();
         e.returnValue = ""; // For Chrome
         return ""; // For other browsers
@@ -133,7 +157,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [hasUnsavedChanges]);
+  }, [hopsHasChanges]);
 
   /**
    * Handles tab changes in the application panel.
@@ -149,7 +173,6 @@ const HopsApplication = (props: HopsApplicationProps) => {
         window.location.hash = hash.hash;
       }
       setActiveTab(id);
-      setHasUnsavedChanges(false);
     }
   }, []);
 
@@ -284,31 +307,9 @@ const HopsApplication = (props: HopsApplicationProps) => {
     },
   ];
 
-  const updatedMatriculationPlan = {
-    ...hops.hopsEditing.matriculationPlan,
-    plannedSubjects: hops.hopsEditing.matriculationPlan.plannedSubjects.filter(
-      (subject) => subject.subject
-    ),
-  };
-
-  // Check if the matriculation plan has changes
-  const hopsMatriculationHasChanges = !_.isEqual(
-    hops.hopsMatriculation.plan,
-    updatedMatriculationPlan
-  );
-
-  // Check if the HOPS form has changes
-  const hopsFormHasChanges = !_.isEqual(
-    hops.hopsForm,
-    hops.hopsEditing.hopsForm
-  );
-
   const changedFields = hopsFormHasChanges
     ? getEditedHopsFields(hops.hopsForm, hops.hopsEditing.hopsForm)
     : [];
-
-  // Check if any of the HOPS data has changes
-  const hopsHasChanges = hopsMatriculationHasChanges || hopsFormHasChanges;
 
   let editingDisabled = false;
 
