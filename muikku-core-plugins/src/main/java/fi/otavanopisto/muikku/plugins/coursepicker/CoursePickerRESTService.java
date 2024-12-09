@@ -703,7 +703,7 @@ public class CoursePickerRESTService extends PluginRESTService {
         
         // Websocket recipients 
         
-        List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselors(userIdentifier, false);
+        List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselorUserEntities(userIdentifier, false);
 
         recipients.add(userSchoolDataIdentifier.getUserEntity());
         
