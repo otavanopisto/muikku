@@ -2,9 +2,7 @@ import * as React from "react";
 import { NotesLocation, NotesItemFilters } from "~/@types/notes";
 import {
   Note,
-  NoteStatusType,
   UpdateNoteRequest,
-  NoteReceiver,
   UpdateNoteReceiverRequest,
 } from "~/generated/client";
 import { sortNotesItemsBy } from "./helpers/filters";

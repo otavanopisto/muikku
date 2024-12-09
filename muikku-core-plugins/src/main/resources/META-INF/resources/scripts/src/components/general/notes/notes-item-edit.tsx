@@ -9,15 +9,23 @@ import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Note, NotePriorityType, UpdateNoteRequest } from "~/generated/client";
+import {
+  Note,
+  NotePriorityType,
+  UpdateNoteRequest,
+  NoteReceiver,
+} from "~/generated/client";
 import { ContactRecipientType } from "~/reducers/user-index";
+import {} from "~/generated/client";
+import { InputContactsAutofillLoaders } from "~/components/base/input-contacts-autofill";
+
 /**
  * NotesItemEditProps
  */
 interface NotesItemEditProps extends WithTranslation {
   selectedNotesItem?: Note;
   children: React.ReactElement;
-  recipients?: ContactRecipientType[];
+  loaders?: () => InputContactsAutofillLoaders;
   onNotesItemSaveUpdateClick?: (
     journalId: number,
     updateNoteRequest: UpdateNoteRequest,
@@ -29,7 +37,7 @@ interface NotesItemEditProps extends WithTranslation {
  * NotesItemEditState
  */
 interface NotesItemEditState {
-  recipients: ContactRecipientType[];
+  // recipients: ContactRecipientType[];
   notesItem: UpdateNoteRequest;
   locked: boolean;
 }
@@ -52,7 +60,7 @@ class NotesItemEdit extends SessionStateComponent<
 
     this.state = {
       locked: false,
-      recipients: [],
+      // recipients: [],
       notesItem: props.selectedNotesItem,
     };
   }
@@ -99,6 +107,17 @@ class NotesItemEdit extends SessionStateComponent<
       notesItem: updateNotesItem,
     });
   };
+
+  turnNoteRecipientsToAutofillRecipients = (
+    recipients: NoteReceiver[]
+  ): ContactRecipientType[] =>
+    recipients.map((recipient) => ({
+      type: recipient.id ? "user" : "usergroup",
+      value: {
+        id: recipient.id || recipient.userGroupId,
+        name: recipient.recipientName || recipient.userGroupName,
+      },
+    }));
 
   /**
    * render

@@ -7,11 +7,9 @@ import MApi from "~/api/api";
 import {
   Note,
   NotePriorityType,
-  NoteStatusType,
   CreateNoteRequest,
   UpdateNoteRequest,
   UpdateNoteReceiverRequest,
-  NoteReceiver,
 } from "~/generated/client";
 
 /**
