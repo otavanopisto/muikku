@@ -253,7 +253,7 @@ public class HopsRestService {
           return Response.status(Status.FORBIDDEN).build();
         }
         else {
-          return Response.ok("").build(); // guardians don't need form data
+          return Response.noContent().build(); // guardians don't need form data
         }
       }
     }
