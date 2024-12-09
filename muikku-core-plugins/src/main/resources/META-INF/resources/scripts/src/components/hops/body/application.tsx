@@ -146,7 +146,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
      * @returns - Returns an empty string to allow the user to leave the page
      */
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hopsHasChanges) {
+      if (hopsHasChanges || hops.hopsMode === "EDIT") {
         e.preventDefault();
         e.returnValue = ""; // For Chrome
         return ""; // For other browsers
@@ -157,7 +157,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [hopsHasChanges]);
+  }, [hops.hopsMode, hopsHasChanges]);
 
   /**
    * Handles tab changes in the application panel.

@@ -24,10 +24,6 @@ import {
   SaveHopsTriggerType,
   CancelEditingTriggerType,
   cancelEditing,
-  LoadStudentHopsFormTriggerType,
-  loadStudentHopsForm,
-  LoadHopsFormHistoryTriggerType,
-  loadHopsFormHistory,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
@@ -67,10 +63,6 @@ interface HopsApplicationProps {
   studentInfo: GuiderStudent;
   /** Unique identifier for the student */
   studentIdentifier: string;
-  /** Function to load student HOPS form data */
-  loadStudentHopsForm: LoadStudentHopsFormTriggerType;
-  /** Function to load HOPS form history data */
-  loadHopsFormHistory: LoadHopsFormHistoryTriggerType;
   /** Function to load matriculation data */
   loadMatriculationData: LoadMatriculationDataTriggerType;
   /** Function to enable editing mode */
@@ -92,8 +84,6 @@ const HopsApplication = (props: HopsApplicationProps) => {
   const {
     studentIdentifier,
     loadMatriculationData,
-    loadStudentHopsForm,
-    loadHopsFormHistory,
     startEditing,
     saveHops,
     cancelEditing,
@@ -148,26 +138,8 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   // Load data on demand depending on the active tab
   React.useEffect(() => {
-    // On background or postgraduate tabs,
-    if (activeTab === "BACKGROUND" || activeTab === "POSTGRADUATE") {
-      // Load the HOPS form history if it is not already loaded
-      if (
-        hops.hopsFormHistoryStatus !== "LOADING" &&
-        hops.hopsFormHistoryStatus !== "READY"
-      ) {
-        loadHopsFormHistory({ userIdentifier: studentIdentifier });
-      }
-
-      // Load the HOPS form if it is not already loaded
-      if (
-        hops.hopsFormStatus !== "LOADING" &&
-        hops.hopsFormStatus !== "READY"
-      ) {
-        loadStudentHopsForm({ userIdentifier: studentIdentifier });
-      }
-    }
     // On Matriculation tab,
-    else if (
+    if (
       activeTab === "MATRICULATION" &&
       hops.hopsMatriculationStatus !== "LOADING" &&
       hops.hopsMatriculationStatus !== "READY"
@@ -178,14 +150,9 @@ const HopsApplication = (props: HopsApplicationProps) => {
     }
   }, [
     activeTab,
-    hops.hopsFormStatus,
     hops.hopsMatriculationStatus,
     loadMatriculationData,
-    loadStudentHopsForm,
-    loadHopsFormHistory,
     studentIdentifier,
-    hops.hopsFormHistoryStatus,
-    hops.hopsLockedStatus,
   ]);
 
   // Add useEffect to handle beforeunload event
@@ -198,7 +165,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
      * @returns - Returns an empty string to allow the user to leave the page
      */
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (hopsHasChanges) {
+      if (hopsHasChanges || hops.hopsMode === "EDIT") {
         e.preventDefault();
         e.returnValue = ""; // For Chrome
         return ""; // For other browsers
@@ -209,7 +176,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [hopsHasChanges]);
+  }, [hops.hopsMode, hopsHasChanges]);
 
   /**
    * Handles tab changes in the application panel
@@ -489,8 +456,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadMatriculationData,
-      loadStudentHopsForm,
-      loadHopsFormHistory,
       startEditing,
       saveHops,
       cancelEditing,

@@ -1016,7 +1016,10 @@
       "LC": "Latina, lyhyt oppimäärä",
       "SMC": "Saame, lyhyt oppimäärä"
     },
-    "notifications": {}
+    "notifications": {
+      "initilizationError": "Virhe HOPS:n alustamisessa",
+      "editingModePersistentInfo": "Olet varannut HOPS:sin muokkaustilaan. Tänä aikana muut eivät voi muokata HOPS:siasi. Muista päättää tai tallentaa muokkauksesi ennen siirtymistä pois. Tallentamattomat tiedot menetetään."
+    }
   },
   "organization": {
     "content": {

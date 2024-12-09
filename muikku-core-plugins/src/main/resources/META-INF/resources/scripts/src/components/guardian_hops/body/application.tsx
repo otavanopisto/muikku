@@ -23,10 +23,6 @@ import {
   LoadMatriculationDataTriggerType,
   resetHopsData,
   ResetHopsDataTriggerType,
-  loadStudentHopsForm,
-  LoadStudentHopsFormTriggerType,
-  loadHopsFormHistory,
-  LoadHopsFormHistoryTriggerType,
 } from "~/actions/main-function/hops/";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
@@ -52,8 +48,6 @@ type GuardianHopsTab = "MATRICULATION";
 interface GuardianHopsApplicationProps extends WithTranslation {
   dependants: DependantsState;
   loadMatriculationData: LoadMatriculationDataTriggerType;
-  loadStudentHopsForm: LoadStudentHopsFormTriggerType;
-  loadHopsFormHistory: LoadHopsFormHistoryTriggerType;
   resetHopsData: ResetHopsDataTriggerType;
 }
 
@@ -290,8 +284,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadMatriculationData,
-      loadStudentHopsForm,
-      loadHopsFormHistory,
       resetHopsData,
     },
     dispatch

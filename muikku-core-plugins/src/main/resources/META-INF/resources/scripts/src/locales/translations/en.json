@@ -1016,7 +1016,10 @@
       "LC": "Latin, C-level",
       "SMC": "Sami, C-level"
     },
-    "notifications": {}
+    "notifications": {
+      "initilizationError": "Error while initializing HOPS",
+      "editingModePersistentInfo": "You have reserved HOPS editing mode. During this time, others cannot edit your HOPS. Remember to finish or save your changes before leaving. Unsaved data will be lost."
+    }
   },
   "organization": {
     "content": {

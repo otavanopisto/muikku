@@ -118,9 +118,7 @@ import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-web
 import { WindowContextProvider } from "~/context/window-context";
 import {
   initializeHops,
-  loadHopsFormHistory,
   loadMatriculationData,
-  loadStudentHopsForm,
 } from "~/actions/main-function/hops/";
 import GuardianHopsBody from "~/components/guardian_hops/body";
 
@@ -238,7 +236,7 @@ export default class MainFunction extends React.Component<
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [identifier, tab] = hashArray;
 
-      this.loadHopsData(tab, identifier);
+      this.loadHopsData(tab, identifier, true);
     } else if (window.location.pathname.includes("/guardian")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
       const [identifier, tab] = hashArray;
@@ -360,8 +358,9 @@ export default class MainFunction extends React.Component<
    * loadHopsData
    * @param tab tab
    * @param userId userId
+   * @param guardianHops guardianHops
    */
-  loadHopsData(tab: string, userId?: string) {
+  loadHopsData(tab: string, userId?: string, guardianHops: boolean = false) {
     const givenLocation = tab;
 
     // Load HOPS locked status and HOPS form history always
@@ -369,24 +368,7 @@ export default class MainFunction extends React.Component<
       initializeHops({ userIdentifier: userId }) as Action
     );
 
-    // Other things are loaded in demand depending on the location
-    if (
-      givenLocation === "background" ||
-      givenLocation === "postgraduate" ||
-      !givenLocation
-    ) {
-      // Load HOPS form history
-      this.props.store.dispatch(
-        loadHopsFormHistory({ userIdentifier: userId }) as Action
-      );
-
-      // Load HOPS form
-      this.props.store.dispatch(
-        loadStudentHopsForm({ userIdentifier: userId }) as Action
-      );
-    }
-
-    if (givenLocation === "matriculation") {
+    if (givenLocation === "matriculation" || (guardianHops && !givenLocation)) {
       this.props.store.dispatch(
         loadMatriculationData({ userIdentifier: userId }) as Action
       );
@@ -1069,7 +1051,7 @@ export default class MainFunction extends React.Component<
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       // If there's an identifier, we can load hops data, otherwise it's done in the hash change
-      this.loadHopsData(tab, identifier);
+      this.loadHopsData(tab, identifier, true);
     }
     return <GuardianHopsBody />;
   }

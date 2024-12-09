@@ -87,6 +87,7 @@
     }
   }
 
+  &.notification-queue__item--persistent-info,
   &.notification-queue__item--fatal {
     background-color: $color-notification-queue-item-fatal-background;
     color: $color-notification-queue-item-fatal-text;
