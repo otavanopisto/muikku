@@ -1069,7 +1069,7 @@ public class HopsRestService {
     
     List<String> counselorList = new ArrayList<>();
 
-    List<UserEntity> counselorEntities = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier, false);
+    List<UserEntity> counselorEntities = userGroupGuidanceController.getGuidanceCounselorUserEntities(studentIdentifier, false);
     for (UserEntity counselorEntity : counselorEntities) {
       UserEntityName counselorName = userEntityController.getName(counselorEntity, false);
       if (counselorName != null) {

@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
+import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.Optionality;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
@@ -528,9 +529,13 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId()).getIdentifier());
   }
 
-  public GroupUser createEntity(StudentGroupUser studentGroupUser) {
-    return new PyramusGroupUser(identifierMapper.getStudentGroupStaffMemberIdentifier(studentGroupUser.getId()),
-        identifierMapper.getStaffIdentifier(studentGroupUser.getStaffMemberId()).getIdentifier());
+  public GroupStaffMember createEntity(StudentGroupUser studentGroupUser) {
+    return new PyramusGroupStaffMember(
+        identifierMapper.getStudentGroupStaffMemberIdentifier(studentGroupUser.getId()),
+        identifierMapper.getStaffIdentifier(studentGroupUser.getStaffMemberId()).getIdentifier(),
+        studentGroupUser.isGroupAdvisor(),
+        studentGroupUser.isStudyAdvisor(),
+        studentGroupUser.isMessageReceiver());
   }
   
   public PyramusStudentCard createEntity(fi.otavanopisto.pyramus.rest.model.StudentCard studentCard) {
@@ -555,11 +560,11 @@ public class PyramusSchoolDataEntityFactory {
     return results;
   }
 
-  public List<GroupUser> createEntities(StudentGroupUser... studentGroupUsers) {
-    List<GroupUser> results = new ArrayList<>();
+  public <E extends GroupUser> List<E> createEntities(Class<E> outputClass, StudentGroupUser... studentGroupUsers) {
+    List<E> results = new ArrayList<>();
     if (studentGroupUsers != null) {
       for (StudentGroupUser studentGroupUser : studentGroupUsers) {
-        results.add(createEntity(studentGroupUser));
+        results.add(outputClass.cast(createEntity(studentGroupUser)));
       }
     }
     return results;
