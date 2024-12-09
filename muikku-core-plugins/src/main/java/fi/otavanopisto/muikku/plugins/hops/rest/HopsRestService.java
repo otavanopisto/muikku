@@ -50,10 +50,12 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsGoalsWSMessage;
+import fi.otavanopisto.muikku.plugins.hops.ws.HopsHistoryItemWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsLockWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsOptionalSuggestionWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsStudentChoiceWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsSuggestionWSMessage;
+import fi.otavanopisto.muikku.plugins.hops.ws.HopsWithLatestChangeWSMessage;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -302,6 +304,13 @@ public class HopsRestService {
     }
 
     HopsWithLatestChange hopsWithChange = new HopsWithLatestChange(formData, toRestModel(historyItem, null));
+    
+    HopsWithLatestChangeWSMessage msg = new HopsWithLatestChangeWSMessage();
+    msg.setFormData(hopsWithChange.getFormData());
+    msg.setLatestChange(hopsWithChange.getLatestChange());
+    msg.setStudentIdentifier(studentIdentifier);
+    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:hops-updated", msg);
+
     return Response.ok(hopsWithChange).build();
   }
 
@@ -558,6 +567,17 @@ public class HopsRestService {
     historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
     historyItem.setDetails(updatedHistory.getDetails());
     historyItem.setChanges(updatedHistory.getChanges());
+
+    HopsHistoryItemWSMessage msg = new HopsHistoryItemWSMessage();
+    msg.setChanges(historyItem.getChanges());
+    msg.setDate(historyItem.getDate());
+    msg.setDetails(historyItem.getDetails());
+    msg.setId(historyItem.getId());
+    msg.setModifier(historyItem.getModifier());
+    msg.setModifierHasImage(historyItem.getModifierHasImage());
+    msg.setModifierId(historyItem.getModifierId());
+    msg.setStudentIdentifier(studentIdentifier);
+    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:history-item-updated", msg);
 
     return Response.ok(historyItem).build();
   }
