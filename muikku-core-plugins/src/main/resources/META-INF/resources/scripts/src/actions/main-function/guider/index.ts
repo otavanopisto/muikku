@@ -620,7 +620,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
-    const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
     const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
@@ -731,17 +730,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "files", value: files },
-            });
-          }),
-
-        hopsUppersecondaryApi
-          .getHopsByUser({
-            userIdentifier: id,
-          })
-          .then((hops) => {
-            dispatch({
-              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-              payload: { property: "hops", value: hops },
             });
           }),
 
