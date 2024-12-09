@@ -427,11 +427,15 @@ export const hopsNew: Reducer<HopsState> = (
     case "HOPS_FORM_HISTORY_ENTRY_UPDATE":
       return {
         ...state,
-        hopsFormHistory: state.hopsFormHistory
-          ? state.hopsFormHistory.map((entry) =>
-              entry.id === action.payload.data.id ? action.payload.data : entry
-            )
-          : state.hopsFormHistory,
+        hopsFormHistory:
+          state.hopsFormHistory && action.payload.data
+            ? state.hopsFormHistory.map((entry) =>
+                entry.id === action.payload.data.id
+                  ? action.payload.data
+                  : entry
+              )
+            : state.hopsFormHistory,
+        hopsFormHistoryStatus: action.payload.status,
       };
 
     case "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY":

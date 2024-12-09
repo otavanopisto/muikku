@@ -2,14 +2,23 @@ import React, { ReactNode, useEffect } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { Action } from "redux";
+import { HopsForm } from "~/@types/hops";
 import { AnyActionType } from "~/actions";
 import {
   UpdateMatriculationPlanTriggerType,
   updateMatriculationPlan,
   UpdateHopsLockedTriggerType,
   updateHopsLocked,
+  UpdateHopsFormTriggerType,
+  updateHopsForm,
+  UpdateHopsHistoryTriggerType,
+  updateHopsHistory,
 } from "~/actions/main-function/hops/";
-import { HopsLocked, MatriculationPlan } from "~/generated/client";
+import {
+  HopsHistoryEntry,
+  HopsLocked,
+  MatriculationPlan,
+} from "~/generated/client";
 import { StateType } from "~/reducers";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 
@@ -19,10 +28,11 @@ import { WebsocketStateType } from "~/reducers/util/websocket";
 interface HopsWebsocketWatcherProps {
   /** Student identifier */
   studentIdentifier: string;
-  /** Child components that will have access to the context */
   children: ReactNode;
   websocketState: WebsocketStateType;
   updateHopsLocked: UpdateHopsLockedTriggerType;
+  updateHopsForm: UpdateHopsFormTriggerType;
+  updateHopsHistory: UpdateHopsHistoryTriggerType;
   updateMatriculationPlan: UpdateMatriculationPlanTriggerType;
 }
 
@@ -43,12 +53,13 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
     websocketState,
     updateMatriculationPlan,
     updateHopsLocked,
+    updateHopsForm,
+    updateHopsHistory,
   } = props;
 
   // Matriculation plan watcher
   useEffect(() => {
     /**
-     * onMatriculationPlanUpdated
      * Callback function to handle matriculation plan updates
      * @param data - MatriculationPlan and studentIdentifier
      */
@@ -88,7 +99,6 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
   // Hops locked watcher
   useEffect(() => {
     /**
-     * onHopsLockedUpdated
      * Callback function to handle Hops locked updates
      * @param data - HopsLocked and studentIdentifier
      */
@@ -119,6 +129,74 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
     };
   }, [props.studentIdentifier, updateHopsLocked, websocketState.websocket]);
 
+  // Hops form watcher
+  useEffect(() => {
+    /**
+     * Callback function to handle Hops form updates
+     * @param data - HopsForm
+     * @param data.formData - Hops form data
+     * @param data.latestChange - Latest changes to the Hops form
+     * @param data.studentIdentifier - Student identifier
+     */
+    const onHopsFormUpdated = (data: {
+      formData: string;
+      latestChange: HopsHistoryEntry;
+      studentIdentifier: string;
+    }) => {
+      const { studentIdentifier } = data;
+
+      // If the student identifier does not match, do nothing
+      if (studentIdentifier !== props.studentIdentifier) {
+        return;
+      }
+
+      updateHopsForm({
+        form: JSON.parse(data.formData) as HopsForm,
+      });
+
+      updateHopsHistory({
+        history: data.latestChange,
+      });
+    };
+
+    websocketState.websocket.addEventCallback(
+      "hops:hops-updated",
+      onHopsFormUpdated
+    );
+  }, [
+    props.studentIdentifier,
+    updateHopsForm,
+    updateHopsHistory,
+    websocketState.websocket,
+  ]);
+
+  // Hops history watcher
+  useEffect(() => {
+    /**
+     * Callback function to handle Hops history updates
+     * @param data - HopsHistory
+     */
+    const onHopsHistoryUpdated = (
+      data: HopsHistoryEntry & { studentIdentifier: string }
+    ) => {
+      const { studentIdentifier, ...history } = data;
+
+      // If the student identifier does not match, do nothing
+      if (studentIdentifier !== props.studentIdentifier) {
+        return;
+      }
+
+      updateHopsHistory({
+        history,
+      });
+    };
+
+    websocketState.websocket.addEventCallback(
+      "hops:history-item-updated",
+      onHopsHistoryUpdated
+    );
+  }, [props.studentIdentifier, updateHopsHistory, websocketState.websocket]);
+
   return <>{children}</>;
 }
 
@@ -140,7 +218,12 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { updateMatriculationPlan, updateHopsLocked },
+    {
+      updateMatriculationPlan,
+      updateHopsLocked,
+      updateHopsForm,
+      updateHopsHistory,
+    },
     dispatch
   );
 }
