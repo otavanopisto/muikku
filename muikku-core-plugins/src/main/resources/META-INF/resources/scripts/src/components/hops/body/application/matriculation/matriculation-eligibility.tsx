@@ -111,7 +111,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
 
   return (
     <>
-      <ApplicationSubPanel modifier="sub-tabs">
+      <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
           {t("labels.matriculationParticipation", {
             ns: "hops_new",
@@ -208,7 +208,7 @@ const MatriculationEligibility = (props: MatriculationEligibilityProps) => {
         </div>
       </ApplicationSubPanel>
 
-      <ApplicationSubPanel modifier="sub-tabs">
+      <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
           {t("labels.matriculationParticipation", {
             ns: "hops_new",

@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .application-sub-panel {
-  border-bottom: 1px solid $color-subpanel-border;
+  // border-bottom: 1px solid $color-subpanel-border;
   margin: 0 0 30px;
   width: 100%;
 
@@ -36,14 +36,6 @@
 
 .application-sub-panel--guidance-relation-guidance-events {
   flex-basis: 100%;
-}
-
-.application-sub-panel--sub-tabs {
-  padding: 0 0 30px;
-
-  &:last-child {
-    padding: 0;
-  }
 }
 
 .application-sub-panel--header-main {
@@ -310,9 +302,32 @@
 
 // Subpanel description
 .application-sub-panel__description {
-  font-size: 0.8125rem;
-  font-style: italic;
-  margin: 0 0 10px;
+  font-weight: 300;
+  line-height: 1.375rem;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+}
+
+// Multicolumn subpanel
+.application-sub-panel__body--multicolumn {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0 20px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+
+  // Multricolumn subpanel item
+  .application-sub-panel__item--multicolumn {
+    flex-basis: 50%;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
 }
 
 // Subpanel body
@@ -787,6 +802,7 @@
 
 .application-sub-panel__item--counselors {
   align-items: start;
+  flex-flow: column nowrap;
 }
 
 .application-sub-panel__item--guider-student {
@@ -1026,6 +1042,12 @@
     flex-basis: 250px;
     margin: 0 10px 5px 0;
   }
+}
+
+.application-sub-panel__item-title--counselors {
+  flex-basis: auto;
+  font-weight: 600;
+  width: 100%,
 }
 
 .application-sub-panel__item-title--organization-summary,

@@ -13841,6 +13841,8 @@ components:
         - firstName
         - lastName
         - hasImage
+        - groupAdvisor
+        - studyAdvisor
         - properties
       properties:
         id:
@@ -13855,6 +13857,10 @@ components:
         lastName:
           type: string
         hasImage:
+          type: boolean
+        groupAdvisor:
+          type: boolean
+        studyAdvisor:
           type: boolean
         properties:
           $ref: "#/components/schemas/AnyValue"
