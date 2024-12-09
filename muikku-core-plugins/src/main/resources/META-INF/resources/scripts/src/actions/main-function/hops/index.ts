@@ -329,6 +329,20 @@ export interface UpdateHopsLockedTriggerType {
 }
 
 /**
+ * UpdateHopsFormTriggerType
+ */
+export interface UpdateHopsFormTriggerType {
+  (data: { form: HopsForm }): AnyActionType;
+}
+
+/**
+ * UpdateHopsHistoryTriggerType
+ */
+export interface UpdateHopsHistoryTriggerType {
+  (data: { history: HopsHistoryEntry }): AnyActionType;
+}
+
+/**
  * InitializeHopsLockedTriggerType
  */
 export interface InitializeHopsTriggerType {
@@ -382,11 +396,6 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
       });
 
       try {
-        // NOTE: This is for registering websocket events and will be refactored when actual HOPS form is implemented
-        await hopsApi.getStudentHops({
-          studentIdentifier,
-        });
-
         const matriculationPlan =
           await matriculationApi.getStudentMatriculationPlan({
             studentIdentifier,
@@ -1509,6 +1518,65 @@ const updateHopsLocked: UpdateHopsLockedTriggerType = function updateHopsLocked(
 };
 
 /**
+ * Update Hops form
+ * @param data Data containing partial updates to apply to Hops form
+ */
+const updateHopsForm: UpdateHopsFormTriggerType = function updateHopsForm(
+  data
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    dispatch({
+      type: "HOPS_FORM_UPDATE",
+      payload: { status: "READY", data: data.form },
+    });
+  };
+};
+
+/**
+ * Update Hops history
+ * @param data Data containing partial updates to apply to Hops history
+ */
+const updateHopsHistory: UpdateHopsHistoryTriggerType =
+  function updateHopsHistory(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      //Check if the history is already in the state...
+      const historyIndex = state.hopsNew.hopsFormHistory.findIndex(
+        (h) => h.id === data.history.id
+      );
+
+      // ...if it is, update it
+      if (historyIndex !== -1) {
+        const updatedHistory = state.hopsNew.hopsFormHistory;
+        updatedHistory[historyIndex] = data.history;
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_UPDATE",
+          payload: { status: "READY", data: updatedHistory },
+        });
+      }
+      // ...otherwise append it
+      else {
+        dispatch({
+          type: "HOPS_FORM_HISTORY_APPEND",
+          payload: {
+            status: "READY",
+            data: [data.history],
+            appendPosition: "start",
+          },
+        });
+      }
+    };
+  };
+
+/**
  * Update HOPS form history entry thunk
  *
  * @param data data
@@ -1841,6 +1909,11 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
     });
 
     try {
+      // NOTE: This is for registering websocket events and will be refactored when actual HOPS form is implemented
+      await hopsApi.getStudentHops({
+        studentIdentifier,
+      });
+
       const hopsLocked = await hopsApi.getStudentHopsLock({
         studentIdentifier,
       });
@@ -1907,6 +1980,8 @@ export {
   updateHopsEditing,
   updateHopsFormHistoryEntry,
   updateHopsLocked,
+  updateHopsForm,
+  updateHopsHistory,
   updateMatriculationExamination,
   updateMatriculationPlan,
   verifyMatriculationExam,
