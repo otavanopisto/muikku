@@ -252,6 +252,9 @@ public class HopsRestService {
         if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
           return Response.status(Status.FORBIDDEN).build();
         }
+        else {
+          return Response.ok("").build(); // guardians don't need form data
+        }
       }
     }
     
@@ -499,6 +502,9 @@ public class HopsRestService {
       if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
         if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
           return Response.status(Status.FORBIDDEN).build();
+        }
+        else {
+          return Response.ok(Collections.<HistoryItem>emptyList()).build(); // guardians don't see hops history
         }
       }
     }
