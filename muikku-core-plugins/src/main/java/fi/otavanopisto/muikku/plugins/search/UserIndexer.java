@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.search;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,7 +88,7 @@ public class UserIndexer {
         indexedUser.setLanguage(user.getLanguage());
         indexedUser.setMunicipality(user.getMunicipality());
         indexedUser.setSchool(user.getSchool());
-        indexedUser.setU18Compulsory(userController.isUnder18CompulsoryEducationStudent(userIdentifier));
+        indexedUser.setBirthday(userController.getBirthday(userIdentifier));
 
         // TODO: we have only one role here but a user(entity) can have several roles via several userschooldataidentifiers
         UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());
@@ -136,8 +137,8 @@ public class UserIndexer {
         
         List<UserStudyPeriod> studentStudyPeriods = userController.listStudentStudyPeriods(userIdentifier);
         
-        Set<IndexedUserStudyPeriod> studyPeriods = CollectionUtils.isEmpty(studentStudyPeriods) ? new HashSet<>() :
-          studentStudyPeriods.stream().map(studyPeriod -> new IndexedUserStudyPeriod(studyPeriod.getBegin(), studyPeriod.getEnd(), studyPeriod.getType())).collect(Collectors.toSet());
+        List<IndexedUserStudyPeriod> studyPeriods = CollectionUtils.isEmpty(studentStudyPeriods) ? new ArrayList<>() :
+          studentStudyPeriods.stream().map(studyPeriod -> new IndexedUserStudyPeriod(studyPeriod.getBegin(), studyPeriod.getEnd(), studyPeriod.getType())).collect(Collectors.toList());
 
         indexedUser.setStudyPeriods(studyPeriods);
         

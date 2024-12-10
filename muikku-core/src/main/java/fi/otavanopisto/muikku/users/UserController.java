@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.users;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -117,15 +118,8 @@ public class UserController {
     return userSchoolDataController.listStudentStudyPeriods(userIdentifier);
   }
   
-  /**
-   * Return true, if the given student is under 18 years old and
-   * part of compulsory education system.
-   * 
-   * @param studentIdentifier student's identifier
-   * @return true if yes, otherwise default to false
-   */
-  public boolean isUnder18CompulsoryEducationStudent(SchoolDataIdentifier studentIdentifier) {
-    return userSchoolDataController.isUnder18CompulsoryEducationStudent(studentIdentifier);
+  public LocalDate getBirthday(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.getBirthday(studentIdentifier);
   }
   
   public String findUserSsn(User user) {
@@ -154,5 +148,5 @@ public class UserController {
         ? guardiansDependents.stream().map(GuardiansDependent::getUserIdentifier).anyMatch(identifier -> Objects.equals(identifier, studentIdentifier))
         : false;
   }
-  
+
 }

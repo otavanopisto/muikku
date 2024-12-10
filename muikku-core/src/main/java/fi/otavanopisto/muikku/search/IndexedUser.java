@@ -1,11 +1,14 @@
 package fi.otavanopisto.muikku.search;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
+import fi.otavanopisto.muikku.search.annotations.IndexFieldType;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
 import fi.otavanopisto.muikku.search.annotations.IndexableFieldMultiField;
@@ -41,6 +44,10 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldType;
       multiFields = {
         @IndexableFieldMultiField(name = "untouched", type = IndexableFieldType.KEYWORD)
       }
+    ),
+    @IndexableFieldOption (
+      name = "birthday",
+      type = IndexableFieldType.DATE
     ),
     @IndexableFieldOption (
       name = "email",
@@ -269,11 +276,11 @@ public class IndexedUser {
     this.groups = groups;
   }
 
-  public Set<IndexedUserStudyPeriod> getStudyPeriods() {
+  public List<IndexedUserStudyPeriod> getStudyPeriods() {
     return studyPeriods;
   }
 
-  public void setStudyPeriods(Set<IndexedUserStudyPeriod> studyPeriods) {
+  public void setStudyPeriods(List<IndexedUserStudyPeriod> studyPeriods) {
     this.studyPeriods = studyPeriods;
   }
 
@@ -285,12 +292,13 @@ public class IndexedUser {
     this.roles = roles;
   }
 
-  public boolean isU18Compulsory() {
-    return u18Compulsory;
+  @IndexField(type = IndexFieldType.DATE)
+  public LocalDate getBirthday() {
+    return birthday;
   }
 
-  public void setU18Compulsory(boolean u18Compulsory) {
-    this.u18Compulsory = u18Compulsory;
+  public void setBirthday(LocalDate birthday) {
+    this.birthday = birthday;
   }
 
   private String identifier;
@@ -309,7 +317,6 @@ public class IndexedUser {
   private OffsetDateTime studyTimeEnd;
   private boolean hidden;
   private boolean evaluationFees;
-  private boolean u18Compulsory;
   private SchoolDataIdentifier curriculumIdentifier;
   private SchoolDataIdentifier organizationIdentifier;
   private String nickName;
@@ -319,5 +326,6 @@ public class IndexedUser {
   private String email;
   private Set<Long> workspaces;
   private Set<Long> groups;
-  private Set<IndexedUserStudyPeriod> studyPeriods;
+  private List<IndexedUserStudyPeriod> studyPeriods;
+  private LocalDate birthday;
 }

@@ -480,7 +480,7 @@ public class GuiderRESTService extends PluginRESTService {
           UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
           OrganizationEntity organizationEntity = usdi.getOrganization();
           
-          boolean u18Compulsory = o.containsKey("u18Compulsory") && o.get("u18Compulsory") != null ? (Boolean) o.get("u18Compulsory") : false;
+          boolean u18Compulsory = userEntityController.isUnder18CompulsoryEducationStudent(studentIdentifier);
           
           students.add(new fi.otavanopisto.muikku.rest.model.FlaggedStudentRestModel(
             studentIdentifier.toId(),
@@ -564,7 +564,7 @@ public class GuiderRESTService extends PluginRESTService {
       organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
     }
 
-    boolean u18Compulsory = userController.isUnder18CompulsoryEducationStudent(studentIdentifier);
+    boolean u18Compulsory = userEntityController.isUnder18CompulsoryEducationStudent(studentIdentifier);
     
     GuiderStudentRestModel student = new GuiderStudentRestModel(
         studentIdentifier.toId(),

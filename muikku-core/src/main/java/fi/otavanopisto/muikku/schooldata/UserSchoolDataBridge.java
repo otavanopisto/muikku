@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.schooldata;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
@@ -256,6 +257,8 @@ public interface UserSchoolDataBridge {
 
   public String findUserSsn(SchoolDataIdentifier userIdentifier);
 
+  public LocalDate getBirthday(SchoolDataIdentifier studentIdentifier);
+
   public boolean amICounselor(String studentIdentifier);
 
   public List<String> listStudentAlternativeStudyOptions(String userIdentifier);
@@ -280,14 +283,5 @@ public interface UserSchoolDataBridge {
    * @return list of workspace information
    */
   public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier);
-
-  /**
-   * Return true, if the given student is under 18 years old and
-   * part of compulsory education system.
-   * 
-   * @param studentIdentifier student's identifier
-   * @return true if yes, otherwise default to false
-   */
-  public boolean isUnder18CompulsoryEducationStudent(SchoolDataIdentifier studentIdentifier);
 
 }

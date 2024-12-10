@@ -1,10 +1,13 @@
 package fi.otavanopisto.muikku.users;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +19,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,6 +40,7 @@ import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -434,6 +440,95 @@ public class UserEntityController implements Serializable {
   
   public UserEntity markAsUpdatedByStudent(UserEntity userEntity) {
     return userEntityDAO.updateUpdatedByStudent(userEntity, Boolean.TRUE);
+  }
+  
+  /**
+   * Returns true, if the student is under 18 years old and
+   * part of compulsory education system.
+   * 
+   * @param studentIdentifier Student's identifier
+   * @return true if yes
+   */
+  public boolean isUnder18CompulsoryEducationStudent(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier != null) {
+      for (SearchProvider searchProvider : searchProviders) {
+        if (StringUtils.equals(searchProvider.getName(), "elastic-search")) {
+          SearchResult searchResult = searchProvider.findUser(studentIdentifier, true);
+          if (searchResult.getTotalHitCount() == 1) {
+            List<Map<String, Object>> results = searchResult.getResults();
+            Map<String, Object> match = results.get(0);
+
+            try {
+              String birthdayStr = (String) match.get("birthday");
+  
+              if (StringUtils.isNotBlank(birthdayStr)) {
+                LocalDate birthday = LocalDate.parse(birthdayStr);
+                
+                if (birthday == null || birthday.plusYears(18).isBefore(LocalDate.now())) {
+                  // Student is 18 years old or older
+                  return false;
+                }
+
+                @SuppressWarnings("unchecked")
+                List<Map<String, Object>> studyPeriods = (List<Map<String, Object>>) match.get("studyPeriods");
+
+                if (CollectionUtils.isNotEmpty(studyPeriods)) {
+                  EnumSet<UserStudyPeriodType> states = EnumSet.of(
+                      UserStudyPeriodType.COMPULSORY_EDUCATION, 
+                      UserStudyPeriodType.NON_COMPULSORY_EDUCATION, 
+                      UserStudyPeriodType.EXTENDED_COMPULSORY_EDUCATION
+                  );
+                  LocalDate now = LocalDate.now();
+                  LocalDate date = null;
+                  UserStudyPeriodType state = null;
+        
+                  /*
+                   * Loop through study periods and for the periods
+                   * that are active, check that they are one of the
+                   * states that correspond to the compulsory state.
+                   * After the loop is done, we should have the state
+                   * in state variable that is the currently active one.
+                   */
+                  for (Map<String, Object> studyPeriod : studyPeriods) {
+                    UserStudyPeriodType periodType = EnumUtils.getEnum(UserStudyPeriodType.class, (String) studyPeriod.get("type"));                    
+                    if (states.contains(periodType)) {
+                      String periodBeginStr = (String) studyPeriod.get("begin");
+                      String periodEndStr = (String) studyPeriod.get("end");
+  
+                      LocalDate periodBegin = StringUtils.isNotBlank(periodBeginStr) ? LocalDate.parse(periodBeginStr) : null;
+                      LocalDate periodEnd = StringUtils.isNotBlank(periodEndStr) ? LocalDate.parse(periodEndStr) : null;
+  
+                      boolean isActivePeriod = 
+                          (periodBegin == null || periodBegin.equals(now) || periodBegin.isBefore(now)) &&
+                          (periodEnd == null || periodEnd.equals(now) || periodEnd.isAfter(now));
+  
+                      if (isActivePeriod && (date == null || periodBegin.isAfter(date))) {
+                        date = periodBegin;
+                        state = periodType;
+                      }
+                    }
+                  }
+                  
+                  EnumSet<UserStudyPeriodType> activeStates = EnumSet.of(
+                      UserStudyPeriodType.COMPULSORY_EDUCATION, 
+                      UserStudyPeriodType.EXTENDED_COMPULSORY_EDUCATION
+                  );
+                  
+                  if (activeStates.contains(state)) {
+                    return true;
+                  }
+                }
+              }
+            }
+            catch (DateTimeParseException ex) {
+              return false;
+            }
+          }
+        }
+      }
+    }
+
+    return false;
   }
 
 }

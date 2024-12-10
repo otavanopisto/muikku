@@ -13519,6 +13519,7 @@ components:
         - workspaceUserEntityId
         - workspaceUserIdentifier
         - hasPedagogyForm
+        - u18Compulsory
         - state
         - locked
       properties:
@@ -13575,6 +13576,9 @@ components:
         workspaceUserIdentifier:
           type: string
         hasPedagogyForm:
+          type: boolean
+        u18Compulsory:
+          description: Is the student under 18yo and part of compulsory education program
           type: boolean
         state:
           $ref: "#/components/schemas/WorkspaceAssessmentStateType"
@@ -17359,6 +17363,7 @@ components:
             - studyProgrammeName
             - active
             - hasPedagogyForm
+            - u18Compulsory
           properties:
             nickname:
               description: The nickname of the user
@@ -17370,6 +17375,9 @@ components:
               description: If the user is active
               type: boolean
             hasPedagogyForm:
+              type: boolean
+            u18Compulsory:
+              description: Is the student under 18yo and part of compulsory education program
               type: boolean
 
     WorkspaceUserBase:
