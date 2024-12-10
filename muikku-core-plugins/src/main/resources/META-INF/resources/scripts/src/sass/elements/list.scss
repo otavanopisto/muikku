@@ -98,6 +98,7 @@
 
 .list__indicator--MANDATORY {
   background-color: $color-mandatory;
+  color: $color-default-contrast;
 }
 
 .list__indicator--OPTIONAL {
@@ -120,8 +121,8 @@
     font-size: 1rem;
     height: 1rem;
     position: absolute;
-    right: 12px;
-    top: 3px;
+    right: -6px;
+    top: -6px;
     width: 1rem;
     z-index: 97;
   }
@@ -133,16 +134,17 @@
     font-size: 1rem;
     height: 1rem;
     position: absolute;
-    right: 12px;
-    top: 3px;
+    right: -6px;
+    top: -6px;
     width: 1rem;
     z-index: 98;
   }
 }
 
 .list__indicator--INPROGRESS {
-  background: $color-info;
-  color: $color-default;
+  background: $color-default;
+  border-color: $color-info;
+  border-radius: 50% 3px 50% 50%;
 }
 
 .list__indicator--APPROVAL {
