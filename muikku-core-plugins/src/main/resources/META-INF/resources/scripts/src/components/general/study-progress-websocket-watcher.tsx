@@ -28,6 +28,8 @@ import { WebsocketStateType } from "~/reducers/util/websocket";
  */
 interface StudyProgressWebsocketWatcherProps {
   children: React.ReactNode;
+
+  // Websocket state is missing when using Muikku as unlogged user
   websocketState: WebsocketStateType;
 
   // Records related actions
@@ -44,15 +46,17 @@ interface StudyProgressWebsocketWatcherProps {
 /**
  * Custom hook to watch websocket events
  * @param eventName event name
- * @param websocket websocket
  * @param handlers handlers that receive data from websocket
+ * @param websocket websocket
  */
 function useWebsocketEvent<T>(
   eventName: string,
-  websocket: WebsocketStateType["websocket"],
-  handlers: Array<(data: T) => void>
+  handlers: Array<(data: T) => void>,
+  websocket?: WebsocketStateType["websocket"]
 ) {
   React.useEffect(() => {
+    if (!websocket) return;
+
     /**
      * onAnswerSavedAtServer
      * @param data data
@@ -95,29 +99,28 @@ const StudyProgressWebsocketWatcher = (
   // hops:workspace-suggested watcher
   useWebsocketEvent<StudentStudyActivity>(
     "hops:workspace-suggested",
-    websocketState.websocket,
     [
       (data) => recordsSummarySuggestedNextWebsocket({ websocketData: data }),
       (data) =>
         guiderStudyProgressSuggestedNextWebsocket({ websocketData: data }),
-    ]
+    ],
+    websocketState.websocket
   );
 
   // hops:workspace-signup watcher
   useWebsocketEvent<StudentStudyActivity | StudentStudyActivity[]>(
     "hops:workspace-signup",
-    websocketState.websocket,
     [
       (data) => recordsSummaryWorkspaceSignupWebsocket({ websocketData: data }),
       (data) =>
         guiderStudyProgressWorkspaceSignupWebsocket({ websocketData: data }),
-    ]
+    ],
+    websocketState.websocket
   );
 
   // hops:alternative-study-options watcher
   useWebsocketEvent<string[]>(
     "hops:alternative-study-options",
-    websocketState.websocket,
     [
       (data) =>
         recordsSummaryAlternativeStudyOptionsWebsocket({
@@ -127,7 +130,8 @@ const StudyProgressWebsocketWatcher = (
         guiderStudyProgressAlternativeStudyOptionsWebsocket({
           websocketData: data,
         }),
-    ]
+    ],
+    websocketState.websocket
   );
 
   return <>{children}</>;
