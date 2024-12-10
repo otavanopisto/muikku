@@ -300,12 +300,16 @@ export const filterActivity = (
 
   const transferedList = list.filter((item) => item.status === "TRANSFERRED");
   const gradedList = list.filter((item) => item.status === "GRADED");
+  const needSupplementationList = list.filter(
+    (item) => item.status === "SUPPLEMENTATIONREQUEST"
+  );
 
   return {
     onGoingList,
     suggestedNextList,
     transferedList,
     gradedList,
+    needSupplementationList,
   };
 };
 
@@ -337,6 +341,7 @@ export const filterActivityBySubjects = (
  * @param transferedList transferedList
  * @param gradedList gradedList
  * @param onGoingList onGoingList
+ * @param needSupplementationList needSupplementationList
  * @returns string[]
  */
 export const getCourseInfo = (
@@ -346,12 +351,15 @@ export const getCourseInfo = (
   suggestedNextList: StudentStudyActivity[],
   transferedList: StudentStudyActivity[],
   gradedList: StudentStudyActivity[],
-  onGoingList: StudentStudyActivity[]
+  onGoingList: StudentStudyActivity[],
+  needSupplementationList: StudentStudyActivity[]
 ) => {
   const updatedModifiers = [...modifiers];
 
   let courseSuggestions: StudentStudyActivity[] = [];
   let canBeSelected = true;
+  let needsSupplementation = false;
+  let grade: string | undefined = undefined;
 
   if (
     suggestedNextList.find(
@@ -386,6 +394,16 @@ export const getCourseInfo = (
     canBeSelected = false;
     updatedModifiers.push("COMPLETED");
   } else if (
+    needSupplementationList.find(
+      (nCourse) =>
+        nCourse.subject === subject.subjectCode &&
+        nCourse.courseNumber === course.courseNumber
+    )
+  ) {
+    canBeSelected = false;
+    needsSupplementation = true;
+    updatedModifiers.push("SUPPLEMENTATIONREQUEST");
+  } else if (
     onGoingList.find(
       (oCourse) =>
         oCourse.subject === subject.subjectCode &&
@@ -396,9 +414,29 @@ export const getCourseInfo = (
     updatedModifiers.push("INPROGRESS");
   }
 
+  // Only graded list and transfered list are evaluated
+  // and holds grade value
+  const evaluatedCourse = [...gradedList, ...transferedList].find(
+    (gCourse) =>
+      gCourse.subject === subject.subjectCode &&
+      gCourse.courseNumber === course.courseNumber
+  );
+
+  if (evaluatedCourse) {
+    if (evaluatedCourse.passing) {
+      updatedModifiers.push("PASSED_GRADE");
+    } else {
+      updatedModifiers.push("FAILED_GRADE");
+    }
+
+    grade = evaluatedCourse.grade;
+  }
+
   return {
     modifiers: updatedModifiers,
     courseSuggestions,
     canBeSelected,
+    grade,
+    needsSupplementation,
   };
 };

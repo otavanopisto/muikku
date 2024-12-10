@@ -46,6 +46,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
     transferedList,
     gradedList,
     onGoingList,
+    needSupplementationList,
     onSignUp,
   } = props;
 
@@ -66,15 +67,17 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   const renderCourseCell = (params: RenderItemParams) => {
     const { subject, course, tdModifiers } = params;
 
-    const { modifiers, canBeSelected } = getCourseInfo(
-      tdModifiers,
-      subject,
-      course,
-      suggestedNextList,
-      transferedList,
-      gradedList,
-      onGoingList
-    );
+    const { modifiers, canBeSelected, grade, needsSupplementation } =
+      getCourseInfo(
+        tdModifiers,
+        subject,
+        course,
+        suggestedNextList,
+        transferedList,
+        gradedList,
+        onGoingList,
+        needSupplementationList
+      );
 
     const suggestionList = (
       <SuggestionList
@@ -111,6 +114,23 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
     const courseDropdownName =
       subject.subjectCode + course.courseNumber + " - " + course.name;
 
+    // By default content is mandatory or option shorthand
+    let courseTdContent = course.mandatory
+      ? t("labels.mandatoryShorthand", { ns: "studyMatrix" })
+      : t("labels.optionalShorthand", { ns: "studyMatrix" });
+
+    // If needs supplementation, then replace default with supplementation request shorthand
+    if (needsSupplementation) {
+      courseTdContent = t("labels.supplementationRequestShorthand", {
+        ns: "studyMatrix",
+      });
+    }
+
+    // If grade is available, then replace content with that
+    if (grade) {
+      courseTdContent = grade;
+    }
+
     return (
       <Td
         key={`${subject.subjectCode}-${course.courseNumber}`}
@@ -132,7 +152,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
             tabIndex={0}
             className="table__data-content-wrapper table__data-content-wrapper--course"
           >
-            {course.mandatory ? course.courseNumber : `${course.courseNumber}*`}
+            {course.mandatory ? courseTdContent : `${courseTdContent}*`}
           </span>
         </Dropdown>
       </Td>
@@ -146,9 +166,11 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
           <Th modifiers={["subject"]}>
             {t("labels.schoolSubject", { ns: "studyMatrix" })}
           </Th>
-          <Th colSpan={currentMaxCourses}>
-            {t("labels.courses", { ns: "studyMatrix" })}
-          </Th>
+          {Array.from({ length: currentMaxCourses }).map((_, index) => (
+            <Th key={index} modifiers={["course"]}>
+              {index + 1}
+            </Th>
+          ))}
         </Tr>
       </TableHead>
       <OPSCourseTableContent

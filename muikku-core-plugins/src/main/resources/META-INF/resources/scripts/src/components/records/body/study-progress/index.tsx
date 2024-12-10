@@ -99,6 +99,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             onGoingList={studyProgress.onGoingList}
             transferedList={studyProgress.transferedList}
             gradedList={studyProgress.gradedList}
+            needSupplementationList={studyProgress.needSupplementationList}
             skillsAndArt={studyProgress.skillsAndArt}
             otherLanguageSubjects={studyProgress.otherLanguageSubjects}
             otherSubjects={studyProgress.otherSubjects}
@@ -119,6 +120,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             onGoingList={studyProgress.onGoingList}
             transferedList={studyProgress.transferedList}
             gradedList={studyProgress.gradedList}
+            needSupplementationList={studyProgress.needSupplementationList}
             skillsAndArt={studyProgress.skillsAndArt}
             otherLanguageSubjects={studyProgress.otherLanguageSubjects}
             otherSubjects={studyProgress.otherSubjects}

@@ -41,6 +41,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
     transferedList,
     gradedList,
     onGoingList,
+    needSupplementationList,
     studentIdentifier,
     studentUserEntityId,
     onSignUpBehalf,
@@ -60,14 +61,21 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
   const renderCourseItem = (params: RenderItemParams) => {
     const { subject, course, listItemModifiers } = params;
 
-    const { modifiers, courseSuggestions, canBeSelected } = getCourseInfo(
+    const {
+      modifiers,
+      courseSuggestions,
+      canBeSelected,
+      grade,
+      needsSupplementation,
+    } = getCourseInfo(
       listItemModifiers,
       subject,
       course,
       suggestedNextList,
       transferedList,
       gradedList,
-      onGoingList
+      onGoingList,
+      needSupplementationList
     );
 
     const suggestionList = (
@@ -107,6 +115,23 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
     const courseDropdownName =
       subject.subjectCode + course.courseNumber + " - " + course.name;
 
+    // By default content is mandatory or option shorthand
+    let courseTdContent = course.mandatory
+      ? t("labels.mandatoryShorthand", { ns: "studyMatrix" })
+      : t("labels.optionalShorthand", { ns: "studyMatrix" });
+
+    // If needs supplementation, then replace default with supplementation request shorthand
+    if (needsSupplementation) {
+      courseTdContent = t("labels.supplementationRequestShorthand", {
+        ns: "studyMatrix",
+      });
+    }
+
+    // If grade is available, then replace content with that
+    if (grade) {
+      courseTdContent = grade;
+    }
+
     return (
       <ListItem
         key={`${subject.subjectCode}-${course.courseNumber}`}
@@ -126,9 +151,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
             }
           >
             <span tabIndex={0} className="list__indicator-data-wapper">
-              {course.mandatory
-                ? course.courseNumber
-                : `${course.courseNumber}*`}
+              {course.mandatory ? courseTdContent : `${courseTdContent}*`}
             </span>
           </Dropdown>
         </ListItemIndicator>

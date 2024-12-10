@@ -218,6 +218,8 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
           onGoingList: studentActivityByStatus.onGoingList,
           suggestedNextList: studentActivityByStatus.suggestedNextList,
           transferedList: studentActivityByStatus.transferedList,
+          needSupplementationList:
+            studentActivityByStatus.needSupplementationList,
           studentChoices: [],
           supervisorOptionalSuggestions: [],
           options: studentOptions,
