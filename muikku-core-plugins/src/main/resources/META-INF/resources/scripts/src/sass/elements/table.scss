@@ -198,6 +198,7 @@
 .table__data--OPTIONAL {
   .table__data-content-wrapper--course {
     background: $color-optional;
+    color: $color-default-contrast;
   }
 }
 
@@ -208,8 +209,38 @@
 }
 
 .table__data--COMPLETED {
+  position: relative;
+
+  &:after {
+    font-family: "muikku";
+    color: $color-great-success;
+    content: "\e62b";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: 12px;
+    top: 3px;
+    width: 1rem;
+    z-index: 97;
+  }
+
+  &:before {
+    font-family: "muikku";
+    color: $color-completed-border;
+    content: "\e62c";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: 12px;
+    top: 3px;
+    width: 1rem;
+    z-index: 98;
+  }
+
   .table__data-content-wrapper--course {
-    background: $color-success;
+    background: $color-completed;
+    border-color: $color-completed-border;
+    border-width: 3px;
     color: $color-default;
   }
 }
@@ -222,9 +253,36 @@
 }
 
 .table__data--APPROVAL {
+  position: relative;
+
+  &:after {
+    font-family: "muikku";
+    color: $color-great-success;
+    content: "\e62b";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: 12px;
+    top: 3px;
+    width: 1rem;
+    z-index: 97;
+  }
+
+  &:before {
+    font-family: "muikku";
+    color: $color-completed-border;
+    content: "\e62c";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: 12px;
+    top: 3px;
+    width: 1rem;
+    z-index: 98;
+  }
+
   .table__data-content-wrapper--course {
-    background: $color-success;
-    border-color: $color-approval;
+    background: $color-completed;
     color: $color-default;
   }
 }

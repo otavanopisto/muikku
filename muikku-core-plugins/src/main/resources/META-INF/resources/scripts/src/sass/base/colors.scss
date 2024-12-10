@@ -23,6 +23,8 @@ $color-fatal: #de3211;
 $color-fatal-contrast: $color-default;
 $color-error: #ff6600;
 $color-error-contrast: $color-default;
+$color-great-success: #ffd700;
+$color-great-success-contrast: $color-default;
 $color-success: #24c118;
 $color-success-contrast: $color-default;
 $color-execute: #66b43b;
@@ -52,12 +54,15 @@ $color-priority-low: #7391a7;
 
 // Notes
 $color-notes-action-button: #7391a7;
+
+// Course Matrix colors
 $color-suggested: #e464dc;
+$color-completed: $color-success;
 $color-next: #bd0174;
-$color-optional: #97dbf7;
+$color-optional: #ffe2aa;
 $color-optional-selected: #0099ff;
-$color-mandatory: #088478;
-$color-approval: darken(#24c118, 15%);
+$color-mandatory: #2db0bd;
+$color-completed-border: darken($color-success, 15%);
 
 // Search
 $color-search-clear-icon: $color-disabled;

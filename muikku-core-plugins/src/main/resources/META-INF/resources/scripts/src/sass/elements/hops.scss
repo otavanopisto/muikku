@@ -672,12 +672,12 @@
 }
 
 .hops-container__indicator-item--approval {
-  background: $color-success;
-  border-color: $color-approval;
+  background: $color-completed;
 }
 
 .hops-container__indicator-item--completed {
-  background: $color-success;
+  background: $color-completed;
+  border-color: $color-completed-border;
 }
 
 .hops-container__indicator-item--inprogress {
