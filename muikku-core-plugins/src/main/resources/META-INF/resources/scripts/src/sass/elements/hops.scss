@@ -658,9 +658,9 @@
 .hops-container__indicator-item {
   border: 3px solid transparent;
   border-radius: 100%;
-  height: 20px;
+  height: 35px;
   margin: 0 5px 0 0;
-  width: 20px;
+  width: 35px;
 }
 
 .hops-container__indicator-item--mandatory {
@@ -681,7 +681,9 @@
 }
 
 .hops-container__indicator-item--inprogress {
-  background: $color-info;
+  background: $color-default;
+  border-color: $color-info;
+  border-radius: 50% 3px 50% 50%;
 }
 
 .hops-container__indicator-item--selected {
