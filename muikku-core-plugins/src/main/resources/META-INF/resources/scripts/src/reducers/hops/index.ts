@@ -361,6 +361,9 @@ export const hopsNew: Reducer<HopsState> = (
           plan: null,
           results: [],
         },
+        hopsLocked: null,
+        hopsLockedStatus: "IDLE",
+        hopsMode: "READ",
         hopsEditing: {
           ...state.hopsEditing,
           readyToEdit: false,
