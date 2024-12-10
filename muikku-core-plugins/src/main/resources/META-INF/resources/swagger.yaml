@@ -15842,6 +15842,7 @@ components:
         - courseNumber
         - courseName
         - grade
+        - passing
         - status
         - date
         - transferCreditMandatory
@@ -15862,6 +15863,8 @@ components:
           type: string
         grade:
           type: string
+        passing:
+          type: boolean
         status:
           $ref: "#/components/schemas/CourseStatus"
         date:
@@ -17300,6 +17303,7 @@ components:
       enum:
         - ONGOING
         - GRADED
+        - SUPPLEMENTATIONREQUEST
         - TRANSFERRED
         - SUGGESTED_NEXT
         - SUGGESTED_OPTIONAL
