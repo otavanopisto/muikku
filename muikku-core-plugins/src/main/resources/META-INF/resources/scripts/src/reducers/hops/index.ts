@@ -34,7 +34,10 @@ interface HopsBackgroundState {}
 /**
  * HopsStudyPlanState
  */
-interface HopsStudyPlanState {}
+interface HopsStudyPlanState {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  plannedCourses: any[];
+}
 
 /**
  * MatriculationExamWithHistory
@@ -131,7 +134,9 @@ const initialHopsState: HopsState = {
   hopsBackgroundStatus: "READY",
   hopsBackgroundState: {},
   hopsStudyPlanStatus: "READY",
-  hopsStudyPlanState: {},
+  hopsStudyPlanState: {
+    plannedCourses: [],
+  },
   hopsMatriculationStatus: "IDLE",
   hopsMatriculation: {
     exams: [],
@@ -407,6 +412,15 @@ export const hopsNew: Reducer<HopsState> = (
       return {
         ...state,
         hopsLocked: action.payload,
+      };
+
+    case "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          plannedCourses: action.payload,
+        },
       };
 
     default:

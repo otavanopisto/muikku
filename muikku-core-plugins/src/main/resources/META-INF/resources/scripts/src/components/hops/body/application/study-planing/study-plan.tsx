@@ -17,6 +17,7 @@ interface StudyPlanProps {}
 const StudyPlan = (props: StudyPlanProps) => {
   const [activeTab, setActiveTab] = React.useState<string>("PLAN");
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useTranslation(["hops_new", "common"]);
 
   /**

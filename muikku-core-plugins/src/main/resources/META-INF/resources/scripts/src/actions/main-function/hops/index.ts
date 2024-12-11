@@ -44,6 +44,12 @@ export type HOPS_STUDYPLAN_UPDATE_STATUS = SpecificActionType<
   ReducerStateType
 >;
 
+export type HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES = SpecificActionType<
+  "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any[]
+>;
+
 // HOPS CAREER PLAN ACTIONS TYPES
 
 export type HOPS_CAREERPLAN_UPDATE_STATUS = SpecificActionType<
@@ -251,6 +257,17 @@ export interface UpdateMatriculationPlanTriggerType {
  */
 export interface UpdateHopsLockedTriggerType {
   (data: { locked: HopsLocked; studentIdentifier: string }): AnyActionType;
+}
+
+/**
+ * LoadStudyPlanDataTriggerType
+ */
+export interface LoadStudyPlanDataTriggerType {
+  (data: {
+    studentIdentifier: string;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
@@ -1224,8 +1241,30 @@ const updateHopsLocked: UpdateHopsLockedTriggerType = function updateHopsLocked(
   };
 };
 
+/**
+ * Load study plan data
+ * @param data Data containing partial updates to apply to study plan
+ */
+const loadStudyPlanData: LoadStudyPlanDataTriggerType =
+  function loadStudyPlanData(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { studentIdentifier } = data;
+
+      // TODO: Implement study plan data loading
+
+      dispatch({
+        type: "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
+        payload: [],
+      });
+    };
+  };
+
 export {
   loadMatriculationData,
+  loadStudyPlanData,
   verifyMatriculationExam,
   loadMatriculationExamHistory,
   saveMatriculationPlan,

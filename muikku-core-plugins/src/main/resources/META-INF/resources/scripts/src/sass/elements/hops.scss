@@ -864,7 +864,7 @@
 
 .hops-planner__content {
   display: flex;
-  gap: 2rem;
+  gap: 1rem;
   height: calc(100% - 48px);
   overflow: hidden;
 }
@@ -895,7 +895,7 @@
 .hops-planner__course-group-toggle {
   width: 100%;
   text-align: left;
-  padding: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -903,6 +903,7 @@
   align-items: center;
   gap: 0.5rem;
   font-weight: 500;
+  color: #B1296F;
 
   &:hover {
     background: $color-default-lighter-generic-background;
@@ -910,16 +911,20 @@
 }
 
 .hops-planner__course-item {
-  padding: 0.5rem;
-  margin-left: 1.5rem;
+  padding: 0.25rem;
+  margin-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  border-left: 2px solid $color-default-separator-border;
+  border-left: 3px solid #a09f9f;
+}
+
+.hops-planner_course-item-header {
 }
 
 .hops-planner__course-code {
-  font-weight: 500;
+  font-weight: bold;
+  margin-right: 0.25rem;
 }
 
 .hops-planner__course-type {
@@ -971,6 +976,9 @@
   min-width: 300px;
   max-width: 300px;
   height: 100%;
+  background: #F5F5F7;
+  border-radius: 10px;
+  padding: 0.5rem;
 }
 
 .hops-planner__months {
@@ -1022,16 +1030,18 @@
 }
 
 .hops-planner__course-card {
-  border: 1px solid $color-default-separator-border;
-  border-radius: 3px;
-  padding: 1rem;
+  border-left: 5px solid #8d8d8d;
+  padding: 0.5rem;
   margin-bottom: 0.5rem;
+  background: white;
+  border-radius: 0px 5px 5px 0px;
 }
 
 .hops-planner__course-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
   margin-bottom: 0.5rem;
 }
 
@@ -1039,17 +1049,19 @@
   font-size: 0.875rem;
   color: $color-default-contrast;
   margin: 0.5rem 0;
+  display: block;
 }
 
 .hops-planner__course-actions {
   display: flex;
   gap: 0.5rem;
   margin-top: 0.5rem;
+  justify-content: flex-end;
 }
 
 .hops-planner__action-button {
-  padding: 0.25rem 0.5rem;
-  border: 1px solid $color-default-separator-border;
+  padding: 0;
+  border: none;
   border-radius: 3px;
   background: none;
   cursor: pointer;
@@ -1058,18 +1070,14 @@
     color: $color-fatal;
     border-color: $color-fatal;
   }
-
-  &:hover {
-    background: $color-default-lighter-generic-background;
-  }
 }
 
 .hops-planner__empty-month {
-  padding: 1rem;
-  border: 2px dashed $color-default-separator-border;
+  border: 2px dashed $color-info;
   border-radius: 3px;
-  margin: 0.5rem 0;
+  background: rgba($color-info, 0.05);
 }
+
 
 .hops-planner__dropzone {
   display: flex;
@@ -1095,7 +1103,7 @@
 .hops-planner__month-toggle {
   width: 100%;
   text-align: left;
-  padding: 0.75rem;
+  padding: 0.5rem 0;
   background: none;
   border: none;
   cursor: pointer;
@@ -1105,10 +1113,8 @@
   font-weight: 500;
   color: $color-info;
   border-radius: 3px;
-
-  &:hover {
-    background: $color-default-lighter-generic-background;
-  }
+  margin-bottom: 0.5rem;
+  color: #B1296F;
 
   i {
     font-size: 0.875rem;
@@ -1121,16 +1127,9 @@
 }
 
 .hops-planner__month-content {
-  padding: 0.5rem 0 0.5rem 2rem;
+  padding: 0rem 0 0.5rem 0rem;
 }
 
-.hops-planner__empty-month {
-  padding: 1rem;
-  border: 2px dashed $color-info;
-  border-radius: 3px;
-  margin: 0.5rem 0;
-  background: rgba($color-info, 0.05);
-}
 
 .hops-planner__dropzone {
   display: flex;
@@ -1150,3 +1149,17 @@
   }
 }
 
+.hops-planner__period-title {
+  text-align: center;
+}
+
+.hops-planner__course-drag-handle {
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.hops-planner__course-drag-handle:active {
+  cursor: grabbing;
+}

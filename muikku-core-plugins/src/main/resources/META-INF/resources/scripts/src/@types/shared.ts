@@ -309,6 +309,45 @@ export interface Course {
 }
 
 /**
+ * PlannedCourse
+ */
+export interface PlannedCourse {
+  id: number;
+  name: string;
+  courseNumber: number;
+  /**
+   * Length of the course
+   */
+  length: number;
+  lengthSymbol: string;
+  subjectCode: string;
+  mandatory: boolean;
+  /**
+   * Start date of the course
+   */
+  startDate: Date;
+  /**
+   * Duration of the course in milliseconds
+   */
+  duration?: number;
+  /**
+   * Id of the workspace (instance)
+   */
+  workspaceId?: number;
+}
+
+/**
+ * Period
+ */
+export interface Period {
+  title: string;
+  year: number;
+  credits: number;
+  type: "AUTUMN" | "SPRING";
+  plannedCourses: PlannedCourse[];
+}
+
+/**
  * UploadingValue
  */
 export interface UploadingValue {

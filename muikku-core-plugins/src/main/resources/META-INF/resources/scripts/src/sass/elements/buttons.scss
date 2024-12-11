@@ -2519,3 +2519,21 @@
   background-color: $color-list-selected-background;
   color: $color-default;
 }
+
+.button--planner-course-group-toggle {
+  justify-content: flex-start;
+  color: #B1296F;
+  white-space: wrap;
+  text-transform: none;
+  padding-left: 0;
+}
+
+.button--planner-month-toggle {
+  justify-content: flex-start;
+  color: #B1296F;
+  white-space: wrap;
+  text-transform: none;
+  padding-left: 0;
+  background: transparent;
+}
+

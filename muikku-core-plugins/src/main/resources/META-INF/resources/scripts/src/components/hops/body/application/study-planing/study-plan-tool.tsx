@@ -11,6 +11,9 @@ import PlannerControls from "./components/planner-controls";
 import PlannerSidebar from "./components/planner-sidebar";
 import PlannerPeriod from "./components/planner-period";
 import { schoolCourseTableUppersecondary2021 } from "~/mock/mock-data";
+import { createAndAllocateCoursesToPeriods } from "./helper";
+import { plannedCoursesMock } from "./mock";
+import { Period } from "~/@types/shared";
 
 /**
  * MatriculationPlanProps
@@ -22,11 +25,19 @@ interface StudyPlanToolProps {}
  * @param props props
  */
 const StudyPlanTool = (props: StudyPlanToolProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useTranslation(["hops_new", "common"]);
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
+  const [periods, setPeriods] = useState<Period[]>(
+    createAndAllocateCoursesToPeriods(plannedCoursesMock)
+  );
   const [view, setView] = useState<"list" | "table">("list");
   const [searchTerm, setSearchTerm] = useState("");
 
+  /**
+   * Handles group toggle
+   * @param groupCode group code
+   */
   const handleGroupToggle = (groupCode: string) => {
     setExpandedGroups((prev) =>
       prev.includes(groupCode)
@@ -35,52 +46,60 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     );
   };
 
+  /**
+   * Handles course select
+   * @param subjectCode subject code
+   * @param courseNumber course number
+   */
   const handleCourseSelect = (subjectCode: string, courseNumber: number) => {
     console.log(`Selected course: ${subjectCode}${courseNumber}`);
     // Add course selection logic here
   };
 
+  /**
+   * Handles course action
+   * @param action action
+   * @param courseCode course code
+   * @param newIndex new index
+   */
+  const handleCourseAction = (
+    action: "detail" | "remove" | "reorder",
+    courseCode: string,
+    newIndex?: number
+  ) => {
+    console.log(`Course action: ${action}`, courseCode, newIndex);
+    if (action === "reorder") {
+      handleCourseReorder(courseCode, newIndex);
+    }
+  };
+
+  /**
+   * Handles course reorder
+   * @param courseCode course code
+   * @param newIndex new index
+   */
+  const handleCourseReorder = (courseCode: string, newIndex: number) => {
+    setPeriods((prev) => {
+      const updatedPeriods = prev.map((period) => ({
+        ...period,
+        plannedCourses: period.plannedCourses.map((course) =>
+          course.subjectCode === courseCode
+            ? { ...course, order: newIndex }
+            : course
+        ),
+      }));
+      return updatedPeriods;
+    });
+  };
+
+  /**
+   * Handles search
+   * @param term term
+   */
   const handleSearch = (term: string) => {
     setSearchTerm(term);
     // Add search logic here if needed
   };
-
-  const periods = [
-    {
-      title: "2024 Syksy",
-      credits: 7,
-      type: "AUTUMN" as const,
-      courses: [
-        {
-          code: "ÄI1",
-          name: "Tekstien tulkinta ja kirjoittaminen",
-          type: "mandatory" as const,
-          startDate: "2024-08-01",
-          endDate: "2024-09-05",
-        },
-      ],
-    },
-    {
-      title: "2025 Kevät",
-      credits: 3,
-      type: "SPRING" as const,
-      courses: [
-        {
-          code: "RUB12",
-          name: "Ruotsin kieli arjessani",
-          type: "mandatory" as const,
-          startDate: "2025-01-15",
-          endDate: "2025-02-20",
-        },
-      ],
-    },
-    {
-      title: "2025 Syksy",
-      credits: 3,
-      type: "AUTUMN" as const,
-      courses: [],
-    },
-  ];
 
   return (
     <ApplicationSubPanel>
@@ -169,10 +188,8 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             <div className="hops-planner">
               <PlannerControls
                 onViewChange={setView}
-                onRefresh={() => console.log("Refresh")}
-                onPeriodChange={(direction) =>
-                  console.log("Period change:", direction)
-                }
+                onRefresh={() => undefined}
+                onPeriodChange={(direction) => undefined}
               />
               <div className="hops-planner__content">
                 <PlannerSidebar
@@ -187,9 +204,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                     <PlannerPeriod
                       key={period.title}
                       {...period}
-                      onCourseAction={(action, code) =>
-                        console.log(`${action} course:`, code)
-                      }
+                      onCourseAction={handleCourseAction}
                     />
                   ))}
                 </div>
