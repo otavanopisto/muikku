@@ -53,6 +53,8 @@ export const useOnGoingNotes = (
     loadNotes();
   }, [userId, roles, displayNotification, t]);
 
+  /** TODO later */
+
   /**
    * changenotesItemStatus
    * @param noteId notesItemId
@@ -68,10 +70,16 @@ export const useOnGoingNotes = (
       const notesItemToUpdate = notes[indexOfNotesItem];
 
       notesItemToUpdate.recipients[0].status = newStatus;
+      const recipients = notesItemToUpdate.recipients;
+      delete notesItemToUpdate.recipients;
 
+      const updateNoteRequest = {
+        note: notesItemToUpdate,
+        recipients: recipients,
+      };
       await notesApi.updateNote({
         noteId,
-        updateNoteRequest: notesItemToUpdate,
+        updateNoteRequest,
       });
 
       // Initializing list

@@ -12,9 +12,7 @@ import {
   NoteStatusType,
   UpdateNoteRequest,
   UpdateNoteReceiverRequest,
-  NoteReceiver,
 } from "~/generated/client";
-import { ContactRecipientType } from "~/reducers/user-index";
 
 /**
  * DropdownItem
@@ -473,6 +471,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         <div className="notes__item-actions">
           {loggedUserIsCreator && onNotesItemSaveUpdateClick && (
             <NotesItemEdit
+              recipientId={recipientId}
               selectedNotesItem={notesItem}
               onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
             >
