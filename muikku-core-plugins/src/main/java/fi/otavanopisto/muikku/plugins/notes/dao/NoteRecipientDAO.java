@@ -17,13 +17,14 @@ public class NoteRecipientDAO extends CorePluginsDAO<NoteReceiver> {
   
   private static final long serialVersionUID = 5332322875854879065L;
 
-  public NoteReceiver create(Boolean pinned, Long recipient, NoteStatus status, Boolean archived, Note note, Long userGroupId){
+  public NoteReceiver create(Boolean pinned, Long recipient, NoteStatus status, Boolean archived, Note note, Long userGroupId, Long workspaceId){
     NoteReceiver noteRecipient = new NoteReceiver();
     noteRecipient.setPinned(pinned);
     noteRecipient.setRecipient(recipient);
     noteRecipient.setStatus(status);
     noteRecipient.setNote(note);
     noteRecipient.setRecipientGroup(userGroupId);
+    noteRecipient.setWorkspace_id(workspaceId);
     return persist(noteRecipient);
   }
   

@@ -68,6 +68,22 @@ public class NoteReceiverRestModel {
     this.userGroupName = userGroupName;
   }
 
+  public Long getWorkspaceId() {
+    return workspaceId;
+  }
+
+  public void setWorkspaceId(Long workspaceId) {
+    this.workspaceId = workspaceId;
+  }
+
+  public String getWorkspaceName() {
+    return workspaceName;
+  }
+
+  public void setWorkspaceName(String workspaceName) {
+    this.workspaceName = workspaceName;
+  }
+
   private Long id;
   private Long noteId;
   private Boolean pinned;
@@ -76,6 +92,8 @@ public class NoteReceiverRestModel {
   private NoteStatus status;
   private Long userGroupId;
   private String userGroupName;
+  private Long workspaceId;
+  private String workspaceName;
   
 
 }
