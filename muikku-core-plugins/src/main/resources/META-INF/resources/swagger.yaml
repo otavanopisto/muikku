@@ -11643,27 +11643,6 @@ components:
                 $ref: "#/components/schemas/NoteCreationObject"
               recipients:
                 $ref: "#/components/schemas/NoteRecipientList"
-            # required:
-            #   - title
-            #   - description
-            #   - priority
-            #   - startDate
-            #   - dueDate
-            # properties:
-            #   title:
-            #     type: string
-            #   description:
-            #     type: string
-            #   priority:
-            #     $ref: "#/components/schemas/NotePriorityType"
-            #   startDate:
-            #     type: string
-            #     format: date-time
-            #     nullable: true
-            #   dueDate:
-            #     type: string
-            #     format: date-time
-            #     nullable: true
 
     NoteReceiverUpdateRequestBody:
       required: true
