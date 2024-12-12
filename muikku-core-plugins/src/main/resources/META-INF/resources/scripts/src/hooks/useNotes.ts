@@ -56,6 +56,7 @@ export const useOnGoingNotes = (
   /**
    * changenotesItemStatus
    * @param noteId notesItemId
+   * @param recipientId recipientId
    * @param newStatus newStatus
    */
   const updateNoteStatus = async (
@@ -64,14 +65,18 @@ export const useOnGoingNotes = (
   ) => {
     try {
       const indexOfNotesItem = notes.findIndex((j) => j.id === noteId);
+      const noteRecipient = notes[indexOfNotesItem].recipients.find(
+        (recipient) => recipient.recipient === userId
+      );
+      const updateNoteReceiverRequest = {
+        status: newStatus,
+        pinned: noteRecipient.pinned,
+      };
 
-      const notesItemToUpdate = notes[indexOfNotesItem];
-
-      notesItemToUpdate.recipients[0].status = newStatus;
-
-      await notesApi.updateNote({
+      await notesApi.updateNoteReceiver({
         noteId,
-        updateNoteRequest: notesItemToUpdate,
+        recipientId: userId,
+        updateNoteReceiverRequest,
       });
 
       // Initializing list

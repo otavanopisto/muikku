@@ -11636,26 +11636,13 @@ components:
           schema:
             type: object
             required:
-              - title
-              - description
-              - priority
-              - startDate
-              - dueDate
+              - note
+              - recipients
             properties:
-              title:
-                type: string
-              description:
-                type: string
-              priority:
-                $ref: "#/components/schemas/NotePriorityType"
-              startDate:
-                type: string
-                format: date-time
-                nullable: true
-              dueDate:
-                type: string
-                format: date-time
-                nullable: true
+              note:
+                $ref: "#/components/schemas/NoteCreationObject"
+              recipients:
+                $ref: "#/components/schemas/NoteRecipientList"
 
     NoteReceiverUpdateRequestBody:
       required: true

@@ -4,9 +4,11 @@ import { useTranslation } from "react-i18next";
 import { loadNotes, updateNote } from "~/actions/main-function/guider";
 import { StateType } from "~/reducers";
 import NotesItemList from "~/components/general/notes/notes-item-list";
-
 import { NotesLocation, NotesItemFilters } from "~/@types/notes";
 import { UpdateNoteRequest } from "~/generated/client";
+import { GuiderContext } from "../../context";
+import { UseFilterNotes } from "~/components/guider/hooks/useFilterNotes";
+
 /**
  * GuiderStudentsProps
  */
@@ -19,27 +21,30 @@ const GuiderNotes = (props: GuiderNotesProps) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { status, guider } = useSelector((state: StateType) => state);
-  const notes = guider.notes.list;
   const loadingState = guider.notes.state;
+  const { filters } = React.useContext(GuiderContext);
+  const notes = UseFilterNotes(guider.notes.list, filters);
 
   // TODO: this needs and implementation
-  const [nonActiveNoteFilters, setNoneActiveNoteFilters] =
-    React.useState<NotesItemFilters>({
-      high: false,
-      normal: false,
-      low: false,
-      own: false,
-      guider: false,
-    });
+  const [noteFilters, setNoteFilters] = React.useState<NotesItemFilters>({
+    high: false,
+    normal: false,
+    low: false,
+    own: false,
+    guider: false,
+  });
 
   React.useEffect(() => {
     dispatch(loadNotes(status.userId, false));
   }, [dispatch, status]);
 
+  React.useEffect(() => {}, [notes]);
+
   const pinNotesItem = () => {};
   const updateNotesItemStatus = () => {};
   const onArchiveClick = () => {};
   const onReturnArchivedClick = () => {};
+
   const onNotesItemSaveUpdateClick = (
     noteId: number,
     request: UpdateNoteRequest
@@ -61,7 +66,7 @@ const GuiderNotes = (props: GuiderNotesProps) => {
             ) : (
               <NotesItemList
                 usePlace={"guider"}
-                filters={nonActiveNoteFilters}
+                filters={filters}
                 isLoadingList={false}
                 userId={status.userId}
                 notesItems={notes}

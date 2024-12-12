@@ -12,9 +12,7 @@ import {
   NoteStatusType,
   UpdateNoteRequest,
   UpdateNoteReceiverRequest,
-  NoteReceiver,
 } from "~/generated/client";
-import { ContactRecipientType } from "~/reducers/user-index";
 
 /**
  * DropdownItem
@@ -460,16 +458,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       );
     };
 
-    const turnNoteRecipientsToAutofillRecipients = (
-      recipients: NoteReceiver[]
-    ): ContactRecipientType[] =>
-      recipients.map((recipient) => ({
-        type: recipient.id ? "user" : "usergroup",
-        value: {
-          id: recipient.id || recipient.userGroupId,
-          name: recipient.recipientName || recipient.userGroupName,
-        },
-      }));
     return (
       <div
         {...restProps}
@@ -483,8 +471,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         <div className="notes__item-actions">
           {loggedUserIsCreator && onNotesItemSaveUpdateClick && (
             <NotesItemEdit
+              recipientId={recipientId}
               selectedNotesItem={notesItem}
-              recipients={turnNoteRecipientsToAutofillRecipients(recipients)}
               onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
             >
               <IconButton

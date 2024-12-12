@@ -522,9 +522,9 @@ const loadNotes: LoadNotesTriggerType = function loadNotes(
   ) => {
     try {
       // Lets not load something that is already loaded
-      if (getState().guider.notes.state === "READY") {
-        return;
-      }
+      // if (getState().guider.notes.state === "READY") {
+      //   return;
+      // }
       dispatch({ type: "UPDATE_NOTES_STATUS", payload: "LOADING" });
       const NotesApi = MApi.getNotesApi();
       const notes = await NotesApi.getNotesByCreator({

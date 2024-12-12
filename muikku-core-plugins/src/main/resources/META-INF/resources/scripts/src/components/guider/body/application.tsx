@@ -7,7 +7,7 @@ import Toolbar from "./application/toolbar";
 import { withTranslation, WithTranslation } from "react-i18next";
 import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
-import { GuiderContext, GuiderViews } from "../context";
+import { GuiderContext, GuiderView } from "../context";
 
 /**
  * GuiderApplicationProps
@@ -20,7 +20,7 @@ interface GuiderApplicationProps extends WithTranslation<["common"]> {
  * GuiderApplicationState
  */
 interface GuiderApplicationState {
-  view: GuiderViews;
+  view: GuiderView;
 }
 
 /**
@@ -56,7 +56,7 @@ class GuiderApplication extends React.Component<
    * @param option Select  option
    */
   handleSelectChange = (option: OptionDefault<string>) => {
-    this.context.setView(option.value as GuiderViews);
+    this.context.setView(option.value as GuiderView);
   };
 
   /**
@@ -64,7 +64,7 @@ class GuiderApplication extends React.Component<
    * @param content type of content
    * @returns JSX.Element
    */
-  handleContent = (content: GuiderViews) => {
+  handleContent = (content: GuiderView) => {
     switch (content) {
       case "students":
         return <Students />;

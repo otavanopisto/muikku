@@ -1,4 +1,6 @@
 import * as React from "react";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
@@ -11,13 +13,26 @@ import Navigation, {
 } from "~/components/general/navigation";
 import { UserGroup } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { GuiderContext } from "../context";
+import {
+  BooleanNoteFilters,
+  GuiderContext,
+  GuiderNoteFilters,
+  GuiderNotesState,
+} from "../context";
+import {
+  loadNotes,
+  LoadNotesTriggerType,
+} from "~/actions/main-function/guider";
+import { StatusType } from "~/reducers/base/status";
+import { NotesItemFilters } from "~/@types/notes";
 
 /**
  * NavigationProps
  */
 interface NavigationProps extends WithTranslation<["common"]> {
+  loadNotes: LoadNotesTriggerType;
   guider: GuiderState;
+  status: StatusType;
 }
 
 /**
@@ -32,6 +47,20 @@ class NavigationAside extends React.Component<
   NavigationProps,
   NavigationState
 > {
+  // These are required to make the types work in the context
+  static contextType = GuiderContext;
+  context!: React.ContextType<typeof GuiderContext>;
+
+  /**
+   * @param filter state filter
+   */
+  handleStateFilterChange = (filter: GuiderNotesState) => {
+    this.props.loadNotes(this.props.status.userId, filter === "archived");
+    this.context.dispatch({
+      type: "SET_STATE_FILTER",
+      payload: filter,
+    });
+  };
   /**
    * render
    */
@@ -179,6 +208,74 @@ class NavigationAside extends React.Component<
           )}
         </Navigation>
       );
+    } else if (view === "tasks") {
+      const { state, high, normal, low } = this.context.filters;
+
+      return (
+        <Navigation>
+          <NavigationTopic name={"Tila"}>
+            <NavigationElement
+              modifiers="aside-navigation-guider-flag"
+              icon="note"
+              isActive={state === "active"}
+              onClick={() => this.handleStateFilterChange("active")}
+            >
+              Aktiiviset
+            </NavigationElement>
+            <NavigationElement
+              modifiers="aside-navigation-guider-flag"
+              icon="trash"
+              isActive={state === "archived"}
+              onClick={() => this.handleStateFilterChange("archived")}
+            >
+              Arkistoidut
+            </NavigationElement>
+          </NavigationTopic>
+          <NavigationTopic name={"Prioriteetti"}>
+            <NavigationElement
+              modifiers="aside-navigation-guider-flag"
+              icon="note"
+              isActive={high}
+              onClick={() =>
+                this.context.dispatch({
+                  type: "SET_BOOLEAN_FILTER",
+                  payload: "high",
+                })
+              }
+            >
+              Korkea
+            </NavigationElement>
+
+            <NavigationElement
+              modifiers="aside-navigation-guider-flag"
+              icon="note"
+              isActive={normal}
+              onClick={() =>
+                this.context.dispatch({
+                  type: "SET_BOOLEAN_FILTER",
+                  payload: "normal",
+                })
+              }
+            >
+              Normaali
+            </NavigationElement>
+
+            <NavigationElement
+              modifiers="aside-navigation-guider-flag"
+              icon="note"
+              isActive={low}
+              onClick={() =>
+                this.context.dispatch({
+                  type: "SET_BOOLEAN_FILTER",
+                  payload: "low",
+                })
+              }
+            >
+              Matala
+            </NavigationElement>
+          </NavigationTopic>
+        </Navigation>
+      );
     } else {
       return null;
     }
@@ -194,14 +291,21 @@ NavigationAside.contextType = GuiderContext;
 function mapStateToProps(state: StateType) {
   return {
     guider: state.guider,
+    status: state.status,
   };
 }
 
 /**
  * mapDispatchToProps
+ * @param dispatch dispatch
  */
-function mapDispatchToProps() {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators(
+    {
+      loadNotes,
+    },
+    dispatch
+  );
 }
 
 export default withTranslation(["guider"])(
