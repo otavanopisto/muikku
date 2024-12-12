@@ -2,9 +2,11 @@ package fi.otavanopisto.muikku.plugins.hops.rest;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,7 @@ import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsPlannedCourse;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
@@ -468,6 +471,96 @@ public class HopsRestService {
     else {
       return Response.status(response.getStatusCode()).entity(response.getMessage()).build();
     }
+  }
+
+  @GET
+  @Path("/student/{STUDENTIDENTIFIER}/plannedCourses")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getPlannedCourses(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    
+    // Access check
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+          return Response.status(Status.FORBIDDEN).build();
+        }
+      }
+    }
+    
+    List<HopsPlannedCourse> plannedCourses = hopsController.listPlannedCoursesByStudentIdentifier(studentIdentifierStr);
+    if (plannedCourses.isEmpty()) {
+      return Response.ok(Collections.<HistoryItem>emptyList()).build();
+    }
+    
+    List<HopsPlannedCourseRestModel> restPlannedCourses = new ArrayList<>();
+    for (HopsPlannedCourse plannedCourse : plannedCourses) {
+      restPlannedCourses.add(toRestModel(plannedCourse));
+    }
+    
+    return Response.ok(restPlannedCourses).build();
+  }
+
+  @PUT
+  @Path("/student/{STUDENTIDENTIFIER}/plannedCourses")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updatePlannedCourses(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, List<HopsPlannedCourseRestModel> payload) {
+    
+    // Access check
+
+    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
+      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Create, update, and delete planned courses based on payload
+    
+    List<HopsPlannedCourse> currentPlannedCourses = hopsController.listPlannedCoursesByStudentIdentifier(studentIdentifierStr);
+    for (HopsPlannedCourseRestModel plannedCourse : payload) {
+      if (plannedCourse.getId() == null) {
+        HopsPlannedCourse newPlannedCourse = hopsController.createPlannedCourse(studentIdentifierStr,
+            plannedCourse.getName(),
+            plannedCourse.getCourseNumber(),
+            plannedCourse.getLength(),
+            plannedCourse.getLengthSymbol(),
+            plannedCourse.getSubjectCode(),
+            plannedCourse.getMandatory(),
+            plannedCourse.getStartDate(),
+            plannedCourse.getDuration(),
+            plannedCourse.getWorkspaceEntityId());
+        plannedCourse.setId(newPlannedCourse.getId());
+      }
+      else {
+        HopsPlannedCourse existingPlannedCourse = currentPlannedCourses.stream().filter(c -> c.getId().equals(plannedCourse.getId())).findFirst().orElse(null);
+        if (existingPlannedCourse != null) {
+          hopsController.updatePlannedCourse(existingPlannedCourse,
+              plannedCourse.getName(),
+              plannedCourse.getCourseNumber(),
+              plannedCourse.getLength(),
+              plannedCourse.getLengthSymbol(),
+              plannedCourse.getSubjectCode(),
+              plannedCourse.getMandatory(),
+              plannedCourse.getStartDate(),
+              plannedCourse.getDuration(),
+              plannedCourse.getWorkspaceEntityId());
+          currentPlannedCourses.remove(existingPlannedCourse);
+        }
+      }
+    }
+    for (HopsPlannedCourse deletedCourse : currentPlannedCourses) {
+      hopsController.deletePlannedCourse(deletedCourse);
+    }
+    
+    return Response.ok(payload).build();
   }
 
   @GET
@@ -1196,4 +1289,18 @@ public class HopsRestService {
     return Response.ok(userSchoolDataController.listStudentAlternativeStudyOptions(studentIdentifier)).build();
 
   }
+  
+  private HopsPlannedCourseRestModel toRestModel(HopsPlannedCourse plannedCourse) {
+    return new HopsPlannedCourseRestModel(plannedCourse.getId(),
+        plannedCourse.getName(),
+        plannedCourse.getCourseNumber(),
+        plannedCourse.getLength(),
+        plannedCourse.getLengthSymbol(),
+        plannedCourse.getSubjectCode(),
+        plannedCourse.getMandatory(),
+        new Date(plannedCourse.getStartDate().getTime()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+        plannedCourse.getDuration(),
+        plannedCourse.getWorkspaceEntityId());
+  }
+
 }
