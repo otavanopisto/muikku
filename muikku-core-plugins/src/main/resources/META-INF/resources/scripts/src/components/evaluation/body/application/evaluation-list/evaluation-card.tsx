@@ -409,6 +409,7 @@ interface EvaluationCardHeaderProps {
  * @returns JSX.Element
  */
 const EvaluationCardHeader = (props: EvaluationCardHeaderProps) => {
+  const { t } = useTranslation(["common"]);
   const { evaluationAssessmentRequest } = props;
 
   const studentName = `${evaluationAssessmentRequest.lastName} ${evaluationAssessmentRequest.firstName}`;
@@ -433,7 +434,9 @@ const EvaluationCardHeader = (props: EvaluationCardHeaderProps) => {
                     `pedagogyPlan-` + evaluationAssessmentRequest.userEntityId
                   }
                 >
-                  Opiskelijalle on tehty pedagogisen tuen suunnitelma
+                  {t("labels.pedagogyPlan", {
+                    ns: "common",
+                  })}
                 </span>
               }
             >
@@ -445,6 +448,35 @@ const EvaluationCardHeader = (props: EvaluationCardHeaderProps) => {
                   }
                 >
                   P
+                </span>
+              </div>
+            </Dropdown>
+          ) : null}
+
+          {evaluationAssessmentRequest.u18Compulsory ? (
+            <Dropdown
+              alignSelfVertically="top"
+              openByHover
+              content={
+                <span
+                  id={
+                    `u18Compulsory-` + evaluationAssessmentRequest.userEntityId
+                  }
+                >
+                  {t("labels.u18Compulsory", {
+                    ns: "common",
+                  })}
+                </span>
+              }
+            >
+              <div className="label label--u18-compulsory">
+                <span
+                  className="label__text label__text--u18-compulsory"
+                  aria-labelledby={
+                    `u18Compulsory-` + evaluationAssessmentRequest.userEntityId
+                  }
+                >
+                  O
                 </span>
               </div>
             </Dropdown>

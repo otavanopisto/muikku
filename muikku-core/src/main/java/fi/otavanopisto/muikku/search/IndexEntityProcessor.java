@@ -5,8 +5,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
+import fi.otavanopisto.muikku.search.annotations.IndexFieldType;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.IndexIgnore;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
@@ -106,6 +113,24 @@ public class IndexEntityProcessor {
           }
 
           fieldValue = processed;
+        }
+        else if (indexField.type() == IndexFieldType.DATE) {
+          if (fieldValue instanceof LocalDate) {
+            DateTimeFormatter dateFormat = DateTimeFormatter.ISO_LOCAL_DATE;
+            fieldValue = ((LocalDate) fieldValue).format(dateFormat);
+          } 
+          else if (fieldValue instanceof LocalDateTime) {
+            DateTimeFormatter dateFormat = DateTimeFormatter.ISO_LOCAL_DATE;
+            fieldValue = ((LocalDateTime) fieldValue).format(dateFormat);
+          } 
+          else if (fieldValue instanceof OffsetDateTime) {
+            DateTimeFormatter dateFormat = DateTimeFormatter.ISO_LOCAL_DATE;
+            fieldValue = ((OffsetDateTime) fieldValue).format(dateFormat);
+          } 
+          else if (fieldValue instanceof Date) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            fieldValue = sdf.format((Date) fieldValue);
+          }
         }
       }
       

@@ -14,5 +14,6 @@ public @interface IndexField {
   boolean toId() default false;
   // Instruct the processor to handle this as a collection of ("complex") objects
   boolean collection() default false;
-  
+  // Type determines how the data should be processed
+  IndexFieldType type() default IndexFieldType.DEFAULT;
 }

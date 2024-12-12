@@ -175,6 +175,14 @@ public class RestAssessmentRequest {
     this.identifier = identifier;
   }
 
+  public boolean isU18Compulsory() {
+    return u18Compulsory;
+  }
+
+  public void setU18Compulsory(boolean u18Compulsory) {
+    this.u18Compulsory = u18Compulsory;
+  }
+
   private Long id;
   private String identifier; // for assessment requests
   private Long userEntityId;
@@ -195,5 +203,6 @@ public class RestAssessmentRequest {
   private List<WorkspaceSubjectRestModel> subjects;
   private boolean hasPedagogyForm;
   private boolean locked;
+  private boolean u18Compulsory;
   private String state; // essentially state string of WorkspaceAssessmentState
 }
