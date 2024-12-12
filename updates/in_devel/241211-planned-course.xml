@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table HopsPlannedCourse (
+      id bigint not null auto_increment,
+      courseNumber integer,
+      duration bigint,
+      length integer,
+      lengthSymbol varchar(255),
+      mandatory bit not null,
+      name varchar(255),
+      startDate date,
+      studentIdentifier varchar(255) not null,
+      subjectCode varchar(255),
+      workspaceEntityId bigint,
+      primary key (id)
+    );
+  </sql>
+  <sql>create index IDXq5u4v18v3jl2ub6mg45rmagbl on HopsPlannedCourse (studentIdentifier);</sql>  
+
+</update> 
