@@ -158,20 +158,19 @@ public class NotesRESTService extends PluginRESTService {
 
         // User groups
         for (UserGroupEntity userGroup : prepareRecipientList.getUserGroups()) {
-          prepareRecipientList.getUserGroupRecipients(userGroup);
 
-          List<UserGroupUserEntity> ugue = userGroupEntityController
-              .listUserGroupUserEntitiesByUserGroupEntity(userGroup);
+          Long userGroupId = userGroup.getId();
 
-          for (UserGroupUserEntity userGroupUserEntity : ugue) {
+          List<UserEntity> groupUsers = prepareRecipientList.getUserGroupRecipients(userGroup);
 
-            if (userGroupUserEntity != null) {
-              UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
-
-              UserEntity groupRecipientEntity = userSchoolDataIdentifier.getUserEntity();
-
-              newReceiver = noteReceiverController.createNoteRecipient(pinned, groupRecipientEntity.getId(), newNote,
-                  userGroupUserEntity.getUserGroupEntity().getId());
+          if (!CollectionUtils.isEmpty(groupUsers)) {
+            for (UserEntity groupUser : groupUsers) {
+              UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController
+                  .findUserSchoolDataIdentifierByUserEntity(groupUser);
+              if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+                continue;
+              }
+              newReceiver = noteReceiverController.createNoteRecipient(pinned, groupUser.getId(), newNote, userGroupId);
               receiverList.add(toRestModel(newReceiver));
             }
           }
@@ -291,6 +290,10 @@ public class NotesRESTService extends PluginRESTService {
             UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
 
             UserEntity groupRecipientEntity = userSchoolDataIdentifier.getUserEntity();
+
+            if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+              continue;
+            }
 
             NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(groupRecipientEntity.getId(),
                 updatedNote);
