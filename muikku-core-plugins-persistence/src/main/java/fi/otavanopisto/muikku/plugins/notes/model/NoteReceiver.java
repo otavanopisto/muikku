@@ -57,6 +57,14 @@ public class NoteReceiver {
   public void setRecipientGroup(Long recipientGroup_id) {
     this.recipientGroup_id = recipientGroup_id;
   }
+
+  public Long getWorkspace_id() {
+    return workspace_id;
+  }
+
+  public void setWorkspace_id(Long workspace_id) {
+    this.workspace_id = workspace_id;
+  }
   
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -79,4 +87,7 @@ public class NoteReceiver {
 
   @Column
   private Long recipientGroup_id;
+  
+  @Column
+  private Long workspace_id;
 }

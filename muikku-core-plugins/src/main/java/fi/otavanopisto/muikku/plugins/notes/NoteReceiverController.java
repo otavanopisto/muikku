@@ -26,14 +26,15 @@ public class NoteReceiverController {
     return noteRecipientDAO.listByReceiver(recipientId);
   }
   
-  public NoteReceiver createNoteRecipient(Boolean pinned, Long recipient, Note note, Long userGroupId) {
+  public NoteReceiver createNoteRecipient(Boolean pinned, Long recipient, Note note, Long userGroupId, Long workspaceId) {
     return noteRecipientDAO.create(
         pinned,
         recipient,
         NoteStatus.ONGOING,
         Boolean.FALSE, 
         note,
-        userGroupId);
+        userGroupId,
+        workspaceId);
   }
   
   public NoteReceiver updateNoteRecipient(NoteReceiver noteRecipient, Boolean pinned, NoteStatus status) {
