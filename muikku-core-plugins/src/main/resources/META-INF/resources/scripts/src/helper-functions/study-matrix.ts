@@ -424,9 +424,9 @@ export const getCourseInfo = (
 
   if (evaluatedCourse) {
     if (evaluatedCourse.passing) {
-      updatedModifiers.push("PASSED_GRADE");
+      updatedModifiers.push("PASSED-GRADE");
     } else {
-      updatedModifiers.push("FAILED_GRADE");
+      updatedModifiers.push("FAILED-GRADE");
     }
 
     grade = evaluatedCourse.grade;

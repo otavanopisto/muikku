@@ -658,26 +658,140 @@
 .hops-container__indicator-item {
   border: 3px solid transparent;
   border-radius: 100%;
+  color: $color-default-contrast;
   height: 35px;
   margin: 0 5px 0 0;
   width: 35px;
 }
 
 .hops-container__indicator-item--mandatory {
+  align-items: center;
   background: $color-mandatory;
+  display: flex;
+  justify-content: center;
 }
 
 .hops-container__indicator-item--optional {
+  align-items: center;
   background: $color-optional;
+  display: flex;
+  justify-content: center;
 }
 
 .hops-container__indicator-item--approval {
   background: $color-completed;
+  position: relative;
+
+  &:after {
+    font-family: "muikku";
+    color: $color-great-success;
+    content: "\e62b";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &:before {
+    font-family: "muikku";
+    color: $color-completed-border;
+    content: "\e62c";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 2;
+  }
 }
 
 .hops-container__indicator-item--completed {
   background: $color-completed;
   border-color: $color-completed-border;
+  border-radius: 50% 50% 50% 3px;
+  position: relative;
+
+  &:after {
+    font-family: "muikku";
+    color: $color-great-success;
+    content: "\e62b";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &:before {
+    font-family: "muikku";
+    color: $color-completed-border;
+    content: "\e62c";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 2;
+  }
+}
+
+.hops-container__indicator-item--failed {
+  align-items: center;
+  background: $color-passed-failed;
+  border-color: $color-passed-failed-border;
+  display: flex;
+  justify-content: center;
+  position: relative;
+
+  &:after {
+    font-family: "muikku";
+    color: $color-great-success;
+    content: "\e62b";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &:before {
+    font-family: "muikku";
+    color: $color-completed-border;
+    content: "\e62c";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 2;
+  }
+}
+
+.hops-container__indicator-item--aborted {
+  align-items: center;
+  background: $color-passed-aborted;
+  border-color: $color-passed-aborted-border;
+  display: flex;
+  justify-content: center;
+}
+
+.hops-container__indicator-item--supplementationrequest {
+  align-items: center;
+  background: lighten($color-incomplete, 30%);
+  border-color: $color-incomplete;
+  border-width: 3px;
+  display: flex;
+  justify-content: center;
 }
 
 .hops-container__indicator-item--inprogress {
@@ -686,16 +800,10 @@
   border-radius: 50% 3px 50% 50%;
 }
 
-.hops-container__indicator-item--selected {
-  border-color: $color-optional-selected;
-}
-
-.hops-container__indicator-item--suggested {
-  background: $color-suggested;
-}
-
 .hops-container__indicator-item--next {
-  background: $color-next;
+  background: lighten($color-next, 50%);
+  border-color: $color-next;
+  border-radius: 50% 3px;
 }
 
 // HOPS study tool dropdown content

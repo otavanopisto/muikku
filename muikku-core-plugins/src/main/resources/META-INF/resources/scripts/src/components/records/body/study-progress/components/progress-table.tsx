@@ -152,7 +152,8 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
             tabIndex={0}
             className="table__data-content-wrapper table__data-content-wrapper--course"
           >
-            {course.mandatory ? courseTdContent : `${courseTdContent}*`}
+            {courseTdContent}
+            {!course.mandatory ? <sup>*</sup> : null}
           </span>
         </Dropdown>
       </Td>

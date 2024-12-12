@@ -147,7 +147,8 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
             }
           >
             <span tabIndex={0} className="list__indicator-data-wapper">
-              {course.mandatory ? courseTdContent : `${courseTdContent}*`}
+              {courseTdContent}
+              {!course.mandatory ? <sup>*</sup> : null}
             </span>
           </Dropdown>
         </ListItemIndicator>

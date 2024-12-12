@@ -80,6 +80,7 @@
   align-items: center;
   border: 3px solid transparent;
   border-radius: 100%;
+  color: $color-default-contrast;
   cursor: pointer;
   display: flex;
   height: 35px;
@@ -98,21 +99,13 @@
 
 .list__indicator--MANDATORY {
   background-color: $color-mandatory;
-  color: $color-default-contrast;
 }
 
 .list__indicator--OPTIONAL {
   background-color: $color-optional;
 }
 
-.list__indicator--OPTIONAL-SELECTED {
-  border-color: $color-optional-selected;
-}
-
 .list__indicator--COMPLETED {
-  background-color: $color-completed;
-  border-color: $color-completed-border;
-  color: $color-default;
 
   &:after {
     font-family: "muikku";
@@ -124,7 +117,7 @@
     right: -6px;
     top: -6px;
     width: 1rem;
-    z-index: 97;
+    z-index: 1;
   }
 
   &:before {
@@ -137,8 +130,63 @@
     right: -6px;
     top: -6px;
     width: 1rem;
-    z-index: 98;
+    z-index: 2;
   }
+}
+
+.list__indicator--COMPLETED.list__indicator--PASSED-GRADE {
+  background: $color-completed;
+  border-color: $color-completed-border;
+  border-radius: 50% 50% 50% 3px;
+}
+
+.list__indicator--COMPLETED.list__indicator--FAILED-GRADE {
+  background: $color-passed-failed;
+  border-color: $color-passed-failed-border;
+  border-radius: 50% 50% 50% 3px;
+}
+
+.list__indicator--APPROVAL {
+
+  &:after {
+    font-family: "muikku";
+    color: $color-great-success;
+    content: "\e62b";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &:before {
+    font-family: "muikku";
+    color: $color-completed-border;
+    content: "\e62c";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 2;
+  }
+}
+
+.list__indicator--APPROVAL.list__indicator--PASSED-GRADE {
+  background: $color-completed;
+}
+
+.list__indicator--APPROVAL.list__indicator--FAILED-GRADE {
+  background: $color-passed-failed;
+  // border-color: $color-passed-failed-border;
+}
+
+.list__indicator--ABORTED {
+  background: $color-passed-aborted;
+  border-color: $color-passed-aborted-border;
 }
 
 .list__indicator--INPROGRESS {
@@ -147,47 +195,8 @@
   border-radius: 50% 3px 50% 50%;
 }
 
-.list__indicator--APPROVAL {
-  background: $color-completed;
-  color: $color-default;
-
-  &:after {
-    font-family: "muikku";
-    color: $color-great-success;
-    content: "\e62b";
-    font-size: 1rem;
-    height: 1rem;
-    position: absolute;
-    right: 12px;
-    top: 3px;
-    width: 1rem;
-    z-index: 97;
-  }
-
-  &:before {
-    font-family: "muikku";
-    color: $color-completed-border;
-    content: "\e62c";
-    font-size: 1rem;
-    height: 1rem;
-    position: absolute;
-    right: 12px;
-    top: 3px;
-    width: 1rem;
-    z-index: 98;
-  }
-}
-
-.list__indicator--SUGGESTED {
-  background: $color-suggested;
-  color: $color-default;
-}
-
 .list__indicator--NEXT {
-  background: $color-next;
-  color: $color-default;
-}
-
-.list__indicator--SELECTED-OPTIONAL {
-  background-color: $color-optional-selected;
+  background: lighten($color-next, 50%);
+  border-color: $color-next;
+  border-radius: 50% 3px;
 }

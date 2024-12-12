@@ -47,16 +47,21 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
     <>
       <div className="hops-container__study-tool-indicators">
         <div className="hops-container__study-tool-indicator-container--legend-title">
-          {t("labels.colorDescriptions", { ns: "studyMatrix" })}
+          {t("labels.legendDescriptions", { ns: "studyMatrix" })}
         </div>
         <div className="hops-container__study-tool-indicator-container">
-          <div className="hops-container__indicator-item hops-container__indicator-item--mandatory"></div>
+          <div className="hops-container__indicator-item hops-container__indicator-item--mandatory">
+            {t("labels.mandatoryShorthand", { ns: "studyMatrix" })}
+          </div>
           <div className="hops-container__indicator-item-label">
             {t("labels.mandatory", { ns: "studyMatrix" })}
           </div>
         </div>
         <div className="hops-container__study-tool-indicator-container ">
-          <div className="hops-container__indicator-item hops-container__indicator-item--optional"></div>
+          <div className="hops-container__indicator-item hops-container__indicator-item--optional">
+            {t("labels.optionalShorthand", { ns: "studyMatrix" })}
+            <sup>*</sup>
+          </div>
           <div className="hops-container__indicator-item-label">
             {t("labels.optional", { ns: "studyMatrix" })}
           </div>
@@ -74,12 +79,27 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
           </div>
         </div>
         <div className="hops-container__study-tool-indicator-container ">
+          <div className="hops-container__indicator-item hops-container__indicator-item--aborted">
+            {t("labels.abortedShorthand", { ns: "studyMatrix" })}
+          </div>
+          <div className="hops-container__indicator-item-label">
+            {t("labels.aborted", { ns: "studyMatrix" })}
+          </div>
+        </div>
+        <div className="hops-container__study-tool-indicator-container ">
+          <div className="hops-container__indicator-item hops-container__indicator-item--supplementationrequest">
+            {t("labels.supplementationRequestShorthand", { ns: "studyMatrix" })}
+          </div>
+          <div className="hops-container__indicator-item-label">
+            {t("labels.supplementationRequest", { ns: "studyMatrix" })}
+          </div>
+        </div>
+        <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--inprogress"></div>
           <div className="hops-container__indicator-item-label">
             {t("labels.inProgress", { ns: "studyMatrix" })}
           </div>
         </div>
-
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
           <div className="hops-container__indicator-item-label">

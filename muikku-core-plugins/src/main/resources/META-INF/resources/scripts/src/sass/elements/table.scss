@@ -146,6 +146,7 @@
 
 .table__data {
   padding: 5px;
+  position: relative;
   width: auto;
 }
 
@@ -201,14 +202,7 @@
   }
 }
 
-.table__data--OPTIONAL-SELECTED {
-  .table__data-content-wrapper--course {
-    border-color: $color-optional-selected;
-  }
-}
-
 .table__data--COMPLETED {
-  position: relative;
 
   &:after {
     font-family: "muikku";
@@ -220,7 +214,7 @@
     right: 12px;
     top: 3px;
     width: 1rem;
-    z-index: 97;
+    z-index: 1;
   }
 
   &:before {
@@ -233,12 +227,79 @@
     right: 12px;
     top: 3px;
     width: 1rem;
-    z-index: 98;
+    z-index: 2;
   }
+}
 
+.table__data--COMPLETED.table__data--PASSED-GRADE {
   .table__data-content-wrapper--course {
     background: $color-completed;
     border-color: $color-completed-border;
+    border-radius: 50% 50% 50% 3px;
+  }
+}
+
+.table__data--COMPLETED.table__data--FAILED-GRADE {
+  .table__data-content-wrapper--course {
+    background: $color-passed-failed;
+    border-color: $color-passed-failed-border;
+    border-radius: 50% 50% 50% 3px;
+  }
+}
+
+.table__data--APPROVAL {
+
+  &:after {
+    font-family: "muikku";
+    color: $color-great-success;
+    content: "\e62b";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: 12px;
+    top: 3px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &:before {
+    font-family: "muikku";
+    color: $color-completed-border;
+    content: "\e62c";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: 12px;
+    top: 3px;
+    width: 1rem;
+    z-index: 2;
+  }
+}
+
+.table__data--ABORTED {
+  .table__data-content-wrapper--course {
+    background: $color-passed-aborted;
+    border-color: $color-passed-aborted-border;
+  }
+}
+
+.table__data--APPROVAL.table__data--PASSED-GRADE {
+  .table__data-content-wrapper--course {
+    background: $color-completed;
+  }
+}
+
+.table__data--APPROVAL.table__data--FAILED-GRADE {
+  .table__data-content-wrapper--course {
+    background: $color-passed-failed;
+    // border-color: $color-passed-failed-border;
+  }
+}
+
+.table__data--SUPPLEMENTATIONREQUEST {
+  .table__data-content-wrapper--course {
+    background: lighten($color-incomplete, 30%);
+    border-color: $color-incomplete;
     border-width: 3px;
   }
 }
@@ -251,51 +312,11 @@
   }
 }
 
-.table__data--APPROVAL {
-  position: relative;
-
-  &:after {
-    font-family: "muikku";
-    color: $color-great-success;
-    content: "\e62b";
-    font-size: 1rem;
-    height: 1rem;
-    position: absolute;
-    right: 12px;
-    top: 3px;
-    width: 1rem;
-    z-index: 97;
-  }
-
-  &:before {
-    font-family: "muikku";
-    color: $color-completed-border;
-    content: "\e62c";
-    font-size: 1rem;
-    height: 1rem;
-    position: absolute;
-    right: 12px;
-    top: 3px;
-    width: 1rem;
-    z-index: 98;
-  }
-
-  .table__data-content-wrapper--course {
-    background: $color-completed;
-  }
-}
-
-.table__data--SUGGESTED {
-  .table__data-content-wrapper--course {
-    background: $color-suggested;
-    color: $color-default;
-  }
-}
-
 .table__data--NEXT {
   .table__data-content-wrapper--course {
-    background: $color-next;
-    color: $color-default;
+    background: lighten($color-next, 50%);
+    border-color: $color-next;
+    border-radius: 50% 3px;
   }
 }
 
