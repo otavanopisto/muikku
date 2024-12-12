@@ -509,7 +509,7 @@ public class HopsRestService {
   @PUT
   @Path("/student/{STUDENTIDENTIFIER}/plannedCourses")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updatePlannedCourses(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, List<HopsPlannedCourseRestModel> payload) {
+  public Response updatePlannedCourses(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, HopsPlannedCoursesRestModel payload) {
     
     // Access check
 
@@ -525,7 +525,7 @@ public class HopsRestService {
     // Create, update, and delete planned courses based on payload
     
     List<HopsPlannedCourse> currentPlannedCourses = hopsController.listPlannedCoursesByStudentIdentifier(studentIdentifierStr);
-    for (HopsPlannedCourseRestModel plannedCourse : payload) {
+    for (HopsPlannedCourseRestModel plannedCourse : payload.getPlannedCourses()) {
       if (plannedCourse.getId() == null) {
         HopsPlannedCourse newPlannedCourse = hopsController.createPlannedCourse(studentIdentifierStr,
             plannedCourse.getName(),
