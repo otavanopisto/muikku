@@ -101,7 +101,7 @@ class NotesItemEdit extends SessionStateComponent<
    */
   handleUpdateClick = (closeDialog: () => void) => () => {
     const { note, recipients } = this.state;
-    // If the recipien is explicitly given, use it,
+    // If the recipient is explicitly given, use it,
     // otherwise use the autofill recipients
     const recipientIds = this.props.recipientId
       ? [this.props.recipientId]

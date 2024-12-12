@@ -15377,6 +15377,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/NoteReceiver"
+        multiUserNote:
+          type: boolean
 
     NoteCreationObject:
       type: object
