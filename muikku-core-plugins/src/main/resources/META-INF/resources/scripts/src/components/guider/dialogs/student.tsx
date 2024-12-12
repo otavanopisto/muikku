@@ -234,9 +234,7 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
         <DialogTitleItem modifier="hops-toggle">
           <Button
             className={
-              viewMode === "HOPS_VIEW"
-                ? "button--primary active"
-                : "button--primary"
+              viewMode === "HOPS_VIEW" ? "button--info active" : "button--info"
             }
             icon="compass"
             onClick={toggleViewMode}

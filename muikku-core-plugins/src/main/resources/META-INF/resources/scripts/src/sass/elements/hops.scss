@@ -797,6 +797,10 @@
 }
 
 .hops-edit__button-row {
+  align-items: center;
   display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+  gap: 10px;
   width: 100%;
 }

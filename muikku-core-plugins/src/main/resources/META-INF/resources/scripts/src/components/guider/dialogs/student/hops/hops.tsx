@@ -346,11 +346,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
               <Button
                 onClick={handleStartEditing}
                 disabled={editingDisabled}
-                buttonModifiers={[
-                  "primary",
-                  "standard-ok",
-                  "standard-fit-content",
-                ]}
+                buttonModifiers={["info", "standard-ok"]}
               >
                 {t("actions.editingStart", { ns: "hops_new" })}
               </Button>
@@ -358,22 +354,14 @@ const HopsApplication = (props: HopsApplicationProps) => {
               <Button
                 onClick={handleOpenPendingChangesDetailsDialog}
                 disabled={!hopsHasChanges}
-                buttonModifiers={[
-                  "primary",
-                  "standard-ok",
-                  "standard-fit-content",
-                ]}
+                buttonModifiers={["execute", "standard-ok"]}
               >
                 {t("actions.editingEnd", { ns: "hops_new" })}
               </Button>
             )}
             {hops.hopsMode === "EDIT" && (
               <Button
-                buttonModifiers={[
-                  "cancel",
-                  "standard-cancel",
-                  "standard-fit-content",
-                ]}
+                buttonModifiers={["cancel", "standard-cancel"]}
                 onClick={
                   hopsHasChanges
                     ? handleOpenPendingChangesWarningDialog
@@ -401,32 +389,36 @@ const HopsApplication = (props: HopsApplicationProps) => {
           onSaveClick={handleSaveHops}
           onCancelClick={handlePendingChangesDetailsDialogCancel}
           content={
-            <div className="hops-container__row">
+            <>
               {changedFields.length > 0 && (
-                <div className="hops__form-element-container">
-                  <h4>
-                    {t("labels.editedFields", { ns: "pedagogySupportPlan" })}
-                  </h4>
-                  <ul>
-                    {changedFields.map((field) => (
-                      <li key={field} style={{ display: "list-item" }}>
-                        {isCompulsoryStudiesHops(hops.hopsForm)
-                          ? compulsoryStudiesFieldsTranslation(t)[field]
-                          : secondaryStudiesFieldsTranslation(t)[field]}
-                      </li>
-                    ))}
-                  </ul>
+                <div className="hops-container__row">
+                  <div className="hops__form-element-container">
+                    <h4>
+                      {t("labels.editedFields", { ns: "pedagogySupportPlan" })}
+                    </h4>
+                    <ul>
+                      {changedFields.map((field) => (
+                        <li key={field} style={{ display: "list-item" }}>
+                          {isCompulsoryStudiesHops(hops.hopsForm)
+                            ? compulsoryStudiesFieldsTranslation(t)[field]
+                            : secondaryStudiesFieldsTranslation(t)[field]}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               )}
-              <div className="hops__form-element-container">
-                <Textarea
-                  id="pending-changes-details"
-                  value={pendingDetailsContent}
-                  onChange={(e) => setPendingDetailsContent(e.target.value)}
-                  className="form-element__textarea form-element__textarea--resize__vertically"
-                />
+              <div className="hops-container__row">
+                <div className="hops__form-element-container">
+                  <Textarea
+                    id="pending-changes-details"
+                    value={pendingDetailsContent}
+                    onChange={(e) => setPendingDetailsContent(e.target.value)}
+                    className="form-element__textarea form-element__textarea--resize__vertically"
+                  />
+                </div>
               </div>
-            </div>
+            </>
           }
         />
       </HopsBasicInfoProvider>

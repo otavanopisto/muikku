@@ -337,11 +337,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
                 <Button
                   onClick={handleStartEditing}
                   disabled={editingDisabled}
-                  buttonModifiers={[
-                    "primary",
-                    "standard-ok",
-                    "standard-fit-content",
-                  ]}
+                  buttonModifiers={["info", "standard-ok"]}
                 >
                   {t("actions.editingStart", { ns: "hops_new" })}
                 </Button>
@@ -349,22 +345,14 @@ const HopsApplication = (props: HopsApplicationProps) => {
                 <Button
                   onClick={handleOpenPendingChangesDetailsDialog}
                   disabled={!hopsHasChanges}
-                  buttonModifiers={[
-                    "primary",
-                    "standard-ok",
-                    "standard-fit-content",
-                  ]}
+                  buttonModifiers={["execute", "standard-ok"]}
                 >
                   {t("actions.editingEnd", { ns: "hops_new" })}
                 </Button>
               )}
               {hops.hopsMode === "EDIT" && (
                 <Button
-                  buttonModifiers={[
-                    "cancel",
-                    "standard-cancel",
-                    "standard-fit-content",
-                  ]}
+                  buttonModifiers={["cancel", "standard-cancel"]}
                   onClick={
                     hopsHasChanges
                       ? handleOpenPendingChangesWarningDialog
