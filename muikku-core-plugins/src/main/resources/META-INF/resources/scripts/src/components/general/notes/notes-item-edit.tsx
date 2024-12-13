@@ -21,6 +21,7 @@ import {} from "~/generated/client";
 import InputContactsAutofill, {
   InputContactsAutofillLoaders,
 } from "~/components/base/input-contacts-autofill";
+import autofillLoaders from "./helpers/autofill-loaders";
 
 /**
  * NotesItemEditProps
@@ -59,9 +60,7 @@ class NotesItemEdit extends SessionStateComponent<
    */
   constructor(props: NotesItemEditProps) {
     super(props, "records-notes-item-edit");
-
     this.clearUp = this.clearUp.bind(this);
-
     const { title, description, type, priority, startDate, dueDate } =
       props.selectedNotesItem;
     this.state = {
@@ -180,29 +179,30 @@ class NotesItemEdit extends SessionStateComponent<
      */
     const content = (closeDialog: () => void) => [
       <>
-        {!this.props.recipientId && this.props.loaders && (
-          <div className="env-dialog__form-element-container">
-            <InputContactsAutofill
-              identifier="communicatorRecipients"
-              modifier="new-message"
-              key="new-message-1"
-              showFullNames={true}
-              loaders={this.props.loaders()}
-              hasWorkspacePermission={false}
-              hasGroupPermission={true}
-              placeholder={this.props.t("labels.search", {
-                context: "recipients",
-              })}
-              label={this.props.t("labels.recipients", {
-                ns: "messaging",
-                count: 0,
-              })}
-              selectedItems={this.state.recipients}
-              onChange={this.handleRecipientsChange}
-              autofocus={false}
-            />
-          </div>
-        )}
+        {!this.props.recipientId &&
+          this.props.selectedNotesItem.multiUserNote && (
+            <div className="env-dialog__form-element-container">
+              <InputContactsAutofill
+                identifier="communicatorRecipients"
+                modifier="new-message"
+                key="new-message-1"
+                showFullNames={true}
+                loaders={autofillLoaders()}
+                hasWorkspacePermission={false}
+                hasGroupPermission={true}
+                placeholder={this.props.t("labels.search", {
+                  context: "recipients",
+                })}
+                label={this.props.t("labels.recipients", {
+                  ns: "messaging",
+                  count: 0,
+                })}
+                selectedItems={this.state.recipients}
+                onChange={this.handleRecipientsChange}
+                autofocus={false}
+              />
+            </div>
+          )}
       </>,
       <div
         key="edit-note-1"
@@ -337,7 +337,7 @@ class NotesItemEdit extends SessionStateComponent<
         title={this.props.i18n.t("labels.edit", { ns: "tasks" })}
         content={content}
         footer={footer}
-        // onOpen={this.clearUp}
+        // onClose={this.clearUp}
       >
         {this.props.children}
       </EnvironmentDialog>
