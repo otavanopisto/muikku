@@ -238,10 +238,7 @@ class GuiderToolbar extends React.Component<
       return (
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
-            <NotesItemNew
-              loaders={this.autofillLoaders}
-              onNotesItemSaveClick={this.handleNoteCreation}
-            >
+            <NotesItemNew onNotesItemSaveClick={this.handleNoteCreation}>
               <ButtonPill
                 buttonModifiers={["add-note", "within-content"]}
                 icon="plus"

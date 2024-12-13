@@ -22,6 +22,7 @@ import InputContactsAutofill, {
   InputContactsAutofillLoaders,
 } from "~/components/base/input-contacts-autofill";
 import autofillLoaders from "./helpers/autofill-loaders";
+import { turnNoteRecipientsToContacts } from "~/util/users";
 
 /**
  * NotesItemEditProps
@@ -158,17 +159,6 @@ class NotesItemEdit extends SessionStateComponent<
     });
   };
 
-  turnNoteRecipientsToAutofillRecipients = (
-    recipients: NoteReceiver[]
-  ): ContactRecipientType[] =>
-    recipients.map((recipient) => ({
-      type: recipient.id ? "user" : "usergroup",
-      value: {
-        id: recipient.id || recipient.userGroupId,
-        name: recipient.recipientName || recipient.userGroupName,
-      },
-    }));
-
   /**
    * render
    */
@@ -197,7 +187,9 @@ class NotesItemEdit extends SessionStateComponent<
                   ns: "messaging",
                   count: 0,
                 })}
-                selectedItems={this.state.recipients}
+                selectedItems={turnNoteRecipientsToContacts(
+                  this.props.selectedNotesItem.recipients
+                )}
                 onChange={this.handleRecipientsChange}
                 autofocus={false}
               />
