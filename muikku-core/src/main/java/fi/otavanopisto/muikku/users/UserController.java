@@ -1,16 +1,20 @@
 package fi.otavanopisto.muikku.users;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
+
+import org.apache.commons.collections.CollectionUtils;
 
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
+import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
-import fi.otavanopisto.muikku.schooldata.entity.StudentMatriculationEligibility;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -58,6 +62,10 @@ public class UserController {
     return userSchoolDataController.getGuidanceRelation(schoolDataSource, studentIdentifier);
   }
 
+  public StudentGuidanceRelation getGuidanceRelation(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.getGuidanceRelation(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+  }
+
   public User findUserByIdentifier(SchoolDataIdentifier userIdentifier) {
     if (userIdentifier == null) {
       return null; 
@@ -70,10 +78,6 @@ public class UserController {
     return findUserByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
   }
 
-  public List<User> listUsers() {
-    return userSchoolDataController.listUsers();
-  }
-  
   public List<StudyProgramme> listStudyProgrammes() {
     return userSchoolDataController.listStudyProgrammes();
   }
@@ -121,19 +125,23 @@ public class UserController {
     return userSchoolDataController.findUserSsn(userIdentifier);
   }
   
-  /**
-   * Returns student eligibility to participate matriculation exams
-   * 
-   * @param studentIdentifier student identifier
-   * @param subjectCode subject code
-   * @return student eligibility to participate matriculation exams
-   */
-  public StudentMatriculationEligibility getStudentMatriculationEligibility(SchoolDataIdentifier studentIdentifier, String subjectCode) {
-    return userSchoolDataController.getStudentMatriculationEligibility(studentIdentifier, subjectCode);
-  }
-
   public List<UserEmail> listUserEmails(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserEmails(userIdentifier);
+  }
+  
+  public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
+    return userSchoolDataController.listGuardiansDependents(guardianUserIdentifier);
+  }
+  
+  public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.listGuardiansDependentsWorkspaces(guardianUserIdentifier, studentIdentifier);
+  }
+
+  public boolean isGuardianOfStudent(SchoolDataIdentifier guardianIdentifier, SchoolDataIdentifier studentIdentifier) {
+    List<GuardiansDependent> guardiansDependents = listGuardiansDependents(guardianIdentifier);
+    return CollectionUtils.isNotEmpty(guardiansDependents)
+        ? guardiansDependents.stream().map(GuardiansDependent::getUserIdentifier).anyMatch(identifier -> Objects.equals(identifier, studentIdentifier))
+        : false;
   }
   
 }

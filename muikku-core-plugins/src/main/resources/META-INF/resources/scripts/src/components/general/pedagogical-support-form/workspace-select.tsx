@@ -1,15 +1,17 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Select from "react-select";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { WorkspaceType } from "~/reducers/workspaces";
 import { OptionDefault } from "../react-select/types";
 import { useWorkspaces } from "./hooks/useWorkspaces";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { useTranslation } from "react-i18next";
+import { PedagogyWorkspace } from "~/generated/client";
+import { Action, Dispatch } from "redux";
 
 /**
  * WorkspaceSelectProps
@@ -18,15 +20,19 @@ interface WorkspaceSelectProps {
   /**
    * Selected value
    */
-  selectedValue?: OptionDefault<WorkspaceType>;
+  selectedValue?: OptionDefault<PedagogyWorkspace>;
   /**
    * On change
    */
-  onChange: (selectedWorkspace?: OptionDefault<WorkspaceType>) => void;
+  onChange: (selectedWorkspace?: OptionDefault<PedagogyWorkspace>) => void;
   /**
    * If select is disabled
    */
   disabled: boolean;
+  /**
+   * Student identifier
+   */
+  userEntityId: number;
   id: string;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -36,19 +42,29 @@ interface WorkspaceSelectProps {
  * @param props props
  */
 const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
-  const { selectedValue, id, onChange, disabled, displayNotification } = props;
-  const { workspaces, loadingWorkspaces, handleTextInput } =
-    useWorkspaces(displayNotification);
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
+  const {
+    selectedValue,
+    id,
+    onChange,
+    disabled,
+    displayNotification,
+    userEntityId,
+  } = props;
+  const { workspaces, loadingWorkspaces, handleTextInput } = useWorkspaces(
+    userEntityId,
+    displayNotification
+  );
 
   /**
    * handleSelectChange
    * @param option option
    */
-  const handleSelectChange = (option: OptionDefault<WorkspaceType>) => {
+  const handleSelectChange = (option: OptionDefault<PedagogyWorkspace>) => {
     onChange(option);
   };
 
-  const options: OptionDefault<WorkspaceType>[] = workspaces.map(
+  const options: OptionDefault<PedagogyWorkspace>[] = workspaces.map(
     (workspace) => ({
       value: workspace,
       label: workspace.nameExtension
@@ -63,12 +79,17 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
       className="react-select-override react-select-override--hops"
       classNamePrefix="react-select-override"
       isClearable
-      placeholder="Etsi kursseja..."
+      placeholder={t("labels.search", {
+        ns: "pedagogySupportPlan",
+        context: "course",
+      })}
       options={options}
       value={selectedValue}
       onChange={handleSelectChange}
       onInputChange={handleTextInput}
-      noOptionsMessage={() => "Ei vaihtoehtoja"}
+      noOptionsMessage={() =>
+        t("content.empty", { ns: "common", context: "courses" })
+      }
       isLoading={loadingWorkspaces}
       isDisabled={disabled}
     />
@@ -87,7 +108,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {
     displayNotification,
   };

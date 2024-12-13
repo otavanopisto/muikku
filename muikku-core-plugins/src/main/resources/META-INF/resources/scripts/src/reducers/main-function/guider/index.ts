@@ -1,11 +1,11 @@
 import { ActionType } from "~/actions";
-import { WorkspaceType } from "~/reducers/workspaces";
-import { PurchaseType, PurchaseProductType } from "../profile";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { LoadingState } from "~/@types/shared";
 import { Reducer } from "redux";
 import {
   ContactLog,
-  Student,
+  GuiderStudent,
+  FlaggedStudent,
   GuiderStudentNotification,
   UserFile,
   UserStudentFlag,
@@ -15,10 +15,13 @@ import {
   UserStudentAddress,
   UserStudentEmail,
   UserStudentPhoneNumber,
+  CeeposOrder,
+  CeeposPurchaseProduct,
   PedagogyFormAccess,
   HopsUppersecondary,
   ActivityLogEntry,
 } from "~/generated/client";
+import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
 /**
  * GuiderFiltersType
@@ -26,7 +29,7 @@ import {
 export interface GuiderFiltersType {
   labels: UserFlag[];
   userGroups: UserGroup[];
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
 }
 
 export type GuiderStudentsStateType =
@@ -81,9 +84,11 @@ export interface PedagogyFormAvailability {
 export interface GuiderStudentUserProfileType {
   contactLogState: LoadingState;
   currentWorkspacesState: LoadingState;
+  pastStudiesState: LoadingState;
   pastWorkspacesState: LoadingState;
   activityLogState: LoadingState;
-  basic: Student;
+  pedagogyFormState: LoadingState;
+  basic: GuiderStudent;
   labels: UserStudentFlag[];
   files: UserFile[];
   emails: UserStudentEmail[];
@@ -95,10 +100,16 @@ export interface GuiderStudentUserProfileType {
   hops: HopsUppersecondary;
   notifications: GuiderStudentNotification;
   contactLogs: ContactLog;
-  currentWorkspaces: WorkspaceType[];
-  pastWorkspaces: WorkspaceType[];
+  currentWorkspaces: WorkspaceDataType[];
+  pastStudies: RecordWorkspaceActivitiesWithLineCategory[];
+  pastWorkspaces: WorkspaceDataType[];
   activityLogs: ActivityLogEntry[];
-  purchases: PurchaseType[];
+  purchases: CeeposOrder[];
+  courseCredits: {
+    completedCourseCredits: number;
+    mandatoryCourseCredits: number;
+    showCredits: boolean;
+  };
   hopsPhase?: string;
   hopsAvailable: boolean;
   pedagogyFormAvailable: PedagogyFormAccess;
@@ -108,16 +119,16 @@ export interface GuiderStudentUserProfileType {
  * GuiderState
  */
 export interface GuiderState {
-  students: Student[];
+  students: FlaggedStudent[];
   studentsState: GuiderStudentsStateType;
   activeFilters: GuiderActiveFiltersType;
-  availablePurchaseProducts: PurchaseProductType[];
+  availablePurchaseProducts: CeeposPurchaseProduct[];
   availableFilters: GuiderFiltersType;
   hasMore: boolean;
   toolbarLock: boolean;
   currentStudent: GuiderStudentUserProfileType | null;
   currentStudentState: GuiderCurrentStudentStateType;
-  selectedStudents: Student[];
+  selectedStudents: FlaggedStudent[];
   selectedStudentsIds: Array<string>;
   toggleAllStudentsActive: boolean;
 }
@@ -126,14 +137,14 @@ export interface GuiderState {
  * GuiderStatePatch
  */
 export interface GuiderStatePatch {
-  students?: Student[];
+  students?: FlaggedStudent[];
   studentsState?: GuiderStudentsStateType;
   activeFilters?: GuiderActiveFiltersType;
   availableFilters?: GuiderFiltersType;
   hasMore?: boolean;
   toolbarLock?: boolean;
   currentStudent?: GuiderStudentUserProfileType;
-  selectedStudents?: Student[];
+  selectedStudents?: FlaggedStudent[];
   selectedStudentsIds?: Array<string>;
   currentState?: GuiderCurrentStudentStateType;
 }
@@ -160,8 +171,8 @@ function sortLabels(labelA: UserFlag, labelB: UserFlag) {
   return labelAUpperCase < labelBUpperCase
     ? -1
     : labelAUpperCase > labelBUpperCase
-    ? 1
-    : 0;
+      ? 1
+      : 0;
 }
 /**
  * Sort for ceepos orders
@@ -169,7 +180,7 @@ function sortLabels(labelA: UserFlag, labelB: UserFlag) {
  * @param b a second type of purchas
  * @returns sorted orders by date
  */
-function sortOrders(a: PurchaseType, b: PurchaseType) {
+function sortOrders(a: CeeposOrder, b: CeeposOrder) {
   const dateA = new Date(a.created).getTime();
   const dateB = new Date(b.created).getTime();
   return dateA > dateB ? -1 : 1;
@@ -178,6 +189,8 @@ function sortOrders(a: PurchaseType, b: PurchaseType) {
 /**
  * InitialGuiderState
  */
+
+// TODO: the states are not loading at this point, should be "WAITING"
 const initialGuiderState: GuiderState = {
   studentsState: "LOADING",
   currentStudentState: "LOADING",
@@ -202,8 +215,10 @@ const initialGuiderState: GuiderState = {
   currentStudent: {
     contactLogState: "LOADING",
     currentWorkspacesState: "LOADING",
+    pastStudiesState: "LOADING",
     pastWorkspacesState: "LOADING",
     activityLogState: "LOADING",
+    pedagogyFormState: "WAITING",
     basic: null,
     labels: [],
     emails: [],
@@ -215,6 +230,7 @@ const initialGuiderState: GuiderState = {
     notifications: null,
     contactLogs: null,
     currentWorkspaces: [],
+    pastStudies: [],
     pastWorkspaces: [],
     activityLogs: [],
     purchases: [],
@@ -224,6 +240,11 @@ const initialGuiderState: GuiderState = {
       courseTeacher: false,
       specEdTeacher: false,
       guidanceCounselor: false,
+    },
+    courseCredits: {
+      completedCourseCredits: 0,
+      mandatoryCourseCredits: 0,
+      showCredits: false,
     },
   },
 };
@@ -267,7 +288,7 @@ export const guider: Reducer<GuiderState> = (
       };
 
     case "ADD_TO_GUIDER_SELECTED_STUDENTS": {
-      const student: Student = action.payload;
+      const student = action.payload;
 
       return {
         ...state,
@@ -276,7 +297,7 @@ export const guider: Reducer<GuiderState> = (
       };
     }
     case "REMOVE_FROM_GUIDER_SELECTED_STUDENTS": {
-      const student: Student = action.payload;
+      const student = action.payload;
 
       return {
         ...state,
@@ -321,7 +342,7 @@ export const guider: Reducer<GuiderState> = (
       }
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
             flags: student.flags.concat([action.payload.label]),
@@ -350,7 +371,7 @@ export const guider: Reducer<GuiderState> = (
       }
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
             flags: student.flags.filter(
@@ -382,7 +403,7 @@ export const guider: Reducer<GuiderState> = (
       };
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         return Object.assign({}, student, {
           flags: student.flags.map(mapFnStudentLabel),
         });
@@ -412,7 +433,7 @@ export const guider: Reducer<GuiderState> = (
       };
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         return Object.assign({}, student, {
           flags: student.flags.filter(filterFnStudentLabel),
         });
@@ -543,7 +564,7 @@ export const guider: Reducer<GuiderState> = (
         currentStudent: {
           ...state.currentStudent,
           purchases: state.currentStudent.purchases.filter(
-            (purchace: PurchaseType) => purchace.id !== action.payload.id
+            (purchace: CeeposOrder) => purchace.id !== action.payload.id
           ),
         },
       };
@@ -554,7 +575,7 @@ export const guider: Reducer<GuiderState> = (
         currentStudent: {
           ...state.currentStudent,
           purchases: state.currentStudent.purchases.map(
-            (purchace: PurchaseType) => {
+            (purchace: CeeposOrder) => {
               if (purchace.id == action.payload.id) {
                 return Object.assign({}, purchace, action.payload);
               }

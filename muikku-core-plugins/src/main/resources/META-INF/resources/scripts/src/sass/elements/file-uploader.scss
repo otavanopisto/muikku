@@ -27,7 +27,7 @@
   // DISABLED FILE FIELD
   &.file-uploader--readonly {
     border-color: $color-disabled-taskfield-border;
-    cursor: text;
+    cursor: not-allowed;
 
     .file-uploader__field-container--taskfield {
       display: none;
@@ -97,6 +97,11 @@
   flex-flow: row nowrap;
   margin: 5px;
   padding: 0 5px;
+
+  .file-uploader__item-upload-progressbar-wrapper {
+    margin: 5px 0;
+    width: 100%;
+  }
 
   &.file-uploader__item--failed-to-upload {
     .file-uploader__item-title {
@@ -175,16 +180,10 @@
   }
 }
 
-.file-uploader__item-upload-progressbar {
+.file-uploader__item-upload-percentage {
   @include text;
 
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-weight: 400;
-}
-
-.file-uploader__item-upload-percentage {
+  color: $color-uploading;
   line-height: 1;
-  margin: 0 0 5px;
+  margin: 10px 0 5px;
 }

@@ -5,8 +5,8 @@ import {
 } from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import { WorkspaceType } from "~/reducers/workspaces";
-import { connect, Dispatch } from "react-redux";
+import { WorkspaceDataType } from "~/reducers/workspaces";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import AnimateHeight from "react-animate-height";
 import WorkspaceJournalCommentEditor from "./editors/workspace-journal-comment-editor";
@@ -17,7 +17,7 @@ import {
   JournalsState,
   WorkspaceJournalWithComments,
 } from "~/reducers/workspaces/journals";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   createWorkspaceJournalComment,
   CreateWorkspaceJournalCommentTriggerType,
@@ -31,7 +31,7 @@ import { useTranslation } from "react-i18next";
 interface WorkspaceJournalCommentListProps {
   status: StatusType;
   journalsState: JournalsState;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   currentJournal: WorkspaceJournalWithComments;
   createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType;
   displayNotification: DisplayNotificationTriggerType;
@@ -181,7 +181,7 @@ export const WorkspaceJournalCommentList: React.FC<
                 onClick={handleCreateNewCommentClick}
                 className="link link--application-list"
               >
-                {t("labels.create", { context: "comment" })}
+                {t("actions.create", { ns: "common", context: "comment" })}
               </Link>
             </div>
           )}
@@ -229,7 +229,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       displayNotification,

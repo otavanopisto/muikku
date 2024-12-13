@@ -1,14 +1,14 @@
 import "~/sass/elements/tabs.scss";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import "swiper/scss";
 import "swiper/scss/a11y";
 import "swiper/scss/pagination";
-import { A11y, Pagination } from "swiper";
-import { StateType } from "~/reducers";
-import variables from "~/sass/_exports.scss";
+import SwiperCore from "swiper";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
+import { A11y, Pagination } from "swiper";
+import { useTranslation } from "react-i18next";
+import { breakpoints } from "~/util/breakpoints";
 
 /**
  * Tab
@@ -35,24 +35,33 @@ export interface Tab {
  * TabsProps
  */
 interface TabsProps {
-  onTabChange: (id: string, hash?: string | Tab) => void;
+  /**
+   * Id of the active tab
+   */
   activeTab: string;
   /** General class modifier */
   modifier?: string;
   /** Localization */
-  tabs: Array<Tab>;
+  tabs: Tab[];
   /** If all of the tabs components should be rendered */
   renderAllComponents?: boolean;
-  children?: React.ReactNode;
   /**
-   * If tabs changing needs to take account of hash changing also
+   * Set to true on Swiper for correct touch events interception.
+   * Use only on swipers that use same direction as the parent one
    * @default false
    */
-  useWithHash?: boolean;
+  nested?: boolean;
+  children?: React.ReactNode;
+  /**
+   * Handles tab change
+   * @param id id
+   * @param hash hash
+   */
+  onTabChange: (id: string, hash?: string | Tab) => void;
 }
 
 const defaultProps = {
-  useWithHash: false,
+  nested: false,
 };
 
 /**
@@ -70,83 +79,96 @@ export const Tabs: React.FC<TabsProps> = (props) => {
     onTabChange,
     tabs,
     children,
-    useWithHash,
   } = props;
 
-  const [swiper, setSwiper] = React.useState(null);
+  // Get ref callback, to get the ref of the tab buttons for keyboard navigation by index
+  const getRef = useGetRef<HTMLButtonElement>();
+  // Focus index for keyboard navigation
+  const focusRefIndex = React.useRef<number>(0);
+
+  const { t } = useTranslation("common");
 
   /**
-   * This IS NOT good solution, but for now it will do
+   * Handles tab click
+   * @param tab tab
    */
-  React.useEffect(() => {
-    if (swiper && useWithHash) {
-      const timer = setTimeout(() => {
-        const index = tabs.findIndex((t) => t.id === activeTab);
+  const handleTabClick =
+    (tab: Tab) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      onTabChange(tab.id, tab.hash);
+    };
 
-        if (index) {
-          const initSlide = allTabs[index];
-          const initHash = tabs[index];
-
-          swiper.slideTo(index);
-          onTabChange(initSlide, initHash);
-        }
-      }, 500);
-      return () => clearTimeout(timer);
+  /**
+   * Handles key down
+   * @param e e
+   */
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [swiper, useWithHash]);
 
-  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
-  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
-  const a11yConfig = {
-    enabled: true,
+    // Set the previous focused tab to -1
+    getRef(focusRefIndex.current)?.current.setAttribute("tabindex", "-1");
+
+    if (e.key === "ArrowRight") {
+      focusRefIndex.current++;
+
+      // Jump to the first tab if the last tab is focused and the right arrow key is pressed
+      if (focusRefIndex.current >= tabs.length) {
+        focusRefIndex.current = 0;
+      }
+    } else if (e.key === "ArrowLeft") {
+      focusRefIndex.current--;
+
+      // Jump to the last tab if the first tab is focused and the left arrow key is pressed
+      if (focusRefIndex.current < 0) {
+        focusRefIndex.current = tabs.length - 1;
+      }
+    }
+    // Set the new tab to be focusable and focus it
+    getRef(focusRefIndex.current)?.current.setAttribute("tabindex", "0");
+    getRef(focusRefIndex.current)?.current.focus();
   };
 
+  // Swiper a11y config
+  const a11yConfig = {
+    enabled: true,
+    paginationBulletMessage: `${t("wcag.goToTab")} {{index}}`,
+  };
+
+  // Swiper pagination config
   const paginationConfig = {
     el: ".tabs__pagination-container",
     modifierClass: "tabs__pagination-container--",
+    clickable: true,
   };
 
-  /**
-   * Creates an array from tab ids from given tabs
-   * @param tabs array of tabs
-   * @returns an array of strings
-   */
-  const createAllTabs = (tabs: Tab[]) => tabs.map((tab) => tab.id);
-
-  const allTabs = createAllTabs(tabs);
-
-  const nextSlide = allTabs[allTabs.indexOf(activeTab) + 1];
-  const prevSlide = allTabs[allTabs.indexOf(activeTab) - 1];
-
-  const nextHash = tabs.find((tab) => tab.id === nextSlide);
-  const prevHash = tabs.find((tab) => tab.id === prevSlide);
+  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
 
   return (
     <div className={`tabs ${modifier ? "tabs--" + modifier : ""}`}>
       {isMobileWidth ? (
         <Swiper
-          onSwiper={(s) => useWithHash && setSwiper(s)}
-          onSlidePrevTransitionStart={onTabChange.bind(
-            this,
-            prevSlide,
-            prevHash
-          )}
-          onSlideNextTransitionStart={onTabChange.bind(
-            this,
-            nextSlide,
-            nextHash
-          )}
           modules={[A11y, Pagination]}
           a11y={a11yConfig}
           pagination={paginationConfig}
-          className="tabs__tab-data-container tabs__tab-data-container--mobile"
+          className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs"
           touchMoveStopPropagation={true}
+          keyboard={{
+            enabled: true,
+            onlyInViewport: false,
+          }}
+          nested={props.nested}
         >
-          {tabs.map((t: Tab) => (
+          <SwiperHandler
+            onTabChange={onTabChange}
+            tabs={tabs}
+            activeTab={activeTab}
+          />
+          <div className="tabs__pagination-container" />
+          {tabs.map((t) => (
             <SwiperSlide key={t.id}>
               <div className="tabs__mobile-tab">
-                <div className="tabs__pagination-container"> </div>
                 <div>{t.name}</div>
                 {t.mobileAction ? (
                   t.mobileAction
@@ -159,34 +181,44 @@ export const Tabs: React.FC<TabsProps> = (props) => {
           ))}
         </Swiper>
       ) : (
-        <>
+        <div className="tabs__tab-data-container tabs__tab-data-container--desktop-tabs">
           <div
+            role="tablist"
             className={`tabs__tab-labels ${
               modifier ? "tabs__tab-labels--" + modifier : ""
             }`}
           >
-            {tabs.map((tab: Tab) => (
-              <div
+            {tabs.map((tab, i) => (
+              <button
+                key={tab.id}
+                ref={getRef(i)}
+                id={"tabControl-" + tab.id}
+                aria-controls={"tabPanel-" + tab.id}
+                role="tab"
+                aria-selected={tab.id === activeTab}
+                onClick={handleTabClick(tab)}
+                onKeyDown={handleKeyDown}
+                tabIndex={tab.id === activeTab ? 0 : -1}
                 className={`tabs__tab ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
                   tab.id === activeTab ? "active" : ""
                 }`}
-                key={tab.id}
-                id={tab.id}
-                onClick={onTabChange.bind(this, tab.id, tab.hash)}
               >
                 {tab.name}
-              </div>
+              </button>
             ))}
             {children}
           </div>
           <div className="tabs__tab-data-container">
             {tabs
-              .filter((t: Tab) => renderAllComponents || t.id === activeTab)
-              .map((t: Tab) => (
+              .filter((t) => renderAllComponents || t.id === activeTab)
+              .map((t) => (
                 <div
                   key={t.id}
+                  role="tabpanel"
+                  id={"tabPanel-" + t.id}
+                  aria-labelledby={"tabControl-" + t.id}
                   className={`tabs__tab-data ${
                     t.type ? "tabs__tab-data--" + t.type : ""
                   }  ${t.id === activeTab ? "active" : ""}`}
@@ -195,10 +227,62 @@ export const Tabs: React.FC<TabsProps> = (props) => {
                 </div>
               ))}
           </div>
-        </>
+        </div>
       )}
     </div>
   );
+};
+
+/**
+ * CustomSwiperProps
+ */
+interface SwiperHandlerProps {
+  onTabChange: (id: string, hash?: string | Tab) => void;
+  tabs: Array<Tab>;
+  activeTab: string;
+}
+
+/**
+ * Component to handle the swiper instance inside Swiper context.
+ * Doesn't render anything
+ *
+ * @param props props
+ */
+const SwiperHandler = (props: SwiperHandlerProps): null => {
+  const { onTabChange, activeTab, tabs } = props;
+  const swiper = useSwiper();
+
+  // Get the index of the active tab
+  // Updated when activeTab or list of tabs changes
+  const currentIndex = React.useMemo(
+    () => tabs.findIndex((t) => t.id === activeTab),
+    [activeTab, tabs]
+  );
+
+  // Slide to the active tab using the swiper instance
+  // only if the component is in mobile view
+  React.useEffect(() => {
+    swiper?.slideTo(currentIndex);
+  }, [currentIndex, swiper]);
+
+  const handleSwiperIndexChange = React.useCallback(
+    (s: SwiperCore) => {
+      const activeTab = tabs[s.activeIndex];
+      // Update swiper instance
+      onTabChange(activeTab.id, activeTab.hash);
+    },
+    [onTabChange, tabs]
+  );
+
+  React.useEffect(() => {
+    swiper?.on("activeIndexChange", handleSwiperIndexChange);
+
+    return () => {
+      swiper?.off("activeIndexChange", handleSwiperIndexChange);
+    };
+  }, [handleSwiperIndexChange, swiper]);
+
+  return null;
 };
 
 /**
@@ -219,8 +303,7 @@ interface MobileOnlyTabsProps {
  */
 export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
   const { tabs, modifier, activeTab, onTabChange } = props;
-  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
-  const isMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
   const a11yConfig = {
     enabled: true,
   };
@@ -261,12 +344,12 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
           modules={[A11y, Pagination]}
           a11y={a11yConfig}
           pagination={paginationConfig}
-          className="tabs__tab-data-container tabs__tab-data-container--mobile"
+          className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs"
         >
+          <div className="tabs__pagination-container" />
           {tabs.map((t: Tab) => (
             <SwiperSlide key={t.id}>
               <div className="tabs__mobile-tab">
-                <div className="tabs__pagination-container"> </div>
                 <div>{t.name}</div>
                 {t.mobileAction ? (
                   t.mobileAction
@@ -280,10 +363,14 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
         </Swiper>
       ) : (
         <>
-          <div className="tabs__tab-labels tabs__tab-labels--desktop">
-            {tabs.map((tab, index) => (
+          <div className="tabs__tab-labels tabs__tab-labels--no-tabs">
+            {tabs.map((tab) => (
               <div
-                className={`tabs__tab tabs__tab--mobile-only-tab ${
+                id={"tabControl-" + tab.id}
+                aria-controls={"tabPanel-" + tab.id}
+                role="tab"
+                aria-selected={tab.id === activeTab}
+                className={`tabs__tab tabs__tab--no-tabs ${
                   modifier ? "tabs__tab--" + modifier : ""
                 } `}
                 key={tab.id}
@@ -292,10 +379,14 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
               </div>
             ))}
           </div>
-          <div className="tabs__tab-data-container tabs__tab-data-container--mobile-tabs">
+          <div className="tabs__tab-data-container tabs__tab-data-container--no-tabs">
             {tabs.map((t) => (
               <div
                 key={t.id}
+                role="tabpanel"
+                id={"tabPanel-" + t.id}
+                hidden={t.id !== activeTab}
+                aria-labelledby={"tabControl-" + t.id}
                 className={`tabs__tab-data ${
                   t.type ? "tabs__tab-data--" + t.type : ""
                 }`}
@@ -307,6 +398,20 @@ export const MobileOnlyTabs: React.FC<MobileOnlyTabsProps> = (props) => {
         </>
       )}
     </div>
+  );
+};
+
+/**
+ * useGetRef
+ * @returns calback to get ref
+ */
+const useGetRef = <T,>() => {
+  const refs = React.useRef<{
+    [key: number]: React.RefObject<T>;
+  }>({});
+  return React.useCallback(
+    (idx: number) => (refs.current[idx] ??= React.createRef()),
+    [refs]
   );
 };
 

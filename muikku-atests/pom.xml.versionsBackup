@@ -5,10 +5,10 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.176-SNAPSHOT</version>
+    <version>1.1.238-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  
+
   <artifactId>atests</artifactId>
   <packaging>jar</packaging>
   <name>Muikku atests</name>
@@ -16,8 +16,10 @@
 
   <properties>
     <!-- Selenium -->
-    <selenium-java.version>4.0.0</selenium-java.version>
+    <selenium-java.version>4.1.3</selenium-java.version>
     <wiremock.version>2.6.0</wiremock.version>
+    <mysql-connector-java.version>5.1.49</mysql-connector-java.version>
+    <wildfly-download-url>https://github.com/wildfly/wildfly/releases/download/26.1.2.Final/wildfly-26.1.2.Final.zip</wildfly-download-url>
   </properties>
 
   <dependencies>
@@ -36,33 +38,23 @@
       <scope>test</scope>
     </dependency>
 
-	<!-- https://mvnrepository.com/artifact/com.deque.html.axe-core/selenium -->
-	<dependency>
-	  <groupId>com.deque.html.axe-core</groupId>
-	  <artifactId>selenium</artifactId>
-	  <version>4.1.1</version>
-	  <scope>test</scope>
-	</dependency>
-
-		
+    <!-- https://mvnrepository.com/artifact/com.deque.html.axe-core/selenium -->
     <dependency>
-	    <groupId>com.google.guava</groupId>
-	    <artifactId>guava</artifactId>
-	    <version>25.0-jre</version>
-	    <scope>test</scope>
-	  </dependency>
-
-    <!-- RestEasy -->
-    
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-      <scope>provided</scope>
+      <groupId>com.deque.html.axe-core</groupId>
+      <artifactId>selenium</artifactId>
+      <version>4.1.1</version>
+      <scope>test</scope>
     </dependency>
-    
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.jboss.spec.javax.ws.rs</groupId>
-      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+      <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -71,7 +63,7 @@
       <artifactId>resteasy-jackson2-provider</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
@@ -79,14 +71,14 @@
     </dependency>
 
     <!-- Jackson -->
-    
+
     <!--
 
     <dependency>
       <groupId>com.fasterxml.jackson.jaxrs</groupId>
       <artifactId>jackson-jaxrs-json-provider</artifactId>
     </dependency>
-    
+
     -->
 
     <dependency>
@@ -98,14 +90,14 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.171-SNAPSHOT</version>
+      <version>0.7.221-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.171-SNAPSHOT</version>
+      <version>0.7.221-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
@@ -115,11 +107,15 @@
       <version>${wiremock.version}</version>
       <scope>test</scope>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
     <dependency>
-      <groupId>com.jayway.restassured</groupId>
+      <groupId>io.rest-assured</groupId>
       <artifactId>rest-assured</artifactId>
+      <version>5.1.0</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.oltu.oauth2</groupId>
       <artifactId>org.apache.oltu.oauth2.common</artifactId>
@@ -144,22 +140,27 @@
       <version>1.0.0</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>persistence</artifactId>
     </dependency>
-    
+
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>core-plugins-persistence</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>muikku-school-data-pyramus-persistence</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>forum-plugin-rest-model</artifactId>
@@ -167,57 +168,36 @@
 
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>evaluation-plugin-rest-model</artifactId>
+      <artifactId>atests-plugin-rest-model</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>evaluation-plugin-persistence</artifactId>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
     </dependency>
-    
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>timed-notifications-plugin-persistence</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>matriculation-plugin-persistence</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>atests-plugin-rest-model</artifactId>
-      <version>${project.version}</version>
-    </dependency>    
-    
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
-      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+      <artifactId>jboss-servlet-api_4.0_spec</artifactId>
     </dependency>
-    
+
     <dependency>
       <artifactId>httpclient</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
-      <version>4.3.6</version>
     </dependency>
-    
+
     <dependency>
       <artifactId>httpmime</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
       <version>4.3.1</version>
     </dependency>
-    
+
     <dependency>
       <artifactId>httpcore</artifactId>
       <groupId>org.apache.httpcomponents</groupId>
-      <version>4.3.1</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.skyscreamer</groupId>
       <artifactId>jsonassert</artifactId>
@@ -228,6 +208,14 @@
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>fi.otavanopisto.muikku</groupId>
+      <artifactId>muikku</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+    </dependency>
+
   </dependencies>
 
   <profiles>
@@ -237,17 +225,17 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <h2.version>1.4.197</h2.version>
         <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
-        <it.jdbc.driver>org.h2.Driver</it.jdbc.driver>
-        <it.jdbc.url>jdbc:h2:file:${project.build.directory}/h2;AUTO_SERVER=TRUE</it.jdbc.url>
+        <it.database.name>testdb</it.database.name>
+        <it.jdbc.driver>com.mysql.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
         <it.jdbc.password>sa</it.jdbc.password>
-        <it.hibernate.dialect>org.hibernate.dialect.H2Dialect</it.hibernate.dialect>
+        <it.hibernate.dialect>MYSQL5_INNODB</it.hibernate.dialect>
         <it.keystore.alias>pyrit</it.keystore.alias>
         <it.keystore.pass>storepass</it.keystore.pass>
         <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
@@ -257,36 +245,94 @@
         <it.package>**</it.package>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
         <it.cargo.stop.timeout>240000</it.cargo.stop.timeout>
-        <elasticsearch.http.port>9201</elasticsearch.http.port>
-        <elasticsearch.node.port>9301</elasticsearch.node.port>
-        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
+        <elasticsearch.http.port>9200</elasticsearch.http.port>
+        <elasticsearch.node.port>9300</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearchatests</elasticsearch.cluster.name>
         <it.profile>ui-it</it.profile>
       </properties>
 
       <dependencies>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <version>${h2.version}</version>
-          <scope>test</scope>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>${mysql-connector-java.version}</version>
         </dependency>
       </dependencies>
-      <build>
 
+      <build>
         <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.39.1</version>
+            <configuration>
+              <machine>
+                <autoCreate>true</autoCreate>
+                <createOptions>
+                  <virtualbox-memory>10000</virtualbox-memory>
+                  <virtualbox-no-share />
+                </createOptions>
+              </machine>
+              <dockerHost>unix:///var/run/docker.sock</dockerHost>
+              <verbose>true</verbose>
+              <images>
+                <image>
+                  <alias>mysql</alias>
+                  <name>mysql:5.6</name>
+                  <run>
+                    <env>
+                      <MYSQL_USER>sa</MYSQL_USER>
+                      <MYSQL_PASSWORD>sa</MYSQL_PASSWORD>
+                      <MYSQL_ROOT_PASSWORD>test</MYSQL_ROOT_PASSWORD>
+                      <MYSQL_DATABASE>testdb</MYSQL_DATABASE>
+                    </env>
+                    <wait>
+                      <log>MySQL init process done. Ready for start up.</log>
+                      <time>80000</time>
+                    </wait>
+                    <ports>
+                      <port>5555:3306</port>
+                    </ports>
+                  </run>
+                </image>
+              </images>
+            </configuration>
+            <executions>
+              <execution>
+                <id>docker-start</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>docker-stop</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
 
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.14.1</version>
+            <version>2.16</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
           </plugin>
+
 
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
             <version>2.16</version>
             <configuration>
-
+            
               <dependenciesToScan>
                 <dependency>fi.otavanopisto.muikku:core-plugins</dependency>
               </dependenciesToScan>
@@ -315,17 +361,23 @@
                 <it.browser>${it.browser}</it.browser>
                 <it.cargo.stop.timeout>${it.cargo.stop.timeout}</it.cargo.stop.timeout>
                 <it.profile>${it.profile}</it.profile>
+                <it.hibernate.dialect>${it.hibernate.dialect}</it.hibernate.dialect>
+                <elasticsearch.http.port>${elasticsearch.http.port}</elasticsearch.http.port>
+                <elasticsearch.node.port>${elasticsearch.node.port}</elasticsearch.node.port>
+                <elasticsearch.cluster.name>${elasticsearch.cluster.name}</elasticsearch.cluster.name>
               </systemPropertyVariables>
             </configuration>
             <executions>
               <execution>
-                <id>integration-test</id>
+                <id>failsafe-integration-tests</id>
+                <phase>integration-test</phase>
                 <goals>
                   <goal>integration-test</goal>
                 </goals>
               </execution>
               <execution>
-                <id>verify</id>
+                <id>failsafe-verify</id>
+                <phase>verify</phase>
                 <goals>
                   <goal>verify</goal>
                 </goals>
@@ -334,124 +386,62 @@
           </plugin>
 
           <plugin>
-            <groupId>de.juplo</groupId>
-            <artifactId>hibernate-maven-plugin</artifactId>
-            <version>2.0.0</version>
+            <groupId>de.jpdigital</groupId>
+            <artifactId>hibernate53-ddl-maven-plugin</artifactId>
+            <version>2.5.0</version>
             <dependencies>
               <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
               </dependency>
             </dependencies>
             <configuration>
-              <driver>${it.jdbc.driver}</driver>
-              <dialect>${it.hibernate.dialect}</dialect>
-              <url><![CDATA[${it.jdbc.url}]]></url>
-              <username>${it.jdbc.username}</username>
-              <password>${it.jdbc.password}</password>
+              <dialects>
+                <param>${it.hibernate.dialect}</param>
+              </dialects>
+              <outputDirectory>${basedir}/target/sql/ddl</outputDirectory>
+              <persistenceXml>${basedir}/src/test/resources/persistence_for_generation_purpose.xml</persistenceXml>
+              <createDropStatements>false</createDropStatements>
+              <omitDialectFromFileName>true</omitDialectFromFileName>
+              <outputFileNamePrefix />
+              <outputFileNameSuffix>createDatabase</outputFileNameSuffix>
+              <packages>
+                <param>fi.otavanopisto.muikku.plugins.schooldatapyramus.model</param>
+                <param>fi.otavanopisto.muikku.plugins</param>
+                <param>fi.otavanopisto.muikku.model</param>
+              </packages>
             </configuration>
             <executions>
               <execution>
-                <id>create-schema</id>
-                <phase>pre-integration-test</phase>
+                <id>generate-ddl</id>
+                <phase>process-classes</phase>
                 <goals>
-                  <goal>drop</goal>
-                  <goal>create</goal>
+                  <goal>gen-ddl</goal>
                 </goals>
               </execution>
             </executions>
           </plugin>
 
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>keytool-maven-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>keyclean</id>
-                <goals>
-                  <goal>clean</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>genkey</id>
-                <goals>
-                  <goal>generateKeyPair</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <dname>cn=${it.host}, ou=None, L=Test, ST=Test, o=Test, c=TE</dname>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <alias>${it.keystore.alias}</alias>
-                  <keyalg>RSA</keyalg>
-                  <keysize>2048</keysize>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>exportkey</id>
-                <goals>
-                  <goal>exportCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>${it.keystore.alias}</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>importkey</id>
-                <goals>
-                  <goal>importCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>root</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <noprompt>true</noprompt>
-                  <trustcacerts>true</trustcacerts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          
-          
-          <plugin>
             <groupId>com.github.alexcojocaru</groupId>
             <artifactId>elasticsearch-maven-plugin</artifactId>
-            <version>2.0</version>
+            <version>6.13</version>
             <configuration>
+              <version>${elasticsearch.version}</version>
               <clusterName>${elasticsearch.cluster.name}</clusterName>
-              <tcpPort>${elasticsearch.node.port}</tcpPort>
               <httpPort>${elasticsearch.http.port}</httpPort>
               <autoCreateIndex>true</autoCreateIndex>
+              <downloadUrl>https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.5-linux-x86_64.tar.gz</downloadUrl>
+              <pathConf>${project.basedir}/src/test/resources/elasticsearch</pathConf>
             </configuration>
             <executions>
               <execution>
                 <id>start-elasticsearch</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>start</goal>
+                  <goal>runforked</goal>
                 </goals>
-              </execution>
-              <execution>
-                <id>init-elasticsearch</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>load</goal>
-                </goals>
-                <configuration>
-                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
-                </configuration>
               </execution>
               <execution>
                 <id>stop-elasticsearch</id>
@@ -461,46 +451,74 @@
                 </goals>
               </execution>
             </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch.version}</version>
-              </dependency>
-              <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.21</version>
-              </dependency>
-            </dependencies>
           </plugin>
           
           <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.6.2</version>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>sql-maven-plugin</artifactId>
+            <version>1.5</version>
+
+            <dependencies>
+              <!-- specify the dependent jdbc driver here -->
+              <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+              </dependency>
+            </dependencies>
+            <!-- common configuration shared by all executions -->
             <configuration>
+              <driver>${it.jdbc.driver}</driver>
+              <url><![CDATA[${it.jdbc.url}]]></url>
+              <username>${it.jdbc.username}</username>
+              <password>${it.jdbc.password}</password>
+            </configuration>
+
+            <executions>
+              <execution>
+                <id>create-schema</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <autocommit>true</autocommit>
+                  <srcFiles>
+                    <srcFile>${basedir}/target/sql/ddl/createDatabase.sql</srcFile>
+                  </srcFiles>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.cargo</groupId>
+            <artifactId>cargo-maven3-plugin</artifactId>
+            <version>1.9.11</version>
+            <configuration>
+              <!-- Container configs -->
               <container>
-                <containerId>wildfly10x</containerId>
+                <containerId>wildfly26x</containerId>
                 <log>${project.basedir}/target/cargo.log</log>
                 <output>${project.basedir}/target/jboss.log</output>
                 <zipUrlInstaller>
-                  <url>https://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
+                  <url>${wildfly-download-url}</url>
                   <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
                 <dependencies>
                   <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
                   </dependency>
                 </dependencies>
               </container>
+              <!-- Configuration to use with the container or the deployer -->
               <configuration>
                 <properties>
                   <cargo.servlet.port>${it.port.http}</cargo.servlet.port>
                   <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
-                  <cargo.jvmargs>-Xms64m -Xmx1152m -XX:MaxPermSize=512m</cargo.jvmargs>
+                  <cargo.jvmargs>--add-opens java.base/java.util=ALL-UNNAMED -Xms64m -Xmx1152m</cargo.jvmargs>
                   <cargo.datasource.datasource.pyrit>
                     cargo.datasource.driver=${it.jdbc.driver}|
                     cargo.datasource.url=${it.jdbc.url}|
@@ -511,9 +529,15 @@
                   </cargo.datasource.datasource.pyrit>
                 </properties>
               </configuration>
-
+              <deployables>
+                <deployable>
+                  <groupId>fi.otavanopisto.muikku</groupId>
+                  <artifactId>muikku</artifactId>
+                  <type>war</type>
+                </deployable>
+              </deployables>
             </configuration>
-            <executions> 
+            <executions>
               <execution>
                 <id>start-cargo</id>
                 <phase>pre-integration-test</phase>
@@ -537,7 +561,7 @@
           <plugin>
             <groupId>org.wildfly.plugins</groupId>
             <artifactId>wildfly-maven-plugin</artifactId>
-            <version>1.0.2.Final</version>
+            <version>3.0.0.Final</version>
             <executions>
               <execution>
                 <id>configure-wildfly</id>
@@ -546,34 +570,26 @@
                   <goal>execute-commands</goal>
                 </goals>
                 <configuration>
-                  <execute-commands>
-                    <batch>true</batch>
-                    <commands>
-                      <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
-                      <command>/system-property=jsf.project.stage:add(value="Production")</command>
-                      <command>/system-property=tests.running:add(value="true")</command>
-                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
-                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
-                      <command>/core-service=management/security-realm=ssl-realm:add()</command>
-                      <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
-                      <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-                      <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
-                    </commands>
-                  </execute-commands>
-                </configuration>
-              </execution>
-              
-              <execution>
-                <id>deploy-muikku</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-                <configuration>
-                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
+                  <commands>
+                    <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
+                    <command>/system-property=jsf.project.stage:add(value="Production")</command>
+                    <command>/system-property=tests.running:add(value="true")</command>
+                    <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                    <!--
+                      Below node.port = http.port because elasticsearch 
+                      http port is read from elasticsearch.node.port property instead of elasticsearch.http.port 
+                      in the code.
+                    -->
+                    <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.http.port}")</command>
+                    <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
+                    <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
+                    <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=muikku-ROOT.war)</command>
+                    <command>/subsystem=undertow:write-attribute(name=default-virtual-host,value="muikku")</command>
+                    <command>/subsystem=undertow/server=default-server/host=default-host:remove()</command>
+                    <command>/subsystem=undertow/configuration=handler/file=welcome-content:remove</command>
+                    <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
+                    <command>:reload</command>
+                  </commands>
                 </configuration>
               </execution>
             </executions>
@@ -604,820 +620,109 @@
         </plugins>
       </build>
     </profile>
-    
-    <profile>
-      <id>sauce-it</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <h2.version>1.4.177</h2.version>
-        <it.port.http>8081</it.port.http>
-        <it.port.https>8443</it.port.https>
-        <it.host>dev.muikku.fi</it.host>
-        <it.build.directory>${project.build.directory}</it.build.directory>
-        <it.jdbc.driver>org.h2.Driver</it.jdbc.driver>
-        <it.jdbc.url>jdbc:h2:file:${project.build.directory}/h2;AUTO_SERVER=TRUE</it.jdbc.url>
-        <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
-        <it.jdbc.username>sa</it.jdbc.username>
-        <it.jdbc.password>sa</it.jdbc.password>
-        <it.hibernate.dialect>org.hibernate.dialect.H2Dialect</it.hibernate.dialect>
-        <it.keystore.alias>pyrit</it.keystore.alias>
-        <it.keystore.pass>storepass</it.keystore.pass>
-        <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
-        <it.wiremock.port>8089</it.wiremock.port>
-        <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
-        <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
-        <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
-        <it.sauce.tunnelId>${env.GITHUB_ACTION}</it.sauce.tunnelId>
-        <it.browser />
-        <it.browser.version />
-        <it.browser.resolution />
-        <it.platform />
-        <it.package>**</it.package>
-        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
-        <elasticsearch.http.port>9201</elasticsearch.http.port>
-        <elasticsearch.node.port>9301</elasticsearch.node.port>
-        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
-        <it.profile>sauce-it</it.profile>
-      </properties>
 
-      <dependencies>
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <version>${h2.version}</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-      <build>
-
-        <plugins>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.14.1</version>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.16</version>
-            <configuration>
-
-              <dependenciesToScan>
-                <dependency>fi.otavanopisto.muikku:core-plugins</dependency>
-              </dependenciesToScan>
-
-              <includes>
-                <include>fi/otavanopisto/muikku/ui/sauce/${it.package}/*IT.java</include>
-              </includes>
-              <systemPropertyVariables>
-                <it.project.version>${project.version}</it.project.version>
-                <it.host>${it.host}</it.host>
-                <it.port.http>${it.port.http}</it.port.http>
-                <it.port.https>${it.port.https}</it.port.https>
-                <it.jdbc.driver>${it.jdbc.driver}</it.jdbc.driver>
-                <it.jdbc.url>${it.jdbc.url}</it.jdbc.url>
-                <it.jdbc.jndi>${it.jdbc.jndi}</it.jdbc.jndi>
-                <it.jdbc.username>${it.jdbc.username}</it.jdbc.username>
-                <it.jdbc.password>${it.jdbc.password}</it.jdbc.password>
-                <it.keystore.file>${it.keystore.file}</it.keystore.file>
-                <it.keystore.alias>${it.keystore.alias}</it.keystore.alias>
-                <it.keystore.storepass>${it.keystore.pass}</it.keystore.storepass>
-                <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
-                <it.report.directory>${it.report.directory}</it.report.directory>
-                <it.build.directory>${it.build.directory}</it.build.directory>
-                <it.sauce.username>${it.sauce.username}</it.sauce.username>
-                <it.sauce.accessKey>${it.sauce.accessKey}</it.sauce.accessKey>
-                <it.sauce.tunnelId>${it.sauce.tunnelId}</it.sauce.tunnelId>
-                <it.selenium.version>${selenium-java.version}</it.selenium.version>
-                <it.browser>${it.browser}</it.browser>
-                <it.browser.version>${it.browser.version}</it.browser.version>
-                <it.browser.resolution>${it.browser.resolution}</it.browser.resolution>
-                <it.platform>${it.platform}</it.platform>
-                <it.selenium.version>${selenium-java.version}</it.selenium.version>
-                <it.test.file>${it.test.file}</it.test.file>
-                <it.profile>${it.profile}</it.profile>
-              </systemPropertyVariables>
-            </configuration>
-            <executions>
-              <execution>
-                <id>integration-test</id>
-                <goals>
-                  <goal>integration-test</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>verify</id>
-                <goals>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>de.juplo</groupId>
-            <artifactId>hibernate-maven-plugin</artifactId>
-            <version>2.0.0</version>
-            <dependencies>
-              <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
-              </dependency>
-            </dependencies>
-            <configuration>
-              <driver>${it.jdbc.driver}</driver>
-              <dialect>${it.hibernate.dialect}</dialect>
-              <url><![CDATA[${it.jdbc.url}]]></url>
-              <username>${it.jdbc.username}</username>
-              <password>${it.jdbc.password}</password>
-            </configuration>
-            <executions>
-              <execution>
-                <id>create-schema</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>drop</goal>
-                  <goal>create</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>keytool-maven-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>keyclean</id>
-                <goals>
-                  <goal>clean</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>genkey</id>
-                <goals>
-                  <goal>generateKeyPair</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <dname>cn=${it.host}, ou=None, L=Test, ST=Test, o=Test, c=TE</dname>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <alias>${it.keystore.alias}</alias>
-                  <keyalg>RSA</keyalg>
-                  <keysize>2048</keysize>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>exportkey</id>
-                <goals>
-                  <goal>exportCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>${it.keystore.alias}</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>importkey</id>
-                <goals>
-                  <goal>importCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>root</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <noprompt>true</noprompt>
-                  <trustcacerts>true</trustcacerts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>com.github.alexcojocaru</groupId>
-            <artifactId>elasticsearch-maven-plugin</artifactId>
-            <version>2.0</version>
-            <configuration>
-              <clusterName>${elasticsearch.cluster.name}</clusterName>
-              <tcpPort>${elasticsearch.node.port}</tcpPort>
-              <httpPort>${elasticsearch.http.port}</httpPort>
-              <autoCreateIndex>true</autoCreateIndex>
-            </configuration>
-            <executions>
-              <execution>
-                <id>start-elasticsearch</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>init-elasticsearch</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>load</goal>
-                </goals>
-                <configuration>
-                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
-                </configuration>
-              </execution>
-              <execution>
-                <id>stop-elasticsearch</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch.version}</version>
-              </dependency>
-              <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.21</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-
-          <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.6.2</version>
-            <configuration>
-              <container>
-                <containerId>wildfly10x</containerId>
-                <log>${project.basedir}/target/cargo.log</log>
-                <output>${project.basedir}/target/jboss.log</output>
-                <zipUrlInstaller>
-                  <url>https://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
-                  <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
-                  <extractDir>${project.basedir}/.cargo/extracts</extractDir>
-                </zipUrlInstaller>
-                <dependencies>
-                  <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                  </dependency>
-                </dependencies>
-              </container>
-              <configuration>
-                <properties>
-                  <cargo.servlet.port>${it.port.http}</cargo.servlet.port>
-                  <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
-                  <cargo.jvmargs>-Xms64m -Xmx1152m -XX:MaxPermSize=512m</cargo.jvmargs>
-                  <cargo.datasource.datasource.pyrit>
-                    cargo.datasource.driver=${it.jdbc.driver}|
-                    cargo.datasource.url=${it.jdbc.url}|
-                    cargo.datasource.jndi=${it.jdbc.jndi}|
-                    cargo.datasource.username=${it.jdbc.username}|
-                    cargo.datasource.password=${it.jdbc.password}|
-                    cargo.datasource.transactionsupport=LOCAL_TRANSACTION
-                  </cargo.datasource.datasource.pyrit>
-                </properties>
-              </configuration>
-
-            </configuration>
-            <executions>
-              <execution>
-                <id>start-cargo</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>stop-cargo</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-                <configuration>
-                  <timeout>${it.cargo.stop.timeout}</timeout>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.wildfly.plugins</groupId>
-            <artifactId>wildfly-maven-plugin</artifactId>
-            <version>1.0.2.Final</version>
-            <executions>
-              <execution>
-                <id>configure-wildfly</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>execute-commands</goal>
-                </goals>
-                <configuration>
-                  <execute-commands>
-                    <batch>true</batch>
-                    <commands>
-                      <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
-                      <command>/system-property=jsf.project.stage:add(value="Production")</command>
-                      <command>/system-property=tests.running:add(value="true")</command>
-                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
-                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
-                      <command>/core-service=management/security-realm=ssl-realm:add()</command>
-                      <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
-                      <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-                      <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
-                    </commands>
-                  </execute-commands>
-                </configuration>
-              </execution>
-              
-              <execution>
-                <id>deploy-muikku</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-                <configuration>
-                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>wait-maven-plugin</artifactId>
-            <version>1.0</version>
-            <executions>
-              <execution>
-                <id>wait-rest</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>wait</goal>
-                </goals>
-                <configuration>
-                  <protocol>http</protocol>
-                  <host>${it.host}</host>
-                  <port>${it.port.http}</port>
-                  <file>/rest/system/ping</file>
-                  <maxcount>10</maxcount>
-                  <timeout>10000</timeout>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    
-    <profile>
-      <id>travis</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <h2.version>1.4.177</h2.version>
-        <it.port.http>8081</it.port.http>
-        <it.port.https>8443</it.port.https>
-        <it.host>dev.muikku.fi</it.host>
-        <it.build.directory>${project.build.directory}</it.build.directory>
-        <it.jdbc.driver>org.h2.Driver</it.jdbc.driver>
-        <it.jdbc.url>jdbc:h2:file:${project.build.directory}/h2;AUTO_SERVER=TRUE</it.jdbc.url>
-        <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
-        <it.jdbc.username>sa</it.jdbc.username>
-        <it.jdbc.password>sa</it.jdbc.password>
-        <it.hibernate.dialect>org.hibernate.dialect.H2Dialect</it.hibernate.dialect>
-        <it.keystore.alias>pyrit</it.keystore.alias>
-        <it.keystore.pass>storepass</it.keystore.pass>
-        <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
-        <it.wiremock.port>8089</it.wiremock.port>
-        <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
-        <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
-        <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
-        <it.sauce.tunnelId>${env.TRAVIS_JOB_NUMBER}</it.sauce.tunnelId>
-        <it.browser />
-        <it.browser.version />
-        <it.browser.resolution />
-        <it.platform />
-        <it.package>**</it.package>
-        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
-        <it.cargo.stop.timeout>240000</it.cargo.stop.timeout>
-        <elasticsearch.http.port>9201</elasticsearch.http.port>
-        <elasticsearch.node.port>9301</elasticsearch.node.port>
-        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
-        <it.profile>travis</it.profile>
-      </properties>
-
-      <dependencies>
-        <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <version>${h2.version}</version>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-      <build>
-
-        <plugins>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.14.1</version>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.16</version>
-            <configuration>
-
-              <dependenciesToScan>
-                <dependency>fi.otavanopisto.muikku:core-plugins</dependency>
-              </dependenciesToScan>
-
-              <includes>
-                <include>fi/otavanopisto/muikku/ui/sauce/${it.package}/*IT.java</include>
-              </includes>
-              <systemPropertyVariables>
-                <it.project.version>${project.version}</it.project.version>
-                <it.host>${it.host}</it.host>
-                <it.port.http>${it.port.http}</it.port.http>
-                <it.port.https>${it.port.https}</it.port.https>
-                <it.jdbc.driver>${it.jdbc.driver}</it.jdbc.driver>
-                <it.jdbc.url>${it.jdbc.url}</it.jdbc.url>
-                <it.jdbc.jndi>${it.jdbc.jndi}</it.jdbc.jndi>
-                <it.jdbc.username>${it.jdbc.username}</it.jdbc.username>
-                <it.jdbc.password>${it.jdbc.password}</it.jdbc.password>
-                <it.keystore.file>${it.keystore.file}</it.keystore.file>
-                <it.keystore.alias>${it.keystore.alias}</it.keystore.alias>
-                <it.keystore.storepass>${it.keystore.pass}</it.keystore.storepass>
-                <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
-                <it.report.directory>${it.report.directory}</it.report.directory>
-                <it.build.directory>${it.build.directory}</it.build.directory>
-                <it.sauce.username>${it.sauce.username}</it.sauce.username>
-                <it.sauce.accessKey>${it.sauce.accessKey}</it.sauce.accessKey>
-                <it.sauce.tunnelId>${it.sauce.tunnelId}</it.sauce.tunnelId>
-                <it.browser>${it.browser}</it.browser>
-                <it.browser.version>${it.browser.version}</it.browser.version>
-                <it.browser.resolution>${it.browser.resolution}</it.browser.resolution>
-                <it.platform>${it.platform}</it.platform>
-                <it.selenium.version>${selenium-java.version}</it.selenium.version>
-                <it.test.file>${it.test.file}</it.test.file>
-                <it.cargo.stop.timeout>${it.cargo.stop.timeout}</it.cargo.stop.timeout>
-                <it.profile>${it.profile}</it.profile>
-              </systemPropertyVariables>
-            </configuration>
-            <executions>
-              <execution>
-                <id>integration-test</id>
-                <goals>
-                  <goal>integration-test</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>verify</id>
-                <goals>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>de.juplo</groupId>
-            <artifactId>hibernate-maven-plugin</artifactId>
-            <version>2.0.0</version>
-            <dependencies>
-              <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
-              </dependency>
-            </dependencies>
-            <configuration>
-              <driver>${it.jdbc.driver}</driver>
-              <dialect>${it.hibernate.dialect}</dialect>
-              <url><![CDATA[${it.jdbc.url}]]></url>
-              <username>${it.jdbc.username}</username>
-              <password>${it.jdbc.password}</password>
-            </configuration>
-            <executions>
-              <execution>
-                <id>create-schema</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>create</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>keytool-maven-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>keyclean</id>
-                <goals>
-                  <goal>clean</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>genkey</id>
-                <goals>
-                  <goal>generateKeyPair</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <dname>cn=${it.host}, ou=None, L=Test, ST=Test, o=Test, c=TE</dname>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <alias>${it.keystore.alias}</alias>
-                  <keyalg>RSA</keyalg>
-                  <keysize>2048</keysize>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>exportkey</id>
-                <goals>
-                  <goal>exportCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>${it.keystore.alias}</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>importkey</id>
-                <goals>
-                  <goal>importCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>root</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <noprompt>true</noprompt>
-                  <trustcacerts>true</trustcacerts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>com.github.alexcojocaru</groupId>
-            <artifactId>elasticsearch-maven-plugin</artifactId>
-            <version>2.0</version>
-            <configuration>
-              <clusterName>${elasticsearch.cluster.name}</clusterName>
-              <tcpPort>${elasticsearch.node.port}</tcpPort>
-              <httpPort>${elasticsearch.http.port}</httpPort>
-              <autoCreateIndex>true</autoCreateIndex>
-            </configuration>
-            <executions>
-              <execution>
-                <id>start-elasticsearch</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>init-elasticsearch</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>load</goal>
-                </goals>
-                <configuration>
-                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
-                </configuration>
-              </execution>
-              <execution>
-                <id>stop-elasticsearch</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch.version}</version>
-              </dependency>
-              <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.21</version>
-              </dependency>
-            </dependencies>
-          </plugin>
-
-          <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.6.2</version>
-            <configuration>
-              <container>
-                <containerId>wildfly10x</containerId>
-                <log>${project.basedir}/target/cargo.log</log>
-                <output>${project.basedir}/target/jboss.log</output>
-                <zipUrlInstaller>
-                  <url>https://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
-                  <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
-                  <extractDir>${project.basedir}/.cargo/extracts</extractDir>
-                </zipUrlInstaller>
-                <dependencies>
-                  <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
-                  </dependency>
-                </dependencies>
-              </container>
-              <configuration>
-                <properties>
-                  <cargo.servlet.port>${it.port.http}</cargo.servlet.port>
-                  <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
-                  <cargo.jvmargs>-Xms64m -Xmx1152m -XX:MaxPermSize=512m</cargo.jvmargs>
-                  <cargo.datasource.datasource.pyrit>
-                    cargo.datasource.driver=${it.jdbc.driver}|
-                    cargo.datasource.url=${it.jdbc.url}|
-                    cargo.datasource.jndi=${it.jdbc.jndi}|
-                    cargo.datasource.username=${it.jdbc.username}|
-                    cargo.datasource.password=${it.jdbc.password}|
-                    cargo.datasource.transactionsupport=LOCAL_TRANSACTION
-                  </cargo.datasource.datasource.pyrit>
-                </properties>
-              </configuration>
-
-            </configuration>
-            <executions>
-              <execution>
-                <id>start-cargo</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>stop-cargo</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-                <configuration>
-                  <timeout>${it.cargo.stop.timeout}</timeout>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.wildfly.plugins</groupId>
-            <artifactId>wildfly-maven-plugin</artifactId>
-            <version>1.0.2.Final</version>
-            <executions>
-              <execution>
-                <id>configure-wildfly</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>execute-commands</goal>
-                </goals>
-                <configuration>
-                  <execute-commands>
-                    <batch>true</batch>
-                    <commands>
-                      <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
-                      <command>/system-property=jsf.project.stage:add(value="Production")</command>
-                      <command>/system-property=tests.running:add(value="true")</command>
-                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
-                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
-                      <command>/core-service=management/security-realm=ssl-realm:add()</command>
-                      <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
-                      <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-                      <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
-                    </commands>
-                  </execute-commands>
-                </configuration>
-              </execution>
-              
-              <execution>
-                <id>deploy-muikku</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-                <configuration>
-                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>wait-maven-plugin</artifactId>
-            <version>1.0</version>
-            <executions>
-              <execution>
-                <id>wait-rest</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>wait</goal>
-                </goals>
-                <configuration>
-                  <protocol>http</protocol>
-                  <host>${it.host}</host>
-                  <port>${it.port.http}</port>
-                  <file>/rest/system/ping</file>
-                  <maxcount>10</maxcount>
-                  <timeout>10000</timeout>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    
     <profile>
       <id>rest-it</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
       <properties>
-        <h2.version>1.4.177</h2.version>
         <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
-        <it.jdbc.driver>org.h2.Driver</it.jdbc.driver>
-        <it.jdbc.url>jdbc:h2:file:${project.build.directory}/h2;AUTO_SERVER=TRUE</it.jdbc.url>
+        <it.database.name>testdb</it.database.name>
+        <it.jdbc.driver>com.mysql.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
         <it.jdbc.password>sa</it.jdbc.password>
-        <it.hibernate.dialect>org.hibernate.dialect.H2Dialect</it.hibernate.dialect>
+        <it.hibernate.dialect>MYSQL5_INNODB</it.hibernate.dialect>
         <it.keystore.alias>pyrit</it.keystore.alias>
         <it.keystore.pass>storepass</it.keystore.pass>
         <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
-        <elasticsearch.http.port>9201</elasticsearch.http.port>
-        <elasticsearch.node.port>9301</elasticsearch.node.port>
-        <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
+        <elasticsearch.http.port>9200</elasticsearch.http.port>
+        <elasticsearch.node.port>9300</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearchatests</elasticsearch.cluster.name>
         <it.profile>rest-it</it.profile>
       </properties>
 
       <dependencies>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
-          <groupId>com.h2database</groupId>
-          <artifactId>h2</artifactId>
-          <version>${h2.version}</version>
-          <scope>test</scope>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>${mysql-connector-java.version}</version>
         </dependency>
       </dependencies>
+      
       <build>
 
         <plugins>
-
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.39.1</version>
+            <configuration>
+              <machine>
+                <autoCreate>true</autoCreate>
+                <createOptions>
+                  <virtualbox-memory>10000</virtualbox-memory>
+                  <virtualbox-no-share />
+                </createOptions>
+              </machine>
+              <dockerHost>unix:///var/run/docker.sock</dockerHost>
+              <verbose>true</verbose>
+              <images>
+                <image>
+                  <alias>mysql</alias>
+                  <name>mysql:5.6</name>
+                  <run>
+                    <env>
+                      <MYSQL_USER>sa</MYSQL_USER>
+                      <MYSQL_PASSWORD>sa</MYSQL_PASSWORD>
+                      <MYSQL_ROOT_PASSWORD>test</MYSQL_ROOT_PASSWORD>
+                      <MYSQL_DATABASE>testdb</MYSQL_DATABASE>
+                    </env>
+                    <wait>
+                      <log>MySQL init process done. Ready for start up.</log>
+                      <time>80000</time>
+                    </wait>
+                    <ports>
+                      <port>5555:3306</port>
+                    </ports>
+                  </run>
+                </image>
+              </images>
+            </configuration>
+            <executions>
+              <execution>
+                <id>docker-start</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>docker-stop</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.14.1</version>
+            <version>2.16</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
           </plugin>
 
           <plugin>
@@ -1449,8 +754,15 @@
                 <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
                 <it.report.directory>${it.report.directory}</it.report.directory>
                 <it.build.directory>${it.build.directory}</it.build.directory>
+                <it.selenium.version>${selenium-java.version}</it.selenium.version>
                 <it.test.file>${it.test.file}</it.test.file>
+                <it.browser>${it.browser}</it.browser>
+                <it.cargo.stop.timeout>${it.cargo.stop.timeout}</it.cargo.stop.timeout>
                 <it.profile>${it.profile}</it.profile>
+                <it.hibernate.dialect>${it.hibernate.dialect}</it.hibernate.dialect>
+                <elasticsearch.http.port>${elasticsearch.http.port}</elasticsearch.http.port>
+                <elasticsearch.node.port>${elasticsearch.node.port}</elasticsearch.node.port>
+                <elasticsearch.cluster.name>${elasticsearch.cluster.name}</elasticsearch.cluster.name>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -1470,123 +782,63 @@
           </plugin>
 
           <plugin>
-            <groupId>de.juplo</groupId>
-            <artifactId>hibernate-maven-plugin</artifactId>
-            <version>2.0.0</version>
+            <groupId>de.jpdigital</groupId>
+            <artifactId>hibernate53-ddl-maven-plugin</artifactId>
+            <version>2.5.0</version>
             <dependencies>
               <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>${h2.version}</version>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
               </dependency>
             </dependencies>
             <configuration>
-              <driver>${it.jdbc.driver}</driver>
-              <dialect>${it.hibernate.dialect}</dialect>
-              <url><![CDATA[${it.jdbc.url}]]></url>
-              <username>${it.jdbc.username}</username>
-              <password>${it.jdbc.password}</password>
+              <dialects>
+                <param>${it.hibernate.dialect}</param>
+              </dialects>
+              <outputDirectory>${basedir}/target/sql/ddl</outputDirectory>
+              <persistenceXml>${basedir}/src/test/resources/persistence_for_generation_purpose.xml</persistenceXml>
+              <createDropStatements>false</createDropStatements>
+              <omitDialectFromFileName>true</omitDialectFromFileName>
+              <outputFileNamePrefix />
+              <outputFileNameSuffix>createDatabase</outputFileNameSuffix>
+              <packages>
+                <param>fi.otavanopisto.muikku.plugins.schooldatapyramus.model</param>
+                <param>fi.otavanopisto.muikku.plugins</param>
+                <param>fi.otavanopisto.muikku.model</param>
+              </packages>
             </configuration>
             <executions>
               <execution>
-                <id>create-schema</id>
-                <phase>pre-integration-test</phase>
+                <id>generate-ddl</id>
+                <phase>process-classes</phase>
                 <goals>
-                  <goal>drop</goal>
-                  <goal>create</goal>
+                  <goal>gen-ddl</goal>
                 </goals>
               </execution>
             </executions>
           </plugin>
 
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>keytool-maven-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>keyclean</id>
-                <goals>
-                  <goal>clean</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>genkey</id>
-                <goals>
-                  <goal>generateKeyPair</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <dname>cn=${it.host}, ou=None, L=Test, ST=Test, o=Test, c=TE</dname>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <alias>${it.keystore.alias}</alias>
-                  <keyalg>RSA</keyalg>
-                  <keysize>2048</keysize>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>exportkey</id>
-                <goals>
-                  <goal>exportCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>${it.keystore.alias}</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                </configuration>
-              </execution>
-              <execution>
-                <phase>pre-integration-test</phase>
-                <id>importkey</id>
-                <goals>
-                  <goal>importCertificate</goal>
-                </goals>
-                <configuration>
-                  <keystore>${it.keystore.file}</keystore>
-                  <alias>root</alias>
-                  <file>${project.build.directory}/pyrit.crt</file>
-                  <storepass>${it.keystore.pass}</storepass>
-                  <noprompt>true</noprompt>
-                  <trustcacerts>true</trustcacerts>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
 
           <plugin>
             <groupId>com.github.alexcojocaru</groupId>
             <artifactId>elasticsearch-maven-plugin</artifactId>
-            <version>2.0</version>
+            <version>6.13</version>
             <configuration>
+              <version>${elasticsearch.version}</version>
               <clusterName>${elasticsearch.cluster.name}</clusterName>
-              <tcpPort>${elasticsearch.node.port}</tcpPort>
               <httpPort>${elasticsearch.http.port}</httpPort>
               <autoCreateIndex>true</autoCreateIndex>
+              <downloadUrl>https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.5-linux-x86_64.tar.gz</downloadUrl>
+              <pathConf>${project.basedir}/src/test/resources/elasticsearch</pathConf>
             </configuration>
             <executions>
               <execution>
                 <id>start-elasticsearch</id>
                 <phase>pre-integration-test</phase>
                 <goals>
-                  <goal>start</goal>
+                  <goal>runforked</goal>
                 </goals>
-              </execution>
-              <execution>
-                <id>init-elasticsearch</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>load</goal>
-                </goals>
-                <configuration>
-                  <scriptFile>${project.basedir}/src/test/resources/elasticsearch/init_script.txt</scriptFile>
-                </configuration>
               </execution>
               <execution>
                 <id>stop-elasticsearch</id>
@@ -1596,46 +848,74 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>sql-maven-plugin</artifactId>
+            <version>1.5</version>
+
             <dependencies>
+              <!-- specify the dependent jdbc driver here -->
               <dependency>
-                <groupId>org.elasticsearch</groupId>
-                <artifactId>elasticsearch</artifactId>
-                <version>${elasticsearch.version}</version>
-              </dependency>
-              <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.21</version>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
               </dependency>
             </dependencies>
+            <!-- common configuration shared by all executions -->
+            <configuration>
+              <driver>${it.jdbc.driver}</driver>
+              <url><![CDATA[${it.jdbc.url}]]></url>
+              <username>${it.jdbc.username}</username>
+              <password>${it.jdbc.password}</password>
+            </configuration>
+
+            <executions>
+              <execution>
+                <id>create-schema</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <autocommit>true</autocommit>
+                  <srcFiles>
+                    <srcFile>${basedir}/target/sql/ddl/createDatabase.sql</srcFile>
+                  </srcFiles>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
 
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.6.2</version>
+            <artifactId>cargo-maven3-plugin</artifactId>
+            <version>1.9.11</version>
             <configuration>
+              <!-- Container configs -->
               <container>
-                <containerId>wildfly10x</containerId>
+                <containerId>wildfly26x</containerId>
                 <log>${project.basedir}/target/cargo.log</log>
                 <output>${project.basedir}/target/jboss.log</output>
                 <zipUrlInstaller>
-                  <url>https://download.jboss.org/wildfly/10.0.0.Final/wildfly-10.0.0.Final.zip</url>
+                  <url>${wildfly-download-url}</url>
                   <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
                   <extractDir>${project.basedir}/.cargo/extracts</extractDir>
                 </zipUrlInstaller>
                 <dependencies>
                   <dependency>
-                    <groupId>com.h2database</groupId>
-                    <artifactId>h2</artifactId>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
                   </dependency>
                 </dependencies>
               </container>
+              <!-- Configuration to use with the container or the deployer -->
               <configuration>
                 <properties>
                   <cargo.servlet.port>${it.port.http}</cargo.servlet.port>
                   <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
-                  <cargo.jvmargs>-Xms64m -Xmx1152m -XX:MaxPermSize=512m</cargo.jvmargs>
+                  <cargo.jvmargs>--add-opens java.base/java.util=ALL-UNNAMED -Xms64m -Xmx1152m</cargo.jvmargs>
                   <cargo.datasource.datasource.pyrit>
                     cargo.datasource.driver=${it.jdbc.driver}|
                     cargo.datasource.url=${it.jdbc.url}|
@@ -1646,7 +926,13 @@
                   </cargo.datasource.datasource.pyrit>
                 </properties>
               </configuration>
-
+              <deployables>
+                <deployable>
+                  <groupId>fi.otavanopisto.muikku</groupId>
+                  <artifactId>muikku</artifactId>
+                  <type>war</type>
+                </deployable>
+              </deployables>
             </configuration>
             <executions>
               <execution>
@@ -1672,7 +958,7 @@
           <plugin>
             <groupId>org.wildfly.plugins</groupId>
             <artifactId>wildfly-maven-plugin</artifactId>
-            <version>1.0.2.Final</version>
+            <version>3.0.0.Final</version>
             <executions>
               <execution>
                 <id>configure-wildfly</id>
@@ -1681,34 +967,26 @@
                   <goal>execute-commands</goal>
                 </goals>
                 <configuration>
-                  <execute-commands>
-                    <batch>true</batch>
-                    <commands>
-                      <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
-                      <command>/system-property=jsf.project.stage:add(value="Production")</command>
-                      <command>/system-property=tests.running:add(value="true")</command>
-                      <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
-                      <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.node.port}")</command>
-                      <command>/core-service=management/security-realm=ssl-realm:add()</command>
-                      <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
-                      <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
-                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-                      <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
-                    </commands>
-                  </execute-commands>
-                </configuration>
-              </execution>
-              
-              <execution>
-                <id>deploy-muikku</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-                <configuration>
-                  <filename>../../muikku/target/muikku-${project.version}.war</filename>
+                  <commands>
+                    <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
+                    <command>/system-property=jsf.project.stage:add(value="Production")</command>
+                    <command>/system-property=tests.running:add(value="true")</command>
+                    <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                    <!--
+                      Below node.port = http.port because elasticsearch 
+                      http port is read from elasticsearch.node.port property instead of elasticsearch.http.port 
+                      in the code.
+                    -->
+                    <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.http.port}")</command>
+                    <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
+                    <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
+                    <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=muikku-ROOT.war)</command>
+                    <command>/subsystem=undertow:write-attribute(name=default-virtual-host,value="muikku")</command>
+                    <command>/subsystem=undertow/server=default-server/host=default-host:remove()</command>
+                    <command>/subsystem=undertow/configuration=handler/file=welcome-content:remove</command>
+                    <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
+                    <command>:reload</command>
+                  </commands>
                 </configuration>
               </execution>
             </executions>
@@ -1767,7 +1045,10 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.14.1</version>
+            <version>2.16</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
           </plugin>
 
           <plugin>
@@ -1784,7 +1065,7 @@
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
                 <it.test.file>${it.test.file}</it.test.file>
                 <it.port.http>${it.port.http}</it.port.http>
-                <it.port.https>${it.port.https}</it.port.https>               
+                <it.port.https>${it.port.https}</it.port.https>
                 <it.host>${it.host}</it.host>
                 <it.browser>${it.browser}</it.browser>
                 <it.profile>${it.profile}</it.profile>
@@ -1807,6 +1088,419 @@
                 <goals>
                   <goal>verify</goal>
                 </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>sauce-it</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <it.port.http>8081</it.port.http>
+        <it.port.https>8443</it.port.https>
+        <it.host>dev.muikku.fi</it.host>
+        <it.build.directory>${project.build.directory}</it.build.directory>
+        <it.database.name>testdb</it.database.name>
+        <it.jdbc.driver>com.mysql.jdbc.Driver</it.jdbc.driver>
+        <it.jdbc.url>jdbc:mysql://127.0.0.1:5555/testdb</it.jdbc.url>
+        <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
+        <it.jdbc.username>sa</it.jdbc.username>
+        <it.jdbc.password>sa</it.jdbc.password>
+        <it.hibernate.dialect>MYSQL5_INNODB</it.hibernate.dialect>
+        <it.keystore.alias>pyrit</it.keystore.alias>
+        <it.keystore.pass>storepass</it.keystore.pass>
+        <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
+        <it.wiremock.port>8089</it.wiremock.port>
+        <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
+        <it.sauce.username>${env.SAUCE_USERNAME}</it.sauce.username>
+        <it.sauce.accessKey>${env.SAUCE_ACCESS_KEY}</it.sauce.accessKey>
+        <it.sauce.tunnelId>${env.GITHUB_ACTION}</it.sauce.tunnelId>
+        <it.browser />
+        <it.browser.version />
+        <it.browser.resolution />
+        <it.platform />
+        <it.package>**</it.package>
+        <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
+        <elasticsearch.http.port>9200</elasticsearch.http.port>
+        <elasticsearch.node.port>9300</elasticsearch.node.port>
+        <elasticsearch.cluster.name>elasticsearchatests</elasticsearch.cluster.name>
+        <it.profile>sauce-it</it.profile>
+      </properties>
+
+      <dependencies>
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>${mysql-connector-java.version}</version>
+        </dependency>
+      </dependencies>
+      
+      <build>
+
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.39.1</version>
+            <configuration>
+              <machine>
+                <autoCreate>true</autoCreate>
+                <createOptions>
+                  <virtualbox-memory>10000</virtualbox-memory>
+                  <virtualbox-no-share />
+                </createOptions>
+              </machine>
+              <dockerHost>unix:///var/run/docker.sock</dockerHost>
+              <verbose>true</verbose>
+              <images>
+                <image>
+                  <alias>mysql</alias>
+                  <name>mysql:5.6</name>
+                  <run>
+                    <env>
+                      <MYSQL_USER>sa</MYSQL_USER>
+                      <MYSQL_PASSWORD>sa</MYSQL_PASSWORD>
+                      <MYSQL_ROOT_PASSWORD>test</MYSQL_ROOT_PASSWORD>
+                      <MYSQL_DATABASE>testdb</MYSQL_DATABASE>
+                    </env>
+                    <wait>
+                      <log>MySQL init process done. Ready for start up.</log>
+                      <time>80000</time>
+                    </wait>
+                    <ports>
+                      <port>5555:3306</port>
+                    </ports>
+                  </run>
+                </image>
+              </images>
+            </configuration>
+            <executions>
+              <execution>
+                <id>docker-start</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>docker-stop</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.16</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>2.16</version>
+            <configuration>
+            
+              <dependenciesToScan>
+                <dependency>fi.otavanopisto.muikku:core-plugins</dependency>
+              </dependenciesToScan>
+
+              <includes>
+                <include>fi/otavanopisto/muikku/ui/sauce/${it.package}/*IT.java</include>
+              </includes>
+              <systemPropertyVariables>
+                <it.project.version>${project.version}</it.project.version>
+                <it.host>${it.host}</it.host>
+                <it.port.http>${it.port.http}</it.port.http>
+                <it.port.https>${it.port.https}</it.port.https>
+                <it.jdbc.driver>${it.jdbc.driver}</it.jdbc.driver>
+                <it.jdbc.url>${it.jdbc.url}</it.jdbc.url>
+                <it.jdbc.jndi>${it.jdbc.jndi}</it.jdbc.jndi>
+                <it.jdbc.username>${it.jdbc.username}</it.jdbc.username>
+                <it.jdbc.password>${it.jdbc.password}</it.jdbc.password>
+                <it.keystore.file>${it.keystore.file}</it.keystore.file>
+                <it.keystore.alias>${it.keystore.alias}</it.keystore.alias>
+                <it.keystore.storepass>${it.keystore.pass}</it.keystore.storepass>
+                <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
+                <it.report.directory>${it.report.directory}</it.report.directory>
+                <it.build.directory>${it.build.directory}</it.build.directory>
+                <it.sauce.username>${it.sauce.username}</it.sauce.username>
+                <it.sauce.accessKey>${it.sauce.accessKey}</it.sauce.accessKey>
+                <it.sauce.tunnelId>${it.sauce.tunnelId}</it.sauce.tunnelId>
+                <it.selenium.version>${selenium-java.version}</it.selenium.version>
+                <it.browser>${it.browser}</it.browser>
+                <it.browser.version>${it.browser.version}</it.browser.version>
+                <it.browser.resolution>${it.browser.resolution}</it.browser.resolution>
+                <it.platform>${it.platform}</it.platform>
+                <it.cargo.stop.timeout>${it.cargo.stop.timeout}</it.cargo.stop.timeout>
+                <it.selenium.version>${selenium-java.version}</it.selenium.version>
+                <it.test.file>${it.test.file}</it.test.file>
+                <it.profile>${it.profile}</it.profile>
+                <it.hibernate.dialect>${it.hibernate.dialect}</it.hibernate.dialect>
+                <elasticsearch.http.port>${elasticsearch.http.port}</elasticsearch.http.port>
+                <elasticsearch.node.port>${elasticsearch.node.port}</elasticsearch.node.port>
+                <elasticsearch.cluster.name>${elasticsearch.cluster.name}</elasticsearch.cluster.name>
+              </systemPropertyVariables>
+            </configuration>
+            <executions>
+              <execution>
+                <id>failsafe-integration-tests</id>
+                <phase>integration-test</phase>
+                <goals>
+                  <goal>integration-test</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>failsafe-verify</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>de.jpdigital</groupId>
+            <artifactId>hibernate53-ddl-maven-plugin</artifactId>
+            <version>2.5.0</version>
+            <dependencies>
+              <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <dialects>
+                <param>${it.hibernate.dialect}</param>
+              </dialects>
+              <outputDirectory>${basedir}/target/sql/ddl</outputDirectory>
+              <persistenceXml>${basedir}/src/test/resources/persistence_for_generation_purpose.xml</persistenceXml>
+              <createDropStatements>false</createDropStatements>
+              <omitDialectFromFileName>true</omitDialectFromFileName>
+              <outputFileNamePrefix />
+              <outputFileNameSuffix>createDatabase</outputFileNameSuffix>
+              <packages>
+                <param>fi.otavanopisto.muikku.plugins.schooldatapyramus.model</param>
+                <param>fi.otavanopisto.muikku.plugins</param>
+                <param>fi.otavanopisto.muikku.model</param>
+              </packages>
+            </configuration>
+            <executions>
+              <execution>
+                <id>generate-ddl</id>
+                <phase>process-classes</phase>
+                <goals>
+                  <goal>gen-ddl</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>com.github.alexcojocaru</groupId>
+            <artifactId>elasticsearch-maven-plugin</artifactId>
+            <version>6.13</version>
+            <configuration>
+              <version>${elasticsearch.version}</version>
+              <clusterName>${elasticsearch.cluster.name}</clusterName>
+              <httpPort>${elasticsearch.http.port}</httpPort>
+              <autoCreateIndex>true</autoCreateIndex>
+              <downloadUrl>https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.5-linux-x86_64.tar.gz</downloadUrl>
+              <pathConf>${project.basedir}/src/test/resources/elasticsearch</pathConf>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-elasticsearch</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>runforked</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-elasticsearch</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>sql-maven-plugin</artifactId>
+            <version>1.5</version>
+
+            <dependencies>
+              <!-- specify the dependent jdbc driver here -->
+              <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+              </dependency>
+            </dependencies>
+            <!-- common configuration shared by all executions -->
+            <configuration>
+              <driver>${it.jdbc.driver}</driver>
+              <url><![CDATA[${it.jdbc.url}]]></url>
+              <username>${it.jdbc.username}</username>
+              <password>${it.jdbc.password}</password>
+            </configuration>
+
+            <executions>
+              <execution>
+                <id>create-schema</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <autocommit>true</autocommit>
+                  <srcFiles>
+                    <srcFile>${basedir}/target/sql/ddl/createDatabase.sql</srcFile>
+                  </srcFiles>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.cargo</groupId>
+            <artifactId>cargo-maven3-plugin</artifactId>
+            <version>1.9.11</version>
+            <configuration>
+              <!-- Container configs -->
+              <container>
+                <containerId>wildfly26x</containerId>
+                <log>${project.basedir}/target/cargo.log</log>
+                <output>${project.basedir}/target/jboss.log</output>
+                <zipUrlInstaller>
+                  <url>${wildfly-download-url}</url>
+                  <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
+                  <extractDir>${project.basedir}/.cargo/extracts</extractDir>
+                </zipUrlInstaller>
+                <dependencies>
+                  <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                  </dependency>
+                </dependencies>
+              </container>
+              <!-- Configuration to use with the container or the deployer -->
+              <configuration>
+                <properties>
+                  <cargo.servlet.port>${it.port.http}</cargo.servlet.port>
+                  <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
+                  <cargo.jvmargs>-Xms64m -Xmx1152m -XX:MaxPermSize=512m</cargo.jvmargs>
+                  <cargo.datasource.datasource.pyrit>
+                    cargo.datasource.driver=${it.jdbc.driver}|
+                    cargo.datasource.url=${it.jdbc.url}|
+                    cargo.datasource.jndi=${it.jdbc.jndi}|
+                    cargo.datasource.username=${it.jdbc.username}|
+                    cargo.datasource.password=${it.jdbc.password}|
+                    cargo.datasource.transactionsupport=LOCAL_TRANSACTION
+                  </cargo.datasource.datasource.pyrit>
+                </properties>
+              </configuration>
+              <deployables>
+                <deployable>
+                  <groupId>fi.otavanopisto.muikku</groupId>
+                  <artifactId>muikku</artifactId>
+                  <type>war</type>
+                </deployable>
+              </deployables>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-cargo</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-cargo</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+                <configuration>
+                  <timeout>${it.cargo.stop.timeout}</timeout>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          
+          <plugin>
+            <groupId>org.wildfly.plugins</groupId>
+            <artifactId>wildfly-maven-plugin</artifactId>
+            <version>3.0.0.Final</version>
+            <executions>
+              <execution>
+                <id>configure-wildfly</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute-commands</goal>
+                </goals>
+                <configuration>
+                  <commands>
+                    <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
+                    <command>/system-property=jsf.project.stage:add(value="Production")</command>
+                    <command>/system-property=tests.running:add(value="true")</command>
+                    <command>/system-property=elasticsearch.cluster.name:add(value="${elasticsearch.cluster.name}")</command>
+                    <!--
+                      Below node.port = http.port because elasticsearch 
+                      http port is read from elasticsearch.node.port property instead of elasticsearch.http.port 
+                      in the code.
+                    -->
+                    <command>/system-property=elasticsearch.node.port:add(value="${elasticsearch.http.port}")</command>
+                    <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
+                    <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["${it.host}"])</command>
+                    <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=muikku-ROOT.war)</command>
+                    <command>/subsystem=undertow:write-attribute(name=default-virtual-host,value="muikku")</command>
+                    <command>/subsystem=undertow/server=default-server/host=default-host:remove()</command>
+                    <command>/subsystem=undertow/configuration=handler/file=welcome-content:remove</command>
+                    <command>/subsystem=logging/logger=fi.otavanopisto.muikku.facelets.WidgetComponentHandler:add(level=FATAL)</command>
+                    <command>:reload</command>
+                  </commands>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>wait-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+              <execution>
+                <id>wait-rest</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>wait</goal>
+                </goals>
+                <configuration>
+                  <protocol>http</protocol>
+                  <host>${it.host}</host>
+                  <port>${it.port.http}</port>
+                  <file>/rest/system/ping</file>
+                  <maxcount>10</maxcount>
+                  <timeout>10000</timeout>
+                </configuration>
               </execution>
             </executions>
           </plugin>

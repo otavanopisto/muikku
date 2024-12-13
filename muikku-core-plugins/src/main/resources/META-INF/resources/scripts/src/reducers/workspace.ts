@@ -2,7 +2,6 @@ import { easyToUse } from "./easy-to-use-functions/index";
 import { notifications } from "./base/notifications";
 import { locales } from "./base/locales";
 import status from "./base/status";
-import { title } from "./base/title";
 import websocket from "./util/websocket";
 import { workspaces } from "./workspaces";
 import { announcements } from "./announcements";
@@ -27,7 +26,6 @@ export default combineReducers({
   notifications,
   profile,
   status,
-  title,
   userIndex,
   websocket,
   workspaces,

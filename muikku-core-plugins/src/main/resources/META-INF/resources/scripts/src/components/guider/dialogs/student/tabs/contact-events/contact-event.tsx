@@ -5,7 +5,7 @@ import CommentContactEvent from "./editors/new-comment";
 import EditContactEvent from "./editors/edit-event";
 import EditContactEventComment from "./editors/edit-comment";
 import ContactEventDeletePrompt from "./editors/delete-prompt";
-import * as moment from "moment";
+import moment from "moment";
 import Avatar from "~/components/general/avatar";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
@@ -13,6 +13,7 @@ import { StatusType } from "~/reducers/base/status";
 import Link from "~/components/general/link";
 import { ContactLogEvent } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * ContactEventProps
@@ -45,6 +46,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
   const [commentOpen, setCreateCommentOpen] = React.useState<boolean>(false);
   const [eventEditOpen, setEventEditOpen] = React.useState<boolean>(false);
   const [commentEditOpen, setCommentEditOpen] = React.useState<number[]>([]);
+  const { date } = localize;
   const { t } = useTranslation(["messaging", "common"]);
   return (
     <div
@@ -65,7 +67,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
             {t("labels.type", { context: type })}
           </div>
           <div className="contact-event__date">
-            {moment(entryDate).format("dddd, MMMM Do YYYY")}
+            {date(entryDate, "dddd, MMMM Do YYYY")}
           </div>
         </div>
       </div>
@@ -89,7 +91,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           className="link link--contact-event-footer"
           onClick={() => setCreateCommentOpen(true)}
         >
-          {t("actions.comment")}
+          {t("actions.create", { context: "comment" })}
         </Link>
         <Link
           className="link link--contact-event-footer"
@@ -130,7 +132,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                     {comment.creatorName}
                   </div>
                   <div className="contact-event__date">
-                    {moment(comment.commentDate).format("dddd, MMMM Do YYYY")}
+                    {date(comment.commentDate, "dddd, MMMM Do YYYY")}
                   </div>
                 </div>
               </div>

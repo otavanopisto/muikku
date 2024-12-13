@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.workspace.Mandatority;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCompositeGrade;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCompositeGradingScale;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScale;
@@ -352,7 +353,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null;
     }
     else {
-      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE, Boolean.FALSE);
+      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE);
       return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), courseAssessmentRequest));
     }
   }
@@ -418,6 +419,10 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       activity.setIdentifier(courseActivity.getCourseId() == null ? null : courseActivity.getCourseId().toString());
       activity.setName(courseActivity.getCourseName());
       
+      if (courseActivity.getOptionality() != null && courseActivity.getOptionality().equals(Mandatority.MANDATORY.name())) {
+        activity.setMandatority(Mandatority.MANDATORY);
+      }
+       
       List<WorkspaceActivitySubject> subjects = new ArrayList<>();
       if (courseActivity.getSubjects() != null) {
         for (CourseActivitySubject cas : courseActivity.getSubjects()) {
@@ -454,7 +459,10 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
           assessment.setGrade(caa.getGrade());
           assessment.setGradeDate(caa.getGradeDate());
           if (caa.getCourseModuleId() != null) {
-            assessment.setWorkspaceSubjectIdentifier(identifierMapper.getCourseModuleIdentifier(caa.getCourseModuleId()).toId());
+            // #7002: Assessment state per course module now contains full information about the subject of the module 
+            String courseModuleIdentifier = identifierMapper.getCourseModuleIdentifier(caa.getCourseModuleId()).toId();
+            WorkspaceActivitySubject subject = subjects.stream().filter(s -> StringUtils.equals(s.getIdentifier(), courseModuleIdentifier)).findFirst().orElse(null);
+            assessment.setSubject(subject);
           }
           assessment.setPassingGrade(caa.getPassingGrade());
           assessment.setState(caa.getState().toString());
@@ -574,7 +582,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier,
       String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
-      String requestText, Date date, Boolean archived, Boolean handled) {
+      String requestText, Date date, Boolean archived, Boolean handled, Boolean locked) {
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
@@ -600,7 +608,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, archived, handled);
+    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, archived, handled, locked);
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), courseAssessmentRequest));
   }
 
@@ -720,6 +728,44 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       dateParams.append("&").append("to=").append(toDate.toInstant().toString());
     
     return pyramusClient.get(String.format("/students/students/%d/courseAssessmentCount/?onlyPassingGrades=%s%s", studentId, onlyPassingGrades, dateParams.toString()), Long.class);
+  }
+
+  @Override
+  public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequestLock(String identifier,
+      String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier,
+      String studentIdentifier, boolean locked) {
+    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    Long id = NumberUtils.createLong(identifier);
+    
+    if (courseStudentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course student", workspaceUserIdentifier));
+      return null; 
+    }
+    
+    if (courseId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
+      return null; 
+    }
+    
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null; 
+    }
+    
+    if (id == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus assessment", identifier));
+      return null; 
+    }
+    
+    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest();
+    
+    courseAssessmentRequest.setId(id);
+    courseAssessmentRequest.setLocked(locked);
+    courseAssessmentRequest.setCourseStudentId(courseStudentId);
+    return entityFactory.createEntity(pyramusClient.put(String.format("/courses/courses/%d/courseStudents/%d/assessmentRequest/lock", courseId, courseStudentId), courseAssessmentRequest));
+  
   }
 
 }

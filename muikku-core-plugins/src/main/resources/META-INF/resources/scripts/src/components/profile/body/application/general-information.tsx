@@ -2,7 +2,7 @@ import * as React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import { ProfileState } from "~/reducers/main-function/profile";
 import ProfilePicture from "./components/profile-picture";
@@ -61,7 +61,7 @@ class GeneralInformation extends React.Component<
     const studyTimeEndValues = [];
     if (this.props.status.profile.studyTimeEnd) {
       studyTimeEndValues.push(
-        localizeTime.date(this.props.status.profile.studyTimeEnd)
+        localize.date(this.props.status.profile.studyTimeEnd)
       );
       if (this.props.status.profile.studyTimeLeftStr) {
         studyTimeEndValues.push(this.props.status.profile.studyTimeLeftStr);
@@ -76,16 +76,17 @@ class GeneralInformation extends React.Component<
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <div className="form__row">
-                <ProfilePicture />
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <ProfilePicture />
+                </div>
               </div>
+
               <ProfileProperty
                 modifier="study-start-date"
                 condition={!!this.props.status.profile.studyStartDate}
                 label={this.props.t("labels.studyStartDate", { ns: "users" })}
-                value={localizeTime.date(
-                  this.props.status.profile.studyStartDate
-                )}
+                value={localize.date(this.props.status.profile.studyStartDate)}
               />
               <ProfileProperty
                 modifier="study-end-date"

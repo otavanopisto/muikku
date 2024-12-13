@@ -29,8 +29,8 @@ import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 
 @MultipartConfig
@@ -45,6 +45,9 @@ public class MaterialAttachmentUploadServlet extends HttpServlet {
   
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private WorkspaceController workspaceController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -101,7 +104,7 @@ public class MaterialAttachmentUploadServlet extends HttpServlet {
       return;
     }
     
-    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+    if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
       sendResponse(resp, "Forbidden", HttpServletResponse.SC_FORBIDDEN);
       return;
     }

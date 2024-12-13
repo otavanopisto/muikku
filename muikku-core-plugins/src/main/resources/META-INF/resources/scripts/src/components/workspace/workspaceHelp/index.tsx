@@ -1,14 +1,9 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Depcrecated refs should be refactored
- */
-
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import Help from "./help";
 import MaterialEditor from "~/components/base/material-editor";
 import TableOfContentsComponent from "./content";
+import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceHelpBodyProps
@@ -20,54 +15,26 @@ interface WorkspaceHelpBodyProps {
 }
 
 /**
- * WorkspaceHelpBodyState
- */
-interface WorkspaceHelpBodyState {}
-
-/**
  * WorkspaceHelpBody
+ * @param props props
  */
-export default class WorkspaceHelpBody extends React.Component<
-  WorkspaceHelpBodyProps,
-  WorkspaceHelpBodyState
-> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: WorkspaceHelpBodyProps) {
-    super(props);
+const WorkspaceHelpBody = (props: WorkspaceHelpBodyProps) => {
+  const { t } = useTranslation(["common", "workspace"]);
+  const navigationComponent = <TableOfContentsComponent />;
+  return (
+    <div>
+      <WorkspaceNavbar
+        title={t("labels.instructions", { ns: "workspace" })}
+        activeTrail="help"
+        workspaceUrl={props.workspaceUrl}
+      />
+      <MaterialEditor locationPage="Help" />
+      <Help
+        navigation={navigationComponent}
+        onActiveNodeIdChange={props.onActiveNodeIdChange}
+      />
+    </div>
+  );
+};
 
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
-  }
-
-  /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.refs.content as any).getWrappedInstance().refresh();
-  }
-
-  /**
-   * render
-   */
-  render() {
-    const navigationComponent = <TableOfContentsComponent ref="content" />;
-    return (
-      <div>
-        <WorkspaceNavbar
-          activeTrail="help"
-          workspaceUrl={this.props.workspaceUrl}
-        />
-        <MaterialEditor locationPage="Help" />
-        <Help
-          onOpenNavigation={this.onOpenNavigation}
-          navigation={navigationComponent}
-          ref="guides"
-          onActiveNodeIdChange={this.props.onActiveNodeIdChange}
-        />
-      </div>
-    );
-  }
-}
+export default WorkspaceHelpBody;

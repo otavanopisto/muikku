@@ -7,13 +7,11 @@
 
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import {
-  WorkspaceType,
-  MaterialContentNodeListType,
-  MaterialContentNodeType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
-  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 import ContentPanel, {
   ContentPanelItem,
@@ -22,7 +20,7 @@ import HelpMaterial from "./help-material-page";
 import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { Redirect } from "react-router-dom";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
@@ -35,22 +33,23 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { MaterialViewRestriction } from "~/generated/client";
+import ReadSpeakerReader from "~/components/general/readspeaker";
+import { BackToToc } from "~/components/general/toc";
 
 /**
  * HelpMaterialsProps
  */
 interface HelpMaterialsProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
-  materials: MaterialContentNodeListType;
+  workspace: WorkspaceDataType;
+  materials: MaterialContentNodeWithIdAndLogic[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: React.ReactElement<any>;
   activeNodeId: number;
   workspaceEditMode: WorkspaceEditModeStateType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onActiveNodeIdChange: (activeNodeId: number) => any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onOpenNavigation: () => any;
   setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
   createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
@@ -70,7 +69,9 @@ const DEFAULT_OFFSET = 67;
  * Help
  */
 class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
-  private flattenedMaterial: MaterialContentNodeListType;
+  private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
+  private contentPanelRef = React.createRef<ContentPanel>();
+
   /**
    * constructor
    * @param props props
@@ -83,7 +84,6 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       redirect: null,
     };
 
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
     this.getFlattenedMaterials = this.getFlattenedMaterials.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.startupEditor = this.startupEditor.bind(this);
@@ -121,7 +121,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   UNSAFE_componentWillReceiveProps(nextProps: HelpMaterialsProps) {
@@ -134,7 +134,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * toggleSectionHiddenStatus
    * @param section section
    */
-  toggleSectionHiddenStatus(section: MaterialContentNodeType) {
+  toggleSectionHiddenStatus(section: MaterialContentNodeWithIdAndLogic) {
     this.props.updateWorkspaceMaterialContentNode({
       workspace: this.props.workspace,
       material: section,
@@ -153,15 +153,15 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param includesSection includesSection
    */
   getMaterialsOptionListDropdown(
-    section: MaterialContentNodeType,
-    nextSection: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType,
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSection: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic,
     includesSection: boolean
   ) {
     const { t } = this.props;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const materialManagementItemsOptions: Array<any> = [
+    const materialManagementItemsOptions = [
       {
         icon: "plus",
         text: t("labels.create_chapter", { ns: "materials" }),
@@ -199,7 +199,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * startupEditor
    * @param section section
    */
-  startupEditor(section: MaterialContentNodeType) {
+  startupEditor(section: MaterialContentNodeWithIdAndLogic) {
     this.props.setWorkspaceMaterialEditorState({
       currentNodeWorkspace: this.props.workspace,
       currentNodeValue: section,
@@ -235,8 +235,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param nextSibling nextSibling
    */
   createPage(
-    section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic
   ) {
     const { t } = this.props;
 
@@ -260,8 +260,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param e e
    */
   createPageFromBinary(
-    section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType,
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
     this.props.createWorkspaceMaterialContentNode(
@@ -282,7 +282,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * createSection
    * @param nextSibling nextSibling
    */
-  createSection(nextSibling: MaterialContentNodeType) {
+  createSection(nextSibling: MaterialContentNodeWithIdAndLogic) {
     const { t } = this.props;
 
     this.props.createWorkspaceMaterialContentNode(
@@ -303,8 +303,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
    * @param nextSibling nextSibling
    */
   pastePage(
-    section: MaterialContentNodeType,
-    nextSibling: MaterialContentNodeType
+    section: MaterialContentNodeWithIdAndLogic,
+    nextSibling: MaterialContentNodeWithIdAndLogic
   ) {
     const workspaceMaterialCopiedId =
       localStorage.getItem("workspace-material-copied-id") || null;
@@ -341,13 +341,6 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         this.flattenedMaterial.push(subnode);
       });
     });
-  }
-
-  /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    this.props.onOpenNavigation();
   }
 
   /**
@@ -436,10 +429,10 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     const { t } = this.props;
 
     switch (viewRestrict) {
-      case MaterialViewRestriction.LOGGED_IN:
+      case MaterialViewRestriction.LoggedIn:
         return t("content.viewRestricted", { ns: "materials" });
 
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+      case MaterialViewRestriction.WorkspaceMembers:
         return t("content.viewRestricted_workspaceMembers", {
           ns: "materials",
         });
@@ -448,6 +441,57 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         return null;
     }
   };
+
+  /**
+   * renderDropdownItem
+   * @param item Dropdown item
+   * @param closeDropdown Function to close the dropdown
+   * @returns Rendered dropdown item
+   */
+  renderDropdownItem = (item: any, closeDropdown: () => void) => {
+    if (item.file) {
+      return (
+        <label
+          htmlFor="baseFileInput"
+          className={`link link--full link--material-management-dropdown`}
+        >
+          <input
+            type="file"
+            id="baseFileInput"
+            onChange={(e) => {
+              closeDropdown();
+              item.onChange && item.onChange(e);
+            }}
+          />
+          <span className={`link__icon icon-${item.icon}`}></span>
+          <span>{item.text}</span>
+        </label>
+      );
+    }
+    return (
+      <Link
+        className={`link link--full link--material-management-dropdown`}
+        onClick={() => {
+          closeDropdown();
+          item.onClick && item.onClick();
+        }}
+      >
+        <span className={`link__icon icon-${item.icon}`}></span>
+        <span>{item.text}</span>
+      </Link>
+    );
+  };
+
+  /**
+   * renderDropdownItems
+   * @param items Array of dropdown items
+   * @returns Array of rendered dropdown items
+   */
+  renderDropdownItems = (items: any[]) =>
+    items.map(
+      (item) => (closeDropdown: () => void) =>
+        this.renderDropdownItem(item, closeDropdown)
+    );
 
   /**
    * render
@@ -462,6 +506,8 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     if (!this.props.materials || !this.props.workspace) {
       return null;
     }
+
+    const readSpeakerParameters: string[] = [];
 
     const isEditable = this.props.workspaceEditMode.active;
 
@@ -485,13 +531,15 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
     const emptyMessage =
       this.props.materials.length === 0 ? (
         <div className="material-page material-page--empty">
-          {t("content.empty", { ns: "materials", context: "materials" })}
+          {t("content.empty", { ns: "workspace", context: "instructions" })}
         </div>
       ) : null;
 
     const results: JSX.Element[] = [];
 
     this.props.materials.forEach((section, index) => {
+      readSpeakerParameters.push(`sectionId${section.workspaceMaterialId}`);
+
       // If first section, then above it is "add new section" icon button
       // And it is only showed when editing is active
       if (index === 0 && isEditable) {
@@ -522,44 +570,14 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown
             modifier="material-management"
-            items={this.getMaterialsOptionListDropdown(
-              section,
-              nextSection,
-              null,
-              true
-            ).map((item) => (closeDropdown: () => void) => {
-              if (item.file) {
-                return (
-                  <label
-                    htmlFor="baseFileInput"
-                    className={`link link--full link--material-management-dropdown`}
-                  >
-                    <input
-                      type="file"
-                      id="baseFileInput"
-                      onChange={(e) => {
-                        closeDropdown();
-                        item.onChange && item.onChange(e);
-                      }}
-                    />
-                    <span className={`link__icon icon-${item.icon}`}></span>
-                    <span>{item.text}</span>
-                  </label>
-                );
-              }
-              return (
-                <Link
-                  className={`link link--full link--material-management-dropdown`}
-                  onClick={() => {
-                    closeDropdown();
-                    item.onClick && item.onClick();
-                  }}
-                >
-                  <span className={`link__icon icon-${item.icon}`}></span>
-                  <span>{item.text}</span>
-                </Link>
-              );
-            })}
+            items={this.renderDropdownItems(
+              this.getMaterialsOptionListDropdown(
+                section,
+                nextSection,
+                null,
+                true
+              )
+            )}
           >
             <ButtonPill
               buttonModifiers="material-management-master"
@@ -573,9 +591,9 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       // section is restricted for logged in users and users is not logged in...
       // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
       const isSectionViewRestricted =
-        (section.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+        (section.viewRestrict === MaterialViewRestriction.LoggedIn &&
           !this.props.status.loggedIn) ||
-        (section.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+        (section.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
           !this.props.workspace.isCourseMember &&
           (this.props.status.isStudent || !this.props.status.loggedIn));
 
@@ -584,7 +602,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
       // If section is restricted we don't return anything
       !isSectionViewRestricted &&
-        section.children.forEach((node) => {
+        section.children.forEach((node, pageI) => {
           // this is the next sibling for the content node that is to be added, aka the current
           const nextSibling = node;
 
@@ -597,46 +615,14 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               >
                 <Dropdown
                   modifier="material-management"
-                  items={this.getMaterialsOptionListDropdown(
-                    section,
-                    nextSection,
-                    nextSibling,
-                    false
-                  ).map((item) => (closeDropdown: () => void) => {
-                    if (item.file) {
-                      return (
-                        <label
-                          htmlFor={node.workspaceMaterialId + "-input"}
-                          className={`link link--full link--material-management-dropdown`}
-                        >
-                          <input
-                            type="file"
-                            id={node.workspaceMaterialId + "-input"}
-                            onChange={(e) => {
-                              closeDropdown();
-                              item.onChange && item.onChange(e);
-                            }}
-                          />
-                          <span
-                            className={`link__icon icon-${item.icon}`}
-                          ></span>
-                          <span>{item.text}</span>
-                        </label>
-                      );
-                    }
-                    return (
-                      <Link
-                        className={`link link--full link--material-management-dropdown`}
-                        onClick={() => {
-                          closeDropdown();
-                          item.onClick && item.onClick();
-                        }}
-                      >
-                        <span className={`link__icon icon-${item.icon}`}></span>
-                        <span>{item.text}</span>
-                      </Link>
-                    );
-                  })}
+                  items={this.renderDropdownItems(
+                    this.getMaterialsOptionListDropdown(
+                      section,
+                      nextSection,
+                      nextSibling,
+                      false
+                    )
+                  )}
                 >
                   <ButtonPill
                     buttonModifiers="material-management-master"
@@ -647,12 +633,50 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             );
           }
 
+          let readSpeakerComponent = undefined;
+
+          if (!this.props.workspaceEditMode.active) {
+            const arrayOfSectionsToRemoved = Array(
+              pageI === 0 ? index : index + 1
+            )
+              .fill(0)
+              .map((_, i) => i);
+
+            const arrayOfPagesToRemoved = Array(pageI)
+              .fill(0)
+              .map((_, i) => i);
+
+            let contentToRead = [
+              ...this.props.materials
+                .filter((section, i) => !arrayOfSectionsToRemoved.includes(i))
+                .map((section) => `s-${section.workspaceMaterialId}`),
+            ];
+
+            if (pageI !== 0) {
+              contentToRead = [
+                ...section.children
+                  .filter((page, i) => !arrayOfPagesToRemoved.includes(i))
+                  .map((page) => `p-${page.workspaceMaterialId}`),
+                ...contentToRead,
+              ];
+            }
+
+            readSpeakerComponent = (
+              <ReadSpeakerReader
+                entityId={pageI + 1}
+                readParameterType="readid"
+                readParameters={contentToRead}
+              />
+            );
+          }
+
           // Actual page material
           // Nothing is shown is workspace or material "compositeReplies" are missing or
           // editing is not active and material is hided and showEvenIfHidden is false
           const material =
             !this.props.workspace || (!isEditable && node.hidden) ? null : (
               <ContentPanelItem
+                id={`p-${node.workspaceMaterialId}`}
                 ref={node.workspaceMaterialId + ""}
                 key={node.workspaceMaterialId + ""}
               >
@@ -669,6 +693,16 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
                   materialContentNode={node}
                   workspace={this.props.workspace}
                   isViewRestricted={false}
+                  readspeakerComponent={readSpeakerComponent}
+                  anchorItem={
+                    <BackToToc
+                      tocElementId={`tocElement-${node.workspaceMaterialId}`}
+                      openToc={
+                        this.contentPanelRef.current &&
+                        this.contentPanelRef.current.openNavigation
+                      }
+                    />
+                  }
                 />
               </ContentPanelItem>
             );
@@ -685,6 +719,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         <section
           key={"section-" + section.workspaceMaterialId}
           className="content-panel__chapter"
+          id={`s-${section.workspaceMaterialId}`}
         >
           <div
             id={"s-" + section.workspaceMaterialId}
@@ -736,6 +771,17 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
               lang={section.titleLanguage || this.props.workspace.language}
             >
               {section.title}
+              <BackToToc
+                tocElementId={
+                  this.props.status.loggedIn
+                    ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                    : `tocTopic-${section.workspaceMaterialId}`
+                }
+                openToc={
+                  this.contentPanelRef.current &&
+                  this.contentPanelRef.current.openNavigation
+                }
+              />
             </div>
           </h2>
 
@@ -756,11 +802,19 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
     return (
       <ContentPanel
-        onOpenNavigation={this.onOpenNavigation}
         modifier="workspace-instructions"
         navigation={this.props.navigation}
         title={t("labels.instructions", { ns: "workspace" })}
-        ref="content-panel"
+        readspeakerComponent={
+          <ReadSpeakerReader
+            readParameterType="readid"
+            readParameters={readSpeakerParameters}
+          />
+        }
+        t={t}
+        i18n={this.props.i18n}
+        tReady={this.props.tReady}
+        ref={this.contentPanelRef}
       >
         {results}
         {emptyMessage}
@@ -788,7 +842,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,
@@ -807,5 +861,5 @@ const componentWithTranslation = withTranslation(
 )(Help);
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true,
+  forwardRef: true,
 })(componentWithTranslation);

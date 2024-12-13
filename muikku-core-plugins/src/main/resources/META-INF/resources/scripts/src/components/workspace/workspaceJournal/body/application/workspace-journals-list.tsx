@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/journal.scss";
@@ -11,7 +11,7 @@ import { StatusType } from "~/reducers/base/status";
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
-import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
+import { WorkspacesStateType, WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import {
   LoadMoreCurrentWorkspaceJournalsFromServerTriggerType,
@@ -27,7 +27,7 @@ interface WorkspaceJournalsListProps extends WithTranslation {
   workspaceJournalsState: WorkspacesStateType;
   workspaceJournalsHasMore: boolean;
   loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   journalsState: JournalsState;
   status: StatusType;
 }
@@ -155,7 +155,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { loadMoreCurrentWorkspaceJournalsFromServer },
     dispatch

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Dialog, {
   DialogRow,
   DialogRowHeader,
@@ -23,7 +23,7 @@ import {
   UpdateUsergroupTriggerType,
 } from "~/actions/main-function/users";
 import { StateType } from "~/reducers";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import AutofillSelector, {
   UiSelectItem,
 } from "~/components/base/input-select-autofill";
@@ -36,11 +36,13 @@ import {
 } from "~/reducers/main-function/users";
 import { TagItem } from "~/components/general/tag-input";
 import {
+  OrganizationStaffMemberSearchResult,
+  OrganizationStudentSearchResult,
+  StaffMember,
+  Student,
   UpdateUsergroupAddUsersRequest,
   UpdateUsergroupRemoveUsersRequest,
-  User,
   UserGroup,
-  UserSearchResult,
 } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
@@ -235,7 +237,11 @@ class OrganizationEditUsergroup extends React.Component<
        * success
        * @param users users
        */
-      success: (users: UserSearchResult) => {
+      success: (
+        users:
+          | OrganizationStaffMemberSearchResult
+          | OrganizationStudentSearchResult
+      ) => {
         this.setState({
           pages: {
             ...this.state.pages,
@@ -250,7 +256,7 @@ class OrganizationEditUsergroup extends React.Component<
    * turnUsersToSelectItems
    * @param users users
    */
-  turnUsersToSelectItems(users: User[]) {
+  turnUsersToSelectItems(users: Student[] | StaffMember[]) {
     const selectItems: SelectItem[] = [];
 
     for (let i = 0; i < users.length; i++) {
@@ -800,7 +806,7 @@ class OrganizationEditUsergroup extends React.Component<
                   : 0
               }
               identifier={"userGroup" + this.props.usergroup.id + "Staff"}
-              allTabTitle={t("labels.groupCouncelors", { ns: "users" })}
+              allTabTitle={t("labels.counselors", { ns: "users" })}
               removeTabTitle={t("labels.counselorsToRemove", { ns: "users" })}
               onEmptyTitle={t("content.notFound", { ns: "users" })}
               searchValue={
@@ -898,7 +904,7 @@ class OrganizationEditUsergroup extends React.Component<
                   <div>
                     {t("content.noneSelected", {
                       ns: "users",
-                      context: "councelors",
+                      context: "counselors",
                     })}
                   </div>
                 )}
@@ -962,7 +968,7 @@ class OrganizationEditUsergroup extends React.Component<
                   <div>
                     {t("content.noneSelected", {
                       ns: "users",
-                      context: "councelors",
+                      context: "counselors",
                     })}
                   </div>
                 )}
@@ -1105,7 +1111,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadStudents: loadSelectorStudents,

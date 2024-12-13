@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { StateType } from "~/reducers";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const StepZilla = require("react-stepzilla").default;
@@ -26,8 +25,10 @@ import NewHopsEventDescriptionDialog from "./dialogs/new-hops-event-description-
 import { Textarea } from "./text-area";
 import { StatusType } from "~/reducers/base/status";
 import EditHopsEventDescriptionDialog from "./dialogs/edit-hops-event-description-dialog";
+import StudyProgressContextProvider from "~/components/general/study-progress/context";
 import MApi, { isMApiError } from "~/api/api";
 import { HopsGoals, HopsHistoryEntry } from "~/generated/client";
+import { Action, Dispatch } from "redux";
 
 export const COMPULSORY_HOPS_VISIBLITY = [
   "Nettiperuskoulu",
@@ -49,9 +50,9 @@ export const NEEDED_STUDIES_IN_TOTAL = 46;
  * and depending of that there is different amount
  * functionalities in study tool for example
  */
-export type HopsUser = "supervisor" | "student";
+export type HopsUser = "supervisor" | "student" | "guardian";
 
-export type HopsUsePlace = "guider" | "studies";
+export type HopsUsePlace = "guider" | "studies" | "guardian";
 
 /**
  * HopsSteps
@@ -126,6 +127,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
       basicInfo: {
         name: "",
         studentUserEntityId: null,
+        curriculumName: null,
       },
       hopsCompulsory: {
         ...initializeHops(),
@@ -272,6 +274,7 @@ class CompulsoryEducationHopsWizard extends React.Component<
               educationalLevel: studentBasicInfo.studyProgrammeEducationType
                 ? studentBasicInfo.studyProgrammeEducationType
                 : "Ei asetettu",
+              curriculumName: studentBasicInfo.curriculumName,
             } as BasicInformation,
             hopsCompulsory: {
               ...initializeHops(),
@@ -685,78 +688,90 @@ class CompulsoryEducationHopsWizard extends React.Component<
     }
 
     return (
-      <div className="wizard">
-        <div className="wizard_container">
-          {baseProps.disabled ? (
-            <StepZilla
-              steps={steps}
-              dontValidate={false}
-              preventEnterSubmission={true}
-              showNavigation={!this.state.loading}
-              showSteps={true}
-              prevBtnOnLastStep={true}
-              nextButtonCls="button button--wizard"
-              backButtonCls="button button--wizard"
-              nextButtonText="Seuraava"
-              backButtonText="Edellinen"
-            />
-          ) : (
-            <StepZilla
-              steps={steps}
-              dontValidate={false}
-              preventEnterSubmission={true}
-              showNavigation={!this.state.loading}
-              showSteps={true}
-              prevBtnOnLastStep={true}
-              nextTextOnFinalActionStep="Tallenna"
-              nextButtonCls="button button--wizard"
-              backButtonCls="button button--wizard"
-              nextButtonText="Seuraava"
-              backButtonText="Edellinen"
-              onStepChange={this.handleStepChange(steps)}
-            />
-          )}
+      <StudyProgressContextProvider
+        user={this.props.user}
+        useCase="hops-planning"
+        studentId={this.props.studentId}
+        studentUserEntityId={this.state.basicInfo.studentUserEntityId}
+        dataToLoad={[
+          "studentActivity",
+          "studentChoices",
+          "optionalSuggestions",
+        ]}
+      >
+        <div className="wizard">
+          <div className="wizard_container">
+            {baseProps.disabled ? (
+              <StepZilla
+                steps={steps}
+                dontValidate={false}
+                preventEnterSubmission={true}
+                showNavigation={!this.state.loading}
+                showSteps={true}
+                prevBtnOnLastStep={true}
+                nextButtonCls="button button--wizard"
+                backButtonCls="button button--wizard"
+                nextButtonText="Seuraava"
+                backButtonText="Edellinen"
+              />
+            ) : (
+              <StepZilla
+                steps={steps}
+                dontValidate={false}
+                preventEnterSubmission={true}
+                showNavigation={!this.state.loading}
+                showSteps={true}
+                prevBtnOnLastStep={true}
+                nextTextOnFinalActionStep="Tallenna"
+                nextButtonCls="button button--wizard"
+                backButtonCls="button button--wizard"
+                nextButtonText="Seuraava"
+                backButtonText="Edellinen"
+                onStepChange={this.handleStepChange(steps)}
+              />
+            )}
+          </div>
+          <NewHopsEventDescriptionDialog
+            content={
+              <div className="hops-container__row">
+                <div className="hops__form-element-container">
+                  <Textarea
+                    id="hopsUpdateDetailsExplanation"
+                    label="Vapaa kuvaus tapahtuman muutoksista"
+                    className="form-element__textarea form-element__textarea--resize__vertically"
+                    onChange={this.handleHopsUpdateDetailsChange}
+                    value={this.state.hopsUpdateDetails}
+                  />
+                </div>
+              </div>
+            }
+            isOpen={this.state.addHopsUpdateDetailsDialogOpen}
+            onSaveClick={this.handleSaveClick}
+            onCancelClick={this.handleCancelClick}
+          />
+          <EditHopsEventDescriptionDialog
+            content={
+              <div className="hops-container__row">
+                <div className="hops__form-element-container">
+                  <Textarea
+                    id="updateEventToBeEditedExplanation"
+                    label="Muokkaa tapahtuman kuvausta"
+                    className="form-element__textarea form-element__textarea--resize__vertically"
+                    onChange={this.handleHopsEditingHistoryEventDetailsChange}
+                    value={
+                      this.state.updateEventToBeEdited &&
+                      this.state.updateEventToBeEdited.details
+                    }
+                  />
+                </div>
+              </div>
+            }
+            isOpen={!!this.state.updateEventToBeEdited}
+            onSaveClick={this.handleSaveUpdatedHistoryEventClick}
+            onCancelClick={this.handleCancelUpdatingHistoryEventClick}
+          />
         </div>
-        <NewHopsEventDescriptionDialog
-          content={
-            <div className="hops-container__row">
-              <div className="hops__form-element-container">
-                <Textarea
-                  id="hopsUpdateDetailsExplanation"
-                  label="Vapaa kuvaus tapahtuman muutoksista"
-                  className="form-element__textarea form-element__textarea--resize__vertically"
-                  onChange={this.handleHopsUpdateDetailsChange}
-                  value={this.state.hopsUpdateDetails}
-                />
-              </div>
-            </div>
-          }
-          isOpen={this.state.addHopsUpdateDetailsDialogOpen}
-          onSaveClick={this.handleSaveClick}
-          onCancelClick={this.handleCancelClick}
-        />
-        <EditHopsEventDescriptionDialog
-          content={
-            <div className="hops-container__row">
-              <div className="hops__form-element-container">
-                <Textarea
-                  id="updateEventToBeEditedExplanation"
-                  label="Muokkaa tapahtuman kuvausta"
-                  className="form-element__textarea form-element__textarea--resize__vertically"
-                  onChange={this.handleHopsEditingHistoryEventDetailsChange}
-                  value={
-                    this.state.updateEventToBeEdited &&
-                    this.state.updateEventToBeEdited.details
-                  }
-                />
-              </div>
-            </div>
-          }
-          isOpen={!!this.state.updateEventToBeEdited}
-          onSaveClick={this.handleSaveUpdatedHistoryEventClick}
-          onCancelClick={this.handleCancelUpdatingHistoryEventClick}
-        />
-      </div>
+      </StudyProgressContextProvider>
     );
   }
 }
@@ -775,7 +790,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {
     displayNotification,
   };

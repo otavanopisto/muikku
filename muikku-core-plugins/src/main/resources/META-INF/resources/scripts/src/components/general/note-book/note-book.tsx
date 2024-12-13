@@ -2,9 +2,9 @@ import * as React from "react";
 import NoteEditor from "./note-editor";
 import { NoteBookState } from "~/reducers/notebook/notebook";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   LoadNotebookEntries,
   loadNotebookEntries,
@@ -18,7 +18,7 @@ import {
   updateSelectedNotePosition,
 } from "../../../actions/notebook/notebook";
 import { StatusType } from "~/reducers/base/status";
-import { WorkspaceType } from "~/reducers/workspaces/index";
+import { WorkspaceDataType } from "~/reducers/workspaces/index";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/notebook.scss";
 import NoteList, { NoteListItem } from "./note-list";
@@ -61,7 +61,7 @@ export const HTML5toTouch: MultiBackendOptions = {
  */
 interface NoteBookProps {
   status: StatusType;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   notebook: NoteBookState;
   loadNotebookEntries: LoadNotebookEntries;
   updateNotebookEntriesOrder: UpdateNotebookEntriesOrder;
@@ -297,6 +297,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         <Dropdown openByHover content={<p>{t("actions.add")}</p>}>
           <IconButton
             icon="plus"
+            aria-label={t("actions.add")}
             buttonModifiers={["notebook-action"]}
             onClick={handleAddNewNoteClick}
             disablePropagation={true}
@@ -305,6 +306,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         <Dropdown openByHover content={<p>{t("actions.organize")}</p>}>
           <IconButton
             icon="move"
+            aria-label={t("actions.organize")}
             buttonModifiers={["notebook-action"]}
             onClick={handleEditEntriesOrderClick}
             disablePropagation={true}
@@ -316,6 +318,7 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         >
           <IconButton
             icon="arrow-down"
+            aria-label={t("actions.openAll", { ns: "common" })}
             buttonModifiers={["notebook-action"]}
             onClick={handleOpenAllClick}
             disablePropagation={true}
@@ -327,12 +330,16 @@ const NoteBook: React.FC<NoteBookProps> = (props) => {
         >
           <IconButton
             icon="arrow-up"
+            aria-label={t("actions.closeAll", { ns: "common" })}
             buttonModifiers={["notebook-action"]}
             onClick={handleCloseAllClick}
             disablePropagation={true}
           />
         </Dropdown>
-        <Dropdown openByHover content={<p>PDF</p>}>
+        <Dropdown
+          openByHover
+          content={<p>{t("actions.openPDF", { ns: "common" })}</p>}
+        >
           <NoteBookPDFDialog notes={notes} workspace={props.currentWorkspace}>
             <IconButton
               icon="pdf"
@@ -385,7 +392,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadNotebookEntries,

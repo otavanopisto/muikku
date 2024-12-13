@@ -6,7 +6,7 @@
 
 import * as React from "react";
 import MathField from "./better-math-field";
-import "~/sass/elements/math-field.scss";
+import "~/sass/elements/mathfield.scss";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
@@ -134,7 +134,7 @@ class TextField extends React.Component<MathFieldProps, MathFieldState> {
           })}
         />
         <div
-          className={`material-page__mathfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`mathfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
@@ -142,7 +142,7 @@ class TextField extends React.Component<MathFieldProps, MathFieldState> {
             i18n={this.props.i18n}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-          <span className="material-page__taskfield-header">
+          <span className="mathfield-header">
             <span></span>
             <Instructions
               modifier="instructions"
@@ -160,16 +160,17 @@ class TextField extends React.Component<MathFieldProps, MathFieldState> {
               }
             />
           </span>
+          {/* WARNING: previous .material-page__mathfield-formula and current .mathfield__formula classNames are written to the DB and cannot be changed */}
           <MathField
             ref="base"
-            className="material-page__mathfield"
+            className="mathfield"
             userId={this.props.userId}
             value={this.state.value}
             onChange={this.setValue}
-            formulaClassName="material-page__mathfield-formula"
-            editorClassName="material-page__mathfield-editor"
-            imageClassName="material-page__mathfield-image"
-            toolbarClassName="material-page__mathfield-toolbar"
+            formulaClassName="mathfield__formula"
+            editorClassName="mathfield__editor"
+            imageClassName="mathfield__image"
+            toolbarClassName="mathfield__toolbar"
             mathi18n={{
               symbols: t("labels.symbols", { ns: "materials" }),
               relations: t("labels.relations", { ns: "materials" }),

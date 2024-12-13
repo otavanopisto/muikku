@@ -1,7 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
-import { bindActionCreators, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
@@ -22,7 +22,7 @@ import {
   WorkspaceJournal,
   EvaluationAssessmentRequest,
 } from "~/generated/client";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -239,10 +239,10 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
               <div className="evaluation-modal__item-meta">
                 <div className="evaluation-modal__item-meta-item">
                   <span className="evaluation-modal__item-meta-item-label">
-                    {t("labels.feedbackDate", { ns: "journal" })}:
+                    {t("labels.feedbackDate", { ns: "journal" })}
                   </span>
                   <span className="evaluation-modal__item-meta-item-data">
-                    {localizeTime.date(journalFeedback.created, "l")}
+                    {localize.date(journalFeedback.created)}
                   </span>
                 </div>
               </div>
@@ -355,8 +355,8 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
                   onClick={handleSortFunctionClick}
                   icon={
                     sortByCreationDate === "asc"
-                      ? "sort-amount-asc"
-                      : "sort-amount-desc"
+                      ? "sort-amount-desc"
+                      : "sort-amount-asc"
                   }
                   buttonModifiers={["evaluation-journal-sorter"]}
                 />
@@ -403,7 +403,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ deleteEvaluationJournalFeedback }, dispatch);
 }
 

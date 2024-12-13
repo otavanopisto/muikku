@@ -1,7 +1,7 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import CKEditor from "~/components/general/ckeditor";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { StateType } from "~/reducers/index";
 import { AnyActionType } from "~/actions/index";
 import { StatusType } from "~/reducers/base/status";
@@ -137,14 +137,16 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
   render() {
     const { t } = this.props;
     const editorTitle = this.props.journalComment
-      ? t("actions.edit", { context: "comment" }) + " - " + t("labels.content")
-      : t("labels.create", { context: "comment" }) +
+      ? t("actions.edit", { ns: "common", context: "comment" }) +
+        " - " +
+        t("labels.content")
+      : t("actions.create", { ns: "common", context: "comment" }) +
         " - " +
         t("labels.content");
 
     const commentHeaderTitle = this.props.journalComment
-      ? t("actions.edit", { context: "comment" })
-      : t("labels.create", { context: "comment" });
+      ? t("actions.edit", { ns: "common", context: "comment" })
+      : t("actions.create", { ns: "common", context: "comment" });
 
     return (
       <div className="form" role="form">
@@ -179,7 +181,7 @@ class WorkspaceJournalCommentEditor extends SessionStateComponent<
                     onClick={this.handleSaveClick}
                     disabled={this.props.locked}
                   >
-                    {t("actions.save")}
+                    {t("actions.save", { ns: "common" })}
                   </Button>
                   <Button
                     onClick={this.props.onClose}
@@ -222,7 +224,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({}, dispatch);
 }
 

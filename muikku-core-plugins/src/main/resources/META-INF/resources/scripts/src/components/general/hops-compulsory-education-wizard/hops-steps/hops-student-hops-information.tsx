@@ -40,22 +40,12 @@ class HopsStudentHopsInformation extends React.Component<
   HopsStudentHopsInformationProps,
   HopsStudentHopsInformationState
 > {
-  private myRef: HTMLElement = undefined;
   /**
    * constructor
    * @param props props
    */
   constructor(props: HopsStudentHopsInformationProps) {
     super(props);
-  }
-
-  /**
-   * componentDidMount
-   */
-  componentDidMount(): void {
-    window.dispatchEvent(new Event("resize"));
-
-    this.myRef.scrollIntoView({ behavior: "smooth" });
   }
 
   /**
@@ -76,7 +66,7 @@ class HopsStudentHopsInformation extends React.Component<
    */
   render() {
     return (
-      <section className="hops-container" ref={(ref) => (this.myRef = ref)}>
+      <section className="hops-container">
         {this.props.loading ? (
           <div className="loader-empty" />
         ) : (
@@ -113,7 +103,7 @@ class HopsStudentHopsInformation extends React.Component<
               <div className="hops-container__row">
                 <div className="hops__form-element-container">
                   <TextField
-                    id="guidanceCouncelor"
+                    id="guidanceCouselor"
                     label="Ohjaaja:"
                     type="text"
                     placeholder="Ohjaaja"

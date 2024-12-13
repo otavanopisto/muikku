@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
@@ -11,12 +11,12 @@ import {
   ApplicationListItemBody,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
 import DeleteJournal from "~/components/workspace/workspaceJournal/dialogs/delete-journal";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   SetCurrentJournalTriggerType,
   setCurrentJournal,
@@ -26,7 +26,7 @@ import WorkspaceJournalCommentList from "./workspace-journal-comment-list";
 import WorkspaceJournalEditor from "./editors/workspace-journal-editor";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 
 /**
  * JournalProps
@@ -34,7 +34,7 @@ import { localizeTime } from "~/locales/i18n";
 interface WorkspaceJournalsListItemProps extends WithTranslation {
   status: StatusType;
   journal: WorkspaceJournalWithComments;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   asCurrent: boolean;
   showCommentList: boolean;
   setCurrentJournal: SetCurrentJournalTriggerType;
@@ -169,7 +169,8 @@ class WorkspaceJournalsListItem extends React.Component<
 
             <div className="application-list__item-header-aside">
               <span>
-                {localizeTime.date(this.props.journal.created, "L LT")}
+                {localize.date(this.props.journal.created)} -{" "}
+                {localize.date(this.props.journal.created, "LT")}
               </span>
             </div>
           </ApplicationListItemHeader>
@@ -247,7 +248,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ setCurrentJournal }, dispatch);
 }
 

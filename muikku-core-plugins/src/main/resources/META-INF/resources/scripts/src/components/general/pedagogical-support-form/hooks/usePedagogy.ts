@@ -16,11 +16,11 @@ const pedagogyApi = MApi.getPedagogyApi();
 
 /**
  * usePedagogy
- * @param studentId studentId
+ * @param studentUserEntityId studentUserEntityId
  * @param displayNotification displayNotification
  */
 export const usePedagogy = (
-  studentId: string,
+  studentUserEntityId: number,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [loading, setLoading] = React.useState(true);
@@ -45,7 +45,7 @@ export const usePedagogy = (
 
       try {
         const pedagogyData = await pedagogyApi.getPedagogyForm({
-          studentIdentifier: studentId,
+          userEntityId: studentUserEntityId,
         });
 
         if (componentMounted.current) {
@@ -75,7 +75,7 @@ export const usePedagogy = (
     };
 
     loadData();
-  }, [displayNotification, studentId]);
+  }, [displayNotification, studentUserEntityId]);
 
   /**
    * resetData
@@ -158,7 +158,7 @@ export const usePedagogy = (
     setLoading(true);
     try {
       const pedagogyData = await pedagogyApi.createPedagogyForm({
-        studentIdentifier: studentId,
+        userEntityId: studentUserEntityId,
         createPedagogyFormRequest: {
           formData: "{}",
         },
@@ -321,7 +321,7 @@ export const usePedagogy = (
     }
 
     return await pedagogyApi.updatePedagogyFormData({
-      studentIdentifier: studentId,
+      userEntityId: studentUserEntityId,
       updatePedagogyFormDataRequest: {
         formData: JSON.stringify(dataToUpdate),
         fields: fields || null,
@@ -336,7 +336,7 @@ export const usePedagogy = (
    */
   const updateStateToServer = async (state: PedagogyFormState) =>
     await pedagogyApi.updatePedagogyFormState({
-      studentIdentifier: studentId,
+      userEntityId: studentUserEntityId,
       updatePedagogyFormStateRequest: {
         state,
       },
@@ -354,6 +354,7 @@ export const usePedagogy = (
     sendToStudent,
     approveForm,
     updateFormData,
+    studentUserEntityId,
     setFormDataAndUpdateChangedFields,
     setFormIsApproved,
     setExtraDetails,
@@ -362,7 +363,6 @@ export const usePedagogy = (
 };
 
 const defaultFormData: FormData = {
-  supportReasons: [],
   supportActions: [],
   matriculationExaminationSupport: [],
   supportActionsImplemented: [],

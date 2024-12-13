@@ -2,7 +2,7 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap");
+@import "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap";
 
 // This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
 
@@ -86,7 +86,11 @@
 
   .details__content {
     font-weight: 300;
-    padding: 5px 15px;
+    padding: 5px 10px;
+
+    @include breakpoint($breakpoint-pad) {
+      padding: 5px 15px;
+    }
   }
 
   .mathjax-preview-result {

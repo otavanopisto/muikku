@@ -3,15 +3,14 @@ import Link from "~/components/general/link";
 import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/indicator.scss";
 import Dropdown from "~/components/general/dropdown";
 import {
-  WorkspaceType,
-  WorkspaceAssessementStateType,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import EvaluationRequestDialog from "./evaluation-request-dialog";
@@ -20,11 +19,14 @@ import {
   UpdateWorkspaceEditModeStateTriggerType,
   updateWorkspaceEditModeState,
 } from "~/actions/workspaces";
-import { bindActionCreators } from "redux";
-import { Assessment } from "~/reducers/workspaces";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import i18n from "~/locales/i18n";
+import {
+  WorkspaceAssessmentState,
+  WorkspaceAssessmentStateType,
+} from "~/generated/client";
 
 /**
  * ItemDataElement
@@ -49,10 +51,11 @@ interface WorkspaceNavbarProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   status: StatusType;
-  title: string;
+  title?: string;
   workspaceUrl: string;
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   workspaceEditMode: WorkspaceEditModeStateType;
+  workspaceIsBeingEvaluated: boolean;
   updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType;
 }
 
@@ -103,8 +106,14 @@ class WorkspaceNavbar extends React.Component<
   /**
    * onRequestEvaluationOrCancel
    * @param canCancel canCancel
+   * @param isBeingEvaluated isBeingEvaluated
    */
-  onRequestEvaluationOrCancel(canCancel: boolean) {
+  onRequestEvaluationOrCancel(canCancel: boolean, isBeingEvaluated: boolean) {
+    // If workspace is being evaluated, just return
+    if (isBeingEvaluated) {
+      return;
+    }
+
     if (canCancel) {
       this.setState({
         requestCancelOpen: true,
@@ -225,8 +234,8 @@ class WorkspaceNavbar extends React.Component<
     let assessmentState =
       this.props.currentWorkspace &&
       this.props.currentWorkspace.activity &&
-      this.props.currentWorkspace.activity.assessmentState.length > 0
-        ? this.props.currentWorkspace.activity.assessmentState[0]
+      this.props.currentWorkspace.activity.assessmentStates.length > 0
+        ? this.props.currentWorkspace.activity.assessmentStates[0]
         : undefined;
 
     let canCancelRequest =
@@ -236,16 +245,16 @@ class WorkspaceNavbar extends React.Component<
       assessmentState =
         this.props.currentWorkspace &&
         this.props.currentWorkspace.activity &&
-        this.props.currentWorkspace.activity.assessmentState.length > 0
+        this.props.currentWorkspace.activity.assessmentStates.length > 0
           ? getPrioritizedAssessmentState(
-              this.props.currentWorkspace.activity.assessmentState
+              this.props.currentWorkspace.activity.assessmentStates
             )
           : undefined;
 
       canCancelRequest =
         assessmentState &&
         canCancelAssessmentRequest(
-          this.props.currentWorkspace.activity.assessmentState
+          this.props.currentWorkspace.activity.assessmentStates
         );
     }
 
@@ -261,6 +270,7 @@ class WorkspaceNavbar extends React.Component<
                 modifier="assessment"
                 content={getTextForAssessmentState(
                   canCancelRequest,
+                  this.props.workspaceIsBeingEvaluated,
                   assessmentState.state
                 )}
               >
@@ -269,17 +279,23 @@ class WorkspaceNavbar extends React.Component<
                   as="span"
                   onClick={this.onRequestEvaluationOrCancel.bind(
                     this,
-                    canCancelRequest
+                    canCancelRequest,
+                    this.props.workspaceIsBeingEvaluated
                   )}
                   aria-label={getTextForAssessmentState(
                     canCancelRequest,
+                    this.props.workspaceIsBeingEvaluated,
                     assessmentState.state
                   )}
                   className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(
                     assessmentState.state
                   )} link--workspace-navbar icon-assessment-${getIconForAssessmentState(
                     assessmentState.state
-                  )}`}
+                  )} ${
+                    this.props.workspaceIsBeingEvaluated
+                      ? "link--workspace-is-being-evaluated"
+                      : ""
+                  }`}
                   role="menuitem"
                 ></Link>
               </Dropdown>
@@ -290,7 +306,11 @@ class WorkspaceNavbar extends React.Component<
     const assessmentRequestMenuItem = assessmentRequestItem ? (
       <Link
         key="link--assessment-request"
-        onClick={this.onRequestEvaluationOrCancel.bind(this, canCancelRequest)}
+        onClick={this.onRequestEvaluationOrCancel.bind(
+          this,
+          canCancelRequest,
+          this.props.workspaceIsBeingEvaluated
+        )}
         className="link link--full link--menu link--assessment-request"
       >
         <span
@@ -299,7 +319,11 @@ class WorkspaceNavbar extends React.Component<
           )}`}
         />
         <span className="link--menu-text">
-          {getTextForAssessmentState(canCancelRequest, assessmentState.state)}
+          {getTextForAssessmentState(
+            canCancelRequest,
+            this.props.workspaceIsBeingEvaluated,
+            assessmentState.state
+          )}
         </span>
       </Link>
     ) : null;
@@ -315,9 +339,9 @@ class WorkspaceNavbar extends React.Component<
             id="editingMasterSwitch"
             key="3"
             type="checkbox"
-            className={`button-pill button-pill--editing-master-switch ${
+            className={`button-pill button-pill--switch-vertical ${
               this.props.workspaceEditMode.active
-                ? "button-pill--editing-master-switch-active"
+                ? "button-pill--switch-vertical-active"
                 : ""
             }`}
             onChange={this.toggleEditModeActive}
@@ -335,7 +359,10 @@ class WorkspaceNavbar extends React.Component<
 
     return (
       <Navbar
-        mobileTitle={this.props.title}
+        // By default title comes from props but if it's not set, then use current workspace name or empty string
+        mobileTitle={
+          this.props.title || this.props.currentWorkspace?.name || ""
+        }
         isProfileContainedInThisApp={false}
         modifier={navbarModifiers}
         navigation={this.props.navigation}
@@ -459,9 +486,9 @@ class WorkspaceNavbar extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
-    title: state.title,
     currentWorkspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
+    workspaceIsBeingEvaluated: state.workspaces.workspaceIsBeingEvaluated,
   };
 }
 
@@ -470,7 +497,7 @@ function mapStateToProps(state: StateType) {
  *
  * @param dispatch dispatch
  */
-const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) =>
+const mapDispatchToProps = (dispatch: Dispatch<Action<AnyActionType>>) =>
   bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
 
 export default withTranslation(["workspace", "users", "common"])(
@@ -481,14 +508,21 @@ export default withTranslation(["workspace", "users", "common"])(
  * Get text by assessment state
  *
  * @param canCancelRequest canCancelRequest
+ * @param isBeingEvaluated isBeingEvaluated
  * @param state state
  * @returns localized text
  */
 function getTextForAssessmentState(
   canCancelRequest: boolean,
-  state: WorkspaceAssessementStateType
+  isBeingEvaluated: boolean,
+  state: WorkspaceAssessmentStateType
 ) {
   let text;
+
+  if (isBeingEvaluated) {
+    return i18n.t("content.evaluationInProgress", { ns: "workspace" });
+  }
+
   switch (state) {
     case "interim_evaluation":
     case "interim_evaluation_request":
@@ -520,7 +554,7 @@ function getTextForAssessmentState(
  * @param state state
  * @returns icon
  */
-function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
+function getIconForAssessmentState(state: WorkspaceAssessmentStateType) {
   let icon;
   switch (state) {
     case "unassessed":
@@ -557,7 +591,7 @@ function getIconForAssessmentState(state: WorkspaceAssessementStateType) {
  * @param state state
  * @returns classname
  */
-function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
+function getClassNameForAssessmentState(state: WorkspaceAssessmentStateType) {
   let className;
   switch (state) {
     case "pending":
@@ -595,11 +629,13 @@ function getClassNameForAssessmentState(state: WorkspaceAssessementStateType) {
  * @param assessmentStates assessmentStates
  * @returns assessment state
  */
-function getPrioritizedAssessmentState(assessmentStates: Assessment[]) {
+function getPrioritizedAssessmentState(
+  assessmentStates: WorkspaceAssessmentState[]
+) {
   /**
    * Priority array
    */
-  const assessmentPriorityOrder: WorkspaceAssessementStateType[] = [
+  const assessmentPriorityOrder: WorkspaceAssessmentStateType[] = [
     "fail",
     "incomplete",
     "pending",
@@ -632,7 +668,7 @@ function getPrioritizedAssessmentState(assessmentStates: Assessment[]) {
  * @returns boolean if current request can be canceled
  */
 function canCancelAssessmentRequest(
-  assessmentState: Assessment | Assessment[]
+  assessmentState: WorkspaceAssessmentState | WorkspaceAssessmentState[]
 ) {
   /**
    * If "aka" combination workspace

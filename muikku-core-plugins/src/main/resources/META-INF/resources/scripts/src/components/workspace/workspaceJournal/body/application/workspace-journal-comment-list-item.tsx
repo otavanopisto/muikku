@@ -1,9 +1,8 @@
-import * as moment from "moment";
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import WorkspaceJournalCommentEditor from "./editors/workspace-journal-comment-editor";
 // eslint-disable-next-line camelcase
@@ -16,7 +15,7 @@ import {
   ApplicationListItemBody,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
@@ -25,6 +24,7 @@ import {
 } from "../../../../../actions/workspaces/journals";
 import { WorkspaceJournalComment } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * WorkspaceJournalCommentListProps
@@ -98,9 +98,6 @@ export const WorkspaceJournalCommentListItem: React.FC<
 
   const creatorIsMe = status.userId === authorId;
   const creatorName = creatorIsMe ? `Minä` : `${firstName} ${lastName}`;
-  const formatedDate = `${moment(created).format("l")} - ${moment(
-    created
-  ).format("h:mm")}`;
 
   return (
     <ApplicationListItem className="journal journal--comment">
@@ -119,7 +116,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
           </span>
         </div>
         <div className="application-list__item-header-aside application-list__item-header-aside--journal-comment">
-          {formatedDate}
+          {localize.date(created)} - {localize.date(created, "LT")}
         </div>
       </ApplicationListItemHeader>
 
@@ -147,7 +144,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
                 className="link link--application-list"
                 onClick={handleEditCommentClick}
               >
-                {t("actions.edit")}
+                {t("actions.edit", { ns: "common", context: "comment" })}
               </Link>
 
               <DeleteJournalComment
@@ -178,7 +175,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       updatedWorkspaceJournalComment,

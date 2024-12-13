@@ -4,10 +4,11 @@
 
 import Link from "~/components/general/link";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { Action, Dispatch } from "redux";
 
 /**
  * LoginButtonProps
@@ -41,7 +42,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
 
     return (
       <Link
-        tabIndex={0}
+        role="button"
         className={`button button--login ${
           this.props.modifier ? "button--" + this.props.modifier : ""
         }`}
@@ -65,7 +66,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

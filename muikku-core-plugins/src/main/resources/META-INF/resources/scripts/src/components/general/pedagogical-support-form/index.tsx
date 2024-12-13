@@ -6,7 +6,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { PDFViewer } from "@react-pdf/renderer";
@@ -22,16 +22,22 @@ import { PedagogyProvider } from "./context/pedagogy-context";
 import "~/sass/elements/pedagogy.scss";
 import PedagogyToolbar from "./pedagogy-toolbar";
 import { UserRole } from "~/@types/pedagogy-form";
+import { useTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 // Visibility settings which study programmes have access to the form
-export const UPPERSECONDARY_PEDAGOGYFORM = ["Nettilukio"];
+export const UPPERSECONDARY_PEDAGOGYFORM = [
+  "Nettilukio",
+  "Aikuislukio",
+  "Nettilukio/yksityisopiskelu (aineopintoina)",
+];
 
 /**
  * The props for the UpperSecondaryPedagogicalSupportForm component.
  */
 interface UpperSecondaryPedagogicalSupportWizardFormmProps {
   userRole: UserRole;
-  studentId: string;
+  studentUserEntityId: number;
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -45,8 +51,9 @@ interface UpperSecondaryPedagogicalSupportWizardFormmProps {
 const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
   UpperSecondaryPedagogicalSupportWizardFormmProps
 > = (props) => {
+  const { t } = useTranslation(["pedagogySupportPlan"]);
   const usePedagogyValues = usePedagogy(
-    props.studentId,
+    props.studentUserEntityId,
     props.displayNotification
   );
   const { loading, data } = usePedagogyValues;
@@ -60,7 +67,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
   const listOfStepObjects: WizardStep[] = [
     {
       index: 0,
-      name: "Perustiedot",
+      name: t("labels.step1", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step1 status={props.status} />
@@ -69,7 +76,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     },
     {
       index: 1,
-      name: "Asiakirja",
+      name: t("labels.step2", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step2 />
@@ -78,7 +85,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     },
     {
       index: 2,
-      name: "Pedagogisen tuen tarve",
+      name: t("labels.step3", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step3 />
@@ -87,7 +94,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     },
     {
       index: 3,
-      name: "Toteutetut tukitoimet",
+      name: t("labels.step4", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step4 status={props.status} />
@@ -96,7 +103,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     },
     {
       index: 4,
-      name: "Tuen seuranta ja arviointi",
+      name: t("labels.step5", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step5 status={props.status} />
@@ -105,7 +112,7 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
     },
     {
       index: 5,
-      name: "Luvat ja hyväksyminen",
+      name: t("labels.step6", { ns: "pedagogySupportPlan" }),
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step6 />
@@ -149,11 +156,15 @@ const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
                 <div className="pedagogy-form__overlay-content">
                   {props.userRole === "STUDENT" ? (
                     <p>
-                      Pedagogisen tuen suunnitelmaa ei ole aktivoitu, ole
-                      yhteydessä erityisopettajaasi.
+                      {t("content.notActivated", {
+                        ns: "pedagogySupportPlan",
+                        context: props.userRole.toLowerCase(),
+                      })}
                     </p>
                   ) : (
-                    <p>Et ole aktivoinut pedagogisen tuen suunnitelmaa.</p>
+                    <p>
+                      {t("content.notActivated", { ns: "pedagogySupportPlan" })}
+                    </p>
                   )}
                 </div>
               </OverlayComponent>
@@ -192,7 +203,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {
     displayNotification,
   };

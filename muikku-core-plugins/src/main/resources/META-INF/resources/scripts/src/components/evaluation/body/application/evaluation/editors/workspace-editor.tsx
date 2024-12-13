@@ -1,11 +1,11 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import CKEditor from "~/components/general/ckeditor";
 import { StateType } from "~/reducers/index";
 import { AnyActionType } from "~/actions/index";
 import { StatusType } from "~/reducers/base/status";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   UpdateWorkspaceEvaluation,
   updateWorkspaceEvaluationToServer,
@@ -27,6 +27,7 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import MApi from "~/api/api";
 import { BilledPrice } from "~/generated/client";
+import AssignmentDetails from "~/components/general/assignment-info-details";
 
 /**
  * WorkspaceEditorProps
@@ -36,6 +37,12 @@ interface WorkspaceEditorProps extends WithTranslation {
   evaluations: EvaluationState;
   locale: LocaleState;
   selectedAssessment: EvaluationAssessmentRequest;
+  assignmentInfoArray: {
+    title: string;
+    grade?: string | null;
+    points?: number;
+    maxPoints?: number;
+  }[];
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
@@ -721,8 +728,14 @@ class WorkspaceEditor extends SessionStateComponent<
         name: `${t("labels.billing", {
           ns: "evaluation",
           context: "full",
-        })} ${basePriceFromServer.toFixed(2)} €`,
-        value: basePriceFromServer,
+        })} ${(
+          Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100
+        ).toFixed(2)} €`,
+        value: parseFloat(
+          (
+            Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100
+          ).toFixed(2)
+        ),
       });
 
       /**
@@ -733,8 +746,14 @@ class WorkspaceEditor extends SessionStateComponent<
           name: `${t("labels.billing", {
             ns: "evaluation",
             context: "half",
-          })} ${(basePriceFromServer / 2).toFixed(2)} €`,
-          value: basePriceFromServer / 2,
+          })} ${(
+            Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100
+          ).toFixed(2)} €`,
+          value: parseFloat(
+            (
+              Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100
+            ).toFixed(2)
+          ),
         });
       }
 
@@ -756,13 +775,21 @@ class WorkspaceEditor extends SessionStateComponent<
         /**
          * If the price from server is not in our options...
          */
-        if (
+
+        const condition1 =
           this.state.basePriceFromServer !==
-            this.state.existingBilledPriceObject.price &&
-          this.state.basePriceFromServer / 2 !==
-            this.state.existingBilledPriceObject.price &&
-          this.state.existingBilledPriceObject.price > 0
-        ) {
+          this.state.existingBilledPriceObject.price;
+
+        const condition2 =
+          Math.round(
+            (this.state.basePriceFromServer / 2 + Number.EPSILON) * 100
+          ) /
+            100 !==
+          this.state.existingBilledPriceObject.price;
+
+        const condition3 = this.state.existingBilledPriceObject.price > 0;
+
+        if (condition1 && condition2 && condition3) {
           /**
            * ...then add a custom option with the current price
            */
@@ -770,8 +797,21 @@ class WorkspaceEditor extends SessionStateComponent<
             name: `${t("labels.billing", {
               ns: "evaluation",
               context: "else",
-            })} ${this.state.existingBilledPriceObject.price.toFixed(2)}`,
-            value: this.state.existingBilledPriceObject.price,
+            })} ${(
+              Math.round(
+                (this.state.existingBilledPriceObject.price + Number.EPSILON) *
+                  100
+              ) / 100
+            ).toFixed(2)}`,
+            value: parseFloat(
+              (
+                Math.round(
+                  (this.state.existingBilledPriceObject.price +
+                    Number.EPSILON) *
+                    100
+                ) / 100
+              ).toFixed(2)
+            ),
           });
         }
       }
@@ -805,8 +845,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const { t } = this.props;
-
+    const { t, assignmentInfoArray } = this.props;
     const { existingBilledPriceObject, activeGradeSystems } = this.state;
 
     const options = this.renderSelectOptions();
@@ -850,6 +889,10 @@ class WorkspaceEditor extends SessionStateComponent<
 
     return (
       <div className="form" role="form">
+        <div className="form__row">
+          <AssignmentDetails assignmentInfoList={assignmentInfoArray} />
+        </div>
+
         <div className="form__row">
           <div className="form-element">
             {this.props.editorLabel && <label>{this.props.editorLabel}</label>}
@@ -950,7 +993,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { updateWorkspaceEvaluationToServer, updateNeedsReloadEvaluationRequests },
     dispatch

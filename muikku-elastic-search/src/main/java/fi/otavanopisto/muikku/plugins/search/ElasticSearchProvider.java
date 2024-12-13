@@ -55,7 +55,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
@@ -205,12 +205,12 @@ public class ElasticSearchProvider implements SearchProvider {
 
     BoolQueryBuilder query = boolQuery();
     if (!includeInactive) {
-      query.mustNot(existsQuery("studyEndDate"));
+      query.filter(getActiveUserRestriction(OffsetDateTime.now().toEpochSecond(), getActiveWorkspaces()));
     }
     
     IdsQueryBuilder includeIdsQuery = idsQuery();
     includeIdsQuery.addIds(String.format("%s/%s", identifier.getIdentifier(), identifier.getDataSource()));
-    query.must(includeIdsQuery);
+    query.filter(includeIdsQuery);
     
     try {
       SearchResponse response = searchRequest(MUIKKU_USER_INDEX, query);
@@ -238,14 +238,12 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> roles,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers,
       Date startedStudiesBefore, Date studyTimeEndsBefore, boolean joinGroupsAndWorkspaces) {
     try {
-      long now = OffsetDateTime.now().toEpochSecond();
-
       if (CollectionUtils.isEmpty(organizations)) {
         throw new IllegalArgumentException("Cannot search with no organizations specified.");
       }
@@ -292,13 +290,13 @@ public class ElasticSearchProvider implements SearchProvider {
         query.filter(rangeQuery("studyTimeEnd").lt((long) studyTimeEndsBefore.getTime() / 1000));
       }
 
-      if (archetypes != null) {
-        List<String> archetypeNames = new ArrayList<>(archetypes.size());
-        for (EnvironmentRoleArchetype archetype : archetypes) {
-          archetypeNames.add(archetypeToIndexString(archetype));
+      if (roles != null) {
+        List<String> roleNames = new ArrayList<>(roles.size());
+        for (EnvironmentRoleArchetype role : roles) {
+          roleNames.add(archetypeToIndexString(role));
         }
 
-        query.filter(termsQuery("archetype", archetypeNames.toArray(new String[0])));
+        query.filter(termsQuery("roles", roleNames.toArray(new String[0])));
       }
 
       Set<String> organizationIdentifiers = organizations
@@ -344,51 +342,7 @@ public class ElasticSearchProvider implements SearchProvider {
       }
 
       if (includeInactiveStudents == false) {
-        /**
-         * List only active users.
-         *
-         * Active user is
-         * - staff member (teacher, manager, study guider, study programme leader, administrator)
-         * - student that has study start date (in the past) and no study end date
-         * - student that has study start date (in the past) and study end date in the future
-         * - student that has no study start and end date but belongs to an active workspace
-         *
-         * Active workspace is
-         * - published and
-         * - either has no start/end date or current date falls between them
-         */
-
-        Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
-
-        query.filter(
-          boolQuery()
-          .should(termsQuery("archetype",
-              archetypeToIndexString(EnvironmentRoleArchetype.TEACHER),
-              archetypeToIndexString(EnvironmentRoleArchetype.MANAGER),
-              archetypeToIndexString(EnvironmentRoleArchetype.STUDY_GUIDER),
-              archetypeToIndexString(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER),
-              archetypeToIndexString(EnvironmentRoleArchetype.ADMINISTRATOR))
-            )
-            .should(boolQuery()
-              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
-              .must(existsQuery("studyStartDate"))
-              .must(rangeQuery("studyStartDate").lte(now))
-              .mustNot(existsQuery("studyEndDate"))
-            )
-            .should(boolQuery()
-              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
-              .must(existsQuery("studyStartDate"))
-              .must(rangeQuery("studyStartDate").lte(now))
-              .must(existsQuery("studyEndDate"))
-              .must(rangeQuery("studyEndDate").gte(now))
-            )
-            .should(boolQuery()
-              .must(termQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
-              .mustNot(existsQuery("studyEndDate"))
-              .mustNot(existsQuery("studyStartDate"))
-              .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
-            )
-        );
+        query.filter(getActiveUserRestriction(OffsetDateTime.now().toEpochSecond(), getActiveWorkspaces()));
       }
       
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
@@ -429,28 +383,28 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> roles,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore, boolean joinGroupsAndWorkspaces) {
-    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, roles, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
         onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null, joinGroupsAndWorkspaces);
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> roles,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, boolean joinGroupsAndWorkspaces) {
-    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, roles, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
         onlyDefaultUsers, start, maxResults, null, null, null, joinGroupsAndWorkspaces);
   }
 
   @Override
-  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes,
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, Set<SchoolDataIdentifier> studyProgrammeIdentifiers, String text, String[] textFields, Collection<EnvironmentRoleArchetype> roles,
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields,
       boolean joinGroupsAndWorkspaces) {
-    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
+    return searchUsers(organizations, studyProgrammeIdentifiers, text, textFields, roles, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden,
         onlyDefaultUsers, start, maxResults, fields, null, null, joinGroupsAndWorkspaces);
   }
 
@@ -462,6 +416,51 @@ public class ElasticSearchProvider implements SearchProvider {
    */
   private String archetypeToIndexString(EnvironmentRoleArchetype archetype) {
     return archetype.name();
+  }
+  
+  /**
+   * Returns a restriction to limit a search to active users.
+   *
+   * Active user is
+   * - staff member (teacher, manager, study guider, study programme leader, administrator)
+   * - student that has study start date (in the past) and no study end date
+   * - student that has study start date (in the past) and study end date in the future
+   * - student that has no study start and end date but belongs to an active workspace
+   *
+   * Active workspace is
+   * - published and
+   * - either has no start/end date or current date falls between them
+   * 
+   * @param now epoch second from OffsetDateTime.toEpochSecond()
+   */
+  private BoolQueryBuilder getActiveUserRestriction(long now, Collection<Long> activeWorkspaceEntityIds) {
+    return boolQuery()
+        .should(termsQuery("roles",
+          archetypeToIndexString(EnvironmentRoleArchetype.TEACHER),
+          archetypeToIndexString(EnvironmentRoleArchetype.MANAGER),
+          archetypeToIndexString(EnvironmentRoleArchetype.STUDY_GUIDER),
+          archetypeToIndexString(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER),
+          archetypeToIndexString(EnvironmentRoleArchetype.ADMINISTRATOR))
+        )
+        .should(boolQuery()
+          .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+          .must(existsQuery("studyStartDate"))
+          .must(rangeQuery("studyStartDate").lte(now))
+          .mustNot(existsQuery("studyEndDate"))
+        )
+        .should(boolQuery()
+          .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+          .must(existsQuery("studyStartDate"))
+          .must(rangeQuery("studyStartDate").lte(now))
+          .must(existsQuery("studyEndDate"))
+          .must(rangeQuery("studyEndDate").gte(now))
+        )
+        .should(boolQuery()
+          .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+          .mustNot(existsQuery("studyEndDate"))
+          .mustNot(existsQuery("studyStartDate"))
+          .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
+        );
   }
   
   private Set<Long> getActiveWorkspaces() {
@@ -782,7 +781,7 @@ public class ElasticSearchProvider implements SearchProvider {
       long totalHitCount = searchHits.getTotalHits().value;
       
       ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.registerModule(new JSR310Module());
+      objectMapper.registerModule(new JavaTimeModule());
       SearchHit[] results = searchHits.getHits();
       List<IndexedWorkspace> searchResults = Arrays.stream(results)
           .map(hit -> {
@@ -1194,7 +1193,7 @@ public class ElasticSearchProvider implements SearchProvider {
     BoolQueryBuilder query = boolQuery();
     query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier));
     query.must(termQuery("isDefaultIdentifier", true));
-    query.must(termsQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)));
+    query.must(termsQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)));
 
     Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
     query.must(
@@ -1236,7 +1235,7 @@ public class ElasticSearchProvider implements SearchProvider {
     BoolQueryBuilder query = boolQuery();
     query.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier));
     query.must(termQuery("isDefaultIdentifier", true));
-    query.must(termsQuery("archetype", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)));
+    query.must(termsQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)));
 
     Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
     query.must(

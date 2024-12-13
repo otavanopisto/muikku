@@ -1,18 +1,13 @@
 import actions from "../../base/notifications";
-import promisify from "~/util/promisify";
-import mApi, { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   SummaryDataType,
   SummaryStatusType,
 } from "~/reducers/main-function/records/summary";
-import {
-  WorkspaceForumStatisticsType,
-  WorkspaceType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StateType } from "~/reducers";
-import MApi from "~/api/api";
-import { Dispatch } from "react-redux";
+import MApi, { isMApiError } from "~/api/api";
+import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 import { ActivityLogEntry, ActivityLogType } from "~/generated/client";
 
@@ -28,38 +23,48 @@ export type UPDATE_STUDIES_SUMMARY_STATUS = SpecificActionType<
  * UpdateSummaryTriggerType
  */
 export interface UpdateSummaryTriggerType {
-  (): AnyActionType;
+  (studentIdentifier?: string): AnyActionType;
 }
 
 /**
  * UpdateSummaryTriggerType
+ * @param studentIdentifier student pyramus identifier
  */
-const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
+const updateSummary: UpdateSummaryTriggerType = function updateSummary(
+  studentIdentifier
+) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const recordsApi = MApi.getRecordsApi();
     const evaluationApi = MApi.getEvaluationApi();
     const userApi = MApi.getUserApi();
+    const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
+    const workspaceApi = MApi.getWorkspaceApi();
     const activitylogsApi = MApi.getActivitylogsApi();
-
+    const state = getState();
     try {
+      // Get user id
+      const pyramusIdentifier = studentIdentifier
+        ? studentIdentifier
+        : state.status.userSchoolDataIdentifier;
+
+      if (state.summary.status === "READY") {
+        return null;
+      }
+
       dispatch({
         type: "UPDATE_STUDIES_SUMMARY_STATUS",
         payload: <SummaryStatusType>"LOADING",
       });
 
-      // Get user id
-      const pyramusId = getState().status.userSchoolDataIdentifier;
-
-      // We need completed courses from Eligibility
       const eligibility = await recordsApi.getStudentMatriculationEligibility({
-        studentIdentifier: pyramusId,
+        studentIdentifier: pyramusIdentifier,
       });
 
       const activityLogsHash = await activitylogsApi.getUserActivityLogs({
-        userId: pyramusId,
+        userIdentifier: pyramusIdentifier,
         from: new Date(new Date().setMonth(new Date().getMonth() - 1)),
         to: new Date(),
       });
@@ -70,7 +75,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
 
       // Student's study time
       const studentsDetails = await userApi.getStudent({
-        studentId: pyramusId,
+        studentId: pyramusIdentifier,
       });
 
       // Convert key value pairs to array of array of objects
@@ -84,19 +89,15 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
           param.type == "MATERIAL_ASSIGNMENTDONE"
             ? assignmentsDone.push(param.type)
             : param.type == "EVALUATION_GOTPASSED"
-            ? coursesDone.push(param.type)
-            : null;
+              ? coursesDone.push(param.type)
+              : null;
         });
       });
 
-      // User workspaces
-      const workspaces = <WorkspaceType[]>await promisify(
-        mApi().workspace.workspaces.read({
-          userIdentifier: pyramusId,
-          includeInactiveWorkspaces: true,
-        }),
-        "callback"
-      )();
+      const workspaces = (await workspaceApi.getWorkspaces({
+        userIdentifier: pyramusIdentifier,
+        includeInactiveWorkspaces: true,
+      })) as WorkspaceDataType[];
 
       if (workspaces && workspaces.length) {
         await Promise.all([
@@ -104,21 +105,19 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
             workspaces.map(async (workspace, index) => {
               const activity = await evaluationApi.getWorkspaceStudentActivity({
                 workspaceId: workspace.id,
-                studentEntityId: pyramusId,
+                studentEntityId: pyramusIdentifier,
               });
               workspaces[index].activity = activity;
             })
           ),
           Promise.all(
             workspaces.map(async (workspace, index) => {
-              const statistics: WorkspaceForumStatisticsType = <
-                WorkspaceForumStatisticsType
-              >await promisify(
-                mApi().workspace.workspaces.forumStatistics.read(workspace.id, {
-                  userIdentifier: pyramusId,
-                }),
-                "callback"
-              )();
+              const statistics =
+                await workspaceDiscussionApi.getWorkspaceDiscussionStatistics({
+                  workspaceEntityId: workspace.id,
+                  userIdentifier: pyramusIdentifier,
+                });
+
               workspaces[index].forumStatistics = statistics;
             })
           ),
@@ -126,7 +125,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
             workspaces.map(async (workspace, index) => {
               const courseActivity =
                 await activitylogsApi.getWorkspaceActivityLogs({
-                  userId: pyramusId,
+                  userIdentifier: pyramusIdentifier,
                   workspaceEntityId: workspace.id,
                   from: new Date(new Date().getFullYear() - 2, 0),
                   to: new Date(),
@@ -163,7 +162,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary() {
         payload: <SummaryStatusType>"READY",
       });
     } catch (err) {
-      if (!(err instanceof MApiError)) {
+      if (!isMApiError(err)) {
         throw err;
       }
       dispatch(

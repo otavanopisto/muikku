@@ -1,10 +1,10 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
@@ -125,8 +125,8 @@ class Announcements extends React.Component<
                     <ApplicationListItemHeader>
                       <ApplicationListHeaderPrimary>
                         <ApplicationListItemDate
-                          startDate={localizeTime.date(announcement.startDate)}
-                          endDate={localizeTime.date(announcement.endDate)}
+                          startDate={localize.date(announcement.startDate)}
+                          endDate={localize.date(announcement.endDate)}
                         />
                       </ApplicationListHeaderPrimary>
                     </ApplicationListItemHeader>
@@ -214,7 +214,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       addToAnnouncementsSelected,

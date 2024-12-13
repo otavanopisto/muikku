@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.215-SNAPSHOT</version>
+    <version>1.1.248-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -178,11 +178,6 @@
 
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
-      <artifactId>openfire-rest-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>muikku-school-data-pyramus</artifactId>
     </dependency>
 
@@ -223,7 +218,7 @@
     <dependency>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
-      <version>1.13.1</version>
+      <version>1.17.2</version>
     </dependency>
 
     <dependency>
@@ -258,6 +253,29 @@
 
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.3.1</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>src/main/resources/META-INF/resources/scripts/dist</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+            <fileset>
+              <directory>src/main/resources/META-INF/resources/scripts/src/generated</directory>
+              <includes>
+                <include>**/*</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-processor-plugin</artifactId>
@@ -345,8 +363,8 @@
             </goals>
             <phase>generate-resources</phase>
             <configuration>
-              <nodeVersion>v14.18.1</nodeVersion>
-              <npmVersion>8.1.0</npmVersion>
+              <nodeVersion>v20.11.1</nodeVersion>
+              <npmVersion>10.2.4</npmVersion>
             </configuration>
           </execution>
           <execution>

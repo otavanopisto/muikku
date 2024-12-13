@@ -8,6 +8,13 @@
   width: 100%;
 }
 
+.form__container-title {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  font-weight: 400;
+}
+
 .form__row {
   margin: 0 0 15px;
   position: relative;
@@ -23,9 +30,10 @@
   justify-content: center;
 
   .recording-warning {
-    color: $color-failed;
+    color: $color-recording;
     display: flex;
     justify-content: center;
+    padding: 10px 0;
   }
 }
 
@@ -38,6 +46,11 @@
 .form__row--split {
   display: flex;
   flex-flow: row wrap;
+}
+
+.form__row-header {
+  display: flex;
+  justify-content: space-between;
 }
 
 .form__buttons {
@@ -63,6 +76,7 @@
 
 .form__subdivision {
   flex-basis: 100%;
+  margin: 5px 0;
 
   @include breakpoint($breakpoint-desktop) {
     flex-basis: 50%;
@@ -102,6 +116,8 @@ legend {
 .form__fieldset {
   border: 0;
   margin: 0;
+  max-width: 100%;
+  min-width: 0;
   padding: 0;
 }
 
@@ -134,6 +150,17 @@ legend {
 }
 
 // FORM ELEMENTS
+.form-switch-element {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0 10px;
+
+  label {
+    font-weight: 400;
+  }
+}
+
 .form-element {
   width: auto;
 
@@ -156,6 +183,7 @@ legend {
   input[type="checkbox"] {
     align-items: center;
     appearance: none;
+    background: $color-default;
     border: solid 2px $color-form-element-border;
     border-radius: 3px;
     display: flex;
@@ -164,6 +192,16 @@ legend {
     margin-right: 5px;
     padding: 0;
     width: 1rem;
+
+    &[disabled] {
+      border: 2px solid lighten($color-disabled, 20%);
+      color: $color-disabled;
+
+      &:checked {
+        background-color: $color-disabled;
+        border: 2px solid $color-disabled;
+      }
+    }
   }
 
   input[type="radio"] {
@@ -176,6 +214,16 @@ legend {
     justify-content: center;
     margin-right: 5px;
     width: 1rem;
+
+    &[disabled] {
+      border: 2px solid lighten($color-disabled, 20%);
+      color: $color-disabled;
+
+      &:checked {
+        background-color: $color-disabled;
+        border: 2px solid $color-disabled;
+      }
+    }
   }
 
   input:checked {
@@ -191,6 +239,25 @@ legend {
   }
 }
 
+.form-element--chat {
+  input[type="checkbox"] {
+    border: solid 2px $color-chat-primary;
+  }
+
+  input[type="radio"] {
+    border: solid 2px $color-chat-primary;
+  }
+
+  input:checked {
+    background-color: $color-chat-primary;
+    border: solid 2px $color-chat-primary;
+  }
+
+  input:checked::after {
+    color: $color-default;
+  }
+}
+
 .form-element--new-label {
   width: 100%;
 
@@ -201,6 +268,15 @@ legend {
 
 .form-element--user-group-name {
   width: 100%;
+}
+
+.form-element--sign-up-message {
+  max-width: 100%;
+  width: 100%;
+
+  .form-element__input {
+    width: 100%;
+  }
 }
 
 // Application-list item selector
@@ -352,6 +428,25 @@ legend {
   margin: 10px 0 0;
 }
 
+.form-element__description-chip {
+  align-items: center;
+  background: $color-disabled-background;
+  border-color: $color-disabled-background;
+  border-radius: 2px;
+  display: flex;
+  font-size: $text-mobile-font-size;
+  height: $input-height-mobile;
+  justify-content: center;
+  margin: 0 5px;
+  padding: 0 10px;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    height: $input-height-desktop;
+  }
+}
+
 // TEXTFIELD
 .form-element__input {
   @include prefix(
@@ -369,6 +464,7 @@ legend {
   height: $input-height-mobile;
   padding: 0 10px;
   resize: none;
+  width: auto;
 
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -382,10 +478,21 @@ legend {
   &.VALID {
     border-color: $color-success;
   }
+
+  @include form-focus;
 }
 
-.form-element__input--note-title {
+.form-element__input--note-title,
+.form-element__input--material-editor-assignment-points {
   width: 100%;
+}
+
+.form-element__input--content-centered {
+  text-align: center;
+}
+
+.form-element__divider {
+  margin: 0 5px;
 }
 
 .form-element__input--material-editor-title {
@@ -566,6 +673,8 @@ legend {
       no-repeat right 5px center;
     border: 2px solid lighten($color-disabled, 20%);
   }
+
+  @include form-focus;
 }
 
 .form-element__select--guider-hops {
@@ -578,7 +687,11 @@ legend {
 }
 
 .form-element__select--matriculation-exam {
+  flex-basis: 50%;
+  flex-grow: 0;
+  flex-shrink: 1;
   margin-right: 5px;
+  max-width: 50%;
 }
 
 .form-element__select--hops-selector {
@@ -649,10 +762,18 @@ legend {
   @include breakpoint($breakpoint-desktop) {
     font-size: $text-desktop-font-size;
   }
+
+  @include form-focus;
 }
 
 .form-element__dropdown-selection-container {
   padding: 3px 0;
+}
+
+.form-element__dropdown-selection-container--nowrap {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
 }
 
 .form-element__autocomplete-highlight {

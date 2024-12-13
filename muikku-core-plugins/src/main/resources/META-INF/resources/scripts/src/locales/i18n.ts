@@ -3,7 +3,8 @@ import { initReactI18next } from "react-i18next";
 import * as en from "./translations/en.json";
 import * as fi from "./translations/fi.json";
 import { outputCorrectMomentLocale } from "~/helper-functions/locale";
-import * as moment from "moment";
+import moment from "moment";
+import "moment/min/locales";
 
 export const resources = {
   en,
@@ -29,7 +30,7 @@ i18n.use(initReactI18next).init({
 /**Localize
  * Helper functions for  time localization
  */
-export class LocalizeTime {
+export class Localize {
   lang;
   /**
    * constructor
@@ -47,7 +48,7 @@ export class LocalizeTime {
   }
 
   /**
-   * getter function for language
+   * Setter function for language
    */
   get language(): string {
     return this.lang.toLowerCase();
@@ -58,6 +59,8 @@ export class LocalizeTime {
    */
   set language(lang: string) {
     this.lang = lang;
+    document.querySelector("html").lang = lang;
+    i18n.changeLanguage(lang);
   }
 
   /**
@@ -132,8 +135,18 @@ export class LocalizeTime {
   ) {
     return moment.duration(inp, unit);
   }
+
+  /**
+   * Formats a number according to the locale conventions
+   * @param value number to format
+   * @param options formatting options (optional)
+   * @returns formatted number string
+   */
+  number(value: number, options: Intl.NumberFormatOptions = {}) {
+    return new Intl.NumberFormat(this.language, options).format(value);
+  }
 }
 
-export const localizeTime = new LocalizeTime(lang);
+export const localize = new Localize(lang);
 
 export default i18n;

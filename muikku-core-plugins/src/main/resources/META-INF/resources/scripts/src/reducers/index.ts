@@ -7,7 +7,7 @@ import { WebsocketStateType } from "./util/websocket";
 import { AnnouncementsState } from "./announcements";
 import { HOPSState } from "./main-function/hops";
 import { MessagesState } from "./main-function/messages";
-import { WorkspacesType } from "./workspaces";
+import { WorkspacesState } from "./workspaces";
 import {
   UsersState,
   UserGroupsState,
@@ -18,20 +18,17 @@ import { DiscussionState } from "./discussion";
 import { UserIndexState } from "./user-index";
 import { GuiderState } from "./main-function/guider";
 import { SummaryType } from "./main-function/records/summary";
-import {
-  YOType,
-  SubjectEligibilitySubjectsType,
-} from "./main-function/records/yo";
 import { RecordsType } from "./main-function/records";
 import { ErrorType } from "./base/error";
 import { ProfileState } from "./main-function/profile";
 import { OrganizationSummaryType } from "./organization/summary";
 import { EvaluationState } from "./main-function/evaluation/index";
 import { CeeposState } from "./main-function/ceepos";
-import { Calendar } from "./main-function/calendar";
 import { JournalsState } from "./workspaces/journals";
 import { ContactsState } from "./base/contacts";
 import { NoteBookState } from "./notebook/notebook";
+import { DependantsState } from "./main-function/dependants";
+import { HopsState } from "./hops";
 
 /**
  * StateType
@@ -41,22 +38,20 @@ export interface StateType {
   locales: LocaleState;
   status: StatusType;
   contacts: ContactsState;
-  title: string;
   websocket?: WebsocketStateType;
-  yo?: YOType;
-  eligibilitySubjects?: SubjectEligibilitySubjectsType;
   credentials?: CredentialsState;
   announcements?: AnnouncementsState;
   hops?: HOPSState;
   summary?: SummaryType;
   studyprogrammes?: StudyprogrammeTypes;
   messages?: MessagesState;
+  dependants: DependantsState;
   userIndex?: UserIndexState;
   userSelect?: UsersSelectState;
   userGroups?: UserGroupsState;
-  workspaces?: WorkspacesType;
+  workspaces?: WorkspacesState;
   organizationSummary?: OrganizationSummaryType;
-  organizationWorkspaces?: WorkspacesType;
+  organizationWorkspaces?: WorkspacesState;
   discussion?: DiscussionState;
   organizationUsers?: UsersState;
   guider?: GuiderState;
@@ -65,8 +60,8 @@ export interface StateType {
   profile?: ProfileState;
   evaluations?: EvaluationState;
   ceepos?: CeeposState;
-  calendar?: Calendar;
   easyToUse?: EasyToUseFunctionState;
   journals?: JournalsState;
   notebook?: NoteBookState;
+  hopsNew?: HopsState;
 }

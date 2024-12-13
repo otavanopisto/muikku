@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .application-sub-panel {
-  border-bottom: 1px solid $color-subpanel-border;
+  // border-bottom: 1px solid $color-subpanel-border;
   margin: 0 0 30px;
   width: 100%;
 
@@ -144,6 +144,42 @@
   }
 }
 
+.application-sub-panel--evaluation-cards {
+  margin: 0 0 15px;
+  padding: 0 0 15px;
+}
+
+.application-sub-panel--matriculation-plan-content,
+.application-sub-panel--matriculation-results-content {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.application-sub-panel--matriculation-plan-data,
+.application-sub-panel--matriculation-results {
+  border-bottom: unset;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
+}
+
+.application-sub-panel--matriculation-plan-info {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 50%;
+  }
+}
+
 // Subpanel header
 .application-sub-panel__header {
   @include mainfunction-subpanel-title;
@@ -264,11 +300,34 @@
   }
 }
 
-// Subpanel description'
+// Subpanel description
 .application-sub-panel__description {
-  font-size: 0.8125rem;
-  font-style: italic;
-  margin: 0 0 10px;
+  font-weight: 300;
+  line-height: 1.375rem;
+  padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+}
+
+// Multicolumn subpanel
+.application-sub-panel__body--multicolumn {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0 20px;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row nowrap;
+  }
+
+  // Multricolumn subpanel item
+  .application-sub-panel__item--multicolumn {
+    flex-basis: 50%;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
 }
 
 // Subpanel body
@@ -305,16 +364,6 @@
   }
 }
 
-.application-sub-panel__body--studies-yo-subjects {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  @include breakpoint($breakpoint-pad) {
-    flex-direction: row;
-  }
-}
-
 .application-sub-panel__body--guidance-relation {
   display: flex;
   flex-flow: wrap;
@@ -324,11 +373,17 @@
   flex-basis: 100%;
 }
 
+.application-sub-panel__notification-title {
+  font-weight: 600;
+  padding: 5px 0;
+}
+
 .application-sub-panel__notification-body {
-  align-items: center;
-  display: flex;
-  flex-flow: row wrap;
   padding: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
 
   p {
     margin: 0 0 10px;
@@ -339,20 +394,11 @@
   }
 }
 
-.application-sub-panel__notification-body--studies-yo-subjects {
-  padding: 10px;
-
-  @include breakpoint($breakpoint-pad) {
-    padding: 10px 0;
-  }
-}
-
 .application-sub-panel__notification-content {
-  margin: 0 0 10px;
-
-  &:last-child {
-    margin: 0;
-  }
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 5px;
 }
 
 .application-sub-panel__notification-content-title {
@@ -370,7 +416,10 @@
 }
 
 .application-sub-panel__notification-footer {
-  padding: 10px;
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 10px 0;
 }
 
 .application-sub-panel__card-item {
@@ -614,7 +663,7 @@
 }
 
 .application-sub-panel__multiple-item-container--worklist-price {
-  flex-basis: 60px;
+  flex-basis: 80px;
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: center;
@@ -753,6 +802,7 @@
 
 .application-sub-panel__item--counselors {
   align-items: start;
+  flex-flow: column nowrap;
 }
 
 .application-sub-panel__item--guider-student {
@@ -786,7 +836,8 @@
   flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 0;
+  margin: 5px 0;
+  padding: 0 10px 0 0;
 
   &:not(:last-child) {
     border: 0;
@@ -993,6 +1044,12 @@
   }
 }
 
+.application-sub-panel__item-title--counselors {
+  flex-basis: auto;
+  font-weight: 600;
+  width: 100%,
+}
+
 .application-sub-panel__item-title--organization-summary,
 .application-sub-panel__item-title--organization-previous-bills,
 .application-sub-panel__item-title--organization-contact-information {
@@ -1066,6 +1123,10 @@
   display: flex;
 }
 
+.application-sub-panel__item-data-container--guider-course-credits {
+  flex-direction: column;
+}
+
 .application-sub-panel__item-data-container--organization-summary *:not(:first-child) {
   margin-left: 10px;
 }
@@ -1075,7 +1136,6 @@
 }
 
 // Sub panel item sub item
-
 .application-sub-panel__item-sub-item--organization-previous-bills {
   display: flex;
 
@@ -1088,6 +1148,11 @@
   }
 }
 
+// Removing single-enty background
+.application-sub-panel__item-data-content--no-bg .application-sub-panel__single-entry {
+  background-color: transparent;
+}
+
 // Subpanel item data for worklist entries total
 .application-sub-panel__item-data--worklist-total {
   flex-basis: auto;
@@ -1097,7 +1162,7 @@
 
   @include breakpoint($breakpoint-pad) {
     display: flex;
-    flex-basis: 60px;
+    flex-basis: 80px;
     justify-content: center;
     margin: 0 165px 0 0;
   }
@@ -1109,11 +1174,11 @@
   justify-content: flex-end;
 }
 
-.application-sub-panel__item-data--study-start-date.application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-start-date .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-1-background;
 }
 
-.application-sub-panel__item-data--study-end-date.application-sub-panel__single-entry {
+.application-sub-panel__item-data--study-end-date .application-sub-panel__single-entry {
   background-color: $color-sub-panel-data-2-background;
   color: $color-default;
 }

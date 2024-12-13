@@ -1,5 +1,5 @@
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import Step1 from "./form";
 import Step2 from "./summary";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -10,10 +10,10 @@ import {
   CopyCurrentWorkspaceTriggerType,
   CopyCurrentWorkspaceStepType,
 } from "~/actions/workspaces";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { bindActionCreators } from "redux";
-import * as moment from "moment";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import moment from "moment";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 
@@ -21,7 +21,7 @@ import { AnyActionType } from "~/actions";
  * CopyWizardProps
  */
 interface CopyWizardProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onDone: () => any;
@@ -33,7 +33,7 @@ interface CopyWizardProps extends WithTranslation {
 interface CopyWizardState {
   store: CopyWizardStoreType;
   locked: boolean;
-  resultingWorkspace?: WorkspaceType;
+  resultingWorkspace?: WorkspaceDataType;
   step?: CopyCurrentWorkspaceStepType;
 }
 
@@ -244,7 +244,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ copyCurrentWorkspace }, dispatch);
 }
 

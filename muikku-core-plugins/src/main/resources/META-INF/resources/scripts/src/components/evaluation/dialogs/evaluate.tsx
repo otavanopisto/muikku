@@ -1,7 +1,7 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
@@ -17,7 +17,7 @@ import {
   LoadEvaluationCompositeReplies,
   loadEvaluationCompositeRepliesFromServer,
   UpdateEvaluationSelectedAssessment,
-  updateSelectedAssessment,
+  setSelectedAssessmentAndLoadEvents,
   LoadEvaluationJournalFeedbackFromServerTriggerType,
   loadEvaluationJournalFeedbackFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
@@ -36,7 +36,7 @@ interface EvaluateDialogProps {
   onOpen?: (jotan: any) => any;
   status: StatusType;
   assessment: EvaluationAssessmentRequest;
-  updateSelectedAssessment: UpdateEvaluationSelectedAssessment;
+  setSelectedAssessmentAndLoadEvents: UpdateEvaluationSelectedAssessment;
   loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments;
   loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies;
   loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFromServerTriggerType;
@@ -71,7 +71,7 @@ class EvaluateDialog extends React.Component<
   handleUpdateSelectAssessmentOnDialogOpen = (
     assessment: EvaluationAssessmentRequest
   ) => {
-    this.props.updateSelectedAssessment({ assessment });
+    this.props.setSelectedAssessmentAndLoadEvents({ assessment });
 
     this.props.loadEvaluationCompositeRepliesFromServer({
       userEntityId: this.props.assessment.userEntityId,
@@ -149,10 +149,10 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
-      updateSelectedAssessment,
+      setSelectedAssessmentAndLoadEvents,
       loadCurrentStudentAssigmentsData,
       loadEvaluationCompositeRepliesFromServer,
       loadEvaluationJournalFeedbackFromServer,

@@ -2,58 +2,14 @@ import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import {
+  CeeposOrder,
+  StudentCard,
   UserStudentAddress,
   UserWithSchoolData,
   WorklistItem,
   WorklistSummary,
   WorklistTemplate,
 } from "~/generated/client";
-
-/**
- * PurchaseStateType
- */
-export enum PurchaseStateType {
-  CREATED = "CREATED",
-  CANCELLED = "CANCELLED",
-  ERRORED = "ERRORED",
-  ONGOING = "ONGOING",
-  PAID = "PAID",
-  COMPLETE = "COMPLETE",
-}
-
-/**
- * PurchaseProductType
- */
-export interface PurchaseProductType {
-  Code: string;
-  Description: string;
-  Price: number;
-}
-
-/**
- * PurchaseCreatorType
- */
-export interface PurchaseCreatorType {
-  id: number;
-  userEntityId: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
-/**
- * PurchaseType
- */
-export interface PurchaseType {
-  created: string;
-  paid: string;
-  id: number;
-  product: PurchaseProductType;
-  state: PurchaseStateType;
-  studentEmail: string;
-  studentIdentifier: string;
-  creator: PurchaseCreatorType;
-}
 
 /**
  * WorklistSection
@@ -71,6 +27,14 @@ export interface ProfileProperty {
 }
 
 /**
+ * ProfileAuthorizations
+ */
+export interface ProfileAuthorizations {
+  studentCard: StudentCard;
+  studentCardActive: boolean;
+}
+
+/**
  * ProfileState
  */
 export interface ProfileState {
@@ -82,7 +46,8 @@ export interface ProfileState {
   chatSettings?: UserChatSettingsType;
   worklistTemplates?: WorklistTemplate[];
   worklist?: Array<WorklistSection>;
-  purchases?: PurchaseType[];
+  purchases?: CeeposOrder[];
+  authorizations?: ProfileAuthorizations;
 }
 
 /**
@@ -97,6 +62,7 @@ const initialProfileState: ProfileState = {
   worklistTemplates: null,
   worklist: null,
   purchases: null,
+  authorizations: null,
 };
 
 /**
@@ -141,6 +107,9 @@ export const profile: Reducer<ProfileState> = (
 
     case "SET_PURCHASE_HISTORY":
       return { ...state, purchases: action.payload };
+
+    case "SET_PROFILE_AUTHORIZATIONS":
+      return { ...state, authorizations: action.payload };
 
     default:
       return state;

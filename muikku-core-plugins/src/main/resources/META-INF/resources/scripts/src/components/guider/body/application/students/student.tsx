@@ -3,7 +3,8 @@ import { getName } from "~/util/modifiers";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import moment from "~/lib/moment";
+import moment from "moment";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/user.scss";
 import "~/sass/elements/application-list.scss";
@@ -13,8 +14,9 @@ import {
   ApplicationListItemHeader,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
-import { Student } from "~/generated/client";
+import { FlaggedStudent, Student } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import Dropdown from "~/components/general/dropdown";
 
 type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
 
@@ -22,7 +24,7 @@ type StudentStudyTimeState = "ONGOING" | "ENDING" | "ENDED";
  * StudentProps
  */
 interface StudentProps extends WithTranslation<"common"> {
-  student: Student;
+  student: FlaggedStudent;
   checkbox: React.ReactElement<HTMLInputElement>;
   index: number;
   status: StatusType;
@@ -100,11 +102,12 @@ class StudentListItem extends React.Component<StudentProps, StudentState> {
                   {this.props.i18n.t("labels.studyTime", {
                     ns: "guider",
                     context: studyTimeEndState,
-                    time: moment(this.props.student.studyTimeEnd).format("LL"),
+                    time: localize.date(this.props.student.studyTimeEnd),
                   })}{" "}
                 </span>
               </div>
             ) : null}
+
             {this.props.student.flags.length
               ? this.props.student.flags.map((flag) => (
                   <div className="label" key={flag.id}>
@@ -116,6 +119,27 @@ class StudentListItem extends React.Component<StudentProps, StudentState> {
                   </div>
                 ))
               : null}
+
+            {this.props.student.hasPedagogyForm ? (
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={
+                  <span id={`pedagogyPlan-` + this.props.index}>
+                    Opiskelijalle on tehty pedagogisen tuen suunnitelma
+                  </span>
+                }
+              >
+                <div className="label label--pedagogy-plan">
+                  <span
+                    className="label__text label__text--pedagogy-plan"
+                    aria-labelledby={`pedagogyPlan-` + this.props.index}
+                  >
+                    P
+                  </span>
+                </div>
+              </Dropdown>
+            ) : null}
           </div>
         </ApplicationListItemFooter>
       </ApplicationListItemContentWrapper>

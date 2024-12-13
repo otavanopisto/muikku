@@ -80,7 +80,7 @@ public class WorkspaceVisitController {
   
   public List<WorkspaceEntity> listEnrolledWorkspaceEntitiesByMinVisitsOrderByLastVisit(UserEntity userEntity, Long numVisits) {
     
-    List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
+    List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listActiveWorkspaceEntitiesByUserIdentifier(userEntity.defaultSchoolDataIdentifier());
     Map<Long, WorkspaceEntity> workspaceEntityMap = new HashMap<>();
     for (WorkspaceEntity workspaceEntity : workspaceEntities) {
       workspaceEntityMap.put(workspaceEntity.getId(), workspaceEntity);

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import {
   StudySector,
   FollowUpStudies,
@@ -18,12 +18,13 @@ import { Textarea } from "./text-area";
 import { TextField } from "./text-field";
 import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import { localizeTime } from "~/locales/i18n";
-import * as moment from "moment";
+import { localize } from "~/locales/i18n";
+import moment from "moment";
 import AnimateHeight from "react-animate-height";
 import { updateFollowUpData, useFollowUp } from "./context/follow-up-context";
 import { HopsGoals } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 /**
  * FollowUpGoalsProps
@@ -83,7 +84,7 @@ const HopsFollowUpGoals: React.FC<HopsFollowUpGoalsProps> = (props) => {
               followUpData.followUp.graduationGoal &&
               moment(followUpData.followUp.graduationGoal).toDate()
             }
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="MM/yyyy"
             showMonthYearPicker
             showFullMonthYearPicker
@@ -289,7 +290,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return { displayNotification };
 }
 

@@ -1,7 +1,6 @@
-import promisify, { promisifyNewConstructor } from "~/util/promisify";
+import { promisifyNewConstructor } from "~/util/promisify";
 import actions from "../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import mApi, { MApiError } from "~/lib/mApi";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import { resize } from "~/util/modifiers";
@@ -10,14 +9,16 @@ import {
   updateStatusHasImage,
 } from "~/actions/base/status";
 import {
+  ProfileAuthorizations,
   ProfileProperty,
-  PurchaseType,
   WorklistSection,
 } from "~/reducers/main-function/profile";
-import moment from "~/lib/moment";
-import MApi, { isMApiError } from "~/api/api";
-import { Dispatch } from "react-redux";
+import moment from "moment";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
+import { Dispatch, Action } from "redux";
 import {
+  CeeposOrder,
+  StudentCard,
   UserStudentAddress,
   UserWithSchoolData,
   WorklistBillingStateType,
@@ -25,7 +26,7 @@ import {
   WorklistSummary,
   WorklistTemplate,
 } from "~/generated/client";
-import i18n, { localizeTime } from "~/locales/i18n";
+import i18n, { localize } from "~/locales/i18n";
 
 /**
  * LoadProfilePropertiesSetTriggerType
@@ -64,6 +65,32 @@ export interface LoadProfileAddressTriggerType {
  * LoadProfilePurchasesTriggerType
  */
 export interface LoadProfilePurchasesTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * LoadProfileAuthorizationsTriggerType
+ */
+export interface LoadProfileAuthorizationsTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * UpdateProfileAuthorizationsStudentCardTriggerType
+ */
+export interface UpdateProfileAuthorizationsTriggerType {
+  (data: {
+    current: ProfileAuthorizations;
+    updated: Partial<ProfileAuthorizations>;
+    success?: () => void;
+    fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * LoadProfileStudentCardInfoTriggerType
+ */
+export interface LoadProfileStudentCardInfoTriggerType {
   (): AnyActionType;
 }
 
@@ -243,7 +270,12 @@ export type SET_WORKLIST = SpecificActionType<
 >;
 export type SET_PURCHASE_HISTORY = SpecificActionType<
   "SET_PURCHASE_HISTORY",
-  Array<PurchaseType>
+  Array<CeeposOrder>
+>;
+
+export type SET_PROFILE_AUTHORIZATIONS = SpecificActionType<
+  "SET_PROFILE_AUTHORIZATIONS",
+  ProfileAuthorizations
 >;
 
 /**
@@ -252,7 +284,7 @@ export type SET_PURCHASE_HISTORY = SpecificActionType<
 const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
   function loadProfilePropertiesSet() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -275,7 +307,7 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
           });
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -289,7 +321,7 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
 const saveProfileProperty: SaveProfilePropertyTriggerType =
   function saveProfileProperty(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       const userApi = MApi.getUserApi();
 
@@ -310,7 +342,7 @@ const saveProfileProperty: SaveProfilePropertyTriggerType =
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -325,13 +357,12 @@ const saveProfileProperty: SaveProfilePropertyTriggerType =
 const loadProfileUsername: LoadProfileUsernameTriggerType =
   function loadProfileUsername() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
+      const userpluginApi = MApi.getUserpluginApi();
+
       try {
-        const credentials: any = await promisify(
-          mApi().userplugin.credentials.read(),
-          "callback"
-        )();
+        const credentials = await userpluginApi.getUserPluginCredentials();
 
         if (credentials && credentials.username) {
           dispatch({
@@ -340,7 +371,7 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -353,7 +384,7 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
 const loadProfileAddress: LoadProfileAddressTriggerType =
   function loadProfileAddress() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -394,7 +425,7 @@ const loadProfileAddress: LoadProfileAddressTriggerType =
 const updateProfileAddress: UpdateProfileAddressTriggerType =
   function updateProfileAddress(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -471,62 +502,13 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
   };
 
 /**
- * loadProfileChatSettings
- */
-const loadProfileChatSettings: LoadProfileChatSettingsTriggerType =
-  function loadProfileChatSettings() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
-      getState: () => StateType
-    ) => {
-      const state = getState();
-      if (state.profile.chatSettings) {
-        return;
-      }
-      try {
-        const chatSettings: any = await promisify(
-          mApi().chat.settings.cacheClear().read(),
-          "callback"
-        )();
-
-        if (chatSettings && chatSettings.visibility) {
-          dispatch({
-            type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: chatSettings,
-          });
-        } else {
-          dispatch({
-            type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: {
-              visibility: "DISABLED",
-              nick: null,
-            },
-          });
-        }
-      } catch (err) {
-        if (!(err instanceof MApiError)) {
-          throw err;
-        } else {
-          dispatch({
-            type: "SET_PROFILE_CHAT_SETTINGS",
-            payload: {
-              visibility: "DISABLED",
-              nick: null,
-            },
-          });
-        }
-      }
-    };
-  };
-
-/**
  * updateProfileChatSettings
  * @param data data
  */
 const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
   function updateProfileChatSettings(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       try {
         const request = await fetch("/rest/chat/settings", {
@@ -555,9 +537,11 @@ const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
           data.fail && data.fail();
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        // Commented out for now and will replaced with ne
+        // after the new chat is implemented
+        /* if (!(err instanceof MApiError)) {
           throw err;
-        }
+        } */
 
         data.fail && data.fail();
       }
@@ -573,7 +557,7 @@ const imageSizes = [96, 256];
 const uploadProfileImage: UploadProfileImageTriggerType =
   function uploadProfileImage(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const userApi = MApi.getUserApi();
@@ -641,7 +625,7 @@ const uploadProfileImage: UploadProfileImageTriggerType =
 const deleteProfileImage: DeleteProfileImageTriggerType =
   function deleteProfileImage() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const userApi = MApi.getUserApi();
@@ -693,7 +677,7 @@ const setProfileLocation: SetProfileLocationTriggerType =
 const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
   function insertProfileWorklistItem(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const worklistApi = MApi.getWorklistApi();
@@ -716,10 +700,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
           },
         });
 
-        let displayName = localizeTime.date(
-          worklistItem.entryDate,
-          "MMMM YYYY"
-        );
+        let displayName = localize.date(worklistItem.entryDate, "MMMM YYYY");
         displayName = displayName[0].toUpperCase() + displayName.substr(1);
 
         const expectedSummary: WorklistSummary = {
@@ -813,7 +794,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
 const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
   function deleteProfileWorklistItem(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const worklistApi = MApi.getWorklistApi();
@@ -884,7 +865,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
 const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
   function deleteProfileWorklistItem(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       if (
@@ -983,7 +964,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
 const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
   function loadProfileWorklistTemplates() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const worklistApi = MApi.getWorklistApi();
@@ -1027,7 +1008,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
     cb?: (d: Array<WorklistSection>) => void
   ) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const worklistApi = MApi.getWorklistApi();
@@ -1077,7 +1058,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
 const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
   function loadProfileWorklistSection(index: number, refresh?: boolean) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const worklistApi = MApi.getWorklistApi();
@@ -1133,7 +1114,7 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
 const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType =
   function updateProfileWorklistItemsState(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const worklistApi = MApi.getWorklistApi();
@@ -1199,31 +1180,153 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
 const loadProfilePurchases: LoadProfilePurchasesTriggerType =
   function loadProfilePurchases() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
+      const ceeposApi = MApi.getCeeposApi();
+
       try {
         const studentId = state.status.userSchoolDataIdentifier;
-        const historia: PurchaseType[] = (await promisify(
-          mApi().ceepos.user.orders.read(studentId),
-          "callback"
-        )()) as any;
+
+        const orderHistory: CeeposOrder[] = await ceeposApi.getCeeposUserOrders(
+          {
+            userIdentifier: studentId,
+          }
+        );
 
         dispatch({
           type: "SET_PURCHASE_HISTORY",
-          payload: historia,
+          payload: orderHistory,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
         dispatch(
           actions.displayNotification(
-            i18n.t("notifications.loadError", { ns: "orders", count: 0 }),
+            i18n.t("notifications.loadError", {
+              ns: "orders",
+              context: "orders",
+            }),
             "error"
           )
         );
+      }
+    };
+  };
+
+/**
+ * Thunk function to load profile authorizations data. Can be expanded to load more data in the future.
+ * Currently only student card data is loaded.
+ */
+const loadProfileAuthorizations: LoadProfileAuthorizationsTriggerType =
+  function loadProfileAuthorizations() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const studentCardApi = MApi.getStudentCardApi();
+
+      const status = getState().status;
+
+      /**
+       * Callback helper function to get student card data
+       * @returns Student card data or null if not found
+       */
+      const getStudentCardCallback = async () => {
+        if (status.isStudent) {
+          try {
+            return await studentCardApi.getStudentCard({
+              studentIdentifier: status.userSchoolDataIdentifier,
+            });
+          } catch (err) {
+            if (!isMApiError(err)) {
+              throw err;
+            }
+
+            // In case the student card is not found, we don't want to throw an error
+            // but we want to handle it as null value
+            if (isResponseError(err) && err.response.status === 404) {
+              return null;
+            }
+          }
+        }
+        return null;
+      };
+
+      try {
+        let studentCard: StudentCard = null;
+
+        [studentCard] = await Promise.all([await getStudentCardCallback()]);
+
+        let authorizations: ProfileAuthorizations;
+
+        if (studentCard) {
+          authorizations = {
+            studentCard,
+            studentCardActive: studentCard.activity === "ACTIVE",
+          };
+        }
+
+        dispatch({
+          type: "SET_PROFILE_AUTHORIZATIONS",
+          payload: authorizations,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+      }
+    };
+  };
+
+/**
+ * updateProfileAuthorizations
+ * @param data data
+ */
+const updateProfileAuthorizations: UpdateProfileAuthorizationsTriggerType =
+  function updateProfileAuthorizationStudentCard(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const studentCardApi = MApi.getStudentCardApi();
+
+      const currentAuthorizationData = data.current;
+      const newAuthorizationData = data.updated;
+
+      const updatedAuthorizations: ProfileAuthorizations = {
+        ...currentAuthorizationData,
+      };
+
+      try {
+        // As endpoint only uses boolean value and not whole object but returns the whole object
+        // thats why studentCardActive is used to store the boolean value
+        if (newAuthorizationData.studentCardActive !== undefined) {
+          const studentCard = await studentCardApi.updateStudentCard({
+            studentIdentifier: getState().status.userSchoolDataIdentifier,
+            studentCardId: currentAuthorizationData.studentCard.id,
+            active: newAuthorizationData.studentCardActive,
+          });
+
+          updatedAuthorizations.studentCard = studentCard;
+          updatedAuthorizations.studentCardActive =
+            studentCard.activity === "ACTIVE";
+        }
+
+        dispatch({
+          type: "SET_PROFILE_AUTHORIZATIONS",
+          payload: updatedAuthorizations,
+        });
+
+        data.success && data.success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        data.fail && data.fail();
       }
     };
   };
@@ -1234,7 +1337,6 @@ export {
   loadProfileUsername,
   loadProfileAddress,
   updateProfileAddress,
-  loadProfileChatSettings,
   updateProfileChatSettings,
   uploadProfileImage,
   deleteProfileImage,
@@ -1247,4 +1349,6 @@ export {
   editProfileWorklistItem,
   updateProfileWorklistItemsState,
   loadProfilePurchases,
+  loadProfileAuthorizations,
+  updateProfileAuthorizations,
 };

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
@@ -27,11 +26,7 @@ public interface WorkspaceSchoolDataBridge {
 
   public Workspace findWorkspace(String identifier);
 
-  public List<Workspace> listWorkspaces();
-
   public Workspace updateWorkspace(Workspace workspace);
-  
-  public void removeWorkspace(String identifier);
   
   /* Workspace Types */
   
@@ -41,14 +36,11 @@ public interface WorkspaceSchoolDataBridge {
   
   /* Workspace Users */
 
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, WorkspaceRoleArchetype role);
+  public WorkspaceUser createWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier, WorkspaceRoleArchetype role);
   
   public WorkspaceUser findWorkspaceUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier workspaceUserIdentifier);
   
   public WorkspaceUser findWorkspaceUserByWorkspaceAndUser(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier userIdentifier);
-  
-  @Deprecated
-  public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier);
   
   public List<WorkspaceUser> listWorkspaceStaffMembers(String workspaceIdentifier);
   public List<WorkspaceUser> listWorkspaceStudents(String workspaceIdentifier);

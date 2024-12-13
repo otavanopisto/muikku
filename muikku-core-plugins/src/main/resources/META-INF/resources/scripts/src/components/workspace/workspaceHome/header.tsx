@@ -1,19 +1,15 @@
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
-import { localizeTime } from "~/locales/i18n";
+import { WorkspaceDataType } from "~/reducers/workspaces";
+import { localize } from "~/locales/i18n";
 import ProgressData from "../progressData";
 import { StatusType } from "~/reducers/base/status";
-import { bindActionCreators } from "redux";
-import {
-  updateWorkspace,
-  UpdateWorkspaceTriggerType,
-} from "~/actions/workspaces";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import "~/sass/elements/hero.scss";
 import "~/sass/elements/meta.scss";
 import { AnyActionType } from "~/actions";
-import { suitabilityMap } from "~/@shared/suitability";
+import { suitabilityMapHelper } from "~/@shared/suitability";
 import { Curriculum } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -21,10 +17,9 @@ import { withTranslation, WithTranslation } from "react-i18next";
  * WorkspaceHomeHeaderProps
  */
 interface WorkspaceHomeHeaderProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   availableCurriculums: Curriculum[];
   status: StatusType;
-  updateWorkspace: UpdateWorkspaceTriggerType;
 }
 
 /**
@@ -101,11 +96,13 @@ class WorkspaceHomeHeader extends React.Component<
         .toLowerCase()
         .replace(/ /g, "")}${OPS.name.replace(/ /g, "")}`;
 
+      const suitabilityMap = suitabilityMapHelper(this.props.t);
+
       /**
        * Check if our map contains data with just created education string
        * Otherwise just return null. There might not be all included values by every OPS created...
        */
-      if (!suitabilityMap.has(education)) {
+      if (!suitabilityMap[education]) {
         return null;
       }
 
@@ -113,7 +110,7 @@ class WorkspaceHomeHeader extends React.Component<
        * Then get correct local string from map by suitability enum value
        */
       const localString =
-        suitabilityMap.get(education)[this.props.workspace.mandatority];
+        suitabilityMap[education][this.props.workspace.mandatority];
 
       return localString ? (
         <div className="meta__item">
@@ -131,6 +128,12 @@ class WorkspaceHomeHeader extends React.Component<
    */
   render() {
     const { t } = this.props;
+    const hasPassingGrade =
+      this.props.workspace &&
+      this.props.workspace.activity &&
+      !!this.props.workspace.activity.assessmentStates.find(
+        (state) => state.passingGrade === true
+      );
 
     if (!this.props.workspace) {
       return null;
@@ -153,6 +156,14 @@ class WorkspaceHomeHeader extends React.Component<
      * name/s default to undefined if additionalInfo is not present
      */
     let workspaceSubjectNameOrNames: undefined | JSX.Element;
+
+    /**
+     * First assessmenState for when it's not a a combinationWorkspace - makes the code cleaner
+     */
+    const assessmentState =
+      this.props.workspace &&
+      this.props.workspace.activity &&
+      this.props.workspace.activity.assessmentStates[0];
 
     if (this.props.workspace.additionalInfo) {
       const { subjects } = this.props.workspace.additionalInfo;
@@ -244,23 +255,45 @@ class WorkspaceHomeHeader extends React.Component<
     return (
       <header className="hero hero--workspace">
         <div
-          className="hero__wrapper hero__wrapper--workspace"
+          className={`hero__wrapper hero__wrapper--workspace ${
+            hasPassingGrade && !isCombinationWorkspace ? "STATE-passed" : ""
+          }`}
           style={{ backgroundImage: headerBackgroundImage }}
         >
+          {hasPassingGrade && !isCombinationWorkspace && (
+            <div className="hero__workspace-assessment-container">
+              <div className="hero__workspace-assessment">
+                <label
+                  htmlFor={assessmentState.subject.identifier}
+                  className="visually-hidden"
+                >
+                  <span id={assessmentState.subject.identifier}>
+                    {t("labels.evaluated", {
+                      ns: "workspace",
+                      context: "in",
+                      date: localize.date(assessmentState.date),
+                    })}
+                    {t("labels.grade", { ns: "workspace" })}
+                  </span>
+                </label>
+                {assessmentState.grade}
+              </div>
+            </div>
+          )}
           <h1 className="hero__workspace-title">{this.props.workspace.name}</h1>
-          {this.props.workspace.nameExtension ? (
+          {this.props.workspace.nameExtension && (
             <div className="hero__workspace-name-extension">
               <span>{this.props.workspace.nameExtension}</span>
             </div>
-          ) : null}
+          )}
           {this.props.workspace.additionalInfo &&
-          this.props.workspace.additionalInfo.educationType ? (
-            <div className="hero__workspace-education-type">
-              <span>
-                {this.props.workspace.additionalInfo.educationType.name}
-              </span>
-            </div>
-          ) : null}
+            this.props.workspace.additionalInfo.educationType && (
+              <div className="hero__workspace-education-type">
+                <span>
+                  {this.props.workspace.additionalInfo.educationType.name}
+                </span>
+              </div>
+            )}
         </div>
         <div className="meta meta--workspace">
           <div className="meta__item">
@@ -292,19 +325,17 @@ class WorkspaceHomeHeader extends React.Component<
               <span className="meta__item-description">
                 {t("labels.workspaceDates", {
                   ns: "workspace",
-                  beginDate: localizeTime.date(
+                  beginDate: localize.date(
                     this.props.workspace.additionalInfo.beginDate
                   ),
-                  endDate: localizeTime.date(
+                  endDate: localize.date(
                     this.props.workspace.additionalInfo.endDate
                   ),
                 })}
               </span>
             </div>
           ) : null}
-
           {this.renderMandatorityDescription()}
-
           {this.props.workspace.activity ? (
             <div className="meta__item meta__item--progress-data">
               <ProgressData
@@ -336,8 +367,8 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ updateWorkspace }, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators({}, dispatch);
 }
 
 export default withTranslation(["workspace", "common"])(

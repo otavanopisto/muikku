@@ -7,8 +7,8 @@
 import Link from "../link";
 import * as React from "react";
 import { logout, LogoutTriggerType } from "~/actions/base/status";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import $ from "~/lib/jquery";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
@@ -82,6 +82,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
     this.open = this.open.bind(this);
     this.close = this.close.bind(this);
     this.closeByOverlay = this.closeByOverlay.bind(this);
+    this.handleCloseLinkKeyDown = this.handleCloseLinkKeyDown.bind(this);
 
     this.state = {
       displayed: props.open,
@@ -93,10 +94,10 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: DrawerProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: DrawerProps) {
     if (nextProps.open && !this.state.open) {
       this.open();
     } else if (!nextProps.open && this.state.open) {
@@ -211,6 +212,17 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
   }
 
   /**
+   * Handles the keydown event for the close link
+   * @param e e
+   */
+  handleCloseLinkKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      this.close();
+    }
+  }
+
+  /**
    * render
    * @returns JSX.Element
    */
@@ -227,7 +239,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
         ref="menu"
-        aria-hidden="true"
+        aria-hidden={!this.state.open}
       >
         <div
           className="drawer__container"
@@ -236,7 +248,11 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
         >
           <div className="drawer__header">
             <div className="drawer__header-logo">
-              <Link href="/" className="drawer__header-link">
+              <Link
+                aria-label={this.props.i18n.t("wcag.goToMainPage")}
+                href="/"
+                className="drawer__header-link"
+              >
                 <img
                   src={`${
                     this.props.modifier == "frontpage"
@@ -250,6 +266,8 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
               </Link>
             </div>
             <Link
+              aria-label={this.props.i18n.t("wcag.closeMainNavigation")}
+              onKeyDown={this.handleCloseLinkKeyDown}
               className={`drawer__button-close drawer__button-close--${this.props.modifier} icon-arrow-left`}
             ></Link>
           </div>
@@ -327,7 +345,9 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     onClick={this.props.openReadingRuler}
                   >
                     <span className="menu__item-link-icon icon-cogs"></span>
-                    <span className="menu__item-link-text">Ruleri</span>
+                    <span className="menu__item-link-text">
+                      {this.props.t("labels.readingRuler")}
+                    </span>
                   </Link>
                 </li>
                 {this.props.status.loggedIn ? (
@@ -368,7 +388,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ logout, openReadingRuler }, dispatch);
 }
 

@@ -1,14 +1,17 @@
 import { ActionType } from "~/actions";
-import { WorkspacesType } from "./index";
+import { WorkspacesState } from "./index";
 import { Reducer } from "redux";
 
 /**
  * initialOrganizationWorkspacesState
  */
-const initialOrganizationWorkspacesState: WorkspacesType = {
+const initialOrganizationWorkspacesState: WorkspacesState = {
+  materialsAreDisabled: false,
+  workspaceIsBeingEvaluated: false,
   availableWorkspaces: [],
   templateWorkspaces: [],
   currentWorkspace: null,
+  settings: null,
   availableFilters: {
     educationTypes: [],
     curriculums: [],
@@ -33,7 +36,7 @@ const initialOrganizationWorkspacesState: WorkspacesType = {
  * @param action action
  * @returns State of organizationWorkspaces
  */
-export const organizationWorkspaces: Reducer<WorkspacesType> = (
+export const organizationWorkspaces: Reducer<WorkspacesState> = (
   state = initialOrganizationWorkspacesState,
   action: ActionType
 ) => {

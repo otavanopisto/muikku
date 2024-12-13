@@ -1,10 +1,11 @@
-import * as moment from "moment";
 import * as React from "react";
 import Avatar from "~/components/general/avatar";
 import { PedagogyHistoryEntry } from "~/generated/client";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/hops.scss";
 import { formFieldsWithTranslation } from "./helpers";
+import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * HopsHistoryProps
@@ -33,7 +34,8 @@ interface HistoryEntryItemProps {
  * @param props props
  */
 export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
-  const { status, historyEntry } = props;
+  const { t } = useTranslation(["pedagogySupportPlan"]);
+  const { historyEntry } = props;
 
   const editedFields =
     historyEntry?.editedFields?.map((field) => (
@@ -63,7 +65,7 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
               : "muokkasi pedagogisen tuen suunnitelmaa"}
           </span>
           <span className="hops-container__history-event-date">
-            {moment(historyEntry.date).format("l")}
+            {localize.date(historyEntry.date)}
           </span>
         </div>
 
@@ -75,7 +77,9 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
             {editedFields && (
               <div className="hops-container__history-event-secondary">
                 <div>
-                  <label className="hops__label">Muokatut kentät</label>
+                  <label className="hops__label">
+                    {t("labels.editedFields", { ns: "pedagogySupportPlan" })}
+                  </label>
                   <ul>{editedFields}</ul>
                 </div>
               </div>

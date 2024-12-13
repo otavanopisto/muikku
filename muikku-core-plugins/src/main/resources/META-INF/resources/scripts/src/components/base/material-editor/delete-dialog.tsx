@@ -1,13 +1,13 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
-  MaterialContentNodeType,
+  MaterialContentNodeWithIdAndLogic,
   WorkspaceMaterialEditorType,
 } from "~/reducers/workspaces";
 import {
@@ -23,7 +23,7 @@ interface DeleteWorkspaceMaterialDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children: any;
   isSection?: boolean;
-  material: MaterialContentNodeType;
+  material: MaterialContentNodeWithIdAndLogic;
   deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType;
   materialEditor: WorkspaceMaterialEditorType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -174,7 +174,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ deleteWorkspaceMaterialContentNode }, dispatch);
 }
 

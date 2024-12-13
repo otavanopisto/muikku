@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Dialog, {
   DialogRow,
   DialogRowHeader,
@@ -31,9 +31,9 @@ import {
   loadCurrentOrganizationWorkspaceStaff,
   loadCurrentOrganizationWorkspaceStudents,
 } from "~/actions/workspaces/organization";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import AutofillSelector, {
   UiSelectItem,
 } from "~/components/base/input-select-autofill";
@@ -41,22 +41,22 @@ import { SelectItem } from "~/actions/workspaces/index";
 import { UsersSelectState } from "~/reducers/main-function/users";
 import {
   WorkspaceUpdateType,
-  WorkspaceType,
-  WorkspaceAccessType,
+  WorkspaceDataType,
   WorkspacesActiveFiltersType,
-  WorkspaceDetailsType,
 } from "~/reducers/workspaces";
 import { TagItem } from "~/components/general/tag-input";
-import * as moment from "moment";
+import moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import {
-  UserStaff,
+  StaffMember,
   UserStaffSearchResult,
+  WorkspaceAccess,
   WorkspaceStudentSearchResult,
 } from "~/generated/client";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { WorkspaceDetails } from "~/generated/client";
 
 /**
  * ValidationType
@@ -74,8 +74,8 @@ interface OrganizationEditWorkspaceProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   users: UsersSelectState;
-  workspace: WorkspaceType;
-  currentWorkspace: WorkspaceType;
+  workspace: WorkspaceDataType;
+  currentWorkspace: WorkspaceDataType;
   activeFilters: WorkspacesActiveFiltersType;
   updateOrganizationWorkspace: UpdateWorkspaceTriggerType;
   setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType;
@@ -101,7 +101,7 @@ interface OrganizationEditWorkspaceState {
   };
   workspaceName: string;
   workspaceNameExtension: string;
-  workspaceAccess: WorkspaceAccessType;
+  workspaceAccess: WorkspaceAccess;
   locked: boolean;
   currentStep: number;
   addStaff: UiSelectItem[];
@@ -395,18 +395,14 @@ class OrganizationEditWorkspace extends React.Component<
        * success
        * @param workspace workspace
        */
-      success: (workspace: WorkspaceType) => {
+      success: (workspace: WorkspaceDataType) => {
         this.setState({
           workspaceAccess: workspace.access,
           beginDate: workspace.details.beginDate
-            ? localizeTime
-                .getLocalizedMoment(workspace.details.beginDate)
-                .toDate()
+            ? localize.getLocalizedMoment(workspace.details.beginDate).toDate()
             : null,
           endDate: workspace.details.endDate
-            ? localizeTime
-                .getLocalizedMoment(workspace.details.endDate)
-                .toDate()
+            ? localize.getLocalizedMoment(workspace.details.endDate).toDate()
             : null,
         });
       },
@@ -442,7 +438,7 @@ class OrganizationEditWorkspace extends React.Component<
    * setWorkspaceAccess
    * @param value value
    */
-  setWorkspaceAccess(value: WorkspaceAccessType) {
+  setWorkspaceAccess(value: WorkspaceAccess) {
     this.setState({ workspaceAccess: value });
   }
 
@@ -528,7 +524,7 @@ class OrganizationEditWorkspace extends React.Component<
    * turnStaffToSelectItems
    * @param users users
    */
-  turnStaffToSelectItems(users: UserStaff[]) {
+  turnStaffToSelectItems(users: StaffMember[]) {
     const selectItems: SelectItem[] = [];
 
     for (let i = 0; i < users.length; i++) {
@@ -592,7 +588,7 @@ class OrganizationEditWorkspace extends React.Component<
       payload.access = this.state.workspaceAccess;
     }
 
-    const detailsUpdate: WorkspaceDetailsType = {
+    const detailsUpdate: WorkspaceDetails = {
       beginDate: this.props.currentWorkspace.details.beginDate,
       endDate: this.props.currentWorkspace.details.endDate,
       signupStart: this.props.currentWorkspace.details.signupStart,
@@ -721,7 +717,7 @@ class OrganizationEditWorkspace extends React.Component<
                 id="workspaceBeginDate"
                 maxDate={this.state.endDate}
                 updateField={this.handleDateChange.bind(this, "beginDate")}
-                locale={outputCorrectDatePickerLocale(localizeTime.language)}
+                locale={outputCorrectDatePickerLocale(localize.language)}
                 selected={this.state.beginDate}
                 modifiers="organization-workspace-date"
                 labels={{
@@ -733,7 +729,7 @@ class OrganizationEditWorkspace extends React.Component<
                 id="workspaceEndDate"
                 minDate={this.state.beginDate}
                 updateField={this.handleDateChange.bind(this, "endDate")}
-                locale={outputCorrectDatePickerLocale(localizeTime.language)}
+                locale={outputCorrectDatePickerLocale(localize.language)}
                 selected={this.state.endDate}
                 modifiers="organization-workspace-date"
                 labels={{
@@ -803,6 +799,7 @@ class OrganizationEditWorkspace extends React.Component<
         );
       case 2: {
         const students = this.props.users.students.map((student) => ({
+          // Note that the id is actually identifier format. Something to be aware of.
           id: student.id,
           label: student.firstName + " " + student.lastName,
           icon: "user",
@@ -816,7 +813,7 @@ class OrganizationEditWorkspace extends React.Component<
           type: "student-group",
         }));
 
-        const allItems = students.concat(groups);
+        const allItems = [...students, ...groups];
         return (
           <form>
             <DialogRow>
@@ -1046,7 +1043,7 @@ class OrganizationEditWorkspace extends React.Component<
               <DialogRowContent modifiers="summary-dates">
                 <span>
                   {this.state.beginDate
-                    ? localizeTime.date(this.state.beginDate)
+                    ? localize.date(this.state.beginDate)
                     : t("content.empty", {
                         ns: "workspace",
                         context: "beginDate",
@@ -1054,7 +1051,7 @@ class OrganizationEditWorkspace extends React.Component<
                 </span>
                 <span>
                   {this.state.endDate
-                    ? localizeTime.date(this.state.endDate)
+                    ? localize.date(this.state.endDate)
                     : t("content.empty", {
                         ns: "workspace",
                         context: "endDate",
@@ -1322,7 +1319,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadStaff: loadSelectorStaff,

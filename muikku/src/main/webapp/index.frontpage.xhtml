@@ -1,18 +1,26 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="/WEB-INF/templates/base.xhtml">
-  
+  template="/WEB-INF/templates/base.xhtml"
+>
   <ui:define name="scripts">
-    <script defer="defer" src="#{request.contextPath}/scripts/dist/vendor.js" />
-    <script defer="defer" src="#{request.contextPath}/scripts/dist/index.frontpage.js" />
-  </ui:define>
-  
-  <ui:define name="styles">
-    <link rel="stylesheet" type="text/css" href="scripts/dist/index.frontpage.css" />
-    <link rel="stylesheet" type="text/css" href="scripts/dist/vendor.css" />
-    <link href="https://fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900" rel="stylesheet" />
+    <script
+      src="#{request.contextPath}/scripts/dist/index.frontpage.js"
+      type="module"
+    />
   </ui:define>
 
+  <ui:define name="styles">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="scripts/dist/index.frontpage.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900"
+      rel="stylesheet"
+    />
+  </ui:define>
 </ui:composition>

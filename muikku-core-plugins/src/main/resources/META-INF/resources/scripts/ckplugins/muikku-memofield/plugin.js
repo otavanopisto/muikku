@@ -109,7 +109,9 @@
           'name': name,
           'rows': this.getContentElement('info', 'rows').getValue(),
           'example': this.getContentElement('info', 'example').getValue(),
-          'richedit': this.getContentElement('info', 'richedit').getValue()
+          'richedit': this.getContentElement('info', 'richedit').getValue(),
+          'maxChars': this.getContentElement('info', 'maxChars').getValue(),
+          'maxWords': this.getContentElement('info', 'maxWords').getValue()
         };
 
         var object = new CKEDITOR.dom.element('object');
@@ -138,6 +140,24 @@
             setup: function(json) {
               this.setValue(json.rows);
             }
+          },
+          {
+            type: 'hbox',
+            children: [{
+              id : 'maxWords',
+              type : 'text',
+              label : lang.propertiesDialogMaxWords,
+              setup: function(json) {
+                this.setValue(json.maxWords);
+              }
+            }, {
+              id : 'maxChars',
+              type : 'text',
+              label : lang.propertiesDialogMaxChars,
+              setup: function(json) {
+                this.setValue(json.maxChars);
+              }
+            }]
           },
           {
             id: 'example',

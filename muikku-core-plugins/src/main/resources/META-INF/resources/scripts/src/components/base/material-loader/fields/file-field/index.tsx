@@ -8,6 +8,7 @@ import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
+import "~/sass/elements/filefield.scss";
 
 /**
  * FileFieldProps
@@ -186,7 +187,7 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
 
     // if elements is disabled
     const ElementDisabledState = this.props.readOnly
-      ? "material-page__taskfield-disabled"
+      ? "filefield--disabled"
       : "";
 
     /**
@@ -212,14 +213,14 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
           })}
         />
         <span
-          className={`material-page__filefield-wrapper ${fieldSavedStateClass} rs_skip_always`}
+          className={`filefield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
             synced={this.state.synced}
             syncError={this.state.syncError}
             onFieldSavedStateChange={this.onFieldSavedStateChange.bind(this)}
           />
-          <span className={`material-page__filefield ${ElementDisabledState}`}>
+          <span className={`filefield ${ElementDisabledState}`}>
             <FileUploader
               emptyText={
                 this.props.readOnly ? t("content.empty", { ns: "files" }) : null
@@ -236,7 +237,7 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
                 ns: "files",
               })}
               deleteFileText={t("actions.remove")}
-              downloadFileText={t("actions.download", { count: 1 })}
+              downloadFileText={t("actions.download")}
               files={this.state.values}
               fileIdKey="fileId"
               fileNameKey="name"
@@ -247,7 +248,7 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
                 "?archiveName=" +
                 t("labels.zipFileName", { ns: "files" })
               }
-              fileDownloadAllLabel={t("actions.download", { count: 0 })}
+              fileDownloadAllLabel={t("actions.downloadAll")}
               deleteDialogElement={ConfirmRemoveDialog}
               deleteDialogElementProps={{ onConfirm: this.removeFile }}
               modifier="taskfield"

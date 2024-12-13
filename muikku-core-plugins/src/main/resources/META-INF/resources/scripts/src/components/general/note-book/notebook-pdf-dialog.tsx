@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import NoteBookPDF from "./notebook-pdf";
 import { PDFViewer } from "@react-pdf/renderer";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { WorkspaceNote } from "~/generated/client";
 
 /**
@@ -15,7 +15,7 @@ import { WorkspaceNote } from "~/generated/client";
 interface NoteBookPDFDialogProps {
   children?: React.ReactElement<any>;
   notes: WorkspaceNote[];
-  workspace?: WorkspaceType;
+  workspace?: WorkspaceDataType;
   isOpen?: boolean;
   onClose?: () => void;
 }
@@ -66,7 +66,7 @@ const NoteBookPDFDialog = (props: NoteBookPDFDialogProps) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({}, dispatch);
 }
 

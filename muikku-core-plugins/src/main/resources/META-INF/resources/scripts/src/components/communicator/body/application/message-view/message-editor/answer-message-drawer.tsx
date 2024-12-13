@@ -1,13 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions/index";
 import {
   SendMessageTriggerType,
   sendMessage,
 } from "~/actions/main-function/messages/index";
-import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
@@ -18,6 +17,7 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/environment-dialog.scss";
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { CommunicatorSignature } from "~/generated/client";
 
 /**
  * AnswerMessageDrawerProps
@@ -28,7 +28,7 @@ interface AnswerMessageDrawerProps extends WithTranslation {
   messageId?: number;
   extraNamespace?: string;
   initialSelectedItems?: Array<ContactRecipientType>;
-  signature: MessageSignatureType;
+  signature: CommunicatorSignature;
   sendMessage: SendMessageTriggerType;
   initialSubject?: string;
   initialMessage?: string;
@@ -275,11 +275,11 @@ class AnswerMessageDrawer extends SessionStateComponent<
           }
           placeholder={this.props.t("labels.recipients", {
             ns: "messaging",
-            count: 0,
+            count: this.state.selectedItems.length,
           })}
           label={this.props.t("labels.recipients", {
             ns: "messaging",
-            count: 0,
+            count: this.state.selectedItems.length,
           })}
           selectedItems={this.state.selectedItems}
           onChange={this.setSelectedItems}
@@ -425,7 +425,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ sendMessage }, dispatch);
 }
 

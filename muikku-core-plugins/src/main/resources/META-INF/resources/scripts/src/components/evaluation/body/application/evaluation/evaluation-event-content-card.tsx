@@ -1,10 +1,9 @@
 import * as React from "react";
-import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import DeleteDialog from "../../../dialogs/delete";
 import Link from "~/components/general/link";
 import { StateType } from "~/reducers/index";
-import { Dispatch, bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
 import "~/sass/elements/rich-text.scss";
@@ -16,6 +15,7 @@ import {
   EvaluationEventType,
 } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * EvaluationEventContentCardProps
@@ -309,7 +309,7 @@ const EvaluationEventContentCard: React.FC<EvaluationEventContentCardProps> = (
     }
   };
 
-  const parsedDate = moment(date).format("l");
+  const parsedDate = localize.date(date);
 
   return (
     <>
@@ -388,7 +388,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({}, dispatch);
 }
 

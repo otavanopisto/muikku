@@ -20,27 +20,41 @@
   align-items: flex-start;
   display: flex;
   flex-flow: row wrap;
+  padding: 5px 0 20px;
   width: 100%;
 
   .item-list__item {
     align-items: flex-start;
-    border-top: 1px solid $color-default-separator-border;
+    border: 1px solid $color-default-separator-border;
+    border-radius: 3px;
+    box-shadow: 0 0 15px rgba(0 0 0 / 2%);
     cursor: inherit;
-    flex-basis: 100%;
+    flex-basis: calc(100% - 16px);
     flex-grow: 1;
     flex-shrink: 1;
-    padding: 10px 0;
+    margin: 8px;
+    max-width: calc(100% - 10px);
+    padding: 10px;
 
-    &:first-child {
-      border: 0;
+    @include breakpoint($breakpoint-pad) {
+      flex-basis: calc(50% - 16px);
+      max-width: calc(50% - 16px);
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: calc(33% - 16px);
+      max-width: calc(33% - 16px);
     }
   }
+}
+
+.item-list--matriculation-results {
+  width: 100%;
 }
 
 // Item-list items BASE
 .item-list__item {
   align-items: flex-start;
-  background-color: $color-item-list-item-background;
   color: $color-text-default;
   cursor: pointer;
   display: flex;
@@ -49,15 +63,22 @@
 }
 
 .item-list__item--continue-studies,
-.item-list__item--next-studies {
+.item-list__item--next-studies,
+.item-list__item--dependant-workspaces {
   cursor: default;
+}
+
+.item-list__item--dependant-workspaces {
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .item-list__item--teacher {
   cursor: auto;
 }
 
-.item-list__item--info-popper {
+.item-list__item--info-popover {
+  background-color: transparent;
   cursor: auto;
   max-width: 325px;
 }
@@ -121,6 +142,16 @@
   font-weight: 600;
 }
 
+.item-list__item-title {
+  display: flex;
+  flex-grow: 1;
+}
+
+.item-list__item-aside-title {
+  display: flex;
+  flex-grow: 0;
+}
+
 .item-list__item-content {
   padding: 5px;
 }
@@ -166,6 +197,7 @@
 }
 
 .item-list__icon--workspaces,
+.item-list__icon--dependant-workspaces,
 .item-list__icon--next-studies {
   color: $color-index-item-list-item-panel-workspaces-icon;
 }
@@ -219,6 +251,10 @@
   font-weight: 600;
 }
 
+.item-list__counselors {
+  padding: 5px 0 0;
+}
+
 .item-list__user-email,
 .item-list__user-phone {
   @include word-break;
@@ -236,6 +272,11 @@
 }
 
 // List item texts
+
+.item-list__text-title {
+  line-height: 1.25rem;
+}
+
 .item-list__text-body {
   flex-basis: auto;
   flex-grow: 1;
@@ -247,6 +288,10 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+}
+
+.item-list__text-body--date {
+  font-weight: 600;
 }
 
 .item-list__text-body--multiline {

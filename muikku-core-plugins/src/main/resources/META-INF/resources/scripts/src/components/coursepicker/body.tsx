@@ -3,6 +3,7 @@ import Application from "./body/application";
 import Aside from "./body/aside";
 
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * CoursepickerBodyProps
@@ -10,27 +11,23 @@ import * as React from "react";
 interface CoursepickerBodyProps {}
 
 /**
- * CoursepickerBodyState
- */
-interface CoursepickerBodyState {}
-
-/**
  * CoursepickerBody
+ * @param props props
  */
-export default class CoursepickerBody extends React.Component<
-  CoursepickerBodyProps,
-  CoursepickerBodyState
-> {
-  /**
-   * render
-   */
-  render() {
-    const aside = <Aside />;
-    return (
-      <div>
-        <MainFunctionNavbar activeTrail="coursepicker" navigation={aside} />
-        <Application aside={aside} />
-      </div>
-    );
-  }
-}
+const CoursepickerBody = (props: CoursepickerBodyProps) => {
+  const { t } = useTranslation("common");
+
+  const aside = <Aside />;
+  return (
+    <div>
+      <MainFunctionNavbar
+        title={t("labels.coursepicker")}
+        activeTrail="coursepicker"
+        navigation={aside}
+      />
+      <Application aside={aside} />
+    </div>
+  );
+};
+
+export default CoursepickerBody;

@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { PDFViewer } from "@react-pdf/renderer";
 import {
-  MaterialCompositeRepliesListType,
-  MaterialContentNodeListType,
-  WorkspaceType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
 import TableOfContentPDF from "./table-of-content-pdf";
 import { StatusType } from "~/reducers/base/status";
+import { MaterialCompositeReply } from "~/generated/client";
 
 /**
  * NoteBookPDFProps
@@ -20,9 +20,9 @@ import { StatusType } from "~/reducers/base/status";
 interface TableOfContentPDFDialogProps {
   children?: React.ReactElement<any>;
   assignmentTypeFilters: string[];
-  materials: MaterialContentNodeListType;
-  compositeReplies: MaterialCompositeRepliesListType;
-  workspace?: WorkspaceType;
+  materials: MaterialContentNodeWithIdAndLogic[];
+  compositeReplies: MaterialCompositeReply[];
+  workspace?: WorkspaceDataType;
   isOpen?: boolean;
   onClose?: () => void;
   status: StatusType;
@@ -100,7 +100,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({}, dispatch);
 }
 

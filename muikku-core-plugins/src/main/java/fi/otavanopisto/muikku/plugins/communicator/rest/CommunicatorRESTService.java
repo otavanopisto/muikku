@@ -52,6 +52,8 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAutoReplyControll
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
+import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
@@ -64,9 +66,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
-import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessage;
 import fi.otavanopisto.muikku.search.IndexedCommunicatorMessageRecipient;
@@ -77,9 +77,7 @@ import fi.otavanopisto.muikku.search.SearchProvider.Sort.Order;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.AuthorizationException;
@@ -109,6 +107,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   private CommunicatorController communicatorController;
   
   @Inject
+  private UserRecipientController userRecipientController;
+  
+  @Inject
   private CommunicatorAttachmentController communicatorAttachmentController;
   
   @Inject
@@ -121,13 +122,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   private UserEntityController userEntityController;
 
   @Inject
-  private UserController userController;
-
-  @Inject
   private UserGroupEntityController userGroupEntityController;
-
-  @Inject
-  private UserEntityFileController userEntityFileController;
 
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
@@ -139,9 +134,6 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Any
   private Instance<SearchProvider> searchProviders;
   
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
-
   @Inject
   private WorkspaceEntityController workspaceEntityController;
 
@@ -551,6 +543,11 @@ public class CommunicatorRESTService extends PluginRESTService {
           }
         }
 
+        if (!userEntityController.isActiveUserEntity(recipient)) {
+          logger.log(Level.WARNING, String.format("Inactive student passed as recipient %d", recipientId));
+          return Response.status(Status.BAD_REQUEST).entity("One or more of the recipients are inactive and the message cannot be sent to them. Contact support for help.").build();
+        }
+        
         recipients.add(recipient);
       } else {
         return Response.status(Status.BAD_REQUEST).build();
@@ -610,9 +607,15 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
+    UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
+        userEntity, recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, null);
+
+    if (!prepareRecipientList.hasRecipients()) {
+      return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
+    }
+    
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, userEntity, 
-        recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
-        newMessage.getCaption(), newMessage.getContent(), tagList);
+        prepareRecipientList, categoryEntity, newMessage.getCaption(), newMessage.getContent(), tagList);
     
     sendNewMessageNotifications(message);
     
@@ -724,6 +727,11 @@ public class CommunicatorRESTService extends PluginRESTService {
           }
         }
         
+        if (!userEntityController.isActiveUserEntity(recipient)) {
+          logger.log(Level.WARNING, String.format("Inactive student passed as recipient %d", recipientId));
+          return Response.status(Status.BAD_REQUEST).entity("One or more of the recipients are inactive and the message cannot be sent to them. Contact support for help.").build();
+        }
+        
         recipients.add(recipient);
       } else {
         return Response.status(Status.BAD_REQUEST).build();
@@ -779,9 +787,15 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
+    UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
+        userEntity, recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, null);
+
+    if (!prepareRecipientList.hasRecipients()) {
+      return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
+    }
+    
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, userEntity, 
-        recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
-        newMessage.getCaption(), newMessage.getContent(), tagList);
+        prepareRecipientList, categoryEntity, newMessage.getCaption(), newMessage.getContent(), tagList);
 
     sendNewMessageNotifications(message);
     
@@ -820,60 +834,6 @@ public class CommunicatorRESTService extends PluginRESTService {
     return Response.ok(
       restModels.restRecipient2(messageRecipients)
     ).build();
-  }
-
-  @GET
-  @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/recipients/{RECIPIENTID}/info")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listCommunicatorMessageRecipients(@PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId, @PathParam ("RECIPIENTID") Long recipientId) throws AuthorizationException {
-
-    CommunicatorMessageRecipient recipient = communicatorController.findCommunicatorMessageRecipient(recipientId);
-
-    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
-
-    if (!hasCommunicatorMessageAccess(communicatorMessage)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    schoolDataBridgeSessionController.startSystemSession();
-    try {
-      UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
-      fi.otavanopisto.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
-      Boolean hasPicture = userEntityFileController.hasProfilePicture(userEntity);
-      
-      fi.otavanopisto.muikku.rest.model.UserBasicInfo result = new fi.otavanopisto.muikku.rest.model.UserBasicInfo(
-          userEntity.getId(), 
-          userEntity.defaultSchoolDataIdentifier().toId(),
-          user.getFirstName(), 
-          user.getLastName(), 
-          user.getNickName(),
-          hasPicture
-      );
-      
-      return Response.ok(
-        result
-      ).build();
-    } finally {
-      schoolDataBridgeSessionController.endSystemSession();
-    }
-  }
-  
-  @GET
-  @Path ("/communicatormessages/{COMMUNICATORMESSAGEID}/sender")
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getCommunicatorMessageSenderInfo(@PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
-
-    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
-    if (!hasCommunicatorMessageAccess(communicatorMessage)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    UserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(communicatorMessage);
-    
-    if (senderBasicInfo != null)
-      return Response.ok(senderBasicInfo).build();
-    else
-      return Response.status(Status.NOT_FOUND).build();
   }
 
   @GET

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
 import Link from "~/components/general/link";
 import { AnnouncementsState } from "~/reducers/announcements";
 import "~/sass/elements/buttons.scss";
@@ -7,10 +6,12 @@ import "~/sass/elements/item-list.scss";
 import { StateType } from "~/reducers";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/item-list.scss";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
 import { AnyActionType } from "~/actions";
+import { Action, Dispatch } from "redux";
+import { connect } from "react-redux";
 
 /**
  * AnnouncementsAsideProps
@@ -62,7 +63,7 @@ class AnnouncementsAside extends React.Component<
                         {announcement.caption}
                       </span>
                       <span className="item-list__announcement-date">
-                        {localizeTime.date(announcement.startDate)}
+                        {localize.date(announcement.startDate)}
                       </span>
                       {announcement.workspaces &&
                       announcement.workspaces.length ? (
@@ -117,7 +118,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

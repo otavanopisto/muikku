@@ -3,6 +3,8 @@
 // break points will scale properly (threshold to fire break point increases as well) without breaking the
 // amazing and magnificent layout :)
 
+// DISCLAIMER: if these values are changed, the values in the breakpoints.ts file should be updated as well.
+
 // eq. 640px and up - large mobile screens and for mobiles in landscape mode that exceeds 40em/640px width
 $breakpoint-mobile-xl: 40em;
 

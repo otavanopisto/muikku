@@ -7,7 +7,7 @@
   margin: 5px;
 
   @include breakpoint($breakpoint-pad) {
-    margin: 0 -5px -5px;
+    margin: 0 -5px;
   }
 }
 
@@ -17,9 +17,11 @@
   border-radius: 2px;
   border-style: solid;
   border-width: 1px;
+  border-left-width: 5px;
   box-sizing: border-box;
   display: inline-block;
-  margin: 5px;
+  margin: 7px 5px;
+  position: relative;
   vertical-align: top;
   width: calc(100% - 10px);
 
@@ -37,6 +39,10 @@
 
   &.state-REQUESTED {
     border-color: $color-evaluation-request;
+
+    .evaluation-card__type {
+      background: $color-evaluation-request;
+    }
   }
 
   &.state-FAILED {
@@ -58,15 +64,21 @@
   &.state-INCOMPLETE {
     border-color: $color-grade-incomplete;
 
+    .evaluation-card__type {
+      background: $color-grade-incomplete;
+    }
+
     .button-pill--evaluate {
       background: $color-grade-incomplete;
     }
   }
-}
 
-.evaluation-card--interim {
-  &.state-REQUESTED {
+  &.state-INTERIM-EVALUATION-REQUEST {
     border-color: $color-interim-evaluation;
+
+    .evaluation-card__type {
+      background: $color-interim-evaluation;
+    }
 
     .button-pill--evaluate {
       background: $color-interim-evaluation;
@@ -74,11 +86,34 @@
   }
 }
 
+.evaluation-card__type {
+  border-radius: 3px;
+  color: $color-default;
+  font-size: 0.625rem;
+  line-height: 1;
+  padding: 5px;
+  position: absolute;
+  right: -1px;
+  text-transform: uppercase;
+  top: -10px;
+}
+
 .evaluation-card__header {
+  align-items: center;
   background: $color-evaluation-card-header-background;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
+  display: flex;
+  justify-content: space-between;
   padding: 5px;
+}
+
+.evaluation-card__header-primary {
+  max-width: calc(100% - 30px);
+}
+
+.evaluation-card__header-secondary {
+  width: 30px;
 }
 
 .evaluation-card__header-title {
@@ -86,9 +121,12 @@
   font-weight: 600;
 }
 
-.evaluation-card__header-desciption {
+.evaluation-card__header-description {
   font-size: 0.875rem;
   font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .evaluation-card__content {

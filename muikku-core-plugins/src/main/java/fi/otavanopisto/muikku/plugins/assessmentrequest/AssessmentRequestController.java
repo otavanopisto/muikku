@@ -13,9 +13,11 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.activitylog.ActivityLogController;
 import fi.otavanopisto.muikku.plugins.activitylog.model.ActivityLogType;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceActivityInfo;
@@ -52,6 +54,12 @@ public class AssessmentRequestController {
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
 
     activityLogController.createActivityLog(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), ActivityLogType.EVALUATION_REQUESTED, workspaceEntity.getId(), null);
+    
+    // #7000: Since we now have a new assessment request, mark all supplementation requests of the user + workspace as handled
+    
+    evaluationController.markSupplementationRequestHandled(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId(), workspaceEntity.getId());
+    
+    // Return object
 
     return gradingController.createWorkspaceAssessmentRequest(
         dataSource,
@@ -122,7 +130,20 @@ public class AssessmentRequestController {
   }
   
   public WorkspaceAssessmentRequest archiveWorkspaceAssessmentRequest(WorkspaceAssessmentRequest assessmentRequest, WorkspaceEntity workspaceEntity, UserEntity studentEntity) {
-    return gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), studentEntity.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), true , assessmentRequest.getHandled());
+    
+    // #7000: Requesting assessment sets supplementation request handled so this is vice versa
+    
+    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+        studentEntity.getId(),
+        workspaceEntity.getId(),
+        Boolean.FALSE);
+    if (supplementationRequest != null && Boolean.TRUE.equals(supplementationRequest.getHandled())) {
+      evaluationController.markSupplementationRequestUnhandled(supplementationRequest);
+    }
+    
+    // Archive assessment request
+    
+    return gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), studentEntity.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), true , assessmentRequest.getHandled(), assessmentRequest.getLocked());
   }
 
   public CommunicatorMessageId findCommunicatorMessageId(WorkspaceUserEntity workspaceUserEntity) {
@@ -149,6 +170,36 @@ public class AssessmentRequestController {
       assessmentRequestMessageIdDAO.create(workspaceUserEntity, communicatorMessageId);
     else
       assessmentRequestMessageIdDAO.updateMessageId(requestMessageId, communicatorMessageId);
+  }
+  
+  public AssessmentRequestRESTModel restModel(WorkspaceAssessmentRequest workspaceAssessmentRequest) {
+
+    SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(
+        workspaceAssessmentRequest.getWorkspaceUserIdentifier(),
+        workspaceAssessmentRequest.getWorkspaceUserSchoolDataSource());
+
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+    if (workspaceUserEntity != null) {
+      SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier(), 
+          workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource().getIdentifier());
+      SchoolDataIdentifier workspaceAssessmentRequestIdentifier = new SchoolDataIdentifier(
+          workspaceAssessmentRequest.getIdentifier(), workspaceAssessmentRequest.getSchoolDataSource());
+      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+      UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+      
+      AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel(
+          workspaceAssessmentRequestIdentifier.toId(), 
+          userIdentifier.toId(),
+          workspaceUserIdentifier.toId(),
+          workspaceEntity.getId(), 
+          userEntity.getId(), 
+          workspaceAssessmentRequest.getRequestText(), 
+          workspaceAssessmentRequest.getDate(),
+          workspaceAssessmentRequest.getLocked());
+  
+      return restAssessmentRequest;
+    }
+    return null;
   }
 
 

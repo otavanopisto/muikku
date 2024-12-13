@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/message.scss";
@@ -14,7 +14,7 @@ import {
   loadMoreWorkspacesFromServer,
   LoadMoreWorkspacesFromServerTriggerType,
 } from "~/actions/workspaces";
-import { WorkspacesStateType, WorkspaceType } from "~/reducers/workspaces";
+import { WorkspacesStateType, WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 
@@ -25,7 +25,7 @@ interface CoursepickerWorkspacesProps extends WithTranslation<["common"]> {
   workspacesState: WorkspacesStateType;
   workspacesHasMore: boolean;
   loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType;
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
 }
 
 /**
@@ -81,7 +81,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<
 
     return (
       <ApplicationList>
-        {this.props.workspaces.map((workspace: WorkspaceType) => (
+        {this.props.workspaces.map((workspace: WorkspaceDataType) => (
           <Course key={workspace.id} workspace={workspace} />
         ))}
         {this.props.workspacesState === "LOADING_MORE" ? (
@@ -108,7 +108,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ loadMoreWorkspacesFromServer }, dispatch);
 }
 

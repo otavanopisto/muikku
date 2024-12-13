@@ -1,4 +1,4 @@
-import { WorkspaceType } from "~/reducers/workspaces";
+import { PedagogyWorkspace } from "~/generated/client";
 
 // used for frontend logic
 const useRoles = [
@@ -6,6 +6,7 @@ const useRoles = [
   "COURSE_TEACHER",
   "GUIDANCE_COUNSELOR",
   "SPECIAL_ED_TEACHER",
+  "STUDENT_PARENT",
 ] as const;
 
 // For the PedagogyForm JSON
@@ -41,17 +42,17 @@ const matriculationExaminationSupport = [
   "other",
 ] as const;
 
-export type UserRole = typeof useRoles[number];
+export type UserRole = (typeof useRoles)[number];
 
 // Types for the PedagogyForm JSON
-export type SupportReason = typeof reasonsForSupport[number];
+export type SupportReason = (typeof reasonsForSupport)[number];
 
 // Types for the PedagogyForm JSON
-export type SupportAction = typeof supportActions[number];
+export type SupportAction = (typeof supportActions)[number];
 
 // Types for the PedagogyForm JSON
 export type SupportActionMatriculationExamination =
-  typeof matriculationExaminationSupport[number];
+  (typeof matriculationExaminationSupport)[number];
 
 // Types for the PedagogyForm JSON
 export type OpinionType = "studentOpinionOfSupport" | "schoolOpinionOfSupport";
@@ -76,7 +77,7 @@ export interface SupportActionImplementation {
   /**
    * The details of the action
    */
-  course?: WorkspaceType;
+  course?: PedagogyWorkspace;
   /**
    * The extra information of the action
    */
@@ -131,13 +132,9 @@ export interface FormData {
    */
   studentStrengths?: string;
   /**
-   * Reasoning for the support
+   * The description of the student's challenges
    */
-  supportReasons: SupportReason[];
-  /**
-   * Some other reason for the support
-   */
-  supportReasonOther?: string;
+  needOfSupport?: string;
   /**
    * Actions to support the student
    */

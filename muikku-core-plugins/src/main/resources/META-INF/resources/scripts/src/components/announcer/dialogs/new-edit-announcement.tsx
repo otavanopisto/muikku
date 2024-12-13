@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import EnvironmentDialog from "~/components/general/environment-dialog";
@@ -9,7 +9,7 @@ import { AnyActionType } from "~/actions";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
-import { WorkspacesType } from "~/reducers/workspaces";
+import { WorkspacesState } from "~/reducers/workspaces";
 import {
   createAnnouncement,
   CreateAnnouncementTriggerType,
@@ -26,9 +26,9 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Announcement } from "~/generated/client";
+import { Announcement, Role } from "~/generated/client";
 
 /**
  * TargetItemsListType
@@ -47,7 +47,7 @@ interface NewEditAnnouncementProps extends WithTranslation {
   displayNotification: DisplayNotificationTriggerType;
   status: StatusType;
   workspaceId: number;
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
 }
 
 /**
@@ -92,7 +92,7 @@ class NewEditAnnouncement extends SessionStateComponent<
               ({
                 type: "workspace",
                 value: w,
-              } as ContactRecipientType)
+              }) as ContactRecipientType
           )
           .concat(
             props.announcement.userGroupEntityIds
@@ -102,7 +102,7 @@ class NewEditAnnouncement extends SessionStateComponent<
                   ({
                     type: "usergroup",
                     value: props.userIndex.groups[id],
-                  } as ContactRecipientType)
+                  }) as ContactRecipientType
               ) as any
           )
       : this.getPredefinedWorkspaceByIdToConcat(props);
@@ -114,15 +114,15 @@ class NewEditAnnouncement extends SessionStateComponent<
         subject: props.announcement ? props.announcement.caption : "",
         locked: false,
         startDate: props.announcement
-          ? localizeTime
+          ? localize
               .getLocalizedMoment(this.props.announcement.startDate)
               .toDate()
-          : localizeTime.getLocalizedMoment().toDate(),
+          : localize.getLocalizedMoment().toDate(),
         endDate: props.announcement
-          ? localizeTime
+          ? localize
               .getLocalizedMoment(this.props.announcement.endDate)
               .toDate()
-          : localizeTime.getLocalizedMoment().add(1, "day").toDate(),
+          : localize.getLocalizedMoment().add(1, "day").toDate(),
       },
       (props.announcement ? props.announcement.id + "-" : "") +
         (props.workspaceId || "")
@@ -130,10 +130,10 @@ class NewEditAnnouncement extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: NewEditAnnouncementProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: NewEditAnnouncementProps) {
     if (
       (this.props.announcement &&
         nextProps.announcement &&
@@ -150,7 +150,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             ({
               type: "workspace",
               value: w,
-            } as ContactRecipientType)
+            }) as ContactRecipientType
         )
         .concat(
           nextProps.announcement.userGroupEntityIds
@@ -160,7 +160,7 @@ class NewEditAnnouncement extends SessionStateComponent<
                 ({
                   type: "usergroup",
                   value: nextProps.userIndex.groups[id],
-                } as ContactRecipientType)
+                }) as ContactRecipientType
             ) as any
         );
 
@@ -180,10 +180,10 @@ class NewEditAnnouncement extends SessionStateComponent<
             subject: nextProps.announcement.caption,
             text: nextProps.announcement.content,
             currentTarget: this.baseAnnouncementCurrentTarget,
-            startDate: localizeTime
+            startDate: localize
               .getLocalizedMoment(nextProps.announcement.startDate)
               .toDate(),
-            endDate: localizeTime
+            endDate: localize
               .getLocalizedMoment(nextProps.announcement.endDate)
               .toDate(),
           },
@@ -199,8 +199,8 @@ class NewEditAnnouncement extends SessionStateComponent<
             subject: "",
             text: "",
             currentTarget: this.baseAnnouncementCurrentTarget,
-            startDate: localizeTime.getLocalizedMoment().toDate(),
-            endDate: localizeTime.getLocalizedMoment().add(1, "day").toDate(),
+            startDate: localize.getLocalizedMoment().toDate(),
+            endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
           },
           nextProps.workspaceId || ""
         )
@@ -234,10 +234,10 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
-          startDate: localizeTime
+          startDate: localize
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
-          endDate: localizeTime
+          endDate: localize
             .getLocalizedMoment(this.props.announcement.endDate)
             .toDate(),
         },
@@ -265,8 +265,8 @@ class NewEditAnnouncement extends SessionStateComponent<
           subject: "",
           text: "",
           currentTarget: this.getPredefinedWorkspaceByIdToConcat(this.props),
-          startDate: localizeTime.getLocalizedMoment().toDate(),
-          endDate: localizeTime.getLocalizedMoment().add(1, "day").toDate(),
+          startDate: localize.getLocalizedMoment().toDate(),
+          endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
         },
         this.props.workspaceId || ""
       );
@@ -284,8 +284,8 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: "",
           text: "",
-          startDate: localizeTime.getLocalizedMoment().toDate(),
-          endDate: localizeTime.getLocalizedMoment().add(1, "day").toDate(),
+          startDate: localize.getLocalizedMoment().toDate(),
+          endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
           currentTarget: this.baseAnnouncementCurrentTarget,
         },
         this.props.workspaceId || ""
@@ -298,17 +298,17 @@ class NewEditAnnouncement extends SessionStateComponent<
             ({
               type: "workspace",
               value: w,
-            } as ContactRecipientType)
+            }) as ContactRecipientType
         );
       this.setStateAndClear(
         {
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
           currentTarget: this.baseAnnouncementCurrentTarget,
-          startDate: localizeTime
+          startDate: localize
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
-          endDate: localizeTime
+          endDate: localize
             .getLocalizedMoment(this.props.announcement.endDate)
             .toDate(),
         },
@@ -392,7 +392,7 @@ class NewEditAnnouncement extends SessionStateComponent<
   createOrModifyAnnouncement(closeDialog: () => any) {
     this.setState({ locked: true });
 
-    if (this.props.status.role === "TEACHER") {
+    if (this.props.status.roles.includes(Role.Teacher)) {
       if (this.state.currentTarget.length <= 0) {
         this.props.displayNotification(
           this.props.i18n.t("validation.targetGroup", { ns: "messaging" }),
@@ -415,10 +415,10 @@ class NewEditAnnouncement extends SessionStateComponent<
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
-            localizeTime.date(this.state.endDate, "YYYY-MM-DD"),
+            localize.date(this.state.endDate, "YYYY-MM-DD"),
           startDate:
             this.state.startDate &&
-            localizeTime.date(this.state.startDate, "YYYY-MM-DD"),
+            localize.date(this.state.startDate, "YYYY-MM-DD"),
           userGroupEntityIds: this.state.currentTarget
             .filter((w) => w.type === "usergroup")
             .map((w) => (w.value as any).id),
@@ -454,10 +454,10 @@ class NewEditAnnouncement extends SessionStateComponent<
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
-            localizeTime.date(this.state.endDate, "YYYY-MM-DD"),
+            localize.date(this.state.endDate, "YYYY-MM-DD"),
           startDate:
             this.state.startDate &&
-            localizeTime.date(this.state.startDate, "YYYY-MM-DD"),
+            localize.date(this.state.startDate, "YYYY-MM-DD"),
           userGroupEntityIds: this.state.currentTarget
             .filter((w) => w.type === "usergroup")
             .map((w) => (w.value as any).id),
@@ -474,8 +474,8 @@ class NewEditAnnouncement extends SessionStateComponent<
               locked: false,
               subject: "",
               text: "",
-              startDate: localizeTime.getLocalizedMoment().toDate(),
-              endDate: localizeTime.getLocalizedMoment().add(1, "day").toDate(),
+              startDate: localize.getLocalizedMoment().toDate(),
+              endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
               currentTarget: this.getPredefinedWorkspaceByIdToConcat(
                 this.props
               ),
@@ -550,7 +550,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             className="env-dialog__input env-dialog__input--date-picker"
             selected={this.state.startDate}
             onChange={this.handleDateChange.bind(this, "startDate")}
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
           />
         </div>
@@ -563,7 +563,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             className="env-dialog__input env-dialog__input--date-picker"
             selected={this.state.endDate}
             onChange={this.handleDateChange.bind(this, "endDate")}
-            locale={outputCorrectDatePickerLocale(localizeTime.language)}
+            locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
           />
         </div>
@@ -591,7 +591,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           context: "target",
         })}
         label={this.props.i18n.t("labels.target", { ns: "messaging" })}
-        required={this.props.status.role === "TEACHER"}
+        required={this.props.status.roles.includes(Role.Teacher)}
       />,
       <div className="env-dialog__row" key="annnouncement-edit-3">
         <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">
@@ -704,7 +704,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { createAnnouncement, updateAnnouncement, displayNotification },
     dispatch

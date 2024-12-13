@@ -1,5 +1,4 @@
 import actions from "../../base/notifications";
-import { MApiError } from "~/lib/mApi";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   StatisticsDataType,
@@ -7,6 +6,7 @@ import {
 } from "~/reducers/main-function/records/statistics";
 import { StateType } from "~/reducers";
 import i18n from "~/locales/i18n";
+import { Action, Dispatch } from "redux";
 
 export type UPDATE_STUDIES_STATISTICS = SpecificActionType<
   "UPDATE_STUDIES_STATISTICS",
@@ -30,7 +30,7 @@ export interface UpdateStatisticsTriggerType {
 const updateStatistics: UpdateStatisticsTriggerType =
   function updateStatistics() {
     return async (
-      dispatch: (arg: AnyActionType) => any,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       try {
@@ -39,9 +39,6 @@ const updateStatistics: UpdateStatisticsTriggerType =
           payload: null,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
-          throw err;
-        }
         dispatch(
           actions.displayNotification(
             i18n.t("notifications.loadError", {

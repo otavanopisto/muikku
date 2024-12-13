@@ -29,9 +29,12 @@ import {
   ResponseError,
   FetchError,
   RequiredError,
-  ResponseContext,
+  AssessmentRequestApi,
+  ChatApi,
   Middleware,
+  ResponseContext,
   ActivitylogsApi,
+  StudentCardsApi,
 } from "../generated/client";
 
 /**
@@ -118,6 +121,24 @@ export default class MApi {
    */
   public static getAnnouncerApi() {
     return new AnnouncerApi(configuration);
+  }
+
+  /**
+   * Get initialized ChatApi API
+   *
+   * @returns initialized ChatApi API
+   */
+  public static getChatApi() {
+    return new ChatApi(configuration);
+  }
+
+  /**
+   * Get initialized AssessmentRequestApi API
+   *
+   * @returns initialized AssessmentRequestApi API
+   */
+  public static getAssessmentApi() {
+    return new AssessmentRequestApi(configuration);
   }
 
   /**
@@ -334,6 +355,15 @@ export default class MApi {
    */
   public static getWorkspaceNotesApi() {
     return new WorkspaceNotesApi(configuration);
+  }
+
+  /**
+   * Gets initialized StudentCard API
+   *
+   * @returns initialized StudentCard API
+   */
+  public static getStudentCardApi() {
+    return new StudentCardsApi(configuration);
   }
 
   /**

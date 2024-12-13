@@ -1,17 +1,17 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import MaterialLoader from "~/components/base/material-loader";
 import {
-  MaterialContentNodeType,
-  WorkspaceType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
 import {
   setCurrentWorkspace,
   SetCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
@@ -31,11 +31,13 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface HelpMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
-  materialContentNode: MaterialContentNodeType;
-  folder: MaterialContentNodeType;
+  materialContentNode: MaterialContentNodeWithIdAndLogic;
+  folder: MaterialContentNodeWithIdAndLogic;
   isViewRestricted: boolean;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
+  anchorItem?: JSX.Element;
+  readspeakerComponent?: JSX.Element;
 }
 
 /**
@@ -109,6 +111,8 @@ class WorkspaceMaterial extends React.Component<
             onAssignmentStateModified={this.updateWorkspaceActivity}
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
+            readspeakerComponent={this.props.readspeakerComponent}
+            anchorElement={this.props.anchorItem}
           >
             {(props, state, stateConfiguration) => (
               <div>
@@ -158,7 +162,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 

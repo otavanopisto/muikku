@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/application-list.scss";
@@ -10,9 +10,10 @@ import { StateType } from "~/reducers";
 import { UserIndexState } from "~/reducers/user-index";
 import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { Announcement } from "~/generated/client";
 import { AnyActionType } from "~/actions";
+import { Action, Dispatch } from "redux";
 
 /**
  * AnnouncementProps
@@ -48,7 +49,7 @@ class Announcements extends React.Component<
   render() {
     const articleDate =
       this.props.announcement &&
-      localizeTime.date(this.props.announcement.startDate);
+      localize.date(this.props.announcement.startDate);
 
     if (!this.props.announcement) {
       return (
@@ -120,7 +121,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns JSX.Element
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

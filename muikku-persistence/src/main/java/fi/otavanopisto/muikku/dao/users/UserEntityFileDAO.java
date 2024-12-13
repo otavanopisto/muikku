@@ -47,6 +47,23 @@ public class UserEntityFileDAO extends CoreDAO<UserEntityFile> {
     super.delete(userEntityFile);
   }
 
+  public long countByUserEntityAndIdentifier(UserEntity userEntity, String identifier) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<UserEntityFile> root = criteria.from(UserEntityFile.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(UserEntityFile_.userEntity), userEntity),
+        criteriaBuilder.equal(root.get(UserEntityFile_.identifier), identifier)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+
   public UserEntityFile findByUserEntityAndIdentifier(UserEntity userEntity, String identifier) {
     EntityManager entityManager = getEntityManager(); 
     

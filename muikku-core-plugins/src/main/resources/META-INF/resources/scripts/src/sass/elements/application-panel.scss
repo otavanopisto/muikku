@@ -23,6 +23,11 @@
   padding: 0;
 }
 
+.application-panel--guider-student-hops {
+  max-width: 100%;
+  padding: 0;
+}
+
 // Component's wrapper
 .application-panel__container {
   @include text;
@@ -56,6 +61,7 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
+    align-items: center;
     display: flex;
     flex-basis: auto;
     flex-grow: 1;
@@ -66,6 +72,11 @@
     line-height: 1;
     text-transform: uppercase;
   }
+}
+
+// Component's header's option at the header level (ie. select dependant feature)
+.application-panel__header-options {
+  margin: 0 0 0 15px;
 }
 
 // Component's header's actions at the header level (ie. signature feature)
@@ -117,7 +128,7 @@
   position: fixed;
   right: 0;
   top: $navbar-mobile-height;
-  z-index: 2;
+  z-index: 99;
 
   @include breakpoint($breakpoint-pad) {
     align-items: center;
@@ -231,6 +242,10 @@
     flex-direction: row;
     padding: 0;
   }
+}
+
+.application-panel__content--tabs {
+  padding: 1rem 0 0;
 }
 
 // Component's content header (h2 level header)

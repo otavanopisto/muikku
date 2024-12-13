@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Dialog, { DialogRow } from "~/components/general/dialog";
 import {
   FormActionsElement,
@@ -13,9 +13,9 @@ import {
 } from "~/actions/main-function/users";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
-import { User } from "~/generated/client";
+import { StaffMember, UpdateStaffMemberRequest } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 
@@ -26,7 +26,7 @@ interface OrganizationUserProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   status: StatusType;
-  data?: User;
+  data?: StaffMember;
   studyprogrammes: StudyprogrammeTypes;
   updateStaffmember: UpdateStaffmemberTriggerType;
 }
@@ -35,9 +35,7 @@ interface OrganizationUserProps extends WithTranslation {
  * OrganizationUserState
  */
 interface OrganizationUserState {
-  user: {
-    [field: string]: string;
-  };
+  user: Partial<StaffMember>;
   locked: boolean;
   firstNameValid: number;
   lastNameValid: number;
@@ -59,7 +57,7 @@ class OrganizationUser extends React.Component<
     super(props);
     this.state = {
       user: {
-        role: this.props.data.role,
+        roles: this.props.data.roles,
         firstName: this.props.data.firstName,
         lastName: this.props.data.lastName,
         email: this.props.data.email,
@@ -133,16 +131,19 @@ class OrganizationUser extends React.Component<
         locked: true,
       });
 
-      const data = {
-        identifier: this.props.data.id,
-        firstName: this.state.user.firstName,
-        lastName: this.state.user.lastName,
-        email: this.state.user.email,
-        role: this.state.user.role,
+      const data: UpdateStaffMemberRequest = {
+        staffMemberIdentifier: this.props.data.id,
+        userStaffCreatePayload: {
+          identifier: this.props.data.id,
+          firstName: this.state.user.firstName,
+          lastName: this.state.user.lastName,
+          email: this.state.user.email,
+          roles: this.state.user.roles,
+        },
       };
 
       this.props.updateStaffmember({
-        staffmember: data,
+        updateRequest: data,
         /**
          *
          */
@@ -184,13 +185,15 @@ class OrganizationUser extends React.Component<
             modifiers="new-user"
             label={t("labels.role", { ns: "users" })}
             updateField={this.updateField}
-            value={this.props.data.role}
+            // TODO: Rooleja voi olla useita, käyttöliittymä pitäisi päivittää vastaamaan sitä
+            //       joskin voi olla edelleen paras, että käyttäjälle valitaan muikussa vain yksi rooli
+            //TODO value={this.props.data.role}
           >
             <option value="MANAGER">
               {t("labels.manager", { ns: "users" })}
             </option>
             <option value="TEACHER">
-              {t("labels.teacher", { ns: "users", count: 1 })}
+              {t("labels.teacher", { ns: "users" })}
             </option>
           </SelectFormElement>
         </DialogRow>
@@ -271,7 +274,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ updateStaffmember }, dispatch);
 }
 

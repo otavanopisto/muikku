@@ -1,12 +1,10 @@
 import thunk from "redux-thunk";
 import * as React from "react";
-import { Provider, Store } from "react-redux";
-import { createStore, applyMiddleware, Reducer } from "redux";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware, Reducer, Store } from "redux";
 import { render } from "react-dom";
 import { composeWithDevTools } from "@redux-devtools/extension";
 import { StateType } from "~/reducers";
-
-import { logger } from "redux-logger";
 
 /**
  * runApp
@@ -28,6 +26,7 @@ export default async function runApp(
   }
 
   const newStore: Store<StateType> = {
+    ...store,
     /**
      * dispatch
      * @param action action

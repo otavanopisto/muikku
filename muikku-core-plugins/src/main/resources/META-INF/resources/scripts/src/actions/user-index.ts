@@ -1,44 +1,22 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { User, UserGroup, UserWhoAmI } from "~/generated/client";
+import { UserGroup, UserWhoAmI } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch } from "react-redux";
-
-/**
- * LoadUserIndexTriggerType
- */
-export interface LoadUserIndexTriggerType {
-  (userId: number, callback?: (user: User) => any): AnyActionType;
-}
-
-/**
- * LoadUserIndexBySchoolDataTriggerType
- */
-export interface LoadUserIndexBySchoolDataTriggerType {
-  (userId: string, callback?: (user: User) => any): AnyActionType;
-}
+import { Dispatch, Action } from "redux";
 
 /**
  * LoadLoggedUserTriggerType
  */
-export interface LoadLoggedUserTriggerType {
-  (callback?: (user: User) => any): AnyActionType;
+interface LoadLoggedUserTriggerType {
+  (callback?: (user: UserWhoAmI) => void): AnyActionType;
 }
 
 /**
  * LoadUserGroupIndexTriggerType
  */
-export interface LoadUserGroupIndexTriggerType {
+interface LoadUserGroupIndexTriggerType {
   (groupId: number): AnyActionType;
 }
-
-export type SET_USER_INDEX = SpecificActionType<
-  "SET_USER_INDEX",
-  {
-    index: number;
-    value: User;
-  }
->;
 
 export type SET_USER_GROUP_INDEX = SpecificActionType<
   "SET_USER_GROUP_INDEX",
@@ -66,7 +44,7 @@ const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
   callback
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -112,7 +90,7 @@ const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
 const loadUserGroupIndex: LoadUserGroupIndexTriggerType =
   function loadUserGroupIndex(groupId) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const usergroupApi = MApi.getUsergroupApi();

@@ -8,24 +8,26 @@ import * as React from "react";
 import Autocomplete from "~/components/general/autocomplete";
 import TagInput from "~/components/general/tag-input";
 import { filterHighlight, getName } from "~/util/modifiers";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { ContactRecipientType } from "~/reducers/user-index";
 import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
 import {
-  User,
+  Student,
   UserGroup,
-  UserStaff,
   WorkspaceBasicInfo,
   UserStaffSearchResult,
+  StaffMember,
+  User,
 } from "~/generated/client";
 import MApi from "~/api/api";
+import { isUser } from "~/helper-functions/type-guards";
 
 /**
  * InputContactsAutofillLoaders
  */
 export interface InputContactsAutofillLoaders {
-  studentsLoader?: (searchString: string) => () => Promise<User[]>;
+  studentsLoader?: (searchString: string) => () => Promise<Student[] | User[]>;
   staffLoader?: (searchString: string) => () => Promise<UserStaffSearchResult>;
   userGroupsLoader?: (searchString: string) => () => Promise<UserGroup[]>;
   workspacesLoader?: (
@@ -123,7 +125,7 @@ export default class c extends React.Component<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line camelcase
@@ -214,14 +216,7 @@ export default class c extends React.Component<
     const getStudentsLoader = () =>
       loaders.studentsLoader
         ? loaders.studentsLoader(textInput)
-        : () =>
-            MApi.getUserApi().getUsers({
-              q: textInput,
-              maxResults: 20,
-              onlyDefaultUsers: checkHasPermission(
-                this.props.userPermissionIsOnlyDefaultUsers
-              ),
-            });
+        : () => new Promise<Student[] | User[]>(() => []);
 
     /**
      * getUserGroupsLoader
@@ -280,7 +275,7 @@ export default class c extends React.Component<
         : [],
       checkHasPermission(this.props.hasStaffPermission, false)
         ? getStaffLoader()()
-            .then((result: UserStaffSearchResult) => result.results || [])
+            .then((result) => result.results || [])
             .catch((err: any): any[] => [])
         : [],
     ]);
@@ -289,15 +284,25 @@ export default class c extends React.Component<
      * userItems
      */
     const userItems: ContactRecipientType[] = searchResults[0].map(
-      (item: User): ContactRecipientType => ({
-        type: "user",
-        value: {
-          id: item.id,
+      (item: Student | User): ContactRecipientType => {
+        const value = {
+          id: 0,
           name: getName(item, this.props.showFullNames),
           email: item.email,
           studyProgrammeName: item.studyProgrammeName,
-        },
-      })
+        };
+
+        if (isUser(item)) {
+          value.id = item.id;
+        } else {
+          value.id = item.userEntityId;
+        }
+
+        return {
+          type: "user",
+          value: value,
+        };
+      }
     );
 
     /**
@@ -318,7 +323,7 @@ export default class c extends React.Component<
      * workspaceItems
      */
     const workspaceItems: ContactRecipientType[] = searchResults[2].map(
-      (item: WorkspaceType): ContactRecipientType => ({
+      (item: WorkspaceDataType): ContactRecipientType => ({
         type: "workspace",
         value: {
           id: item.id,
@@ -333,7 +338,7 @@ export default class c extends React.Component<
      * staffItems
      */
     const staffItems: ContactRecipientType[] = searchResults[3].map(
-      (item: UserStaff): ContactRecipientType => ({
+      (item: StaffMember): ContactRecipientType => ({
         type: "staff",
         value: {
           id: item.userEntityId,

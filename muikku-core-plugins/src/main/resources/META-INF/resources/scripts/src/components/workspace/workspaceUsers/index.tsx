@@ -1,12 +1,7 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Depcrecated refs should be refactored
- */
-
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import Users from "./users";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceUsersBodyProps
@@ -17,41 +12,21 @@ interface WorkspaceUsersBodyProps {
 
 /**
  * WorkspaceUsersBody
+ * @param props props
  */
-export default class WorkspaceUsersBody extends React.Component<
-  WorkspaceUsersBodyProps,
-  Record<string, unknown>
-> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: WorkspaceUsersBodyProps) {
-    super(props);
+const WorkspaceUsersBody = (props: WorkspaceUsersBodyProps) => {
+  const { t } = useTranslation(["common", "workspace"]);
 
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
-  }
+  return (
+    <div>
+      <WorkspaceNavbar
+        title={t("labels.users", { ns: "users" })}
+        activeTrail="users"
+        workspaceUrl={props.workspaceUrl}
+      />
+      <Users />
+    </div>
+  );
+};
 
-  /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.refs.content as any).getWrappedInstance().refresh();
-  }
-
-  /**
-   * render
-   */
-  render() {
-    return (
-      <div>
-        <WorkspaceNavbar
-          activeTrail="users"
-          workspaceUrl={this.props.workspaceUrl}
-        />
-        <Users />
-      </div>
-    );
-  }
-}
+export default WorkspaceUsersBody;

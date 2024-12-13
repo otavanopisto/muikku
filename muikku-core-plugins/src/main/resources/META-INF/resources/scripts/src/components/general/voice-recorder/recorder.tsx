@@ -1,20 +1,19 @@
 import * as React from "react";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { UseRecorder } from "../../../@types/recorder";
 import useRecorder from "./hooks/use-recorder";
 import RecorderControls from "./recorder-controls";
 import RecordingsList from "./recordings-list";
 import { AnyActionType } from "../../../actions/index";
 import { StateType } from "../../../reducers/index";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StatusType } from "../../../reducers/base/status";
-import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/voice-recorder.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const ProgressBarLine = require("react-progress-bar.js").Line;
+import ProgressBar from "@ramonak/react-progress-bar";
+import moment from "moment";
 
 /**
  * RecorderProps
@@ -29,13 +28,16 @@ interface RecorderProps extends WithTranslation {
   values?: RecordValue[];
 }
 
+// this is the maximum recording time in seconds
+const MAX_RECORDING_TIME_IN_SECONDS = 60 * 5;
+
 /**
  * Recorder
  * @param props props
  * @returns JSX.Element
  */
 function Recorder(props: RecorderProps) {
-  const { onIsRecordingChange, onChange, values } = props;
+  const { onIsRecordingChange, onChange, values, t } = props;
 
   const { recorderState, ...handlers }: UseRecorder = useRecorder({
     status: props.status,
@@ -86,44 +88,32 @@ function Recorder(props: RecorderProps) {
       <RecorderControls recorderState={recorderState} handlers={handlers} />
 
       <AnimateHeight duration={300} height={initRecording ? "auto" : 0}>
-        <span className="voice-recorder__file-container voice-recorder__file-container--recording">
-          <ProgressBarLine
-            containerClassName="voice-recorder__file-record-progressbar"
-            options={{
-              strokeWidth: 1,
-              duration: 1000,
-              color: "#de3211",
-              trailColor: "#f5f5f5",
-              trailWidth: 1,
-              svgStyle: { width: "100%", height: "4px" },
-              text: {
-                className: "voice-recorder__file-record-percentage",
-                style: {
-                  right: "100%",
-                },
-              },
-            }}
-            strokeWidth={1}
-            easing="easeInOut"
-            duration={1000}
-            color="#de3211"
-            trailColor="#f5f5f5"
-            trailWidth={1}
-            svgStyle={{ width: "100%", height: "4px" }}
-            text={props.t("notifications.recording", {
-              ns: "materials",
-              currentLength: moment("2015-01-01")
-                .startOf("day")
-                .seconds(seconds)
-                .format("mm:ss"),
-              maxLength: moment("2015-01-01")
-                .startOf("day")
-                .seconds(300)
-                .format("mm:ss"),
-            })}
-            progress={seconds / 300}
-          />
-        </span>
+        <div className="voice-recorder__file-container voice-recorder__file-container--recording">
+          <div className="voice-recorder__file voice-recorder__file--recording">
+            <ProgressBar
+              className="voice-recorder__file-record-progressbar"
+              completed={(seconds / 300) * 100}
+              maxCompleted={100}
+              customLabel={`${Math.round((seconds / 300) * 100)}%`}
+              bgColor="#de3211"
+              baseBgColor="#f5f5f5"
+              height="5px"
+            />
+            <div className="voice-recorder__file-record-percentage voice-recorder__file-record-percentage--recording">
+              {t("notifications.recording", {
+                ns: "materials",
+                currentLength: moment("2015-01-01")
+                  .startOf("day")
+                  .seconds(seconds)
+                  .format("mm:ss"),
+                maxLength: moment("2015-01-01")
+                  .startOf("day")
+                  .seconds(MAX_RECORDING_TIME_IN_SECONDS)
+                  .format("mm:ss"),
+              })}
+            </div>
+          </div>
+        </div>
       </AnimateHeight>
       <RecordingsList
         records={recorderState.values}
@@ -147,7 +137,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({}, dispatch);
 }
 

@@ -2,13 +2,11 @@ import * as React from "react";
 import CKEditor from "~/components/general/ckeditor";
 import "~/sass/elements/evaluation.scss";
 import SessionStateComponent from "~/components/general/session-state-component";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers/index";
 import { AnyActionType } from "~/actions/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
-import { MaterialAssignmentType } from "~/reducers/workspaces/index";
-import { MaterialCompositeRepliesType } from "~/reducers/workspaces/index";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import {
@@ -23,7 +21,6 @@ import "~/sass/elements/form.scss";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import AnimateHeight from "react-animate-height";
 import { CKEditorConfig } from "../evaluation";
-import mApi from "~/lib/mApi";
 import notificationActions from "~/actions/base/notifications";
 import WarningDialog from "../../../../dialogs/close-warning";
 import { LocaleState } from "~/reducers/base/locales";
@@ -34,6 +31,8 @@ import {
   EvaluationGradeScale,
   MaterialEvaluation,
   SaveWorkspaceAssigmentAssessmentRequest,
+  MaterialCompositeReply,
+  WorkspaceMaterial,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -44,8 +43,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface InterimEvaluationEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
   materialEvaluation?: MaterialEvaluation;
-  materialAssignment: MaterialAssignmentType;
-  compositeReplies: MaterialCompositeRepliesType;
+  materialAssignment: WorkspaceMaterial;
+  compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;
   locale: LocaleState;
@@ -199,8 +198,6 @@ class InterimEvaluationEditor extends SessionStateComponent<
           },
         });
 
-      await mApi().workspace.workspaces.compositeReplies.cacheClear();
-
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,
         userEntityId: userEntityId,
@@ -277,7 +274,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
         verbalAssessment: this.state.literalEvaluation,
         assessmentDate: new Date().getTime(),
         audioAssessments: this.state.audioAssessments,
-        evaluationType: "ASSESSMENT",
+        evaluationType: "GRADED",
       },
       materialId: this.props.materialAssignment.materialId,
     });
@@ -444,7 +441,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       updateCurrentStudentCompositeRepliesData,

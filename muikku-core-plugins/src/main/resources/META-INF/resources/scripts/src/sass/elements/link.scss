@@ -317,6 +317,13 @@
   }
 }
 
+.link--chat {
+  font-size: 0.825rem;
+  line-height: 1;
+  padding: 0 0 5px;
+  text-transform: none;
+}
+
 .link--material-management-dropdown {
   color: $color-default;
   justify-content: flex-start;
@@ -495,6 +502,14 @@
   &::before {
     background: transparent;
     box-shadow: none;
+  }
+}
+
+.link--workspace-is-being-evaluated {
+  cursor: not-allowed;
+
+  &::before {
+    background: $color-default-contrast;
   }
 }
 

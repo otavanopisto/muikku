@@ -3,7 +3,7 @@ import { StateType } from "~/reducers";
 import { ContactGroup, ContactGroupNames } from "~/reducers/base/contacts";
 import { LoadingState } from "~/@types/shared";
 import notificationActions from "~/actions/base/notifications";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError } from "~/api/api";
 
@@ -36,25 +36,30 @@ export interface LoadingStatePayload {
  * LoadContactGroupTriggerType
  */
 export interface LoadContactGroupTriggerType {
-  (groupName: ContactGroupNames): AnyActionType;
+  (groupName: ContactGroupNames, userIdentifier?: string): AnyActionType;
 }
 
 /**
  * loadContactGroup thunk function
  * @param groupName The name of the group to be loaded
+ * @param userIdentifier The muikku identifier of the user to be loaded
  */
 const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
-  groupName
+  groupName,
+  userIdentifier
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
-    const meApi = MApi.getMeApi();
+    const userApi = MApi.getUserApi();
 
-    const contactsLoaded = getState().contacts[groupName].list.length > 0;
-
-    if (contactsLoaded) {
+    const contactsLoaded = getState().contacts[groupName].state === "READY";
+    const isActiveUser = getState().status.isActiveUser;
+    const studentIdentifier = userIdentifier
+      ? userIdentifier
+      : getState().status.userSchoolDataIdentifier;
+    if (contactsLoaded || !isActiveUser) {
       return;
     }
 
@@ -64,7 +69,8 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
         payload: { groupName: groupName, state: <LoadingState>"LOADING" },
       });
 
-      const data = await meApi.getGuidanceCounselors({
+      const data = await userApi.getGuidanceCounselors({
+        studentIdentifier,
         properties:
           "profile-phone,profile-appointmentCalendar,profile-whatsapp,profile-vacation-start,profile-vacation-end",
       });

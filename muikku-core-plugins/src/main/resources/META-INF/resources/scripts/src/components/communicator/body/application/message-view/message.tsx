@@ -1,8 +1,8 @@
 import * as React from "react";
 import Link from "~/components/general/link";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
 import { colorIntToHex, getName } from "~/util/modifiers";
@@ -11,7 +11,6 @@ import "~/sass/elements/label.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/link.scss";
 import AnswerMessageDrawer from "./message-editor/answer-message-drawer";
-import { MessageSignatureType } from "~/reducers/main-function/messages";
 import { AnyActionType } from "~/actions";
 import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
@@ -20,10 +19,12 @@ import InfoPopover from "~/components/general/info-popover";
 // Message imported as IMessage to avoid conflict with Message component
 // Component can be renamed to something else if needed later
 import {
+  CommunicatorSignature,
+  CommunicatorUserBasicInfo,
   Message as IMessage,
   MessageThreadLabel,
-  User,
 } from "~/generated/client";
+import { Action, Dispatch } from "redux";
 
 /**
  * MessageProps
@@ -31,7 +32,7 @@ import {
 interface MessageProps extends WithTranslation {
   message: IMessage;
   status: StatusType;
-  signature: MessageSignatureType;
+  signature: CommunicatorSignature;
   labels?: MessageThreadLabel[];
 }
 
@@ -66,7 +67,10 @@ class Message extends React.Component<MessageProps, MessageState> {
    * @param userId userId of current logged in user
    * @returns Returns span element with sender name
    */
-  getMessageSender(sender: User, userId: number): JSX.Element {
+  getMessageSender(
+    sender: CommunicatorUserBasicInfo,
+    userId: number
+  ): JSX.Element {
     if (sender.archived === true) {
       return (
         <span key={sender.userEntityId} className="message__user-archived">
@@ -387,12 +391,9 @@ class Message extends React.Component<MessageProps, MessageState> {
             </div>
             <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
               <span aria-label={this.props.t("wcag.date", { ns: "messaging" })}>
-                {`${localizeTime.date(
+                {`${localize.date(
                   this.props.message.created
-                )} klo ${localizeTime.date(
-                  this.props.message.created,
-                  "HH:mm"
-                )}`}
+                )} - ${localize.date(this.props.message.created, "LT")}`}
               </span>
             </div>
           </div>
@@ -442,9 +443,19 @@ class Message extends React.Component<MessageProps, MessageState> {
               <Link
                 tabIndex={0}
                 className="link link--application-list"
-                onClick={this.handleOpenNewMessage("all")}
+                onClick={this.handleOpenNewMessage("person")}
               >
                 {this.props.t("actions.reply", { ns: "messaging" })}
+              </Link>
+            )}
+            {this.props.message.sender.studiesEnded ||
+            this.props.message.sender.archived ? null : (
+              <Link
+                tabIndex={0}
+                className="link link--application-list"
+                onClick={this.handleOpenNewMessage("all")}
+              >
+                {this.props.t("actions.replyAll", { ns: "messaging" })}
               </Link>
             )}
           </footer>
@@ -504,7 +515,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

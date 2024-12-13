@@ -1,12 +1,11 @@
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import MApi from "~/api/api";
-import mApi from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
-import { WorkspaceBasicInfo } from "~/reducers/workspaces";
-import promisify from "~/util/promisify";
-import i18n from "~/locales/i18n";
+import { ChatUser, WorkspaceBasicInfo } from "~/generated/client";
+import { localize } from "~/locales/i18n";
+import { Role } from "~/generated/client";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -20,6 +19,11 @@ export type UPDATE_STATUS_HAS_IMAGE = SpecificActionType<
 export type UPDATE_STATUS = SpecificActionType<
   "UPDATE_STATUS",
   Partial<StatusType>
+>;
+
+export type UPDATE_STATUS_CHAT_SETTINGS = SpecificActionType<
+  "UPDATE_STATUS_CHAT_SETTINGS",
+  ChatUser
 >;
 
 export type UPDATE_STATUS_WORKSPACE_PERMISSIONS = SpecificActionType<
@@ -54,12 +58,26 @@ export interface LoadEnviromentalForumAreaPermissionsType {
 }
 
 /**
+ * LoadChatSettingsType
+ */
+export interface LoadStatusChatSettingsType {
+  (): AnyActionType;
+}
+
+/**
+ * UpdateStatusChatSettingsType
+ */
+export interface UpdateStatusChatSettingsType {
+  (): AnyActionType;
+}
+
+/**
  * loadWhoAMI
  * @param dispatch dispatch
  * @param whoAmIReadyCb whoAmIReadyCb
  */
 async function loadWhoAMI(
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   whoAmIReadyCb: () => void
 ) {
   const userApi = MApi.getUserApi();
@@ -74,8 +92,8 @@ async function loadWhoAMI(
       hasImage: whoAmI.hasImage,
       hasFees: whoAmI.hasEvaluationFees,
       isActiveUser: whoAmI.isActive,
-      role: whoAmI.role,
-      isStudent: whoAmI.role === "STUDENT",
+      roles: whoAmI.roles,
+      isStudent: whoAmI.roles.includes(Role.Student),
       userSchoolDataIdentifier: whoAmI.identifier,
       services: whoAmI.services,
       permissions: {
@@ -87,6 +105,9 @@ async function loadWhoAMI(
         ),
         ANNOUNCER_CAN_PUBLISH_WORKSPACES: true,
         ANNOUNCER_TOOL: whoAmI.permissions.includes("ANNOUNCER_TOOL"),
+        CHAT_MANAGE_PUBLIC_ROOMS: whoAmI.permissions.includes(
+          "CHAT_MANAGE_PUBLIC_ROOMS"
+        ),
         COMMUNICATOR_GROUP_MESSAGING: whoAmI.permissions.includes(
           "COMMUNICATOR_GROUP_MESSAGING"
         ),
@@ -100,6 +121,7 @@ async function loadWhoAMI(
         FORUM_UPDATEENVIRONMENTFORUM: whoAmI.permissions.includes(
           "FORUM_UPDATEENVIRONMENTFORUM"
         ),
+        GUARDIAN_VIEW: whoAmI.permissions.includes("GUARDIAN_VIEW"),
         GUIDER_VIEW: whoAmI.permissions.includes("GUIDER_VIEW"),
         ORGANIZATION_VIEW: whoAmI.permissions.includes("ORGANIZATION_VIEW"),
         TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.includes(
@@ -112,17 +134,15 @@ async function loadWhoAMI(
         PAY_ORDER: whoAmI.permissions.includes("PAY_ORDER"),
         LIST_PRODUCTS: whoAmI.permissions.includes("LIST_PRODUCTS"),
         COMPLETE_ORDER: whoAmI.permissions.includes("COMPLETE_ORDER"),
-        CHAT_ACTIVE: whoAmI.services.chat.isActive,
-        CHAT_AVAILABLE: whoAmI.services.chat.isAvailable,
-        FORUM_ACCESSENVIRONMENTFORUM:
-          whoAmI.services.environmentForum.isAvailable &&
-          whoAmI.permissions.includes("FORUM_ACCESSENVIRONMENTFORUM"),
-        FORUM_CREATEENVIRONMENTFORUM:
-          whoAmI.services.environmentForum.isAvailable &&
-          whoAmI.permissions.includes("FORUM_CREATEENVIRONMENTFORUM"),
-        FORUM_DELETEENVIRONMENTFORUM:
-          whoAmI.services.environmentForum.isAvailable &&
-          whoAmI.permissions.includes("FORUM_DELETEENVIRONMENTFORUM"),
+        FORUM_ACCESSENVIRONMENTFORUM: whoAmI.permissions.includes(
+          "FORUM_ACCESSENVIRONMENTFORUM"
+        ),
+        FORUM_CREATEENVIRONMENTFORUM: whoAmI.permissions.includes(
+          "FORUM_CREATEENVIRONMENTFORUM"
+        ),
+        FORUM_DELETEENVIRONMENTFORUM: whoAmI.permissions.includes(
+          "FORUM_DELETEENVIRONMENTFORUM"
+        ),
         WORKLIST_AVAILABLE: whoAmI.services.worklist.isAvailable,
       },
       profile: {
@@ -144,7 +164,7 @@ async function loadWhoAMI(
     },
   });
 
-  i18n.changeLanguage(whoAmI.locale);
+  localize.language = whoAmI.locale;
 
   dispatch({
     type: "LOCALE_UPDATE",
@@ -162,17 +182,15 @@ async function loadWhoAMI(
  */
 async function loadWorkspacePermissions(
   workspaceId: number,
-  dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
   readyCb: () => void
 ) {
+  const workspaceApi = MApi.getWorkspaceApi();
   const coursepickerApi = MApi.getCoursepickerApi();
 
-  const permissions = <string[]>(
-    await promisify(
-      mApi().workspace.workspaces.permissions.read(workspaceId),
-      "callback"
-    )()
-  );
+  const permissions = await workspaceApi.getWorkspacePermissions({
+    workspaceEntityId: workspaceId,
+  });
 
   const canCurrentWorkspaceSignup = await coursepickerApi.workspaceCanSignUp({
     workspaceId,
@@ -237,7 +255,7 @@ async function loadWorkspacePermissions(
           "LIST_WORKSPACE_MEMBERS"
         ),
       },
-      canCurrentWorkspaceSignup,
+      canCurrentWorkspaceSignup: canCurrentWorkspaceSignup.canSignup,
     },
   });
 
@@ -252,7 +270,7 @@ const loadStatus: LoadStatusType = function loadStatus(
   whoAmIReadyCb: () => void
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     loadWhoAMI(dispatch, whoAmIReadyCb);
@@ -266,20 +284,19 @@ const loadStatus: LoadStatusType = function loadStatus(
 const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
   function loadWorkspaceStatusInfo(readyCb: () => void) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       const workspaceUrlName = window.location.pathname.split("/")[2];
 
       let workspaceBasicInfo: WorkspaceBasicInfo = undefined;
 
       if (workspaceUrlName) {
-        workspaceBasicInfo = <WorkspaceBasicInfo>(
-          await promisify(
-            mApi().workspace.workspaces.basicInfo.read(workspaceUrlName),
-            "callback"
-          )()
-        );
+        workspaceBasicInfo = await workspaceApi.getWorkspaceBasicInfo({
+          urlName: workspaceUrlName,
+        });
       }
 
       dispatch({
@@ -297,7 +314,7 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
 const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissionsType =
   function loadEnviromentalForumAreaPermissions() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -316,6 +333,24 @@ const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissions
             AREA_PERMISSIONS: areaPermissions,
           },
         },
+      });
+    };
+  };
+
+/**
+ * loadChatSettings
+ */
+const updateStatusChatSettings: LoadStatusChatSettingsType =
+  function loadChatSettings() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const chatApi = MApi.getChatApi();
+      const chatSettings = await chatApi.getChatSettings();
+      dispatch({
+        type: "UPDATE_STATUS_CHAT_SETTINGS",
+        payload: chatSettings,
       });
     };
   };
@@ -382,6 +417,7 @@ export default {
   loadStatus,
   loadWorkspaceStatus,
   loadEnviromentalForumAreaPermissions,
+  updateStatusChatSettings,
 };
 export {
   logout,
@@ -390,4 +426,5 @@ export {
   loadStatus,
   loadWorkspaceStatus,
   loadEnviromentalForumAreaPermissions,
+  updateStatusChatSettings,
 };

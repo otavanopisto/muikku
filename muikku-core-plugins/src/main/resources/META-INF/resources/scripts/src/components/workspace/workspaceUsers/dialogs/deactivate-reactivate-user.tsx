@@ -1,16 +1,16 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import Button from "~/components/general/button";
 import {
   toggleActiveStateOfStudentOfWorkspace,
   ToggleActiveStateOfStudentOfWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { getName } from "~/util/modifiers";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -21,7 +21,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface DeactivateReactivateUserDialogProps extends WithTranslation {
   user: WorkspaceStudent;
   toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
 
   isOpen: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -145,7 +145,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { toggleActiveStateOfStudentOfWorkspace },
     dispatch

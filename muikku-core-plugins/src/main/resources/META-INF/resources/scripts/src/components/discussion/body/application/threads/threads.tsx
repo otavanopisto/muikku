@@ -30,6 +30,7 @@ export class DiscussionThreads extends React.Component<
 interface DiscussionThreadProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClick: (event: React.MouseEvent<HTMLDivElement>) => any;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   avatar: JSX.Element;
 }
 
@@ -48,6 +49,7 @@ export class DiscussionThread extends React.Component<
       <ApplicationListItem
         className="message message--discussion"
         onClick={this.props.onClick}
+        onKeyDown={this.props.onKeyDown}
       >
         <ApplicationListItemContentWrapper
           asideModifiers="discussion"
@@ -214,8 +216,8 @@ export class DiscussionCurrentThreadElement extends React.Component<
     const baseMod = this.props.isOpMessage
       ? "discussion-message"
       : this.props.isReplyOfReply
-      ? "discussion-reply-of-reply"
-      : "discussion-reply";
+        ? "discussion-reply-of-reply"
+        : "discussion-reply";
 
     return (
       !this.props.hidden && (

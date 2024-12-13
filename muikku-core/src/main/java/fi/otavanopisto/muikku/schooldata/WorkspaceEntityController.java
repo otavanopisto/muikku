@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.schooldata;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -18,6 +17,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -26,10 +27,8 @@ import fi.otavanopisto.muikku.dao.users.UserGroupEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserGroupUserEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
-import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -40,8 +39,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 
@@ -52,19 +49,10 @@ public class WorkspaceEntityController {
   private Logger logger;
   
   @Inject
-  private SessionController sessionController;
-
-  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-  
-  @Inject
   private WorkspaceEntityDAO workspaceEntityDAO;
-
-  @Inject
-  private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
@@ -120,10 +108,6 @@ public class WorkspaceEntityController {
     return workspaceEntityDAO.findByUrlName(urlName);
   }
 
-  public WorkspaceEntity findWorkspaceByUrlNameAndArchived(String urlName, Boolean archived) {
-    return workspaceEntityDAO.findByUrlNameAndArchived(urlName, archived);
-  }
-
   public List<WorkspaceEntity> listWorkspaceEntities() {
     return workspaceEntityDAO.listAll();
   }
@@ -156,17 +140,6 @@ public class WorkspaceEntityController {
     return listWorkspaceEntitiesByDataSource(schoolDataSource, firstResult, maxResults); 
   }
   
-  public List<WorkspaceEntity> listWorkspaceEntitiesByCurrentUser() {
-    UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-    if (usdi == null) {
-      logger.severe("UserSchoolDataIdentifier not found for " + sessionController.getLoggedUser());
-      return null;
-    }
-    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityDAO.listByUserSchoolDataIdentifierAndActiveAndArchived(
-        usdi, Boolean.TRUE, Boolean.FALSE);
-    return workspaceUserEntities.stream().map(WorkspaceUserEntity::getWorkspaceEntity).collect(Collectors.toList()); 
-  }
-
   public WorkspaceEntity updateAccess(WorkspaceEntity workspaceEntity, WorkspaceAccess access) {
     return workspaceEntityDAO.updateAccess(workspaceEntity, access);
   }
@@ -202,22 +175,13 @@ public class WorkspaceEntityController {
         .collect(Collectors.toList());
   }
   
-  /**
-   * Deprecated as this would potentially include workspaces from past UserSchoolDataIdentifiers too, which 
-   * is prone to errors.
-   */
-  @Deprecated
-  public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
-    List<WorkspaceEntity> result = new ArrayList<>();
-    
-    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceUserEntitiesByUserEntity(userEntity);
-    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-      result.add(workspaceUserEntity.getWorkspaceEntity());
-    }
-    
-    return result;
+  public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserIdentifiers(Collection<SchoolDataIdentifier> userIdentifiers) {
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceUserEntitiesByUserIdentifiers(userIdentifiers);
+    return workspaceUserEntities.stream()
+        .map(workspaceUserEntity -> workspaceUserEntity.getWorkspaceEntity())
+        .collect(Collectors.toList());
   }
-
+  
   public List<Long> listPublishedWorkspaceEntityIds() {
     return workspaceEntityDAO.listPublishedWorkspaceEntityIds();
   }
@@ -352,8 +316,29 @@ public class WorkspaceEntityController {
     return educationTypeMapping;
   }
   
-  public List<WorkspaceEntity> listCommonWorkspaces (UserSchoolDataIdentifier teacher, UserSchoolDataIdentifier student){
+  public List<WorkspaceEntity> listCommonWorkspaces(UserSchoolDataIdentifier teacher, UserSchoolDataIdentifier student){
     return workspaceEntityDAO.listCommonWorkspaces(teacher, student);
   }
   
+  /**
+   * Returns true if the two users share common workspaces. The first parameter
+   * is assumed to be a workspace staff member f.ex. a teacher and the second
+   * a workspace student.
+   * 
+   * @param teacherIdentifier Staff member's identifier
+   * @param studentIdentifier Student's identifier
+   * @return true if they share a workspace
+   */
+  public boolean isWorkspaceTeacherOfStudent(SchoolDataIdentifier teacherIdentifier, SchoolDataIdentifier studentIdentifier) {
+    UserSchoolDataIdentifier teacherUSDI = userSchoolDataIdentifierDAO.findBySchoolDataIdentifier(teacherIdentifier);
+    UserSchoolDataIdentifier studentUSDI = userSchoolDataIdentifierDAO.findBySchoolDataIdentifier(studentIdentifier);
+    
+    if (teacherUSDI != null && studentUSDI != null) {
+      return CollectionUtils.isNotEmpty(workspaceEntityDAO.listCommonWorkspaces(teacherUSDI, studentUSDI));
+    }
+    else {
+      return false;
+    }
+  }
+
 }

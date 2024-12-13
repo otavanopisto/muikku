@@ -32,10 +32,22 @@ export const MATHJAXCONFIG = {
   showProcessingMessages: true,
   messageStyle: "normal",
   showMathMenu: true,
+  menuSettings: {
+    collapsible: false,
+    autocollapse: false,
+    explorer: false,
+  },
+  tex2jax: {
+    inlineMath: [["\\(", "\\)"]],
+  },
+  mml2jax: {
+    preview: "mathml",
+  },
+  skipStartupTypeset: true,
 };
 
 export const MATHJAXSRC =
-  "//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_SVG";
+  "//cdn.jsdelivr.net/npm/mathjax@2.7.7/MathJax.js?config=TeX-MML-AM_SVG";
 
 /**
  * loadMathJax
@@ -62,6 +74,7 @@ export function loadMathJax() {
 }
 
 /**
+ *
  * toSVG
  * @param element element
  * @param errorSrc errorSrc
@@ -76,6 +89,15 @@ export function toSVG(
   placeholderSrc?: string,
   placeholderCb?: (element: HTMLImageElement) => any
 ) {
+  // Crummy duct tape fix to not bother with elements that are detached from DOM or are still to be lazy-loaded
+  // Actual solution is to figure out why fields even go through a mount/unmount/mount cycle in materials
+  if (
+    !element ||
+    !element.isConnected ||
+    element.closest("div.material-lazy-loader-container")
+  ) {
+    return;
+  }
   if (!(window as any).MathJax) {
     queue.push(
       toSVG.bind(this, element, errorSrc, cb, placeholderSrc, placeholderCb)
@@ -83,6 +105,13 @@ export function toSVG(
     return;
   }
   let formula = element.textContent || (element as HTMLImageElement).alt;
+  // Apparently some elements coming to this method could have no content to render, so skip them
+  if (!formula) {
+    if (window.console) {
+      console.error("Unable to render MathJax element " + element.outerHTML);
+    }
+    return;
+  }
   if (!formula.startsWith("\\(")) {
     formula = "\\(" + formula + "\\)";
   }

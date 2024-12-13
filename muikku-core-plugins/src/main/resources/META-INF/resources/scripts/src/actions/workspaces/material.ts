@@ -5,28 +5,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { UploadingValue } from "~/@types/shared";
 import {
-  MaterialCompositeRepliesListType,
-  MaterialContentNodeListType,
-  MaterialContentNodeProducerType,
-  MaterialContentNodeType,
   WorkspaceMaterialEditorType,
-  WorkspaceType,
+  WorkspaceDataType,
+  MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
-import promisify from "~/util/promisify";
 import { AnyActionType, SpecificActionType } from "../index";
-import mApi, { MApiError } from "~/lib/mApi";
 import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
+import { MaterialCompositeReply } from "~/generated/client";
 import i18n from "~/locales/i18n";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 
 /**
  * UPDATE_WORKSPACES_SET_CURRENT_MATERIALS
  */
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<
   "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
-  MaterialContentNodeListType
+  MaterialContentNodeWithIdAndLogic[]
 >;
 
 /**
@@ -34,7 +31,7 @@ export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS = SpecificActionType<
  */
 export type UPDATE_WORKSPACES_SET_CURRENT_HELP = SpecificActionType<
   "UPDATE_WORKSPACES_SET_CURRENT_HELP",
-  MaterialContentNodeListType
+  MaterialContentNodeWithIdAndLogic[]
 >;
 
 /**
@@ -52,7 +49,7 @@ export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID =
 export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES =
   SpecificActionType<
     "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
-    MaterialCompositeRepliesListType
+    MaterialCompositeReply[]
   >;
 
 /**
@@ -60,7 +57,7 @@ export type UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES =
  */
 export type INSERT_MATERIAL_CONTENT_NODE = SpecificActionType<
   "INSERT_MATERIAL_CONTENT_NODE",
-  { nodeContent: MaterialContentNodeType; apiPath: ApiPath }
+  { nodeContent: MaterialContentNodeWithIdAndLogic; apiPath: ApiPath }
 >;
 
 /**
@@ -69,7 +66,7 @@ export type INSERT_MATERIAL_CONTENT_NODE = SpecificActionType<
 export type UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES = SpecificActionType<
   "UPDATE_PATH_FROM_MATERIAL_CONTENT_NODES",
   {
-    material: MaterialContentNodeType;
+    material: MaterialContentNodeWithIdAndLogic;
     newPath: string;
   }
 >;
@@ -84,8 +81,8 @@ export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<
     showUpdateLinkedMaterialsDialogForPublish: boolean;
     showRemoveLinkedAnswersDialogForPublish: boolean;
     showUpdateLinkedMaterialsDialogForPublishCount: number;
-    material: MaterialContentNodeType;
-    update: Partial<MaterialContentNodeType>;
+    material: MaterialContentNodeWithIdAndLogic;
+    update: Partial<MaterialContentNodeWithIdAndLogic>;
     isDraft?: boolean;
   }
 >;
@@ -95,7 +92,7 @@ export type UPDATE_MATERIAL_CONTENT_NODE = SpecificActionType<
  */
 export type DELETE_MATERIAL_CONTENT_NODE = SpecificActionType<
   "DELETE_MATERIAL_CONTENT_NODE",
-  MaterialContentNodeType
+  MaterialContentNodeWithIdAndLogic
 >;
 
 /**
@@ -114,16 +111,16 @@ type ApiPath = "materials" | "help";
 export interface CreateWorkspaceMaterialContentNodeTriggerType {
   (
     data: {
-      parentMaterial?: MaterialContentNodeType;
+      parentMaterial?: MaterialContentNodeWithIdAndLogic;
       makeFolder: boolean;
       rootParentId: number;
-      nextSibling?: MaterialContentNodeType;
+      nextSibling?: MaterialContentNodeWithIdAndLogic;
       copyWorkspaceId?: number;
       copyMaterialId?: number;
       title?: string;
       file?: File;
-      workspace: WorkspaceType;
-      success?: (newNode: MaterialContentNodeType) => void;
+      workspace: WorkspaceDataType;
+      success?: (newNode: MaterialContentNodeWithIdAndLogic) => void;
       fail?: () => void;
     },
     apiPath: ApiPath
@@ -136,8 +133,8 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
 export interface CreateWorkspaceMaterialAttachmentTriggerType {
   (
     data: {
-      workspace: WorkspaceType;
-      material: MaterialContentNodeType;
+      workspace: WorkspaceDataType;
+      material: MaterialContentNodeWithIdAndLogic;
       files: File[];
       uploadingValues?: UploadingValue[];
       success?: () => void;
@@ -151,7 +148,10 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
  * RequestWorkspaceMaterialContentNodeAttachmentsTriggerType
  */
 export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
-  (workspace: WorkspaceType, material: MaterialContentNodeType): AnyActionType;
+  (
+    workspace: WorkspaceDataType,
+    material: MaterialContentNodeWithIdAndLogic
+  ): AnyActionType;
 }
 
 /**
@@ -159,9 +159,9 @@ export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
  */
 export interface UpdateWorkspaceMaterialContentNodeTriggerType {
   (data: {
-    workspace: WorkspaceType;
-    material: MaterialContentNodeType;
-    update: Partial<MaterialContentNodeType>;
+    workspace: WorkspaceDataType;
+    material: MaterialContentNodeWithIdAndLogic;
+    update: Partial<MaterialContentNodeWithIdAndLogic>;
     isDraft?: boolean;
     updateLinked?: boolean;
     removeAnswers?: boolean;
@@ -178,7 +178,7 @@ export interface LoadWholeWorkspaceMaterialsTriggerType {
   (
     workspaceId: number,
     includeHidden: boolean,
-    callback?: (nodes: Array<MaterialContentNodeType>) => any
+    callback?: (nodes: Array<MaterialContentNodeWithIdAndLogic>) => any
   ): AnyActionType;
 }
 
@@ -211,8 +211,8 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
  */
 export interface DeleteWorkspaceMaterialContentNodeTriggerType {
   (data: {
-    material: MaterialContentNodeType;
-    workspace: WorkspaceType;
+    material: MaterialContentNodeWithIdAndLogic;
+    workspace: WorkspaceDataType;
     removeAnswers?: boolean;
     success?: () => any;
     fail?: () => any;
@@ -223,7 +223,7 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
  * SetWholeWorkspaceMaterialsTriggerType
  */
 export interface SetWholeWorkspaceMaterialsTriggerType {
-  (materials: MaterialContentNodeListType): AnyActionType;
+  (materials: MaterialContentNodeWithIdAndLogic[]): AnyActionType;
 }
 
 /**
@@ -233,7 +233,7 @@ export interface LoadWholeWorkspaceHelpTriggerType {
   (
     workspaceId: number,
     includeHidden: boolean,
-    callback?: (nodes: Array<MaterialContentNodeType>) => any
+    callback?: (nodes: Array<MaterialContentNodeWithIdAndLogic>) => any
   ): AnyActionType;
 }
 
@@ -255,12 +255,10 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      try {
-        const apiRef =
-          apiPath === "help"
-            ? mApi().workspace.workspaces.help
-            : mApi().workspace.workspaces.materials;
+      const workspaceApi = MApi.getWorkspaceApi();
+      const materialsApi = MApi.getMaterialsApi();
 
+      try {
         const parentId = data.parentMaterial
           ? data.parentMaterial.workspaceMaterialId
           : data.rootParentId;
@@ -271,33 +269,27 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
         let workspaceMaterialId: number = null;
 
         if (data.copyMaterialId) {
-          /**
-           * Reason why copying uses materials end point naming, is
-           * because it is shared end point for other workspaces functionality
-           * too
-           * Confusing yes, but this is how it works now
-           */
-          workspaceMaterialId = (
-            (await promisify(
-              mApi().workspace.workspaces.materials.create(
-                data.workspace.id,
-                {
-                  parentId,
-                  nextSiblingId,
-                },
-                {
-                  sourceNodeId: data.copyMaterialId,
-                  targetNodeId: parentId,
-                  sourceWorkspaceEntityId: data.workspace.id,
-                  targetWorkspaceEntityId: data.copyWorkspaceId,
-                  copyOnlyChildren: false,
-                  cloneMaterials: true,
-                  updateLinkedMaterials: true,
-                }
-              ),
-              "callback"
-            )()) as any
-          ).id;
+          // Reason why copying uses materials end point naming, is
+          // because it is shared end point for other workspaces functionality
+          // too
+          // Confusing yes, but this is how it works now
+          const materialContentNode =
+            await workspaceApi.createWorkspaceMaterial({
+              workspaceEntityId: data.workspace.id,
+              sourceNodeId: data.copyMaterialId,
+              targetNodeId: parentId,
+              sourceWorkspaceEntityId: data.workspace.id,
+              targetWorkspaceEntityId: data.copyWorkspaceId,
+              copyOnlyChildren: false,
+              cloneMaterials: true,
+              updateLinkedMaterials: true,
+              createWorkspaceMaterialRequest: {
+                parentId,
+                nextSiblingId,
+              },
+            });
+
+          workspaceMaterialId = materialContentNode.id;
         } else if (data.file) {
           const formData = new FormData();
           //we add it to the file
@@ -329,75 +321,66 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
             });
           });
 
-          const materialResult: any = await promisify(
-            mApi().materials.binary.create({
+          const materialResult = await materialsApi.createBinaryMaterial({
+            createBinaryMaterialRequest: {
               title: data.title,
               contentType: tempFileData.fileContentType || data.file.type,
               fileId: tempFileData.fileId,
-            }),
-            "callback"
-          )();
+            },
+          });
 
-          workspaceMaterialId = (
-            (await promisify(
-              apiRef.create(
-                data.workspace.id,
-                {
-                  materialId: materialResult.id,
-                  parentId,
-                  nextSiblingId,
-                },
-                {
-                  updateLinkedMaterials: true,
-                }
-              ),
-              "callback"
-            )()) as any
-          ).id;
+          // Creating html material
+          const materialContentNode =
+            await workspaceApi.createWorkspaceMaterial({
+              workspaceEntityId: data.workspace.id,
+              updateLinkedMaterials: true,
+              createWorkspaceMaterialRequest: {
+                materialId: materialResult.id,
+                parentId,
+                nextSiblingId,
+              },
+            });
+
+          workspaceMaterialId = materialContentNode.id;
         } else if (!data.makeFolder) {
-          // Creating page for section !
-          const materialId = (
-            (await promisify(
-              mApi().materials.html.create({
-                title: data.title,
-                contentType: "text/html;editor=CKEditor",
-              }),
-              "callback"
-            )()) as any
-          ).id;
+          // Creating html material
+          const htmlMaterial = await materialsApi.createHtmlMaterial({
+            createHtmlMaterialRequest: {
+              title: data.title,
+              contentType: "text/html;editor=CKEditor",
+            },
+          });
 
-          workspaceMaterialId = (
-            (await promisify(
-              mApi().workspace.workspaces.materials.create(data.workspace.id, {
+          const materialId = htmlMaterial.id;
+
+          const materialContentNode =
+            await workspaceApi.createWorkspaceMaterial({
+              workspaceEntityId: data.workspace.id,
+              createWorkspaceMaterialRequest: {
                 materialId,
                 parentId,
                 nextSiblingId,
-              }),
-              "callback"
-            )()) as any
-          ).id;
+              },
+            });
+
+          workspaceMaterialId = materialContentNode.id;
         } else {
-          //Creating section
-          workspaceMaterialId = (
-            (await promisify(
-              mApi().workspace.workspaces.folders.create(data.workspace.id, {
-                parentId,
-                nextSiblingId,
-              }),
-              "callback"
-            )()) as any
-          ).id;
+          // Creating section
+          const folderContentNode = await workspaceApi.createWorkspaceFolder({
+            workspaceId: data.workspace.id,
+            createWorkspaceFolderRequest: {
+              parentId,
+              nextSiblingId,
+            },
+          });
+
+          workspaceMaterialId = folderContentNode.id;
         }
 
-        const newContentNode: MaterialContentNodeType = <
-          MaterialContentNodeType
-        >await promisify(
-          mApi().workspace.workspaces.asContentNode.read(
-            data.workspace.id,
-            workspaceMaterialId
-          ),
-          "callback"
-        )();
+        const newContentNode = await workspaceApi.getWorkspaceAsContentNode({
+          workspaceEntityId: data.workspace.id,
+          workspaceMaterialNodeId: workspaceMaterialId,
+        });
 
         dispatch({
           type: "INSERT_MATERIAL_CONTENT_NODE",
@@ -409,7 +392,7 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
 
         data.success && data.success(newContentNode);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -433,6 +416,9 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const materialsApi = MApi.getMaterialsApi();
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
         /**
          * Up keep updated values when mapping them
@@ -518,29 +504,23 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
 
         await Promise.all(
           tempFilesData.map(async (tempFileData: any, index) => {
-            const materialResult: any = await promisify(
-              mApi().materials.binary.create({
+            const materialResult = await materialsApi.createBinaryMaterial({
+              createBinaryMaterialRequest: {
                 title: data.files[index].name,
                 contentType:
                   tempFileData.fileContentType || data.files[index].type,
                 fileId: tempFileData.fileId,
-              }),
-              "callback"
-            )();
+              },
+            });
 
-            await promisify(
-              mApi().workspace.workspaces.materials.create(
-                data.workspace.id,
-                {
-                  materialId: materialResult.id,
-                  parentId: data.material.workspaceMaterialId,
-                },
-                {
-                  updateLinkedMaterials: true,
-                }
-              ),
-              "callback"
-            )();
+            await workspaceApi.createWorkspaceMaterial({
+              workspaceEntityId: data.workspace.id,
+              updateLinkedMaterials: true,
+              createWorkspaceMaterialRequest: {
+                materialId: materialResult.id,
+                parentId: data.material.workspaceMaterialId,
+              },
+            });
           })
         );
 
@@ -555,6 +535,10 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
         );
         data.success && data.success();
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch(actions.displayNotification(err.message, "error"));
         data.fail && data.fail();
       }
@@ -576,16 +560,20 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
 const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
     return async (dispatch: (arg: AnyActionType) => any) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
-        const childrenAttachments: MaterialContentNodeType[] =
-          ((await promisify(
-            mApi()
-              .workspace.workspaces.materials.cacheClear()
-              .read(workspace.id, {
-                parentId: material.workspaceMaterialId,
-              }),
-            "callback"
-          )()) as MaterialContentNodeType[]) || [];
+        const childrenAttachments = await workspaceApi.getWorkspaceMaterials({
+          workspaceEntityId: workspace.id,
+          parentId: material.workspaceMaterialId,
+        });
+
+        const attachments = childrenAttachments.map(
+          (attachment) =>
+            <MaterialContentNodeWithIdAndLogic>{
+              ...attachment,
+            }
+        );
 
         dispatch({
           type: "UPDATE_MATERIAL_CONTENT_NODE",
@@ -596,13 +584,13 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
             showRemoveLinkedAnswersDialogForPublish: false,
             material: material,
             update: {
-              childrenAttachments,
+              childrenAttachments: attachments,
             },
             isDraft: false,
           },
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
       }
@@ -619,6 +607,9 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const materialsApi = MApi.getMaterialsApi();
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
         if (!data.dontTriggerReducerActions) {
           dispatch({
@@ -644,12 +635,9 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             data.material.materialId &&
             !data.dontTriggerReducerActions
           ) {
-            const materialsAnswer: any[] = (await promisify(
-              mApi().materials.material.workspaceMaterials.read(
-                data.material.materialId
-              ),
-              "callback"
-            )()) as any;
+            const materialsAnswer = await materialsApi.getMaterialsByWorkspace({
+              materialId: data.material.materialId,
+            });
 
             if (materialsAnswer && materialsAnswer.length > 1) {
               dispatch({
@@ -673,17 +661,17 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             typeof data.update.html !== "undefined" &&
             data.material.html !== data.update.html
           ) {
-            await promisify(
-              mApi().materials.html.content.update(data.material.materialId, {
+            await materialsApi.updateHtmlMaterialContent({
+              materialid: data.material.materialId,
+              updateHtmlMaterialContentRequest: {
                 content: data.update.html,
                 removeAnswers: data.removeAnswers || false,
-              }),
-              "callback"
-            )();
+              },
+            });
           }
 
           let newPath = data.material.path;
-          let fields = [
+          let fields: (keyof MaterialContentNodeWithIdAndLogic)[] = [
             "materialId",
             "parentId",
             "nextSiblingId",
@@ -693,6 +681,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             "path",
             "title",
             "titleLanguage",
+            "maxPoints",
           ];
 
           if (data.material.type === "folder") {
@@ -714,34 +703,33 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           let changed = false;
 
           fields.forEach((field) => {
-            if (
-              typeof (data.update as any)[field] !== "undefined" &&
-              (data.material as any)[field] !== (data.update as any)[field]
-            ) {
+            if (data.material[field] !== data.update[field]) {
               changed = true;
+              result[field] = data.update[field];
+            } else {
+              result[field] = data.material[field];
             }
-            result[field] =
-              typeof (data.update as any)[field] !== "undefined"
-                ? (data.update as any)[field]
-                : (data.material as any)[field];
           });
 
           if (changed) {
-            let urlPath = "materials";
             if (data.material.type === "folder") {
-              urlPath = "folders";
-            }
+              const updatedFolder = await workspaceApi.updateWorkspaceFolder({
+                workspaceId: data.workspace.id,
+                workspaceFolderId: data.material.workspaceMaterialId,
+                body: result,
+              });
 
-            newPath = (
-              (await promisify(
-                mApi().workspace.workspaces[urlPath].update(
-                  data.workspace.id,
-                  data.material.workspaceMaterialId,
-                  result
-                ),
-                "callback"
-              )()) as any
-            ).path;
+              newPath = updatedFolder.path;
+            } else {
+              const updatedMaterial =
+                await workspaceApi.updateWorkspaceMaterial({
+                  workspaceEntityId: data.workspace.id,
+                  workspaceMaterialId: data.material.workspaceMaterialId,
+                  body: result,
+                });
+
+              newPath = updatedMaterial.path;
+            }
           }
 
           const materialFields = ["id", "license", "viewRestrict"];
@@ -767,36 +755,30 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           });
 
           if (changed) {
-            await promisify(
-              mApi().materials.material.update(
-                data.material.materialId,
-                materialResult
-              ),
-              "callback"
-            )();
+            await materialsApi.updateMaterial({
+              materialId: data.material.materialId,
+              body: materialResult,
+            });
           }
 
           if (
             typeof data.update.producers !== "undefined" &&
             !equals(data.material.producers, data.update.producers)
           ) {
-            const newProducers: MaterialContentNodeProducerType[] =
-              await Promise.all<MaterialContentNodeProducerType>(
-                data.update.producers.map((p) => {
-                  if (p.id === null) {
-                    return <Promise<MaterialContentNodeProducerType>>(
-                      promisify(
-                        mApi().materials.material.producers.create(
-                          data.material.materialId,
-                          { name: p.name }
-                        ),
-                        "callback"
-                      )()
-                    );
-                  }
-                  return p;
-                })
-              );
+            const newProducers = await Promise.all(
+              data.update.producers.map((p) => {
+                if (p.id === null) {
+                  return materialsApi.createMaterialProducer({
+                    materialId: data.material.materialId,
+                    createMaterialProducerRequest: {
+                      name: p.name,
+                    },
+                  });
+                }
+                return p;
+              })
+            );
+
             if (!data.dontTriggerReducerActions) {
               dispatch({
                 type: "UPDATE_MATERIAL_CONTENT_NODE",
@@ -833,15 +815,13 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
             const deletedProducers = data.material.producers.filter(
               (p) => !newProducers.find((p2) => p2.id === p.id)
             );
+
             await Promise.all(
               deletedProducers.map((p) =>
-                promisify(
-                  mApi().materials.material.producers.del(
-                    data.material.materialId,
-                    p.id
-                  ),
-                  "callback"
-                )()
+                materialsApi.deleteMaterialProducer({
+                  materialId: data.material.materialId,
+                  producerId: p.id,
+                })
               )
             );
           }
@@ -900,16 +880,16 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
 
         data.success && data.success();
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
         let isConflictError = false;
 
         // The "message.reason === "CONTAINS_ANSWERS"" is only available for admins, who receive a conflict error (409),
-        if (err.message) {
-          const message = JSON.parse(err.message);
-          if (message.reason === "CONTAINS_ANSWERS") {
+        if (isResponseError(err)) {
+          const errorObject = await err.response.json();
+          if (errorObject.reason === "CONTAINS_ANSWERS") {
             isConflictError = true;
           }
         }
@@ -1001,21 +981,22 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
-        const contentNodes: Array<MaterialContentNodeType> =
-          <Array<MaterialContentNodeType>>await promisify(
-            mApi().workspace.workspaces.materialContentNodes.read(workspaceId, {
-              includeHidden,
-            }),
-            "callback"
-          )() || [];
+        const materialContentNodes =
+          await workspaceApi.getWorkspaceMaterialContentNodes({
+            workspaceEntityId: workspaceId,
+            includeHidden,
+          });
+
         dispatch({
           type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
-          payload: contentNodes,
+          payload: materialContentNodes,
         });
-        callback && callback(contentNodes);
+        callback && callback(materialContentNodes);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1042,6 +1023,8 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
         if (!getState().status.loggedIn) {
           dispatch({
@@ -1055,18 +1038,18 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
             payload: null,
           });
         }
-        const compositeReplies: MaterialCompositeRepliesListType = <
-          MaterialCompositeRepliesListType
-        >await promisify(
-          mApi().workspace.workspaces.compositeReplies.cacheClear().read(id),
-          "callback"
-        )();
+
+        const compositeReplies =
+          await workspaceApi.getWorkspaceCompositeReplies({
+            workspaceEntityId: id,
+          });
+
         dispatch({
           type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_REPLIES",
           payload: compositeReplies || [],
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1138,23 +1121,40 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
-        let urlPath = "materials";
         if (data.material.type === "folder") {
-          urlPath = "folders";
+          // Check if folder has child nodes, if so, we cannot delete it
+          // and just give a notification and end the function
+          if (data.material.children?.length) {
+            // ERROR section has child nodes
+            dispatch(
+              displayNotification(
+                i18n.t("content.sectionRemoveDenied", { ns: "materials" }),
+                "error"
+              )
+            );
+
+            data.fail && data.fail();
+
+            return;
+          }
+
+          await workspaceApi.deleteWorkspaceFolder({
+            workspaceId: data.workspace.id,
+            workspaceFolderId: data.material.workspaceMaterialId,
+          });
+        } else {
+          await workspaceApi.deleteWorkspaceMaterial({
+            workspaceEntityId: data.workspace.id,
+            // Please note that first option is for normal materials and second is for files
+            workspaceMaterialId:
+              data.material.workspaceMaterialId || data.material.id,
+            removeAnswers: data.removeAnswers || false,
+            updateLinkedMaterials: true,
+          });
         }
-        await promisify(
-          mApi().workspace.workspaces[urlPath].del(
-            data.workspace.id,
-            data.material.workspaceMaterialId || data.material.id,
-            {},
-            {
-              removeAnswers: data.removeAnswers || false,
-              updateLinkedMaterials: true,
-            }
-          ),
-          "callback"
-        )();
 
         data.success && data.success();
 
@@ -1163,49 +1163,42 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
           payload: data.material,
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
         let showRemoveAnswersDialogForDelete = false;
-        if (!data.removeAnswers && err.message) {
-          try {
-            const message = JSON.parse(err.message);
-            if (message.reason === "CONTAINS_ANSWERS") {
-              showRemoveAnswersDialogForDelete = true;
-              const currentEditorState = getState().workspaces.materialEditor;
-              dispatch(
-                setWorkspaceMaterialEditorState({
-                  ...currentEditorState,
-                  showRemoveAnswersDialogForDelete,
-                })
-              );
-            }
-            // eslint-disable-next-line no-empty
-          } catch (e) {}
+
+        // we need to check that removeAnswers value is undefined
+        // specifically for this error, because it's the only way to
+        if (data.removeAnswers === undefined && isResponseError(err)) {
+          const errorObject = await err.response.json();
+          // If the error reason is "CONTAINS_ANSWERS" we need to show the remove answers dialog
+          // and end the function, so we don't display the error notification
+          if (errorObject.reason === "CONTAINS_ANSWERS") {
+            showRemoveAnswersDialogForDelete = true;
+            const currentEditorState = getState().workspaces.materialEditor;
+            dispatch(
+              setWorkspaceMaterialEditorState({
+                ...currentEditorState,
+                showRemoveAnswersDialogForDelete,
+              })
+            );
+
+            data.fail && data.fail();
+            return;
+          }
+          // eslint-disable-next-line no-empty
         }
 
         data.fail && data.fail();
-        if (!showRemoveAnswersDialogForDelete) {
-          if (data.material.children && data.material.children.length) {
-            // ERROR section has child nodes
 
-            dispatch(
-              displayNotification(
-                i18n.t("content.sectionRemoveDenied", { ns: "materials" }),
-                "error"
-              )
-            );
-          } else {
-            // ERROR generic delete failure
-            dispatch(
-              displayNotification(
-                i18n.t("notifications.removeError", { ns: "materials" }),
-                "error"
-              )
-            );
-          }
-        }
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.removeError", { ns: "materials" }),
+            "error"
+          )
+        );
       }
     };
   };
@@ -1222,23 +1215,21 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       try {
-        const contentNodes: Array<MaterialContentNodeType> =
-          <Array<MaterialContentNodeType>>(
-            await promisify(
-              mApi()
-                .workspace.workspaces.help.cacheClear()
-                .read(workspaceId, { includeHidden }),
-              "callback"
-            )()
-          ) || [];
+        const materialContentNodes = await workspaceApi.getWorkspaceHelp({
+          workspaceId: workspaceId,
+          includeHidden,
+        });
+
         dispatch({
           type: "UPDATE_WORKSPACES_SET_CURRENT_HELP",
-          payload: contentNodes,
+          payload: materialContentNodes,
         });
-        callback && callback(contentNodes);
+        callback && callback(materialContentNodes);
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 

@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import {
   editContactLogEventComment,
@@ -10,7 +10,7 @@ import {
 import { StateType } from "~/reducers";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import * as moment from "moment";
+import moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { ContactLogEventComment, ContactType } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -222,7 +222,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns dispatch function
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ editContactLogEventComment }, dispatch);
 }
 

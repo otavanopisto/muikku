@@ -1,5 +1,5 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import * as queryString from "query-string";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/buttons.scss";
@@ -9,18 +9,16 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
-import {
-  WorkspacesType,
-  WorkspaceOrganizationFilterType,
-} from "~/reducers/workspaces";
+import { WorkspacesState } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 /**
  * NavigationAsideProps
  */
 interface NavigationAsideProps extends WithTranslation {
-  workspaces: WorkspacesType;
+  workspaces: WorkspacesState;
   status: StatusType;
 }
 
@@ -131,7 +129,7 @@ class NavigationAside extends React.Component<
             name={this.props.t("labels.organization", { ns: "workspace" })}
           >
             {this.props.workspaces.availableFilters.organizations.map(
-              (organization: WorkspaceOrganizationFilterType) => {
+              (organization) => {
                 const isActive =
                   this.props.workspaces.activeFilters.organizationFilters.includes(
                     organization.identifier
@@ -188,7 +186,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

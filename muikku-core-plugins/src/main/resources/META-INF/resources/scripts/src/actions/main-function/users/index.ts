@@ -8,25 +8,26 @@ import {
   StudyprogrammeStatusType,
   UserPayloadType,
   UsergroupPayloadType,
-  UserSearchResultWithExtraProperties,
+  UserStudentSearchResultWithExtraProperties,
+  UserStaffSearchResultWithExtraProperties,
 } from "reducers/main-function/users";
 import notificationActions from "~/actions/base/notifications";
 import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch } from "react-redux";
+import { Dispatch, Action } from "redux";
 import {
   CreateStaffMemberRequest,
   CreateStudentRequest,
   CreateUsergroupRequest,
+  StaffMember,
+  Student,
   StudyProgramme,
   UpdateStaffMemberRequest,
-  UpdateStudentBasicInfoRequest,
+  UpdateStudentBasicInfoOperationRequest,
   UpdateUsergroupAddUsersRequest,
   UpdateUsergroupRemoveUsersRequest,
   UpdateUsergroupRequest,
-  User,
   UserGroup,
-  UserSearchResult,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 
@@ -44,11 +45,11 @@ export type UPDATE_HAS_MORE_USERGROUPS = SpecificActionType<
 >;
 export type UPDATE_STUDENT_USERS = SpecificActionType<
   "UPDATE_STUDENT_USERS",
-  UserSearchResultWithExtraProperties
+  UserStudentSearchResultWithExtraProperties
 >;
 export type UPDATE_STAFF_USERS = SpecificActionType<
   "UPDATE_STAFF_USERS",
-  UserSearchResultWithExtraProperties
+  UserStaffSearchResultWithExtraProperties
 >;
 export type LOAD_MORE_USER_GROUPS = SpecificActionType<
   "LOAD_MORE_USER_GROUPS",
@@ -64,11 +65,11 @@ export type UPDATE_CURRENT_USER_GROUP = SpecificActionType<
 >;
 export type UPDATE_STUDENT_SELECTOR = SpecificActionType<
   "UPDATE_STUDENT_SELECTOR",
-  User[]
+  Student[]
 >;
 export type UPDATE_STAFF_SELECTOR = SpecificActionType<
   "UPDATE_STAFF_SELECTOR",
-  User[]
+  StaffMember[]
 >;
 export type UPDATE_GROUP_SELECTOR = SpecificActionType<
   "UPDATE_GROUP_SELECTOR",
@@ -107,7 +108,7 @@ export interface CreateStudentTriggerType {
  */
 export interface CreateStaffmemberTriggerType {
   (data: {
-    staffmember: CreateStaffMemberRequest;
+    createRequest: CreateStaffMemberRequest;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -118,7 +119,7 @@ export interface CreateStaffmemberTriggerType {
  */
 export interface UpdateStudentTriggerType {
   (data: {
-    student: UpdateStudentBasicInfoRequest;
+    updateRequest: UpdateStudentBasicInfoOperationRequest;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -129,7 +130,7 @@ export interface UpdateStudentTriggerType {
  */
 export interface UpdateStaffmemberTriggerType {
   (data: {
-    staffmember: UpdateStaffMemberRequest;
+    updateRequest: UpdateStaffMemberRequest;
     success?: () => any;
     fail?: () => any;
   }): AnyActionType;
@@ -175,7 +176,11 @@ export interface LoadStudyprogrammesTriggerType {
 export interface LoadUsersTriggerType {
   (data: {
     payload: UserPayloadType;
-    success?: (result: UserSearchResult) => any;
+    success?: (
+      result:
+        | UserStudentSearchResultWithExtraProperties
+        | UserStaffSearchResultWithExtraProperties
+    ) => any;
     fail?: () => any;
   }): AnyActionType;
 }
@@ -186,7 +191,11 @@ export interface LoadUsersTriggerType {
 export interface LoadUsergroupsTriggerType {
   (data: {
     payload: UsergroupPayloadType;
-    success?: (result: UserSearchResult) => any;
+    success?: (
+      result:
+        | UserStudentSearchResultWithExtraProperties
+        | UserStaffSearchResultWithExtraProperties
+    ) => any;
     fail?: () => any;
   }): AnyActionType;
 }
@@ -221,7 +230,7 @@ function delay(ms: number) {
  */
 const createStudent: CreateStudentTriggerType = function createStudent(data) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const userApi = MApi.getUserApi();
@@ -273,17 +282,14 @@ const createStudent: CreateStudentTriggerType = function createStudent(data) {
  */
 const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const userApi = MApi.getUserApi();
     const organizationApi = MApi.getOrganizationApi();
 
     try {
-      await userApi.updateStudentBasicInfo({
-        studentId: data.student.identifier,
-        updateStudentBasicInfoRequest: data.student,
-      });
+      await userApi.updateStudentBasicInfo(data.updateRequest);
 
       dispatch(
         notificationActions.displayNotification(
@@ -328,16 +334,14 @@ const updateStudent: UpdateStudentTriggerType = function updateStudent(data) {
 const createStaffmember: CreateStaffmemberTriggerType =
   function createStaffmember(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const userApi = MApi.getUserApi();
       const organizationApi = MApi.getOrganizationApi();
 
       try {
-        await userApi.createStaffMember({
-          createStaffMemberRequest: data.staffmember,
-        });
+        await userApi.createStaffMember(data.createRequest);
 
         dispatch(
           notificationActions.displayNotification(
@@ -384,17 +388,14 @@ const createStaffmember: CreateStaffmemberTriggerType =
 const updateStaffmember: UpdateStaffmemberTriggerType =
   function updateStaffmember(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const userApi = MApi.getUserApi();
       const organizationApi = MApi.getOrganizationApi();
 
       try {
-        await userApi.updateStaffMember({
-          staffMemberId: data.staffmember.identifier,
-          updateStaffMemberRequest: data.staffmember,
-        });
+        await userApi.updateStaffMember(data.updateRequest);
 
         dispatch(
           notificationActions.displayNotification(
@@ -441,7 +442,7 @@ const updateUsergroup: UpdateUsergroupTriggerType = function updateUsergroup(
   data
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const usergroupApi = MApi.getUsergroupApi();
@@ -505,7 +506,7 @@ const createUsergroup: CreateUsergroupTriggerType = function createUsergroup(
   data
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const usergroupApi = MApi.getUsergroupApi();
@@ -563,7 +564,7 @@ const createUsergroup: CreateUsergroupTriggerType = function createUsergroup(
 const loadStudyprogrammes: LoadStudyprogrammesTriggerType =
   function loadStudyprogrammes() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const userApi = MApi.getUserApi();
@@ -605,7 +606,7 @@ const loadStudyprogrammes: LoadStudyprogrammesTriggerType =
  */
 const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const organizationApi = MApi.getOrganizationApi();
@@ -644,7 +645,6 @@ const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
           i18n.t("notifications.loadError", {
             ns: "users",
             context: "students",
-            count: 0,
           }),
           "error"
         )
@@ -668,7 +668,7 @@ const loadStudents: LoadUsersTriggerType = function loadStudents(data) {
  */
 const loadStaff: LoadUsersTriggerType = function loadStaff(data) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const organizationApi = MApi.getOrganizationApi();
@@ -728,7 +728,7 @@ const loadUserGroups: LoadUsergroupsTriggerType = function loadUserGroups(
   data
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const usergroupApi = MApi.getUsergroupApi();
@@ -814,7 +814,7 @@ const loadUserGroups: LoadUsergroupsTriggerType = function loadUserGroups(
  */
 const loadMoreUserGroups: LoadUsersTriggerType = function loadMoreUserGroups() {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const usergroupApi = MApi.getUsergroupApi();
@@ -885,7 +885,7 @@ const loadMoreUserGroups: LoadUsersTriggerType = function loadMoreUserGroups() {
 const setCurrentUserGroup: SetCurrentUserGroupTriggerType =
   function setCurrentUserGroup(id: number) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const current: CurrentUserGroupType = getState().userGroups
@@ -925,7 +925,7 @@ const setCurrentUserGroup: SetCurrentUserGroupTriggerType =
 const loadAllCurrentUserGroupStaff: LoadUsersTriggerType =
   function loadAllCurrentUserGroupUsers(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const organizationApi = MApi.getOrganizationApi();
@@ -983,7 +983,7 @@ const loadAllCurrentUserGroupStaff: LoadUsersTriggerType =
 const loadAllCurrentUserGroupStudents: LoadUsersTriggerType =
   function loadAllCurrentUserGroupUsers(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const organizationApi = MApi.getOrganizationApi();
@@ -1037,7 +1037,7 @@ const loadAllCurrentUserGroupStudents: LoadUsersTriggerType =
  */
 const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const organizationApi = MApi.getOrganizationApi();
@@ -1117,7 +1117,7 @@ const loadUsers: LoadUsersTriggerType = function loadUsers(data) {
 const loadSelectorStudents: LoadUsersTriggerType =
   function loadSelectorStudents(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const organizationApi = MApi.getOrganizationApi();
@@ -1163,7 +1163,6 @@ const loadSelectorStudents: LoadUsersTriggerType =
             i18n.t("notifications.loadError", {
               ns: "users",
               context: "students",
-              count: 0,
             }),
             "error"
           )
@@ -1189,7 +1188,7 @@ const loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(
   data
 ) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const organizationApi = MApi.getOrganizationApi();
@@ -1256,7 +1255,7 @@ const loadSelectorStaff: LoadUsersTriggerType = function loadSelectorStaff(
 const loadSelectorUserGroups: LoadUsersTriggerType =
   function loadSelectorUserGroups(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const usergroupApi = MApi.getUsergroupApi();

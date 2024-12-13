@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Depcrecated refs should be refactored
- */
-
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import Materials from "./materials";
@@ -11,7 +5,6 @@ import MaterialEditor from "~/components/base/material-editor";
 import SignupDialog from "~/components/coursepicker/dialogs/workspace-signup";
 import TableOfContentsComponent from "./content";
 import EnrollmentDialog from "../enrollment-dialog";
-import MaterialExtraToolDrawer from "./extra-tools-drawer";
 import Tabs, { Tab } from "~/components/general/tabs";
 import NoteBook from "~/components/general/note-book/note-book";
 import {
@@ -92,8 +85,6 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
       }),
       draftId,
     };
-
-    this.onOpenNavigation = this.onOpenNavigation.bind(this);
   }
 
   /**
@@ -108,14 +99,6 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
         this.state.draftId
       ),
     });
-  }
-
-  /**
-   * onOpenNavigation
-   */
-  onOpenNavigation() {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.refs.content as any).getWrappedInstance().refresh();
   }
 
   /**
@@ -135,7 +118,7 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
         id: "table-of-contents",
         type: "workspace-table-of-contents",
         name: this.props.t("labels.tableOfContents", { ns: "materials" }),
-        component: <TableOfContentsComponent ref="content" />,
+        component: <TableOfContentsComponent />,
       },
     ];
 
@@ -165,6 +148,7 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
     return (
       <div>
         <WorkspaceNavbar
+          title={this.props.t("labels.materials", { ns: "materials" })}
           activeTrail="materials"
           workspaceUrl={this.props.workspaceUrl}
         />
@@ -177,13 +161,8 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
           onClose={this.props.onCloseSignupDialog}
         />
         <MaterialEditor locationPage="Materials" />
-        <MaterialExtraToolDrawer
-          closeIconModifiers={["workspace-extra-tools-close"]}
-        />
         <Materials
-          onOpenNavigation={this.onOpenNavigation}
           navigation={navigationComponent}
-          ref="materials"
           onActiveNodeIdChange={this.props.onActiveNodeIdChange}
         />
       </div>
@@ -206,5 +185,5 @@ const componentWithTranslation = withTranslation("materials", {
 })(WorkspaceMaterialsBody);
 
 export default connect(mapStateToProps, null, null, {
-  withRef: true,
+  forwardRef: true,
 })(componentWithTranslation);

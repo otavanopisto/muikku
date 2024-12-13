@@ -1,17 +1,17 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
-import { schoolCourseTable } from "~/mock/mock-data";
-import { SuggestedCourse } from "~/@types/shared";
-import { filterSpecialSubjects } from "~/helper-functions/shared";
+import { SchoolCurriculumMatrix, SuggestedCourse } from "~/@types/shared";
 import MApi, { isMApiError } from "~/api/api";
 import { WorkspaceSuggestion } from "~/generated/client";
+import { filterCompulsorySubjects } from "~/helper-functions/study-matrix";
+import { schoolCourseTableCompulsory2018 } from "~/mock/mock-data";
 
 /**
  * UseCourseCarousel
  */
 export interface UseCourseCarousel {
   isLoading: boolean;
-  carouselItems: SuggestedCourse[];
+  carouselItems: SuggestedCourse[] | null;
 }
 
 /**
@@ -22,16 +22,6 @@ interface CarouselSuggestion {
   courseNumber: number;
 }
 
-/**
- * compareAll
- * @param obj1 obj1
- * @param obj2 obj2
- * @returns boolean
- */
-const compareAll = (obj1: CarouselSuggestion, obj2: CarouselSuggestion) =>
-  obj1.subjectCode === obj2.subjectCode &&
-  obj1.courseNumber === obj2.courseNumber;
-
 const hopsApi = MApi.getHopsApi();
 
 /**
@@ -39,12 +29,16 @@ const hopsApi = MApi.getHopsApi();
  *
  * @param studentId studentId
  * @param userEntityId userEntityId
+ * @param studyProgrammeName studyProgrammeName
+ * @param curriculumName curriculumName
  * @param displayNotification displayNotification
  * @returns array of course carousel items
  */
 export const useCourseCarousel = (
   studentId: string,
   userEntityId: number,
+  studyProgrammeName: string,
+  curriculumName: string,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   // This hook cannot be called for anyone else but students (without an error)
@@ -64,6 +58,21 @@ export const useCourseCarousel = (
      * @param studentId of student
      */
     const loadStudentActivityListData = async (studentId: string) => {
+      const matrix = carouselMatrixByStudyProgrammeAndCurriculum(
+        studyProgrammeName,
+        curriculumName
+      );
+
+      // If matrix is not found, cancel function and return
+      if (!matrix) {
+        setCourseCarousel((courseCarousel) => ({
+          ...courseCarousel,
+          carouselItems: null,
+          isLoading: false,
+        }));
+        return;
+      }
+
       setCourseCarousel((courseCarousel) => ({
         ...courseCarousel,
         isLoading: true,
@@ -96,8 +105,8 @@ export const useCourseCarousel = (
             // Ids of supervisor suggestions
             const suggestedNextIdList: number[] = [];
 
-            const filteredSchoolCourseTable = filterSpecialSubjects(
-              schoolCourseTable,
+            const filteredSchoolCourseTable = filterCompulsorySubjects(
+              matrix,
               loadedStudentAlternativeOptions
             );
 
@@ -195,7 +204,7 @@ export const useCourseCarousel = (
             // Suggestions as Courses, sorted by alphabetically
             // These cannot be suggested as next
             const suggestedCourses = suggestions
-              .map((s) => ({ ...s, suggestedAsNext: false } as SuggestedCourse))
+              .map((s) => ({ ...s, suggestedAsNext: false }) as SuggestedCourse)
               .sort((a, b) => a.name.localeCompare(b.name));
 
             // Suggested as next courses, sorted by alphabetically
@@ -206,7 +215,7 @@ export const useCourseCarousel = (
                   suggestedNextIdList.find((id) => id === sNext.id) !==
                   undefined
               )
-              .map((s) => ({ ...s, suggestedAsNext: true } as SuggestedCourse))
+              .map((s) => ({ ...s, suggestedAsNext: true }) as SuggestedCourse)
               .sort((a, b) => a.name.localeCompare(b.name));
 
             // Here merge two previous arrays and return it
@@ -229,9 +238,68 @@ export const useCourseCarousel = (
     };
 
     loadStudentActivityListData(studentId);
-  }, [studentId, userEntityId, displayNotification]);
+  }, [
+    studentId,
+    userEntityId,
+    displayNotification,
+    studyProgrammeName,
+    curriculumName,
+  ]);
 
   return {
     courseCarousel,
   };
+};
+
+/**
+ * compareAll
+ * @param obj1 obj1
+ * @param obj2 obj2
+ * @returns boolean
+ */
+const compareAll = (obj1: CarouselSuggestion, obj2: CarouselSuggestion) =>
+  obj1.subjectCode === obj2.subjectCode &&
+  obj1.courseNumber === obj2.courseNumber;
+
+/**
+ * carouselMatrixByStudyProgrammeAndCurriculum
+ * @param studyProgrammeName studyProgrammeName
+ * @param curriculumName curriculumName
+ * @returns Matrix or null if matrix is not found
+ */
+export const carouselMatrixByStudyProgrammeAndCurriculum = (
+  studyProgrammeName: string,
+  curriculumName: string
+) => {
+  const compulsoryMatrices = [schoolCourseTableCompulsory2018];
+  // Will be enabled later
+  //const uppersecondaryMatrices = [schoolCourseTableUppersecondary2021];
+
+  /**
+   * Finds and returns OPS based matrix
+   *
+   * @param matrices list of matrices
+   * @returns OPS based matrix or null if OPS based matrix is not found
+   */
+  const matrixTableBasedOnOPS = (matrices: SchoolCurriculumMatrix[]) => {
+    const matrix = matrices.find(
+      (matrix) => matrix.curriculumName === curriculumName
+    );
+
+    if (matrix) {
+      return matrix.subjectsTable;
+    }
+    return null;
+  };
+
+  switch (studyProgrammeName) {
+    case "Nettiperuskoulu":
+    case "Nettiperuskoulu/yksityisopiskelu":
+    case "Aineopiskelu/perusopetus":
+    case "Aineopiskelu/oppivelvolliset/korottajat (pk)":
+      return matrixTableBasedOnOPS(compulsoryMatrices);
+
+    default:
+      return null;
+  }
 };

@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import {
   createContactLogEventComment,
@@ -9,7 +9,7 @@ import {
 } from "~/actions/main-function/guider";
 import SessionStateComponent from "~/components/general/session-state-component";
 import Button from "~/components/general/button";
-import * as moment from "moment";
+import moment from "moment";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -187,7 +187,7 @@ class NewContactLogEventComment extends SessionStateComponent<
  * @param dispatch dispatch
  * @returns dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ createContactLogEventComment }, dispatch);
 }
 

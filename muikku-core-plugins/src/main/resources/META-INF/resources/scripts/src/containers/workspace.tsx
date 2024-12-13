@@ -4,11 +4,9 @@ import DisconnectedWarningDialog from "../components/base/disconnect-warning";
 import { BrowserRouter, Route } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
-import { Store } from "react-redux";
 import { StateType } from "~/reducers";
-import { Action } from "redux";
+import { Action, Store } from "redux";
 import Websocket from "~/util/websocket";
-import titleActions from "~/actions/base/title";
 import WorkspaceHomeBody from "~/components/workspace/workspaceHome";
 import WorkspaceHelpBody from "~/components/workspace/workspaceHelp";
 import WorkspaceDiscussionBody from "~/components/workspace/workspaceDiscussions";
@@ -18,18 +16,14 @@ import WorkspaceMaterialsBody from "~/components/workspace/workspaceMaterials";
 import WorkspaceJournalBody from "~/components/workspace/workspaceJournal";
 import WorkspaceManagementBody from "~/components/workspace/workspaceManagement";
 import WorkspaceUsersBody from "~/components/workspace/workspaceUsers";
-import WorkspacePermissionsBody from "~/components/workspace/workspacePermissions";
-import Chat from "../components/chat/chat";
 import { RouteComponentProps } from "react-router";
 import {
   setCurrentWorkspace,
   loadStaffMembersOfWorkspace,
   updateLastWorkspaces,
   loadStudentsOfWorkspace,
-  loadWorkspaceDetailsInCurrentWorkspace,
   loadWorkspaceTypes,
-  loadCurrentWorkspaceUserGroupPermissions,
-  loadWorkspaceChatStatus,
+  loadWorkspaceSettings,
   setAvailableCurriculums,
   loadLastWorkspacesFromServer,
 } from "~/actions/workspaces";
@@ -49,7 +43,6 @@ import {
 } from "~/actions/discussion";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
 import { displayNotification } from "~/actions/base/notifications";
-import { loadProfileChatSettings } from "~/actions/main-function/profile";
 import WorkspaceEvaluationBody from "../components/workspace/workspaceEvaluation/index";
 import {
   loadEvaluationAssessmentRequestsFromServer,
@@ -61,7 +54,6 @@ import {
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { registerLocale } from "react-datepicker";
-import * as moment from "moment";
 import { enGB, fi } from "date-fns/locale";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { DiscussionStatePatch } from "~/reducers/discussion";
@@ -74,10 +66,11 @@ import {
 } from "~/actions/workspaces/material";
 import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
+import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
+import Chat from "~/components/chat";
+import { WindowContextProvider } from "~/context/window-context";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
-
-moment.locale("fi");
 
 /**
  * WorkspaceProps
@@ -107,8 +100,6 @@ export default class Workspace extends React.Component<
   private prevPathName: string;
   private itsFirstTime: boolean;
   private loadedLibs: Array<string>;
-  private subscribedChatSettings = false;
-  private loadedChatSettings = false;
 
   /**
    * constructor
@@ -134,8 +125,6 @@ export default class Workspace extends React.Component<
     this.renderWorkspaceJournal = this.renderWorkspaceJournal.bind(this);
     this.renderWorkspaceManagement = this.renderWorkspaceManagement.bind(this);
     this.renderWorkspaceEvaluation = this.renderWorkspaceEvaluation.bind(this);
-    this.renderWorkspacePermissions =
-      this.renderWorkspacePermissions.bind(this);
     this.loadWorkspaceDiscussionData =
       this.loadWorkspaceDiscussionData.bind(this);
     this.loadWorkspaceAnnouncementsData =
@@ -263,21 +252,6 @@ export default class Workspace extends React.Component<
       this.loadWorkspaceUsersData();
     }
   }
-
-  /**
-   * loadChatSettings
-   */
-  loadChatSettings = (): void => {
-    if (this.props.store.getState().status.permissions.CHAT_AVAILABLE) {
-      if (!this.loadedChatSettings) {
-        this.loadedChatSettings = true;
-        this.props.store.dispatch(loadProfileChatSettings() as Action);
-      }
-    } else if (!this.subscribedChatSettings) {
-      this.subscribedChatSettings = true;
-      this.props.store.subscribe(this.loadChatSettings);
-    }
-  };
 
   /**
    * onWorkspaceMaterialsBodyActiveNodeIdChange
@@ -431,7 +405,6 @@ export default class Workspace extends React.Component<
                 loadStaffMembersOfWorkspace({ workspace }) as Action
               );
             }
-            this.props.store.dispatch(titleActions.updateTitle(workspace.name));
           },
         }) as Action
       );
@@ -450,8 +423,6 @@ export default class Workspace extends React.Component<
           }) as Action
         );
       }
-
-      this.loadChatSettings();
     }
 
     return (
@@ -478,11 +449,7 @@ export default class Workspace extends React.Component<
       );
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(
-          i18n.t("labels.instructions", { ns: "workspace" })
-        )
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -507,8 +474,6 @@ export default class Workspace extends React.Component<
           }
         ) as Action
       );
-
-      this.loadChatSettings();
     }
 
     return (
@@ -539,9 +504,7 @@ export default class Workspace extends React.Component<
       );
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.discussion"))
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -559,8 +522,6 @@ export default class Workspace extends React.Component<
           this.loadWorkspaceDiscussionData(currentLocation);
         }) as Action
       );
-
-      this.loadChatSettings();
     }
 
     return (
@@ -581,11 +542,6 @@ export default class Workspace extends React.Component<
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(
-          i18n.t("labels.announcement", { ns: "messaging", count: 0 })
-        )
-      );
 
       //Maybe we shouldn't load again, but whatever, maybe it updates
       this.props.store.dispatch(
@@ -598,8 +554,6 @@ export default class Workspace extends React.Component<
       this.loadWorkspaceAnnouncementsData(
         parseInt(window.location.hash.replace("#", ""))
       );
-
-      this.loadChatSettings();
     }
     return (
       <WorkspaceAnnouncementsBody
@@ -628,9 +582,7 @@ export default class Workspace extends React.Component<
       );
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.announcer"))
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -644,8 +596,6 @@ export default class Workspace extends React.Component<
           window.location.hash.replace("#", "").split("/")
         );
       }
-
-      this.loadChatSettings();
     }
     return (
       <WorkspaceAnnouncerBody
@@ -724,6 +674,7 @@ export default class Workspace extends React.Component<
           loadDiscussionThreadsFromServer({
             areaId: parseInt(location[0]) || null,
             page: parseInt(location[1]) || 1,
+            forceRefresh: true,
           }) as Action
         );
       } else {
@@ -873,11 +824,7 @@ export default class Workspace extends React.Component<
       }
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(
-          i18n.t("labels.materials", { ns: "materials" })
-        )
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -1007,8 +954,6 @@ export default class Workspace extends React.Component<
           );
         }
       }
-
-      this.loadChatSettings();
     }
 
     return (
@@ -1042,11 +987,7 @@ export default class Workspace extends React.Component<
         }
       );
 
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.users", { ns: "users" }))
-      );
       this.loadWorkspaceUsersData();
-      this.loadChatSettings();
     }
 
     return (
@@ -1074,9 +1015,7 @@ export default class Workspace extends React.Component<
       );
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.journal", { ns: "journal" }))
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -1093,7 +1032,10 @@ export default class Workspace extends React.Component<
                 }) as Action
               );
             }
-            if (!workspace.journals) {
+            if (
+              state.journals.state !== "READY" &&
+              state.journals.journals.length === 0
+            ) {
               if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
                 // This happens if teacher/admin uses diary
                 this.props.store.dispatch(
@@ -1110,7 +1052,6 @@ export default class Workspace extends React.Component<
           },
         }) as Action
       );
-      this.loadChatSettings();
     }
 
     return (
@@ -1138,31 +1079,16 @@ export default class Workspace extends React.Component<
       );
 
       const state = this.props.store.getState();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.settings", { ns: "common" }))
-      );
+
       this.props.store.dispatch(loadWorkspaceTypes() as Action);
+      this.props.store.dispatch(
+        loadWorkspaceSettings(state.status.currentWorkspaceId) as Action
+      );
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
-          /**
-           * success
-           */
-          success: () => {
-            this.props.store.dispatch(
-              loadCurrentWorkspaceUserGroupPermissions() as Action
-            );
-            if (state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS) {
-              this.props.store.dispatch(
-                loadWorkspaceDetailsInCurrentWorkspace() as Action
-              );
-            }
-            this.props.store.dispatch(loadWorkspaceChatStatus() as Action);
-          },
         }) as Action
       );
-
-      this.loadChatSettings();
     }
 
     return (
@@ -1171,43 +1097,6 @@ export default class Workspace extends React.Component<
       />
     );
   }
-
-  /**
-   * renderWorkspacePermissions
-   * @param props props
-   * @returns JSX.Element
-   */
-  renderWorkspacePermissions(props: RouteComponentProps<any>) {
-    this.updateFirstTime();
-    if (this.itsFirstTime) {
-      this.props.websocket && this.props.websocket.restoreEventListeners();
-
-      const state = this.props.store.getState();
-      this.props.store.dispatch(titleActions.updateTitle("Permissions"));
-      this.props.store.dispatch(
-        setCurrentWorkspace({
-          workspaceId: state.status.currentWorkspaceId,
-          /**
-           * success
-           */
-          success: () => {
-            this.props.store.dispatch(
-              loadCurrentWorkspaceUserGroupPermissions() as Action
-            );
-          },
-        }) as Action
-      );
-
-      this.loadChatSettings();
-    }
-
-    return (
-      <WorkspacePermissionsBody
-        workspaceUrl={props.match.params["workspaceUrl"]}
-      />
-    );
-  }
-
   /**
    * renderWorkspaceEvaluation
    * @param props props
@@ -1227,9 +1116,7 @@ export default class Workspace extends React.Component<
       );
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
-      this.props.store.dispatch(
-        titleActions.updateTitle(i18n.t("labels.evaluation"))
-      );
+
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -1238,10 +1125,6 @@ export default class Workspace extends React.Component<
            * @param workspace workspace
            */
           success: (workspace) => {
-            this.props.store.dispatch(
-              loadCurrentWorkspaceUserGroupPermissions() as Action
-            );
-
             this.props.store.dispatch(
               loadEvaluationAssessmentRequestsFromServer(true) as Action
             );
@@ -1269,8 +1152,6 @@ export default class Workspace extends React.Component<
           },
         }) as Action
       );
-
-      this.loadChatSettings();
     }
 
     return (
@@ -1289,56 +1170,56 @@ export default class Workspace extends React.Component<
       <ReadspeakerProvider>
         <BrowserRouter>
           <div id="root">
-            <Notifications></Notifications>
-            <DisconnectedWarningDialog />
-            <EasyToUseFunctions />
+            <WindowContextProvider>
+              <ChatWebsocketContextProvider websocket={this.props.websocket}>
+                <Chat />
+              </ChatWebsocketContextProvider>
+              <Notifications></Notifications>
+              <DisconnectedWarningDialog />
+              <EasyToUseFunctions />
 
-            <Route
-              exact
-              path="/workspace/:workspaceUrl/"
-              render={this.renderWorkspaceHome}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/help"
-              render={this.renderWorkspaceHelp}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/discussions"
-              render={this.renderWorkspaceDiscussions}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/announcements"
-              render={this.renderWorkspaceAnnouncements}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/announcer"
-              render={this.renderWorkspaceAnnouncer}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/materials"
-              render={this.renderWorkspaceMaterials}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/users"
-              render={this.renderWorkspaceUsers}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/journal"
-              render={this.renderWorkspaceJournal}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/workspace-management"
-              render={this.renderWorkspaceManagement}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/permissions"
-              render={this.renderWorkspacePermissions}
-            />
-            <Route
-              path="/workspace/:workspaceUrl/evaluation"
-              render={this.renderWorkspaceEvaluation}
-            />
-            <Chat />
+              <Route
+                exact
+                path="/workspace/:workspaceUrl/"
+                render={this.renderWorkspaceHome}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/help"
+                render={this.renderWorkspaceHelp}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/discussions"
+                render={this.renderWorkspaceDiscussions}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/announcements"
+                render={this.renderWorkspaceAnnouncements}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/announcer"
+                render={this.renderWorkspaceAnnouncer}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/materials"
+                render={this.renderWorkspaceMaterials}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/users"
+                render={this.renderWorkspaceUsers}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/journal"
+                render={this.renderWorkspaceJournal}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/workspace-management"
+                render={this.renderWorkspaceManagement}
+              />
+              <Route
+                path="/workspace/:workspaceUrl/evaluation"
+                render={this.renderWorkspaceEvaluation}
+              />
+            </WindowContextProvider>
           </div>
         </BrowserRouter>
       </ReadspeakerProvider>

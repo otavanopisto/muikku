@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ButtonPill } from "~/components/general/button";
 import Link from "~/components/general/link";
-import moment from "~/lib/moment";
+import moment from "moment";
 import { WorklistSection } from "~/reducers/main-function/profile";
 import WorkListRow from "./work-list-row";
 import SubmitWorklistItemsDialog from "../../../dialogs/submit-worklist-items";
@@ -43,9 +43,9 @@ interface WorkListSectionProps {
   section: WorklistSection;
   isExpanded: boolean;
   daysInCurrentMonth: number;
-  previousMonthsFirstDay: string;
+  previousMonthsFirstDay: moment.Moment;
   currentMonthDayLimit: number;
-  currentMonthsFirstDay: string;
+  currentMonthsFirstDay: moment.Moment;
   onToggleSection: () => void;
 }
 
@@ -97,13 +97,17 @@ export function WorkListSection(props: WorkListSectionProps) {
           .reduce((a, b) => a + b)
       : null;
 
+  const totalCostSummaryRounded = totalCostSummary
+    ? (Math.round((totalCostSummary + Number.EPSILON) * 100) / 100).toFixed(2)
+    : null;
+
   const sectionTotalRow = (
     <div className="application-sub-panel__item application-sub-panel__item--worklist-total">
       <div className="application-sub-panel__item-title application-sub-panel__item-title--worklist-total">
         {t("labels.total", { ns: "worklist" })}
       </div>
       <div className="application-sub-panel__item-data  application-sub-panel__item-data--worklist-total">
-        {totalCostSummary}
+        {totalCostSummaryRounded}
       </div>
     </div>
   );

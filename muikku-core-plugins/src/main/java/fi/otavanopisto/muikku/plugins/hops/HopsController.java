@@ -28,12 +28,13 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
+import fi.otavanopisto.muikku.rest.model.HopsStudentPermissionsRestModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
-import fi.otavanopisto.muikku.session.CurrentUserSession;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
@@ -41,9 +42,6 @@ public class HopsController {
 
   @Inject
   private SessionController sessionController;
-
-  @Inject
-  private CurrentUserSession currentUserSession;
 
   @Inject
   private HopsDAO hopsDAO;
@@ -76,49 +74,66 @@ public class HopsController {
   private AssessmentRequestController assessmentRequestController;
   
   @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  private UserController userController;
   
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
-  public boolean isHopsAvailable(String studentIdentifier) {
+  public boolean isHopsAvailable(String studentIdentifierStr) {
     if (sessionController.isLoggedIn()) {
+      SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+      if (studentIdentifier == null) {
+        return false;
+      }
       
       // Hops is always available for admins
-      
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      if (userSchoolDataIdentifier != null && userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        return true;
-      }
-      SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
-      
-      if (sessionController.getLoggedUser().equals(schoolDataIdentifier)) {
+      if (sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
         return true;
       }
       
-      return userSchoolDataController.amICounselor(schoolDataIdentifier);
+      if (sessionController.getLoggedUser().equals(studentIdentifier) || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+        return true;
+      }
+      
+      if (userSchoolDataController.amICounselor(studentIdentifier)) {
+        return true;
+      }
+      
+      /*
+       * If logged user is TEACHER and given identifier belongs to a STUDENT
+       * we'll allow the access if logged user is a teacher on a workspace where
+       * the student is.
+       */
+      if (sessionController.hasRole(EnvironmentRoleArchetype.TEACHER)) {
+        UserSchoolDataIdentifier studentUserSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+        if (studentUserSchoolDataIdentifier != null && studentUserSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+          return workspaceUserEntityController.haveSharedWorkspaces(sessionController.getLoggedUserEntity(), studentUserSchoolDataIdentifier.getUserEntity());
+        }
+      }
     }
+    
     return false;
   }
   
-  public boolean canSignup(WorkspaceEntity workspaceEntity, UserEntity studentEntity) {
+  public boolean canSignup(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
     boolean canSignUp = false;
     
-    if (studentEntity == null) {
-      return canSignUp;
+    if (userEntity == null) {
+      return false;
     }
+
     // Check that user isn't already in the workspace. If not, check if they could sign up
     
-    if (sessionController.isLoggedIn() && currentUserSession.isActive()) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentEntity.defaultSchoolDataIdentifier());
-      canSignUp = workspaceUserEntity == null && workspaceEntityController.canSignup(studentEntity.defaultSchoolDataIdentifier(), workspaceEntity);
-    }
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
+    canSignUp = workspaceUserEntity == null && workspaceEntityController.canSignup(userEntity.defaultSchoolDataIdentifier(), workspaceEntity);
     
     // If user could sign up, revoke that if they have already been evaluated
     
     if (canSignUp) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentEntity.defaultSchoolDataIdentifier());
+      workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
       if (workspaceUserEntity != null) {
         WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntity.getWorkspaceUserRole();
         WorkspaceRoleArchetype archetype = workspaceRoleEntity.getArchetype();
@@ -281,4 +296,72 @@ public class HopsController {
     }
   }
   
+  /**
+   * Returns true if currently logged in user can view the regular hops tabs
+   * of given student. The regular tabs are the planning tab and the matriculation
+   * tab. The other two tabs are covered as "details" tabs.
+   * 
+   * @param studentIdentifier for which student the permission is checked for
+   * @return true if user has permission, false otherwise
+   */
+  public boolean canViewHops(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return true;
+    }
+    
+    return userSchoolDataController.amICounselor(studentIdentifier)
+        || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)
+        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)
+        || workspaceEntityController.isWorkspaceTeacherOfStudent(sessionController.getLoggedUser(), studentIdentifier);
+  }
+
+  /**
+   * Returns true if currently logged in user can view the hops details of 
+   * given student.
+   * 
+   * @param studentIdentifier for which student the permission is checked for
+   * @return true if user has permission, false otherwise
+   */
+  public boolean canViewHopsDetails(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return true;
+    }
+    
+    return userSchoolDataController.amICounselor(studentIdentifier)
+        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+  }
+
+  /**
+   * Returns true if currently logged in user can modify the hops of 
+   * given student.
+   * 
+   * @param studentIdentifier for which student the permission is checked for
+   * @return true if user has permission, false otherwise
+   */
+  public boolean canModifyHops(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return true;
+    }
+    
+    return userSchoolDataController.amICounselor(studentIdentifier) 
+        || sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR);
+  }
+
+  /**
+   * Returns a permission rest model for frontend for currently
+   * logged in user.
+   * 
+   * @param studentIdentifier for which student the permissions are for
+   * @return a permission rest model
+   */
+  public HopsStudentPermissionsRestModel getHOPSStudentPermissions(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return new HopsStudentPermissionsRestModel(true, true);
+    }
+    
+    boolean isGuidanceCounselor = userSchoolDataController.amICounselor(studentIdentifier);
+    boolean canViewDetails = isGuidanceCounselor || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+    boolean canEdit = isGuidanceCounselor || sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR);
+    return new HopsStudentPermissionsRestModel(canViewDetails, canEdit);
+  }
 }

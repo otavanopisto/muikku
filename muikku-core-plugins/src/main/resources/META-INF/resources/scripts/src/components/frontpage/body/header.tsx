@@ -39,7 +39,7 @@ class FrontpageHero extends React.Component<
             >
               <Button
                 buttonModifiers={["branded", "frontpage-bubble", "warn"]}
-                href="https://pyramus.otavanopisto.fi/applications/index.page"
+                href="/application"
                 openInNewTab="_blank"
               >
                 {this.props.t("actions.apply", {
@@ -70,10 +70,10 @@ class FrontpageHero extends React.Component<
           <div className="hero__item hero__item--frontpage">
             <Bubble
               modifier="goto-materials"
-              title={this.props.t("labels.openMaterials", {
+              title={this.props.t("labels.coursesAvailable", {
                 ns: "frontPage",
               })}
-              content={this.props.t("content.openMaterials", {
+              content={this.props.t("content.coursesAvailable", {
                 ns: "frontPage",
               })}
             >
@@ -81,7 +81,7 @@ class FrontpageHero extends React.Component<
                 buttonModifiers={["branded", "frontpage-bubble", "warn"]}
                 href="/coursepicker"
               >
-                {this.props.t("actions.exploreMaterials", {
+                {this.props.t("actions.exploreCourses", {
                   ns: "frontPage",
                 })}
               </Button>

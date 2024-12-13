@@ -1,32 +1,21 @@
 import { SpecificActionType, AnyActionType } from "../../index";
+import { StateType } from "../../../reducers/index";
+import notificationActions, {
+  displayNotification,
+} from "~/actions/base/notifications";
+import { Dispatch, Action } from "redux";
 import {
+  UpdateImportanceObject,
+  EvaluationAssigmentData,
+  EvaluationFilters,
+  EvaluationImportance,
+  EvaluationSort,
+  EvaluationStatus,
   EvaluationStateType,
   EvaluationBasePriceById,
   EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
-import { StateType } from "../../../reducers/index";
-import mApi from "~/lib/mApi";
-import promisify from "../../../util/promisify";
-import { MApiError } from "../../../lib/mApi";
-import notificationActions, {
-  displayNotification,
-} from "~/actions/base/notifications";
-import { EvaluationAssigmentData } from "../../../@types/evaluation";
-import {
-  MaterialCompositeRepliesType,
-  WorkspaceInterimEvaluationRequest,
-  WorkspaceType,
-} from "../../../reducers/workspaces/index";
-import { WorkspaceUserEntity } from "../../../@types/evaluation";
-import { MaterialAssignmentType } from "../../../reducers/workspaces/index";
-import { Dispatch } from "react-redux";
-import { UpdateImportanceObject } from "../../../@types/evaluation";
-import {
-  EvaluationFilters,
-  EvaluationImportance,
-} from "../../../@types/evaluation";
-import { EvaluationSort } from "../../../@types/evaluation";
-import { EvaluationStatus } from "../../../@types/evaluation";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import {
   EvaluationAssessmentRequest,
   EvaluationEvent,
@@ -41,10 +30,12 @@ import {
   CreateWorkspaceJournalCommentRequest,
   UpdateWorkspaceJournalCommentRequest,
   WorkspaceJournal,
+  MaterialCompositeReply,
+  UpdateBilledPriceRequest,
+  InterimEvaluationRequest,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
-import { UpdateBilledPriceRequest } from "~/generated/client";
 
 //////State update interfaces
 export type EVALUATION_BASE_PRICE_STATE_UPDATE = SpecificActionType<
@@ -74,7 +65,7 @@ export type EVALUATION_ASSESSMENT_EVENTS_LOAD = SpecificActionType<
 
 export type EVALUATION_INTERMIN_REQUESTS_LOAD = SpecificActionType<
   "EVALUATION_INTERMIN_REQUESTS_LOAD",
-  WorkspaceInterimEvaluationRequest[]
+  InterimEvaluationRequest[]
 >;
 
 export type EVALUATION_REQUESTS_STATE_UPDATE = SpecificActionType<
@@ -85,6 +76,11 @@ export type EVALUATION_REQUESTS_STATE_UPDATE = SpecificActionType<
 export type EVALUATION_REQUESTS_LOAD = SpecificActionType<
   "EVALUATION_REQUESTS_LOAD",
   EvaluationAssessmentRequest[]
+>;
+
+export type EVALUATION_UDATE_SELECTED_ASSESSMENT_REQUEST = SpecificActionType<
+  "EVALUATION_UDATE_SELECTED_ASSESSMENT_REQUEST",
+  EvaluationAssessmentRequest
 >;
 
 export type EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE = SpecificActionType<
@@ -109,7 +105,7 @@ export type EVALUATION_UNIMPORTANT_ASSESSMENTS_LOAD = SpecificActionType<
 
 export type EVALUATION_WORKSPACES_LOAD = SpecificActionType<
   "EVALUATION_WORKSPACES_LOAD",
-  WorkspaceType[]
+  WorkspaceDataType[]
 >;
 
 export type EVALUATION_GRADE_SYSTEM_LOAD = SpecificActionType<
@@ -144,7 +140,7 @@ export type EVALUATION_SEARCH_CHANGE = SpecificActionType<
 
 export type EVALUATION_COMPOSITE_REPLIES_LOAD = SpecificActionType<
   "EVALUATION_COMPOSITE_REPLIES_LOAD",
-  MaterialCompositeRepliesType[]
+  MaterialCompositeReply[]
 >;
 
 export type EVALUATION_IMPORTANCE_UPDATE = SpecificActionType<
@@ -416,6 +412,16 @@ export interface RemoveWorkspaceEvent {
 }
 
 /**
+ * LockAssessmentRequest
+ */
+export interface LockAssessmentRequest {
+  (data: {
+    assessment: EvaluationAssessmentRequest;
+    locked: boolean;
+  }): AnyActionType;
+}
+
+/**
  * DeleteAssessmentRequest
  */
 export interface DeleteAssessmentRequest {
@@ -432,6 +438,18 @@ export interface DeleteAssessmentRequest {
 export interface DeleteInterimEvaluationRequest {
   (data: {
     interimEvaluatiomRequestId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * DeleteSupplementationRequest
+ */
+export interface DeleteSupplementationRequest {
+  (data: {
+    workspaceUserEntityId: number;
+    supplementationRequestId: number;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -599,7 +617,7 @@ export interface DeleteEvaluationJournalCommentTriggerType {
 const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
   function loadEvaluationGradingSystemFromServer() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -655,7 +673,7 @@ const loadEvaluationGradingSystemFromServer: LoadEvaluationSystem =
 const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentRequest =
   function loadEvaluationAssessmentRequestsFromServer(useFromWorkspace) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -721,10 +739,11 @@ const loadEvaluationAssessmentRequestsFromServer: LoadEvaluationAssessmentReques
 const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
   function loadEvaluationWorkspacesFromServer() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
+      const workspaceApi = MApi.getWorkspaceApi();
 
       if (state.evaluations.status !== "LOADING") {
         dispatch({
@@ -733,15 +752,11 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
         });
       }
 
-      let evaluationWorkspaces: WorkspaceType[] = [];
-
       try {
-        evaluationWorkspaces = (await promisify(
-          mApi().workspace.workspaces.read({
-            userId: state.status.userId,
-          }),
-          "callback"
-        )()) as WorkspaceType[];
+        const evaluationWorkspaces = (await workspaceApi.getWorkspaces({
+          userId: state.status.userId,
+          maxResults: 500,
+        })) as WorkspaceDataType[];
 
         dispatch({
           type: "EVALUATION_WORKSPACES_LOAD",
@@ -755,7 +770,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
           });
         }
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -783,7 +798,7 @@ const loadEvaluationWorkspacesFromServer: LoadEvaluationWorkspaces =
 const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessment =
   function loadListOfImportantAssessmentIdsFromServer() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -842,7 +857,7 @@ const loadListOfImportantAssessmentIdsFromServer: LoadEvaluationImportantAssessm
 const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAssessment =
   function loadListOfUnimportantAssessmentIdsFromServer() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -900,7 +915,7 @@ const loadListOfUnimportantAssessmentIdsFromServer: LoadEvaluationUnimportantAss
 const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
   function loadEvaluationSortFunction() {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -964,7 +979,7 @@ const loadEvaluationSortFunctionFromServer: LoadEvaluationSortFunction =
 const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
   function loadEvaluationAssessmentEventsFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -1000,7 +1015,7 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
           notificationActions.displayNotification(
             i18n.t("notifications.loadError", {
               ns: "evaluation",
-              context: "evaluationEvents",
+              context: "evaluation",
             }),
             "error"
           )
@@ -1021,7 +1036,7 @@ const loadEvaluationAssessmentEventsFromServer: LoadEvaluationAssessmentEvent =
 const loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFromServerTriggerType =
   function loadEvaluationJournalFeedbkackFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -1078,7 +1093,7 @@ const loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFrom
 const createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFeedbackTriggerType =
   function createEvaluationJournalFeedback(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -1141,7 +1156,7 @@ const createOrUpdateEvaluationJournalFeedback: CreateOrUpdateEvaluationJournalFe
 const deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType =
   function deleteEvaluationJournalFeedback(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -1200,7 +1215,7 @@ const deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerTyp
 const loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJournalEvents =
   function loadEvaluationSelectedAssessmentJournalEventsFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const workspaceApi = MApi.getWorkspaceApi();
@@ -1274,23 +1289,22 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
     workspaceId,
   }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       dispatch({
         type: "EVALUATION_COMPOSITE_REPLIES_STATE_UPDATE",
         payload: <EvaluationStateType>"LOADING",
       });
 
-      let evaluationCompositeReplies: MaterialCompositeRepliesType[];
-
       try {
-        evaluationCompositeReplies = (await promisify(
-          mApi().workspace.workspaces.compositeReplies.read(workspaceId, {
+        const evaluationCompositeReplies =
+          await workspaceApi.getWorkspaceCompositeReplies({
+            workspaceEntityId: workspaceId,
             userEntityId,
-          }),
-          "callback"
-        )()) as MaterialCompositeRepliesType[];
+          });
 
         dispatch({
           type: "EVALUATION_COMPOSITE_REPLIES_LOAD",
@@ -1330,7 +1344,7 @@ const loadEvaluationCompositeRepliesFromServer: LoadEvaluationCompositeReplies =
 const updateEvaluationSortFunctionToServer: UpdateEvaluationSortFunction =
   function updateEvaluationSortFunctionToServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1401,7 +1415,7 @@ const updateWorkspaceEvaluationToServer: UpdateWorkspaceEvaluation =
     onFail,
   }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1537,7 +1551,7 @@ const updateWorkspaceSupplementationToServer: UpdateWorkspaceSupplementation =
     onFail,
   }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1644,7 +1658,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
     onFail,
   }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
@@ -1668,7 +1682,7 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
               workspaceUserEntityId:
                 state.evaluations.evaluationSelectedAssessmentId
                   .workspaceUserEntityId,
-              workspaceAssessmentId: identifier,
+              workspaceAssessmentIdentifier: identifier,
             })
             .then(() => {
               dispatch(
@@ -1724,7 +1738,9 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
               workspaceUserEntityId:
                 state.evaluations.evaluationSelectedAssessmentId
                   .workspaceUserEntityId,
-              supplementationRequestId: identifier,
+              // Note that in case of deleting supplementation request, identifier is tecnhinically type number
+              // but EvaluationEvent object has it as string. So we have to parse it to int
+              supplementationRequestId: parseInt(identifier),
             })
             .then(() => {
               dispatch(
@@ -1786,9 +1802,11 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
 const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
   function loadCurrentStudentAssigmentsData({ workspaceId }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const workspaceApi = MApi.getWorkspaceApi();
+
       dispatch({
         type: "EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE",
         payload: "LOADING",
@@ -1797,29 +1815,24 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       try {
         const [assigments] = await Promise.all([
           (async () => {
-            const assignmentsInterim =
-              <MaterialAssignmentType[]>await promisify(
-                mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "INTERIM_EVALUATION",
-                }),
-                "callback"
-              )() || [];
+            const assignmentsInterim = await workspaceApi.getWorkspaceMaterials(
+              {
+                workspaceEntityId: workspaceId,
+                assignmentType: "INTERIM_EVALUATION",
+              }
+            );
 
             const assignmentsExercise =
-              <MaterialAssignmentType[]>await promisify(
-                mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "EXERCISE",
-                }),
-                "callback"
-              )() || [];
+              await workspaceApi.getWorkspaceMaterials({
+                workspaceEntityId: workspaceId,
+                assignmentType: "EXERCISE",
+              });
 
             const assignmentsEvaluated =
-              <MaterialAssignmentType[]>await promisify(
-                mApi().workspace.workspaces.materials.read(workspaceId, {
-                  assignmentType: "EVALUATED",
-                }),
-                "callback"
-              )() || [];
+              await workspaceApi.getWorkspaceMaterials({
+                workspaceEntityId: workspaceId,
+                assignmentType: "EVALUATED",
+              });
 
             const assignments = [
               ...assignmentsInterim,
@@ -1841,7 +1854,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
           payload: "READY",
         });
       } catch (err) {
-        if (!(err instanceof MApiError)) {
+        if (!isMApiError(err)) {
           throw err;
         }
 
@@ -1871,33 +1884,28 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
 const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData =
   function updateCurrentStudentEvaluationData(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
+      const workspaceApi = MApi.getWorkspaceApi();
 
-      /**
-       * There is reason why update composite replies state is not changed here. Because
-       * we don't wan't to change ui to loading states that would re render materials. It should still have
-       * some indicator maybe specificilly to that component which compositereply is updating so there is
-       * indicating that tell if something is coming from backend. But currently this is how its working now
-       */
+      // There is reason why update composite replies state is not changed here. Because
+      // we don't wan't to change ui to loading states that would re render materials. It should still have
+      // some indicator maybe specificilly to that component which compositereply is updating so there is
+      // indicating that tell if something is coming from backend. But currently this is how its working now
 
-      /**
-       * Get initial values that needs to be updated
-       */
-      const updatedCompositeReplies: MaterialCompositeRepliesType[] =
+      // Get initial values that needs to be updated
+      const updatedCompositeReplies =
         state.evaluations.evaluationCompositeReplies.data;
 
       try {
-        const updatedCompositeReply = (await promisify(
-          mApi().workspace.workspaces.user.workspacematerial.compositeReply.read(
-            data.workspaceId,
-            data.userEntityId,
-            data.workspaceMaterialId
-          ),
-          "callback"
-        )()) as MaterialCompositeRepliesType;
+        const updatedCompositeReply =
+          await workspaceApi.getWorkspaceUserCompositeReply({
+            workspaceEntityId: data.workspaceId,
+            workspaceMaterialId: data.workspaceMaterialId,
+            userEntityId: data.userEntityId,
+          });
 
         const index = updatedCompositeReplies.findIndex(
           (item) =>
@@ -1914,6 +1922,10 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
           payload: updatedCompositeReplies,
         });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
         dispatch(
           notificationActions.displayNotification(
             i18n.t("notifications.loadError", {
@@ -1935,7 +1947,7 @@ const updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCo
 const setSelectedWorkspaceId: SetEvaluationSelectedWorkspace =
   function setSelectedWorkspaceId(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_SELECTED_WORKSPACE_CHANGE",
@@ -1955,7 +1967,7 @@ const setSelectedWorkspaceId: SetEvaluationSelectedWorkspace =
 const setEvaluationFilters: SetEvaluationFilters =
   function setEvaluationFilters(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_FILTERS_CHANGE",
@@ -1971,7 +1983,7 @@ const setEvaluationFilters: SetEvaluationFilters =
 const updateBillingToServer: UpdateEvaluationEvent =
   function updateBillingToServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const worklistApi = MApi.getWorklistApi();
@@ -2014,13 +2026,13 @@ const updateBillingToServer: UpdateEvaluationEvent =
   };
 
 /**
- * Updates selected assessment
+ * Updates selected assessment and loads events
  * @param data data
  */
-const updateSelectedAssessment: UpdateEvaluationSelectedAssessment =
+const setSelectedAssessmentAndLoadEvents: UpdateEvaluationSelectedAssessment =
   function updateSelectedAssessment(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_ASSESSMENT_UPDATE",
@@ -2036,13 +2048,29 @@ const updateSelectedAssessment: UpdateEvaluationSelectedAssessment =
   };
 
 /**
+ * Updates selected assessment
+ * @param data data
+ */
+const updateSelectedAassessment: UpdateEvaluationSelectedAssessment =
+  function updateSelectedAssessment(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+    ) => {
+      dispatch({
+        type: "EVALUATION_ASSESSMENT_UPDATE",
+        payload: data.assessment,
+      });
+    };
+  };
+
+/**
  * Changed evaluation search filter
  * @param data data
  */
 const updateEvaluationSearch: UpdateEvaluationSearch =
   function updateEvaluationSearch(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_SEARCH_CHANGE",
@@ -2057,7 +2085,7 @@ const updateEvaluationSearch: UpdateEvaluationSearch =
  */
 const updateImportance: UpdateImportance = function updateImportance(data) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
     const state = getState();
@@ -2136,7 +2164,7 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
 const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
   function updateOpenedAssignmentEvaluation(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_OPENED_ASSIGNMENT_UPDATE",
@@ -2153,14 +2181,14 @@ const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
 const deleteAssessmentRequest: DeleteAssessmentRequest =
   function deleteAssessmentRequest({ workspaceUserEntityId }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
 
       try {
         await evaluationApi
-          .archiveEvaluationWorkspaceUser({
+          .archiveWorkspaceUserEvaluationRequest({
             workspaceUserEntityId: workspaceUserEntityId,
           })
           .then(() => {
@@ -2196,9 +2224,9 @@ const deleteAssessmentRequest: DeleteAssessmentRequest =
  * @param param0.interimEvaluatiomRequestId interimEvaluatiomRequestId
  */
 const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
-  function deleteAssessmentRequest({ interimEvaluatiomRequestId }) {
+  function deleteInterimEvaluationRequest({ interimEvaluatiomRequestId }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationApi = MApi.getEvaluationApi();
@@ -2236,6 +2264,49 @@ const deleteInterimEvaluationRequest: DeleteInterimEvaluationRequest =
   };
 
 /**
+ * Deletes supplementation request
+ * @param data data
+ */
+const deleteSupplementationRequest: DeleteSupplementationRequest =
+  function deleteSupplementationRequest(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { workspaceUserEntityId, supplementationRequestId } = data;
+
+      const evaluationApi = MApi.getEvaluationApi();
+
+      try {
+        await evaluationApi
+          .deleteWorkspaceUserSupplementationRequest({
+            workspaceUserEntityId,
+            supplementationRequestId,
+          })
+          .then(() => {
+            notificationActions.displayNotification(
+              "Täydennyspyyntö poistettu onnistuneesti",
+              "success"
+            );
+
+            dispatch(loadEvaluationAssessmentRequestsFromServer());
+          });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            "Virhe poistettaessa täydennyspyyntöä",
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
  * Archives student from workspace
  * @param root0 root0
  * @param root0.workspaceEntityId workspaceEntityId
@@ -2248,31 +2319,31 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
   onSuccess,
 }) {
   return async (
-    dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
-    try {
-      await promisify(
-        mApi().workspace.workspaces.students.read(
-          workspaceEntityId,
-          workspaceUserEntityId
-        ),
-        "callback"
-      )().then(async (workspaceUserEntity: WorkspaceUserEntity) => {
-        workspaceUserEntity.active = false;
+    const workspaceApi = MApi.getWorkspaceApi();
 
-        await promisify(
-          mApi().workspace.workspaces.students.update(
-            workspaceEntityId,
-            workspaceUserEntityId,
-            workspaceUserEntity
-          ),
-          "callback"
-        )().then(() => {
-          onSuccess && onSuccess();
-        });
+    try {
+      const student = await workspaceApi.getWorkspaceStudent({
+        workspaceEntityId: workspaceEntityId,
+        studentId: workspaceUserEntityId,
       });
+
+      student.active = false;
+
+      await workspaceApi.updateWorkspaceStudent({
+        workspaceEntityId: workspaceEntityId,
+        studentId: workspaceUserEntityId,
+        updateWorkspaceStudentRequest: student,
+      });
+
+      onSuccess && onSuccess();
     } catch (error) {
+      if (!isMApiError(error)) {
+        throw error;
+      }
+
       dispatch(
         notificationActions.displayNotification(
           i18n.t("notifications.removeError", {
@@ -2296,7 +2367,7 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
 const loadBasePriceFromServer: LoadBasePrice =
   function loadBasePriceFromServer({ workspaceEntityId }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       const worklistApi = MApi.getWorklistApi();
 
@@ -2341,7 +2412,7 @@ const loadBasePriceFromServer: LoadBasePrice =
 const updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests =
   function updateNeedsReloadEvaluationRequests({ value }) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
         type: "EVALUATION_NEEDS_RELOAD_REQUESTS_UPDATE",
@@ -2357,7 +2428,7 @@ const updateNeedsReloadEvaluationRequests: UpdateNeedsReloadEvaluationRequests =
 const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFromServerTriggerType =
   function loadWorkspaceJournalCommentsFromServer(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const evaluationJournalComments =
@@ -2418,7 +2489,7 @@ const loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFrom
 const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType =
   function createEvaluationJournalComment(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const {
@@ -2504,7 +2575,7 @@ const createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType 
 const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType =
   function createEvaluationJournalComment(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const {
@@ -2585,7 +2656,7 @@ const updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType 
 const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType =
   function createEvaluationJournalComment(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<AnyActionType>,
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const { commentId, journalEntryId, workspaceEntityId, fail, success } =
@@ -2669,6 +2740,53 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
     };
   };
 
+/**
+ * lockAssessmentRequest
+ * @param data data
+ */
+const lockAssessmentRequest: LockAssessmentRequest =
+  function lockAssessmentRequest(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { assessment, locked } = data;
+
+      const evaluationApi = MApi.getEvaluationApi();
+
+      try {
+        const updatedAssessmentRequest =
+          await evaluationApi.lockWorkspaceUserEvaluationRequest({
+            workspaceUserEntityId: assessment.workspaceUserEntityId,
+            assessmentRequestIdentifier: assessment.identifier,
+            lockWorkspaceUserEvaluationRequestRequest: {
+              ...assessment,
+              locked,
+            },
+          });
+
+        dispatch(
+          updateSelectedAassessment({ assessment: updatedAssessmentRequest })
+        );
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "evaluation",
+              context: "locking",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -2688,7 +2806,7 @@ export {
   updateEvaluationSearch,
   updateNeedsReloadEvaluationRequests,
   updateImportance,
-  updateSelectedAssessment,
+  setSelectedAssessmentAndLoadEvents,
   updateCurrentStudentCompositeRepliesData,
   updateOpenedAssignmentEvaluation,
   loadEvaluationAssessmentEventsFromServer,
@@ -2704,4 +2822,6 @@ export {
   loadEvaluationJournalFeedbackFromServer,
   createOrUpdateEvaluationJournalFeedback,
   deleteEvaluationJournalFeedback,
+  deleteSupplementationRequest,
+  lockAssessmentRequest,
 };

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { NotesItemFilters } from "~/@types/notes";
 import Button from "~/components/general/button";
 
@@ -27,6 +28,8 @@ const NotesItemFilterChip: React.FC<NotesItemListFiltterChipProps> = (
 ) => {
   props = { ...defaultProps, ...props };
 
+  const { t } = useTranslation("tasks");
+
   const { onChipClick, activeModifier, modifier, label } = props;
 
   /**
@@ -51,6 +54,10 @@ const NotesItemFilterChip: React.FC<NotesItemListFiltterChipProps> = (
 
   return (
     <Button
+      as="div"
+      role="button"
+      aria-label={t("wcag.prioritySorter", { priorityName: label })}
+      aria-pressed={!!activeModifier}
       buttonModifiers={priorityButtonModifiers}
       onClick={handleChipClick(props.name)}
     >

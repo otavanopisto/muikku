@@ -11,14 +11,11 @@
 
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import {
-  MaterialContentNodeListType,
-  WorkspaceType,
-  MaterialCompositeRepliesListType,
-  MaterialContentNodeType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
   WorkspaceEditModeStateType,
-  MaterialViewRestriction,
 } from "~/reducers/workspaces";
 
 import "~/sass/elements/buttons.scss";
@@ -27,10 +24,10 @@ import "~/sass/elements/material-admin.scss";
 import TocTopic, {
   Toc,
   TocElement,
-  ToggleOpenHandle,
+  TocTopicRef,
 } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { repairContentNodes } from "~/util/modifiers";
 import { AnyActionType } from "~/actions/index";
 import { StatusType } from "~/reducers/base/status";
@@ -45,16 +42,27 @@ import { IconButton } from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import { withTranslation, WithTranslation } from "react-i18next";
 import TableOfContentPDFDialog from "./table-of-content-pdf-dialog";
+import {
+  MaterialCompositeReply,
+  MaterialViewRestriction,
+} from "~/generated/client";
+
+/**
+ * TocElementRef
+ */
+interface TocElementRef {
+  [key: string]: HTMLAnchorElement[];
+}
 
 /**
  * ContentProps
  */
 interface ContentProps extends WithTranslation {
   status: StatusType;
-  materials: MaterialContentNodeListType;
-  materialReplies: MaterialCompositeRepliesListType;
+  materials: MaterialContentNodeWithIdAndLogic[];
+  materialReplies: MaterialCompositeReply[];
   activeNodeId: number;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
   setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType;
   workspaceEditMode: WorkspaceEditModeStateType;
@@ -66,33 +74,9 @@ interface ContentProps extends WithTranslation {
  * ContentState
  */
 interface ContentState {
-  materials: MaterialContentNodeListType;
+  materials: MaterialContentNodeWithIdAndLogic[];
   assignmentTypeFilters: string[];
   sessionId: string;
-}
-
-/**
- * isScrolledIntoView
- * @param el el
- * @returns boolean
- */
-function isScrolledIntoView(el: HTMLElement) {
-  const rect = el.getBoundingClientRect();
-  const elemTop = rect.top;
-  const elemBottom = rect.bottom;
-
-  const element = document.querySelector(
-    ".content-panel__navigation"
-  ) as HTMLElement;
-
-  if (element) {
-    const isVisible =
-      elemTop < window.innerHeight - 100 &&
-      elemBottom >= element.offsetTop + 50;
-    return isVisible;
-  } else {
-    return true;
-  }
 }
 
 /**
@@ -103,8 +87,11 @@ class ContentComponent extends SessionStateComponent<
   ContentState
 > {
   private storedLastUpdateServerExecution: Function;
-  private originalMaterials: MaterialContentNodeListType;
-  private topicRefs: ToggleOpenHandle[];
+  private originalMaterials: MaterialContentNodeWithIdAndLogic[];
+  private topicRefs: TocTopicRef[];
+  private elementRefs: TocElementRef;
+
+  private tocElementFocusIndexRef: number;
 
   /**
    * constructor
@@ -116,8 +103,6 @@ class ContentComponent extends SessionStateComponent<
     const sessionId = props.status.loggedIn
       ? `${props.workspace.id}.${props.status.userId}`
       : `${props.workspace.id}`;
-
-    this.topicRefs = [];
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -146,16 +131,14 @@ class ContentComponent extends SessionStateComponent<
       this.onInteractionBetweenSubnodes.bind(this);
     this.onDropBetweenSubnodes = this.onDropBetweenSubnodes.bind(this);
     this.onDropBetweenSections = this.onDropBetweenSections.bind(this);
-  }
 
-  /**
-   * componentDidUpdate
-   * @param prevProps prevProps
-   */
-  componentDidUpdate(prevProps: ContentProps) {
-    if (prevProps.activeNodeId !== this.props.activeNodeId) {
-      this.refresh();
-    }
+    this.topicRefs = [];
+    this.elementRefs = props.materials.reduce<TocElementRef>((acc, node) => {
+      acc[`s-${node.workspaceMaterialId}`] = [];
+      return acc;
+    }, {});
+
+    this.tocElementFocusIndexRef = 0;
   }
 
   /**
@@ -164,27 +147,20 @@ class ContentComponent extends SessionStateComponent<
    */
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: ContentProps) {
+    // If materials have changed, specifically length, reset elementRefs
+    if (this.props.materials.length !== nextProps.materials.length) {
+      this.elementRefs = nextProps.materials.reduce<TocElementRef>(
+        (acc, node) => {
+          acc[`s-${node.workspaceMaterialId}`] = [];
+          return acc;
+        },
+        {}
+      );
+    }
+
     this.setState({
       materials: nextProps.materials,
     });
-  }
-
-  /**
-   * refresh
-   * @param props props
-   */
-  refresh(props: ContentProps = this.props) {
-    const tocElement = this.refs[props.activeNodeId] as TocElement;
-    if (tocElement) {
-      const element = tocElement.getElement();
-      if (!isScrolledIntoView(element)) {
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: "start",
-        });
-      }
-    }
   }
 
   /**
@@ -222,6 +198,7 @@ class ContentComponent extends SessionStateComponent<
         workspace: this.props.workspace,
         material,
         update: {
+          ...material,
           parentId: update.parentId,
           nextSiblingId: update.nextSiblingId,
         },
@@ -284,7 +261,7 @@ class ContentComponent extends SessionStateComponent<
     const materialFromState = materialParentFromState.children[baseIndex];
     const workspaceId = materialFromState.workspaceMaterialId;
 
-    let material: MaterialContentNodeType;
+    let material: MaterialContentNodeWithIdAndLogic;
     this.originalMaterials.forEach((cn) => {
       cn.children.forEach((ccn) => {
         if (ccn.workspaceMaterialId === materialFromState.workspaceMaterialId) {
@@ -294,7 +271,7 @@ class ContentComponent extends SessionStateComponent<
     });
 
     const update = repariedNodes[parentTargetBeforeIndex].children.find(
-      (cn: MaterialContentNodeType) =>
+      (cn: MaterialContentNodeWithIdAndLogic) =>
         cn.workspaceMaterialId === material.workspaceMaterialId
     );
 
@@ -321,6 +298,7 @@ class ContentComponent extends SessionStateComponent<
         workspace: this.props.workspace,
         material,
         update: {
+          ...material,
           parentId: update.parentId,
           nextSiblingId: update.nextSiblingId,
         },
@@ -342,8 +320,8 @@ class ContentComponent extends SessionStateComponent<
    * @param target target
    */
   onInteractionBetweenSections(
-    base: MaterialContentNodeType,
-    target: MaterialContentNodeType
+    base: MaterialContentNodeWithIdAndLogic,
+    target: MaterialContentNodeWithIdAndLogic
   ) {
     this.hotInsertBeforeSection(
       this.state.materials.findIndex(
@@ -370,8 +348,8 @@ class ContentComponent extends SessionStateComponent<
    * @param target target
    */
   onInteractionBetweenSubnodes(
-    base: MaterialContentNodeType,
-    target: MaterialContentNodeType | number
+    base: MaterialContentNodeWithIdAndLogic,
+    target: MaterialContentNodeWithIdAndLogic | number
   ) {
     const parentBaseIndex = this.state.materials.findIndex(
       (m) => m.workspaceMaterialId === base.parentId
@@ -417,11 +395,26 @@ class ContentComponent extends SessionStateComponent<
    * handleOpenAllSections
    * @param type type
    */
-  handleToggleAllSectionsOpen =
+  handleToggleAllSectionsClick =
     (type: "close" | "open") =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       for (const ref of this.topicRefs) {
         ref.toggleOpen(type);
+      }
+    };
+
+  /**
+   * handleToggleAllSectionKeyDown
+   * @param type type
+   */
+  handleToggleAllSectionKeyDown =
+    (type: "close" | "open") => (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        e.stopPropagation();
+        for (const ref of this.topicRefs) {
+          ref.toggleOpen(type);
+        }
       }
     };
 
@@ -447,6 +440,14 @@ class ContentComponent extends SessionStateComponent<
       newAssignmentFilter.push(clickedValue);
     }
 
+    this.elementRefs = this.state.materials.reduce<TocElementRef>(
+      (acc, node) => {
+        acc[`s-${node.workspaceMaterialId}`] = [];
+        return acc;
+      },
+      {}
+    );
+
     // Using session component to store filters
     this.setStateAndStore(
       {
@@ -467,10 +468,10 @@ class ContentComponent extends SessionStateComponent<
   ) => {
     if (section) {
       switch (viewRestrict) {
-        case MaterialViewRestriction.LOGGED_IN:
+        case MaterialViewRestriction.LoggedIn:
           return "view-restricted-to-logged-in";
 
-        case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        case MaterialViewRestriction.WorkspaceMembers:
           return "view-restricted-to-members";
 
         default:
@@ -478,10 +479,10 @@ class ContentComponent extends SessionStateComponent<
       }
     } else {
       switch (viewRestrict) {
-        case MaterialViewRestriction.LOGGED_IN:
+        case MaterialViewRestriction.LoggedIn:
           return "toc__item--view-restricted-to-logged-in";
 
-        case MaterialViewRestriction.WORKSPACE_MEMBERS:
+        case MaterialViewRestriction.WorkspaceMembers:
           return "toc__item--view-restricted-to-members";
 
         default:
@@ -501,10 +502,10 @@ class ContentComponent extends SessionStateComponent<
     const { t } = this.props;
 
     switch (viewRestrict) {
-      case MaterialViewRestriction.LOGGED_IN:
+      case MaterialViewRestriction.LoggedIn:
         return t("content.viewRestricted", { ns: "materials" });
 
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+      case MaterialViewRestriction.WorkspaceMembers:
         return t("content.viewRestricted_workspaceMembers", {
           ns: "materials",
         });
@@ -520,7 +521,7 @@ class ContentComponent extends SessionStateComponent<
    * @param section section
    * @returns boolean if section is active
    */
-  isSectionActive = (section: MaterialContentNodeType) => {
+  isSectionActive = (section: MaterialContentNodeWithIdAndLogic) => {
     const { activeNodeId } = this.props;
 
     for (const m of section.children) {
@@ -530,6 +531,124 @@ class ContentComponent extends SessionStateComponent<
     }
 
     return false;
+  };
+
+  /**
+   * Sets ref to topic
+   * @param index index
+   */
+  handleCallbackTocTopicRef = (index: number) => (ref: TocTopicRef) => {
+    this.topicRefs[index] = ref;
+  };
+
+  /**
+   * Sets ref to element
+   * @param parentIdentifier parentIdentifier
+   * @param index index
+   */
+  handleCallbackTocElementRef =
+    (parentIdentifier: string, index: number) => (ref: HTMLAnchorElement) => {
+      this.elementRefs[parentIdentifier][index] = ref;
+    };
+
+  /**
+   * Handle keydown event on toc topic
+   * @param topicIdentifier topicIdentifier
+   */
+  handleTocTopicTitleKeyDown =
+    (topicIdentifier: string) => (e: React.KeyboardEvent) => {
+      // Change focus to first element in topic
+      if (e.key === "ArrowDown") {
+        e.stopPropagation();
+        e.preventDefault();
+
+        this.tocElementFocusIndexRef = 0;
+
+        // Check if there are any elements in topic top focus
+        if (this.elementRefs[topicIdentifier].length > 0) {
+          this.elementRefs[topicIdentifier][
+            this.tocElementFocusIndexRef
+          ].setAttribute("tabindex", "0");
+          this.elementRefs[topicIdentifier][
+            this.tocElementFocusIndexRef
+          ].focus();
+        }
+      }
+    };
+
+  /**
+   * Handles keydown event on toc element
+   * @param parentNodeIdentifier parentNodeIdentifier
+   */
+  handleTocElementKeyDown =
+    (parentNodeIdentifier: string) => (e: React.KeyboardEvent) => {
+      /**
+       * elementFocusChange
+       * @param operation operation
+       */
+      const elementFocusChange = (operation: "decrement" | "increment") => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (operation === "decrement") {
+          this.tocElementFocusIndexRef--;
+        } else {
+          this.tocElementFocusIndexRef++;
+        }
+
+        if (this.tocElementFocusIndexRef < 0) {
+          this.tocElementFocusIndexRef =
+            this.elementRefs[parentNodeIdentifier].length - 1;
+        } else if (
+          this.tocElementFocusIndexRef >
+          this.elementRefs[parentNodeIdentifier].length - 1
+        ) {
+          this.tocElementFocusIndexRef = 0;
+        }
+
+        this.elementRefs[parentNodeIdentifier][
+          this.tocElementFocusIndexRef
+        ].setAttribute("tabindex", "0");
+        this.elementRefs[parentNodeIdentifier][
+          this.tocElementFocusIndexRef
+        ].focus();
+      };
+
+      if (e.key === "ArrowUp") {
+        elementFocusChange("decrement");
+      }
+
+      if (e.key === "ArrowDown") {
+        elementFocusChange("increment");
+      }
+    };
+
+  /**
+   * Handle blur event on toc element
+   * @param parentNodeIdentifier parentNodeIdentifier
+   * @param elementIndex elementIndex
+   */
+  handleTocElementBlur =
+    (parentNodeIdentifier: string, elementIndex: number) =>
+    (e: React.FocusEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      this.elementRefs[parentNodeIdentifier][elementIndex].setAttribute(
+        "tabindex",
+        "-1"
+      );
+    };
+
+  /**
+   * Handle focus event on toc element
+   * @param elementIndex elementIndex
+   */
+  handleTocElementFocus = (elementIndex: number) => (e: React.FocusEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.tocElementFocusIndexRef = elementIndex;
   };
 
   /**
@@ -548,139 +667,149 @@ class ContentComponent extends SessionStateComponent<
     return (
       <Toc
         modifier="workspace-materials"
-        // tocHeaderTitle={t("labels.tableOfContents", { ns: "materials" })}
         tocHeaderExtraContent={
           <>
             <Dropdown openByHover content={<p>{t("actions.openAll")}</p>}>
               <IconButton
                 icon="arrow-down"
+                aria-label={t("wcag.tocTopicAllExpand", {
+                  ns: "materials",
+                })}
                 buttonModifiers={["toc-action"]}
-                onClick={this.handleToggleAllSectionsOpen("open")}
+                onClick={this.handleToggleAllSectionsClick("open")}
+                onKeyDown={this.handleToggleAllSectionKeyDown("open")}
               />
             </Dropdown>
             <Dropdown openByHover content={<p>{t("actions.closeAll")}</p>}>
               <IconButton
                 icon="arrow-up"
+                aria-label={t("wcag.tocTopicAllCollapse", {
+                  ns: "materials",
+                })}
                 buttonModifiers={["toc-action"]}
-                onClick={this.handleToggleAllSectionsOpen("close")}
+                onClick={this.handleToggleAllSectionsClick("close")}
+                onKeyDown={this.handleToggleAllSectionKeyDown("close")}
               />
             </Dropdown>
             <Dropdown
-              content={
-                <>
-                  <div className="dropdown__container-item">
-                    <div className="filter-category">
-                      <div className="filter-category__label">
-                        {t("labels.pagesShown", { ns: "materials" })}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        type="checkbox"
-                        value="THEORY"
-                        id="theory-page-filter"
-                        checked={this.state.assignmentTypeFilters.includes(
-                          "THEORY"
-                        )}
-                        onChange={this.handleToggleAssignmentFilterChange}
-                      />
-                      <label
-                        htmlFor="theory-page-filter"
-                        className="filter-item__label"
-                      >
-                        {t("labels.theoryPages", { ns: "materials" })}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        type="checkbox"
-                        value="EXERCISE"
-                        id="exercise-page-filter"
-                        checked={this.state.assignmentTypeFilters.includes(
-                          "EXERCISE"
-                        )}
-                        onChange={this.handleToggleAssignmentFilterChange}
-                      />
-                      <label
-                        htmlFor="exercise-page-filter"
-                        className="filter-item__label"
-                      >
-                        {t("labels.exercises", { ns: "materials", count: 0 })}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        type="checkbox"
-                        value="EVALUATED"
-                        id="assignment-page-filter"
-                        checked={this.state.assignmentTypeFilters.includes(
-                          "EVALUATED"
-                        )}
-                        onChange={this.handleToggleAssignmentFilterChange}
-                      />
-                      <label
-                        htmlFor="assignment-page-filter"
-                        className="filter-item__label"
-                      >
-                        {t("labels.evaluables", {
-                          ns: "materials",
-                          count: 0,
-                        })}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        type="checkbox"
-                        value="JOURNAL"
-                        id="journal-page-filter"
-                        checked={this.state.assignmentTypeFilters.includes(
-                          "JOURNAL"
-                        )}
-                        onChange={this.handleToggleAssignmentFilterChange}
-                      />
-                      <label
-                        htmlFor="journal-page-filter"
-                        className="filter-item__label"
-                      >
-                        {t("labels.journalAssignments", { ns: "materials" })}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="dropdown__container-item">
-                    <div className="filter-item filter-item--workspace-page">
-                      <input
-                        type="checkbox"
-                        value="INTERIM_EVALUATION"
-                        id="interim-evaluation-page-filter"
-                        checked={this.state.assignmentTypeFilters.includes(
-                          "INTERIM_EVALUATION"
-                        )}
-                        onChange={this.handleToggleAssignmentFilterChange}
-                      />
-                      <label
-                        htmlFor="interim-evaluation-page-filter"
-                        className="filter-item__label"
-                      >
-                        {t("labels.interimEvaluationPages", {
-                          ns: "materials",
-                        })}
-                      </label>
-                    </div>
-                  </div>
-                </>
-              }
+              items={[
+                <div
+                  key="theory-page"
+                  className="filter-item filter-item--workspace-page"
+                >
+                  <input
+                    type="checkbox"
+                    value="THEORY"
+                    id="theory-page-filter"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "THEORY"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label
+                    htmlFor="theory-page-filter"
+                    className="filter-item__label"
+                  >
+                    {t("labels.theoryPages", { ns: "materials" })}
+                  </label>
+                </div>,
+                <div
+                  key="exercise-page"
+                  className="filter-item filter-item--workspace-page"
+                >
+                  <input
+                    type="checkbox"
+                    value="EXERCISE"
+                    id="exercise-page-filter"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "EXERCISE"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label
+                    htmlFor="exercise-page-filter"
+                    className="filter-item__label"
+                  >
+                    {t("labels.exercises", { ns: "materials" })}
+                  </label>
+                </div>,
+                <div
+                  key="evaluated-page"
+                  className="filter-item filter-item--workspace-page"
+                >
+                  <input
+                    type="checkbox"
+                    value="EVALUATED"
+                    id="assignment-page-filter"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "EVALUATED"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label
+                    htmlFor="assignment-page-filter"
+                    className="filter-item__label"
+                  >
+                    {t("labels.evaluables", {
+                      ns: "materials",
+                    })}
+                  </label>
+                </div>,
+                <div
+                  key="journal-page"
+                  className="filter-item filter-item--workspace-page"
+                >
+                  <input
+                    type="checkbox"
+                    value="JOURNAL"
+                    id="journal-page-filter"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "JOURNAL"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label
+                    htmlFor="journal-page-filter"
+                    className="filter-item__label"
+                  >
+                    {t("labels.journalAssignments", { ns: "materials" })}
+                  </label>
+                </div>,
+
+                <div
+                  key="interim-evaluation-page"
+                  className="filter-item filter-item--workspace-page"
+                >
+                  <input
+                    type="checkbox"
+                    value="INTERIM_EVALUATION"
+                    id="interim-evaluation-page-filter"
+                    checked={this.state.assignmentTypeFilters.includes(
+                      "INTERIM_EVALUATION"
+                    )}
+                    onChange={this.handleToggleAssignmentFilterChange}
+                  />
+                  <label
+                    htmlFor="interim-evaluation-page-filter"
+                    className="filter-item__label"
+                  >
+                    {t("labels.interimEvaluationPages", {
+                      ns: "materials",
+                    })}
+                  </label>
+                </div>,
+              ]}
             >
-              <IconButton icon="filter" buttonModifiers={["toc-action"]} />
+              <IconButton
+                icon="filter"
+                buttonModifiers={["toc-action"]}
+                aria-label={t("actions.filterContent")}
+              />
             </Dropdown>
-            <Dropdown openByHover content={<p>Sisällysluettelo PDF</p>}>
+            <Dropdown
+              openByHover
+              content={<p>{t("actions.openPDF", { ns: "common" })}</p>}
+            >
               <TableOfContentPDFDialog
                 assignmentTypeFilters={this.state.assignmentTypeFilters}
                 materials={this.props.materials}
@@ -689,6 +818,7 @@ class ContentComponent extends SessionStateComponent<
               >
                 <IconButton
                   icon="pdf"
+                  aria-label={t("actions.openPDF", { ns: "common" })}
                   buttonModifiers={["toc-action"]}
                   disablePropagation={true}
                 />
@@ -700,16 +830,16 @@ class ContentComponent extends SessionStateComponent<
         {this.state.materials.map((node, nodeIndex) => {
           // Boolean if there is view Restriction for toc topic
           const isTocTopicViewRestricted =
-            node.viewRestrict === MaterialViewRestriction.LOGGED_IN ||
-            node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS;
+            node.viewRestrict === MaterialViewRestriction.LoggedIn ||
+            node.viewRestrict === MaterialViewRestriction.WorkspaceMembers;
 
           // section is restricted in following cases:
           // section is restricted for logged in users and users is not logged in...
           // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
           const isTocTopicViewRestrictedFromUser =
-            (node.viewRestrict === MaterialViewRestriction.LOGGED_IN &&
+            (node.viewRestrict === MaterialViewRestriction.LoggedIn &&
               !this.props.status.loggedIn) ||
-            (node.viewRestrict === MaterialViewRestriction.WORKSPACE_MEMBERS &&
+            (node.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
               !this.props.workspace.isCourseMember &&
               (this.props.status.isStudent || !this.props.status.loggedIn));
 
@@ -734,16 +864,22 @@ class ContentComponent extends SessionStateComponent<
               ? [this.buildViewRestrictionModifiers(node.viewRestrict, true)]
               : [];
 
+          const filteredChildren = node.children.filter((child) => {
+            const isTheory = child.assignmentType === null;
+
+            return this.state.assignmentTypeFilters.includes(
+              child.assignmentType || (isTheory && "THEORY")
+            );
+          });
+
           const topic = (
             <TocTopic
-              ref={(ref) => {
-                this.topicRefs[nodeIndex] = ref;
-              }}
+              ref={this.handleCallbackTocTopicRef(nodeIndex)}
               isActive={this.isSectionActive(node)}
               topicId={
                 this.props.status.loggedIn
-                  ? `${node.workspaceMaterialId}_${this.props.status.userId}`
-                  : node.workspaceMaterialId
+                  ? `tocTopic-${node.workspaceMaterialId}_${this.props.status.userId}`
+                  : `tocTopic-${node.workspaceMaterialId}`
               }
               name={node.title}
               isHidden={node.hidden}
@@ -756,45 +892,40 @@ class ContentComponent extends SessionStateComponent<
               modifiers={topicClassMods}
               iconAfter={iconTopic}
               iconAfterTitle={iconTitleTopic}
+              onTitleKeyDown={this.handleTocTopicTitleKeyDown(
+                `s-${node.workspaceMaterialId}`
+              )}
               language={node.titleLanguage || this.props.workspace.language}
             >
               {!isTocTopicViewRestrictedFromUser &&
-                node.children.map((subnode) => {
+                filteredChildren.map((subnode, subNodeIndex) => {
                   // Boolean if there is view Restriction for toc element
                   const isTocElementViewRestricted =
+                    subnode.viewRestrict === MaterialViewRestriction.LoggedIn ||
                     subnode.viewRestrict ===
-                      MaterialViewRestriction.LOGGED_IN ||
-                    subnode.viewRestrict ===
-                      MaterialViewRestriction.WORKSPACE_MEMBERS;
+                      MaterialViewRestriction.WorkspaceMembers;
 
                   const isAssignment = subnode.assignmentType === "EVALUATED";
                   const isExercise = subnode.assignmentType === "EXERCISE";
                   const isJournal = subnode.assignmentType === "JOURNAL";
                   const isInterimEvaluation =
                     subnode.assignmentType === "INTERIM_EVALUATION";
-                  const isTheory = subnode.assignmentType === null;
-
-                  // Boolean if toc element is filtered out
-                  // if there is filters, then only elements that match the filters are shown
-                  const filteredOut =
-                    !this.state.assignmentTypeFilters.includes(
-                      subnode.assignmentType || (isTheory && "THEORY")
-                    );
 
                   //this modifier will add the --assignment or --exercise to the list so you can add the border style with it
                   const modifier = isAssignment
                     ? "assignment"
                     : isExercise
-                    ? "exercise"
-                    : isJournal
-                    ? "journal"
-                    : isInterimEvaluation
-                    ? "interim-evaluation"
-                    : null;
+                      ? "exercise"
+                      : isJournal
+                        ? "journal"
+                        : isInterimEvaluation
+                          ? "interim-evaluation"
+                          : null;
 
                   let icon: string | null = null;
                   let iconTitle: string | null = null;
                   let className: string | null = null;
+                  let ariaLabel: string | null = null;
 
                   const compositeReplies =
                     this.props.materialReplies &&
@@ -820,12 +951,20 @@ class ContentComponent extends SessionStateComponent<
                           context: "done",
                           ns: "materials",
                         });
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "done",
+                          ns: "materials",
+                        });
                         break;
                       case "SUBMITTED":
                         icon = "check";
                         className = "toc__item--submitted";
                         iconTitle = t("labels.assignment", {
                           context: "returned",
+                          ns: "materials",
+                        });
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "submitted",
                           ns: "materials",
                         });
                         break;
@@ -836,8 +975,10 @@ class ContentComponent extends SessionStateComponent<
                           context: "cancelled",
                           ns: "materials",
                         });
-                        break;
-
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "withdrawn",
+                          ns: "materials",
+                        });
                         break;
                       case "INCOMPLETE":
                         icon = "check";
@@ -846,7 +987,10 @@ class ContentComponent extends SessionStateComponent<
                           context: "incomplete",
                           ns: "materials",
                         });
-                        break;
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "incomplete",
+                          ns: "materials",
+                        });
                         break;
                       case "FAILED":
                         icon = "thumb-down";
@@ -856,6 +1000,10 @@ class ContentComponent extends SessionStateComponent<
                           ns: "materials",
                         });
                         iconTitle = "Tittel";
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "failed",
+                          ns: "materials",
+                        });
                         break;
                       case "PASSED":
                         icon = "thumb-up";
@@ -864,8 +1012,11 @@ class ContentComponent extends SessionStateComponent<
                           context: "passed",
                           ns: "materials",
                         });
+                        ariaLabel = t("wcag.tocPageMaterialStatus", {
+                          context: "passed",
+                          ns: "materials",
+                        });
                         break;
-
                       case "UNANSWERED":
                       default:
                         break;
@@ -889,16 +1040,19 @@ class ContentComponent extends SessionStateComponent<
 
                   const pageElement = (
                     <TocElement
+                      id={`tocElement-${subnode.workspaceMaterialId}`}
                       modifier={modifier}
-                      ref={subnode.workspaceMaterialId + ""}
+                      tabIndex={-1}
+                      ref={this.handleCallbackTocElementRef(
+                        `s-${node.workspaceMaterialId}`,
+                        subNodeIndex
+                      )}
                       key={subnode.workspaceMaterialId}
                       isActive={
                         this.props.activeNodeId === subnode.workspaceMaterialId
                       }
                       className={className}
                       isHidden={subnode.hidden || node.hidden}
-                      isFilteredOut={filteredOut}
-                      disableScroll
                       iconAfter={icon}
                       iconAfterTitle={iconTitle}
                       hash={
@@ -906,11 +1060,20 @@ class ContentComponent extends SessionStateComponent<
                           ? null
                           : "p-" + subnode.workspaceMaterialId
                       }
-                      language={
+                      onKeyDown={this.handleTocElementKeyDown(
+                        `s-${node.workspaceMaterialId}`
+                      )}
+                      onBlur={this.handleTocElementBlur(
+                        `s-${node.workspaceMaterialId}`,
+                        subNodeIndex
+                      )}
+                      onFocus={this.handleTocElementFocus(subNodeIndex)}
+                      lang={
                         subnode.titleLanguage ||
                         node.titleLanguage ||
                         this.props.workspace.language
                       }
+                      aria-label={ariaLabel}
                     >
                       {subnode.title}
                     </TocElement>
@@ -1007,7 +1170,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { updateWorkspaceMaterialContentNode, setWholeWorkspaceMaterials },
     dispatch
@@ -1019,5 +1182,5 @@ const componentWithTranslation = withTranslation(["materials", "common"], {
 })(ContentComponent);
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {
-  withRef: true,
+  forwardRef: true,
 })(componentWithTranslation);

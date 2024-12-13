@@ -1,8 +1,8 @@
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { IconButton } from "~/components/general/button";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
@@ -40,7 +40,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface WorkspaceUsersProps extends WithTranslation {
   status: StatusType;
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   loadStaffMembers: LoadUsersOfWorkspaceTriggerType;
   loadStudents: LoadUsersOfWorkspaceTriggerType;
 }
@@ -372,7 +372,11 @@ class WorkspaceUsers extends React.Component<
         />
       ) : null;
 
-    t("labels.teacher", { ns: "users", count: 0 });
+    const teacherCount =
+      (this.props.workspace &&
+        this.props.workspace.staffMembers &&
+        this.props.workspace.staffMembers.results.length) ||
+      0;
 
     return (
       <ApplicationPanel
@@ -381,7 +385,7 @@ class WorkspaceUsers extends React.Component<
       >
         <ApplicationSubPanel modifier="workspace-users">
           <ApplicationSubPanel.Header modifier="workspace-users">
-            {t("labels.teacher", { ns: "users", count: 0 })}
+            {t("labels.teacher", { ns: "users", count: teacherCount })}
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body modifier="workspace-users">
             <ApplicationList
@@ -565,7 +569,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadStaffMembers: loadStaffMembersOfWorkspace,

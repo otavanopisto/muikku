@@ -1,6 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -9,8 +9,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { bindActionCreators } from "redux";
-import mApi from "~/lib/mApi";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { ProfileState } from "~/reducers/main-function/profile";
 import {
   loadProfileUsername,
@@ -18,6 +17,7 @@ import {
 } from "~/actions/main-function/profile";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 
 /**
  * UpdateUsernamePasswordDialogProps
@@ -68,7 +68,7 @@ class UpdateUsernamePasswordDialog extends React.Component<
     };
   }
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
   // eslint-disable-next-line camelcase
@@ -88,7 +88,9 @@ class UpdateUsernamePasswordDialog extends React.Component<
    * update
    * @param closeDialog closeDialog
    */
-  update(closeDialog: () => void) {
+  async update(closeDialog: () => void) {
+    const userpluginApi = MApi.getUserpluginApi();
+
     const newPassword1 = this.state.newPassword;
     const newPassword2 = this.state.newPasswordConfirm;
 
@@ -118,59 +120,65 @@ class UpdateUsernamePasswordDialog extends React.Component<
       newPassword: this.state.newPassword,
     };
 
-    mApi()
-      .userplugin.credentials.update(values)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .callback((err: any, result: any) => {
-        this.setState({
-          locked: false,
-        });
-
-        if (err) {
-          if (result.status === 403) {
-            this.props.displayNotification(
-              this.props.t("notifications.403", {
-                context: "password",
-              }),
-              "error"
-            );
-          } else if (result.status === 409) {
-            this.props.displayNotification(
-              this.props.t("notifications.409", {
-                context: "userName",
-              }),
-              "error"
-            );
-          } else {
-            this.props.displayNotification(err.message, "error");
-          }
-        } else {
-          closeDialog();
-          this.setState({
-            username: "",
-            oldPassword: "",
-            newPassword: "",
-            newPasswordConfirm: "",
-          });
-          if (values.newPassword === "") {
-            this.props.displayNotification(
-              this.props.t("notifications.updateSuccess", {
-                context: "credentials",
-              }),
-              "success"
-            );
-          } else {
-            this.props.displayNotification(
-              this.props.t("notifications.updateSuccess", {
-                context: "password",
-              }),
-              "success"
-            );
-          }
-
-          this.props.loadProfileUsername();
-        }
+    try {
+      await userpluginApi.updateUserPluginCredentials({
+        updateUserPluginCredentialsRequest: values,
       });
+
+      this.setState({
+        locked: false,
+        username: "",
+        oldPassword: "",
+        newPassword: "",
+        newPasswordConfirm: "",
+      });
+
+      if (values.newPassword === "") {
+        this.props.displayNotification(
+          this.props.t("notifications.updateSuccess", {
+            context: "credentials",
+          }),
+          "success"
+        );
+      } else {
+        this.props.displayNotification(
+          this.props.t("notifications.updateSuccess", {
+            context: "password",
+          }),
+          "success"
+        );
+      }
+
+      this.props.loadProfileUsername();
+
+      closeDialog();
+    } catch (err) {
+      this.setState({
+        locked: false,
+      });
+
+      if (!isMApiError(err)) {
+        throw err;
+      } else if (isResponseError(err)) {
+        if (err.response.status === 403) {
+          this.props.displayNotification(
+            this.props.t("notifications.403", {
+              context: "password",
+            }),
+            "error"
+          );
+        } else if (err.response.status === 409) {
+          this.props.displayNotification(
+            this.props.t("notifications.409", {
+              context: "userName",
+            }),
+            "error"
+          );
+        }
+      } else {
+        this.props.displayNotification(err.message, "error");
+      }
+    }
   }
 
   /**
@@ -301,7 +309,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { displayNotification, loadProfileUsername },
     dispatch

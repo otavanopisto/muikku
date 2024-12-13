@@ -2,122 +2,12 @@ import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import {
   CommunicatorSignature,
+  MessageSearchResult,
   MessageThread,
   MessageThreadExpanded,
-  MessageThreadLabel,
-  User,
-  UserGroup,
 } from "~/generated/client";
 
 export type MessagesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
-export type MessagesSearchResultFolderType = "INBOX" | "TRASH" | "SENT";
-/**
- * MessageSignatureType
- */
-export interface MessageSignatureType {
-  id: number;
-  name: string;
-  signature: string;
-}
-
-/**
- * MessageSearchResult
- */
-export interface MessageSearchResult {
-  caption: string;
-  communicatorMessageId: number;
-  created: string;
-  id: number;
-  readByReceiver: boolean;
-  folder: MessagesSearchResultFolderType;
-  labels: Array<{
-    labelColor: number;
-    id: number;
-    labelName: string;
-  }>;
-  sender: {
-    userEntityId: number;
-    firstName: string;
-    lastName: string;
-    nickName: string;
-    studyProgrammeName?: string;
-  };
-  senderId: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tags: any;
-  recipients?: Array<MessageRecepientType>;
-  userGroupRecipients?: UserGroup[];
-  workspaceRecipients?: Array<MessageWorkspaceRecipientType>;
-}
-
-/**
- * MessageThreadLabelUpdateType
- */
-export interface MessageThreadLabelUpdateType {
-  id?: number;
-  labelColor?: number;
-  labelId?: number;
-  labelName?: string;
-  messageThreadId?: number;
-  userEntityId?: number;
-}
-
-/**
- * MessageThreadUpdateType
- */
-export interface MessageThreadUpdateType {
-  communicatorMessageId?: number;
-  senderId?: number;
-  categoryName?: "message";
-  caption?: string;
-  created?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tags?: any;
-  threadLatestMessageDate?: string;
-  unreadMessagesInThread?: boolean;
-  sender?: User;
-  messageCountInThread?: number;
-  labels?: MessageThreadLabel[];
-}
-
-/**
- * MessageRecepientType
- */
-export interface MessageRecepientType {
-  communicatorMessageId: number;
-  userEntityId: number;
-  nickName?: string | null;
-  firstName: string;
-  lastName?: string | null;
-  recipientId: number;
-  archived?: boolean;
-  studiesEnded?: boolean;
-}
-
-/**
- * MessageWorkspaceRecipientType
- */
-export interface MessageWorkspaceRecipientType {
-  archetype: string;
-  workspaceEntityId: number;
-  workspaceExtension?: string;
-  workspaceName: string;
-}
-/* export type MessageThread[] = Array<MessageThread>; */
-
-/**
- * MessagesNavigationItemUpdateType
- */
-export interface MessagesNavigationItemUpdateType {
-  location?: string;
-  type?: string;
-  id?: string | number;
-  icon?: string;
-  color?: string;
-  text: string;
-}
-
-export type NavigationItemTypes = "folder" | "label";
 
 /**
  * MessagesNavigationItem
@@ -136,17 +26,6 @@ export interface MessagesNavigationItem {
   color?: string;
   text: string;
 }
-
-/**
- * LabelType
- */
-export interface LabelType {
-  id: number;
-  color: number;
-  name: string;
-}
-
-export type LabelListType = Array<LabelType>;
 
 const defaultNavigation: MessagesNavigationItem[] = [
   {
@@ -240,8 +119,8 @@ function sortNavigationItems(
   return labelAUpperCase < labelBUpperCase
     ? -1
     : labelAUpperCase > labelBUpperCase
-    ? 1
-    : 0;
+      ? 1
+      : 0;
 }
 
 const initialMessagesState: MessagesState = {
@@ -380,18 +259,16 @@ export const messages: Reducer<MessagesState> = (
 
       return {
         ...state,
-        selectedThreads: state.selectedThreads.map(
-          (selectedThread: MessageThread) => {
-            if (
-              selectedThread.communicatorMessageId ===
-              oldThread.communicatorMessageId
-            ) {
-              return newThread;
-            }
-            return selectedThread;
+        selectedThreads: state.selectedThreads.map((selectedThread) => {
+          if (
+            selectedThread.communicatorMessageId ===
+            oldThread.communicatorMessageId
+          ) {
+            return newThread;
           }
-        ),
-        threads: state.threads.map((thread: MessageThread) => {
+          return selectedThread;
+        }),
+        threads: state.threads.map((thread) => {
           if (
             thread.communicatorMessageId === oldThread.communicatorMessageId
           ) {
@@ -552,7 +429,7 @@ export const messages: Reducer<MessagesState> = (
           }),
         })),
 
-        threads: state.threads.map((thread: MessageThread) => ({
+        threads: state.threads.map((thread) => ({
           ...thread,
           labels: thread.labels.map((label) => {
             if (label.labelId === action.payload.labelId) {

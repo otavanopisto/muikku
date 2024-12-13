@@ -10,19 +10,14 @@
 //please remove it
 
 import * as React from "react";
-
-import mApi from "~/lib/mApi";
 import {
-  WorkspaceType,
-  MaterialContentNodeType,
-  MaterialCompositeRepliesType,
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
 } from "~/reducers/workspaces";
-import promisify from "~/util/promisify";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   UpdateAssignmentStateTriggerType,
   updateAssignmentState,
@@ -31,7 +26,6 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/material-page.scss";
 import { UsedAs } from "~/@types/shared";
@@ -43,8 +37,10 @@ import {
   updateWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces/material";
-import i18n from "~/locales/i18n";
+import { MaterialCompositeReply } from "~/generated/client";
 import { AnyActionType } from "~/actions";
+import MApi from "~/api/api";
+import { connect } from "react-redux";
 
 /* i18n.t("", { ns: "materials" }); */
 
@@ -62,7 +58,7 @@ const STATES = [
     "button-class": "muikku-submit-exercise",
 
     //This is what by default appears on the button
-    "button-text": "actions.send",
+    "button-text": "actions.send_exercise",
 
     //Buttons are not disabled
     "button-disabled": false,
@@ -75,7 +71,21 @@ const STATES = [
   },
   {
     "assignment-type": "EXERCISE",
-    state: ["SUBMITTED", "PASSED", "FAILED", "INCOMPLETE"],
+    state: ["SUBMITTED"],
+
+    //With this property active whenever in this state the answers will be checked
+    "checks-answers": true,
+    "displays-hide-show-answers-on-request-button-if-allowed": true,
+    "button-class": "muikku-submit-exercise",
+    "button-text": "actions.cancel_exercise",
+    "button-disabled": false,
+    "success-state": "ANSWERED",
+    //This is for when the fields are modified, the exercise rolls back to be answered rather than submitted
+    "modify-state": "ANSWERED",
+  },
+  {
+    "assignment-type": "EXERCISE",
+    state: ["PASSED", "FAILED", "INCOMPLETE"],
 
     //With this property active whenever in this state the answers will be checked
     "checks-answers": true,
@@ -91,7 +101,7 @@ const STATES = [
     "assignment-type": "EVALUATED",
     state: ["UNANSWERED", "ANSWERED"],
     "button-class": "muikku-submit-assignment",
-    "button-text": "actions.send",
+    "button-text": "actions.send_assignment",
     //Represents a message that will be shown once the state changes to the success state
     "success-text": "notifications.assignmentSubmitted",
     "button-disabled": false,
@@ -195,9 +205,9 @@ const STATES = [
  * MaterialLoaderProps
  */
 export interface MaterialLoaderProps {
-  material: MaterialContentNodeType;
-  folder?: MaterialContentNodeType;
-  workspace: WorkspaceType;
+  material: MaterialContentNodeWithIdAndLogic;
+  folder?: MaterialContentNodeWithIdAndLogic;
+  workspace: WorkspaceDataType;
   status: StatusType;
   modifiers?: string | Array<string>;
   id?: string;
@@ -252,7 +262,7 @@ export interface MaterialLoaderProps {
    * used
    */
   loadCompositeReplies?: boolean;
-  compositeReplies?: MaterialCompositeRepliesType;
+  compositeReplies?: MaterialCompositeReply;
 
   readOnly?: boolean;
 
@@ -270,6 +280,7 @@ export interface MaterialLoaderProps {
   answersVisible?: boolean;
   isViewRestricted?: boolean;
   readspeakerComponent?: JSX.Element;
+  anchorElement?: JSX.Element;
 
   children?: (
     props: MaterialLoaderProps,
@@ -290,7 +301,7 @@ interface DefaultMaterialLoaderProps {
  */
 interface MaterialLoaderState {
   //Composite replies as loaded when using loadCompositeReplies boolean
-  compositeRepliesInState: MaterialCompositeRepliesType;
+  compositeRepliesInState: MaterialCompositeReply;
   compositeRepliesInStateLoaded: boolean;
 
   //whether the answers are visible and checked
@@ -306,8 +317,7 @@ interface MaterialLoaderState {
 
 //A cheap cache for material replies and composite replies used by the hack
 const materialRepliesCache: { [key: string]: any } = {};
-const compositeRepliesCache: { [key: string]: MaterialCompositeRepliesType } =
-  {};
+const compositeRepliesCache: { [key: string]: MaterialCompositeReply } = {};
 
 //Treat this class with care it uses a lot of hacks to be efficient
 //The compositeReplies which answers are ignored and only used for setting the initial replies
@@ -412,11 +422,12 @@ class MaterialLoader extends React.Component<
     this.create();
   }
   /**
-   * componentWillUpdate
+   * UNSAFE_componentWillUpdate
    * @param nextProps nextProps
    * @param nextState nextState
    */
-  componentWillUpdate(
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillUpdate(
     nextProps: MaterialLoaderProps,
     nextState: MaterialLoaderState
   ) {
@@ -483,6 +494,8 @@ class MaterialLoader extends React.Component<
   async create() {
     const { usedAs = "default", userEntityId } = this.props;
 
+    const workspaceApi = MApi.getWorkspaceApi();
+
     let userEntityIdToLoad = this.props.status.userId;
 
     if (usedAs === "evaluationTool" && userEntityId) {
@@ -492,19 +505,17 @@ class MaterialLoader extends React.Component<
     //TODO maybe we should get rid of this way to load the composite replies
     //after all it's learned that this is part of the workspace
     if (this.props.loadCompositeReplies) {
-      let compositeRepliesInState: MaterialCompositeRepliesType =
+      let compositeRepliesInState: MaterialCompositeReply =
         compositeRepliesCache[
           this.props.workspace.id + "-" + this.props.material.assignment.id
         ];
       if (!compositeRepliesInState) {
-        compositeRepliesInState = (await promisify(
-          mApi().workspace.workspaces.materials.compositeMaterialReplies.read(
-            this.props.workspace.id,
-            this.props.material.assignment.id,
-            { userEntityId: userEntityIdToLoad }
-          ),
-          "callback"
-        )()) as MaterialCompositeRepliesType;
+        compositeRepliesInState =
+          await workspaceApi.getWorkspaceCompositeMaterialReplies({
+            workspaceEntityId: this.props.workspace.id,
+            workspaceMaterialId: this.props.material.assignment.id,
+            userEntityId: userEntityIdToLoad,
+          });
 
         materialRepliesCache[
           this.props.workspace.id + "-" + this.props.material.assignment.id
@@ -726,7 +737,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       updateAssignmentState,

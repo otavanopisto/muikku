@@ -1,30 +1,29 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import Dialog from "~/components/general/dialog";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import { bindActionCreators } from "redux";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import {
   RequestAssessmentAtWorkspaceTriggerType,
   requestAssessmentAtWorkspace,
 } from "~/actions/workspaces";
 import { StatusType } from "~/reducers/base/status";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
 import { withTranslation, WithTranslation } from "react-i18next";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * EvaluationRequestDialogProps
  */
 interface EvaluationRequestDialogProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   isOpen: boolean;
   onClose: () => any;
   requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType;
@@ -109,19 +108,24 @@ class EvaluationRequestDialog extends React.Component<
    * @param closeDialog closeDialog
    */
   proceedToPay = async (closeDialog: () => any) => {
+    const assessmentRequestApi = MApi.getAssessmentApi();
+
     try {
       closeDialog();
-      const link: string = (await promisify(
-        mApi().assessmentrequest.workspace.paidAssessmentRequest.create(
-          this.props.workspace.id,
-          {
-            requestText: this.state.message,
-          }
-        ),
-        "callback"
-      )().then((link: { url: string }) => link.url)) as string;
-      window.location.href = link;
+
+      const result = await assessmentRequestApi.createPaidAssessmentRequest({
+        workspaceEntityId: this.props.workspace.id,
+        createPaidAssessmentRequestRequest: {
+          requestText: this.state.message,
+        },
+      });
+
+      window.location.href = result.url;
     } catch (e) {
+      if (!isMApiError(e)) {
+        throw e;
+      }
+
       this.props.displayNotification(
         this.props.t("notifications.createError", {
           ns: "orders",
@@ -136,25 +140,25 @@ class EvaluationRequestDialog extends React.Component<
    * loadPriceInfo loads the assessment prices from backend
    */
   loadPriceInfo = async () => {
+    const assessmentRequestApi = MApi.getAssessmentApi();
+
     try {
-      const price: number = (await promisify(
-        mApi().assessmentrequest.workspace.assessmentPrice.read(
-          this.props.workspace.id
-        ),
-        "callback"
-      )().then(
-        (assessmentPrice: { price: number }) => assessmentPrice.price
-      )) as number;
+      const result = await assessmentRequestApi.getWorkspaceAssessmentPrice({
+        workspaceEntityId: this.props.workspace.id,
+      });
 
       this.setState({
-        price,
+        price: result.price,
       });
-      // eslint-disable-next-line no-empty
     } catch (e) {
+      if (!isMApiError(e)) {
+        throw e;
+      }
       this.props.displayNotification(
         this.props.t("notifications.loadError", {
           ns: "orders",
-          error: e,
+          context: "price",
+          error: e.message,
         }),
         "error"
       );
@@ -308,7 +312,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { requestAssessmentAtWorkspace, displayNotification },
     dispatch

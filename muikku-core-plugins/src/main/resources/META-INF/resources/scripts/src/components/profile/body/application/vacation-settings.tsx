@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { Dispatch, connect } from "react-redux";
-import { localizeTime } from "~/locales/i18n";
+import { connect } from "react-redux";
+import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,17 +10,15 @@ import { ProfileState } from "~/reducers/main-function/profile";
 import {
   saveProfileProperty,
   SaveProfilePropertyTriggerType,
-  updateProfileChatSettings,
-  UpdateProfileChatSettingsTriggerType,
 } from "~/actions/main-function/profile";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import Button from "~/components/general/button";
 import { SimpleActionExecutor } from "~/actions/executor";
-import * as moment from "moment";
+import moment from "moment";
 import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -33,7 +31,6 @@ interface VacationSettingsProps extends WithTranslation {
   status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
   saveProfileProperty: SaveProfilePropertyTriggerType;
-  updateProfileChatSettings: UpdateProfileChatSettingsTriggerType;
 }
 
 /**
@@ -320,145 +317,151 @@ class VacationSettings extends React.Component<
           </h2>
           <div className="application-sub-panel">
             <div className="application-sub-panel__body">
-              <div className="form__row">
-                <div className="form-element">
-                  <label htmlFor="profileVacationStart">
-                    {this.props.t("labels.beginDate", { ns: "profile" })}
-                  </label>
-                  <DatePicker
-                    id="profileVacationStart"
-                    className="form-element__input"
-                    onChange={this.handleDateChange.bind(
-                      this,
-                      "profileVacationStart"
-                    )}
-                    maxDate={this.state.profileVacationEnd}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
-                    selected={this.state.profileVacationStart}
-                    dateFormat="P"
-                  />
-                </div>
-              </div>
-              <div className="form__row">
-                <div className="form-element">
-                  <label htmlFor="profileVacationStart">
-                    {this.props.t("labels.endDate", { ns: "profile" })}{" "}
-                  </label>
-                  <DatePicker
-                    id="profileVacationEnd"
-                    className="form-element__input"
-                    onChange={this.handleDateChange.bind(
-                      this,
-                      "profileVacationEnd"
-                    )}
-                    minDate={this.state.profileVacationStart}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
-                    selected={this.state.profileVacationEnd}
-                    dateFormat="P"
-                  />
-                </div>
-              </div>
-
-              <div className="form__row">
-                <div
-                  className={`form-element ${
-                    !this.state.profileVacationStart ||
-                    !this.state.profileVacationEnd
-                      ? "NON-ACTIVE"
-                      : ""
-                  }`}
-                >
-                  <div className="form-element form-element--checkbox-radiobutton">
-                    <input
-                      checked={
-                        this.state.vacationAutoReply === "ENABLED"
-                          ? true
-                          : false
-                      }
-                      value={this.state.vacationAutoReply}
-                      id="profileVacationAutoReply"
-                      type="checkbox"
-                      onChange={this.onVacationAutoReplyChange}
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileVacationStart">
+                      {this.props.t("labels.beginDate", { ns: "profile" })}
+                    </label>
+                    <DatePicker
+                      id="profileVacationStart"
+                      className="form-element__input"
+                      onChange={this.handleDateChange.bind(
+                        this,
+                        "profileVacationStart"
+                      )}
+                      maxDate={this.state.profileVacationEnd}
+                      locale={outputCorrectDatePickerLocale(localize.language)}
+                      selected={this.state.profileVacationStart}
+                      dateFormat="P"
                     />
-                    <label htmlFor="profileVacationAutoReply">
-                      {this.props.t("labels.vacationAutoReply", {
+                  </div>
+                </div>
+              </div>
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="profileVacationStart">
+                      {this.props.t("labels.endDate", { ns: "profile" })}{" "}
+                    </label>
+                    <DatePicker
+                      id="profileVacationEnd"
+                      className="form-element__input"
+                      onChange={this.handleDateChange.bind(
+                        this,
+                        "profileVacationEnd"
+                      )}
+                      minDate={this.state.profileVacationStart}
+                      locale={outputCorrectDatePickerLocale(localize.language)}
+                      selected={this.state.profileVacationEnd}
+                      dateFormat="P"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__row">
+                  <div
+                    className={`form-element ${
+                      !this.state.profileVacationStart ||
+                      !this.state.profileVacationEnd
+                        ? "NON-ACTIVE"
+                        : ""
+                    }`}
+                  >
+                    <div className="form-element form-element--checkbox-radiobutton">
+                      <input
+                        checked={
+                          this.state.vacationAutoReply === "ENABLED"
+                            ? true
+                            : false
+                        }
+                        value={this.state.vacationAutoReply}
+                        id="profileVacationAutoReply"
+                        type="checkbox"
+                        onChange={this.onVacationAutoReplyChange}
+                      />
+                      <label htmlFor="profileVacationAutoReply">
+                        {this.props.t("labels.vacationAutoReply", {
+                          ns: "profile",
+                        })}
+                      </label>
+                    </div>
+                    <div className="form-element__description">
+                      {this.props.t("content.vacationAutoReply", {
                         ns: "profile",
                       })}
-                    </label>
-                  </div>
-                  <div className="form-element__description">
-                    {this.props.t("content.vacationAutoReply", {
-                      ns: "profile",
-                    })}
+                    </div>
                   </div>
                 </div>
               </div>
 
               {this.state.vacationAutoReply === "ENABLED" && (
-                <div className="form__row">
-                  <div
-                    className={`form-element ${
-                      !this.state.profileVacationStart ||
-                      !this.state.profileVacationEnd
-                        ? "NON-ACTIVE"
-                        : ""
-                    } form-element`}
-                  >
-                    <label htmlFor="profileVacationAutoReplySubject">
-                      {this.props.t("labels.title", {
-                        context: "vacationMessage",
-                      })}
-                    </label>
-                    <input
-                      className="form-element__input form-element__input--profile-auto-reply"
-                      id="profileVacationAutoReplySubject"
-                      type="text"
-                      onChange={this.onVacationAutoReplySubjectChange}
-                      value={this.state.vacationAutoReplySubject}
-                    ></input>
-                  </div>
-                </div>
-              )}
-
-              {this.state.vacationAutoReply === "ENABLED" && (
-                <div className="form__row">
-                  <div
-                    className={`form-element ${
-                      !this.state.profileVacationStart ||
-                      !this.state.profileVacationEnd
-                        ? "NON-ACTIVE"
-                        : ""
-                    } form-element`}
-                  >
-                    <label htmlFor="profileVacationAutoReplyMsg">
-                      {this.props.t("labels.content", {
-                        context: "vacationMessage",
-                      })}
-                    </label>
-                    <div className="form-element__textarea-container">
-                      <textarea
-                        className="form-element__textarea form-element__textarea--profile-auto-reply"
-                        id="profileVacationAutoReplyMsg"
-                        onChange={this.onVacationAutoReplyMsgChange}
-                        value={this.state.vacationAutoReplyMsg}
-                      ></textarea>
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div
+                      className={`form-element ${
+                        !this.state.profileVacationStart ||
+                        !this.state.profileVacationEnd
+                          ? "NON-ACTIVE"
+                          : ""
+                      } form-element`}
+                    >
+                      <label htmlFor="profileVacationAutoReplySubject">
+                        {this.props.t("labels.title", {
+                          context: "vacationMessage",
+                        })}
+                      </label>
+                      <input
+                        className="form-element__input form-element__input--profile-auto-reply"
+                        id="profileVacationAutoReplySubject"
+                        type="text"
+                        onChange={this.onVacationAutoReplySubjectChange}
+                        value={this.state.vacationAutoReplySubject}
+                      ></input>
                     </div>
                   </div>
                 </div>
               )}
 
-              <div className="form__buttons">
-                <Button
-                  buttonModifiers="primary-function-save"
-                  onClick={this.save}
-                  disabled={this.state.locked}
-                >
-                  {this.props.t("actions.save")}
-                </Button>
+              {this.state.vacationAutoReply === "ENABLED" && (
+                <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                  <div className="form__row">
+                    <div
+                      className={`form-element ${
+                        !this.state.profileVacationStart ||
+                        !this.state.profileVacationEnd
+                          ? "NON-ACTIVE"
+                          : ""
+                      } form-element`}
+                    >
+                      <label htmlFor="profileVacationAutoReplyMsg">
+                        {this.props.t("labels.content", {
+                          context: "vacationMessage",
+                        })}
+                      </label>
+                      <div className="form-element__textarea-container">
+                        <textarea
+                          className="form-element__textarea form-element__textarea--profile-auto-reply"
+                          id="profileVacationAutoReplyMsg"
+                          onChange={this.onVacationAutoReplyMsgChange}
+                          value={this.state.vacationAutoReplyMsg}
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="application-sub-panel__item  application-sub-panel__item--profile">
+                <div className="form__buttons">
+                  <Button
+                    buttonModifiers="primary-function-save"
+                    onClick={this.save}
+                    disabled={this.state.locked}
+                  >
+                    {this.props.t("actions.save")}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -483,9 +486,9 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { saveProfileProperty, displayNotification, updateProfileChatSettings },
+    { saveProfileProperty, displayNotification },
     dispatch
   );
 }

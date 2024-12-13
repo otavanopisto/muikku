@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as moment from "moment";
+import moment from "moment";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { sleep } from "~/helper-functions/shared";
@@ -125,21 +125,23 @@ function FollowUpProvider(providerProps: FollowUpProviderProps) {
      *
      * @param data HopsGoals. As its plain json, it needs to be parsed
      */
-    const onAnswerSavedAtServer = (data: unknown) => {
-      if (typeof data === "string") {
-        const followUp: HopsGoals = JSON.parse(data);
+    const onAnswerSavedAtServer = (
+      data: HopsGoals & { studentIdentifier: string }
+    ) => {
+      // Destructure studentIdentifier out so it's not included in the spread
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { studentIdentifier, ...hopsGoals } = data;
 
-        if (componentMounted.current) {
-          setFollowUpData((followUpData) => ({
-            ...followUpData,
-            followUp: {
-              ...followUp,
-              graduationGoal: followUp.graduationGoal
-                ? moment(followUp.graduationGoal).toDate()
-                : null,
-            },
-          }));
-        }
+      if (componentMounted.current) {
+        setFollowUpData((followUpData) => ({
+          ...followUpData,
+          followUp: {
+            ...hopsGoals,
+            graduationGoal: hopsGoals.graduationGoal
+              ? moment(hopsGoals.graduationGoal).toDate()
+              : null,
+          },
+        }));
       }
     };
 

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import Link from "~/components/general/link";
 import DeleteThreadComponent from "../../dialogs/delete-thread-component";
 import { getName } from "~/util/modifiers";
@@ -18,9 +18,10 @@ import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
 import { AnyActionType } from "~/actions";
 import { DiscussionThreadReply, DiscussionUser } from "~/generated/client";
-import * as moment from "moment";
-import { localizeTime } from "~/locales/i18n";
+import moment from "moment";
+import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { Action, Dispatch } from "redux";
 
 /**
  * DiscussionThreadReplyProps
@@ -113,7 +114,7 @@ class DiscussionThreadReplyComponent extends React.Component<
         hidden={isHidden}
       >
         <DiscussionThreadHeader
-          aside={<span>{localizeTime.date(discussionItem.created)}</span>}
+          aside={<span>{localize.date(discussionItem.created)}</span>}
         >
           <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">
             {getName(user, this.props.status.permissions.FORUM_SHOW_FULL_NAMES)}
@@ -139,7 +140,7 @@ class DiscussionThreadReplyComponent extends React.Component<
                   <div className="application-list__item-edited">
                     {this.props.i18n.t("labels.edited", {
                       context: "in",
-                      time: localizeTime.date(discussionItem.lastModified),
+                      time: localize.date(discussionItem.lastModified),
                     })}
                   </div>
                 ) : null}
@@ -152,7 +153,7 @@ class DiscussionThreadReplyComponent extends React.Component<
                   <div className="application-list__item-edited">
                     {this.props.i18n.t("labels.edited", {
                       context: "in",
-                      time: localizeTime.date(discussionItem.lastModified),
+                      time: localize.date(discussionItem.lastModified),
                     })}
                   </div>
                 ) : null}
@@ -262,7 +263,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

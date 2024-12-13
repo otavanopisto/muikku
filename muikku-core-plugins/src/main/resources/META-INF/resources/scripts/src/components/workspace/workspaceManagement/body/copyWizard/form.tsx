@@ -1,22 +1,18 @@
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import { CopyWizardStoreType, CopyWizardStoreUpdateType } from "./";
 import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
 import "~/sass/elements/form.scss";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { StateType } from "~/reducers";
-import { connect, Dispatch } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 
 /**
  * StepProps
  */
 interface StepProps extends WithTranslation {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
   getStore: () => CopyWizardStoreType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateStore: (u: CopyWizardStoreUpdateType) => any;
@@ -214,9 +210,7 @@ class Step extends React.Component<StepProps, StepState> {
                     id="workspaceStartDate"
                     onChange={this.updateStartDate}
                     maxDate={this.props.getStore().endDate}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.props.getStore().beginDate}
                     dateFormat="P"
                   />
@@ -230,9 +224,7 @@ class Step extends React.Component<StepProps, StepState> {
                     id="workspaceEndDate"
                     onChange={this.updateEndDate}
                     minDate={this.props.getStore().beginDate}
-                    locale={outputCorrectDatePickerLocale(
-                      localizeTime.language
-                    )}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
                     selected={this.props.getStore().endDate}
                     dateFormat="P"
                   />

@@ -1,18 +1,18 @@
 import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
-import { Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
+import { Action, Dispatch } from "redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import Link from "~/components/general/link";
-import {
-  MaterialCompositeRepliesType,
-  WorkspaceType,
-} from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
 import EvaluationAssessmentInterminEvaluation from "./evaluation-assessment-intermin-evaluation";
-import { EvaluationAssessmentRequest } from "~/generated/client";
+import {
+  EvaluationAssessmentRequest,
+  MaterialCompositeReply,
+} from "~/generated/client";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
  */
 interface AssessmentListProps {
   evaluation: EvaluationState;
-  workspaces: WorkspaceType[];
+  workspaces: WorkspaceDataType[];
   selectedAssessment: EvaluationAssessmentRequest;
 }
 
@@ -87,7 +87,7 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
    * @returns boolean whether to show assignment or not
    */
   const showAsHiddenEvaluationAssignment = (
-    compositeReply?: MaterialCompositeRepliesType
+    compositeReply?: MaterialCompositeReply
   ): boolean =>
     compositeReply &&
     (compositeReply.submitted !== null ||
@@ -253,7 +253,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

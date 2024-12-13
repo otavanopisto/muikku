@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Dispatch, connect } from "react-redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import {
   editContactLogEvent,
@@ -13,10 +13,10 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import DatePicker from "react-datepicker";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import * as moment from "moment";
+import moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { ContactLogEvent, ContactType } from "~/generated/client";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -63,7 +63,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
     this.state = this.getRecoverStoredState(
       {
         locked: false,
-        date: localizeTime
+        date: localize
           .getLocalizedMoment(this.props.contactEvent.entryDate)
           .toDate(),
         text: this.props.contactEvent.text,
@@ -109,7 +109,7 @@ class EditContactLogEventEvent extends SessionStateComponent<
   clearUp = () => {
     this.setStateAndClear(
       {
-        date: localizeTime
+        date: localize
           .getLocalizedMoment(this.props.contactEvent.entryDate)
           .toDate(),
         text: this.props.contactEvent.text,
@@ -173,13 +173,13 @@ class EditContactLogEventEvent extends SessionStateComponent<
         <div className="env-dialog__row env-dialog__row--new-contact-event">
           <div className="env-dialog__form-element-container env-dialog__form-element-container--new-contact-event">
             <label htmlFor="contactEventdate" className="env-dialog__label">
-              {this.props.i18n.t("labels.date", { count: 1 })}
+              {this.props.i18n.t("labels.date")}
             </label>
             <DatePicker
               className="env-dialog__input"
               id="contactEventdate"
               onChange={this.onDateChange}
-              locale={outputCorrectDatePickerLocale(localizeTime.language)}
+              locale={outputCorrectDatePickerLocale(localize.language)}
               dateFormat="P"
               selected={this.state.date}
             ></DatePicker>
@@ -196,7 +196,10 @@ class EditContactLogEventEvent extends SessionStateComponent<
             >
               {contactTypesArray.map((contactType) => (
                 <option key={contactType} value={contactType}>
-                  {this.props.i18n.t("labels.type", { context: contactType })}
+                  {this.props.i18n.t("labels.type", {
+                    ns: "messaging",
+                    context: contactType,
+                  })}
                 </option>
               ))}
             </select>
@@ -282,7 +285,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ editContactLogEvent }, dispatch);
 }
 

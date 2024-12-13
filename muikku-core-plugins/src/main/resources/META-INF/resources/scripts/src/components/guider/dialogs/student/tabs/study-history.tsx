@@ -2,13 +2,11 @@ import * as React from "react";
 import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
 import { AnyActionType } from "~/actions/index";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import FileDeleteDialog from "../../../dialogs/file-delete";
 import FileUploader from "~/components/general/file-uploader";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { UserFileType } from "~/reducers/user-index";
-import Workspaces from "../workspaces";
-import MainChart from "~/components/general/graph/main-chart";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Navigation, { NavigationElement } from "~/components/general/navigation";
@@ -17,8 +15,15 @@ import {
   addFileToCurrentStudent,
 } from "~/actions/main-function/guider";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
-import variables from "~/sass/_exports.scss";
 import { useTranslation } from "react-i18next";
+import RecordsGroup from "~/components/general/records-history/records-group";
+import MainChart from "~/components/general/graph/main-chart";
+import { breakpoints } from "~/util/breakpoints";
+import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 
 type studyHistoryAside = "history" | "library";
 
@@ -28,6 +33,7 @@ type studyHistoryAside = "history" | "library";
 interface StudyHistoryProps {
   guider: GuiderState;
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -36,29 +42,29 @@ interface StudyHistoryProps {
  * @returns JSX.Element
  */
 const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
-  const mobileBreakpoint = parseInt(variables.mobilebreakpoint); //Parse a breakpoint from scss to a number
-  const isAtMobileWidth = useIsAtBreakpoint(mobileBreakpoint);
+  const isAtMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
   const [navigationActive, setNavigationActive] =
     React.useState<studyHistoryAside>("history");
-  const { t } = useTranslation("guider");
+  const { t } = useTranslation(["guider", "materials"]);
 
   if (
     !props.guider.currentStudent ||
     !props.guider.currentStudent.pastWorkspaces ||
+    !props.guider.currentStudent.pastStudies ||
     !props.guider.currentStudent.activityLogs
   ) {
     return null;
   }
 
-  const { addFileToCurrentStudent } = props;
+  const { addFileToCurrentStudent, displayNotification } = props;
   const {
     activityLogs,
-    activityLogState,
-    pastWorkspaces,
-    pastWorkspacesState,
-    currentWorkspaces,
+    pastStudies,
     basic,
     files,
+    currentWorkspaces,
+    pastWorkspaces,
+    activityLogState,
   } = props.guider.currentStudent;
 
   /**
@@ -97,7 +103,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         onClick={() => handleNavigationClick("library")}
         isActive={navigationActive === "library" ? true : false}
       >
-        {t("labels.library")}
+        {t("labels.library", { ns: "guider" })}
       </NavigationElement>
     </Navigation>
   );
@@ -123,7 +129,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         onFileSuccess={(file: File, data: UserFileType) => {
           addFileToCurrentStudent(data);
         }}
-        hintText={t("content.addAttachmentInstruction")}
+        hintText={t("content.addAttachmentInstruction", { ns: "guider" })}
         fileTooLargeErrorText={t("notifications.sizeTooLarge", { ns: "files" })}
         files={files}
         fileIdKey="id"
@@ -133,7 +139,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
         modifier="guider"
         emptyText={t("content.empty", { ns: "files" })}
         uploadingTextProcesser={(percent: number) =>
-          t("notifications.uploading", { ns: "files", progress: percent })
+          t("content.statusUploading", { ns: "materials", progress: percent })
         }
         notificationOfSuccessText={t("notifications.uploadSuccess", {
           ns: "files",
@@ -143,20 +149,47 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
     </div>
   );
 
+  /**
+   * studentRecords
+   */
+  const studentRecords = (
+    <RecordsInfoProvider
+      value={{
+        identifier: basic.id,
+        userEntityId: basic.userEntityId,
+        displayNotification,
+      }}
+    >
+      <ApplicationSubPanel>
+        {pastStudies.map((lineCategoryData, i) => (
+          <ApplicationSubPanel.Body key={lineCategoryData.lineCategory}>
+            {lineCategoryData.credits.length +
+              lineCategoryData.transferCredits.length >
+            0 ? (
+              <RecordsGroup
+                key={`credit-category-${i}`}
+                recordGroup={lineCategoryData}
+              />
+            ) : (
+              <div className="application-sub-panel__item">
+                <div className="empty">
+                  <span>
+                    {t("content.notInWorkspaces", {
+                      ns: "guider",
+                    })}
+                  </span>
+                </div>
+              </div>
+            )}
+          </ApplicationSubPanel.Body>
+        ))}
+      </ApplicationSubPanel>
+    </RecordsInfoProvider>
+  );
+
   const historyComponent = (
     <React.Fragment key="history-component">
-      <ApplicationSubPanel>
-        <ApplicationSubPanel.Header>
-          {t("labels.workspaces", { ns: "workspace" })}
-        </ApplicationSubPanel.Header>
-        <ApplicationSubPanel.Body>
-          {pastWorkspacesState === "READY" ? (
-            <Workspaces workspaces={pastWorkspaces} />
-          ) : (
-            <div className="loader-empty" />
-          )}
-        </ApplicationSubPanel.Body>
-      </ApplicationSubPanel>
+      <ApplicationSubPanel>{studentRecords}</ApplicationSubPanel>
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
           {t("labels.stats", { ns: "common" })}
@@ -214,8 +247,11 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
-  return bindActionCreators({ addFileToCurrentStudent }, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators(
+    { addFileToCurrentStudent, displayNotification },
+    dispatch
+  );
 }
 
 /**

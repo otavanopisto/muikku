@@ -7,7 +7,7 @@
 //4. it works :D
 
 import { ActionType } from "~/actions";
-import { Role, UserWhoAmIServices } from "~/generated/client";
+import { ChatUser, Role, UserWhoAmIServices } from "~/generated/client";
 
 /**
  * StatusType
@@ -19,7 +19,7 @@ export interface StatusType {
   permissions: any;
   contextPath: string;
   isActiveUser: boolean;
-  role: Role;
+  roles: Role[];
   isStudent: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
@@ -46,6 +46,7 @@ export interface StatusType {
   imgVersion: number;
   hopsEnabled: boolean;
   currentWorkspaceId: number;
+  chatSettings: ChatUser;
 }
 
 /**
@@ -78,7 +79,7 @@ export default function status(
     loggedIn: false, //whoami.id is checked if exists
     userId: null, // whoami.id
     userSchoolDataIdentifier: null, // whoami.identifier
-    role: undefined, // whoami.role
+    roles: undefined, // whoami.roles
     permissions: {},
     contextPath: "", // always empty
     isActiveUser: false, // whoamI.isActive
@@ -92,6 +93,7 @@ export default function status(
     canCurrentWorkspaceSignup: false,
     hopsEnabled: false, // /user/property/hops.enabled
     services: null,
+    chatSettings: null,
   },
   action: ActionType
 ): StatusType {
@@ -99,8 +101,6 @@ export default function status(
     case "LOGOUT": {
       // chat listens to this event to close the connection
       (window as any).ON_LOGOUT && (window as any).ON_LOGOUT();
-      // remove the old session on logout
-      window.sessionStorage.removeItem("strophe-bosh-session");
       // trigger the logout
       window.location.replace("/logout");
 
@@ -117,6 +117,18 @@ export default function status(
         ...state,
         hasImage: action.payload,
         imgVersion: new Date().getTime(),
+      };
+
+    case "UPDATE_STATUS_CHAT_SETTINGS":
+      return {
+        ...state,
+        chatSettings: action.payload,
+        services: {
+          ...state.services,
+          chat: {
+            isAvailable: action.payload.visibility !== "NONE",
+          },
+        },
       };
 
     case "UPDATE_STATUS": {
@@ -140,6 +152,7 @@ export default function status(
         loggedIn: !!action.payload.userId,
         isActiveUser: action.payload.isActiveUser,
         permissions: { ...state.permissions, ...action.payload.permissions },
+        chatSettings: state.chatSettings,
       };
     }
 

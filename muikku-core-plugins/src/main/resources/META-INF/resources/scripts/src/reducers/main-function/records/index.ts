@@ -1,87 +1,24 @@
 import { UserFileType } from "~/reducers/user-index";
-import { Assessment, WorkspaceType } from "~/reducers/workspaces";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
 import { ActionType } from "actions";
 import { Reducer } from "redux";
-import {
-  MaterialContentNodeListType,
-  MaterialCompositeRepliesType,
-} from "~/reducers/workspaces";
-import { Curriculum, WorkspaceJournal } from "~/generated/client";
+import { MaterialCompositeReply, Curriculum } from "~/generated/client";
+import { WorkspaceJournal } from "~/generated/client";
+import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
-
-/**
- * Subject data for record workspace activity
- */
-export interface RecordWorkspaceActivitySubject {
-  identifier?: string | null;
-  subjectCode: string;
-  subjectName: string;
-  courseNumber?: number;
-  courseLength: number;
-  courseLengthSymbol: string;
-}
-
-/**
- * Record workspace curriculum that includes
- * curriculum identifier and curriculum name
- */
-export interface RecordWorkspaceActivityCurriculum {
-  identifier: string;
-  name: string;
-}
-
-/**
- * RecordWorkspaceByLineCategory
- */
-export interface RecordWorkspaceActivitiesWithLineCategory {
-  lineCategory: string;
-  credits: RecordWorkspaceActivityByLine[];
-  transferCredits: RecordWorkspaceActivityByLine[];
-}
-
-/**
- * Record workspace activity with line name
- */
-export interface RecordWorkspaceActivityByLine {
-  lineName: string;
-  activity: RecordWorkspaceActivity;
-}
-
-/**
- * Record workspace with activity data
- */
-export interface RecordWorkspaceActivity {
-  id: number;
-  identifier: string;
-  subjects: RecordWorkspaceActivitySubject[] | null;
-  assessmentStates: Assessment[];
-  name: string;
-  curriculums: RecordWorkspaceActivityCurriculum[] | null;
-  exercisesTotal?: number | null;
-  exercisesAnswered?: number | null;
-  evaluablesTotal?: number | null;
-  evaluablesAnswered?: number | null;
-}
-
-/**
- * RecordGroupType
- */
-export interface RecordGroupType {
-  groupCurriculumName?: string;
-  groupCurriculumIdentifier?: string;
-  credits: RecordWorkspaceActivity[];
-  transferCredits: RecordWorkspaceActivity[];
-}
 
 /**
  * CurrentRecordType
  */
 export interface CurrentRecordType {
-  workspace: WorkspaceType;
+  workspace: WorkspaceDataType;
+  materials: MaterialContentNodeWithIdAndLogic[];
+  compositeReplies: MaterialCompositeReply[];
   journals: WorkspaceJournal[];
-  materials: MaterialContentNodeListType;
-  compositeReplies: MaterialCompositeRepliesType[];
 }
 
 export type AllStudentUsersDataStatusType =

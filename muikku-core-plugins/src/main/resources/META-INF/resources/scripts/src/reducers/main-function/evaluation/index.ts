@@ -1,9 +1,5 @@
 import { ActionType } from "../../../actions/index";
 import {
-  MaterialCompositeRepliesType,
-  WorkspaceType,
-} from "../../workspaces/index";
-import {
   EvaluationStateType,
   EvaluationSort,
   EvaluationAssigmentData,
@@ -12,13 +8,16 @@ import {
   EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { Reducer } from "redux";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import {
   EvaluationAssessmentRequest,
   EvaluationEvent,
   EvaluationGradeScale,
   EvaluationJournalFeedback,
+  MaterialCompositeReply,
   WorkspaceJournal,
 } from "~/generated/client";
+import _ from "lodash";
 
 /**
  * EvaluationStateAndData
@@ -37,7 +36,7 @@ export interface EvaluationState {
   unimportantRequests: number[];
   evaluationGradeSystem: EvaluationGradeScale[];
   evaluationRequests: EvaluationStateAndData<EvaluationAssessmentRequest[]>;
-  evaluationWorkspaces: WorkspaceType[];
+  evaluationWorkspaces: WorkspaceDataType[];
   selectedWorkspaceId?: number;
   evaluationSearch: string;
   evaluationSort?: EvaluationSort;
@@ -51,9 +50,7 @@ export interface EvaluationState {
     commentsLoaded: number[];
   };
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;
-  evaluationCompositeReplies?: EvaluationStateAndData<
-    MaterialCompositeRepliesType[]
-  >;
+  evaluationCompositeReplies?: EvaluationStateAndData<MaterialCompositeReply[]>;
   openedAssignmentEvaluationId?: number;
   evaluationBilledPrice?: number;
   needsReloadEvaluationRequests: boolean;
@@ -81,6 +78,8 @@ export const initialState: EvaluationState = {
     notEvaluated: false,
     assessmentRequest: false,
     supplementationRequest: false,
+    interimRequest: false,
+    interimEvaluation: false,
   },
   evaluationAssessmentEvents: {
     state: "LOADING",
@@ -193,11 +192,50 @@ export const evaluations: Reducer<EvaluationState> = (
           : [],
       };
 
-    case "EVALUATION_ASSESSMENT_UPDATE":
-      return {
+    case "EVALUATION_ASSESSMENT_UPDATE": {
+      // Helper variable to determine if the list needs to be updated because the selected assessment was updated
+      let updateList = false;
+
+      const updatedRequests = state.evaluationRequests.data?.map((request) => {
+        // Either one of these will be null depending of the evaluation state so we need check agains
+        // one of them to find the correct request
+        const checkAgainsIdentifier = request.identifier !== null;
+        const checkAgainsId = request.id !== null;
+
+        if (
+          ((checkAgainsIdentifier &&
+            request.identifier === action.payload.identifier) ||
+            (checkAgainsId && request.id === action.payload.id)) &&
+          !_.isEqual(request, action.payload)
+        ) {
+          updateList = true;
+          return action.payload;
+        }
+        return request;
+      });
+
+      // Create new state
+      let newState = {
         ...state,
+      };
+
+      // Update list if needed
+      if (updateList) {
+        newState = {
+          ...state,
+          evaluationRequests: {
+            ...state.evaluationRequests,
+            data: updatedRequests,
+          },
+        };
+      }
+
+      // Update new state with assessment
+      return {
+        ...newState,
         evaluationSelectedAssessmentId: action.payload,
       };
+    }
 
     case "EVALUATION_OPENED_ASSIGNMENT_UPDATE":
       return {

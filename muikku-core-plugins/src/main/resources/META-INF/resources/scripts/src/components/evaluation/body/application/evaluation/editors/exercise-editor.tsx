@@ -1,18 +1,13 @@
 import * as React from "react";
-import {
-  MaterialAssignmentType,
-  MaterialCompositeRepliesType,
-} from "~/reducers/workspaces/index";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { StatusType } from "~/reducers/base/status";
 import SessionStateComponent from "~/components/general/session-state-component";
 import CKEditor from "~/components/general/ckeditor";
 import Button from "~/components/general/button";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import Recorder from "~/components/general/voice-recorder/recorder";
-import mApi from "~/lib/mApi";
 import { StateType } from "reducers";
 import { displayNotification } from "~/actions/base/notifications";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
@@ -27,6 +22,8 @@ import {
   EvaluationAssessmentRequest,
   MaterialEvaluation,
   SaveWorkspaceAssigmentAssessmentRequest,
+  MaterialCompositeReply,
+  WorkspaceMaterial,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -37,8 +34,8 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
   materialEvaluation?: MaterialEvaluation;
-  materialAssignment: MaterialAssignmentType;
-  compositeReplies: MaterialCompositeRepliesType;
+  materialAssignment: WorkspaceMaterial;
+  compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
   status: StatusType;
   updateMaterialEvaluationData: (
@@ -172,8 +169,6 @@ class ExerciseEditor extends SessionStateComponent<
           },
         });
 
-      await mApi().workspace.workspaces.compositeReplies.cacheClear();
-
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,
         userEntityId: userEntityId,
@@ -236,7 +231,7 @@ class ExerciseEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
-        evaluationType: "ASSESSMENT",
+        evaluationType: "GRADED",
         assessorIdentifier: this.props.status.userSchoolDataIdentifier,
         gradingScaleIdentifier: null,
         gradeIdentifier: null,
@@ -394,7 +389,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { updateCurrentStudentCompositeRepliesData, displayNotification },
     dispatch

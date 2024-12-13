@@ -69,10 +69,10 @@ export class Droppable extends React.Component<DroppableProps, DroppableState> {
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: DroppableProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: DroppableProps) {
     if (typeof nextProps.interactionData !== "undefined") {
       interactionData[this.id] = nextProps.interactionData;
     } else if (
@@ -448,7 +448,7 @@ export default class Draggable extends React.Component<
     }
 
     if (this.state.isDragging) {
-      if (new Date().getTime() - this.timer <= 100) {
+      if (new Date().getTime() - this.timer <= 150) {
         this.props.onClick && this.props.onClick(e as any);
         this.setState(
           {

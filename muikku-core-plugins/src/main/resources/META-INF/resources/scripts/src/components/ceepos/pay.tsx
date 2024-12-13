@@ -1,8 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Dispatch, bindActionCreators } from "redux";
-import promisify from "~/util/promisify";
-import mApi from "~/lib/mApi";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
@@ -18,17 +16,17 @@ import { getName } from "~/util/modifiers";
 import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
-import { ReturnLink } from "./done";
 import { AnyActionType } from "~/actions/index";
 import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { CeeposReturnLink } from "~/generated/client";
+import MApi, { isMApiError } from "~/api/api";
 
 /**
  * CeeposPayProps
  */
-
 interface CeeposPayProps extends WithTranslation {
   ceepos: CeeposState;
   status: StatusType;
@@ -39,7 +37,7 @@ interface CeeposPayProps extends WithTranslation {
  * CeeposPayState
  */
 interface CeeposPayState {
-  returnLink: ReturnLink;
+  returnLink: CeeposReturnLink;
 }
 
 /**
@@ -66,15 +64,20 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
    * componentDidMount
    */
   async componentDidMount() {
+    const ceeposApi = MApi.getCeeposApi();
+
     try {
       const searchParams = new URLSearchParams(window.location.search);
 
-      const returnLink: ReturnLink = (await promisify(
-        mApi().ceepos.order.returnLink.read(searchParams.get("order")),
-        "callback"
-      )()) as ReturnLink;
+      const returnLink = await ceeposApi.getCeeposReturnLink({
+        orderId: parseInt(searchParams.get("order")),
+      });
       this.setState({ returnLink });
     } catch (e) {
+      if (!isMApiError(e)) {
+        throw e;
+      }
+
       this.props.displayNotification(
         this.props.t("notifications.loadError", {
           context: "link",
@@ -192,7 +195,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

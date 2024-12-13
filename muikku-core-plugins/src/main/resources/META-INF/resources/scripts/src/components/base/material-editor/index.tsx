@@ -1,18 +1,15 @@
 import * as React from "react";
 import "~/sass/elements/material-editor.scss";
 import "~/sass/elements/form.scss";
-import { bindActionCreators } from "redux";
-import { connect, Dispatch } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import Link from "~/components/general/link";
 import {
   WorkspaceMaterialEditorType,
-  WorkspaceType,
-  MaterialContentNodeType,
-  MaterialViewRestriction,
-  AssignmentType,
-  Language,
+  WorkspaceDataType,
   languageOptions,
+  MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
 import { ButtonPill } from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";
@@ -44,6 +41,12 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import { withTranslation, WithTranslation } from "react-i18next";
+import {
+  Language,
+  MaterialAssigmentType,
+  MaterialViewRestriction,
+} from "~/generated/client";
+import { NumberFormatValues, NumericFormat } from "react-number-format";
 
 /**
  * MaterialEditorProps
@@ -81,8 +84,8 @@ const CKEditorConfig = (
   /* eslint-disable camelcase */
   locale: string,
   contextPath: string,
-  workspace: WorkspaceType,
-  materialNode: MaterialContentNodeType,
+  workspace: WorkspaceDataType,
+  materialNode: MaterialContentNodeWithIdAndLogic,
   disablePlugins: boolean
 ) => ({
   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
@@ -226,7 +229,7 @@ type PageTypeLocales =
  * MaterialPageTypeConfic
  */
 interface MaterialPageTypeConfic {
-  type: AssignmentType | null;
+  type: MaterialAssigmentType | null;
   classNameMod: string;
   text: PageTypeLocales;
 }
@@ -282,6 +285,7 @@ class MaterialEditor extends React.Component<
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
+    this.updateMaxPoints = this.updateMaxPoints.bind(this);
     this.updateTitleLanguage = this.updateTitleLanguage.bind(this);
     this.close = this.close.bind(this);
     this.publish = this.publish.bind(this);
@@ -370,14 +374,15 @@ class MaterialEditor extends React.Component<
       update: {
         viewRestrict:
           this.props.editorState.currentDraftNodeValue.viewRestrict ===
-          MaterialViewRestriction.NONE
-            ? MaterialViewRestriction.WORKSPACE_MEMBERS
+          MaterialViewRestriction.None
+            ? MaterialViewRestriction.WorkspaceMembers
             : this.props.editorState.currentDraftNodeValue.viewRestrict ===
-              MaterialViewRestriction.WORKSPACE_MEMBERS
-            ? MaterialViewRestriction.LOGGED_IN
-            : this.props.editorState.currentDraftNodeValue.viewRestrict ===
-                MaterialViewRestriction.LOGGED_IN &&
-              MaterialViewRestriction.NONE,
+                MaterialViewRestriction.WorkspaceMembers
+              ? MaterialViewRestriction.LoggedIn
+              : this.props.editorState.currentDraftNodeValue.viewRestrict ===
+                  MaterialViewRestriction.LoggedIn
+                ? MaterialViewRestriction.None
+                : MaterialViewRestriction.None,
       },
       isDraft: true,
     });
@@ -389,7 +394,7 @@ class MaterialEditor extends React.Component<
    * @param onClose onClose
    */
   handleChangeAssignmentType =
-    (type: AssignmentType, onClose: () => void) =>
+    (type: MaterialAssigmentType, onClose: () => void) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       this.props.updateWorkspaceMaterialContentNode({
         workspace: this.props.editorState.currentNodeWorkspace,
@@ -416,9 +421,9 @@ class MaterialEditor extends React.Component<
             "ALWAYS"
             ? "ON_REQUEST"
             : this.props.editorState.currentDraftNodeValue.correctAnswers ===
-              "ON_REQUEST"
-            ? "NEVER"
-            : "ALWAYS",
+                "ON_REQUEST"
+              ? "NEVER"
+              : "ALWAYS",
       },
       isDraft: true,
     });
@@ -456,6 +461,22 @@ class MaterialEditor extends React.Component<
       isDraft: true,
     });
   }
+
+  /**
+   * updateMaxPoints
+   * @param values values
+   */
+  updateMaxPoints = (values: NumberFormatValues) => {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        // With two decimal places
+        maxPoints: values.floatValue,
+      },
+      isDraft: true,
+    });
+  };
 
   /**
    * updateContent
@@ -592,21 +613,21 @@ class MaterialEditor extends React.Component<
     switch (this.props.locationPage) {
       case "Help": {
         switch (viewRestriction) {
-          case MaterialViewRestriction.NONE:
+          case MaterialViewRestriction.None:
             localeString = t("labels.restrict", {
               ns: "materials",
               context: "materialVisibilityForMemebers",
             });
             break;
 
-          case MaterialViewRestriction.WORKSPACE_MEMBERS:
+          case MaterialViewRestriction.WorkspaceMembers:
             localeString = t("labels.restrict", {
               ns: "materials",
               context: "instructionVisibility",
             });
             break;
 
-          case MaterialViewRestriction.LOGGED_IN:
+          case MaterialViewRestriction.LoggedIn:
             localeString = t("labels.remove", {
               ns: "materials",
               context: "instructionVisibilityRestriction",
@@ -621,21 +642,21 @@ class MaterialEditor extends React.Component<
       }
       case "Materials": {
         switch (viewRestriction) {
-          case MaterialViewRestriction.NONE:
+          case MaterialViewRestriction.None:
             localeString = t("labels.restrict", {
               ns: "materials",
               context: "materialVisibilityForMemebers",
             });
             break;
 
-          case MaterialViewRestriction.WORKSPACE_MEMBERS:
+          case MaterialViewRestriction.WorkspaceMembers:
             localeString = t("labels.restrict", {
               ns: "materials",
               context: "materialVisibilityForLoggedIn",
             });
             break;
 
-          case MaterialViewRestriction.LOGGED_IN:
+          case MaterialViewRestriction.LoggedIn:
             localeString = t("labels.remove", {
               ns: "materials",
               context: "materialVisibilityRestriction",
@@ -830,7 +851,7 @@ class MaterialEditor extends React.Component<
 
     const assignmentPageType = "material-editor-" + materialPageType;
 
-    const comparerPoints = [
+    const comparerPoints: (keyof MaterialContentNodeWithIdAndLogic)[] = [
       "assignmentType",
       "correctAnswers",
       "hidden",
@@ -842,18 +863,15 @@ class MaterialEditor extends React.Component<
       "type",
       "viewRestrict",
       "titleLanguage",
+      "maxPoints",
     ];
 
     let canPublish = false;
     for (const point of comparerPoints) {
       if (
         !equals(
-          this.props.editorState.currentNodeValue[
-            point as keyof MaterialContentNodeType
-          ],
-          this.props.editorState.currentDraftNodeValue[
-            point as keyof MaterialContentNodeType
-          ]
+          this.props.editorState.currentNodeValue[point],
+          this.props.editorState.currentDraftNodeValue[point]
         )
       ) {
         canPublish = true;
@@ -891,15 +909,15 @@ class MaterialEditor extends React.Component<
     ];
 
     switch (this.props.editorState.currentDraftNodeValue.viewRestrict) {
-      case MaterialViewRestriction.NONE:
+      case MaterialViewRestriction.None:
         viewRestrictionButtonModifiers.push("material-editor-enabled");
         break;
 
-      case MaterialViewRestriction.LOGGED_IN:
+      case MaterialViewRestriction.LoggedIn:
         viewRestrictionButtonModifiers.push("material-editor-disabled");
         break;
 
-      case MaterialViewRestriction.WORKSPACE_MEMBERS:
+      case MaterialViewRestriction.WorkspaceMembers:
         viewRestrictionButtonModifiers.push("material-editor-members-only");
         break;
 
@@ -912,9 +930,9 @@ class MaterialEditor extends React.Component<
       this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
         ? "always-show"
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
-          "ON_REQUEST"
-        ? "on-request"
-        : "never-show";
+            "ON_REQUEST"
+          ? "on-request"
+          : "never-show";
 
     const correctAnswersModifiers = [
       "material-editor-change-answer-reveal-type",
@@ -927,9 +945,9 @@ class MaterialEditor extends React.Component<
       this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
         ? t("labels.showAnswersAlways", { ns: "materials" })
         : this.props.editorState.currentDraftNodeValue.correctAnswers ===
-          "ON_REQUEST"
-        ? t("labels.showAnswersOnRequest", { ns: "materials" })
-        : t("labels.showAnswersNever", { ns: "materials" });
+            "ON_REQUEST"
+          ? t("labels.showAnswersOnRequest", { ns: "materials" })
+          : t("labels.showAnswersNever", { ns: "materials" });
 
     const canRestrictViewLocale = this.buildRestrictViewLocale(
       this.props.editorState.currentDraftNodeValue.viewRestrict
@@ -1115,7 +1133,7 @@ class MaterialEditor extends React.Component<
                             ns: "workspace",
                           })}
                         </option>
-                        {languageOptions.map((language) => (
+                        {languageOptions.map((language: string) => (
                           <option key={language} value={language}>
                             {this.props.i18n.t("labels.language", {
                               context: language,
@@ -1174,7 +1192,7 @@ class MaterialEditor extends React.Component<
             {this.props.editorState.canSetProducers ? (
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">
-                  {t("labels.producer", { ns: "users", count: 0 })}
+                  {t("labels.producers", { ns: "users" })}
                 </h3>
                 {this.props.editorState.currentDraftNodeValue.producers ? (
                   <div className="material-editor__add-producer-container">
@@ -1228,7 +1246,7 @@ class MaterialEditor extends React.Component<
                           ns: "workspace",
                         })}
                       </option>
-                      {languageOptions.map((language) => (
+                      {languageOptions.map((language: string) => (
                         <option key={language} value={language}>
                           {this.props.i18n.t("labels.language", {
                             context: language,
@@ -1237,6 +1255,28 @@ class MaterialEditor extends React.Component<
                         </option>
                       ))}
                     </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="material-editor__sub-section">
+              <h3 className="material-editor__sub-title">
+                {this.props.i18n.t("labels.pointsMax", { ns: "workspace" })}
+              </h3>
+              <div className="material-editor__select-locale-container">
+                <div className="form__row">
+                  <div className="form-element">
+                    <NumericFormat
+                      className="form-element__input form-element__input--material-editor-assignment-points"
+                      value={
+                        this.props.editorState.currentDraftNodeValue.maxPoints
+                      }
+                      decimalScale={2}
+                      decimalSeparator=","
+                      allowNegative={false}
+                      onValueChange={this.updateMaxPoints}
+                    />
                   </div>
                 </div>
               </div>
@@ -1275,8 +1315,7 @@ class MaterialEditor extends React.Component<
               deleteDialogElement={ConfirmRemoveAttachment}
               hintText={t("content.add", { ns: "materials", context: "file" })}
               deleteFileText={t("actions.remove")}
-              downloadFileText={t("actions.download", { count: 1 })}
-              showURL
+              downloadFileText={t("actions.download")}
               notificationOfSuccessText={t("notifications.uploadSuccess", {
                 ns: "files",
               })}
@@ -1331,7 +1370,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,

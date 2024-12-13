@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import {
@@ -124,7 +124,7 @@ class CommunicatorToolbar extends React.Component<
   }
 
   /**
-   * componentWillUpdate
+   * UNSAFE_componentWillUpdate
    * @param nextProps nextProps
    * @param nextState nextState
    */
@@ -610,7 +610,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       deleteCurrentMessageThread,

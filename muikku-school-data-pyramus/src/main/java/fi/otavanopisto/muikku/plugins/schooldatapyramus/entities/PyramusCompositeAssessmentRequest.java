@@ -8,9 +8,10 @@ import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 
 public class PyramusCompositeAssessmentRequest implements CompositeAssessmentRequest {
   
-  public PyramusCompositeAssessmentRequest(String courseStudentIdentifier, String userIdentifier, String firstName, String lastName,
+  public PyramusCompositeAssessmentRequest(String identifier, String courseStudentIdentifier, String userIdentifier, String firstName, String lastName,
       String studyProgramme, String courseIdentifier, String courseName, String courseNameExtension, Date courseEnrollmentDate,
-      Date assessmentRequestDate, Date evaluationDate, Boolean passing) {
+      Date assessmentRequestDate, Date evaluationDate, boolean passing, boolean locked) {
+    this.identifier = identifier == null ? null : new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.courseStudentIdentifier = new SchoolDataIdentifier(courseStudentIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.userIdentifier = new SchoolDataIdentifier(userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.firstName = firstName;
@@ -23,11 +24,17 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
     this.assessmentRequestDate = assessmentRequestDate;
     this.evaluationDate = evaluationDate;
     this.passing = passing;
+    this.locked = locked;
   }
 
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+  }
+
+  @Override
+  public SchoolDataIdentifier getIdentifier() {
+    return identifier;
   }
 
   @Override
@@ -86,10 +93,16 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   }
 
   @Override
-  public Boolean getPassing() {
+  public boolean getPassing() {
     return passing;
   }
 
+  @Override
+  public boolean getLocked() {
+    return locked;
+  }
+
+  private final SchoolDataIdentifier identifier;
   private final SchoolDataIdentifier courseStudentIdentifier;
   private final SchoolDataIdentifier userIdentifier;
   private final String firstName;
@@ -101,6 +114,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   private final Date courseEnrollmentDate;
   private final Date assessmentRequestDate;
   private final Date evaluationDate;
-  private final Boolean passing;
+  private final boolean passing;
+  private final boolean locked;
 
 }

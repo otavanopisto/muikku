@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import { AnyActionType } from "~/actions";
@@ -75,10 +75,10 @@ class ModifyThread extends SessionStateComponent<
   }
 
   /**
-   * componentWillReceiveProps
+   * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
-  componentWillReceiveProps(nextProps: ModifyThreadProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: ModifyThreadProps) {
     if (nextProps.thread.id !== this.props.thread.id) {
       this.setState(
         this.getRecoverStoredState(
@@ -365,7 +365,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ modifyDiscussionThread }, dispatch);
 }
 

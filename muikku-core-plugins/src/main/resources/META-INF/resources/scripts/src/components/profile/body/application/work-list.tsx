@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import {
   InsertProfileWorklistItemTriggerType,
   insertProfileWorklistItem,
@@ -10,7 +10,7 @@ import {
 import { StateType } from "~/reducers";
 import { ProfileState } from "~/reducers/main-function/profile";
 import WorkListEditable from "./components/work-list-editable";
-import moment from "~/lib/moment";
+import moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { WorkListSection } from "./components/work-list-section";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -277,7 +277,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { insertProfileWorklistItem, loadProfileWorklistSection },
     dispatch

@@ -1,5 +1,4 @@
-import { SchoolSubject } from "~/@types/shared";
-import { AlternativeStudyOption } from "~/generated/client";
+import { WorkspaceAssessmentState } from "~/generated/client";
 
 /**
  * sleep
@@ -7,43 +6,6 @@ import { AlternativeStudyOption } from "~/generated/client";
  * @returns Promise
  */
 export const sleep = (m: number) => new Promise((r) => setTimeout(r, m));
-
-/**
- * Filters special subjects away depending options selected by student
- * or loaded from pyramus
- *
- * @param schoolCourseTable intial table that is altered depending options
- * @param options options for special subjects
- * @returns altered school course table with correct special subject included
- */
-export const filterSpecialSubjects = (
-  schoolCourseTable: SchoolSubject[],
-  options: AlternativeStudyOption
-) => {
-  let alteredShoolCourseTable = schoolCourseTable;
-
-  if (options.nativeLanguageSelection === "s2") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "äi"
-    );
-  } else if (options.nativeLanguageSelection === "äi") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "s2"
-    );
-  }
-
-  if (options.religionSelection === "et") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "ue"
-    );
-  } else if (options.religionSelection === "ue") {
-    alteredShoolCourseTable = alteredShoolCourseTable.filter(
-      (sSubject) => sSubject.subjectCode !== "et"
-    );
-  }
-
-  return alteredShoolCourseTable;
-};
 
 /**
  * Checks if string is valid html
@@ -64,4 +26,68 @@ export const isStringHTML = (str: string) => {
     str !== "" &&
     helperElement.childNodes[0].nodeType == 1
   );
+};
+
+/**
+ * getAssessmentData
+ * @param assessment assessment
+ */
+export const getAssessmentData = (assessment: WorkspaceAssessmentState) => {
+  let evalStateClassName = "";
+  let evalStateIcon = "";
+  let assessmentIsPending = false;
+  let assessmentIsIncomplete = false;
+  let assessmentIsUnassessed = false;
+  let assessmentIsInterim = false;
+
+  switch (assessment.state) {
+    case "pass":
+      evalStateClassName = "workspace-assessment--passed";
+      evalStateIcon = "icon-thumb-up";
+      break;
+    case "pending":
+    case "pending_pass":
+    case "pending_fail":
+      evalStateClassName = "workspace-assessment--pending";
+      evalStateIcon = "icon-assessment-pending";
+      assessmentIsPending = true;
+      break;
+    case "fail":
+      evalStateClassName = "workspace-assessment--failed";
+      evalStateIcon = "icon-thumb-down";
+      break;
+    case "incomplete":
+      evalStateClassName = "workspace-assessment--incomplete";
+      assessmentIsIncomplete = true;
+      break;
+
+    case "interim_evaluation_request":
+      assessmentIsPending = true;
+      assessmentIsInterim = true;
+      evalStateClassName = "workspace-assessment--interim-evaluation-request";
+      evalStateIcon = "icon-assessment-pending";
+      break;
+    case "interim_evaluation":
+      assessmentIsInterim = true;
+      evalStateClassName = "workspace-assessment--interim-evaluation";
+      evalStateIcon = "icon-thumb-up";
+      break;
+
+    case "unassessed":
+    default:
+      assessmentIsUnassessed = true;
+  }
+
+  const literalAssessment =
+    assessment && assessment.text ? assessment.text : null;
+
+  return {
+    evalStateClassName,
+    evalStateIcon,
+    assessmentIsPending,
+    assessmentIsUnassessed,
+    assessmentIsIncomplete,
+    assessmentIsInterim,
+    literalAssessment,
+  };
 };

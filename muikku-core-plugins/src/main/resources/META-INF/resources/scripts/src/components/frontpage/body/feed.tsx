@@ -1,20 +1,21 @@
 import Feed from "../../general/feed";
 import * as React from "react";
-import mApi from "~/lib/mApi";
+import MApi, { isMApiError } from "~/api/api";
+import { FeedEntry, GetFeedsRequest } from "~/generated/client";
 
 /**
  * FrontpageFeedProps
  */
 interface FrontpageFeedProps {
-  feedReadTarget: string;
-  queryOptions: any;
+  feedReadTarget: string[];
+  queryOptions: Partial<Omit<GetFeedsRequest, "feedReadTarget">>;
 }
 
 /**
  * FrontpageFeedState
  */
 interface FrontpageFeedState {
-  entries: Array<any>;
+  entries: FeedEntry[];
 }
 
 /**
@@ -38,14 +39,22 @@ export default class FrontpageFeed extends React.Component<
   /**
    * componentDidMount
    */
-  componentDidMount() {
-    mApi()
-      .feed.feeds.read(this.props.feedReadTarget, this.props.queryOptions)
-      .callback((err: Error, entries: Array<any>) => {
-        if (!err) {
-          this.setState({ entries });
-        }
+  async componentDidMount() {
+    const feedsApi = MApi.getFeedsApi();
+
+    try {
+      const feeds = await feedsApi.getFeeds({
+        feedReadTarget: this.props.feedReadTarget,
+        ...this.props.queryOptions,
       });
+
+      this.setState({ entries: feeds });
+    } catch (err) {
+      this.setState({ entries: [] });
+      if (!isMApiError(err)) {
+        throw err;
+      }
+    }
   }
   /**
    * render

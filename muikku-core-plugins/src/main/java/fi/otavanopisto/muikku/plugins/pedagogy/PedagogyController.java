@@ -16,13 +16,13 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.pedagogy.dao.PedagogyFormDAO;
 import fi.otavanopisto.muikku.plugins.pedagogy.dao.PedagogyFormHistoryDAO;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistoryType;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -60,7 +60,7 @@ public class PedagogyController {
   private PedagogyFormHistoryDAO pedagogyFormHistoryDAO;
 
 
-  public PedagogyForm createForm(String studentIdentifier, String formData) {
+  public PedagogyForm createForm(Long userEntityId, String formData) {
 
     // Default values for a new form
 
@@ -70,7 +70,7 @@ public class PedagogyController {
 
     // Create form and a history entry about that having happened (doubles as the creator and creation date of the form)
 
-    PedagogyForm form = pedagogyFormDAO.create(studentIdentifier, formData, state, visibility);
+    PedagogyForm form = pedagogyFormDAO.create(userEntityId, formData, state, visibility);
     pedagogyFormHistoryDAO.create(form, "Asiakirja luotiin", creator, PedagogyFormHistoryType.EDIT);
 
     return form;
@@ -154,9 +154,9 @@ public class PedagogyController {
     else if (state == PedagogyFormState.PENDING) {
       UserEntityName staffName = userEntityController.getName(sessionController.getLoggedUser(), true);
       String staffMail = userEmailEntityController.getUserDefaultEmailAddress(sessionController.getLoggedUser(), false);
-      SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(form.getStudentIdentifier());
-      UserEntityName studentName = userEntityController.getName(studentIdentifier, true);
-      String studentMail = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
+      UserEntity studentEntity = userEntityController.findUserEntityById(form.getUserEntityId());
+      UserEntityName studentName = userEntityController.getName(studentEntity, true);
+      String studentMail = userEmailEntityController.getUserDefaultEmailAddress(studentEntity, false);
 
       StringBuffer url = new StringBuffer();
       url.append(httpRequest.getScheme());
@@ -184,8 +184,8 @@ public class PedagogyController {
     return form;
   }
 
-  public PedagogyForm findFormByStudentIdentifier(String studentIdentifier) {
-    return pedagogyFormDAO.findByStudentIdentifier(studentIdentifier);
+  public PedagogyForm findFormByUserEntityId(Long userEntityId) {
+    return pedagogyFormDAO.findByUserEntityId(userEntityId);
   }
 
   public void createViewHistory(PedagogyForm form, Long modifierId) {
@@ -207,11 +207,14 @@ public class PedagogyController {
 
   }
 
-
   public List<PedagogyFormHistory> listHistory(PedagogyForm form) {
     List<PedagogyFormHistory> history = pedagogyFormHistoryDAO.listByForm(form);
     history.sort(Comparator.comparing(PedagogyFormHistory::getCreated).reversed());
     return history;
+  }
+  
+  public boolean hasPedagogyForm(Long userEntityId) {
+    return findFormByUserEntityId(userEntityId) != null;
   }
 
 }

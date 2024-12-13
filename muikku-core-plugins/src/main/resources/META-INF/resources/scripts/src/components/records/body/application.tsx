@@ -1,10 +1,9 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Records from "./application/records";
 import Summary from "./application/summary";
 import Hops from "./application/hops";
-import YO from "./application/yo";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
 import {
@@ -27,6 +26,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
 import MApi from "~/api/api";
 import { PedagogyFormState } from "~/generated/client";
+import { Action, Dispatch } from "redux";
 
 /**
  * StudiesApplicationProps
@@ -46,7 +46,6 @@ type StudiesTab =
   | "CURRENT_RECORD"
   | "HOPS"
   | "SUMMARY"
-  | "YO"
   | "STUDY_INFO"
   | "PEDAGOGY_FORM";
 
@@ -77,6 +76,10 @@ class StudiesApplication extends React.Component<
       loading: false,
       activeTab: "SUMMARY",
     };
+
+    this.loadPedagogyFormState = this.loadPedagogyFormState.bind(this);
+    this.isVisible = this.isVisible.bind(this);
+    this.onTabChange = this.onTabChange.bind(this);
   }
 
   /**
@@ -112,11 +115,6 @@ class StudiesApplication extends React.Component<
           activeTab: "HOPS",
         });
         break;
-      case "yo":
-        this.setState({
-          activeTab: "YO",
-        });
-        break;
 
       case "pedagogy-form":
         this.setState({
@@ -139,18 +137,18 @@ class StudiesApplication extends React.Component<
     const pedagogyApi = MApi.getPedagogyApi();
 
     return await pedagogyApi.getPedagogyFormState({
-      studentIdentifier: this.props.status.userSchoolDataIdentifier,
+      userEntityId: this.props.status.userId,
     });
   };
 
   /**
    * Returns whether section with given hash should be visible or not
    *
-   * @param id section id
+   * @param tab a tab
    * @returns whether section with given hash should be visible or not
    */
-  isVisible(id: string) {
-    switch (id) {
+  isVisible(tab: Tab) {
+    switch (tab.id) {
       case "HOPS":
         return (
           this.props.status.isActiveUser &&
@@ -162,7 +160,6 @@ class StudiesApplication extends React.Component<
                 true))
         );
       case "VOPS":
-      case "YO":
         return (
           this.props.status.isActiveUser &&
           this.props.hops.value &&
@@ -184,10 +181,7 @@ class StudiesApplication extends React.Component<
    * @param id id
    * @param hash hash
    */
-  onTabChange = (
-    id: "RECORDS" | "HOPS" | "SUMMARY" | "YO" | "PEDAGOGY_FORM",
-    hash?: string | Tab
-  ) => {
+  onTabChange = (id: StudiesTab, hash?: string | Tab) => {
     if (hash) {
       if (typeof hash === "string" || hash instanceof String) {
         window.location.hash = hash as string;
@@ -249,35 +243,22 @@ class StudiesApplication extends React.Component<
         ),
       },
       {
-        id: "YO",
-        name: t("labels.matriculationExams", { ns: "studies" }),
-        hash: "yo",
-        type: "yo",
-        component: (
-          <ApplicationPanelBody modifier="tabs">
-            <YO />
-          </ApplicationPanelBody>
-        ),
-      },
-      {
         id: "PEDAGOGY_FORM",
-        name: "Pedagogisen tuen suunnitelma",
+        name: t("labels.title", { ns: "pedagogySupportPlan" }),
         hash: "pedagogy-form",
         type: "pedagogy-form",
         component: (
           <ApplicationPanelBody modifier="tabs">
             <UpperSecondaryPedagogicalSupportWizardForm
               userRole="STUDENT"
-              studentId={this.props.status.userSchoolDataIdentifier}
+              studentUserEntityId={this.props.status.userId}
             />
           </ApplicationPanelBody>
         ),
       },
     ];
 
-    panelTabs = panelTabs
-      .filter((pTab) => this.isVisible(pTab.id))
-      .map((item) => item);
+    panelTabs = panelTabs.filter(this.isVisible);
 
     /**
      * Just because we need to have all tabs ready first before rendering Application panel
@@ -290,7 +271,6 @@ class StudiesApplication extends React.Component<
         onTabChange={this.onTabChange}
         activeTab={this.state.activeTab}
         panelTabs={ready && panelTabs}
-        useWithHash
       />
     );
   }
@@ -313,7 +293,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

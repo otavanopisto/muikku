@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -56,7 +55,6 @@ import fi.otavanopisto.muikku.model.users.FlagStudent;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
-import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserInfo;
 import fi.otavanopisto.muikku.model.users.UserPendingPasswordChange;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -64,7 +62,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
-import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.StaffMemberBasicInfo;
 import fi.otavanopisto.muikku.rest.model.Student;
@@ -92,7 +89,6 @@ import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
-import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.CreatedUserEntityFinder;
@@ -103,7 +99,6 @@ import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
-import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -149,9 +144,6 @@ public class UserRESTService extends AbstractRESTService {
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
-  private UserGroupEntityController userGroupEntityController; 
-  
-  @Inject
   private SessionController sessionController;
   
   @Inject
@@ -187,6 +179,9 @@ public class UserRESTService extends AbstractRESTService {
 
   @Inject
   private UserEmailEntityController userEmailEntityController;
+
+  @Inject
+  private GuidanceCounselorRestModels guidanceCounselorRestModels;
 
   @GET
   @Path("/property/{KEY}")
@@ -265,46 +260,37 @@ public class UserRESTService extends AbstractRESTService {
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
-    Map<String, String> result = new HashMap<String, String>();
-    
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+
     Boolean isStudent = userEntityController.isStudent(userEntity);
-
-    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-      
-      // "moreInfoForLoggedUser" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
-      if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-        result.put("moreInfoForLoggedUser", "true");
-      } else if (sessionController.hasRole(EnvironmentRoleArchetype.TEACHER)) {
-        UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(loggedUser);
-        UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
-
-        List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
-        
-        if (!commonWorkspaces.isEmpty()) {
-          result.put("moreInfoForLoggedUser", "true");
-        } else {
-          result.put("moreInfoForLoggedUser", "false");
-        }
-      } else {
-        Boolean amICounselor = userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier());
-        
-        // True if logged user is student's counselor / searchable user is not student
-        if (amICounselor || !isStudent) {
-          result.put("moreInfoForLoggedUser", "true");
-        } else {
-          result.put("moreInfoForLoggedUser", "false");
-        }
-      }
-    } else {
-      if (!isStudent) {
-        result.put("moreInfoForLoggedUser", "true");
-      }
-    }
-    
     if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) && isStudent) {
       return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // "moreInfoForLoggedUser" is needed for checking if the logged user is able to get to student's guider view and then get more information about searchable user
+
+    Map<String, String> result = new HashMap<>();
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      // Admins, study programme leaders, and managers always see extra info
+      if (!isStudent || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.MANAGER)) {
+        result.put("moreInfoForLoggedUser", Boolean.toString(true));
+      }
+      else {
+        // Extra info if staff and student share common courses
+        UserSchoolDataIdentifier teacher = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(sessionController.getLoggedUserEntity());
+        UserSchoolDataIdentifier student = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByUserEntity(userEntity);
+        List<WorkspaceEntity> commonWorkspaces = workspaceEntityController.listCommonWorkspaces(teacher, student);
+        if (!commonWorkspaces.isEmpty()) {
+          result.put("moreInfoForLoggedUser", Boolean.toString(true));
+        }
+        else {
+          // Extra info if staff is student's counselor
+          result.put("moreInfoForLoggedUser", Boolean.toString(userSchoolDataController.amICounselor(userEntity.defaultSchoolDataIdentifier())));
+        }
+      }
+    }
+    else {
+      // Extra info for students querying staff
+      result.put("moreInfoForLoggedUser", Boolean.toString(!isStudent));
     }
     
     result.put("isStudent", isStudent.toString());
@@ -379,264 +365,6 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   @GET
-  @Path("/students")
-  @RESTPermit (handling = Handling.INLINE)
-  public Response searchStudents(
-      @QueryParam("q") String searchString,
-      @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
-      @QueryParam("maxResults") @DefaultValue("10") Integer maxResults,
-      @QueryParam("userGroupIds") List<Long> userGroupIds,
-      @QueryParam("myUserGroups") Boolean myUserGroups,
-      @QueryParam("workspaceIds") List<Long> workspaceIds,
-      @QueryParam("myWorkspaces") Boolean myWorkspaces,
-      @QueryParam("userEntityId") Long userEntityId,
-      @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
-      @QueryParam("flags") Long[] flagIds,
-      @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
-    
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    if (CollectionUtils.isNotEmpty(userGroupIds) && Boolean.TRUE.equals(myUserGroups)) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    if (CollectionUtils.isNotEmpty(workspaceIds) && Boolean.TRUE.equals(myWorkspaces)) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    List<Flag> flags = null;
-    if (flagIds != null && flagIds.length > 0) {
-      flags = new ArrayList<>(flagIds.length);
-      for (Long flagId : flagIds) {
-        Flag flag = flagController.findFlagById(flagId);
-        if (flag == null) {
-          return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid flag id %d", flagId)).build();
-        }
-        
-        if (!flagController.hasFlagPermission(flag, sessionController.getLoggedUser())) {
-          return Response.status(Status.FORBIDDEN).entity(String.format("You don't have permission to use flag %d", flagId)).build();
-        }
-        
-        flags.add(flag);
-      }
-    }
-    
-    List<fi.otavanopisto.muikku.rest.model.Student> students = new ArrayList<>();
-
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    
-    Set<Long> userGroupFilters = null;
-    Set<Long> workspaceFilters = null;
-
-    if (!sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS)) {
-      if ((myUserGroups != null) && myUserGroups) {
-        userGroupFilters = new HashSet<Long>();
-  
-        // Groups where user is a member
-        
-        List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
-        for (UserGroupEntity userGroup : userGroups) {
-          userGroupFilters.add(userGroup.getId());
-        }
-      } else if (!CollectionUtils.isEmpty(userGroupIds)) {
-        userGroupFilters = new HashSet<Long>();
-        
-        // Defined user groups
-        userGroupFilters.addAll(userGroupIds);
-      }
-    } else {
-      // User can only list users from his/her own user groups
-      userGroupFilters = new HashSet<Long>();
-
-      // Groups where user is a member and the ids of the groups
-      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
-      Set<Long> accessibleUserGroupEntityIds = userGroups.stream().map(UserGroupEntity::getId).collect(Collectors.toSet());
-      
-      if (CollectionUtils.isNotEmpty(userGroupIds)) {
-        // if there are specified user groups, they need to be subset of the groups that the user can access
-        if (!CollectionUtils.isSubCollection(userGroupIds, accessibleUserGroupEntityIds))
-          return Response.status(Status.BAD_REQUEST).build();
-        
-        userGroupFilters.addAll(userGroupIds);
-      } else {
-        userGroupFilters.addAll(accessibleUserGroupEntityIds);
-      }
-    }
-    
-    List<SchoolDataIdentifier> userIdentifiers = null;    
-    if (flags != null) {
-      if (userIdentifiers == null) {
-        userIdentifiers = new ArrayList<>();
-      }
-      
-      userIdentifiers.addAll(flagController.getFlaggedStudents(flags));
-    }
-    
-    if (Boolean.TRUE.equals(includeInactiveStudents)) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_INACTIVE_STUDENTS)) {
-        if (userEntityId == null) {
-          return Response.status(Status.FORBIDDEN).build();
-        } else {
-          if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
-            return Response.status(Status.FORBIDDEN).build();
-          }
-        }
-      }
-    } 
-    
-    if (userEntityId != null) {
-      List<SchoolDataIdentifier> userEntityIdentifiers = new ArrayList<>();
-       
-      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-      if (userEntity == null) {
-        return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid userEntityId %d", userEntityId)).build();
-      }
-      
-      List<UserSchoolDataIdentifier> schoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-      for (UserSchoolDataIdentifier schoolDataIdentifier : schoolDataIdentifiers) {
-        userEntityIdentifiers.add(schoolDataIdentifier.schoolDataIdentifier());
-      }
-      
-      if (userIdentifiers == null) {
-        userIdentifiers = userEntityIdentifiers;
-      } else {
-        userIdentifiers.retainAll(userEntityIdentifiers);
-      }
-    }
-    
-    if ((myWorkspaces != null) && myWorkspaces) {
-      // Workspaces where user is a member
-      List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);
-      Set<Long> myWorkspaceIds = new HashSet<Long>();
-      for (WorkspaceEntity ws : workspaces)
-        myWorkspaceIds.add(ws.getId());
-
-      workspaceFilters = new HashSet<>(myWorkspaceIds);
-    } else if (!CollectionUtils.isEmpty(workspaceIds)) {
-      // Defined workspaces
-      workspaceFilters = new HashSet<>(workspaceIds);
-    }
-
-    SearchProvider elasticSearchProvider = getProvider("elastic-search");
-    if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
-
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
-      
-      SearchResult result = elasticSearchProvider.searchUsers(
-          Arrays.asList(organization),
-          null, // study programme identifiers (TODO Where is this endpoint used - should this be enforced?)
-          searchString,
-          fields,
-          Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
-          userGroupFilters,
-          workspaceFilters,
-          userIdentifiers,
-          includeInactiveStudents,
-          true,
-          false,
-          firstResult,
-          maxResults,
-          false);
-      
-      List<Map<String, Object>> results = result.getResults();
-
-      if (results != null && !results.isEmpty()) {
-        boolean getFlagsFromStudents = !StringUtils.isBlank(flagOwnerId);
-        SchoolDataIdentifier ownerIdentifier = null;
-        if (getFlagsFromStudents) {
-          ownerIdentifier = SchoolDataIdentifier.fromId(flagOwnerId);
-          if (ownerIdentifier == null) {
-            return Response.status(Status.BAD_REQUEST).entity("flagOwnerIdentifier is malformed").build();
-          }
-          if (!ownerIdentifier.equals(sessionController.getLoggedUser())) {
-            return Response.status(Status.FORBIDDEN).build();
-          }
-        }
-        
-        for (Map<String, Object> o : results) {
-          String studentId = (String) o.get("id");
-          if (StringUtils.isBlank(studentId)) {
-            logger.severe("Could not process user found from search index because it had a null id");
-            continue;
-          }
-          
-          String[] studentIdParts = studentId.split("/", 2);
-          SchoolDataIdentifier studentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
-          if (studentIdentifier == null) {
-            logger.severe(String.format("Could not process user found from search index with id %s", studentId));
-            continue;
-          }
-          
-          UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
-          String emailAddress = userEntity != null ? userEmailEntityController.getUserDefaultEmailAddress(userEntity, true) : null;
-
-          Date studyStartDate = getDateResult(o.get("studyStartDate"));
-          Date studyEndDate = getDateResult(o.get("studyEndDate"));
-          Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
-          
-          List<FlagStudent> studentFlags = null;
-          List<fi.otavanopisto.muikku.rest.model.StudentFlag> restFlags = null;
-          if (getFlagsFromStudents) {
-             studentFlags = flagController.listByOwnedAndSharedStudentFlags(studentIdentifier, ownerIdentifier);
-            restFlags = createRestModel(studentFlags.toArray(new FlagStudent[0]));
-          }
-          
-          boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-
-          UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
-          OrganizationEntity organizationEntity = usdi.getOrganization();
-          OrganizationRESTModel organizationRESTModel = null;
-          if (organizationEntity != null) {
-            organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
-          }
-
-          students.add(new fi.otavanopisto.muikku.rest.model.Student(
-            studentIdentifier.toId(), 
-            (String) o.get("firstName"),
-            (String) o.get("lastName"),
-            (String) o.get("nickName"),
-            (String) o.get("studyProgrammeName"), 
-            (String) o.get("studyProgrammeIdentifier"),
-            hasImage,
-            (String) o.get("nationality"), 
-            (String) o.get("language"), 
-            (String) o.get("municipality"), 
-            (String) o.get("school"), 
-            emailAddress,
-            studyStartDate,
-            studyEndDate,
-            studyTimeEnd,
-            userEntity.getLastLogin(),
-            (String) o.get("curriculumIdentifier"),
-            userEntity.getUpdatedByStudent(),
-            userEntity.getId(),
-            restFlags,
-            organizationRESTModel
-          ));
-        }
-      }
-    }
-
-    return Response.ok(students).build();
-  }
-  
-  private Date getDateResult(Object value) {
-    Date date = null;
-    if (value instanceof Long) {
-      date = new Date((Long) value);
-    }
-    else if (value instanceof Double) {
-      // seconds to ms
-      date = new Date(((Double) value).longValue() * 1000);
-    }
-    return date;
-  }
-  
-  @GET
   @Path("/students/{ID}")
   @RESTPermit (handling = Handling.INLINE)
   public Response findStudent(@Context Request request, @PathParam("ID") String id) {
@@ -650,7 +378,8 @@ public class UserRESTService extends AbstractRESTService {
     }
 
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.FIND_STUDENT)) {
-      if (!sessionController.getLoggedUser().equals(studentIdentifier)) {
+                                                                          // Necessary?
+      if (!sessionController.getLoggedUser().equals(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
@@ -716,8 +445,8 @@ public class UserRESTService extends AbstractRESTService {
         user.getCurriculumIdentifier() != null ? user.getCurriculumIdentifier().toId() : null,
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
-        null,
-        organizationRESTModel
+        organizationRESTModel,
+        false
     );
     
     return Response
@@ -1307,151 +1036,6 @@ public class UserRESTService extends AbstractRESTService {
     return Response.noContent().build();
   }
   
-  @GET
-  @Path("/users")
-  @RESTPermitUnimplemented
-  public Response searchUsers(
-      @QueryParam("q") String searchString,
-      @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
-      @QueryParam("maxResults") @DefaultValue("10") Integer maxResults,
-      @QueryParam("userGroupIds") List<Long> userGroupIds,
-      @QueryParam("myUserGroups") Boolean myUserGroups,
-      @QueryParam("workspaceIds") List<Long> workspaceIds,
-      @QueryParam("myWorkspaces") Boolean myWorkspaces,
-      @QueryParam("archetype") String archetype,
-      @DefaultValue ("false") @QueryParam("onlyDefaultUsers") Boolean onlyDefaultUsers) {
-    
-    // TODO: Add new endpoint for listing staff members and deprecate this.
-    
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    if (CollectionUtils.isNotEmpty(userGroupIds) && Boolean.TRUE.equals(myUserGroups))
-      return Response.status(Status.BAD_REQUEST).build();
-    
-    if (CollectionUtils.isNotEmpty(workspaceIds) && Boolean.TRUE.equals(myWorkspaces))
-      return Response.status(Status.BAD_REQUEST).build();
-    
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
-    
-    EnvironmentRoleArchetype roleArchetype = archetype != null ? EnvironmentRoleArchetype.valueOf(archetype) : null;
-
-    Set<Long> userGroupFilters = null;
-    Set<Long> workspaceFilters = null;
-
-    if (!sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS)) {
-      if ((myUserGroups != null) && myUserGroups) {
-        userGroupFilters = new HashSet<Long>();
-  
-        // Groups where user is a member
-        
-        List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
-        for (UserGroupEntity userGroup : userGroups) {
-          userGroupFilters.add(userGroup.getId());
-        }
-      } else if (!CollectionUtils.isEmpty(userGroupIds)) {
-        userGroupFilters = new HashSet<Long>();
-        
-        // Defined user groups
-        userGroupFilters.addAll(userGroupIds);
-      }
-    } else {
-      // User can only list users from his/her own user groups
-      userGroupFilters = new HashSet<Long>();
-  
-      // Groups where user is a member and the ids of the groups
-      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
-      Set<Long> accessibleUserGroupEntityIds = userGroups.stream().map(UserGroupEntity::getId).collect(Collectors.toSet());
-      
-      if (CollectionUtils.isNotEmpty(userGroupIds)) {
-        // if there are specified user groups, they need to be subset of the groups that the user can access
-        if (!CollectionUtils.isSubCollection(userGroupIds, accessibleUserGroupEntityIds))
-          return Response.status(Status.BAD_REQUEST).build();
-        
-        userGroupFilters.addAll(userGroupIds);
-      } else {
-        userGroupFilters.addAll(accessibleUserGroupEntityIds);
-      }
-    }
-
-    if ((myWorkspaces != null) && myWorkspaces) {
-      // Workspaces where user is a member
-      List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(loggedUser);
-      Set<Long> myWorkspaceIds = new HashSet<Long>();
-      for (WorkspaceEntity ws : workspaces)
-        myWorkspaceIds.add(ws.getId());
-
-      workspaceFilters = new HashSet<Long>(myWorkspaceIds);
-    } else if (!CollectionUtils.isEmpty(workspaceIds)) {
-      // Defined workspaces
-      workspaceFilters = new HashSet<Long>(workspaceIds);
-    }
-
-    SearchProvider elasticSearchProvider = getProvider("elastic-search");
-    if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
-
-      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
-      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
-
-      SearchResult result = elasticSearchProvider.searchUsers(
-          Arrays.asList(organization),
-          null, // study programme identifiers (TODO Where is this endpoint used - should this be enforced?) 
-          searchString, 
-          fields, 
-          roleArchetype != null ? Arrays.asList(roleArchetype) : null, 
-          userGroupFilters, 
-          workspaceFilters, 
-          null, 
-          false,
-          false,
-          onlyDefaultUsers,
-          firstResult, 
-          maxResults,
-          false);
-      
-      List<Map<String, Object>> results = result.getResults();
-
-      List<fi.otavanopisto.muikku.rest.model.User> ret = new ArrayList<fi.otavanopisto.muikku.rest.model.User>();
-
-      if (!results.isEmpty()) {
-        for (Map<String, Object> o : results) {
-          String[] id = ((String) o.get("id")).split("/", 2);
-          UserEntity userEntity = userEntityController
-              .findUserEntityByDataSourceAndIdentifier(id[1], id[0]);
-          
-          if (userEntity != null) {
-            boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-            String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
-            Date studyStartDate = getDateResult(o.get("studyStartDate"));
-            Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
-            
-            ret.add(new fi.otavanopisto.muikku.rest.model.User(
-              userEntity.getId(), 
-              (String) o.get("firstName"),
-              (String) o.get("lastName"), 
-              (String) o.get("nickName"),
-              (String) o.get("studyProgrammeName"),
-              hasImage,
-              (String) o.get("nationality"),
-              (String) o.get("language"), 
-              (String) o.get("municipality"), 
-              (String) o.get("school"), 
-              emailAddress,
-              studyStartDate,
-              studyTimeEnd));
-          }
-        }
-
-        return Response.ok(ret).build();
-      } else
-        return Response.noContent().build();
-    }
-
-    return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-  }
-  
   /**
    * POST mApi().user.staffMembers
    * 
@@ -1480,7 +1064,7 @@ public class UserRESTService extends AbstractRESTService {
     
     // Payload validation
     
-    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+    if (StringUtils.isAnyBlank(payload.getFirstName(), payload.getLastName(), payload.getEmail()) || CollectionUtils.isEmpty(payload.getRoles())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
@@ -1564,7 +1148,8 @@ public class UserRESTService extends AbstractRESTService {
     // Payload validation
     
     if (!StringUtils.equals(id, payload.getIdentifier()) ||
-        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail(), payload.getRole())) {
+        CollectionUtils.isEmpty(payload.getRoles()) ||
+        StringUtils.isAnyBlank(payload.getIdentifier(), payload.getFirstName(), payload.getLastName(), payload.getEmail())) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid payload").build();
     }
 
@@ -1708,42 +1293,31 @@ public class UserRESTService extends AbstractRESTService {
   }
 
   @GET
-  @Path("/users/{ID}")
-  @RESTPermitUnimplemented
-  public Response findUser(@Context Request request, @PathParam("ID") Long id) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).build();
+  @Path("/students/{IDENTIFIER}/guidanceCounselors")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listGuidanceCounselors(
+      @PathParam("IDENTIFIER") String studentIdentifierStr,
+      @QueryParam("properties") String properties) {
+
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    if (studentIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    UserSchoolDataIdentifier loggedUser = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
+    if (loggedUser == null || !loggedUser.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      return Response.status(Status.NOT_FOUND).build();
     }
 
-    UserEntity userEntity = userEntityController.findUserEntityById(id);
-    if (userEntity == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
+    if (!sessionController.getLoggedUser().equals(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.NOT_FOUND).build();
     }
 
-    EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(userEntity.getVersion())));
+    String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
 
-    ResponseBuilder builder = request.evaluatePreconditions(tag);
-    if (builder != null) {
-      return builder.build();
-    }
-
-    CacheControl cacheControl = new CacheControl();
-    cacheControl.setMustRevalidate(true);
-
-    User user = userController.findUserByDataSourceAndIdentifier(
-        userEntity.getDefaultSchoolDataSource(),
-        userEntity.getDefaultIdentifier());
-    if (user == null) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    return Response
-        .ok(createRestModel(userEntity, user))
-        .cacheControl(cacheControl)
-        .tag(tag)
-        .build();
+    return Response.ok(guidanceCounselorRestModels.getGuidanceCounselorRestModels(sessionController.getLoggedUser(), propertyArray)).build();
   }
-
+  
   @GET
   @Path("/staffMembers")
   @RESTPermit (handling = Handling.INLINE)
@@ -1848,7 +1422,7 @@ public class UserRESTService extends AbstractRESTService {
           // #3111: Workspace staff members should be limited to teachers only. A better implementation would support specified workspace roles
           
           if (workspaceEntity != null) {
-            WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+            WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
             if (workspaceUserEntity == null || workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
               continue;
             }
@@ -1861,6 +1435,12 @@ public class UserRESTService extends AbstractRESTService {
             organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
           }
           boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);          
+
+          Set<String> roles = new HashSet<>();
+          if (usdi.getRoles() != null) {
+            usdi.getRoles().forEach(roleEntity -> roles.add(roleEntity.getArchetype().name()));
+          }
+          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
             Long.valueOf((Integer) o.get("userEntityId")),
@@ -1869,7 +1449,7 @@ public class UserRESTService extends AbstractRESTService {
             email,
             propertyMap,
             organizationRESTModel,
-            (String) o.get("archetype"),
+            roles,
             hasImage));
         }
       }
@@ -1878,22 +1458,6 @@ public class UserRESTService extends AbstractRESTService {
     return Response.ok(responseStaffMembers).build();
   }
   
-  private fi.otavanopisto.muikku.rest.model.User createRestModel(UserEntity userEntity,
-      User user) {
-    boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-    
-    String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true); 
-    
-    Date startDate = user.getStudyStartDate() != null ? Date.from(user.getStudyStartDate().toInstant()) : null;
-    Date endDate = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
-    
-    return new fi.otavanopisto.muikku.rest.model.User(userEntity.getId(),
-        user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage,
-        user.getNationality(), user.getLanguage(),
-        user.getMunicipality(), user.getSchool(), emailAddress,
-        startDate, endDate);
-  }
-
   private fi.otavanopisto.muikku.rest.model.StudentFlag createRestModel(FlagStudent flagStudent) {
     SchoolDataIdentifier studentIdentifier = flagStudent.getStudentIdentifier().schoolDataIdentifier();
     return new fi.otavanopisto.muikku.rest.model.StudentFlag(

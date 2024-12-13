@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { localizeTime } from "~/locales/i18n";
+import { connect } from "react-redux";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/rich-text.scss";
@@ -17,6 +17,7 @@ import ApplicationList, {
 import { AnnouncementsState } from "~/reducers/announcements";
 import { UserIndexState } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions/index";
+import { Action, Dispatch } from "redux";
 
 /**
  * MessageViewProps
@@ -61,10 +62,10 @@ class AnnouncementView extends React.Component<
           <ApplicationListItemHeader modifiers="announcer-announcement">
             <ApplicationListHeaderPrimary modifiers="announcement-meta">
               <ApplicationListItemDate
-                startDate={localizeTime.date(
+                startDate={localize.date(
                   this.props.announcements.current.startDate
                 )}
-                endDate={localizeTime.date(
+                endDate={localize.date(
                   this.props.announcements.current.endDate
                 )}
               />
@@ -132,7 +133,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

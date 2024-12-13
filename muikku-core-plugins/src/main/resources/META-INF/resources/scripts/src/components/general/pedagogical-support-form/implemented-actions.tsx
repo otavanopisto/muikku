@@ -10,6 +10,7 @@ import { SupportActionImplementation } from "~/@types/pedagogy-form";
 import { supportActionsOptions } from "./helpers";
 import { TextField } from "../hops-compulsory-education-wizard/text-field";
 import { usePedagogyContext } from "./context/pedagogy-context";
+import { useTranslation } from "react-i18next";
 
 /**
  * ImplementedActionsListProps
@@ -48,7 +49,8 @@ interface ImplementedActionsListItemProps {
 export const ImplementedActionsListItem: React.FC<
   ImplementedActionsListItemProps
 > = (props) => {
-  const { userRole, editIsActive } = usePedagogyContext();
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
+  const { userRole, editIsActive, studentUserEntityId } = usePedagogyContext();
 
   const {
     index,
@@ -67,7 +69,7 @@ export const ImplementedActionsListItem: React.FC<
         <div className="hops__form-element-container">
           <TextField
             id="implemenetedSupportActionCreatorName"
-            label="Merkitsijä"
+            label={t("labels.creator", { ns: "pedagogySupportPlan" })}
             value={implemenetedSupportAction.creatorName}
             disabled
           />
@@ -78,7 +80,7 @@ export const ImplementedActionsListItem: React.FC<
             htmlFor="implemenetedSupportActionDate"
             className="hops__label"
           >
-            Päivämäärä
+            {t("labels.date", { ns: "common" })}
           </label>
           <DatePicker
             id="implemenetedSupportActionDate"
@@ -96,7 +98,7 @@ export const ImplementedActionsListItem: React.FC<
             htmlFor="implemenetedSupportActionAction"
             className="hops__label"
           >
-            Tukitoimi
+            {t("labels.supportAction", { ns: "pedagogySupportPlan" })}
           </label>
           <Select
             id="implemenetedSupportActionAction"
@@ -116,10 +118,11 @@ export const ImplementedActionsListItem: React.FC<
             htmlFor="implemenetedSupportActionCourse"
             className="hops__label"
           >
-            Kurssi
+            {t("labels.course", { ns: "common" })}
           </label>
           <WorkspaceSelect
             id="implemenetedSupportActionCourse"
+            userEntityId={studentUserEntityId}
             onChange={(option) => {
               onActionChange(index, "course", option?.value || undefined);
             }}
@@ -141,7 +144,7 @@ export const ImplementedActionsListItem: React.FC<
         <div className="hops__form-element-container">
           <Textarea
             id="implemenetedSupportActionStudentStrengths"
-            label="Lisätietoa"
+            label={t("labels.additionalInfo", { ns: "pedagogySupportPlan" })}
             className="hops__textarea"
             onChange={(e) =>
               onActionChange(index, "extraInfoDetails", e.target.value)
@@ -159,7 +162,7 @@ export const ImplementedActionsListItem: React.FC<
               id={`removePedagogyRowLabel${index}`}
               className="visually-hidden"
             >
-              Poista
+              {t("actions.remove", { ns: "common" })}
             </label>
             <Button
               icon="trash"
@@ -187,15 +190,21 @@ interface AddNewActionsBoxProps {
  * @param props props
  * @returns JSX.Element
  */
-export const AddNewActionsBox: React.FC<AddNewActionsBoxProps> = (props) => (
-  <div className="hops-container__row">
-    <Button
-      buttonModifiers={"add-pedagogy-row"}
-      onClick={props.onClick}
-      icon="plus"
-      disabled={props.disabled}
-    >
-      Lisää uusi rivi
-    </Button>
-  </div>
-);
+export const AddNewActionsBox: React.FC<AddNewActionsBoxProps> = (props) => {
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
+
+  const { onClick, disabled } = props;
+
+  return (
+    <div className="hops-container__row">
+      <Button
+        buttonModifiers={"add-pedagogy-row"}
+        onClick={onClick}
+        icon="plus"
+        disabled={disabled}
+      >
+        {t("actions.add", { ns: "pedagogySupportPlan", context: "row" })}
+      </Button>
+    </div>
+  );
+};

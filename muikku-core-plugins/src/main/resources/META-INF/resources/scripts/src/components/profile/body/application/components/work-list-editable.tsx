@@ -6,8 +6,8 @@ import { ButtonPill } from "~/components/general/button";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
-import { localizeTime } from "~/locales/i18n";
-import * as moment from "moment";
+import { localize } from "~/locales/i18n";
+import moment from "moment";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
@@ -150,7 +150,9 @@ class WorkListEditable extends React.Component<
     }
 
     if (props.base && props.base.price) {
-      newState.price = props.base.price.toString();
+      newState.price = (
+        Math.round((props.base.price + Number.EPSILON) * 100) / 100
+      ).toFixed(2);
 
       if (props.locales.current !== "en") {
         newState.price = newState.price.replace(".", ",");
@@ -267,7 +269,7 @@ class WorkListEditable extends React.Component<
               id={"date-" + (this.props.base && this.props.base.id)}
               className="form-element__input form-element__input--worklist-date"
               onChange={this.handleDateChange.bind(this)}
-              locale={outputCorrectDatePickerLocale(localizeTime.language)}
+              locale={outputCorrectDatePickerLocale(localize.language)}
               selected={this.state.date}
               // the entry date min date allows us to pick the previous month within the limit, or otherwise
               // we can only choose from this month forwards

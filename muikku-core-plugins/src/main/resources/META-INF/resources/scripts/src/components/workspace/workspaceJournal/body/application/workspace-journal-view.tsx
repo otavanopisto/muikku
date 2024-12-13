@@ -1,21 +1,22 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/message.scss";
 import { AnyActionType } from "~/actions";
-import { WorkspaceType } from "~/reducers/workspaces";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 import WorkspaceJournalsListItem from "./workspace-journals-list-item";
 import ApplicationList from "~/components/general/application-list";
 import { JournalsState } from "~/reducers/workspaces/journals";
+import { Action, Dispatch } from "redux";
 
 /**
  * MessageViewProps
  */
 interface WorkspaceJournalViewProps {
-  currentWorkspace: WorkspaceType;
+  currentWorkspace: WorkspaceDataType;
   journalsState: JournalsState;
 }
 
@@ -58,7 +59,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {};
 }
 

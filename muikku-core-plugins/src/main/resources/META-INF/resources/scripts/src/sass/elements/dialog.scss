@@ -19,6 +19,14 @@
   z-index: 9990;
 }
 
+.dialog--local {
+  position: absolute;
+
+  .dialog__window {
+    position: relative;
+  }
+}
+
 .dialog--matriculation {
   .dialog__window {
     @include breakpoint($breakpoint-pad) {
@@ -80,23 +88,27 @@
   opacity: 100%;
 }
 
+.dialog--workspace-signup-dialog {
+  z-index: 9999;
+}
+
 .dialog__window {
   align-items: flex-start;
   background-color: $color-dialog-default-background;
-  bottom: 0;
+  border-radius: 5px;
+  bottom: 10px;
   display: flex;
   flex-flow: column nowrap;
   font-family: $system-font-family;
   font-size: $text-mobile-font-size;
   justify-content: flex-start;
-  left: 0;
+  left: 10px;
   position: fixed;
-  right: 0;
-  top: 0;
-  width: 100%;
+  right: 10px;
+  top: 10px;
+  width: calc(100% - 20px);
 
   @include breakpoint($breakpoint-pad) {
-    border-radius: 5px;
     bottom: auto;
     box-shadow: 0 0 80px $color-dialog-default-shadow;
     font-size: $text-desktop-font-size;
@@ -105,6 +117,14 @@
     position: relative;
     right: auto;
     top: auto;
+  }
+}
+
+.dialog__window--chat {
+  max-height: calc(100% - 20px);
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 700px;
   }
 }
 
@@ -186,6 +206,7 @@
   position: fixed;
   right: 0;
   top: 0;
+  width: auto;
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 10px;
@@ -195,14 +216,15 @@
     position: fixed;
     right: 20px;
     top: 20px;
-    width: auto;
   }
 
   .dialog__content {
+    display: flex;
     flex-basis: auto;
     flex-flow: column nowrap;
     flex-grow: 1;
     flex-shrink: 1;
+    max-height: 100%;
   }
 
   .multi-step {
@@ -301,6 +323,7 @@
   align-items: center;
   display: flex;
   justify-content: center;
+  margin-top: 5px;
 }
 
 .dialog__slider {
@@ -313,24 +336,24 @@
 .dialog__header {
   align-items: center;
   background-color: $color-dialog-mobile-background;
+  border-radius: 5px 5px 0 0;
   color: $color-dialog-mobile-text;
   display: flex;
   flex-basis: 3rem;
   flex-grow: 0;
   flex-shrink: 0;
   height: $dialog-title-height;
-  padding: 15px 20px;
+  padding: 15px 10px 15px 20px;
   position: relative;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
     background-color: $color-dialog-desktop-background;
-    border-radius: 5px 5px 0 0;
     color: $color-dialog-desktop-text;
     display: flex;
     height: 3rem;
     min-height: 3rem;
-    padding: 0 20px;
+    padding: 0 10px 0 20px;
   }
 }
 
@@ -338,7 +361,7 @@
   @include breakpoint($breakpoint-pad) {
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 4;
   }
 }
 
@@ -387,6 +410,29 @@
   }
 }
 
+.dialog__header--chat {
+  background: $color-default;
+  color: $color-default-contrast;
+
+  .dialog__title {
+    font-size: 0.9375rem;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: 1rem;
+    }
+  }
+
+  .button-icon--dialog-close {
+    color: $color-default-contrast;
+  }
+}
+
+.dialog__header--matriculation {
+  .button-icon--dialog-close {
+    color: $color-default-contrast;
+  }
+}
+
 .dialog__icon-container {
   align-items: center;
   border-radius: 5px;
@@ -411,6 +457,7 @@
 }
 
 .dialog__title-sub-container {
+  align-items: center;
   display: flex;
 }
 
@@ -418,6 +465,12 @@
   &:not(:first-child) {
     margin-left: 10px;
   }
+}
+
+.dialog__title-item--hops-toggle {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
 }
 
 .dialog__title-item--studyprogramme {
@@ -441,14 +494,20 @@
 }
 
 .dialog__content {
-  display: flex;
   flex-basis: calc(100% - 6rem - 20px);
   flex-grow: 1;
   flex-shrink: 1;
+  line-height: 1.25rem;
   max-height: calc(100% - 6rem - 20px);
   min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
   padding: $dialog-content-padding;
-  position: relative;
+  width: 100%;
+}
+
+.dialog__content--workspace-signup-dialog {
+  display: block;
   width: 100%;
 }
 
@@ -457,18 +516,62 @@
 }
 
 .dialog__content--disconnect-warning {
+  line-height: 1.5rem;
   padding: 0 20px;
 
   @include breakpoint($breakpoint-pad) {
+    line-height: 1.75rem;
     padding: 0 30px;
   }
 }
 
+// Descrease top and bottom padding in chat's dialogs as they have white background
+.dialog__content--chat {
+  padding: 10px 20px;
+}
+
+.dialog__content-column-container {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column wrap;
+  gap: 20px 30px;
+  justify-content: flex-start;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+}
+
+.dialog__content-column {
+  align-items: flex-start;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  justify-content: flex-start;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    max-width: 50%;
+    width: auto;
+  }
+}
+
 .dialog__content-row {
-  margin: 0 0 10px;
+  margin: 0 0 15px;
+  width: 100%;
+
+  &:last-child {
+    margin: 0;
+  }
 
   label {
     font-weight: 600;
+  }
+
+  p {
+    margin: 0 0 10px;
   }
 }
 
@@ -613,6 +716,7 @@
       position: fixed;
       right: 0;
       top: 0;
+      width: 100%;
     }
   }
 }
@@ -620,6 +724,8 @@
 .dialog--enrollment {
   background: transparent;
   bottom: auto;
+  left: calc(50% - 235px);
+  max-width: 470px;
   top: 10px;
 
   .dialog__content-row--label {
@@ -639,6 +745,10 @@
 .dialog__header--enrollment {
   background: $color-default;
   color: $color-default-contrast;
+
+  .button-icon--dialog-close {
+    color: $color-info;
+  }
 }
 
 .dialog__executer {

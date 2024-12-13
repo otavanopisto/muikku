@@ -9,6 +9,7 @@ import {
 import { FormData, SupportActionImplementation } from "~/@types/pedagogy-form";
 import { StatusType } from "~/reducers/base/status";
 import { usePedagogyContext } from "../context/pedagogy-context";
+import { useTranslation } from "react-i18next";
 
 /**
  * ImplementedSupportActionsProps
@@ -26,6 +27,7 @@ interface ImplementedSupportActionsProps {
 const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
   props
 ) => {
+  const { t } = useTranslation("pedagogySupportPlan");
   const { status } = props;
   const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
   const { userRole, editIsActive } = usePedagogyContext();
@@ -68,7 +70,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
    * @param value value
    */
   const handleSupportActionChange = <
-    T extends keyof SupportActionImplementation
+    T extends keyof SupportActionImplementation,
   >(
     index: number,
     key: T,
@@ -99,7 +101,9 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
       />
     ))) || (
     <div className="empty">
-      <span>Ei toteutettuja tukitoimia</span>
+      <span>
+        {t("content.empty", { ns: "pedagogySupportPlan", context: "actions" })}
+      </span>
     </div>
   );
 
@@ -107,12 +111,12 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          Toteutetut tukitoimet
+          {t("labels.implementedActions", { ns: "pedagogySupportPlan" })}
         </legend>
 
         <ImplementedActionsList>
           {implementedActions}
-          {userRole !== "STUDENT" && (
+          {userRole !== "STUDENT" && userRole !== "STUDENT_PARENT" && (
             <AddNewActionsBox
               onClick={handleAddNewSupportAction}
               disabled={!editIsActive}

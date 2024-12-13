@@ -4,6 +4,7 @@ import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
 import WarningDialog from "./dialogs/warning";
 import Button from "../button";
 import { usePedagogyContext } from "./context/pedagogy-context";
+import { useTranslation } from "react-i18next";
 
 /**
  * PedagogyToolbarProps
@@ -21,6 +22,7 @@ interface PedagogyToolbarProps {
  */
 const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   const { showPDF, setShowPDF } = props;
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
 
   const usePedagogyValues = usePedagogyContext();
 
@@ -85,13 +87,13 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
    */
   const handleCancelSaveWithExtraDetailsClick = () => setExtraDetails("");
 
-  if (userRole !== "STUDENT") {
+  if (userRole !== "STUDENT" && userRole !== "STUDENT_PARENT") {
     switch (data.state) {
       case "INACTIVE":
         return userRole === "SPECIAL_ED_TEACHER" ? (
           <div className="pedagogy-form__toolbar">
             <Button buttonModifiers={["success"]} onClick={activateForm}>
-              Aktivoi
+              {t("actions.activate", { ns: "common" })}
             </Button>
           </div>
         ) : null;
@@ -106,22 +108,27 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
                   {changedFields.length > 0 ? (
                     <WarningDialog
                       onApproveClick={resetData}
-                      title="Tallentamattomat muutokset"
+                      title={t("labels.unsavedWarning", {
+                        ns: "pedagogySupportPlan",
+                      })}
                       content={
                         <p>
-                          Sinulla on tallentamattomia muutoksia. Haluatko
-                          varmasti peruuttaa muokkauksen
+                          {t("content.unsavedWarning", {
+                            ns: "pedagogySupportPlan",
+                          })}
                         </p>
                       }
                     >
-                      <Button buttonModifiers={["cancel"]}>Peruuta</Button>
+                      <Button buttonModifiers={["cancel"]}>
+                        {t("actions.cancel", { ns: "common" })}
+                      </Button>
                     </WarningDialog>
                   ) : (
                     <Button
                       buttonModifiers={["cancel"]}
                       onClick={handleEditClick}
                     >
-                      Peruuta
+                      {t("actions.cancel", { ns: "common" })}
                     </Button>
                   )}
 
@@ -135,7 +142,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
                       buttonModifiers={["success"]}
                       disabled={!editIsActive && changedFields.length === 0}
                     >
-                      Tallenna
+                      {t("actions.save", { ns: "common" })}
                     </Button>
                   </SaveWithExtraDetailsDialog>
                 </>
@@ -144,7 +151,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
                   buttonModifiers={["fatal", "standard-ok"]}
                   onClick={handleEditClick}
                 >
-                  Muokkaa
+                  {t("actions.edit", { ns: "common" })}
                 </Button>
               )}
             </div>
@@ -156,7 +163,9 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
                   disabled={loading}
                   onClick={handlePDFClick}
                 >
-                  {showPDF ? "Sulje PDF" : "PDF"}
+                  {showPDF
+                    ? t("actions.closePDF", { ns: "common" })
+                    : t("actions.openPDF", { ns: "common" })}
                 </Button>
               </div>
             ) : null}
@@ -164,28 +173,35 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         );
 
       default:
-        return <></>;
+        return null;
+    }
+  }
+  if (userRole === "STUDENT") {
+    switch (data.state) {
+      case "PENDING":
+        return (
+          <div className="pedagogy-form__toolbar">
+            <ApprovalDialog
+              formIsApproved={formIsApproved}
+              saveButtonDisabled={!formIsApproved}
+              onSaveClick={approveForm}
+              onApproveChange={handleApproveValueChange}
+            >
+              <Button buttonModifiers={["info"]}>
+                {t("actions.approve", {
+                  ns: "pedagogySupportPlan",
+                })}
+              </Button>
+            </ApprovalDialog>
+          </div>
+        );
+
+      default:
+        return null;
     }
   }
 
-  switch (data.state) {
-    case "PENDING":
-      return (
-        <div className="pedagogy-form__toolbar">
-          <ApprovalDialog
-            formIsApproved={formIsApproved}
-            saveButtonDisabled={!formIsApproved}
-            onSaveClick={approveForm}
-            onApproveChange={handleApproveValueChange}
-          >
-            <Button buttonModifiers={["info"]}>Hyväksy lomake</Button>
-          </ApprovalDialog>
-        </div>
-      );
-
-    default:
-      return <></>;
-  }
+  return null;
 };
 
 export default PedagogyToolbar;

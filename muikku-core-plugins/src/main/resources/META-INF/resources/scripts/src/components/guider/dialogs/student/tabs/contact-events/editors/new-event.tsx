@@ -1,6 +1,6 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import {
@@ -8,14 +8,14 @@ import {
   CreateContactLogEventTriggerType,
 } from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import SessionStateComponent from "~/components/general/session-state-component";
 import DatePicker from "react-datepicker";
 import { contactTypesArray } from "~/reducers/main-function/guider";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import * as moment from "moment";
+import moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import {
   loadStudentContactLogs,
@@ -78,8 +78,8 @@ class NewContactEvent extends SessionStateComponent<
         text: props.initialMessage || "",
         sender: props.initialSender || "",
         date:
-          localizeTime.getLocalizedMoment(props.initialDate).toDate() ||
-          localizeTime.getLocalizedMoment().toDate(),
+          localize.getLocalizedMoment(props.initialDate).toDate() ||
+          localize.getLocalizedMoment().toDate(),
         type: props.initialType || "OTHER",
         locked: false,
       },
@@ -96,8 +96,8 @@ class NewContactEvent extends SessionStateComponent<
         text: this.props.initialMessage || "",
         sender: this.props.initialSender || "",
         date:
-          localizeTime.getLocalizedMoment(this.props.initialDate).toDate() ||
-          localizeTime.getLocalizedMoment().toDate(),
+          localize.getLocalizedMoment(this.props.initialDate).toDate() ||
+          localize.getLocalizedMoment().toDate(),
         type: this.props.initialType || "OTHER",
         locked: false,
       },
@@ -182,8 +182,8 @@ class NewContactEvent extends SessionStateComponent<
         text: this.props.initialMessage || "",
         sender: this.props.initialSender || "",
         date:
-          localizeTime.getLocalizedMoment(this.props.initialDate).toDate() ||
-          localizeTime.getLocalizedMoment().toDate(),
+          localize.getLocalizedMoment(this.props.initialDate).toDate() ||
+          localize.getLocalizedMoment().toDate(),
         type: this.props.initialType || "OTHER",
         locked: false,
       },
@@ -225,7 +225,7 @@ class NewContactEvent extends SessionStateComponent<
               className="env-dialog__input"
               id="contactEventdate"
               onChange={this.onDateChange}
-              locale={outputCorrectDatePickerLocale(localizeTime.language)}
+              locale={outputCorrectDatePickerLocale(localize.language)}
               selected={this.state.date}
               dateFormat="P"
             ></DatePicker>
@@ -337,7 +337,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { createContactLogEvent, loadStudentContactLogs },
     dispatch

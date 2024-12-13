@@ -1,10 +1,9 @@
 import * as React from "react";
-import * as moment from "moment";
 import AnimateHeight from "react-animate-height";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { StateType } from "~/reducers";
-import { bindActionCreators, Dispatch } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import Link from "~/components/general/link";
 import { connect } from "react-redux";
@@ -28,6 +27,7 @@ import {
   createEvaluationJournalComment,
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
 import { WorkspaceJournal, WorkspaceJournalComment } from "~/generated/client";
+import { localize } from "~/locales/i18n";
 
 /**
  * EvaluationEventContentCardProps
@@ -237,9 +237,10 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     });
   };
 
-  const formatedDate = `${moment(created).format("l")} - ${moment(
-    created
-  ).format("h:mm")}`;
+  const formatedDate = `${localize.date(created)} - ${localize.date(
+    created,
+    "h:mm"
+  )}`;
 
   const arrowClasses = !showComments
     ? `evaluation-modal__event-arrow evaluation-modal__event-arrow--journal-comment evaluation-modal__event-arrow--right`
@@ -400,7 +401,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadEvaluationJournalCommentsFromServer,

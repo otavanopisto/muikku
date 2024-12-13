@@ -1,10 +1,10 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { ButtonPill } from "~/components/general/button";
 import "react-datepicker/dist/react-datepicker.css";
 import "~/sass/elements/datepicker/datepicker.scss";
 import "~/sass/elements/glyph.scss";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 import WorkListEditable from "./work-list-editable";
 import {
   DeleteProfileWorklistItemTriggerType,
@@ -12,9 +12,9 @@ import {
   editProfileWorklistItem,
   EditProfileWorklistItemTriggerType,
 } from "~/actions/main-function/profile";
-import { bindActionCreators } from "redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import DeleteWorklistItemDialog from "../../../dialogs/delete-worklist-item";
-import moment from "~/lib/moment";
+import moment from "moment";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { WorklistBillingStateType, WorklistItem } from "~/generated/client";
@@ -246,10 +246,12 @@ class WorkListRow extends React.Component<
           {this.props.item.description}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-date">
-          {localizeTime.date(this.props.item.entryDate)}
+          {localize.date(this.props.item.entryDate)}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-price">
-          {this.props.item.price}
+          {(
+            Math.round((this.props.item.price + Number.EPSILON) * 100) / 100
+          ).toFixed(2)}
         </span>
         <span className="application-sub-panel__multiple-item-container application-sub-panel__multiple-item-container--worklist-factor">
           {this.props.item.factor}
@@ -289,7 +291,7 @@ class WorkListRow extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { deleteProfileWorklistItem, editProfileWorklistItem },
     dispatch

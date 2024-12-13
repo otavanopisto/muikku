@@ -1,10 +1,10 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
-import "~/sass/elements/popper.scss";
+import { localize } from "~/locales/i18n";
+import "~/sass/elements/popover.scss";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -14,7 +14,7 @@ import { ButtonPill } from "~/components/general/button";
 import { fetchUserInfo, useInfoPopperContext } from "./context";
 import { WhatsappButtonLink } from "../whatsapp-link";
 import { GuiderStudentLink } from "../guider-link";
-import * as moment from "moment";
+import moment from "moment";
 import {
   Popover,
   PopoverArrow,
@@ -151,7 +151,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
                 }, 200);
               }
             }}
-            className="item-list__item item-list__item--info-popper"
+            className="item-list__item item-list__item--info-popover"
           >
             <div className="item-list__profile-picture">
               <Avatar
@@ -259,8 +259,8 @@ function ContactVacation(props: ContactVacationProps) {
     <div className="item-list__user-vacation-period">
       {t("labels.away")}
       &nbsp;
-      {localizeTime.date(info.vacationStart)}
-      {info.vacationEnd ? `- ${localizeTime.date(info.vacationEnd)}` : null}
+      {localize.date(info.vacationStart)}
+      {info.vacationEnd ? `- ${localize.date(info.vacationEnd)}` : null}
     </div>
   );
 }
@@ -370,7 +370,7 @@ function ContactActions(props: ContactActionsProps) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       displayNotification,

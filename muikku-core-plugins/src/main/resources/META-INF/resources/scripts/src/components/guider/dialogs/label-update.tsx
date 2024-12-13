@@ -1,7 +1,7 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 //Another weird typescript bug, won't import properly
 import { ChromePicker, ColorState } from "react-color";
 import { AnyActionType } from "~/actions";
@@ -639,7 +639,7 @@ class GuiderLabelUpdateDialog extends React.Component<
           <div className="dialog__state state-INFO">
             <div className="dialog__state-icon icon-notification"></div>
             <div className="dialog__state-text">
-              {this.props.i18n.t("notifications.warning", {
+              {this.props.i18n.t("notifications.removeWarning", {
                 ns: "flags",
               })}
             </div>
@@ -680,7 +680,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     { updateGuiderFilterLabel, removeGuiderFilterLabel, displayNotification },
     dispatch

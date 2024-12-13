@@ -5,13 +5,9 @@
  */
 
 import * as React from "react";
-import { HTMLAttributeAnchorTarget } from "react";
 import { Redirect } from "react-router-dom";
 import "~/sass/elements/link.scss";
 import { scrollToSection } from "~/util/modifiers";
-import { StateType } from "~/reducers";
-import { connect } from "react-redux";
-
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -194,9 +190,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
    * @param target target
    * @returns target accessibility indicator
    */
-  renderAccessibilityIndicatorByTarget = (
-    target: HTMLAttributeAnchorTarget
-  ) => {
+  renderAccessibilityIndicatorByTarget = (target: any) => {
     switch (target) {
       case "_blank":
         return (

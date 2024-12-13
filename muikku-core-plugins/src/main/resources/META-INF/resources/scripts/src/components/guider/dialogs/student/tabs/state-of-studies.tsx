@@ -1,8 +1,8 @@
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
+import { connect } from "react-redux";
 import { StateType } from "~/reducers";
-import { bindActionCreators } from "redux";
-import { localizeTime } from "~/locales/i18n";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { localize } from "~/locales/i18n";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/course.scss";
@@ -35,11 +35,11 @@ import {
   UpdateCurrentStudentHopsPhaseTriggerType,
   updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
-import StudySuggestionMatrix from "./state-of-studies/study-suggestion-matrix";
-import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
+import StudyProgress from "~/components/general/study-progress";
+import StudyProgressContextProvider from "~/components/general/study-progress/context";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
@@ -89,6 +89,7 @@ class StateOfStudies extends React.Component<
     if (this.props.guider.currentStudent === null) {
       return null;
     }
+
     // Note that some properties are not available until later, that's because it does
     // step by step loading, make sure to show this in the way this is represented, ensure to have
     // a case where the property is not available
@@ -169,7 +170,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyStartDate
-              ? localizeTime.date(
+              ? localize.date(
                   this.props.guider.currentStudent.basic.studyStartDate
                 )
               : "-"}
@@ -180,7 +181,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyEndDate
-              ? localizeTime.date(
+              ? localize.date(
                   this.props.guider.currentStudent.basic.studyEndDate
                 )
               : "-"}
@@ -191,7 +192,7 @@ class StateOfStudies extends React.Component<
         >
           <ApplicationSubPanelItem.Content>
             {this.props.guider.currentStudent.basic.studyTimeEnd
-              ? localizeTime.date(
+              ? localize.date(
                   this.props.guider.currentStudent.basic.studyTimeEnd
                 )
               : "-"}
@@ -291,7 +292,7 @@ class StateOfStudies extends React.Component<
           >
             <ApplicationSubPanelItem.Content>
               {this.props.guider.currentStudent.basic.lastLogin
-                ? localizeTime.date(
+                ? localize.date(
                     this.props.guider.currentStudent.basic.lastLogin,
                     "LLL"
                   )
@@ -311,12 +312,39 @@ class StateOfStudies extends React.Component<
                 key={notification}
               >
                 <ApplicationSubPanelItem.Content>
-                  {localizeTime.date(
+                  {localize.date(
                     this.props.guider.currentStudent.notifications[notification]
                   )}
                 </ApplicationSubPanelItem.Content>
               </ApplicationSubPanelItem>;
             }
+          )}
+
+        {this.props.guider.currentStudent.courseCredits &&
+          this.props.guider.currentStudent.courseCredits.showCredits && (
+            <ApplicationSubPanelItem
+              title={this.props.i18n.t("labels.courseCredits", {
+                ns: "guider",
+              })}
+              modifier="guider-course-credits"
+            >
+              <ApplicationSubPanelItem.Content>
+                {this.props.t("labels.courseCreditsMandatory", {
+                  ns: "guider",
+                  mandatoryCredits:
+                    this.props.guider.currentStudent.courseCredits
+                      .mandatoryCourseCredits,
+                })}
+              </ApplicationSubPanelItem.Content>
+              <ApplicationSubPanelItem.Content>
+                {this.props.t("labels.courseCreditsTotal", {
+                  ns: "guider",
+                  totalCredits:
+                    this.props.guider.currentStudent.courseCredits
+                      .completedCourseCredits,
+                })}
+              </ApplicationSubPanelItem.Content>
+            </ApplicationSubPanelItem>
           )}
       </ApplicationSubPanel.Body>
     );
@@ -358,7 +386,6 @@ class StateOfStudies extends React.Component<
                     <ApplicationSubPanel.Header>
                       {this.props.i18n.t("labels.orders", {
                         ns: "orders",
-                        count: 0,
                       })}
                     </ApplicationSubPanel.Header>
                     <ApplicationSubPanel.Body>
@@ -376,28 +403,37 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
-            {this.props.guider.currentStudent.hopsAvailable &&
-            COMPULSORY_HOPS_VISIBLITY.includes(
-              this.props.guider.currentStudent.basic.studyProgrammeName
-            ) ? (
-              <ApplicationSubPanel modifier="student-data-container">
-                <ApplicationSubPanel>
-                  <ApplicationSubPanel.Header>
-                    {this.props.i18n.t("labels.studyProgress", {
-                      ns: "guider",
-                    })}
-                  </ApplicationSubPanel.Header>
-                  <ApplicationSubPanel.Body>
-                    <StudySuggestionMatrix
-                      studentId={this.props.guider.currentStudent.basic.id}
-                      studentUserEntityId={
-                        this.props.guider.currentStudent.basic.userEntityId
+            <ApplicationSubPanel modifier="student-data-container">
+              <ApplicationSubPanel>
+                <ApplicationSubPanel.Header>
+                  {this.props.i18n.t("labels.studyProgress", {
+                    ns: "guider",
+                  })}
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
+                  <StudyProgressContextProvider
+                    user="supervisor"
+                    useCase="state-of-studies"
+                    studentId={this.props.guider.currentStudent.basic.id}
+                    studentUserEntityId={
+                      this.props.guider.currentStudent.basic.userEntityId
+                    }
+                    dataToLoad={["studentActivity"]}
+                  >
+                    <StudyProgress
+                      curriculumName={
+                        this.props.guider.currentStudent.basic.curriculumName
                       }
+                      studyProgrammeName={
+                        this.props.guider.currentStudent.basic
+                          .studyProgrammeName
+                      }
+                      editMode={true}
                     />
-                  </ApplicationSubPanel.Body>
-                </ApplicationSubPanel>
+                  </StudyProgressContextProvider>
+                </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
-            ) : null}
+            </ApplicationSubPanel>
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>
@@ -455,7 +491,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       displayNotification,

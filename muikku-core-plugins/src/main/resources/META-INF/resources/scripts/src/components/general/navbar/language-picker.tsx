@@ -1,8 +1,8 @@
 import { setLocale, SetLocaleTriggerType } from "~/actions/base/locales";
 import Dropdown from "~/components/general/dropdown";
 import * as React from "react";
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { Action, bindActionCreators, Dispatch } from "redux";
 import Link from "~/components/general/link";
 import { LocaleState, LocaleType } from "~/reducers/base/locales";
 import { StateType } from "~/reducers";
@@ -36,6 +36,7 @@ class LanguagePicker extends React.Component<
   /**
    * Handles set locale click
    * @param locale locale
+   * @param closeDropdown closeDropdown
    */
   handleSetLocaleClick =
     (locale: LocaleType, closeDropdown: () => any) =>
@@ -48,6 +49,25 @@ class LanguagePicker extends React.Component<
     };
 
   /**
+   * Renders language link
+   * @param locale locale
+   * @param closeDropdown closeDropdown
+   * @returns React.ReactNode
+   */
+  renderLanguageLink = (locale: LocaleType, closeDropdown: () => any) => (
+    <Link
+      key={locale}
+      className="link link--full link--language-picker-dropdown"
+      onClick={this.handleSetLocaleClick(locale, closeDropdown)}
+      role="menuitem"
+    >
+      <span className={`link__locale link__locale--${locale}`}>
+        {this.props.t("labels.language", { context: locale })}
+      </span>
+    </Link>
+  );
+
+  /**
    * Component render method
    */
   render() {
@@ -56,18 +76,7 @@ class LanguagePicker extends React.Component<
         modifier="language-picker"
         items={availableLanguages.map(
           (locale: LocaleType) => (closeDropdown: () => any) =>
-            (
-              <Link
-                key={locale}
-                className={`link link--full link--language-picker-dropdown`}
-                onClick={this.handleSetLocaleClick(locale, closeDropdown)}
-                role="menuitem"
-              >
-                <span className={`link__locale link__locale--${locale}`}>
-                  {this.props.t("labels.language", { context: locale })}
-                </span>
-              </Link>
-            )
+            this.renderLanguageLink(locale, closeDropdown)
         )}
       >
         <Link
@@ -104,7 +113,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>) =>
+const mapDispatchToProps = (dispatch: Dispatch<Action<AnyActionType>>) =>
   bindActionCreators({ setLocale }, dispatch);
 
 export default withTranslation()(

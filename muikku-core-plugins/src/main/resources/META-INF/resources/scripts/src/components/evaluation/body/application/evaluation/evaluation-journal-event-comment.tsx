@@ -2,7 +2,6 @@ import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { StateType } from "~/reducers";
-import { Dispatch } from "redux";
 import Link from "~/components/general/link";
 import { AnyActionType } from "~/actions";
 import {
@@ -10,11 +9,12 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { connect } from "react-redux";
+import { Action, Dispatch } from "redux";
 import { StatusType } from "~/reducers/base/status";
 import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
 import { WorkspaceJournalComment } from "~/generated/client";
 import { useTranslation } from "react-i18next";
-import { localizeTime } from "~/locales/i18n";
+import { localize } from "~/locales/i18n";
 
 /**
  * EvaluationEventContentCardProps
@@ -75,10 +75,10 @@ const EvaluationJournalEventComment: React.FC<
   const creatorName = creatorIsMe
     ? t("labels.self")
     : `${firstName} ${lastName}`;
-  const formatedDate = `${localizeTime.date(
+  const formatedDate = `${localize.date(created)} - ${localize.date(
     created,
-    "l"
-  )} - ${localizeTime.date(created, "h:mm")}`;
+    "LT"
+  )}`;
 
   return (
     <div
@@ -113,7 +113,16 @@ const EvaluationJournalEventComment: React.FC<
       )}
 
       <div className="evaluation-modal__item-footer evaluation-modal__item-footer--journal-comment">
-        {creatorName} - {formatedDate}
+        <div className="evaluation-modal__item-meta">
+          <div className="evaluation-modal__item-meta-item">
+            <span className="evaluation-modal__item-meta-item-label">
+              {creatorName}
+            </span>
+            <span className="evaluation-modal__item-meta-item-data">
+              {formatedDate}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -133,7 +142,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>) {
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return { displayNotification };
 }
 

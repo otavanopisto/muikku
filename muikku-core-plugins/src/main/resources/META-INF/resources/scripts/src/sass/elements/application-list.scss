@@ -303,10 +303,11 @@
 }
 
 .application-list__indicator-badge--task {
+  border-radius: 3px;
   font-size: 1rem;
   height: 1.75rem;
   margin: 0 10px 0 0;
-  width: 1.75rem;
+  width: 2.75rem;
 }
 
 .application-list__indicator-badge--evaluation-request {
@@ -340,7 +341,20 @@
   margin-left: 5px;
 }
 
+.application-list__item-content-primary-data {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
 .application-list__item-content-actions {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+
   span {
     cursor: pointer;
   }
@@ -381,6 +395,13 @@
     top: 5px;
     width: 15px;
   }
+}
+
+.application-list__item-content-container--course-assessments {
+  background: $color-default-lighter-generic-background;
+  border-radius: 5px;
+  margin: 0 0 20px;
+  padding: 10px;
 }
 
 .application-list__item-content-single-item {
@@ -505,24 +526,12 @@
 }
 
 .application-list__item--notification {
-  border-top: 3px solid $color-message-border;
-  margin: 0 0 1px;
-  padding: 10px 10px 10px 0;
-
-  @include breakpoint($breakpoint-pad) {
-    border-width: 1px;
-  }
-
-  &:first-child {
-    border-color: transparent;
-  }
-
-  &.course--open {
-    background: $color-default;
-    border-color: transparent;
-    box-shadow: 0 0 0 2px #000000;
-    z-index: 10;
-  }
+  background: lighten($color-notice, 20%);
+  border-radius: 5px;
+  font-size: 1rem;
+  font-style: italic;
+  padding: 10px;
+  text-align: center;
 }
 
 .application-list__item--user {
@@ -597,6 +606,7 @@
   display: flex;
   height: 20px;
   justify-content: center;
+  margin: 0 10px 0 2px;
   min-width: 20px;
   padding: 0 4px;
 }
@@ -1196,6 +1206,7 @@
 }
 
 .application-list__item-footer--course {
+  align-items: center;
   padding: 0 0 10px;
 
   @include breakpoint($breakpoint-pad) {
