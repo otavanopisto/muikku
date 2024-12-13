@@ -61,6 +61,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientController;
 import fi.otavanopisto.muikku.plugins.communicator.UserRecipientList;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
@@ -229,6 +230,9 @@ public class GuiderRESTService extends PluginRESTService {
   
   @Inject
   private UserRecipientController userRecipientController;
+
+  @Inject
+  private HopsController hopsController;
 
   @GET
   @Path("/students")
@@ -581,8 +585,8 @@ public class GuiderRESTService extends PluginRESTService {
         organizationRESTModel,
         user.getMatriculationEligibility(),
         userEntity == null ? false : pedagogyController.hasPedagogyForm(userEntity.getId()),
-        user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null
-        
+        user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null,
+        hopsController.getHOPSStudentPermissions(studentIdentifier)
     );
 
     return Response

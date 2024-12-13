@@ -167,7 +167,9 @@ export const useStudentActivity = (
      * something is saved/changed
      * @param data Websocket data
      */
-    const onAnswerSavedAtServer = (data: StudentStudyActivity) => {
+    const onAnswerSavedAtServer = (
+      data: StudentStudyActivity & { studentIdentifier: string }
+    ) => {
       const { suggestedNextList, onGoingList, gradedList, transferedList } =
         ref.current;
 

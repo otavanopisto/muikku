@@ -23,6 +23,11 @@
   padding: 0;
 }
 
+.application-panel--guider-student-hops {
+  max-width: 100%;
+  padding: 0;
+}
+
 // Component's wrapper
 .application-panel__container {
   @include text;
@@ -112,17 +117,6 @@
 // Component's body which is used inside tabs
 .application-panel__body--tabs {
   @include breakpoint($breakpoint-pad) {
-    border-top: 0;
-  }
-}
-
-// Component's body which is used inside sub-tabs
-.application-panel__body--sub-tabs {
-  border: 0;
-  box-shadow: none;
-
-  @include breakpoint($breakpoint-pad) {
-    border: 1px solid $color-tab-border;
     border-top: 0;
   }
 }
@@ -252,10 +246,6 @@
 
 .application-panel__content--tabs {
   padding: 1rem 0 0;
-}
-
-.application-panel__content--sub-tabs {
-  padding: 10px 0 0;
 }
 
 // Component's content header (h2 level header)

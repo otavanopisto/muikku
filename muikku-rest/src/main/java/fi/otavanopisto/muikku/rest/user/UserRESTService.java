@@ -62,7 +62,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
-import fi.otavanopisto.muikku.rest.model.GuidanceCounselorRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.StaffMemberBasicInfo;
 import fi.otavanopisto.muikku.rest.model.Student;
@@ -100,7 +99,6 @@ import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
-import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -183,7 +181,7 @@ public class UserRESTService extends AbstractRESTService {
   private UserEmailEntityController userEmailEntityController;
 
   @Inject
-  private UserGroupGuidanceController userGroupGuidanceController;
+  private GuidanceCounselorRestModels guidanceCounselorRestModels;
 
   @GET
   @Path("/property/{KEY}")
@@ -1314,38 +1312,10 @@ public class UserRESTService extends AbstractRESTService {
     if (!sessionController.getLoggedUser().equals(studentIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
-    List<UserEntity> guidanceCouncelors = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier, false);
-    
-    List<GuidanceCounselorRestModel> guidanceCounselorRestModels = new ArrayList<>();
-    
-    for (UserEntity userEntity : guidanceCouncelors) {
-      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-      SchoolDataIdentifier schoolDataIdentifier = userEntity.defaultSchoolDataIdentifier();
-      UserEntityName userEntityName = userEntityController.getName(userEntity, true);
-      String email = userEmailEntityController.getUserDefaultEmailAddress(schoolDataIdentifier, false);
 
-      String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
+    String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
 
-      Map<String, String> propertyMap = new HashMap<String, String>();
-      if (userEntity != null) {
-        for (int i = 0; i < propertyArray.length; i++) {
-          UserEntityProperty userEntityProperty = userEntityController.getUserEntityPropertyByKey(userEntity, propertyArray[i]);
-          propertyMap.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
-        }
-      }
-
-      guidanceCounselorRestModels.add(new GuidanceCounselorRestModel(
-          userEntity.defaultSchoolDataIdentifier().toId(),
-          userEntity.getId(),
-          userEntityName.getFirstName(),
-          userEntityName.getLastName(),
-          email,
-          propertyMap,
-          hasImage));
-    }
-    
-    return Response.ok(guidanceCounselorRestModels).build();
+    return Response.ok(guidanceCounselorRestModels.getGuidanceCounselorRestModels(sessionController.getLoggedUser(), propertyArray)).build();
   }
   
   @GET

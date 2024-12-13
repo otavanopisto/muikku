@@ -114,7 +114,7 @@ import { loadContactGroup } from "~/actions/base/contacts";
 import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
-import { Announcement, User } from "~/generated/client";
+import { Announcement, UserWhoAmI } from "~/generated/client";
 import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
@@ -357,7 +357,9 @@ export default class MainFunction extends React.Component<
     const givenLocation = tab;
 
     if (givenLocation === "matriculation" || !givenLocation) {
-      this.props.store.dispatch(loadMatriculationData(userId) as Action);
+      this.props.store.dispatch(
+        loadMatriculationData({ userIdentifier: userId }) as Action
+      );
     }
   }
 
@@ -560,17 +562,17 @@ export default class MainFunction extends React.Component<
 
       /**
        * loadCoursepickerDataByUser
-       * @param user user
+       * @param whoAmI whoAmI
        */
-      const loadCoursepickerDataByUser = (user: User) => {
+      const loadCoursepickerDataByUser = (whoAmI: UserWhoAmI) => {
         if (!currentLocationHasData) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const defaultSelections: any = {};
-          if (user.curriculumIdentifier) {
-            defaultSelections["c"] = [user.curriculumIdentifier];
+          if (whoAmI.curriculumIdentifier) {
+            defaultSelections["c"] = [whoAmI.curriculumIdentifier];
           }
-          if (user.organizationIdentifier) {
-            defaultSelections["o"] = [user.organizationIdentifier];
+          if (whoAmI.organizationIdentifier) {
+            defaultSelections["o"] = [whoAmI.organizationIdentifier];
           }
 
           if (defaultSelections.c || defaultSelections.o) {
@@ -590,16 +592,16 @@ export default class MainFunction extends React.Component<
       if (state.status.loggedIn) {
         if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
           this.props.store.dispatch(
-            loadLoggedUser((user: User) => {
-              loadCoursepickerDataByUser(user);
+            loadLoggedUser((whoAmICallbackValue) => {
+              loadCoursepickerDataByUser(whoAmICallbackValue);
             }) as Action
           );
         } else {
-          const user =
+          const whoAmI =
             state.userIndex.usersBySchoolData[
               state.status.userSchoolDataIdentifier
             ];
-          loadCoursepickerDataByUser(user);
+          loadCoursepickerDataByUser(whoAmI);
         }
       } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false, false);
@@ -693,16 +695,16 @@ export default class MainFunction extends React.Component<
 
       /**
        * loadWorkspacesByUser
-       * @param user user
+       * @param whoAmI whoAmI
        */
-      const loadWorkspacesByUser = (user: User) => {
+      const loadWorkspacesByUser = (whoAmI: UserWhoAmI) => {
         if (!currentLocationHasData) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const defaultSelections: any = {
             p: ["PUBLISHED"],
           };
-          if (user.organizationIdentifier) {
-            defaultSelections["o"] = [user.organizationIdentifier];
+          if (whoAmI.organizationIdentifier) {
+            defaultSelections["o"] = [whoAmI.organizationIdentifier];
           }
           if (defaultSelections.c || defaultSelections.o) {
             location.hash =
@@ -721,16 +723,16 @@ export default class MainFunction extends React.Component<
       if (state.status.loggedIn) {
         if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
           this.props.store.dispatch(
-            loadLoggedUser((user: User) => {
-              loadWorkspacesByUser(user);
+            loadLoggedUser((whoAmICallbackValue) => {
+              loadWorkspacesByUser(whoAmICallbackValue);
             }) as Action
           );
         } else {
-          const user =
+          const whoAmI =
             state.userIndex.usersBySchoolData[
               state.status.userSchoolDataIdentifier
             ];
-          loadWorkspacesByUser(user);
+          loadWorkspacesByUser(whoAmI);
         }
       } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, true, false);
@@ -1038,7 +1040,9 @@ export default class MainFunction extends React.Component<
 
       // If there's an identifier, we can load records data, otherwise it's done in the hash change
       if (identifier) {
-        this.props.store.dispatch(loadMatriculationData(identifier) as Action);
+        this.props.store.dispatch(
+          loadMatriculationData({ userIdentifier: identifier }) as Action
+        );
       }
     }
     return <GuardianHopsBody />;

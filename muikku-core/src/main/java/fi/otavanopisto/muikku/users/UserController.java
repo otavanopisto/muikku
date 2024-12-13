@@ -62,6 +62,10 @@ public class UserController {
     return userSchoolDataController.getGuidanceRelation(schoolDataSource, studentIdentifier);
   }
 
+  public StudentGuidanceRelation getGuidanceRelation(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.getGuidanceRelation(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+  }
+
   public User findUserByIdentifier(SchoolDataIdentifier userIdentifier) {
     if (userIdentifier == null) {
       return null; 
