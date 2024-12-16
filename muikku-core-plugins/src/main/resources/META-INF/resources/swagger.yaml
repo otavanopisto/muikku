@@ -15377,6 +15377,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/NoteReceiver"
+        multiUserNote:
+          type: boolean
 
     NoteCreationObject:
       type: object
@@ -15445,6 +15447,8 @@ components:
         - status
         - userGroupId
         - userGroupName
+        - workspaceId
+        - workspaceName
       properties:
         id:
           type: integer
@@ -15465,6 +15469,11 @@ components:
           type: integer
           format: int64
         userGroupName:
+          type: string
+        workspaceId:
+          type: integer
+          format: int64
+        workspaceName:
           type: string
 
     NoteRecipientList:

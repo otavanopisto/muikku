@@ -144,6 +144,7 @@ const Notes: React.FC<NotesProps> = (props) => {
             filters={activeNoteFilters}
             isLoadingList={notesItems.isLoadingList}
             notesItems={notesItems.notesItemList}
+            notesRecipientId={studentId}
             userId={userId}
             usePlace={usePlace}
             onPinNotesItemClick={updateNotesItemStatus}

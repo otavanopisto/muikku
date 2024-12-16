@@ -16,6 +16,7 @@ interface NotesItemListContentProps {
   notesItems: Note[];
   usePlace: NotesLocation;
   userId: number;
+  notesRecipientId?: number;
   isLoadingList: boolean;
   filters: NotesItemFilters;
   onArchiveClick?: (notesItemd: number) => void;
@@ -48,6 +49,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
     filters,
     userId,
     notesItems,
+    notesRecipientId,
     isLoadingList,
     onArchiveClick,
     onReturnArchivedClick,
@@ -139,6 +141,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
             key={j.id}
             tabIndex={0}
             ref={(ref) => (itemRefs.current[i] = ref)}
+            specificRecipient={notesRecipientId}
             notesItem={j}
             archived={j.isArchived}
             onFocus={handleListItemFocus(i)}

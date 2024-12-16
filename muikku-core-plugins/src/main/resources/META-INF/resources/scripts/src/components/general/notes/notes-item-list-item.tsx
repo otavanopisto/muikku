@@ -101,6 +101,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       startDate,
       dueDate,
       recipients,
+      multiUserNote,
     } = notesItem;
 
     const { t } = useTranslation("tasks");
@@ -112,6 +113,11 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const currentRecipient = recipients.find(
       (r) => r.recipient === recipientId
     );
+
+    // Editing is forbidden
+    // if the note is multi-user and there is a specific recipient selected
+    const editForbidden = !!specificRecipient && multiUserNote;
+
     React.useImperativeHandle(
       outerRef,
       () => innerRef.current && innerRef.current,
@@ -471,12 +477,13 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         <div className="notes__item-actions">
           {loggedUserIsCreator && onNotesItemSaveUpdateClick && (
             <NotesItemEdit
-              recipientId={recipientId}
+              recipientId={specificRecipient}
               selectedNotesItem={notesItem}
               onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
             >
               <IconButton
                 icon="pencil"
+                disabled={editForbidden}
                 buttonModifiers={["notes-action", "notes-edit"]}
                 aria-label={t("wcag.editNote")}
               />

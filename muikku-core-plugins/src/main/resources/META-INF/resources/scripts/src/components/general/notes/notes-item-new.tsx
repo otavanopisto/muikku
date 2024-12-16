@@ -14,11 +14,9 @@ import {
   NoteCreationObject,
   NotePriorityType,
 } from "~/generated/client";
-import InputContactsAutofill, {
-  InputContactsAutofillLoaders,
-} from "~/components/base/input-contacts-autofill";
+import InputContactsAutofill from "~/components/base/input-contacts-autofill"; // InputContactsAutofillLoaders,
 import { ContactRecipientType } from "~/reducers/user-index";
-
+import autofillLoaders from "./helpers/autofill-loaders";
 /**
  * NotesItemNewProps
  */
@@ -28,7 +26,6 @@ interface NotesItemNewProps extends WithTranslation {
    * if this in not given there will be a recipient field
    */
   newNoteRecipientId?: number;
-  loaders?: () => InputContactsAutofillLoaders;
   children: React.ReactElement;
   onNotesItemSaveClick?: (
     newNotesItem: CreateNoteRequest,
@@ -184,14 +181,14 @@ class NotesItemNew extends SessionStateComponent<
      */
     const content = (closeDialog: () => never) => [
       <>
-        {!this.props.newNoteRecipientId && this.props.loaders && (
+        {!this.props.newNoteRecipientId && (
           <div className="env-dialog__form-element-container">
             <InputContactsAutofill
               identifier="communicatorRecipients"
               modifier="new-message"
               key="new-message-1"
               showFullNames={true}
-              loaders={this.props.loaders()}
+              loaders={autofillLoaders()}
               hasWorkspacePermission={false}
               hasGroupPermission={true}
               placeholder={this.props.t("labels.search", {
