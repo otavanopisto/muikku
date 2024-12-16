@@ -344,7 +344,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const renderUpdateStatus = () => {
       let items: DropdownItem[] = [];
 
-      if (archived || multiUserNote ) {
+      if (archived || multiUserNote) {
         return;
       }
 
@@ -474,49 +474,61 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             : ""
         }`}
       >
-        <div className="notes__item-actions">
-          {loggedUserIsCreator && onNotesItemSaveUpdateClick && (
-            <NotesItemEdit
-              recipientId={specificRecipient}
-              selectedNotesItem={notesItem}
-              onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
-            >
-              <IconButton
-                icon="pencil"
-                disabled={editForbidden}
-                buttonModifiers={["notes-action", "notes-edit"]}
-                aria-label={t("wcag.editNote")}
+        <div className="notes__item-hero">
+          {loggedUserIsCreator && (
+            <div className="notes__item-decoration">
+              <span
+                className={`
+                  "notes__item-icon" + ${
+                    multiUserNote ? "icon-users" : "icon-user"
+                  }`}
               />
-            </NotesItemEdit>
+            </div>
           )}
+          <div className="notes__item-actions">
+            {loggedUserIsCreator && onNotesItemSaveUpdateClick && (
+              <NotesItemEdit
+                recipientId={specificRecipient}
+                selectedNotesItem={notesItem}
+                onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
+              >
+                <IconButton
+                  icon="pencil"
+                  disabled={editForbidden}
+                  buttonModifiers={["notes-action", "notes-edit"]}
+                  aria-label={t("wcag.editNote")}
+                />
+              </NotesItemEdit>
+            )}
 
-          {loggedUserIsOwner && onPinNotesItemClick && (
-            <IconButton
-              onClick={handleNotesItemPinClick}
-              icon={currentRecipient.pinned ? "star-full" : "star-empty"}
-              buttonModifiers={["notes-action", "notes-pin"]}
-            />
-          )}
+            {loggedUserIsOwner && onPinNotesItemClick && (
+              <IconButton
+                onClick={handleNotesItemPinClick}
+                icon={currentRecipient.pinned ? "star-full" : "star-empty"}
+                buttonModifiers={["notes-action", "notes-pin"]}
+              />
+            )}
 
-          {loggedUserIsCreator && onReturnArchivedClick && (
-            <IconButton
-              onClick={handleNotesItemReturnArchiveClick}
-              icon="undo"
-              buttonModifiers={["notes-action", "notes-unarchive"]}
-              aria-label={t("wcag.archiveUndo")}
-            />
-          )}
+            {loggedUserIsCreator && onReturnArchivedClick && (
+              <IconButton
+                onClick={handleNotesItemReturnArchiveClick}
+                icon="undo"
+                buttonModifiers={["notes-action", "notes-unarchive"]}
+                aria-label={t("wcag.archiveUndo")}
+              />
+            )}
 
-          {loggedUserIsCreator && !archived && onArchiveClick && (
-            <IconButton
-              onClick={handleNotesItemArchiveClick}
-              icon="trash"
-              buttonModifiers={["notes-action", "notes-archive"]}
-              aria-label={t("wcag.archive")}
-            />
-          )}
+            {loggedUserIsCreator && !archived && onArchiveClick && (
+              <IconButton
+                onClick={handleNotesItemArchiveClick}
+                icon="trash"
+                buttonModifiers={["notes-action", "notes-archive"]}
+                aria-label={t("wcag.archive")}
+              />
+            )}
 
-          {renderUpdateStatus()}
+            {renderUpdateStatus()}
+          </div>
         </div>
 
         <div className="notes__item-dates">{renderDates()}</div>
