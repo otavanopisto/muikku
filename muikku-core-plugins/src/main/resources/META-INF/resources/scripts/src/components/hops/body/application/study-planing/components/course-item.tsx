@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useDrag } from "react-dnd";
 import { Course } from "~/@types/shared";
 
 /**
@@ -17,10 +18,30 @@ interface CourseItemProps {
 const CourseItem: React.FC<CourseItemProps> = (props) => {
   const { course, subjectCode, onClick } = props;
 
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: "new-course-card",
+      item: {
+        info: { ...course, subjectCode },
+        type: "new-course-card",
+      },
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+    }),
+    []
+  );
+
   const type = course.mandatory ? "mandatory" : "optional";
 
   return (
-    <div className="hops-planner__course-item" onClick={onClick}>
+    <div
+      className="hops-planner__course-item"
+      onClick={onClick}
+      ref={drag}
+      style={{ opacity: isDragging ? 0.5 : 1 }}
+    >
       <div className="hops-planner_course-item-header">
         <span className="hops-planner__course-code">{subjectCode}</span>
         <span className="hops-planner__course-name">

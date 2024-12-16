@@ -9,6 +9,7 @@ import {
   MatriculationResults,
   MatriculationSubject,
   MatriculationSubjectEligibilityOPS2021,
+  PlannedCourse,
 } from "~/generated/client";
 import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 
@@ -36,7 +37,34 @@ interface HopsBackgroundState {}
  */
 interface HopsStudyPlanState {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  plannedCourses: any[];
+  plannedCourses: PlannedCourseWithIdentifier[];
+}
+
+/**
+ * PlannedCourseWithIdentifier
+ */
+export interface PlannedCourseWithIdentifier extends PlannedCourse {
+  /**
+   * Identifier of the planned course. Specifically used within frontend
+   * to identify the exiting and newly added planned course in the planner with drag and drop.
+   */
+  identifier: string;
+}
+
+/**
+ * CourseChangeAction
+ */
+export type CourseChangeAction = "add" | "update" | "delete";
+
+/**
+ * Period
+ */
+export interface PlannedPeriod {
+  title: string;
+  year: number;
+  credits: number;
+  type: "AUTUMN" | "SPRING";
+  plannedCourses: PlannedCourseWithIdentifier[];
 }
 
 /**
@@ -92,6 +120,7 @@ export type HopsMode = "READ" | "EDIT";
 export interface HopsEditingState {
   readyToEdit: boolean;
   matriculationPlan: MatriculationPlan | null;
+  plannedCourses: PlannedCourseWithIdentifier[];
 }
 
 /**
@@ -133,7 +162,7 @@ const initialHopsState: HopsState = {
   currentStudentStudyProgramme: null,
   hopsBackgroundStatus: "READY",
   hopsBackgroundState: {},
-  hopsStudyPlanStatus: "READY",
+  hopsStudyPlanStatus: "IDLE",
   hopsStudyPlanState: {
     plannedCourses: [],
   },
@@ -157,6 +186,7 @@ const initialHopsState: HopsState = {
       plannedSubjects: [],
       goalMatriculationExam: false,
     },
+    plannedCourses: [],
   },
 };
 
@@ -366,6 +396,7 @@ export const hopsNew: Reducer<HopsState> = (
           plan: null,
           results: [],
         },
+        hopsLocked: null,
         hopsEditing: {
           ...state.hopsEditing,
           readyToEdit: false,
@@ -373,6 +404,7 @@ export const hopsNew: Reducer<HopsState> = (
             plannedSubjects: [],
             goalMatriculationExam: false,
           },
+          plannedCourses: [],
         },
       };
     }
@@ -408,10 +440,25 @@ export const hopsNew: Reducer<HopsState> = (
         },
       };
 
+    case "HOPS_UPDATE_EDITING_STUDYPLAN":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          plannedCourses: action.payload,
+        },
+      };
+
     case "HOPS_UPDATE_LOCKED":
       return {
         ...state,
         hopsLocked: action.payload,
+      };
+
+    case "HOPS_STUDYPLAN_UPDATE_STATUS":
+      return {
+        ...state,
+        hopsStudyPlanStatus: action.payload,
       };
 
     case "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES":
@@ -419,6 +466,10 @@ export const hopsNew: Reducer<HopsState> = (
         ...state,
         hopsStudyPlanState: {
           ...state.hopsStudyPlanState,
+          plannedCourses: action.payload,
+        },
+        hopsEditing: {
+          ...state.hopsEditing,
           plannedCourses: action.payload,
         },
       };

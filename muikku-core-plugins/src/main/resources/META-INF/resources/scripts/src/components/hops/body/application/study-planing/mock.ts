@@ -1,5 +1,4 @@
-import { PlannedCourse } from "~/@types/shared";
-
+import { PlannedCourse } from "~/generated/client";
 export const plannedCoursesMock: PlannedCourse[] = [
   {
     id: 1,

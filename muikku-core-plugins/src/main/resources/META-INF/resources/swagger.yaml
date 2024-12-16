@@ -5798,6 +5798,63 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/hops/student/{studentIdentifier}/plannedCourses:
+    get:
+      operationId: getStudentPlannedCourses
+      summary: Get student planned courses
+      description: Get student planned courses
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student planned courses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlannedCourse"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    put:
+      operationId: updateStudentPlannedCourses
+      summary: Update student planned courses
+      description: Update student planned courses
+      tags:
+        - Hops
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/PlannedCoursesUpdateRequestBody"
+      responses:
+        "200":
+          description: Student planned courses updated successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlannedCourse"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   #MATERIALS
   /rest/materials/binary:
     post:
@@ -11681,6 +11738,20 @@ components:
                   type: integer
                   format: int64
 
+    PlannedCoursesUpdateRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            description: PlannedCoursesUpdateRequestBody object
+            required:
+              - plannedCourses
+            properties:
+              plannedCourses:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlannedCourse"
+
     PaidAssessmentRequestCreateRequestBody:
       content:
         application/json:
@@ -15430,6 +15501,58 @@ components:
     OptionalCourseSuggestion:
       allOf:
         - $ref: "#/components/schemas/Course"
+
+    PlannedCourse:
+      type: object
+      description: Planned course object
+      required:
+        - id
+        - name
+        - courseNumber
+        - startDate
+        - length
+        - lengthSymbol
+        - subjectCode
+        - mandatory
+      properties:
+        id:
+          description: The id of the planned course
+          type: integer
+          format: int64
+          readOnly: true
+          nullable: true
+        name:
+          description: The name of the course
+          type: string
+        courseNumber:
+          description: The number of the course
+          type: integer
+        startDate:
+          description: The start date of the planned course
+          type: string
+          format: date-time
+        duration:
+          description: The duration of the course in milliseconds
+          type: integer
+          format: int64
+          nullable: true
+        length:
+          description: The length of the course in credits or hours
+          type: integer
+        lengthSymbol:
+          description: The symbol of the length (e.g. op = credits, h = hours)
+          type: string
+        subjectCode:
+          description: The code of the subject
+          type: string
+        mandatory:
+          description: If the course is mandatory
+          type: boolean
+        workspaceEntityId:
+          description: The id of the workspace (instance)
+          type: integer
+          format: int64
+          nullable: true
 
     PedagogyFormAccess:
       type: object

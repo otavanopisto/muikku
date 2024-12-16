@@ -118,7 +118,10 @@ import { Announcement, UserWhoAmI } from "~/generated/client";
 import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
-import { loadMatriculationData } from "~/actions/main-function/hops/";
+import {
+  loadMatriculationData,
+  loadStudyPlanData,
+} from "~/actions/main-function/hops/";
 import GuardianHopsBody from "~/components/guardian_hops/body";
 
 /**
@@ -359,6 +362,10 @@ export default class MainFunction extends React.Component<
     if (givenLocation === "matriculation" || !givenLocation) {
       this.props.store.dispatch(
         loadMatriculationData({ userIdentifier: userId }) as Action
+      );
+    } else if (givenLocation === "studyplan") {
+      this.props.store.dispatch(
+        loadStudyPlanData({ userIdentifier: userId }) as Action
       );
     }
   }

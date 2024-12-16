@@ -79,6 +79,16 @@ const HopsApplication = (props: HopsApplicationProps) => {
   ] = React.useState(false);
   const { t } = useTranslation(["studies", "common", "hops_new"]);
 
+  // Add new useEffect for handling initial URL hash
+  React.useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash === "matriculation") {
+      setActiveTab("MATRICULATION");
+    } else if (hash === "studyplan") {
+      setActiveTab("STUDYPLAN");
+    }
+  }, []); // Run only on mount
+
   /**
    * Handles tab changes in the application panel.
    * Updates the URL hash and active tab state.

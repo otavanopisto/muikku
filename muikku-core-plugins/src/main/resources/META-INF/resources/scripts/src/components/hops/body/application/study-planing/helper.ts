@@ -1,12 +1,13 @@
-import { Period, PlannedCourse } from "~/@types/shared";
-import { groupBy } from "lodash";
-
+import { CourseFilter, SchoolSubject } from "~/@types/shared";
+import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 /**
  * Convert planned course to period
  * @param plannedCourses planned course
  * @returns period
  */
-const createPeriods = (plannedCourses: PlannedCourse[]): Period[] => {
+const createPeriods = (
+  plannedCourses: PlannedCourseWithIdentifier[]
+): PlannedPeriod[] => {
   // Get all unique years from planned courses
   const years = [
     ...new Set(
@@ -14,12 +15,12 @@ const createPeriods = (plannedCourses: PlannedCourse[]): Period[] => {
     ),
   ];
 
-  const periods: Period[] = [];
+  const periods: PlannedPeriod[] = [];
 
   // Create spring and fall periods for each year
   years.forEach((year) => {
     // Spring period: January 1st - July 31st
-    const springPeriod: Period = {
+    const springPeriod: PlannedPeriod = {
       type: "SPRING",
       year,
       title: `${year} Spring`,
@@ -28,7 +29,7 @@ const createPeriods = (plannedCourses: PlannedCourse[]): Period[] => {
     };
 
     // Fall period: August 1st - December 31st
-    const fallPeriod: Period = {
+    const fallPeriod: PlannedPeriod = {
       type: "AUTUMN",
       year,
       title: `${year} Fall`,
@@ -49,8 +50,8 @@ const createPeriods = (plannedCourses: PlannedCourse[]): Period[] => {
  * @returns List of periods with allocated courses and calculated credits
  */
 const createAndAllocateCoursesToPeriods = (
-  plannedCourses: PlannedCourse[]
-): Period[] => {
+  plannedCourses: PlannedCourseWithIdentifier[]
+): PlannedPeriod[] => {
   // Convert all planned courses to periods to get date ranges
   const periods = createPeriods(plannedCourses);
 
@@ -82,4 +83,47 @@ const createAndAllocateCoursesToPeriods = (
     .sort((a, b) => a.year - b.year);
 };
 
-export { createAndAllocateCoursesToPeriods };
+/**
+ * Filters subjects and courses
+ * @param subjects subjects
+ * @param searchTerm search term
+ * @param selectedFilters selected filters
+ * @returns filtered subjects and courses
+ */
+const filterSubjectsAndCourses = (
+  subjects: SchoolSubject[],
+  searchTerm: string,
+  selectedFilters: CourseFilter[]
+) =>
+  subjects
+    .map((subject) => {
+      let filteredCourses = [...subject.availableCourses];
+
+      const skipMandatoryChecking =
+        selectedFilters.includes("mandatory") &&
+        selectedFilters.includes("optional");
+
+      // Apply filters
+      if (!skipMandatoryChecking && selectedFilters.includes("mandatory")) {
+        filteredCourses = filteredCourses.filter((course) => course.mandatory);
+      }
+
+      if (!skipMandatoryChecking && selectedFilters.includes("optional")) {
+        filteredCourses = filteredCourses.filter((course) => !course.mandatory);
+      }
+
+      // Apply search term
+      if (searchTerm !== "") {
+        filteredCourses = filteredCourses.filter((course) =>
+          course.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      return {
+        ...subject,
+        availableCourses: filteredCourses,
+      };
+    })
+    .filter((subject) => subject.availableCourses.length > 0); // Remove subjects with no matching courses
+
+export { createAndAllocateCoursesToPeriods, filterSubjectsAndCourses };

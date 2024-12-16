@@ -8,7 +8,9 @@ import {
   MatriculationExamFinishedSubject,
   MatriculationExamPlannedSubject,
   MatriculationExamEnrollment,
+  PlannedCourse,
 } from "~/generated/client";
+import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 
 /**
  * UsedAs
@@ -308,44 +310,7 @@ export interface Course {
   mandatory: boolean;
 }
 
-/**
- * PlannedCourse
- */
-export interface PlannedCourse {
-  id: number;
-  name: string;
-  courseNumber: number;
-  /**
-   * Length of the course
-   */
-  length: number;
-  lengthSymbol: string;
-  subjectCode: string;
-  mandatory: boolean;
-  /**
-   * Start date of the course
-   */
-  startDate: Date;
-  /**
-   * Duration of the course in milliseconds
-   */
-  duration?: number;
-  /**
-   * Id of the workspace (instance)
-   */
-  workspaceId?: number;
-}
-
-/**
- * Period
- */
-export interface Period {
-  title: string;
-  year: number;
-  credits: number;
-  type: "AUTUMN" | "SPRING";
-  plannedCourses: PlannedCourse[];
-}
+export type CourseFilter = "available_in_otavi" | "mandatory" | "optional";
 
 /**
  * UploadingValue

@@ -11,12 +11,15 @@ import {
   MatriculationPlan,
   MatriculationResults,
   MatriculationSubject,
+  PlannedCourse,
 } from "~/generated/client";
 import {
+  CourseChangeAction,
   HopsEditingState,
   HopsMode,
   MatriculationEligibilityWithAbistatus,
   MatriculationSubjectWithEligibility,
+  PlannedCourseWithIdentifier,
   ReducerStateType,
 } from "~/reducers/hops";
 import i18n from "~/locales/i18n";
@@ -24,6 +27,7 @@ import { abistatus } from "~/helper-functions/abistatus";
 import { displayNotification } from "~/actions/base/notifications";
 import { OPS2021SubjectCodesInOrder } from "~/mock/mock-data";
 import _ from "lodash";
+import { plannedCoursesMock } from "~/components/hops/body/application/study-planing/mock";
 
 // Api instances
 const hopsApi = MApi.getHopsApi();
@@ -46,8 +50,7 @@ export type HOPS_STUDYPLAN_UPDATE_STATUS = SpecificActionType<
 
 export type HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES = SpecificActionType<
   "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any[]
+  PlannedCourseWithIdentifier[]
 >;
 
 // HOPS CAREER PLAN ACTIONS TYPES
@@ -150,11 +153,26 @@ export type HOPS_UPDATE_EDITING = SpecificActionType<
   Partial<HopsEditingState>
 >;
 
+export type HOPS_UPDATE_EDITING_STUDYPLAN = SpecificActionType<
+  "HOPS_UPDATE_EDITING_STUDYPLAN",
+  PlannedCourseWithIdentifier[]
+>;
+
 /**
  * UpdateHopsEditingTriggerType
  */
 export interface UpdateHopsEditingTriggerType {
   (data: { updates: Partial<HopsEditingState> }): AnyActionType;
+}
+
+/**
+ * UpdateHopsEditingStudyPlanTriggerType
+ */
+export interface UpdateHopsEditingStudyPlanTriggerType {
+  (data: {
+    updatedCourse: PlannedCourseWithIdentifier;
+    action: CourseChangeAction;
+  }): AnyActionType;
 }
 
 /**
@@ -264,10 +282,17 @@ export interface UpdateHopsLockedTriggerType {
  */
 export interface LoadStudyPlanDataTriggerType {
   (data: {
-    studentIdentifier: string;
+    userIdentifier: string;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
+}
+
+/**
+ * SaveStudyPlanDataTriggerType
+ */
+export interface SaveStudyPlanDataTriggerType {
+  (data: { onSuccess?: () => void; onFail?: () => void }): AnyActionType;
 }
 
 /**
@@ -928,6 +953,11 @@ const startEditing: StartEditingTriggerType = function startEditing() {
 
     if (state.hopsNew.hopsStudyPlanStatus !== "READY") {
       // TODO: Load study plan data
+      dispatch(
+        loadStudyPlanData({
+          userIdentifier: state.hopsNew.currentStudentIdentifier,
+        })
+      );
     }
 
     if (state.hopsNew.hopsCareerPlanStatus !== "READY") {
@@ -980,12 +1010,21 @@ const endEditing: EndEditingTriggerType = function endEditing() {
       updatedPlan
     );
 
+    const studyPlanHasChanges = !_.isEqual(
+      state.hopsNew.hopsEditing.plannedCourses,
+      state.hopsNew.hopsStudyPlanState.plannedCourses
+    );
+
     if (matriculationPlanHasChanges) {
       dispatch(
         saveMatriculationPlan({
           plan: updatedPlan,
         })
       );
+    }
+
+    if (studyPlanHasChanges) {
+      dispatch(saveStudyPlanData({}));
     }
 
     const hopsLocked = await hopsApi.updateStudentHopsLock({
@@ -1043,11 +1082,46 @@ const cancelEditing: CancelEditingTriggerType = function cancelEditing() {
 const updateHopsEditing: UpdateHopsEditingTriggerType =
   function updateHopsEditing(data) {
     return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
     ) => {
       dispatch({
         type: "HOPS_UPDATE_EDITING",
         payload: data.updates,
+      });
+    };
+  };
+
+/**
+ * Update HOPS editing study plan
+ * @param data Data containing partial updates to apply to editing state
+ */
+const updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType =
+  function updateHopsEditingStudyPlan(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const updatedList = [...state.hopsNew.hopsEditing.plannedCourses];
+
+      const index = updatedList.findIndex(
+        (c) => c.identifier === data.updatedCourse.identifier
+      );
+
+      if (data.action === "add" && index === -1) {
+        updatedList.push(data.updatedCourse);
+      } else if (data.action === "delete" && index !== -1) {
+        updatedList.splice(index, 1);
+      } else if (data.action === "update" && index !== -1) {
+        updatedList[index] = data.updatedCourse;
+      }
+
+      dispatch({
+        type: "HOPS_UPDATE_EDITING",
+        payload: {
+          plannedCourses: updatedList,
+        },
       });
     };
   };
@@ -1251,13 +1325,111 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const { studentIdentifier } = data;
+      const state = getState();
 
-      // TODO: Implement study plan data loading
+      const { userIdentifier } = data;
+
+      const studentIdentifier = userIdentifier
+        ? userIdentifier
+        : state.status.userSchoolDataIdentifier;
+
+      if (state.hopsNew.hopsStudyPlanStatus === "READY") {
+        return;
+      }
+
+      // If the student identifier has changed, update it
+      if (state.hopsNew.currentStudentIdentifier !== studentIdentifier) {
+        dispatch({
+          type: "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER",
+          payload: studentIdentifier,
+        });
+
+        dispatch({
+          type: "HOPS_UPDATE_CURRENTSTUDENT_STUDYPROGRAM",
+          payload: state.status.profile.studyProgrammeName,
+        });
+      }
+
+      const hopsLocked = await hopsApi.getStudentHopsLock({
+        studentIdentifier,
+      });
+
+      dispatch({
+        type: "HOPS_UPDATE_LOCKED",
+        payload: hopsLocked,
+      });
+
+      let plannedCourses = await hopsApi.getStudentPlannedCourses({
+        studentIdentifier,
+      });
+
+      if (plannedCourses.length === 0) {
+        plannedCourses = plannedCoursesMock;
+      }
+
+      // Add identifier to planned courses because
+      const plannedCoursesWithIdentifier: PlannedCourseWithIdentifier[] =
+        plannedCourses.map((course) => ({
+          ...course,
+          identifier: "planned-course-" + course.id,
+        }));
 
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
-        payload: [],
+        payload: plannedCoursesWithIdentifier,
+      });
+
+      // Check if the current user is the same as the user who has locked the Hops
+      // Meaning that the current user is the one who is editing
+      if (state.status.userId === hopsLocked.userEntityId) {
+        dispatch({
+          type: "HOPS_CHANGE_MODE",
+          payload: "EDIT",
+        });
+      }
+
+      dispatch({
+        type: "HOPS_STUDYPLAN_UPDATE_STATUS",
+        payload: "READY",
+      });
+    };
+  };
+
+/**
+ * Save study plan data
+ * @param data Data containing partial updates to apply to study plan
+ */
+const saveStudyPlanData: SaveStudyPlanDataTriggerType =
+  function saveStudyPlanData(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      // Without identifier
+      const plannedCourses: PlannedCourse[] =
+        state.hopsNew.hopsEditing.plannedCourses.map(
+          ({ identifier, ...rest }) => rest
+        );
+
+      const updatedList = await hopsApi.updateStudentPlannedCourses({
+        studentIdentifier: state.hopsNew.currentStudentIdentifier,
+        updateStudentPlannedCoursesRequest: {
+          plannedCourses,
+        },
+      });
+
+      // Add identifier to planned courses
+      const plannedCoursesWithIdentifier: PlannedCourseWithIdentifier[] =
+        updatedList.map((course) => ({
+          ...course,
+          identifier: "planned-course-" + course.id,
+        }));
+
+      dispatch({
+        type: "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
+        payload: plannedCoursesWithIdentifier,
       });
     };
   };
@@ -1268,12 +1440,14 @@ export {
   verifyMatriculationExam,
   loadMatriculationExamHistory,
   saveMatriculationPlan,
+  saveStudyPlanData,
   updateMatriculationExamination,
   resetMatriculationData,
   startEditing,
   endEditing,
   cancelEditing,
   updateHopsEditing,
+  updateHopsEditingStudyPlan,
   updateMatriculationPlan,
   updateHopsLocked,
 };
