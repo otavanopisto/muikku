@@ -62,11 +62,18 @@ class NotesItemEdit extends SessionStateComponent<
   constructor(props: NotesItemEditProps) {
     super(props, "records-notes-item-edit");
     this.clearUp = this.clearUp.bind(this);
-    const { title, description, type, priority, startDate, dueDate } =
-      props.selectedNotesItem;
+    const {
+      title,
+      description,
+      type,
+      priority,
+      startDate,
+      dueDate,
+      recipients,
+    } = props.selectedNotesItem;
     this.state = {
       locked: false,
-      recipients: [],
+      recipients: turnNoteRecipientsToContacts(recipients),
       note: {
         title,
         description,
@@ -176,6 +183,7 @@ class NotesItemEdit extends SessionStateComponent<
                 identifier="communicatorRecipients"
                 modifier="new-message"
                 key="new-message-1"
+                disableRemove={this.state.recipients.length === 1}
                 showFullNames={true}
                 loaders={autofillLoaders()}
                 hasWorkspacePermission={false}
@@ -187,9 +195,7 @@ class NotesItemEdit extends SessionStateComponent<
                   ns: "messaging",
                   count: 0,
                 })}
-                selectedItems={turnNoteRecipientsToContacts(
-                  this.props.selectedNotesItem.recipients
-                )}
+                selectedItems={this.state.recipients}
                 onChange={this.handleRecipientsChange}
                 autofocus={false}
               />

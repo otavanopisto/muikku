@@ -55,6 +55,7 @@ export interface InputContactsAutofillProps {
   loaders?: InputContactsAutofillLoaders;
   identifier: string;
   required?: boolean;
+  disableRemove?: boolean;
 }
 
 /**
@@ -411,7 +412,9 @@ export default class c extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const selectedItems = this.state.selectedItems.map((item) => {
+    const selectedItems = this.state.selectedItems.map((item, index) => {
+      const disabled =
+        this.props.disableRemove;
       if (item.type === "user" || item.type === "staff") {
         return {
           node: (
@@ -427,6 +430,7 @@ export default class c extends React.Component<
             </span>
           ),
           value: item,
+          disabled,
         };
       } else if (item.type === "usergroup") {
         return {
@@ -440,6 +444,7 @@ export default class c extends React.Component<
             </span>
           ),
           value: item,
+          disabled,
         };
       } else if (item.type === "workspace") {
         return {
@@ -450,6 +455,7 @@ export default class c extends React.Component<
             </span>
           ),
           value: item,
+          disabled,
         };
       }
     });
