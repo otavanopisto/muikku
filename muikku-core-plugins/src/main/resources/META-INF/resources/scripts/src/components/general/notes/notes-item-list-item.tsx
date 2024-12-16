@@ -344,7 +344,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const renderUpdateStatus = () => {
       let items: DropdownItem[] = [];
 
-      if (archived) {
+      if (archived || multiUserNote ) {
         return;
       }
 
