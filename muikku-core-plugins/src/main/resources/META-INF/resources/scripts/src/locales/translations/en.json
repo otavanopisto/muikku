@@ -434,6 +434,7 @@
       "graph_logins": "Logins",
       "graph_passed": "Evaluated as passed",
       "graph_visits": "Course visits",
+      "guiderViewSelect": "Guider view selection",
       "evaluatedWithNonPassingGrade": "Evaluated with a non-passing grade",
       "evaluatedWithPassingGrade": "Evaluated with a passing grade",
       "evaluated_interim": "Interim evaluation given",

@@ -95,11 +95,12 @@ class GuiderApplication extends React.Component<
 
     const primaryOption = (
       <div className="form-element form-element--main-action">
-        <label htmlFor="selectUsers" className="visually-hidden">
-          {this.props.i18n.t("labels.workspaceTypeSelect", { ns: "workspace" })}
+        <label htmlFor="selectGuiderView" className="visually-hidden">
+          {this.props.i18n.t("labels.guiderViewSelect", { ns: "guider" })}
         </label>
         <Select
-          id="selectUsers"
+          className="react-select-override"
+          classNamePrefix="react-select-override"
           options={options}
           value={options.find((option) => option.value === this.context.view)}
           onChange={this.handleSelectChange}

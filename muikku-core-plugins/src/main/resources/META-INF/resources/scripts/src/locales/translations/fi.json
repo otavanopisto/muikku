@@ -434,6 +434,7 @@
       "graph_logins": "Sisäänkirjautumiset",
       "graph_passed": "Arvioitu hyväksytyksi",
       "graph_visits": "Käynnit kurssilla",
+      "guiderViewSelect": "Ohjaamon näkymän valinta",
       "evaluatedWithNonPassingGrade": "Arvioitu ei-läpäisevällä arvosanalla",
       "evaluatedWithPassingGrade": "Arvioitu läpäisevällä arvosanalla",
       "evaluated_interim": "Välipalaute annettu",
