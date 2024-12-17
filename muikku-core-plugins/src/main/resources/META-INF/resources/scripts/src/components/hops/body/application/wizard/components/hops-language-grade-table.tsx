@@ -192,9 +192,13 @@ export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
     <Tr modifiers={["language-table"]}>
       <Td modifiers={["centered", "language"]}>
         {lng.hardCoded ? (
-          <span className="table__alignment-helper table__alignment-helper--required">
+          <>
+            {/* TODO: Add back in when we have the information about validation */}
+            {/* <span className="table__alignment-helper table__alignment-helper--required">
             {lng.name}
-          </span>
+          </span> */}
+            <span className="table__alignment-helper">{lng.name}</span>
+          </>
         ) : (
           <span className="table__alignment-helper">
             <input

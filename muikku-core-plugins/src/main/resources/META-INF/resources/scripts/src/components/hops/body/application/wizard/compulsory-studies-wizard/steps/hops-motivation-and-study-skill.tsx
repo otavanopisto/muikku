@@ -97,17 +97,24 @@ const HopsMotivationAndStudySkills: React.FC<
   return (
     <div className="hops-container" ref={myRef}>
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader hops-container__subheader--required">
+        {/* <legend className="hops-container__subheader hops-container__subheader--required">
+          {t("labels.hopsCompulsorySelfAssessmentTitle1", {
+            ns: "hops_new",
+          })}
+        </legend> */}
+
+        <legend className="hops-container__subheader">
           {t("labels.hopsCompulsorySelfAssessmentTitle1", {
             ns: "hops_new",
           })}
         </legend>
 
-        <div className="hops-container__fieldset-description">
+        {/* TODO: Add back in when we have the information about validation */}
+        {/* <div className="hops-container__fieldset-description">
           {t("labels.hopsFormFieldsRequired", {
             ns: "hops_new",
           })}
-        </div>
+        </div> */}
 
         <div className="hops-container__row">
           <div className="hops-container__table-container">
@@ -126,7 +133,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 onInputGroupChange={handleScaleRangeChange(
                   "byReadingMaterials"
                 )}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -140,7 +146,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="byTakingNotes"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("byTakingNotes")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -154,7 +159,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="byDoingExercises"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("byDoingExercises")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -168,7 +172,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="byMemorizing"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("byMemorizing")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -182,7 +185,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="byWatchingVideos"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("byWatchingVideos")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -198,7 +200,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 onInputGroupChange={handleScaleRangeChange(
                   "byListeningTeaching"
                 )}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -212,7 +213,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="byExplaining"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("byExplaining")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -226,7 +226,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="byDiscussing"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("byDiscussing")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -242,7 +241,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 onInputGroupChange={handleScaleRangeChange(
                   "byWatchingOrDoingExamples"
                 )}
-                required
               />
               <EmptyRow colSpan={5} modifiers={["empty", "question-table"]} />
             </HopsInputTable>
@@ -267,17 +265,25 @@ const HopsMotivationAndStudySkills: React.FC<
       </fieldset>
 
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader hops-container__subheader--required">
+        {/* TODO: Add back in when we have the information about validation */}
+        {/* <legend className="hops-container__subheader hops-container__subheader--required">
+          {t("labels.hopsCompulsorySelfAssessmentTitle2", {
+            ns: "hops_new",
+          })}
+        </legend> */}
+
+        <legend className="hops-container__subheader">
           {t("labels.hopsCompulsorySelfAssessmentTitle2", {
             ns: "hops_new",
           })}
         </legend>
 
-        <div className="hops-container__fieldset-description">
+        {/* TODO: Add back in when we have the information about validation */}
+        {/* <div className="hops-container__fieldset-description">
           {t("labels.hopsFormFieldsRequired", {
             ns: "hops_new",
           })}
-        </div>
+        </div> */}
 
         <div className="hops-container__row">
           <div className="hops__form-element-container hops__form-element-container--single-row">
@@ -388,17 +394,25 @@ const HopsMotivationAndStudySkills: React.FC<
       </fieldset>
 
       <fieldset className="hops-container__fieldset">
-        <legend className="hops-container__subheader hops-container__subheader--required">
+        {/* TODO: Add back in when we have the information about validation */}
+        {/* <legend className="hops-container__subheader hops-container__subheader--required">
+          {t("labels.hopsCompulsorySelfAssessmentTitle3", {
+            ns: "hops_new",
+          })}
+        </legend> */}
+
+        <legend className="hops-container__subheader">
           {t("labels.hopsCompulsorySelfAssessmentTitle3", {
             ns: "hops_new",
           })}
         </legend>
 
-        <div className="hops-container__fieldset-description">
+        {/* TODO: Add back in when we have the information about validation */}
+        {/* <div className="hops-container__fieldset-description">
           {t("labels.hopsFormFieldsRequired", {
             ns: "hops_new",
           })}
-        </div>
+        </div> */}
 
         <div className="hops-container__row">
           <div className="hops-container__table-container">
@@ -415,7 +429,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="likeStudying"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("likeStudying")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -429,7 +442,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="haveGoals"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("haveGoals")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -445,7 +457,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 onInputGroupChange={handleScaleRangeChange(
                   "readyToAchieveGoals"
                 )}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -459,7 +470,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="alwaysFinishJobs"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("alwaysFinishJobs")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -473,7 +483,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="bePedantic"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("bePedantic")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -489,7 +498,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 onInputGroupChange={handleScaleRangeChange(
                   "studyingConcentration"
                 )}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -503,7 +511,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="affectedByNoise"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("affectedByNoise")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -519,7 +526,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 onInputGroupChange={handleScaleRangeChange(
                   "canFollowInstructions"
                 )}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -535,7 +541,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 onInputGroupChange={handleScaleRangeChange(
                   "canEvaluateOwnWork"
                 )}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -549,7 +554,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 groupName="canTakeFeedback"
                 disabled={disabled}
                 onInputGroupChange={handleScaleRangeChange("canTakeFeedback")}
-                required
               />
               <InputRow
                 scaleStart={1}
@@ -568,7 +572,6 @@ const HopsMotivationAndStudySkills: React.FC<
                 onInputGroupChange={handleScaleRangeChange(
                   "canUseBasicComputerFunctionalities"
                 )}
-                required
               />
               <EmptyRow colSpan={5} modifiers={["empty", "question-table"]} />
             </HopsInputTable>
