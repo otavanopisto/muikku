@@ -25,6 +25,7 @@ import {
   HopsState,
   PlannedCourseWithIdentifier,
 } from "~/reducers/hops";
+import StudyPlannerDragLayer from "./components/react-dnd/planner-drag-layer";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -194,6 +195,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
               Opintojen suunnittelutyökalu
             </ApplicationSubPanel.Header>
             <ApplicationSubPanel.Body>
+              <StudyPlannerDragLayer />
               <div className="hops-planner">
                 <PlannerControls
                   onViewChange={setView}

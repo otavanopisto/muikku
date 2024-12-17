@@ -1,24 +1,25 @@
 import * as React from "react";
 import { useDrag } from "react-dnd";
+import { getEmptyImage } from "react-dnd-html5-backend";
 import { Course } from "~/@types/shared";
 
 /**
- * CourseItem props
+ * PlannerSidebarCourse props
  */
-interface CourseItemProps {
+interface PlannerSidebarCourseProps {
   course: Course;
   subjectCode: string;
   onClick?: () => void;
 }
 
 /**
- * CourseItem component
+ * PlannerSidebarCourse component
  * @param props props
  */
-const CourseItem: React.FC<CourseItemProps> = (props) => {
+const PlannerSidebarCourse: React.FC<PlannerSidebarCourseProps> = (props) => {
   const { course, subjectCode, onClick } = props;
 
-  const [{ isDragging }, drag] = useDrag(
+  const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       type: "new-course-card",
       item: {
@@ -33,25 +34,26 @@ const CourseItem: React.FC<CourseItemProps> = (props) => {
     []
   );
 
+  preview(getEmptyImage(), { captureDraggingState: true });
+
   const type = course.mandatory ? "mandatory" : "optional";
 
   return (
     <div
-      className="hops-planner__course-item"
+      className={`planner-sidebar-course ${isDragging ? "is-dragging" : ""}`}
       onClick={onClick}
       ref={drag}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
     >
-      <div className="hops-planner_course-item-header">
-        <span className="hops-planner__course-code">{subjectCode}</span>
-        <span className="hops-planner__course-name">
+      <div className="planner-sidebar-course__header">
+        <span className="planner-sidebar-course__code">{subjectCode}</span>
+        <span className="planner-sidebar-course__name">
           {course.name}, {course.length} op
         </span>
       </div>
 
-      <div className="hops-planner__course-item-content">
+      <div className="planner-sidebar-course__content">
         <span
-          className={`hops-planner__course-type hops-planner__course-type--${type}`}
+          className={`planner-sidebar-course__type planner-sidebar-course__type--${type}`}
         >
           {type === "mandatory" ? "PAKOLLINEN" : "VALINNAINEN"}
         </span>
@@ -60,4 +62,4 @@ const CourseItem: React.FC<CourseItemProps> = (props) => {
   );
 };
 
-export default CourseItem;
+export default PlannerSidebarCourse;

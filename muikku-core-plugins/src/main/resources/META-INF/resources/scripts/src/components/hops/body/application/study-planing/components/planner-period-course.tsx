@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { getEmptyImage } from "react-dnd-html5-backend";
 
 /**
  * CourseCardProps
@@ -42,7 +43,7 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
     workspaceEntityId?: number;
   } | null>(null);
 
-  const [{ isDragging }, drag] = useDrag(
+  const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       type: "planned-course-card",
       item: {
@@ -53,9 +54,14 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
+      options: {
+        dropEffect: "move",
+      },
     }),
     []
   );
+
+  preview(getEmptyImage(), { captureDraggingState: true });
 
   /**
    * Handles specify
@@ -147,7 +153,6 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
       <div
         ref={drag}
         className={`hops-planner__course-card ${isDragging ? "is-dragging" : ""}`}
-        style={{ opacity: isDragging ? 0.5 : 1 }}
       >
         <div className="hops-planner__course-header">
           <span className="hops-planner__course-code">

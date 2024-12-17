@@ -4,7 +4,7 @@ import {
   PlannedCourseWithIdentifier,
   PlannedPeriod,
 } from "~/reducers/hops";
-import PlannerPeriodMonth from "./planner-perioud-month";
+import PlannerPeriodMonth from "./planner-period-month";
 
 const AUTUMN_MONTHS = ["Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"];
 const SPRING_MONTHS = [

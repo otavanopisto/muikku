@@ -8,6 +8,7 @@ interface DroppableProps<T> {
   className?: string;
   accept: string[];
   onDrop: (info: T, type: string) => void;
+  onHover?: (isOver: boolean, info: T) => void;
   children: React.ReactNode;
 }
 
@@ -16,7 +17,7 @@ interface DroppableProps<T> {
  * @param props props
  */
 const Droppable = <T,>(props: DroppableProps<T>) => {
-  const { accept, onDrop, children, className } = props;
+  const { accept, onDrop, children, className, onHover } = props;
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: accept,
@@ -25,10 +26,23 @@ const Droppable = <T,>(props: DroppableProps<T>) => {
       onDrop(item.info, item.type);
     },
     // eslint-disable-next-line jsdoc/require-jsdoc
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop(),
-    }),
+    hover: (item: { info: T; type: string }) => {
+      if (onHover) {
+        onHover(true, item.info);
+      }
+    },
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    collect: (monitor) => {
+      const isOverNow = monitor.isOver();
+
+      if (onHover) {
+        onHover(isOverNow, monitor?.getItem()?.info || null);
+      }
+      return {
+        isOver: isOverNow,
+        canDrop: monitor.canDrop(),
+      };
+    },
   }));
 
   const isActive = canDrop && isOver;

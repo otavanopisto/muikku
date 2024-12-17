@@ -6,9 +6,10 @@ import {
   CourseChangeAction,
   PlannedCourseWithIdentifier,
 } from "~/reducers/hops";
-import Droppable from "./droppable";
+import Droppable from "./react-dnd/droppable";
 import { PlannerPeriodProps } from "./planner-period";
-import PlannerPeriodCourseCard from "./planner-perioud-course";
+import PlannerPeriodCourseCard from "./planner-period-course";
+import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * Checks if the course is a planned course
@@ -38,6 +39,15 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
   const { monthIndex, title, year, courses, onCourseChange } = props;
 
   const [isExpanded, setIsExpanded] = React.useState(true);
+  const [showDropIndicator, setShowDropIndicator] = React.useState(false);
+
+  // Create a ref to always have access to latest courses
+  const coursesRef = React.useRef(courses);
+
+  // Keep the ref updated
+  React.useEffect(() => {
+    coursesRef.current = courses;
+  }, [courses]);
 
   /**
    * Handles month toggle
@@ -90,6 +100,45 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     onCourseChange(updatedCourse, action);
   };
 
+  /**
+   * Finds if the course is already in the droppable area
+   * @param course course
+   * @returns true if the course is already in the droppable area
+   */
+  const isAlreadyInMonth = React.useCallback(
+    (
+      course: PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+    ) => {
+      // Use coursesRef.current instead of courses
+      if (isPlannedCourse(course)) {
+        return coursesRef.current.some(
+          (c) => c.identifier === course.identifier
+        );
+      }
+      return false;
+    },
+    []
+  ); // No dependencies needed since we're using ref
+
+  /**
+   * Handles drop hover
+   * @param isOver is over
+   * @param course course
+   */
+  const handleDropHover = React.useCallback(
+    (
+      isOver: boolean,
+      course: PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+    ) => {
+      if (isOver && !isAlreadyInMonth(course)) {
+        setShowDropIndicator(true);
+      } else {
+        setShowDropIndicator(false);
+      }
+    },
+    [isAlreadyInMonth]
+  );
+
   return (
     <div className="hops-planner__month">
       <Button
@@ -99,6 +148,19 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
         onClick={handleMonthToggle}
       >
         {title}
+        <AnimatePresence>
+          {showDropIndicator && (
+            <motion.span
+              className="drop-indicator"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              transition={{ duration: 0.2 }}
+            >
+              +
+            </motion.span>
+          )}
+        </AnimatePresence>
       </Button>
 
       <AnimateHeight height={isExpanded ? "auto" : 0}>
@@ -109,6 +171,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
             >
               accept={["planned-course-card", "new-course-card"]}
               onDrop={handleDrop}
+              onHover={handleDropHover}
               className="hops-planner__courses"
             >
               {courses.map((course) => (
@@ -125,6 +188,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
             >
               accept={["planned-course-card", "new-course-card"]}
               onDrop={handleDrop}
+              onHover={handleDropHover}
               className="hops-planner__empty-month"
             >
               <div className="hops-planner__dropzone">

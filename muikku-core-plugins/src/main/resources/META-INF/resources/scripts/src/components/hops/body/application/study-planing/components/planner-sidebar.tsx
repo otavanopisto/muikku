@@ -5,7 +5,7 @@ import { CourseFilter, SchoolSubject } from "~/@types/shared";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { filterSubjectsAndCourses } from "../helper";
-import CourseItem from "./course-item";
+import PlannerSidebarCourse from "./planner-sidebar-course";
 
 /**
  * PlannerSidebarProps
@@ -142,7 +142,7 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
             >
               <div className="hops-planner__course-list">
                 {subject.availableCourses.map((course) => (
-                  <CourseItem
+                  <PlannerSidebarCourse
                     key={`${subject.subjectCode}${course.courseNumber}`}
                     course={course}
                     subjectCode={subject.subjectCode}

@@ -914,36 +914,63 @@
   }
 }
 
-.hops-planner__course-item {
+.planner-sidebar-course {
   padding: 0.25rem;
   margin-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   border-left: 3px solid #a09f9f;
-}
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-.hops-planner_course-item-header {
-}
-
-.hops-planner__course-code {
-  font-weight: bold;
-  margin-right: 0.25rem;
-}
-
-.hops-planner__course-type {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 3px;
-
-  &--mandatory {
-    background: $color-mandatory;
-    color: $color-default;
+  &.is-dragging {
+    opacity: 0.5;
   }
 
-  &--optional {
-    background: $color-optional;
-    color: $color-default;
+  &__header {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__code {
+    font-weight: bold;
+    margin-right: 0.25rem;
+  }
+
+  &__content {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  &__type {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    display: inline-block;
+
+    &--mandatory {
+      background: $color-mandatory;
+      color: $color-default;
+    }
+
+    &--optional {
+      background: $color-optional;
+      color: $color-default;
+    }
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  &--preview {
+    background: white;
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    cursor: move;
   }
 }
 
@@ -1035,10 +1062,38 @@
 
 .hops-planner__course-card {
   border-left: 5px solid #8d8d8d;
+  cursor: move;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
   background: white;
   border-radius: 0px 5px 5px 0px;
+  opacity: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+
+  &.is-dragging {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    cursor: grabbing;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    opacity: 0.5;
+  }
+}
+
+.hops-planner__course-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.hops-planner__course-card-preview {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  border-left: 5px solid #8d8d8d;
+  cursor: move;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: white;
+  border-radius: 0px 5px 5px 0px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .hops-planner__course-header {
@@ -1047,6 +1102,29 @@
   flex-direction: row;
   flex-wrap: wrap;
   margin-bottom: 0.5rem;
+}
+
+.hops-planner__course-code {
+  font-weight: bold;
+  margin-right: 0.25rem;
+}
+
+.hops-planner__course-type {
+  color: $color-default-contrast;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.hops-planner__course-type--mandatory {
+  background: $color-mandatory;
+  color: $color-default;
+}
+
+.hops-planner__course-type--optional {
+  background: $color-optional;
+  color: $color-default;
 }
 
 .hops-planner__course-unsaved {
@@ -1108,6 +1186,13 @@
 
 .hops-planner__month {
   margin-bottom: 0.5rem;
+}
+
+.drop-indicator {
+  display: inline-block;
+  color: #B1296F;
+  margin-left: 8px;
+  font-size: 1rem;
 }
 
 .hops-planner__month-toggle {
