@@ -1018,7 +1018,14 @@
     },
     "notifications": {
       "initilizationError": "Error while initializing HOPS",
-      "editingModePersistentInfo": "You have reserved HOPS editing mode. During this time, others cannot edit your HOPS. Remember to finish or save your changes before leaving. Unsaved data will be lost."
+      "editingModePersistentInfo": "You have reserved HOPS editing mode. During this time, others cannot edit your HOPS. Remember to finish or save your changes before leaving. Unsaved data will be lost.",
+      "startEditingError": "Editing mode could not be started. Please refresh the page and try again.",
+      "cancelEditingError": "Editing mode could not be cancelled. Please refresh the page and try again.",
+      "updateError": "$t(common:notifications.updateError)",
+      "updateError_saveHops": "HOPS could not be saved. Please refresh the page and try again.",
+      "updateError_hopsEntry": "HOPS entry could not be updated. Please refresh the page and try again.",
+      "loadError": "$t(common:notifications.loadError)",
+      "loadError_hopsHistory": "HOPS history could not be loaded. Please refresh the page and try again."
     }
   },
   "organization": {

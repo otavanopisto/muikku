@@ -1040,6 +1040,15 @@ const startEditing: StartEditingTriggerType = function startEditing() {
       if (!isMApiError(err)) {
         throw err;
       }
+
+      dispatch(
+        displayNotification(
+          i18n.t("notifications.startEditingError", {
+            ns: "hops_new",
+          }),
+          "error"
+        )
+      );
     }
   };
 };
@@ -1054,29 +1063,44 @@ const cancelEditing: CancelEditingTriggerType = function cancelEditing() {
   ) => {
     const state = getState();
 
-    const hopsLocked = await hopsApi.updateStudentHopsLock({
-      studentIdentifier: state.hopsNew.currentStudentIdentifier,
-      updateStudentHopsLockRequest: {
-        locked: false,
-      },
-    });
+    try {
+      const hopsLocked = await hopsApi.updateStudentHopsLock({
+        studentIdentifier: state.hopsNew.currentStudentIdentifier,
+        updateStudentHopsLockRequest: {
+          locked: false,
+        },
+      });
 
-    dispatch({
-      type: "HOPS_UPDATE_LOCKED",
-      payload: { status: "READY", data: hopsLocked },
-    });
+      dispatch({
+        type: "HOPS_UPDATE_LOCKED",
+        payload: { status: "READY", data: hopsLocked },
+      });
 
-    dispatch({
-      type: "HOPS_CANCEL_EDITING",
-      payload: undefined,
-    });
+      dispatch({
+        type: "HOPS_CANCEL_EDITING",
+        payload: undefined,
+      });
 
-    const hopsNotification = getState().notifications.notifications.find(
-      (notification) => notification.id === "hops-editing-mode-notification"
-    );
+      const hopsNotification = getState().notifications.notifications.find(
+        (notification) => notification.id === "hops-editing-mode-notification"
+      );
 
-    if (hopsNotification) {
-      dispatch(hideNotification(hopsNotification));
+      if (hopsNotification) {
+        dispatch(hideNotification(hopsNotification));
+      }
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      dispatch(
+        displayNotification(
+          i18n.t("notifications.cancelEditingError", {
+            ns: "hops_new",
+          }),
+          "error"
+        )
+      );
     }
   };
 };
@@ -1180,6 +1204,16 @@ const saveHops: SaveHopsTriggerType = function saveHops(data) {
       if (!isMApiError(err)) {
         throw err;
       }
+
+      dispatch(
+        displayNotification(
+          i18n.t("notifications.updateError", {
+            ns: "hops_new",
+            context: "saveHops",
+          }),
+          "error"
+        )
+      );
 
       data.onFail && data.onFail();
     }
@@ -1434,7 +1468,6 @@ const updateHopsHistory: UpdateHopsHistoryTriggerType =
       );
 
       // ...if it is, update it
-      // ...if it is, update it
       if (historyIndex !== -1) {
         updatedHistory[historyIndex] = data.history;
 
@@ -1511,10 +1544,10 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
         });
 
         dispatch(
-          actions.displayNotification(
+          displayNotification(
             i18n.t("notifications.updateError", {
-              ns: "studies",
-              context: "hopsFormHistoryEntry",
+              ns: "common",
+              context: "hopsEntry",
             }),
             "error"
           )
@@ -1586,10 +1619,10 @@ const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
         });
 
         dispatch(
-          actions.displayNotification(
+          displayNotification(
             i18n.t("notifications.loadError", {
-              ns: "studies",
-              context: "hopsFormHistory",
+              ns: "hops_new",
+              context: "hopsHistory",
             }),
             "error"
           )

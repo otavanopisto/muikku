@@ -1018,7 +1018,14 @@
     },
     "notifications": {
       "initilizationError": "Virhe HOPS:n alustamisessa",
-      "editingModePersistentInfo": "Olet varannut HOPS:sin muokkaustilaan. Tänä aikana muut eivät voi muokata HOPS:siasi. Muista päättää tai tallentaa muokkauksesi ennen siirtymistä pois. Tallentamattomat tiedot menetetään."
+      "editingModePersistentInfo": "Olet varannut HOPS:sin muokkaustilaan. Tänä aikana muut eivät voi muokata HOPS:siasi. Muista päättää tai tallentaa muokkauksesi ennen siirtymistä pois. Tallentamattomat tiedot menetetään.",
+      "startEditingError": "Muokkauksen aloittaminen epäonnistui. Päivitä sivu ja yritä uudelleen.",
+      "cancelEditingError": "Muokkauksen peruuttaminen epäonnistui. Päivitä sivu ja yritä uudelleen.",
+      "updateError": "$t(common:notifications.updateError)",
+      "updateError_saveHops": "HOPS:n tallentaminen epäonnistui. Päivitä sivu ja yritä uudelleen.",
+      "updateError_hopsEntry": "HOPS:n historiamerkintää ei voitu päivittää. Päivitä sivu ja yritä uudelleen.",
+      "loadError": "$t(common:notifications.loadError)",
+      "loadError_hopsHistory": "HOPS:n historiaa ei voitu ladata. Päivitä sivu ja yritä uudelleen."
     }
   },
   "organization": {
