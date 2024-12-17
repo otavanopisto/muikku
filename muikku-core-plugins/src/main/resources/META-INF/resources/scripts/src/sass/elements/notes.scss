@@ -50,7 +50,7 @@
   flex-basis: calc(100% - 16px);
   flex-grow: 1;
   flex-shrink: 1;
-  height: 260px;
+  height: 300px;
   margin: 8px;
   overflow: hidden;
   padding: 0 10px;
@@ -217,6 +217,13 @@
     position: absolute;
     width: 100%;
   }
+}
+
+.notes__item-recipients {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 5px 0;
 }
 
 .notes__item-author {

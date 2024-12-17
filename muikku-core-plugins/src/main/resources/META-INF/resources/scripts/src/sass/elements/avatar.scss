@@ -21,6 +21,7 @@
   }
 }
 
+
 .avatar-container--discussion-area {
   background: $color-default-generic-background;
   color: $color-info;
@@ -31,6 +32,13 @@
   @include breakpoint($breakpoint-pad) {
     height: $avatar-desktop-small-size;
     width: $avatar-desktop-small-size;
+  }
+}
+
+.avatar-container--xsmall {
+  @include breakpoint($breakpoint-pad) {
+    height: $avatar-desktop-xsmall-size;
+    width: $avatar-desktop-xsmall-size;
   }
 }
 
@@ -65,6 +73,14 @@
 .avatar--small {
   @include breakpoint($breakpoint-pad) {
     font-size: $avatar-desktop-small-font-size;
+  }
+}
+
+.avatar--xsmall {
+  width: 20px;
+  height: 20px;
+  @include breakpoint($breakpoint-pad) {
+    font-size: $avatar-desktop-xsmall-font-size;
   }
 }
 
