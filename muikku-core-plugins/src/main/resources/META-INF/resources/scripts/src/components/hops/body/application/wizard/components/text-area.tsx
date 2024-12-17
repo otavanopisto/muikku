@@ -14,21 +14,20 @@ interface TextareaProps
 
 /**
  * Textarea
- * @param param0 param0
- * @param param0.label label
+ * @param props props
  * @returns JSX.Element. Textarea component
  */
-export const Textarea: React.FC<TextareaProps> = ({
-  label,
-  id,
-  ...textareaProps
-}) => (
-  <>
-    <label htmlFor={id} className="hops__label">
-      {label}
-    </label>
-    <div className="form-element__textarea-container">
-      <textarea id={id} {...textareaProps} />
-    </div>
-  </>
-);
+export const Textarea: React.FC<TextareaProps> = (props) => {
+  const { label, id, ...textareaProps } = props;
+
+  return (
+    <>
+      <label htmlFor={id} className="hops__label">
+        {label}
+      </label>
+      <div className="form-element__textarea-container">
+        <textarea id={id} {...textareaProps} />
+      </div>
+    </>
+  );
+};
