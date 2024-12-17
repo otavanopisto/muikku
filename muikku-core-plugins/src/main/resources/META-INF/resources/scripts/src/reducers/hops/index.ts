@@ -29,6 +29,12 @@ export interface MatriculationSubjectWithEligibilityStatus {
 
 export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
 
+export type ReducerInitializeStatusType =
+  | "INITIALIZING"
+  | "INITIALIZED"
+  | "INITIALIZATION_FAILED"
+  | "IDLE";
+
 /**
  * HopsStudyPlanState
  */
@@ -89,6 +95,8 @@ export interface HopsEditingState {
  * HopsState
  */
 export interface HopsState {
+  initialized: ReducerInitializeStatusType;
+
   // CURRENT STUDENT IDENTIFIER
   currentStudentIdentifier?: string;
   currentStudentStudyProgramme?: string;
@@ -125,6 +133,7 @@ export interface HopsState {
 }
 
 const initialHopsState: HopsState = {
+  initialized: "IDLE",
   hopsStudyPlanStatus: "READY",
   hopsStudyPlanState: {},
   hopsMatriculationStatus: "IDLE",
@@ -168,6 +177,12 @@ export const hopsNew: Reducer<HopsState> = (
   action: ActionType
 ) => {
   switch (action.type) {
+    case "HOPS_UPDATE_INITIALIZE_STATUS":
+      return {
+        ...state,
+        initialized: action.payload,
+      };
+
     case "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER":
       return {
         ...state,
@@ -350,14 +365,13 @@ export const hopsNew: Reducer<HopsState> = (
     case "HOPS_RESET_DATA": {
       return {
         ...state,
+        initialized: "IDLE",
         hopsMatriculationStatus: "IDLE",
         hopsFormStatus: "IDLE",
         hopsFormHistoryStatus: "IDLE",
         hopsForm: null,
         hopsFormHistory: null,
         hopsFormCanLoadMoreHistory: true,
-        hopsLocked: null,
-        hopsLockedStatus: "IDLE",
         studentInfo: null,
         studentInfoStatus: "IDLE",
         hopsMatriculation: {
