@@ -526,8 +526,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                 aria-label={t("wcag.archive")}
               />
             )}
-
-            {renderUpdateStatus()}
+            {!multiUserNote && renderUpdateStatus()}
           </div>
         </div>
 
