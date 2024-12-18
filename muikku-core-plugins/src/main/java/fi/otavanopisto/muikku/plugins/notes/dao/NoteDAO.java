@@ -23,7 +23,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   
   private static final long serialVersionUID = 1265008061182482207L;
 
-  public Note create(String title, String description, NoteType type, NotePriority priority, Long creator, Long lastModifier,Date startDate, Date dueDate, Boolean archived){
+  public Note create(String title, String description, NoteType type, NotePriority priority, Long creator, Long lastModifier,Date startDate, Date dueDate, Boolean archived, Boolean multiUserNote){
     Note note = new Note();
     note.setTitle(title);
     note.setDescription(description);
@@ -36,6 +36,7 @@ public class NoteDAO extends CorePluginsDAO<Note> {
     note.setArchived(archived);
     note.setStartDate(startDate);
     note.setDueDate(dueDate);
+    note.setMultiUserNote(multiUserNote);
     return persist(note);
   }
   
@@ -114,5 +115,27 @@ public class NoteDAO extends CorePluginsDAO<Note> {
   
   return entityManager.createQuery(criteria).getResultList();
 }
+  
+public List<Note> listByCreatorAndRecipientAndArchived(UserEntity creator, UserEntity recipient, boolean archived){
+    
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Note> criteria = criteriaBuilder.createQuery(Note.class);
+    Root<NoteReceiver> root = criteria.from(NoteReceiver.class);
+    Root<Note> root2 = criteria.from(Note.class);
+
+    criteria.select(root.get(NoteReceiver_.note));
+    criteria.where(
+        criteriaBuilder.and(
+          criteriaBuilder.equal(root.get(NoteReceiver_.recipient), recipient.getId()),
+          criteriaBuilder.equal(root2.get(Note_.id), root.get(NoteReceiver_.note)),
+          criteriaBuilder.equal(root2.get(Note_.creator), creator),
+          criteriaBuilder.equal(root2.get(Note_.archived), archived)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
   
 }

@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -86,9 +87,12 @@ public class NotesRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-  
+
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private UserEntityFileController userEntityFileController;
   // mApi() call (mApi().notes.note.create(noteRestModelWithRecipients)
   //
   // noteRestModelWithRecipients{
@@ -140,7 +144,7 @@ public class NotesRESTService extends PluginRESTService {
           return Response.status(Status.BAD_REQUEST).entity("Student and note recipient does not match").build();
         }
         newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(),
-            note.getStartDate(), note.getDueDate());
+            note.getStartDate(), note.getDueDate(), false);
 
         newReceiver = noteReceiverController.createNoteRecipient(pinned,
             sessionController.getLoggedUserEntity().getId(), newNote, null, null);
@@ -153,9 +157,14 @@ public class NotesRESTService extends PluginRESTService {
         if (prepareRecipientList == null || !prepareRecipientList.hasRecipients()) {
           return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
         }
-
+        
+        Boolean multiUserNote = Boolean.FALSE;
+        
+        if (recipientPayload.getRecipientIds().size() != 1) {
+          multiUserNote = Boolean.TRUE;
+        }
         newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(),
-            note.getStartDate(), note.getDueDate());
+            note.getStartDate(), note.getDueDate(), multiUserNote);
 
         // userRecipients
 
@@ -178,12 +187,13 @@ public class NotesRESTService extends PluginRESTService {
               if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
                 continue;
               }
-              newReceiver = noteReceiverController.createNoteRecipient(pinned, groupUser.getId(), newNote, userGroupId, null);
+              newReceiver = noteReceiverController.createNoteRecipient(pinned, groupUser.getId(), newNote, userGroupId,
+                  null);
               receiverList.add(toRestModel(newReceiver));
             }
           }
         }
-        
+
         // Workspace members
 
         for (WorkspaceEntity workspaceEntity : prepareRecipientList.getStudentWorkspaces()) {
@@ -196,7 +206,8 @@ public class NotesRESTService extends PluginRESTService {
               if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
                 continue;
               }
-              newReceiver = noteReceiverController.createNoteRecipient(pinned, workspaceUserEntity.getId(), newNote, null, workspaceEntity.getId());
+              newReceiver = noteReceiverController.createNoteRecipient(pinned, workspaceUserEntity.getId(), newNote,
+                  null, workspaceEntity.getId());
               receiverList.add(toRestModel(newReceiver));
             }
           }
@@ -207,7 +218,6 @@ public class NotesRESTService extends PluginRESTService {
 
     NoteRestModel noteRest = toRestModel(newNote);
     noteRest.setRecipients(receiverList);
-    noteRest.setMultiUserNote(receiverList.size() > 1);
 
     return Response.ok(noteRest).build();
   }
@@ -240,7 +250,7 @@ public class NotesRESTService extends PluginRESTService {
 
       // workspaces
       List<WorkspaceEntity> workspaceStudentRecipients = null;
-      
+
       if (!CollectionUtils.isEmpty(recipientPayload.getRecipientStudentsWorkspaceIds())) {
         workspaceStudentRecipients = new ArrayList<WorkspaceEntity>();
         WorkspaceEntity workspaceEntity = null;
@@ -255,7 +265,8 @@ public class NotesRESTService extends PluginRESTService {
 
       // Filter recipients
       UserRecipientList prepareRecipientList = userRecipientController.prepareRecipientList(
-          sessionController.getLoggedUserEntity(), recipientList, userGroupRecipients, workspaceStudentRecipients, null, roles);
+          sessionController.getLoggedUserEntity(), recipientList, userGroupRecipients, workspaceStudentRecipients, null,
+          roles);
 
       return prepareRecipientList;
     }
@@ -297,47 +308,85 @@ public class NotesRESTService extends PluginRESTService {
     // Add recipients
 
     if (payload.getRecipients() != null) {
-      UserRecipientList prepareRecipientList = prepareRecipientList(payload.getRecipients());
 
-      if (prepareRecipientList == null || !prepareRecipientList.hasRecipients()) {
-        return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
-      }
+      if (!payload.getRecipients().getRecipientGroupIds().isEmpty()
+          || !payload.getRecipients().getRecipientIds().isEmpty()
+          || !payload.getRecipients().getRecipientStudentsWorkspaceIds().isEmpty()) {
+        UserRecipientList prepareRecipientList = prepareRecipientList(payload.getRecipients());
 
-      // userRecipients
-
-      for (UserEntity userRecipient : prepareRecipientList.getUserRecipients()) {
-
-        NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(userRecipient.getId(), updatedNote);
-
-        if (receiver == null) {
-          noteReceiverController.createNoteRecipient(false, userRecipient.getId(), updatedNote, null, null);
+        if (prepareRecipientList == null || !prepareRecipientList.hasRecipients()) {
+          return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
         }
-      }
 
-      // User groups
-      for (UserGroupEntity userGroup : prepareRecipientList.getUserGroups()) {
-        prepareRecipientList.getUserGroupRecipients(userGroup);
+        // userRecipients
 
-        List<UserGroupUserEntity> ugue = userGroupEntityController
-            .listUserGroupUserEntitiesByUserGroupEntity(userGroup);
+        for (UserEntity userRecipient : prepareRecipientList.getUserRecipients()) {
 
-        for (UserGroupUserEntity userGroupUserEntity : ugue) {
+          NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(userRecipient.getId(), updatedNote);
 
-          if (userGroupUserEntity != null) {
-            UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
+          if (receiver == null) {
+            noteReceiverController.createNoteRecipient(false, userRecipient.getId(), updatedNote, null, null);
+          }
+          else {
+//            noteReceiverController.deleteRecipient(receiver);
+          }
+        }
 
-            UserEntity groupRecipientEntity = userSchoolDataIdentifier.getUserEntity();
+        // User groups
+        for (UserGroupEntity userGroup : prepareRecipientList.getUserGroups()) {
+          prepareRecipientList.getUserGroupRecipients(userGroup);
 
-            if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-              continue;
+          List<UserGroupUserEntity> ugue = userGroupEntityController
+              .listUserGroupUserEntitiesByUserGroupEntity(userGroup);
+
+          for (UserGroupUserEntity userGroupUserEntity : ugue) {
+
+            if (userGroupUserEntity != null) {
+              UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
+
+              UserEntity groupRecipientEntity = userSchoolDataIdentifier.getUserEntity();
+
+              if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+                continue;
+              }
+
+              NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(groupRecipientEntity.getId(),
+                  updatedNote);
+
+              if (receiver == null) {
+                noteReceiverController.createNoteRecipient(false, groupRecipientEntity.getId(), updatedNote,
+                    userGroupUserEntity.getUserGroupEntity().getId(), null);
+              }
+              else {
+//                noteReceiverController.deleteRecipient(receiver);
+              }
             }
+          }
+        }
 
-            NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(groupRecipientEntity.getId(),
-                updatedNote);
+        // Workspace members
 
-            if (receiver == null) {
-              noteReceiverController.createNoteRecipient(false, groupRecipientEntity.getId(), updatedNote,
-                  userGroupUserEntity.getUserGroupEntity().getId(), null);
+        for (WorkspaceEntity workspaceEntity : prepareRecipientList.getStudentWorkspaces()) {
+          List<UserEntity> workspaceUsers = prepareRecipientList.getWorkspaceStudentRecipients(workspaceEntity);
+
+          if (!CollectionUtils.isEmpty(workspaceUsers)) {
+            for (UserEntity workspaceUserEntity : workspaceUsers) {
+              UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController
+                  .findUserSchoolDataIdentifierByUserEntity(workspaceUserEntity);
+              if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+                continue;
+              }
+
+              NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(workspaceUserEntity.getId(),
+                  updatedNote);
+
+              if (receiver == null) {
+                noteReceiverController.createNoteRecipient(false, workspaceUserEntity.getId(), updatedNote, null,
+                    workspaceEntity.getId());
+              }
+              else {
+//                noteReceiverController.deleteRecipient(receiver);
+              }
             }
           }
         }
@@ -357,7 +406,6 @@ public class NotesRESTService extends PluginRESTService {
     }
 
     updatedRestModel.setRecipients(recipientsRest);
-    updatedRestModel.setMultiUserNote(recipientsRest.size() > 1);
 
     return Response.ok(updatedRestModel).build();
   }
@@ -437,6 +485,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setStartDate(note.getStartDate());
     restModel.setDueDate(note.getDueDate());
     restModel.setIsArchived(note.getArchived());
+    restModel.setMultiUserNote(note.getMultiUserNote());
 
     return restModel;
   }
@@ -444,7 +493,7 @@ public class NotesRESTService extends PluginRESTService {
   private NoteReceiverRestModel toRestModel(NoteReceiver noteReceiver) {
     String groupName = null;
     String workspaceName = null;
-    
+    Boolean hasImage = false;
     if (noteReceiver.getRecipientGroup() != null) {
       UserGroupEntity userGroupEntity = userGroupEntityController
           .findUserGroupEntityById(noteReceiver.getRecipientGroup());
@@ -455,12 +504,12 @@ public class NotesRESTService extends PluginRESTService {
         groupName = usergroup.getName();
       }
     }
-    
+
     if (noteReceiver.getWorkspace_id() != null) {
       WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(noteReceiver.getWorkspace_id());
-      
+
       if (workspaceEntity != null) {
-        
+
         workspaceName = workspaceController.findWorkspace(workspaceEntity).getName();
       }
     }
@@ -470,6 +519,7 @@ public class NotesRESTService extends PluginRESTService {
 
     if (userEntity != null) {
       recipientName = userEntityController.getName(userEntity, true).getDisplayName();
+      hasImage = userEntityFileController.hasProfilePicture(userEntity);
     }
 
     NoteReceiverRestModel restModel = new NoteReceiverRestModel();
@@ -483,6 +533,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setUserGroupName(groupName);
     restModel.setWorkspaceId(noteReceiver.getWorkspace_id());
     restModel.setWorkspaceName(workspaceName);
+    restModel.setHasImage(hasImage);
 
     return restModel;
   }

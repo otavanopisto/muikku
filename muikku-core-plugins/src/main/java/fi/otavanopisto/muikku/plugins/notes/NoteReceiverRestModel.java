@@ -84,6 +84,14 @@ public class NoteReceiverRestModel {
     this.workspaceName = workspaceName;
   }
 
+  public Boolean getHasImage() {
+    return hasImage;
+  }
+
+  public void setHasImage(Boolean hasImage) {
+    this.hasImage = hasImage;
+  }
+
   private Long id;
   private Long noteId;
   private Boolean pinned;
@@ -94,6 +102,7 @@ public class NoteReceiverRestModel {
   private String userGroupName;
   private Long workspaceId;
   private String workspaceName;
+  private Boolean hasImage;
   
 
 }

@@ -15,5 +15,6 @@
        select id, owner, pinned, status
        from Note;</sql>
   <sql>alter table Note drop owner, drop status, drop pinned;</sql>
-  
-</update> 
+  <sql>alter table Note add column multiUserNote bit not null;</sql>
+  <sql>update Note set multiUserNote=true where id in (select note_id from NoteReceiver group by note_id having count(note_id) > 1);</sql>
+</update>

@@ -20,7 +20,7 @@ public class NotesController {
   @Inject
   private NoteDAO noteDAO;
   
-  public Note createNote(String title, String description, NoteType type, NotePriority priority, Date startDate, Date dueDate) {
+  public Note createNote(String title, String description, NoteType type, NotePriority priority, Date startDate, Date dueDate, Boolean multiUserNote) {
     return noteDAO.create(
         title,
         description,
@@ -30,7 +30,8 @@ public class NotesController {
         sessionController.getLoggedUserEntity().getId(),
         startDate,
         dueDate,
-        Boolean.FALSE);
+        Boolean.FALSE,
+        multiUserNote);
   }
   
   public Note updateNote(Note note, String title, String description, NotePriority priority, Date startDate,  Date dueDate) {
@@ -49,6 +50,9 @@ public class NotesController {
     return noteDAO.findByIdAndArchived(id, archived);
   }
 
+  public List<Note> listByCreatorAndRecipientAndArchived(UserEntity creator, UserEntity recipient, boolean archived) {
+    return noteDAO.listByCreatorAndRecipientAndArchived(creator, recipient, archived);
+  }
   public List<Note> listByReceiver(UserEntity recipient, boolean listArchived) {
     return noteDAO.listByReceiver(recipient, listArchived);
   }

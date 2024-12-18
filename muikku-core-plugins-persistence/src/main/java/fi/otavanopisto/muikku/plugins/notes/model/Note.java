@@ -111,6 +111,14 @@ public class Note {
     this.dueDate = dueDate;
   }
   
+  public Boolean getMultiUserNote() {
+    return multiUserNote;
+  }
+
+  public void setMultiUserNote(Boolean multiUserNote) {
+    this.multiUserNote = multiUserNote;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -154,6 +162,9 @@ public class Note {
   
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date dueDate;
+  
+  @Column (nullable = false)
+  private Boolean multiUserNote = Boolean.FALSE;
 }
 
   
