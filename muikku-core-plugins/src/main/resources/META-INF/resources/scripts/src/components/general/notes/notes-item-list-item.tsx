@@ -574,7 +574,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               <Avatar
                 key={recipient.recipient}
                 id={recipient.recipient}
-                hasImage={false}
+                hasImage={recipient.hasImage}
                 firstName={recipient.recipientName}
                 size="xsmall"
               ></Avatar>

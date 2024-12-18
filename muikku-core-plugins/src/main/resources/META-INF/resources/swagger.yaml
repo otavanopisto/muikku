@@ -15341,6 +15341,7 @@ components:
         - startDate
         - dueDate
         - recipients
+        - multiUserNote
       properties:
         id:
           type: integer
@@ -15449,6 +15450,7 @@ components:
         - userGroupName
         - workspaceId
         - workspaceName
+        - hasImage
       properties:
         id:
           type: integer
@@ -15475,6 +15477,8 @@ components:
           format: int64
         workspaceName:
           type: string
+        hasImage:
+          type: boolean
 
     NoteRecipientList:
       type: object
