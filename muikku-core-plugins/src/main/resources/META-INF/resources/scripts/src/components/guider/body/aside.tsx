@@ -13,18 +13,12 @@ import Navigation, {
 } from "~/components/general/navigation";
 import { UserGroup } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
-import {
-  BooleanNoteFilters,
-  GuiderContext,
-  GuiderNoteFilters,
-  GuiderNotesState,
-} from "../context";
+import { GuiderContext, GuiderNotesState } from "../context";
 import {
   loadNotes,
   LoadNotesTriggerType,
 } from "~/actions/main-function/guider";
 import { StatusType } from "~/reducers/base/status";
-import { NotesItemFilters } from "~/@types/notes";
 
 /**
  * NavigationProps
@@ -208,7 +202,7 @@ class NavigationAside extends React.Component<
           )}
         </Navigation>
       );
-    } else if (view === "tasks") {
+    } else if (view === "notes") {
       const { state, high, normal, low } = this.context.filters;
 
       return (

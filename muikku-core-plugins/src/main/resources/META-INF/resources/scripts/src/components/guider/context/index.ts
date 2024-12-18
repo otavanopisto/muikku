@@ -3,7 +3,7 @@ import { NotesItemFilters } from "~/@types/notes";
 /**
  * GuiderViews
  */
-export type GuiderView = "students" | "tasks";
+export type GuiderView = "students" | "notes";
 export type GuiderNotesState = "active" | "archived";
 export type GuiderNotesType = "single" | "multi";
 

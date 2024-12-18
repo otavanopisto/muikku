@@ -568,17 +568,19 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             dangerouslySetInnerHTML={createHtmlMarkup(description)}
           />
         ) : null}
-        <div className="notes__item-recipients">
-          {recipients.map((recipient) => (
-            <Avatar
-              key={recipient.recipient}
-              id={recipient.recipient}
-              hasImage={false}
-              firstName={recipient.recipientName}
-              size="xsmall"
-            ></Avatar>
-          ))}
-        </div>
+        {!specificRecipient && (
+          <div className="notes__item-recipients">
+            {recipients.map((recipient) => (
+              <Avatar
+                key={recipient.recipient}
+                id={recipient.recipient}
+                hasImage={false}
+                firstName={recipient.recipientName}
+                size="xsmall"
+              ></Avatar>
+            ))}
+          </div>
+        )}
         <div className="notes__item-author">
           {!loggedUserIsCreator ? creatorName : null}
         </div>

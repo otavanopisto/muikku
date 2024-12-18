@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Students from "./application/students";
-import Notes from "./application/tasks";
+import Notes from "./application/notes";
 import Toolbar from "./application/toolbar";
 import { withTranslation, WithTranslation } from "react-i18next";
 import Select from "react-select";
@@ -68,7 +68,7 @@ class GuiderApplication extends React.Component<
     switch (content) {
       case "students":
         return <Students />;
-      case "tasks":
+      case "notes":
         return <Notes />;
       default:
         return null;
@@ -82,13 +82,14 @@ class GuiderApplication extends React.Component<
     const title = this.props.i18n.t("labels.guider");
     const toolbar = <Toolbar />;
 
+
     const options = [
       {
         value: "students",
         label: this.props.i18n.t("labels.all", { ns: "users" }),
       },
       {
-        value: "tasks",
+        value: "notes",
         label: this.props.i18n.t("labels.tasks", { ns: "tasks" }),
       },
     ];

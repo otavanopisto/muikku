@@ -81,6 +81,10 @@ class GuiderToolbar extends React.Component<
     this.autofillLoaders = this.autofillLoaders.bind(this);
   }
 
+    // These are required to make the types work in the context
+    static contextType = GuiderContext;
+    context!: React.ContextType<typeof GuiderContext>;
+
   /**
    * componentDidUpdate
    * @param prevProps prevProps
@@ -234,7 +238,7 @@ class GuiderToolbar extends React.Component<
    */
   render() {
     const view = this.context.view;
-    if (view === "tasks") {
+    if (view === "notes") {
       return (
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>

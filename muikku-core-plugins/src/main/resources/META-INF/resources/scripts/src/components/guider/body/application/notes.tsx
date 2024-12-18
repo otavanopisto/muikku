@@ -54,7 +54,6 @@ const GuiderNotes = (props: GuiderNotesProps) => {
 
   return (
     <div>
-      <h1>Tittel</h1>
       <div>
         {loadingState === "LOADING" && <p>Loadr</p>}
         {loadingState === "ERROR" && <p>Errr</p>}
