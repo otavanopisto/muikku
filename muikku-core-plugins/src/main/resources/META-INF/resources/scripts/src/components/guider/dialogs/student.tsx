@@ -212,11 +212,6 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
       ) : guider.currentStudent && guider.currentStudent.basic ? (
         <HopsApplication studentIdentifier={student.basic.id} />
       ) : null}
-      {/* <HopsPendingEditing
-        isOpen={isHopsEditModeWarningOpen}
-        onConfirm={closeDialog}
-        onCancel={handleHopsEditModeWarningClose}
-      /> */}
     </>
   );
 
