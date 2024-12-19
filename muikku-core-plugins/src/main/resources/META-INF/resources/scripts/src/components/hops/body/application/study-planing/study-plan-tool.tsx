@@ -9,7 +9,7 @@ import {
   updateHopsEditingStudyPlan,
   UpdateHopsEditingStudyPlanTriggerType,
 } from "~/actions/main-function/hops/";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PlannerControls from "./components/planner-controls";
 import PlannerSidebar from "./components/planner-sidebar";
 import PlannerPeriod from "./components/planner-period";
@@ -68,6 +68,83 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [view, setView] = useState<"list" | "table">("list");
 
+  const timelineRef = React.useRef<HTMLDivElement>(null);
+  // Add new state for mouse tracking
+  const [isMouseOverTimeline, setIsMouseOverTimeline] = React.useState(false);
+  const [isDraggingTimeline, setIsDraggingTimeline] = React.useState(false);
+
+  // Add ref for the timeline content
+  const timelineContentRef = React.useRef<HTMLDivElement>(null);
+
+  // Add state for overlay width
+  const [overlayWidth, setOverlayWidth] = useState(0);
+
+  // Update dragStart state to include initial mouse position
+  const dragStart = React.useRef<{
+    mouseX: number;
+    scrollLeft: number;
+  } | null>(null);
+
+  const mousePositionRef = React.useRef({ x: 0 });
+
+  /**
+   * Handles mouse move. Scroll timeline when dragging
+   * @param event event
+   */
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (isDraggingTimeline && timelineRef.current && dragStart.current) {
+        const dx = event.clientX - dragStart.current!.mouseX;
+        const newScrollLeft = dragStart.current!.scrollLeft - dx;
+        timelineRef.current!.scrollLeft = newScrollLeft;
+      }
+    },
+    [isDraggingTimeline]
+  );
+
+  /**
+   * Handles key down. Start dragging when space is pressed
+   * @param event event
+   */
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (isMouseOverTimeline && event.key === " ") {
+      event.preventDefault();
+      setIsDraggingTimeline(true);
+
+      if (timelineRef.current) {
+        dragStart.current = {
+          mouseX: mousePositionRef.current.x,
+          scrollLeft: timelineRef.current.scrollLeft,
+        };
+      }
+
+      // Add mousemove listener when starting to drag
+      document.addEventListener("mousemove", handleMouseMove);
+    }
+  };
+
+  /**
+   * Handles key up. Clear dragging state when space is released
+   * @param event event
+   */
+  const handleKeyUp = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === " ") {
+      setIsDraggingTimeline(false);
+      dragStart.current = null;
+
+      // Remove mousemove listener when stopping drag
+      document.removeEventListener("mousemove", handleMouseMove);
+    }
+  };
+
+  // Clean up event listeners when component unmounts
+  useEffect(
+    () => () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+    },
+    [handleMouseMove]
+  );
+
   // Used planned courses in use
   const usedPlannedCourses = React.useMemo(() => {
     if (!plannedCourses || !editingPlan) return [];
@@ -78,6 +155,16 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
       return editingPlan;
     }
   }, [plannedCourses, editingPlan, hops.hopsMode]);
+
+  const calculatedPeriods =
+    createAndAllocateCoursesToPeriods(usedPlannedCourses);
+
+  // Add effect to update overlay width when content changes
+  useEffect(() => {
+    if (timelineContentRef.current) {
+      setOverlayWidth(timelineContentRef.current.scrollWidth);
+    }
+  }, [calculatedPeriods.length]); // Update when periods change
 
   /**
    * Handles course select
@@ -105,8 +192,13 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     });
   };
 
-  const calculatedPeriods =
-    createAndAllocateCoursesToPeriods(usedPlannedCourses);
+  // Add mouse move tracker
+  const handleMousePositionUpdate = React.useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      mousePositionRef.current.x = e.clientX;
+    },
+    []
+  );
 
   return (
     <DndProvider options={HTML5toTouch}>
@@ -207,14 +299,37 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                     subjects={schoolCourseTableUppersecondary2021.subjectsTable}
                     onCourseSelect={handleCourseSelect}
                   />
-                  <div className="hops-planner__timeline">
-                    {calculatedPeriods.map((period) => (
-                      <PlannerPeriod
-                        key={period.title}
-                        {...period}
-                        onCourseChange={handleCourseChange}
+                  <div
+                    className="hops-planner__timeline-container"
+                    onKeyDown={handleKeyDown}
+                    onKeyUp={handleKeyUp}
+                    onMouseEnter={() => setIsMouseOverTimeline(true)}
+                    onMouseLeave={() => {
+                      setIsMouseOverTimeline(false);
+                      setIsDraggingTimeline(false);
+                    }}
+                    tabIndex={0}
+                    ref={timelineRef}
+                    onMouseMove={handleMousePositionUpdate}
+                  >
+                    {isDraggingTimeline && (
+                      <div
+                        className="hops-planner__timeline-overlay"
+                        style={{ width: `${overlayWidth}px` }}
                       />
-                    ))}
+                    )}
+                    <div
+                      className="hops-planner__timeline"
+                      ref={timelineContentRef}
+                    >
+                      {calculatedPeriods.map((period) => (
+                        <PlannerPeriod
+                          key={period.title}
+                          {...period}
+                          onCourseChange={handleCourseChange}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
