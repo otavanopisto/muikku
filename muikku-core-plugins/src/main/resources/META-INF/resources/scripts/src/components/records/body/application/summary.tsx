@@ -9,7 +9,6 @@ import "~/sass/elements/item-list.scss";
 import "~/sass/elements/application-sub-panel.scss";
 import { RecordsType } from "~/reducers/main-function/records";
 import { SummaryType } from "~/reducers/main-function/records/summary";
-import { HOPSState } from "~/reducers/main-function/hops";
 import { ContactsState } from "~/reducers/base/contacts";
 import { StateType } from "~/reducers";
 import MainChart from "~/components/general/graph/main-chart";
@@ -40,7 +39,6 @@ interface SummaryProps extends WithTranslation {
   contacts: ContactsState;
   summary: SummaryType;
   status: StatusType;
-  hops: HOPSState;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -299,44 +297,25 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
         </div>
       );
 
-      const studyStatus =
-        this.props.hops.value.goalMatriculationExam === "yes" ? (
-          <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-            <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">
-              {t("labels.workspacesDone", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("labels.completedWorkspaces", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">
-              {this.props.summary.data.eligibilityStatus}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("content.completedWorkspaces", {
-                ns: "studies",
-                context: "matriculation",
-              })}
-            </div>
+      const studyStatus = (
+        <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
+          <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">
+            {t("labels.workspacesDone", { ns: "studies" })}
           </div>
-        ) : (
-          <div className="application-sub-panel__card-item application-sub-panel__card-item--summary-evaluated">
-            <div className="application-sub-panel__card-header application-sub-panel__card-header--summary-evaluated">
-              {t("labels.workspacesDone", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("labels.completedWorkspaces", { ns: "studies" })}
-            </div>
-            <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">
-              {this.props.summary.data.coursesDone}
-            </div>
-            <div className="application-sub-panel__card-body">
-              {t("content.completedWorkspaces", {
-                ns: "studies",
-                context: "lastMonth",
-              })}
-            </div>
+          <div className="application-sub-panel__card-body">
+            {t("labels.completedWorkspaces", { ns: "studies" })}
           </div>
-        );
+          <div className="application-sub-panel__card-highlight application-sub-panel__card-highlight--summary-evaluated">
+            {this.props.summary.data.coursesDone}
+          </div>
+          <div className="application-sub-panel__card-body">
+            {t("content.completedWorkspaces", {
+              ns: "studies",
+              context: "lastMonth",
+            })}
+          </div>
+        </div>
+      );
 
       return (
         <section>
@@ -462,7 +441,6 @@ function mapStateToProps(state: StateType) {
     contacts: state.contacts,
     summary: state.summary,
     status: state.status,
-    hops: state.hops,
   };
 }
 

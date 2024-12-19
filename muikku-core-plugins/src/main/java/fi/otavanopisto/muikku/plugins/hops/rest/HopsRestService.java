@@ -50,10 +50,12 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsGoalsWSMessage;
+import fi.otavanopisto.muikku.plugins.hops.ws.HopsHistoryItemWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsLockWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsOptionalSuggestionWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsStudentChoiceWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsSuggestionWSMessage;
+import fi.otavanopisto.muikku.plugins.hops.ws.HopsWithLatestChangeWSMessage;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
@@ -250,6 +252,9 @@ public class HopsRestService {
         if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
           return Response.status(Status.FORBIDDEN).build();
         }
+        else {
+          return Response.noContent().build(); // guardians don't need form data
+        }
       }
     }
     
@@ -293,14 +298,23 @@ public class HopsRestService {
     // Create or update
 
     Hops hops = hopsController.findHopsByStudentIdentifier(studentIdentifier);
+    HopsHistory historyItem;
     if (hops == null) {
-      hops = hopsController.createHops(studentIdentifier, formData, payload.getHistoryDetails());
+      historyItem = hopsController.createHops(studentIdentifier, formData, payload.getHistoryDetails(), payload.getHistoryChanges());
     }
     else {
-      hops = hopsController.updateHops(hops, studentIdentifier, formData, payload.getHistoryDetails());
+      historyItem = hopsController.updateHops(hops, studentIdentifier, formData, payload.getHistoryDetails(), payload.getHistoryChanges());
     }
 
-    return Response.ok(payload.getFormData()).build();
+    HopsWithLatestChange hopsWithChange = new HopsWithLatestChange(formData, toRestModel(historyItem, null));
+    
+    HopsWithLatestChangeWSMessage msg = new HopsWithLatestChangeWSMessage();
+    msg.setFormData(hopsWithChange.getFormData());
+    msg.setLatestChange(hopsWithChange.getLatestChange());
+    msg.setStudentIdentifier(studentIdentifier);
+    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:hops-updated", msg);
+
+    return Response.ok(hopsWithChange).build();
   }
 
   @GET
@@ -489,6 +503,9 @@ public class HopsRestService {
         if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
           return Response.status(Status.FORBIDDEN).build();
         }
+        else {
+          return Response.ok(Collections.<HistoryItem>emptyList()).build(); // guardians don't see hops history
+        }
       }
     }
 
@@ -501,38 +518,7 @@ public class HopsRestService {
 
     List<HistoryItem> historyItems = new ArrayList<>();
     for (HopsHistory historyEntry : history) {
-      HistoryItem historyItem = new HistoryItem();
-      historyItem.setDate(historyEntry.getDate());
-      historyItem.setId(historyEntry.getId());
-      historyItem.setDetails(historyEntry.getDetails());
-
-      if (userMap.containsKey(historyEntry.getModifier())) {
-        historyItem.setModifier(userMap.get(historyEntry.getModifier()).getFirstName() + " " + userMap.get(historyEntry.getModifier()).getLastName());
-        historyItem.setModifierId(userMap.get(historyEntry.getModifier()).getId());
-        historyItem.setModifierHasImage(userMap.get(historyEntry.getModifier()).isHasImage());
-      }
-      else {
-        SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(historyEntry.getModifier());
-        UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
-        UserEntityName userEntityName = userEntityController.getName(sdi, false);
-
-        if (userEntity != null && userEntityName != null) {
-          UserBasicInfo userDetails = new UserBasicInfo();
-
-          historyItem.setModifier(userEntityName.getDisplayName());
-          historyItem.setModifierId(userEntity.getId());
-          historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
-
-          userDetails.setFirstName(userEntityName.getFirstName());
-          userDetails.setLastName(userEntityName.getLastName());
-          userDetails.setId(userEntity.getId());
-          userDetails.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
-
-          userMap.put(historyEntry.getModifier(), userDetails);
-
-        }
-      }
-      historyItems.add(historyItem);
+      historyItems.add(toRestModel(historyEntry, userMap));
     }
 
     historyItems.sort(Comparator.comparing(HistoryItem::getDate).reversed());
@@ -568,7 +554,7 @@ public class HopsRestService {
       return Response.status(Status.FORBIDDEN).entity("You can modify only your own history details").build();
     }
 
-    HopsHistory updatedHistory = hopsController.updateHopsHistoryDetails(history, hopsHistory.getDetails());
+    HopsHistory updatedHistory = hopsController.updateHopsHistoryDetails(history, hopsHistory.getDetails(), hopsHistory.getChanges());
 
     HistoryItem historyItem = new HistoryItem();
     historyItem.setDate(updatedHistory.getDate());
@@ -586,6 +572,18 @@ public class HopsRestService {
     historyItem.setModifierId(userEntity.getId());
     historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
     historyItem.setDetails(updatedHistory.getDetails());
+    historyItem.setChanges(updatedHistory.getChanges());
+
+    HopsHistoryItemWSMessage msg = new HopsHistoryItemWSMessage();
+    msg.setChanges(historyItem.getChanges());
+    msg.setDate(historyItem.getDate());
+    msg.setDetails(historyItem.getDetails());
+    msg.setId(historyItem.getId());
+    msg.setModifier(historyItem.getModifier());
+    msg.setModifierHasImage(historyItem.getModifierHasImage());
+    msg.setModifierId(historyItem.getModifierId());
+    msg.setStudentIdentifier(studentIdentifier);
+    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:history-item-updated", msg);
 
     return Response.ok(historyItem).build();
   }
@@ -1196,4 +1194,45 @@ public class HopsRestService {
     return Response.ok(userSchoolDataController.listStudentAlternativeStudyOptions(studentIdentifier)).build();
 
   }
+  
+  private HistoryItem toRestModel(HopsHistory historyEntry, Map<String, UserBasicInfo> userMap) {
+    HistoryItem historyItem = new HistoryItem();
+    historyItem.setDate(historyEntry.getDate());
+    historyItem.setId(historyEntry.getId());
+    historyItem.setDetails(historyEntry.getDetails());
+    historyItem.setChanges(historyEntry.getChanges());
+
+    if (userMap != null && userMap.containsKey(historyEntry.getModifier())) {
+      UserBasicInfo basicInfo = userMap.get(historyEntry.getModifier());
+      historyItem.setModifier(String.format("%s %s", basicInfo.getFirstName(), basicInfo.getLastName()));
+      historyItem.setModifierId(userMap.get(historyEntry.getModifier()).getId());
+      historyItem.setModifierHasImage(userMap.get(historyEntry.getModifier()).isHasImage());
+    }
+    else {
+      SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(historyEntry.getModifier());
+      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
+      UserEntityName userEntityName = userEntityController.getName(sdi, false);
+
+      if (userEntity != null && userEntityName != null) {
+        UserBasicInfo userDetails = new UserBasicInfo();
+
+        historyItem.setModifier(userEntityName.getDisplayName());
+        historyItem.setModifierId(userEntity.getId());
+        historyItem.setModifierHasImage(userEntityFileController.hasProfilePicture(userEntity));
+
+        userDetails.setFirstName(userEntityName.getFirstName());
+        userDetails.setLastName(userEntityName.getLastName());
+        userDetails.setId(userEntity.getId());
+        userDetails.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
+
+        if (userMap != null) {
+          userMap.put(historyEntry.getModifier(), userDetails);
+        }
+
+      }
+    }
+    return historyItem;
+  }
+  
+  
 }

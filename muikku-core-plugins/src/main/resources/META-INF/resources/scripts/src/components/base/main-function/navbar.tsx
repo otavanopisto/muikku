@@ -1,5 +1,4 @@
 import Navbar from "~/components/general/navbar";
-import Link from "~/components/general/link";
 import LoginButton from "../login-button";
 import ForgotPasswordDialog from "../forgot-password-dialog";
 import Dropdown from "~/components/general/dropdown";
@@ -13,6 +12,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { Dependant } from "~/reducers/main-function/dependants";
 import { Action, Dispatch } from "redux";
+import Link from "~/components/general/link";
 
 /**
  * ItemDataElement
@@ -114,7 +114,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/hops",
         icon: "compass",
         to: true,
-        condition: this.props.status.services.hops.isAvailable,
+        condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW,
       },
       {
         modifier: "hops",

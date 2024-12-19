@@ -13,7 +13,6 @@ import {
 import { SummaryStatusType } from "~/reducers/main-function/records/summary";
 import { AllStudentUsersDataStatusType } from "~/reducers/main-function/records";
 import { LoadingState } from "~/@types/shared";
-import { HOPSStatusType } from "~/reducers/main-function/hops";
 
 export type DEPENDANTS_UPDATE = SpecificActionType<
   "DEPENDANTS_UPDATE",
@@ -77,10 +76,7 @@ const clearDependantState: clearDependantTriggerType =
         type: "CONTACT_UPDATE_GROUP_STATE",
         payload: { groupName: "counselors", state: <LoadingState>"WAITING" },
       });
-      dispatch({
-        type: "UPDATE_HOPS_STATUS",
-        payload: <HOPSStatusType>"WAIT",
-      });
+
       dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_PROP",
         payload: {

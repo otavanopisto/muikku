@@ -4,7 +4,7 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
 import { formFieldsWithTranslation } from "../helpers";
-import { Textarea } from "../../hops-compulsory-education-wizard/text-area";
+import { Textarea } from "../components/textarea";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
