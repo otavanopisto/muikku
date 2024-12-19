@@ -53,31 +53,33 @@ const GuiderNotes = (props: GuiderNotesProps) => {
   };
 
   return (
-    <div>
-      <div>
-        {loadingState === "LOADING" && <p>Loadr</p>}
-        {loadingState === "ERROR" && <p>Errr</p>}
-        {loadingState === "READY" && (
-          <>
-            <h2>Tehtävät</h2>
-            {notes.length === 0 ? (
-              <p>Ei merkintöjä</p>
-            ) : (
-              <NotesItemList
-                usePlace={"guider"}
-                filters={filters}
-                isLoadingList={false}
-                userId={status.userId}
-                notesItems={notes}
-                onArchiveClick={onArchiveClick}
-                onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
-                onPinNotesItemClick={pinNotesItem}
-                onUpdateNotesItemStatus={updateNotesItemStatus}
-              />
-            )}
-          </>
-        )}
-      </div>
+    <div className="notes--full-height">
+      {loadingState === "LOADING" && <div className="loader-empty" />}
+      {loadingState === "ERROR" && <div className="loader-error" />}
+      {loadingState === "READY" && (
+        <>
+          <h2 className="notes__title">{t("labels.tasks", { ns: "tasks" })}</h2>
+          {notes.length === 0 ? (
+            <div className="empty">
+              <span>
+                {t("content.empty", { ns: "tasks", context: "tasks" })}
+              </span>
+            </div>
+          ) : (
+            <NotesItemList
+              usePlace={"guider"}
+              filters={filters}
+              isLoadingList={false}
+              userId={status.userId}
+              notesItems={notes}
+              onArchiveClick={onArchiveClick}
+              onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
+              onPinNotesItemClick={pinNotesItem}
+              onUpdateNotesItemStatus={updateNotesItemStatus}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };

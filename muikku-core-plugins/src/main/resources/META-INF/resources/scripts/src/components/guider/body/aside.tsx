@@ -214,7 +214,7 @@ class NavigationAside extends React.Component<
               isActive={state === "active"}
               onClick={() => this.handleStateFilterChange("active")}
             >
-              Aktiiviset
+              {this.props.t("labels.tasks", { ns: "tasks", context: "active" })}
             </NavigationElement>
             <NavigationElement
               modifiers="aside-navigation-guider-flag"
@@ -222,7 +222,10 @@ class NavigationAside extends React.Component<
               isActive={state === "archived"}
               onClick={() => this.handleStateFilterChange("archived")}
             >
-              Arkistoidut
+              {this.props.t("labels.tasks", {
+                ns: "tasks",
+                context: "archived",
+              })}
             </NavigationElement>
           </NavigationTopic>
           <NavigationTopic name={"Prioriteetti"}>
@@ -237,7 +240,10 @@ class NavigationAside extends React.Component<
                 })
               }
             >
-              Korkea
+              {this.props.t("labels.priority", {
+                ns: "tasks",
+                context: "high",
+              })}
             </NavigationElement>
 
             <NavigationElement
@@ -251,7 +257,10 @@ class NavigationAside extends React.Component<
                 })
               }
             >
-              Normaali
+              {this.props.t("labels.priority", {
+                ns: "tasks",
+                context: "normal",
+              })}
             </NavigationElement>
 
             <NavigationElement
@@ -265,7 +274,10 @@ class NavigationAside extends React.Component<
                 })
               }
             >
-              Matala
+              {this.props.t("labels.priority", {
+                ns: "tasks",
+                context: "low",
+              })}
             </NavigationElement>
           </NavigationTopic>
         </Navigation>
