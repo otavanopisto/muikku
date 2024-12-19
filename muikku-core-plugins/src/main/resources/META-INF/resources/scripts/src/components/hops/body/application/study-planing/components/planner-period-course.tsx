@@ -36,6 +36,7 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
 
   const [specifyIsOpen, setSpecifyIsOpen] = React.useState(false);
   const [deleteWarningIsOpen, setDeleteWarningIsOpen] = React.useState(false);
+  const [pendingDelete, setPendingDelete] = React.useState(false);
 
   const [specifyCourse, setSpecifyCourse] = React.useState<{
     startDate: Date;
@@ -131,8 +132,20 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
    * Handles confirm delete
    */
   const handleConfirmDelete = () => {
-    onCourseChange(course, "delete");
-    setDeleteWarningIsOpen(false);
+    unstable_batchedUpdates(() => {
+      setPendingDelete(true);
+      setDeleteWarningIsOpen(false);
+    });
+  };
+
+  /**
+   * Handles actual delete after animation
+   */
+  const handleAnimationComplete = () => {
+    if (pendingDelete && !deleteWarningIsOpen) {
+      onCourseChange(course, "delete");
+      setPendingDelete(false);
+    }
   };
 
   // Calculate the end date of the course from the start date and duration
@@ -262,6 +275,7 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
           deleteWarningIsOpen ? "open" : "close"
         }`}
         contentClassName="hops-planner__course-item-delete-warning"
+        onTransitionEnd={handleAnimationComplete}
       >
         <h4>Haluatko varmasti poistaa kurssin suunnitelmasta?</h4>
         <div className="button-group">

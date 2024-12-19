@@ -9,7 +9,7 @@ import {
 import Droppable from "./react-dnd/droppable";
 import { PlannerPeriodProps } from "./planner-period";
 import PlannerPeriodCourseCard from "./planner-period-course";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
 /**
  * Checks if the course is a planned course
@@ -164,40 +164,55 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
       </Button>
 
       <AnimateHeight height={isExpanded ? "auto" : 0}>
-        <div className="hops-planner__month-content">
-          {courses.length > 0 ? (
-            <Droppable<
-              PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+        <Droppable<
+          PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+        >
+          accept={["planned-course-card", "new-course-card"]}
+          onDrop={handleDrop}
+          onHover={handleDropHover}
+          className="hops-planner__courses"
+        >
+          <LayoutGroup id={`month-${monthIndex}-${year}`}>
+            <motion.div
+              className="hops-planner__month-content"
+              layout
+              transition={{
+                layout: { duration: 0.3, ease: "easeInOut" },
+              }}
             >
-              accept={["planned-course-card", "new-course-card"]}
-              onDrop={handleDrop}
-              onHover={handleDropHover}
-              className="hops-planner__courses"
-            >
-              {courses.map((course) => (
-                <PlannerPeriodCourseCard
-                  key={course.id}
-                  course={course}
-                  onCourseChange={onCourseChange}
-                />
-              ))}
-            </Droppable>
-          ) : (
-            <Droppable<
-              PlannedCourseWithIdentifier | (Course & { subjectCode: string })
-            >
-              accept={["planned-course-card", "new-course-card"]}
-              onDrop={handleDrop}
-              onHover={handleDropHover}
-              className="hops-planner__empty-month"
-            >
-              <div className="hops-planner__dropzone">
-                <i className="muikku-icon-drag-handle" />
-                <span>Raahaa kursseja tähän</span>
-              </div>
-            </Droppable>
-          )}
-        </div>
+              <AnimatePresence initial={false}>
+                {courses.length > 0
+                  ? courses.map((course) => (
+                      <motion.div
+                        key={course.id}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.4 }}
+                        layout
+                      >
+                        <PlannerPeriodCourseCard
+                          course={course}
+                          onCourseChange={onCourseChange}
+                        />
+                      </motion.div>
+                    ))
+                  : null}
+
+                <motion.div
+                  className="hops-planner__empty-month"
+                  layout
+                  key={`empty-month-${monthIndex}-${year}`}
+                >
+                  <div className="hops-planner__dropzone">
+                    <i className="muikku-icon-drag-handle" />
+                    <span>Raahaa kursseja tähän</span>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+          </LayoutGroup>
+        </Droppable>
       </AnimateHeight>
     </div>
   );

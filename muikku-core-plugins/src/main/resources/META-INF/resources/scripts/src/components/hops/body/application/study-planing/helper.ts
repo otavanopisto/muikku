@@ -9,11 +9,13 @@ const createPeriods = (
   plannedCourses: PlannedCourseWithIdentifier[]
 ): PlannedPeriod[] => {
   // Get all unique years from planned courses
-  const years = [
+  /* const years = [
     ...new Set(
       plannedCourses.map((course) => new Date(course.startDate).getFullYear())
     ),
-  ];
+  ]; */
+
+  const years = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
 
   const periods: PlannedPeriod[] = [];
 
@@ -78,9 +80,11 @@ const createAndAllocateCoursesToPeriods = (
   });
 
   // Remove empty periods and sort by date
-  return periods
+  /* return periods
     .filter((period) => period.plannedCourses.length > 0)
-    .sort((a, b) => a.year - b.year);
+    .sort((a, b) => a.year - b.year); */
+
+  return periods.sort((a, b) => a.year - b.year);
 };
 
 /**

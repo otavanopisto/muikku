@@ -870,12 +870,14 @@
 }
 
 .hops-planner__sidebar {
-  width: 300px;
   border-right: 1px solid $color-default-separator-border;
   padding-right: 1rem;
   display: flex;
   flex-direction: column;
   height: 100%;
+  flex-basis: 300px;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .hops-planner__sidebar-header {
@@ -917,8 +919,6 @@
 .planner-sidebar-course {
   padding: 0.25rem;
   margin-bottom: 0.5rem;
-  display: flex;
-  flex-direction: column;
   gap: 0.25rem;
   border-left: 3px solid #a09f9f;
   cursor: pointer;
@@ -968,7 +968,6 @@
 
   &--preview {
     background: white;
-    transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(0,0,0,0.1);
     cursor: move;
   }
@@ -977,9 +976,11 @@
 .hops-planner__timeline {
   display: flex;
   gap: 1rem;
-  overflow-x: auto;
-  overflow-y: hidden;
   padding-bottom: 0.5rem;
+  flex-basis: 100%;
+  flex-shrink: 1;
+  flex-grow: 1;
+  position: relative;
 
   &::-webkit-scrollbar {
     height: 8px;
@@ -1341,4 +1342,23 @@
       }
     }
   }
+}
+
+.hops-planner__timeline-container {
+  position: relative;
+  overflow-x: auto;
+  flex-basis: 100%;
+  flex-shrink: 1;
+  flex-grow: 1;
+  display: flex;
+}
+
+.hops-planner__timeline-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  cursor: grab;
+  background: transparent;
 }

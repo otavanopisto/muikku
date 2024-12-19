@@ -2526,6 +2526,13 @@
   white-space: wrap;
   text-transform: none;
   padding-left: 0;
+  transition: color 0.1s ease-in-out;
+
+  &:hover {
+    color: #F1489F;
+    text-decoration: underline;
+    transition: color 0.1s ease-in-out;
+  }
 }
 
 .button--planner-month-toggle {
@@ -2536,5 +2543,12 @@
   padding-left: 0;
   background: transparent;
   font-size: 1rem;
+  transition: color 0.1s ease-in-out;
+
+  &:hover {
+    color: #F1489F;
+    text-decoration: underline;
+    transition: color 0.1s ease-in-out;
+  }
 }
 
