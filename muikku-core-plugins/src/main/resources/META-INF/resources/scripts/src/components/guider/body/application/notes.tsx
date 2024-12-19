@@ -8,6 +8,7 @@ import { NotesLocation, NotesItemFilters } from "~/@types/notes";
 import { UpdateNoteRequest } from "~/generated/client";
 import { GuiderContext } from "../../context";
 import { UseFilterNotes } from "~/components/guider/hooks/useFilterNotes";
+import { on } from "events";
 
 /**
  * GuiderStudentsProps
@@ -40,22 +41,22 @@ const GuiderNotes = (props: GuiderNotesProps) => {
 
   React.useEffect(() => {}, [notes]);
 
-  const pinNotesItem = () => {};
   const updateNotesItemStatus = () => {};
   const onArchiveClick = () => {};
   const onReturnArchivedClick = () => {};
 
   const onNotesItemSaveUpdateClick = (
     noteId: number,
-    request: UpdateNoteRequest
+    request: UpdateNoteRequest,
+    onSucces?: () => void
   ) => {
-    dispatch(updateNote(noteId, request));
+    dispatch(updateNote(noteId, request, onSucces));
   };
 
   return (
     <div>
       <div>
-        {loadingState === "LOADING" && <p>Loadr</p>}
+        {loadingState === "LOADING" && <div className="loader-empty"></div>}
         {loadingState === "ERROR" && <p>Errr</p>}
         {loadingState === "READY" && (
           <>
@@ -71,7 +72,6 @@ const GuiderNotes = (props: GuiderNotesProps) => {
                 notesItems={notes}
                 onArchiveClick={onArchiveClick}
                 onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
-                onPinNotesItemClick={pinNotesItem}
                 onUpdateNotesItemStatus={updateNotesItemStatus}
               />
             )}

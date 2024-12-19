@@ -41,6 +41,8 @@ export type UPDATE_NOTES_STATUS = SpecificActionType<
   LoadingState
 >;
 export type LOAD_NOTES = SpecificActionType<"LOAD_NOTES", Note[]>;
+export type UPDATE_NOTE = SpecificActionType<"UPDATE_NOTE", Note>;
+export type REMOVE_NOTE = SpecificActionType<"REMOVE_NOTE", number>;
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -611,6 +613,8 @@ const updateNote: UpdateNoteTriggerType = function updateNote(
         noteId,
         updateNoteRequest,
       });
+
+      dispatch({ type: "UPDATE_NOTE", payload: updatedNote });
       onSuccess && onSuccess();
       dispatch(
         notificationActions.displayNotification(

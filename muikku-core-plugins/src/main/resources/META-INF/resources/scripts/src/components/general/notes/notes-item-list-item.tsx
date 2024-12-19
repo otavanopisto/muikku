@@ -583,7 +583,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         <div className="notes__item-author">
           {!loggedUserIsCreator ? creatorName : null}
         </div>
-        <div className="notes__item-footer">{renderStatus()}</div>
+        <div className="notes__item-footer">
+          {!multiUserNote && renderStatus()}
+        </div>
       </div>
     );
   }
