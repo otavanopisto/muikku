@@ -122,7 +122,6 @@ export interface GuiderStudentUserProfileType {
     showCredits: boolean;
   };
   hopsPhase?: string;
-  hopsAvailable: boolean;
   pedagogyFormAvailable: PedagogyFormAccess;
   studyProgress: GuiderStudentStudyProgress;
 }
@@ -246,7 +245,6 @@ const initialGuiderState: GuiderState = {
     pastWorkspaces: [],
     activityLogs: [],
     purchases: [],
-    hopsAvailable: false,
     pedagogyFormAvailable: {
       accessible: false,
       courseTeacher: false,
