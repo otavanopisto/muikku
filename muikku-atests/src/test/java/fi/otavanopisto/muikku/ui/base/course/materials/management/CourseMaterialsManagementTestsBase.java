@@ -358,7 +358,9 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         
         waitAndClickAndConfirm(".material-page--theory .material-admin-panel--page-functions .icon-pencil", ".material-editor--visible .form-element__input--material-editor-title", 5, 3000);
         waitAndClick(".button-pill--material-editor-delete-page");
-        waitAndClick(".button--standard-ok");
+        sleep(2500);
+        waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".button--standard-ok", 3, 1000);
+//        waitAndClick(".button--standard-ok");
         sleep(2500);
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent("#editingMasterSwitch");
