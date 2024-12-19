@@ -328,7 +328,7 @@ public class NotesRESTService extends PluginRESTService {
             noteReceiverController.createNoteRecipient(false, userRecipient.getId(), updatedNote, null, null);
           }
           else {
-//            noteReceiverController.deleteRecipient(receiver);
+            noteReceiverController.deleteRecipient(receiver);
           }
         }
 
@@ -358,7 +358,7 @@ public class NotesRESTService extends PluginRESTService {
                     userGroupUserEntity.getUserGroupEntity().getId(), null);
               }
               else {
-//                noteReceiverController.deleteRecipient(receiver);
+                noteReceiverController.deleteRecipient(receiver);
               }
             }
           }
@@ -385,7 +385,7 @@ public class NotesRESTService extends PluginRESTService {
                     workspaceEntity.getId());
               }
               else {
-//                noteReceiverController.deleteRecipient(receiver);
+                noteReceiverController.deleteRecipient(receiver);
               }
             }
           }
@@ -472,7 +472,10 @@ public class NotesRESTService extends PluginRESTService {
 
     UserEntity userEntity = userEntityController.findUserEntityById(note.getCreator());
     String creatorName = userEntityController.getName(userEntity, true).getDisplayNameWithLine();
-
+    Boolean multiUserNote = false;
+    if (note.getMultiUserNote() != null) {
+      multiUserNote = note.getMultiUserNote();
+    }
     NoteRestModel restModel = new NoteRestModel();
     restModel.setId(note.getId());
     restModel.setTitle(note.getTitle());
@@ -485,7 +488,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setStartDate(note.getStartDate());
     restModel.setDueDate(note.getDueDate());
     restModel.setIsArchived(note.getArchived());
-    restModel.setMultiUserNote(note.getMultiUserNote());
+    restModel.setMultiUserNote(multiUserNote);
 
     return restModel;
   }

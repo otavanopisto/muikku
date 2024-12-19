@@ -311,12 +311,21 @@ export const guider: Reducer<GuiderState> = (
       return { ...state, notes };
     }
 
-    // case "ADD_NOTE": {
-    //   const notes = { ...state.notes };
+    case "UPDATE_NOTE": {
+      const updatedNotes = state.notes.list.map((note) =>
+        note.id === action.payload.id ? { ...note, ...action.payload } : note
+      );
+      return { ...state, notes: {...state.notes, list: updatedNotes} }; ;
+    }
 
-    //   notes.notes = action.payload;
-    //   return { ...state, notes };
-    // }
+    case "REMOVE_NOTE": {
+      const notes = { ...state.notes };
+      notes.list.filter((note) => note.id !== action.payload);
+      return {
+        ...state,
+        notes,
+      };
+    }
 
     case "ADD_TO_GUIDER_SELECTED_STUDENTS": {
       const student: Student = action.payload;
