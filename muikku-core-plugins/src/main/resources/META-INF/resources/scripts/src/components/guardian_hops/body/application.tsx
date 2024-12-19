@@ -21,8 +21,8 @@ import { OptionDefault } from "~/components/general/react-select/types";
 import {
   loadMatriculationData,
   LoadMatriculationDataTriggerType,
-  resetMatriculationData,
-  ResetMatriculationDataTriggerType,
+  resetHopsData,
+  ResetHopsDataTriggerType,
 } from "~/actions/main-function/hops/";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
@@ -38,24 +38,24 @@ const UPPERSECONDARY_PROGRAMMES = [
 ];
 
 /**
- * StudiesTab
+ * GuardianHopsTab. Restricted to only MATRICULATION tab and upcoming STUDYPLAN tab.
  */
-type HopsTab = "MATRICULATION";
+type GuardianHopsTab = "MATRICULATION";
 
 /**
- * HopsApplicationProps
+ * GuardianHopsApplicationProps
  */
 interface GuardianHopsApplicationProps extends WithTranslation {
   dependants: DependantsState;
   loadMatriculationData: LoadMatriculationDataTriggerType;
-  resetMatriculationData: ResetMatriculationDataTriggerType;
+  resetHopsData: ResetHopsDataTriggerType;
 }
 
 /**
  * GuardianHopsApplicationState
  */
 interface GuardianHopsApplicationState {
-  activeTab: HopsTab;
+  activeTab: GuardianHopsTab;
   selectedDependantIdentifier: string;
 }
 
@@ -147,9 +147,10 @@ class GuardianHopsApplication extends React.Component<
     switch (tab.id) {
       case "MATRICULATION":
         return UPPERSECONDARY_PROGRAMMES.includes(selectUserStudyProgramme);
-    }
 
-    return false;
+      default:
+        return false;
+    }
   };
 
   /**
@@ -157,7 +158,7 @@ class GuardianHopsApplication extends React.Component<
    * @param id id
    * @param hash hash
    */
-  handleTabChange = (id: "MATRICULATION", hash?: string | Tab) => {
+  handleTabChange = (id: GuardianHopsTab, hash?: string | Tab) => {
     if (hash) {
       const user = window.location.hash.replace("#", "").split("/")[0];
       if (typeof hash === "string" || hash instanceof String) {
@@ -173,13 +174,13 @@ class GuardianHopsApplication extends React.Component<
   };
 
   /**
-   * handleSelectChange
+   * Handles change of dependant. Resets data and loads new data for HOPS form and history by default.
    * @param option selectedOptions
    */
   handleDependantSelectChange = async (option: OptionDefault<string>) => {
     window.location.hash = option.value;
 
-    this.props.resetMatriculationData();
+    this.props.resetHopsData();
     this.props.loadMatriculationData({ userIdentifier: option.value });
 
     this.setState({
@@ -281,7 +282,10 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { loadMatriculationData, resetMatriculationData },
+    {
+      loadMatriculationData,
+      resetHopsData,
+    },
     dispatch
   );
 }

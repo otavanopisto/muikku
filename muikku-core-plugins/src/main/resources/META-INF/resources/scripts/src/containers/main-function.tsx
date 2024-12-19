@@ -75,14 +75,12 @@ import GuardianBody from "../components/guardian/body";
 import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
-  setLocationToHopsInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
   setLocationToPedagogyFormInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
-import { updateHops } from "~/actions/main-function/hops";
 import { updateStatistics } from "~/actions/main-function/records/statistics";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
@@ -119,6 +117,7 @@ import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
 import {
+  initializeHops,
   loadMatriculationData,
   loadStudyPlanData,
 } from "~/actions/main-function/hops/";
@@ -238,9 +237,7 @@ export default class MainFunction extends React.Component<
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [identifier, tab] = hashArray;
 
-      if (identifier) {
-        this.loadHopsData(tab, identifier);
-      }
+      this.loadHopsData(tab, identifier, true);
     } else if (window.location.pathname.includes("/guardian")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
       const [identifier, tab] = hashArray;
@@ -282,6 +279,15 @@ export default class MainFunction extends React.Component<
           decodeURIComponent(window.location.hash.split("/")[1]).split('"')[0]
         ) as Action
       );
+
+      // Initialize Hops
+      this.props.store.dispatch(
+        initializeHops({
+          userIdentifier: decodeURIComponent(
+            window.location.hash.split("/")[1]
+          ).split('"')[0],
+        }) as Action
+      );
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -303,6 +309,11 @@ export default class MainFunction extends React.Component<
     this.props.store.dispatch(loadStudents(filters) as Action);
     if (originalData.c) {
       this.props.store.dispatch(loadStudent(originalData.c) as Action);
+      this.props.store.dispatch(
+        initializeHops({
+          userIdentifier: originalData.c,
+        }) as Action
+      );
     }
   }
 
@@ -327,11 +338,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords(userId) as Action
       );
-    } else if (givenLocation === "hops") {
-      this.props.store.dispatch(
-        setLocationToHopsInTranscriptOfRecords() as Action
-      );
-      this.props.store.dispatch(updateHops(null, userId) as Action);
     } else if (givenLocation === "pedagogy-form") {
       this.props.store.dispatch(
         setLocationToPedagogyFormInTranscriptOfRecords() as Action
@@ -347,19 +353,23 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(updateSummary(userId) as Action);
     }
-    // Hops needs to be loaded for correct tabs to be seen
-    this.props.store.dispatch(updateHops(null, userId) as Action);
   }
 
   /**
    * loadHopsData
    * @param tab tab
    * @param userId userId
+   * @param guardianHops guardianHops
    */
-  loadHopsData(tab: string, userId?: string) {
+  loadHopsData(tab: string, userId?: string, guardianHops: boolean = false) {
     const givenLocation = tab;
 
-    if (givenLocation === "matriculation" || !givenLocation) {
+    // Load HOPS locked status and HOPS form history always
+    this.props.store.dispatch(
+      initializeHops({ userIdentifier: userId }) as Action
+    );
+
+    if (givenLocation === "matriculation" || (guardianHops && !givenLocation)) {
       this.props.store.dispatch(
         loadMatriculationData({ userIdentifier: userId }) as Action
       );
@@ -1045,12 +1055,8 @@ export default class MainFunction extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      // If there's an identifier, we can load records data, otherwise it's done in the hash change
-      if (identifier) {
-        this.props.store.dispatch(
-          loadMatriculationData({ userIdentifier: identifier }) as Action
-        );
-      }
+      // If there's an identifier, we can load hops data, otherwise it's done in the hash change
+      this.loadHopsData(tab, identifier, true);
     }
     return <GuardianHopsBody />;
   }
@@ -1152,16 +1158,16 @@ export default class MainFunction extends React.Component<
    */
   render() {
     return (
-      <BrowserRouter>
-        <div id="root">
-          <WindowContextProvider>
-            <ChatWebsocketContextProvider websocket={this.props.websocket}>
-              <Chat />
-            </ChatWebsocketContextProvider>
-            <InfoPopperProvider>
-              <Notifications></Notifications>
-              <DisconnectedWarningDialog />
-              <EasyToUseFunctions />
+      <div id="root">
+        <WindowContextProvider>
+          <ChatWebsocketContextProvider websocket={this.props.websocket}>
+            <Chat />
+          </ChatWebsocketContextProvider>
+          <InfoPopperProvider>
+            <Notifications></Notifications>
+            <DisconnectedWarningDialog />
+            <EasyToUseFunctions />
+            <BrowserRouter>
               <Route exact path="/" render={this.renderIndexBody} />
               <Route
                 path="/organization"
@@ -1193,10 +1199,10 @@ export default class MainFunction extends React.Component<
               <Route path="/evaluation" render={this.renderEvaluationBody} />
               <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
               <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
-            </InfoPopperProvider>
-          </WindowContextProvider>
-        </div>
-      </BrowserRouter>
+            </BrowserRouter>
+          </InfoPopperProvider>
+        </WindowContextProvider>
+      </div>
     );
   }
 }

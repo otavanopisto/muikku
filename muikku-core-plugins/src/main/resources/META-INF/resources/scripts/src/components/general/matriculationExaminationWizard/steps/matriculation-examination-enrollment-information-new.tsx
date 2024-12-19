@@ -1319,7 +1319,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
           />
           <div className="matriculation-container__row">
             <Button
-              buttonModifiers={"add-matriculation-row"}
+              buttonModifiers={"add-extra-row"}
               onClick={handleNewFinishedAttendanceClick}
               icon="plus"
             >
@@ -1359,7 +1359,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         />
         <div className="matriculation-container__row">
           <Button
-            buttonModifiers={"add-matriculation-row"}
+            buttonModifiers={"add-extra-row"}
             onClick={handleNewEnrolledAttendanceClick}
             icon="plus"
           >
@@ -1432,7 +1432,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         />
         <div className="matriculation-container__row">
           <Button
-            buttonModifiers={"add-matriculation-row"}
+            buttonModifiers={"add-extra-row"}
             onClick={handleNewPlannedAttendanceClick}
             icon="plus"
           >

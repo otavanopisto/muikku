@@ -76,9 +76,7 @@ const MatriculationEnrollmentLink = (
         >
           <Button
             buttonModifiers={["info"]}
-            disabled={
-              useCase === "GUARDIAN" || useCase === "GUIDANCE_COUNSELOR"
-            }
+            disabled={useCase === "GUARDIAN" || useCase === "GUIDER"}
           >
             {t("actions.signUp", {
               ns: "hops_new",
@@ -135,7 +133,7 @@ const MatriculationSubmittedEnrollment = (
       );
     }
 
-    if (useCase === "GUARDIAN" || useCase === "GUIDANCE_COUNSELOR") {
+    if (useCase === "GUARDIAN" || useCase === "GUIDER") {
       // Guardians can only view the summary
       switch (exam.studentStatus) {
         case MatriculationExamStudentStatus.Pending:

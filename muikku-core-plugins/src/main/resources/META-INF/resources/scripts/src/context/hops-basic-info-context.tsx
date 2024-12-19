@@ -1,6 +1,6 @@
 import React, { createContext, useContext, ReactNode } from "react";
 
-export type UseCase = "STUDENT" | "GUARDIAN" | "GUIDANCE_COUNSELOR";
+export type UseCase = "STUDENT" | "GUARDIAN" | "GUIDER";
 
 /**
  * Interface representing the basic information of a student
