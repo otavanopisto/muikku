@@ -26,7 +26,7 @@ interface WorkspaceDescriptionDialogState {
 }
 
 /**
- * WorkspaceSignupDialog
+ * WorkspaceDescriptionDialog
  */
 class WorkspaceDescriptionDialog extends React.Component<
   WorkspaceDescriptionDialogProps,
