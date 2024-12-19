@@ -267,6 +267,7 @@ const initialGuiderState: GuiderState = {
       supervisorOptionalSuggestions: [],
       studentChoices: [],
       options: [],
+      needSupplementationList: [],
     },
   },
 };

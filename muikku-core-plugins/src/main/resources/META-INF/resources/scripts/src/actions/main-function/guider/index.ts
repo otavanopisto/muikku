@@ -664,6 +664,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     const pedagogyApi = MApi.getPedagogyApi();
     const usergroupApi = MApi.getUsergroupApi();
     const activitylogsApi = MApi.getActivitylogsApi();
+    const hopsApi = MApi.getHopsApi();
 
     try {
       const currentUserSchoolDataIdentifier =
