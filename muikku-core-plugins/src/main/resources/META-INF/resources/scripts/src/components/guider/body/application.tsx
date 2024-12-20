@@ -82,7 +82,6 @@ class GuiderApplication extends React.Component<
     const title = this.props.i18n.t("labels.guider");
     const toolbar = <Toolbar />;
 
-
     const options = [
       {
         value: "students",

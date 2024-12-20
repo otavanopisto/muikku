@@ -81,9 +81,9 @@ class GuiderToolbar extends React.Component<
     this.autofillLoaders = this.autofillLoaders.bind(this);
   }
 
-    // These are required to make the types work in the context
-    static contextType = GuiderContext;
-    context!: React.ContextType<typeof GuiderContext>;
+  // These are required to make the types work in the context
+  static contextType = GuiderContext;
+  context!: React.ContextType<typeof GuiderContext>;
 
   /**
    * componentDidUpdate
@@ -244,7 +244,7 @@ class GuiderToolbar extends React.Component<
           <ApplicationPanelToolbarActionsMain>
             <NotesItemNew onNotesItemSaveClick={this.handleNoteCreation}>
               <ButtonPill
-                buttonModifiers={["add-note", "within-content"]}
+                buttonModifiers={["add-note"]}
                 icon="plus"
                 aria-label={this.props.i18n.t("wcag.createNewNote", {
                   ns: "tasks",
