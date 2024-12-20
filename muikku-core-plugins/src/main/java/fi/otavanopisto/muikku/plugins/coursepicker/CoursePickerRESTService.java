@@ -50,6 +50,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
+import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
@@ -65,6 +66,8 @@ import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchProvider.Sort;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -78,6 +81,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityIdFinder;
@@ -155,6 +159,12 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @Inject
   private OrganizationEntityController organizationEntityController;
+  
+  @Inject
+  private WebSocketMessenger webSocketMessenger;
+  
+  @Inject
+  private UserGroupGuidanceController userGroupGuidanceController;
   
   @Inject
   @Any
@@ -665,11 +675,53 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (!teacherEmails.isEmpty()) {
       mailer.sendMail(MailType.HTML, teacherEmails, caption, content);
     }
+    List<StudyActivityItemRestModel> restItems = new ArrayList<StudyActivityItemRestModel>();
     
+    SearchProvider searchProvider = getProvider("elastic-search");
+    if (searchProvider != null) {
+      SearchResult searchResult =  searchProvider.findWorkspace(workspaceIdentifier);
+      
+      if (searchResult.getTotalHitCount() > 0) {
+        Map<String, Object> match = searchResult.getResults().get(0);
+
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> subjectList = (List<Map<String, Object>>) match.get("subjects");
+        for (Map<String, Object> s : subjectList) {
+          StudyActivityItemRestModel item = new StudyActivityItemRestModel();
+
+          item.setCourseName(workspaceName);
+          item.setCourseId(workspaceEntity.getId());
+          item.setCourseNumber((Integer) s.get("courseNumber"));
+          item.setSubject((String) s.get("subjectCode"));
+          item.setStatus(StudyActivityItemStatus.ONGOING);
+          item.setSubjectName((String) s.get("subjectName"));
+          item.setDate(new Date());
+          
+          restItems.add(item);
+        }
+        
+        // Websocket recipients 
+        
+        List<UserEntity> recipients = userGroupGuidanceController.getGuidanceCounselorUserEntities(userIdentifier, false);
+
+        recipients.add(userSchoolDataIdentifier.getUserEntity());
+        
+        webSocketMessenger.sendMessage("hops:workspace-signup", restItems, recipients);
+      }
+    }
     return Response.noContent().build();
   }
   
-  
+  private SearchProvider getProvider(String name) {
+    Iterator<SearchProvider> i = searchProviders.iterator();
+    while (i.hasNext()) {
+      SearchProvider provider = i.next();
+      if (name.equals(provider.getName())) {
+        return provider;
+      }
+    }
+    return null;
+  }
 
   private boolean getIsAlreadyOnWorkspace(WorkspaceEntity workspaceEntity) {
     return sessionController.isLoggedIn() ? workspaceUserEntityController.isWorkspaceMember(sessionController.getLoggedUser(), workspaceEntity) : false;

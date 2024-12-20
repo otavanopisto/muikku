@@ -80,10 +80,12 @@
   align-items: center;
   border: 3px solid transparent;
   border-radius: 100%;
+  color: $color-default-contrast;
   cursor: pointer;
   display: flex;
   height: 35px;
   justify-content: center;
+  position: relative;
   width: 35px;
 }
 
@@ -103,36 +105,95 @@
   background-color: $color-optional;
 }
 
-.list__indicator--OPTIONAL-SELECTED {
-  border-color: $color-optional-selected;
-}
-
 .list__indicator--COMPLETED {
-  background-color: $color-success;
-  color: $color-default;
+  &::after {
+    color: $color-great-success;
+    content: "\e62b";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &::before {
+    color: $color-completed-border;
+    content: "\e62c";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 2;
+  }
 }
 
-.list__indicator--INPROGRESS {
-  background: $color-info;
-  color: $color-default;
+.list__indicator--COMPLETED.list__indicator--PASSED-GRADE {
+  background: $color-completed;
+  border-color: $color-completed-border;
+  border-radius: 50% 50% 50% 3px;
+}
+
+.list__indicator--COMPLETED.list__indicator--FAILED-GRADE {
+  background: $color-passed-failed;
+  border-color: $color-passed-failed-border;
+  border-radius: 50% 50% 50% 3px;
 }
 
 .list__indicator--APPROVAL {
-  background: $color-success;
-  border-color: $color-approval;
-  color: $color-default;
+  &::after {
+    color: $color-great-success;
+    content: "\e62b";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &::before {
+    color: $color-completed-border;
+    content: "\e62c";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 2;
+  }
 }
 
-.list__indicator--SUGGESTED {
-  background: $color-suggested;
-  color: $color-default;
+.list__indicator--APPROVAL.list__indicator--PASSED-GRADE {
+  background: $color-completed;
+}
+
+.list__indicator--APPROVAL.list__indicator--FAILED-GRADE {
+  background: $color-passed-failed;
+}
+
+.list__indicator--ABORTED {
+  background: $color-passed-aborted;
+  border-color: $color-passed-aborted-border;
+}
+
+.list__indicator--INPROGRESS {
+  background: $color-default;
+  border-color: $color-info;
+  border-radius: 50% 3px 50% 50%;
 }
 
 .list__indicator--NEXT {
-  background: $color-next;
-  color: $color-default;
-}
-
-.list__indicator--SELECTED-OPTIONAL {
-  background-color: $color-optional-selected;
+  background: lighten($color-next, 50%);
+  border-color: $color-next;
+  border-radius: 50% 3px;
 }

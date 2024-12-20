@@ -161,6 +161,7 @@ const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
               nameExtension: course.nameExtension,
               urlName: course.urlName,
             }}
+            redirectOnSuccess
           >
             <Button
               aria-label={course.name}
