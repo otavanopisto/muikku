@@ -509,7 +509,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               />
             )}
 
-            {loggedUserIsCreator && onReturnArchivedClick && (
+            {loggedUserIsCreator && archived && onReturnArchivedClick && (
               <IconButton
                 onClick={handleNotesItemReturnArchiveClick}
                 icon="undo"

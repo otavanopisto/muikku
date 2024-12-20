@@ -484,6 +484,13 @@ export interface UpdateNoteTriggerType {
 }
 
 /**
+ * CreateNoteTriggerType
+ */
+export interface ArchiveNoteTriggerType {
+  (noteId: number, success?: () => void): AnyActionType;
+}
+
+/**
  * toggleAllStudents thunk action creator
  * @returns a thunk function for toggling all students selection
  */
@@ -623,9 +630,54 @@ const updateNote: UpdateNoteTriggerType = function updateNote(
         )
       );
     } catch (err) {
-      notificationActions.displayNotification(
-        i18n.t("notifications.updateError", { error: err }),
-        "error"
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.updateError", { error: err }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * Archives one notesItem
+ *
+ * @param notesItemId notesItemId
+ * @param onSuccess onSuccess
+ */
+const toggleNoteArchive: ArchiveNoteTriggerType = function toggleNoteArchive(
+  noteId: number,
+  onSuccess?: () => void
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    try {
+      const notesApi = MApi.getNotesApi();
+
+      // Updating and getting updated notesItem
+      await notesApi.toggleNoteArchived({
+        noteId: noteId,
+      });
+
+      dispatch({ type: "REMOVE_NOTE", payload: noteId });
+      onSuccess && onSuccess();
+
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.archiveSuccess", { ns: "tasks" }),
+
+          "success"
+        )
+      );
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.archiveError", { ns: "tasks", error: err }),
+          "error"
+        )
       );
     }
   };
@@ -2691,6 +2743,7 @@ export {
   loadNotes,
   createNote,
   updateNote,
+  toggleNoteArchive,
   loadStudents,
   loadMoreStudents,
   loadStudent,

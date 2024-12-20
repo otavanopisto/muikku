@@ -19,8 +19,8 @@ interface NotesItemListContentProps {
   notesRecipientId?: number;
   isLoadingList: boolean;
   filters: NotesItemFilters;
-  onArchiveClick?: (notesItemd: number) => void;
-  onReturnArchivedClick?: (notesItemId: number) => void;
+  onArchiveClick?: (noteId: number) => void;
+  onReturnArchivedClick?: (noteId: number) => void;
   onPinNotesItemClick?: (
     noteId: number,
     newReceiverStatus: UpdateNoteReceiverRequest,

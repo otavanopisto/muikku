@@ -1,14 +1,18 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { loadNotes, updateNote } from "~/actions/main-function/guider";
+import {
+  loadNotes,
+  updateNote,
+  toggleNoteArchive,
+} from "~/actions/main-function/guider";
 import { StateType } from "~/reducers";
 import NotesItemList from "~/components/general/notes/notes-item-list";
 import { NotesLocation, NotesItemFilters } from "~/@types/notes";
 import { UpdateNoteRequest } from "~/generated/client";
 import { GuiderContext } from "../../context";
 import { UseFilterNotes } from "~/components/guider/hooks/useFilterNotes";
-import { on } from "events";
+import { number } from "@amcharts/amcharts4/core";
 
 /**
  * GuiderStudentsProps
@@ -42,8 +46,14 @@ const GuiderNotes = (props: GuiderNotesProps) => {
   React.useEffect(() => {}, [notes]);
 
   const updateNotesItemStatus = () => {};
-  const onArchiveClick = () => {};
-  const onReturnArchivedClick = () => {};
+
+  /**
+   * onArchiveClick function
+   * @param noteId noteId
+   */
+  const onArchiveClick = (noteId: number) => {
+    dispatch(toggleNoteArchive(noteId));
+  };
 
   const onNotesItemSaveUpdateClick = (
     noteId: number,
@@ -71,6 +81,7 @@ const GuiderNotes = (props: GuiderNotesProps) => {
                 userId={status.userId}
                 notesItems={notes}
                 onArchiveClick={onArchiveClick}
+                onReturnArchivedClick={onArchiveClick}
                 onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
                 onUpdateNotesItemStatus={updateNotesItemStatus}
               />

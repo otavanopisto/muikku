@@ -315,12 +315,12 @@ export const guider: Reducer<GuiderState> = (
       const updatedNotes = state.notes.list.map((note) =>
         note.id === action.payload.id ? { ...note, ...action.payload } : note
       );
-      return { ...state, notes: {...state.notes, list: updatedNotes} }; ;
+      return { ...state, notes: { ...state.notes, list: updatedNotes } };
     }
 
     case "REMOVE_NOTE": {
       const notes = { ...state.notes };
-      notes.list.filter((note) => note.id !== action.payload);
+      notes.list = notes.list.filter((note) => note.id !== action.payload);
       return {
         ...state,
         notes,
