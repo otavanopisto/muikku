@@ -203,11 +203,10 @@
 }
 
 .table__data--COMPLETED {
-
-  &:after {
-    font-family: "muikku";
+  &::after {
     color: $color-great-success;
     content: "\e62b";
+    font-family: "muikku";
     font-size: 1rem;
     height: 1rem;
     position: absolute;
@@ -217,10 +216,10 @@
     z-index: 1;
   }
 
-  &:before {
-    font-family: "muikku";
+  &::before {
     color: $color-completed-border;
     content: "\e62c";
+    font-family: "muikku";
     font-size: 1rem;
     height: 1rem;
     position: absolute;
@@ -248,11 +247,10 @@
 }
 
 .table__data--APPROVAL {
-
-  &:after {
-    font-family: "muikku";
+  &::after {
     color: $color-great-success;
     content: "\e62b";
+    font-family: "muikku";
     font-size: 1rem;
     height: 1rem;
     position: absolute;
@@ -262,10 +260,10 @@
     z-index: 1;
   }
 
-  &:before {
-    font-family: "muikku";
+  &::before {
     color: $color-completed-border;
     content: "\e62c";
+    font-family: "muikku";
     font-size: 1rem;
     height: 1rem;
     position: absolute;
@@ -292,7 +290,6 @@
 .table__data--APPROVAL.table__data--FAILED-GRADE {
   .table__data-content-wrapper--course {
     background: $color-passed-failed;
-    // border-color: $color-passed-failed-border;
   }
 }
 

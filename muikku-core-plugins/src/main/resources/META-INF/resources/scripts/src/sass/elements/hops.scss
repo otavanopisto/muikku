@@ -682,10 +682,10 @@
   background: $color-completed;
   position: relative;
 
-  &:after {
-    font-family: "muikku";
+  &::after {
     color: $color-great-success;
     content: "\e62b";
+    font-family: "muikku";
     font-size: 1rem;
     height: 1rem;
     position: absolute;
@@ -695,10 +695,10 @@
     z-index: 1;
   }
 
-  &:before {
-    font-family: "muikku";
+  &::before {
     color: $color-completed-border;
     content: "\e62c";
+    font-family: "muikku";
     font-size: 1rem;
     height: 1rem;
     position: absolute;
@@ -715,10 +715,10 @@
   border-radius: 50% 50% 50% 3px;
   position: relative;
 
-  &:after {
-    font-family: "muikku";
+  &::after {
     color: $color-great-success;
     content: "\e62b";
+    font-family: "muikku";
     font-size: 1rem;
     height: 1rem;
     position: absolute;
@@ -728,10 +728,10 @@
     z-index: 1;
   }
 
-  &:before {
-    font-family: "muikku";
+  &::before {
     color: $color-completed-border;
     content: "\e62c";
+    font-family: "muikku";
     font-size: 1rem;
     height: 1rem;
     position: absolute;
@@ -750,10 +750,10 @@
   justify-content: center;
   position: relative;
 
-  &:after {
-    font-family: "muikku";
+  &::after {
     color: $color-great-success;
     content: "\e62b";
+    font-family: "muikku";
     font-size: 1rem;
     height: 1rem;
     position: absolute;
@@ -763,10 +763,10 @@
     z-index: 1;
   }
 
-  &:before {
-    font-family: "muikku";
+  &::before {
     color: $color-completed-border;
     content: "\e62c";
+    font-family: "muikku";
     font-size: 1rem;
     height: 1rem;
     position: absolute;
