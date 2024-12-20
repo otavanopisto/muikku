@@ -1,12 +1,14 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { UpdateSuggestionParams } from "../../../hooks/useStudentActivity";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { AnyActionType } from "~/actions";
-import { useSuggestionList } from "./hooks/useSuggestedList";
+import {
+  UpdateSuggestionParams,
+  useSuggestionList,
+} from "./hooks/useSuggestedList";
 import { WorkspaceSuggestion } from "~/generated/client";
 import { Course } from "~/@types/shared";
 import { Action, Dispatch } from "redux";

@@ -682,8 +682,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       SearchResult searchResult =  searchProvider.findWorkspace(workspaceIdentifier);
       
       if (searchResult.getTotalHitCount() > 0) {
-        List<Map<String, Object>> results = searchResult.getResults();
-        Map<String, Object> match = results.get(0);
+        Map<String, Object> match = searchResult.getResults().get(0);
 
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> subjectList = (List<Map<String, Object>>) match.get("subjects");
@@ -708,8 +707,8 @@ public class CoursePickerRESTService extends PluginRESTService {
         recipients.add(userSchoolDataIdentifier.getUserEntity());
         
         webSocketMessenger.sendMessage("hops:workspace-signup", restItems, recipients);
-
-      }}
+      }
+    }
     return Response.noContent().build();
   }
   

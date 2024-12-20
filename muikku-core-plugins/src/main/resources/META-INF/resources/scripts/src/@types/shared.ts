@@ -335,6 +335,9 @@ export interface SuggestionWithWorkspaceInfo extends WorkspaceSuggestion {}
  * StudentActivityByStatus
  */
 export interface StudentActivityByStatus {
+  /**
+   * List of need supplementation courses
+   */
   needSupplementationList: StudentStudyActivity[];
   /**
    * List of ongoing courses

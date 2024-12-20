@@ -408,13 +408,6 @@ export interface UpdateGuiderFilterLabelTriggerType {
 }
 
 /**
- * UpdateCurrentStudentHopsPhaseTriggerType action creator type
- */
-export interface UpdateCurrentStudentHopsPhaseTriggerType {
-  (data: { value: string }): AnyActionType;
-}
-
-/**
  * RemoveGuiderFilterLabelTriggerType action creator type
  */
 export interface RemoveGuiderFilterLabelTriggerType {
@@ -664,8 +657,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
-    const hopsApi = MApi.getHopsApi();
-    const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
     const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
@@ -673,6 +664,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     const pedagogyApi = MApi.getPedagogyApi();
     const usergroupApi = MApi.getUsergroupApi();
     const activitylogsApi = MApi.getActivitylogsApi();
+    const hopsApi = MApi.getHopsApi();
 
     try {
       const currentUserSchoolDataIdentifier =
@@ -753,37 +745,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               dispatch(updateAvailablePurchaseProducts());
             }
 
-            // After basic data is loaded, check if current user of guider has permissions
-            // to see/use current student hops
-            hopsApi
-              .isHopsAvailable({
-                studentIdentifier: id,
-              })
-              .then(async (hopsAvailable) => {
-                dispatch({
-                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                  payload: {
-                    property: "hopsAvailable",
-                    value: hopsAvailable,
-                  },
-                });
-
-                // after basic data is loaded and hops availability checked, then check if hopsPhase property
-                // is used and what values it contains
-                const hopsPhase = await userApi.getUserProperties({
-                  userEntityId: student.userEntityId,
-                  properties: "hopsPhase",
-                });
-
-                dispatch({
-                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                  payload: {
-                    property: "hopsPhase",
-                    value: hopsPhase[0].value,
-                  },
-                });
-              });
-
             pedagogyApi
               .getPedagogyFormAccess({
                 userEntityId: student.userEntityId,
@@ -853,17 +814,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "files", value: files },
-            });
-          }),
-
-        hopsUppersecondaryApi
-          .getHopsByUser({
-            userIdentifier: id,
-          })
-          .then((hops) => {
-            dispatch({
-              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-              payload: { property: "hops", value: hops },
             });
           }),
 
@@ -1938,52 +1888,6 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
   };
 
 /**
- *
- * Updates and return hops phase for current student
- *
- * @param data data
- */
-const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
-  function updateCurrentStudentHopsPhase(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const userApi = MApi.getUserApi();
-
-      try {
-        const properties = await userApi.setUserProperty({
-          setUserPropertyRequest: {
-            key: "hopsPhase",
-            value: data.value,
-            userEntityId: getState().guider.currentStudent.basic.userEntityId,
-          },
-        });
-
-        dispatch({
-          type: "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
-          payload: {
-            property: "hopsPhase",
-            value: properties.value,
-          },
-        });
-
-        dispatch(
-          notificationActions.displayNotification(
-            "HOPS-vaiheen päivittäminen onnistui.",
-            "success"
-          )
-        );
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-        dispatch(notificationActions.displayNotification(err.message, "error"));
-      }
-    };
-  };
-
-/**
  * removeLabelFromUserUtil utility function
  * @param student student
  * @param flags student flags
@@ -2781,7 +2685,6 @@ export {
   removeFileFromCurrentStudent,
   updateLabelFilters,
   updateWorkspaceFilters,
-  updateCurrentStudentHopsPhase,
   createGuiderFilterLabel,
   updateGuiderFilterLabel,
   removeGuiderFilterLabel,

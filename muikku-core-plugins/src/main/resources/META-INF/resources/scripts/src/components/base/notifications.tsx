@@ -63,6 +63,7 @@ class Notifications extends React.Component<
                 <span
                   dangerouslySetInnerHTML={{ __html: notification.message }}
                 />
+
                 <a
                   className="notification-queue__close"
                   onClick={this.props.hideNotification.bind(this, notification)}

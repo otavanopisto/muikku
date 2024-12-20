@@ -23,14 +23,10 @@ import {
   LoadStudentTriggerType,
   loadStudentContactLogs,
   LoadContactLogsTriggerType,
-  UpdateCurrentStudentHopsPhaseTriggerType,
-  updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
 import { getName } from "~/util/modifiers";
-import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 import Button from "~/components/general/button";
-import { COMPULSORY_HOPS_VISIBLITY } from "../../general/hops-compulsory-education-wizard/index";
-import { withTranslation, WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm, {
   UPPERSECONDARY_PEDAGOGYFORM,
 } from "~/components/general/pedagogical-support-form";
@@ -39,17 +35,17 @@ import HopsApplication from "./student/hops/hops";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {
-  ResetMatriculationDataTriggerType,
-  resetMatriculationData,
+  ResetHopsDataTriggerType,
+  resetHopsData,
 } from "~/actions/main-function/hops/";
+import { HopsState } from "~/reducers/hops";
 
 export type tabs =
   | "STUDIES"
   | "STUDY_PLAN"
   | "GUIDANCE_RELATIONS"
   | "STUDY_HISTORY"
-  | "PEDAGOGICAL_SUPPORT"
-  | "HOPS";
+  | "PEDAGOGICAL_SUPPORT";
 
 /**
  * Dialog view modes
@@ -59,18 +55,18 @@ type DialogViewMode = "TABS" | "HOPS_VIEW";
 /**
  * StudentDialogProps
  */
-interface StudentDialogProps extends WithTranslation<["common"]> {
+interface StudentDialogProps {
   isOpen?: boolean;
   student: GuiderStudentUserProfileType;
   guider: GuiderState;
   currentStudentStatus: GuiderCurrentStudentStateType;
+  hops: HopsState;
   onClose?: () => void;
   onOpen?: () => void;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
-  updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
-  resetMatriculationData: ResetMatriculationDataTriggerType;
+  resetHopsData: ResetHopsDataTriggerType;
 }
 
 /**
@@ -95,20 +91,16 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
     onClose,
     loadStudentHistory,
     loadStudentContactLogs,
-    updateCurrentStudentHopsPhase,
-    resetMatriculationData,
-    i18n,
-    t,
+    resetHopsData,
   } = props;
+
+  const { t } = useTranslation(["common"]);
 
   /** Number of contact logs to display per page */
   const contactLogsPerPage = 10;
 
   /** Current active tab state */
   const [activeTab, setActiveTab] = React.useState<string>("STUDIES");
-
-  /** HOPS edit mode state */
-  const [editHops, setEditHops] = React.useState(false);
 
   /** Current view mode state */
   const [viewMode, setViewMode] = React.useState<DialogViewMode>("TABS");
@@ -118,18 +110,6 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
    */
   const toggleViewMode = () => {
     setViewMode((prevMode) => (prevMode === "TABS" ? "HOPS_VIEW" : "TABS"));
-  };
-
-  /**
-   * Handles changes to the HOPS phase select dropdown
-   * Updates the current student's HOPS phase in the store
-   *
-   * @param e - Select element change event
-   */
-  const handleHopsPhaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateCurrentStudentHopsPhase({
-      value: e.currentTarget.value,
-    });
   };
 
   /**
@@ -154,13 +134,6 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
   };
 
   /**
-   * Toggles HOPS edit mode
-   */
-  const onClickEditHops = () => {
-    setEditHops(!editHops);
-  };
-
-  /**
    * Handles dialog close
    * Resets active tab to Studies and view mode to TABS and calls onClose callback
    */
@@ -169,7 +142,7 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
       setActiveTab("STUDIES");
       setViewMode("TABS");
     });
-    resetMatriculationData();
+    resetHopsData();
     onClose && onClose();
   };
 
@@ -178,27 +151,22 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
     return null;
   }
 
-  const hopsModifyStateModifiers = ["modify-hops"];
-  if (editHops) {
-    hopsModifyStateModifiers.push("modify-hops-active");
-  }
-
   const tabs = [
     {
       id: "STUDIES",
-      name: i18n.t("labels.situation", { ns: "guider" }),
+      name: t("labels.situation", { ns: "guider" }),
       type: "guider-student",
       component: <StateOfStudies />,
     },
     {
       id: "GUIDANCE_RELATIONS",
-      name: i18n.t("labels.relations", { ns: "guider" }),
+      name: t("labels.relations", { ns: "guider" }),
       type: "guider-student",
       component: <GuidanceRelation contactLogsPerPage={contactLogsPerPage} />,
     },
     {
       id: "STUDY_HISTORY",
-      name: i18n.t("labels.studyHistory", { ns: "guider" }),
+      name: t("labels.studyHistory", { ns: "guider" }),
       type: "guider-student",
       component: <StudyHistory />,
     },
@@ -228,90 +196,24 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
     });
   }
 
-  if (
-    guider.currentStudent &&
-    guider.currentStudent.basic &&
-    guider.currentStudent.hopsAvailable
-  ) {
-    // Hops is shown only if basic info is there,
-    // current guider has permissions to use/see (hopsAvailable)
-    // Compulsory hops
-    if (
-      COMPULSORY_HOPS_VISIBLITY.includes(
-        guider.currentStudent.basic.studyProgrammeName
-      )
-    ) {
-      tabs.splice(1, 0, {
-        id: "HOPS",
-        name: "Hops",
-        type: "guider-student",
-        component: (
-          <>
-            <div className="tabs__header-actions tabs__header-actions--hops">
-              <Button
-                onClick={onClickEditHops}
-                buttonModifiers={hopsModifyStateModifiers}
-              >
-                Muokkaustila
-              </Button>
-
-              <select
-                className="form-element__select"
-                value={
-                  guider.currentStudent.hopsPhase
-                    ? guider.currentStudent.hopsPhase
-                    : 0
-                }
-                onChange={handleHopsPhaseChange}
-              >
-                <option value={0}>HOPS - Ei aktivoitu</option>
-                <option value={1}>HOPS - esitäyttö</option>
-                <option value={2}>HOPS - opintojen suunnittelu</option>
-              </select>
-            </div>
-
-            {editHops ? (
-              <CompulsoryEducationHopsWizard
-                user="supervisor"
-                usePlace="guider"
-                disabled={false}
-                studentId={guider.currentStudent.basic.id}
-                editMode
-              />
-            ) : (
-              <CompulsoryEducationHopsWizard
-                user="supervisor"
-                usePlace="guider"
-                disabled={true}
-                studentId={guider.currentStudent.basic.id}
-                editMode={false}
-              />
-            )}
-          </>
-        ),
-      });
-    }
-  }
-
   /**
    * Content
    * @returns JSX.Element
    */
-  const content = () => {
-    if (viewMode === "TABS") {
-      return (
+  const content = () => (
+    <>
+      {viewMode === "TABS" ? (
         <Tabs
           modifier="guider-student"
           tabs={tabs}
           activeTab={activeTab}
           onTabChange={onTabChange}
         />
-      );
-    } else if (guider.currentStudent && guider.currentStudent.basic) {
-      return <HopsApplication studentIdentifier={student.basic.id} />;
-    }
-    return null;
-  };
+      ) : guider.currentStudent && guider.currentStudent.basic ? (
+        <HopsApplication studentIdentifier={student.basic.id} />
+      ) : null}
+    </>
+  );
 
   const studyProgrammeName = student.basic && student.basic.studyProgrammeName;
   const dialogTitle = (
@@ -322,30 +224,20 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
       <DialogTitleItem modifier="studyprogramme">
         {"(" + studyProgrammeName + ")"}
       </DialogTitleItem>
-      {/* Hops toggle. Currently available only for uppersecondary school */}
-      {student.basic &&
-        [
-          "Nettilukio",
-          "Aikuislukio",
-          "Nettilukio/yksityisopiskelu (aineopintoina)",
-          "Aineopiskelu/yo-tutkinto",
-          "Aineopiskelu/lukio",
-          "Aineopiskelu/lukio (oppivelvolliset)",
-        ].includes(student.basic.studyProgrammeName) && (
-          <DialogTitleItem modifier="hops-toggle">
-            <Button
-              className={
-                viewMode === "HOPS_VIEW"
-                  ? "button--primary active"
-                  : "button--primary"
-              }
-              icon="compass"
-              onClick={toggleViewMode}
-            >
-              HOPS
-            </Button>
-          </DialogTitleItem>
-        )}
+      {/* Hops toggle. */}
+      {student.basic && (
+        <DialogTitleItem modifier="hops-toggle">
+          <Button
+            className={
+              viewMode === "HOPS_VIEW" ? "button--info active" : "button--info"
+            }
+            icon="compass"
+            onClick={toggleViewMode}
+          >
+            HOPS
+          </Button>
+        </DialogTitleItem>
+      )}
     </DialogTitleContainer>
   );
 
@@ -373,6 +265,7 @@ function mapStateToProps(state: StateType) {
     status: state.status,
     currentStudentStatus: state.guider.currentStudentState,
     guider: state.guider,
+    hops: state.hopsNew,
   };
 }
 
@@ -387,8 +280,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
     {
       loadStudentHistory,
       loadStudentContactLogs,
-      updateCurrentStudentHopsPhase,
-      resetMatriculationData,
+      resetHopsData,
     },
     dispatch
   );
@@ -416,6 +308,4 @@ const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAccess) => {
   }
 };
 
-export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(StudentDialog)
-);
+export default connect(mapStateToProps, mapDispatchToProps)(StudentDialog);

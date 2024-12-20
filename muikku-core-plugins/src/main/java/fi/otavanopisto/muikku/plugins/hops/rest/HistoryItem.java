@@ -52,12 +52,20 @@ public class HistoryItem {
     this.details = details;
   }
 
+  public String getChanges() {
+    return changes;
+  }
+
+  public void setChanges(String changes) {
+    this.changes = changes;
+  }
+
   private Long id;
   private Date date;
   private Long modifierId;
   private String modifier;
   private Boolean modifierHasImage;
   private String details;
-  
+  private String changes;
 
 }

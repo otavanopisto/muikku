@@ -26,11 +26,14 @@ export type UseWizardType = ReturnType<typeof useWizard>;
 export const useWizard = (props: UseWizardProps) => {
   props = { ...defaultUseWizardProps, ...props };
 
-  const { preventNextIfInvalid, onStepChange, preventStepperNavigation } =
-    props;
+  const {
+    preventNextIfInvalid,
+    onStepChange,
+    preventStepperNavigation,
+    steps,
+  } = props;
 
   const [currentStepIndex, setCurrentStepIndex] = React.useState<number>(0);
-  const [steps, setSteps] = React.useState<WizardStep[]>(props.steps);
 
   /**
    * Set the invalid state of a step. This will trigger a re-render of the wizard.
@@ -39,16 +42,15 @@ export const useWizard = (props: UseWizardProps) => {
    * @param value invalid state
    * @param index step index
    */
-  const isInvalid = React.useCallback((value: boolean, index: number) => {
-    setSteps((oldValues) => {
-      if (value !== oldValues[index].isInvalid) {
-        const newValues = [...oldValues];
-        newValues[index].isInvalid = value;
-        return newValues;
-      }
-      return oldValues;
-    });
-  }, []);
+  const isInvalid = React.useCallback(
+    (value: boolean, index: number) => {
+      // Update the steps directly from props
+      steps[index].isInvalid = value;
+      // Force a re-render
+      setCurrentStepIndex((currentIndex) => currentIndex);
+    },
+    [steps]
+  );
 
   /**
    * Go to the next step

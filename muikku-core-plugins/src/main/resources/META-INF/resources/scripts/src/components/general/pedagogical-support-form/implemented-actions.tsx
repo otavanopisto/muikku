@@ -2,13 +2,13 @@ import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
-import { Textarea } from "../hops-compulsory-education-wizard/text-area";
+import { Textarea } from "./components/textarea";
 import Button from "../button";
 import Select from "react-select";
 import WorkspaceSelect from "./workspace-select";
 import { SupportActionImplementation } from "~/@types/pedagogy-form";
 import { supportActionsOptions } from "./helpers";
-import { TextField } from "../hops-compulsory-education-wizard/text-field";
+import { TextField } from "./components/textfield";
 import { usePedagogyContext } from "./context/pedagogy-context";
 import { useTranslation } from "react-i18next";
 
@@ -198,7 +198,7 @@ export const AddNewActionsBox: React.FC<AddNewActionsBoxProps> = (props) => {
   return (
     <div className="hops-container__row">
       <Button
-        buttonModifiers={"add-pedagogy-row"}
+        buttonModifiers={"add-extra-row"}
         onClick={onClick}
         icon="plus"
         disabled={disabled}

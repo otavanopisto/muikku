@@ -426,7 +426,13 @@ export const getCourseInfo = (
     if (evaluatedCourse.passing) {
       updatedModifiers.push("PASSED-GRADE");
     } else {
-      updatedModifiers.push("FAILED-GRADE");
+      // If grade is K, then it is aborted, hard check as it is only
+      // way to recognize aborted courses
+      if (evaluatedCourse.grade === "K") {
+        updatedModifiers.push("ABORTED");
+      } else {
+        updatedModifiers.push("FAILED-GRADE");
+      }
     }
 
     grade = evaluatedCourse.grade;
