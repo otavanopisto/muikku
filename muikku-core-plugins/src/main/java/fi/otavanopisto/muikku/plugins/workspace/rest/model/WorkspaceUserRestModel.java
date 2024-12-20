@@ -7,7 +7,7 @@ public class WorkspaceUserRestModel {
   public WorkspaceUserRestModel() {
   }
 
-  public WorkspaceUserRestModel(Long workspaceUserEntityId, Long userEntityId, SchoolDataIdentifier userIdentifier, String firstName, String lastName, Boolean hasImage) {
+  public WorkspaceUserRestModel(Long workspaceUserEntityId, Long userEntityId, SchoolDataIdentifier userIdentifier, String firstName, String lastName, boolean hasImage) {
     this.workspaceUserEntityId = workspaceUserEntityId;
     this.userEntityId = userEntityId;
     this.userIdentifier = userIdentifier.toId();
@@ -48,11 +48,11 @@ public class WorkspaceUserRestModel {
     this.lastName = lastName;
   }
 
-  public Boolean getHasImage() {
+  public boolean getHasImage() {
     return hasImage;
   }
 
-  public void setHasImage(Boolean hasImage) {
+  public void setHasImage(boolean hasImage) {
     this.hasImage = hasImage;
   }
 
@@ -69,5 +69,5 @@ public class WorkspaceUserRestModel {
   private String userIdentifier;
   private String firstName;
   private String lastName;
-  private Boolean hasImage;
+  private boolean hasImage;
 }

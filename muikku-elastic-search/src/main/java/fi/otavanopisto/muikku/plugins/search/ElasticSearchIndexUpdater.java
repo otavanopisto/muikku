@@ -141,6 +141,10 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
       case TEXT:
         fieldMapping = new ElasticMappingStringProperty(fieldOption.type(), fieldOption.index());
       break;
+      case DATE:
+        // For elastic: date = yyyy-MM-dd
+        fieldMapping = new ElasticMappingDateProperty("date");
+      break;
     }
     
     if (fieldMapping == null) {
@@ -182,6 +186,8 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
         return "text";
       case KEYWORD:
         return "keyword";
+      case DATE:
+        return "date";
     }
     
     return null;
@@ -238,6 +244,20 @@ public class ElasticSearchIndexUpdater implements SearchIndexUpdater {
     }
       
     private boolean index;
+  }
+  
+  public static class ElasticMappingDateProperty extends TypedElasticMappingProperty {
+
+    public ElasticMappingDateProperty(String format) {
+      super("date");
+      this.format = format;
+    }
+
+    public String getFormat() {
+      return format;
+    }
+
+    private final String format;
   }
   
   public static class ElasticMappingPropertyOptionField {

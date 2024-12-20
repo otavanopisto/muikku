@@ -1885,6 +1885,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setSubjects(subjects);
     boolean hasPedagogyForm = pedagogyController.hasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
+    restAssessmentRequest.setU18Compulsory(userEntityController.isUnder18CompulsoryEducationStudent(workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier()));
     return restAssessmentRequest;
   }
 

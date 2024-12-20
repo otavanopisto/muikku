@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.schooldata;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
@@ -255,6 +256,8 @@ public interface UserSchoolDataBridge {
   public boolean isActiveUser(User user);
 
   public String findUserSsn(SchoolDataIdentifier userIdentifier);
+
+  public LocalDate getBirthday(SchoolDataIdentifier studentIdentifier);
 
   public boolean amICounselor(String studentIdentifier);
 

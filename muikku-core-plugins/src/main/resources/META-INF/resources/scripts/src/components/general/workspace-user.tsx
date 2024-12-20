@@ -8,10 +8,10 @@ import { getName, filterHighlight } from "~/util/modifiers";
 import {
   ApplicationListItem,
   ApplicationListItemContentWrapper,
-  ApplicationListItemContentActions,
 } from "~/components/general/application-list";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import Dropdown from "~/components/general/dropdown";
+import { useTranslation } from "react-i18next";
 
 /**
  * workspaceUserProps
@@ -31,13 +31,17 @@ interface workspaceUserProps {
  * @returns JSX.Element
  */
 export default function WorkspaceUser(props: workspaceUserProps) {
+  const { t } = useTranslation(["common"]);
+
   const pedagogyFormIcon = props.student.hasPedagogyForm ? (
     <Dropdown
       alignSelfVertically="top"
       openByHover
       content={
         <span id={`pedagogyPlan-` + props.student.userEntityId}>
-          Opiskelijalle on tehty pedagogisen tuen suunnitelma
+          {t("labels.pedagogyPlan", {
+            ns: "common",
+          })}
         </span>
       }
     >
@@ -47,6 +51,29 @@ export default function WorkspaceUser(props: workspaceUserProps) {
           aria-labelledby={`pedagogyPlan-` + props.student.userEntityId}
         >
           P
+        </span>
+      </div>
+    </Dropdown>
+  ) : null;
+
+  const u18CompulsoryIcon = props.student.u18Compulsory ? (
+    <Dropdown
+      alignSelfVertically="top"
+      openByHover
+      content={
+        <span id={`u18Compulsory-` + props.student.userEntityId}>
+          {t("labels.u18Compulsory", {
+            ns: "common",
+          })}
+        </span>
+      }
+    >
+      <div className="label label--u18-compulsory">
+        <span
+          className="label__text label__text--u18-compulsory"
+          aria-labelledby={`u18Compulsory-` + props.student.userEntityId}
+        >
+          O
         </span>
       </div>
     </Dropdown>
@@ -96,7 +123,10 @@ export default function WorkspaceUser(props: workspaceUserProps) {
       >
         <div className="application-list__item-content-primary-data">
           {filterHighlight(getName(props.student, true), props.highlight)}
-          <div className="labels">{pedagogyFormIcon}</div>
+          <div className="labels">
+            {pedagogyFormIcon}
+            {u18CompulsoryIcon}
+          </div>
         </div>
         <div className="application-list__item-content-secondary-data">
           {props.student.studyProgrammeName

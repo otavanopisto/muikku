@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatalocal;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -562,6 +563,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public LocalDate getBirthday(SchoolDataIdentifier studentIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 
