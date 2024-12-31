@@ -5,20 +5,22 @@ import Button from "~/components/general/button";
 import {
   CourseChangeAction,
   PlannedCourseWithIdentifier,
+  SelectedCourse,
 } from "~/reducers/hops";
 import Droppable from "./react-dnd/droppable";
 import { PlannerPeriodProps } from "./planner-period";
 import PlannerPeriodCourseCard from "./planner-period-course";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-
-/**
- * Checks if the course is a planned course
- * @param course course
- * @returns true if the course is a planned course
- */
-const isPlannedCourse = (
-  course: PlannedCourseWithIdentifier | Course
-): course is PlannedCourseWithIdentifier => "identifier" in course;
+import { motion, AnimatePresence, LayoutGroup, Variants } from "framer-motion";
+import { isPlannedCourse } from "../helper";
+import { bindActionCreators } from "redux";
+import { AnyActionType } from "~/actions";
+import { StateType } from "~/reducers";
+import { Action, Dispatch } from "redux";
+import { connect } from "react-redux";
+import {
+  updateSelectedCourse,
+  UpdateSelectedCourseTriggerType,
+} from "~/actions/main-function/hops";
 
 /**
  * PlannerPeriodMonthProps
@@ -29,14 +31,44 @@ interface PlannerPeriodMonthProps {
   year: number;
   courses: PlannedCourseWithIdentifier[];
   onCourseChange: PlannerPeriodProps["onCourseChange"];
+
+  //Redux state
+  selectedCourse: SelectedCourse;
+  editedPlannedCourses: PlannedCourseWithIdentifier[];
+  updateSelectedCourse: UpdateSelectedCourseTriggerType;
 }
+
+const dropZoneVariants: Variants = {
+  initial: {
+    opacity: 0.6,
+    scale: 1,
+  },
+  dropIsActive: {
+    opacity: [0.6, 1, 0.6],
+    scale: [1, 1.02, 1],
+    transition: {
+      duration: 1.5,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  },
+};
 
 /**
  * PlannerPeriodMonth component
  * @param props props
  */
 const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
-  const { monthIndex, title, year, courses, onCourseChange } = props;
+  const {
+    monthIndex,
+    title,
+    year,
+    courses,
+    selectedCourse,
+    editedPlannedCourses,
+    onCourseChange,
+    updateSelectedCourse,
+  } = props;
 
   const [isExpanded, setIsExpanded] = React.useState(true);
   const [showDropIndicator, setShowDropIndicator] = React.useState(false);
@@ -54,6 +86,52 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
    */
   const handleMonthToggle = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  /**
+   * Handles move course here click
+   */
+  const handleMoveCourseHereClick = () => {
+    // If there is no selected course, do nothing
+    if (!selectedCourse) {
+      return;
+    }
+
+    // Try to find the course info from the edited planned courses
+    const courseInfo = editedPlannedCourses.find(
+      (c) => c.identifier === selectedCourse.identifier
+    );
+
+    // If the course info is found, update the course
+    if (courseInfo) {
+      onCourseChange(
+        {
+          ...courseInfo,
+          startDate: new Date(year, monthIndex, 1),
+        },
+        "update"
+      );
+    }
+    // Else means that the course does not exist in the planned list and must be added as new one
+    else {
+      onCourseChange(
+        {
+          identifier: "planned-course-" + new Date().getTime(),
+          id: new Date().getTime(),
+          name: selectedCourse.name,
+          courseNumber: selectedCourse.courseNumber,
+          length: selectedCourse.length,
+          lengthSymbol: "op",
+          subjectCode: selectedCourse.subjectCode,
+          mandatory: selectedCourse.mandatory,
+          startDate: new Date(year, monthIndex, 1),
+        },
+        "add"
+      );
+    }
+
+    // Clear the selected course
+    updateSelectedCourse(null);
   };
 
   /**
@@ -139,29 +217,40 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     [isAlreadyInMonth]
   );
 
+  // Check if selected course is in month already
+  const selectedCourseIsInMonth = selectedCourse
+    ? courses.some((course) => course.identifier === selectedCourse.identifier)
+    : false;
+
+  // Pulse dropzone if selected course is not in month or drop indicator is shown
+  const pulseDropzone =
+    (selectedCourse && !selectedCourseIsInMonth) || showDropIndicator;
+
   return (
-    <div className="hops-planner__month">
-      <Button
-        iconPosition="left"
-        icon={isExpanded ? "arrow-down" : "arrow-right"}
-        buttonModifiers={["planner-month-toggle"]}
-        onClick={handleMonthToggle}
-      >
-        {title}
-        <AnimatePresence>
-          {showDropIndicator && (
-            <motion.span
-              className="drop-indicator"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              transition={{ duration: 0.2 }}
-            >
-              +
-            </motion.span>
-          )}
-        </AnimatePresence>
-      </Button>
+    <motion.div layout className="study-planner__month">
+      <motion.div layout="position" className="study-planner__month-header">
+        <Button
+          iconPosition="left"
+          icon={isExpanded ? "arrow-down" : "arrow-right"}
+          buttonModifiers={["planner-month-toggle"]}
+          onClick={handleMonthToggle}
+        >
+          {title}
+          <AnimatePresence>
+            {showDropIndicator && (
+              <motion.span
+                className="drop-indicator"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.2 }}
+              >
+                +
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </Button>
+      </motion.div>
 
       <AnimateHeight height={isExpanded ? "auto" : 0}>
         <Droppable<
@@ -170,12 +259,13 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
           accept={["planned-course-card", "new-course-card"]}
           onDrop={handleDrop}
           onHover={handleDropHover}
-          className="hops-planner__courses"
+          className="study-planner__month-content"
         >
           <LayoutGroup id={`month-${monthIndex}-${year}`}>
             <motion.div
-              className="hops-planner__month-content"
-              layout
+              className="study-planner__month-courses"
+              layout="position"
+              initial={false}
               transition={{
                 layout: { duration: 0.3, ease: "easeInOut" },
               }}
@@ -193,29 +283,53 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
                       >
                         <PlannerPeriodCourseCard
                           course={course}
+                          selected={
+                            selectedCourse &&
+                            selectedCourse.identifier === course.identifier
+                          }
                           onCourseChange={onCourseChange}
                         />
                       </motion.div>
                     ))
                   : null}
-
-                <motion.div
-                  className="hops-planner__empty-month"
-                  layout
-                  key={`empty-month-${monthIndex}-${year}`}
-                >
-                  <div className="hops-planner__dropzone">
-                    <i className="muikku-icon-drag-handle" />
-                    <span>Raahaa kursseja tähän</span>
-                  </div>
-                </motion.div>
               </AnimatePresence>
+              <motion.div
+                layout="position"
+                animate={pulseDropzone ? "dropIsActive" : "initial"}
+                variants={dropZoneVariants}
+                className="study-planner__month-dropzone"
+              >
+                <i className="muikku-icon-drag-handle" />
+                <span onClick={handleMoveCourseHereClick}>
+                  Siirrä kursseja tähän raahamalla tai klikkaamalla tästä, kun
+                  kurssi on valittu
+                </span>
+              </motion.div>
             </motion.div>
           </LayoutGroup>
         </Droppable>
       </AnimateHeight>
-    </div>
+    </motion.div>
   );
 };
 
-export default PlannerPeriodMonth;
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    editedPlannedCourses: state.hopsNew.hopsEditing.plannedCourses,
+    selectedCourse: state.hopsNew.hopsEditing.selectedCourse,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators({ updateSelectedCourse }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlannerPeriodMonth);

@@ -1,0 +1,471 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.study-planner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 750px;
+}
+
+.study-planner__controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid $color-default-separator-border;
+}
+
+.study-planner__control-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.study-planner__period-navigation {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.study-planner__control-button {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: $color-default-contrast;
+
+  &:hover {
+    color: $color-info;
+  }
+}
+
+.study-planner__nav-button {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: $color-default-contrast;
+
+  &:hover {
+    color: $color-info;
+  }
+}
+
+.study-planner__content {
+  display: flex;
+  gap: 1rem;
+  height: calc(100% - 48px);
+  overflow: hidden;
+}
+
+// Timeline
+.study-planner__timeline-container {
+  position: relative;
+  overflow-x: auto;
+  flex-basis: 100%;
+  flex-shrink: 1;
+  flex-grow: 1;
+  display: flex;
+}
+
+.study-planner__timeline {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+  flex-basis: 100%;
+  flex-shrink: 1;
+  flex-grow: 1;
+  position: relative;
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $color-default-lighter-generic-background;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-default-separator-border;
+    border-radius: 4px;
+
+    &:hover {
+      background: darken($color-default-separator-border, 10%);
+    }
+  }
+}
+
+.study-planner__timeline-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  cursor: grab;
+  background: transparent;
+}
+
+// Period
+.study-planner__period {
+  display: flex;
+  flex-direction: column;
+  min-width: 350px;
+  max-width: 350px;
+  height: 100%;
+  background: #F5F5F7;
+  border-radius: 10px;
+  padding: 0.5rem;
+}
+
+.study-planner__period-title {
+  text-align: center;
+}
+
+// Months list
+.study-planner__months {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $color-default-lighter-generic-background;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-default-separator-border;
+    border-radius: 4px;
+
+    &:hover {
+      background: darken($color-default-separator-border, 10%);
+    }
+  }
+}
+
+// Month
+.study-planner__month {
+  margin-bottom: 0.5rem;
+}
+
+.study-planner__month-header {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.study-planner__month-toggle {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: $color-info;
+  border-radius: 3px;
+  margin-bottom: 0.5rem;
+  color: #B1296F;
+
+  i {
+    font-size: 0.875rem;
+    transition: transform 0.2s ease;
+  }
+
+  &.is-expanded i {
+    transform: rotate(90deg);
+  }
+}
+
+// Month content
+.study-planner__month-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.study-planner__month-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  border: 3px dashed #B1296F;
+  color: #B1296F;
+  border-radius: 10px;
+  padding: 0.5rem;
+}
+
+// Sidebar
+.study-planner__sidebar {
+  border-right: 1px solid $color-default-separator-border;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-basis: 300px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.study-planner__sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.study-planner__sidebar-title {
+  margin: 0;
+}
+
+.study-planner__search {
+  margin-bottom: 1rem;
+}
+
+.study-planner__course-group {
+  margin-bottom: 0.5rem;
+}
+
+.study-planner__course-group-toggle {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.5rem 0.5rem 0rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #B1296F;
+
+  &:hover {
+    background: $color-default-lighter-generic-background;
+  }
+}
+
+.study-planner__course-groups {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $color-default-lighter-generic-background;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-default-separator-border;
+    border-radius: 4px;
+
+    &:hover {
+      background: darken($color-default-separator-border, 10%);
+    }
+  }
+}
+
+// Planner card
+.study-planner__card {
+  cursor: move;
+  margin-bottom: 0.5rem;
+  background: white;
+  border-radius: 0px 5px 5px 0px;
+  opacity: 1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+}
+
+.study-planner__card--preview,
+.study-planner__card--is-dragging {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  cursor: move;
+  opacity: 0.8;
+}
+
+.study-planner__card--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.study-planner__card--selected {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid $color-info;
+    border-radius: 0 5px 5px 0;
+    pointer-events: none;
+  }
+}
+
+.study-planner__card-inner-container {
+  position: relative;
+  width: 100%;
+  border-left: 5px solid #8d8d8d;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: white;
+}
+
+.study-planner__card-inner-container--mandatory {
+  border-left: 5px solid $color-mandatory;
+}
+
+.study-planner__card-inner-container--optional {
+  border-left: 5px solid $color-optional;
+}
+
+.study-planner__card-header {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.study-planner__card-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.study-planner__card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  justify-content: flex-end;
+}
+
+.study-planner__card-label {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  max-width: fit-content;
+}
+
+.study-planner__card-label--mandatory {
+  background: $color-mandatory;
+  color: $color-default;
+}
+
+.study-planner__card-label--optional {
+  background: $color-optional;
+  color: $color-default;
+}
+
+.study-planner__card-label--course-length {
+  background: $color-info;
+  color: $color-default;
+}
+
+.study-planner__card-label--already-planned {
+  background: $color-info;
+  color: $color-default;
+}
+
+.study-planner__course-code {
+  font-weight: bold;
+  margin-right: 0.25rem;
+}
+
+.study-planner__course-unsaved {
+  color: $color-fatal;
+  font-size: 0.875rem;
+  margin-left: 0.5rem;
+}
+
+.study-planner__course-dates {
+  font-size: 0.875rem;
+  color: $color-default-contrast;
+  margin: 0.5rem 0;
+  display: block;
+  flex-basis: 100%;
+}
+
+// Specify animate height
+.study-planner__extra-section-animate-height {
+  &.open {
+    margin-bottom: 0.5rem;
+  }
+
+  &.close {
+    margin-bottom: 0;
+  }
+}
+
+// Specify section
+.study-planner__extra-section {
+  padding: 0.5rem;
+  background: white;
+  border-radius: 15px;
+  border: 2px solid rgb(224, 224, 224)
+}
+
+.study-planner__extra-section-title {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.study-planner__extra-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.study-planner__extra-section-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.study-planner__extra-section-input-group-label {
+  margin-bottom: 0.25rem;
+}
+
+.study-planner__extra-section-date-inputs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.study-planner__extra-section-button-group {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.study-planner__input {
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #f8a1ce;
+  border-radius: 3px;
+  height: 2.25rem;
+  padding: 4px 8px;
+  width: 100%;
+}
+

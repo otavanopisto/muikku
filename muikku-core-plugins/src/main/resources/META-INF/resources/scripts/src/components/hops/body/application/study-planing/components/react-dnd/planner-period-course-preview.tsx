@@ -4,6 +4,14 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
+import {
+  PlannerCardActions,
+  PlannerCardContent,
+  PlannerCardHeader,
+  PlannerCardLabel,
+} from "../planner-card";
+import { PlannerCard } from "../planner-card";
+import Button from "~/components/general/button";
 
 /**
  * CourseCardProps
@@ -27,21 +35,24 @@ const PlannerPeriodCourseCardPreview: React.FC<
     : null;
 
   return (
-    <div className={`hops-planner__course-card-preview`}>
-      <div className="hops-planner__course-header">
-        <span className="hops-planner__course-code">
+    <PlannerCard modifiers={["planned-course-card", "preview"]}>
+      <PlannerCardHeader modifiers={["planned-course-card"]}>
+        <span className="study-planner__course-code">
           {`${course.subjectCode}-${course.courseNumber}`}
         </span>
-        <span className="hops-planner__course-name">{course.name}</span>
-      </div>
+        <span className="study-planner__course-name">{course.name}</span>
+      </PlannerCardHeader>
 
-      <div className="hops-planner__course-content">
-        <span
-          className={`hops-planner__course-type hops-planner__course-type--${course.mandatory ? "mandatory" : "optional"}`}
+      <PlannerCardContent modifiers={["planned-course-card"]}>
+        <PlannerCardLabel
+          modifiers={[course.mandatory ? "mandatory" : "optional"]}
         >
           {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
-        </span>
-        <span className="hops-planner__course-dates">
+        </PlannerCardLabel>
+        <PlannerCardLabel modifiers={["course-length"]}>
+          {course.length} op
+        </PlannerCardLabel>
+        <span className="study-planner__course-dates">
           {calculatedEndDate ? (
             <>
               {course.startDate.toLocaleDateString()} -{" "}
@@ -51,15 +62,13 @@ const PlannerPeriodCourseCardPreview: React.FC<
             course.startDate.toLocaleDateString()
           )}
         </span>
-      </div>
+      </PlannerCardContent>
 
-      <div className="hops-planner__course-actions">
-        <button className="hops-planner__action-button">Tarkenna</button>
-        <button className="hops-planner__action-button hops-planner__action-button--danger">
-          Poista
-        </button>
-      </div>
-    </div>
+      <PlannerCardActions modifiers={["planned-course-card"]}>
+        <Button buttonModifiers={["primary"]}>Tarkenna</Button>
+        <Button buttonModifiers={["danger"]}>Poista</Button>
+      </PlannerCardActions>
+    </PlannerCard>
   );
 };
 

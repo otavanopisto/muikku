@@ -1,5 +1,11 @@
 import * as React from "react";
 import { Course } from "~/@types/shared";
+import {
+  PlannerCard,
+  PlannerCardContent,
+  PlannerCardHeader,
+  PlannerCardLabel,
+} from "../planner-card";
 
 /**
  * PlannerSidebarCoursePreview props
@@ -21,22 +27,21 @@ const PlannerSidebarCoursePreview: React.FC<
   const type = course.mandatory ? "mandatory" : "optional";
 
   return (
-    <div className="planner-sidebar-course planner-sidebar-course--preview">
-      <div className="planner-sidebar-course__header">
-        <span className="planner-sidebar-course__code">{subjectCode}</span>
-        <span className="planner-sidebar-course__name">
-          {course.name}, {course.length} op
-        </span>
-      </div>
+    <PlannerCard modifiers={["sidebar-course-card", "preview"]}>
+      <PlannerCardHeader modifiers={["sidebar-course-card"]}>
+        <span className="planner-sidebar-course__code">{`${subjectCode} ${course.courseNumber}. `}</span>
+        <span className="planner-sidebar-course__name">{course.name}</span>
+      </PlannerCardHeader>
 
-      <div className="planner-sidebar-course__content">
-        <span
-          className={`planner-sidebar-course__type planner-sidebar-course__type--${type}`}
-        >
+      <PlannerCardContent modifiers={["planned-course-card"]}>
+        <PlannerCardLabel modifiers={[type]}>
           {type === "mandatory" ? "PAKOLLINEN" : "VALINNAINEN"}
-        </span>
-      </div>
-    </div>
+        </PlannerCardLabel>
+        <PlannerCardLabel modifiers={["course-length"]}>
+          {course.length} op
+        </PlannerCardLabel>
+      </PlannerCardContent>
+    </PlannerCard>
   );
 };
 

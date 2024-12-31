@@ -114,6 +114,11 @@ interface hopsMatriculation {
 export type HopsMode = "READ" | "EDIT";
 
 /**
+ * SelectedCourse
+ */
+export interface SelectedCourse extends Partial<PlannedCourseWithIdentifier> {}
+
+/**
  * HopsEditingState
  */
 export interface HopsEditingState {
@@ -121,6 +126,7 @@ export interface HopsEditingState {
   hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
   plannedCourses: PlannedCourseWithIdentifier[];
+  selectedCourse: SelectedCourse | null;
 }
 
 /**
@@ -198,6 +204,7 @@ const initialHopsState: HopsState = {
       goalMatriculationExam: false,
     },
     plannedCourses: [],
+    selectedCourse: null,
   },
 };
 
@@ -430,6 +437,7 @@ export const hopsNew: Reducer<HopsState> = (
             goalMatriculationExam: false,
           },
           plannedCourses: [],
+          selectedCourse: null,
         },
       };
     }
@@ -543,6 +551,24 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           plannedCourses: action.payload,
+        },
+      };
+
+    case "HOPS_SET_SELECTED_COURSE":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          selectedCourse: action.payload,
+        },
+      };
+
+    case "HOPS_CLEAR_SELECTED_COURSE":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          selectedCourse: null,
         },
       };
 

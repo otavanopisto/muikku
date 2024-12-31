@@ -1,9 +1,20 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { Action } from "redux";
+import { Dispatch } from "redux";
 import { useLocalStorage } from "usehooks-ts";
 import { CourseFilter, SchoolSubject } from "~/@types/shared";
+import { AnyActionType } from "~/actions";
+import {
+  updateSelectedCourse,
+  UpdateSelectedCourseTriggerType,
+} from "~/actions/main-function/hops";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
+import { StateType } from "~/reducers";
+import { PlannedCourseWithIdentifier, SelectedCourse } from "~/reducers/hops";
 import { filterSubjectsAndCourses } from "../helper";
 import PlannerSidebarCourse from "./planner-sidebar-course";
 
@@ -12,7 +23,9 @@ import PlannerSidebarCourse from "./planner-sidebar-course";
  */
 interface PlannerSidebarProps {
   subjects: SchoolSubject[];
-  onCourseSelect: (subjectCode: string, courseNumber: number) => void;
+  plannedCourses: PlannedCourseWithIdentifier[];
+  selectedCourse: SelectedCourse | null;
+  updateSelectedCourse: UpdateSelectedCourseTriggerType;
 }
 
 /**
@@ -20,7 +33,8 @@ interface PlannerSidebarProps {
  * @param props props
  */
 const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
-  const { subjects, onCourseSelect } = props;
+  const { subjects, plannedCourses, selectedCourse, updateSelectedCourse } =
+    props;
 
   const [searchTerm, setSearchTerm] = useLocalStorage(
     "hops-planner-search-term",
@@ -62,6 +76,23 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
     });
   };
 
+  /**
+   * Handles course click. If the same course is clicked, clear the selection
+   * @param course course
+   */
+  const handleCourseClick = (course: SelectedCourse) => {
+    if (
+      selectedCourse &&
+      selectedCourse.identifier === undefined &&
+      course.subjectCode === selectedCourse.subjectCode &&
+      course.courseNumber === selectedCourse.courseNumber
+    ) {
+      updateSelectedCourse(null);
+    } else {
+      updateSelectedCourse({ course });
+    }
+  };
+
   // Filter subjects and courses
   const filteredSubjects = filterSubjectsAndCourses(
     subjects,
@@ -86,10 +117,10 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
   ];
 
   return (
-    <div className="hops-planner__sidebar">
-      <div className="hops-planner__sidebar-header">
-        <h3 className="hops-planner__sidebar-title">Opintojaksot</h3>
-        <div className="hops-planner_sidebar-filters">
+    <div className="study-planner__sidebar">
+      <div className="study-planner__sidebar-header">
+        <h3 className="study-planner__sidebar-title">Opintojaksot</h3>
+        <div className="study-planner_sidebar-filters">
           <Dropdown
             items={filterOptions.map((filter) => (
               <div key={filter.value} className="filter-item">
@@ -113,18 +144,21 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
           </Dropdown>
         </div>
       </div>
-      <div className="hops-planner__search">
+      <div className="study-planner__search">
         <input
           type="text"
-          className="hops__input"
+          className="study-planner__input"
           placeholder="Hae opintojaksoja"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-      <div className="hops-planner__course-groups">
+      <div className="study-planner__course-groups">
         {filteredSubjects.map((subject) => (
-          <div key={subject.subjectCode} className="hops-planner__course-group">
+          <div
+            key={subject.subjectCode}
+            className="study-planner__course-group"
+          >
             <Button
               iconPosition="left"
               icon={
@@ -140,14 +174,28 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
             <AnimateHeight
               height={expandedGroups.includes(subject.subjectCode) ? "auto" : 0}
             >
-              <div className="hops-planner__course-list">
+              <div className="study-planner__course-list">
                 {subject.availableCourses.map((course) => (
                   <PlannerSidebarCourse
                     key={`${subject.subjectCode}${course.courseNumber}`}
                     course={course}
                     subjectCode={subject.subjectCode}
                     onClick={() =>
-                      onCourseSelect(subject.subjectCode, course.courseNumber)
+                      handleCourseClick({
+                        ...course,
+                        subjectCode: subject.subjectCode,
+                      })
+                    }
+                    plannedCourse={plannedCourses.find(
+                      (plannedCourse) =>
+                        plannedCourse.subjectCode === subject.subjectCode &&
+                        plannedCourse.courseNumber === course.courseNumber
+                    )}
+                    selected={
+                      selectedCourse &&
+                      selectedCourse.identifier === undefined &&
+                      selectedCourse.subjectCode === subject.subjectCode &&
+                      selectedCourse.courseNumber === course.courseNumber
                     }
                   />
                 ))}
@@ -160,4 +208,23 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
   );
 };
 
-export default PlannerSidebar;
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    editedPlannedCourses: state.hopsNew.hopsEditing.plannedCourses,
+    selectedCourse: state.hopsNew.hopsEditing.selectedCourse,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators({ updateSelectedCourse }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlannerSidebar);

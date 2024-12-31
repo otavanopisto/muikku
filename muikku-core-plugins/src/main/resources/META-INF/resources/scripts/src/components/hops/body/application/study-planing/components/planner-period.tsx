@@ -5,7 +5,7 @@ import {
   PlannedPeriod,
 } from "~/reducers/hops";
 import PlannerPeriodMonth from "./planner-period-month";
-import { LayoutGroup } from "framer-motion";
+import { LayoutGroup, motion } from "framer-motion";
 
 const AUTUMN_MONTHS = ["Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"];
 const SPRING_MONTHS = [
@@ -49,12 +49,12 @@ const PlannerPeriod: React.FC<PlannerPeriodProps> = (props) => {
     });
 
   return (
-    <LayoutGroup id="planner-periods">
-      <div className="hops-planner__period">
-        <h3 className="hops-planner__period-title">
-          {title} - {credits} op
-        </h3>
-        <div className="hops-planner__months">
+    <div className="study-planner__period">
+      <h3 className="study-planner__period-title">
+        {title} - {credits} op
+      </h3>
+      <LayoutGroup>
+        <motion.div layout className="study-planner__months">
           {months.map((monthName, index) => {
             const monthCourses = getCoursesByMonth(monthName);
 
@@ -70,9 +70,9 @@ const PlannerPeriod: React.FC<PlannerPeriodProps> = (props) => {
               />
             );
           })}
-        </div>
-      </div>
-    </LayoutGroup>
+        </motion.div>
+      </LayoutGroup>
+    </div>
   );
 };
 

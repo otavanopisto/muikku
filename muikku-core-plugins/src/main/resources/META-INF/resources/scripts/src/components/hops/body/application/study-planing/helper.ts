@@ -1,5 +1,9 @@
-import { CourseFilter, SchoolSubject } from "~/@types/shared";
-import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
+import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
+import {
+  PlannedCourseWithIdentifier,
+  PlannedPeriod,
+  SelectedCourse,
+} from "~/reducers/hops";
 /**
  * Convert planned course to period
  * @param plannedCourses planned course
@@ -130,4 +134,27 @@ const filterSubjectsAndCourses = (
     })
     .filter((subject) => subject.availableCourses.length > 0); // Remove subjects with no matching courses
 
-export { createAndAllocateCoursesToPeriods, filterSubjectsAndCourses };
+/**
+ * Checks if the course is a planned course
+ * @param course course
+ * @returns true if the course is a planned course
+ */
+const isPlannedCourse = (
+  course: PlannedCourseWithIdentifier | Course
+): course is PlannedCourseWithIdentifier => "identifier" in course;
+
+/**
+ * Checks if the selected course is a planned course
+ * @param course selected course
+ * @returns true if the selected course is a planned course
+ */
+const selectedIsPlannedCourse = (
+  course: SelectedCourse
+): course is PlannedCourseWithIdentifier => "identifier" in course;
+
+export {
+  createAndAllocateCoursesToPeriods,
+  filterSubjectsAndCourses,
+  isPlannedCourse,
+  selectedIsPlannedCourse,
+};

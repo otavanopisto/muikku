@@ -14,15 +14,30 @@ import _ from "lodash";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { getEmptyImage } from "react-dnd-html5-backend";
+import {
+  PlannerCardActions,
+  PlannerCardContent,
+  PlannerCardLabel,
+  PlannerCard,
+  PlannerCardHeader,
+} from "./planner-card";
+import Button from "~/components/general/button";
+import {
+  updateSelectedCourse,
+  UpdateSelectedCourseTriggerType,
+} from "~/actions/main-function/hops";
 
 /**
  * CourseCardProps
  */
 interface PlannerPeriodCourseCardProps {
   course: PlannedCourseWithIdentifier;
+  selected: boolean;
   onCourseChange: PlannerPeriodProps["onCourseChange"];
 
+  //Redux state
   plannedCourses: PlannedCourseWithIdentifier[];
+  updateSelectedCourse: UpdateSelectedCourseTriggerType;
 }
 
 /**
@@ -32,7 +47,13 @@ interface PlannerPeriodCourseCardProps {
 const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
   props
 ) => {
-  const { course, onCourseChange, plannedCourses } = props;
+  const {
+    course,
+    selected,
+    plannedCourses,
+    onCourseChange,
+    updateSelectedCourse,
+  } = props;
 
   const [specifyIsOpen, setSpecifyIsOpen] = React.useState(false);
   const [deleteWarningIsOpen, setDeleteWarningIsOpen] = React.useState(false);
@@ -66,8 +87,12 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
 
   /**
    * Handles specify
+   * @param e event
    */
-  const handleSpecifyOpen = () => {
+  const handleSpecifyOpen = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
     unstable_batchedUpdates(() => {
       setSpecifyIsOpen(true);
       setSpecifyCourse({
@@ -81,8 +106,12 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
 
   /**
    * Handles delete
+   * @param e event
    */
-  const handleDeleteOpen = () => {
+  const handleDeleteOpen = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
     unstable_batchedUpdates(() => {
       setSpecifyIsOpen(false);
       setDeleteWarningIsOpen(true);
@@ -148,6 +177,21 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
     }
   };
 
+  /**
+   * Handles course select. If the same course is clicked, clear the selection
+   */
+  const handleCourseSelect = () => {
+    if (selected) {
+      updateSelectedCourse(null);
+    } else {
+      updateSelectedCourse({
+        course: {
+          ...course,
+        },
+      });
+    }
+  };
+
   // Calculate the end date of the course from the start date and duration
   const calculatedEndDate = course.duration
     ? new Date(course.startDate.getTime() + course.duration)
@@ -161,29 +205,40 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
   // And check if there are any unsaved changes
   const hasUnsavedChanges = currentInfo && !_.isEqual(currentInfo, course);
 
+  const cardModifiers = [];
+  isDragging && cardModifiers.push("is-dragging");
+  selected && cardModifiers.push("selected");
+
+  const type = course.mandatory ? "mandatory" : "optional";
+
   return (
     <>
-      <div
+      <PlannerCard
+        modifiers={["planned-course-card", ...cardModifiers]}
+        innerContainerModifiers={[type]}
+        onClick={handleCourseSelect}
         ref={drag}
-        className={`hops-planner__course-card ${isDragging ? "is-dragging" : ""}`}
       >
-        <div className="hops-planner__course-header">
-          <span className="hops-planner__course-code">
-            {`${course.subjectCode}-${course.courseNumber}`}
+        <PlannerCardHeader modifiers={["planned-course-card"]}>
+          <span className="study-planner__course-code">
+            {`${course.subjectCode} ${course.courseNumber}.`}
           </span>
-          <span className="hops-planner__course-name">{course.name}</span>
+          <span className="study-planner__course-name">{course.name}</span>
           {hasUnsavedChanges && (
-            <span className="hops-planner__course-unsaved">*</span>
+            <span className="study-planner__course-unsaved">*</span>
           )}
-        </div>
+        </PlannerCardHeader>
 
-        <div className="hops-planner__course-content">
-          <span
-            className={`hops-planner__course-type hops-planner__course-type--${course.mandatory ? "mandatory" : "optional"}`}
+        <PlannerCardContent modifiers={["planned-course-card"]}>
+          <PlannerCardLabel
+            modifiers={[course.mandatory ? "mandatory" : "optional"]}
           >
             {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
-          </span>
-          <span className="hops-planner__course-dates">
+          </PlannerCardLabel>
+          <PlannerCardLabel modifiers={["course-length"]}>
+            {course.length} op
+          </PlannerCardLabel>
+          <span className="study-planner__course-dates">
             {calculatedEndDate ? (
               <>
                 {course.startDate.toLocaleDateString()} -{" "}
@@ -193,57 +248,57 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
               course.startDate.toLocaleDateString()
             )}
           </span>
-        </div>
+        </PlannerCardContent>
 
-        <div className="hops-planner__course-actions">
-          <button
-            className="hops-planner__action-button"
-            onClick={handleSpecifyOpen}
-          >
+        <PlannerCardActions modifiers={["planned-course-card"]}>
+          <Button buttonModifiers={["primary"]} onClick={handleSpecifyOpen}>
             Tarkenna
-          </button>
-          <button
-            className="hops-planner__action-button hops-planner__action-button--danger"
-            onClick={handleDeleteOpen}
-          >
+          </Button>
+          <Button buttonModifiers={["danger"]} onClick={handleDeleteOpen}>
             Poista
-          </button>
-        </div>
-      </div>
+          </Button>
+        </PlannerCardActions>
+      </PlannerCard>
 
       <AnimateHeight
         duration={500}
         height={specifyIsOpen ? "auto" : 0}
-        className={`hops-planner__course-item-animate-height ${
+        className={`study-planner__extra-section-animate-height ${
           specifyIsOpen ? "open" : "close"
         }`}
-        contentClassName="hops-planner__course-item-specify"
+        contentClassName="study-planner__extra-section study-planner__extra-section--specify"
       >
-        <h4>Tarkenna suunnitelmaa</h4>
+        <h4 className="study-planner__extra-section-title">
+          Tarkenna suunnitelmaa
+        </h4>
 
-        <div className="specify-section">
-          <div className="input-group">
-            <label>Valitse kurssi-ilmentymä</label>
-            <select className="hops__input">
+        <div className="study-planner__extra-section-content">
+          <div className="study-planner__extra-section-input-group">
+            <label className="study-planner__extra-section-input-group-label">
+              Valitse kurssi-ilmentymä
+            </label>
+            <select className="study-planner__input">
               <option>{course.name}</option>
             </select>
           </div>
 
-          <div className="input-group">
-            <label>Valitse ajankohta</label>
-            <div className="date-inputs">
+          <div className="study-planner__extra-section-input-group">
+            <label className="study-planner__extra-section-input-group-label">
+              Valitse ajankohta
+            </label>
+            <div className="study-planner__extra-section-date-inputs">
               <DatePicker
-                className="hops__input"
+                className="study-planner__input"
                 placeholderText="Alkaa"
-                selected={specifyCourse?.startDate}
+                selected={specifyCourse && specifyCourse.startDate}
                 onChange={handleSpecifyStartDate}
                 locale={outputCorrectDatePickerLocale(localize.language)}
                 dateFormat="P"
               />
               <DatePicker
-                className="hops__input"
+                className="study-planner__input"
                 placeholderText="Päättyy"
-                selected={specifyCourse?.endDate}
+                selected={specifyCourse && specifyCourse.endDate}
                 onChange={handleSpecifyEndDate}
                 locale={outputCorrectDatePickerLocale(localize.language)}
                 dateFormat="P"
@@ -251,19 +306,19 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
             </div>
           </div>
 
-          <div className="button-group">
-            <button
-              className="hops__button hops__button--secondary"
+          <div className="study-planner__extra-section-button-group">
+            <Button
+              buttonModifiers={["secondary"]}
               onClick={() => setSpecifyIsOpen(false)}
             >
               PERUUTA
-            </button>
-            <button
-              className="hops__button hops__button--primary"
+            </Button>
+            <Button
+              buttonModifiers={["primary"]}
               onClick={handleConfirmSpecify}
             >
               TARKENNA
-            </button>
+            </Button>
           </div>
         </div>
       </AnimateHeight>
@@ -271,26 +326,25 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
       <AnimateHeight
         duration={500}
         height={deleteWarningIsOpen ? "auto" : 0}
-        className={`hops-planner__course-item-animate-height ${
+        className={`study-planner__extra-section-animate-height ${
           deleteWarningIsOpen ? "open" : "close"
         }`}
-        contentClassName="hops-planner__course-item-delete-warning"
+        contentClassName="study-planner__extra-section"
         onTransitionEnd={handleAnimationComplete}
       >
-        <h4>Haluatko varmasti poistaa kurssin suunnitelmasta?</h4>
-        <div className="button-group">
-          <button
-            className="hops__button hops__button--secondary"
+        <h4 className="study-planner__extra-section-title">
+          Haluatko varmasti poistaa kurssin suunnitelmasta?
+        </h4>
+        <div className="study-planner__extra-section-button-group">
+          <Button
+            buttonModifiers={["secondary"]}
             onClick={() => setDeleteWarningIsOpen(false)}
           >
             PERUUTA
-          </button>
-          <button
-            className="hops__button hops__button--primary"
-            onClick={handleConfirmDelete}
-          >
+          </Button>
+          <Button buttonModifiers={["primary"]} onClick={handleConfirmDelete}>
             POISTA KURSSI
-          </button>
+          </Button>
         </div>
       </AnimateHeight>
     </>
@@ -312,7 +366,12 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators(
+    {
+      updateSelectedCourse,
+    },
+    dispatch
+  );
 }
 
 export default connect(

@@ -8,9 +8,7 @@ import {
   MatriculationExamFinishedSubject,
   MatriculationExamPlannedSubject,
   MatriculationExamEnrollment,
-  PlannedCourse,
 } from "~/generated/client";
-import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 
 /**
  * UsedAs

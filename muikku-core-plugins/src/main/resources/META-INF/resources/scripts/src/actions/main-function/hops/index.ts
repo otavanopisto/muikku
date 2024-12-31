@@ -24,6 +24,7 @@ import {
   PlannedCourseWithIdentifier,
   ReducerInitializeStatusType,
   ReducerStateType,
+  SelectedCourse,
 } from "~/reducers/hops";
 import i18n from "~/locales/i18n";
 import { abistatus } from "~/helper-functions/abistatus";
@@ -194,6 +195,16 @@ export type HOPS_UPDATE_EDITING = SpecificActionType<
 export type HOPS_UPDATE_EDITING_STUDYPLAN = SpecificActionType<
   "HOPS_UPDATE_EDITING_STUDYPLAN",
   PlannedCourseWithIdentifier[]
+>;
+
+export type HOPS_SET_SELECTED_COURSE = SpecificActionType<
+  "HOPS_SET_SELECTED_COURSE",
+  SelectedCourse
+>;
+
+export type HOPS_CLEAR_SELECTED_COURSE = SpecificActionType<
+  "HOPS_CLEAR_SELECTED_COURSE",
+  undefined
 >;
 
 /**
@@ -396,6 +407,20 @@ export interface LoadStudyPlanDataTriggerType {
  */
 export interface SaveStudyPlanDataTriggerType {
   (data: { onSuccess?: () => void; onFail?: () => void }): AnyActionType;
+}
+
+/**
+ * SetSelectedCourseTriggerType
+ */
+export interface UpdateSelectedCourseTriggerType {
+  (data: { course: SelectedCourse }): AnyActionType;
+}
+
+/**
+ * ClearSelectedCourseTriggerType
+ */
+export interface ClearSelectedCourseTriggerType {
+  (): AnyActionType;
 }
 
 /**
@@ -2068,6 +2093,30 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
   };
 
 /**
+ * Set selected course
+ * @param data Data containing course to set
+ */
+const updateSelectedCourse: UpdateSelectedCourseTriggerType =
+  function updateSelectedCourse(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      if (data === null) {
+        dispatch({
+          type: "HOPS_CLEAR_SELECTED_COURSE",
+          payload: null,
+        });
+      } else {
+        dispatch({
+          type: "HOPS_SET_SELECTED_COURSE",
+          payload: data.course,
+        });
+      }
+    };
+  };
+
+/**
  * Initialize student info
  * @param studentIdentifier student identifier
  * @param dispatch dispatch
@@ -2257,4 +2306,5 @@ export {
   verifyMatriculationExam,
   updateHopsEditingStudyPlan,
   saveStudyPlanData,
+  updateSelectedCourse,
 };

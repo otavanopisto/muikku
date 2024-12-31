@@ -268,6 +268,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     switch (tab) {
       case "BACKGROUND":
       case "POSTGRADUATE":
+      case "STUDYPLAN":
         return true;
       case "MATRICULATION":
         return [
@@ -296,17 +297,6 @@ const HopsApplication = (props: HopsApplicationProps) => {
       ),
     },
     {
-      id: "MATRICULATION",
-      name: t("labels.hopsMatriculation", { ns: "hops_new" }),
-      hash: "matriculation",
-      type: "matriculation",
-      component: (
-        <ApplicationPanelBody modifier="tabs">
-          <Matriculation />
-        </ApplicationPanelBody>
-      ),
-    },
-    {
       id: "STUDYPLAN",
       name: "Opintojen suunnittelu",
       hash: "studyplan",
@@ -314,6 +304,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
       component: (
         <ApplicationPanelBody modifier="tabs">
           <StudyPlan />
+        </ApplicationPanelBody>
+      ),
+    },
+    {
+      id: "MATRICULATION",
+      name: t("labels.hopsMatriculation", { ns: "hops_new" }),
+      hash: "matriculation",
+      type: "matriculation",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <Matriculation />
         </ApplicationPanelBody>
       ),
     },
