@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import { Action } from "redux";
 import { Dispatch } from "redux";
 import { useLocalStorage } from "usehooks-ts";
-import { CourseFilter, SchoolSubject } from "~/@types/shared";
+import { Course, CourseFilter } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
 import {
   updateSelectedCourse,
@@ -14,17 +14,21 @@ import {
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { StateType } from "~/reducers";
-import { PlannedCourseWithIdentifier, SelectedCourse } from "~/reducers/hops";
-import { filterSubjectsAndCourses } from "../helper";
+import { PlannedCourseWithIdentifier } from "~/reducers/hops";
+import { CurriculumConfig } from "~/util/curriculum-config";
+import { filterSubjectsAndCourses, selectedIsPlannedCourse } from "../helper";
 import PlannerSidebarCourse from "./planner-sidebar-course";
 
 /**
  * PlannerSidebarProps
  */
 interface PlannerSidebarProps {
-  subjects: SchoolSubject[];
   plannedCourses: PlannedCourseWithIdentifier[];
-  selectedCourse: SelectedCourse | null;
+  curriculumConfig: CurriculumConfig;
+  selectedCourse:
+    | PlannedCourseWithIdentifier
+    | (Course & { subjectCode: string })
+    | null;
   updateSelectedCourse: UpdateSelectedCourseTriggerType;
 }
 
@@ -33,8 +37,12 @@ interface PlannerSidebarProps {
  * @param props props
  */
 const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
-  const { subjects, plannedCourses, selectedCourse, updateSelectedCourse } =
-    props;
+  const {
+    plannedCourses,
+    selectedCourse,
+    curriculumConfig,
+    updateSelectedCourse,
+  } = props;
 
   const [searchTerm, setSearchTerm] = useLocalStorage(
     "hops-planner-search-term",
@@ -80,13 +88,8 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
    * Handles course click. If the same course is clicked, clear the selection
    * @param course course
    */
-  const handleCourseClick = (course: SelectedCourse) => {
-    if (
-      selectedCourse &&
-      selectedCourse.identifier === undefined &&
-      course.subjectCode === selectedCourse.subjectCode &&
-      course.courseNumber === selectedCourse.courseNumber
-    ) {
+  const handleCourseClick = (course: Course & { subjectCode: string }) => {
+    if (course === null) {
       updateSelectedCourse(null);
     } else {
       updateSelectedCourse({ course });
@@ -95,7 +98,7 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
 
   // Filter subjects and courses
   const filteredSubjects = filterSubjectsAndCourses(
-    subjects,
+    curriculumConfig.strategy.getCurriculumMatrix().subjectsTable,
     searchTerm,
     selectedFilters
   );
@@ -175,30 +178,33 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
               height={expandedGroups.includes(subject.subjectCode) ? "auto" : 0}
             >
               <div className="study-planner__course-list">
-                {subject.availableCourses.map((course) => (
-                  <PlannerSidebarCourse
-                    key={`${subject.subjectCode}${course.courseNumber}`}
-                    course={course}
-                    subjectCode={subject.subjectCode}
-                    onClick={() =>
-                      handleCourseClick({
-                        ...course,
-                        subjectCode: subject.subjectCode,
-                      })
-                    }
-                    plannedCourse={plannedCourses.find(
-                      (plannedCourse) =>
-                        plannedCourse.subjectCode === subject.subjectCode &&
-                        plannedCourse.courseNumber === course.courseNumber
-                    )}
-                    selected={
-                      selectedCourse &&
-                      selectedCourse.identifier === undefined &&
-                      selectedCourse.subjectCode === subject.subjectCode &&
-                      selectedCourse.courseNumber === course.courseNumber
-                    }
-                  />
-                ))}
+                {subject.availableCourses.map((course) => {
+                  // Check if the course is already planned
+                  const isPlannedCourse = plannedCourses.find(
+                    (plannedCourse) =>
+                      plannedCourse.subjectCode === subject.subjectCode &&
+                      plannedCourse.courseNumber === course.courseNumber
+                  );
+
+                  // Check if the course is selected
+                  const isSelected =
+                    selectedCourse &&
+                    !selectedIsPlannedCourse(selectedCourse) &&
+                    selectedCourse.subjectCode === subject.subjectCode &&
+                    selectedCourse.courseNumber === course.courseNumber;
+
+                  return (
+                    <PlannerSidebarCourse
+                      key={`${subject.subjectCode}${course.courseNumber}`}
+                      course={course}
+                      subjectCode={subject.subjectCode}
+                      plannedCourse={isPlannedCourse}
+                      selected={isSelected}
+                      curriculumConfig={curriculumConfig}
+                      onSelectCourse={handleCourseClick}
+                    />
+                  );
+                })}
               </div>
             </AnimateHeight>
           </div>
@@ -214,7 +220,6 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    editedPlannedCourses: state.hopsNew.hopsEditing.plannedCourses,
     selectedCourse: state.hopsNew.hopsEditing.selectedCourse,
   };
 }

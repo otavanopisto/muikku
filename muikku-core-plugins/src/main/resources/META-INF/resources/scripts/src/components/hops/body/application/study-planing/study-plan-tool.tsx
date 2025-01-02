@@ -5,28 +5,20 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
-import {
-  updateHopsEditingStudyPlan,
-  UpdateHopsEditingStudyPlanTriggerType,
-} from "~/actions/main-function/hops/";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import PlannerControls from "./components/planner-controls";
 import PlannerSidebar from "./components/planner-sidebar";
 import PlannerPeriod from "./components/planner-period";
-import { schoolCourseTableUppersecondary2021 } from "~/mock/mock-data";
 import { createAndAllocateCoursesToPeriods } from "./helper";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider, TouchTransition } from "react-dnd-multi-backend";
 import { MouseTransition } from "react-dnd-multi-backend";
 import { MultiBackendOptions } from "react-dnd-multi-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
-import {
-  CourseChangeAction,
-  HopsState,
-  PlannedCourseWithIdentifier,
-} from "~/reducers/hops";
+import { HopsMode, PlannedCourseWithIdentifier } from "~/reducers/hops";
 import StudyPlannerDragLayer from "./components/react-dnd/planner-drag-layer";
 import "~/sass/elements/study-planner.scss";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -49,10 +41,10 @@ export const HTML5toTouch: MultiBackendOptions = {
  * MatriculationPlanProps
  */
 interface StudyPlanToolProps {
-  hops: HopsState;
+  hopsMode: HopsMode;
+  curriculumConfig: CurriculumConfig | null;
   plannedCourses: PlannedCourseWithIdentifier[];
   editingPlan: PlannedCourseWithIdentifier[];
-  updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType;
 }
 
 /**
@@ -60,8 +52,7 @@ interface StudyPlanToolProps {
  * @param props props
  */
 const StudyPlanTool = (props: StudyPlanToolProps) => {
-  const { plannedCourses, editingPlan, hops, updateHopsEditingStudyPlan } =
-    props;
+  const { plannedCourses, editingPlan, hopsMode, curriculumConfig } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useTranslation(["hops_new", "common"]);
@@ -149,16 +140,20 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
   const usedPlannedCourses = React.useMemo(() => {
     if (!plannedCourses || !editingPlan) return [];
 
-    if (hops.hopsMode === "READ") {
+    if (hopsMode === "READ") {
       return plannedCourses;
     } else {
       return editingPlan;
     }
-  }, [plannedCourses, editingPlan, hops.hopsMode]);
+  }, [plannedCourses, editingPlan, hopsMode]);
 
   const calculatedPeriods = useMemo(
-    () => createAndAllocateCoursesToPeriods(usedPlannedCourses),
-    [usedPlannedCourses]
+    () =>
+      createAndAllocateCoursesToPeriods(
+        usedPlannedCourses,
+        curriculumConfig.strategy
+      ),
+    [usedPlannedCourses, curriculumConfig]
   );
 
   // Add effect to update overlay width when content changes
@@ -173,7 +168,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
    * @param course course
    * @param action action
    */
-  const handleCourseChange = (
+  /* const handleCourseChange = (
     course: PlannedCourseWithIdentifier,
     action: CourseChangeAction
   ) => {
@@ -181,7 +176,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
       updatedCourse: course,
       action,
     });
-  };
+  }; */
 
   // Add mouse move tracker
   const handleMousePositionUpdate = useCallback(
@@ -302,7 +297,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                 />
                 <div className="study-planner__content">
                   <PlannerSidebar
-                    subjects={schoolCourseTableUppersecondary2021.subjectsTable}
+                    curriculumConfig={curriculumConfig}
                     plannedCourses={usedPlannedCourses}
                   />
                   <div
@@ -326,11 +321,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                       ref={timelineContentRef}
                     >
                       {calculatedPeriods.map((period) => (
-                        <PlannerPeriod
-                          key={period.title}
-                          {...period}
-                          onCourseChange={handleCourseChange}
-                        />
+                        <PlannerPeriod key={period.title} {...period} />
                       ))}
                     </div>
                   </div>
@@ -350,7 +341,8 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    hops: state.hopsNew,
+    hopsMode: state.hopsNew.hopsMode,
+    curriculumConfig: state.hopsNew.hopsCurriculumConfig,
     plannedCourses: state.hopsNew.hopsStudyPlanState.plannedCourses,
     editingPlan: state.hopsNew.hopsEditing.plannedCourses,
   };
@@ -361,7 +353,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ updateHopsEditingStudyPlan }, dispatch);
+  return bindActionCreators({}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudyPlanTool);

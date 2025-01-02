@@ -1,6 +1,8 @@
 import { Reducer } from "redux";
 import { HopsForm } from "~/@types/hops";
+import { Course } from "~/@types/shared";
 import { ActionType } from "~/actions";
+import { CurriculumConfig, PeriodWorkload } from "~/util/curriculum-config";
 import {
   HopsLocked,
   MatriculationEligibilityStatus,
@@ -40,7 +42,6 @@ export type ReducerInitializeStatusType =
  * HopsStudyPlanState
  */
 interface HopsStudyPlanState {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   plannedCourses: PlannedCourseWithIdentifier[];
 }
 
@@ -66,9 +67,10 @@ export type CourseChangeAction = "add" | "update" | "delete";
 export interface PlannedPeriod {
   title: string;
   year: number;
-  credits: number;
   type: "AUTUMN" | "SPRING";
   plannedCourses: PlannedCourseWithIdentifier[];
+  workloadType: "credits" | "courses";
+  workload?: PeriodWorkload;
 }
 
 /**
@@ -114,11 +116,6 @@ interface hopsMatriculation {
 export type HopsMode = "READ" | "EDIT";
 
 /**
- * SelectedCourse
- */
-export interface SelectedCourse extends Partial<PlannedCourseWithIdentifier> {}
-
-/**
  * HopsEditingState
  */
 export interface HopsEditingState {
@@ -126,7 +123,10 @@ export interface HopsEditingState {
   hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
   plannedCourses: PlannedCourseWithIdentifier[];
-  selectedCourse: SelectedCourse | null;
+  selectedCourse:
+    | PlannedCourseWithIdentifier
+    | (Course & { subjectCode: string })
+    | null;
 }
 
 /**
@@ -142,6 +142,10 @@ export interface HopsState {
   // HOPS STUDY PLAN
   hopsStudyPlanStatus: ReducerStateType;
   hopsStudyPlanState: HopsStudyPlanState;
+
+  // HOPS CURRICULUM CONFIG
+  hopsCurriculumConfigStatus: ReducerStateType;
+  hopsCurriculumConfig: CurriculumConfig | null;
 
   // HOPS EXAMINATION
   hopsMatriculationStatus: ReducerStateType;
@@ -176,6 +180,8 @@ const initialHopsState: HopsState = {
   hopsStudyPlanState: {
     plannedCourses: [],
   },
+  hopsCurriculumConfigStatus: "IDLE",
+  hopsCurriculumConfig: null,
   hopsMatriculationStatus: "IDLE",
   hopsMatriculation: {
     exams: [],
@@ -416,6 +422,12 @@ export const hopsNew: Reducer<HopsState> = (
         hopsFormCanLoadMoreHistory: true,
         studentInfo: null,
         studentInfoStatus: "IDLE",
+        hopsCurriculumConfigStatus: "IDLE",
+        hopsCurriculumConfig: null,
+        hopsStudyPlanStatus: "IDLE",
+        hopsStudyPlanState: {
+          plannedCourses: [],
+        },
         hopsMatriculation: {
           exams: [],
           pastExams: [],
@@ -570,6 +582,13 @@ export const hopsNew: Reducer<HopsState> = (
           ...state.hopsEditing,
           selectedCourse: null,
         },
+      };
+
+    case "HOPS_UPDATE_CURRICULUM_CONFIG":
+      return {
+        ...state,
+        hopsCurriculumConfigStatus: action.payload.status,
+        hopsCurriculumConfig: action.payload.data || state.hopsCurriculumConfig,
       };
 
     default:

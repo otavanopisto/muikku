@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-  CourseChangeAction,
-  PlannedCourseWithIdentifier,
-  PlannedPeriod,
-} from "~/reducers/hops";
+import { PlannedPeriod } from "~/reducers/hops";
 import PlannerPeriodMonth from "./planner-period-month";
 import { LayoutGroup, motion } from "framer-motion";
 
@@ -21,19 +17,14 @@ const SPRING_MONTHS = [
 /**
  * PlannerPeriodProps
  */
-export interface PlannerPeriodProps extends PlannedPeriod {
-  onCourseChange?: (
-    course: PlannedCourseWithIdentifier,
-    action: CourseChangeAction
-  ) => void;
-}
+export interface PlannerPeriodProps extends PlannedPeriod {}
 
 /**
  * PlannerPeriod component
  * @param props props
  */
 const PlannerPeriod: React.FC<PlannerPeriodProps> = (props) => {
-  const { title, credits, type, year, plannedCourses, onCourseChange } = props;
+  const { title, workload, type, year, plannedCourses } = props;
 
   const months = type === "AUTUMN" ? AUTUMN_MONTHS : SPRING_MONTHS;
 
@@ -51,7 +42,8 @@ const PlannerPeriod: React.FC<PlannerPeriodProps> = (props) => {
   return (
     <div className="study-planner__period">
       <h3 className="study-planner__period-title">
-        {title} - {credits} op
+        {title}
+        {workload && ` - ${workload.displayValue}`}
       </h3>
       <LayoutGroup>
         <motion.div layout className="study-planner__months">
@@ -66,7 +58,6 @@ const PlannerPeriod: React.FC<PlannerPeriodProps> = (props) => {
                 monthIndex={index + (type === "AUTUMN" ? 7 : 0)}
                 year={year}
                 courses={monthCourses}
-                onCourseChange={onCourseChange}
               />
             );
           })}

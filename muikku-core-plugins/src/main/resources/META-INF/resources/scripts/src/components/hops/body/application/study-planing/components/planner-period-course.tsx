@@ -3,14 +3,11 @@ import AnimateHeight from "react-animate-height";
 import { useDrag } from "react-dnd";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import { PlannedCourseWithIdentifier } from "~/reducers/hops";
-import { PlannerPeriodProps } from "./planner-period";
+import {
+  CourseChangeAction,
+  PlannedCourseWithIdentifier,
+} from "~/reducers/hops";
 import DatePicker from "react-datepicker";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
-import { StateType } from "~/reducers";
-import { connect } from "react-redux";
-import _ from "lodash";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { getEmptyImage } from "react-dnd-html5-backend";
@@ -22,10 +19,7 @@ import {
   PlannerCardHeader,
 } from "./planner-card";
 import Button from "~/components/general/button";
-import {
-  updateSelectedCourse,
-  UpdateSelectedCourseTriggerType,
-} from "~/actions/main-function/hops";
+import { CurriculumConfig } from "~/util/curriculum-config";
 
 /**
  * CourseCardProps
@@ -33,11 +27,13 @@ import {
 interface PlannerPeriodCourseCardProps {
   course: PlannedCourseWithIdentifier;
   selected: boolean;
-  onCourseChange: PlannerPeriodProps["onCourseChange"];
-
-  //Redux state
-  plannedCourses: PlannedCourseWithIdentifier[];
-  updateSelectedCourse: UpdateSelectedCourseTriggerType;
+  hasChanges: boolean;
+  curriculumConfig: CurriculumConfig;
+  onCourseChange: (
+    course: PlannedCourseWithIdentifier,
+    action: CourseChangeAction
+  ) => void;
+  onSelectCourse: (course: PlannedCourseWithIdentifier) => void;
 }
 
 /**
@@ -50,9 +46,10 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
   const {
     course,
     selected,
-    plannedCourses,
+    hasChanges,
+    curriculumConfig,
     onCourseChange,
-    updateSelectedCourse,
+    onSelectCourse,
   } = props;
 
   const [specifyIsOpen, setSpecifyIsOpen] = React.useState(false);
@@ -97,7 +94,9 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
       setSpecifyIsOpen(true);
       setSpecifyCourse({
         startDate: course.startDate,
-        endDate: new Date(course.startDate.getTime() + course.duration),
+        endDate: course.duration
+          ? new Date(course.startDate.getTime() + course.duration)
+          : undefined,
         workspaceEntityId: course.workspaceEntityId,
       });
       setDeleteWarningIsOpen(false);
@@ -182,13 +181,9 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
    */
   const handleCourseSelect = () => {
     if (selected) {
-      updateSelectedCourse(null);
+      onSelectCourse(null);
     } else {
-      updateSelectedCourse({
-        course: {
-          ...course,
-        },
-      });
+      onSelectCourse(course);
     }
   };
 
@@ -196,14 +191,6 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
   const calculatedEndDate = course.duration
     ? new Date(course.startDate.getTime() + course.duration)
     : null;
-
-  // Find the current course info from the plannedCourses array
-  const currentInfo = plannedCourses.find(
-    (c) => c.identifier === course.identifier
-  );
-
-  // And check if there are any unsaved changes
-  const hasUnsavedChanges = currentInfo && !_.isEqual(currentInfo, course);
 
   const cardModifiers = [];
   isDragging && cardModifiers.push("is-dragging");
@@ -224,7 +211,7 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
             {`${course.subjectCode} ${course.courseNumber}.`}
           </span>
           <span className="study-planner__course-name">{course.name}</span>
-          {hasUnsavedChanges && (
+          {hasChanges && (
             <span className="study-planner__course-unsaved">*</span>
           )}
         </PlannerCardHeader>
@@ -236,7 +223,7 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
             {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
           </PlannerCardLabel>
           <PlannerCardLabel modifiers={["course-length"]}>
-            {course.length} op
+            {curriculumConfig.strategy.getCourseDisplayedLength(course)}
           </PlannerCardLabel>
           <span className="study-planner__course-dates">
             {calculatedEndDate ? (
@@ -351,30 +338,4 @@ const PlannerPeriodCourseCard: React.FC<PlannerPeriodCourseCardProps> = (
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    plannedCourses: state.hopsNew.hopsStudyPlanState.plannedCourses,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators(
-    {
-      updateSelectedCourse,
-    },
-    dispatch
-  );
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PlannerPeriodCourseCard);
+export default PlannerPeriodCourseCard;

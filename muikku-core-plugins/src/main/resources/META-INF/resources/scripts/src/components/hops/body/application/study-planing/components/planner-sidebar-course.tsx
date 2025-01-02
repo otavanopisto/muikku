@@ -3,6 +3,7 @@ import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { Course } from "~/@types/shared";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
+import { CurriculumConfig } from "~/util/curriculum-config";
 import {
   PlannerCard,
   PlannerCardContent,
@@ -18,7 +19,8 @@ interface PlannerSidebarCourseProps {
   subjectCode: string;
   plannedCourse?: PlannedCourseWithIdentifier;
   selected: boolean;
-  onClick?: () => void;
+  curriculumConfig: CurriculumConfig;
+  onSelectCourse: (course: Course & { subjectCode: string }) => void;
 }
 
 /**
@@ -26,7 +28,14 @@ interface PlannerSidebarCourseProps {
  * @param props props
  */
 const PlannerSidebarCourse: React.FC<PlannerSidebarCourseProps> = (props) => {
-  const { course, subjectCode, plannedCourse, onClick, selected } = props;
+  const {
+    course,
+    subjectCode,
+    plannedCourse,
+    onSelectCourse,
+    selected,
+    curriculumConfig,
+  } = props;
 
   const isDisabled = plannedCourse !== undefined;
 
@@ -49,6 +58,17 @@ const PlannerSidebarCourse: React.FC<PlannerSidebarCourseProps> = (props) => {
 
   preview(getEmptyImage(), { captureDraggingState: true });
 
+  /**
+   * Handles course select
+   */
+  const handleSelectCourse = () => {
+    if (selected) {
+      onSelectCourse(null);
+    } else {
+      onSelectCourse({ ...course, subjectCode });
+    }
+  };
+
   const modifiers = [];
 
   isDragging && modifiers.push("is-dragging");
@@ -62,7 +82,7 @@ const PlannerSidebarCourse: React.FC<PlannerSidebarCourseProps> = (props) => {
     <PlannerCard
       modifiers={modifiers}
       innerContainerModifiers={[type]}
-      onClick={!isDisabled ? onClick : undefined}
+      onClick={!isDisabled ? handleSelectCourse : undefined}
       ref={drag}
     >
       <PlannerCardHeader modifiers={["sidebar-course-card"]}>
@@ -77,7 +97,7 @@ const PlannerSidebarCourse: React.FC<PlannerSidebarCourseProps> = (props) => {
           {type === "mandatory" ? "PAKOLLINEN" : "VALINNAINEN"}
         </PlannerCardLabel>
         <PlannerCardLabel modifiers={["course-length"]}>
-          {course.length} op
+          {curriculumConfig.strategy.getCourseDisplayedLength(course)}
         </PlannerCardLabel>
 
         {plannedCourse && (

@@ -120,10 +120,21 @@ const HopsApplication = (props: HopsApplicationProps) => {
     return !_.isEqual(hops.hopsMatriculation.plan, updatedMatriculationPlan);
   }, [hops.hopsEditing.matriculationPlan, hops.hopsMatriculation.plan]);
 
+  // Check if the study plan has changes
+  const studyPlanHasChanges = React.useMemo(
+    () =>
+      !_.isEqual(
+        hops.hopsEditing.plannedCourses,
+        hops.hopsStudyPlanState.plannedCourses
+      ),
+    [hops.hopsEditing.plannedCourses, hops.hopsStudyPlanState.plannedCourses]
+  );
+
   // Check if any of the HOPS data has changes
   const hopsHasChanges = React.useMemo(
-    () => hopsMatriculationHasChanges || hopsFormHasChanges,
-    [hopsFormHasChanges, hopsMatriculationHasChanges]
+    () =>
+      hopsMatriculationHasChanges || hopsFormHasChanges || studyPlanHasChanges,
+    [hopsFormHasChanges, hopsMatriculationHasChanges, studyPlanHasChanges]
   );
 
   // Add new useEffect for handling initial URL hash

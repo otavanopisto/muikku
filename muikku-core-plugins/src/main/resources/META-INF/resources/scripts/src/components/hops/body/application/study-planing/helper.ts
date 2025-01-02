@@ -1,16 +1,16 @@
 import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
-import {
-  PlannedCourseWithIdentifier,
-  PlannedPeriod,
-  SelectedCourse,
-} from "~/reducers/hops";
+import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
+import { CurriculumStrategy } from "~/util/curriculum-config";
+
 /**
  * Convert planned course to period
  * @param plannedCourses planned course
+ * @param curriculumStrategy curriculum strategy
  * @returns period
  */
 const createPeriods = (
-  plannedCourses: PlannedCourseWithIdentifier[]
+  plannedCourses: PlannedCourseWithIdentifier[],
+  curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
   // Get all unique years from planned courses
   /* const years = [
@@ -25,25 +25,10 @@ const createPeriods = (
 
   // Create spring and fall periods for each year
   years.forEach((year) => {
-    // Spring period: January 1st - July 31st
-    const springPeriod: PlannedPeriod = {
-      type: "SPRING",
-      year,
-      title: `${year} Spring`,
-      credits: 0,
-      plannedCourses: [],
-    };
-
-    // Fall period: August 1st - December 31st
-    const fallPeriod: PlannedPeriod = {
-      type: "AUTUMN",
-      year,
-      title: `${year} Fall`,
-      credits: 0,
-      plannedCourses: [],
-    };
-
-    periods.push(springPeriod, fallPeriod);
+    periods.push(
+      curriculumStrategy.getEmptyPeriod("SPRING", year),
+      curriculumStrategy.getEmptyPeriod("AUTUMN", year)
+    );
   });
 
   // Sort periods by years
@@ -53,13 +38,15 @@ const createPeriods = (
 /**
  * Creates and allocates planned courses to academic periods
  * @param plannedCourses List of planned courses to allocate
+ * @param curriculumStrategy curriculum strategy
  * @returns List of periods with allocated courses and calculated credits
  */
 const createAndAllocateCoursesToPeriods = (
-  plannedCourses: PlannedCourseWithIdentifier[]
+  plannedCourses: PlannedCourseWithIdentifier[],
+  curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
   // Convert all planned courses to periods to get date ranges
-  const periods = createPeriods(plannedCourses);
+  const periods = createPeriods(plannedCourses, curriculumStrategy);
 
   // Allocate courses to periods
   plannedCourses.forEach((course) => {
@@ -79,7 +66,11 @@ const createAndAllocateCoursesToPeriods = (
 
     if (period) {
       period.plannedCourses.push(course);
-      period.credits += course.length;
+      // Update workload using strategy
+      const workload = curriculumStrategy.calculatePeriodWorkload(
+        period.plannedCourses
+      );
+      period.workload = workload;
     }
   });
 
@@ -149,7 +140,7 @@ const isPlannedCourse = (
  * @returns true if the selected course is a planned course
  */
 const selectedIsPlannedCourse = (
-  course: SelectedCourse
+  course: PlannedCourseWithIdentifier | (Course & { subjectCode: string })
 ): course is PlannedCourseWithIdentifier => "identifier" in course;
 
 export {
