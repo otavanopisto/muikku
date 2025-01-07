@@ -509,7 +509,7 @@ public class HopsRestService {
 
     List<HopsPlannedCourse> plannedCourses = hopsController.listPlannedCoursesByStudentIdentifier(studentIdentifierStr);
     if (plannedCourses.isEmpty()) {
-      return Response.ok(Collections.<HistoryItem>emptyList()).build();
+      return Response.ok(Collections.emptyList()).build();
     }
 
     List<HopsPlannedCourseRestModel> restPlannedCourses = new ArrayList<>();
@@ -541,7 +541,7 @@ public class HopsRestService {
     List<HopsPlannedCourse> currentPlannedCourses = hopsController.listPlannedCoursesByStudentIdentifier(studentIdentifierStr);
     for (HopsPlannedCourseRestModel plannedCourse : payload.getPlannedCourses()) {
       if (plannedCourse.getId() == null) {
-        HopsPlannedCourse newPlannedCourse = hopsController.createPlannedCourse(studentIdentifierStr,
+        hopsController.createPlannedCourse(studentIdentifierStr,
             plannedCourse.getName(),
             plannedCourse.getCourseNumber(),
             plannedCourse.getLength(),
@@ -551,7 +551,6 @@ public class HopsRestService {
             plannedCourse.getStartDate(),
             plannedCourse.getDuration(),
             plannedCourse.getWorkspaceEntityId());
-        plannedCourse.setId(newPlannedCourse.getId());
       }
       else {
         HopsPlannedCourse existingPlannedCourse = currentPlannedCourses.stream().filter(c -> c.getId().equals(plannedCourse.getId())).findFirst().orElse(null);
@@ -574,7 +573,17 @@ public class HopsRestService {
       hopsController.deletePlannedCourse(deletedCourse);
     }
 
-    return Response.ok(payload).build();
+    List<HopsPlannedCourse> plannedCourses = hopsController.listPlannedCoursesByStudentIdentifier(studentIdentifierStr);
+    if (plannedCourses.isEmpty()) {
+      return Response.ok(Collections.emptyList()).build();
+    }
+
+    List<HopsPlannedCourseRestModel> restPlannedCourses = new ArrayList<>();
+    for (HopsPlannedCourse plannedCourse : plannedCourses) {
+      restPlannedCourses.add(toRestModel(plannedCourse));
+    }
+
+    return Response.ok(restPlannedCourses).build();
   }
 
   @GET
