@@ -21,6 +21,7 @@ interface GuiderNotesProps {}
 
 /**
  * GuiderStudents
+ * @param props props
  */
 const GuiderNotes = (props: GuiderNotesProps) => {
   const { t } = useTranslation();
@@ -43,26 +44,28 @@ const GuiderNotes = (props: GuiderNotesProps) => {
     dispatch(loadNotes(status.userId, false));
   }, [dispatch, status]);
 
-  React.useEffect(() => {}, [notes]);
-
   const updateNotesItemStatus = () => {};
 
   /**
    * onArchiveClick function
    * @param noteId noteId
    */
-  const onArchiveClick = (noteId: number) => {
-    dispatch(toggleNoteArchive(noteId));
-  };
+  const onArchiveClick = React.useCallback(
+    (noteId: number) => {
+      dispatch(toggleNoteArchive(noteId));
+    },
+    [dispatch]
+  );
 
-  const onNotesItemSaveUpdateClick = (
-    noteId: number,
-    request: UpdateNoteRequest,
-    onSucces?: () => void
-  ) => {
-    dispatch(updateNote(noteId, request, onSucces));
-  };
-
+  /**
+   * onNotesItemSaveUpdateClick function
+   */
+  const onNotesItemSaveUpdateClick = React.useCallback(
+    (noteId: number, request: UpdateNoteRequest, onSuccess?: () => void) => {
+      dispatch(updateNote(noteId, request, onSuccess));
+    },
+    [dispatch]
+  );
   return (
     <div className="notes--full-height">
       {loadingState === "LOADING" && <div className="loader-empty" />}

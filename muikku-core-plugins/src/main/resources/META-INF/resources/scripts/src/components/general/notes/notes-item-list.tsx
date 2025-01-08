@@ -136,19 +136,21 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
   return (
     <div tabIndex={0} onKeyDown={handleListKeyDown} className="notes__content">
       <NotesItemListWithoutAnimation isLoadingList={isLoadingList}>
-        {filteredNotesItemList.map((j, i) => (
+        {filteredNotesItemList.map((note, i) => (
           <NotesListItem
-            key={j.id}
+            key={note.id}
             tabIndex={0}
             ref={(ref) => (itemRefs.current[i] = ref)}
             specificRecipient={notesRecipientId}
-            notesItem={j}
-            archived={j.isArchived}
+            notesItem={note}
+            archived={note.isArchived}
             onFocus={handleListItemFocus(i)}
             onKeyDown={handleListItemKeyDown}
-            loggedUserIsCreator={j.creator === userId}
+            loggedUserIsCreator={note.creator === userId}
             loggedUserIsOwner={
-              !!j.recipients.find((receiver) => receiver.recipient === userId)
+              !!note.recipients.find(
+                (receiver) => receiver.recipient === userId
+              )
             }
             onPinNotesItemClick={onPinNotesItemClick}
             onArchiveClick={onArchiveClick}

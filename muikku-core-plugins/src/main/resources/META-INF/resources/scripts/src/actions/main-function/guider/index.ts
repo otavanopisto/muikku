@@ -643,7 +643,7 @@ const updateNote: UpdateNoteTriggerType = function updateNote(
 /**
  * Archives one notesItem
  *
- * @param notesItemId notesItemId
+ * @param noteId notesItemId
  * @param onSuccess onSuccess
  */
 const toggleNoteArchive: ArchiveNoteTriggerType = function toggleNoteArchive(

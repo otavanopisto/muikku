@@ -40,7 +40,10 @@ export interface InputContactsAutofillLoaders {
 export interface InputContactsAutofillProps {
   placeholder?: string;
   label?: string;
-  onChange: (newValue: ContactRecipientType[]) => void;
+  onChange: (
+    newValue: ContactRecipientType[],
+    changedValue?: ContactRecipientType
+  ) => void;
   modifier: string;
   selectedItems: ContactRecipientType[];
   hasGroupPermission?: boolean;
@@ -122,17 +125,6 @@ export default class c extends React.Component<
 
     this.activeSearchId = null;
     this.activeSearchTimeout = null;
-  }
-
-  /**
-   * UNSAFE_componentWillReceiveProps
-   * @param nextProps nextProps
-   */
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps: InputContactsAutofillProps) {
-    if (nextProps.selectedItems !== this.props.selectedItems) {
-      this.setState({ selectedItems: nextProps.selectedItems });
-    }
   }
 
   /**
@@ -378,8 +370,7 @@ export default class c extends React.Component<
       },
       this.setBodyMargin
     );
-
-    this.props.onChange(nfilteredValue);
+    this.props.onChange(nfilteredValue, item);
   }
 
   /**
@@ -401,7 +392,7 @@ export default class c extends React.Component<
         },
         this.setBodyMargin
       );
-      this.props.onChange(nvalue);
+      this.props.onChange(nvalue, item);
     } else {
       this.setState({ isFocused: true });
     }
@@ -413,8 +404,7 @@ export default class c extends React.Component<
    */
   render() {
     const selectedItems = this.state.selectedItems.map((item, index) => {
-      const disabled =
-        this.props.disableRemove;
+      const disabled = this.props.disableRemove;
       if (item.type === "user" || item.type === "staff") {
         return {
           node: (

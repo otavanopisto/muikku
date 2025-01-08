@@ -228,7 +228,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
     }
 
-    if (overdue && currentRecipient.status !== "APPROVED") {
+    if (overdue && currentRecipient?.status !== "APPROVED") {
       updatedModifiers.push("overdue");
     }
 

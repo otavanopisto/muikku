@@ -43,9 +43,10 @@ interface NotesItemEditProps extends WithTranslation {
  * NotesItemEditState
  */
 interface NotesItemEditState {
-  recipients: ContactRecipientType[];
+  recipientIds: number[];
+  recipientGroupIds: number[];
   note: NoteCreationObject;
-  locked: boolean;
+  removeLocked: boolean;
 }
 
 /**
@@ -62,18 +63,13 @@ class NotesItemEdit extends SessionStateComponent<
   constructor(props: NotesItemEditProps) {
     super(props, "records-notes-item-edit");
     this.clearUp = this.clearUp.bind(this);
-    const {
-      title,
-      description,
-      type,
-      priority,
-      startDate,
-      dueDate,
-      recipients,
-    } = props.selectedNotesItem;
+    const { title, description, type, priority, startDate, dueDate } =
+      props.selectedNotesItem;
+
     this.state = {
-      locked: false,
-      recipients: turnNoteRecipientsToContacts(recipients),
+      removeLocked: false,
+      recipientIds: [],
+      recipientGroupIds: [],
       note: {
         title,
         description,
@@ -90,15 +86,9 @@ class NotesItemEdit extends SessionStateComponent<
    */
   clearUp() {
     this.setState({
-      recipients: [],
-      // note: {
-      //   title: "",
-      //   description: "",
-      //   type: "AUTOMATIC",
-      //   priority: "LOW",
-      //   startDate: null,
-      //   dueDate: null,
-      // },
+      removeLocked: false,
+      recipientIds: [],
+      recipientGroupIds: [],
     });
   }
 
@@ -107,19 +97,9 @@ class NotesItemEdit extends SessionStateComponent<
    * @param closeDialog closeDialog
    */
   handleUpdateClick = (closeDialog: () => void) => () => {
-    const { note, recipients } = this.state;
+    const { note, recipientIds, recipientGroupIds } = this.state;
     // If the recipient is explicitly given, use it,
     // otherwise use the autofill recipients
-    const recipientIds = this.props.recipientId
-      ? [this.props.recipientId]
-      : recipients
-          .filter((recipient) => recipient.type == "user")
-          .map((recipient) => recipient.value.id);
-
-    const recipientGroupIds = recipients
-      .filter((recipient) => recipient.type === "usergroup")
-      .map((recipient) => recipient.value.id);
-
     const request = {
       note,
       recipients: {
@@ -159,11 +139,55 @@ class NotesItemEdit extends SessionStateComponent<
   /**
    * handleRecipientsChange
    * @param recipients recipients
+   * @param changedValue changedValue
    */
-  handleRecipientsChange = (recipients: ContactRecipientType[]) => {
-    this.setState({
-      recipients,
-    });
+  handleRecipientsChange = (
+    recipients: ContactRecipientType[],
+    changedValue: ContactRecipientType
+  ) => {
+    if (recipients.length === 1) {
+      this.setState({
+        removeLocked: true,
+      });
+    } else if (this.state.removeLocked === true) {
+      this.setState({
+        removeLocked: false,
+      });
+    }
+    if (changedValue.type === "user") {
+      if (this.state.recipientIds.includes(changedValue.value.id)) {
+        // Remove the recipient if it's already in the list
+        this.setState({
+          recipientIds: this.state.recipientIds.filter(
+            (id) => id !== changedValue.value.id
+          ),
+        });
+      } else {
+        // Add the recipient if it's not in the list
+        this.setState({
+          recipientIds: [...this.state.recipientIds, changedValue.value.id],
+        });
+      }
+    } else if (changedValue.type === "usergroup") {
+      // Remove the userGroup if it's already in the list
+      if (changedValue.value.id in this.state.recipientGroupIds) {
+        this.setState({
+          recipientGroupIds: this.state.recipientGroupIds.filter(
+            (id) => id !== changedValue.value.id
+          ),
+        });
+      } else {
+        // Add the userGroup if it's not in the list
+        this.setState({
+          recipientGroupIds: [
+            ...this.state.recipientGroupIds,
+            changedValue.value.id,
+          ],
+        });
+      }
+    } else {
+      return;
+    }
   };
 
   /**
@@ -174,6 +198,7 @@ class NotesItemEdit extends SessionStateComponent<
      * content
      * @param closeDialog closeDialog
      */
+
     const content = (closeDialog: () => void) => [
       <>
         {!this.props.recipientId &&
@@ -183,7 +208,7 @@ class NotesItemEdit extends SessionStateComponent<
                 identifier="communicatorRecipients"
                 modifier="new-message"
                 key="new-message-1"
-                disableRemove={this.state.recipients.length === 1}
+                disableRemove={this.state.removeLocked}
                 showFullNames={true}
                 loaders={autofillLoaders()}
                 hasWorkspacePermission={false}
@@ -195,7 +220,9 @@ class NotesItemEdit extends SessionStateComponent<
                   ns: "messaging",
                   count: 0,
                 })}
-                selectedItems={this.state.recipients}
+                selectedItems={turnNoteRecipientsToContacts(
+                  this.props.selectedNotesItem.recipients
+                )}
                 onChange={this.handleRecipientsChange}
                 autofocus={false}
               />
