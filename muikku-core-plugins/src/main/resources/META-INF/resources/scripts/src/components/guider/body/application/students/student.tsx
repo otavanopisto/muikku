@@ -126,7 +126,9 @@ class StudentListItem extends React.Component<StudentProps, StudentState> {
                 openByHover
                 content={
                   <span id={`pedagogyPlan-` + this.props.index}>
-                    Opiskelijalle on tehty pedagogisen tuen suunnitelma
+                    {this.props.i18n.t("labels.pedagogyPlan", {
+                      ns: "common",
+                    })}
                   </span>
                 }
               >
@@ -136,6 +138,29 @@ class StudentListItem extends React.Component<StudentProps, StudentState> {
                     aria-labelledby={`pedagogyPlan-` + this.props.index}
                   >
                     P
+                  </span>
+                </div>
+              </Dropdown>
+            ) : null}
+
+            {this.props.student.u18Compulsory ? (
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={
+                  <span id={`u18Compulsory-` + this.props.index}>
+                    {this.props.i18n.t("labels.u18Compulsory", {
+                      ns: "common",
+                    })}
+                  </span>
+                }
+              >
+                <div className="label label--u18-compulsory">
+                  <span
+                    className="label__text label__text--u18-compulsory"
+                    aria-labelledby={`u18Compulsory-` + this.props.index}
+                  >
+                    O
                   </span>
                 </div>
               </Dropdown>
