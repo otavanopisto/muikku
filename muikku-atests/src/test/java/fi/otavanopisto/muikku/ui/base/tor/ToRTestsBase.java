@@ -343,6 +343,7 @@ public class ToRTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-email", "admin@example.com");
       assertPresent(".item-list--student-counselors .button-pill--new-message");
       
+// Removed in #7016
 //      waitForPresent(".application-sub-panel__card-header--summary-evaluated");
 //      assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");
 //      waitForPresent(".application-sub-panel__card-highlight--summary-evaluated");
