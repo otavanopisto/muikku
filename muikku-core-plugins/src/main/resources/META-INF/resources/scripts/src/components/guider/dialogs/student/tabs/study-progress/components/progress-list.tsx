@@ -1,5 +1,4 @@
 import * as React from "react";
-//import { useTranslation } from "react-i18next";
 import Dropdown from "~/components/general/dropdown";
 import { ListItem, ListItemIndicator } from "~/components/general/list";
 import {
