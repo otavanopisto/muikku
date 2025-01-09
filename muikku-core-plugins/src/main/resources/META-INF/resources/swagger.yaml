@@ -15486,6 +15486,7 @@ components:
       required:
         - recipientIds
         - recipientGroupIds
+        - recipientStudentsWorkspaceIds
       properties:
         recipientIds:
           description: The list of userEntityIds
@@ -15494,6 +15495,11 @@ components:
             type: integer
         recipientGroupIds:
           description: The list of studentGroupIds
+          type: array
+          items:
+            type: integer
+        recipientStudentsWorkspaceIds:
+          description: The list of workspaceIds
           type: array
           items:
             type: integer

@@ -72,6 +72,7 @@ class NotesItemNew extends SessionStateComponent<
             : [],
 
           recipientGroupIds: [],
+          recipientStudentsWorkspaceIds: [],
         },
         note: {
           title: "",
@@ -103,6 +104,7 @@ class NotesItemNew extends SessionStateComponent<
               : null,
           ],
           recipientGroupIds: [],
+          recipientStudentsWorkspaceIds: [],
         },
         note: {
           title: "",
@@ -159,13 +161,18 @@ class NotesItemNew extends SessionStateComponent<
       .filter((recipient) => recipient.type === "usergroup")
       .map((recipient) => recipient.value.id);
 
+    const recipientStudentsWorkspaceIds = recipients
+      .filter((recipient) => recipient.type === "workspace")
+      .map((recipient) => recipient.value.id);
+
     this.setState({
       recipients,
       notesItem: {
         ...this.state.notesItem,
         recipients: {
-          recipientIds: recipientIds,
-          recipientGroupIds: recipientGroupIds,
+          recipientIds,
+          recipientGroupIds,
+          recipientStudentsWorkspaceIds,
         },
       },
     });
@@ -336,7 +343,7 @@ class NotesItemNew extends SessionStateComponent<
         title={this.props.i18n.t("labels.create", { ns: "tasks" })}
         content={content}
         footer={footer}
-        // onOpen={this.clearUp}
+        onOpen={this.clearUp}
       >
         {this.props.children}
       </EnvironmentDialog>

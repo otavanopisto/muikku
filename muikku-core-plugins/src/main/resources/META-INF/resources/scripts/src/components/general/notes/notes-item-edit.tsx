@@ -45,6 +45,7 @@ interface NotesItemEditProps extends WithTranslation {
 interface NotesItemEditState {
   recipientIds: number[];
   recipientGroupIds: number[];
+  recipientStudentsWorkspaceIds: number[];
   note: NoteCreationObject;
   removeLocked: boolean;
 }
@@ -70,6 +71,7 @@ class NotesItemEdit extends SessionStateComponent<
       removeLocked: false,
       recipientIds: [],
       recipientGroupIds: [],
+      recipientStudentsWorkspaceIds: [],
       note: {
         title,
         description,
@@ -89,6 +91,7 @@ class NotesItemEdit extends SessionStateComponent<
       removeLocked: false,
       recipientIds: [],
       recipientGroupIds: [],
+      recipientStudentsWorkspaceIds: [],
     });
   }
 
@@ -97,7 +100,12 @@ class NotesItemEdit extends SessionStateComponent<
    * @param closeDialog closeDialog
    */
   handleUpdateClick = (closeDialog: () => void) => () => {
-    const { note, recipientIds, recipientGroupIds } = this.state;
+    const {
+      note,
+      recipientIds,
+      recipientGroupIds,
+      recipientStudentsWorkspaceIds,
+    } = this.state;
     // If the recipient is explicitly given, use it,
     // otherwise use the autofill recipients
     const request = {
@@ -105,6 +113,7 @@ class NotesItemEdit extends SessionStateComponent<
       recipients: {
         recipientIds,
         recipientGroupIds,
+        recipientStudentsWorkspaceIds,
       },
     };
 
