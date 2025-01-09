@@ -362,7 +362,7 @@ class NotesItemEdit extends SessionStateComponent<
         title={this.props.i18n.t("labels.edit", { ns: "tasks" })}
         content={content}
         footer={footer}
-        // onClose={this.clearUp}
+        onClose={this.clearUp}
       >
         {this.props.children}
       </EnvironmentDialog>
