@@ -168,16 +168,19 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
 
   return (
     <Table modifiers={["course"]}>
-      <TableHead modifiers={["course", "sticky-inside-dialog"]}>
-        <Tr modifiers={["course"]}>
-          <Th modifiers={["subject"]}>
-            {t("labels.schoolSubject", { ns: "studyMatrix" })}
-          </Th>
-          <Th colSpan={currentMaxCourses}>
-            {t("labels.courses", { ns: "studyMatrix" })}
-          </Th>
-        </Tr>
-      </TableHead>
+      {currentMaxCourses && (
+        <TableHead modifiers={["course", "sticky-inside-dialog"]}>
+          <Tr modifiers={["course"]}>
+            <Th modifiers={["subject"]}>
+              {t("labels.schoolSubject", { ns: "studyMatrix" })}
+            </Th>
+            <Th colSpan={currentMaxCourses}>
+              {t("labels.courses", { ns: "studyMatrix" })}
+            </Th>
+          </Tr>
+        </TableHead>
+      )}
+
       <OPSCourseTableContent
         {...props}
         matrix={matrix}

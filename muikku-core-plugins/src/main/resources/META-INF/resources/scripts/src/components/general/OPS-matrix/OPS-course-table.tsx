@@ -25,7 +25,7 @@ export interface OPSCourseTableProps extends StudentActivityByStatus {
   matrix: SchoolSubject[] | null;
   studentIdentifier: string;
   studentUserEntityId: number;
-  currentMaxCourses: number;
+  currentMaxCourses: number | null;
   curriculumName: string;
   studyProgrammeName: string;
   studentOptions: string[];
@@ -57,7 +57,7 @@ export const OPSCourseTableContent: React.FC<OPSCourseTableProps> = (props) => {
 
   const { t } = useTranslation("studyMatrix");
 
-  if (matrix === null) {
+  if (matrix === null || currentMaxCourses === null) {
     return (
       <div className="empty">
         <span>{t("content.noSubjectTable")}</span>

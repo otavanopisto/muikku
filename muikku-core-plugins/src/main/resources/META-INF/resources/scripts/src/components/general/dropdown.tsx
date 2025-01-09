@@ -20,6 +20,8 @@ import $ from "~/lib/jquery";
 import "~/sass/elements/dropdown.scss";
 import { v4 as uuidv4 } from "uuid";
 import { Provider, ReactReduxContext } from "react-redux";
+// Using RouterContext to fix the issue with the dropdown router items not working because they are rendered outside of the router context
+import { __RouterContext as RouterContext } from "react-router";
 
 /**
  * itemType2
@@ -676,76 +678,88 @@ export default class Dropdown extends React.Component<
     portalProps.closeOnScroll = !this.props.persistent;
     portalProps.closeOnClick = this.props.closeOnClick;
 
+    // All the context consumers and providers are needed to fix the issue with the items rendered outside of the different providers
+    // because portal.
     return (
       <ReactReduxContext.Consumer>
         {({ store }) => (
-          <Portal
-            ref={this.portalRef}
-            {...portalProps}
-            onOpen={this.onOpen}
-            onClose={this.onClose}
-            onWrapperKeyDown={this.onKeyDown}
-            beforeClose={this.beforeClose}
-            closeOnOutsideClick={false} // Disable Portal's built-in outside click handling
-          >
-            <Provider store={store}>
-              <div
-                ref={this.dropdownRef}
-                id={this.id + "-menu"}
-                style={{
-                  position: "fixed",
-                  top: this.state.top,
-                  left: this.state.left,
-                  width: this.state.forcedWidth,
-                }}
-                className={`dropdown ${
-                  this.props.modifier ? "dropdown--" + this.props.modifier : ""
-                } ${this.state.visible ? "visible" : ""}`}
+          <RouterContext.Consumer>
+            {(routerContext) => (
+              <Portal
+                ref={this.portalRef}
+                {...portalProps}
+                onOpen={this.onOpen}
+                onClose={this.onClose}
+                onWrapperKeyDown={this.onKeyDown}
+                beforeClose={this.beforeClose}
+                closeOnOutsideClick={false} // Disable Portal's built-in outside click handling
               >
-                <span
-                  className="dropdown__arrow"
-                  ref={this.arrowRef}
-                  style={{
-                    left: this.state.arrowLeft,
-                    right: this.state.arrowRight,
-                    top: this.state.arrowTop,
-                    transform: this.state.reverseArrow ? "scaleY(-1)" : "",
-                  }}
-                ></span>
-                {(this.props.content || this.props.items) && (
-                  <div
-                    className="dropdown__container"
-                    id={this.props.tooltipId}
-                  >
-                    {this.props.content ? this.props.content : null}
-                    {this.props.items
-                      ? this.props.items.map((item, index) => {
-                          const itemContent =
-                            typeof item === "function"
-                              ? item(this.close) // Pass the close function to the item renderer
-                              : item;
+                <Provider store={store}>
+                  <RouterContext.Provider value={routerContext}>
+                    <div
+                      ref={this.dropdownRef}
+                      id={this.id + "-menu"}
+                      style={{
+                        position: "fixed",
+                        top: this.state.top,
+                        left: this.state.left,
+                        width: this.state.forcedWidth,
+                      }}
+                      className={`dropdown ${
+                        this.props.modifier
+                          ? "dropdown--" + this.props.modifier
+                          : ""
+                      } ${this.state.visible ? "visible" : ""}`}
+                    >
+                      <span
+                        className="dropdown__arrow"
+                        ref={this.arrowRef}
+                        style={{
+                          left: this.state.arrowLeft,
+                          right: this.state.arrowRight,
+                          top: this.state.arrowTop,
+                          transform: this.state.reverseArrow
+                            ? "scaleY(-1)"
+                            : "",
+                        }}
+                      ></span>
+                      {(this.props.content || this.props.items) && (
+                        <div
+                          className="dropdown__container"
+                          id={this.props.tooltipId}
+                        >
+                          {this.props.content ? this.props.content : null}
+                          {this.props.items
+                            ? this.props.items.map((item, index) => {
+                                const itemContent =
+                                  typeof item === "function"
+                                    ? item(this.close) // Pass the close function to the item renderer
+                                    : item;
 
-                          return (
-                            <div
-                              className="dropdown__container-item"
-                              key={index}
-                            >
-                              {React.cloneElement(
-                                itemContent as React.ReactElement,
-                                {
-                                  id: this.id + "-item-" + index,
-                                  onKeyDown: this.onItemKeyDown,
-                                }
-                              )}
-                            </div>
-                          );
-                        })
-                      : null}
-                  </div>
-                )}
-              </div>
-            </Provider>
-          </Portal>
+                                return (
+                                  <div
+                                    className="dropdown__container-item"
+                                    key={index}
+                                  >
+                                    {React.cloneElement(
+                                      itemContent as React.ReactElement,
+                                      {
+                                        id: this.id + "-item-" + index,
+                                        onKeyDown: this.onItemKeyDown,
+                                      }
+                                    )}
+                                  </div>
+                                );
+                              })
+                            : null}
+                        </div>
+                      )}
+                    </div>
+                  </RouterContext.Provider>
+                </Provider>
+              </Portal>
+            )}
+          </RouterContext.Consumer>
         )}
       </ReactReduxContext.Consumer>
     );

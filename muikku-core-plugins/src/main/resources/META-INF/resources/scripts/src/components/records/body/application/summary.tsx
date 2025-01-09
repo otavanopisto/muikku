@@ -336,21 +336,6 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                   {t("labels.studyProgress", {
                     ns: "studies",
                   })}
-                  {/* <Instructions
-                    modifier="instructions"
-                    alignSelfVertically="top"
-                    openByHover={false}
-                    closeOnClick={true}
-                    closeOnOutsideClick={true}
-                    persistent
-                    content={
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: t("content.instructions", { ns: "tasks" }),
-                        }}
-                      />
-                    }
-                  /> */}
                 </div>
 
                 <StudyProgress

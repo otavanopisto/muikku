@@ -183,6 +183,10 @@ export const compulsoryOrUpperSecondary = (
   studyProgrammeName: string,
   curriculumName: string
 ) => {
+  if (!studyProgrammeName || !curriculumName) {
+    return null;
+  }
+
   const compulsoryMatrices = [schoolCourseTableCompulsory2018];
   const uppersecondaryMatrices = [schoolCourseTableUppersecondary2021];
 
@@ -260,7 +264,11 @@ export const filterMatrix = (
  */
 export const getHighestCourseNumber = (
   schoolSubjects: SchoolSubject[]
-): number => {
+): number | null => {
+  if (schoolSubjects === null) {
+    return null;
+  }
+
   let highestCourseNumber = 1;
 
   for (const sSubject of schoolSubjects) {
