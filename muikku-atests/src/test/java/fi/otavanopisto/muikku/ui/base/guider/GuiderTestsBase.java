@@ -372,8 +372,8 @@ public class GuiderTestsBase extends AbstractUITest {
       try {
         navigate("/guider", false);
         waitAndClick(".application-list__item-content-main .application-list__header-primary");
-        waitForPresent(".application-list__item-header--course .application-list__header-primary");
-        List<WebElement> webElements = getWebDriver().findElements(By.cssSelector(".application-list__item-header--course .application-list__header-primary"));
+        waitForPresent(".application-list__item-header--course .application-list__header");
+        List<WebElement> webElements = getWebDriver().findElements(By.cssSelector(".application-list__item-header--course .application-list__header"));
         while(webElements.remove(null));
         assertTrue(isInOrder(webElements));
       }finally {
