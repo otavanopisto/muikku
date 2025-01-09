@@ -24,6 +24,7 @@ import {
   PlannedCourseWithIdentifier,
   ReducerInitializeStatusType,
   ReducerStateType,
+  Selection,
 } from "~/reducers/hops";
 import i18n from "~/locales/i18n";
 import { abistatus } from "~/helper-functions/abistatus";
@@ -205,13 +206,23 @@ export type HOPS_UPDATE_EDITING_STUDYPLAN = SpecificActionType<
   PlannedCourseWithIdentifier[]
 >;
 
-export type HOPS_SET_SELECTED_COURSE = SpecificActionType<
-  "HOPS_SET_SELECTED_COURSE",
-  PlannedCourseWithIdentifier | (Course & { subjectCode: string }) | null
+export type HOPS_SET_SELECTION = SpecificActionType<
+  "HOPS_SET_SELECTION",
+  Selection | null
 >;
 
-export type HOPS_CLEAR_SELECTED_COURSE = SpecificActionType<
-  "HOPS_CLEAR_SELECTED_COURSE",
+export type HOPS_CLEAR_SELECTION = SpecificActionType<
+  "HOPS_CLEAR_SELECTION",
+  undefined
+>;
+
+export type HOPS_UPDATE_ADD_TO_PERIOD = SpecificActionType<
+  "HOPS_UPDATE_ADD_TO_PERIOD",
+  (Course & { subjectCode: string })[]
+>;
+
+export type HOPS_CLEAR_ADD_TO_PERIOD = SpecificActionType<
+  "HOPS_CLEAR_ADD_TO_PERIOD",
   undefined
 >;
 
@@ -418,22 +429,41 @@ export interface SaveStudyPlanDataTriggerType {
 }
 
 /**
- * SetSelectedCourseTriggerType
+ * SetSelectionTriggerType
  */
-export interface UpdateSelectedCourseTriggerType {
-  (data: {
-    course:
-      | PlannedCourseWithIdentifier
-      | (Course & { subjectCode: string })
-      | null;
-  }): AnyActionType;
+export interface UpdateSelectionTriggerType {
+  (data: { selection: Selection | null }): AnyActionType;
 }
 
 /**
- * ClearSelectedCourseTriggerType
+ * ClearSelectionTriggerType
  */
-export interface ClearSelectedCourseTriggerType {
+export interface ClearSelectionTriggerType {
   (): AnyActionType;
+}
+
+/**
+ * UpdateAddToPeriodTriggerType
+ */
+export interface UpdateAddToPeriodTriggerType {
+  (data: { courses: (Course & { subjectCode: string })[] }): AnyActionType;
+}
+
+/**
+ * ClearAddToPeriodTriggerType
+ */
+export interface ClearAddToPeriodTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * UpdatePlannedCoursesInBatchTriggerType
+ */
+export interface UpdatePlannedCoursesInBatchTriggerType {
+  (data: {
+    plannedCourses: PlannedCourseWithIdentifier[];
+    action: CourseChangeAction;
+  }): AnyActionType;
 }
 
 /**
@@ -1880,7 +1910,7 @@ const saveStudyPlanData: SaveStudyPlanDataTriggerType =
 
       // Add identifier to planned courses
       const plannedCoursesWithIdentifier: PlannedCourseWithIdentifier[] =
-        updatedList.plannedCourses.map((course) => ({
+        updatedList.map((course) => ({
           ...course,
           identifier: "planned-course-" + course.id,
         }));
@@ -2083,23 +2113,57 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
  * Set selected course
  * @param data Data containing course to set
  */
-const updateSelectedCourse: UpdateSelectedCourseTriggerType =
-  function updateSelectedCourse(data) {
+const updateSelection: UpdateSelectionTriggerType = function updateSelection(
+  data
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    if (data === null) {
+      dispatch({
+        type: "HOPS_CLEAR_SELECTION",
+        payload: null,
+      });
+    } else {
+      dispatch({
+        type: "HOPS_SET_SELECTION",
+        payload: data.selection,
+      });
+    }
+  };
+};
+
+/**
+ * Update add to period
+ * @param data Data containing courses to add to period
+ */
+const updateAddToPeriod: UpdateAddToPeriodTriggerType =
+  function updateAddToPeriod(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      if (data === null) {
-        dispatch({
-          type: "HOPS_CLEAR_SELECTED_COURSE",
-          payload: null,
-        });
-      } else {
-        dispatch({
-          type: "HOPS_SET_SELECTED_COURSE",
-          payload: data.course,
-        });
-      }
+      dispatch({
+        type: "HOPS_UPDATE_ADD_TO_PERIOD",
+        payload: data.courses,
+      });
+    };
+  };
+
+/**
+ * Clear add to period
+ */
+const clearAddToPeriod: ClearAddToPeriodTriggerType =
+  function clearAddToPeriod() {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "HOPS_CLEAR_ADD_TO_PERIOD",
+        payload: null,
+      });
     };
   };
 
@@ -2323,5 +2387,7 @@ export {
   verifyMatriculationExam,
   updateHopsEditingStudyPlan,
   saveStudyPlanData,
-  updateSelectedCourse,
+  updateSelection,
+  updateAddToPeriod,
+  clearAddToPeriod,
 };

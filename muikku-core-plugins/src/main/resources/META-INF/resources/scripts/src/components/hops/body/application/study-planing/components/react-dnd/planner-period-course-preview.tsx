@@ -12,6 +12,7 @@ import {
 } from "../planner-card";
 import { PlannerCard } from "../planner-card";
 import Button from "~/components/general/button";
+import { localize } from "~/locales/i18n";
 
 /**
  * CourseCardProps
@@ -29,9 +30,11 @@ const PlannerPeriodCourseCardPreview: React.FC<
 > = (props) => {
   const { course } = props;
 
+  const startDate = new Date(course.startDate);
+
   // Calculate the end date of the course from the start date and duration
   const calculatedEndDate = course.duration
-    ? new Date(course.startDate.getTime() + course.duration)
+    ? new Date(startDate.getTime() + course.duration)
     : null;
 
   return (
@@ -55,11 +58,10 @@ const PlannerPeriodCourseCardPreview: React.FC<
         <span className="study-planner__course-dates">
           {calculatedEndDate ? (
             <>
-              {course.startDate.toLocaleDateString()} -{" "}
-              {calculatedEndDate.toLocaleDateString()}
+              {localize.date(startDate)} - {localize.date(calculatedEndDate)}
             </>
           ) : (
-            course.startDate.toLocaleDateString()
+            localize.date(startDate)
           )}
         </span>
       </PlannerCardContent>

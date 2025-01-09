@@ -858,12 +858,17 @@
 .hops-container__statistics {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 2rem;
   margin-top: 2rem;
 }
 
 .hops-container__statistic-item {
-  flex: 1;
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex: 1;
+  }
 }
 
 .hops-container__statistic-title {

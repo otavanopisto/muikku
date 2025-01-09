@@ -115,6 +115,54 @@ interface hopsMatriculation {
  */
 export type HopsMode = "READ" | "EDIT";
 
+export type Selection =
+  | { type: "unplanned-course"; course: Course & { subjectCode: string } }
+  | { type: "planned-course"; course: PlannedCourseWithIdentifier }
+  | { type: "period-month"; year: number; monthIndex: number }
+  | { type: null };
+
+/**
+ * Type guards for unplanned course selection
+ * @param selection Selection
+ */
+export const isUnplannedCourseSelection = (
+  selection: Selection
+): selection is {
+  type: "unplanned-course";
+  course: Course & { subjectCode: string };
+} => selection.type === "unplanned-course";
+
+/**
+ * Type guard for planned course selection
+ * @param selection Selection
+ */
+export const isPlannedCourseSelection = (
+  selection: Selection
+): selection is {
+  type: "planned-course";
+  course: PlannedCourseWithIdentifier;
+} => selection.type === "planned-course";
+
+/**
+ * Type guard for period month selection
+ * @param selection Selection
+ */
+export const isPeriodMonthSelection = (
+  selection: Selection
+): selection is {
+  type: "period-month";
+  year: number;
+  monthIndex: number;
+} => selection.type === "period-month";
+
+/**
+ * Type guard for no selection
+ * @param selection Selection
+ */
+export const isNoSelection = (
+  selection: Selection
+): selection is { type: null } => selection.type === null;
+
 /**
  * HopsEditingState
  */
@@ -127,6 +175,8 @@ export interface HopsEditingState {
     | PlannedCourseWithIdentifier
     | (Course & { subjectCode: string })
     | null;
+  selection: Selection;
+  addToPeriod: (Course & { subjectCode: string })[] | null;
 }
 
 /**
@@ -211,6 +261,8 @@ const initialHopsState: HopsState = {
     },
     plannedCourses: [],
     selectedCourse: null,
+    selection: null,
+    addToPeriod: null,
   },
 };
 
@@ -566,21 +618,30 @@ export const hopsNew: Reducer<HopsState> = (
         },
       };
 
-    case "HOPS_SET_SELECTED_COURSE":
+    case "HOPS_SET_SELECTION":
       return {
         ...state,
         hopsEditing: {
           ...state.hopsEditing,
-          selectedCourse: action.payload,
+          selection: action.payload,
         },
       };
 
-    case "HOPS_CLEAR_SELECTED_COURSE":
+    case "HOPS_CLEAR_SELECTION":
       return {
         ...state,
         hopsEditing: {
           ...state.hopsEditing,
-          selectedCourse: null,
+          selection: null,
+        },
+      };
+
+    case "HOPS_UPDATE_ADD_TO_PERIOD":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          addToPeriod: action.payload,
         },
       };
 

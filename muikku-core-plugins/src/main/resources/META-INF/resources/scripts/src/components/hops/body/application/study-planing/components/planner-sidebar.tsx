@@ -8,15 +8,26 @@ import { useLocalStorage } from "usehooks-ts";
 import { Course, CourseFilter } from "~/@types/shared";
 import { AnyActionType } from "~/actions";
 import {
-  updateSelectedCourse,
-  UpdateSelectedCourseTriggerType,
+  clearAddToPeriod,
+  ClearAddToPeriodTriggerType,
+  updateAddToPeriod,
+  UpdateAddToPeriodTriggerType,
+  updateHopsEditingStudyPlan,
+  UpdateHopsEditingStudyPlanTriggerType,
+  updateSelection,
+  UpdateSelectionTriggerType,
 } from "~/actions/main-function/hops";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import { StateType } from "~/reducers";
-import { PlannedCourseWithIdentifier } from "~/reducers/hops";
+import {
+  isPeriodMonthSelection,
+  isUnplannedCourseSelection,
+  PlannedCourseWithIdentifier,
+  Selection,
+} from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
-import { filterSubjectsAndCourses, selectedIsPlannedCourse } from "../helper";
+import { filterSubjectsAndCourses } from "../helper";
 import PlannerSidebarCourse from "./planner-sidebar-course";
 
 /**
@@ -25,11 +36,12 @@ import PlannerSidebarCourse from "./planner-sidebar-course";
 interface PlannerSidebarProps {
   plannedCourses: PlannedCourseWithIdentifier[];
   curriculumConfig: CurriculumConfig;
-  selectedCourse:
-    | PlannedCourseWithIdentifier
-    | (Course & { subjectCode: string })
-    | null;
-  updateSelectedCourse: UpdateSelectedCourseTriggerType;
+  selection: Selection;
+  addToPeriod: (Course & { subjectCode: string })[];
+  updateSelection: UpdateSelectionTriggerType;
+  updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType;
+  updateAddToPeriod: UpdateAddToPeriodTriggerType;
+  clearAddToPeriod: ClearAddToPeriodTriggerType;
 }
 
 /**
@@ -39,9 +51,13 @@ interface PlannerSidebarProps {
 const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
   const {
     plannedCourses,
-    selectedCourse,
+    selection,
+    addToPeriod,
     curriculumConfig,
-    updateSelectedCourse,
+    updateSelection,
+    updateHopsEditingStudyPlan,
+    updateAddToPeriod,
+    clearAddToPeriod,
   } = props;
 
   const [searchTerm, setSearchTerm] = useLocalStorage(
@@ -89,10 +105,19 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
    * @param course course
    */
   const handleCourseClick = (course: Course & { subjectCode: string }) => {
-    if (course === null) {
-      updateSelectedCourse(null);
+    if (selection && isPeriodMonthSelection(selection)) {
+      updateAddToPeriod({ courses: [...(addToPeriod ?? []), course] });
     } else {
-      updateSelectedCourse({ course });
+      if (
+        selection &&
+        isUnplannedCourseSelection(selection) &&
+        selection.course.courseNumber === course.courseNumber &&
+        selection.course.subjectCode === course.subjectCode
+      ) {
+        updateSelection(null);
+      } else {
+        updateSelection({ selection: { type: "unplanned-course", course } });
+      }
     }
   };
 
@@ -102,6 +127,51 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
     searchTerm,
     selectedFilters
   );
+
+  /**
+   * Handles course removal
+   * @param course course
+   */
+  const handleRemoveCourse =
+    (course: Course & { subjectCode: string }) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      e.preventDefault();
+      updateAddToPeriod({
+        courses: addToPeriod.filter(
+          (c) =>
+            c.subjectCode !== course.subjectCode ||
+            c.courseNumber !== course.courseNumber
+        ),
+      });
+    };
+
+  /**
+   * Handles confirm add
+   */
+  const handleConfirmAdd = () => {
+    if (!selection || !isPeriodMonthSelection(selection)) return;
+
+    const newCourses = addToPeriod.map((course) =>
+      curriculumConfig.strategy.createPlannedCourse(
+        course,
+        new Date(selection.year, selection.monthIndex, 1)
+      )
+    );
+
+    const newPlannedCourses = [...plannedCourses, ...newCourses];
+
+    /* updateHopsEditingStudyPlan({
+
+    }); */
+  };
+
+  /**
+   * Handles cancel selection
+   */
+  const handleCancelSelection = () => {
+    clearAddToPeriod();
+    updateSelection(null);
+  };
 
   // Filter options
   const filterOptions: { label: string; value: CourseFilter }[] = [
@@ -118,9 +188,86 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
       value: "optional",
     },
   ];
+  /**
+   * Renders a single course that will be planned
+   * @param course course
+   */
+  const renderWillBePlannedCourse = (
+    course: Course & { subjectCode: string }
+  ) => (
+    <li
+      key={`${course.subjectCode}${course.courseNumber}`}
+      className="study-planner__will-be-added-course"
+    >
+      <span className="study-planner__will-be-added-course-name">
+        {course.name}
+      </span>
+      <IconButton
+        icon="cross"
+        buttonModifiers={["small", "transparent"]}
+        onClick={handleRemoveCourse(course)}
+        aria-label="Poista kurssi listalta"
+      />
+    </li>
+  );
+
+  /**
+   * Renders the list of courses that will be planned
+   */
+  const renderWillBeAddedPlannedCourses = () => {
+    if (!addToPeriod || addToPeriod.length === 0) return null;
+
+    return (
+      <div className="study-planner__will-be-added">
+        <h4 className="study-planner__will-be-added-title">
+          Lisättävät kurssit ({addToPeriod.length})
+        </h4>
+        <ul className="study-planner__will-be-added-planned-courses">
+          {addToPeriod.map(renderWillBePlannedCourse)}
+        </ul>
+      </div>
+    );
+  };
 
   return (
     <div className="study-planner__sidebar">
+      {selection && isPeriodMonthSelection(selection) && (
+        <div className="study-planner__sidebar-header-extra">
+          <div className="study-planner__selection-info">
+            <span className="study-planner__selection-info-text">
+              Valitse haluamasi kursseja ajankohtaan
+            </span>
+            <span className="study-planner__selected-period-month">
+              {new Date(selection.year, selection.monthIndex).toLocaleString(
+                "fi-FI",
+                {
+                  month: "long",
+                  year: "numeric",
+                }
+              )}
+            </span>
+            {renderWillBeAddedPlannedCourses()}
+
+            <div className="study-planner__selection-actions">
+              <Button
+                buttonModifiers={["study-planner-month-toggle"]}
+                onClick={handleCancelSelection}
+              >
+                Peruuta valinta
+              </Button>
+
+              {addToPeriod && addToPeriod.length > 0 && (
+                <Button
+                  buttonModifiers={["study-planner-month-toggle"]}
+                  onClick={handleConfirmAdd}
+                >
+                  Lisää valinta
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       <div className="study-planner__sidebar-header">
         <h3 className="study-planner__sidebar-title">Opintojaksot</h3>
         <div className="study-planner_sidebar-filters">
@@ -188,10 +335,10 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
 
                   // Check if the course is selected
                   const isSelected =
-                    selectedCourse &&
-                    !selectedIsPlannedCourse(selectedCourse) &&
-                    selectedCourse.subjectCode === subject.subjectCode &&
-                    selectedCourse.courseNumber === course.courseNumber;
+                    selection &&
+                    isUnplannedCourseSelection(selection) &&
+                    selection.course.subjectCode === subject.subjectCode &&
+                    selection.course.courseNumber === course.courseNumber;
 
                   return (
                     <PlannerSidebarCourse
@@ -220,7 +367,8 @@ const PlannerSidebar: React.FC<PlannerSidebarProps> = (props) => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    selectedCourse: state.hopsNew.hopsEditing.selectedCourse,
+    selection: state.hopsNew.hopsEditing.selection,
+    addToPeriod: state.hopsNew.hopsEditing.addToPeriod,
   };
 }
 
@@ -229,7 +377,15 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ updateSelectedCourse }, dispatch);
+  return bindActionCreators(
+    {
+      updateSelection,
+      updateHopsEditingStudyPlan,
+      updateAddToPeriod,
+      clearAddToPeriod,
+    },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlannerSidebar);

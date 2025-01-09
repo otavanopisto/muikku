@@ -5847,12 +5847,9 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  plannedCourses:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/PlannedCourse"
+                type: array
+                items:
+                  $ref: "#/components/schemas/PlannedCourse"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -15539,9 +15536,8 @@ components:
           description: The number of the course
           type: integer
         startDate:
-          description: The start date of the planned course
+          description: The start date of the planned course. Local date in ISO format (YYYY-MM-DD)
           type: string
-          format: date-time
         duration:
           description: The duration of the course in milliseconds
           type: integer

@@ -1,49 +1,37 @@
 import * as React from "react";
+import { IconButton } from "~/components/general/button";
 
+/**
+ * PlannerControlsProps
+ */
 interface PlannerControlsProps {
   onViewChange: (view: "list" | "table") => void;
   onRefresh: () => void;
   onPeriodChange: (direction: "prev" | "next") => void;
+  onFullScreen: () => void;
 }
 
-const PlannerControls: React.FC<PlannerControlsProps> = ({
-  onViewChange,
-  onRefresh,
-  onPeriodChange,
-}) => (
-  <div className="hops-planner__controls">
-    <div className="hops-planner__control-buttons">
-      <button
-        className="hops-planner__control-button"
-        onClick={() => onViewChange("list")}
-      >
-        <i className="muikku-icon-list" />
-      </button>
-      <button
-        className="hops-planner__control-button"
-        onClick={() => onViewChange("table")}
-      >
-        <i className="muikku-icon-table" />
-      </button>
-      <button className="hops-planner__control-button" onClick={onRefresh}>
-        <i className="muikku-icon-refresh" />
-      </button>
+/**
+ * PlannerControls
+ * @param props props
+ * @returns JSX.Element
+ */
+const PlannerControls: React.FC<PlannerControlsProps> = (props) => {
+  const { onPeriodChange, onFullScreen } = props;
+
+  return (
+    <div className="study-planner__controls">
+      <div className="study-planner__control-buttons">
+        {/* <IconButton icon="profile" onClick={() => onViewChange("list")} />
+      <IconButton icon="profile" onClick={() => onViewChange("table")} /> */}
+        <IconButton icon="fullscreen" onClick={onFullScreen} />
+      </div>
+      <div className="study-planner__period-navigation">
+        <IconButton icon="arrow-left" onClick={() => onPeriodChange("prev")} />
+        <IconButton icon="arrow-right" onClick={() => onPeriodChange("next")} />
+      </div>
     </div>
-    <div className="hops-planner__period-navigation">
-      <button
-        className="hops-planner__nav-button"
-        onClick={() => onPeriodChange("prev")}
-      >
-        <i className="muikku-icon-arrow-left" />
-      </button>
-      <button
-        className="hops-planner__nav-button"
-        onClick={() => onPeriodChange("next")}
-      >
-        <i className="muikku-icon-arrow-right" />
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 export default PlannerControls;

@@ -62,11 +62,7 @@ const PlannerSidebarCourse: React.FC<PlannerSidebarCourseProps> = (props) => {
    * Handles course select
    */
   const handleSelectCourse = () => {
-    if (selected) {
-      onSelectCourse(null);
-    } else {
-      onSelectCourse({ ...course, subjectCode });
-    }
+    onSelectCourse({ ...course, subjectCode });
   };
 
   const modifiers = [];

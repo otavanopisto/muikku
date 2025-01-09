@@ -2533,7 +2533,7 @@
   }
 }
 
-.button--planner-month-toggle {
+.button--study-planner-month-toggle {
   justify-content: flex-start;
   color: #B1296F;
   white-space: wrap;
@@ -2549,4 +2549,18 @@
     transition: color 0.1s ease-in-out;
   }
 }
+
+.button-icon--study-planner-month-selection {
+  background: transparent;
+  color: #B1296F;
+  font-size: 1rem;
+  transition: color 0.1s ease-in-out;
+
+  &:hover {
+    color: #F1489F;
+    text-decoration: underline;
+    transition: color 0.1s ease-in-out;
+  }
+}
+
 

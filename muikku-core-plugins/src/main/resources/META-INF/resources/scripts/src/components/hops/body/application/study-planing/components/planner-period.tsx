@@ -23,48 +23,52 @@ export interface PlannerPeriodProps extends PlannedPeriod {}
  * PlannerPeriod component
  * @param props props
  */
-const PlannerPeriod: React.FC<PlannerPeriodProps> = (props) => {
-  const { title, workload, type, year, plannedCourses } = props;
+const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
+  (props, ref) => {
+    const { title, workload, type, year, plannedCourses } = props;
 
-  const months = type === "AUTUMN" ? AUTUMN_MONTHS : SPRING_MONTHS;
+    const months = type === "AUTUMN" ? AUTUMN_MONTHS : SPRING_MONTHS;
 
-  /**
-   * Gets courses by month
-   * @param monthName month name
-   */
-  const getCoursesByMonth = (monthName: string) =>
-    plannedCourses.filter((course) => {
-      const startDate = new Date(course.startDate);
-      const monthIndex = startDate.getMonth();
-      return months[monthIndex - (type === "AUTUMN" ? 7 : 0)] === monthName;
-    });
+    /**
+     * Gets courses by month
+     * @param monthName month name
+     */
+    const getCoursesByMonth = (monthName: string) =>
+      plannedCourses.filter((course) => {
+        const startDate = new Date(course.startDate);
+        const monthIndex = startDate.getMonth();
+        return months[monthIndex - (type === "AUTUMN" ? 7 : 0)] === monthName;
+      });
 
-  return (
-    <div className="study-planner__period">
-      <h3 className="study-planner__period-title">
-        {title}
-        {workload && ` - ${workload.displayValue}`}
-      </h3>
-      <LayoutGroup>
-        <motion.div layout className="study-planner__months">
-          {months.map((monthName, index) => {
-            const monthCourses = getCoursesByMonth(monthName);
+    return (
+      <div className="study-planner__period" ref={ref}>
+        <h3 className="study-planner__period-title">
+          {title}
+          {workload && ` - ${workload.displayValue}`}
+        </h3>
+        <LayoutGroup>
+          <motion.div layout="position" className="study-planner__months">
+            {months.map((monthName, index) => {
+              const monthCourses = getCoursesByMonth(monthName);
 
-            return (
-              <PlannerPeriodMonth
-                key={`${monthName}-${year}`}
-                title={monthName}
-                // Get month index from months array
-                monthIndex={index + (type === "AUTUMN" ? 7 : 0)}
-                year={year}
-                courses={monthCourses}
-              />
-            );
-          })}
-        </motion.div>
-      </LayoutGroup>
-    </div>
-  );
-};
+              return (
+                <PlannerPeriodMonth
+                  key={`${monthName}-${year}`}
+                  title={monthName}
+                  // Get month index from months array
+                  monthIndex={index + (type === "AUTUMN" ? 7 : 0)}
+                  year={year}
+                  courses={monthCourses}
+                />
+              );
+            })}
+          </motion.div>
+        </LayoutGroup>
+      </div>
+    );
+  }
+);
+
+PlannerPeriod.displayName = "PlannerPeriod";
 
 export default PlannerPeriod;
