@@ -10,7 +10,8 @@ import { createAndAllocateCoursesToPeriods } from "./helper";
 import {
   HopsMode,
   PlannedCourseWithIdentifier,
-  Selection,
+  SelectedCourse,
+  TimeContextSelection,
 } from "~/reducers/hops";
 import StudyPlannerDragLayer from "./components/react-dnd/planner-drag-layer";
 import "~/sass/elements/study-planner.scss";
@@ -18,6 +19,10 @@ import { CurriculumConfig } from "~/util/curriculum-config";
 import { useMediaQuery } from "usehooks-ts";
 import DesktopStudyPlanner from "./components/desktop/study-plan-tool-desktop";
 import MobileStudyPlanner from "./components/mobile/study-plan-tool-mobile";
+import {
+  UpdateSelectedCoursesTriggerType,
+  updateSelectedCourses,
+} from "~/actions/main-function/hops";
 
 /**
  * MatriculationPlanProps
@@ -27,7 +32,9 @@ interface StudyPlanToolProps {
   curriculumConfig: CurriculumConfig | null;
   plannedCourses: PlannedCourseWithIdentifier[];
   editingPlan: PlannedCourseWithIdentifier[];
-  selection: Selection;
+  timeContextSelection: TimeContextSelection;
+  selectedCourses: SelectedCourse[];
+  updateSelectedCourses: UpdateSelectedCoursesTriggerType;
 }
 
 /**
@@ -35,8 +42,15 @@ interface StudyPlanToolProps {
  * @param props props
  */
 const StudyPlanTool = (props: StudyPlanToolProps) => {
-  const { plannedCourses, editingPlan, hopsMode, curriculumConfig, selection } =
-    props;
+  const {
+    plannedCourses,
+    editingPlan,
+    hopsMode,
+    curriculumConfig,
+    selectedCourses,
+    timeContextSelection,
+    updateSelectedCourses,
+  } = props;
 
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -153,13 +167,16 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                 curriculumConfig={curriculumConfig}
                 plannedCourses={usedPlannedCourses}
                 calculatedPeriods={calculatedPeriods}
-                selection={selection}
+                timeContextSelection={timeContextSelection}
+                selectedCourses={selectedCourses}
               />
             ) : (
               <DesktopStudyPlanner
                 curriculumConfig={curriculumConfig}
                 plannedCourses={usedPlannedCourses}
                 calculatedPeriods={calculatedPeriods}
+                selectedCourses={selectedCourses}
+                updateSelectedCourses={updateSelectedCourses}
               />
             )}
           </ApplicationSubPanel.Body>
@@ -179,7 +196,8 @@ function mapStateToProps(state: StateType) {
     curriculumConfig: state.hopsNew.hopsCurriculumConfig,
     plannedCourses: state.hopsNew.hopsStudyPlanState.plannedCourses,
     editingPlan: state.hopsNew.hopsEditing.plannedCourses,
-    selection: state.hopsNew.hopsEditing.selection,
+    selectedCourses: state.hopsNew.hopsEditing.selectedCourses,
+    timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
   };
 }
 
@@ -188,7 +206,12 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators(
+    {
+      updateSelectedCourses,
+    },
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudyPlanTool);

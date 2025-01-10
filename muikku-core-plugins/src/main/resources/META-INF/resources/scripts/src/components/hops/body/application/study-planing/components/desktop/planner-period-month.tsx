@@ -1,29 +1,31 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import { Course } from "~/@types/shared";
-import Button, { IconButton } from "~/components/general/button";
+import Button from "~/components/general/button";
 import {
   CourseChangeAction,
-  isPeriodMonthSelection,
-  isPlannedCourseSelection,
-  isUnplannedCourseSelection,
+  isPlannedCourseWithIdentifier,
   PlannedCourseWithIdentifier,
-  Selection,
+  SelectedCourse,
 } from "~/reducers/hops";
-import Droppable from "./react-dnd/droppable";
-import PlannerPeriodCourseCard from "./planner-period-course";
+import Droppable from "../react-dnd/droppable";
+import PlannerPeriodCourseCard from "../planner-period-course";
 import { motion, AnimatePresence, LayoutGroup, Variants } from "framer-motion";
-import { isPlannedCourse } from "../helper";
+import { isPlannedCourse } from "../../helper";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { Action, Dispatch } from "redux";
 import { connect } from "react-redux";
 import {
+  clearSelectedCourses,
+  ClearSelectedCoursesTriggerType,
+  updateEditingStudyPlanBatch,
+  UpdateEditingStudyPlanBatchTriggerType,
   updateHopsEditingStudyPlan,
   UpdateHopsEditingStudyPlanTriggerType,
-  updateSelection,
-  UpdateSelectionTriggerType,
+  updateSelectedCourses,
+  UpdateSelectedCoursesTriggerType,
 } from "~/actions/main-function/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import _ from "lodash";
@@ -39,12 +41,14 @@ interface PlannerPeriodMonthProps {
   courses: PlannedCourseWithIdentifier[];
 
   //Redux state
-  selection: Selection;
   originalPlannedCourses: PlannedCourseWithIdentifier[];
   editedPlannedCourses: PlannedCourseWithIdentifier[];
   curriculumConfig: CurriculumConfig;
-  updateSelection: UpdateSelectionTriggerType;
+  selectedCourses: SelectedCourse[];
   updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType;
+  updateEditingStudyPlanBatch: UpdateEditingStudyPlanBatchTriggerType;
+  updateSelectedCourses: UpdateSelectedCoursesTriggerType;
+  clearSelectedCourses: ClearSelectedCoursesTriggerType;
 }
 
 const dropZoneVariants: Variants = {
@@ -73,12 +77,14 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     title,
     year,
     courses,
-    selection,
     originalPlannedCourses,
-    editedPlannedCourses,
     curriculumConfig,
+    selectedCourses,
+    editedPlannedCourses,
+    updateEditingStudyPlanBatch,
     updateHopsEditingStudyPlan,
-    updateSelection,
+    updateSelectedCourses,
+    clearSelectedCourses,
   } = props;
 
   const [isExpanded, setIsExpanded] = React.useState(true);
@@ -104,43 +110,51 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
    */
   const handleMoveCourseHereClick = () => {
     // If there is no selected course, do nothing
-    if (!selection) {
+    if (!selectedCourses.length) {
       return;
     }
 
-    // If the selected course is not a planned course, do nothing
-    if (isPlannedCourseSelection(selection)) {
-      // Try to find the course info from the edited planned courses
-      const index = editedPlannedCourses.findIndex(
-        (c) => c.identifier === selection.course.identifier
-      );
-
-      if (index === -1) {
-        return;
+    const plannedCourses = selectedCourses.map((course) => {
+      if (isPlannedCourseWithIdentifier(course)) {
+        return {
+          ...course,
+          startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
+        };
       }
 
-      // Update the course
-      updateHopsEditingStudyPlan({
-        updatedCourse: {
-          ...editedPlannedCourses[index],
-          startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
-        },
-        action: "update",
-      });
-    }
-    // Else means that the course does not exist in the planned list and must be added as new one
-    else if (isUnplannedCourseSelection(selection)) {
-      updateHopsEditingStudyPlan({
-        updatedCourse: curriculumConfig.strategy.createPlannedCourse(
-          selection.course,
+      return {
+        ...curriculumConfig.strategy.createPlannedCourse(
+          course,
           new Date(year, monthIndex, 1)
         ),
-        action: "add",
-      });
-    }
+      };
+    });
+
+    // Create a map of the new/updated courses by identifier for efficient lookup
+    const plannedCoursesMap = new Map(
+      plannedCourses.map((course) => [course.identifier, course])
+    );
+
+    // Update existing courses and keep unchanged ones
+    const updatedList = editedPlannedCourses.map(
+      (course) => plannedCoursesMap.get(course.identifier) || course
+    );
+
+    // Add any new courses that didn't exist in the original list
+    const newCourses = plannedCourses.filter(
+      (course) =>
+        !editedPlannedCourses.some(
+          (existing) => existing.identifier === course.identifier
+        )
+    );
+
+    // Update the editing study plan with batch thunk
+    updateEditingStudyPlanBatch({
+      plannedCourses: [...updatedList, ...newCourses],
+    });
 
     // Clear the selected course
-    updateSelection(null);
+    clearSelectedCourses();
   };
 
   /**
@@ -148,15 +162,12 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
    * @param course course
    * @param type type
    */
-  const handleDrop = (
-    course: PlannedCourseWithIdentifier | (Course & { subjectCode: string }),
-    type: string
-  ) => {
+  const handleDrop = (course: SelectedCourse, type: string) => {
     let updatedCourse: PlannedCourseWithIdentifier;
 
     let action: CourseChangeAction = "add";
 
-    if (isPlannedCourse(course)) {
+    if (isPlannedCourseWithIdentifier(course)) {
       // Set start date to the month number and year
       const updatedStartDate = new Date(course.startDate);
       updatedStartDate.setMonth(monthIndex);
@@ -203,37 +214,8 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
    * @param course course
    */
   const handleSelectCourse = (course: PlannedCourseWithIdentifier) => {
-    if (course === null) {
-      updateSelection(null);
-    } else {
-      updateSelection({ selection: { type: "planned-course", course } });
-    }
+    updateSelectedCourses({ course });
   };
-
-  /**
-   * Handles month select
-   * @param year year
-   * @param monthIndex month index
-   */
-  const handleSelectMonth =
-    (year: number, monthIndex: number) =>
-    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e.preventDefault();
-
-      // If the month is already selected, clear the selection
-      if (
-        selection &&
-        isPeriodMonthSelection(selection) &&
-        selection.year === year &&
-        selection.monthIndex === monthIndex
-      ) {
-        updateSelection(null);
-      } else {
-        updateSelection({
-          selection: { type: "period-month", year, monthIndex },
-        });
-      }
-    };
 
   /**
    * Finds if the course is already in the droppable area
@@ -275,19 +257,19 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
   );
 
   // Check if selected course is planned and in month already
-  const selectedCourseIsInMonth =
+  /* const selectedCourseIsInMonth =
     selection && isPlannedCourseSelection(selection)
       ? courses.some(
           (course) => course.identifier === selection.course.identifier
         )
-      : false;
+      : false; */
 
   // Pulse dropzone if hovering over dropzone or selection is not in month and not a period month selection
-  const pulseDropzone =
+  /* const pulseDropzone =
     (selection &&
       !selectedCourseIsInMonth &&
       !isPeriodMonthSelection(selection)) ||
-    showDropIndicator;
+    showDropIndicator; */
 
   return (
     <motion.div layout className="study-planner__month">
@@ -313,12 +295,6 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
             )}
           </AnimatePresence>
         </Button>
-
-        <IconButton
-          icon="plus"
-          buttonModifiers={["study-planner-month-selection"]}
-          onClick={handleSelectMonth(year, monthIndex)}
-        />
       </motion.div>
 
       <AnimateHeight height={isExpanded ? "auto" : 0}>
@@ -343,10 +319,11 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
                 {courses.length > 0
                   ? courses.map((course) => {
                       // Check if the course is selected
-                      const isSelected =
-                        selection &&
-                        isPlannedCourseSelection(selection) &&
-                        selection.course.identifier === course.identifier;
+                      const isSelected = selectedCourses.some(
+                        (c) =>
+                          isPlannedCourseWithIdentifier(c) &&
+                          c.identifier === course.identifier
+                      );
 
                       // Find the original course info
                       const originalInfo = originalPlannedCourses.find(
@@ -362,7 +339,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
 
                       return (
                         <motion.div
-                          key={course.id}
+                          key={course.identifier}
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.8 }}
@@ -384,7 +361,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
               </AnimatePresence>
               <motion.div
                 layout="position"
-                animate={pulseDropzone ? "dropIsActive" : "initial"}
+                animate={"initial"}
                 variants={dropZoneVariants}
                 className="study-planner__month-dropzone"
               >
@@ -410,8 +387,9 @@ function mapStateToProps(state: StateType) {
   return {
     originalPlannedCourses: state.hopsNew.hopsStudyPlanState.plannedCourses,
     editedPlannedCourses: state.hopsNew.hopsEditing.plannedCourses,
-    selection: state.hopsNew.hopsEditing.selection,
+    timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
     curriculumConfig: state.hopsNew.hopsCurriculumConfig,
+    selectedCourses: state.hopsNew.hopsEditing.selectedCourses,
   };
 }
 
@@ -421,7 +399,12 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { updateSelection, updateHopsEditingStudyPlan },
+    {
+      updateHopsEditingStudyPlan,
+      updateSelectedCourses,
+      updateEditingStudyPlanBatch,
+      clearSelectedCourses,
+    },
     dispatch
   );
 }

@@ -6,6 +6,7 @@ import {
   schoolCourseTableUppersecondary2021,
 } from "~/mock/mock-data";
 import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Period workload
@@ -129,8 +130,8 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
     startDate: Date
   ): PlannedCourseWithIdentifier {
     return {
-      identifier: `planned-course-${new Date().getTime()}`,
-      id: new Date().getTime(),
+      identifier: `planned-course-${uuidv4()}`,
+      id: null,
       name: course.name,
       courseNumber: course.courseNumber,
       length: course.length,
@@ -224,8 +225,8 @@ class CompulsoryCurriculum implements CurriculumStrategy {
     startDate: Date
   ): PlannedCourseWithIdentifier {
     return {
-      identifier: `planned-course-${new Date().getTime()}`,
-      id: new Date().getTime(),
+      identifier: `planned-course-${uuidv4()}`,
+      id: null,
       name: course.name,
       courseNumber: course.courseNumber,
       length: course.length,

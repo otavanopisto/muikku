@@ -3,11 +3,21 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import PlannerControls from "../planner-controls";
-import PlannerSidebar from "../planner-sidebar";
-import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
+import {
+  isUnplannedCourse,
+  PlannedCourseWithIdentifier,
+  PlannedPeriod,
+  SelectedCourse,
+} from "~/reducers/hops";
 import PlannerPeriod from "../planner-period";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { motion, Variants } from "framer-motion";
+import PlannerCourseTray from "../planner-course-tray";
+import {
+  UpdateSelectedCoursesTriggerType,
+  updateSelectedCourses,
+} from "~/actions/main-function/hops";
+import { Course } from "~/@types/shared";
 
 /**
  * DesktopStudyPlannerProps
@@ -16,6 +26,8 @@ interface DesktopStudyPlannerProps {
   curriculumConfig: CurriculumConfig;
   plannedCourses: PlannedCourseWithIdentifier[];
   calculatedPeriods: PlannedPeriod[];
+  selectedCourses: SelectedCourse[];
+  updateSelectedCourses: UpdateSelectedCoursesTriggerType;
 }
 
 const variants: Variants = {
@@ -39,7 +51,12 @@ const variants: Variants = {
  * @returns JSX.Element
  */
 const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
-  const { curriculumConfig, plannedCourses, calculatedPeriods } = props;
+  const {
+    curriculumConfig,
+    plannedCourses,
+    calculatedPeriods,
+    selectedCourses,
+  } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [view, setView] = useState<"list" | "table">("list");
@@ -154,6 +171,14 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
     []
   );
 
+  /**
+   * Handles course click
+   * @param course course
+   */
+  const handleCourseClick = (course: Course & { subjectCode: string }) => {
+    updateSelectedCourses({ course });
+  };
+
   return (
     <motion.div
       className="study-planner"
@@ -167,10 +192,23 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
         onFullScreen={() => setIsFullScreen(!isFullScreen)}
       />
       <div className="study-planner__content">
-        <PlannerSidebar
-          curriculumConfig={curriculumConfig}
-          plannedCourses={plannedCourses}
-        />
+        <div className="study-planner__sidebar">
+          <PlannerCourseTray
+            curriculumConfig={curriculumConfig}
+            plannedCourses={plannedCourses}
+            selectedCourses={selectedCourses}
+            onCourseClick={handleCourseClick}
+            isSelected={(course) =>
+              isUnplannedCourse(course) &&
+              selectedCourses.some(
+                (c) =>
+                  c.subjectCode === course.subjectCode &&
+                  c.courseNumber === course.courseNumber
+              )
+            }
+          />
+        </div>
+
         <div
           className="study-planner__timeline-container"
           onKeyDown={handleKeyDown}

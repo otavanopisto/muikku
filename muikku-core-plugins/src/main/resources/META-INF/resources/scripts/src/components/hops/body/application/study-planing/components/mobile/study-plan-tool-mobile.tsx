@@ -2,12 +2,11 @@ import * as React from "react";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
-import PlannerSidebar from "../planner-sidebar";
 import {
-  isPeriodMonthSelection,
   PlannedCourseWithIdentifier,
   PlannedPeriod,
-  Selection,
+  SelectedCourse,
+  TimeContextSelection,
 } from "~/reducers/hops";
 import PlannerPeriod from "../planner-period";
 import { CurriculumConfig } from "~/util/curriculum-config";
@@ -27,7 +26,8 @@ interface MobileStudyPlannerProps {
   curriculumConfig: CurriculumConfig;
   plannedCourses: PlannedCourseWithIdentifier[];
   calculatedPeriods: PlannedPeriod[];
-  selection: Selection;
+  timeContextSelection: TimeContextSelection;
+  selectedCourses: SelectedCourse[];
 }
 
 /**
@@ -36,8 +36,13 @@ interface MobileStudyPlannerProps {
  * @returns JSX.Element
  */
 const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
-  const { curriculumConfig, plannedCourses, calculatedPeriods, selection } =
-    props;
+  const {
+    curriculumConfig,
+    plannedCourses,
+    calculatedPeriods,
+    timeContextSelection,
+    selectedCourses,
+  } = props;
   const manager = useDragDropManager();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,16 +56,6 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
   const fullscreenPeriodRefs = React.useRef(new Map<string, HTMLDivElement>());
 
   const [shouldRenderPortal, setShouldRenderPortal] = useState(false);
-
-  useEffect(() => {
-    if (!selection) return;
-
-    if (isPeriodMonthSelection(selection)) {
-      setIsSidebarOpen(true);
-    } else {
-      setIsSidebarOpen(false);
-    }
-  }, [selection]);
 
   useEffect(() => {
     if (isFullScreen) {
@@ -202,13 +197,6 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
                           }
                         />
                         <div className="study-planner__content">
-                          <MobileSidebar
-                            isOpen={isSidebarOpen}
-                            onClose={() => setIsSidebarOpen(false)}
-                            curriculumConfig={curriculumConfig}
-                            plannedCourses={plannedCourses}
-                            selectedPeriod={undefined}
-                          />
                           <div
                             className="study-planner__timeline-container"
                             tabIndex={0}
@@ -219,6 +207,7 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
                                 <PlannerPeriod
                                   key={period.title}
                                   {...period}
+                                  renderMobile={true}
                                   ref={(el) => {
                                     if (el) {
                                       fullscreenPeriodRefs.current.set(
@@ -257,13 +246,6 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
             onPeriodChange={(direction) => scrollToAdjacentPeriod(direction)}
           />
           <div className="study-planner__content">
-            <MobileSidebar
-              isOpen={isSidebarOpen}
-              onClose={() => setIsSidebarOpen(false)}
-              curriculumConfig={curriculumConfig}
-              plannedCourses={plannedCourses}
-              selectedPeriod={undefined}
-            />
             <div
               className="study-planner__timeline-container"
               tabIndex={0}
@@ -274,6 +256,7 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
                   <PlannerPeriod
                     key={period.title}
                     {...period}
+                    renderMobile={true}
                     ref={(el) => {
                       if (el) {
                         // Element is being mounted - add to refs Map
@@ -291,114 +274,6 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
         </motion.div>
       )}
     </>
-  );
-};
-
-/**
- * MobileSidebarProps
- */
-interface MobileSidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-  curriculumConfig: CurriculumConfig;
-  plannedCourses: PlannedCourseWithIdentifier[];
-  selectedPeriod?: { monthIndex: number; year: number };
-}
-
-/**
- * Mobile sidebar
- * @param props props
- * @returns JSX.Element
- */
-const MobileSidebar: React.FC<MobileSidebarProps> = (props) => {
-  const { isOpen, onClose, curriculumConfig, plannedCourses, selectedPeriod } =
-    props;
-  const manager = useDragDropManager();
-  const [shouldRenderPortal, setShouldRenderPortal] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      setShouldRenderPortal(true);
-    } else {
-      // Delay portal unmounting to allow exit animations to complete
-      const timer = setTimeout(() => {
-        setShouldRenderPortal(false);
-      }, 300); // Match this with your exit animation duration
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
-
-  if (!shouldRenderPortal) return null;
-
-  return (
-    <ReactReduxContext.Consumer>
-      {({ store }) => (
-        <Portal isOpen={true}>
-          <Provider store={store}>
-            <DndProvider manager={manager}>
-              <AnimatePresence>
-                {isOpen && (
-                  <>
-                    <motion.div
-                      key="study-planner__mobile-sidebar-overlay"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 0.5 }}
-                      exit={{ opacity: 0 }}
-                      onClick={onClose}
-                      className="study-planner__mobile-sidebar-overlay"
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: "#000",
-                        zIndex: 1000,
-                      }}
-                    />
-
-                    <motion.div
-                      key="mobile-sidebar"
-                      initial={{ x: "-100%" }}
-                      animate={{ x: 0 }}
-                      exit={{ x: "-100%" }}
-                      transition={{ type: "tween", duration: 0.3 }}
-                      className="study-planner__mobile-sidebar"
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        bottom: 0,
-                        width: "80%",
-                        maxWidth: "400px",
-                        background: "white",
-                        zIndex: 1001,
-                        boxShadow: "2px 0 8px rgba(0,0,0,0.15)",
-                        display: "flex",
-                        flexDirection: "column",
-                      }}
-                    >
-                      {/* Header */}
-                      <div className="study-planner__mobile-sidebar-header">
-                        <div className="study-planner__mobile-sidebar-header-actions">
-                          <IconButton icon="cross" onClick={onClose} />
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <PlannerSidebar
-                        curriculumConfig={curriculumConfig}
-                        plannedCourses={plannedCourses}
-                      />
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </DndProvider>
-          </Provider>
-        </Portal>
-      )}
-    </ReactReduxContext.Consumer>
   );
 };
 

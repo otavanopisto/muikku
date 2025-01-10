@@ -226,37 +226,47 @@
   flex-grow: 0;
 }
 
-.study-planner__sidebar-header {
+// Course tray
+.study-planner__course-tray {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-basis: 300px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
+.study-planner__course-tray-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.25rem;
 }
 
-.study-planner__sidebar-header-extra {
+.study-planner__course-tray-header-extra {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.study-planner__sidebar-header-actions {
+.study-planner__course-tray-header-actions {
   display: flex;
   gap: 0.5rem;
 }
 
-.study-planner__sidebar-title {
+.study-planner__course-tray-title {
   margin: 0;
 }
 
-.study-planner__search {
+.study-planner__course-tray-search {
   margin-bottom: 1rem;
 }
 
-.study-planner__course-group {
+.study-planner__course-tray-group {
   margin-bottom: 0.5rem;
 }
 
-.study-planner__course-group-toggle {
+.study-planner__course-tray-group-toggle {
   width: 100%;
   text-align: left;
   padding: 0.5rem 0.5rem 0.5rem 0rem;
@@ -274,7 +284,7 @@
   }
 }
 
-.study-planner__course-groups {
+.study-planner__course-tray-groups {
   flex: 1;
   overflow-y: auto;
   padding-right: 0.5rem;

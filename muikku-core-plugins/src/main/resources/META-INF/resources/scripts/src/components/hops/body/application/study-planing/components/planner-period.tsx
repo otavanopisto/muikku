@@ -1,6 +1,7 @@
 import * as React from "react";
 import { PlannedPeriod } from "~/reducers/hops";
-import PlannerPeriodMonth from "./planner-period-month";
+import PlannerPeriodMonth from "./desktop/planner-period-month";
+import MobilePlannerPeriodMonth from "./mobile/planner-period-month";
 import { LayoutGroup, motion } from "framer-motion";
 
 const AUTUMN_MONTHS = ["Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"];
@@ -17,7 +18,13 @@ const SPRING_MONTHS = [
 /**
  * PlannerPeriodProps
  */
-export interface PlannerPeriodProps extends PlannedPeriod {}
+export interface PlannerPeriodProps extends PlannedPeriod {
+  renderMobile?: boolean;
+}
+
+const defaultProps: Partial<PlannerPeriodProps> = {
+  renderMobile: false,
+};
 
 /**
  * PlannerPeriod component
@@ -25,7 +32,9 @@ export interface PlannerPeriodProps extends PlannedPeriod {}
  */
 const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
   (props, ref) => {
-    const { title, workload, type, year, plannedCourses } = props;
+    props = { ...defaultProps, ...props };
+
+    const { title, workload, type, year, plannedCourses, renderMobile } = props;
 
     const months = type === "AUTUMN" ? AUTUMN_MONTHS : SPRING_MONTHS;
 
@@ -50,6 +59,18 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
           <motion.div layout="position" className="study-planner__months">
             {months.map((monthName, index) => {
               const monthCourses = getCoursesByMonth(monthName);
+
+              if (renderMobile) {
+                return (
+                  <MobilePlannerPeriodMonth
+                    key={`${monthName}-${year}`}
+                    title={monthName}
+                    monthIndex={index + (type === "AUTUMN" ? 7 : 0)}
+                    year={year}
+                    courses={monthCourses}
+                  />
+                );
+              }
 
               return (
                 <PlannerPeriodMonth

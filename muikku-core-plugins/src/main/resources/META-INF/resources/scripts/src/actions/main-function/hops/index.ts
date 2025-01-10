@@ -19,12 +19,14 @@ import {
   CourseChangeAction,
   HopsEditingState,
   HopsMode,
+  isPlannedCourseWithIdentifier,
   MatriculationEligibilityWithAbistatus,
   MatriculationSubjectWithEligibility,
   PlannedCourseWithIdentifier,
   ReducerInitializeStatusType,
   ReducerStateType,
-  Selection,
+  SelectedCourse,
+  TimeContextSelection,
 } from "~/reducers/hops";
 import i18n from "~/locales/i18n";
 import { abistatus } from "~/helper-functions/abistatus";
@@ -206,13 +208,30 @@ export type HOPS_UPDATE_EDITING_STUDYPLAN = SpecificActionType<
   PlannedCourseWithIdentifier[]
 >;
 
-export type HOPS_SET_SELECTION = SpecificActionType<
-  "HOPS_SET_SELECTION",
-  Selection | null
+export type HOPS_UPDATE_EDITING_STUDYPLAN_BATCH = SpecificActionType<
+  "HOPS_UPDATE_EDITING_STUDYPLAN_BATCH",
+  {
+    plannedCourses: PlannedCourseWithIdentifier[];
+  }
 >;
 
-export type HOPS_CLEAR_SELECTION = SpecificActionType<
-  "HOPS_CLEAR_SELECTION",
+export type HOPS_SET_TIME_CONTEXT_SELECTION = SpecificActionType<
+  "HOPS_SET_TIME_CONTEXT_SELECTION",
+  TimeContextSelection | null
+>;
+
+export type HOPS_CLEAR_TIME_CONTEXT_SELECTION = SpecificActionType<
+  "HOPS_CLEAR_TIME_CONTEXT_SELECTION",
+  undefined
+>;
+
+export type HOPS_UPDATE_SELECTED_COURSES = SpecificActionType<
+  "HOPS_UPDATE_SELECTED_COURSES",
+  SelectedCourse[]
+>;
+
+export type HOPS_CLEAR_SELECTED_COURSES = SpecificActionType<
+  "HOPS_CLEAR_SELECTED_COURSES",
   undefined
 >;
 
@@ -431,39 +450,45 @@ export interface SaveStudyPlanDataTriggerType {
 /**
  * SetSelectionTriggerType
  */
-export interface UpdateSelectionTriggerType {
-  (data: { selection: Selection | null }): AnyActionType;
+export interface UpdateTimeContextSelectionTriggerType {
+  (data: { selection: TimeContextSelection | null }): AnyActionType;
 }
 
 /**
  * ClearSelectionTriggerType
  */
-export interface ClearSelectionTriggerType {
+export interface ClearTimeContextSelectionTriggerType {
   (): AnyActionType;
 }
 
 /**
- * UpdateAddToPeriodTriggerType
+ * UpdateSelectedCoursesTriggerType
  */
-export interface UpdateAddToPeriodTriggerType {
-  (data: { courses: (Course & { subjectCode: string })[] }): AnyActionType;
-}
-
-/**
- * ClearAddToPeriodTriggerType
- */
-export interface ClearAddToPeriodTriggerType {
-  (): AnyActionType;
-}
-
-/**
- * UpdatePlannedCoursesInBatchTriggerType
- */
-export interface UpdatePlannedCoursesInBatchTriggerType {
+export interface UpdateSelectedCoursesTriggerType {
   (data: {
-    plannedCourses: PlannedCourseWithIdentifier[];
-    action: CourseChangeAction;
+    course: PlannedCourseWithIdentifier | (Course & { subjectCode: string });
   }): AnyActionType;
+}
+
+/**
+ * ClearSelectedCoursesTriggerType
+ */
+export interface ClearSelectedCoursesTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * UpdateEditingStudyPlanBatchTriggerType
+ */
+export interface UpdateEditingStudyPlanBatchTriggerType {
+  (data: { plannedCourses: PlannedCourseWithIdentifier[] }): AnyActionType;
+}
+
+/**
+ * UpdateSelectedCoursesToStateTriggerType
+ */
+export interface UpdateTriggerType {
+  (data: { selectedCourses: PlannedCourseWithIdentifier[] }): AnyActionType;
 }
 
 /**
@@ -2113,57 +2138,93 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
  * Set selected course
  * @param data Data containing course to set
  */
-const updateSelection: UpdateSelectionTriggerType = function updateSelection(
-  data
-) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
-    if (data === null) {
-      dispatch({
-        type: "HOPS_CLEAR_SELECTION",
-        payload: null,
-      });
-    } else {
-      dispatch({
-        type: "HOPS_SET_SELECTION",
-        payload: data.selection,
-      });
-    }
-  };
-};
-
-/**
- * Update add to period
- * @param data Data containing courses to add to period
- */
-const updateAddToPeriod: UpdateAddToPeriodTriggerType =
-  function updateAddToPeriod(data) {
+const updateTimeContextSelection: UpdateTimeContextSelectionTriggerType =
+  function updateTimeContextSelection(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      if (data === null) {
+        dispatch({
+          type: "HOPS_CLEAR_TIME_CONTEXT_SELECTION",
+          payload: null,
+        });
+      } else {
+        dispatch({
+          type: "HOPS_SET_TIME_CONTEXT_SELECTION",
+          payload: data.selection,
+        });
+      }
+    };
+  };
+
+/**
+ * Update selected courses
+ * @param data Data containing courses to add to period
+ */
+const updateSelectedCourses: UpdateSelectedCoursesTriggerType =
+  function updateSelectedCourses(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      const updatedCourses = [...state.hopsNew.hopsEditing.selectedCourses];
+
+      const index = updatedCourses.findIndex((course) => {
+        if (
+          isPlannedCourseWithIdentifier(course) &&
+          isPlannedCourseWithIdentifier(data.course)
+        ) {
+          return course.identifier === data.course.identifier;
+        }
+        return (
+          course.subjectCode === data.course.subjectCode &&
+          course.courseNumber === data.course.courseNumber
+        );
+      });
+
+      if (index !== -1) {
+        updatedCourses.splice(index, 1);
+      } else {
+        updatedCourses.push(data.course);
+      }
+
       dispatch({
-        type: "HOPS_UPDATE_ADD_TO_PERIOD",
-        payload: data.courses,
+        type: "HOPS_UPDATE_SELECTED_COURSES",
+        payload: updatedCourses,
       });
     };
   };
 
 /**
- * Clear add to period
+ * Clear selected courses
  */
-const clearAddToPeriod: ClearAddToPeriodTriggerType =
-  function clearAddToPeriod() {
+const clearSelectedCourses: ClearSelectedCoursesTriggerType =
+  function clearSelectedCourses() {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       dispatch({
-        type: "HOPS_CLEAR_ADD_TO_PERIOD",
+        type: "HOPS_CLEAR_SELECTED_COURSES",
         payload: null,
       });
+    };
+  };
+
+/**
+ * Update editing study plan batch
+ * @param data Data containing planned courses to update
+ */
+const updateEditingStudyPlanBatch: UpdateEditingStudyPlanBatchTriggerType =
+  function updateEditingStudyPlanBatch(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      dispatch({ type: "HOPS_UPDATE_EDITING_STUDYPLAN_BATCH", payload: data });
     };
   };
 
@@ -2387,7 +2448,8 @@ export {
   verifyMatriculationExam,
   updateHopsEditingStudyPlan,
   saveStudyPlanData,
-  updateSelection,
-  updateAddToPeriod,
-  clearAddToPeriod,
+  updateTimeContextSelection,
+  updateSelectedCourses,
+  clearSelectedCourses,
+  updateEditingStudyPlanBatch,
 };

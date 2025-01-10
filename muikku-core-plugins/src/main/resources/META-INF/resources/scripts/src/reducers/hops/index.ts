@@ -115,40 +115,36 @@ interface hopsMatriculation {
  */
 export type HopsMode = "READ" | "EDIT";
 
-export type Selection =
-  | { type: "unplanned-course"; course: Course & { subjectCode: string } }
-  | { type: "planned-course"; course: PlannedCourseWithIdentifier }
+export type TimeContextSelection =
   | { type: "period-month"; year: number; monthIndex: number }
   | { type: null };
 
-/**
- * Type guards for unplanned course selection
- * @param selection Selection
- */
-export const isUnplannedCourseSelection = (
-  selection: Selection
-): selection is {
-  type: "unplanned-course";
-  course: Course & { subjectCode: string };
-} => selection.type === "unplanned-course";
+export type SelectedCourse =
+  | PlannedCourseWithIdentifier
+  | (Course & { subjectCode: string });
 
 /**
- * Type guard for planned course selection
- * @param selection Selection
+ * Type guard for planned course with identifier
+ * @param course Course
  */
-export const isPlannedCourseSelection = (
-  selection: Selection
-): selection is {
-  type: "planned-course";
-  course: PlannedCourseWithIdentifier;
-} => selection.type === "planned-course";
+export const isPlannedCourseWithIdentifier = (
+  course: SelectedCourse
+): course is PlannedCourseWithIdentifier => "identifier" in course;
+
+/**
+ * Type guard for unplanned course
+ * @param course Course
+ */
+export const isUnplannedCourse = (
+  course: SelectedCourse
+): course is Course & { subjectCode: string } => !("identifier" in course);
 
 /**
  * Type guard for period month selection
  * @param selection Selection
  */
 export const isPeriodMonthSelection = (
-  selection: Selection
+  selection: TimeContextSelection
 ): selection is {
   type: "period-month";
   year: number;
@@ -159,8 +155,8 @@ export const isPeriodMonthSelection = (
  * Type guard for no selection
  * @param selection Selection
  */
-export const isNoSelection = (
-  selection: Selection
+export const isNoTimeContextSelection = (
+  selection: TimeContextSelection
 ): selection is { type: null } => selection.type === null;
 
 /**
@@ -171,12 +167,9 @@ export interface HopsEditingState {
   hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
   plannedCourses: PlannedCourseWithIdentifier[];
-  selectedCourse:
-    | PlannedCourseWithIdentifier
-    | (Course & { subjectCode: string })
-    | null;
-  selection: Selection;
-  addToPeriod: (Course & { subjectCode: string })[] | null;
+  selectedCourses: SelectedCourse[];
+  timeContextSelection: TimeContextSelection;
+  waitingToBeAllocatedCourses: (Course & { subjectCode: string })[] | null;
 }
 
 /**
@@ -260,9 +253,9 @@ const initialHopsState: HopsState = {
       goalMatriculationExam: false,
     },
     plannedCourses: [],
-    selectedCourse: null,
-    selection: null,
-    addToPeriod: null,
+    selectedCourses: [],
+    timeContextSelection: null,
+    waitingToBeAllocatedCourses: null,
   },
 };
 
@@ -618,30 +611,48 @@ export const hopsNew: Reducer<HopsState> = (
         },
       };
 
-    case "HOPS_SET_SELECTION":
+    case "HOPS_SET_TIME_CONTEXT_SELECTION":
       return {
         ...state,
         hopsEditing: {
           ...state.hopsEditing,
-          selection: action.payload,
+          timeContextSelection: action.payload,
         },
       };
 
-    case "HOPS_CLEAR_SELECTION":
+    case "HOPS_CLEAR_TIME_CONTEXT_SELECTION":
       return {
         ...state,
         hopsEditing: {
           ...state.hopsEditing,
-          selection: null,
+          timeContextSelection: null,
         },
       };
 
-    case "HOPS_UPDATE_ADD_TO_PERIOD":
+    case "HOPS_UPDATE_SELECTED_COURSES":
       return {
         ...state,
         hopsEditing: {
           ...state.hopsEditing,
-          addToPeriod: action.payload,
+          selectedCourses: action.payload,
+        },
+      };
+
+    case "HOPS_CLEAR_SELECTED_COURSES":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          selectedCourses: [],
+        },
+      };
+
+    case "HOPS_UPDATE_EDITING_STUDYPLAN_BATCH":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          plannedCourses: action.payload.plannedCourses,
         },
       };
 

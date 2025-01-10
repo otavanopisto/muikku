@@ -172,7 +172,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
         ref={ref}
         modifiers={["planned-course-card", ...cardModifiers]}
         innerContainerModifiers={[course.mandatory ? "mandatory" : "optional"]}
-        onClick={() => onSelectCourse(selected ? null : course)}
+        onClick={() => onSelectCourse(course)}
       >
         <PlannerCardHeader modifiers={["planned-course-card"]}>
           <span className="study-planner__course-code">
