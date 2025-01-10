@@ -83,6 +83,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
       <Dropdown
         modifier="profile"
         items={items.map(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (item) => (closeDropdown: () => any) =>
             this.renderProfileLink(item, closeDropdown)
         )}
@@ -120,11 +121,13 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
    * @param closeDropdown closeDropdown
    * @returns React.ReactNode
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderProfileLink = (item: any, closeDropdown: () => any) => (
     <Link
       href={item.href}
       to={item.to ? item.href : null}
       className="link link--full link--profile-dropdown"
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       onClick={(...args: any[]) => {
         closeDropdown();
         item.onClick && item.onClick(...args);

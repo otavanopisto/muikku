@@ -34,9 +34,8 @@ import Avatar from "~/components/general/avatar";
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
-import StudyProgress from "~/components/general/study-progress";
-import StudyProgressContextProvider from "~/components/general/study-progress/context";
 import { withTranslation, WithTranslation } from "react-i18next";
+import StudyProgress from "./study-progress";
 import Dropdown from "~/components/general/dropdown";
 
 /**
@@ -461,27 +460,25 @@ class StateOfStudies extends React.Component<
                     ns: "guider",
                   })}
                 </ApplicationSubPanel.Header>
+
                 <ApplicationSubPanel.Body>
-                  <StudyProgressContextProvider
-                    user="supervisor"
-                    useCase="state-of-studies"
-                    studentId={this.props.guider.currentStudent.basic.id}
+                  <StudyProgress
+                    studentIdentifier={
+                      this.props.guider.currentStudent.basic.id
+                    }
                     studentUserEntityId={
                       this.props.guider.currentStudent.basic.userEntityId
                     }
-                    dataToLoad={["studentActivity"]}
-                  >
-                    <StudyProgress
-                      curriculumName={
-                        this.props.guider.currentStudent.basic.curriculumName
-                      }
-                      studyProgrammeName={
-                        this.props.guider.currentStudent.basic
-                          .studyProgrammeName
-                      }
-                      editMode={true}
-                    />
-                  </StudyProgressContextProvider>
+                    curriculumName={
+                      this.props.guider.currentStudent.basic.curriculumName
+                    }
+                    studyProgrammeName={
+                      this.props.guider.currentStudent.basic.studyProgrammeName
+                    }
+                    studyProgress={
+                      this.props.guider.currentStudent.studyProgress
+                    }
+                  />
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>

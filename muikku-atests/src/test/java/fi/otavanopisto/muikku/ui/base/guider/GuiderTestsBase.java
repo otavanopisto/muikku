@@ -349,6 +349,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addCourse(course1)
       .addCourse(course2)
       .addCourse(course3)
+      .mockEmptyStudyActivity()
       .mockIAmCounselor()
       .build();
       login();
