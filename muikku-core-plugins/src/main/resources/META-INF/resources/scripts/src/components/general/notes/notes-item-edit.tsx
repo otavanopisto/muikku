@@ -13,7 +13,6 @@ import {
   Note,
   NotePriorityType,
   UpdateNoteRequest,
-  NoteReceiver,
   NoteCreationObject,
 } from "~/generated/client";
 import { ContactRecipientType } from "~/reducers/user-index";
@@ -61,6 +60,7 @@ class NotesItemEdit extends SessionStateComponent<
    * constructor
    * @param props props
    */
+
   constructor(props: NotesItemEditProps) {
     super(props, "records-notes-item-edit");
     this.clearUp = this.clearUp.bind(this);

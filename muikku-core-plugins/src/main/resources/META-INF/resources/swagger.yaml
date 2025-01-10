@@ -15401,12 +15401,8 @@ components:
           $ref: "#/components/schemas/NotePriorityType"
         startDate:
           type: string
-          format: date-time
-          nullable: true
         dueDate:
           type: string
-          format: date-time
-          nullable: true
 
     NoteSortedList:
       type: object

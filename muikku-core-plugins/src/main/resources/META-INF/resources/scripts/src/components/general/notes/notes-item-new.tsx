@@ -54,11 +54,11 @@ class NotesItemNew extends SessionStateComponent<
    * @param props props
    */
   constructor(props: NotesItemNewProps) {
-    super(props, "discussion-modify-thread-dialog");
+    super(props, "records-notes-item-new");
 
     this.clearUp = this.clearUp.bind(this);
 
-    this.state = {
+    this.state = this.getRecoverStoredState({
       locked: false,
       recipients: [],
       notesItem: {
@@ -83,26 +83,25 @@ class NotesItemNew extends SessionStateComponent<
           dueDate: null,
         },
       },
-    };
+    });
   }
 
   /**
    * clearUp
    */
   clearUp() {
-    this.setState({
+    this.setStateAndClear({
       locked: false,
+      recipients: [],
       notesItem: {
         noteReceiver: {
           pinned: false,
           status: "ONGOING",
         },
         recipients: {
-          recipientIds: [
-            this.props.newNoteRecipientId
-              ? this.props.newNoteRecipientId
-              : null,
-          ],
+          recipientIds: this.props.newNoteRecipientId
+            ? [this.props.newNoteRecipientId]
+            : [],
           recipientGroupIds: [],
           recipientStudentsWorkspaceIds: [],
         },
@@ -143,7 +142,7 @@ class NotesItemNew extends SessionStateComponent<
 
     updateNotesItem[key] = value;
 
-    this.setState({
+    this.setStateAndStore({
       notesItem: { ...this.state.notesItem, note: updateNotesItem },
     });
   };
@@ -165,7 +164,7 @@ class NotesItemNew extends SessionStateComponent<
       .filter((recipient) => recipient.type === "workspace")
       .map((recipient) => recipient.value.id);
 
-    this.setState({
+    this.setStateAndStore({
       recipients,
       notesItem: {
         ...this.state.notesItem,
@@ -272,16 +271,14 @@ class NotesItemNew extends SessionStateComponent<
             className="env-dialog__input"
             selected={
               this.state.notesItem.note.startDate
-                ? this.state.notesItem.note.startDate
+                ? new Date(this.state.notesItem.note.startDate)
                 : undefined
             }
             onChange={(date, e) =>
-              this.handleNotesItemChange("startDate", date)
+              this.handleNotesItemChange("startDate", new Date(date).toString())
             }
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
-            minDate={new Date()}
-            maxDate={this.state.notesItem.note.dueDate}
           />
         </div>
         <div className="env-dialog__form-element-container">
@@ -292,17 +289,14 @@ class NotesItemNew extends SessionStateComponent<
             className="env-dialog__input"
             selected={
               this.state.notesItem.note.dueDate
-                ? this.state.notesItem.note.dueDate
+                ? new Date(this.state.notesItem.note.dueDate)
                 : undefined
             }
-            onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
+            onChange={(date, e) =>
+              this.handleNotesItemChange("dueDate", new Date(date).toString())
+            }
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
-            minDate={
-              this.state.notesItem.note.startDate !== null
-                ? this.state.notesItem.note.startDate
-                : new Date()
-            }
           />
         </div>
       </div>,
@@ -325,6 +319,15 @@ class NotesItemNew extends SessionStateComponent<
      */
     const footer = (closeDialog: () => never) => (
       <div className="env-dialog__actions">
+        {this.recovered && (
+          <Button
+            buttonModifiers="dialog-clear"
+            onClick={this.clearUp}
+            disabled={this.state.locked}
+          >
+            {this.props.t("actions.remove", { context: "draft" })}
+          </Button>
+        )}
         <Button
           buttonModifiers={["dialog-execute"]}
           onClick={this.handleSaveClick(closeDialog)}
@@ -343,7 +346,6 @@ class NotesItemNew extends SessionStateComponent<
         title={this.props.i18n.t("labels.create", { ns: "tasks" })}
         content={content}
         footer={footer}
-        onOpen={this.clearUp}
       >
         {this.props.children}
       </EnvironmentDialog>
