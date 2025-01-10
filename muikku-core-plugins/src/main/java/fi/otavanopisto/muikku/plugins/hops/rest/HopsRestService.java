@@ -42,6 +42,8 @@ import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
@@ -103,6 +105,9 @@ public class HopsRestService {
   @Inject
   private HopsController hopsController;
 
+  @Inject
+  private EvaluationController evaluationController;
+  
   @Inject
   private UserEntityController userEntityController;
 
@@ -426,16 +431,30 @@ public class HopsRestService {
     }
 
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
 
     // Pyramus call for ongoing, transferred, and graded courses
 
     BridgeResponse<List<StudyActivityItemRestModel>> response = userSchoolDataController.getStudyActivity(
         schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
     if (response.ok()) {
-
-      // Add suggested courses to the list
+      
+      // Add suggested courses to the list and track supplementation requests as well
 
       List<StudyActivityItemRestModel> items = response.getEntity();
+      for (StudyActivityItemRestModel item : items) {
+        if (item.getCourseId() != null && studentEntity != null) {
+          SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+              studentEntity.getId(),
+              item.getCourseId(),
+              Boolean.FALSE);
+          if (supplementationRequest != null && !supplementationRequest.getHandled() && item.getDate().before(supplementationRequest.getRequestDate())) {
+            item.setDate(supplementationRequest.getRequestDate());
+            item.setStatus(StudyActivityItemStatus.SUPPLEMENTATIONREQUEST);
+          }
+        }
+      }
+      
       List<HopsSuggestion> suggestions = hopsController.listSuggestionsByStudentIdentifier(studentIdentifierStr);
       for (HopsSuggestion suggestion : suggestions) {
 

@@ -116,6 +116,7 @@ const StudiesPanel: React.FC<WorkspacesPanelProps> = (props) => {
                         nameExtension: workspace.nameExtension,
                         urlName: workspace.urlName,
                       }}
+                      redirectOnSuccess
                     >
                       <Link
                         className="link--index"

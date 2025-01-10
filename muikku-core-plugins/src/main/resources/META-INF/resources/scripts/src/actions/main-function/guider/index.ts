@@ -6,6 +6,7 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderState,
+  GuiderStudentStudyProgress,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
 import { UserFileType } from "reducers/user-index";
@@ -23,6 +24,7 @@ import {
   UserStudentFlag,
   UserFlag,
   UserGroup,
+  StudentStudyActivity,
   FlaggedStudent,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
@@ -31,6 +33,13 @@ import {
   RecordWorkspaceActivitiesWithLineCategory,
   RecordWorkspaceActivityByLine,
 } from "~/components/general/records-history/types";
+import {
+  filterActivity,
+  filterActivityBySubjects,
+  LANGUAGE_SUBJECTS_CS,
+  OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+  SKILL_AND_ART_SUBJECTS_CS,
+} from "~/helper-functions/study-matrix";
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -165,6 +174,11 @@ export type TOGGLE_ALL_STUDENTS = SpecificActionType<
 export type DELETE_CONTACT_EVENT = SpecificActionType<
   "DELETE_CONTACT_EVENT",
   number
+>;
+
+export type GUIDER_UPDATE_STUDENT_STUDY_PROGRESS = SpecificActionType<
+  "GUIDER_UPDATE_STUDENT_STUDY_PROGRESS",
+  GuiderStudentStudyProgress
 >;
 
 export type DELETE_CONTACT_EVENT_COMMENT = SpecificActionType<
@@ -440,6 +454,29 @@ export interface ToggleAllStudentsTriggerType {
 }
 
 /**
+ * Interface for the suggested next websocket thunk action creator
+ */
+export interface GuiderStudyProgressSuggestedNextWebsocketType {
+  (data: { websocketData: StudentStudyActivity }): AnyActionType;
+}
+
+/**
+ * Interface for the workspace signup websocket thunk action creator
+ */
+export interface GuiderStudyProgressWorkspaceSignupWebsocketType {
+  (data: {
+    websocketData: StudentStudyActivity | StudentStudyActivity[];
+  }): AnyActionType;
+}
+
+/**
+ * Interface for the alternative study options websocket thunk action creator
+ */
+export interface GuiderStudyProgressAlternativeStudyOptionsWebsocketType {
+  (data: { websocketData: string[] }): AnyActionType;
+}
+
+/**
  * toggleAllStudents thunk action creator
  * @returns a thunk function for toggling all students selection
  */
@@ -627,6 +664,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     const pedagogyApi = MApi.getPedagogyApi();
     const usergroupApi = MApi.getUsergroupApi();
     const activitylogsApi = MApi.getActivitylogsApi();
+    const hopsApi = MApi.getHopsApi();
 
     try {
       const currentUserSchoolDataIdentifier =
@@ -643,6 +681,50 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
         payload: <GuiderCurrentStudentStateType>"LOADING",
       });
+
+      /**
+       * Study progress promise
+       */
+      const studyProgressPromise = async () => {
+        const studentActivity = await hopsApi.getStudentStudyActivity({
+          studentIdentifier: id,
+        });
+
+        const studentOptions = await hopsApi.getStudentAlternativeStudyOptions({
+          studentIdentifier: id,
+        });
+
+        const skillAndArtCourses = filterActivityBySubjects(
+          SKILL_AND_ART_SUBJECTS_CS,
+          studentActivity
+        );
+
+        const otherLanguageSubjects = filterActivityBySubjects(
+          LANGUAGE_SUBJECTS_CS,
+          studentActivity
+        );
+
+        const otherSubjects = filterActivityBySubjects(
+          OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+          studentActivity
+        );
+
+        const studentActivityByStatus = filterActivity(studentActivity);
+
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "studyProgress",
+            value: {
+              skillsAndArt: skillAndArtCourses,
+              otherLanguageSubjects: otherLanguageSubjects,
+              otherSubjects: otherSubjects,
+              ...studentActivityByStatus,
+              options: studentOptions,
+            },
+          },
+        });
+      };
 
       await Promise.all([
         guiderApi
@@ -677,6 +759,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 });
               });
           }),
+
+        studyProgressPromise(),
 
         usergroupApi
           .getUsergroups({ userIdentifier: id })
@@ -2430,6 +2514,153 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
     };
   };
 
+/**
+ * Thunk action creator for the suggested next websocket
+ * @param data data
+ */
+const guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNextWebsocketType =
+  function guiderStudyProgressSuggestedNextWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { suggestedNextList } = currentStudent.studyProgress;
+
+      const updatedSuggestedNextList: StudentStudyActivity[] = [].concat(
+        suggestedNextList
+      );
+
+      // If course id is null, meaning that delete existing activity course by
+      // finding that specific course with subject code and course number and splice it out
+      const indexOfCourse = updatedSuggestedNextList.findIndex(
+        (item) =>
+          item.courseId === websocketData.courseId &&
+          websocketData.subject === item.subject
+      );
+
+      if (indexOfCourse !== -1) {
+        updatedSuggestedNextList.splice(indexOfCourse, 1);
+      } else {
+        // Add new
+        updatedSuggestedNextList.push(websocketData);
+      }
+
+      const studyProgress: GuiderStudentStudyProgress = {
+        ...state.guider.currentStudent.studyProgress,
+        suggestedNextList: updatedSuggestedNextList,
+      };
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: {
+            ...studyProgress,
+            suggestedNextList: updatedSuggestedNextList,
+          },
+        },
+      });
+    };
+  };
+
+/**
+ * Thunk action creator for the workspace signup websocket
+ * @param data data
+ */
+const guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceSignupWebsocketType =
+  function guiderStudyProgressWorkspaceSignupWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { studyProgress } = currentStudent;
+      const { suggestedNextList, onGoingList, gradedList, transferedList } =
+        studyProgress;
+
+      // Combine all course lists and filter out the updated course
+      let allCourses = [
+        ...onGoingList,
+        ...gradedList,
+        ...transferedList,
+        ...suggestedNextList,
+      ];
+      const courseIdToFilter = Array.isArray(websocketData)
+        ? websocketData[0].courseId
+        : websocketData.courseId;
+      allCourses = allCourses.filter(
+        (item) => item.courseId !== courseIdToFilter
+      );
+
+      // Add the new course(s)
+      allCourses = allCourses.concat(websocketData);
+
+      // Get filtered course lists
+      const categorizedCourses = {
+        ...filterActivity(allCourses), // This adds suggestedNextList, onGoingList, gradedList, transferedList
+      };
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: {
+            ...studyProgress,
+            ...categorizedCourses,
+          },
+        },
+      });
+    };
+  };
+
+/**
+ * Thunk action creator for the alternative study options websocket
+ * @param data data
+ */
+const guiderStudyProgressAlternativeStudyOptionsWebsocket: GuiderStudyProgressAlternativeStudyOptionsWebsocketType =
+  function guiderStudyProgressAlternativeStudyOptionsWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { studyProgress } = currentStudent;
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: { ...studyProgress, options: websocketData },
+        },
+      });
+    };
+  };
+
 export {
   loadStudents,
   loadMoreStudents,
@@ -2463,4 +2694,7 @@ export {
   doOrderForCurrentStudent,
   deleteOrderFromCurrentStudent,
   completeOrderFromCurrentStudent,
+  guiderStudyProgressSuggestedNextWebsocket,
+  guiderStudyProgressWorkspaceSignupWebsocket,
+  guiderStudyProgressAlternativeStudyOptionsWebsocket,
 };

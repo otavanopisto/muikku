@@ -63,6 +63,7 @@
     "react-paginate": "8.1.2",
     "react-pdf-html": "1.1.18",
     "react-redux": "7.2.9",
+    "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
     "react-select": "5.8.0",
     "react-stepzilla": "7.0.0",

@@ -6,6 +6,17 @@ import { Course } from "~/@types/shared";
 import MApi, { isMApiError } from "~/api/api";
 
 /**
+ * UpdateSuggestionParams
+ */
+export interface UpdateSuggestionParams {
+  actionType: "add" | "remove";
+  courseNumber: number;
+  subjectCode: string;
+  courseId?: number;
+  studentId: string;
+}
+
+/**
  * UseSuggestion
  */
 export interface UseSuggestion {
@@ -102,6 +113,58 @@ export const useSuggestionList = (
     }
   }, [course, subjectCode, userEntityId, loadData, displayNotification]);
 
+  /**
+   * updateSuggestion
+   * @param params params
+   */
+  const updateSuggestionForNext = React.useCallback(
+    async (params: UpdateSuggestionParams) => {
+      const { actionType, courseId, subjectCode, courseNumber, studentId } =
+        params;
+
+      if (actionType === "add") {
+        try {
+          await hopsApi.toggleSuggestion({
+            studentIdentifier: studentId,
+            toggleSuggestionRequest: {
+              courseId: courseId,
+              subject: subjectCode,
+              courseNumber: courseNumber,
+            },
+          });
+        } catch (err) {
+          // TODO: lokalisointi
+          displayNotification(
+            `Update add suggestion:, ${err.message}`,
+            "error"
+          );
+        }
+      } else {
+        try {
+          await hopsApi.updateToggleSuggestion({
+            studentIdentifier: studentId,
+            updateToggleSuggestionRequest: {
+              courseId: courseId,
+              subject: subjectCode,
+              courseNumber: courseNumber,
+            },
+          });
+        } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
+          // TODO: lokalisointi
+          displayNotification(
+            `Update remove suggestion:, ${err.message}`,
+            "error"
+          );
+        }
+      }
+    },
+    [displayNotification]
+  );
+
   React.useEffect(
     () => () => {
       componentMounted.current = false;
@@ -109,5 +172,9 @@ export const useSuggestionList = (
     []
   );
 
-  return suggestions;
+  return {
+    suggestionList: suggestions.suggestionsList,
+    isLoading: suggestions.isLoading,
+    updateSuggestionForNext,
+  };
 };

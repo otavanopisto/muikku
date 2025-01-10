@@ -1,7 +1,13 @@
 import { ActionType } from "actions";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { Reducer } from "redux";
-import { ActivityLogEntry, UserWithSchoolData } from "~/generated/client";
+import {
+  ActivityLogEntry,
+  OptionalCourseSuggestion,
+  StudentCourseChoice,
+  UserWithSchoolData,
+} from "~/generated/client";
+import { StudentActivityByStatus } from "~/@types/shared";
 
 export type SummaryStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
@@ -15,26 +21,12 @@ export interface SummaryStudyTime {
 }
 
 /**
- * SummarStudentDetails
+ * SummaryStudyProgress
  */
-export interface SummarStudentDetails extends SummaryStudyTime {
-  id: string;
-  firstName: string;
-  lastName: string;
-  nickName: string | null;
-  studyProgrammeName: string;
-  studyProgrammeIdentifier: string;
-  hasImage: boolean;
-  nationality: string | null;
-  language: string | null;
-  municipality: string | null;
-  school: string | null;
-  email: string | null;
-  lastLogin: string;
-  curriculumIdentifier: string | null;
-  updatedByStudent: boolean;
-  userEntityId: number;
-  flags: any;
+export interface SummaryStudyProgress extends StudentActivityByStatus {
+  studentChoices: StudentCourseChoice[];
+  supervisorOptionalSuggestions: OptionalCourseSuggestion[];
+  options: string[];
 }
 
 /**
@@ -47,6 +39,7 @@ export interface SummaryDataType {
   graphData: GraphDataType;
   coursesDone: number;
   studentsDetails: UserWithSchoolData;
+  studyProgress: SummaryStudyProgress;
 }
 
 /**

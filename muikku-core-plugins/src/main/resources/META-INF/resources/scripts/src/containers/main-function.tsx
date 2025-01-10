@@ -130,6 +130,7 @@ import {
   DndProvider,
 } from "react-dnd-multi-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
+import StudyProgressWebsocketWatcher from "~/components/general/study-progress-websocket-watcher";
 
 const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -1184,6 +1185,7 @@ export default class MainFunction extends React.Component<
   render() {
     return (
       <DndProvider options={HTML5toTouch}>
+      <StudyProgressWebsocketWatcher>
         <div id="root">
           <WindowContextProvider>
             <ChatWebsocketContextProvider websocket={this.props.websocket}>
@@ -1229,7 +1231,9 @@ export default class MainFunction extends React.Component<
             </InfoPopperProvider>
           </WindowContextProvider>
         </div>
+        </StudyProgressWebsocketWatcher>
       </DndProvider>
+
     );
   }
 }

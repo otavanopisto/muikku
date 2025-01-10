@@ -1,8 +1,26 @@
-import { SchoolCurriculumMatrix, SchoolSubject } from "~/@types/shared";
+import {
+  Course,
+  SchoolCurriculumMatrix,
+  SchoolSubject,
+  StudentActivityByStatus,
+} from "~/@types/shared";
+import { StudentStudyActivity } from "~/generated/client";
 import {
   schoolCourseTableUppersecondary2021,
   schoolCourseTableCompulsory2018,
 } from "~/mock/mock-data";
+
+export const SKILL_AND_ART_SUBJECTS_CS: string[] = [
+  "mu",
+  "li",
+  "ks",
+  "ku",
+  "ko",
+];
+
+export const OTHER_SUBJECT_OUTSIDE_HOPS_CS: string[] = ["MUU"];
+
+export const LANGUAGE_SUBJECTS_CS: string[] = ["rab", "sab", "eab2", "lab"];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const RELIGION_SUBJECTS_CS = ["ue", "uo", "et"];
@@ -165,6 +183,10 @@ export const compulsoryOrUpperSecondary = (
   studyProgrammeName: string,
   curriculumName: string
 ) => {
+  if (!studyProgrammeName || !curriculumName) {
+    return null;
+  }
+
   const compulsoryMatrices = [schoolCourseTableCompulsory2018];
   const uppersecondaryMatrices = [schoolCourseTableUppersecondary2021];
 
@@ -233,4 +255,202 @@ export const filterMatrix = (
     default:
       return matrix;
   }
+};
+
+/**
+ * gets highest of course number available or if under 9, then default 9
+ * @param schoolSubjects list of school sucjests
+ * @returns number of highest course or default 9
+ */
+export const getHighestCourseNumber = (
+  schoolSubjects: SchoolSubject[]
+): number | null => {
+  if (schoolSubjects === null) {
+    return null;
+  }
+
+  let highestCourseNumber = 1;
+
+  for (const sSubject of schoolSubjects) {
+    for (const aCourse of sSubject.availableCourses) {
+      if (aCourse.courseNumber <= highestCourseNumber) {
+        continue;
+      } else {
+        highestCourseNumber = aCourse.courseNumber;
+      }
+    }
+  }
+
+  if (highestCourseNumber > 9) {
+    return highestCourseNumber;
+  }
+
+  return 9;
+};
+
+/**
+ * filterActivity
+ *
+ * @param list of studentactivity courses
+ * @returns Object containing lists filttered by status.
+ * Lists are Ongoing, Suggested next, Suggested optional, Transfered and graded
+ */
+export const filterActivity = (
+  list: StudentStudyActivity[]
+): Omit<
+  StudentActivityByStatus,
+  "skillsAndArt" | "otherLanguageSubjects" | "otherSubjects"
+> => {
+  const onGoingList = list.filter((item) => item.status === "ONGOING");
+  const suggestedNextList = list.filter(
+    (item) => item.status === "SUGGESTED_NEXT"
+  );
+
+  const transferedList = list.filter((item) => item.status === "TRANSFERRED");
+  const gradedList = list.filter((item) => item.status === "GRADED");
+  const needSupplementationList = list.filter(
+    (item) => item.status === "SUPPLEMENTATIONREQUEST"
+  );
+
+  return {
+    onGoingList,
+    suggestedNextList,
+    transferedList,
+    gradedList,
+    needSupplementationList,
+  };
+};
+
+/**
+ * filterSkillAndArtSubject
+ * @param subjectsList of studentactivity courses
+ * @param list of studentactivity courses
+ */
+export const filterActivityBySubjects = (
+  subjectsList: string[],
+  list: StudentStudyActivity[]
+) =>
+  subjectsList.reduce(
+    (a, v) => ({
+      ...a,
+      [v]: list
+        .filter((c) => c.subject === v)
+        .sort((a, b) => a.courseNumber - b.courseNumber),
+    }),
+    {}
+  );
+
+/**
+ * getGetCourseInfo
+ * @param modifiers modifiers
+ * @param subject subject
+ * @param course course
+ * @param suggestedNextList suggestedNextList
+ * @param transferedList transferedList
+ * @param gradedList gradedList
+ * @param onGoingList onGoingList
+ * @param needSupplementationList needSupplementationList
+ * @returns string[]
+ */
+export const getCourseInfo = (
+  modifiers: string[],
+  subject: SchoolSubject,
+  course: Course,
+  suggestedNextList: StudentStudyActivity[],
+  transferedList: StudentStudyActivity[],
+  gradedList: StudentStudyActivity[],
+  onGoingList: StudentStudyActivity[],
+  needSupplementationList: StudentStudyActivity[]
+) => {
+  const updatedModifiers = [...modifiers];
+
+  let courseSuggestions: StudentStudyActivity[] = [];
+  let canBeSelected = true;
+  let needsSupplementation = false;
+  let grade: string | undefined = undefined;
+
+  if (
+    suggestedNextList.find(
+      (sCourse) =>
+        sCourse.subject === subject.subjectCode &&
+        sCourse.courseNumber === course.courseNumber
+    )
+  ) {
+    const suggestedCourseDataNext = suggestedNextList.filter(
+      (sCourse) => sCourse.subject === subject.subjectCode
+    );
+
+    courseSuggestions = courseSuggestions.concat(suggestedCourseDataNext);
+
+    updatedModifiers.push("NEXT");
+  } else if (
+    transferedList.find(
+      (tCourse) =>
+        tCourse.subject === subject.subjectCode &&
+        tCourse.courseNumber === course.courseNumber
+    )
+  ) {
+    canBeSelected = false;
+    updatedModifiers.push("APPROVAL");
+  } else if (
+    gradedList.find(
+      (gCourse) =>
+        gCourse.subject === subject.subjectCode &&
+        gCourse.courseNumber === course.courseNumber
+    )
+  ) {
+    canBeSelected = false;
+    updatedModifiers.push("COMPLETED");
+  } else if (
+    needSupplementationList.find(
+      (nCourse) =>
+        nCourse.subject === subject.subjectCode &&
+        nCourse.courseNumber === course.courseNumber
+    )
+  ) {
+    canBeSelected = false;
+    needsSupplementation = true;
+    updatedModifiers.push("SUPPLEMENTATIONREQUEST");
+  } else if (
+    onGoingList.find(
+      (oCourse) =>
+        oCourse.subject === subject.subjectCode &&
+        oCourse.courseNumber === course.courseNumber
+    )
+  ) {
+    canBeSelected = false;
+    updatedModifiers.push("INPROGRESS");
+  }
+
+  // Only graded list and transfered list are evaluated
+  // and holds grade value
+  const evaluatedCourse = [...gradedList, ...transferedList].find(
+    (gCourse) =>
+      gCourse.subject === subject.subjectCode &&
+      gCourse.courseNumber === course.courseNumber
+  );
+
+  if (evaluatedCourse) {
+    if (evaluatedCourse.passing) {
+      updatedModifiers.push("PASSED-GRADE");
+    } else {
+      // If grade is K, then it is aborted, hard check as it is only
+      // way to recognize aborted courses
+      if (evaluatedCourse.grade === "K") {
+        updatedModifiers.push("ABORTED");
+      } else {
+        updatedModifiers.push("FAILED-GRADE");
+      }
+    }
+
+    grade = evaluatedCourse.grade;
+  }
+
+  return {
+    modifiers: updatedModifiers,
+    courseSuggestions,
+    canBeSelected,
+    grade,
+    needsSupplementation,
+  };
 };

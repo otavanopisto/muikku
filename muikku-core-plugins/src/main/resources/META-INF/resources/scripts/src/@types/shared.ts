@@ -338,6 +338,10 @@ export interface SuggestionWithWorkspaceInfo extends WorkspaceSuggestion {}
  */
 export interface StudentActivityByStatus {
   /**
+   * List of need supplementation courses
+   */
+  needSupplementationList: StudentStudyActivity[];
+  /**
    * List of ongoing courses
    */
   onGoingList: StudentStudyActivity[];
@@ -394,3 +398,10 @@ export interface OPSsuitability {
   NATIONAL_LEVEL_OPTIONAL: string;
   SCHOOL_LEVEL_OPTIONAL: string;
 }
+
+export type HopsWebsocketMessage =
+  | "hops:workspace-suggested"
+  | "hops:workspace-signup"
+  | "hops:alternative-study-options"
+  | "hops:optionalsuggestion-updated"
+  | "hops:studentchoice-updated";
