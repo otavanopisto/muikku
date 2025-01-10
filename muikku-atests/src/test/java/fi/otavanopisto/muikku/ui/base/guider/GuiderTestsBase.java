@@ -349,6 +349,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addCourse(course1)
       .addCourse(course2)
       .addCourse(course3)
+      .mockEmptyStudyActivity()
       .mockIAmCounselor()
       .build();
       login();
@@ -372,8 +373,8 @@ public class GuiderTestsBase extends AbstractUITest {
       try {
         navigate("/guider", false);
         waitAndClick(".application-list__item-content-main .application-list__header-primary");
-        waitForPresent(".application-list__item-header--course .application-list__header");
-        List<WebElement> webElements = getWebDriver().findElements(By.cssSelector(".application-list__item-header--course .application-list__header"));
+        waitForPresent(".application-list__item-header--course .application-list__header-primary");
+        List<WebElement> webElements = getWebDriver().findElements(By.cssSelector(".application-list__item-header--course .application-list__header-primary"));
         while(webElements.remove(null));
         assertTrue(isInOrder(webElements));
       }finally {

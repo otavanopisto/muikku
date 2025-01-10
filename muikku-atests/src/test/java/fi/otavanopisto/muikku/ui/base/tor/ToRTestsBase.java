@@ -310,7 +310,7 @@ public class ToRTestsBase extends AbstractUITest {
 //  }
 
   @Test
-  public void g() throws Exception {
+  public void studiesSummaryTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(5l, 5l, "Studentos", "Tester", "studento@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111195-1252", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     student.addCounselor(new StudentGroupUser(1l, 1l, false, false, false));
@@ -342,21 +342,6 @@ public class ToRTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-name", "Admin User");
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-email", "admin@example.com");
       assertPresent(".item-list--student-counselors .button-pill--new-message");
-      
-//      waitForPresent(".application-sub-panel__card-header--summary-evaluated");
-//      assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");
-//      waitForPresent(".application-sub-panel__card-highlight--summary-evaluated");
-//      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-evaluated", "0");
-//      
-//      waitForPresent(".application-sub-panel__card-header--summary-activity");
-//      assertTextIgnoreCase(".application-sub-panel__card-header--summary-activity", "Aktiivisuus");
-//      waitForPresent(".application-sub-panel__card-highlight--summary-activity");
-//      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-activity", "1");
-//
-//      waitForPresent(".application-sub-panel__card-header--summary-returned");
-//      assertTextIgnoreCase(".application-sub-panel__card-header--summary-returned", "Palautetut tehtävät");
-//      waitForPresent(".application-sub-panel__card-highlight--summary-returned");
-//      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-returned", "0");
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteUserGroupUsers();
