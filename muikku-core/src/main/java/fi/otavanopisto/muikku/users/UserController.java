@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.users;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -117,6 +118,10 @@ public class UserController {
     return userSchoolDataController.listStudentStudyPeriods(userIdentifier);
   }
   
+  public LocalDate getBirthday(SchoolDataIdentifier studentIdentifier) {
+    return userSchoolDataController.getBirthday(studentIdentifier);
+  }
+  
   public String findUserSsn(User user) {
     return findUserSsn(new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource()));
   }
@@ -143,5 +148,5 @@ public class UserController {
         ? guardiansDependents.stream().map(GuardiansDependent::getUserIdentifier).anyMatch(identifier -> Objects.equals(identifier, studentIdentifier))
         : false;
   }
-  
+
 }

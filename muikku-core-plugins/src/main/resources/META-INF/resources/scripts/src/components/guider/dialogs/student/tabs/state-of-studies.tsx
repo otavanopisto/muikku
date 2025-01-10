@@ -36,6 +36,7 @@ import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import StudyProgress from "./study-progress";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * StateOfStudiesProps
@@ -356,7 +357,71 @@ class StateOfStudies extends React.Component<
               {this.props.guider.currentStudent.labels &&
               this.props.guider.currentStudent.labels.length ? (
                 <ApplicationSubPanel.Body modifier="labels">
-                  <div className="labels">{studentLabels}</div>
+                  <div className="labels">
+                    {studentLabels}
+
+                    {this.props.guider.currentStudent.basic.hasPedagogyForm ? (
+                      <Dropdown
+                        alignSelfVertically="top"
+                        openByHover
+                        content={
+                          <span
+                            id={
+                              `pedagogyPlan-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            {this.props.i18n.t("labels.pedagogyPlan", {
+                              ns: "common",
+                            })}
+                          </span>
+                        }
+                      >
+                        <div className="label label--pedagogy-plan">
+                          <span
+                            className="label__text label__text--pedagogy-plan"
+                            aria-labelledby={
+                              `pedagogyPlan-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            P
+                          </span>
+                        </div>
+                      </Dropdown>
+                    ) : null}
+
+                    {this.props.guider.currentStudent.basic.u18Compulsory ? (
+                      <Dropdown
+                        alignSelfVertically="top"
+                        openByHover
+                        content={
+                          <span
+                            id={
+                              `u18Compulsory-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            {this.props.i18n.t("labels.u18Compulsory", {
+                              ns: "common",
+                            })}
+                          </span>
+                        }
+                      >
+                        <div className="label label--u18-compulsory">
+                          <span
+                            className="label__text label__text--u18-compulsory"
+                            aria-labelledby={
+                              `u18Compulsory-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            O
+                          </span>
+                        </div>
+                      </Dropdown>
+                    ) : null}
+                  </div>
                 </ApplicationSubPanel.Body>
               ) : null}
             </ApplicationSubPanel>
