@@ -163,7 +163,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   return (
     <Table modifiers={["course"]}>
       {currentMaxCourses && (
-        <TableHead modifiers={["course", "sticky-inside-dialog"]}>
+        <TableHead modifiers={["course", "sticky"]}>
           <Tr modifiers={["course"]}>
             <Th modifiers={["subject"]}>
               {t("labels.schoolSubject", { ns: "studyMatrix" })}

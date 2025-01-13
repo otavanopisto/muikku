@@ -50,6 +50,7 @@
 .table__thead th {
   background: $color-default;
   border-bottom: 2px solid $color-hops-dialog-form-element-border;
+  z-index: 3;
 }
 
 .table__thead--sticky th {
