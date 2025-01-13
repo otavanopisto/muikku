@@ -1,4 +1,5 @@
 import { Reducer } from "redux";
+import { HopsForm } from "~/@types/hops";
 import { ActionType } from "~/actions";
 import {
   HopsLocked,
@@ -9,6 +10,8 @@ import {
   MatriculationResults,
   MatriculationSubject,
   MatriculationSubjectEligibilityOPS2021,
+  StudentInfo,
+  HopsHistoryEntry,
 } from "~/generated/client";
 import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 
@@ -26,10 +29,11 @@ export interface MatriculationSubjectWithEligibilityStatus {
 
 export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
 
-/**
- * HopsBackgroundState
- */
-interface HopsBackgroundState {}
+export type ReducerInitializeStatusType =
+  | "INITIALIZING"
+  | "INITIALIZED"
+  | "INITIALIZATION_FAILED"
+  | "IDLE";
 
 /**
  * HopsStudyPlanState
@@ -74,11 +78,6 @@ interface hopsMatriculation {
 }
 
 /**
- * HopsCareerPlanState
- */
-interface HopsCareerPlanState {}
-
-/**
  * HopsMode type
  */
 export type HopsMode = "READ" | "EDIT";
@@ -88,6 +87,7 @@ export type HopsMode = "READ" | "EDIT";
  */
 export interface HopsEditingState {
   readyToEdit: boolean;
+  hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
 }
 
@@ -95,13 +95,11 @@ export interface HopsEditingState {
  * HopsState
  */
 export interface HopsState {
-  // CURRENT STUDENT IDENTIFIER
-  currentStudentIdentifier: string | null;
-  currentStudentStudyProgramme: string | null;
+  initialized: ReducerInitializeStatusType;
 
-  // HOPS BACKGROUND
-  hopsBackgroundStatus: ReducerStateType;
-  hopsBackgroundState: HopsBackgroundState;
+  // CURRENT STUDENT IDENTIFIER
+  currentStudentIdentifier?: string;
+  currentStudentStudyProgramme?: string;
 
   // HOPS STUDY PLAN
   hopsStudyPlanStatus: ReducerStateType;
@@ -111,25 +109,31 @@ export interface HopsState {
   hopsMatriculationStatus: ReducerStateType;
   hopsMatriculation: hopsMatriculation;
 
-  // HOPS CAREER PLAN
-  hopsCareerPlanStatus: ReducerStateType;
-  hopsCareerPlanState: HopsCareerPlanState;
+  // STUDENT INFO
+  studentInfoStatus: ReducerStateType;
+  studentInfo: StudentInfo | null;
 
+  // HOPS FORM
+  hopsFormStatus: ReducerStateType;
+  hopsForm: HopsForm | null;
+
+  // HOPS FORM HISTORY
+  hopsFormHistoryStatus: ReducerStateType;
+  hopsFormHistory: HopsHistoryEntry[] | null;
+  hopsFormCanLoadMoreHistory: boolean;
   // HOPS MODE
   hopsMode: HopsMode;
 
   // HOPS LOCKED STATE
   hopsLocked: HopsLocked | null;
+  hopsLockedStatus: ReducerStateType;
 
   // HOPS EDITING STATE
   hopsEditing: HopsEditingState;
 }
 
 const initialHopsState: HopsState = {
-  currentStudentIdentifier: null,
-  currentStudentStudyProgramme: null,
-  hopsBackgroundStatus: "READY",
-  hopsBackgroundState: {},
+  initialized: "IDLE",
   hopsStudyPlanStatus: "READY",
   hopsStudyPlanState: {},
   hopsMatriculationStatus: "IDLE",
@@ -142,12 +146,19 @@ const initialHopsState: HopsState = {
     plan: null,
     results: [],
   },
-  hopsCareerPlanStatus: "READY",
-  hopsCareerPlanState: {},
+  studentInfoStatus: "IDLE",
+  studentInfo: null,
+  hopsFormStatus: "IDLE",
+  hopsForm: null,
+  hopsFormHistoryStatus: "IDLE",
+  hopsFormHistory: null,
+  hopsFormCanLoadMoreHistory: true,
   hopsMode: "READ",
   hopsLocked: null,
+  hopsLockedStatus: "IDLE",
   hopsEditing: {
     readyToEdit: false,
+    hopsForm: null,
     matriculationPlan: {
       plannedSubjects: [],
       goalMatriculationExam: false,
@@ -166,6 +177,12 @@ export const hopsNew: Reducer<HopsState> = (
   action: ActionType
 ) => {
   switch (action.type) {
+    case "HOPS_UPDATE_INITIALIZE_STATUS":
+      return {
+        ...state,
+        initialized: action.payload,
+      };
+
     case "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER":
       return {
         ...state,
@@ -179,10 +196,7 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           readyToEdit:
-            action.payload === "READY" &&
-            state.hopsCareerPlanStatus === "READY" &&
-            state.hopsStudyPlanStatus === "READY" &&
-            state.hopsBackgroundStatus === "READY",
+            action.payload === "READY" && state.hopsStudyPlanStatus === "READY",
         },
       };
 
@@ -351,7 +365,15 @@ export const hopsNew: Reducer<HopsState> = (
     case "HOPS_RESET_DATA": {
       return {
         ...state,
+        initialized: "IDLE",
         hopsMatriculationStatus: "IDLE",
+        hopsFormStatus: "IDLE",
+        hopsFormHistoryStatus: "IDLE",
+        hopsForm: null,
+        hopsFormHistory: null,
+        hopsFormCanLoadMoreHistory: true,
+        studentInfo: null,
+        studentInfoStatus: "IDLE",
         hopsMatriculation: {
           exams: [],
           pastExams: [],
@@ -367,6 +389,7 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           readyToEdit: false,
+          hopsForm: null,
           matriculationPlan: {
             plannedSubjects: [],
             goalMatriculationExam: false,
@@ -379,6 +402,51 @@ export const hopsNew: Reducer<HopsState> = (
       return {
         ...state,
         currentStudentStudyProgramme: action.payload,
+      };
+
+    case "HOPS_FORM_UPDATE":
+      return {
+        ...state,
+        hopsFormStatus: action.payload.status,
+        hopsForm: action.payload.data || state.hopsForm,
+        hopsEditing: {
+          ...state.hopsEditing,
+          hopsForm: action.payload.data || state.hopsForm,
+        },
+      };
+
+    case "HOPS_STUDENT_INFO_UPDATE":
+      return {
+        ...state,
+        studentInfoStatus: action.payload.status,
+        studentInfo: action.payload.data || state.studentInfo,
+      };
+
+    case "HOPS_FORM_HISTORY_UPDATE":
+      return {
+        ...state,
+        hopsFormHistoryStatus: action.payload.status,
+        hopsFormHistory: action.payload.data || state.hopsFormHistory,
+      };
+
+    case "HOPS_FORM_HISTORY_ENTRY_UPDATE":
+      return {
+        ...state,
+        hopsFormHistory:
+          state.hopsFormHistory && action.payload.data
+            ? state.hopsFormHistory.map((entry) =>
+                entry.id === action.payload.data.id
+                  ? action.payload.data
+                  : entry
+              )
+            : state.hopsFormHistory,
+        hopsFormHistoryStatus: action.payload.status,
+      };
+
+    case "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY":
+      return {
+        ...state,
+        hopsFormCanLoadMoreHistory: action.payload,
       };
 
     case "HOPS_CHANGE_MODE":
@@ -402,6 +470,7 @@ export const hopsNew: Reducer<HopsState> = (
         hopsMode: "READ",
         hopsEditing: {
           ...state.hopsEditing,
+          hopsForm: state.hopsForm,
           matriculationPlan: state.hopsMatriculation.plan,
         },
       };
@@ -409,7 +478,8 @@ export const hopsNew: Reducer<HopsState> = (
     case "HOPS_UPDATE_LOCKED":
       return {
         ...state,
-        hopsLocked: action.payload,
+        hopsLocked: action.payload.data || state.hopsLocked,
+        hopsLockedStatus: action.payload.status,
       };
 
     default:

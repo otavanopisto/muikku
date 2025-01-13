@@ -153,24 +153,22 @@ public class HopsController {
     return canSignUp;
   }
   
-  public Hops createHops(String studentIdentifier, String formData, String historyDetails) {
-    Hops hops = hopsDAO.create(studentIdentifier, formData);
-    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails);
-    return hops;
+  public HopsHistory createHops(String studentIdentifier, String formData, String historyDetails, String historyChanges) {
+    hopsDAO.create(studentIdentifier, formData);
+    return hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails, historyChanges);
   }
 
-  public Hops updateHops(Hops hops, String studentIdentifier, String formData, String historyDetails) {
+  public HopsHistory updateHops(Hops hops, String studentIdentifier, String formData, String historyDetails, String historyChanges) {
     hopsDAO.updateFormData(hops, formData);
-    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails);
-    return hops;
+    return hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails, historyChanges);
   }
   
   public HopsHistory findHistoryById(Long id) {
     return hopsHistoryDAO.findById(id);
   }
   
-  public HopsHistory updateHopsHistoryDetails(HopsHistory history, String details) {
-    hopsHistoryDAO.update(history, details);
+  public HopsHistory updateHopsHistoryDetails(HopsHistory history, String details, String changes) {
+    hopsHistoryDAO.update(history, details, changes);
     return history;
   }
   

@@ -23,6 +23,8 @@ $color-fatal: #de3211;
 $color-fatal-contrast: $color-default;
 $color-error: #ff6600;
 $color-error-contrast: $color-default;
+$color-great-success: #ffd700;
+$color-great-success-contrast: $color-default;
 $color-success: #24c118;
 $color-success-contrast: $color-default;
 $color-execute: #66b43b;
@@ -52,12 +54,18 @@ $color-priority-low: #7391a7;
 
 // Notes
 $color-notes-action-button: #7391a7;
+
+// Course Matrix colors
 $color-suggested: #e464dc;
+$color-completed: #57f26f;
+$color-completed-border: #20992d;
+$color-passed-failed: lighten($color-fatal, 35%);
+$color-passed-failed-border: #de3211;
+$color-passed-aborted: lighten($color-default-contrast, 70%);
+$color-passed-aborted-border: $color-default-contrast;
 $color-next: #bd0174;
-$color-optional: #97dbf7;
-$color-optional-selected: #0099ff;
-$color-mandatory: #dbdada;
-$color-approval: darken(#24c118, 15%);
+$color-optional: #c6efff;
+$color-mandatory: #7adee8;
 
 // Search
 $color-search-clear-icon: $color-disabled;
@@ -182,7 +190,7 @@ $color-disconnect-warning-overlay-background: rgb(0 0 0 / 85%);
 $color-executing-background: #ffffff;
 
 // Notification queue
-$color-notification-queue-item-container-shadow: rgb(0 0 0 / 30%);
+$color-notification-queue-item-shadow: rgb(0 0 0 / 30%);
 $color-notification-queue-item-border-color: rgb(255 255 255 / 30%);
 $color-notification-queue-item-default-background: $color-default;
 $color-notification-queue-item-default-text: $color-default-contrast;

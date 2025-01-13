@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.schooldata;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -369,6 +370,14 @@ public class UserSchoolDataController {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
     }
     return getUserBridge(schoolDataSource).listStudentStudyPeriods(userIdentifier);
+  }
+
+  public LocalDate getBirthday(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).getBirthday(studentIdentifier);
   }
 
   private UserSchoolDataBridge getUserBridge(SchoolDataSource schoolDataSource) {

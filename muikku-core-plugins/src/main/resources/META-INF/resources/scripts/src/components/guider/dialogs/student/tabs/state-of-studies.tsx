@@ -31,16 +31,12 @@ import ApplicationSubPanel, {
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import Avatar from "~/components/general/avatar";
-import {
-  UpdateCurrentStudentHopsPhaseTriggerType,
-  updateCurrentStudentHopsPhase,
-} from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
-import StudyProgress from "~/components/general/study-progress";
-import StudyProgressContextProvider from "~/components/general/study-progress/context";
 import { withTranslation, WithTranslation } from "react-i18next";
+import StudyProgress from "./study-progress";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * StateOfStudiesProps
@@ -48,7 +44,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface StateOfStudiesProps extends WithTranslation {
   guider: GuiderState;
   status: StatusType;
-  updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -71,15 +66,6 @@ class StateOfStudies extends React.Component<
   constructor(props: StateOfStudiesProps) {
     super(props);
   }
-  /**
-   * handleHopsPhaseChange
-   * @param e e
-   */
-  handleHopsPhaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.updateCurrentStudentHopsPhase({
-      value: e.currentTarget.value,
-    });
-  };
 
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   /**
@@ -371,7 +357,71 @@ class StateOfStudies extends React.Component<
               {this.props.guider.currentStudent.labels &&
               this.props.guider.currentStudent.labels.length ? (
                 <ApplicationSubPanel.Body modifier="labels">
-                  <div className="labels">{studentLabels}</div>
+                  <div className="labels">
+                    {studentLabels}
+
+                    {this.props.guider.currentStudent.basic.hasPedagogyForm ? (
+                      <Dropdown
+                        alignSelfVertically="top"
+                        openByHover
+                        content={
+                          <span
+                            id={
+                              `pedagogyPlan-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            {this.props.i18n.t("labels.pedagogyPlan", {
+                              ns: "common",
+                            })}
+                          </span>
+                        }
+                      >
+                        <div className="label label--pedagogy-plan">
+                          <span
+                            className="label__text label__text--pedagogy-plan"
+                            aria-labelledby={
+                              `pedagogyPlan-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            P
+                          </span>
+                        </div>
+                      </Dropdown>
+                    ) : null}
+
+                    {this.props.guider.currentStudent.basic.u18Compulsory ? (
+                      <Dropdown
+                        alignSelfVertically="top"
+                        openByHover
+                        content={
+                          <span
+                            id={
+                              `u18Compulsory-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            {this.props.i18n.t("labels.u18Compulsory", {
+                              ns: "common",
+                            })}
+                          </span>
+                        }
+                      >
+                        <div className="label label--u18-compulsory">
+                          <span
+                            className="label__text label__text--u18-compulsory"
+                            aria-labelledby={
+                              `u18Compulsory-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            O
+                          </span>
+                        </div>
+                      </Dropdown>
+                    ) : null}
+                  </div>
                 </ApplicationSubPanel.Body>
               ) : null}
             </ApplicationSubPanel>
@@ -410,27 +460,25 @@ class StateOfStudies extends React.Component<
                     ns: "guider",
                   })}
                 </ApplicationSubPanel.Header>
+
                 <ApplicationSubPanel.Body>
-                  <StudyProgressContextProvider
-                    user="supervisor"
-                    useCase="state-of-studies"
-                    studentId={this.props.guider.currentStudent.basic.id}
+                  <StudyProgress
+                    studentIdentifier={
+                      this.props.guider.currentStudent.basic.id
+                    }
                     studentUserEntityId={
                       this.props.guider.currentStudent.basic.userEntityId
                     }
-                    dataToLoad={["studentActivity"]}
-                  >
-                    <StudyProgress
-                      curriculumName={
-                        this.props.guider.currentStudent.basic.curriculumName
-                      }
-                      studyProgrammeName={
-                        this.props.guider.currentStudent.basic
-                          .studyProgrammeName
-                      }
-                      editMode={true}
-                    />
-                  </StudyProgressContextProvider>
+                    curriculumName={
+                      this.props.guider.currentStudent.basic.curriculumName
+                    }
+                    studyProgrammeName={
+                      this.props.guider.currentStudent.basic.studyProgrammeName
+                    }
+                    studyProgress={
+                      this.props.guider.currentStudent.studyProgress
+                    }
+                  />
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
@@ -495,7 +543,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       displayNotification,
-      updateCurrentStudentHopsPhase,
     },
     dispatch
   );

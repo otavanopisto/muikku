@@ -20,6 +20,7 @@ import javax.websocket.Session;
 import org.apache.commons.codec.binary.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 
@@ -55,7 +56,7 @@ public class WebSocketMessenger {
   
   public void sendMessage(String eventType, Object data, Set<Long> recipients) {
     WebSocketMessage message = new WebSocketMessage(eventType, data);
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     String strMessage = null;
     try {
       strMessage = mapper.writeValueAsString(message);
@@ -88,7 +89,7 @@ public class WebSocketMessenger {
   
   public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {
     WebSocketMessage message = new WebSocketMessage(eventType, data);
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     String strMessage = null;
     try {
       strMessage = mapper.writeValueAsString(message);
@@ -127,7 +128,7 @@ public class WebSocketMessenger {
   
   public void sendMessage(String eventType, Object data, String ticket) {
     WebSocketMessage message = new WebSocketMessage(eventType, data);
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     String strMessage = null;
     try {
       strMessage = mapper.writeValueAsString(message);

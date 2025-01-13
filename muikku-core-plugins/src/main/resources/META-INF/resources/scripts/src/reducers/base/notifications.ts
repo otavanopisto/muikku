@@ -11,7 +11,8 @@ export type NotificationSeverityType =
   | "fatal"
   | "success"
   | "secondary"
-  | "inverse";
+  | "inverse"
+  | "persistent-info";
 
 /**
  * NotificationState
@@ -26,7 +27,7 @@ export interface NotificationState {
  * NotificationType
  */
 export interface NotificationType {
-  id: number;
+  id: string | number;
   severity: NotificationSeverityType;
   message: string;
 }
