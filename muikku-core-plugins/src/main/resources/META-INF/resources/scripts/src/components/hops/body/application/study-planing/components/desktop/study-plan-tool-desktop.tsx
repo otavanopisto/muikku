@@ -13,11 +13,9 @@ import PlannerPeriod from "../planner-period";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { motion, Variants } from "framer-motion";
 import PlannerCourseTray from "../planner-course-tray";
-import {
-  UpdateSelectedCoursesTriggerType,
-  updateSelectedCourses,
-} from "~/actions/main-function/hops";
+import { UpdateSelectedCoursesTriggerType } from "~/actions/main-function/hops";
 import { Course } from "~/@types/shared";
+import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
 
 /**
  * DesktopStudyPlannerProps
@@ -56,6 +54,7 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
     plannedCourses,
     calculatedPeriods,
     selectedCourses,
+    updateSelectedCourses,
   } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -185,6 +184,7 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
       variants={variants}
       animate={isFullScreen ? "fullScreen" : "default"}
     >
+      <StudyPlannerDragLayer />
       <PlannerControls
         onViewChange={setView}
         onRefresh={() => undefined}
@@ -196,12 +196,11 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
           <PlannerCourseTray
             curriculumConfig={curriculumConfig}
             plannedCourses={plannedCourses}
-            selectedCourses={selectedCourses}
             onCourseClick={handleCourseClick}
             isSelected={(course) =>
-              isUnplannedCourse(course) &&
               selectedCourses.some(
                 (c) =>
+                  isUnplannedCourse(c) &&
                   c.subjectCode === course.subjectCode &&
                   c.courseNumber === course.courseNumber
               )

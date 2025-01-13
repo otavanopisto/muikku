@@ -256,20 +256,8 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     [isAlreadyInMonth]
   );
 
-  // Check if selected course is planned and in month already
-  /* const selectedCourseIsInMonth =
-    selection && isPlannedCourseSelection(selection)
-      ? courses.some(
-          (course) => course.identifier === selection.course.identifier
-        )
-      : false; */
-
-  // Pulse dropzone if hovering over dropzone or selection is not in month and not a period month selection
-  /* const pulseDropzone =
-    (selection &&
-      !selectedCourseIsInMonth &&
-      !isPeriodMonthSelection(selection)) ||
-    showDropIndicator; */
+  // Pulse dropzone if there are selected courses or the drop indicator is shown
+  const pulseDropzone = selectedCourses.length > 0 || showDropIndicator;
 
   return (
     <motion.div layout className="study-planner__month">
@@ -361,7 +349,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
               </AnimatePresence>
               <motion.div
                 layout="position"
-                animate={"initial"}
+                animate={pulseDropzone ? "dropIsActive" : "initial"}
                 variants={dropZoneVariants}
                 className="study-planner__month-dropzone"
               >

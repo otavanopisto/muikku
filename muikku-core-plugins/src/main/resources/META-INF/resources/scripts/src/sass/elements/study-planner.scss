@@ -11,7 +11,15 @@
   background: white;
 }
 
-.study-planner--mobile-fullscreen {
+.study-planner--mobile-not-open {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: 1rem 0.5rem;
+}
+
+.study-planner--mobile-open {
   height: 100vh;
   width: 100%;
   position: fixed;

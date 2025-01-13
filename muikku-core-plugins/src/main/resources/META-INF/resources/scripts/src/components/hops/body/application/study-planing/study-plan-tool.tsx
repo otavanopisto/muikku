@@ -13,7 +13,6 @@ import {
   SelectedCourse,
   TimeContextSelection,
 } from "~/reducers/hops";
-import StudyPlannerDragLayer from "./components/react-dnd/planner-drag-layer";
 import "~/sass/elements/study-planner.scss";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { useMediaQuery } from "usehooks-ts";
@@ -161,7 +160,6 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             Opintojen suunnittelutyökalu
           </ApplicationSubPanel.Header>
           <ApplicationSubPanel.Body>
-            <StudyPlannerDragLayer />
             {isMobile ? (
               <MobileStudyPlanner
                 curriculumConfig={curriculumConfig}

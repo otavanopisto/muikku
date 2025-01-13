@@ -6,12 +6,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { Course, CourseFilter } from "~/@types/shared";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
-import {
-  isPlannedCourseWithIdentifier,
-  isUnplannedCourse,
-  PlannedCourseWithIdentifier,
-  SelectedCourse,
-} from "~/reducers/hops";
+import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { filterSubjectsAndCourses } from "../helper";
 import {
@@ -27,7 +22,6 @@ import {
 interface PlannerCourseTrayProps {
   plannedCourses: PlannedCourseWithIdentifier[];
   curriculumConfig: CurriculumConfig;
-  selectedCourses: SelectedCourse[];
   onCourseClick: (course: Course & { subjectCode: string }) => void;
   isSelected: (course: Course & { subjectCode: string }) => boolean;
 }
@@ -37,7 +31,7 @@ interface PlannerCourseTrayProps {
  * @param props props
  */
 const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
-  const { plannedCourses, curriculumConfig, selectedCourses } = props;
+  const { plannedCourses, curriculumConfig } = props;
 
   const [searchTerm, setSearchTerm] = useLocalStorage(
     "hops-planner-search-term",

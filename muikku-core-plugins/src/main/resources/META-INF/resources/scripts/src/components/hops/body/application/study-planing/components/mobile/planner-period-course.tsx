@@ -8,6 +8,8 @@ import DatePicker from "react-datepicker";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/form.scss";
+import { useDrag } from "react-dnd";
+import { getEmptyImage } from "react-dnd-html5-backend";
 
 /**
  * MobilePlannerPeriodCourseProps
@@ -27,9 +29,31 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
 ) => {
   const { course } = props;
 
+  const [{ isDragging }, drag, preview] = useDrag(
+    () => ({
+      type: "planned-course-card",
+      item: {
+        info: course,
+        type: "planned-course-card",
+      },
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+      options: {
+        dropEffect: "move",
+      },
+    }),
+    []
+  );
+
+  preview(getEmptyImage(), { captureDraggingState: true });
+
   return (
     <BasePlannerPeriodCourse
       {...props}
+      ref={drag}
+      isDragging={isDragging}
       renderSpecifyContent={({
         onClose,
         onConfirm,

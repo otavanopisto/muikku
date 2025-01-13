@@ -1,14 +1,10 @@
 import Dialog from "~/components/general/dialog";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
-import {
-  isUnplannedCourse,
-  PlannedCourseWithIdentifier,
-  SelectedCourse,
-} from "~/reducers/hops";
+import { PlannedCourseWithIdentifier, SelectedCourse } from "~/reducers/hops";
 import PlannerCourseTray from "../planner-course-tray";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { Course } from "~/@types/shared";
@@ -50,6 +46,20 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
 
   const { t } = useTranslation(["hops_new", "common"]);
 
+  const hasChanges = useMemo(
+    () =>
+      selectedCourses.length !== currentSelection.length ||
+      selectedCourses.some(
+        (selected) =>
+          !currentSelection.some(
+            (current) =>
+              current.subjectCode === selected.subjectCode &&
+              current.courseNumber === selected.courseNumber
+          )
+      ),
+    [selectedCourses, currentSelection]
+  );
+
   /**
    * Handles the save button click
    * @param closePortal - Function to close the dialog
@@ -58,7 +68,11 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
   const handleConfirmClick =
     (closePortal: () => void) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      onConfirm(selectedCourses);
+      // Only call onConfirm if the selection has actually changed
+      if (hasChanges) {
+        onConfirm(selectedCourses);
+      }
+      setSelectedCourses([]);
       closePortal();
     };
 
@@ -80,7 +94,6 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
   const handleCourseClick = (course: Course & { subjectCode: string }) => {
     const index = selectedCourses.findIndex(
       (c) =>
-        isUnplannedCourse(c) &&
         c.subjectCode === course.subjectCode &&
         c.courseNumber === course.courseNumber
     );
@@ -120,7 +133,6 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
       <PlannerCourseTray
         plannedCourses={plannedCoursesWithoutCurrentSelection}
         curriculumConfig={curriculumConfig}
-        selectedCourses={selectedCourses}
         onCourseClick={handleCourseClick}
         isSelected={(course) =>
           selectedCourses.some(
@@ -143,6 +155,7 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
       <Button
         buttonModifiers={["standard-ok", "fatal"]}
         onClick={handleConfirmClick(closePortal)}
+        disabled={!hasChanges}
       >
         {t("actions.continue", { ns: "hops_new" })}
       </Button>

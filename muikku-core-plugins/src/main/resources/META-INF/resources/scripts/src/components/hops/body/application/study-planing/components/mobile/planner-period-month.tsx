@@ -31,6 +31,9 @@ import { CurriculumConfig } from "~/util/curriculum-config";
 import _ from "lodash";
 import moment from "moment";
 import PlannerMonthEditDialog from "./planner-month-edit";
+import Droppable from "../react-dnd/droppable";
+import { Course } from "~/@types/shared";
+import { isPlannedCourse } from "../../helper";
 
 /**
  * PlannerPeriodMonthProps
@@ -93,6 +96,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   } = props;
 
   const [isExpanded, setIsExpanded] = React.useState(true);
+  const [showDropIndicator, setShowDropIndicator] = React.useState(false);
 
   // Create a ref to always have access to latest courses
   const coursesRef = React.useRef(courses);
@@ -233,41 +237,83 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   };
 
   /**
-   * Handles month select
-   * @param year year
-   * @param monthIndex month index
+   * Handles drop
+   * @param course course
+   * @param type type
    */
-  /* const handleSelectMonth =
-    (year: number, monthIndex: number) =>
-    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-      e.preventDefault();
+  const handleDrop = (course: SelectedCourse, type: string) => {
+    let updatedCourse: PlannedCourseWithIdentifier;
 
-      // If the month is already selected, clear the selection
-      if (
-        selection &&
-        isPeriodMonthSelection(selection) &&
-        selection.year === year &&
-        selection.monthIndex === monthIndex
-      ) {
-        updateSelection(null);
-      } else {
-        updateSelection({
-          selection: { type: "period-month", year, monthIndex },
-        });
+    let action: CourseChangeAction = "add";
+
+    if (isPlannedCourseWithIdentifier(course)) {
+      // Set start date to the month number and year
+      const updatedStartDate = new Date(course.startDate);
+      updatedStartDate.setMonth(monthIndex);
+      updatedStartDate.setFullYear(year);
+
+      updatedCourse = {
+        ...course,
+        startDate: moment(updatedStartDate).format("YYYY-MM-DD"),
+      };
+
+      action = "update";
+    } else {
+      updatedCourse = curriculumConfig.strategy.createPlannedCourse(
+        course,
+        new Date(year, monthIndex, 1)
+      );
+
+      action = "add";
+    }
+
+    updateHopsEditingStudyPlan({
+      updatedCourse,
+      action,
+    });
+  };
+
+  /**
+   * Finds if the course is already in the droppable area
+   * @param course course
+   * @returns true if the course is already in the droppable area
+   */
+  const isAlreadyInMonth = React.useCallback(
+    (
+      course: PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+    ) => {
+      // Use coursesRef.current instead of courses
+      if (isPlannedCourse(course)) {
+        return coursesRef.current.some(
+          (c) => c.identifier === course.identifier
+        );
       }
-    }; */
+      return false;
+    },
+    []
+  );
 
-  // Check if selected course is planned and in month already
-  /* const selectedCourseIsInMonth =
-    selection && isPlannedCourseSelection(selection)
-      ? courses.some(
-          (course) => course.identifier === selection.course.identifier
-        )
-      : false; */
+  /**
+   * Handles drop hover
+   * @param isOver is over
+   * @param course course
+   */
+  const handleDropHover = React.useCallback(
+    (
+      isOver: boolean,
+      course: PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+    ) => {
+      if (isOver && !isAlreadyInMonth(course)) {
+        setShowDropIndicator(true);
+      } else {
+        setShowDropIndicator(false);
+      }
+    },
+    [isAlreadyInMonth]
+  );
 
-  // Pulse dropzone if hovering over dropzone or selection is not in month and not a period month selection
-  /* const pulseDropzone =
-    selection && !selectedCourseIsInMonth && !isPeriodMonthSelection(selection); */
+  // Pulse dropzone if there are selected courses or the drop indicator is shown
+  const pulseDropzone = selectedCourses.length > 0 || showDropIndicator;
 
   return (
     <motion.div layout className="study-planner__month">
@@ -279,6 +325,19 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
           onClick={handleMonthToggle}
         >
           {title}
+          <AnimatePresence>
+            {showDropIndicator && (
+              <motion.span
+                className="drop-indicator"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.2 }}
+              >
+                +
+              </motion.span>
+            )}
+          </AnimatePresence>
         </Button>
 
         <PlannerMonthEditDialog
@@ -296,73 +355,82 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
       </motion.div>
 
       <AnimateHeight height={isExpanded ? "auto" : 0}>
-        <LayoutGroup id={`month-${monthIndex}-${year}`}>
-          <motion.div
-            className="study-planner__month-courses"
-            layout="position"
-            initial={false}
-            transition={{
-              layout: { duration: 0.3, ease: "easeInOut" },
-            }}
-          >
-            <AnimatePresence initial={false}>
-              {courses.length > 0
-                ? courses.map((course) => {
-                    // Check if the course is selected
-                    const isSelected = selectedCourses.some(
-                      (c) =>
-                        isPlannedCourseWithIdentifier(c) &&
-                        c.identifier === course.identifier
-                    );
-
-                    // Find the original course info
-                    const originalInfo = originalPlannedCourses.find(
-                      (c) => c.identifier === course.identifier
-                    );
-
-                    // Check if there are any unsaved changes
-                    const hasChanges =
-                      originalInfo && !_.isEqual(originalInfo, course);
-
-                    // Check if the course is new
-                    const isNew = !originalInfo;
-
-                    return (
-                      <motion.div
-                        key={course.identifier}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.4 }}
-                        layout="position"
-                      >
-                        <PlannerPeriodCourseCard
-                          course={course}
-                          selected={isSelected}
-                          hasChanges={hasChanges || isNew}
-                          curriculumConfig={curriculumConfig}
-                          onCourseChange={handleCourseChange}
-                          onSelectCourse={handleSelectCourse}
-                        />
-                      </motion.div>
-                    );
-                  })
-                : null}
-            </AnimatePresence>
+        <Droppable<
+          PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+        >
+          accept={["planned-course-card", "new-course-card"]}
+          onDrop={handleDrop}
+          onHover={handleDropHover}
+          className="study-planner__month-content"
+        >
+          <LayoutGroup id={`month-${monthIndex}-${year}`}>
             <motion.div
+              className="study-planner__month-courses"
               layout="position"
-              animate={"initial"}
-              variants={dropZoneVariants}
-              className="study-planner__month-dropzone"
+              initial={false}
+              transition={{
+                layout: { duration: 0.3, ease: "easeInOut" },
+              }}
             >
-              <i className="muikku-icon-drag-handle" />
-              <span onClick={handleMoveCoursesHereClick}>
-                Siirrä kursseja tähän raahamalla tai klikkaamalla tästä, kun
-                kurssi on valittu
-              </span>
+              <AnimatePresence initial={false}>
+                {courses.length > 0
+                  ? courses.map((course) => {
+                      // Check if the course is selected
+                      const isSelected = selectedCourses.some(
+                        (c) =>
+                          isPlannedCourseWithIdentifier(c) &&
+                          c.identifier === course.identifier
+                      );
+
+                      // Find the original course info
+                      const originalInfo = originalPlannedCourses.find(
+                        (c) => c.identifier === course.identifier
+                      );
+
+                      // Check if there are any unsaved changes
+                      const hasChanges =
+                        originalInfo && !_.isEqual(originalInfo, course);
+
+                      // Check if the course is new
+                      const isNew = !originalInfo;
+
+                      return (
+                        <motion.div
+                          key={course.identifier}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.4 }}
+                          layout="position"
+                        >
+                          <PlannerPeriodCourseCard
+                            course={course}
+                            selected={isSelected}
+                            hasChanges={hasChanges || isNew}
+                            curriculumConfig={curriculumConfig}
+                            onCourseChange={handleCourseChange}
+                            onSelectCourse={handleSelectCourse}
+                          />
+                        </motion.div>
+                      );
+                    })
+                  : null}
+              </AnimatePresence>
+              <motion.div
+                layout="position"
+                animate={pulseDropzone ? "dropIsActive" : "initial"}
+                variants={dropZoneVariants}
+                className="study-planner__month-dropzone"
+              >
+                <i className="muikku-icon-drag-handle" />
+                <span onClick={handleMoveCoursesHereClick}>
+                  Siirrä kursseja tähän raahamalla tai klikkaamalla tästä, kun
+                  kurssi on valittu
+                </span>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        </LayoutGroup>
+          </LayoutGroup>
+        </Droppable>
       </AnimateHeight>
     </motion.div>
   );

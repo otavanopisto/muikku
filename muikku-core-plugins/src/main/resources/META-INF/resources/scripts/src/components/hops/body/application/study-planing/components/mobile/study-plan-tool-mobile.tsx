@@ -12,12 +12,13 @@ import PlannerPeriod from "../planner-period";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import { IconButton } from "~/components/general/button";
+import Button, { IconButton } from "~/components/general/button";
 import Portal from "~/components/general/portal";
 import { Provider, ReactReduxContext } from "react-redux";
 import { useDragDropManager } from "react-dnd";
 import { DndProvider } from "react-dnd";
 import "~/sass/elements/study-planner.scss";
+import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
 
 /**
  * DesktopStudyPlannerProps
@@ -36,29 +37,20 @@ interface MobileStudyPlannerProps {
  * @returns JSX.Element
  */
 const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
-  const {
-    curriculumConfig,
-    plannedCourses,
-    calculatedPeriods,
-    timeContextSelection,
-    selectedCourses,
-  } = props;
+  const { calculatedPeriods } = props;
   const manager = useDragDropManager();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [view, setView] = useState<"list" | "table">("list");
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const normalTimelineRef = React.useRef<HTMLDivElement>(null);
   const fullscreenTimelineRef = React.useRef<HTMLDivElement>(null);
-  const normalViewPeriodRefs = React.useRef(new Map<string, HTMLDivElement>());
   const fullscreenPeriodRefs = React.useRef(new Map<string, HTMLDivElement>());
 
   const [shouldRenderPortal, setShouldRenderPortal] = useState(false);
 
   useEffect(() => {
-    if (isFullScreen) {
+    if (isOpen) {
       setShouldRenderPortal(true);
     } else {
       // Delay portal unmounting to allow exit animations to complete
@@ -67,78 +59,62 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
       }, 300); // Match this with your exit animation duration
       return () => clearTimeout(timer);
     }
-  }, [isFullScreen]);
-
-  /**
-   * Gets active timeline ref based on current view
-   */
-  const getActiveTimelineRef = useCallback(
-    () =>
-      isFullScreen ? fullscreenTimelineRef.current : normalTimelineRef.current,
-    [isFullScreen]
-  );
-
-  /**
-   * Gets active refs
-   */
-  const getActiveRefs = useCallback(
-    () =>
-      isFullScreen
-        ? fullscreenPeriodRefs.current
-        : normalViewPeriodRefs.current,
-    [isFullScreen]
-  );
+  }, [isOpen]);
 
   /**
    * Scrolls to next/previous period
    * @param direction direction
    */
-  const scrollToAdjacentPeriod = useCallback(
-    (direction: "next" | "prev") => {
-      const container = getActiveTimelineRef();
+  const scrollToAdjacentPeriod = useCallback((direction: "next" | "prev") => {
+    const container = fullscreenTimelineRef.current;
 
-      if (!container) return;
+    if (!container) return;
 
-      // Use the active refs map
-      const activeRefs = getActiveRefs();
-      const currentScroll = container.scrollLeft;
-      const containerWidth = container.clientWidth;
+    // Use the active refs map
+    const activeRefs = fullscreenPeriodRefs.current;
+    const currentScroll = container.scrollLeft;
+    const containerWidth = container.clientWidth;
 
-      // Find the closest period to the current scroll position
-      let closestPeriod: HTMLDivElement | null = null;
-      let minDistance = Infinity;
+    // Find the closest period to the current scroll position
+    let closestPeriod: HTMLDivElement | null = null;
+    let minDistance = Infinity;
 
-      activeRefs.forEach((element) => {
-        const distance = Math.abs(element.offsetLeft - currentScroll);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestPeriod = element;
-        }
-      });
-
-      if (closestPeriod) {
-        const periods = Array.from(activeRefs.values());
-        const currentIndex = periods.indexOf(closestPeriod);
-        const targetIndex =
-          direction === "next"
-            ? Math.min(currentIndex + 1, periods.length - 1)
-            : Math.max(currentIndex - 1, 0);
-
-        const targetPeriod = periods[targetIndex];
-
-        if (targetPeriod) {
-          const scrollPosition =
-            targetPeriod.offsetLeft -
-            (containerWidth - targetPeriod.offsetWidth) / 2;
-          container.scrollTo({
-            left: scrollPosition,
-            behavior: "smooth",
-          });
-        }
+    activeRefs.forEach((element) => {
+      const distance = Math.abs(element.offsetLeft - currentScroll);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestPeriod = element;
       }
-    },
-    [getActiveRefs, getActiveTimelineRef]
-  );
+    });
+
+    if (closestPeriod) {
+      const periods = Array.from(activeRefs.values());
+      const currentIndex = periods.indexOf(closestPeriod);
+      const targetIndex =
+        direction === "next"
+          ? Math.min(currentIndex + 1, periods.length - 1)
+          : Math.max(currentIndex - 1, 0);
+
+      const targetPeriod = periods[targetIndex];
+
+      if (targetPeriod) {
+        const scrollPosition =
+          targetPeriod.offsetLeft -
+          (containerWidth - targetPeriod.offsetWidth) / 2;
+        container.scrollTo({
+          left: scrollPosition,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, []);
+
+  /**
+   * Handles opening the planner
+   */
+  const handleOpenPlanner = () => {
+    setIsOpen(true);
+  };
 
   return (
     <>
@@ -149,10 +125,10 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
               <Provider store={store}>
                 <DndProvider manager={manager}>
                   <AnimatePresence>
-                    {isFullScreen && (
+                    {isOpen && (
                       <motion.div
                         key="study-planner-fullscreen"
-                        className="study-planner study-planner--mobile study-planner--mobile-fullscreen swiper-no-swiping"
+                        className="study-planner study-planner--mobile-open swiper-no-swiping"
                         initial={{
                           height: "100vh",
                           width: "100%",
@@ -189,12 +165,13 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
                           margin: "auto",
                         }}
                       >
+                        <StudyPlannerDragLayer />
+
                         <MobilePlannerControls
-                          onSidebarOpen={() => setIsSidebarOpen(!isSidebarOpen)}
-                          onFullScreen={() => setIsFullScreen(!isFullScreen)}
                           onPeriodChange={(direction) =>
                             scrollToAdjacentPeriod(direction)
                           }
+                          onClose={() => setIsOpen(false)}
                         />
                         <div className="study-planner__content">
                           <div
@@ -235,44 +212,18 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
         </ReactReduxContext.Consumer>
       )}
 
-      {!isFullScreen && (
-        <motion.div
-          key="study-planner"
-          className="study-planner study-planner--mobile swiper-no-swiping"
+      <motion.div
+        key="study-planner"
+        className="study-planner study-planner--mobile-not-open swiper-no-swiping"
+      >
+        <Button
+          buttonModifiers={["primary"]}
+          onClick={handleOpenPlanner}
+          disabled={isOpen}
         >
-          <MobilePlannerControls
-            onSidebarOpen={() => setIsSidebarOpen(!isSidebarOpen)}
-            onFullScreen={() => setIsFullScreen(!isFullScreen)}
-            onPeriodChange={(direction) => scrollToAdjacentPeriod(direction)}
-          />
-          <div className="study-planner__content">
-            <div
-              className="study-planner__timeline-container"
-              tabIndex={0}
-              ref={normalTimelineRef}
-            >
-              <div className="study-planner__timeline">
-                {calculatedPeriods.map((period) => (
-                  <PlannerPeriod
-                    key={period.title}
-                    {...period}
-                    renderMobile={true}
-                    ref={(el) => {
-                      if (el) {
-                        // Element is being mounted - add to refs Map
-                        normalViewPeriodRefs.current.set(period.title, el);
-                      } else {
-                        // Element is being unmounted - remove from refs Map
-                        normalViewPeriodRefs.current.delete(period.title);
-                      }
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
+          Avaa suunnittelmatyökalu
+        </Button>
+      </motion.div>
     </>
   );
 };
@@ -281,9 +232,8 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
  * MobilePlannerControlsProps
  */
 interface MobilePlannerControlsProps {
-  onSidebarOpen: () => void;
-  onFullScreen: () => void;
   onPeriodChange: (direction: "prev" | "next") => void;
+  onClose: () => void;
 }
 
 /**
@@ -292,17 +242,16 @@ interface MobilePlannerControlsProps {
  * @returns JSX.Element
  */
 const MobilePlannerControls: React.FC<MobilePlannerControlsProps> = (props) => {
-  const { onSidebarOpen, onFullScreen, onPeriodChange } = props;
+  const { onPeriodChange, onClose } = props;
 
   return (
     <div className="study-planner__controls">
-      <div className="study-planner__control-buttons">
-        <IconButton icon="navicon" onClick={onSidebarOpen} />
-        <IconButton icon="fullscreen" onClick={onFullScreen} />
-      </div>
       <div className="study-planner__period-navigation">
         <IconButton icon="arrow-left" onClick={() => onPeriodChange("prev")} />
         <IconButton icon="arrow-right" onClick={() => onPeriodChange("next")} />
+      </div>
+      <div className="study-planner__control-buttons">
+        <IconButton icon="cross" onClick={onClose} />
       </div>
     </div>
   );
