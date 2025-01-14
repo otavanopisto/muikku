@@ -445,7 +445,7 @@ public class HopsRestService {
               studentEntity.getId(),
               item.getCourseId(),
               Boolean.FALSE);
-          if (supplementationRequest != null && !supplementationRequest.getHandled() && item.getDate().before(supplementationRequest.getRequestDate())) {
+          if (supplementationRequest != null && item.getDate().before(supplementationRequest.getRequestDate())) {
             item.setDate(supplementationRequest.getRequestDate());
             item.setStatus(StudyActivityItemStatus.SUPPLEMENTATIONREQUEST);
           }
