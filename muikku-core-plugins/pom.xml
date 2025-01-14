@@ -328,6 +328,8 @@
               <generateModelDocumentation>false</generateModelDocumentation>
               <generateModelTests>false</generateModelTests>
               <generateSupportingFiles>false</generateSupportingFiles>
+
+              <modelsToGenerate>UserWhoAmI,UserWhoAmIServices,UserWhoAmIServices_chat,LocaleType,Role</modelsToGenerate>
               
               <configOptions>
                 <!-- Use root: target/generated-sources/openapi -->

@@ -16617,10 +16617,12 @@ components:
           nullable: true
         roles:
           type: array
+          uniqueItems: true
           items:
             $ref: "#/components/schemas/Role"
         permissions:
           type: array
+          uniqueItems: true
           nullable: true
           items:
             type: string

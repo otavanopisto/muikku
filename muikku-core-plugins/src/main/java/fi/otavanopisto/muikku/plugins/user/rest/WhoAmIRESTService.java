@@ -38,8 +38,13 @@ import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.plugins.worklist.WorklistController;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
+import fi.otavanopisto.muikku.rest.model.LocaleTypeRestModel;
+import fi.otavanopisto.muikku.rest.model.RoleRestModel;
 import fi.otavanopisto.muikku.rest.model.UserWhoAmIInfo;
 import fi.otavanopisto.muikku.rest.model.UserWhoAmIInfoServices;
+import fi.otavanopisto.muikku.rest.model.UserWhoAmIRestModel;
+import fi.otavanopisto.muikku.rest.model.UserWhoAmIServicesChatRestModel;
+import fi.otavanopisto.muikku.rest.model.UserWhoAmIServicesRestModel;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -234,43 +239,83 @@ public class WhoAmIRESTService extends AbstractRESTService {
      */
     boolean hopsAvailable = user != null && StringUtils.equals("lukio", user.getStudyProgrammeEducationType());
     
-    UserWhoAmIInfoServices services = new UserWhoAmIInfoServices(
-        chatAvailable,
-        worklistAvailable,
-        environmentForumAvailable,
-        hopsAvailable
-    );
+    Set<RoleRestModel> roleRestModels = roles.stream().map(role -> RoleRestModel.fromValue(role.name())).collect(Collectors.toUnmodifiableSet());
+    // TODO Does this work ok?
+    LocaleTypeRestModel localeTypeRestModel = StringUtils.equals(locale, "en") ? LocaleTypeRestModel.EN : LocaleTypeRestModel.FI;
     
-    // Result object
-    UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
-        userEntity == null ? null : userEntity.getId(),
-        userEntity == null ? null : userEntity.defaultSchoolDataIdentifier().toId(),
-        user == null ? null : user.getFirstName(),
-        user == null ? null : user.getLastName(),
-        user == null ? null : user.getNickName(),
-        user == null ? null : user.getStudyProgrammeName(),
-        user == null || user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
-        hasImage,
-        user == null ? false : user.getHasEvaluationFees(),
-        user == null || user.getCurriculumIdentifier() == null ? null : user.getCurriculumIdentifier().toId(),
-        curriculumName,
-        organizationIdentifier != null ? organizationIdentifier.toId() : null,
-        isDefaultOrganization,
-        currentUserSession.isActive(),
-        permissionSet,
-        roles,
-        locale,
-        user == null ? null : user.getDisplayName(),
-        emails,
-        addresses,
-        phoneNumbers,
-        studyTimeLeftStr,
-        studyStartDate,
-        studyEndDate,
-        studyTimeEnd,
-        services); 
+    UserWhoAmIServicesRestModel whoamiServicesRestModel = new UserWhoAmIServicesRestModel()
+        .chat(new UserWhoAmIServicesChatRestModel().isAvailable(chatAvailable))
+        .worklist(new UserWhoAmIServicesChatRestModel().isAvailable(worklistAvailable))
+        .environmentForum(new UserWhoAmIServicesChatRestModel().isAvailable(environmentForumAvailable))
+        .hops(new UserWhoAmIServicesChatRestModel().isAvailable(hopsAvailable));
+    
+    UserWhoAmIRestModel ret = new UserWhoAmIRestModel()
+        .id(userEntity == null ? null : userEntity.getId())
+        .identifier(userEntity == null ? null : userEntity.defaultSchoolDataIdentifier().toId())
+        .firstName(user == null ? null : user.getFirstName())
+        .lastName(user == null ? null : user.getLastName())
+        .nickName(user == null ? null : user.getNickName())
+        .studyProgrammeName(user == null ? null : user.getStudyProgrammeName())
+        .studyProgrammeIdentifier(user == null || user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId())
+        .hasImage(hasImage)
+        .hasEvaluationFees(user == null ? false : user.getHasEvaluationFees())
+        .curriculumIdentifier(user == null || user.getCurriculumIdentifier() == null ? null : user.getCurriculumIdentifier().toId())
+        .curriculumName(curriculumName)
+        .organizationIdentifier(organizationIdentifier != null ? organizationIdentifier.toId() : null)
+        .isDefaultOrganization(isDefaultOrganization)
+        .isActive(currentUserSession.isActive())
+        .permissions(permissionSet)
+        .roles(roleRestModels)
+        .locale(localeTypeRestModel)
+        .displayName(user == null ? null : user.getDisplayName())
+        .emails(emails)                                                            // This is some weird json-string-array, should be array of strings, fix yaml and frontend
+        .addresses(addresses)                                                      // This is some weird json-string-array, should be array of strings, fix yaml and frontend
+        .phoneNumbers(phoneNumbers)                                                // This is some weird json-string-array, should be array of strings, fix yaml and frontend
+        .studyTimeLeftStr(studyTimeLeftStr)
+        .studyStartDate(studyStartDate != null ? studyStartDate.toString() : null) // Shouldn't be string but date, fix yaml and frontend
+        .studyEndDate(studyEndDate != null ? studyEndDate.toString() : null)       // Shouldn't be string but date, fix yaml and frontend
+        .studyTimeEnd(studyTimeEnd != null ? studyTimeEnd.toString() : null)       // Shouldn't be string but date, fix yaml and frontend
+        .services(whoamiServicesRestModel);
 
-    return Response.ok(whoamiInfo).build();
+    return Response.ok(ret).build();
+
+//    UserWhoAmIInfoServices services = new UserWhoAmIInfoServices(
+//        chatAvailable,
+//        worklistAvailable,
+//        environmentForumAvailable,
+//        hopsAvailable
+//    );
+//    
+//    // Result object
+//    UserWhoAmIInfo whoamiInfo = new UserWhoAmIInfo(
+//        userEntity == null ? null : userEntity.getId(),
+//        userEntity == null ? null : userEntity.defaultSchoolDataIdentifier().toId(),
+//        user == null ? null : user.getFirstName(),
+//        user == null ? null : user.getLastName(),
+//        user == null ? null : user.getNickName(),
+//        user == null ? null : user.getStudyProgrammeName(),
+//        user == null || user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
+//        hasImage,
+//        user == null ? false : user.getHasEvaluationFees(),
+//        user == null || user.getCurriculumIdentifier() == null ? null : user.getCurriculumIdentifier().toId(),
+//        curriculumName,
+//        organizationIdentifier != null ? organizationIdentifier.toId() : null,
+//        isDefaultOrganization,
+//        currentUserSession.isActive(),
+//        permissionSet,
+//        roles,
+//        locale,
+//        user == null ? null : user.getDisplayName(),
+//        emails,
+//        addresses,
+//        phoneNumbers,
+//        studyTimeLeftStr,
+//        studyStartDate,
+//        studyEndDate,
+//        studyTimeEnd,
+//        services); 
+//
+//    return Response.ok(whoamiInfo).build();
   }
 
 }
