@@ -6,7 +6,6 @@
 .study-planner {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   height: 750px;
   background: white;
 }
@@ -558,4 +557,47 @@
       font-size: 0.9rem;
     }
   }
+}
+
+// Plan status
+.study-planner__plan-status {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.study-planner__plan-status-title {
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.study-planner__plan-status-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+.study-planner__plan-statistic-item {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex: 1;
+  }
+}
+
+.study-planner__plan-statistic-item-title {
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin-bottom: 0.5rem;
+}
+
+.study-planner__plan-statistic-item-value {
+  height: 0.5rem;
+  width: 6rem;
+  background-color: $color-success;
+  border-radius: 0.25rem;
 }

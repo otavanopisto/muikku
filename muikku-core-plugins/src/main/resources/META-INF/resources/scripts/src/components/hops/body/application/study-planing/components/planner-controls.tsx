@@ -6,9 +6,9 @@ import { IconButton } from "~/components/general/button";
  */
 interface PlannerControlsProps {
   onViewChange: (view: "list" | "table") => void;
-  onRefresh: () => void;
   onPeriodChange: (direction: "prev" | "next") => void;
   onFullScreen: () => void;
+  onShowPlanStatus: () => void;
 }
 
 /**
@@ -16,15 +16,14 @@ interface PlannerControlsProps {
  * @param props props
  * @returns JSX.Element
  */
-const PlannerControls: React.FC<PlannerControlsProps> = (props) => {
-  const { onPeriodChange, onFullScreen } = props;
+export const PlannerControls: React.FC<PlannerControlsProps> = (props) => {
+  const { onPeriodChange, onFullScreen, onShowPlanStatus } = props;
 
   return (
     <div className="study-planner__controls">
       <div className="study-planner__control-buttons">
-        {/* <IconButton icon="profile" onClick={() => onViewChange("list")} />
-      <IconButton icon="profile" onClick={() => onViewChange("table")} /> */}
         <IconButton icon="fullscreen" onClick={onFullScreen} />
+        <IconButton icon="eye" onClick={onShowPlanStatus} />
       </div>
       <div className="study-planner__period-navigation">
         <IconButton icon="arrow-left" onClick={() => onPeriodChange("prev")} />
@@ -34,4 +33,37 @@ const PlannerControls: React.FC<PlannerControlsProps> = (props) => {
   );
 };
 
-export default PlannerControls;
+/**
+ * MobilePlannerControlsProps
+ */
+interface MobilePlannerControlsProps {
+  onPeriodChange: (direction: "prev" | "next") => void;
+  onShowPlanStatus: () => void;
+  onClose: () => void;
+}
+
+/**
+ * Mobile planner controls
+ * @param props props
+ * @returns JSX.Element
+ */
+export const MobilePlannerControls: React.FC<MobilePlannerControlsProps> = (
+  props
+) => {
+  const { onPeriodChange, onShowPlanStatus, onClose } = props;
+
+  return (
+    <div className="study-planner__controls">
+      <div className="study-planner__period-navigation">
+        <IconButton icon="arrow-left" onClick={() => onPeriodChange("prev")} />
+        <IconButton icon="arrow-right" onClick={() => onPeriodChange("next")} />
+        <IconButton icon="eye" onClick={onShowPlanStatus} />
+      </div>
+      {onClose && (
+        <div className="study-planner__control-buttons">
+          <IconButton icon="cross" onClick={onClose} />
+        </div>
+      )}
+    </div>
+  );
+};

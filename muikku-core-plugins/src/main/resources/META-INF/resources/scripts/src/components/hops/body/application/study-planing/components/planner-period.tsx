@@ -18,7 +18,8 @@ const SPRING_MONTHS = [
 /**
  * PlannerPeriodProps
  */
-export interface PlannerPeriodProps extends PlannedPeriod {
+export interface PlannerPeriodProps {
+  period: PlannedPeriod;
   renderMobile?: boolean;
 }
 
@@ -34,7 +35,9 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
   (props, ref) => {
     props = { ...defaultProps, ...props };
 
-    const { title, workload, type, year, plannedCourses, renderMobile } = props;
+    const { period, renderMobile } = props;
+
+    const { title, workload, type, year, plannedCourses } = period;
 
     const months = type === "AUTUMN" ? AUTUMN_MONTHS : SPRING_MONTHS;
 

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
 import {
@@ -8,17 +8,24 @@ import {
   SelectedCourse,
   TimeContextSelection,
 } from "~/reducers/hops";
-import PlannerPeriod from "../planner-period";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import Button, { IconButton } from "~/components/general/button";
+import Button from "~/components/general/button";
 import Portal from "~/components/general/portal";
 import { Provider, ReactReduxContext } from "react-redux";
 import { useDragDropManager } from "react-dnd";
 import { DndProvider } from "react-dnd";
 import "~/sass/elements/study-planner.scss";
 import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
+import PlannerPlanStatus from "../planner-plan-status";
+import PlannerTimelineMobile from "./planner-timeline";
+import { MobilePlannerControls } from "../planner-controls";
+
+// Memoized components
+const MemoizedMobilePlannerControls = React.memo(MobilePlannerControls);
+const MemoizedPlannerPlanStatus = React.memo(PlannerPlanStatus);
+const MemoizedPlannerTimelineMobile = React.memo(PlannerTimelineMobile);
 
 /**
  * DesktopStudyPlannerProps
@@ -43,9 +50,11 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [view, setView] = useState<"list" | "table">("list");
   const [isOpen, setIsOpen] = useState(false);
+  const [showPlanStatus, setShowPlanStatus] = useState(false);
 
-  const fullscreenTimelineRef = React.useRef<HTMLDivElement>(null);
-  const fullscreenPeriodRefs = React.useRef(new Map<string, HTMLDivElement>());
+  const timelineComponentRef = useRef<{
+    scrollToAdjacentPeriod: (direction: "next" | "prev") => void;
+  }>(null);
 
   const [shouldRenderPortal, setShouldRenderPortal] = useState(false);
 
@@ -62,59 +71,19 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
   }, [isOpen]);
 
   /**
-   * Scrolls to next/previous period
-   * @param direction direction
-   */
-  const scrollToAdjacentPeriod = useCallback((direction: "next" | "prev") => {
-    const container = fullscreenTimelineRef.current;
-
-    if (!container) return;
-
-    // Use the active refs map
-    const activeRefs = fullscreenPeriodRefs.current;
-    const currentScroll = container.scrollLeft;
-    const containerWidth = container.clientWidth;
-
-    // Find the closest period to the current scroll position
-    let closestPeriod: HTMLDivElement | null = null;
-    let minDistance = Infinity;
-
-    activeRefs.forEach((element) => {
-      const distance = Math.abs(element.offsetLeft - currentScroll);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestPeriod = element;
-      }
-    });
-
-    if (closestPeriod) {
-      const periods = Array.from(activeRefs.values());
-      const currentIndex = periods.indexOf(closestPeriod);
-      const targetIndex =
-        direction === "next"
-          ? Math.min(currentIndex + 1, periods.length - 1)
-          : Math.max(currentIndex - 1, 0);
-
-      const targetPeriod = periods[targetIndex];
-
-      if (targetPeriod) {
-        const scrollPosition =
-          targetPeriod.offsetLeft -
-          (containerWidth - targetPeriod.offsetWidth) / 2;
-        container.scrollTo({
-          left: scrollPosition,
-          behavior: "smooth",
-        });
-      }
-    }
-  }, []);
-
-  /**
    * Handles opening the planner
    */
   const handleOpenPlanner = () => {
     setIsOpen(true);
   };
+
+  /**
+   * Handles period change
+   * @param direction direction
+   */
+  const handlePeriodChange = useCallback((direction: "next" | "prev") => {
+    timelineComponentRef.current?.scrollToAdjacentPeriod(direction);
+  }, []);
 
   return (
     <>
@@ -167,40 +136,19 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
                       >
                         <StudyPlannerDragLayer />
 
-                        <MobilePlannerControls
-                          onPeriodChange={(direction) =>
-                            scrollToAdjacentPeriod(direction)
-                          }
+                        <MemoizedMobilePlannerControls
+                          onPeriodChange={handlePeriodChange}
                           onClose={() => setIsOpen(false)}
+                          onShowPlanStatus={() =>
+                            setShowPlanStatus(!showPlanStatus)
+                          }
                         />
+                        <MemoizedPlannerPlanStatus show={showPlanStatus} />
                         <div className="study-planner__content">
-                          <div
-                            className="study-planner__timeline-container"
-                            tabIndex={0}
-                            ref={fullscreenTimelineRef}
-                          >
-                            <div className="study-planner__timeline">
-                              {calculatedPeriods.map((period) => (
-                                <PlannerPeriod
-                                  key={period.title}
-                                  {...period}
-                                  renderMobile={true}
-                                  ref={(el) => {
-                                    if (el) {
-                                      fullscreenPeriodRefs.current.set(
-                                        period.title,
-                                        el
-                                      );
-                                    } else {
-                                      fullscreenPeriodRefs.current.delete(
-                                        period.title
-                                      );
-                                    }
-                                  }}
-                                />
-                              ))}
-                            </div>
-                          </div>
+                          <MemoizedPlannerTimelineMobile
+                            calculatedPeriods={calculatedPeriods}
+                            ref={timelineComponentRef}
+                          />
                         </div>
                       </motion.div>
                     )}
@@ -225,35 +173,6 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
         </Button>
       </motion.div>
     </>
-  );
-};
-
-/**
- * MobilePlannerControlsProps
- */
-interface MobilePlannerControlsProps {
-  onPeriodChange: (direction: "prev" | "next") => void;
-  onClose: () => void;
-}
-
-/**
- * Mobile planner controls
- * @param props props
- * @returns JSX.Element
- */
-const MobilePlannerControls: React.FC<MobilePlannerControlsProps> = (props) => {
-  const { onPeriodChange, onClose } = props;
-
-  return (
-    <div className="study-planner__controls">
-      <div className="study-planner__period-navigation">
-        <IconButton icon="arrow-left" onClick={() => onPeriodChange("prev")} />
-        <IconButton icon="arrow-right" onClick={() => onPeriodChange("next")} />
-      </div>
-      <div className="study-planner__control-buttons">
-        <IconButton icon="cross" onClick={onClose} />
-      </div>
-    </div>
   );
 };
 
