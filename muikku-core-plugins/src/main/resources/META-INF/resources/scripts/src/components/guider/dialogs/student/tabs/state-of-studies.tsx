@@ -354,8 +354,10 @@ class StateOfStudies extends React.Component<
           <>
             <ApplicationSubPanel modifier="guider-student-header">
               {studentBasicHeader}
-              {this.props.guider.currentStudent.labels &&
-              this.props.guider.currentStudent.labels.length ? (
+              {(this.props.guider.currentStudent.labels &&
+                this.props.guider.currentStudent.labels.length) ||
+              this.props.guider.currentStudent.basic.hasPedagogyForm ||
+              this.props.guider.currentStudent.basic.u18Compulsory ? (
                 <ApplicationSubPanel.Body modifier="labels">
                   <div className="labels">
                     {studentLabels}
