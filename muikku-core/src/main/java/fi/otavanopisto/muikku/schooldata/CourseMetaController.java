@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.schooldata;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,6 +14,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
@@ -42,6 +45,33 @@ public class CourseMetaController {
     courseLengthUnitCache = new ConcurrentHashMap<>();
     curriculumCache = new ConcurrentHashMap<>();
     educationTypeCache = new ConcurrentHashMap<>();
+  }
+  
+  public SchoolDataIdentifier educationTypeNameToIdentifier(String educationType) {
+    listEducationTypes(); // populate cache
+    Enumeration<SchoolDataIdentifier> e = educationTypeCache.keys();
+    while (e.hasMoreElements()) {
+      SchoolDataIdentifier sdi = e.nextElement();
+      EducationType et = educationTypeCache.get(sdi);
+      if (StringUtils.equals(educationType, et.getName())) {
+        return sdi;
+      }
+    }
+    return null;
+  }
+
+  public SchoolDataIdentifier opsNameToIdentifier(String ops) {
+    listCurriculums(); // populate cache
+    Enumeration<SchoolDataIdentifier> e = curriculumCache.keys();
+    while (e.hasMoreElements()) {
+      SchoolDataIdentifier sdi = e.nextElement();
+      Curriculum c = curriculumCache.get(sdi);
+      System.out.println("Comparing " + ops + " to " + c.getName());
+      if (StringUtils.equals(ops, c.getName())) {
+        return sdi;
+      }
+    }
+    return null;
   }
 
   /* Subjects */

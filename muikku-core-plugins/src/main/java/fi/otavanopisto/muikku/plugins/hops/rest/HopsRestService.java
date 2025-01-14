@@ -8,9 +8,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +40,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -78,8 +82,12 @@ import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
@@ -104,6 +112,9 @@ public class HopsRestService {
 
   @Inject
   private HopsController hopsController;
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
 
   @Inject
   private EvaluationController evaluationController;
@@ -1066,6 +1077,96 @@ public class HopsRestService {
       hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:optionalsuggestion-updated", msg);
 
       return Response.noContent().build();
+    }
+  }
+  
+  @GET
+  @Path("/opsCourses")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listOpsCourses(@QueryParam ("ops") String ops, @QueryParam ("educationType") String educationType) {
+    
+    // OPS name to identifier (e.g. OPS 2021 -> PYRAMUS-1)
+    
+    if (StringUtils.isEmpty(ops)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing OPS").build();
+    }
+    SchoolDataIdentifier opsIdentifier = courseMetaController.opsNameToIdentifier(ops);
+    if (opsIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Unknown OPS %s", ops)).build();
+    }
+    List<SchoolDataIdentifier> curriculumIdentifiers = new ArrayList<>();
+    curriculumIdentifiers.add(opsIdentifier);
+    
+    // Education type name to identifier (e.g. Lukio -> PYRAMUS-2)
+    
+    if (StringUtils.isEmpty(educationType)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing education type").build();
+    }
+    SchoolDataIdentifier educationTypeIdentifier = courseMetaController.educationTypeNameToIdentifier(educationType);
+    if (educationTypeIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Unknown education type %s", educationType)).build();
+    }
+    List<SchoolDataIdentifier> educationTypeIdentifiers = new ArrayList<>();
+    educationTypeIdentifiers.add(educationTypeIdentifier);
+    
+    // Enforced organization filter
+    
+    List<OrganizationEntity> organizations = new ArrayList<>();
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity loggedUserOrganization = userSchoolDataIdentifier.getOrganization();
+    organizations.add(loggedUserOrganization);
+    List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(
+        organizations,
+        PublicityRestriction.ONLY_PUBLISHED,
+        TemplateRestriction.ONLY_WORKSPACES);
+    
+    // Search matching courses
+    
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      SearchProvider searchProvider = searchProviderIterator.next();
+      SearchResult searchResult = searchProvider.searchWorkspaces()
+          .setEducationTypeIdentifiers(educationTypeIdentifiers)
+          .setCurriculumIdentifiers(curriculumIdentifiers)
+          .setOrganizationRestrictions(organizationRestrictions)
+          .setAccessUser(sessionController.getLoggedUser())
+          .setFirstResult(0)
+          .setMaxResults(1000)
+          .search();
+      List<Map<String, Object>> results = searchResult.getResults();
+      
+      // List instances
+      
+      List<HopsOpsCoursesRestModel> courses = new ArrayList<>();
+      Map<String,Set<Integer>> courseMap = new HashMap<>();
+      for (Map<String, Object> result : results) {
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> subjects = (List<Map<String, Object>>) result.get("subjects");
+        for (Map<String, Object> s : subjects) {
+          String subject = (String) s.get("subjectCode");
+          Integer courseNumber = (Integer) s.get("courseNumber");
+          if (subject != null && courseNumber != null) {
+            if (courseMap.containsKey(subject)) {
+              courseMap.get(subject).add(courseNumber);
+            }
+            else {
+              Set<Integer> courseNumbers = new HashSet<>();
+              courseNumbers.add(courseNumber);
+              courseMap.put(subject, courseNumbers);
+            }
+          }
+        }
+      }
+      
+      // Convert to return value
+      
+      for (String s : courseMap.keySet()) {
+        courses.add(new HopsOpsCoursesRestModel(s, courseMap.get(s)));
+      }
+      return Response.ok().entity(courses).build();
+    }
+    else {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Elastic search unavailable").build();
     }
   }
 
