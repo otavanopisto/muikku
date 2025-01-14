@@ -3,6 +3,7 @@ import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import Button from "~/components/general/button";
+import { StudentStudyActivity } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import {
   CourseChangeAction,
@@ -26,6 +27,7 @@ export interface BasePlannerPeriodCourseProps {
   isDragging?: boolean;
   hasChanges: boolean;
   curriculumConfig: CurriculumConfig;
+  studyActivity?: StudentStudyActivity;
   onCourseChange: (
     course: PlannedCourseWithIdentifier,
     action: CourseChangeAction

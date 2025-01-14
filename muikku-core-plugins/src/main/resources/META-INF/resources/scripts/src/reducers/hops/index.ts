@@ -15,6 +15,8 @@ import {
   PlannedCourse,
   StudentInfo,
   HopsHistoryEntry,
+  StudentStudyActivity,
+  HopsOpsCourse,
 } from "~/generated/client";
 import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 
@@ -43,6 +45,8 @@ export type ReducerInitializeStatusType =
  */
 interface HopsStudyPlanState {
   plannedCourses: PlannedCourseWithIdentifier[];
+  availableOPSCourses: HopsOpsCourse[];
+  studyActivity: StudentStudyActivity[];
 }
 
 /**
@@ -222,6 +226,8 @@ const initialHopsState: HopsState = {
   hopsStudyPlanStatus: "IDLE",
   hopsStudyPlanState: {
     plannedCourses: [],
+    studyActivity: [],
+    availableOPSCourses: [],
   },
   hopsCurriculumConfigStatus: "IDLE",
   hopsCurriculumConfig: null,
@@ -472,6 +478,8 @@ export const hopsNew: Reducer<HopsState> = (
         hopsStudyPlanStatus: "IDLE",
         hopsStudyPlanState: {
           plannedCourses: [],
+          studyActivity: [],
+          availableOPSCourses: [],
         },
         hopsMatriculation: {
           exams: [],
@@ -661,6 +669,24 @@ export const hopsNew: Reducer<HopsState> = (
         ...state,
         hopsCurriculumConfigStatus: action.payload.status,
         hopsCurriculumConfig: action.payload.data || state.hopsCurriculumConfig,
+      };
+
+    case "HOPS_UPDATE_STUDY_ACTIVITY":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          studyActivity: action.payload,
+        },
+      };
+
+    case "HOPS_UPDATE_AVAILABLE_OPS_COURSES":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          availableOPSCourses: action.payload,
+        },
       };
 
     default:

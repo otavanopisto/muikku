@@ -72,6 +72,8 @@
   gap: 1rem;
   height: calc(100% - 48px);
   overflow: hidden;
+  border-top: 1px solid #ebebeb;
+  padding-top: 0.5rem;
 }
 
 // Timeline
@@ -424,6 +426,35 @@
 
 .study-planner__card-label--already-planned {
   background: $color-info;
+  color: $color-default;
+}
+
+.study-planner__card-label--transferred {
+  background: $color-completed;
+  color: $color-default;
+}
+
+.study-planner__card-label--inprogress {
+  background: $color-default;
+  border: 3px solid $color-info;
+  color: $color-default;
+}
+
+.study-planner__card-label--completed {
+  background: $color-completed;
+  border: 3px solid $color-completed-border;
+  color: $color-default;
+}
+
+.study-planner__card-label--failed {
+  background: $color-passed-failed;
+  border: 3px solid $color-passed-failed-border;
+  color: $color-default;
+}
+
+.study-planner__card-label--supplementation-request {
+  background: lighten($color-incomplete, 30%);
+  border: 3px solid $color-incomplete;
   color: $color-default;
 }
 

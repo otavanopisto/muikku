@@ -22,6 +22,7 @@ import {
   UpdateSelectedCoursesTriggerType,
   updateSelectedCourses,
 } from "~/actions/main-function/hops";
+import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 
 /**
  * MatriculationPlanProps
@@ -33,6 +34,8 @@ interface StudyPlanToolProps {
   editingPlan: PlannedCourseWithIdentifier[];
   timeContextSelection: TimeContextSelection;
   selectedCourses: SelectedCourse[];
+  studyActivity: StudentStudyActivity[];
+  availableOPSCourses: HopsOpsCourse[];
   updateSelectedCourses: UpdateSelectedCoursesTriggerType;
 }
 
@@ -48,6 +51,8 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     curriculumConfig,
     selectedCourses,
     timeContextSelection,
+    studyActivity,
+    availableOPSCourses,
     updateSelectedCourses,
   } = props;
 
@@ -174,6 +179,8 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                 plannedCourses={usedPlannedCourses}
                 calculatedPeriods={calculatedPeriods}
                 selectedCourses={selectedCourses}
+                studyActivity={studyActivity}
+                availableOPSCourses={availableOPSCourses}
                 updateSelectedCourses={updateSelectedCourses}
               />
             )}
@@ -196,6 +203,8 @@ function mapStateToProps(state: StateType) {
     editingPlan: state.hopsNew.hopsEditing.plannedCourses,
     selectedCourses: state.hopsNew.hopsEditing.selectedCourses,
     timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
+    studyActivity: state.hopsNew.hopsStudyPlanState.studyActivity,
+    availableOPSCourses: state.hopsNew.hopsStudyPlanState.availableOPSCourses,
   };
 }
 

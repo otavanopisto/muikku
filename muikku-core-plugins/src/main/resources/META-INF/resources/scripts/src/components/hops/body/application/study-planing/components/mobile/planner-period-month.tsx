@@ -34,6 +34,7 @@ import PlannerMonthEditDialog from "./planner-month-edit";
 import Droppable from "../react-dnd/droppable";
 import { Course } from "~/@types/shared";
 import { isPlannedCourse } from "../../helper";
+import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 
 /**
  * PlannerPeriodMonthProps
@@ -50,6 +51,8 @@ interface MobilePlannerPeriodMonthProps {
   editedPlannedCourses: PlannedCourseWithIdentifier[];
   curriculumConfig: CurriculumConfig;
   selectedCourses: SelectedCourse[];
+  studyActivity: StudentStudyActivity[];
+  availableOPSCourses: HopsOpsCourse[];
   updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType;
   updateTimeContextSelection: UpdateTimeContextSelectionTriggerType;
   updateSelectedCourses: UpdateSelectedCoursesTriggerType;
@@ -89,6 +92,8 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     curriculumConfig,
     selectedCourses,
     editedPlannedCourses,
+    studyActivity,
+    availableOPSCourses,
     updateHopsEditingStudyPlan,
     updateSelectedCourses,
     clearSelectedCourses,
@@ -346,6 +351,8 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
           curriculumConfig={curriculumConfig}
           timeContext={new Date(year, monthIndex, 1)}
           currentSelection={courses}
+          studyActivity={studyActivity}
+          availableOPSCourses={availableOPSCourses}
         >
           <IconButton
             icon="plus"
@@ -447,6 +454,8 @@ function mapStateToProps(state: StateType) {
     timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
     curriculumConfig: state.hopsNew.hopsCurriculumConfig,
     selectedCourses: state.hopsNew.hopsEditing.selectedCourses,
+    studyActivity: state.hopsNew.hopsStudyPlanState.studyActivity,
+    availableOPSCourses: state.hopsNew.hopsStudyPlanState.availableOPSCourses,
   };
 }
 

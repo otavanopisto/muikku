@@ -15,6 +15,7 @@ import { Course } from "~/@types/shared";
 import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
 import PlannerPlanStatus from "../planner-plan-status";
 import PlannerTimeline from "./planner-timeline";
+import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 
 /**
  * DesktopStudyPlannerProps
@@ -24,6 +25,8 @@ interface DesktopStudyPlannerProps {
   plannedCourses: PlannedCourseWithIdentifier[];
   calculatedPeriods: PlannedPeriod[];
   selectedCourses: SelectedCourse[];
+  studyActivity: StudentStudyActivity[];
+  availableOPSCourses: HopsOpsCourse[];
   updateSelectedCourses: UpdateSelectedCoursesTriggerType;
 }
 
@@ -38,7 +41,7 @@ const variants: Variants = {
     height: "100vh",
   },
   default: {
-    height: "750px",
+    height: "900px",
   },
 };
 
@@ -59,6 +62,8 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
     plannedCourses,
     calculatedPeriods,
     selectedCourses,
+    studyActivity,
+    availableOPSCourses,
     updateSelectedCourses,
   } = props;
 
@@ -75,6 +80,11 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
   const memoizedPlannedCourses = React.useMemo(
     () => plannedCourses,
     [plannedCourses]
+  );
+
+  const memoizedStudyActivity = React.useMemo(
+    () => studyActivity,
+    [studyActivity]
   );
 
   // Get the ref to the timeline component
@@ -157,10 +167,12 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
       <div className="study-planner__content">
         <div className="study-planner__sidebar">
           <MemoizedPlannerCourseTray
+            availableOPSCourses={availableOPSCourses}
             curriculumConfig={curriculumConfig}
             plannedCourses={memoizedPlannedCourses}
             onCourseClick={handleCourseClick}
             isSelected={isSelected}
+            studyActivity={memoizedStudyActivity}
           />
         </div>
 

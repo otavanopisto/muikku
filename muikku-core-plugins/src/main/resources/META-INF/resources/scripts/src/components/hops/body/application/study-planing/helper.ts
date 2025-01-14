@@ -87,12 +87,14 @@ const createAndAllocateCoursesToPeriods = (
  * @param subjects subjects
  * @param searchTerm search term
  * @param selectedFilters selected filters
+ * @param availableOPSCoursesMap available OPS courses map
  * @returns filtered subjects and courses
  */
 const filterSubjectsAndCourses = (
   subjects: SchoolSubject[],
   searchTerm: string,
-  selectedFilters: CourseFilter[]
+  selectedFilters: CourseFilter[],
+  availableOPSCoursesMap: Map<string, number[]>
 ) =>
   subjects
     .map((subject) => {
@@ -109,6 +111,16 @@ const filterSubjectsAndCourses = (
 
       if (!skipMandatoryChecking && selectedFilters.includes("optional")) {
         filteredCourses = filteredCourses.filter((course) => !course.mandatory);
+      }
+
+      // Filter available OPS courses
+      if (selectedFilters.includes("available_in_otavi")) {
+        filteredCourses = filteredCourses.filter((course) => {
+          const availableCourseNumbers = availableOPSCoursesMap.get(
+            subject.subjectCode
+          );
+          return availableCourseNumbers?.includes(course.courseNumber) ?? false;
+        });
       }
 
       // Apply search term

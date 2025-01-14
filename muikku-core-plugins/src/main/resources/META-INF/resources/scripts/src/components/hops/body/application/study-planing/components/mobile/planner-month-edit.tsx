@@ -9,6 +9,7 @@ import PlannerCourseTray from "../planner-course-tray";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { Course } from "~/@types/shared";
 import { DndProvider, useDragDropManager } from "react-dnd";
+import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 
 /**
  * Props for the EditHopsEventDescriptionDialog component
@@ -20,6 +21,8 @@ interface PlannerMonthEditDialogProps {
   plannedCourses: PlannedCourseWithIdentifier[];
   currentSelection: PlannedCourseWithIdentifier[];
   curriculumConfig: CurriculumConfig;
+  studyActivity: StudentStudyActivity[];
+  availableOPSCourses: HopsOpsCourse[];
 }
 
 /**
@@ -37,6 +40,8 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
     plannedCourses,
     timeContext,
     currentSelection,
+    studyActivity,
+    availableOPSCourses,
   } = props;
 
   const manager = useDragDropManager();
@@ -141,6 +146,8 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
               c.courseNumber === course.courseNumber
           )
         }
+        studyActivity={studyActivity}
+        availableOPSCourses={availableOPSCourses}
       />
     </DndProvider>
   );

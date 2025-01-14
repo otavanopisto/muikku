@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useMemo } from "react";
 import AnimateHeight from "react-animate-height";
 import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
@@ -6,6 +7,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { Course, CourseFilter } from "~/@types/shared";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
+import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { filterSubjectsAndCourses } from "../helper";
@@ -21,7 +23,9 @@ import {
  */
 interface PlannerCourseTrayProps {
   plannedCourses: PlannedCourseWithIdentifier[];
+  studyActivity: StudentStudyActivity[];
   curriculumConfig: CurriculumConfig;
+  availableOPSCourses: HopsOpsCourse[];
   onCourseClick: (course: Course & { subjectCode: string }) => void;
   isSelected: (course: Course & { subjectCode: string }) => boolean;
 }
@@ -31,7 +35,12 @@ interface PlannerCourseTrayProps {
  * @param props props
  */
 const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
-  const { plannedCourses, curriculumConfig } = props;
+  const {
+    plannedCourses,
+    studyActivity,
+    curriculumConfig,
+    availableOPSCourses,
+  } = props;
 
   const [searchTerm, setSearchTerm] = useLocalStorage(
     "hops-planner-search-term",
@@ -45,6 +54,15 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   const [selectedFilters, setSelectedFilters] = useLocalStorage<CourseFilter[]>(
     "hops-planner-selected-filters",
     []
+  );
+
+  const availableOPSCoursesMap = useMemo(
+    () =>
+      availableOPSCourses.reduce((acc, course) => {
+        acc.set(course.subjectCode, course.courseNumbers);
+        return acc;
+      }, new Map<string, number[]>()),
+    [availableOPSCourses]
   );
 
   /**
@@ -85,7 +103,8 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   const filteredSubjects = filterSubjectsAndCourses(
     curriculumConfig.strategy.getCurriculumMatrix().subjectsTable,
     searchTerm,
-    selectedFilters
+    selectedFilters,
+    availableOPSCoursesMap
   );
 
   // Filter options
@@ -170,6 +189,12 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                     subjectCode: subject.subjectCode,
                   });
 
+                  const courseActivity = studyActivity?.find(
+                    (activity) =>
+                      activity.subject === subject.subjectCode &&
+                      activity.courseNumber === course.courseNumber
+                  );
+
                   // Check if the course is already planned
                   const isPlannedCourse =
                     plannedCourses.findIndex(
@@ -185,6 +210,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                       subjectCode={subject.subjectCode}
                       isPlannedCourse={isPlannedCourse}
                       selected={selected}
+                      studyActivity={courseActivity}
                       curriculumConfig={curriculumConfig}
                       onSelectCourse={handleCourseClick}
                     />
@@ -208,6 +234,7 @@ interface PlannerCourseTrayItemProps {
   isPlannedCourse: boolean;
   selected: boolean;
   curriculumConfig: CurriculumConfig;
+  studyActivity?: StudentStudyActivity;
   onSelectCourse: (course: Course & { subjectCode: string }) => void;
 }
 
@@ -223,9 +250,48 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     onSelectCourse,
     selected,
     curriculumConfig,
+    studyActivity,
   } = props;
 
-  const isDisabled = isPlannedCourse;
+  /**
+   * Gets course state
+   * @returns course state
+   */
+  const getCourseState = () => {
+    if (studyActivity) {
+      switch (studyActivity.status) {
+        case "GRADED":
+          return studyActivity.passing
+            ? { disabled: true, state: "completed", label: "Suoritettu" }
+            : { disabled: false, state: "failed", label: "Hylätty" };
+        case "TRANSFERRED":
+          return {
+            disabled: true,
+            state: "transferred",
+            label: "Hyväksiluettu",
+          };
+        case "ONGOING":
+          return { disabled: true, state: "inprogress", label: "Työnalla" };
+        case "SUPPLEMENTATIONREQUEST":
+          return {
+            disabled: true,
+            state: "supplementation-request",
+            label: "Täydennettävä",
+          };
+        default:
+          return { disabled: false, state: null, label: null };
+      }
+    }
+
+    if (isPlannedCourse) {
+      return { disabled: true, state: "planned", label: "Suunnitelmassa" };
+    }
+
+    return { disabled: false, state: "available", label: "Lisättävissä" };
+  };
+
+  const courseState = getCourseState();
+  const isDisabled = courseState.disabled;
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
@@ -257,7 +323,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
 
   isDragging && modifiers.push("is-dragging");
   selected && modifiers.push("selected");
-
+  courseState.state && modifiers.push(courseState.state);
   isDisabled && modifiers.push("disabled");
 
   const type = course.mandatory ? "mandatory" : "optional";
@@ -284,9 +350,9 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
           {curriculumConfig.strategy.getCourseDisplayedLength(course)}
         </PlannerCardLabel>
 
-        {isPlannedCourse && (
-          <PlannerCardLabel modifiers={["already-planned"]}>
-            Suunnitelmassa
+        {courseState.label && (
+          <PlannerCardLabel modifiers={[courseState.state]}>
+            {courseState.label}
           </PlannerCardLabel>
         )}
       </PlannerCardContent>

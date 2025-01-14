@@ -30,6 +30,7 @@ import {
 import { CurriculumConfig } from "~/util/curriculum-config";
 import _ from "lodash";
 import moment from "moment";
+import { StudentStudyActivity } from "~/generated/client";
 
 /**
  * PlannerPeriodMonthProps
@@ -45,6 +46,7 @@ interface PlannerPeriodMonthProps {
   editedPlannedCourses: PlannedCourseWithIdentifier[];
   curriculumConfig: CurriculumConfig;
   selectedCourses: SelectedCourse[];
+  studyActivity: StudentStudyActivity[];
   updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType;
   updateEditingStudyPlanBatch: UpdateEditingStudyPlanBatchTriggerType;
   updateSelectedCourses: UpdateSelectedCoursesTriggerType;
@@ -81,6 +83,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     curriculumConfig,
     selectedCourses,
     editedPlannedCourses,
+    studyActivity,
     updateEditingStudyPlanBatch,
     updateHopsEditingStudyPlan,
     updateSelectedCourses,
@@ -313,6 +316,10 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
                           c.identifier === course.identifier
                       );
 
+                      /* const courseActivity = studyActivity.find(
+                        (activity) => activity.subject
+                      ); */
+
                       // Find the original course info
                       const originalInfo = originalPlannedCourses.find(
                         (c) => c.identifier === course.identifier
@@ -378,6 +385,7 @@ function mapStateToProps(state: StateType) {
     timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
     curriculumConfig: state.hopsNew.hopsCurriculumConfig,
     selectedCourses: state.hopsNew.hopsEditing.selectedCourses,
+    studyActivity: state.hopsNew.hopsStudyPlanState.studyActivity,
   };
 }
 

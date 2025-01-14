@@ -6,6 +6,7 @@ import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
   HopsHistoryEntry,
   HopsLocked,
+  HopsOpsCourse,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
   MatriculationExamStudentStatus,
@@ -14,6 +15,7 @@ import {
   MatriculationSubject,
   PlannedCourse,
   StudentInfo,
+  StudentStudyActivity,
 } from "~/generated/client";
 import {
   CourseChangeAction,
@@ -213,6 +215,16 @@ export type HOPS_UPDATE_EDITING_STUDYPLAN_BATCH = SpecificActionType<
   {
     plannedCourses: PlannedCourseWithIdentifier[];
   }
+>;
+
+export type HOPS_UPDATE_STUDY_ACTIVITY = SpecificActionType<
+  "HOPS_UPDATE_STUDY_ACTIVITY",
+  StudentStudyActivity[]
+>;
+
+export type HOPS_UPDATE_AVAILABLE_OPS_COURSES = SpecificActionType<
+  "HOPS_UPDATE_AVAILABLE_OPS_COURSES",
+  HopsOpsCourse[]
 >;
 
 export type HOPS_SET_TIME_CONTEXT_SELECTION = SpecificActionType<
@@ -2115,6 +2127,15 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
         studentIdentifier,
       });
 
+      const studyActivity = await hopsApi.getStudentStudyActivity({
+        studentIdentifier,
+      });
+
+      const availableOPSCourses = await hopsApi.getOpsCourses({
+        ops: state.hopsNew.studentInfo.curriculumName,
+        educationType: "Lukio",
+      });
+
       // Add identifier to planned courses because
       const plannedCoursesWithIdentifier: PlannedCourseWithIdentifier[] =
         plannedCourses.map((course) => ({
@@ -2125,6 +2146,16 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES",
         payload: plannedCoursesWithIdentifier,
+      });
+
+      dispatch({
+        type: "HOPS_UPDATE_STUDY_ACTIVITY",
+        payload: studyActivity,
+      });
+
+      dispatch({
+        type: "HOPS_UPDATE_AVAILABLE_OPS_COURSES",
+        payload: availableOPSCourses,
       });
 
       dispatch({
@@ -2401,7 +2432,7 @@ function initializeHopsForm(
  * @param dispatch dispatch
  * @param getState getState
  */
-function initializeHopsCurriculumConfig(
+async function initializeHopsCurriculumConfig(
   dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
   getState: () => StateType
 ) {
