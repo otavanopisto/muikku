@@ -66,7 +66,6 @@ public class CourseMetaController {
     while (e.hasMoreElements()) {
       SchoolDataIdentifier sdi = e.nextElement();
       Curriculum c = curriculumCache.get(sdi);
-      System.out.println("Comparing " + ops + " to " + c.getName());
       if (StringUtils.equals(ops, c.getName())) {
         return sdi;
       }
