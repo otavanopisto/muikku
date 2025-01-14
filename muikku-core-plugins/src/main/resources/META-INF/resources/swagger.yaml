@@ -5561,6 +5561,40 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/hops/opsCourses:
+    get:
+      operationId: getOpsCourses
+      summary: Lists course information based on given OPS and education type
+      description: Lists course information based on given OPS and education type
+      tags:
+        - Hops
+      parameters:
+        - name: ops
+          in: query
+          description: Name of relevant OPS (e.g. OPS 2021)
+          required: true
+          schema:
+            type: string
+        - name: educationType
+          in: query
+          description: Name of relevant education type (e.g. Lukio)
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of available courses as subjects and course numbers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HopsOpsCourse"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/hops/student/{studentIdentifier}/optionalSuggestions:
     get:
       operationId: getStudentOptionalSuggestions
@@ -15519,6 +15553,22 @@ components:
       allOf:
         - $ref: "#/components/schemas/Course"
 
+    HopsOpsCourse:
+      type: object
+      description: Subject and course numbers of an available course
+      required:
+        - subjectCode
+        - courseNumbers
+      properties:
+        subjectCode:
+          description: Subject code (e.g. ENA)
+          type: string
+        courseNumbers:
+          description: Course numbers
+          type: array
+          items:
+            type: integer
+    
     PlannedCourse:
       type: object
       description: Planned course object
