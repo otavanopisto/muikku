@@ -396,7 +396,8 @@ export const getCourseInfo = (
     gradedList.find(
       (gCourse) =>
         gCourse.subject === subject.subjectCode &&
-        gCourse.courseNumber === course.courseNumber
+        gCourse.courseNumber === course.courseNumber &&
+        gCourse.grade !== "K"
     )
   ) {
     canBeSelected = false;
