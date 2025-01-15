@@ -47,17 +47,18 @@ public class CourseMetaController {
     educationTypeCache = new ConcurrentHashMap<>();
   }
   
-  public SchoolDataIdentifier educationTypeNameToIdentifier(String educationType) {
+  public List<SchoolDataIdentifier> educationTypeCodeToIdentifiers(String code) {
     listEducationTypes(); // populate cache
+    List<SchoolDataIdentifier> identifiers = new ArrayList<>();
     Enumeration<SchoolDataIdentifier> e = educationTypeCache.keys();
     while (e.hasMoreElements()) {
       SchoolDataIdentifier sdi = e.nextElement();
       EducationType et = educationTypeCache.get(sdi);
-      if (StringUtils.equals(educationType, et.getName())) {
-        return sdi;
+      if (StringUtils.equals(code, et.getCode())) {
+        identifiers.add(sdi);
       }
     }
-    return null;
+    return identifiers;
   }
 
   public SchoolDataIdentifier opsNameToIdentifier(String ops) {

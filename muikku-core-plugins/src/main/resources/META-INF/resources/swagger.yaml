@@ -5564,8 +5564,8 @@ paths:
   /rest/hops/opsCourses:
     get:
       operationId: getOpsCourses
-      summary: Lists course information based on given OPS and education type
-      description: Lists course information based on given OPS and education type
+      summary: Lists course information based on given OPS and education level
+      description: Lists course information based on given OPS and education level
       tags:
         - Hops
       parameters:
@@ -5575,9 +5575,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: educationType
+        - name: educationTypeCode
           in: query
-          description: Name of relevant education type (e.g. Lukio)
+          description: Code of the relevant education level (e.g. lukio, peruskoulu)
           required: true
           schema:
             type: string
