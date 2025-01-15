@@ -1083,7 +1083,7 @@ public class HopsRestService {
   @GET
   @Path("/opsCourses")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listOpsCourses(@QueryParam ("ops") String ops, @QueryParam ("educationType") String educationType) {
+  public Response listOpsCourses(@QueryParam ("ops") String ops, @QueryParam ("educationTypeCode") String educationTypeCode) {
     
     // OPS name to identifier (e.g. OPS 2021 -> PYRAMUS-1)
     
@@ -1099,15 +1099,13 @@ public class HopsRestService {
     
     // Education type name to identifier (e.g. Lukio -> PYRAMUS-2)
     
-    if (StringUtils.isEmpty(educationType)) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing education type").build();
+    if (StringUtils.isEmpty(educationTypeCode)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing educationTypeCode").build();
     }
-    SchoolDataIdentifier educationTypeIdentifier = courseMetaController.educationTypeNameToIdentifier(educationType);
-    if (educationTypeIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).entity(String.format("Unknown education type %s", educationType)).build();
+    List<SchoolDataIdentifier> educationTypeIdentifiers = courseMetaController.educationTypeCodeToIdentifiers(educationTypeCode);
+    if (educationTypeIdentifiers.isEmpty()) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Unknown education type code %s", educationTypeCode)).build();
     }
-    List<SchoolDataIdentifier> educationTypeIdentifiers = new ArrayList<>();
-    educationTypeIdentifiers.add(educationTypeIdentifier);
     
     // Enforced organization filter
     
