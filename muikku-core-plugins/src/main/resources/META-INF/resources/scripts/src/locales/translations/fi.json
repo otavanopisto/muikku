@@ -636,7 +636,7 @@
       "loadAll": "Lataa kaikki",
       "continue": "Jatka",
       "editingStart": "Aloita muokkaus",
-      "editingEnd": "Päätä muokkaus",
+      "editingEnd": "Lopeta muokkaus",
       "showSummary": "Näytä yhteenveto",
       "showOldSummary": "Näytä vanha yhteenveto",
       "showChangeLog": "Näytä ilmoittautumisen muutoshistoria",
@@ -1021,7 +1021,7 @@
     },
     "notifications": {
       "initilizationError": "Virhe HOPS:n alustamisessa",
-      "editingModePersistentInfo": "Olet varannut HOPS:sin muokkaustilaan. Tänä aikana muut eivät voi muokata HOPS:siasi. Muista päättää tai tallentaa muokkauksesi ennen siirtymistä pois. Tallentamattomat tiedot menetetään.",
+      "editingModePersistentInfo": "Hopsisi on nyt muokkaustilassa. Muut eivät voi muokata hopsia samaan aikaan kanssasi. Kun lopetat muokkaamisen, tallenna muutokset klikkaamalla Lopeta muokkaus -painiketta. Jos et tallenna, tiedot katoavat.",
       "startEditingError": "Muokkauksen aloittaminen epäonnistui. Päivitä sivu ja yritä uudelleen.",
       "cancelEditingError": "Muokkauksen peruuttaminen epäonnistui. Päivitä sivu ja yritä uudelleen.",
       "updateError": "$t(common:notifications.updateError)",
