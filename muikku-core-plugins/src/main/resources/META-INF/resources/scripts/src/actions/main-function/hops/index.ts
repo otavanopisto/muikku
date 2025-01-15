@@ -548,8 +548,6 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
         });
       }
 
-      console.log("state", state.hopsNew.studentInfo);
-
       dispatch({
         type: "HOPS_MATRICULATION_UPDATE_STATUS",
         payload: "LOADING",
@@ -2094,8 +2092,6 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
       if (state.hopsNew.hopsStudyPlanStatus === "READY") {
         return;
       }
-
-      console.log("state", state.hopsNew.studentInfo);
 
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_STATUS",
