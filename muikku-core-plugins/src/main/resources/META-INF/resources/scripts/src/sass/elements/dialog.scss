@@ -74,6 +74,10 @@
   @include breakpoint($breakpoint-pad) {
     background-color: $color-overlay-background;
   }
+
+  .dialog__content {
+    overflow: clip; // We use clip here instead of auto so that child elements can have sticky positioning
+  }
 }
 
 .dialog--disconnect-warning {

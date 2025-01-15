@@ -174,9 +174,11 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
             <Th modifiers={["subject"]}>
               {t("labels.schoolSubject", { ns: "studyMatrix" })}
             </Th>
-            <Th colSpan={currentMaxCourses}>
-              {t("labels.courses", { ns: "studyMatrix" })}
-            </Th>
+            {Array.from({ length: currentMaxCourses }).map((_, index) => (
+              <Th key={index} modifiers={["course"]}>
+                {index + 1}
+              </Th>
+            ))}
           </Tr>
         </TableHead>
       )}
