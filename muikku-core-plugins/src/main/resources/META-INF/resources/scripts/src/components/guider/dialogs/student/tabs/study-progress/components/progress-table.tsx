@@ -248,37 +248,41 @@ const SuggestionListContent = (props: SuggestionListContentProps) => {
     >
       <div className="hops-container__study-tool-dropdow-title">{name}</div>
 
-      <Button
-        buttonModifiers={[
-          "guider-hops-studytool",
-          "guider-hops-studytool-next",
-        ]}
-        onClick={suggestionContext.handleSuggestionNextClick({
-          actionType: suggestionNextActionType,
-          courseNumber: suggestionContext.course.courseNumber,
-          subjectCode: suggestionContext.subjectCode,
-          courseId: suggestion.id,
-          studentId: suggestionContext.studentId,
-        })}
-      >
-        {suggestionNextActionType === "remove"
-          ? t("actions.suggested", { ns: "studyMatrix" })
-          : t("actions.suggestToNext", { ns: "studyMatrix" })}
-      </Button>
-
+      {
+        // In guider side, suggestion next is only avaiable if student has permissions to signup
+        // but student can be signed up by guider even if they don't have permissions to signup themself
+      }
       {suggestion.canSignup && (
         <Button
           buttonModifiers={[
             "guider-hops-studytool",
             "guider-hops-studytool-next",
           ]}
-          onClick={handleSignUpBehalf}
-        >
-          {t("actions.signupStudentToWorkspace", {
-            ns: "studyMatrix",
+          onClick={suggestionContext.handleSuggestionNextClick({
+            actionType: suggestionNextActionType,
+            courseNumber: suggestionContext.course.courseNumber,
+            subjectCode: suggestionContext.subjectCode,
+            courseId: suggestion.id,
+            studentId: suggestionContext.studentId,
           })}
+        >
+          {suggestionNextActionType === "remove"
+            ? t("actions.suggested", { ns: "studyMatrix" })
+            : t("actions.suggestToNext", { ns: "studyMatrix" })}
         </Button>
       )}
+
+      <Button
+        buttonModifiers={[
+          "guider-hops-studytool",
+          "guider-hops-studytool-next",
+        ]}
+        onClick={handleSignUpBehalf}
+      >
+        {t("actions.signupStudentToWorkspace", {
+          ns: "studyMatrix",
+        })}
+      </Button>
     </div>
   );
 };
