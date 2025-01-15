@@ -394,6 +394,12 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
                         (c) => c.identifier === course.identifier
                       );
 
+                      const courseActivity = studyActivity.find(
+                        (sa) =>
+                          sa.courseNumber === course.courseNumber &&
+                          sa.subject === course.subjectCode
+                      );
+
                       // Check if there are any unsaved changes
                       const hasChanges =
                         originalInfo && !_.isEqual(originalInfo, course);
@@ -415,6 +421,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
                             selected={isSelected}
                             hasChanges={hasChanges || isNew}
                             curriculumConfig={curriculumConfig}
+                            studyActivity={courseActivity}
                             onCourseChange={handleCourseChange}
                             onSelectCourse={handleSelectCourse}
                           />

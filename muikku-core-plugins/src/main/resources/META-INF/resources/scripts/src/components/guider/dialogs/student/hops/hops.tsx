@@ -24,6 +24,8 @@ import {
   SaveHopsTriggerType,
   CancelEditingTriggerType,
   cancelEditing,
+  loadStudyPlanData,
+  LoadStudyPlanDataTriggerType,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
@@ -49,7 +51,7 @@ import { Textarea } from "~/components/hops/body/application/wizard/components/t
 /**
  * Represents the available tabs in the HOPS application
  */
-type HopsTab = "MATRICULATION" | "BACKGROUND" | "POSTGRADUATE";
+type HopsTab = "MATRICULATION" | "BACKGROUND" | "POSTGRADUATE" | "STUDYPLAN";
 
 /**
  * Props interface for the HopsApplication component
@@ -65,6 +67,8 @@ interface HopsApplicationProps {
   studentIdentifier: string;
   /** Function to load matriculation data */
   loadMatriculationData: LoadMatriculationDataTriggerType;
+  /** Function to load study plan data */
+  loadStudyPlanData: LoadStudyPlanDataTriggerType;
   /** Function to enable editing mode */
   startEditing: StartEditingTriggerType;
   /** Function to disable editing mode */
@@ -84,6 +88,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   const {
     studentIdentifier,
     loadMatriculationData,
+    loadStudyPlanData,
     startEditing,
     saveHops,
     cancelEditing,
@@ -147,11 +152,21 @@ const HopsApplication = (props: HopsApplicationProps) => {
       loadMatriculationData({
         userIdentifier: studentIdentifier,
       });
+    } else if (
+      activeTab === "STUDYPLAN" &&
+      hops.hopsStudyPlanStatus !== "LOADING" &&
+      hops.hopsStudyPlanStatus !== "READY"
+    ) {
+      loadStudyPlanData({
+        userIdentifier: studentIdentifier,
+      });
     }
   }, [
     activeTab,
     hops.hopsMatriculationStatus,
+    hops.hopsStudyPlanStatus,
     loadMatriculationData,
+    loadStudyPlanData,
     studentIdentifier,
   ]);
 
@@ -448,6 +463,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadMatriculationData,
+      loadStudyPlanData,
       startEditing,
       saveHops,
       cancelEditing,

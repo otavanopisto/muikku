@@ -131,6 +131,7 @@ import {
 } from "react-dnd-multi-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import StudyProgressWebsocketWatcher from "~/components/general/study-progress-websocket-watcher";
+import { displayNotification } from "~/actions/base/notifications";
 
 const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -392,18 +393,45 @@ export default class MainFunction extends React.Component<
 
     // Load HOPS locked status and HOPS form history always
     this.props.store.dispatch(
-      initializeHops({ userIdentifier: userId }) as Action
-    );
+      initializeHops({
+        userIdentifier: userId,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onSuccess: (currentUserIsEditing: boolean) => {
+          if (currentUserIsEditing) {
+            this.props.store.dispatch({
+              type: "HOPS_CHANGE_MODE",
+              payload: "EDIT",
+            });
 
-    if (givenLocation === "matriculation" || (guardianHops && !givenLocation)) {
-      this.props.store.dispatch(
-        loadMatriculationData({ userIdentifier: userId }) as Action
-      );
-    } else if (givenLocation === "studyplan") {
-      this.props.store.dispatch(
-        loadStudyPlanData({ userIdentifier: userId }) as Action
-      );
-    }
+            this.props.store.dispatch(
+              displayNotification(
+                i18n.t("notifications.editingModePersistentInfo", {
+                  ns: "hops_new",
+                }),
+                "persistent-info",
+                undefined,
+                "hops-editing-mode-notification"
+              ) as Action
+            );
+          }
+
+          if (
+            givenLocation === "matriculation" ||
+            (guardianHops && !givenLocation) ||
+            currentUserIsEditing
+          ) {
+            this.props.store.dispatch(
+              loadMatriculationData({ userIdentifier: userId }) as Action
+            );
+          }
+          if (givenLocation === "studyplan" || currentUserIsEditing) {
+            this.props.store.dispatch(
+              loadStudyPlanData({ userIdentifier: userId }) as Action
+            );
+          }
+        },
+      }) as Action
+    );
   }
 
   /**
@@ -1185,55 +1213,63 @@ export default class MainFunction extends React.Component<
   render() {
     return (
       <DndProvider options={HTML5toTouch}>
-      <StudyProgressWebsocketWatcher>
-        <div id="root">
-          <WindowContextProvider>
-            <ChatWebsocketContextProvider websocket={this.props.websocket}>
-              <Chat />
-            </ChatWebsocketContextProvider>
-            <InfoPopperProvider>
-              <Notifications></Notifications>
-              <DisconnectedWarningDialog />
-              <EasyToUseFunctions />
-              <BrowserRouter>
-                <Route exact path="/" render={this.renderIndexBody} />
-                <Route
-                  path="/organization"
-                  render={this.renderOrganizationAdministrationBody}
-                />
-                <Route
-                  path="/coursepicker"
-                  render={this.renderCoursePickerBody}
-                />
-                <Route
-                  path="/communicator"
-                  render={this.renderCommunicatorBody}
-                />
-                <Route path="/discussion" render={this.renderDiscussionBody} />
-                <Route
-                  path="/announcements"
-                  render={this.renderAnnouncementsBody}
-                />
-                <Route path="/announcer" render={this.renderAnnouncerBody} />
-                <Route path="/guider" render={this.renderGuiderBody} />
-                <Route path="/guardian" render={this.renderGuardianBody} />
-                <Route
-                  path="/guardian_hops"
-                  render={this.renderGuardianHopsBody}
-                />
-                <Route path="/profile" render={this.renderProfileBody} />
-                <Route path="/records" render={this.renderRecordsBody} />
-                <Route path="/hops" render={this.renderHopsBody} />
-                <Route path="/evaluation" render={this.renderEvaluationBody} />
-                <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
-                <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
-              </BrowserRouter>
-            </InfoPopperProvider>
-          </WindowContextProvider>
-        </div>
+        <StudyProgressWebsocketWatcher>
+          <div id="root">
+            <WindowContextProvider>
+              <ChatWebsocketContextProvider websocket={this.props.websocket}>
+                <Chat />
+              </ChatWebsocketContextProvider>
+              <InfoPopperProvider>
+                <Notifications></Notifications>
+                <DisconnectedWarningDialog />
+                <EasyToUseFunctions />
+                <BrowserRouter>
+                  <Route exact path="/" render={this.renderIndexBody} />
+                  <Route
+                    path="/organization"
+                    render={this.renderOrganizationAdministrationBody}
+                  />
+                  <Route
+                    path="/coursepicker"
+                    render={this.renderCoursePickerBody}
+                  />
+                  <Route
+                    path="/communicator"
+                    render={this.renderCommunicatorBody}
+                  />
+                  <Route
+                    path="/discussion"
+                    render={this.renderDiscussionBody}
+                  />
+                  <Route
+                    path="/announcements"
+                    render={this.renderAnnouncementsBody}
+                  />
+                  <Route path="/announcer" render={this.renderAnnouncerBody} />
+                  <Route path="/guider" render={this.renderGuiderBody} />
+                  <Route path="/guardian" render={this.renderGuardianBody} />
+                  <Route
+                    path="/guardian_hops"
+                    render={this.renderGuardianHopsBody}
+                  />
+                  <Route path="/profile" render={this.renderProfileBody} />
+                  <Route path="/records" render={this.renderRecordsBody} />
+                  <Route path="/hops" render={this.renderHopsBody} />
+                  <Route
+                    path="/evaluation"
+                    render={this.renderEvaluationBody}
+                  />
+                  <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
+                  <Route
+                    path="/ceepos/done"
+                    render={this.renderCeeposDoneBody}
+                  />
+                </BrowserRouter>
+              </InfoPopperProvider>
+            </WindowContextProvider>
+          </div>
         </StudyProgressWebsocketWatcher>
       </DndProvider>
-
     );
   }
 }

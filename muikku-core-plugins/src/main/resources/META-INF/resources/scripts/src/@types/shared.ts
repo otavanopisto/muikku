@@ -308,7 +308,7 @@ export interface Course {
   mandatory: boolean;
 }
 
-export type CourseFilter = "available_in_otavi" | "mandatory" | "optional";
+export type CourseFilter = "available" | "mandatory" | "optional";
 
 /**
  * UploadingValue

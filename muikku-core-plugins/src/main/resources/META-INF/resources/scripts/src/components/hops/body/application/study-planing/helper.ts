@@ -114,7 +114,7 @@ const filterSubjectsAndCourses = (
       }
 
       // Filter available OPS courses
-      if (selectedFilters.includes("available_in_otavi")) {
+      if (selectedFilters.includes("available")) {
         filteredCourses = filteredCourses.filter((course) => {
           const availableCourseNumbers = availableOPSCoursesMap.get(
             subject.subjectCode

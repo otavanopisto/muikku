@@ -70,6 +70,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
     selected,
     isDragging = false,
     hasChanges,
+    studyActivity,
     curriculumConfig,
     onCourseChange,
     onSelectCourse,
@@ -82,6 +83,41 @@ const BasePlannerPeriodCourse = React.forwardRef<
 
   const [specifyCourse, setSpecifyCourse] =
     React.useState<SpecifyCourse | null>(null);
+
+  /**
+   * Gets course state
+   * @returns course state
+   */
+  const getCourseState = () => {
+    if (studyActivity) {
+      switch (studyActivity.status) {
+        case "GRADED":
+          return studyActivity.passing
+            ? { disabled: true, state: "completed", label: "Suoritettu" }
+            : { disabled: false, state: "failed", label: "Hylätty" };
+        case "TRANSFERRED":
+          return {
+            disabled: true,
+            state: "transferred",
+            label: "Hyväksiluettu",
+          };
+        case "ONGOING":
+          return { disabled: true, state: "inprogress", label: "Työnalla" };
+        case "SUPPLEMENTATIONREQUEST":
+          return {
+            disabled: true,
+            state: "supplementation-request",
+            label: "Täydennettävä",
+          };
+        default:
+          return { disabled: false, state: null, label: null };
+      }
+    }
+
+    return { disabled: false, state: null, label: null };
+  };
+
+  const courseState = getCourseState();
 
   /**
    * Handles specify open
@@ -155,6 +191,17 @@ const BasePlannerPeriodCourse = React.forwardRef<
     setDeleteWarningIsOpen(false);
   };
 
+  /**
+   * Handles select course
+   */
+  const handleSelectCourse = () => {
+    if (courseState.disabled) {
+      return;
+    }
+
+    onSelectCourse(course);
+  };
+
   const startDate = new Date(course.startDate);
 
   /**
@@ -174,7 +221,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
         ref={ref}
         modifiers={["planned-course-card", ...cardModifiers]}
         innerContainerModifiers={[course.mandatory ? "mandatory" : "optional"]}
-        onClick={() => onSelectCourse(course)}
+        onClick={handleSelectCourse}
       >
         <PlannerCardHeader modifiers={["planned-course-card"]}>
           <span className="study-planner__course-code">
@@ -195,6 +242,11 @@ const BasePlannerPeriodCourse = React.forwardRef<
           <PlannerCardLabel modifiers={["course-length"]}>
             {curriculumConfig.strategy.getCourseDisplayedLength(course)}
           </PlannerCardLabel>
+          {courseState.state && (
+            <PlannerCardLabel modifiers={["course-state"]}>
+              {courseState.label}
+            </PlannerCardLabel>
+          )}
           <span className="study-planner__course-dates">
             {calculatedEndDate ? (
               <>
@@ -208,10 +260,22 @@ const BasePlannerPeriodCourse = React.forwardRef<
         </PlannerCardContent>
 
         <PlannerCardActions modifiers={["planned-course-card"]}>
-          <Button buttonModifiers={["primary"]} onClick={handleSpecifyOpen}>
+          <Button
+            buttonModifiers={["primary"]}
+            onClick={handleSpecifyOpen}
+            disabled={
+              courseState.disabled || specifyIsOpen || deleteWarningIsOpen
+            }
+          >
             Tarkenna
           </Button>
-          <Button buttonModifiers={["danger"]} onClick={handleDeleteOpen}>
+          <Button
+            buttonModifiers={["danger"]}
+            onClick={handleDeleteOpen}
+            disabled={
+              courseState.disabled || specifyIsOpen || deleteWarningIsOpen
+            }
+          >
             Poista
           </Button>
         </PlannerCardActions>

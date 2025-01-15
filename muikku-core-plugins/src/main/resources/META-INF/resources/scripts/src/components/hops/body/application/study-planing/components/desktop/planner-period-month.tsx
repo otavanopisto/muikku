@@ -316,9 +316,11 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
                           c.identifier === course.identifier
                       );
 
-                      /* const courseActivity = studyActivity.find(
-                        (activity) => activity.subject
-                      ); */
+                      const courseActivity = studyActivity.find(
+                        (sa) =>
+                          sa.courseNumber === course.courseNumber &&
+                          sa.subject === course.subjectCode
+                      );
 
                       // Find the original course info
                       const originalInfo = originalPlannedCourses.find(
@@ -346,6 +348,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
                             selected={isSelected}
                             hasChanges={hasChanges || isNew}
                             curriculumConfig={curriculumConfig}
+                            studyActivity={courseActivity}
                             onCourseChange={handleCourseChange}
                             onSelectCourse={handleSelectCourse}
                           />

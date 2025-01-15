@@ -438,7 +438,11 @@ export interface UpdateHopsHistoryTriggerType {
  * InitializeHopsLockedTriggerType
  */
 export interface InitializeHopsTriggerType {
-  (data: { userIdentifier: string }): AnyActionType;
+  (data: {
+    userIdentifier: string;
+    onSuccess?: (currentUserIsEditing: boolean) => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
@@ -543,6 +547,8 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
           payload: state.status.profile.studyProgrammeName,
         });
       }
+
+      console.log("state", state.hopsNew.studentInfo);
 
       dispatch({
         type: "HOPS_MATRICULATION_UPDATE_STATUS",
@@ -2039,36 +2045,15 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
         getState
       );
 
-      // 6. Handle edit mode if user is the one who has locked HOPS
-      // Here is loaded any missing data that is needed for edit mode
-      // In case if hopsLocked is ready or loading, this will not be executed
-      if (hopsLocked && state.status.userId === hopsLocked.userEntityId) {
-        // This will grow as we add more data to load for edit mode later on
-        await Promise.all([
-          dispatch(
-            loadMatriculationData({ userIdentifier: studentIdentifier })
-          ),
-          dispatch(loadStudyPlanData({ userIdentifier: studentIdentifier })),
-        ]);
-
-        dispatch({ type: "HOPS_CHANGE_MODE", payload: "EDIT" });
-
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.editingModePersistentInfo", {
-              ns: "hops_new",
-            }),
-            "persistent-info",
-            undefined,
-            "hops-editing-mode-notification"
-          )
-        );
-      }
+      const currentUserIsEditing =
+        hopsLocked && state.status.userId === hopsLocked.userEntityId;
 
       dispatch({
         type: "HOPS_UPDATE_INITIALIZE_STATUS",
         payload: "INITIALIZED",
       });
+
+      data.onSuccess && data.onSuccess(currentUserIsEditing);
     } catch (err) {
       if (!isMApiError(err)) throw err;
       dispatch({
@@ -2110,6 +2095,13 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
         return;
       }
 
+      console.log("state", state.hopsNew.studentInfo);
+
+      dispatch({
+        type: "HOPS_STUDYPLAN_UPDATE_STATUS",
+        payload: "LOADING",
+      });
+
       // If the student identifier has changed, update it
       if (state.hopsNew.currentStudentIdentifier !== studentIdentifier) {
         dispatch({
@@ -2131,8 +2123,11 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
         studentIdentifier,
       });
 
+      /* const educationType =
+        state.hopsNew.studentInfo.studyProgrammeEducationType; */
+
       const availableOPSCourses = await hopsApi.getOpsCourses({
-        ops: state.hopsNew.studentInfo.curriculumName,
+        ops: "OPS 2021",
         educationType: "Lukio",
       });
 

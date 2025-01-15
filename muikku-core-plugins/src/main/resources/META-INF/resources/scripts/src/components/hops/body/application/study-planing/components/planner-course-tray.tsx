@@ -110,8 +110,8 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   // Filter options
   const filterOptions: { label: string; value: CourseFilter }[] = [
     {
-      label: "Tarjolla Otaviassa",
-      value: "available_in_otavi",
+      label: "Saatavilla",
+      value: "available",
     },
     {
       label: "Pakolliset",
@@ -287,7 +287,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
       return { disabled: true, state: "planned", label: "Suunnitelmassa" };
     }
 
-    return { disabled: false, state: "available", label: "Lisättävissä" };
+    return { disabled: false, state: null, label: null };
   };
 
   const courseState = getCourseState();
