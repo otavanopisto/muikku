@@ -88,13 +88,21 @@
     }
   }
 
-  &.notification-queue__item--persistent-info,
   &.notification-queue__item--fatal {
     background-color: $color-notification-queue-item-fatal-background;
     color: $color-notification-queue-item-fatal-text;
 
     .notification-queue__close::before {
       color: $color-notification-queue-item-fatal-text;
+    }
+  }
+
+  &.notification-queue__item--persistent-info {
+    background-color: $color-default-contrast;
+    color: $color-default;
+
+    .notification-queue__close::before {
+      color: $color-default;
     }
   }
 

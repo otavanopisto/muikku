@@ -15810,7 +15810,10 @@ components:
               required:
                 - canViewDetails
                 - canEdit
+                - isAvailable
               properties:
+                isAvailable:
+                  type: boolean
                 canViewDetails:
                   type: boolean
                 canEdit:

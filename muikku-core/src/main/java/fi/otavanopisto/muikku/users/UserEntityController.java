@@ -39,7 +39,9 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserStudyPeriodType;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -82,6 +84,12 @@ public class UserEntityController implements Serializable {
   
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
+
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   @Any
@@ -337,6 +345,18 @@ public class UserEntityController implements Serializable {
     // Return false if identifier is not default identifier
     if (!userSchoolDataIdentifier.schoolDataIdentifier().equals(userEntity.defaultSchoolDataIdentifier())) {
       return false;
+    }
+
+    // Guardians have additional check to determine if they are acive or not. To be 
+    // active, they need to have active dependents (students) they are a guardian of.
+    // Sadly this information is only availabe through a bridge.
+    if (userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)) {
+      schoolDataBridgeSessionController.startSystemSession();
+      try {
+        return userSchoolDataController.isActiveGuardian(userSchoolDataIdentifier.schoolDataIdentifier());
+      } finally {
+        schoolDataBridgeSessionController.endSystemSession();
+      }
     }
     
     EnvironmentRoleArchetype[] staffRoles = {

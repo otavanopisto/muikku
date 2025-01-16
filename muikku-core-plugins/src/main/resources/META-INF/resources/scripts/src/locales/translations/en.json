@@ -1021,7 +1021,7 @@
     },
     "notifications": {
       "initilizationError": "Error while initializing HOPS",
-      "editingModePersistentInfo": "You have reserved HOPS editing mode. During this time, others cannot edit your HOPS. Remember to finish or save your changes before leaving. Unsaved data will be lost.",
+      "editingModePersistentInfo": "Your Personal study plan (PSP) is now in edit mode. Others cannot edit the PSP at the same time as you. When you finish editing, save your changes by clicking the <b>End editing</b> button. If you don’t save, the information will be lost.",
       "startEditingError": "Editing mode could not be started. Please refresh the page and try again.",
       "cancelEditingError": "Editing mode could not be cancelled. Please refresh the page and try again.",
       "updateError": "$t(common:notifications.updateError)",
@@ -2642,7 +2642,7 @@
       "courses": "Courses",
       "guidanceCouncelorSuggestion": "Guidance councelor's suggestion",
       "guidanceCouncelorSuggestionNext": "Guidance councelor's suggestion for next",
-      "inprogress": "In progress",
+      "inProgress": "Enrolled",
       "legendDescriptions": "Marking's descriptions",
       "mandatory": "Mandatory",
       "mandatoryShorthand": "M",
@@ -2654,7 +2654,7 @@
       "signUpStudentToWorkspace": "Sign up student to course {{workspaceName}}",
       "supplementationRequest": "Incomplete",
       "supplementationRequestShorthand": "I",
-      "transfered": "Transfered",
+      "transfered": "Credited",
       "transferedLanguages": "Transfered: Languages",
       "transferedOther": "Transfered: Other",
       "transferedSkillAndArt": "Transfered: Skill and art"

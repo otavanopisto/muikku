@@ -10,6 +10,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
@@ -478,7 +480,25 @@ public class UserSchoolDataController {
     }
     return getUserBridge(schoolDataSource).listStudentSpecEdTeachers(studentIdentifier, includeGuidanceCouncelors, onlyMessageReceivers);
   }
+
+  /**
+   * Returns true, if the given identifier is a guardian for any active students.
+   * 
+   * @param guardianUserIdentifier guardian, should be of role STUDENT_PARENT
+   * @return true if the given identifier points to an active guardian
+   */
+  public boolean isActiveGuardian(SchoolDataIdentifier guardianUserIdentifier) {
+    // Loads a list of dependents for the guardian, this could be optimized
+    List<GuardiansDependent> guardiansDependents = listGuardiansDependents(guardianUserIdentifier);
+    return CollectionUtils.isNotEmpty(guardiansDependents);
+  }
   
+  /**
+   * Lists students for who the given user is a active guardian for.
+   * 
+   * @param guardianUserIdentifier guardian, should be of role STUDENT_PARENT
+   * @return guardians' students
+   */
   public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(guardianUserIdentifier.getDataSource());
     if (schoolDataSource == null) {
