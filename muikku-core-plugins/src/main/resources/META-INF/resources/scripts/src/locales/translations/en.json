@@ -2642,7 +2642,7 @@
       "courses": "Courses",
       "guidanceCouncelorSuggestion": "Guidance councelor's suggestion",
       "guidanceCouncelorSuggestionNext": "Guidance councelor's suggestion for next",
-      "inProgress": "In progress",
+      "inProgress": "Enrolled",
       "legendDescriptions": "Marking's descriptions",
       "mandatory": "Mandatory",
       "mandatoryShorthand": "M",
@@ -2654,7 +2654,7 @@
       "signUpStudentToWorkspace": "Sign up student to course {{workspaceName}}",
       "supplementationRequest": "Incomplete",
       "supplementationRequestShorthand": "I",
-      "transfered": "Transfered",
+      "transfered": "Credited",
       "transferedLanguages": "Transfered: Languages",
       "transferedOther": "Transfered: Other",
       "transferedSkillAndArt": "Transfered: Skill and art"

@@ -225,7 +225,7 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
         {"(" + studyProgrammeName + ")"}
       </DialogTitleItem>
       {/* Hops toggle. */}
-      {student.basic && (
+      {student.basic && student.basic.permissions.isAvailable && (
         <DialogTitleItem modifier="hops-toggle">
           <Button
             className={
