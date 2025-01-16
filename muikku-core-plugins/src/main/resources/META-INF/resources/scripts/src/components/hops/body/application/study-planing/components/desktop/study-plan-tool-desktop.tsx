@@ -89,6 +89,21 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
     [studyActivity]
   );
 
+  const memoizedPlanStatistics = React.useMemo(
+    () =>
+      curriculumConfig.strategy.calculatePlanStatistics(
+        memoizedPlannedCourses,
+        memoizedStudyActivity,
+        studyOptions
+      ),
+    [
+      curriculumConfig,
+      memoizedPlannedCourses,
+      memoizedStudyActivity,
+      studyOptions,
+    ]
+  );
+
   // Get the ref to the timeline component
   const timelineComponentRef = useRef<{
     scrollToAdjacentPeriod: (direction: "next" | "prev") => void;
@@ -165,7 +180,10 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
         onFullScreen={handleFullScreen}
         onShowPlanStatus={handleShowPlanStatus}
       />
-      <MemoizedPlannerPlanStatus show={showPlanStatus} />
+      <MemoizedPlannerPlanStatus
+        show={showPlanStatus}
+        planStatistics={memoizedPlanStatistics}
+      />
       <div className="study-planner__content">
         <div className="study-planner__sidebar">
           <MemoizedPlannerCourseTray

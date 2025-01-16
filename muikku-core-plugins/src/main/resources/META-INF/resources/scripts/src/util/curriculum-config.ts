@@ -15,6 +15,9 @@ import {
 // Uppersecondary curriculum has 88 credits required
 const UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES = 88;
 
+// Uppersecondary curriculum has 2 mandatory credits offset which is added to one of the required exception subjects (BI, FY, KE, GE)
+const UPPER_SECONDARY_MANDATORY_OFFSET = 2;
+
 // One of these subjects is required to have 2 + 2 credits, which is calculated as 4 mandatory credits
 // when calculating total studies.
 const UPPER_SECONDARY_REQUIRED_EXCEPTION = ["BI", "FY", "KE", "GE"];
@@ -43,6 +46,21 @@ export interface Statistics {
     mandatoryStudies: number;
     optionalStudies: number;
     totalStudies: number;
+  };
+}
+
+/**
+ * Plan statistics
+ */
+export interface PlanStatistics {
+  plannedMandatoryStudies: number;
+  plannedOptionalStudies: number;
+  plannedTotalStudies: number;
+  unit: string;
+  requiredStudies: {
+    plannedMandatoryStudies: number;
+    plannedOptionalStudies: number;
+    plannedTotalStudies: number;
   };
 }
 
@@ -95,6 +113,19 @@ export interface CurriculumStrategy {
     studyActivities: StudentStudyActivity[],
     options: string[]
   ) => Statistics;
+
+  /**
+   * Calculate plan statistics
+   * @param plannedCourses planned courses
+   * @param studyActivities study activities
+   * @param options options
+   * @returns statistics
+   */
+  calculatePlanStatistics: (
+    plannedCourses: PlannedCourseWithIdentifier[],
+    studyActivities: StudentStudyActivity[],
+    options: string[]
+  ) => PlanStatistics;
 
   /**
    * Get course displayed length
@@ -161,6 +192,70 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
   }
 
   /**
+   * Calculate plan statistics
+   * @param plannedCourses planned courses
+   * @param studyActivities study activities
+   * @param options options
+   * @returns statistics
+   */
+  calculatePlanStatistics(
+    plannedCourses: PlannedCourseWithIdentifier[],
+    studyActivities: StudentStudyActivity[],
+    options: string[]
+  ): PlanStatistics {
+    const matrix = this.getCurriculumMatrix({ studyOptions: options });
+    const completedStats = this.calculateStatistics(studyActivities, options);
+
+    // Calculate planned studies (excluding completed ones)
+    let plannedMandatory = 0;
+    let plannedOptional = 0;
+
+    plannedCourses.forEach((planned) => {
+      // Skip if this course is already completed
+      const isCompleted = studyActivities.some(
+        (activity) =>
+          activity.subject === planned.subjectCode &&
+          activity.courseNumber === planned.courseNumber &&
+          ((activity.status === "GRADED" && activity.passing) ||
+            activity.status === "TRANSFERRED")
+      );
+
+      if (!isCompleted) {
+        if (planned.mandatory) {
+          plannedMandatory += 1;
+        } else {
+          plannedOptional += 1;
+        }
+      }
+    });
+
+    // Calculate remaining required studies
+    const remainingMandatory = Math.max(
+      completedStats.requiredStudies.mandatoryStudies -
+        (completedStats.mandatoryStudies + plannedMandatory),
+      0
+    );
+
+    const remainingOptional = Math.max(
+      completedStats.requiredStudies.optionalStudies -
+        (completedStats.optionalStudies + plannedOptional),
+      0
+    );
+
+    return {
+      plannedMandatoryStudies: plannedMandatory,
+      plannedOptionalStudies: plannedOptional,
+      plannedTotalStudies: plannedMandatory + plannedOptional,
+      unit: "credits",
+      requiredStudies: {
+        plannedMandatoryStudies: remainingMandatory,
+        plannedOptionalStudies: remainingOptional,
+        plannedTotalStudies: remainingMandatory + remainingOptional,
+      },
+    };
+  }
+
+  /**
    * Get required study values. Uppersecondary curriculum has 88 credits required.
    * @param options options
    * @returns required study values in credits
@@ -174,15 +269,16 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
 
     const requiredTotalStudies = UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES;
 
-    const mandatoryStudies = matrix.subjectsTable.reduce(
-      (sum, subject) =>
-        sum +
-        subject.availableCourses
-          .filter((course) => course.mandatory)
-          .map((course) => course.length)
-          .reduce((sum, length) => sum + length, 0),
-      0
-    );
+    const mandatoryStudies =
+      matrix.subjectsTable.reduce(
+        (sum, subject) =>
+          sum +
+          subject.availableCourses
+            .filter((course) => course.mandatory)
+            .map((course) => course.length)
+            .reduce((sum, length) => sum + length, 0),
+        0
+      ) + UPPER_SECONDARY_MANDATORY_OFFSET;
 
     const optionalStudies = requiredTotalStudies - mandatoryStudies;
 
@@ -390,6 +486,70 @@ class CompulsoryCurriculum implements CurriculumStrategy {
       displayValue: `${courses.length} courses`,
       numericValue: courses.length,
       unit: "courses",
+    };
+  }
+
+  /**
+   * Calculate plan statistics
+   * @param plannedCourses planned courses
+   * @param studyActivities study activities
+   * @param options options
+   * @returns statistics
+   */
+  calculatePlanStatistics(
+    plannedCourses: PlannedCourseWithIdentifier[],
+    studyActivities: StudentStudyActivity[],
+    options: string[]
+  ): PlanStatistics {
+    const matrix = this.getCurriculumMatrix({ studyOptions: options });
+    const completedStats = this.calculateStatistics(studyActivities, options);
+
+    // Calculate planned studies (excluding completed ones)
+    let plannedMandatory = 0;
+    let plannedOptional = 0;
+
+    plannedCourses.forEach((planned) => {
+      // Skip if this course is already completed
+      const isCompleted = studyActivities.some(
+        (activity) =>
+          activity.subject === planned.subjectCode &&
+          activity.courseNumber === planned.courseNumber &&
+          ((activity.status === "GRADED" && activity.passing) ||
+            activity.status === "TRANSFERRED")
+      );
+
+      if (!isCompleted) {
+        if (planned.mandatory) {
+          plannedMandatory += 1;
+        } else {
+          plannedOptional += 1;
+        }
+      }
+    });
+
+    // Calculate remaining required studies
+    const remainingMandatory = Math.max(
+      completedStats.requiredStudies.mandatoryStudies -
+        completedStats.mandatoryStudies,
+      0
+    );
+
+    const remainingOptional = Math.max(
+      completedStats.requiredStudies.optionalStudies -
+        completedStats.optionalStudies,
+      0
+    );
+
+    return {
+      plannedMandatoryStudies: plannedMandatory,
+      plannedOptionalStudies: plannedOptional,
+      plannedTotalStudies: plannedMandatory + plannedOptional,
+      unit: "courses",
+      requiredStudies: {
+        plannedMandatoryStudies: remainingMandatory,
+        plannedOptionalStudies: remainingOptional,
+        plannedTotalStudies: remainingMandatory + remainingOptional,
+      },
     };
   }
 

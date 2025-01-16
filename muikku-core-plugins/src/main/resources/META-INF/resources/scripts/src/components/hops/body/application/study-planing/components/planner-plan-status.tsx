@@ -1,12 +1,14 @@
 import ProgressBar from "@ramonak/react-progress-bar";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
+import { PlanStatistics } from "~/util/curriculum-config";
 
 /**
  * PlannerPlanStatusProps
  */
 interface PlannerPlanStatusProps {
   show: boolean;
+  planStatistics: PlanStatistics;
 }
 
 /**
@@ -15,7 +17,8 @@ interface PlannerPlanStatusProps {
  * @returns JSX.Element
  */
 const PlannerPlanStatus = (props: PlannerPlanStatusProps) => {
-  const { show } = props;
+  const { show, planStatistics } = props;
+  console.log(planStatistics);
   return (
     <AnimateHeight
       height={show ? "auto" : 0}
@@ -39,7 +42,7 @@ const PlannerPlanStatus = (props: PlannerPlanStatusProps) => {
               baseBgColor="#f5f5f5"
             />
             <div className="study-planner__plan-statistic-item-bar-label">
-              {`10 / 100`}
+              {`${planStatistics.plannedMandatoryStudies} / ${planStatistics.requiredStudies.plannedMandatoryStudies}`}
             </div>
           </div>
         </div>
@@ -57,25 +60,7 @@ const PlannerPlanStatus = (props: PlannerPlanStatusProps) => {
               baseBgColor="#f5f5f5"
             />
             <div className="study-planner__plan-statistic-item-bar-label">
-              {`10 / 100`}
-            </div>
-          </div>
-        </div>
-        <div className="study-planner__plan-statistic-item">
-          <h4 className="study-planner__plan-statistic-item-title">
-            Arvioitu opintoaika (kk).
-          </h4>
-          <div className="study-planner__plan-statistic-item-bar-container">
-            <ProgressBar
-              className="study-planner__plan-statistic-item-bar"
-              completed={50}
-              maxCompleted={100}
-              isLabelVisible={false}
-              bgColor="#de3211"
-              baseBgColor="#f5f5f5"
-            />
-            <div className="study-planner__plan-statistic-item-bar-label">
-              {`50 / 100`}
+              {`${planStatistics.plannedOptionalStudies} / ${planStatistics.requiredStudies.plannedOptionalStudies}`}
             </div>
           </div>
         </div>

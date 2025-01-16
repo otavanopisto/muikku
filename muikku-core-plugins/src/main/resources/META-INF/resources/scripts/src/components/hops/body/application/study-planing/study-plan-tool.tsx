@@ -93,8 +93,6 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     [curriculumConfig.strategy, studyActivity, studyOptions]
   );
 
-  console.log(statistics);
-
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanel.Header>
@@ -231,6 +229,8 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                 calculatedPeriods={calculatedPeriods}
                 timeContextSelection={timeContextSelection}
                 selectedCourses={selectedCourses}
+                studyActivity={studyActivity}
+                studyOptions={studyOptions}
               />
             ) : (
               <DesktopStudyPlanner

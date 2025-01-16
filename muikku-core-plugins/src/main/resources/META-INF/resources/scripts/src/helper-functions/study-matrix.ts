@@ -46,6 +46,9 @@ const LANGUAGE_SUBJECTS_B3_US = [
   "JPB3",
   "KOB3",
   "KXB3",
+  "ENB3",
+  "KIB3",
+  "POB3",
 ];
 
 const SUBJECTS_NOT_INCLUDED = [
