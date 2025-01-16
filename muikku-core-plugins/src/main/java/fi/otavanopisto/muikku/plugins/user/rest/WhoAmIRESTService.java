@@ -232,7 +232,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
     /*
      * Hops - the NEW Hops view availability
      */
-    boolean hopsAvailable = user != null && StringUtils.equals("lukio", user.getStudyProgrammeEducationType());
+    boolean hopsAvailable = user != null && (StringUtils.equals("lukio", user.getStudyProgrammeEducationType()) || StringUtils.equals("peruskoulu", user.getStudyProgrammeEducationType()));
     
     UserWhoAmIInfoServices services = new UserWhoAmIInfoServices(
         chatAvailable,
