@@ -28,7 +28,7 @@ const RELIGION_SUBJECTS_CS = ["ue", "uo", "et"];
 const NATIVE_LANGUAGE_SUBJECTS_CS = ["äi", "s2"];
 
 const RELIGION_SUBJECTS_US = ["UE", "UO", "UI", "UK", "UJ", "UX", "ET"];
-const NATIVE_LANGUAGE_SUBJECTS_US = ["ÄI", "S2"];
+const NATIVE_LANGUAGE_SUBJECTS_US = ["ÄI", "ÄIM", "S2"];
 const MATHEMATIC_SUBJECTS_US = ["MAA", "MAB"];
 const LANGUAGE_SUBJECTS_A1_US = ["ENA", "RAA", "RUA", "SAA", "VEA"];
 const LANGUAGE_SUBJECTS_B1_US = ["RUB1"];
@@ -133,10 +133,12 @@ export const filterUpperSecondarySubjects = (
     indexOf !== -1 && subjectsToFilterOut.splice(indexOf, 1);
   });
 
-  // Return actual filtered table
-  return schoolCourseTable.filter(
+  const table = schoolCourseTable.filter(
     (subject) => !subjectsToFilterOut.includes(subject.subjectCode)
   );
+
+  // Return actual filtered table
+  return table;
 };
 
 /**

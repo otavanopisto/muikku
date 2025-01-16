@@ -97,6 +97,21 @@ export type HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES = SpecificActionType<
   PlannedCourseWithIdentifier[]
 >;
 
+export type HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS = SpecificActionType<
+  "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS",
+  string[]
+>;
+
+export type HOPS_UPDATE_STUDY_ACTIVITY = SpecificActionType<
+  "HOPS_UPDATE_STUDY_ACTIVITY",
+  StudentStudyActivity[]
+>;
+
+export type HOPS_UPDATE_AVAILABLE_OPS_COURSES = SpecificActionType<
+  "HOPS_UPDATE_AVAILABLE_OPS_COURSES",
+  HopsOpsCourse[]
+>;
+
 // HOPS CAREER PLAN ACTIONS TYPES
 
 export type HOPS_CAREERPLAN_UPDATE_STATUS = SpecificActionType<
@@ -215,16 +230,6 @@ export type HOPS_UPDATE_EDITING_STUDYPLAN_BATCH = SpecificActionType<
   {
     plannedCourses: PlannedCourseWithIdentifier[];
   }
->;
-
-export type HOPS_UPDATE_STUDY_ACTIVITY = SpecificActionType<
-  "HOPS_UPDATE_STUDY_ACTIVITY",
-  StudentStudyActivity[]
->;
-
-export type HOPS_UPDATE_AVAILABLE_OPS_COURSES = SpecificActionType<
-  "HOPS_UPDATE_AVAILABLE_OPS_COURSES",
-  HopsOpsCourse[]
 >;
 
 export type HOPS_SET_TIME_CONTEXT_SELECTION = SpecificActionType<
@@ -2119,12 +2124,18 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
         studentIdentifier,
       });
 
-      /* const educationType =
-        state.hopsNew.studentInfo.studyProgrammeEducationType; */
+      const studyOptions = await hopsApi.getStudentAlternativeStudyOptions({
+        studentIdentifier,
+      });
+
+      const educationTypeCode =
+        state.hopsNew.studentInfo.studyProgrammeEducationType;
+
+      const studentOps = state.hopsNew.studentInfo.curriculumName;
 
       const availableOPSCourses = await hopsApi.getOpsCourses({
-        ops: "OPS 2021",
-        educationType: "Lukio",
+        ops: studentOps,
+        educationTypeCode,
       });
 
       // Add identifier to planned courses because
@@ -2147,6 +2158,11 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
       dispatch({
         type: "HOPS_UPDATE_AVAILABLE_OPS_COURSES",
         payload: availableOPSCourses,
+      });
+
+      dispatch({
+        type: "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS",
+        payload: studyOptions,
       });
 
       dispatch({

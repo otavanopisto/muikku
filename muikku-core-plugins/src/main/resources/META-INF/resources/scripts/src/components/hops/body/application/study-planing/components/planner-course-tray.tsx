@@ -26,6 +26,7 @@ interface PlannerCourseTrayProps {
   studyActivity: StudentStudyActivity[];
   curriculumConfig: CurriculumConfig;
   availableOPSCourses: HopsOpsCourse[];
+  studyOptions: string[];
   onCourseClick: (course: Course & { subjectCode: string }) => void;
   isSelected: (course: Course & { subjectCode: string }) => boolean;
 }
@@ -40,6 +41,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
     studyActivity,
     curriculumConfig,
     availableOPSCourses,
+    studyOptions,
   } = props;
 
   const [searchTerm, setSearchTerm] = useLocalStorage(
@@ -54,6 +56,14 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   const [selectedFilters, setSelectedFilters] = useLocalStorage<CourseFilter[]>(
     "hops-planner-selected-filters",
     []
+  );
+
+  const matrix = useMemo(
+    () =>
+      curriculumConfig.strategy.getCurriculumMatrix({
+        studyOptions,
+      }),
+    [curriculumConfig, studyOptions]
   );
 
   const availableOPSCoursesMap = useMemo(
@@ -100,11 +110,15 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   };
 
   // Filter subjects and courses
-  const filteredSubjects = filterSubjectsAndCourses(
-    curriculumConfig.strategy.getCurriculumMatrix().subjectsTable,
-    searchTerm,
-    selectedFilters,
-    availableOPSCoursesMap
+  const filteredSubjects = useMemo(
+    () =>
+      filterSubjectsAndCourses(
+        matrix.subjectsTable,
+        searchTerm,
+        selectedFilters,
+        availableOPSCoursesMap
+      ),
+    [matrix, searchTerm, selectedFilters, availableOPSCoursesMap]
   );
 
   // Filter options

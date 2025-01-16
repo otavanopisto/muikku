@@ -52,6 +52,7 @@ interface MobilePlannerPeriodMonthProps {
   curriculumConfig: CurriculumConfig;
   selectedCourses: SelectedCourse[];
   studyActivity: StudentStudyActivity[];
+  studyOptions: string[];
   availableOPSCourses: HopsOpsCourse[];
   updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType;
   updateTimeContextSelection: UpdateTimeContextSelectionTriggerType;
@@ -93,6 +94,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     selectedCourses,
     editedPlannedCourses,
     studyActivity,
+    studyOptions,
     availableOPSCourses,
     updateHopsEditingStudyPlan,
     updateSelectedCourses,
@@ -353,6 +355,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
           currentSelection={courses}
           studyActivity={studyActivity}
           availableOPSCourses={availableOPSCourses}
+          studyOptions={studyOptions}
         >
           <IconButton
             icon="plus"
@@ -463,6 +466,7 @@ function mapStateToProps(state: StateType) {
     selectedCourses: state.hopsNew.hopsEditing.selectedCourses,
     studyActivity: state.hopsNew.hopsStudyPlanState.studyActivity,
     availableOPSCourses: state.hopsNew.hopsStudyPlanState.availableOPSCourses,
+    studyOptions: state.hopsNew.hopsStudyPlanState.studyOptions,
   };
 }
 

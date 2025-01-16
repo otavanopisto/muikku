@@ -23,6 +23,7 @@ import {
   updateSelectedCourses,
 } from "~/actions/main-function/hops";
 import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
+import ProgressBar from "@ramonak/react-progress-bar";
 
 /**
  * MatriculationPlanProps
@@ -36,6 +37,7 @@ interface StudyPlanToolProps {
   selectedCourses: SelectedCourse[];
   studyActivity: StudentStudyActivity[];
   availableOPSCourses: HopsOpsCourse[];
+  studyOptions: string[];
   updateSelectedCourses: UpdateSelectedCoursesTriggerType;
 }
 
@@ -53,6 +55,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     timeContextSelection,
     studyActivity,
     availableOPSCourses,
+    studyOptions,
     updateSelectedCourses,
   } = props;
 
@@ -80,6 +83,17 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
       ),
     [usedPlannedCourses, curriculumConfig]
   );
+
+  const statistics = useMemo(
+    () =>
+      curriculumConfig.strategy.calculateStatistics(
+        studyActivity,
+        studyOptions
+      ),
+    [curriculumConfig.strategy, studyActivity, studyOptions]
+  );
+
+  console.log(statistics);
 
   return (
     <ApplicationSubPanel>
@@ -120,41 +134,86 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             </div>
           </div>
 
-          {/* Progress section */}
-          <div className="hops-container__progress-section">
-            <h3 className="hops-container__subheader">Opintojen eteneminen</h3>
-            <div className="hops-container__progress-bar-container">
-              <div className="hops-container__progress-dates">
+          {/* Plan status section */}
+          <div className="study-planner__plan-status-section">
+            <h3 className="study-planner__plan-status-title">
+              Opintojen eteneminen
+            </h3>
+            <div className="study-planner__plan-status-container">
+              <div className="study-planner__plan-status-dates">
                 <span>1.1.2024</span>
                 <span>12.5.2026</span>
               </div>
-              <div className="hops-container__progress-bar">
-                <div
-                  className="hops-container__progress-bar-fill"
-                  style={{ width: "30%" }}
+              <div className="study-planner__plan-status-bar-container">
+                <ProgressBar
+                  className="study-planner__plan-status-bar"
+                  completed={statistics.totalStudies}
+                  maxCompleted={statistics.requiredStudies.totalStudies}
+                  isLabelVisible={false}
+                  bgColor="#de3211"
+                  baseBgColor="#f5f5f5"
                 />
+                <div className="study-planner__plan-status-bar-label">
+                  {`${statistics.totalStudies} / ${statistics.requiredStudies.totalStudies}`}
+                </div>
               </div>
             </div>
 
             {/* Statistics */}
-            <div className="hops-container__statistics">
-              <div className="hops-container__statistic-item">
-                <h4 className="hops-container__statistic-title">
+            <div className="study-planner__plan-statistics">
+              <div className="study-planner__plan-statistic-item">
+                <h4 className="study-planner__plan-statistic-item-title">
                   Suoritetut pakolliset opintojaksot (op).
                 </h4>
-                <div className="hops-container__statistic-bar" />
+                <div className="study-planner__plan-statistic-item-bar-container">
+                  <ProgressBar
+                    className="study-planner__plan-statistic-item-bar"
+                    completed={statistics.mandatoryStudies}
+                    maxCompleted={statistics.requiredStudies.mandatoryStudies}
+                    isLabelVisible={false}
+                    bgColor="#de3211"
+                    baseBgColor="#f5f5f5"
+                  />
+                  <div className="study-planner__plan-statistic-item-bar-label">
+                    {`${statistics.mandatoryStudies} / ${statistics.requiredStudies.mandatoryStudies}`}
+                  </div>
+                </div>
               </div>
-              <div className="hops-container__statistic-item">
-                <h4 className="hops-container__statistic-title">
+              <div className="study-planner__plan-statistic-item">
+                <h4 className="study-planner__plan-statistic-item-title">
                   Suoritetut valinnaisopinnot (op).
                 </h4>
-                <div className="hops-container__statistic-bar" />
+                <div className="study-planner__plan-statistic-item-bar-container">
+                  <ProgressBar
+                    className="study-planner__plan-statistic-item-bar"
+                    completed={statistics.optionalStudies}
+                    maxCompleted={statistics.requiredStudies.optionalStudies}
+                    isLabelVisible={false}
+                    bgColor="#de3211"
+                    baseBgColor="#f5f5f5"
+                  />
+                  <div className="study-planner__plan-statistic-item-bar-label">
+                    {`${statistics.optionalStudies} / ${statistics.requiredStudies.optionalStudies}`}
+                  </div>
+                </div>
               </div>
-              <div className="hops-container__statistic-item">
-                <h4 className="hops-container__statistic-title">
+              <div className="study-planner__plan-statistic-item">
+                <h4 className="study-planner__plan-statistic-item-title">
                   Arvioitu opintoaika (kk).
                 </h4>
-                <div className="hops-container__statistic-bar" />
+                <div className="study-planner__plan-statistic-item-bar-container">
+                  <ProgressBar
+                    className="study-planner__plan-statistic-item-bar"
+                    completed={50}
+                    maxCompleted={100}
+                    isLabelVisible={false}
+                    bgColor="#de3211"
+                    baseBgColor="#f5f5f5"
+                  />
+                  <div className="study-planner__plan-statistic-item-bar-label">
+                    {`50 / 100`}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -181,6 +240,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                 selectedCourses={selectedCourses}
                 studyActivity={studyActivity}
                 availableOPSCourses={availableOPSCourses}
+                studyOptions={studyOptions}
                 updateSelectedCourses={updateSelectedCourses}
               />
             )}
@@ -205,6 +265,7 @@ function mapStateToProps(state: StateType) {
     timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
     studyActivity: state.hopsNew.hopsStudyPlanState.studyActivity,
     availableOPSCourses: state.hopsNew.hopsStudyPlanState.availableOPSCourses,
+    studyOptions: state.hopsNew.hopsStudyPlanState.studyOptions,
   };
 }
 

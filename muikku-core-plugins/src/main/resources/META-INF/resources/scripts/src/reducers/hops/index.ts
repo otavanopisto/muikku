@@ -47,6 +47,7 @@ interface HopsStudyPlanState {
   plannedCourses: PlannedCourseWithIdentifier[];
   availableOPSCourses: HopsOpsCourse[];
   studyActivity: StudentStudyActivity[];
+  studyOptions: string[];
 }
 
 /**
@@ -228,6 +229,7 @@ const initialHopsState: HopsState = {
     plannedCourses: [],
     studyActivity: [],
     availableOPSCourses: [],
+    studyOptions: [],
   },
   hopsCurriculumConfigStatus: "IDLE",
   hopsCurriculumConfig: null,
@@ -480,6 +482,7 @@ export const hopsNew: Reducer<HopsState> = (
           plannedCourses: [],
           studyActivity: [],
           availableOPSCourses: [],
+          studyOptions: [],
         },
         hopsMatriculation: {
           exams: [],
@@ -686,6 +689,15 @@ export const hopsNew: Reducer<HopsState> = (
         hopsStudyPlanState: {
           ...state.hopsStudyPlanState,
           availableOPSCourses: action.payload,
+        },
+      };
+
+    case "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          studyOptions: action.payload,
         },
       };
 

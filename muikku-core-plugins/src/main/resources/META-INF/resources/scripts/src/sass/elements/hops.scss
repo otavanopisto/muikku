@@ -953,7 +953,6 @@
 }
 
 .hops-container__progress-bar {
-  height: 0.5rem;
   background-color: $color-default-lighter-generic-background;
   border-radius: 0.25rem;
 }
@@ -963,33 +962,4 @@
   background-color: $color-success;
   border-radius: 0.25rem;
   transition: width 0.3s ease;
-}
-
-.hops-container__statistics {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.hops-container__statistic-item {
-  flex-basis: 100%;
-
-  @include breakpoint($breakpoint-pad) {
-    flex: 1;
-  }
-}
-
-.hops-container__statistic-title {
-  font-size: 0.875rem;
-  font-weight: 400;
-  margin-bottom: 0.5rem;
-}
-
-.hops-container__statistic-bar {
-  height: 0.5rem;
-  width: 6rem;
-  background-color: $color-success;
-  border-radius: 0.25rem;
 }

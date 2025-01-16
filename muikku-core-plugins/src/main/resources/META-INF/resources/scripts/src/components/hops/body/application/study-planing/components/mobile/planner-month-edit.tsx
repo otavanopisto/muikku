@@ -23,6 +23,7 @@ interface PlannerMonthEditDialogProps {
   curriculumConfig: CurriculumConfig;
   studyActivity: StudentStudyActivity[];
   availableOPSCourses: HopsOpsCourse[];
+  studyOptions: string[];
 }
 
 /**
@@ -42,6 +43,7 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
     currentSelection,
     studyActivity,
     availableOPSCourses,
+    studyOptions,
   } = props;
 
   const manager = useDragDropManager();
@@ -148,6 +150,7 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
         }
         studyActivity={studyActivity}
         availableOPSCourses={availableOPSCourses}
+        studyOptions={studyOptions}
       />
     </DndProvider>
   );

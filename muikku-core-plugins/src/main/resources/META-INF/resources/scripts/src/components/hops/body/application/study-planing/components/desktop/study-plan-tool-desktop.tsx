@@ -27,6 +27,7 @@ interface DesktopStudyPlannerProps {
   selectedCourses: SelectedCourse[];
   studyActivity: StudentStudyActivity[];
   availableOPSCourses: HopsOpsCourse[];
+  studyOptions: string[];
   updateSelectedCourses: UpdateSelectedCoursesTriggerType;
 }
 
@@ -64,6 +65,7 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
     selectedCourses,
     studyActivity,
     availableOPSCourses,
+    studyOptions,
     updateSelectedCourses,
   } = props;
 
@@ -173,6 +175,7 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
             onCourseClick={handleCourseClick}
             isSelected={isSelected}
             studyActivity={memoizedStudyActivity}
+            studyOptions={studyOptions}
           />
         </div>
 

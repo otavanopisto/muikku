@@ -592,32 +592,33 @@
 
 // Plan status
 .study-planner__plan-status {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.study-planner__plan-status-title {
-  font-size: 1rem;
-  font-weight: 600;
-  width: 100%;
   padding: 0.5rem 0;
 }
 
-.study-planner__plan-status-content {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  width: 100%;
-  padding: 0.5rem 0;
+.study-planner__plan-status-section {
+  margin-top: 2rem;
 }
 
-.study-planner__plan-statistic-item {
-  flex-basis: 100%;
+.study-planner__plan-status-container {
+  margin-top: 0.5rem;
+}
 
-  @include breakpoint($breakpoint-pad) {
-    flex: 1;
-  }
+.study-planner__plan-status-bar-container {
+  position: relative;
+}
+
+.study-planner__plan-status-bar-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.study-planner__plan-status-dates {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
 }
 
 .study-planner__plan-statistic-item-title {
@@ -631,4 +632,45 @@
   width: 6rem;
   background-color: $color-success;
   border-radius: 0.25rem;
+}
+
+.study-planner__plan-statistics {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.study-planner__plan-statistic-item {
+  flex-basis: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    flex: 1;
+  }
+}
+
+.study-planner__plan-statistic-item-title {
+  font-size: 0.875rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.study-planner__plan-statistic-item-bar-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+
+.study-planner__plan-statistic-item-bar {
+  border-radius: 0.25rem;
+  width: 100%;
+}
+
+.study-planner__plan-statistic-item-bar-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
 }
