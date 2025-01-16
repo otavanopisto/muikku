@@ -642,8 +642,7 @@ public class HopsRestService {
     
     // Student needs to be OPS 2018 or OPS 2021
     
-    Map<SchoolDataIdentifier, String> curriculumNameCache = new HashMap<>();
-    String curriculumName = getCurriculumName(curriculumNameCache, user.getCurriculumIdentifier());
+    String curriculumName = courseMetaController.getCurriculumName(user.getCurriculumIdentifier()); 
     boolean studentCurriculumOPS2021 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021");
     boolean studentCurriculumOPS2018 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2018");
     if (!studentCurriculumOPS2021 && !studentCurriculumOPS2018) {
@@ -690,7 +689,7 @@ public class HopsRestService {
             ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
             boolean correctCurriculum = false;
             for (String curriculumIdentifier : curriculumIdentifiers) {
-              String courseCurriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
+              String courseCurriculumName = courseMetaController.getCurriculumName(SchoolDataIdentifier.fromId(curriculumIdentifier)); 
               if (StringUtils.equalsIgnoreCase(courseCurriculumName, curriculumName)) {
                 correctCurriculum = true;
                 break;
@@ -763,15 +762,6 @@ public class HopsRestService {
       }
     }
     return Response.ok(suggestedWorkspaces).build();
-  }
-
-  private String getCurriculumName(Map<SchoolDataIdentifier, String> curriculumNameCache, SchoolDataIdentifier curriculumIdentifier){
-
-    if (!curriculumNameCache.containsKey(curriculumIdentifier)) {
-      curriculumNameCache.put(curriculumIdentifier, courseMetaController.getCurriculumName(curriculumIdentifier));
-    }
-
-    return curriculumNameCache.get(curriculumIdentifier);
   }
   
   @POST
