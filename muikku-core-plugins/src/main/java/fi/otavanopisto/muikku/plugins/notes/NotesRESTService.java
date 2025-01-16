@@ -305,7 +305,7 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    // Add recipients
+    // Add/remove recipients
 
     if (payload.getRecipients() != null) {
 
@@ -328,7 +328,13 @@ public class NotesRESTService extends PluginRESTService {
             noteReceiverController.createNoteRecipient(false, userRecipient.getId(), updatedNote, null, null);
           }
           else {
-            noteReceiverController.deleteRecipient(receiver);
+            // Remove only if receiver is user-specific
+            if (receiver.getRecipientGroup() == null && receiver.getWorkspace_id() == null) {
+              noteReceiverController.deleteRecipient(receiver);
+            } else {
+              // If the receiver already exists, we need to make it user-specific and set the user group and workspace IDs to null
+              noteReceiverController.updateNotetWorkspaceAndUserGroupRecipient(receiver, null, null);
+            }
           }
         }
 
@@ -358,7 +364,10 @@ public class NotesRESTService extends PluginRESTService {
                     userGroupUserEntity.getUserGroupEntity().getId(), null);
               }
               else {
-                noteReceiverController.deleteRecipient(receiver);
+                // Remove receiver only if it's originally added with a user group id
+                if (receiver.getRecipientGroup() != null) {
+                  noteReceiverController.deleteRecipient(receiver);
+                }
               }
             }
           }
@@ -385,7 +394,10 @@ public class NotesRESTService extends PluginRESTService {
                     workspaceEntity.getId());
               }
               else {
-                noteReceiverController.deleteRecipient(receiver);
+                // Remove receiver only if it's originally added with a workspace id
+                if (receiver.getWorkspace_id() != null) {
+                  noteReceiverController.deleteRecipient(receiver);
+                }
               }
             }
           }

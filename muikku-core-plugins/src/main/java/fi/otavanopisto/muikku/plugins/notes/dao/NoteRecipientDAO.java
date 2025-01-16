@@ -28,10 +28,17 @@ public class NoteRecipientDAO extends CorePluginsDAO<NoteReceiver> {
     return persist(noteRecipient);
   }
   
-  public NoteReceiver update(NoteReceiver noteRecipient, Boolean pinned, Long lastModifier, NoteStatus status){
+  public NoteReceiver update(NoteReceiver noteRecipient, Boolean pinned, NoteStatus status){
 
     noteRecipient.setPinned(pinned);
     noteRecipient.setStatus(status);
+    return persist(noteRecipient);
+  }
+  
+  public NoteReceiver updateWorkspaceAndUserGroup(NoteReceiver noteRecipient, Long userGroupId, Long workspaceId){
+
+    noteRecipient.setRecipientGroup(userGroupId);
+    noteRecipient.setWorkspace_id(workspaceId);
     return persist(noteRecipient);
   }
   

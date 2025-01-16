@@ -8,12 +8,8 @@ import fi.otavanopisto.muikku.plugins.notes.dao.NoteRecipientDAO;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
-import fi.otavanopisto.muikku.session.SessionController;
 
 public class NoteReceiverController {
-  
-  @Inject 
-  private SessionController sessionController;
   
   @Inject
   private NoteRecipientDAO noteRecipientDAO;
@@ -38,7 +34,11 @@ public class NoteReceiverController {
   }
   
   public NoteReceiver updateNoteRecipient(NoteReceiver noteRecipient, Boolean pinned, NoteStatus status) {
-    return noteRecipientDAO.update(noteRecipient, pinned, sessionController.getLoggedUserEntity().getId(), status);
+    return noteRecipientDAO.update(noteRecipient, pinned, status);
+  }
+  
+  public NoteReceiver updateNotetWorkspaceAndUserGroupRecipient(NoteReceiver noteRecipient, Long userGroupId, Long workspaceId) {
+    return noteRecipientDAO.updateWorkspaceAndUserGroup(noteRecipient, userGroupId, workspaceId);
   }
   
   public NoteReceiver findByRecipientIdAndNote(Long id, Note note) {

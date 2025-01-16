@@ -10,8 +10,6 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumMessage_;
-import fi.otavanopisto.muikku.plugins.forum.model.WorkspaceForumArea_;
 import fi.otavanopisto.muikku.plugins.notes.model.Note;
 import fi.otavanopisto.muikku.plugins.notes.model.NotePriority;
 import fi.otavanopisto.muikku.plugins.notes.model.NoteReceiver;
