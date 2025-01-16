@@ -5,7 +5,8 @@ public class HopsStudentPermissionsRestModel {
   public HopsStudentPermissionsRestModel() {
   }
 
-  public HopsStudentPermissionsRestModel(boolean canViewDetails, boolean canEdit) {
+  public HopsStudentPermissionsRestModel(boolean isAvailable, boolean canViewDetails, boolean canEdit) {
+    this.isAvailable = isAvailable;
     this.canViewDetails = canViewDetails;
     this.canEdit = canEdit;
   }
@@ -25,7 +26,16 @@ public class HopsStudentPermissionsRestModel {
   public void setCanEdit(boolean canEdit) {
     this.canEdit = canEdit;
   }
+  
+  public boolean isAvailable() {
+    return isAvailable;
+  }
 
+  public void setAvailable(boolean isAvailable) {
+    this.isAvailable = isAvailable;
+  }
+
+  private boolean isAvailable;
   private boolean canViewDetails;
   private boolean canEdit;
 }
