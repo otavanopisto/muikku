@@ -118,7 +118,7 @@ public class HopsRestService {
 
   @Inject
   private EvaluationController evaluationController;
-  
+
   @Inject
   private UserEntityController userEntityController;
 
@@ -449,7 +449,7 @@ public class HopsRestService {
     BridgeResponse<List<StudyActivityItemRestModel>> response = userSchoolDataController.getStudyActivity(
         schoolDataIdentifier.getDataSource(), schoolDataIdentifier.getIdentifier());
     if (response.ok()) {
-      
+
       // Add suggested courses to the list and track supplementation requests as well
 
       List<StudyActivityItemRestModel> items = response.getEntity();
@@ -459,13 +459,13 @@ public class HopsRestService {
               studentEntity.getId(),
               item.getCourseId(),
               Boolean.FALSE);
-          if (supplementationRequest != null && !supplementationRequest.getHandled() && item.getDate().before(supplementationRequest.getRequestDate())) {
+          if (supplementationRequest != null && item.getDate().before(supplementationRequest.getRequestDate())) {
             item.setDate(supplementationRequest.getRequestDate());
             item.setStatus(StudyActivityItemStatus.SUPPLEMENTATIONREQUEST);
           }
         }
       }
-      
+
       List<HopsSuggestion> suggestions = hopsController.listSuggestionsByStudentIdentifier(studentIdentifierStr);
       for (HopsSuggestion suggestion : suggestions) {
 
@@ -755,8 +755,7 @@ public class HopsRestService {
 
     // Student needs to be OPS 2018 or OPS 2021
 
-    Map<SchoolDataIdentifier, String> curriculumNameCache = new HashMap<>();
-    String curriculumName = getCurriculumName(curriculumNameCache, user.getCurriculumIdentifier());
+    String curriculumName = courseMetaController.getCurriculumName(user.getCurriculumIdentifier());
     boolean studentCurriculumOPS2021 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2021");
     boolean studentCurriculumOPS2018 = StringUtils.equalsIgnoreCase(curriculumName, "OPS 2018");
     if (!studentCurriculumOPS2021 && !studentCurriculumOPS2018) {
@@ -803,7 +802,7 @@ public class HopsRestService {
             ArrayList<String> curriculumIdentifiers = (ArrayList<String>) result.get("curriculumIdentifiers");
             boolean correctCurriculum = false;
             for (String curriculumIdentifier : curriculumIdentifiers) {
-              String courseCurriculumName = getCurriculumName(curriculumNameCache, SchoolDataIdentifier.fromId(curriculumIdentifier));
+              String courseCurriculumName = courseMetaController.getCurriculumName(SchoolDataIdentifier.fromId(curriculumIdentifier));
               if (StringUtils.equalsIgnoreCase(courseCurriculumName, curriculumName)) {
                 correctCurriculum = true;
                 break;
@@ -876,15 +875,6 @@ public class HopsRestService {
       }
     }
     return Response.ok(suggestedWorkspaces).build();
-  }
-
-  private String getCurriculumName(Map<SchoolDataIdentifier, String> curriculumNameCache, SchoolDataIdentifier curriculumIdentifier){
-
-    if (!curriculumNameCache.containsKey(curriculumIdentifier)) {
-      curriculumNameCache.put(curriculumIdentifier, courseMetaController.getCurriculumName(curriculumIdentifier));
-    }
-
-    return curriculumNameCache.get(curriculumIdentifier);
   }
 
   @POST
@@ -1079,14 +1069,14 @@ public class HopsRestService {
       return Response.noContent().build();
     }
   }
-  
+
   @GET
   @Path("/opsCourses")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listOpsCourses(@QueryParam ("ops") String ops, @QueryParam ("educationTypeCode") String educationTypeCode) {
-    
+
     // OPS name to identifier (e.g. OPS 2021 -> PYRAMUS-1)
-    
+
     if (StringUtils.isEmpty(ops)) {
       return Response.status(Status.BAD_REQUEST).entity("Missing OPS").build();
     }
@@ -1096,9 +1086,9 @@ public class HopsRestService {
     }
     List<SchoolDataIdentifier> curriculumIdentifiers = new ArrayList<>();
     curriculumIdentifiers.add(opsIdentifier);
-    
+
     // Education type name to identifier (e.g. Lukio -> PYRAMUS-2)
-    
+
     if (StringUtils.isEmpty(educationTypeCode)) {
       return Response.status(Status.BAD_REQUEST).entity("Missing educationTypeCode").build();
     }
@@ -1106,9 +1096,9 @@ public class HopsRestService {
     if (educationTypeIdentifiers.isEmpty()) {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Unknown education type code %s", educationTypeCode)).build();
     }
-    
+
     // Enforced organization filter
-    
+
     List<OrganizationEntity> organizations = new ArrayList<>();
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
     OrganizationEntity loggedUserOrganization = userSchoolDataIdentifier.getOrganization();
@@ -1117,9 +1107,9 @@ public class HopsRestService {
         organizations,
         PublicityRestriction.ONLY_PUBLISHED,
         TemplateRestriction.ONLY_WORKSPACES);
-    
+
     // Search matching courses
-    
+
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
@@ -1132,9 +1122,9 @@ public class HopsRestService {
           .setMaxResults(1000)
           .search();
       List<Map<String, Object>> results = searchResult.getResults();
-      
+
       // List instances
-      
+
       List<HopsOpsCoursesRestModel> courses = new ArrayList<>();
       Map<String,Set<Integer>> courseMap = new HashMap<>();
       for (Map<String, Object> result : results) {
@@ -1155,9 +1145,9 @@ public class HopsRestService {
           }
         }
       }
-      
+
       // Convert to return value
-      
+
       for (String s : courseMap.keySet()) {
         courses.add(new HopsOpsCoursesRestModel(s, courseMap.get(s)));
       }
