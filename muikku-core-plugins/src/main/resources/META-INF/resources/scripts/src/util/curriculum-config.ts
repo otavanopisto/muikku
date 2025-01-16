@@ -12,6 +12,14 @@ import {
   filterUpperSecondarySubjects,
 } from "~/helper-functions/study-matrix";
 
+// Uppersecondary curriculum has 88 credits required
+const UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES = 88;
+
+// One of these subjects is required to have 2 + 2 credits, which is calculated as 4 mandatory credits
+// when calculating total studies.
+const UPPER_SECONDARY_REQUIRED_EXCEPTION = ["BI", "FY", "KE", "GE"];
+
+// Compulsory curriculum has 45 courses required
 const COMPULSORY_TOTAL_REQUIRED_STUDIES = 45;
 
 /**
@@ -153,6 +161,39 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
   }
 
   /**
+   * Get required study values. Uppersecondary curriculum has 88 credits required.
+   * @param options options
+   * @returns required study values in credits
+   */
+  getRequiredStudyValues(options: string[]): {
+    mandatoryStudies: number;
+    optionalStudies: number;
+    totalStudies: number;
+  } {
+    const matrix = this.getCurriculumMatrix({ studyOptions: options });
+
+    const requiredTotalStudies = UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES;
+
+    const mandatoryStudies = matrix.subjectsTable.reduce(
+      (sum, subject) =>
+        sum +
+        subject.availableCourses
+          .filter((course) => course.mandatory)
+          .map((course) => course.length)
+          .reduce((sum, length) => sum + length, 0),
+      0
+    );
+
+    const optionalStudies = requiredTotalStudies - mandatoryStudies;
+
+    return {
+      mandatoryStudies,
+      optionalStudies,
+      totalStudies: requiredTotalStudies,
+    };
+  }
+
+  /**
    * Calculate statistics
    * @param studyActivities study activities
    * @param options options
@@ -162,16 +203,86 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
     studyActivities: StudentStudyActivity[],
     options: string[]
   ): Statistics {
+    const matrix = this.getCurriculumMatrix({ studyOptions: options });
+
+    const requiredStudies = this.getRequiredStudyValues(options);
+
+    const completedActivities = studyActivities.filter(
+      (activity) =>
+        (activity.status === "GRADED" && activity.passing) ||
+        activity.status === "TRANSFERRED"
+    );
+
+    let mandatoryStudies = 0;
+    let optionalStudies = 0;
+    let exceptionRuleApplied = false; // Track if we've already applied the 2+2 rule
+
+    // Track credits for exception subjects
+    const exceptionSubjectCredits: Record<
+      string,
+      { mandatory: number; optional: number }
+    > = {};
+
+    completedActivities.forEach((activity) => {
+      const subject = matrix.subjectsTable.find(
+        (subject) => subject.subjectCode === activity.subject
+      );
+
+      if (subject) {
+        const course = subject.availableCourses.find(
+          (course) => course.courseNumber === activity.courseNumber
+        );
+
+        if (course) {
+          if (UPPER_SECONDARY_REQUIRED_EXCEPTION.includes(activity.subject)) {
+            // Initialize tracking for this exception subject if needed
+            if (!exceptionSubjectCredits[activity.subject]) {
+              exceptionSubjectCredits[activity.subject] = {
+                mandatory: 0,
+                optional: 0,
+              };
+            }
+
+            // Track credits for this exception subject
+            if (course.mandatory) {
+              exceptionSubjectCredits[activity.subject].mandatory +=
+                course.length;
+            } else {
+              exceptionSubjectCredits[activity.subject].optional +=
+                course.length;
+            }
+          }
+
+          // Normal credit calculation
+          if (course.mandatory) {
+            mandatoryStudies += course.length;
+          } else {
+            optionalStudies += course.length;
+          }
+        }
+      }
+    });
+
+    // Check if any exception subject has 2 mandatory + 2 optional credits
+    if (!exceptionRuleApplied) {
+      for (const subject of UPPER_SECONDARY_REQUIRED_EXCEPTION) {
+        const credits = exceptionSubjectCredits[subject];
+        if (credits && credits.mandatory >= 2 && credits.optional >= 2) {
+          // Move 4 credits to mandatory studies (2 were already there, so add 2 more)
+          mandatoryStudies += 2;
+          optionalStudies -= 2;
+          exceptionRuleApplied = true;
+          break;
+        }
+      }
+    }
+
     return {
-      mandatoryStudies: 0,
-      optionalStudies: 0,
-      totalStudies: 0,
+      mandatoryStudies,
+      optionalStudies,
+      totalStudies: mandatoryStudies + optionalStudies,
       unit: "credits",
-      requiredStudies: {
-        mandatoryStudies: 0,
-        optionalStudies: 0,
-        totalStudies: 0,
-      },
+      requiredStudies,
     };
   }
 
