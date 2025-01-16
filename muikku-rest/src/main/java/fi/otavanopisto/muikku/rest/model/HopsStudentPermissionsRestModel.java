@@ -27,11 +27,11 @@ public class HopsStudentPermissionsRestModel {
     this.canEdit = canEdit;
   }
   
-  public boolean isAvailable() {
+  public boolean getIsAvailable() {
     return isAvailable;
   }
 
-  public void setAvailable(boolean isAvailable) {
+  public void setIsAvailable(boolean isAvailable) {
     this.isAvailable = isAvailable;
   }
 
