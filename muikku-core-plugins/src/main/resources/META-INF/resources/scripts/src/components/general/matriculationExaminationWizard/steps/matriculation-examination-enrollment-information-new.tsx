@@ -1323,8 +1323,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
               onClick={handleNewFinishedAttendanceClick}
               icon="plus"
             >
-              {t("actions.addNewRow", {
-                ns: "hops_new",
+              {t("actions.add", {
+                ns: "common",
+                context: "row",
               })}
             </Button>
           </div>
@@ -1363,8 +1364,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             onClick={handleNewEnrolledAttendanceClick}
             icon="plus"
           >
-            {t("actions.addNewRow", {
-              ns: "hops_new",
+            {t("actions.add", {
+              ns: "common",
+              context: "row",
             })}
           </Button>
         </div>
@@ -1436,8 +1438,9 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
             onClick={handleNewPlannedAttendanceClick}
             icon="plus"
           >
-            {t("actions.addNewRow", {
-              ns: "hops_new",
+            {t("actions.add", {
+              ns: "common",
+              context: "row",
             })}
           </Button>
         </div>

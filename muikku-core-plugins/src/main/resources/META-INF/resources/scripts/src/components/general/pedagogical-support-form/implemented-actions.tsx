@@ -203,7 +203,7 @@ export const AddNewActionsBox: React.FC<AddNewActionsBoxProps> = (props) => {
         icon="plus"
         disabled={disabled}
       >
-        {t("actions.add", { ns: "pedagogySupportPlan", context: "row" })}
+        {t("actions.add", { ns: "common", context: "row" })}
       </Button>
     </div>
   );

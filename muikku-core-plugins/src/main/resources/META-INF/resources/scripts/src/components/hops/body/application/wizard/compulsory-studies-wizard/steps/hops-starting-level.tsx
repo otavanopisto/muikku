@@ -283,8 +283,9 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
                   onClick={handleAddNewCustomLngClick}
                   icon="plus"
                 >
-                  {t("actions.addNewLng", {
-                    ns: "hops_new",
+                  {t("actions.add", {
+                    ns: "common",
+                    context: "language",
                   })}
                 </Button>
               </div>

@@ -123,7 +123,7 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
               disabled={!canLoadMoreHistory}
               onClick={() => loadMoreHopsEvents({})}
             >
-              {t("actions.loadAll", { ns: "hops_new" })}
+              {t("actions.load", { ns: "common", context: "all" })}
             </Button>
           </div>
         </div>

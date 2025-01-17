@@ -3,6 +3,7 @@ import React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the NewHopsEventDescriptionDialog component.
@@ -30,6 +31,7 @@ const NewHopsEventDescriptionDialog: React.FC<
   NewHopsEventDescriptionDialogProps
 > = (props) => {
   const { children, isOpen, content, onSaveClick, onCancelClick } = props;
+  const { t } = useTranslation(["common"]);
 
   /**
    * Renders the dialog content
@@ -43,14 +45,17 @@ const NewHopsEventDescriptionDialog: React.FC<
    */
   const footer = () => (
     <div className="dialog__button-set">
-      <Button buttonModifiers={["standard-ok", "fatal"]} onClick={onSaveClick}>
-        Ok
+      <Button
+        buttonModifiers={["standard-ok", "execute"]}
+        onClick={onSaveClick}
+      >
+        {t("actions.save", { ns: "common" })}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
         onClick={onCancelClick}
       >
-        Peruuta
+        {t("actions.cancel", { ns: "common" })}
       </Button>
     </div>
   );
@@ -59,7 +64,10 @@ const NewHopsEventDescriptionDialog: React.FC<
     <Dialog
       modifier="confirm-remove-answer-dialog"
       disableScroll={true}
-      title="Tapahtuman kuvaus"
+      title={t("labels.save", {
+        ns: "common",
+        context: "changes",
+      })}
       content={dialogContent}
       footer={footer}
       isOpen={isOpen}

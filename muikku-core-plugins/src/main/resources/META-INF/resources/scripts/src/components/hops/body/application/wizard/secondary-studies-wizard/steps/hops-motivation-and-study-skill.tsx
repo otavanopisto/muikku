@@ -85,12 +85,11 @@ const HopsMotivationAndStudySkills: React.FC<
           })}
         </legend>
 
-        {/* TODO: Add back in when we have the information about validation */}
-        {/* <div className="hops-container__fieldset-description">
-          {t("labels.hopsFormFieldsRequired", {
+        <div className="hops-container__fieldset-description">
+          {t("content.hopsSecondarySelfAssessment", {
             ns: "hops_new",
           })}
-        </div> */}
+        </div>
 
         <div className="hops-container__row">
           <div className="hops-container__table-container">
