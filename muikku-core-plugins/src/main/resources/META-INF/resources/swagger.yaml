@@ -15396,9 +15396,11 @@ components:
           $ref: "#/components/schemas/NotePriorityType"
         startDate:
           type: string
+          format: date-time
         dueDate:
           type: string
-
+          format: date-time
+          nullable: true
     NoteSortedList:
       type: object
       description: A NoteSortedList object where private notes and multi-user notes are organized into separate lists
