@@ -76,8 +76,8 @@ class NotesItemEdit extends SessionStateComponent<
         description,
         type,
         priority,
-        startDate,
-        dueDate,
+        startDate: new Date(startDate),
+        dueDate: new Date(startDate),
       },
     };
   }
@@ -302,7 +302,7 @@ class NotesItemEdit extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) =>
-              this.handleNotesItemChange("startDate", date.toString())
+              this.handleNotesItemChange("startDate", date)
             }
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
@@ -321,9 +321,7 @@ class NotesItemEdit extends SessionStateComponent<
                 ? new Date(this.state.note.dueDate)
                 : undefined
             }
-            onChange={(date, e) =>
-              this.handleNotesItemChange("dueDate", date.toString())
-            }
+            onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={
