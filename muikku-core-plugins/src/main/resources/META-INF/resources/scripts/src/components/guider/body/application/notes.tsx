@@ -8,12 +8,9 @@ import {
 } from "~/actions/main-function/guider";
 import { StateType } from "~/reducers";
 import NotesItemList from "~/components/general/notes/notes-item-list";
-import { NotesLocation, NotesItemFilters } from "~/@types/notes";
 import { UpdateNoteRequest } from "~/generated/client";
 import { GuiderContext } from "../../context";
-import { UseFilterNotes } from "~/components/guider/hooks/useFilterNotes";
-import { number } from "@amcharts/amcharts4/core";
-
+import { useFilterNotes } from "~/components/guider/hooks/useFilterNotes";
 /**
  * GuiderStudentsProps
  */
@@ -29,22 +26,19 @@ const GuiderNotes = (props: GuiderNotesProps) => {
   const { status, guider } = useSelector((state: StateType) => state);
   const loadingState = guider.notes.state;
   const { filters } = React.useContext(GuiderContext);
-  const notes = UseFilterNotes(guider.notes.list, filters);
+  const notes = useFilterNotes(guider.notes.list, filters);
 
-  // TODO: this needs and implementation
-  const [noteFilters, setNoteFilters] = React.useState<NotesItemFilters>({
+  const defaultFilters = {
     high: false,
     normal: false,
     low: false,
     own: false,
     guider: false,
-  });
+  };
 
   React.useEffect(() => {
     dispatch(loadNotes(status.userId, false));
   }, [dispatch, status]);
-
-  const updateNotesItemStatus = () => {};
 
   /**
    * onArchiveClick function
@@ -82,14 +76,13 @@ const GuiderNotes = (props: GuiderNotesProps) => {
           ) : (
             <NotesItemList
               usePlace={"guider"}
-              filters={filters}
+              filters={defaultFilters}
               isLoadingList={false}
               userId={status.userId}
               notesItems={notes}
               onArchiveClick={onArchiveClick}
               onReturnArchivedClick={onArchiveClick}
               onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
-              onUpdateNotesItemStatus={updateNotesItemStatus}
             />
           )}
         </>

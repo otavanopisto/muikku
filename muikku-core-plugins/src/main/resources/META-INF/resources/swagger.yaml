@@ -15365,15 +15365,10 @@ components:
           type: string
         created:
           type: string
-          format: date-time
         startDate:
           type: string
-          format: date-time
-          nullable: true
         dueDate:
           type: string
-          format: date-time
-          nullable: true
         recipients:
           type: array
           items:

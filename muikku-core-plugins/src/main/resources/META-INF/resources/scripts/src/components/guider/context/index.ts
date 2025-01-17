@@ -12,7 +12,7 @@ export type BooleanNoteFilters = NotesItemFilters & {
   multi: boolean;
 };
 /**
- * GuiderViews
+ * GuiderNoteFiltersState
  */
 export type GuiderNoteFiltersState = BooleanNoteFilters & {
   state: GuiderNotesState;

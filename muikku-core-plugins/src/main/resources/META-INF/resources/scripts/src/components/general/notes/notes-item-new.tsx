@@ -275,7 +275,7 @@ class NotesItemNew extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) =>
-              this.handleNotesItemChange("startDate", new Date(date).toString())
+              this.handleNotesItemChange("startDate", date.toString())
             }
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
@@ -293,7 +293,7 @@ class NotesItemNew extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) =>
-              this.handleNotesItemChange("dueDate", new Date(date).toString())
+              this.handleNotesItemChange("dueDate", date.toString())
             }
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"

@@ -60,7 +60,6 @@ class NotesItemEdit extends SessionStateComponent<
    * constructor
    * @param props props
    */
-
   constructor(props: NotesItemEditProps) {
     super(props, "records-notes-item-edit");
     this.clearUp = this.clearUp.bind(this);
@@ -207,7 +206,6 @@ class NotesItemEdit extends SessionStateComponent<
      * content
      * @param closeDialog closeDialog
      */
-
     const content = (closeDialog: () => void) => [
       <>
         {!this.props.recipientId &&
@@ -304,12 +302,12 @@ class NotesItemEdit extends SessionStateComponent<
                 : undefined
             }
             onChange={(date, e) =>
-              this.handleNotesItemChange("startDate", date)
+              this.handleNotesItemChange("startDate", date.toString())
             }
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={new Date()}
-            maxDate={this.state.note.dueDate}
+            maxDate={new Date(this.state.note.dueDate)}
           />
         </div>
         <div className="env-dialog__form-element-container">
@@ -323,7 +321,9 @@ class NotesItemEdit extends SessionStateComponent<
                 ? new Date(this.state.note.dueDate)
                 : undefined
             }
-            onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
+            onChange={(date, e) =>
+              this.handleNotesItemChange("dueDate", date.toString())
+            }
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={
