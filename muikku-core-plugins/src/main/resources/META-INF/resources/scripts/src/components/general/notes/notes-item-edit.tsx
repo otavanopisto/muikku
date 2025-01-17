@@ -77,7 +77,7 @@ class NotesItemEdit extends SessionStateComponent<
         type,
         priority,
         startDate: new Date(startDate),
-        dueDate: new Date(startDate),
+        dueDate: new Date(dueDate),
       },
     };
   }
