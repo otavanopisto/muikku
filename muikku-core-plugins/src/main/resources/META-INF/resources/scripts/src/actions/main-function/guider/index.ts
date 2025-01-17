@@ -24,7 +24,6 @@ import {
   UserStudentFlag,
   UserFlag,
   UserGroup,
-  NoteSortedList,
   Note,
   CreateNoteRequest,
   UpdateNoteRequest,
@@ -42,6 +41,7 @@ export type UPDATE_NOTES_STATUS = SpecificActionType<
 >;
 export type LOAD_NOTES = SpecificActionType<"LOAD_NOTES", Note[]>;
 export type UPDATE_NOTE = SpecificActionType<"UPDATE_NOTE", Note>;
+export type ADD_NOTE = SpecificActionType<"ADD_NOTE", Note>;
 export type REMOVE_NOTE = SpecificActionType<"REMOVE_NOTE", number>;
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
@@ -578,10 +578,11 @@ const createNote: CreateNoteTriggerType = function createNote(
     const notesApi = MApi.getNotesApi();
     try {
       // Creating and getting created notesItem
-      await notesApi.createNote({
+      const newNote = await notesApi.createNote({
         createNoteRequest,
       });
       onSuccess && onSuccess();
+      dispatch({ type: "ADD_NOTE", payload: newNote });
       dispatch(
         notificationActions.displayNotification(
           i18n.t("notifications.createSuccess"),

@@ -123,10 +123,9 @@ class NotesItemNew extends SessionStateComponent<
    */
   handleSaveClick = (closeDialog: () => void) => () => {
     this.props.onNotesItemSaveClick &&
-      this.props.onNotesItemSaveClick(this.state.notesItem, () => {
-        this.clearUp();
-        closeDialog();
-      });
+      this.props.onNotesItemSaveClick(this.state.notesItem);
+    this.clearUp();
+    closeDialog();
   };
 
   /**

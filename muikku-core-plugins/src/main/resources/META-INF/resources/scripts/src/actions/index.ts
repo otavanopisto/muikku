@@ -180,6 +180,7 @@ import {
   UPDATE_NOTES_STATUS,
   LOAD_NOTES,
   UPDATE_NOTE,
+  ADD_NOTE,
   REMOVE_NOTE,
 } from "./main-function/guider";
 import {
@@ -619,6 +620,7 @@ export type ActionType =
   | UPDATE_NOTES_STATUS
   | LOAD_NOTES
   | UPDATE_NOTE
+  | ADD_NOTE
   | REMOVE_NOTE;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

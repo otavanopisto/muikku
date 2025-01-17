@@ -317,7 +317,15 @@ export const guider: Reducer<GuiderState> = (
       );
       return { ...state, notes: { ...state.notes, list: updatedNotes } };
     }
-
+    case "ADD_NOTE": {
+      return {
+        ...state,
+        notes: {
+          ...state.notes,
+          list: [...state.notes.list, action.payload],
+        },
+      };
+    }
     case "REMOVE_NOTE": {
       const notes = { ...state.notes };
       notes.list = notes.list.filter((note) => note.id !== action.payload);
