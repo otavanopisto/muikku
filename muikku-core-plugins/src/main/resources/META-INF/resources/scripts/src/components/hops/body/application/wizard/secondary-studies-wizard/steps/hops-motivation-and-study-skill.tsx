@@ -59,9 +59,7 @@ const HopsMotivationAndStudySkills: React.FC<
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onFormChange({
         ...form,
-        [name]: {
-          [e.currentTarget.name]: parseInt(e.currentTarget.value),
-        },
+        [name]: parseInt(e.currentTarget.value),
       });
     };
 
