@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import * as React from "react";
 import "~/sass/elements/hops.scss";
 import {
   PostGraduateStudies,
@@ -30,15 +30,6 @@ const HopsPostGraduateFuturePlans: React.FC<
 > = (props) => {
   const { form, disabled, onFormChange } = props;
   const { t } = useTranslation(["hops_new"]);
-  const myRef = useRef<HTMLDivElement>(null);
-
-  /**
-   * Effect to resize window and scroll into view on component mount
-   */
-  useEffect(() => {
-    window.dispatchEvent(new Event("resize"));
-    myRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
 
   /**
    * Updates the local form state and calls the parent's onChange handler
@@ -187,7 +178,7 @@ const HopsPostGraduateFuturePlans: React.FC<
   ];
 
   return (
-    <div className="hops-container" ref={myRef}>
+    <div className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
           {t("labels.hopsSecondaryPostgraduateSubTitle1", { ns: "hops_new" })}

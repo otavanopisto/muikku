@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import * as React from "react";
 import { Education, LanguageGrade } from "~/@types/shared";
 import "~/sass/elements/hops.scss";
 
@@ -34,14 +34,8 @@ interface HopsStartingLevelProps {
  */
 const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
   const { form, disabled, onFormChange } = props;
-  const myRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation("hops_new");
-
-  useEffect(() => {
-    window.dispatchEvent(new Event("resize"));
-    myRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
 
   /**
    * Updates the local form state with the provided updates
@@ -120,7 +114,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
    * @returns JSX.Element
    */
   return (
-    <div className="hops-container" ref={myRef}>
+    <div className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
           {t("labels.hopsCompulsoryEntryAssessmentTitle1", {

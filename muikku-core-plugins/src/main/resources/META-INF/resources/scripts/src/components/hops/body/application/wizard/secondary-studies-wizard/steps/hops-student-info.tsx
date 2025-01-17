@@ -5,8 +5,6 @@ import Button from "~/components/general/button";
 import { TextField } from "../../components/text-field";
 import HopsHistory from "../../history";
 import { LoadMoreHopsFormHistoryTriggerType } from "~/actions/main-function/hops/";
-import { useRef } from "react";
-import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -48,15 +46,8 @@ const HopsStudentHopsInformation: React.FC<HopsStudentHopsInformationProps> = (
 
   const { t } = useTranslation("hops_new");
 
-  const myRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    window.dispatchEvent(new Event("resize"));
-    myRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
   return (
-    <section className="hops-container" ref={myRef}>
+    <section className="hops-container">
       {/* Basic Information Fieldset */}
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
