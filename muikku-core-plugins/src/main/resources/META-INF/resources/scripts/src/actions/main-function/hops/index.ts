@@ -289,6 +289,7 @@ export interface LoadHopsFormHistoryTriggerType {
 export interface UpdateHopsFormHistoryEntryTriggerType {
   (data: {
     entryId: number;
+    originalEntry: HopsHistoryEntry;
     updatedEntry: Partial<HopsHistoryEntry>;
     onSuccess?: () => void;
     onFail?: () => void;
@@ -1525,12 +1526,13 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
       });
 
       try {
-        // Assuming there's an API endpoint to update a HOPS form history entry
+        // Update details and keep changes as it is in original entry
         const updatedEntryData = await hopsApi.updateStudentHopsHistoryEntry({
           studentIdentifier,
           entryId: data.entryId,
           updateStudentHopsHistoryEntryRequest: {
             details: data.updatedEntry.details,
+            changes: data.originalEntry.changes,
           },
         });
 

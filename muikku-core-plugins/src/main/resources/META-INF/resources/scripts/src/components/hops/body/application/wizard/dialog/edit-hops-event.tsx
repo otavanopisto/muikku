@@ -54,6 +54,7 @@ const EditHopsEventDescriptionDialog: React.FC<
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       updateHopsFormHistoryEntry({
         entryId: historyEntry.id,
+        originalEntry: historyEntry,
         updatedEntry: { details: description },
         onSuccess: closePortal,
       });
