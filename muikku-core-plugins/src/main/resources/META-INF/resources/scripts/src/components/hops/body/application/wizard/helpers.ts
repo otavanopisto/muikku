@@ -366,7 +366,7 @@ export const getEditedHopsFields = (
 
     // If the previous studies have changed, add it to the changed fields
     if (previousStudiesHasChanged) {
-      changedValuesComparedToPrevious.push("previousEducations");
+      changedValuesComparedToPrevious.push("previousEducation");
     }
 
     // If the what next has changed, add it to the changed fields
