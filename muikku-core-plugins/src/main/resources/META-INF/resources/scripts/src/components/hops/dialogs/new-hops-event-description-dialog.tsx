@@ -1,13 +1,17 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
+import { connect } from "react-redux";
+import { Action, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
  * MatriculationExaminationWizardDialogProps
  */
-interface NewHopsEventDescriptionDialogProps {
+interface NewHopsEventDescriptionDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   isOpen: boolean;
@@ -56,16 +60,16 @@ class NewHopsEventDescriptionDialog extends React.Component<
     const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">
         <Button
-          buttonModifiers={["standard-ok", "fatal"]}
+          buttonModifiers={["standard-ok", "execute"]}
           onClick={this.props.onSaveClick}
         >
-          Ok
+          {this.props.t("actions.save", { ns: "common" })}
         </Button>
         <Button
           buttonModifiers={["standard-cancel", "cancel"]}
           onClick={this.props.onCancelClick}
         >
-          Peruuta
+          {this.props.t("actions.cancel", { ns: "common" })}
         </Button>
       </div>
     );
@@ -74,7 +78,10 @@ class NewHopsEventDescriptionDialog extends React.Component<
       <Dialog
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
-        title="Muokkaa kuvausta"
+        title={this.props.t("labels.save", {
+          ns: "common",
+          context: "changes",
+        })}
         onClose={this.props.onCancelClick}
         content={content}
         footer={footer}
@@ -87,4 +94,13 @@ class NewHopsEventDescriptionDialog extends React.Component<
   }
 }
 
-export default NewHopsEventDescriptionDialog;
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ * @returns object
+ */
+const mapDispatchToProps = (dispatch: Dispatch<Action<AnyActionType>>) => ({});
+
+export default withTranslation()(
+  connect(null, mapDispatchToProps)(NewHopsEventDescriptionDialog)
+);
