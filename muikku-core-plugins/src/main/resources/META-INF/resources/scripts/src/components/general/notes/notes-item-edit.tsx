@@ -219,7 +219,7 @@ class NotesItemEdit extends SessionStateComponent<
                 disableRemove={this.state.removeLocked}
                 showFullNames={true}
                 loaders={autofillLoaders()}
-                hasWorkspacePermission={false}
+                hasWorkspacePermission={true}
                 hasGroupPermission={true}
                 placeholder={this.props.t("labels.search", {
                   context: "recipients",

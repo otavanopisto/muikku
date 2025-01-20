@@ -195,7 +195,7 @@ class NotesItemNew extends SessionStateComponent<
               key="new-message-1"
               showFullNames={true}
               loaders={autofillLoaders()}
-              hasWorkspacePermission={false}
+              hasWorkspacePermission={true}
               hasGroupPermission={true}
               placeholder={this.props.t("labels.search", {
                 context: "recipients",
