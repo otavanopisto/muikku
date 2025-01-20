@@ -5,7 +5,7 @@ import "~/sass/elements/avatar.scss";
 /**
  * AvatarProps
  */
-interface AvatarProps {
+export interface AvatarProps {
   hasImage: boolean;
   id: number | null;
   firstName: string;

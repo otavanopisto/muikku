@@ -14,6 +14,7 @@ import {
   UpdateNoteReceiverRequest,
 } from "~/generated/client";
 import Avatar from "../avatar";
+import { trimNoteRecipientsToAvatars } from "~/util/notes";
 /**
  * DropdownItem
  */
@@ -569,14 +570,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         ) : null}
         {!specificRecipient && (
           <div className="notes__item-recipients">
-            {recipients.map((recipient) => (
-              <Avatar
-                key={recipient.recipient}
-                id={recipient.recipient}
-                hasImage={recipient.hasImage}
-                firstName={recipient.recipientName}
-                size="xsmall"
-              ></Avatar>
+            {trimNoteRecipientsToAvatars(recipients).map((avatar) => (
+              <Avatar key={avatar.id} {...avatar} size="xsmall"></Avatar>
             ))}
           </div>
         )}

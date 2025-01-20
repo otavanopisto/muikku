@@ -29,18 +29,17 @@ export const turnSelectedUsersToContacts = (
 
 /**
  * turnNoteRecipientsToContacts
- * @param recipients
- * @returns
+ * @param recipients array of NoteReceiver
+ * @returns an Array of ContactRecipientType
  */
 export const turnNoteRecipientsToContacts = (
   recipients: NoteReceiver[]
 ): ContactRecipientType[] => {
   const contacts: ContactRecipientType[] = [];
-
   const userGroupIds: number[] = [];
   const workspaceIds: number[] = [];
 
-  recipients.map((noteRecipient) => {
+  recipients.forEach((noteRecipient) => {
     const {
       userGroupId,
       workspaceId,
@@ -77,5 +76,6 @@ export const turnNoteRecipientsToContacts = (
       },
     });
   });
+
   return contacts;
 };
