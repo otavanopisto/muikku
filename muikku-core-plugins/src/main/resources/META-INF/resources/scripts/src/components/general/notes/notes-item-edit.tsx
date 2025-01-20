@@ -212,6 +212,7 @@ class NotesItemEdit extends SessionStateComponent<
           this.props.selectedNotesItem.multiUserNote && (
             <div className="env-dialog__form-element-container">
               <InputContactsAutofill
+                groupArchetype="USERGROUP"
                 identifier="communicatorRecipients"
                 modifier="new-message"
                 key="new-message-1"

@@ -47,6 +47,7 @@ export interface InputContactsAutofillProps {
   modifier: string;
   selectedItems: ContactRecipientType[];
   hasGroupPermission?: boolean;
+  groupArchetype?: "USERGROUP" | "STUDYPROGRAMME";
   hasUserPermission?: boolean;
   hasWorkspacePermission?: boolean;
   hasStaffPermission?: boolean;
@@ -201,7 +202,7 @@ export default class c extends React.Component<
     const searchId = new Date().getTime();
     this.activeSearchId = searchId;
     const loaders = this.props.loaders || {};
-
+    const archetype = this.props.groupArchetype || null;
     /**
      * getStudentsLoader
      */
@@ -220,6 +221,7 @@ export default class c extends React.Component<
             MApi.getUsergroupApi().getUsergroups({
               q: textInput,
               maxResults: 20,
+              archetype,
             });
 
     /**
