@@ -14,7 +14,7 @@ import {
   UpdateNoteReceiverRequest,
 } from "~/generated/client";
 import Avatar from "../avatar";
-import { trimNoteRecipientsToAvatars } from "~/util/notes";
+import { useRecipientsToAvatars } from "./hooks/useRecipientsToAvatars";
 /**
  * DropdownItem
  */
@@ -105,6 +105,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       multiUserNote,
     } = notesItem;
 
+    const avatars = useRecipientsToAvatars(recipients);
     const { t } = useTranslation("tasks");
     const overdue = isOverdue(dueDate);
     const updatedModifiers = [];
@@ -570,7 +571,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         ) : null}
         {!specificRecipient && (
           <div className="notes__item-recipients">
-            {trimNoteRecipientsToAvatars(recipients).map((avatar) => (
+            {avatars.map((avatar) => (
               <Avatar key={avatar.id} {...avatar} size="xsmall"></Avatar>
             ))}
           </div>
