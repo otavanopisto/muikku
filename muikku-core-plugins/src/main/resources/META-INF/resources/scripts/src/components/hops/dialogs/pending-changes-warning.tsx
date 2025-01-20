@@ -88,6 +88,7 @@ const PendingChangesWarningDialog: React.FC<
       modifier="confirm-remove-answer-dialog"
       disableScroll={true}
       title={t("labels.hopsPendingChangesTitle", { ns: "hops_new" })}
+      onClose={onCancel}
       content={dialogContent}
       footer={footer}
       closeOnOverlayClick={false}

@@ -2636,10 +2636,10 @@
       "noSuggestionAvailable_staff": "Ei kursseja saatavilla. Tarkista kurssitarjonta!"
     },
     "labels": {
-      "aborted": "Keskeytynyt",
       "abortedShorthand": "K",
       "completed": "Suoritettu",
       "courses": "Kurssit",
+      "discontinued": "Keskeytetty",
       "guidanceCouncelorSuggestion": "Ohjaajan ehdottama",
       "guidanceCouncelorSuggestionNext": "Seuraavaksi ehdotettu",
       "inProgress": "Kesken",
@@ -2652,6 +2652,7 @@
       "signUpMessage": "Ilmoitusviesti",
       "signUpStudent": "Ilmoita opiskelija kurssille",
       "signUpStudentToWorkspace": "Ilmoita opiskelija kurssille {{workspaceName}}",
+      "suggestedNext": "Seuraavaksi ehdotettu",
       "supplementationRequest": "Täydennettävä",
       "supplementationRequestShorthand": "T",
       "transferred": "Hyväksiluettu",

@@ -1801,11 +1801,18 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
       // In case if hopsLocked is ready or loading, this will not be executed
       if (hopsLocked && state.status.userId === hopsLocked.userEntityId) {
         // This will grow as we add more data to load for edit mode later on
-        await Promise.all([
-          dispatch(
-            loadMatriculationData({ userIdentifier: studentIdentifier })
-          ),
-        ]);
+
+        const promises = [];
+
+        if (studentInfo.studyProgrammeEducationType === "lukio") {
+          promises.push(
+            dispatch(
+              loadMatriculationData({ userIdentifier: studentIdentifier })
+            )
+          );
+        }
+
+        await Promise.all(promises);
 
         dispatch({ type: "HOPS_CHANGE_MODE", payload: "EDIT" });
 

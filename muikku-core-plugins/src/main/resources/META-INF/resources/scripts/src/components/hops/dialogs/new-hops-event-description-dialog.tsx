@@ -75,6 +75,7 @@ class NewHopsEventDescriptionDialog extends React.Component<
         modifier="confirm-remove-answer-dialog"
         disableScroll={true}
         title="Muokkaa kuvausta"
+        onClose={this.props.onCancelClick}
         content={content}
         footer={footer}
         isOpen={this.props.isOpen}

@@ -2636,10 +2636,10 @@
       "noSuggestionAvailable_staff": "No courses available. Check courses and their prerequisites"
     },
     "labels": {
-      "aborted": "Aborted",
       "abortedShorthand": "K",
       "completed": "Completed",
       "courses": "Courses",
+      "discontinued": "Discontinued",
       "guidanceCouncelorSuggestion": "Guidance councelor's suggestion",
       "guidanceCouncelorSuggestionNext": "Guidance councelor's suggestion for next",
       "inProgress": "Enrolled",
@@ -2652,9 +2652,10 @@
       "signUpMessage": "Sign up message",
       "signUpStudent": "Sign up student to course",
       "signUpStudentToWorkspace": "Sign up student to course {{workspaceName}}",
+      "suggestedNext": "Suggested next",
       "supplementationRequest": "Incomplete",
       "supplementationRequestShorthand": "I",
-      "transfered": "Credited",
+      "transferred": "Credited",
       "transferedLanguages": "Transfered: Languages",
       "transferedOther": "Transfered: Other",
       "transferedSkillAndArt": "Transfered: Skill and art"
