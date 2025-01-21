@@ -1320,7 +1320,7 @@ public class UserRESTService extends AbstractRESTService {
 
     String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
 
-    return Response.ok(guidanceCounselorRestModels.getGuidanceCounselorRestModels(sessionController.getLoggedUser(), propertyArray)).build();
+    return Response.ok(guidanceCounselorRestModels.getGuidanceCounselorRestModels(studentIdentifier, propertyArray)).build();
   }
   
   @GET
