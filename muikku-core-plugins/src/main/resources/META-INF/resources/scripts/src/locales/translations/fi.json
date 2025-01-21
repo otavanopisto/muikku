@@ -3,7 +3,10 @@
     "actions": {
       "activate": "Aktivoi",
       "add": "Lisää",
+      "add_language": "Lisää kieli",
       "add_room": "Lisää huone",
+      "add_row": "Lisää rivi",
+      "add_study": "Lisää opinto",
       "approve": "Hyväksy",
       "archive": "Arkistoi",
       "back": "Takaisin",
@@ -2719,7 +2722,6 @@
       "gone": "Poistunut",
       "nick": "Nimimerkki",
       "people": "Käyttäjät",
-
       "roomDetails": "Huoneen tiedot",
       "rooms": "Huoneet",
       "rooms_public": "Julkiset huoneet",
