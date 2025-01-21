@@ -193,6 +193,24 @@ class NotesItemEdit extends SessionStateComponent<
           ],
         });
       }
+    } else if (changedValue.type === "workspace") {
+      // Remove the userGroup if it's already in the list
+      if (changedValue.value.id in this.state.recipientGroupIds) {
+        this.setState({
+          recipientStudentsWorkspaceIds:
+            this.state.recipientStudentsWorkspaceIds.filter(
+              (id) => id !== changedValue.value.id
+            ),
+        });
+      } else {
+        // Add the userGroup if it's not in the list
+        this.setState({
+          recipientStudentsWorkspaceIds: [
+            ...this.state.recipientStudentsWorkspaceIds,
+            changedValue.value.id,
+          ],
+        });
+      }
     } else {
       return;
     }
