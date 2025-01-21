@@ -25,6 +25,7 @@ import { AnyActionType } from "~/actions";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { withTranslation, WithTranslation } from "react-i18next";
+import StudyProgress from "./study-progress";
 
 /**
  * SummaryProps
@@ -262,6 +263,28 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
             {t("labels.summary", { ns: "studies" })}
           </h2>
           {studentBasicInfo}
+
+          <div className="application-sub-panel">
+            <div className="application-sub-panel__header application-sub-panel__header--with-instructions">
+              {t("labels.studyProgress", {
+                ns: "studies",
+              })}
+            </div>
+
+            <StudyProgress
+              curriculumName={
+                this.props.summary.data.studentsDetails.curriculumName
+              }
+              studyProgrammeName={
+                this.props.summary.data.studentsDetails.studyProgrammeName
+              }
+              studentIdentifier={this.props.summary.data.studentsDetails.id}
+              studentUserEntityId={
+                this.props.summary.data.studentsDetails.userEntityId
+              }
+              studyProgress={this.props.summary.data.studyProgress}
+            />
+          </div>
           {this.props.status.isActiveUser ? (
             <>
               <div className="application-sub-panel">
