@@ -89,11 +89,7 @@
 .study-planner__timeline {
   display: flex;
   gap: 1rem;
-  padding-bottom: 0.5rem;
-  flex-basis: 100%;
-  flex-shrink: 1;
-  flex-grow: 1;
-  position: relative;
+  flex-flow: row nowrap;
 
   &::-webkit-scrollbar {
     height: 8px;
@@ -127,25 +123,67 @@
 // Period
 .study-planner__period {
   display: flex;
-  flex-direction: column;
-  min-width: 350px;
+  flex-flow: column nowrap;
   max-width: 350px;
   height: 100%;
   background: #F5F5F7;
   border-radius: 10px;
-  padding: 0.5rem;
+  padding: 10px;
 }
 
+.study-planner__collapse-button {
+  flex-shrink: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.study-planner__period-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+}
+
+.study-planner__period-header--collapsed {
+  height: 100%;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+.study-planner__period-title--collapsed {
+  writing-mode: vertical-rl;
+}
+
+/* .study-planner__collapse-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+} */
+
 .study-planner__period-title {
-  text-align: center;
+  margin: 0;
+  white-space: nowrap;
+  will-change: transform;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+// Scrollable container
+.study-planner__scrollable-container {
+  overflow-y: auto;
 }
 
 // Months list
-.study-planner__months {
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-  padding-left: 0.5rem;
+.study-planner__months-container {
+  padding-right: 4px;
+  padding-left: 4px;
+  width: calc(350px - 20px);
 
   &::-webkit-scrollbar {
     width: 8px;
