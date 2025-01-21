@@ -501,6 +501,7 @@
       "counselorsDescription": "<p><b>Ryhmänohjaaja</b> seuraa opintojen etenemistä ja neuvoo yleisissä opiskeluun liittyvissä asioissa.</p><p><b>Opinto-ohjaaja</b> auttaa opiskelu- ja ylioppilastutkintosuunnitelmaan, opiskelutaitoihin sekä jatko-opintojen suunnitteluun liittyvissä asioissa.</p>",
       "empty": "$t(common:content.empty)",
       "empty_counselors": "Sinulla ei ole ohjaajia",
+      "empty_counselorsGuardian": "Opiskelijalla ei ole ohjaajia",
       "empty_studyTime": "Ei asetettu",
       "empty_records": "Ei suorituksia",
       "empty_workspaces": "Ei kursseja. Jatkossa näet tässä listassa kurssit, joilla opiskelet, jotka olet suorittanut ja joista sinulle on tehty hyväksiluvut.",

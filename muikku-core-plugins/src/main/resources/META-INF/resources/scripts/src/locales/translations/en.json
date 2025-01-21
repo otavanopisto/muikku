@@ -501,6 +501,7 @@
       "counselorsDescription": "<p>The <b>group advisor</b> monitors the progress of studies and provides guidance on general study-related matters.</p><p>The <b>guidance counselor</b> assists with study and matriculation examination plans, study skills, and planning further studies.</p>",
       "empty": "$t(common:content.empty)",
       "empty_counselors": "You have no counselors",
+      "empty_counselorsGuardian": "Student has no counselors",
       "empty_records": "No records",
       "empty_studyTime": "Not set",
       "empty_workspaces": "No courses. In the future, you will see in this list the courses you are studying, the courses you have completed and the courses you have received transfer credits.",
