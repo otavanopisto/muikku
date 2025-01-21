@@ -16527,6 +16527,8 @@ components:
         ceeposLine:
           type: string
           nullable: true
+        curriculumName:
+          type: string
         curriculumIdentifier:
           type: string
         language:

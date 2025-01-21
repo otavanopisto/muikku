@@ -131,7 +131,7 @@ class SaveExtraDetailsDialog extends React.Component<
 
     return (
       <Dialog
-        modifier="confirm-remove-answer-dialog"
+        modifier="save-extra-details-dialog"
         disableScroll={true}
         title={this.props.i18n.t("labels.savingPlan", {
           ns: "pedagogySupportPlan",

@@ -10,7 +10,6 @@ import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { ReducerStateType } from "~/reducers/hops";
 import { localize } from "~/locales/i18n";
-import EditHopsEventDescriptionDialog from "./dialog/edit-hops-event";
 import { HopsFormType } from "~/@types/hops";
 import {
   compulsoryStudiesFieldsTranslation,
@@ -18,6 +17,7 @@ import {
 } from "./helpers";
 import { useTranslation } from "react-i18next";
 import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
+import EditHopsEventDescriptionDialog from "~/components/hops/dialogs/edit-hops-event";
 
 /**
  * HopsHistoryProps

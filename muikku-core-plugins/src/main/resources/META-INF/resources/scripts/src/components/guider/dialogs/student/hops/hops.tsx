@@ -39,12 +39,12 @@ import {
   compulsoryStudiesFieldsTranslation,
   secondaryStudiesFieldsTranslation,
 } from "~/components/hops/body/application/wizard/helpers";
-import NewHopsEventDescriptionDialog from "~/components/hops/body/application/wizard/dialog/new-hops-event";
 import { getEditedHopsFields } from "~/components/hops/body/application/wizard/helpers";
 import { isCompulsoryStudiesHops } from "~/@types/hops";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
+import NewHopsEventDescriptionDialog from "~/components/hops/dialogs/new-hops-event-description-dialog";
 
 /**
  * Represents the available tabs in the HOPS application

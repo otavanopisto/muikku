@@ -145,7 +145,7 @@ class ConfirmDeletePageWithAnswersDialog extends React.Component<
 
     return (
       <Dialog
-        modifier="confirm-remove-answer-dialog"
+        modifier="confirm-remove-page-with-answers-dialog"
         isOpen={this.props.materialEditor.showRemoveAnswersDialogForDelete}
         onClose={this.cancel}
         title={t("labels.pageRemoval", {
