@@ -13,6 +13,7 @@ import {
   UpdateHopsFormHistoryEntryTriggerType,
   updateHopsFormHistoryEntry,
 } from "~/actions/main-function/hops/";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the EditHopsEventDescriptionDialog component
@@ -33,6 +34,7 @@ const EditHopsEventDescriptionDialog: React.FC<
 > = (props) => {
   const { historyEntry, updateHopsFormHistoryEntry, children } = props;
   const [description, setDescription] = useState(historyEntry.details);
+  const { t } = useTranslation(["hops_new", "common"]);
 
   /**
    * Handles changes to the description textarea
@@ -77,11 +79,13 @@ const EditHopsEventDescriptionDialog: React.FC<
    * @returns The dialog content
    */
   const dialogContent = () => (
-    <div className="hops-container__row">
-      <div className="hops__form-element-container">
+    <div>
+      <div className="form-element dialog__content-row">
+        <label htmlFor="hopsUpdateDetailsExplanation">
+          {t("labels.description", { ns: "common" })}
+        </label>
         <Textarea
           id="hopsUpdateDetailsExplanation"
-          label="Vapaa kuvaus tapahtuman muutoksista"
           className="form-element__textarea form-element__textarea--resize__vertically"
           onChange={handleHopsUpdateDetailsChange}
           value={description}
@@ -98,25 +102,25 @@ const EditHopsEventDescriptionDialog: React.FC<
   const footer = (closePortal: () => void) => (
     <div className="dialog__button-set">
       <Button
-        buttonModifiers={["standard-ok", "fatal"]}
+        buttonModifiers={["standard-ok", "execute"]}
         onClick={handleSaveClick(closePortal)}
       >
-        Ok
+        {t("actions.save", { ns: "common" })}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
         onClick={handleCancelClick(closePortal)}
       >
-        Peruuta
+        {t("actions.cancel", { ns: "common" })}
       </Button>
     </div>
   );
 
   return (
     <Dialog
-      modifier="confirm-remove-answer-dialog"
+      modifier="edit-hops-event"
       disableScroll={true}
-      title="Tapahtuman kuvaus"
+      title={t("labels.edit", { ns: "common", context: "description" })}
       content={dialogContent}
       footer={footer}
       closeOnOverlayClick={false}

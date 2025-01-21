@@ -62,7 +62,7 @@ const NewHopsEventDescriptionDialog: React.FC<
 
   return (
     <Dialog
-      modifier="confirm-remove-answer-dialog"
+      modifier="new-hops-event-dialog"
       disableScroll={true}
       title={t("labels.save", {
         ns: "common",

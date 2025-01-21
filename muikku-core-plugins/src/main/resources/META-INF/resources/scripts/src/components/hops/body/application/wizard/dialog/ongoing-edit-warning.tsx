@@ -83,7 +83,7 @@ const OngoingWarningDialog: React.FC<OngoingWarningDialogProps> = (props) => {
 
   return (
     <Dialog
-      modifier="confirm-remove-answer-dialog"
+      modifier="ongoing-edit-warning-dialog"
       disableScroll={true}
       title={t("labels.hopsFormWarningTitle", { ns: "hops_new" })}
       content={dialogContent}
