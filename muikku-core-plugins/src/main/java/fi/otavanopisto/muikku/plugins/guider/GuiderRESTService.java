@@ -500,6 +500,7 @@ public class GuiderRESTService extends PluginRESTService {
             studyTimeEnd,
             userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
+            o.get("curriculumIdentifier") == null ? null : courseMetaController.getCurriculumName(SchoolDataIdentifier.fromId((String) o.get("curriculumIdentifier"))),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
             restFlags,
