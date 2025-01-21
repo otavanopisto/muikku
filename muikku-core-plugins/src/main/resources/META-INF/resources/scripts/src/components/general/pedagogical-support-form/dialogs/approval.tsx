@@ -133,7 +133,7 @@ class ApprovalDialog extends React.Component<
 
     return (
       <Dialog
-        modifier="confirm-remove-answer-dialog"
+        modifier="approval-dialog"
         disableScroll={true}
         title={this.props.i18n.t("labels.approving", {
           ns: "pedagogySupportPlan",

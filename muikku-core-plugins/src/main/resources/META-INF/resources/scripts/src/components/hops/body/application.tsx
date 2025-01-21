@@ -408,11 +408,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
                 )}
               </div>
               <div className="form-element dialog__content-row">
-                <label htmlFor="pending-changes-details">
+                <label htmlFor="pendingChangesDetails">
                   {t("labels.description", { ns: "common" })}
                 </label>
                 <Textarea
-                  id="pending-changes-details"
+                  id="pendingChangesDetails"
                   value={pendingDetailsContent}
                   onChange={(e) => setPendingDetailsContent(e.target.value)}
                   className="form-element__textarea form-element__textarea--resize__vertically"

@@ -26,7 +26,7 @@ export interface DialogProps {
   title: string | React.ReactElement<any>;
   executing?: boolean;
   executeContent?: React.ReactElement<any>;
-  modifier?: string | Array<string>;
+  modifier: string | Array<string>;
   localElementId?: string;
   content: (closePortal: () => void) => JSX.Element | JSX.Element[];
   disableScroll?: boolean;
@@ -178,7 +178,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                       }
                       aria-modal="true"
                       aria-label="Dialog"
-                      aria-labelledby={`dialog-title--${modifiers[0]}`}
+                      aria-labelledby={`dialogTitle--${modifiers[0]}`}
                     >
                       {/* Execution container is missing from here */}
                       <section
@@ -206,7 +206,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                         >
                           <div
                             className="dialog__title"
-                            id={`dialog-title--${modifiers[0]}`}
+                            id={`dialogTitle--${modifiers[0]}`}
                           >
                             {this.props.title}
                           </div>

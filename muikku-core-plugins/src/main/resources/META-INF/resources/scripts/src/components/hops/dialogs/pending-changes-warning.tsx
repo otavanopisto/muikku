@@ -85,7 +85,7 @@ const PendingChangesWarningDialog: React.FC<
 
   return (
     <Dialog
-      modifier="confirm-remove-answer-dialog"
+      modifier="pended-changes-warning-dialog"
       disableScroll={true}
       title={t("labels.hopsPendingChangesTitle", { ns: "hops_new" })}
       onClose={onCancel}
