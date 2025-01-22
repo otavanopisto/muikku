@@ -1168,16 +1168,15 @@ export default class Workspace extends React.Component<
   render() {
     return (
       <ReadspeakerProvider>
-        <BrowserRouter>
-          <div id="root">
-            <WindowContextProvider>
-              <ChatWebsocketContextProvider websocket={this.props.websocket}>
-                <Chat />
-              </ChatWebsocketContextProvider>
-              <Notifications></Notifications>
-              <DisconnectedWarningDialog />
-              <EasyToUseFunctions />
-
+        <div id="root">
+          <WindowContextProvider>
+            <ChatWebsocketContextProvider websocket={this.props.websocket}>
+              <Chat />
+            </ChatWebsocketContextProvider>
+            <Notifications></Notifications>
+            <DisconnectedWarningDialog />
+            <EasyToUseFunctions />
+            <BrowserRouter>
               <Route
                 exact
                 path="/workspace/:workspaceUrl/"
@@ -1219,9 +1218,9 @@ export default class Workspace extends React.Component<
                 path="/workspace/:workspaceUrl/evaluation"
                 render={this.renderWorkspaceEvaluation}
               />
-            </WindowContextProvider>
-          </div>
-        </BrowserRouter>
+            </BrowserRouter>
+          </WindowContextProvider>
+        </div>
       </ReadspeakerProvider>
     );
   }

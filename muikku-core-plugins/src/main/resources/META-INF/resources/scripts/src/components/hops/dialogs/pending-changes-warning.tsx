@@ -72,7 +72,7 @@ const PendingChangesWarningDialog: React.FC<
         buttonModifiers={["standard-ok", "fatal"]}
         onClick={handleConfirmClick(closePortal)}
       >
-        {t("actions.continue", { ns: "hops_new" })}
+        {t("actions.continue", { ns: "common" })}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
@@ -85,9 +85,10 @@ const PendingChangesWarningDialog: React.FC<
 
   return (
     <Dialog
-      modifier="confirm-remove-answer-dialog"
+      modifier="pended-changes-warning-dialog"
       disableScroll={true}
       title={t("labels.hopsPendingChangesTitle", { ns: "hops_new" })}
+      onClose={onCancel}
       content={dialogContent}
       footer={footer}
       closeOnOverlayClick={false}

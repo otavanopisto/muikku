@@ -342,21 +342,6 @@ public class ToRTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-name", "Admin User");
       assertTextIgnoreCase(".item-list--student-counselors .item-list__user-email", "admin@example.com");
       assertPresent(".item-list--student-counselors .button-pill--new-message");
-      
-      waitForPresent(".application-sub-panel__card-header--summary-evaluated");
-      assertTextIgnoreCase(".application-sub-panel__card-header--summary-evaluated", "Kurssisuoritukset");
-      waitForPresent(".application-sub-panel__card-highlight--summary-evaluated");
-      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-evaluated", "0");
-      
-      waitForPresent(".application-sub-panel__card-header--summary-activity");
-      assertTextIgnoreCase(".application-sub-panel__card-header--summary-activity", "Aktiivisuus");
-      waitForPresent(".application-sub-panel__card-highlight--summary-activity");
-      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-activity", "1");
-
-      waitForPresent(".application-sub-panel__card-header--summary-returned");
-      assertTextIgnoreCase(".application-sub-panel__card-header--summary-returned", "Palautetut tehtävät");
-      waitForPresent(".application-sub-panel__card-highlight--summary-returned");
-      assertTextIgnoreCase(".application-sub-panel__card-highlight--summary-returned", "0");
     } finally {
       archiveUserByEmail(student.getEmail());
       deleteUserGroupUsers();

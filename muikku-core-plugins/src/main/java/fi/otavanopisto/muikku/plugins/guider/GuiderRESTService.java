@@ -480,6 +480,8 @@ public class GuiderRESTService extends PluginRESTService {
           UserSchoolDataIdentifier usdi = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(studentIdentifier);
           OrganizationEntity organizationEntity = usdi.getOrganization();
           
+          boolean u18Compulsory = userEntityController.isUnder18CompulsoryEducationStudent(studentIdentifier);
+          
           students.add(new fi.otavanopisto.muikku.rest.model.FlaggedStudentRestModel(
             studentIdentifier.toId(),
             (String) o.get("firstName"),
@@ -498,11 +500,13 @@ public class GuiderRESTService extends PluginRESTService {
             studyTimeEnd,
             userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
+            o.get("curriculumIdentifier") == null ? null : courseMetaController.getCurriculumName(SchoolDataIdentifier.fromId((String) o.get("curriculumIdentifier"))),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
             restFlags,
             organizationEntity == null ? null : toRestModel(organizationEntity),
-            pedagogyController.hasPedagogyForm(userEntity.getId())
+            pedagogyController.hasPedagogyForm(userEntity.getId()),
+            u18Compulsory
           ));
         }
       }
@@ -561,6 +565,8 @@ public class GuiderRESTService extends PluginRESTService {
       organizationRESTModel = new OrganizationRESTModel(organizationEntity.getId(), organizationEntity.getName());
     }
 
+    boolean u18Compulsory = userEntityController.isUnder18CompulsoryEducationStudent(studentIdentifier);
+    
     GuiderStudentRestModel student = new GuiderStudentRestModel(
         studentIdentifier.toId(),
         user.getFirstName(),
@@ -585,6 +591,7 @@ public class GuiderRESTService extends PluginRESTService {
         organizationRESTModel,
         user.getMatriculationEligibility(),
         userEntity == null ? false : pedagogyController.hasPedagogyForm(userEntity.getId()),
+        u18Compulsory,
         user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null,
         hopsController.getHOPSStudentPermissions(studentIdentifier)
     );

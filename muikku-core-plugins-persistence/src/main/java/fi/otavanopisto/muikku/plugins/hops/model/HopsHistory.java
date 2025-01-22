@@ -53,6 +53,14 @@ public class HopsHistory {
     this.details = details;
   }
 
+  public String getChanges() {
+    return changes;
+  }
+
+  public void setChanges(String changes) {
+    this.changes = changes;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -75,5 +83,8 @@ public class HopsHistory {
   @Lob
   @Column
   private String details;
+
+  @Column(columnDefinition = "mediumtext")
+  private String changes;
 
 }

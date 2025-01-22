@@ -5288,7 +5288,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AnyValue"
+                $ref: "#/components/schemas/HopsFormSaveResponse"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11357,6 +11357,9 @@ components:
               historyDetails:
                 description: Hops history details.
                 type: string
+              historyChanges:
+                description: Hops history changes.
+                type: string
 
     HopsUpdateLockRequestBody:
       required: true
@@ -11382,6 +11385,8 @@ components:
               - details
             properties:
               details:
+                type: string
+              changes:
                 type: string
 
     HopsGoalsUpdateRequestBody:
@@ -12068,6 +12073,11 @@ components:
         application/json:
           schema:
             type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
 
     WorkspaceStudentUpdateRequestBody:
       required: true
@@ -13519,6 +13529,7 @@ components:
         - workspaceUserEntityId
         - workspaceUserIdentifier
         - hasPedagogyForm
+        - u18Compulsory
         - state
         - locked
       properties:
@@ -13575,6 +13586,9 @@ components:
         workspaceUserIdentifier:
           type: string
         hasPedagogyForm:
+          type: boolean
+        u18Compulsory:
+          description: Is the student under 18yo and part of compulsory education program
           type: boolean
         state:
           $ref: "#/components/schemas/WorkspaceAssessmentStateType"
@@ -13893,6 +13907,7 @@ components:
       required:
         - id
         - details
+        - changes
         - date
         - modifier
         - modifierId
@@ -13904,6 +13919,8 @@ components:
         details:
           type: string
           nullable: true
+        changes:
+          type: string
         date:
           type: string
           format: date-time
@@ -15764,12 +15781,16 @@ components:
         - type: object
           required:
             - flags
+            - u18Compulsory
           properties:
             flags:
               nullable: true
               type: array
               items:
                 $ref: "#/components/schemas/UserStudentFlag"
+            u18Compulsory:
+              description: Is the student under 18yo and part of the compulsory education system
+              type: boolean
 
     GuiderStudent:
       allOf:
@@ -15789,7 +15810,10 @@ components:
               required:
                 - canViewDetails
                 - canEdit
+                - isAvailable
               properties:
+                isAvailable:
+                  type: boolean
                 canViewDetails:
                   type: boolean
                 canEdit:
@@ -15837,6 +15861,7 @@ components:
         - courseNumber
         - courseName
         - grade
+        - passing
         - status
         - date
         - transferCreditMandatory
@@ -15857,6 +15882,8 @@ components:
           type: string
         grade:
           type: string
+        passing:
+          type: boolean
         status:
           $ref: "#/components/schemas/CourseStatus"
         date:
@@ -16500,6 +16527,8 @@ components:
         ceeposLine:
           type: string
           nullable: true
+        curriculumName:
+          type: string
         curriculumIdentifier:
           type: string
         language:
@@ -17295,6 +17324,7 @@ components:
       enum:
         - ONGOING
         - GRADED
+        - SUPPLEMENTATIONREQUEST
         - TRANSFERRED
         - SUGGESTED_NEXT
         - SUGGESTED_OPTIONAL
@@ -17355,6 +17385,7 @@ components:
             - studyProgrammeName
             - active
             - hasPedagogyForm
+            - u18Compulsory
           properties:
             nickname:
               description: The nickname of the user
@@ -17366,6 +17397,9 @@ components:
               description: If the user is active
               type: boolean
             hasPedagogyForm:
+              type: boolean
+            u18Compulsory:
+              description: Is the student under 18yo and part of compulsory education program
               type: boolean
 
     WorkspaceUserBase:
@@ -18115,6 +18149,17 @@ components:
         canSignup:
           description: If the user can signup
           type: boolean
+
+    HopsFormSaveResponse:
+      type: object
+      required:
+        - formData
+        - latestChange
+      properties:
+        formData:
+          $ref: "#/components/schemas/AnyValue"
+        latestChange:
+          $ref: "#/components/schemas/HopsHistoryEntry"
 
     ErrorModel:
       type: object

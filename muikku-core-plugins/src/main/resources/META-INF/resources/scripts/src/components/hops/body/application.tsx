@@ -20,22 +20,35 @@ import { StatusType } from "~/reducers/base/status";
 import {
   StartEditingTriggerType,
   startEditing,
-  EndEditingTriggerType,
-  endEditing,
+  SaveHopsTriggerType,
+  saveHops,
   CancelEditingTriggerType,
   cancelEditing,
 } from "~/actions/main-function/hops/";
+import { useState, useCallback, useEffect } from "react";
 import { HopsState } from "~/reducers/hops";
 import Button from "~/components/general/button";
 import WebsocketWatcher from "./application/helper/websocket-watcher";
 import _ from "lodash";
 import PendingChangesWarningDialog from "../dialogs/pending-changes-warning";
+import Background from "./application/background/background";
+import Postgraduate from "./application/postgraduate/postgraduate";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
+import NewHopsEventDescriptionDialog from "../dialogs/new-hops-event-description-dialog";
+import {
+  compulsoryStudiesFieldsTranslation,
+  getEditedHopsFields,
+  secondaryStudiesFieldsTranslation,
+} from "./application/wizard/helpers";
+import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
+import { isCompulsoryStudiesHops } from "~/@types/hops";
 
 /**
  * Represents the available tabs in the HOPS application.
  * Currently only supports matriculation.
  */
-type HopsTab = "MATRICULATION";
+type HopsTab = "MATRICULATION" | "BACKGROUND" | "POSTGRADUATE";
 
 /**
  * Props for the HopsApplication component.
@@ -50,7 +63,7 @@ interface HopsApplicationProps {
   /** Function to trigger edit mode */
   startEditing: StartEditingTriggerType;
   /** Function to exit edit mode */
-  endEditing: EndEditingTriggerType;
+  saveHops: SaveHopsTriggerType;
   /** Function to cancel editing */
   cancelEditing: CancelEditingTriggerType;
 }
@@ -66,16 +79,97 @@ const defaultProps: Partial<HopsApplicationProps> = {
  * @returns The rendered HopsApplication component
  */
 const HopsApplication = (props: HopsApplicationProps) => {
-  const { showTitle, status, hops, startEditing, endEditing, cancelEditing } = {
+  const { showTitle, status, hops, startEditing, saveHops, cancelEditing } = {
     ...defaultProps,
     ...props,
   };
-  const [activeTab, setActiveTab] = React.useState<HopsTab>("MATRICULATION");
+  const [activeTab, setActiveTab] = React.useState<HopsTab>("BACKGROUND");
   const [
     isPendingChangesWarningDialogOpen,
     setIsPendingChangesWarningDialogOpen,
   ] = React.useState(false);
   const { t } = useTranslation(["studies", "common", "hops_new"]);
+  const [
+    isPendingChangesDetailsDialogOpen,
+    setIsPendingChangesDetailsDialogOpen,
+  ] = React.useState(false);
+  const [pendingDetailsContent, setPendingDetailsContent] = useState("");
+
+  // Note that this component is used by student, thats why
+  // we need to check the study programme name from profile
+  const studyProgrammeName = status.profile.studyProgrammeName;
+
+  // Check if the HOPS form has changes
+  const hopsFormHasChanges = React.useMemo(
+    () => !_.isEqual(hops.hopsForm, hops.hopsEditing.hopsForm),
+    [hops.hopsForm, hops.hopsEditing.hopsForm]
+  );
+
+  // Check if the matriculation plan has changes
+  const hopsMatriculationHasChanges = React.useMemo(() => {
+    // If the student info is not loaded or the study programme is not upper secondary, return false by default
+    if (
+      !hops.studentInfo ||
+      hops.studentInfo.studyProgrammeEducationType !== "lukio"
+    ) {
+      return false;
+    }
+
+    const updatedMatriculationPlan = {
+      ...hops.hopsEditing.matriculationPlan,
+      plannedSubjects:
+        hops.hopsEditing.matriculationPlan.plannedSubjects.filter(
+          (subject) => subject.subject
+        ),
+    };
+
+    return !_.isEqual(hops.hopsMatriculation.plan, updatedMatriculationPlan);
+  }, [
+    hops.hopsEditing.matriculationPlan,
+    hops.hopsMatriculation.plan,
+    hops.studentInfo,
+  ]);
+
+  // Check if any of the HOPS data has changes
+  const hopsHasChanges = React.useMemo(
+    () => hopsMatriculationHasChanges || hopsFormHasChanges,
+    [hopsFormHasChanges, hopsMatriculationHasChanges]
+  );
+
+  // Add new useEffect for handling initial URL hash
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash === "matriculation") {
+      setActiveTab("MATRICULATION");
+    } else if (hash === "background") {
+      setActiveTab("BACKGROUND");
+    } else if (hash === "postgraduate") {
+      setActiveTab("POSTGRADUATE");
+    }
+  }, []); // Run only on mount
+
+  // Add useEffect to handle beforeunload event
+  useEffect(() => {
+    /**
+     * Handles the beforeunload event to prevent the user from leaving the page
+     * with unsaved changes.
+     *
+     * @param e - The beforeunload event
+     * @returns - Returns an empty string to allow the user to leave the page
+     */
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hopsHasChanges || hops.hopsMode === "EDIT") {
+        e.preventDefault();
+        e.returnValue = ""; // For Chrome
+        return ""; // For other browsers
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [hops.hopsMode, hopsHasChanges]);
 
   /**
    * Handles tab changes in the application panel.
@@ -83,27 +177,31 @@ const HopsApplication = (props: HopsApplicationProps) => {
    * @param id - The ID of the tab to switch to
    * @param hash - Optional hash or Tab object for URL updating
    */
-  const onTabChange = (id: HopsTab, hash?: string | Tab) => {
+  const onTabChange = useCallback((id: HopsTab, hash?: string | Tab) => {
     if (hash) {
       if (typeof hash === "string" || hash instanceof String) {
         window.location.hash = hash as string;
       } else if (typeof hash === "object" && hash !== null) {
         window.location.hash = hash.hash;
       }
+      setActiveTab(id);
     }
+  }, []);
 
-    setActiveTab(id);
+  /**
+   * Handles the start editing button click
+   */
+  const handleStartEditing = () => {
+    startEditing();
+    setPendingDetailsContent("");
   };
 
   /**
-   * Toggles between read and edit modes.
+   * Handles the cancel editing button click
    */
-  const handleModeChangeClick = () => {
-    if (hops.hopsMode === "READ") {
-      startEditing();
-    } else {
-      endEditing();
-    }
+  const handleCancelEditing = () => {
+    cancelEditing();
+    setPendingDetailsContent("");
   };
 
   /**
@@ -131,11 +229,72 @@ const HopsApplication = (props: HopsApplicationProps) => {
   /**
    * Cancels editing and returns to read mode
    */
-  const handleCancelClick = () => {
-    cancelEditing();
+  const handlePendingChangesDetailsDialogCancel = () => {
+    setIsPendingChangesDetailsDialogOpen(false);
+  };
+
+  /**
+   * Handles the save button click in the pending changes details dialog
+   */
+  const handleSaveHops = () => {
+    saveHops({
+      details: pendingDetailsContent,
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      onSuccess: () => {
+        unstable_batchedUpdates(() => {
+          // On success, reset the pending details content and close the dialog
+          setPendingDetailsContent("");
+          setIsPendingChangesDetailsDialogOpen(false);
+        });
+      },
+    });
+  };
+
+  /**
+   * Opens the pending changes details dialog
+   */
+  const handleOpenPendingChangesDetailsDialog = () => {
+    setIsPendingChangesDetailsDialogOpen(true);
+  };
+
+  /**
+   * Checks if the tab is visible.
+   * - Background and Postgraduate tabs are visible for all students
+   * - Matriculation tab is visible if the study programme name is included in the list
+   * @param tab - The tab to check
+   * @returns boolean
+   */
+  const isVisible = (tab: string) => {
+    switch (tab) {
+      case "BACKGROUND":
+      case "POSTGRADUATE":
+        return true;
+      case "MATRICULATION":
+        return [
+          "Nettilukio",
+          "Aikuislukio",
+          "Nettilukio/yksityisopiskelu (aineopintoina)",
+          "Aineopiskelu/yo-tutkinto",
+          "Aineopiskelu/lukio",
+          "Aineopiskelu/lukio (oppivelvolliset)",
+        ].includes(studyProgrammeName);
+      default:
+        return false;
+    }
   };
 
   const panelTabs: Tab[] = [
+    {
+      id: "BACKGROUND",
+      name: t("labels.hopsBackground", { ns: "hops_new" }),
+      hash: "background",
+      type: "background",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <Background />
+        </ApplicationPanelBody>
+      ),
+    },
     {
       id: "MATRICULATION",
       name: t("labels.hopsMatriculation", { ns: "hops_new" }),
@@ -147,19 +306,22 @@ const HopsApplication = (props: HopsApplicationProps) => {
         </ApplicationPanelBody>
       ),
     },
+    {
+      id: "POSTGRADUATE",
+      name: t("labels.hopsPostgraduate", { ns: "hops_new" }),
+      hash: "postgraduate",
+      type: "postgraduate",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <Postgraduate />
+        </ApplicationPanelBody>
+      ),
+    },
   ];
 
-  const updatedMatriculationPlan = {
-    ...hops.hopsEditing.matriculationPlan,
-    plannedSubjects: hops.hopsEditing.matriculationPlan.plannedSubjects.filter(
-      (subject) => subject.subject
-    ),
-  };
-
-  const hopsHasChanges = !_.isEqual(
-    hops.hopsMatriculation.plan,
-    updatedMatriculationPlan
-  );
+  const changedFields = hopsFormHasChanges
+    ? getEditedHopsFields(hops.hopsForm, hops.hopsEditing.hopsForm)
+    : [];
 
   let editingDisabled = false;
 
@@ -185,40 +347,28 @@ const HopsApplication = (props: HopsApplicationProps) => {
             <div className="hops-edit__button-row">
               {hops.hopsMode === "READ" ? (
                 <Button
-                  onClick={handleModeChangeClick}
+                  onClick={handleStartEditing}
                   disabled={editingDisabled}
-                  buttonModifiers={[
-                    "primary",
-                    "standard-ok",
-                    "standard-fit-content",
-                  ]}
+                  buttonModifiers={["info", "standard-ok"]}
                 >
-                  {t("actions.editingStart", { ns: "hops_new" })}
+                  {t("actions.edit", { ns: "common" })}
                 </Button>
               ) : (
                 <Button
-                  onClick={handleModeChangeClick}
+                  onClick={handleOpenPendingChangesDetailsDialog}
                   disabled={!hopsHasChanges}
-                  buttonModifiers={[
-                    "primary",
-                    "standard-ok",
-                    "standard-fit-content",
-                  ]}
+                  buttonModifiers={["execute", "standard-ok"]}
                 >
-                  {t("actions.editingEnd", { ns: "hops_new" })}
+                  {t("actions.save", { ns: "common", context: "changes" })}
                 </Button>
               )}
               {hops.hopsMode === "EDIT" && (
                 <Button
-                  buttonModifiers={[
-                    "cancel",
-                    "standard-cancel",
-                    "standard-fit-content",
-                  ]}
+                  buttonModifiers={["cancel", "standard-cancel"]}
                   onClick={
                     hopsHasChanges
                       ? handleOpenPendingChangesWarningDialog
-                      : handleCancelClick
+                      : handleCancelEditing
                   }
                 >
                   {t("actions.cancel", { ns: "common" })}
@@ -228,12 +378,48 @@ const HopsApplication = (props: HopsApplicationProps) => {
           }
           onTabChange={onTabChange}
           activeTab={activeTab}
-          panelTabs={panelTabs}
+          panelTabs={panelTabs.filter((tab) => isVisible(tab.id))}
         />
         <PendingChangesWarningDialog
           isOpen={isPendingChangesWarningDialogOpen}
           onConfirm={handlePendingChangesWarningDialogConfirm}
           onCancel={handlePendingChangesWarningDialogCancel}
+        />
+        <NewHopsEventDescriptionDialog
+          isOpen={isPendingChangesDetailsDialogOpen}
+          onSaveClick={handleSaveHops}
+          onCancelClick={handlePendingChangesDetailsDialogCancel}
+          content={
+            <div>
+              <div className="form-element dialog__content-row">
+                <label>
+                  {t("labels.editedFields", { ns: "pedagogySupportPlan" })}
+                </label>
+                {changedFields.length > 0 && (
+                  <ul>
+                    {changedFields.map((field) => (
+                      <li key={field} style={{ display: "list-item" }}>
+                        {isCompulsoryStudiesHops(hops.hopsForm)
+                          ? compulsoryStudiesFieldsTranslation(t)[field]
+                          : secondaryStudiesFieldsTranslation(t)[field]}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div className="form-element dialog__content-row">
+                <label htmlFor="pendingChangesDetails">
+                  {t("labels.description", { ns: "common" })}
+                </label>
+                <Textarea
+                  id="pendingChangesDetails"
+                  value={pendingDetailsContent}
+                  onChange={(e) => setPendingDetailsContent(e.target.value)}
+                  className="form-element__textarea form-element__textarea--resize__vertically"
+                />
+              </div>
+            </div>
+          }
         />
       </HopsBasicInfoProvider>
     </WebsocketWatcher>
@@ -261,7 +447,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       startEditing,
-      endEditing,
+      saveHops,
       cancelEditing,
     },
     dispatch
