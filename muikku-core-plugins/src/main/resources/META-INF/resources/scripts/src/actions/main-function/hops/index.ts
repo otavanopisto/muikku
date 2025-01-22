@@ -1,48 +1,81 @@
-import actions from "../../base/notifications";
+import actions, { hideNotification } from "../../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { Dispatch, Action } from "redux";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
+  HopsHistoryEntry,
+  HopsLocked,
   MatriculationExam,
   MatriculationExamChangeLogEntry,
   MatriculationExamStudentStatus,
   MatriculationPlan,
   MatriculationResults,
   MatriculationSubject,
+  StudentInfo,
 } from "~/generated/client";
 import {
+  HopsEditingState,
+  HopsMode,
   MatriculationEligibilityWithAbistatus,
   MatriculationSubjectWithEligibility,
+  ReducerInitializeStatusType,
   ReducerStateType,
 } from "~/reducers/hops";
 import i18n from "~/locales/i18n";
 import { abistatus } from "~/helper-functions/abistatus";
 import { displayNotification } from "~/actions/base/notifications";
 import { OPS2021SubjectCodesInOrder } from "~/mock/mock-data";
+import {
+  CompulsoryStudiesHops,
+  HopsForm,
+  initializeCompulsoryStudiesHops,
+  initializeCompulsoryStudiesHopsFromOld,
+  initializeSecondaryStudiesHops,
+  isCompulsoryStudiesHopsOld,
+  SecondaryStudiesHops,
+} from "~/@types/hops";
+import _ from "lodash";
+import { getEditedHopsFields } from "~/components/hops/body/application/wizard/helpers";
 
 // Api instances
+const hopsApi = MApi.getHopsApi();
 const recordsApi = MApi.getRecordsApi();
 const matriculationApi = MApi.getMatriculationApi();
 
-// HOPS BACKGROUND ACTIONS TYPES
-
-export type HOPS_BACKGROUND_UPDATE_STATUS = SpecificActionType<
-  "HOPS_BACKGROUND_UPDATE_STATUS",
-  ReducerStateType
+// HOPS STATUS
+export type HOPS_UPDATE_INITIALIZE_STATUS = SpecificActionType<
+  "HOPS_UPDATE_INITIALIZE_STATUS",
+  ReducerInitializeStatusType
 >;
+
+// HOPS FORM ACTIONS TYPES
+export type HOPS_FORM_HISTORY_UPDATE = SpecificActionType<
+  "HOPS_FORM_HISTORY_UPDATE",
+  { status: ReducerStateType; data?: HopsHistoryEntry[] | null }
+>;
+
+export type HOPS_FORM_HISTORY_ENTRY_UPDATE = SpecificActionType<
+  "HOPS_FORM_HISTORY_ENTRY_UPDATE",
+  { status: ReducerStateType; data?: HopsHistoryEntry | null }
+>;
+
+export type HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY = SpecificActionType<
+  "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY",
+  boolean
+>;
+
+export type HOPS_FORM_UPDATE = SpecificActionType<
+  "HOPS_FORM_UPDATE",
+  { status: ReducerStateType; data?: HopsForm | null }
+>;
+
+export type HOPS_CHANGE_MODE = SpecificActionType<"HOPS_CHANGE_MODE", HopsMode>;
 
 // HOPS STUDY PLAN ACTIONS TYPES
 
 export type HOPS_STUDYPLAN_UPDATE_STATUS = SpecificActionType<
   "HOPS_STUDYPLAN_UPDATE_STATUS",
-  ReducerStateType
->;
-
-// HOPS CAREER PLAN ACTIONS TYPES
-
-export type HOPS_CAREERPLAN_UPDATE_STATUS = SpecificActionType<
-  "HOPS_CAREERPLAN_UPDATE_STATUS",
   ReducerStateType
 >;
 
@@ -108,6 +141,8 @@ export type HOPS_MATRICULATION_UPDATE_RESULTS = SpecificActionType<
   MatriculationResults[]
 >;
 
+// HOPS OTHER ACTIONS TYPES
+
 export type HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER = SpecificActionType<
   "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER",
   string
@@ -120,17 +155,73 @@ export type HOPS_UPDATE_CURRENTSTUDENT_STUDYPROGRAM = SpecificActionType<
 
 export type HOPS_RESET_DATA = SpecificActionType<"HOPS_RESET_DATA", undefined>;
 
+export type HOPS_STUDENT_INFO_UPDATE = SpecificActionType<
+  "HOPS_STUDENT_INFO_UPDATE",
+  { status: ReducerStateType; data?: StudentInfo | null }
+>;
+
+export type HOPS_CANCEL_EDITING = SpecificActionType<
+  "HOPS_CANCEL_EDITING",
+  undefined
+>;
+
+export type HOPS_UPDATE_LOCKED = SpecificActionType<
+  "HOPS_UPDATE_LOCKED",
+  { status: ReducerStateType; data?: HopsLocked | null }
+>;
+
+export type HOPS_UPDATE_EDITING = SpecificActionType<
+  "HOPS_UPDATE_EDITING",
+  Partial<HopsEditingState>
+>;
+
+/**
+ * UpdateHopsEditingTriggerType
+ */
+export interface UpdateHopsEditingTriggerType {
+  (data: { updates: Partial<HopsEditingState> }): AnyActionType;
+}
+
+/**
+ * StartEditingTriggerType
+ */
+export interface StartEditingTriggerType {
+  (): AnyActionType;
+}
+
+/**
+ * SaveHopsTriggerType
+ */
+export interface SaveHopsTriggerType {
+  (data: {
+    details: string;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * CancelEditingTriggerType
+ */
+export interface CancelEditingTriggerType {
+  (): AnyActionType;
+}
+
 /**
  * loadExamDataTriggerType
  */
 export interface LoadMatriculationDataTriggerType {
-  (userIdentifier?: string): AnyActionType;
+  (data: {
+    userIdentifier?: string;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
  * resetMatriculationDataTriggerType
  */
-export interface ResetMatriculationDataTriggerType {
+export interface ResetHopsDataTriggerType {
   (): AnyActionType;
 }
 
@@ -138,21 +229,33 @@ export interface ResetMatriculationDataTriggerType {
  * verifyMatriculationEligibilityTriggerType
  */
 export interface VerifyMatriculationExamTriggerType {
-  (examId: number): AnyActionType;
+  (data: {
+    examId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
  * LoadMatriculationExamHistoryTriggerType
  */
 export interface LoadMatriculationExamHistoryTriggerType {
-  (examId: number, userIdentifier?: string): AnyActionType;
+  (data: {
+    examId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
  * SaveMatriculationPlanTriggerType
  */
 export interface SaveMatriculationPlanTriggerType {
-  (plan: MatriculationPlan): AnyActionType;
+  (data: {
+    plan: MatriculationPlan;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
 }
 
 /**
@@ -167,21 +270,109 @@ export interface UpdateMatriculationExaminationTriggerType {
 }
 
 /**
+ * LoadStudentHopsFormTriggerType
+ */
+export interface LoadStudentHopsFormTriggerType {
+  (data: { userIdentifier?: string }): AnyActionType;
+}
+
+/**
+ * Trigger type for loading HOPS form history
+ */
+export interface LoadHopsFormHistoryTriggerType {
+  (data: { userIdentifier?: string }): AnyActionType;
+}
+
+/**
+ * UpdateHopsFormHistoryEntryTriggerType
+ */
+export interface UpdateHopsFormHistoryEntryTriggerType {
+  (data: {
+    entryId: number;
+    originalEntry: HopsHistoryEntry;
+    updatedEntry: Partial<HopsHistoryEntry>;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * UpdateMatriculationPlanTriggerType
+ */
+export interface UpdateMatriculationPlanTriggerType {
+  (data: {
+    plan: MatriculationPlan;
+    studentIdentifier: string;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * Load more HOPS form history data trigger type
+ */
+export interface LoadMoreHopsFormHistoryTriggerType {
+  (data: { userIdentifier?: string }): AnyActionType;
+}
+
+/**
+ * Save HOPS form trigger type
+ */
+export interface SaveHopsFormTriggerType {
+  (data: { details: string; editedFields: string[] }): AnyActionType;
+}
+
+/**
+ * UpdateHopsLockedTriggerType
+ */
+export interface UpdateHopsLockedTriggerType {
+  (data: { locked: HopsLocked }): AnyActionType;
+}
+
+/**
+ * UpdateHopsFormTriggerType
+ */
+export interface UpdateHopsFormTriggerType {
+  (data: { form: HopsForm }): AnyActionType;
+}
+
+/**
+ * UpdateHopsHistoryTriggerType
+ */
+export interface UpdateHopsHistoryTriggerType {
+  (data: { history: HopsHistoryEntry }): AnyActionType;
+}
+
+/**
+ * InitializeHopsLockedTriggerType
+ */
+export interface InitializeHopsTriggerType {
+  (data: { userIdentifier: string }): AnyActionType;
+}
+
+/**
  * Load matriculation exam data thunk
  *
- * @param userIdentifier userIdentifier
+ * @param data data
  */
 const loadMatriculationData: LoadMatriculationDataTriggerType =
-  function loadMatriculationData(userIdentifier) {
+  function loadMatriculationData(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
 
-      const studentIdentifier = userIdentifier
-        ? userIdentifier
-        : state.status.userSchoolDataIdentifier;
+      // Student identifier is either user identifier from props or current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        data.userIdentifier ||
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       if (state.hopsNew.hopsMatriculationStatus === "READY") {
         return;
@@ -422,20 +613,29 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
 
 /**
  * Verify matriculation exam
- * @param examId examId
+ * @param data data
  */
 const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
-  function cancelMatriculationExam(examId) {
+  function cancelMatriculationExam(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+
+      // Student identifier is either current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       try {
         await matriculationApi.setStudentExamEnrollmentState({
-          examId,
+          examId: data.examId,
           studentIdentifier,
           setStudentExamEnrollmentStateRequest: {
             state: "CONFIRMED",
@@ -445,7 +645,7 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_EXAM_STATE",
           payload: {
-            examId,
+            examId: data.examId,
             newState: "CONFIRMED",
           },
         });
@@ -467,22 +667,30 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
 
 /**
  * Load matriculation exam history
- * @param examId examId
- * @param userIdentifier userIdentifier
+ * @param data data
  */
 const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
-  function loadMatriculationExamHistoryTriggerType(examId, userIdentifier) {
+  function loadMatriculationExamHistoryTriggerType(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+
+      // Student identifier is either current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       dispatch({
         type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY_STATUS",
         payload: {
-          examId,
+          examId: data.examId,
           status: "LOADING",
         },
       });
@@ -490,14 +698,14 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
       try {
         const entryLogs =
           await matriculationApi.getStudentExamEnrollmentChangeLog({
-            examId,
+            examId: data.examId,
             studentIdentifier,
           });
 
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY",
           payload: {
-            examId,
+            examId: data.examId,
             history: entryLogs,
             status: "READY",
             past: true,
@@ -513,7 +721,7 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
           dispatch({
             type: "HOPS_MATRICULATION_UPDATE_EXAM_HISTORY",
             payload: {
-              examId,
+              examId: data.examId,
               history: [],
               status: "READY",
               past: true,
@@ -531,21 +739,30 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
 
 /**
  * saveMatriculationPlan
- * @param plan plan
+ * @param data data
  */
 const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
-  function saveMatriculationPlan(plan) {
+  function saveMatriculationPlan(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+
+      // Student identifier is either current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       try {
         await matriculationApi.setStudentMatriculationPlan({
           studentIdentifier,
-          setStudentMatriculationPlanRequest: plan,
+          setStudentMatriculationPlanRequest: data.plan,
         });
 
         // After saving the plan, we need to update the eligibility for the subjects
@@ -556,7 +773,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
 
         // Check if subjects are removed and add them to the list
         state.hopsNew.hopsMatriculation.plan.plannedSubjects.forEach((s) => {
-          const match = plan.plannedSubjects.find(
+          const match = data.plan.plannedSubjects.find(
             (ns) => ns.subject === s.subject
           );
 
@@ -569,7 +786,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
         });
 
         // Check if new subjects are added and add them to the list
-        plan.plannedSubjects.forEach((s) => {
+        data.plan.plannedSubjects.forEach((s) => {
           const match =
             state.hopsNew.hopsMatriculation.plan.plannedSubjects.find(
               (ns) => ns.subject === s.subject
@@ -654,7 +871,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
 
         dispatch({
           type: "HOPS_MATRICULATION_UPDATE_PLAN",
-          payload: plan,
+          payload: data.plan,
         });
 
         dispatch({
@@ -696,7 +913,14 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
       getState: () => StateType
     ) => {
       const state = getState();
-      const studentIdentifier = state.hopsNew.currentStudentIdentifier;
+      const studentIdentifier =
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
 
       try {
         // Load the updated exam enrollment
@@ -755,25 +979,1071 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
   };
 
 /**
- * resetMatriculationData
+ * resetHopsData
  */
-const resetMatriculationData: ResetMatriculationDataTriggerType =
-  function resetMatriculationData() {
-    return (
+const resetHopsData: ResetHopsDataTriggerType = function resetHopsData() {
+  return (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
+  ) => {
+    dispatch({
+      type: "HOPS_RESET_DATA",
+      payload: undefined,
+    });
+  };
+};
+
+/**
+ * Start editing. Locks the HOPS for editing for other users.
+ */
+const startEditing: StartEditingTriggerType = function startEditing() {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+
+    const studentInfo = state.hopsNew.studentInfo;
+
+    // Check matriculation data
+    if (
+      state.hopsNew.hopsMatriculationStatus === "IDLE" &&
+      studentInfo.studyProgrammeEducationType === "lukio"
+    ) {
+      dispatch(
+        loadMatriculationData({
+          userIdentifier: state.hopsNew.currentStudentIdentifier,
+        })
+      );
+    }
+
+    if (state.hopsNew.hopsStudyPlanStatus === "IDLE") {
+      // TODO: Load study plan data
+    }
+
+    try {
+      const hopsLocked = await hopsApi.updateStudentHopsLock({
+        studentIdentifier: state.hopsNew.currentStudentIdentifier,
+        updateStudentHopsLockRequest: {
+          locked: true,
+        },
+      });
+
+      dispatch({
+        type: "HOPS_UPDATE_LOCKED",
+        payload: { status: "READY", data: hopsLocked },
+      });
+
+      // Change mode after ensuring data is at least loading and hops is locked
+      dispatch({
+        type: "HOPS_CHANGE_MODE",
+        payload: "EDIT",
+      });
+
+      dispatch(
+        displayNotification(
+          i18n.t("notifications.editingModePersistentInfo", {
+            ns: "hops_new",
+          }),
+          "persistent-info",
+          undefined,
+          "hops-editing-mode-notification"
+        )
+      );
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      dispatch(
+        displayNotification(
+          i18n.t("notifications.startEditingError", {
+            ns: "hops_new",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * Cancel editing. Discards any changes and returns to read mode.
+ */
+const cancelEditing: CancelEditingTriggerType = function cancelEditing() {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+
+    try {
+      const hopsLocked = await hopsApi.updateStudentHopsLock({
+        studentIdentifier: state.hopsNew.currentStudentIdentifier,
+        updateStudentHopsLockRequest: {
+          locked: false,
+        },
+      });
+
+      dispatch({
+        type: "HOPS_UPDATE_LOCKED",
+        payload: { status: "READY", data: hopsLocked },
+      });
+
+      dispatch({
+        type: "HOPS_CANCEL_EDITING",
+        payload: undefined,
+      });
+
+      const hopsNotification = getState().notifications.notifications.find(
+        (notification) => notification.id === "hops-editing-mode-notification"
+      );
+
+      if (hopsNotification) {
+        dispatch(hideNotification(hopsNotification));
+      }
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      dispatch(
+        displayNotification(
+          i18n.t("notifications.cancelEditingError", {
+            ns: "hops_new",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * End editing. Saves possible changes and unlocks the HOPS for editing for other users.
+ * @param data data
+ */
+const saveHops: SaveHopsTriggerType = function saveHops(data) {
+  return async (
+    dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+
+    const isUpperSecondary =
+      state.hopsNew.studentInfo.studyProgrammeEducationType === "lukio";
+
+    // Filter out empty subjects
+    const updatedPlan = {
+      ...state.hopsNew.hopsEditing.matriculationPlan,
+      plannedSubjects:
+        state.hopsNew.hopsEditing.matriculationPlan.plannedSubjects.filter(
+          (subject) => subject.subject
+        ),
+    };
+
+    // Check if the matriculation plan has changes
+    // specifically after filtering out empty subjects
+    const matriculationPlanHasChanges = !_.isEqual(
+      state.hopsNew.hopsMatriculation.plan,
+      updatedPlan
+    );
+
+    // Check if the HOPS form has changes
+    const hopsFormHasChanges = !_.isEqual(
+      state.hopsNew.hopsForm,
+      state.hopsNew.hopsEditing.hopsForm
+    );
+
+    const allPromises = [];
+
+    // Save hops form if there are changes. This because hops details are saved through
+    // hops form endpoint. So if there are or are not changes to the form, we need to save it.
+    if (hopsFormHasChanges || matriculationPlanHasChanges) {
+      const editedFields = getEditedHopsFields(
+        state.hopsNew.hopsForm,
+        state.hopsNew.hopsEditing.hopsForm
+      );
+
+      allPromises.push(
+        dispatch(
+          saveHopsForm({
+            details: data.details,
+            editedFields: editedFields,
+          })
+        )
+      );
+    }
+
+    // Save matriculation plan if there are changes
+    if (isUpperSecondary && matriculationPlanHasChanges) {
+      allPromises.push(
+        dispatch(
+          saveMatriculationPlan({
+            plan: updatedPlan,
+          })
+        )
+      );
+    }
+
+    try {
+      // Wait for all update promises to resolve
+      await Promise.all(allPromises);
+
+      // Then unlock the HOPS
+      const hopsLocked = await hopsApi.updateStudentHopsLock({
+        studentIdentifier: state.hopsNew.currentStudentIdentifier,
+        updateStudentHopsLockRequest: {
+          locked: false,
+        },
+      });
+
+      data.onSuccess && data.onSuccess();
+
+      dispatch({
+        type: "HOPS_UPDATE_LOCKED",
+        payload: { status: "READY", data: hopsLocked },
+      });
+
+      dispatch({
+        type: "HOPS_CHANGE_MODE",
+        payload: "READ",
+      });
+
+      const hopsNotification = getState().notifications.notifications.find(
+        (notification) => notification.id === "hops-editing-mode-notification"
+      );
+
+      if (hopsNotification) {
+        dispatch(hideNotification(hopsNotification));
+      }
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      dispatch(
+        displayNotification(
+          i18n.t("notifications.updateError", {
+            ns: "hops_new",
+            context: "saveHops",
+          }),
+          "error"
+        )
+      );
+
+      data.onFail && data.onFail();
+    }
+  };
+};
+
+/**
+ * Update HOPS editing state
+ * @param data Data containing partial updates to apply to editing state
+ */
+const updateHopsEditing: UpdateHopsEditingTriggerType =
+  function updateHopsEditing(data) {
+    return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
-        type: "HOPS_RESET_DATA",
-        payload: undefined,
+        type: "HOPS_UPDATE_EDITING",
+        payload: data.updates,
       });
     };
   };
 
+/**
+ * Update matriculation plan
+ * @param data Data containing partial updates to apply to matriculation plan
+ */
+const updateMatriculationPlan: UpdateMatriculationPlanTriggerType =
+  function updateMatriculationPlan(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const { plan, studentIdentifier } = data;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
+
+      // matriculation data is not ready aka not loaded, do nothing
+      if (state.hopsNew.hopsMatriculationStatus !== "READY") {
+        return;
+      }
+
+      try {
+        // Calculate which subjects need eligibility updates
+        const loadEligibilityForNewSubjects: MatriculationSubject[] = [];
+        const deleteEligibilityForFollowingSubjects: MatriculationSubject[] =
+          [];
+
+        // Check for removed subjects
+        state.hopsNew.hopsMatriculation.plan.plannedSubjects.forEach((s) => {
+          const match = plan.plannedSubjects.find(
+            (ns) => ns.subject === s.subject
+          );
+          if (!match) {
+            const subject = state.hopsNew.hopsMatriculation.subjects.find(
+              (sub) => sub.code === s.subject
+            );
+            deleteEligibilityForFollowingSubjects.push(subject);
+          }
+        });
+
+        // Check for new subjects
+        plan.plannedSubjects.forEach((s) => {
+          const match =
+            state.hopsNew.hopsMatriculation.plan.plannedSubjects.find(
+              (ns) => ns.subject === s.subject
+            );
+          if (!match) {
+            const subject = state.hopsNew.hopsMatriculation.subjects.find(
+              (sub) => sub.code === s.subject
+            );
+            loadEligibilityForNewSubjects.push(subject);
+          }
+        });
+
+        // Start with current eligibility list
+        let updatedListOfEligibility = [
+          ...state.hopsNew.hopsMatriculation.subjectsWithEligibility,
+        ];
+
+        // Remove subjects no longer in plan
+        deleteEligibilityForFollowingSubjects.forEach((s) => {
+          const index = updatedListOfEligibility.findIndex(
+            (el) => el.subject.code === s.code
+          );
+          if (index !== -1) {
+            updatedListOfEligibility.splice(index, 1);
+          }
+        });
+
+        // Load eligibility for new subjects
+        if (loadEligibilityForNewSubjects.length) {
+          const newSubjectEligibilityDataArray =
+            await Promise.all<MatriculationSubjectWithEligibility>(
+              loadEligibilityForNewSubjects.map(async (s) => {
+                const subjectEligibility =
+                  await matriculationApi.getMatriculationSubjectEligibility({
+                    studentIdentifier,
+                    subjectCode: s.subjectCode,
+                  });
+                return {
+                  ...subjectEligibility,
+                  subject: s,
+                };
+              })
+            );
+          updatedListOfEligibility = [
+            ...updatedListOfEligibility,
+            ...newSubjectEligibilityDataArray,
+          ];
+        }
+
+        // Sort by OPS order
+        updatedListOfEligibility = updatedListOfEligibility.sort(
+          (a, b) =>
+            OPS2021SubjectCodesInOrder.indexOf(a.subject.subjectCode) -
+            OPS2021SubjectCodesInOrder.indexOf(b.subject.subjectCode)
+        );
+
+        // Calculate new abistatus
+        const abistatusData = abistatus(
+          updatedListOfEligibility,
+          state.hopsNew.hopsMatriculation.eligibility.credits,
+          state.hopsNew.hopsMatriculation.eligibility.creditsRequired
+        );
+
+        // Create final eligibility object
+        const eligibilityWithAbistatus: MatriculationEligibilityWithAbistatus =
+          {
+            ...abistatusData,
+            personHasCourseAssessments:
+              state.hopsNew.hopsMatriculation.eligibility
+                .personHasCourseAssessments,
+          };
+
+        // Dispatch updates
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_PLAN",
+          payload: plan,
+        });
+
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_SUBJECT_ELIGIBILITY",
+          payload: updatedListOfEligibility,
+        });
+
+        dispatch({
+          type: "HOPS_MATRICULATION_UPDATE_ELIGIBILITY",
+          payload: eligibilityWithAbistatus,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(
+          displayNotification(i18n.t("notifications.updateError"), "error")
+        );
+      }
+    };
+  };
+
+/**
+ * Update Hops locked
+ * @param data Data containing partial updates to apply to Hops locked
+ */
+const updateHopsLocked: UpdateHopsLockedTriggerType = function updateHopsLocked(
+  data
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const { locked } = data;
+
+    const state = getState();
+
+    // Hops locked is not loaded, do nothing
+    if (state.hopsNew.hopsLocked === null) {
+      return;
+    }
+
+    // Check if the current user is the same as the user who has locked the Hops
+    // Meaning that the current user is the one who is editing
+    if (
+      locked.locked &&
+      state.status.userId === locked.userEntityId &&
+      state.hopsNew.hopsMode !== "EDIT"
+    ) {
+      dispatch({
+        type: "HOPS_CHANGE_MODE",
+        payload: "EDIT",
+      });
+    }
+    // Check if current user is not same as the user who has locked the Hops
+    // And that the Hops is not already in read mode
+    else if (
+      locked.locked &&
+      state.status.userId !== locked.userEntityId &&
+      state.hopsNew.hopsMode !== "READ"
+    ) {
+      dispatch({
+        type: "HOPS_CHANGE_MODE",
+        payload: "READ",
+      });
+    }
+
+    dispatch({
+      type: "HOPS_UPDATE_LOCKED",
+      payload: { status: "READY", data: locked },
+    });
+  };
+};
+
+/**
+ * Update Hops form
+ * @param data Data containing partial updates to apply to Hops form
+ */
+const updateHopsForm: UpdateHopsFormTriggerType = function updateHopsForm(
+  data
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    dispatch({
+      type: "HOPS_FORM_UPDATE",
+      payload: { status: "READY", data: data.form },
+    });
+  };
+};
+
+/**
+ * Update Hops history
+ * @param data Data containing partial updates to apply to Hops history
+ */
+const updateHopsHistory: UpdateHopsHistoryTriggerType =
+  function updateHopsHistory(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      const updatedHistory = [...state.hopsNew.hopsFormHistory];
+
+      //Check if the history is already in the state...
+      const historyIndex = updatedHistory.findIndex(
+        (h) => h.id === data.history.id
+      );
+
+      // ...if it is, update it
+      if (historyIndex !== -1) {
+        updatedHistory[historyIndex] = data.history;
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_UPDATE",
+          payload: { status: "READY", data: updatedHistory },
+        });
+      }
+      // ...otherwise append it
+      else {
+        dispatch({
+          type: "HOPS_FORM_HISTORY_UPDATE",
+          payload: {
+            status: "READY",
+            data: [data.history, ...updatedHistory],
+          },
+        });
+      }
+    };
+  };
+
+/**
+ * Update HOPS form history entry thunk
+ *
+ * @param data data
+ */
+const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
+  function updateHopsFormHistoryEntry(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      // Student identifier is either current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
+
+      dispatch({
+        type: "HOPS_FORM_HISTORY_ENTRY_UPDATE",
+        payload: { status: "LOADING" },
+      });
+
+      try {
+        // Update details and keep changes as it is in original entry
+        const updatedEntryData = await hopsApi.updateStudentHopsHistoryEntry({
+          studentIdentifier,
+          entryId: data.entryId,
+          updateStudentHopsHistoryEntryRequest: {
+            details: data.updatedEntry.details,
+            changes: data.originalEntry.changes,
+          },
+        });
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_ENTRY_UPDATE",
+          payload: { status: "READY", data: updatedEntryData },
+        });
+
+        data.onSuccess && data.onSuccess();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_ENTRY_UPDATE",
+          payload: { status: "ERROR" },
+        });
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "common",
+              context: "hopsEntry",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * Load more HOPS form history data thunk
+ *
+ * @param data data
+ */
+const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
+  function loadMoreHopsFormHistory(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      // Student identifier is either user identifier from props or current student identifier or user school data identifier from current user
+      const studentIdentifier =
+        data.userIdentifier ||
+        state.hopsNew.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
+
+      dispatch({
+        type: "HOPS_FORM_HISTORY_UPDATE",
+        payload: { status: "LOADING" },
+      });
+
+      try {
+        const moreHopsFormHistoryData =
+          await hopsApi.getStudentHopsHistoryEntries({
+            studentIdentifier,
+            firstResult: 6,
+            maxResults: 999,
+          });
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_UPDATE",
+          payload: {
+            status: "READY",
+            data: [
+              ...state.hopsNew.hopsFormHistory,
+              ...moreHopsFormHistoryData,
+            ],
+          },
+        });
+
+        dispatch({
+          type: "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY",
+          payload: false,
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch({
+          type: "HOPS_FORM_HISTORY_UPDATE",
+          payload: { status: "ERROR" },
+        });
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "hops_new",
+              context: "hopsHistory",
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+
+/**
+ * Save/Update HOPS form data thunk
+ * @param data data
+ */
+const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+
+    // Student identifier is either current student identifier or user school data identifier from current user
+    const studentIdentifier =
+      state.hopsNew.currentStudentIdentifier ||
+      state.status.userSchoolDataIdentifier;
+
+    // Only PYRAMUS students are supported
+    if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+      throw new Error("Invalid student identifier");
+    }
+
+    dispatch({
+      type: "HOPS_FORM_UPDATE",
+      payload: { status: "LOADING" },
+    });
+
+    try {
+      const savedFormData = await hopsApi.saveStudentHops({
+        studentIdentifier,
+        saveStudentHopsRequest: {
+          formData: JSON.stringify(state.hopsNew.hopsEditing.hopsForm),
+          historyDetails: data.details,
+          historyChanges: data.editedFields.join(","),
+        },
+      });
+
+      dispatch({
+        type: "HOPS_FORM_UPDATE",
+        payload: { status: "READY", data: JSON.parse(savedFormData.formData) },
+      });
+
+      dispatch({
+        type: "HOPS_FORM_HISTORY_UPDATE",
+        payload: {
+          status: "READY",
+          data: [savedFormData.latestChange, ...state.hopsNew.hopsFormHistory],
+        },
+      });
+
+      dispatch(
+        actions.displayNotification(
+          i18n.t("notifications.saveSuccess", {
+            ns: "common",
+          }),
+          "success"
+        )
+      );
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      dispatch({
+        type: "HOPS_FORM_UPDATE",
+        payload: { status: "ERROR" },
+      });
+
+      dispatch(
+        actions.displayNotification(
+          i18n.t("notifications.saveError", {
+            ns: "common",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * Initialize HOPS data thunk. This is used to load all necessary data for HOPS.
+ * Important thing is that hops locked status is loaded first, as it triggers
+ * loading of other data based on if current user is editing or not.
+ * @param data data
+ */
+const initializeHops: InitializeHopsTriggerType = function initializeHops(
+  data
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+
+    // Get student identifier
+    const studentIdentifier =
+      data.userIdentifier ||
+      state.hopsNew.currentStudentIdentifier ||
+      state.status.userSchoolDataIdentifier;
+
+    // Just throw error if trying to initialize HOPS with invalid student identifier
+    if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+      throw new Error("Invalid student identifier");
+    }
+
+    if (state.hopsNew.initialized !== "IDLE") {
+      return;
+    }
+
+    dispatch({
+      type: "HOPS_UPDATE_INITIALIZE_STATUS",
+      payload: "INITIALIZING",
+    });
+
+    // Update identifier if changed
+    if (state.hopsNew.currentStudentIdentifier !== studentIdentifier) {
+      dispatch({
+        type: "HOPS_UPDATE_CURRENTSTUDENTIDENTIFIER",
+        payload: studentIdentifier,
+      });
+    }
+
+    // Set mode to READ by default
+    dispatch({
+      type: "HOPS_CHANGE_MODE",
+      payload: "READ",
+    });
+
+    try {
+      // 1. Get student info to determine form type
+      const studentInfo = await initializeStudentInfo(
+        studentIdentifier,
+        dispatch,
+        getState
+      );
+
+      // 2. Initialize HOPS form based on student type. In case if info is ready or loading
+      // studentInfo will be undefined and this will not be executed
+      studentInfo &&
+        (await initializeHopsForms(
+          studentIdentifier,
+          studentInfo.studyProgrammeEducationType === "lukio",
+          dispatch,
+          getState
+        ));
+
+      // 3. Load HOPS form history as they are part of the form data
+      await initializeHopsFormHistory(studentIdentifier, dispatch, getState);
+
+      // 4. Check lock status
+      const hopsLocked = await initializeHopsLocked(
+        studentIdentifier,
+        dispatch,
+        getState
+      );
+
+      // 5. Handle edit mode if user is the one who has locked HOPS
+      // Here is loaded any missing data that is needed for edit mode
+      // In case if hopsLocked is ready or loading, this will not be executed
+      if (hopsLocked && state.status.userId === hopsLocked.userEntityId) {
+        // This will grow as we add more data to load for edit mode later on
+
+        const promises = [];
+
+        if (studentInfo.studyProgrammeEducationType === "lukio") {
+          promises.push(
+            dispatch(
+              loadMatriculationData({ userIdentifier: studentIdentifier })
+            )
+          );
+        }
+
+        await Promise.all(promises);
+
+        dispatch({ type: "HOPS_CHANGE_MODE", payload: "EDIT" });
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.editingModePersistentInfo", {
+              ns: "hops_new",
+            }),
+            "persistent-info",
+            undefined,
+            "hops-editing-mode-notification"
+          )
+        );
+      }
+
+      dispatch({
+        type: "HOPS_UPDATE_INITIALIZE_STATUS",
+        payload: "INITIALIZED",
+      });
+    } catch (err) {
+      if (!isMApiError(err)) throw err;
+      dispatch({
+        type: "HOPS_UPDATE_INITIALIZE_STATUS",
+        payload: "INITIALIZATION_FAILED",
+      });
+
+      dispatch(
+        actions.displayNotification(
+          i18n.t("notifications.initilizationError", {
+            ns: "hops_new",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * Initialize student info
+ * @param studentIdentifier student identifier
+ * @param dispatch dispatch
+ * @param getState getState
+ * @returns student info
+ */
+const initializeStudentInfo = async (
+  studentIdentifier: string,
+  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
+  getState: () => StateType
+) => {
+  const state = getState();
+
+  if (state.hopsNew.studentInfoStatus !== "IDLE") {
+    return;
+  }
+
+  dispatch({
+    type: "HOPS_STUDENT_INFO_UPDATE",
+    payload: { status: "LOADING" },
+  });
+  const studentInfo = await hopsApi.getStudentInfo({ studentIdentifier });
+  dispatch({
+    type: "HOPS_STUDENT_INFO_UPDATE",
+    payload: { status: "READY", data: studentInfo },
+  });
+
+  return studentInfo;
+};
+
+/**
+ * Initialize HOPS form
+ * @param studentIdentifier student identifier
+ * @param isSecondary is secondary studies
+ * @param dispatch dispatch
+ * @param getState getState
+ */
+const initializeHopsForms = async (
+  studentIdentifier: string,
+  isSecondary: boolean,
+  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
+  getState: () => StateType
+) => {
+  const state = getState();
+
+  if (state.hopsNew.hopsFormStatus !== "IDLE") {
+    return;
+  }
+
+  const hopsFormData = await hopsApi.getStudentHops({ studentIdentifier });
+
+  // Initialize HOPS form based on student type and existing data
+  const initializedHopsFormData = initializeHopsForm(hopsFormData, isSecondary);
+
+  // Dispatch initialized HOPS form data to state
+  dispatch({
+    type: "HOPS_FORM_UPDATE",
+    payload: { status: "READY", data: initializedHopsFormData },
+  });
+};
+
+/**
+ * Initialize HOPS form history
+ * @param studentIdentifier student identifier
+ * @param dispatch dispatch
+ * @param getState getState
+ */
+const initializeHopsFormHistory = async (
+  studentIdentifier: string,
+  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
+  getState: () => StateType
+) => {
+  const state = getState();
+
+  if (state.hopsNew.hopsFormHistoryStatus !== "IDLE") {
+    return;
+  }
+
+  dispatch({
+    type: "HOPS_FORM_HISTORY_UPDATE",
+    payload: { status: "LOADING" },
+  });
+  const hopsFormHistory = await hopsApi.getStudentHopsHistoryEntries({
+    studentIdentifier,
+    maxResults: 6,
+  });
+
+  // Update the state with the first 5 entries
+  const updatedToState = hopsFormHistory.slice(0, 5);
+  dispatch({
+    type: "HOPS_FORM_HISTORY_UPDATE",
+    payload: { status: "READY", data: updatedToState },
+  });
+
+  // Check if there are more history entries to load
+  const canLoadMoreHistory = hopsFormHistory.length > 5;
+  dispatch({
+    type: "HOPS_FORM_UPDATE_CAN_LOAD_MORE_HISTORY",
+    payload: canLoadMoreHistory,
+  });
+};
+
+/**
+ * Initialize HOPS locked status
+ * @param studentIdentifier student identifier
+ * @param dispatch dispatch
+ * @param getState getState
+ * @returns hops locked
+ */
+const initializeHopsLocked = async (
+  studentIdentifier: string,
+  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
+  getState: () => StateType
+) => {
+  const state = getState();
+
+  if (state.hopsNew.hopsLockedStatus !== "IDLE") {
+    return;
+  }
+
+  dispatch({ type: "HOPS_UPDATE_LOCKED", payload: { status: "LOADING" } });
+  const hopsLocked = await hopsApi.getStudentHopsLock({
+    studentIdentifier,
+  });
+  dispatch({
+    type: "HOPS_UPDATE_LOCKED",
+    payload: { status: "READY", data: hopsLocked },
+  });
+
+  return hopsLocked;
+};
+
+/**
+ * Helper function to initialize HOPS form
+ * @param existingData existing data
+ * @param isSecondary is secondary studies
+ * @returns initialized HOPS form
+ */
+function initializeHopsForm(
+  existingData: HopsForm | string,
+  isSecondary: boolean
+): HopsForm {
+  const baseForm = isSecondary
+    ? { ...initializeSecondaryStudiesHops() }
+    : { ...initializeCompulsoryStudiesHops() };
+
+  // If there is no existing data or it is empty string, return base initial form
+  if (!existingData || existingData === "") return baseForm;
+
+  const existingDataForm = existingData as HopsForm;
+
+  // If there is existing data, but it is old compulsory studies form, return initialized compulsory studies form
+  // that is initialized from old data
+  if (!isSecondary && isCompulsoryStudiesHopsOld(existingDataForm)) {
+    return {
+      ...(baseForm as CompulsoryStudiesHops),
+      ...initializeCompulsoryStudiesHopsFromOld(existingDataForm),
+    };
+  }
+
+  // By default return initialized secondary studies form that is initialized from existing data
+  return {
+    ...(baseForm as SecondaryStudiesHops),
+    ...(existingDataForm as SecondaryStudiesHops),
+  };
+}
+
 export {
+  startEditing,
+  cancelEditing,
+  initializeHops,
   loadMatriculationData,
-  verifyMatriculationExam,
   loadMatriculationExamHistory,
+  loadMoreHopsFormHistory,
+  resetHopsData,
+  saveHops,
+  saveHopsForm,
   saveMatriculationPlan,
+  updateHopsEditing,
+  updateHopsFormHistoryEntry,
+  updateHopsLocked,
+  updateHopsForm,
+  updateHopsHistory,
   updateMatriculationExamination,
-  resetMatriculationData,
+  updateMatriculationPlan,
+  verifyMatriculationExam,
 };

@@ -34,7 +34,7 @@ const build = _build({
   entryNames: "[name]",
   outdir: path.resolve(path.join("../dist")),
   publicPath: "../dist",
-  external: ["/gfx/*"],
+  external: ["/gfx/*", "/sounds/*"],
   loader: {
     ".png": "dataurl",
     ".jpg": "dataurl",
@@ -46,6 +46,7 @@ const build = _build({
     ".woff2": "dataurl",
     ".eot": "dataurl",
     ".ttf": "dataurl",
+    ".wav": "dataurl",
   },
   // commons file name
   chunkNames: "commons-[hash]",

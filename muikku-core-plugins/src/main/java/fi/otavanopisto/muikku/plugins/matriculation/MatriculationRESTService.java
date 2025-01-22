@@ -33,6 +33,9 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.plugins.hops.HopsController;
+import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
+import fi.otavanopisto.muikku.plugins.hops.ws.HopsMatriculationPlanWSMessage;
 import fi.otavanopisto.muikku.plugins.matriculation.dao.SavedMatriculationEnrollmentDAO;
 import fi.otavanopisto.muikku.plugins.matriculation.model.SavedMatriculationEnrollment;
 import fi.otavanopisto.muikku.plugins.matriculation.restmodel.MatriculationExamAttendance;
@@ -105,19 +108,20 @@ public class MatriculationRESTService {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
+  @Inject
+  private HopsController hopsController;
+
+  @Inject
+  private HopsWebsocketMessenger hopsWebSocketMessenger;
+
   @GET
-  @RESTPermit(MatriculationPermissions.MATRICULATION_LIST_EXAMS)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   @Path("/students/{STUDENTIDENTIFIER}/exams")
-  public Response listStudentsExams(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @QueryParam("filter") @DefaultValue("ALL") MatriculationExamListFilter filter) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
-    if (studentIdentifierStr == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
-    }
-    
-    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+  public Response listStudentsExams(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier, @QueryParam("filter") @DefaultValue("ALL") MatriculationExamListFilter filter) {
+    if (!hopsController.canViewHops(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
-    
+
     BridgeResponse<List<MatriculationExam>> response = matriculationController.listStudentsExams(studentIdentifier, filter);
     if (response.ok()) {
       List<MatriculationCurrentExam> examRestModels = response.getEntity().stream().map(exam -> restModel(exam)).collect(Collectors.toList());
@@ -155,16 +159,11 @@ public class MatriculationRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE)
   @Path("/students/{STUDENTIDENTIFIER}/exams/{EXAMID}/enrollment/changelog")
-  public Response getEnrollmentChangeLog(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, @PathParam("EXAMID") Long examId) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
-    if (studentIdentifierStr == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
-    }
-    
-    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+  public Response getEnrollmentChangeLog(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier, @PathParam("EXAMID") Long examId) {
+    if (!hopsController.canViewHops(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
-    
+
     BridgeResponse<List<MatriculationExamEnrollmentChangeLogEntry>> response = matriculationController.getEnrollmentChangeLog(studentIdentifier, examId);
     if (response.ok()) {
       return Response.ok().entity(restModel(response.getEntity())).build();
@@ -414,13 +413,8 @@ public class MatriculationRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   @Path("/students/{STUDENTIDENTIFIER}/plan")
-  public Response getStudentsMatriculationPlan(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
-    if (studentIdentifierStr == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid identifier").build();
-    }
-    
-    if (!studentIdentifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+  public Response getStudentsMatriculationPlan(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier) {
+    if (!hopsController.canViewHops(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
 
@@ -450,18 +444,12 @@ public class MatriculationRESTService {
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   @Path("/students/{STUDENTIDENTIFIER}/plan")
-  public Response updateStudentsMatriculationPlan(@PathParam("STUDENTIDENTIFIER") String studentIdentifierParam, MatriculationPlanRESTModel model) {
+  public Response updateStudentsMatriculationPlan(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier, MatriculationPlanRESTModel model) {
     if (model == null) {
       return Response.status(Status.BAD_REQUEST).entity("Missing payload").build();
     }
 
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    if (!loggedUserIdentifier.equals(studentIdentifier)) {
+    if (!hopsController.canModifyHops(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
@@ -477,6 +465,12 @@ public class MatriculationRESTService {
       logger.log(Level.SEVERE, "Error serializing matriculation plan", e);
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error serializing matriculation plan").build();
     }
+    
+    HopsMatriculationPlanWSMessage msg = new HopsMatriculationPlanWSMessage();
+    msg.setGoalMatriculationExam(model.getGoalMatriculationExam());
+    msg.setPlannedSubjects(model.getPlannedSubjects());
+    msg.setStudentIdentifier(studentIdentifier.toId());
+    hopsWebSocketMessenger.sendMessage(studentIdentifier.toId(), "hops:matriculationplan-updated", msg);
 
     return Response.ok().entity(model).build();
   }
@@ -485,15 +479,9 @@ public class MatriculationRESTService {
   @Path("/students/{STUDENTIDENTIFIER}/matriculationEligibility")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response findMatriculationEligibility(
-      @PathParam("STUDENTIDENTIFIER") String studentIdentifierParam,
+      @PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier,
       @QueryParam ("subjectCode") String subjectCode) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    if (!studentIdentifier.equals(loggedUserIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+    if (!hopsController.canViewHops(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     
@@ -511,14 +499,8 @@ public class MatriculationRESTService {
   @GET
   @Path("/students/{STUDENTIDENTIFIER}/results")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findMatriculationResults(@PathParam("STUDENTIDENTIFIER") String studentIdentifierParam) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierParam);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    if (!studentIdentifier.equals(loggedUserIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
+  public Response findMatriculationResults(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier) {
+    if (!hopsController.canViewHops(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
     

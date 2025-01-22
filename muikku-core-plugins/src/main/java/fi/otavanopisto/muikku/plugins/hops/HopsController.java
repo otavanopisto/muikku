@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.codec.binary.StringUtils;
+
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -28,9 +30,11 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
+import fi.otavanopisto.muikku.rest.model.HopsStudentPermissionsRestModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -88,7 +92,8 @@ public class HopsController {
         return false;
       }
       
-      // Hops is always available for admins
+      // Hops is always available for admins, managers, and study programme leaders
+      
       if (sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
         return true;
       }
@@ -152,24 +157,22 @@ public class HopsController {
     return canSignUp;
   }
   
-  public Hops createHops(String studentIdentifier, String formData, String historyDetails) {
-    Hops hops = hopsDAO.create(studentIdentifier, formData);
-    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails);
-    return hops;
+  public HopsHistory createHops(String studentIdentifier, String formData, String historyDetails, String historyChanges) {
+    hopsDAO.create(studentIdentifier, formData);
+    return hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails, historyChanges);
   }
 
-  public Hops updateHops(Hops hops, String studentIdentifier, String formData, String historyDetails) {
+  public HopsHistory updateHops(Hops hops, String studentIdentifier, String formData, String historyDetails, String historyChanges) {
     hopsDAO.updateFormData(hops, formData);
-    hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails);
-    return hops;
+    return hopsHistoryDAO.create(studentIdentifier, new Date(), sessionController.getLoggedUser().toId(), historyDetails, historyChanges);
   }
   
   public HopsHistory findHistoryById(Long id) {
     return hopsHistoryDAO.findById(id);
   }
   
-  public HopsHistory updateHopsHistoryDetails(HopsHistory history, String details) {
-    hopsHistoryDAO.update(history, details);
+  public HopsHistory updateHopsHistoryDetails(HopsHistory history, String details, String changes) {
+    hopsHistoryDAO.update(history, details, changes);
     return history;
   }
   
@@ -295,4 +298,70 @@ public class HopsController {
     }
   }
   
+  /**
+   * Returns true if currently logged in user can view the regular hops tabs
+   * of given student. The regular tabs are the planning tab and the matriculation
+   * tab. The other two tabs are covered as "details" tabs.
+   * 
+   * @param studentIdentifier for which student the permission is checked for
+   * @return true if user has permission, false otherwise
+   */
+  public boolean canViewHops(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return true;
+    }
+    
+    return userSchoolDataController.amICounselor(studentIdentifier)
+        || userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)
+        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)
+        || workspaceEntityController.isWorkspaceTeacherOfStudent(sessionController.getLoggedUser(), studentIdentifier);
+  }
+
+  /**
+   * Returns true if currently logged in user can view the hops details of 
+   * given student.
+   * 
+   * @param studentIdentifier for which student the permission is checked for
+   * @return true if user has permission, false otherwise
+   */
+  public boolean canViewHopsDetails(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return true;
+    }
+    
+    return userSchoolDataController.amICounselor(studentIdentifier)
+        || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+  }
+
+  /**
+   * Returns true if currently logged in user can modify the hops of 
+   * given student.
+   * 
+   * @param studentIdentifier for which student the permission is checked for
+   * @return true if user has permission, false otherwise
+   */
+  public boolean canModifyHops(SchoolDataIdentifier studentIdentifier) {
+    if (studentIdentifier.equals(sessionController.getLoggedUser())) {
+      return true;
+    }
+    
+    return userSchoolDataController.amICounselor(studentIdentifier) 
+        || sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR);
+  }
+
+  /**
+   * Returns a permission rest model for front-end for currently logged in user.
+   * HOPS is only available for students whose study programme education type is lukio or perusopetus (value is education type code)
+   * 
+   * @param studentIdentifier for which student the permissions are for
+   * @return a permission rest model
+   */
+  public HopsStudentPermissionsRestModel getHOPSStudentPermissions(SchoolDataIdentifier studentIdentifier) {
+    User user = userController.findUserByIdentifier(studentIdentifier);
+    boolean isAvailable = user != null && (StringUtils.equals("lukio", user.getStudyProgrammeEducationType()) || StringUtils.equals("peruskoulu", user.getStudyProgrammeEducationType())); 
+    boolean isGuidanceCounselor = isAvailable && userSchoolDataController.amICounselor(studentIdentifier);
+    boolean canViewDetails = isAvailable &&  (isGuidanceCounselor || sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER));
+    boolean canEdit = isAvailable && (isGuidanceCounselor || sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR));
+    return new HopsStudentPermissionsRestModel(isAvailable, canViewDetails, canEdit);
+  }
 }

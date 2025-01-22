@@ -17,7 +17,6 @@ import { discussion } from "~/reducers/discussion";
 import { guider } from "./main-function/guider";
 import { profile } from "./main-function/profile";
 import { records } from "~/reducers/main-function/records";
-import { hops } from "~/reducers/main-function/hops";
 import { summary } from "~/reducers/main-function/records/summary";
 import { organizationSummary } from "~/reducers/organization/summary";
 import { combineReducers } from "redux";
@@ -36,7 +35,6 @@ export default combineReducers({
   easyToUse,
   evaluations,
   guider,
-  hops,
   locales,
   messages,
   notifications,

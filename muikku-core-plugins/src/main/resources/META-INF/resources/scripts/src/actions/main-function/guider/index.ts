@@ -6,6 +6,7 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderState,
+  GuiderStudentStudyProgress,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
 import { UserFileType } from "reducers/user-index";
@@ -20,13 +21,14 @@ import {
   CeeposPurchaseProduct,
   ContactLog,
   ContactType,
-  Student,
   UserStudentFlag,
   UserFlag,
   UserGroup,
   Note,
   CreateNoteRequest,
   UpdateNoteRequest,
+  StudentStudyActivity,
+  FlaggedStudent,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -34,6 +36,13 @@ import {
   RecordWorkspaceActivitiesWithLineCategory,
   RecordWorkspaceActivityByLine,
 } from "~/components/general/records-history/types";
+import {
+  filterActivity,
+  filterActivityBySubjects,
+  LANGUAGE_SUBJECTS_CS,
+  OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+  SKILL_AND_ART_SUBJECTS_CS,
+} from "~/helper-functions/study-matrix";
 
 export type UPDATE_NOTES_STATUS = SpecificActionType<
   "UPDATE_NOTES_STATUS",
@@ -58,11 +67,11 @@ export type UPDATE_GUIDER_STATE = SpecificActionType<
 >;
 export type ADD_TO_GUIDER_SELECTED_STUDENTS = SpecificActionType<
   "ADD_TO_GUIDER_SELECTED_STUDENTS",
-  Student
+  FlaggedStudent
 >;
 export type REMOVE_FROM_GUIDER_SELECTED_STUDENTS = SpecificActionType<
   "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
-  Student
+  FlaggedStudent
 >;
 export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT",
@@ -177,6 +186,11 @@ export type TOGGLE_ALL_STUDENTS = SpecificActionType<
 export type DELETE_CONTACT_EVENT = SpecificActionType<
   "DELETE_CONTACT_EVENT",
   number
+>;
+
+export type GUIDER_UPDATE_STUDENT_STUDY_PROGRESS = SpecificActionType<
+  "GUIDER_UPDATE_STUDENT_STUDY_PROGRESS",
+  GuiderStudentStudyProgress
 >;
 
 export type DELETE_CONTACT_EVENT_COMMENT = SpecificActionType<
@@ -319,14 +333,14 @@ export interface EditContactLogEventCommentTriggerType {
  * AddToGuiderSelectedStudentsTriggerType action creator type
  */
 export interface AddToGuiderSelectedStudentsTriggerType {
-  (student: Student): AnyActionType;
+  (student: FlaggedStudent): AnyActionType;
 }
 
 /**
  * RemoveFromGuiderSelectedStudentsTriggerType action creator type
  */
 export interface RemoveFromGuiderSelectedStudentsTriggerType {
-  (student: Student): AnyActionType;
+  (student: FlaggedStudent): AnyActionType;
 }
 
 /**
@@ -406,13 +420,6 @@ export interface UpdateGuiderFilterLabelTriggerType {
 }
 
 /**
- * UpdateCurrentStudentHopsPhaseTriggerType action creator type
- */
-export interface UpdateCurrentStudentHopsPhaseTriggerType {
-  (data: { value: string }): AnyActionType;
-}
-
-/**
  * RemoveGuiderFilterLabelTriggerType action creator type
  */
 export interface RemoveGuiderFilterLabelTriggerType {
@@ -488,6 +495,29 @@ export interface UpdateNoteTriggerType {
  */
 export interface ArchiveNoteTriggerType {
   (noteId: number, success?: () => void): AnyActionType;
+}
+
+/**
+ *  Interface for the suggested next websocket thunk action creator
+ */
+export interface GuiderStudyProgressSuggestedNextWebsocketType {
+  (data: { websocketData: StudentStudyActivity }): AnyActionType;
+}
+
+/**
+ * Interface for the workspace signup websocket thunk action creator
+ */
+export interface GuiderStudyProgressWorkspaceSignupWebsocketType {
+  (data: {
+    websocketData: StudentStudyActivity | StudentStudyActivity[];
+  }): AnyActionType;
+}
+
+/**
+ * Interface for the alternative study options websocket thunk action creator
+ */
+export interface GuiderStudyProgressAlternativeStudyOptionsWebsocketType {
+  (data: { websocketData: string[] }): AnyActionType;
 }
 
 /**
@@ -840,8 +870,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
-    const hopsApi = MApi.getHopsApi();
-    const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
     const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
@@ -849,6 +877,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     const pedagogyApi = MApi.getPedagogyApi();
     const usergroupApi = MApi.getUsergroupApi();
     const activitylogsApi = MApi.getActivitylogsApi();
+    const hopsApi = MApi.getHopsApi();
 
     try {
       const currentUserSchoolDataIdentifier =
@@ -865,6 +894,50 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
         payload: <GuiderCurrentStudentStateType>"LOADING",
       });
+
+      /**
+       * Study progress promise
+       */
+      const studyProgressPromise = async () => {
+        const studentActivity = await hopsApi.getStudentStudyActivity({
+          studentIdentifier: id,
+        });
+
+        const studentOptions = await hopsApi.getStudentAlternativeStudyOptions({
+          studentIdentifier: id,
+        });
+
+        const skillAndArtCourses = filterActivityBySubjects(
+          SKILL_AND_ART_SUBJECTS_CS,
+          studentActivity
+        );
+
+        const otherLanguageSubjects = filterActivityBySubjects(
+          LANGUAGE_SUBJECTS_CS,
+          studentActivity
+        );
+
+        const otherSubjects = filterActivityBySubjects(
+          OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+          studentActivity
+        );
+
+        const studentActivityByStatus = filterActivity(studentActivity);
+
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "studyProgress",
+            value: {
+              skillsAndArt: skillAndArtCourses,
+              otherLanguageSubjects: otherLanguageSubjects,
+              otherSubjects: otherSubjects,
+              ...studentActivityByStatus,
+              options: studentOptions,
+            },
+          },
+        });
+      };
 
       await Promise.all([
         guiderApi
@@ -885,37 +958,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               dispatch(updateAvailablePurchaseProducts());
             }
 
-            // After basic data is loaded, check if current user of guider has permissions
-            // to see/use current student hops
-            hopsApi
-              .isHopsAvailable({
-                studentIdentifier: id,
-              })
-              .then(async (hopsAvailable) => {
-                dispatch({
-                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                  payload: {
-                    property: "hopsAvailable",
-                    value: hopsAvailable,
-                  },
-                });
-
-                // after basic data is loaded and hops availability checked, then check if hopsPhase property
-                // is used and what values it contains
-                const hopsPhase = await userApi.getUserProperties({
-                  userEntityId: student.userEntityId,
-                  properties: "hopsPhase",
-                });
-
-                dispatch({
-                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                  payload: {
-                    property: "hopsPhase",
-                    value: hopsPhase[0].value,
-                  },
-                });
-              });
-
             pedagogyApi
               .getPedagogyFormAccess({
                 userEntityId: student.userEntityId,
@@ -930,6 +972,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 });
               });
           }),
+
+        studyProgressPromise(),
 
         usergroupApi
           .getUsergroups({ userIdentifier: id })
@@ -983,17 +1027,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "files", value: files },
-            });
-          }),
-
-        hopsUppersecondaryApi
-          .getHopsByUser({
-            userIdentifier: id,
-          })
-          .then((hops) => {
-            dispatch({
-              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-              payload: { property: "hops", value: hops },
             });
           }),
 
@@ -2068,52 +2101,6 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
   };
 
 /**
- *
- * Updates and return hops phase for current student
- *
- * @param data data
- */
-const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
-  function updateCurrentStudentHopsPhase(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const userApi = MApi.getUserApi();
-
-      try {
-        const properties = await userApi.setUserProperty({
-          setUserPropertyRequest: {
-            key: "hopsPhase",
-            value: data.value,
-            userEntityId: getState().guider.currentStudent.basic.userEntityId,
-          },
-        });
-
-        dispatch({
-          type: "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
-          payload: {
-            property: "hopsPhase",
-            value: properties.value,
-          },
-        });
-
-        dispatch(
-          notificationActions.displayNotification(
-            "HOPS-vaiheen päivittäminen onnistui.",
-            "success"
-          )
-        );
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-        dispatch(notificationActions.displayNotification(err.message, "error"));
-      }
-    };
-  };
-
-/**
  * removeLabelFromUserUtil utility function
  * @param student student
  * @param flags student flags
@@ -2122,7 +2109,7 @@ const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
  * @param getState getstate method
  */
 async function removeLabelFromUserUtil(
-  student: Student,
+  student: FlaggedStudent,
   flags: UserStudentFlag[],
   label: UserFlag,
   dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
@@ -2170,7 +2157,7 @@ async function removeLabelFromUserUtil(
  * @param getState getstate method
  */
 async function addLabelToUserUtil(
-  student: Student,
+  student: FlaggedStudent,
   flags: UserStudentFlag[],
   label: UserFlag,
   dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
@@ -2270,7 +2257,7 @@ const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
       getState: () => StateType
     ) => {
       const guider: GuiderState = getState().guider;
-      guider.selectedStudents.forEach((student: Student) => {
+      guider.selectedStudents.forEach((student) => {
         addLabelToUserUtil(student, student.flags, label, dispatch, getState);
       });
     };
@@ -2287,7 +2274,7 @@ const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrig
       getState: () => StateType
     ) => {
       const guider: GuiderState = getState().guider;
-      guider.selectedStudents.forEach((student: Student) => {
+      guider.selectedStudents.forEach((student) => {
         removeLabelFromUserUtil(
           student,
           student.flags,
@@ -2740,6 +2727,153 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
     };
   };
 
+/**
+ * Thunk action creator for the suggested next websocket
+ * @param data data
+ */
+const guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNextWebsocketType =
+  function guiderStudyProgressSuggestedNextWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { suggestedNextList } = currentStudent.studyProgress;
+
+      const updatedSuggestedNextList: StudentStudyActivity[] = [].concat(
+        suggestedNextList
+      );
+
+      // If course id is null, meaning that delete existing activity course by
+      // finding that specific course with subject code and course number and splice it out
+      const indexOfCourse = updatedSuggestedNextList.findIndex(
+        (item) =>
+          item.courseId === websocketData.courseId &&
+          websocketData.subject === item.subject
+      );
+
+      if (indexOfCourse !== -1) {
+        updatedSuggestedNextList.splice(indexOfCourse, 1);
+      } else {
+        // Add new
+        updatedSuggestedNextList.push(websocketData);
+      }
+
+      const studyProgress: GuiderStudentStudyProgress = {
+        ...state.guider.currentStudent.studyProgress,
+        suggestedNextList: updatedSuggestedNextList,
+      };
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: {
+            ...studyProgress,
+            suggestedNextList: updatedSuggestedNextList,
+          },
+        },
+      });
+    };
+  };
+
+/**
+ * Thunk action creator for the workspace signup websocket
+ * @param data data
+ */
+const guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceSignupWebsocketType =
+  function guiderStudyProgressWorkspaceSignupWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { studyProgress } = currentStudent;
+      const { suggestedNextList, onGoingList, gradedList, transferedList } =
+        studyProgress;
+
+      // Combine all course lists and filter out the updated course
+      let allCourses = [
+        ...onGoingList,
+        ...gradedList,
+        ...transferedList,
+        ...suggestedNextList,
+      ];
+      const courseIdToFilter = Array.isArray(websocketData)
+        ? websocketData[0].courseId
+        : websocketData.courseId;
+      allCourses = allCourses.filter(
+        (item) => item.courseId !== courseIdToFilter
+      );
+
+      // Add the new course(s)
+      allCourses = allCourses.concat(websocketData);
+
+      // Get filtered course lists
+      const categorizedCourses = {
+        ...filterActivity(allCourses), // This adds suggestedNextList, onGoingList, gradedList, transferedList
+      };
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: {
+            ...studyProgress,
+            ...categorizedCourses,
+          },
+        },
+      });
+    };
+  };
+
+/**
+ * Thunk action creator for the alternative study options websocket
+ * @param data data
+ */
+const guiderStudyProgressAlternativeStudyOptionsWebsocket: GuiderStudyProgressAlternativeStudyOptionsWebsocketType =
+  function guiderStudyProgressAlternativeStudyOptionsWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { studyProgress } = currentStudent;
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: { ...studyProgress, options: websocketData },
+        },
+      });
+    };
+  };
+
 export {
   loadNotes,
   createNote,
@@ -2768,7 +2902,6 @@ export {
   removeFileFromCurrentStudent,
   updateLabelFilters,
   updateWorkspaceFilters,
-  updateCurrentStudentHopsPhase,
   createGuiderFilterLabel,
   updateGuiderFilterLabel,
   removeGuiderFilterLabel,
@@ -2778,4 +2911,7 @@ export {
   doOrderForCurrentStudent,
   deleteOrderFromCurrentStudent,
   completeOrderFromCurrentStudent,
+  guiderStudyProgressSuggestedNextWebsocket,
+  guiderStudyProgressWorkspaceSignupWebsocket,
+  guiderStudyProgressAlternativeStudyOptionsWebsocket,
 };

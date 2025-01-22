@@ -12,12 +12,13 @@ public class GuiderStudentRestModel extends FlaggedStudentRestModel {
       String studyProgrammeIdentifier, Boolean hasImage, String nationality, String language, String municipality,
       String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, Date lastLogin,
       String curriculumIdentifier, boolean updatedByStudent, Long userEntityId, List<StudentFlag> flags,
-      OrganizationRESTModel organization, boolean matriculationEligibility, Boolean hasPedagogyForm, String curriculumName) {
+      OrganizationRESTModel organization, boolean matriculationEligibility, Boolean hasPedagogyForm, boolean u18compulsory,
+      String curriculumName, HopsStudentPermissionsRestModel permissions) {
     super(id, firstName, lastName, nickName, studyProgrammeName, studyProgrammeIdentifier, hasImage, nationality, language, municipality,
         school, email, studyStartDate, studyEndDate, studyTimeEnd, lastLogin,
-        curriculumIdentifier, updatedByStudent, userEntityId, flags, organization, hasPedagogyForm);
+        curriculumIdentifier, curriculumName, updatedByStudent, userEntityId, flags, organization, hasPedagogyForm, u18compulsory);
     this.matriculationEligibility = matriculationEligibility;
-    this.curriculumName = curriculumName;
+    this.permissions = permissions;
   }
 
   public boolean getMatriculationEligibility() {
@@ -28,14 +29,14 @@ public class GuiderStudentRestModel extends FlaggedStudentRestModel {
     this.matriculationEligibility = matriculationEligibility;
   }
 
-  public String getCurriculumName() {
-    return curriculumName;
+  public HopsStudentPermissionsRestModel getPermissions() {
+    return permissions;
   }
 
-  public void setCurriculumName(String curriculumName) {
-    this.curriculumName = curriculumName;
+  public void setPermissions(HopsStudentPermissionsRestModel permissions) {
+    this.permissions = permissions;
   }
 
   private boolean matriculationEligibility;
-  private String curriculumName;
+  private HopsStudentPermissionsRestModel permissions;
 }

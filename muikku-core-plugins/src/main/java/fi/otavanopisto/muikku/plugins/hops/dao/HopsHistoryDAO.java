@@ -17,7 +17,7 @@ public class HopsHistoryDAO extends CorePluginsDAO<HopsHistory> {
 
   private static final long serialVersionUID = 684462720482086730L;
 
-  public HopsHistory create(String studentIdentifier, Date date, String lastModifier, String details) {
+  public HopsHistory create(String studentIdentifier, Date date, String lastModifier, String details, String changes) {
     EntityManager entityManager = getEntityManager();
     
     HopsHistory hopsHistory = new HopsHistory();
@@ -25,14 +25,16 @@ public class HopsHistoryDAO extends CorePluginsDAO<HopsHistory> {
     hopsHistory.setDate(date);
     hopsHistory.setModifier(lastModifier);
     hopsHistory.setDetails(details);
+    hopsHistory.setChanges(changes);
     
     entityManager.persist(hopsHistory);
 
     return hopsHistory;
   }
   
-  public HopsHistory update(HopsHistory history, String details) {
+  public HopsHistory update(HopsHistory history, String details, String changes) {
     history.setDetails(details);
+    history.setChanges(changes);
     return persist(history);
   }
 

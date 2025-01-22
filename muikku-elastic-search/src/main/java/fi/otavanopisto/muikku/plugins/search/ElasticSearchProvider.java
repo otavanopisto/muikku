@@ -205,12 +205,12 @@ public class ElasticSearchProvider implements SearchProvider {
 
     BoolQueryBuilder query = boolQuery();
     if (!includeInactive) {
-      query.mustNot(existsQuery("studyEndDate"));
+      query.filter(getActiveUserRestriction(OffsetDateTime.now().toEpochSecond(), getActiveWorkspaces()));
     }
     
     IdsQueryBuilder includeIdsQuery = idsQuery();
     includeIdsQuery.addIds(String.format("%s/%s", identifier.getIdentifier(), identifier.getDataSource()));
-    query.must(includeIdsQuery);
+    query.filter(includeIdsQuery);
     
     try {
       SearchResponse response = searchRequest(MUIKKU_USER_INDEX, query);
@@ -244,8 +244,6 @@ public class ElasticSearchProvider implements SearchProvider {
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers,
       Date startedStudiesBefore, Date studyTimeEndsBefore, boolean joinGroupsAndWorkspaces) {
     try {
-      long now = OffsetDateTime.now().toEpochSecond();
-
       if (CollectionUtils.isEmpty(organizations)) {
         throw new IllegalArgumentException("Cannot search with no organizations specified.");
       }
@@ -344,51 +342,7 @@ public class ElasticSearchProvider implements SearchProvider {
       }
 
       if (includeInactiveStudents == false) {
-        /**
-         * List only active users.
-         *
-         * Active user is
-         * - staff member (teacher, manager, study guider, study programme leader, administrator)
-         * - student that has study start date (in the past) and no study end date
-         * - student that has study start date (in the past) and study end date in the future
-         * - student that has no study start and end date but belongs to an active workspace
-         *
-         * Active workspace is
-         * - published and
-         * - either has no start/end date or current date falls between them
-         */
-
-        Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
-
-        query.filter(
-          boolQuery()
-          .should(termsQuery("roles",
-              archetypeToIndexString(EnvironmentRoleArchetype.TEACHER),
-              archetypeToIndexString(EnvironmentRoleArchetype.MANAGER),
-              archetypeToIndexString(EnvironmentRoleArchetype.STUDY_GUIDER),
-              archetypeToIndexString(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER),
-              archetypeToIndexString(EnvironmentRoleArchetype.ADMINISTRATOR))
-            )
-            .should(boolQuery()
-              .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
-              .must(existsQuery("studyStartDate"))
-              .must(rangeQuery("studyStartDate").lte(now))
-              .mustNot(existsQuery("studyEndDate"))
-            )
-            .should(boolQuery()
-              .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
-              .must(existsQuery("studyStartDate"))
-              .must(rangeQuery("studyStartDate").lte(now))
-              .must(existsQuery("studyEndDate"))
-              .must(rangeQuery("studyEndDate").gte(now))
-            )
-            .should(boolQuery()
-              .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
-              .mustNot(existsQuery("studyEndDate"))
-              .mustNot(existsQuery("studyStartDate"))
-              .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
-            )
-        );
+        query.filter(getActiveUserRestriction(OffsetDateTime.now().toEpochSecond(), getActiveWorkspaces()));
       }
       
       SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder()
@@ -462,6 +416,51 @@ public class ElasticSearchProvider implements SearchProvider {
    */
   private String archetypeToIndexString(EnvironmentRoleArchetype archetype) {
     return archetype.name();
+  }
+  
+  /**
+   * Returns a restriction to limit a search to active users.
+   *
+   * Active user is
+   * - staff member (teacher, manager, study guider, study programme leader, administrator)
+   * - student that has study start date (in the past) and no study end date
+   * - student that has study start date (in the past) and study end date in the future
+   * - student that has no study start and end date but belongs to an active workspace
+   *
+   * Active workspace is
+   * - published and
+   * - either has no start/end date or current date falls between them
+   * 
+   * @param now epoch second from OffsetDateTime.toEpochSecond()
+   */
+  private BoolQueryBuilder getActiveUserRestriction(long now, Collection<Long> activeWorkspaceEntityIds) {
+    return boolQuery()
+        .should(termsQuery("roles",
+          archetypeToIndexString(EnvironmentRoleArchetype.TEACHER),
+          archetypeToIndexString(EnvironmentRoleArchetype.MANAGER),
+          archetypeToIndexString(EnvironmentRoleArchetype.STUDY_GUIDER),
+          archetypeToIndexString(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER),
+          archetypeToIndexString(EnvironmentRoleArchetype.ADMINISTRATOR))
+        )
+        .should(boolQuery()
+          .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+          .must(existsQuery("studyStartDate"))
+          .must(rangeQuery("studyStartDate").lte(now))
+          .mustNot(existsQuery("studyEndDate"))
+        )
+        .should(boolQuery()
+          .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+          .must(existsQuery("studyStartDate"))
+          .must(rangeQuery("studyStartDate").lte(now))
+          .must(existsQuery("studyEndDate"))
+          .must(rangeQuery("studyEndDate").gte(now))
+        )
+        .should(boolQuery()
+          .must(termQuery("roles", archetypeToIndexString(EnvironmentRoleArchetype.STUDENT)))
+          .mustNot(existsQuery("studyEndDate"))
+          .mustNot(existsQuery("studyStartDate"))
+          .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
+        );
   }
   
   private Set<Long> getActiveWorkspaces() {

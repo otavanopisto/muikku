@@ -18,14 +18,15 @@ import { DependantsState } from "~/reducers/main-function/dependants";
 import Select from "react-select";
 import { getName } from "~/util/modifiers";
 import { OptionDefault } from "~/components/general/react-select/types";
-import { UseCaseContextProvider } from "~/context/use-case-context";
 import {
   loadMatriculationData,
   LoadMatriculationDataTriggerType,
-  resetMatriculationData,
-  ResetMatriculationDataTriggerType,
+  resetHopsData,
+  ResetHopsDataTriggerType,
 } from "~/actions/main-function/hops/";
 import { Action, bindActionCreators, Dispatch } from "redux";
+import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
+import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
 
 const UPPERSECONDARY_PROGRAMMES = [
   "Nettilukio",
@@ -37,24 +38,24 @@ const UPPERSECONDARY_PROGRAMMES = [
 ];
 
 /**
- * StudiesTab
+ * GuardianHopsTab. Restricted to only MATRICULATION tab and upcoming STUDYPLAN tab.
  */
-type HopsTab = "MATRICULATION";
+type GuardianHopsTab = "MATRICULATION";
 
 /**
- * HopsApplicationProps
+ * GuardianHopsApplicationProps
  */
 interface GuardianHopsApplicationProps extends WithTranslation {
   dependants: DependantsState;
   loadMatriculationData: LoadMatriculationDataTriggerType;
-  resetMatriculationData: ResetMatriculationDataTriggerType;
+  resetHopsData: ResetHopsDataTriggerType;
 }
 
 /**
  * GuardianHopsApplicationState
  */
 interface GuardianHopsApplicationState {
-  activeTab: HopsTab;
+  activeTab: GuardianHopsTab;
   selectedDependantIdentifier: string;
 }
 
@@ -85,9 +86,11 @@ class GuardianHopsApplication extends React.Component<
   async componentDidUpdate() {
     if (!window.location.hash && this.props.dependants.state === "READY") {
       // Dependants are loaded, but there's none selected, we pick the first one
-
-      const selectedDependantIdentifier =
-        this.props.dependants.list[0].identifier;
+      // that has an upper secondary programme
+      const selectedDependantIdentifier = this.props.dependants.list.find(
+        (dependant) =>
+          UPPERSECONDARY_PROGRAMMES.includes(dependant.studyProgrammeName)
+      )?.identifier;
       window.location.hash = selectedDependantIdentifier;
 
       this.setState({
@@ -108,7 +111,7 @@ class GuardianHopsApplication extends React.Component<
      * opened tab again
      */
     switch (tab) {
-      case "MATRICULATION":
+      case "matriculation":
         this.setState({
           activeTab: "MATRICULATION",
         });
@@ -144,9 +147,10 @@ class GuardianHopsApplication extends React.Component<
     switch (tab.id) {
       case "MATRICULATION":
         return UPPERSECONDARY_PROGRAMMES.includes(selectUserStudyProgramme);
-    }
 
-    return false;
+      default:
+        return false;
+    }
   };
 
   /**
@@ -154,7 +158,7 @@ class GuardianHopsApplication extends React.Component<
    * @param id id
    * @param hash hash
    */
-  handleTabChange = (id: "MATRICULATION", hash?: string | Tab) => {
+  handleTabChange = (id: GuardianHopsTab, hash?: string | Tab) => {
     if (hash) {
       const user = window.location.hash.replace("#", "").split("/")[0];
       if (typeof hash === "string" || hash instanceof String) {
@@ -170,14 +174,14 @@ class GuardianHopsApplication extends React.Component<
   };
 
   /**
-   * handleSelectChange
+   * Handles change of dependant. Resets data and loads new data for HOPS form and history by default.
    * @param option selectedOptions
    */
   handleDependantSelectChange = async (option: OptionDefault<string>) => {
     window.location.hash = option.value;
 
-    this.props.resetMatriculationData();
-    this.props.loadMatriculationData(option.value);
+    this.props.resetHopsData();
+    this.props.loadMatriculationData({ userIdentifier: option.value });
 
     this.setState({
       activeTab: "MATRICULATION",
@@ -199,6 +203,7 @@ class GuardianHopsApplication extends React.Component<
           .map((d) => ({
             label: getName(d, true),
             value: d.identifier,
+            ...d,
           }))
       : [];
 
@@ -240,15 +245,23 @@ class GuardianHopsApplication extends React.Component<
     panelTabs = panelTabs.filter(this.isVisible);
 
     return (
-      <UseCaseContextProvider value="GUARDIAN">
-        <ApplicationPanel
-          title="HOPS"
-          onTabChange={this.handleTabChange}
-          activeTab={this.state.activeTab}
-          panelTabs={panelTabs}
-          panelOptions={dependantSelect}
-        />
-      </UseCaseContextProvider>
+      <WebsocketWatcher studentIdentifier={selectedDependant?.identifier}>
+        <HopsBasicInfoProvider
+          useCase="GUARDIAN"
+          studentInfo={{
+            identifier: selectedDependant?.identifier || "",
+            studyStartDate: selectedDependant?.studyStartDate || new Date(),
+          }}
+        >
+          <ApplicationPanel
+            title="HOPS"
+            onTabChange={this.handleTabChange}
+            activeTab={this.state.activeTab}
+            panelTabs={panelTabs}
+            panelOptions={dependantSelect}
+          />
+        </HopsBasicInfoProvider>
+      </WebsocketWatcher>
     );
   }
 }
@@ -269,7 +282,10 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { loadMatriculationData, resetMatriculationData },
+    {
+      loadMatriculationData,
+      resetHopsData,
+    },
     dispatch
   );
 }

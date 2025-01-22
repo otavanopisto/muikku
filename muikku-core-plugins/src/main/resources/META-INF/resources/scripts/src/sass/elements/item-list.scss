@@ -20,19 +20,30 @@
   align-items: flex-start;
   display: flex;
   flex-flow: row wrap;
+  padding: 5px 0 20px;
   width: 100%;
 
   .item-list__item {
     align-items: flex-start;
-    border-top: 1px solid $color-default-separator-border;
+    border: 1px solid $color-default-separator-border;
+    border-radius: 3px;
+    box-shadow: 0 0 15px rgba(0 0 0 / 2%);
     cursor: inherit;
-    flex-basis: 100%;
+    flex-basis: calc(100% - 16px);
     flex-grow: 1;
     flex-shrink: 1;
-    padding: 10px 0;
+    margin: 8px;
+    max-width: calc(100% - 10px);
+    padding: 10px;
 
-    &:first-child {
-      border: 0;
+    @include breakpoint($breakpoint-pad) {
+      flex-basis: calc(50% - 16px);
+      max-width: calc(50% - 16px);
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: calc(33% - 16px);
+      max-width: calc(33% - 16px);
     }
   }
 }
@@ -238,6 +249,10 @@
 
 .item-list__user-name {
   font-weight: 600;
+}
+
+.item-list__counselors {
+  padding: 5px 0 0;
 }
 
 .item-list__user-email,

@@ -138,7 +138,7 @@ class ConfirmPublishPageWithAnswersDialog extends React.Component<
 
     return (
       <Dialog
-        modifier="confirm-remove-answer-dialog"
+        modifier="confirm-publish-page-with-answers-dialog"
         isOpen={this.props.materialEditor.showRemoveAnswersDialogForPublish}
         onClose={this.cancel}
         title={t("labels.pagePublication", { ns: "materials" })}
