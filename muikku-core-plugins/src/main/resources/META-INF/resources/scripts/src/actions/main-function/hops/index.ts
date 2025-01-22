@@ -1002,8 +1002,13 @@ const startEditing: StartEditingTriggerType = function startEditing() {
   ) => {
     const state = getState();
 
+    const studentInfo = state.hopsNew.studentInfo;
+
     // Check matriculation data
-    if (state.hopsNew.hopsMatriculationStatus === "IDLE") {
+    if (
+      state.hopsNew.hopsMatriculationStatus === "IDLE" &&
+      studentInfo.studyProgrammeEducationType === "lukio"
+    ) {
       dispatch(
         loadMatriculationData({
           userIdentifier: state.hopsNew.currentStudentIdentifier,
@@ -1124,6 +1129,9 @@ const saveHops: SaveHopsTriggerType = function saveHops(data) {
   ) => {
     const state = getState();
 
+    const isUpperSecondary =
+      state.hopsNew.studentInfo.studyProgrammeEducationType === "lukio";
+
     // Filter out empty subjects
     const updatedPlan = {
       ...state.hopsNew.hopsEditing.matriculationPlan,
@@ -1167,7 +1175,7 @@ const saveHops: SaveHopsTriggerType = function saveHops(data) {
     }
 
     // Save matriculation plan if there are changes
-    if (matriculationPlanHasChanges) {
+    if (isUpperSecondary && matriculationPlanHasChanges) {
       allPromises.push(
         dispatch(
           saveMatriculationPlan({

@@ -107,6 +107,14 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   // Check if the matriculation plan has changes
   const hopsMatriculationHasChanges = React.useMemo(() => {
+    // If the student info is not loaded or the study programme is not upper secondary, return false by default
+    if (
+      !hops.studentInfo ||
+      hops.studentInfo.studyProgrammeEducationType !== "lukio"
+    ) {
+      return false;
+    }
+
     const updatedMatriculationPlan = {
       ...hops.hopsEditing.matriculationPlan,
       plannedSubjects:
@@ -116,7 +124,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
     };
 
     return !_.isEqual(hops.hopsMatriculation.plan, updatedMatriculationPlan);
-  }, [hops.hopsEditing.matriculationPlan, hops.hopsMatriculation.plan]);
+  }, [
+    hops.hopsEditing.matriculationPlan,
+    hops.hopsMatriculation.plan,
+    hops.studentInfo,
+  ]);
 
   // Check if any of the HOPS data has changes
   const hopsHasChanges = React.useMemo(
@@ -396,11 +408,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
                 )}
               </div>
               <div className="form-element dialog__content-row">
-                <label htmlFor="pending-changes-details">
+                <label htmlFor="pendingChangesDetails">
                   {t("labels.description", { ns: "common" })}
                 </label>
                 <Textarea
-                  id="pending-changes-details"
+                  id="pendingChangesDetails"
                   value={pendingDetailsContent}
                   onChange={(e) => setPendingDetailsContent(e.target.value)}
                   className="form-element__textarea form-element__textarea--resize__vertically"

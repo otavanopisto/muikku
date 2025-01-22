@@ -16,9 +16,8 @@ public class GuiderStudentRestModel extends FlaggedStudentRestModel {
       String curriculumName, HopsStudentPermissionsRestModel permissions) {
     super(id, firstName, lastName, nickName, studyProgrammeName, studyProgrammeIdentifier, hasImage, nationality, language, municipality,
         school, email, studyStartDate, studyEndDate, studyTimeEnd, lastLogin,
-        curriculumIdentifier, updatedByStudent, userEntityId, flags, organization, hasPedagogyForm, u18compulsory);
+        curriculumIdentifier, curriculumName, updatedByStudent, userEntityId, flags, organization, hasPedagogyForm, u18compulsory);
     this.matriculationEligibility = matriculationEligibility;
-    this.curriculumName = curriculumName;
     this.permissions = permissions;
   }
 
@@ -30,14 +29,6 @@ public class GuiderStudentRestModel extends FlaggedStudentRestModel {
     this.matriculationEligibility = matriculationEligibility;
   }
 
-  public String getCurriculumName() {
-    return curriculumName;
-  }
-
-  public void setCurriculumName(String curriculumName) {
-    this.curriculumName = curriculumName;
-  }
-
   public HopsStudentPermissionsRestModel getPermissions() {
     return permissions;
   }
@@ -47,6 +38,5 @@ public class GuiderStudentRestModel extends FlaggedStudentRestModel {
   }
 
   private boolean matriculationEligibility;
-  private String curriculumName;
   private HopsStudentPermissionsRestModel permissions;
 }

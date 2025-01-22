@@ -76,7 +76,7 @@ class NewHopsEventDescriptionDialog extends React.Component<
 
     return (
       <Dialog
-        modifier="confirm-remove-answer-dialog"
+        modifier="new-hops-event-description-dialog"
         disableScroll={true}
         title={this.props.t("labels.save", {
           ns: "common",
