@@ -194,8 +194,8 @@ class NotesItemEdit extends SessionStateComponent<
         });
       }
     } else if (changedValue.type === "workspace") {
-      // Remove the userGroup if it's already in the list
-      if (changedValue.value.id in this.state.recipientGroupIds) {
+      // Remove the workspace if it's already in the list
+      if (changedValue.value.id in this.state.recipientStudentsWorkspaceIds) {
         this.setState({
           recipientStudentsWorkspaceIds:
             this.state.recipientStudentsWorkspaceIds.filter(
@@ -203,7 +203,7 @@ class NotesItemEdit extends SessionStateComponent<
             ),
         });
       } else {
-        // Add the userGroup if it's not in the list
+        // Add the workspace if it's not in the list
         this.setState({
           recipientStudentsWorkspaceIds: [
             ...this.state.recipientStudentsWorkspaceIds,
