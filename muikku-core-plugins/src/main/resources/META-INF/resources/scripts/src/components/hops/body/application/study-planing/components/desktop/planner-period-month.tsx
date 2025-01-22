@@ -363,7 +363,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
                 variants={dropZoneVariants}
                 className="study-planner__month-dropzone"
                 onClick={handleMoveCourseHereClick}
-              ></motion.div>
+              />
             </motion.div>
           </LayoutGroup>
         </Droppable>
