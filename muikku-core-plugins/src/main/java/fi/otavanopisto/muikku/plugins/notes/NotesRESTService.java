@@ -160,12 +160,17 @@ public class NotesRESTService extends PluginRESTService {
         
         Boolean multiUserNote = Boolean.FALSE;
         
+        // If the note is created for a user group or workspace, it must always be a multi-user note, even if the group or workspace contains only one person.
         if (recipientPayload.getRecipientIds().size() != 1) {
           multiUserNote = Boolean.TRUE;
+        } else {
+          if (!prepareRecipientList.getStudentWorkspaces().isEmpty() || !prepareRecipientList.getUserGroups().isEmpty())
+          multiUserNote = Boolean.TRUE;
         }
+        
         newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(),
             note.getStartDate(), note.getDueDate(), multiUserNote);
-
+        
         // userRecipients
 
         for (UserEntity userRecipient : prepareRecipientList.getUserRecipients()) {
@@ -212,7 +217,7 @@ public class NotesRESTService extends PluginRESTService {
             }
           }
         }
-
+        
       }
     }
 
