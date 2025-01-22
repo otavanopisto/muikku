@@ -27,22 +27,14 @@ const periodVariants: Variants = {
 // Update title variants for the flip animation
 const titleVariants: Variants = {
   expanded: {
-    rotate: 0,
-    x: 48, // Offset by button width
-    y: 0,
-    originX: 0,
-    originY: 0,
+    opacity: 1,
     transition: {
       duration: 0.4,
       ease: "easeInOut",
     },
   },
   collapsed: {
-    rotate: -90,
-    x: 0,
-    y: "50%",
-    originX: 0,
-    originY: 0,
+    opacity: 0,
     transition: {
       duration: 0.4,
       ease: "easeInOut",
@@ -146,6 +138,9 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
         <AnimatePresence initial={false}>
           {isCollapsed && (
             <motion.div
+              initial={{
+                opacity: 0,
+              }}
               animate={{
                 opacity: 1,
                 transition: {
@@ -212,12 +207,6 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                 className="study-planner__period-title"
                 variants={titleVariants}
                 animate={isCollapsed ? "collapsed" : "expanded"}
-                style={{
-                  position: "absolute",
-                  whiteSpace: "nowrap",
-                  display: "flex",
-                  alignItems: "center",
-                }}
               >
                 {title}
                 {workload && (

@@ -79,10 +79,14 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
    */
   const handleMouseMove = useCallback(
     (event: MouseEvent) => {
-      if (isDraggingTimeline && timelineRef.current && dragStart.current) {
+      if (
+        isDraggingTimeline &&
+        timelineContentRef.current &&
+        dragStart.current
+      ) {
         const dx = event.clientX - dragStart.current!.mouseX;
         const newScrollLeft = dragStart.current!.scrollLeft - dx;
-        timelineRef.current!.scrollLeft = newScrollLeft;
+        timelineContentRef.current!.scrollLeft = newScrollLeft;
       }
     },
     [isDraggingTimeline] // No dependencies needed now
@@ -105,10 +109,10 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
       event.preventDefault();
       setIsDraggingTimeline(true);
 
-      if (timelineRef.current) {
+      if (timelineContentRef.current) {
         dragStart.current = {
           mouseX: mousePositionRef.current.x,
-          scrollLeft: timelineRef.current.scrollLeft,
+          scrollLeft: timelineContentRef.current.scrollLeft,
         };
       }
 
@@ -130,14 +134,13 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
   };
 
   const scrollToAdjacentPeriod = useCallback((direction: "next" | "prev") => {
-    const container = timelineRef.current;
+    const container = timelineContentRef.current;
     if (!container) return;
 
     const activeRefs = periodRefs.current;
     const currentScroll = container.scrollLeft;
-    const containerWidth = container.clientWidth;
 
-    // Find the closest period to the current scroll position
+    // Find the period closest to the left edge of the viewport
     let closestPeriod: HTMLDivElement | null = null;
     let minDistance = Infinity;
 
@@ -160,11 +163,9 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
       const targetPeriod = periods[targetIndex];
 
       if (targetPeriod) {
-        const scrollPosition =
-          targetPeriod.offsetLeft -
-          (containerWidth - targetPeriod.offsetWidth) / 2;
+        // Scroll to align with the left edge
         container.scrollTo({
-          left: scrollPosition,
+          left: targetPeriod.offsetLeft,
           behavior: "smooth",
         });
       }
@@ -188,7 +189,7 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       tabIndex={0}
-      ref={timelineRef}
+      ref={timelineContentRef}
       onMouseMove={handleMousePositionUpdate}
     >
       {isDraggingTimeline && (
@@ -197,7 +198,7 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
           style={{ width: `${overlayWidth}px` }}
         />
       )}
-      <div className="study-planner__timeline" ref={timelineContentRef}>
+      <div className="study-planner__timeline" ref={timelineRef}>
         {calculatedPeriods.map((period) => (
           <MemoizedPlannerPeriod
             key={period.title}

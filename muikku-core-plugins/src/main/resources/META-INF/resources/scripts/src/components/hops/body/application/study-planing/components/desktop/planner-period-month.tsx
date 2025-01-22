@@ -362,13 +362,8 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
                 animate={pulseDropzone ? "dropIsActive" : "initial"}
                 variants={dropZoneVariants}
                 className="study-planner__month-dropzone"
-              >
-                <i className="muikku-icon-drag-handle" />
-                <span onClick={handleMoveCourseHereClick}>
-                  Siirrä kursseja tähän raahamalla tai klikkaamalla tästä, kun
-                  kurssi on valittu
-                </span>
-              </motion.div>
+                onClick={handleMoveCourseHereClick}
+              ></motion.div>
             </motion.div>
           </LayoutGroup>
         </Droppable>

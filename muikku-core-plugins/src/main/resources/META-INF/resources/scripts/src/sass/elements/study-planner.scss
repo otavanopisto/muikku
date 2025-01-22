@@ -140,6 +140,7 @@
   border: none;
   background: transparent;
   cursor: pointer;
+  z-index: 1000;
 }
 
 .study-planner__period-header {
@@ -156,22 +157,21 @@
   flex-direction: column;
 }
 
-.study-planner__period-title--collapsed {
-  writing-mode: vertical-rl;
-}
-
-/* .study-planner__collapse-button {
-  position: absolute;
-  top: 0;
-  left: 0;
-} */
-
 .study-planner__period-title {
-  margin: 0;
+  position: absolute;
   white-space: nowrap;
-  will-change: transform;
+  display: flex;
+  align-items: center;
+  margin: 0;
   font-weight: 600;
   font-size: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.study-planner__period-title--collapsed {
+  writing-mode: vertical-rl;
+  margin-top: 50px;
 }
 
 // Scrollable container
@@ -215,6 +215,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 .study-planner__month-toggle {

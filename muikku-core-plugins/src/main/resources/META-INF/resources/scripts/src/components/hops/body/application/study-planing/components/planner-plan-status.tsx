@@ -18,7 +18,6 @@ interface PlannerPlanStatusProps {
  */
 const PlannerPlanStatus = (props: PlannerPlanStatusProps) => {
   const { show, planStatistics } = props;
-  console.log(planStatistics);
   return (
     <AnimateHeight
       height={show ? "auto" : 0}
