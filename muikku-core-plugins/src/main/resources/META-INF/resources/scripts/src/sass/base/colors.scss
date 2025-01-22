@@ -55,7 +55,7 @@ $color-notes-action-button: #7391a7;
 $color-suggested: #e464dc;
 $color-next: #bd0174;
 $color-optional: #97dbf7;
-$color-optional-selected: #0099ff;
+$color-optional-selected: #323e46;
 $color-mandatory: #dbdada;
 $color-approval: darken(#24c118, 15%);
 
@@ -69,6 +69,10 @@ $color-label-background: #f5f5f5;
 $color-label-background-highlight: #f9f1c8;
 $color-label-mobile-selected-background: #97e1ef;
 $color-label-alert: $color-fatal;
+
+// Usergroup
+$color-usergroup: #c10ebe;
+
 
 // Workspace
 $color-workspace: #2fd4af;

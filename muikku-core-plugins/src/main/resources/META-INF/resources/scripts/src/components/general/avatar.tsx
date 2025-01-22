@@ -10,6 +10,7 @@ export interface AvatarProps {
   id: number | null;
   firstName: string;
   size?: string;
+  groupAvatar?: "usergroup" | "workspace";
   userCategory?: number;
   avatarAriaLabel?: string;
   modifier?: string;
@@ -31,6 +32,7 @@ const Avatar = (props: AvatarProps) => {
     modifier,
     avatarAriaLabel,
     avatarAriaHidden,
+    groupAvatar,
   } = props;
 
   const category = React.useMemo(() => {
@@ -67,18 +69,31 @@ const Avatar = (props: AvatarProps) => {
     </div>
   ) : (
     <div
-      className={`avatar-container ${size ? "avatar-container--" + size : ""} ${
+      className={`avatar-container ${size ? "avatar-container--" + size : ""} ${groupAvatar ? "avatar-container--" + groupAvatar : ""} ${
         modifier ? "avatar-container--" + modifier : ""
       } rs_skip_always`}
       aria-hidden={avatarAriaHidden}
     >
-      <div
-        className={`avatar avatar--category-${category} ${
-          size ? "avatar--" + size : ""
-        } ${modifier ? "avatar--" + modifier : ""}`}
-      >
-        {firstName[0]}
-      </div>
+      {groupAvatar ? (
+        <div
+          className={`avatar avatar--group ${
+            size ? "avatar--" + size : ""
+          } ${groupAvatar ? "avatar--" + groupAvatar : ""} ${modifier ? "avatar--" + modifier : ""} `}
+        >
+          <span
+            className={`avatar__decoration icon icon-${groupAvatar === "usergroup" ? "users" : "books"}`}
+          ></span>
+          {firstName}
+        </div>
+      ) : (
+        <div
+          className={`avatar avatar--category-${category} ${
+            size ? "avatar--" + size : ""
+          } ${groupAvatar ? "avatar--" + groupAvatar : ""} ${modifier ? "avatar--" + modifier : ""} `}
+        >
+          {firstName[0]}
+        </div>
+      )}
     </div>
   );
 };

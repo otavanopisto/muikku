@@ -37,6 +37,7 @@ export const useRecipientsToAvatars = (
         avatars.push({
           hasImage: false,
           id: userGroupId,
+          groupAvatar: "usergroup",
           firstName: userGroupName,
         });
         return;
@@ -46,6 +47,7 @@ export const useRecipientsToAvatars = (
         avatars.push({
           hasImage: false,
           id: userGroupId,
+          groupAvatar: "workspace",
           firstName: workspaceName,
         });
         return;

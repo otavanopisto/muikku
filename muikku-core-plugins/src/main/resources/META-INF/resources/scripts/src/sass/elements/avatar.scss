@@ -21,7 +21,6 @@
   }
 }
 
-
 .avatar-container--discussion-area {
   background: $color-default-generic-background;
   color: $color-info;
@@ -39,6 +38,14 @@
   @include breakpoint($breakpoint-pad) {
     height: $avatar-desktop-xsmall-size;
     width: $avatar-desktop-xsmall-size;
+  }
+}
+
+.avatar-container--usergroup,
+.avatar-container--workspace {
+  border-radius: 0;
+  @include breakpoint($breakpoint-pad) {
+    width: auto;
   }
 }
 
@@ -69,6 +76,10 @@
     font-size: $avatar-desktop-font-size;
   }
 }
+.avatar__decoration {
+  margin-right: 5px;
+
+}
 
 .avatar--small {
   @include breakpoint($breakpoint-pad) {
@@ -79,9 +90,39 @@
 .avatar--xsmall {
   width: 20px;
   height: 20px;
+
+  &.avatar--usergroup,
+  &.avatar--workspace {
+    border-radius: 10px;
+    padding: 5px;
+  }
+
+  &.avatar--usergroup {
+    border: 1px solid $color-usergroup;
+    .icon {
+      color: $color-usergroup;
+    }
+
+  }
+  &.avatar--workspace {
+    border: 1px solid $color-workspace;
+    .icon {
+      color: $color-workspace;
+    }
+  }
+
   @include breakpoint($breakpoint-pad) {
     font-size: $avatar-desktop-xsmall-font-size;
   }
+}
+.avatar--group {
+  background-color: #ededed;
+  color: $color-button-default-text;
+}
+
+.avatar--usergroup,
+.avatar--workspace {
+  width: auto;
 }
 
 .avatar--chat {
