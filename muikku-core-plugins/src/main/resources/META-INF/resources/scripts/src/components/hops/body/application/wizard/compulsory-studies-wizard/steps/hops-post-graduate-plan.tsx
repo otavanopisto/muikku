@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import "~/sass/elements/hops.scss";
 import { TextField } from "../../components/text-field";
 import { Textarea } from "../../components/text-area";
@@ -27,14 +27,8 @@ interface HopsPostGraduatePlanProps {
  */
 const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
   const { form, disabled, onFormChange } = props;
-  const myRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation("hops_new");
-
-  useEffect(() => {
-    window.dispatchEvent(new Event("resize"));
-    myRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
 
   /**
    * Updates the local form state with the provided updates
@@ -183,7 +177,7 @@ const HopsPostGraduatePlan: React.FC<HopsPostGraduatePlanProps> = (props) => {
   ];
 
   return (
-    <div className="hops-container" ref={myRef}>
+    <div className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
           {t("labels.hopsCompulsoryPostgraduateSubTitle1", {

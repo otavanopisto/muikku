@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useEffect, useRef } from "react";
 import {
   EmptyRow,
   HopsInputTable,
@@ -42,12 +41,6 @@ const HopsMotivationAndStudySkills: React.FC<
   const { t } = useTranslation(["hops_new"]);
 
   const { moreAboutSelfAssessment } = form;
-  const myRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    window.dispatchEvent(new Event("resize"));
-    myRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
 
   /**
    * Handles changes in scale range inputs
@@ -59,9 +52,7 @@ const HopsMotivationAndStudySkills: React.FC<
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onFormChange({
         ...form,
-        [name]: {
-          [e.currentTarget.name]: parseInt(e.currentTarget.value),
-        },
+        [name]: parseInt(e.currentTarget.value),
       });
     };
 
@@ -77,7 +68,7 @@ const HopsMotivationAndStudySkills: React.FC<
     };
 
   return (
-    <div className="hops-container" ref={myRef}>
+    <div className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
           {t("labels.hopsSecondarySelfAssessmentTitle1", {
@@ -85,12 +76,11 @@ const HopsMotivationAndStudySkills: React.FC<
           })}
         </legend>
 
-        {/* TODO: Add back in when we have the information about validation */}
-        {/* <div className="hops-container__fieldset-description">
-          {t("labels.hopsFormFieldsRequired", {
+        <div className="hops-container__fieldset-description">
+          {t("content.hopsSecondarySelfAssessment", {
             ns: "hops_new",
           })}
-        </div> */}
+        </div>
 
         <div className="hops-container__row">
           <div className="hops-container__table-container">

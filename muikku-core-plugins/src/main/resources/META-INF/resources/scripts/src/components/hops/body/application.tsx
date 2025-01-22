@@ -109,6 +109,14 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   // Check if the matriculation plan has changes
   const hopsMatriculationHasChanges = React.useMemo(() => {
+    // If the student info is not loaded or the study programme is not upper secondary, return false by default
+    if (
+      !hops.studentInfo ||
+      hops.studentInfo.studyProgrammeEducationType !== "lukio"
+    ) {
+      return false;
+    }
+
     const updatedMatriculationPlan = {
       ...hops.hopsEditing.matriculationPlan,
       plannedSubjects:
@@ -118,7 +126,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
     };
 
     return !_.isEqual(hops.hopsMatriculation.plan, updatedMatriculationPlan);
-  }, [hops.hopsEditing.matriculationPlan, hops.hopsMatriculation.plan]);
+  }, [
+    hops.hopsEditing.matriculationPlan,
+    hops.hopsMatriculation.plan,
+    hops.studentInfo,
+  ]);
 
   // Check if the study plan has changes
   const studyPlanHasChanges = React.useMemo(
@@ -374,7 +386,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
                   disabled={editingDisabled}
                   buttonModifiers={["info", "standard-ok"]}
                 >
-                  {t("actions.editingStart", { ns: "hops_new" })}
+                  {t("actions.edit", { ns: "common" })}
                 </Button>
               ) : (
                 <Button
@@ -382,7 +394,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
                   disabled={!hopsHasChanges}
                   buttonModifiers={["execute", "standard-ok"]}
                 >
-                  {t("actions.editingEnd", { ns: "hops_new" })}
+                  {t("actions.save", { ns: "common", context: "changes" })}
                 </Button>
               )}
               {hops.hopsMode === "EDIT" && (
@@ -413,12 +425,12 @@ const HopsApplication = (props: HopsApplicationProps) => {
           onSaveClick={handleSaveHops}
           onCancelClick={handlePendingChangesDetailsDialogCancel}
           content={
-            <div className="hops-container__row">
-              {changedFields.length > 0 && (
-                <div className="hops__form-element-container">
-                  <h4>
-                    {t("labels.editedFields", { ns: "pedagogySupportPlan" })}
-                  </h4>
+            <div>
+              <div className="form-element dialog__content-row">
+                <label>
+                  {t("labels.editedFields", { ns: "pedagogySupportPlan" })}
+                </label>
+                {changedFields.length > 0 && (
                   <ul>
                     {changedFields.map((field) => (
                       <li key={field} style={{ display: "list-item" }}>
@@ -428,11 +440,14 @@ const HopsApplication = (props: HopsApplicationProps) => {
                       </li>
                     ))}
                   </ul>
-                </div>
-              )}
-              <div className="hops__form-element-container">
+                )}
+              </div>
+              <div className="form-element dialog__content-row">
+                <label htmlFor="pendingChangesDetails">
+                  {t("labels.description", { ns: "common" })}
+                </label>
                 <Textarea
-                  id="pending-changes-details"
+                  id="pendingChangesDetails"
                   value={pendingDetailsContent}
                   onChange={(e) => setPendingDetailsContent(e.target.value)}
                   className="form-element__textarea form-element__textarea--resize__vertically"

@@ -221,8 +221,9 @@ const PreviousStudies = (props: HopsPreviousStudiesListProps) => {
           onClick={addStudy}
           disabled={disabled}
         >
-          {t("actions.addNewStudy", {
-            ns: "hops_new",
+          {t("actions.add", {
+            ns: "common",
+            context: "study",
           })}
         </Button>
       </div>

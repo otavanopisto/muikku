@@ -1,7 +1,5 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
-import { WorkspaceSuggestion } from "~/generated/client";
 import { SummaryStudyProgress } from "~/reducers/main-function/records/summary";
 import ProgressList from "./components/progress-list";
 import ProgressTable from "./components/progress-table";
@@ -30,18 +28,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
     studyProgress,
   } = props;
 
-  const [workspaceToSignUp, setWorkspaceToSignUp] =
-    React.useState<WorkspaceSuggestion | null>(null);
-
   const { t } = useTranslation(["studyMatrix"]);
-
-  /**
-   * Handles open sign up dialog
-   * @param workspaceToSignUp workspaceToSignUp
-   */
-  const handleOpenSignUpDialog = (workspaceToSignUp: WorkspaceSuggestion) => {
-    setWorkspaceToSignUp(workspaceToSignUp);
-  };
 
   return (
     <>
@@ -124,7 +111,6 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             otherLanguageSubjects={studyProgress.otherLanguageSubjects}
             otherSubjects={studyProgress.otherSubjects}
             studentOptions={studyProgress.options}
-            onSignUp={handleOpenSignUpDialog}
           />
         </div>
       </div>
@@ -145,24 +131,9 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             otherLanguageSubjects={studyProgress.otherLanguageSubjects}
             otherSubjects={studyProgress.otherSubjects}
             studentOptions={studyProgress.options}
-            onSignUp={handleOpenSignUpDialog}
           />
         </div>
       </div>
-
-      <WorkspaceSignup
-        isOpen={!!workspaceToSignUp}
-        workspaceSignUpDetails={
-          workspaceToSignUp && {
-            id: workspaceToSignUp.id,
-            name: workspaceToSignUp.name,
-            nameExtension: workspaceToSignUp.nameExtension,
-            urlName: workspaceToSignUp.urlName,
-          }
-        }
-        onClose={() => setWorkspaceToSignUp(null)}
-        redirectOnSuccess
-      />
     </>
   );
 };

@@ -12,7 +12,7 @@ public class Student {
   public Student(String id, String firstName, String lastName, String nickName, String studyProgrammeName,
       String studyProgrammeIdentifier, Boolean hasImage, String nationality, String language, String municipality,
       String school, String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, Date lastLogin,
-      String curriculumIdentifier, boolean updatedByStudent, Long userEntityId,
+      String curriculumIdentifier, String curriculumName, boolean updatedByStudent, Long userEntityId,
       OrganizationRESTModel organization, Boolean hasPedagogyForm) {
     super();
     this.id = id;
@@ -32,6 +32,7 @@ public class Student {
     this.studyTimeEnd = studyTimeEnd;
     this.lastLogin = lastLogin;
     this.curriculumIdentifier = curriculumIdentifier;
+    this.setCurriculumName(curriculumName);
     this.updatedByStudent = updatedByStudent;
     this.userEntityId = userEntityId;
     this.organization = organization;
@@ -226,6 +227,14 @@ public class Student {
     this.hasPedagogyForm = hasPedagogyForm;
   }
 
+  public String getCurriculumName() {
+    return curriculumName;
+  }
+
+  public void setCurriculumName(String curriculumName) {
+    this.curriculumName = curriculumName;
+  }
+
   private String id;
   private String firstName;
   private String lastName;
@@ -243,6 +252,7 @@ public class Student {
   private Date studyTimeEnd;
   private Date lastLogin;
   private String curriculumIdentifier;
+  private String curriculumName;
   private boolean updatedByStudent;
   private Long userEntityId;
   private OrganizationRESTModel organization;

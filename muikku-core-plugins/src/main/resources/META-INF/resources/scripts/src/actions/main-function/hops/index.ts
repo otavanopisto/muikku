@@ -386,6 +386,7 @@ export interface LoadHopsFormHistoryTriggerType {
 export interface UpdateHopsFormHistoryEntryTriggerType {
   (data: {
     entryId: number;
+    originalEntry: HopsHistoryEntry;
     updatedEntry: Partial<HopsHistoryEntry>;
     onSuccess?: () => void;
     onFail?: () => void;
@@ -1164,8 +1165,13 @@ const startEditing: StartEditingTriggerType = function startEditing() {
   ) => {
     const state = getState();
 
+    const studentInfo = state.hopsNew.studentInfo;
+
     // Check matriculation data
-    if (state.hopsNew.hopsMatriculationStatus === "IDLE") {
+    if (
+      state.hopsNew.hopsMatriculationStatus === "IDLE" &&
+      studentInfo.studyProgrammeEducationType === "lukio"
+    ) {
       dispatch(
         loadMatriculationData({
           userIdentifier: state.hopsNew.currentStudentIdentifier,
@@ -1291,6 +1297,9 @@ const saveHops: SaveHopsTriggerType = function saveHops(data) {
   ) => {
     const state = getState();
 
+    const isUpperSecondary =
+      state.hopsNew.studentInfo.studyProgrammeEducationType === "lukio";
+
     // Filter out empty subjects
     const updatedPlan = {
       ...state.hopsNew.hopsEditing.matriculationPlan,
@@ -1339,7 +1348,7 @@ const saveHops: SaveHopsTriggerType = function saveHops(data) {
     }
 
     // Save matriculation plan if there are changes
-    if (matriculationPlanHasChanges) {
+    if (isUpperSecondary && matriculationPlanHasChanges) {
       allPromises.push(
         dispatch(
           saveMatriculationPlan({
@@ -1737,12 +1746,13 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
       });
 
       try {
-        // Assuming there's an API endpoint to update a HOPS form history entry
+        // Update details and keep changes as it is in original entry
         const updatedEntryData = await hopsApi.updateStudentHopsHistoryEntry({
           studentIdentifier,
           entryId: data.entryId,
           updateStudentHopsHistoryEntryRequest: {
             details: data.updatedEntry.details,
+            changes: data.originalEntry.changes,
           },
         });
 
@@ -2050,6 +2060,38 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
 
       const currentUserIsEditing =
         hopsLocked && state.status.userId === hopsLocked.userEntityId;
+
+      // 5. Handle edit mode if user is the one who has locked HOPS
+      // Here is loaded any missing data that is needed for edit mode
+      // In case if hopsLocked is ready or loading, this will not be executed
+      if (currentUserIsEditing) {
+        // This will grow as we add more data to load for edit mode later on
+
+        const promises = [];
+
+        if (studentInfo.studyProgrammeEducationType === "lukio") {
+          promises.push(
+            dispatch(
+              loadMatriculationData({ userIdentifier: studentIdentifier })
+            )
+          );
+        }
+
+        await Promise.all(promises);
+
+        dispatch({ type: "HOPS_CHANGE_MODE", payload: "EDIT" });
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.editingModePersistentInfo", {
+              ns: "hops_new",
+            }),
+            "persistent-info",
+            undefined,
+            "hops-editing-mode-notification"
+          )
+        );
+      }
 
       dispatch({
         type: "HOPS_UPDATE_INITIALIZE_STATUS",

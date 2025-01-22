@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useEffect, useRef } from "react";
 import AnimateHeight from "react-animate-height";
 import {
   EmptyRow,
@@ -45,13 +44,6 @@ const HopsMotivationAndStudySkills: React.FC<
 
   const { t } = useTranslation(["hops_new"]);
 
-  const myRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    window.dispatchEvent(new Event("resize"));
-    myRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
   /**
    * Handles changes in textarea inputs
    * @param name - Key of CompulsoryStudiesHops
@@ -95,7 +87,7 @@ const HopsMotivationAndStudySkills: React.FC<
     };
 
   return (
-    <div className="hops-container" ref={myRef}>
+    <div className="hops-container">
       <fieldset className="hops-container__fieldset">
         {/* <legend className="hops-container__subheader hops-container__subheader--required">
           {t("labels.hopsCompulsorySelfAssessmentTitle1", {

@@ -67,7 +67,7 @@ const HopsPendingEditing: React.FC<HopsPendingEditingProps> = (props) => {
         buttonModifiers={["standard-ok", "fatal"]}
         onClick={handleConfirmClick(closePortal)}
       >
-        {t("actions.continue", { ns: "hops_new" })}
+        {t("actions.continue", { ns: "common" })}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
@@ -80,7 +80,7 @@ const HopsPendingEditing: React.FC<HopsPendingEditingProps> = (props) => {
 
   return (
     <Dialog
-      modifier="confirm-remove-answer-dialog"
+      modifier="hops-pending-editing-dialog"
       disableScroll={true}
       title={t("labels.hopsPendingChangesTitle", { ns: "hops_new" })}
       content={dialogContent}

@@ -69,6 +69,7 @@ import fi.otavanopisto.muikku.rest.model.StudentAddress;
 import fi.otavanopisto.muikku.rest.model.StudentEmail;
 import fi.otavanopisto.muikku.rest.model.StudentPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -131,6 +132,9 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
   
+  @Inject
+  private CourseMetaController courseMetaController;
+
   @Inject
   private UserController userController;
 
@@ -443,6 +447,7 @@ public class UserRESTService extends AbstractRESTService {
         studyTimeEnd,
         userEntity == null ? null : userEntity.getLastLogin(),
         user.getCurriculumIdentifier() != null ? user.getCurriculumIdentifier().toId() : null,
+        courseMetaController.getCurriculumName(user.getCurriculumIdentifier()),
         userEntity == null ? false : userEntity.getUpdatedByStudent(),
         userEntity == null ? -1 : userEntity.getId(),
         organizationRESTModel,
@@ -1315,7 +1320,7 @@ public class UserRESTService extends AbstractRESTService {
 
     String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
 
-    return Response.ok(guidanceCounselorRestModels.getGuidanceCounselorRestModels(sessionController.getLoggedUser(), propertyArray)).build();
+    return Response.ok(guidanceCounselorRestModels.getGuidanceCounselorRestModels(studentIdentifier, propertyArray)).build();
   }
   
   @GET

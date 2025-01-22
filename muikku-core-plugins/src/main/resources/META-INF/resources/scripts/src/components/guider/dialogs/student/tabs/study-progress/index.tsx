@@ -85,7 +85,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             {t("labels.abortedShorthand", { ns: "studyMatrix" })}
           </div>
           <div className="hops-container__indicator-item-label">
-            {t("labels.aborted", { ns: "studyMatrix" })}
+            {t("labels.discontinued", { ns: "studyMatrix" })}
           </div>
         </div>
         <div className="hops-container__study-tool-indicator-container ">
@@ -105,7 +105,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
         <div className="hops-container__study-tool-indicator-container ">
           <div className="hops-container__indicator-item hops-container__indicator-item--next"></div>
           <div className="hops-container__indicator-item-label">
-            {t("labels.guidanceCouncelorSuggestionNext", { ns: "studyMatrix" })}
+            {t("labels.suggestedNext", { ns: "studyMatrix" })}
           </div>
         </div>
       </div>

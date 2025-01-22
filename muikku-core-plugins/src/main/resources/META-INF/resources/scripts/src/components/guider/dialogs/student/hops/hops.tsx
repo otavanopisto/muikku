@@ -41,12 +41,12 @@ import {
   compulsoryStudiesFieldsTranslation,
   secondaryStudiesFieldsTranslation,
 } from "~/components/hops/body/application/wizard/helpers";
-import NewHopsEventDescriptionDialog from "~/components/hops/body/application/wizard/dialog/new-hops-event";
 import { getEditedHopsFields } from "~/components/hops/body/application/wizard/helpers";
 import { isCompulsoryStudiesHops } from "~/@types/hops";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
+import NewHopsEventDescriptionDialog from "~/components/hops/dialogs/new-hops-event-description-dialog";
 
 /**
  * Represents the available tabs in the HOPS application
@@ -124,6 +124,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   // Check if the matriculation plan has changes
   const hopsMatriculationHasChanges = React.useMemo(() => {
+    // If study programme is not upper secondary, return false by default
+    if (hops.studentInfo.studyProgrammeEducationType !== "lukio") {
+      return false;
+    }
+
     const updatedMatriculationPlan = {
       ...hops.hopsEditing.matriculationPlan,
       plannedSubjects:
@@ -133,7 +138,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
     };
 
     return !_.isEqual(hops.hopsMatriculation.plan, updatedMatriculationPlan);
-  }, [hops.hopsEditing.matriculationPlan, hops.hopsMatriculation.plan]);
+  }, [
+    hops.hopsEditing.matriculationPlan,
+    hops.hopsMatriculation.plan,
+    hops.studentInfo.studyProgrammeEducationType,
+  ]);
 
   // Check if any of the HOPS data has changes
   const hopsHasChanges = React.useMemo(
@@ -363,7 +372,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
                 disabled={editingDisabled}
                 buttonModifiers={["info", "standard-ok"]}
               >
-                {t("actions.editingStart", { ns: "hops_new" })}
+                {t("actions.edit", { ns: "common" })}
               </Button>
             ) : (
               <Button
@@ -371,7 +380,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
                 disabled={!hopsHasChanges}
                 buttonModifiers={["execute", "standard-ok"]}
               >
-                {t("actions.editingEnd", { ns: "hops_new" })}
+                {t("actions.save", { ns: "common", context: "changes" })}
               </Button>
             )}
             {hops.hopsMode === "EDIT" && (
@@ -404,36 +413,35 @@ const HopsApplication = (props: HopsApplicationProps) => {
           onSaveClick={handleSaveHops}
           onCancelClick={handlePendingChangesDetailsDialogCancel}
           content={
-            <>
-              {changedFields.length > 0 && (
-                <div className="hops-container__row">
-                  <div className="hops__form-element-container">
-                    <h4>
-                      {t("labels.editedFields", { ns: "pedagogySupportPlan" })}
-                    </h4>
-                    <ul>
-                      {changedFields.map((field) => (
-                        <li key={field} style={{ display: "list-item" }}>
-                          {isCompulsoryStudiesHops(hops.hopsForm)
-                            ? compulsoryStudiesFieldsTranslation(t)[field]
-                            : secondaryStudiesFieldsTranslation(t)[field]}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              )}
-              <div className="hops-container__row">
-                <div className="hops__form-element-container">
-                  <Textarea
-                    id="pending-changes-details"
-                    value={pendingDetailsContent}
-                    onChange={(e) => setPendingDetailsContent(e.target.value)}
-                    className="form-element__textarea form-element__textarea--resize__vertically"
-                  />
-                </div>
+            <div>
+              <div className="form-element dialog__content-row">
+                <label>
+                  {t("labels.editedFields", { ns: "pedagogySupportPlan" })}
+                </label>
+                {changedFields.length > 0 && (
+                  <ul>
+                    {changedFields.map((field) => (
+                      <li key={field} style={{ display: "list-item" }}>
+                        {isCompulsoryStudiesHops(hops.hopsForm)
+                          ? compulsoryStudiesFieldsTranslation(t)[field]
+                          : secondaryStudiesFieldsTranslation(t)[field]}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            </>
+              <div className="form-element dialog__content-row">
+                <label htmlFor="pending-changes-details">
+                  {t("labels.description", { ns: "common" })}
+                </label>
+                <Textarea
+                  id="pending-changes-details"
+                  value={pendingDetailsContent}
+                  onChange={(e) => setPendingDetailsContent(e.target.value)}
+                  className="form-element__textarea form-element__textarea--resize__vertically"
+                />
+              </div>
+            </div>
           }
         />
       </HopsBasicInfoProvider>
