@@ -42,7 +42,6 @@ export const useNotesItem = (
   React.useEffect(() => {
     /**
      * loadNotesItemListData
-     * @param byCreator if should load by creator
      */
     const loadNotesItemListData = async () => {
       setNotesItem((notesItem) => ({ ...notesItem, isLoadingList: true }));

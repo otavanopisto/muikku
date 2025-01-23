@@ -56,7 +56,6 @@ export const useOnGoingNotes = (
   /**
    * changenotesItemStatus
    * @param noteId notesItemId
-   * @param recipientId recipientId
    * @param newStatus newStatus
    */
   const updateNoteStatus = async (

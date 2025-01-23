@@ -3,7 +3,7 @@ import { AvatarProps } from "~/components/general/avatar";
 import { useMemo } from "react";
 /**
  * trimNoteRecipients reduces the NoteReceiver array to only the unique recipients
- * @param recipients
+ * @param recipients recipients
  */
 export const useRecipientsToAvatars = (
   recipients: NoteReceiver[]
