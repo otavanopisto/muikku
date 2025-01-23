@@ -1,8 +1,7 @@
-import { instanceOfUser, User, Student } from "~/generated/client";
+import { User, Student } from "~/generated/client";
 
 /**
  * isUser
  * @param item item
  */
-export const isUser = (item: Student | User): item is User =>
-  instanceOfUser(item);
+export const isUser = (item: Student | User): item is User => typeof item.id === 'number';
