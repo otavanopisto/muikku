@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.schooldata;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
@@ -7,6 +8,7 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
+import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
@@ -214,7 +216,7 @@ public interface UserSchoolDataBridge {
 
   public List<GroupUser> listGroupUsersByGroupAndType(String groupIdentifier, GroupUserType type);
 
-  public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers);
+  public List<GroupStaffMember> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers);
   
   public List<SpecEdTeacher> listStudentSpecEdTeachers(SchoolDataIdentifier studentIdentifier, boolean includeGuidanceCouncelors, boolean onlyMessageReceivers);
   
@@ -255,6 +257,8 @@ public interface UserSchoolDataBridge {
 
   public String findUserSsn(SchoolDataIdentifier userIdentifier);
 
+  public LocalDate getBirthday(SchoolDataIdentifier studentIdentifier);
+
   public boolean amICounselor(String studentIdentifier);
 
   public List<String> listStudentAlternativeStudyOptions(String userIdentifier);
@@ -262,8 +266,9 @@ public interface UserSchoolDataBridge {
   public StudentCard getStudentCard(String studentIdentifier);
   
   public BridgeResponse<StudentCardRESTModel> updateActive(String studentIdentifier, Boolean active);
+
   /**
-   * Lists students for who the given user is a guardian for.
+   * Lists students for who the given user is a active guardian for.
    * 
    * @param guardianUserIdentifier guardian, should be of role STUDENT_PARENT
    * @return guardians' students

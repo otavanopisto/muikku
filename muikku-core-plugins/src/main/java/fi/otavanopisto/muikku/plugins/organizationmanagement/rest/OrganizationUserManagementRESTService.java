@@ -35,6 +35,7 @@ import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationStudentsActivityRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -68,6 +69,9 @@ public class OrganizationUserManagementRESTService {
 
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
+  private CourseMetaController courseMetaController;
 
   @Inject
   private UserEntityController userEntityController;
@@ -312,6 +316,7 @@ public class OrganizationUserManagementRESTService {
             studyTimeEnd,
             userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
+            o.get("curriculumIdentifier") == null ? null : courseMetaController.getCurriculumName(SchoolDataIdentifier.fromId((String) o.get("curriculumIdentifier"))),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
             organizationRESTModel,

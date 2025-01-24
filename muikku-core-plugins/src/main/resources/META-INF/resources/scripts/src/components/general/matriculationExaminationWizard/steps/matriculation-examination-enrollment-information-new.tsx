@@ -1319,12 +1319,13 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
           />
           <div className="matriculation-container__row">
             <Button
-              buttonModifiers={"add-matriculation-row"}
+              buttonModifiers={"add-extra-row"}
               onClick={handleNewFinishedAttendanceClick}
               icon="plus"
             >
-              {t("actions.addNewRow", {
-                ns: "hops_new",
+              {t("actions.add", {
+                ns: "common",
+                context: "row",
               })}
             </Button>
           </div>
@@ -1359,12 +1360,13 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         />
         <div className="matriculation-container__row">
           <Button
-            buttonModifiers={"add-matriculation-row"}
+            buttonModifiers={"add-extra-row"}
             onClick={handleNewEnrolledAttendanceClick}
             icon="plus"
           >
-            {t("actions.addNewRow", {
-              ns: "hops_new",
+            {t("actions.add", {
+              ns: "common",
+              context: "row",
             })}
           </Button>
         </div>
@@ -1432,12 +1434,13 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
         />
         <div className="matriculation-container__row">
           <Button
-            buttonModifiers={"add-matriculation-row"}
+            buttonModifiers={"add-extra-row"}
             onClick={handleNewPlannedAttendanceClick}
             icon="plus"
           >
-            {t("actions.addNewRow", {
-              ns: "hops_new",
+            {t("actions.add", {
+              ns: "common",
+              context: "row",
             })}
           </Button>
         </div>

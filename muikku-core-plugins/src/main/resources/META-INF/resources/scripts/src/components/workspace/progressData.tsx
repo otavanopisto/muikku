@@ -132,7 +132,7 @@ class ProgressData extends React.Component<
               <div tabIndex={0}>
                 <div className="workspace-activity__progressbar-circle-wrapper">
                   <CircularProgressbar
-                    value={evaluablesDone / this.props.activity.evaluablesTotal}
+                    value={evaluablesDone}
                     maxValue={this.props.activity.evaluablesTotal}
                     strokeWidth={10}
                     styles={{
@@ -182,10 +182,7 @@ class ProgressData extends React.Component<
                 <div className="workspace-activity__progressbar-circle-wrapper">
                   <CircularProgressbar
                     className="workspace-activity__progressbar-circle workspace-activity__progressbar-circle--workspace"
-                    value={
-                      this.props.activity.exercisesAnswered /
-                      this.props.activity.exercisesTotal
-                    }
+                    value={this.props.activity.exercisesAnswered}
                     maxValue={this.props.activity.exercisesTotal}
                     strokeWidth={10}
                     styles={buildStyles({

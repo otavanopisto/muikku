@@ -50,6 +50,7 @@
 .table__thead th {
   background: $color-default;
   border-bottom: 2px solid $color-hops-dialog-form-element-border;
+  z-index: 3;
 }
 
 .table__thead--sticky th {
@@ -146,6 +147,7 @@
 
 .table__data {
   padding: 5px;
+  position: relative;
   width: auto;
 }
 
@@ -179,6 +181,7 @@
   align-items: center;
   border: 3px solid transparent;
   border-radius: 100%;
+  color: $color-default-contrast;
   cursor: pointer;
   display: flex;
   height: 35px;
@@ -190,7 +193,7 @@
 
 .table__data--MANDATORY {
   .table__data-content-wrapper--course {
-    background: $color-mandatory;
+    background-color: $color-mandatory;
   }
 }
 
@@ -200,45 +203,118 @@
   }
 }
 
-.table__data--OPTIONAL-SELECTED {
-  .table__data-content-wrapper--course {
-    border-color: $color-optional-selected;
+.table__data--COMPLETED {
+  &::after {
+    color: $color-great-success;
+    content: "\e62b";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    left: calc(50% + 3px);
+    position: absolute;
+    top: 3px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &::before {
+    color: $color-completed-border;
+    content: "\e62c";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    left: calc(50% + 3px);
+    position: absolute;
+    top: 3px;
+    width: 1rem;
+    z-index: 2;
   }
 }
 
-.table__data--COMPLETED {
+.table__data--COMPLETED.table__data--PASSED-GRADE {
   .table__data-content-wrapper--course {
-    background: $color-success;
-    color: $color-default;
+    background: $color-completed;
+    border-color: $color-completed-border;
+    border-radius: 50% 50% 50% 3px;
+  }
+}
+
+.table__data--COMPLETED.table__data--FAILED-GRADE {
+  .table__data-content-wrapper--course {
+    background: $color-passed-failed;
+    border-color: $color-passed-failed-border;
+    border-radius: 50% 50% 50% 3px;
+  }
+}
+
+.table__data--APPROVAL {
+  &::after {
+    color: $color-great-success;
+    content: "\e62b";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    left: calc(50% + 3px);
+    position: absolute;
+    top: 3px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &::before {
+    color: $color-completed-border;
+    content: "\e62c";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    left: calc(50% + 3px);
+    position: absolute;
+    top: 3px;
+    width: 1rem;
+    z-index: 2;
+  }
+}
+
+.table__data--ABORTED {
+  .table__data-content-wrapper--course {
+    background: $color-passed-aborted;
+    border-color: $color-passed-aborted-border;
+  }
+}
+
+.table__data--APPROVAL.table__data--PASSED-GRADE {
+  .table__data-content-wrapper--course {
+    background: $color-completed;
+  }
+}
+
+.table__data--APPROVAL.table__data--FAILED-GRADE {
+  .table__data-content-wrapper--course {
+    background: $color-passed-failed;
+  }
+}
+
+.table__data--SUPPLEMENTATIONREQUEST {
+  .table__data-content-wrapper--course {
+    background: lighten($color-incomplete, 30%);
+    border-color: $color-incomplete;
+    border-width: 3px;
   }
 }
 
 .table__data--INPROGRESS {
   .table__data-content-wrapper--course {
-    background: $color-info;
-    color: $color-default;
-  }
-}
-
-.table__data--APPROVAL {
-  .table__data-content-wrapper--course {
-    background: $color-success;
-    border-color: $color-approval;
-    color: $color-default;
-  }
-}
-
-.table__data--SUGGESTED {
-  .table__data-content-wrapper--course {
-    background: $color-suggested;
-    color: $color-default;
+    background: $color-default;
+    border-color: $color-info;
+    border-radius: 50% 3px 50% 50%;
   }
 }
 
 .table__data--NEXT {
   .table__data-content-wrapper--course {
-    background: $color-next;
-    color: $color-default;
+    background: lighten($color-next, 50%);
+    border-color: $color-next;
+    border-radius: 50% 3px;
   }
 }
 

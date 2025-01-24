@@ -45,6 +45,7 @@ import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsPermissions;
@@ -53,6 +54,7 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfReco
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -105,11 +107,14 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private SessionController sessionController;
 
   @Inject
+  private CourseMetaController courseMetaController;
+
+  @Inject
   private WorkspaceController workspaceController;
 
   @Inject
   private UserController userController;
-
+  
   @Inject
   private EvaluationController evaluationController;
 
@@ -139,6 +144,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceRestModels workspaceRestModels;
+
+  @Inject
+  private HopsController hopsController;
 
   @Inject
   @Any
@@ -250,6 +258,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
             studyTimeEnd,
             userEntity.getLastLogin(),
             (String) o.get("curriculumIdentifier"),
+            o.get("curriculumIdentifier") == null ? null : courseMetaController.getCurriculumName(SchoolDataIdentifier.fromId((String) o.get("curriculumIdentifier"))),
             userEntity.getUpdatedByStudent(),
             userEntity.getId(),
             organizationRESTModel,
@@ -459,22 +468,17 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Consumes("application/json")
   @Path("/studentMatriculationEligibility/{STUDENTIDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response getMatriculationEligibility(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
-    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier);
-    if (identifier == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid student identifier").build();
-    }
-
-    if (!identifier.equals(sessionController.getLoggedUser()) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), identifier)) {
+  public Response getMatriculationEligibility(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier) {
+    if (!hopsController.canViewHops(studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-
-    User student = userController.findUserByIdentifier(identifier);
+    
+    User student = userController.findUserByIdentifier(studentIdentifier);
     if (student == null) {
       return Response.status(Status.NOT_FOUND).entity("Student not found").build();
     }
 
-    StudentCourseStats studentCourseStats = transcriptOfRecordsController.fetchStudentCourseStats(identifier);
+    StudentCourseStats studentCourseStats = transcriptOfRecordsController.fetchStudentCourseStats(studentIdentifier);
 
     MatriculationEligibilityRESTModel result = new MatriculationEligibilityRESTModel();
     int coursesCompleted = studentCourseStats.getNumMandatoryCompletedCourses();

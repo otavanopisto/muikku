@@ -27,7 +27,12 @@ export type CLOSE_NOTIFICATION_DIALOG = SpecificActionType<
  * DisplayNotificationTriggerType
  */
 export interface DisplayNotificationTriggerType {
-  (message: string, severity: NotificationSeverityType): AnyActionType;
+  (
+    message: string,
+    severity: NotificationSeverityType,
+    timeout?: number,
+    customId?: string | number
+  ): AnyActionType;
 }
 
 /**
@@ -52,19 +57,31 @@ export interface CloseNotificationDialogTrigger {
 }
 
 const DEFAULT_TIMEOUT = 5000;
-const PERMANENT_LIST = ["warning", "fatal", "error", "notice"];
+const PERMANENT_LIST: NotificationSeverityType[] = [
+  "warning",
+  "fatal",
+  "error",
+  "notice",
+  "persistent-info",
+];
 
 /**
  * displayNotification
  * @param message message
  * @param severity severity
  * @param timeout timeout
+ * @param customId customId
  */
 const displayNotification: DisplayNotificationTriggerType =
-  function displayNotification(message, severity, timeout?: number) {
+  function displayNotification(
+    message,
+    severity,
+    timeout?: number,
+    customId?: string | number
+  ) {
     return async (dispatch: (arg: AnyActionType) => any) => {
       const notification: NotificationType = {
-        id: new Date().getTime(),
+        id: customId || new Date().getTime(),
         severity: severity,
         message: message,
       };

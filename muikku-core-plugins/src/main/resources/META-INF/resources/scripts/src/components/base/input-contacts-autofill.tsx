@@ -13,20 +13,21 @@ import { ContactRecipientType } from "~/reducers/user-index";
 import "~/sass/elements/autocomplete.scss";
 import "~/sass/elements/glyph.scss";
 import {
-  User,
   Student,
   UserGroup,
-  UserStaff,
   WorkspaceBasicInfo,
   UserStaffSearchResult,
+  StaffMember,
+  User,
 } from "~/generated/client";
 import MApi from "~/api/api";
+import { isUser } from "~/helper-functions/type-guards";
 
 /**
  * InputContactsAutofillLoaders
  */
 export interface InputContactsAutofillLoaders {
-  studentsLoader?: (searchString: string) => () => Promise<User[] | Student[]>;
+  studentsLoader?: (searchString: string) => () => Promise<Student[] | User[]>;
   staffLoader?: (searchString: string) => () => Promise<UserStaffSearchResult>;
   userGroupsLoader?: (searchString: string) => () => Promise<UserGroup[]>;
   workspacesLoader?: (
@@ -209,7 +210,7 @@ export default class c extends React.Component<
     const getStudentsLoader = () =>
       loaders.studentsLoader
         ? loaders.studentsLoader(textInput)
-        : () => new Promise<User[] | Student[]>(() => []);
+        : () => new Promise<Student[] | User[]>(() => []);
 
     /**
      * getUserGroupsLoader
@@ -269,7 +270,7 @@ export default class c extends React.Component<
         : [],
       checkHasPermission(this.props.hasStaffPermission, false)
         ? getStaffLoader()()
-            .then((result: UserStaffSearchResult) => result.results || [])
+            .then((result) => result.results || [])
             .catch((err: any): any[] => [])
         : [],
     ]);
@@ -278,18 +279,23 @@ export default class c extends React.Component<
      * userItems
      */
     const userItems: ContactRecipientType[] = searchResults[0].map(
-      (item: User | Student): ContactRecipientType => {
-        // Yeah, this happens sometimes. The API returns a user with id that is a string.
-        const id = typeof item.id === "number" ? item.id : item.userEntityId;
+      (item: Student | User): ContactRecipientType => {
+        const value = {
+          id: 0,
+          name: getName(item, this.props.showFullNames),
+          email: item.email,
+          studyProgrammeName: item.studyProgrammeName,
+        };
+
+        if (isUser(item)) {
+          value.id = item.id;
+        } else {
+          value.id = item.userEntityId;
+        }
 
         return {
           type: "user",
-          value: {
-            id: id,
-            name: getName(item, this.props.showFullNames),
-            email: item.email,
-            studyProgrammeName: item.studyProgrammeName,
-          },
+          value: value,
         };
       }
     );
@@ -327,7 +333,7 @@ export default class c extends React.Component<
      * staffItems
      */
     const staffItems: ContactRecipientType[] = searchResults[3].map(
-      (item: UserStaff): ContactRecipientType => ({
+      (item: StaffMember): ContactRecipientType => ({
         type: "staff",
         value: {
           id: item.userEntityId,

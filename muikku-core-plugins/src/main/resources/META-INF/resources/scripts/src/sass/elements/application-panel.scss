@@ -23,6 +23,11 @@
   padding: 0;
 }
 
+.application-panel--guider-student-hops {
+  max-width: 100%;
+  padding: 0;
+}
+
 // Component's wrapper
 .application-panel__container {
   @include text;
@@ -64,14 +69,13 @@
     font-size: 1.5rem;
     font-weight: 300;
     height: $panel-header-title-height-desktop;
-    line-height: 1;
     text-transform: uppercase;
   }
 }
 
 // Component's header's option at the header level (ie. select dependant feature)
 .application-panel__header-options {
-  margin: 0 0 0 15px;
+  margin: 0 0 0 auto;
 }
 
 // Component's header's actions at the header level (ie. signature feature)
@@ -112,17 +116,6 @@
 // Component's body which is used inside tabs
 .application-panel__body--tabs {
   @include breakpoint($breakpoint-pad) {
-    border-top: 0;
-  }
-}
-
-// Component's body which is used inside sub-tabs
-.application-panel__body--sub-tabs {
-  border: 0;
-  box-shadow: none;
-
-  @include breakpoint($breakpoint-pad) {
-    border: 1px solid $color-tab-border;
     border-top: 0;
   }
 }
@@ -252,10 +245,6 @@
 
 .application-panel__content--tabs {
   padding: 1rem 0 0;
-}
-
-.application-panel__content--sub-tabs {
-  padding: 10px 0 0;
 }
 
 // Component's content header (h2 level header)

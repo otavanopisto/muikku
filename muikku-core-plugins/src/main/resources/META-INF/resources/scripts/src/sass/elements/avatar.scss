@@ -44,6 +44,7 @@
 .avatar-container--usergroup,
 .avatar-container--workspace {
   border-radius: 0;
+
   @include breakpoint($breakpoint-pad) {
     width: auto;
   }
@@ -76,9 +77,9 @@
     font-size: $avatar-desktop-font-size;
   }
 }
+
 .avatar__decoration {
   margin-right: 5px;
-
 }
 
 .avatar--small {
@@ -88,8 +89,8 @@
 }
 
 .avatar--xsmall {
-  width: 20px;
   height: 20px;
+  width: 20px;
 
   &.avatar--usergroup,
   &.avatar--workspace {
@@ -99,13 +100,15 @@
 
   &.avatar--usergroup {
     border: 1px solid $color-usergroup;
+
     .icon {
       color: $color-usergroup;
     }
-
   }
+
   &.avatar--workspace {
     border: 1px solid $color-workspace;
+
     .icon {
       color: $color-workspace;
     }
@@ -115,8 +118,9 @@
     font-size: $avatar-desktop-xsmall-font-size;
   }
 }
+
 .avatar--group {
-  background-color: #ededed;
+  background-color: $color-default-generic-background;
   color: $color-button-default-text;
 }
 

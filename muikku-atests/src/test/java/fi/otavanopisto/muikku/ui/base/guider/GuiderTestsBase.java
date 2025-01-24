@@ -154,6 +154,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .addCourse(course1)
     .mockStudentCourseStats(student.getId(), 25)
     .mockMatriculationEligibility(student.getId(), false)
+    .mockIAmCounselor()
     .build();
     login();
     
@@ -288,7 +289,8 @@ public class GuiderTestsBase extends AbstractUITest {
           .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, false)
           .mockCompositeCourseAssessmentRequests()
           .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
-          .mockStaffCompositeCourseAssessmentRequests();
+          .mockStaffCompositeCourseAssessmentRequests()
+          .mockIAmCounselor();
         
         logout();
         mockBuilder.mockLogin(admin);
@@ -347,6 +349,8 @@ public class GuiderTestsBase extends AbstractUITest {
       .addCourse(course1)
       .addCourse(course2)
       .addCourse(course3)
+      .mockEmptyStudyActivity()
+      .mockIAmCounselor()
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -481,6 +485,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStudyProgrammes()
         .mockStudentGroups()
         .mockEmptyStudyActivity()
+        .mockIAmCounselor()
         .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -580,6 +585,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .mockStudyProgrammes()
       .mockStudentGroups()
       .mockEmptyStudyActivity()
+      .mockIAmCounselor()
       .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 12).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -638,6 +644,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStudyProgrammes()
         .mockStudentGroups()
         .mockEmptyStudyActivity()
+        .mockIAmCounselor()
         .build();
       Course course1 = new CourseBuilder().name("Tests").id((long) 13).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -791,6 +798,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockStudentCourseStats(student.getId(), 25)
     .mockMatriculationEligibility(student.getId(), false)
     .mockEmptyStudyActivity()
+    .mockIAmCounselor()
     .build();
     login();
     

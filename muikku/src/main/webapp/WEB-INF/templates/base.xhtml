@@ -23,6 +23,7 @@
           general: {
             usePost: true,
             enableSkipAlways: true,
+            skipHiddenContent: true,
           },
           ui: {
             tools: {
@@ -37,7 +38,7 @@
           },
         };
       </script>
-
+      
       <script type="text/javascript">
         var CONTEXTPATH = "#{request.contextPath}";
       </script>
@@ -91,7 +92,7 @@
       <link
         rel="stylesheet"
         type="text/css"
-        href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.4.8/style.css"
+        href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.4.9/style.css"
       />
 
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -109,23 +110,6 @@
 
     <body>
       <div id="app"></div>
-
-      <!-- Google Analytics -->
-      <script>
-        window.ga =
-          window.ga ||
-          function () {
-            (ga.q = ga.q || []).push(arguments);
-          };
-        ga.l = +new Date();
-        ga("create", "UA-7407719-33", "auto");
-        ga("send", "pageview");
-      </script>
-      <script
-        async="async"
-        src="https://www.google-analytics.com/analytics.js"
-      ></script>
-      <!-- End Google Analytics -->
     </body>
   </f:view>
 </html>

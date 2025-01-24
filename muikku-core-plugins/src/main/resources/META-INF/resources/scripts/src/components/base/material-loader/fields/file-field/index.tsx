@@ -248,7 +248,10 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
                 "?archiveName=" +
                 t("labels.zipFileName", { ns: "files" })
               }
-              fileDownloadAllLabel={t("actions.downloadAll")}
+              fileDownloadAllLabel={t("actions.download", {
+                ns: "common",
+                context: "all",
+              })}
               deleteDialogElement={ConfirmRemoveDialog}
               deleteDialogElementProps={{ onConfirm: this.removeFile }}
               modifier="taskfield"
