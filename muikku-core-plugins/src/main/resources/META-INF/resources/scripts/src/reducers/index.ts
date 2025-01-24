@@ -28,14 +28,12 @@ import { ContactsState } from "./base/contacts";
 import { NoteBookState } from "./notebook/notebook";
 import { DependantsState } from "./main-function/dependants";
 import { HopsState } from "./hops";
-// import { NotesState } from "./main-function/notes";
 
 /**
  * StateType
  */
 export interface StateType {
   notifications: NotificationState;
-  // notes: NotesState;
   locales: LocaleState;
   status: StatusType;
   contacts: ContactsState;
