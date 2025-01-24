@@ -83,7 +83,7 @@ const Avatar = (props: AvatarProps) => {
           <span
             className={`avatar__decoration icon icon-${groupAvatar === "usergroup" ? "users" : "books"}`}
           ></span>
-          {firstName}
+          <span className="avatar__text">{firstName}</span>
         </div>
       ) : (
         <div

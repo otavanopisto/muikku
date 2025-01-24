@@ -82,19 +82,30 @@
   margin-right: 5px;
 }
 
+.avatar__text {
+  max-width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .avatar--small {
+  height: $avatar-desktop-small-size;
+  width: $avatar-desktop-small-size;
+
   @include breakpoint($breakpoint-pad) {
     font-size: $avatar-desktop-small-font-size;
   }
 }
 
 .avatar--xsmall {
-  height: 20px;
-  width: 20px;
+  height: $avatar-desktop-xsmall-size;
+  width: $avatar-desktop-xsmall-size;
 
   &.avatar--usergroup,
   &.avatar--workspace {
-    border-radius: 10px;
+    border-radius: calc($avatar-desktop-xsmall-size / 2);
     padding: 5px;
   }
 
@@ -122,6 +133,7 @@
 .avatar--group {
   background-color: $color-default-generic-background;
   color: $color-button-default-text;
+  max-width: 100%;
 }
 
 .avatar--usergroup,
