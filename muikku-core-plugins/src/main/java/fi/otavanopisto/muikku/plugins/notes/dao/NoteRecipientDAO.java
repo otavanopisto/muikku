@@ -58,7 +58,7 @@ public class NoteRecipientDAO extends CorePluginsDAO<NoteReceiver> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-public List<NoteReceiver> listByNoteAndRecipientGroup(Long note, Note recipientGroup){
+public List<NoteReceiver> listByNoteAndRecipientGroup(Long note, Long recipientGroup){
     
     EntityManager entityManager = getEntityManager(); 
     
@@ -74,6 +74,23 @@ public List<NoteReceiver> listByNoteAndRecipientGroup(Long note, Note recipientG
     
     return entityManager.createQuery(criteria).getResultList();
   }
+
+public List<NoteReceiver> listByNoteAndWorkspace(Note note, Long workspaceEntityId){
+  
+  EntityManager entityManager = getEntityManager(); 
+  
+  CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+  CriteriaQuery<NoteReceiver> criteria = criteriaBuilder.createQuery(NoteReceiver.class);
+  
+  Root<NoteReceiver> root = criteria.from(NoteReceiver.class);
+  criteria.select(root);
+  criteria.where(criteriaBuilder.and(
+    criteriaBuilder.equal(root.get(NoteReceiver_.note), note),
+    criteriaBuilder.equal(root.get(NoteReceiver_.workspace_id), workspaceEntityId)
+  ));
+  
+  return entityManager.createQuery(criteria).getResultList();
+}
 
 
   public NoteReceiver findByRecipientIdAndNote(Long id, Note note) {
@@ -92,6 +109,8 @@ public List<NoteReceiver> listByNoteAndRecipientGroup(Long note, Note recipientG
 
     return getSingleResult(entityManager.createQuery(criteria));
   }
+  
+  
   
   public List<NoteReceiver> listByReceiver(Long recipient){
     

@@ -37,8 +37,12 @@ public class NoteReceiverController {
     return noteRecipientDAO.update(noteRecipient, pinned, status);
   }
   
-  public NoteReceiver updateNotetWorkspaceAndUserGroupRecipient(NoteReceiver noteRecipient, Long userGroupId, Long workspaceId) {
+  public NoteReceiver updateNoteWorkspaceAndUserGroupRecipient(NoteReceiver noteRecipient, Long userGroupId, Long workspaceId) {
     return noteRecipientDAO.updateWorkspaceAndUserGroup(noteRecipient, userGroupId, workspaceId);
+  }
+  
+  public List<NoteReceiver> listReceiversByNoteAndWorkspace(Note note, Long workspaceEntityId){
+    return noteRecipientDAO.listByNoteAndWorkspace(note, workspaceEntityId);
   }
   
   public NoteReceiver findByRecipientIdAndNote(Long id, Note note) {

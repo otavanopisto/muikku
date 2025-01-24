@@ -157,20 +157,22 @@ public class NotesRESTService extends PluginRESTService {
         if (prepareRecipientList == null || !prepareRecipientList.hasRecipients()) {
           return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
         }
-        
+
         Boolean multiUserNote = Boolean.FALSE;
-        
-        // If the note is created for a user group or workspace, it must always be a multi-user note, even if the group or workspace contains only one person.
+
+        // If the note is created for a user group or workspace, it must always be a
+        // multi-user note, even if the group or workspace contains only one person.
         if (recipientPayload.getRecipientIds().size() != 1) {
           multiUserNote = Boolean.TRUE;
-        } else {
-          if (!prepareRecipientList.getStudentWorkspaces().isEmpty() || !prepareRecipientList.getUserGroups().isEmpty())
-          multiUserNote = Boolean.TRUE;
         }
-        
+        else {
+          if (!prepareRecipientList.getStudentWorkspaces().isEmpty() || !prepareRecipientList.getUserGroups().isEmpty())
+            multiUserNote = Boolean.TRUE;
+        }
+
         newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(),
             note.getStartDate(), note.getDueDate(), multiUserNote);
-        
+
         // userRecipients
 
         for (UserEntity userRecipient : prepareRecipientList.getUserRecipients()) {
@@ -217,7 +219,7 @@ public class NotesRESTService extends PluginRESTService {
             }
           }
         }
-        
+
       }
     }
 
@@ -310,98 +312,111 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    // Add/remove recipients
+    // Add/remove recipients (Only available to staff)
 
-    if (payload.getRecipients() != null) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      if (payload.getRecipients() != null) {
 
-      if (!payload.getRecipients().getRecipientGroupIds().isEmpty()
-          || !payload.getRecipients().getRecipientIds().isEmpty()
-          || !payload.getRecipients().getRecipientStudentsWorkspaceIds().isEmpty()) {
-        UserRecipientList prepareRecipientList = prepareRecipientList(payload.getRecipients());
+        if (!payload.getRecipients().getRecipientGroupIds().isEmpty()
+            || !payload.getRecipients().getRecipientIds().isEmpty()
+            || !payload.getRecipients().getRecipientStudentsWorkspaceIds().isEmpty()) {
 
-        if (prepareRecipientList == null || !prepareRecipientList.hasRecipients()) {
-          return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
-        }
+          // Filter duplicates
+          UserRecipientList prepareRecipientList = prepareRecipientList(payload.getRecipients());
 
-        // userRecipients
-
-        for (UserEntity userRecipient : prepareRecipientList.getUserRecipients()) {
-
-          NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(userRecipient.getId(), updatedNote);
-
-          if (receiver == null) {
-            noteReceiverController.createNoteRecipient(false, userRecipient.getId(), updatedNote, null, null);
+          if (prepareRecipientList == null || !prepareRecipientList.hasRecipients()) {
+            return Response.status(Status.BAD_REQUEST).entity("No recipients").build();
           }
-          else {
-            // Remove only if receiver is user-specific
-            if (receiver.getRecipientGroup() == null && receiver.getWorkspace_id() == null) {
-              noteReceiverController.deleteRecipient(receiver);
-            } else {
-              // If the receiver already exists, we need to make it user-specific and set the user group and workspace IDs to null
-              noteReceiverController.updateNotetWorkspaceAndUserGroupRecipient(receiver, null, null);
+
+          // Individual recipients
+
+          for (UserEntity userRecipient : prepareRecipientList.getUserRecipients()) {
+
+            NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(userRecipient.getId(), updatedNote);
+
+            if (receiver == null) {
+              noteReceiverController.createNoteRecipient(false, userRecipient.getId(), updatedNote, null, null);
             }
-          }
-        }
-
-        // User groups
-        for (UserGroupEntity userGroup : prepareRecipientList.getUserGroups()) {
-          prepareRecipientList.getUserGroupRecipients(userGroup);
-
-          List<UserGroupUserEntity> ugue = userGroupEntityController
-              .listUserGroupUserEntitiesByUserGroupEntity(userGroup);
-
-          for (UserGroupUserEntity userGroupUserEntity : ugue) {
-
-            if (userGroupUserEntity != null) {
-              UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
-
-              UserEntity groupRecipientEntity = userSchoolDataIdentifier.getUserEntity();
-
-              if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-                continue;
-              }
-
-              NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(groupRecipientEntity.getId(),
-                  updatedNote);
-
-              if (receiver == null) {
-                noteReceiverController.createNoteRecipient(false, groupRecipientEntity.getId(), updatedNote,
-                    userGroupUserEntity.getUserGroupEntity().getId(), null);
+            else {
+              // Remove only if receiver is user-specific
+              if (receiver.getRecipientGroup() == null && receiver.getWorkspace_id() == null) {
+                noteReceiverController.deleteRecipient(receiver);
               }
               else {
-                // Remove receiver only if it's originally added with a user group id
-                if (receiver.getRecipientGroup() != null) {
-                  noteReceiverController.deleteRecipient(receiver);
+                // If the receiver already exists, we need to make it user-specific and set the
+                // user group and workspace IDs to null
+                noteReceiverController.updateNoteWorkspaceAndUserGroupRecipient(receiver, null, null);
+              }
+            }
+          }
+
+          // User groups
+          for (UserGroupEntity userGroup : prepareRecipientList.getUserGroups()) {
+            prepareRecipientList.getUserGroupRecipients(userGroup);
+
+            List<UserGroupUserEntity> ugue = userGroupEntityController
+                .listUserGroupUserEntitiesByUserGroupEntity(userGroup);
+
+            for (UserGroupUserEntity userGroupUserEntity : ugue) {
+
+              if (userGroupUserEntity != null) {
+                UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
+
+                UserEntity groupRecipientEntity = userSchoolDataIdentifier.getUserEntity();
+
+                if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+                  continue;
+                }
+
+                NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(groupRecipientEntity.getId(),
+                    updatedNote);
+
+                if (receiver == null) {
+                  noteReceiverController.createNoteRecipient(false, groupRecipientEntity.getId(), updatedNote,
+                      userGroupUserEntity.getUserGroupEntity().getId(), null);
+                }
+                else {
+                  // Remove receiver only if it's originally added with a user group id
+                  if (receiver.getRecipientGroup() != null) {
+                    noteReceiverController.deleteRecipient(receiver);
+                  }
                 }
               }
             }
           }
-        }
 
-        // Workspace members
+          // Workspace members
 
-        for (WorkspaceEntity workspaceEntity : prepareRecipientList.getStudentWorkspaces()) {
-          List<UserEntity> workspaceUsers = prepareRecipientList.getWorkspaceStudentRecipients(workspaceEntity);
+          for (WorkspaceEntity workspaceEntity : prepareRecipientList.getStudentWorkspaces()) {
 
-          if (!CollectionUtils.isEmpty(workspaceUsers)) {
-            for (UserEntity workspaceUserEntity : workspaceUsers) {
-              UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController
-                  .findUserSchoolDataIdentifierByUserEntity(workspaceUserEntity);
-              if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-                continue;
+            List<NoteReceiver> receivers = noteReceiverController.listReceiversByNoteAndWorkspace(updatedNote,
+                workspaceEntity.getId());
+
+            // If there are any note recipients associated with a selected workspace, they
+            // should all be deleted at once
+            if (!CollectionUtils.isEmpty(receivers)) {
+              for (NoteReceiver receiver : receivers) {
+                noteReceiverController.deleteRecipient(receiver);
               }
+            }
+            else {
+              List<UserEntity> workspaceUsers = prepareRecipientList.getWorkspaceStudentRecipients(workspaceEntity);
 
-              NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(workspaceUserEntity.getId(),
-                  updatedNote);
+              if (!CollectionUtils.isEmpty(workspaceUsers)) {
+                for (UserEntity workspaceUserEntity : workspaceUsers) {
+                  UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController
+                      .findUserSchoolDataIdentifierByUserEntity(workspaceUserEntity);
+                  if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+                    continue;
+                  }
 
-              if (receiver == null) {
-                noteReceiverController.createNoteRecipient(false, workspaceUserEntity.getId(), updatedNote, null,
-                    workspaceEntity.getId());
-              }
-              else {
-                // Remove receiver only if it's originally added with a workspace id
-                if (receiver.getWorkspace_id() != null) {
-                  noteReceiverController.deleteRecipient(receiver);
+                  NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(workspaceUserEntity.getId(),
+                      updatedNote);
+
+                  if (receiver == null) {
+                    noteReceiverController.createNoteRecipient(false, workspaceUserEntity.getId(), updatedNote, null,
+                        workspaceEntity.getId());
+                  }
                 }
               }
             }
