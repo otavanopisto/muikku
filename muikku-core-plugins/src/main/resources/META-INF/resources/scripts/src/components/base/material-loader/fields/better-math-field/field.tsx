@@ -28,6 +28,7 @@ interface FieldProps {
   onBlur: () => any;
   onFocus: () => any;
   onLatexModeOpen: () => any;
+  createNewLatex?: () => any;
   onLatexModeClose: () => any;
   readOnly?: boolean;
   userId: number;
@@ -119,6 +120,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.onDeleteSomethingInMathMode =
       this.onDeleteSomethingInMathMode.bind(this);
     this.handleDrops = this.handleDrops.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   /**
@@ -129,6 +131,17 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     return false;
   }
 
+  isFieldFocused() {
+    return (this.refs.input as HTMLElement).classList.contains("focused");
+  }
+
+  handleKeyDown(e: KeyboardEvent) {
+    if (e.ctrlKey && e.key === "e" && this.isFieldFocused()) {
+      e.preventDefault();
+      this.props.createNewLatex();
+      this.props.onLatexModeOpen();
+    }
+  }
   /**
    * componentDidMount
    */
@@ -141,6 +154,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     if (!this.props.readOnly) {
       document.body.addEventListener("click", this.handleAllClicks);
+      document.addEventListener("keydown", this.handleKeyDown);
     } else {
       (this.refs.input as HTMLElement).classList.add("mathfield--readonly");
     }
@@ -825,6 +839,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
    */
   componentWillUnmount() {
     document.body.removeEventListener("click", this.handleAllClicks);
+    document.removeEventListener("keydown", this.handleKeyDown);
   }
 
   /**
