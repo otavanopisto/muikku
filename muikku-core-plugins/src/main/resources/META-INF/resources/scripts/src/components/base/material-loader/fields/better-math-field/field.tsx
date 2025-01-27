@@ -131,10 +131,18 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     return false;
   }
 
+  /**
+   * isFieldFocused
+   * @returns true if ref has a focused class
+   */
   isFieldFocused() {
     return (this.refs.input as HTMLElement).classList.contains("focused");
   }
 
+  /**
+   * handleKeyDown handles keyboard events
+   * @param e keyboard event
+   */
   handleKeyDown(e: KeyboardEvent) {
     if (e.ctrlKey && e.key === "e" && this.isFieldFocused()) {
       e.preventDefault();
@@ -174,12 +182,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         (this.refs.input as HTMLElement).classList.add("mathfield--readonly");
         (this.refs.input as HTMLElement).removeAttribute("contentEditable");
         document.body.removeEventListener("click", this.handleAllClicks);
+        document.removeEventListener("keydown", this.handleKeyDown);
       } else {
         (this.refs.input as HTMLElement).classList.remove(
           "mathfield--readonly"
         );
         (this.refs.input as HTMLElement).contentEditable = "true";
         document.body.addEventListener("click", this.handleAllClicks);
+        document.addEventListener("keydown", this.handleKeyDown);
       }
     }
 

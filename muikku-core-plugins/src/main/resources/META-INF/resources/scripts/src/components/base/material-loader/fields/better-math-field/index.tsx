@@ -194,7 +194,6 @@ export default class MathField extends React.Component<
     this.setState({
       expandMath: true,
     });
-
   }
 
   /**
