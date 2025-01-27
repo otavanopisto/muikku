@@ -28,7 +28,7 @@ interface FieldProps {
   onBlur: () => any;
   onFocus: () => any;
   onLatexModeOpen: () => any;
-  createNewLatex?: () => any;
+  createNewLatex?: () => void;
   onLatexModeClose: () => any;
   readOnly?: boolean;
   userId: number;
