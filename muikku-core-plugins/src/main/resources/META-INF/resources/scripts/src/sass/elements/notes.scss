@@ -120,7 +120,6 @@
     overflow-y: auto;
     scrollbar-color: lighten($color-default-contrast, 35%) $color-default;
     scrollbar-width: thin;
-    white-space: pre-line;
 
     &::-webkit-scrollbar {
       background-color: $color-default;
@@ -132,8 +131,14 @@
     }
   }
 
+  .notes__item-recipients {
+    height: auto;
+    overflow-y: auto;
+  }
+
   // This removes the item's content's fading effect
-  .notes__item-body::before {
+  .notes__item-body::before,
+  .notes__item-recipients::before {
     display: none;
   }
 }
@@ -229,6 +234,14 @@
     position: absolute;
     width: 100%;
   }
+
+  p {
+    margin: 0 0 10px;
+
+    &:last-child {
+      margin: 0;
+    }
+  }
 }
 
 .notes__item-recipients {
@@ -237,7 +250,24 @@
   flex-flow: row wrap;
   gap: 4px;
   margin: 5px 0;
+  max-height: 5.5rem;
+  overflow: hidden;
+  position: relative;
   width: 100%;
+
+  &::before {
+    background: linear-gradient(
+      $color-application-list-item-fade-background 0.5rem,
+      $color-default
+    );
+    bottom: 0;
+    content: " ";
+    height: 2.5rem;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+  }
 }
 
 .notes__item-author {
