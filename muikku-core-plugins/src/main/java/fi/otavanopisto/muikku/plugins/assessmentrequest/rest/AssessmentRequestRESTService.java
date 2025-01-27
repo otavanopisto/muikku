@@ -133,9 +133,10 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     // Price is reset to zero if the user has an active supplementation request on this workspace
     
     if (price != null && price.getPrice() > 0) {
-      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
           sessionController.getLoggedUserEntity().getId(),
           workspaceEntityId,
+          Boolean.FALSE,
           Boolean.FALSE);
       if (supplementationRequest != null) {
         price.setPrice(0d);
