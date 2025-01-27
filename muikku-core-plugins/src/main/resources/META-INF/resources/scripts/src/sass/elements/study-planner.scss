@@ -763,3 +763,66 @@
   display: flex;
   justify-content: center;
 }
+
+// Planner info
+.study-planner__info {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: #F8F8F8;
+  border-left: 5px solid #F8F8F8;
+  border-radius: 0 5px 5px 0;
+  color: #8c8c8c;
+
+  &--warning {
+    border-color: #fb923c;
+
+    .study-planner__info-icon {
+      color: #fb923c;
+    }
+
+    .study-planner__info-content {
+      color: #fb923c;
+    }
+  }
+
+  &--info {
+    border-color: #60a5fa;
+
+    .study-planner__info-icon {
+      color: #60a5fa;
+    }
+
+    .study-planner__info-content {
+      color: #60a5fa;
+    }
+  }
+
+  &--danger {
+    border-color: #f87171;
+
+    .study-planner__info-icon {
+      color: #f87171;
+    }
+
+    .study-planner__info-content {
+      color: #f87171;
+    }
+  }
+
+  &--neutral {
+    border-color: #cccbcb;
+  }
+}
+
+.study-planner__info-icon {
+  font-size: 5rem;
+  flex-shrink: 0;
+}
+
+.study-planner__info-content {
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+  flex: 1;
+}

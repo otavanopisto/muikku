@@ -128,6 +128,19 @@ export interface CurriculumStrategy {
   ) => PlanStatistics;
 
   /**
+   * Calculate estimated time to completion
+   * @param hoursPerWeek hours per week
+   * @param studyActivities study activities
+   * @param options options
+   * @returns estimated time to completion
+   */
+  calculateEstimatedTimeToCompletion: (
+    hoursPerWeek: number,
+    studyActivities: StudentStudyActivity[],
+    options: string[]
+  ) => number;
+
+  /**
    * Get course displayed length
    * @param course course
    * @returns displayed length
@@ -173,6 +186,36 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
   }
 
   /**
+   * Calculate estimated time to completion. Uppersecondary calculates credits
+   * which are converted to hours using 19 hours per credit.
+   * @param hoursPerWeek hours per week
+   * @param studyActivities study activities
+   * @param options options
+   * @returns estimated time to completion in months
+   */
+  calculateEstimatedTimeToCompletion(
+    hoursPerWeek: number,
+    studyActivities: StudentStudyActivity[],
+    options: string[]
+  ): number {
+    const statistics = this.calculateStatistics(studyActivities, options);
+
+    // Calculate remaining credits needed
+    const remainingCredits = Math.max(
+      statistics.requiredStudies.totalStudies - statistics.totalStudies,
+      0
+    );
+
+    // Convert remaining credits to hours
+    const remainingHours = this.convertToHours(remainingCredits);
+
+    // Calculate estimated months to completion
+    const estimatedMonths = remainingHours / (hoursPerWeek * 4);
+
+    return Math.ceil(estimatedMonths);
+  }
+
+  /**
    * Calculate workload
    * @param courses courses
    * @returns workload
@@ -203,7 +246,6 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
     studyActivities: StudentStudyActivity[],
     options: string[]
   ): PlanStatistics {
-    const matrix = this.getCurriculumMatrix({ studyOptions: options });
     const completedStats = this.calculateStatistics(studyActivities, options);
 
     // Calculate planned studies (excluding completed ones)
@@ -397,15 +439,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
    * @returns hours
    */
   convertToHours(credits: number): number {
-    return credits * 28; // 1 credit = 28 hours
-  }
-
-  /**
-   * Get average time per course
-   * @returns average time per course
-   */
-  getAverageTimePerCourse(): number {
-    return 28; // Average hours per course
+    return credits * 19; // 1 credit = 19 hours
   }
 
   /**
@@ -475,6 +509,36 @@ class CompulsoryCurriculum implements CurriculumStrategy {
   }
 
   /**
+   * Calculate estimated time to completion. Compulsory calculates courses instead of credits which
+   * are converted to hours using 38 hours per course.
+   * @param hoursPerWeek hours per week
+   * @param studyActivities study activities
+   * @param options options
+   * @returns estimated time to completion in months
+   */
+  calculateEstimatedTimeToCompletion(
+    hoursPerWeek: number,
+    studyActivities: StudentStudyActivity[],
+    options: string[]
+  ): number {
+    const statistics = this.calculateStatistics(studyActivities, options);
+
+    // Calculate remaining courses needed
+    const remainingCourses = Math.max(
+      statistics.requiredStudies.totalStudies - statistics.totalStudies,
+      0
+    );
+
+    // Convert remaining courses to hours
+    const remainingHours = this.convertToHours(remainingCourses);
+
+    // Calculate estimated months to completion
+    const estimatedMonths = remainingHours / (hoursPerWeek * 4);
+
+    return Math.ceil(estimatedMonths);
+  }
+
+  /**
    * Calculate workload
    * @param courses courses
    * @returns workload
@@ -501,7 +565,6 @@ class CompulsoryCurriculum implements CurriculumStrategy {
     studyActivities: StudentStudyActivity[],
     options: string[]
   ): PlanStatistics {
-    const matrix = this.getCurriculumMatrix({ studyOptions: options });
     const completedStats = this.calculateStatistics(studyActivities, options);
 
     // Calculate planned studies (excluding completed ones)
@@ -660,14 +723,6 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    */
   convertToHours(courses: number): number {
     return courses * 38; // Example: 38 hours per course
-  }
-
-  /**
-   * Get average time per course
-   * @returns average time per course
-   */
-  getAverageTimePerCourse(): number {
-    return 38; // Average hours per course
   }
 
   /**

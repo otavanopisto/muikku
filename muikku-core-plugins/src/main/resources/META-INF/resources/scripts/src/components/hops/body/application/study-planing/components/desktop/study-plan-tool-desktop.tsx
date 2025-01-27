@@ -175,6 +175,7 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
     >
       <StudyPlannerDragLayer />
       <MemoizedPlannerControls
+        fullScreen={isFullScreen}
         onViewChange={handleViewChange}
         onPeriodChange={handlePeriodChange}
         onFullScreen={handleFullScreen}

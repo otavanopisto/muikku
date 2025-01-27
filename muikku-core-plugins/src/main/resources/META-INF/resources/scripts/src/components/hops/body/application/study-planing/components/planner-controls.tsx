@@ -5,6 +5,7 @@ import { IconButton } from "~/components/general/button";
  * PlannerControlsProps
  */
 interface PlannerControlsProps {
+  fullScreen: boolean;
   onViewChange: (view: "list" | "table") => void;
   onPeriodChange: (direction: "prev" | "next") => void;
   onFullScreen: () => void;
@@ -17,12 +18,15 @@ interface PlannerControlsProps {
  * @returns JSX.Element
  */
 export const PlannerControls: React.FC<PlannerControlsProps> = (props) => {
-  const { onPeriodChange, onFullScreen, onShowPlanStatus } = props;
+  const { fullScreen, onPeriodChange, onFullScreen, onShowPlanStatus } = props;
 
   return (
     <div className="study-planner__controls">
       <div className="study-planner__control-buttons">
-        <IconButton icon="fullscreen" onClick={onFullScreen} />
+        <IconButton
+          icon={fullScreen ? "fullscreen-exit" : "fullscreen"}
+          onClick={onFullScreen}
+        />
         <IconButton icon="eye" onClick={onShowPlanStatus} />
       </div>
       <div className="study-planner__period-navigation">

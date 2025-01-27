@@ -24,6 +24,8 @@ import {
 } from "~/actions/main-function/hops";
 import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 import ProgressBar from "@ramonak/react-progress-bar";
+import DatePicker from "react-datepicker";
+import { PlannerInfo } from "./components/planner-info";
 
 /**
  * MatriculationPlanProps
@@ -61,6 +63,9 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
   const isMobile = useMediaQuery("(max-width: 768px)");
 
+  const [hoursPerWeek, setHoursPerWeek] = React.useState(0);
+  const [graduationGoalDate, setGraduationGoalDate] = React.useState(null);
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useTranslation(["hops_new", "common"]);
 
@@ -93,6 +98,13 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     [curriculumConfig.strategy, studyActivity, studyOptions]
   );
 
+  const estimatedTimeToCompletion =
+    curriculumConfig.strategy.calculateEstimatedTimeToCompletion(
+      hoursPerWeek,
+      studyActivity,
+      studyOptions
+    );
+
   return (
     <ApplicationSubPanel>
       <ApplicationSubPanel.Header>
@@ -117,7 +129,19 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
               <p className="hops-container__helper-text">
                 Arvioi mihin päivämäärään mennessä haluaisit valmistua.
               </p>
-              <input type="date" className="hops__input" />
+              <DatePicker
+                className="hops__input"
+                selected={graduationGoalDate || undefined}
+                onChange={(date) => {
+                  // Set to last day of the selected month
+                  date.setMonth(date.getMonth() + 1);
+                  date.setDate(0);
+
+                  setGraduationGoalDate(date);
+                }}
+                showMonthYearPicker
+                dateFormat="MM/yyyy"
+              />
             </div>
 
             <div className="hops-container__input-group">
@@ -128,8 +152,21 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                 Arvioi montako tuntia viikossa sinulla on aikaa käytettävänä
                 opiskeluun.
               </p>
-              <input type="number" className="hops__input" />
+              <input
+                type="number"
+                className="hops__input"
+                value={hoursPerWeek}
+                onChange={(e) => setHoursPerWeek(Number(e.target.value))}
+              />
             </div>
+          </div>
+
+          {/* Plan info section */}
+          <div className="study-planner__plan-status-section">
+            <PlannerInfo
+              graduationGoalDate={graduationGoalDate}
+              estimatedTimeToCompletion={estimatedTimeToCompletion}
+            />
           </div>
 
           {/* Plan status section */}
@@ -209,7 +246,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                     baseBgColor="#f5f5f5"
                   />
                   <div className="study-planner__plan-statistic-item-bar-label">
-                    {`50 / 100`}
+                    {`${estimatedTimeToCompletion}kk`}
                   </div>
                 </div>
               </div>
