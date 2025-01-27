@@ -488,20 +488,21 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             </div>
           )}
           <div className="notes__item-actions">
-            {loggedUserIsCreator && onNotesItemSaveUpdateClick && (
-              <NotesItemEdit
-                recipientId={specificRecipient}
-                selectedNotesItem={notesItem}
-                onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
-              >
-                <IconButton
-                  icon="pencil"
-                  disabled={editForbidden}
-                  buttonModifiers={["notes-action", "notes-edit"]}
-                  aria-label={t("wcag.editNote")}
-                />
-              </NotesItemEdit>
-            )}
+            {loggedUserIsCreator &&
+              onNotesItemSaveUpdateClick &&
+              !editForbidden && (
+                <NotesItemEdit
+                  recipientId={specificRecipient}
+                  selectedNotesItem={notesItem}
+                  onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
+                >
+                  <IconButton
+                    icon="pencil"
+                    buttonModifiers={["notes-action", "notes-edit"]}
+                    aria-label={t("wcag.editNote")}
+                  />
+                </NotesItemEdit>
+              )}
 
             {loggedUserIsOwner && onPinNotesItemClick && (
               <IconButton
