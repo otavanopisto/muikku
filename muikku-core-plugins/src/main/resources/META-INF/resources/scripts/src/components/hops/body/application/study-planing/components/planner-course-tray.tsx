@@ -7,12 +7,17 @@ import { useLocalStorage } from "usehooks-ts";
 import { Course, CourseFilter } from "~/@types/shared";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
-import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
+import {
+  CourseStatus,
+  HopsOpsCourse,
+  StudentStudyActivity,
+} from "~/generated/client";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { filterSubjectsAndCourses } from "../helper";
 import {
   PlannerCard,
+  PlannerCardActions,
   PlannerCardContent,
   PlannerCardHeader,
   PlannerCardLabel,
@@ -116,9 +121,18 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
         matrix.subjectsTable,
         searchTerm,
         selectedFilters,
-        availableOPSCoursesMap
+        availableOPSCoursesMap,
+        studyActivity,
+        plannedCourses
       ),
-    [matrix, searchTerm, selectedFilters, availableOPSCoursesMap]
+    [
+      matrix,
+      searchTerm,
+      selectedFilters,
+      availableOPSCoursesMap,
+      studyActivity,
+      plannedCourses,
+    ]
   );
 
   // Filter options
@@ -134,6 +148,26 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
     {
       label: "Valinnaiset",
       value: "optional",
+    },
+    {
+      label: "Suunniteltu",
+      value: "planned",
+    },
+    {
+      label: "Suoritettu",
+      value: "GRADED",
+    },
+    {
+      label: "Täydennettävä",
+      value: "SUPPLEMENTATIONREQUEST",
+    },
+    {
+      label: "Hyväksiluettu",
+      value: "TRANSFERRED",
+    },
+    {
+      label: "Työnalla",
+      value: "ONGOING",
     },
   ];
 
@@ -267,6 +301,8 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     studyActivity,
   } = props;
 
+  const [isCourseStateOpen, setIsCourseStateOpen] = React.useState(false);
+
   /**
    * Gets course state
    * @returns course state
@@ -333,44 +369,109 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     onSelectCourse({ ...course, subjectCode });
   };
 
+  /**
+   * Handles course state open
+   * @param e Event
+   */
+  const handleCourseStateOpen = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    setIsCourseStateOpen(!isCourseStateOpen);
+  };
+
   const modifiers = [];
 
   isDragging && modifiers.push("is-dragging");
   selected && modifiers.push("selected");
   courseState.state && modifiers.push(courseState.state);
-  isDisabled && modifiers.push("disabled");
 
   const type = course.mandatory ? "mandatory" : "optional";
 
   return (
-    <PlannerCard
-      modifiers={modifiers}
-      innerContainerModifiers={[type]}
-      onClick={!isDisabled ? handleSelectCourse : undefined}
-      ref={drag}
-    >
-      <PlannerCardHeader modifiers={["sidebar-course-card"]}>
-        <span className="planner-sidebar-course__code">
-          {`${subjectCode} ${course.courseNumber}. `}
-        </span>
-        <span className="planner-sidebar-course__name">{course.name}</span>
-      </PlannerCardHeader>
+    <div className="study-planner__course-tray-item">
+      <PlannerCard
+        modifiers={modifiers}
+        innerContainerModifiers={[type]}
+        onClick={!isDisabled ? handleSelectCourse : undefined}
+        ref={drag}
+      >
+        <PlannerCardHeader modifiers={["sidebar-course-card"]}>
+          <span className="planner-sidebar-course__name">
+            <b>{`${subjectCode} ${course.courseNumber}. `}</b>
+            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
+          </span>
+        </PlannerCardHeader>
 
-      <PlannerCardContent modifiers={["planned-course-card"]}>
-        <PlannerCardLabel modifiers={[type]}>
-          {type === "mandatory" ? "PAKOLLINEN" : "VALINNAINEN"}
-        </PlannerCardLabel>
-        <PlannerCardLabel modifiers={["course-length"]}>
-          {curriculumConfig.strategy.getCourseDisplayedLength(course)}
-        </PlannerCardLabel>
-
-        {courseState.label && (
-          <PlannerCardLabel modifiers={[courseState.state]}>
-            {courseState.label}
+        <PlannerCardContent modifiers={["planned-course-card"]}>
+          <PlannerCardLabel modifiers={[type]}>
+            {type === "mandatory" ? "PAKOLLINEN" : "VALINNAINEN"}
           </PlannerCardLabel>
+
+          {courseState.state && (
+            <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+              {courseState.label}
+            </PlannerCardLabel>
+          )}
+        </PlannerCardContent>
+
+        {studyActivity && (
+          <PlannerCardActions modifiers={["course-tray"]}>
+            <Button
+              icon="arrow-down"
+              iconPosition="left"
+              onClick={handleCourseStateOpen}
+              buttonModifiers={["study-planner-extra-info-toggle"]}
+            >
+              Lisätietoa
+            </Button>
+          </PlannerCardActions>
         )}
-      </PlannerCardContent>
-    </PlannerCard>
+      </PlannerCard>
+
+      {studyActivity && (
+        <AnimateHeight
+          height={isCourseStateOpen ? "auto" : 0}
+          animateOpacity={false}
+          contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+        >
+          <div className="study-planner__state-info-row">
+            <span className="study-planner__state-info-row-label">
+              Kurssi suunniteltu
+            </span>
+            <span className="study-planner__state-info-row-value">-</span>
+          </div>
+
+          <div className="study-planner__state-info-row">
+            <span className="study-planner__state-info-row-label">
+              Kurssille ilmoittauduttu
+            </span>
+            <span className="study-planner__state-info-row-value">-</span>
+          </div>
+
+          <div className="study-planner__state-info-row">
+            <span className="study-planner__state-info-row-label">
+              Kurssilta pyydetty arviointia
+            </span>
+            <span className="study-planner__state-info-row-value">-</span>
+          </div>
+
+          <div className="study-planner__state-info-row">
+            <span className="study-planner__state-info-row-label">
+              Kurssi arvioitu
+            </span>
+            <span className="study-planner__state-info-row-value">-</span>
+          </div>
+
+          <div className="study-planner__state-info-row">
+            <span className="study-planner__state-info-row-label">
+              Kurssin arvosana
+            </span>
+            <span className="study-planner__state-info-row-value">-</span>
+          </div>
+        </AnimateHeight>
+      )}
+    </div>
   );
 };
 

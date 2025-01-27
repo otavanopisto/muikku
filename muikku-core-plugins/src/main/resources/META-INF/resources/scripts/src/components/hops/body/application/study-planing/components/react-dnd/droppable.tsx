@@ -9,6 +9,7 @@ interface DroppableProps<T> {
   accept: string[];
   onDrop: (info: T, type: string) => void;
   onHover?: (isOver: boolean, info: T) => void;
+  wrapper?: React.ReactElement;
   children: React.ReactNode;
 }
 
@@ -17,7 +18,7 @@ interface DroppableProps<T> {
  * @param props props
  */
 const Droppable = <T,>(props: DroppableProps<T>) => {
-  const { accept, onDrop, children, className, onHover } = props;
+  const { accept, onDrop, children, className, onHover, wrapper } = props;
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: accept,
@@ -46,6 +47,14 @@ const Droppable = <T,>(props: DroppableProps<T>) => {
   }));
 
   const isActive = canDrop && isOver;
+
+  if (wrapper) {
+    return React.cloneElement(wrapper, {
+      ref: drop,
+      className: `${className} ${isActive ? "is-active" : ""}`,
+      children: children,
+    });
+  }
 
   return (
     <div ref={drop} className={`${className} ${isActive ? "is-active" : ""}`}>

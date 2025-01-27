@@ -2550,6 +2550,29 @@
   }
 }
 
+.button--study-planner-specify {
+  padding-right: 0;
+  color: $color-label-primary;
+
+  &.disabled {
+    color: $color-label-primary;
+  }
+}
+
+.button--study-planner-delete {
+  padding-right: 0;
+  color: $color-label-error;
+
+  &.disabled {
+    color: $color-label-error;
+  }
+}
+
+.button--study-planner-extra-info-toggle {
+  padding-left: 0;
+  font-size: 0.750rem;
+}
+
 .button-icon--study-planner-month-selection {
   background: transparent;
   color: #B1296F;

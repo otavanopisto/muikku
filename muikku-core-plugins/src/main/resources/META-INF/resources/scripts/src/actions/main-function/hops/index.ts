@@ -2080,17 +2080,6 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
         await Promise.all(promises);
 
         dispatch({ type: "HOPS_CHANGE_MODE", payload: "EDIT" });
-
-        dispatch(
-          displayNotification(
-            i18n.t("notifications.editingModePersistentInfo", {
-              ns: "hops_new",
-            }),
-            "persistent-info",
-            undefined,
-            "hops-editing-mode-notification"
-          )
-        );
       }
 
       dispatch({

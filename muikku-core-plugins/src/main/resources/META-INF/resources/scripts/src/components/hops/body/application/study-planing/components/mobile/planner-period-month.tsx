@@ -9,7 +9,7 @@ import {
   TimeContextSelection,
 } from "~/reducers/hops";
 import PlannerPeriodCourseCard from "./planner-period-course";
-import { motion, AnimatePresence, LayoutGroup, Variants } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
@@ -364,86 +364,82 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         </PlannerMonthEditDialog>
       </motion.div>
 
-      <AnimateHeight height={isExpanded ? "auto" : 0}>
-        <Droppable<
-          PlannedCourseWithIdentifier | (Course & { subjectCode: string })
-        >
-          accept={["planned-course-card", "new-course-card"]}
-          onDrop={handleDrop}
-          onHover={handleDropHover}
-          className="study-planner__month-content"
-        >
-          <LayoutGroup id={`month-${monthIndex}-${year}`}>
+      <div style={{ isolation: "isolate", position: "relative" }}>
+        <AnimateHeight height={isExpanded ? "auto" : 0}>
+          <Droppable<
+            PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+          >
+            accept={["planned-course-card", "new-course-card"]}
+            onDrop={handleDrop}
+            onHover={handleDropHover}
+            wrapper={
+              <motion.div layout className="study-planner__month-content" />
+            }
+          >
+            <AnimatePresence initial={false}>
+              {courses.length > 0
+                ? courses.map((course) => {
+                    // Check if the course is selected
+                    const isSelected = selectedCourses.some(
+                      (c) =>
+                        isPlannedCourseWithIdentifier(c) &&
+                        c.identifier === course.identifier
+                    );
+
+                    // Find the original course info
+                    const originalInfo = originalPlannedCourses.find(
+                      (c) => c.identifier === course.identifier
+                    );
+
+                    const courseActivity = studyActivity.find(
+                      (sa) =>
+                        sa.courseNumber === course.courseNumber &&
+                        sa.subject === course.subjectCode
+                    );
+
+                    // Check if there are any unsaved changes
+                    const hasChanges =
+                      originalInfo && !_.isEqual(originalInfo, course);
+
+                    // Check if the course is new
+                    const isNew = !originalInfo;
+
+                    return (
+                      <motion.div
+                        key={course.identifier}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.4 }}
+                        layout="position"
+                        style={{
+                          marginBottom: "10px",
+                        }}
+                      >
+                        <PlannerPeriodCourseCard
+                          course={course}
+                          selected={isSelected}
+                          hasChanges={hasChanges || isNew}
+                          curriculumConfig={curriculumConfig}
+                          studyActivity={courseActivity}
+                          onCourseChange={handleCourseChange}
+                          onSelectCourse={handleSelectCourse}
+                        />
+                      </motion.div>
+                    );
+                  })
+                : null}
+            </AnimatePresence>
             <motion.div
-              className="study-planner__month-courses"
               layout="position"
-              initial={false}
-              transition={{
-                layout: { duration: 0.3, ease: "easeInOut" },
-              }}
-            >
-              <AnimatePresence initial={false}>
-                {courses.length > 0
-                  ? courses.map((course) => {
-                      // Check if the course is selected
-                      const isSelected = selectedCourses.some(
-                        (c) =>
-                          isPlannedCourseWithIdentifier(c) &&
-                          c.identifier === course.identifier
-                      );
-
-                      // Find the original course info
-                      const originalInfo = originalPlannedCourses.find(
-                        (c) => c.identifier === course.identifier
-                      );
-
-                      const courseActivity = studyActivity.find(
-                        (sa) =>
-                          sa.courseNumber === course.courseNumber &&
-                          sa.subject === course.subjectCode
-                      );
-
-                      // Check if there are any unsaved changes
-                      const hasChanges =
-                        originalInfo && !_.isEqual(originalInfo, course);
-
-                      // Check if the course is new
-                      const isNew = !originalInfo;
-
-                      return (
-                        <motion.div
-                          key={course.identifier}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          transition={{ duration: 0.4 }}
-                          layout="position"
-                        >
-                          <PlannerPeriodCourseCard
-                            course={course}
-                            selected={isSelected}
-                            hasChanges={hasChanges || isNew}
-                            curriculumConfig={curriculumConfig}
-                            studyActivity={courseActivity}
-                            onCourseChange={handleCourseChange}
-                            onSelectCourse={handleSelectCourse}
-                          />
-                        </motion.div>
-                      );
-                    })
-                  : null}
-              </AnimatePresence>
-              <motion.div
-                layout="position"
-                animate={pulseDropzone ? "dropIsActive" : "initial"}
-                variants={dropZoneVariants}
-                onClick={handleMoveCoursesHereClick}
-                className="study-planner__month-dropzone"
-              />
-            </motion.div>
-          </LayoutGroup>
-        </Droppable>
-      </AnimateHeight>
+              animate={pulseDropzone ? "dropIsActive" : "initial"}
+              variants={dropZoneVariants}
+              onClick={handleMoveCoursesHereClick}
+              className="study-planner__month-dropzone"
+            />
+          </Droppable>
+        </AnimateHeight>
+      </div>
     </motion.div>
   );
 };

@@ -1,4 +1,5 @@
 import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
+import { StudentStudyActivity } from "~/generated/client";
 import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 import { CurriculumStrategy } from "~/util/curriculum-config";
 
@@ -88,17 +89,37 @@ const createAndAllocateCoursesToPeriods = (
  * @param searchTerm search term
  * @param selectedFilters selected filters
  * @param availableOPSCoursesMap available OPS courses map
+ * @param studyActivities study activities
+ * @param plannedCourses planned courses
  * @returns filtered subjects and courses
  */
 const filterSubjectsAndCourses = (
   subjects: SchoolSubject[],
   searchTerm: string,
   selectedFilters: CourseFilter[],
-  availableOPSCoursesMap: Map<string, number[]>
+  availableOPSCoursesMap: Map<string, number[]>,
+  studyActivities: StudentStudyActivity[],
+  plannedCourses: PlannedCourseWithIdentifier[]
 ) =>
   subjects
     .map((subject) => {
-      let filteredCourses = [...subject.availableCourses];
+      let filteredCoursesWithStudyActivity = [...subject.availableCourses].map(
+        (course) => {
+          const studyActivity = studyActivities.find(
+            (sa) =>
+              sa.courseNumber === course.courseNumber &&
+              sa.subject === subject.subjectCode
+          );
+
+          const plannedCourse = plannedCourses.find(
+            (pc) =>
+              pc.courseNumber === course.courseNumber &&
+              pc.subjectCode === subject.subjectCode
+          );
+
+          return { ...course, studyActivity, planned: !!plannedCourse };
+        }
+      );
 
       const skipMandatoryChecking =
         selectedFilters.includes("mandatory") &&
@@ -106,33 +127,62 @@ const filterSubjectsAndCourses = (
 
       // Apply filters
       if (!skipMandatoryChecking && selectedFilters.includes("mandatory")) {
-        filteredCourses = filteredCourses.filter((course) => course.mandatory);
+        filteredCoursesWithStudyActivity =
+          filteredCoursesWithStudyActivity.filter((course) => course.mandatory);
       }
 
       if (!skipMandatoryChecking && selectedFilters.includes("optional")) {
-        filteredCourses = filteredCourses.filter((course) => !course.mandatory);
+        filteredCoursesWithStudyActivity =
+          filteredCoursesWithStudyActivity.filter(
+            (course) => !course.mandatory
+          );
+      }
+
+      filteredCoursesWithStudyActivity =
+        filteredCoursesWithStudyActivity.filter(
+          (course) =>
+            course.studyActivity === undefined ||
+            (selectedFilters.includes("GRADED") &&
+              course.studyActivity.status === "GRADED") ||
+            (selectedFilters.includes("ONGOING") &&
+              course.studyActivity.status === "ONGOING") ||
+            (selectedFilters.includes("SUPPLEMENTATIONREQUEST") &&
+              course.studyActivity.status === "SUPPLEMENTATIONREQUEST") ||
+            (selectedFilters.includes("TRANSFERRED") &&
+              course.studyActivity.status === "TRANSFERRED")
+        );
+
+      // By default filter out planned courses
+      if (!selectedFilters.includes("planned")) {
+        // Filter out planned courses
+        filteredCoursesWithStudyActivity =
+          filteredCoursesWithStudyActivity.filter((course) => !course.planned);
       }
 
       // Filter available OPS courses
       if (selectedFilters.includes("available")) {
-        filteredCourses = filteredCourses.filter((course) => {
-          const availableCourseNumbers = availableOPSCoursesMap.get(
-            subject.subjectCode
-          );
-          return availableCourseNumbers?.includes(course.courseNumber) ?? false;
-        });
+        filteredCoursesWithStudyActivity =
+          filteredCoursesWithStudyActivity.filter((course) => {
+            const availableCourseNumbers = availableOPSCoursesMap.get(
+              subject.subjectCode
+            );
+            return (
+              availableCourseNumbers?.includes(course.courseNumber) ?? false
+            );
+          });
       }
 
       // Apply search term
       if (searchTerm !== "") {
-        filteredCourses = filteredCourses.filter((course) =>
-          course.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        filteredCoursesWithStudyActivity =
+          filteredCoursesWithStudyActivity.filter((course) =>
+            course.name.toLowerCase().includes(searchTerm.toLowerCase())
+          );
       }
 
       return {
         ...subject,
-        availableCourses: filteredCourses,
+        availableCourses: filteredCoursesWithStudyActivity,
       };
     })
     .filter((subject) => subject.availableCourses.length > 0); // Remove subjects with no matching courses

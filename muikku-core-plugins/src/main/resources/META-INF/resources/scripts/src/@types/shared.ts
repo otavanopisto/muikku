@@ -8,6 +8,7 @@ import {
   MatriculationExamFinishedSubject,
   MatriculationExamPlannedSubject,
   MatriculationExamEnrollment,
+  CourseStatus,
 } from "~/generated/client";
 
 /**
@@ -308,7 +309,20 @@ export interface Course {
   mandatory: boolean;
 }
 
-export type CourseFilter = "available" | "mandatory" | "optional";
+export const courseFilter = [
+  "available",
+  "mandatory",
+  "optional",
+  "planned",
+  CourseStatus.Ongoing,
+  CourseStatus.Graded,
+  CourseStatus.Supplementationrequest,
+  CourseStatus.Transferred,
+  CourseStatus.SuggestedNext,
+  CourseStatus.SuggestedOptional,
+] as const;
+
+export type CourseFilter = (typeof courseFilter)[number];
 
 /**
  * UploadingValue

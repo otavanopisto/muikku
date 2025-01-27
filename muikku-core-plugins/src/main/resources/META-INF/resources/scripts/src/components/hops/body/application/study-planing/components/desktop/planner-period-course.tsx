@@ -9,6 +9,7 @@ import Button from "~/components/general/button";
 import DatePicker from "react-datepicker";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
+import { motion } from "framer-motion";
 
 /**
  * DesktopPlannerPeriodCourseProps
@@ -83,88 +84,143 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
         endDate,
         isOpen,
       }) => (
-        <AnimateHeight
-          duration={500}
-          height={isOpen ? "auto" : 0}
-          className={`study-planner__extra-section-animate-height ${
-            isOpen ? "open" : "close"
-          }`}
-          contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+        <motion.div
+          layout="position"
+          style={{
+            isolation: "isolate",
+          }}
         >
-          <h4 className="study-planner__extra-section-title">
-            Tarkenna suunnitelmaa
-          </h4>
+          <AnimateHeight
+            duration={200}
+            height={isOpen ? "auto" : 0}
+            contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+          >
+            <h4 className="study-planner__extra-section-title">
+              Tarkenna suunnitelmaa
+            </h4>
 
-          <div className="study-planner__extra-section-content">
-            <div className="study-planner__extra-section-input-group">
-              <label className="study-planner__extra-section-input-group-label">
-                Valitse kurssi-ilmentymä
-              </label>
-              <select className="study-planner__input">
-                <option>{course.name}</option>
-              </select>
-            </div>
+            <div className="study-planner__extra-section-content">
+              <div className="study-planner__extra-section-input-group">
+                <label className="study-planner__extra-section-input-group-label">
+                  Valitse kurssi-ilmentymä
+                </label>
 
-            <div className="study-planner__extra-section-input-group">
-              <label className="study-planner__extra-section-input-group-label">
-                Valitse ajankohta
-              </label>
-              <div className="study-planner__extra-section-date-inputs">
-                <DatePicker
-                  className="study-planner__input"
-                  placeholderText="Alkaa"
-                  selected={startDate}
-                  onChange={(date) => onChange(date, endDate)}
-                  locale={outputCorrectDatePickerLocale(localize.language)}
-                  dateFormat="P"
-                />
-                <DatePicker
-                  className="study-planner__input"
-                  placeholderText="Päättyy"
-                  selected={endDate}
-                  onChange={(date) => onChange(startDate, date)}
-                  locale={outputCorrectDatePickerLocale(localize.language)}
-                  dateFormat="P"
-                />
+                <span className="study-planner__extra-section-input-group-label-info">
+                  Valitse kurssi-ilmentymä, jonka mukaan haluat suorituksen
+                  toteuttaa
+                </span>
+                <select className="study-planner__input">
+                  <option>{course.name}</option>
+                </select>
+              </div>
+
+              <div className="study-planner__extra-section-input-group">
+                <label className="study-planner__extra-section-input-group-label">
+                  Valitse ajankohta
+                </label>
+                <span className="study-planner__extra-section-input-group-label-info">
+                  Ajasta kurssi sinulle sopivaan ajankohtaan
+                </span>
+                <div className="study-planner__extra-section-date-inputs">
+                  <DatePicker
+                    className="study-planner__input"
+                    placeholderText="Alkaa"
+                    selected={startDate}
+                    onChange={(date) => onChange(date, endDate)}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
+                    dateFormat="P"
+                  />
+                  <DatePicker
+                    className="study-planner__input"
+                    placeholderText="Päättyy"
+                    selected={endDate}
+                    onChange={(date) => onChange(startDate, date)}
+                    locale={outputCorrectDatePickerLocale(localize.language)}
+                    dateFormat="P"
+                  />
+                </div>
+              </div>
+
+              <div className="study-planner__extra-section-button-group">
+                <Button buttonModifiers={["secondary"]} onClick={onClose}>
+                  PERUUTA
+                </Button>
+                <Button buttonModifiers={["primary"]} onClick={onConfirm}>
+                  TARKENNA
+                </Button>
               </div>
             </div>
-
+          </AnimateHeight>
+        </motion.div>
+      )}
+      renderDeleteWarning={({ isOpen, onClose, onConfirm }) => (
+        <motion.div layout="position" style={{ isolation: "isolate" }}>
+          <AnimateHeight
+            duration={200}
+            height={isOpen ? "auto" : 0}
+            contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+            onTransitionEnd={() => handleTransitionEnd(onConfirm)}
+          >
+            <h4 className="study-planner__extra-section-title">
+              Haluatko varmasti poistaa kurssin suunnitelmasta?
+            </h4>
             <div className="study-planner__extra-section-button-group">
               <Button buttonModifiers={["secondary"]} onClick={onClose}>
                 PERUUTA
               </Button>
-              <Button buttonModifiers={["primary"]} onClick={onConfirm}>
-                TARKENNA
+              <Button
+                buttonModifiers={["primary"]}
+                onClick={() => handleDeleteCard(onClose)}
+              >
+                POISTA KURSSI
               </Button>
             </div>
-          </div>
-        </AnimateHeight>
+          </AnimateHeight>
+        </motion.div>
       )}
-      renderDeleteWarning={({ isOpen, onClose, onConfirm }) => (
-        <AnimateHeight
-          duration={500}
-          height={isOpen ? "auto" : 0}
-          className={`study-planner__extra-section-animate-height ${
-            isOpen ? "open" : "close"
-          }`}
-          contentClassName="study-planner__extra-section study-planner__extra-section--specify"
-          onTransitionEnd={() => handleTransitionEnd(onConfirm)}
-        >
-          <h4 className="study-planner__extra-section-title">
-            Haluatko varmasti poistaa kurssin suunnitelmasta?
-          </h4>
-          <div className="study-planner__extra-section-button-group">
-            <Button buttonModifiers={["secondary"]} onClick={onClose}>
-              PERUUTA
-            </Button>
-            <Button
-              buttonModifiers={["primary"]}
-              onClick={() => handleDeleteCard(onClose)}
-            >
-              POISTA KURSSI
-            </Button>
-          </div>
-        </AnimateHeight>
+      renderCourseState={({ isOpen, onClose, courseState }) => (
+        <motion.div layout="position" style={{ isolation: "isolate" }}>
+          <AnimateHeight
+            duration={200}
+            height={isOpen ? "auto" : 0}
+            contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+          >
+            <div className="study-planner__state-info-row">
+              <span className="study-planner__state-info-row-label">
+                Kurssi suunniteltu
+              </span>
+              <span className="study-planner__state-info-row-value">-</span>
+            </div>
+
+            <div className="study-planner__state-info-row">
+              <span className="study-planner__state-info-row-label">
+                Kurssille ilmoittauduttu
+              </span>
+              <span className="study-planner__state-info-row-value">-</span>
+            </div>
+
+            <div className="study-planner__state-info-row">
+              <span className="study-planner__state-info-row-label">
+                Kurssilta pyydetty arviointia
+              </span>
+              <span className="study-planner__state-info-row-value">-</span>
+            </div>
+
+            <div className="study-planner__state-info-row">
+              <span className="study-planner__state-info-row-label">
+                Kurssi arvioitu
+              </span>
+              <span className="study-planner__state-info-row-value">-</span>
+            </div>
+
+            <div className="study-planner__state-info-row">
+              <span className="study-planner__state-info-row-label">
+                Kurssin arvosana
+              </span>
+              <span className="study-planner__state-info-row-value">-</span>
+            </div>
+          </AnimateHeight>
+        </motion.div>
       )}
     />
   );

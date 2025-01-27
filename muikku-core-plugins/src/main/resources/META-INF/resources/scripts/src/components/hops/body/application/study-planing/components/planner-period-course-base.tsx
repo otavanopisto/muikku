@@ -46,6 +46,12 @@ export interface BasePlannerPeriodCourseProps {
     onClose: () => void;
     onConfirm: () => void;
   }) => React.ReactNode;
+
+  renderCourseState?: (props: {
+    isOpen: boolean;
+    onClose: () => void;
+    courseState: StudentStudyActivity;
+  }) => React.ReactNode;
 }
 
 /**
@@ -76,10 +82,12 @@ const BasePlannerPeriodCourse = React.forwardRef<
     onSelectCourse,
     renderSpecifyContent,
     renderDeleteWarning,
+    renderCourseState,
   } = props;
 
   const [specifyIsOpen, setSpecifyIsOpen] = React.useState(false);
   const [deleteWarningIsOpen, setDeleteWarningIsOpen] = React.useState(false);
+  const [courseStateIsOpen, setCourseStateIsOpen] = React.useState(false);
 
   const [specifyCourse, setSpecifyCourse] =
     React.useState<SpecifyCourse | null>(null);
@@ -118,6 +126,13 @@ const BasePlannerPeriodCourse = React.forwardRef<
   };
 
   const courseState = getCourseState();
+
+  /**
+   * Handles course state open
+   */
+  const handleCourseStateOpen = () => {
+    setCourseStateIsOpen(!courseStateIsOpen);
+  };
 
   /**
    * Handles specify open
@@ -216,18 +231,18 @@ const BasePlannerPeriodCourse = React.forwardRef<
   selected && cardModifiers.push("selected");
 
   return (
-    <>
+    <div>
       <PlannerCard
         ref={ref}
-        modifiers={["planned-course-card", ...cardModifiers]}
+        modifiers={["planned-course", ...cardModifiers]}
         innerContainerModifiers={[course.mandatory ? "mandatory" : "optional"]}
         onClick={handleSelectCourse}
       >
         <PlannerCardHeader modifiers={["planned-course-card"]}>
-          <span className="study-planner__course-code">
-            {`${course.subjectCode} ${course.courseNumber}.`}
+          <span className="study-planner__course-name">
+            <b>{`${course.subjectCode} ${course.courseNumber}. `}</b>
+            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
           </span>
-          <span className="study-planner__course-name">{course.name}</span>
           {hasChanges && (
             <span className="study-planner__course-unsaved">*</span>
           )}
@@ -239,14 +254,13 @@ const BasePlannerPeriodCourse = React.forwardRef<
           >
             {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
           </PlannerCardLabel>
-          <PlannerCardLabel modifiers={["course-length"]}>
-            {curriculumConfig.strategy.getCourseDisplayedLength(course)}
-          </PlannerCardLabel>
+
           {courseState.state && (
-            <PlannerCardLabel modifiers={["course-state"]}>
+            <PlannerCardLabel modifiers={["course-state", courseState.state]}>
               {courseState.label}
             </PlannerCardLabel>
           )}
+
           <span className="study-planner__course-dates">
             {calculatedEndDate ? (
               <>
@@ -259,26 +273,39 @@ const BasePlannerPeriodCourse = React.forwardRef<
           </span>
         </PlannerCardContent>
 
-        <PlannerCardActions modifiers={["planned-course-card"]}>
-          <Button
-            buttonModifiers={["primary"]}
-            onClick={handleSpecifyOpen}
-            disabled={
-              courseState.disabled || specifyIsOpen || deleteWarningIsOpen
-            }
-          >
-            Tarkenna
-          </Button>
-          <Button
-            buttonModifiers={["danger"]}
-            onClick={handleDeleteOpen}
-            disabled={
-              courseState.disabled || specifyIsOpen || deleteWarningIsOpen
-            }
-          >
-            Poista
-          </Button>
-        </PlannerCardActions>
+        {!studyActivity ? (
+          <PlannerCardActions>
+            <Button
+              onClick={handleSpecifyOpen}
+              disabled={
+                courseState.disabled || specifyIsOpen || deleteWarningIsOpen
+              }
+              buttonModifiers={["study-planner-specify"]}
+            >
+              Tarkenna
+            </Button>
+            <Button
+              onClick={handleDeleteOpen}
+              disabled={
+                courseState.disabled || specifyIsOpen || deleteWarningIsOpen
+              }
+              buttonModifiers={["study-planner-delete"]}
+            >
+              Poista
+            </Button>
+          </PlannerCardActions>
+        ) : (
+          <PlannerCardActions modifiers={["planned-course-card"]}>
+            <Button
+              icon="arrow-down"
+              iconPosition="left"
+              onClick={handleCourseStateOpen}
+              buttonModifiers={["study-planner-extra-info-toggle"]}
+            >
+              Lisätietoa
+            </Button>
+          </PlannerCardActions>
+        )}
       </PlannerCard>
 
       {renderSpecifyContent({
@@ -297,7 +324,14 @@ const BasePlannerPeriodCourse = React.forwardRef<
         onClose: () => setDeleteWarningIsOpen(false),
         onConfirm: handleConfirmDelete,
       })}
-    </>
+
+      {renderCourseState({
+        isOpen: courseStateIsOpen,
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        onClose: () => setCourseStateIsOpen(false),
+        courseState: studyActivity,
+      })}
+    </div>
   );
 });
 

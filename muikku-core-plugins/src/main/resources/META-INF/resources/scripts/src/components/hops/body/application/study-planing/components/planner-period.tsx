@@ -55,7 +55,7 @@ const workloadVariants: Variants = {
   },
 };
 
-const periodMonthsVariants: Variants = {
+/* const periodMonthsVariants: Variants = {
   expanded: {
     opacity: 1,
     transition: {
@@ -75,7 +75,7 @@ const periodMonthsVariants: Variants = {
   initial: {
     opacity: 0,
   },
-};
+}; */
 
 const AUTUMN_MONTHS = ["Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"];
 const SPRING_MONTHS = [
@@ -128,146 +128,118 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
       });
 
     return (
-      <motion.div
-        className="study-planner__period"
-        ref={ref}
-        variants={periodVariants}
-        animate={isCollapsed ? "collapsed" : "expanded"}
-        style={{ overflow: "hidden" }}
-      >
-        <AnimatePresence initial={false}>
-          {isCollapsed && (
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{
-                opacity: 1,
-                transition: {
-                  duration: 0.4,
-                  type: "tween",
-                  ease: "easeInOut",
-                },
-              }}
-              exit={{
-                opacity: 0,
-                transition: {
-                  duration: 0.4,
-                  type: "tween",
-                  ease: "easeInOut",
-                },
-              }}
-              className="study-planner__period-header study-planner__period-header--collapsed"
-            >
-              <PeriodButton
-                isCollapsed={isCollapsed}
-                setIsCollapsed={setIsCollapsed}
-              />
-              <motion.div className="study-planner__period-title study-planner__period-title--collapsed">
-                {title}
-                {workload && (
-                  <motion.span
-                    variants={workloadVariants}
-                    style={{ marginLeft: "0.5rem" }}
-                  >
-                    {workload.displayValue}
-                  </motion.span>
-                )}
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence initial={false}>
-          {!isCollapsed && (
-            <motion.div
-              className="study-planner__period-header"
-              animate={{
-                opacity: 1,
-                transition: {
-                  duration: 0.4,
-                  type: "tween",
-                  ease: "easeInOut",
-                },
-              }}
-              exit={{
-                opacity: 0,
-                transition: {
-                  duration: 0.4,
-                  type: "tween",
-                  ease: "easeInOut",
-                },
-              }}
-            >
-              <PeriodButton
-                isCollapsed={isCollapsed}
-                setIsCollapsed={setIsCollapsed}
-              />
+      <LayoutGroup id={`period-${period.title}`}>
+        <motion.div
+          className="study-planner__period"
+          ref={ref}
+          variants={periodVariants}
+          animate={isCollapsed ? "collapsed" : "expanded"}
+          style={{
+            overflow: "hidden",
+            position: "relative",
+          }}
+        >
+          {/* Collapsed state header */}
+          <AnimatePresence>
+            {isCollapsed && (
               <motion.div
-                className="study-planner__period-title"
-                variants={titleVariants}
-                animate={isCollapsed ? "collapsed" : "expanded"}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  duration: 0.2,
+                  ease: "easeInOut",
+                }}
+                className="study-planner__period-header study-planner__period-header--collapsed"
               >
-                {title}
-                {workload && (
-                  <motion.span
-                    variants={workloadVariants}
-                    style={{ marginLeft: "0.5rem" }}
-                  >
-                    {workload.displayValue}
-                  </motion.span>
-                )}
+                <PeriodButton
+                  isCollapsed={isCollapsed}
+                  setIsCollapsed={setIsCollapsed}
+                />
+                <motion.div className="study-planner__period-title study-planner__period-title--collapsed">
+                  {title}
+                </motion.div>
               </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
 
-        <AnimatePresence initial={false}>
-          {!isCollapsed && (
-            <motion.div
-              className="study-planner__scrollable-container"
-              variants={periodMonthsVariants}
-              initial="initial"
-              animate="expanded"
-              exit="collapsed"
-            >
-              <LayoutGroup>
+          {/* Expanded state content */}
+          <AnimatePresence>
+            {!isCollapsed && (
+              <>
                 <motion.div
-                  layout="position"
-                  className="study-planner__months-container"
+                  className="study-planner__period-header"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 0.2,
+                    ease: "easeInOut",
+                  }}
                 >
-                  {months.map((monthName, index) => {
-                    const monthCourses = getCoursesByMonth(monthName);
+                  <PeriodButton
+                    isCollapsed={isCollapsed}
+                    setIsCollapsed={setIsCollapsed}
+                  />
+                  <motion.div
+                    className="study-planner__period-title"
+                    variants={titleVariants}
+                  >
+                    {title}
+                    {workload && (
+                      <motion.span variants={workloadVariants}>
+                        {` - ${workload.displayValue}`}
+                      </motion.span>
+                    )}
+                  </motion.div>
+                </motion.div>
 
-                    if (renderMobile) {
-                      return (
+                <motion.div
+                  className="study-planner__scrollable-container"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 0.2,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <div
+                    className="study-planner__months-container"
+                    style={{
+                      position: "relative",
+                      isolation: "isolate",
+                    }}
+                  >
+                    {months.map((monthName, index) => {
+                      const monthCourses = getCoursesByMonth(monthName);
+                      const monthKey = `${monthName}-${year}-${type}`;
+
+                      return renderMobile ? (
                         <MobilePlannerPeriodMonth
-                          key={`${monthName}-${year}`}
+                          key={monthKey}
+                          title={monthName}
+                          monthIndex={index + (type === "AUTUMN" ? 7 : 0)}
+                          year={year}
+                          courses={monthCourses}
+                        />
+                      ) : (
+                        <PlannerPeriodMonth
+                          key={monthKey}
                           title={monthName}
                           monthIndex={index + (type === "AUTUMN" ? 7 : 0)}
                           year={year}
                           courses={monthCourses}
                         />
                       );
-                    }
-
-                    return (
-                      <PlannerPeriodMonth
-                        key={`${monthName}-${year}`}
-                        title={monthName}
-                        // Get month index from months array
-                        monthIndex={index + (type === "AUTUMN" ? 7 : 0)}
-                        year={year}
-                        courses={monthCourses}
-                      />
-                    );
-                  })}
+                    })}
+                  </div>
                 </motion.div>
-              </LayoutGroup>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </LayoutGroup>
     );
   }
 );

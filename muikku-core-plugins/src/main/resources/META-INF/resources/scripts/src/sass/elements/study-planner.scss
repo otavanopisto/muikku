@@ -207,6 +207,7 @@
 // Month
 .study-planner__month {
   margin-bottom: 0.5rem;
+  position: relative;
 }
 
 .study-planner__month-header {
@@ -356,10 +357,26 @@
   }
 }
 
+.study-planner__course-tray-item {
+  margin-bottom: 0.5rem;
+}
+
+.study-planner__month-height-wrapper {
+  isolation: isolate;
+}
+
+.study-planner__month-content {
+  isolation: isolate;
+}
+
+// Planned course card
+.study-planner__planned-course-card {
+  margin-bottom: 0.5rem;
+}
+
 // Planner card
 .study-planner__card {
   cursor: move;
-  margin-bottom: 0.5rem;
   background: white;
   border-radius: 0px 5px 5px 0px;
   opacity: 1;
@@ -405,7 +422,6 @@
   width: 100%;
   border-left: 5px solid #8d8d8d;
   padding: 0.5rem;
-  margin-bottom: 0.5rem;
   background: white;
 }
 
@@ -439,12 +455,21 @@
   justify-content: flex-end;
 }
 
+.study-planner__card-actions--course-tray {
+  justify-content: flex-start;
+}
+
+.study-planner__card-actions--planned-course-card {
+  justify-content: flex-start;
+}
+
 .study-planner__card-label {
-  display: inline-block;
+  display: flex;
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
+  align-items: center;
   max-width: fit-content;
 }
 
@@ -509,9 +534,8 @@
 }
 
 .study-planner__course-dates {
-  font-size: 0.875rem;
+  font-size: 0.750rem;
   color: $color-default-contrast;
-  margin: 0.5rem 0;
   display: block;
   flex-basis: 100%;
 }
@@ -531,8 +555,7 @@
 .study-planner__extra-section {
   padding: 0.5rem;
   background: white;
-  border-radius: 15px;
-  border: 2px solid rgb(224, 224, 224)
+  border: 1px solid rgb(224, 224, 224)
 }
 
 .study-planner__extra-section-title {
@@ -553,6 +576,14 @@
 
 .study-planner__extra-section-input-group-label {
   margin-bottom: 0.25rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.study-planner__extra-section-input-group-label-info {
+  margin-bottom: 0.25rem;
+  font-weight: 100;
+  font-size: 0.775rem;
 }
 
 .study-planner__extra-section-date-inputs {
@@ -563,7 +594,7 @@
 .study-planner__extra-section-button-group {
   display: flex;
   gap: 0.5rem;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .study-planner__input {
@@ -576,6 +607,25 @@
   width: 100%;
 }
 
+// State info
+.study-planner__state-info-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.study-planner__state-info-row-label {
+  font-weight: 200;
+  font-size: 0.875rem;
+}
+
+.study-planner__state-info-row-value {
+  font-weight: 800;
+  font-size: 0.875rem;
+}
+
+// Mobile sidebar
 .study-planner__mobile-sidebar-header-actions {
   display: flex;
   gap: 0.5rem;
