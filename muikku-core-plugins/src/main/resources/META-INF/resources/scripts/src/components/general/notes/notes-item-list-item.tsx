@@ -529,7 +529,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                 aria-label={t("wcag.archive")}
               />
             )}
-            {specificRecipient && renderUpdateStatus()}
+            {(specificRecipient || !multiUserNote) && renderUpdateStatus()}
           </div>
         </div>
 
@@ -581,7 +581,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           {!loggedUserIsCreator ? creatorName : null}
         </div>
         <div className="notes__item-footer">
-          {specificRecipient && renderStatus()}
+          {(specificRecipient || !multiUserNote) && renderStatus()}
         </div>
       </div>
     );
