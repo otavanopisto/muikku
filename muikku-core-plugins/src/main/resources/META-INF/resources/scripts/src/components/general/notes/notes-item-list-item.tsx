@@ -346,7 +346,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const renderUpdateStatus = () => {
       let items: DropdownItem[] = [];
 
-      if (archived || multiUserNote) {
+      if (archived) {
         return;
       }
 
@@ -529,7 +529,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                 aria-label={t("wcag.archive")}
               />
             )}
-            {!multiUserNote && renderUpdateStatus()}
+            {specificRecipient && renderUpdateStatus()}
           </div>
         </div>
 
@@ -581,7 +581,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           {!loggedUserIsCreator ? creatorName : null}
         </div>
         <div className="notes__item-footer">
-          {!multiUserNote && renderStatus()}
+          {specificRecipient && renderStatus()}
         </div>
       </div>
     );
