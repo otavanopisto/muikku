@@ -189,7 +189,6 @@ class NotesItemNew extends SessionStateComponent<
         {!this.props.newNoteRecipientId && (
           <div className="env-dialog__form-element-container">
             <InputContactsAutofill
-              groupArchetype="USERGROUP"
               identifier="communicatorRecipients"
               modifier="new-message"
               key="new-message-1"
