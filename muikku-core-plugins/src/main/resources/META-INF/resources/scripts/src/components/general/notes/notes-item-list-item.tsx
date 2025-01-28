@@ -534,42 +534,45 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         </div>
 
         <div className="notes__item-dates">{renderDates()}</div>
-        <div
-          className={`notes__item-header ${
-            openInformationToDialog ? "notes__item-header--open-details" : ""
-          }`}
-        >
-          {openInformationToDialog ? (
-            <NoteInformationDialog
-              notesItem={notesItem}
-              archived={archived}
-              loggedUserIsCreator={loggedUserIsCreator}
-              loggedUserIsOwner={loggedUserIsOwner}
-              onPinNotesItemClick={onPinNotesItemClick}
-              onArchiveClick={onArchiveClick}
-              onUpdateNotesItemStatus={onUpdateNotesItemStatus}
-              onReturnArchivedClick={onReturnArchivedClick}
-              onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
-            >
-              <span
-                role="button"
-                aria-label={t("wcag.showDetails")}
-                tabIndex={0}
-              >
-                {title}
-              </span>
-            </NoteInformationDialog>
-          ) : (
-            <span>{title}</span>
-          )}
-        </div>
 
-        {description ? (
-          <div
-            className="notes__item-body"
-            dangerouslySetInnerHTML={createHtmlMarkup(description)}
-          />
-        ) : null}
+        {title && openInformationToDialog ? (
+          <NoteInformationDialog
+            notesItem={notesItem}
+            archived={archived}
+            loggedUserIsCreator={loggedUserIsCreator}
+            loggedUserIsOwner={loggedUserIsOwner}
+            onPinNotesItemClick={onPinNotesItemClick}
+            onArchiveClick={onArchiveClick}
+            onUpdateNotesItemStatus={onUpdateNotesItemStatus}
+            onReturnArchivedClick={onReturnArchivedClick}
+            onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
+          >
+            <div
+              role="button"
+              tabIndex={0}
+              aria-label={t("wcag.showDetails")}
+              className={`notes__item-header ${
+                openInformationToDialog
+                  ? "notes__item-header--open-details"
+                  : ""
+              }`}
+            >
+              {title}
+            </div>
+          </NoteInformationDialog>
+        ) : (
+          <div>{title}</div>
+        )}
+
+        {/* 
+            We render notes body even if description is missing as we use the element to push other elements to the 
+            bottom to help maintain consistent rendering within the notes element
+        */}
+        <div
+          className="notes__item-body"
+          dangerouslySetInnerHTML={createHtmlMarkup(description)}
+        />
+
         {!specificRecipient && (
           <div className="notes__item-recipients">
             {avatars.map((avatar) => (
@@ -577,12 +580,14 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             ))}
           </div>
         )}
-        <div className="notes__item-author">
-          {!loggedUserIsCreator ? creatorName : null}
-        </div>
-        <div className="notes__item-footer">
-          {(specificRecipient || !multiUserNote) && renderStatus()}
-        </div>
+
+        {!loggedUserIsCreator && (
+          <div className="notes__item-author">{creatorName}</div>
+        )}
+
+        {specificRecipient || !multiUserNote && (
+          <div className="notes__item-footer">{renderStatus()}</div>
+        )}
       </div>
     );
   }
