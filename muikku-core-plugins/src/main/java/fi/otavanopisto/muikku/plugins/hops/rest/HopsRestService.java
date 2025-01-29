@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.hops.rest;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -1069,11 +1070,105 @@ public class HopsRestService {
       return Response.noContent().build();
     }
   }
+  
+  /**
+   * For the current user, returns courses based on OPS, subject, and course number that the caller has rights to sign up to.
+   * 
+   * @param ops OPS; optional
+   * @param subject subject code; required
+   * @param courseNumber course number; required
+   * 
+   * @return List of courses matching the search terms
+   */
+  @GET
+  @Path("/availableCourses")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listAvailableCourses(@QueryParam("ops") String ops, @QueryParam("subject") String subject, @QueryParam("courseNumber") Integer courseNumber) {
+    
+    // Returns courses based on OPS, subject, and course number that the caller has rights to sign up to
+    
+    // OPS name to identifier (e.g. OPS 2021 -> PYRAMUS-1)
+
+    List<SchoolDataIdentifier> curriculumIdentifiers = new ArrayList<>();
+    if (!StringUtils.isEmpty(ops)) {
+      SchoolDataIdentifier opsIdentifier = courseMetaController.opsNameToIdentifier(ops);
+      if (opsIdentifier == null) {
+        return Response.status(Status.BAD_REQUEST).entity(String.format("Unknown OPS %s", ops)).build();
+      }
+      curriculumIdentifiers.add(opsIdentifier);
+    }
+    
+    // Subject to identifier
+    
+    if (StringUtils.isEmpty(subject)) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing subject").build();
+    }
+    Subject s = courseMetaController.findSubjectByCode(sessionController.getLoggedUserSchoolDataSource(), subject);
+    if (s == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Subject %s not found", subject)).build();
+    }
+    List<SchoolDataIdentifier> subjectIdentifiers = new ArrayList<>();
+    subjectIdentifiers.add(s.schoolDataIdentifier());
+    
+    // Course number
+    
+    if (courseNumber == null || courseNumber == 0) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing courseNumber").build();
+    }
+
+    // Enforced organization filter
+
+    List<OrganizationEntity> organizations = new ArrayList<>();
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity loggedUserOrganization = userSchoolDataIdentifier.getOrganization();
+    organizations.add(loggedUserOrganization);
+    List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(
+        organizations,
+        PublicityRestriction.ONLY_PUBLISHED,
+        TemplateRestriction.ONLY_WORKSPACES);
+    
+    // Search matching courses
+
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      SearchProvider searchProvider = searchProviderIterator.next();
+      SearchResult searchResult = searchProvider.searchWorkspaces()
+          .setSubjects(subjectIdentifiers)
+          .setCurriculumIdentifiers(curriculumIdentifiers)
+          .setOrganizationRestrictions(organizationRestrictions)
+          .setAccessUser(sessionController.getLoggedUser())
+          .setFirstResult(0)
+          .setMaxResults(1000)
+          .search();
+      List<Map<String, Object>> results = searchResult.getResults();
+
+      // List instances
+
+      List<HopsAvailableCourseRestModel> courses = new ArrayList<>();
+      for (Map<String, Object> result : results) {
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(SchoolDataIdentifier.fromId((String) result.get("identifier")));
+        String name = (String) result.get("name");
+        if (result.get("nameExtension") != null) {
+          name = String.format("%s %s", name, result.get("nameExtension")); 
+        }
+        LocalDate beginDate = result.get("beginDate") == null ? null : LocalDate.parse((String) result.get("beginDate"));
+        LocalDate endDate = result.get("endDate") == null ? null : LocalDate.parse((String) result.get("endDate"));
+        if (workspaceEntity != null && workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity)) {
+          courses.add(new HopsAvailableCourseRestModel(workspaceEntity.getId(), name, beginDate, endDate));
+        }
+      }
+
+      return Response.ok().entity(courses).build();
+    }
+    else {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Elastic search unavailable").build();
+    }
+  }
 
   @GET
   @Path("/opsCourses")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listOpsCourses(@QueryParam ("ops") String ops, @QueryParam ("educationTypeCode") String educationTypeCode) {
+  public Response listOpsCourses(@QueryParam("ops") String ops, @QueryParam("educationTypeCode") String educationTypeCode) {
 
     // OPS name to identifier (e.g. OPS 2021 -> PYRAMUS-1)
 

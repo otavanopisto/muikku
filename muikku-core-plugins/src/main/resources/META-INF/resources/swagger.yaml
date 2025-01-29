@@ -5561,6 +5561,45 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/hops/availableCourses:
+    get:
+      operationId: getAvailableCourses
+      summary: Lists courses based on OPS, subject, and course number that the caller can sign up to
+      description: Lists courses based on OPS, subject, and course number that the caller can sign up to
+      tags:
+        - Hops
+      parameters:
+        - name: ops
+          in: query
+          description: Name of relevant OPS (e.g. OPS 2021)
+          schema:
+            type: string
+        - name: subject
+          in: query
+          description: Subject code (e.g. BI or hi)
+          required: true
+          schema:
+            type: string
+        - name: courseNumber
+          in: query
+          description: Course number (e.g. 1)
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of courses matching the search terms that the user can sign up to
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HopsAvailableCourse"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/hops/opsCourses:
     get:
       operationId: getOpsCourses
@@ -15553,6 +15592,30 @@ components:
       allOf:
         - $ref: "#/components/schemas/Course"
 
+    HopsAvailableCourse:
+      type: object
+      description: Course that a user can sign up to
+      required:
+        - id
+        - name
+        - beginDate
+        - endDate
+      properties:
+        id:
+          description: Workspace entity id
+          type: int64
+        name:
+          description: Course name with possible name extension
+          type: string
+        beginDate:
+          description: Course begin date
+          type: string
+          format: date-time
+        endDate:
+          description: Course begin date
+          type: string
+          format: date-time
+    
     HopsOpsCourse:
       type: object
       description: Subject and course numbers of an available course
