@@ -1,5 +1,4 @@
 import * as React from "react";
-import AnimateHeight from "react-animate-height";
 import Button, { IconButton } from "~/components/general/button";
 import {
   CourseChangeAction,
@@ -8,7 +7,6 @@ import {
   SelectedCourse,
   TimeContextSelection,
 } from "~/reducers/hops";
-import PlannerPeriodCourseCard from "./planner-period-course";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
@@ -28,13 +26,14 @@ import {
   UpdateTimeContextSelectionTriggerType,
 } from "~/actions/main-function/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
-import _ from "lodash";
 import moment from "moment";
 import PlannerMonthEditDialog from "./planner-month-edit";
 import Droppable from "../react-dnd/droppable";
 import { Course } from "~/@types/shared";
 import { isPlannedCourse } from "../../helper";
 import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
+import PlannerPlannedList from "../planner-planned-list";
+import { AnimatedDrawer } from "../Animated-drawer";
 
 /**
  * PlannerPeriodMonthProps
@@ -323,8 +322,8 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   const pulseDropzone = selectedCourses.length > 0 || showDropIndicator;
 
   return (
-    <motion.div layout className="study-planner__month">
-      <motion.div layout="position" className="study-planner__month-header">
+    <div className="study-planner__month">
+      <div className="study-planner__month-header">
         <Button
           iconPosition="left"
           icon={isExpanded ? "arrow-down" : "arrow-right"}
@@ -362,85 +361,42 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
             buttonModifiers={["study-planner-month-selection"]}
           />
         </PlannerMonthEditDialog>
-      </motion.div>
-
-      <div style={{ isolation: "isolate", position: "relative" }}>
-        <AnimateHeight height={isExpanded ? "auto" : 0}>
-          <Droppable<
-            PlannedCourseWithIdentifier | (Course & { subjectCode: string })
-          >
-            accept={["planned-course-card", "new-course-card"]}
-            onDrop={handleDrop}
-            onHover={handleDropHover}
-            wrapper={
-              <motion.div layout className="study-planner__month-content" />
-            }
-          >
-            <AnimatePresence initial={false}>
-              {courses.length > 0
-                ? courses.map((course) => {
-                    // Check if the course is selected
-                    const isSelected = selectedCourses.some(
-                      (c) =>
-                        isPlannedCourseWithIdentifier(c) &&
-                        c.identifier === course.identifier
-                    );
-
-                    // Find the original course info
-                    const originalInfo = originalPlannedCourses.find(
-                      (c) => c.identifier === course.identifier
-                    );
-
-                    const courseActivity = studyActivity.find(
-                      (sa) =>
-                        sa.courseNumber === course.courseNumber &&
-                        sa.subject === course.subjectCode
-                    );
-
-                    // Check if there are any unsaved changes
-                    const hasChanges =
-                      originalInfo && !_.isEqual(originalInfo, course);
-
-                    // Check if the course is new
-                    const isNew = !originalInfo;
-
-                    return (
-                      <motion.div
-                        key={course.identifier}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.4 }}
-                        layout="position"
-                        style={{
-                          marginBottom: "10px",
-                        }}
-                      >
-                        <PlannerPeriodCourseCard
-                          course={course}
-                          selected={isSelected}
-                          hasChanges={hasChanges || isNew}
-                          curriculumConfig={curriculumConfig}
-                          studyActivity={courseActivity}
-                          onCourseChange={handleCourseChange}
-                          onSelectCourse={handleSelectCourse}
-                        />
-                      </motion.div>
-                    );
-                  })
-                : null}
-            </AnimatePresence>
-            <motion.div
-              layout="position"
-              animate={pulseDropzone ? "dropIsActive" : "initial"}
-              variants={dropZoneVariants}
-              onClick={handleMoveCoursesHereClick}
-              className="study-planner__month-dropzone"
-            />
-          </Droppable>
-        </AnimateHeight>
       </div>
-    </motion.div>
+
+      <AnimatedDrawer
+        isOpen={isExpanded}
+        className="study-planner__month-wrapper"
+      >
+        <Droppable<
+          PlannedCourseWithIdentifier | (Course & { subjectCode: string })
+        >
+          accept={["planned-course-card", "new-course-card"]}
+          onDrop={handleDrop}
+          onHover={handleDropHover}
+          className="study-planner__month-content"
+        >
+          {courses.length > 0 ? (
+            <PlannerPlannedList
+              courses={courses}
+              selectedCourses={selectedCourses}
+              originalPlannedCourses={originalPlannedCourses}
+              studyActivity={studyActivity}
+              curriculumConfig={curriculumConfig}
+              onCourseChange={handleCourseChange}
+              onSelectCourse={handleSelectCourse}
+            />
+          ) : null}
+
+          <motion.div
+            layout="position"
+            animate={pulseDropzone ? "dropIsActive" : "initial"}
+            variants={dropZoneVariants}
+            onClick={handleMoveCoursesHereClick}
+            className="study-planner__month-dropzone"
+          />
+        </Droppable>
+      </AnimatedDrawer>
+    </div>
   );
 };
 

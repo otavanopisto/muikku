@@ -7,7 +7,7 @@ import {
   SelectedCourse,
 } from "~/reducers/hops";
 import Droppable from "../react-dnd/droppable";
-import { motion, Variants } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import { isPlannedCourse } from "../../helper";
 import { bindActionCreators } from "redux";
 import { AnyActionType } from "~/actions";
@@ -30,6 +30,7 @@ import moment from "moment";
 import { StudentStudyActivity } from "~/generated/client";
 import { AnimatedDrawer } from "../Animated-drawer";
 import PlannerPlannedList from "../planner-planned-list";
+import Button from "~/components/general/button";
 
 /**
  * PlannerPeriodMonthProps
@@ -264,13 +265,27 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
   return (
     <div className="study-planner__month">
       <div className="study-planner__month-header">
-        <button
-          className="study-planner__month-toggle"
+        <Button
+          iconPosition="left"
+          icon={isExpanded ? "arrow-down" : "arrow-right"}
+          buttonModifiers={["study-planner-month-toggle"]}
           onClick={handleMonthToggle}
         >
           {title}
-          {showDropIndicator && <span className="drop-indicator">+</span>}
-        </button>
+          <AnimatePresence>
+            {showDropIndicator && (
+              <motion.span
+                className="drop-indicator"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ duration: 0.2 }}
+              >
+                +
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </Button>
       </div>
 
       <AnimatedDrawer
