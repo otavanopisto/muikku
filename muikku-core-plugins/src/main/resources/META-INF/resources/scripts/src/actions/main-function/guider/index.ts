@@ -601,7 +601,7 @@ const loadNotes: LoadNotesTriggerType = function loadNotes(
           i18n.t("notifications.createError", {
             ns: "users",
             error: err,
-            context: "student",
+            ns: "tasks",
           }),
           "error"
         )
@@ -634,13 +634,13 @@ const createNote: CreateNoteTriggerType = function createNote(
       dispatch({ type: "ADD_NOTE", payload: newNote });
       dispatch(
         notificationActions.displayNotification(
-          i18n.t("notifications.createSuccess"),
+          i18n.t("notifications.createSuccess", { ns: "tasks" }),
           "success"
         )
       );
     } catch (err) {
       notificationActions.displayNotification(
-        i18n.t("notifications.createError", { error: err }),
+        i18n.t("notifications.createError", { error: err, ns: "tasks" }),
         "error"
       );
     }
@@ -675,14 +675,14 @@ const updateNote: UpdateNoteTriggerType = function updateNote(
       onSuccess && onSuccess();
       dispatch(
         notificationActions.displayNotification(
-          i18n.t("notifications.updateSuccess"),
+          i18n.t("notifications.updateSuccess", { ns: "tasks" }),
           "success"
         )
       );
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          i18n.t("notifications.updateError", { error: err }),
+          i18n.t("notifications.updateError", { error: err, ns: "tasks" }),
           "error"
         )
       );
@@ -724,14 +724,17 @@ const updateRecipientNoteStatus: UpdateNoteRecipientTriggerType =
         onSuccess && onSuccess();
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.updateSuccess"),
+            i18n.t("notifications.updateSuccess", { ns: "tasks", context: "state" }),
             "success"
-          )
         );
       } catch (err) {
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.updateError", { error: err }),
+            i18n.t("notifications.updateError", {
+              ns: "tasks",
+              context: "state",
+              error: err,
+            }),
             "error"
           )
         );
