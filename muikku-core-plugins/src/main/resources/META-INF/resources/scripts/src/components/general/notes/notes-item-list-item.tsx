@@ -44,13 +44,13 @@ export interface NotesListItemProps
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
     noteId: number,
-    newReceiverStatus: UpdateNoteReceiverRequest,
-    recipientId: number
+    recipientId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest
   ) => void;
   onUpdateNotesItemStatus?: (
     noteId: number,
-    newReceiverStatus: UpdateNoteReceiverRequest,
     recipientId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
     onSuccess?: () => void
   ) => void;
   onNotesItemSaveUpdateClick?: (
@@ -144,7 +144,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         pinned: !currentRecipient.pinned,
       };
       if (onUpdateNotesItemStatus) {
-        onUpdateNotesItemStatus(id, newReceiverStatus, recipientId);
+        onUpdateNotesItemStatus(id, recipientId, newReceiverStatus);
       }
     };
 
@@ -194,7 +194,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         status: newStatus,
       };
       if (onUpdateNotesItemStatus) {
-        onUpdateNotesItemStatus(id, newReceiverStatus, recipientId);
+        onUpdateNotesItemStatus(id, recipientId, newReceiverStatus);
 
         if (innerRef.current) {
           innerRef.current.focus();

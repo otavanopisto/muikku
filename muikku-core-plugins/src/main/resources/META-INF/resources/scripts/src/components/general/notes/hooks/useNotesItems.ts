@@ -346,8 +346,8 @@ export const useNotesItem = (
    */
   const updateNotesItemStatus = async (
     noteId: number,
-    newReceiverStatus: UpdateNoteReceiverRequest,
     recipientId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
     onSuccess?: () => void
   ) => {
     try {
@@ -460,10 +460,10 @@ export const useNotesItem = (
      */
     updateNotesItemStatus: (
       noteId: number,
-      newReceiverStatus: UpdateNoteReceiverRequest,
       recipientId: number,
+      newReceiverStatus: UpdateNoteReceiverRequest,
       onSuccess?: () => void
     ) =>
-      updateNotesItemStatus(noteId, newReceiverStatus, recipientId, onSuccess),
+      updateNotesItemStatus(noteId, recipientId, newReceiverStatus, onSuccess),
   };
 };

@@ -692,9 +692,10 @@ const updateNote: UpdateNoteTriggerType = function updateNote(
 };
 
 /**
- * updateNote thunk action creator
+ * updateRecipientNoteStatus thunk action creator
  *
  * @param noteId noteId
+ * @param recipientId recipientId
  * @param updateNoteRequest createNoteRequest
  * @param onSuccess onSuccess
  */

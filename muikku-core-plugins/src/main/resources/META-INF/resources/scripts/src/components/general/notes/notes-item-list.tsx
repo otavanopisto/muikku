@@ -23,13 +23,13 @@ interface NotesItemListContentProps {
   onReturnArchivedClick?: (noteId: number) => void;
   onPinNotesItemClick?: (
     noteId: number,
-    newReceiverStatus: UpdateNoteReceiverRequest,
-    recipientId: number
+    recipientId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest
   ) => void;
   onUpdateNotesItemStatus?: (
     noteId: number,
-    newReceiverStatus: UpdateNoteReceiverRequest,
     recipientId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
     onSuccess?: () => void
   ) => void;
   onNotesItemSaveUpdateClick?: (
