@@ -1151,8 +1151,8 @@ public class HopsRestService {
         if (result.get("nameExtension") != null) {
           name = String.format("%s %s", name, result.get("nameExtension")); 
         }
-        LocalDate beginDate = result.get("beginDate") == null ? null : LocalDate.parse((String) result.get("beginDate"));
-        LocalDate endDate = result.get("endDate") == null ? null : LocalDate.parse((String) result.get("endDate"));
+        LocalDate beginDate = result.get("beginDate") == null ? null : LocalDate.ofInstant(new Date((Long) result.get("beginDate")).toInstant(), ZoneId.systemDefault());
+        LocalDate endDate = result.get("endDate") == null ? null : LocalDate.ofInstant(new Date((Long) result.get("endDate")).toInstant(), ZoneId.systemDefault());
         if (workspaceEntity != null && workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity)) {
           courses.add(new HopsAvailableCourseRestModel(workspaceEntity.getId(), name, beginDate, endDate));
         }
