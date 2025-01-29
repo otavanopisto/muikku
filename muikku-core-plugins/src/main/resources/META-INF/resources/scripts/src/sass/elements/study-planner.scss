@@ -206,7 +206,6 @@
 
 // Month
 .study-planner__month {
-  margin-bottom: 0.5rem;
   position: relative;
 }
 
@@ -216,7 +215,10 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-bottom: 10px;
+}
+
+.study-planner__month-wrapper {
+  position: relative;
 }
 
 .study-planner__month-toggle {
@@ -232,7 +234,6 @@
   font-weight: 500;
   color: $color-info;
   border-radius: 3px;
-  margin-bottom: 0.5rem;
   color: #B1296F;
 
   i {
@@ -369,11 +370,6 @@
   isolation: isolate;
 }
 
-// Planned course card
-.study-planner__planned-course-card {
-  margin-bottom: 0.5rem;
-}
-
 // Planner card
 .study-planner__card {
   cursor: move;
@@ -381,6 +377,8 @@
   border-radius: 0px 5px 5px 0px;
   opacity: 1;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  margin-bottom: 10px;
 
   &:hover {
     transform: translateY(-2px);

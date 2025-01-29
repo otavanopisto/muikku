@@ -3,13 +3,12 @@ import { useDrag } from "react-dnd";
 import BasePlannerPeriodCourse, {
   BasePlannerPeriodCourseProps,
 } from "../planner-period-course-base";
-import AnimateHeight from "react-animate-height";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import Button from "~/components/general/button";
 import DatePicker from "react-datepicker";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
-import { motion } from "framer-motion";
+import { AnimatedDrawer } from "../Animated-drawer";
 
 /**
  * DesktopPlannerPeriodCourseProps
@@ -72,27 +71,25 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
   };
 
   return (
-    <BasePlannerPeriodCourse
-      {...props}
-      ref={drag}
-      isDragging={isDragging}
-      renderSpecifyContent={({
-        onClose,
-        onConfirm,
-        onChange,
-        startDate,
-        endDate,
-        isOpen,
-      }) => (
-        <motion.div
-          layout="position"
-          style={{
-            isolation: "isolate",
-          }}
-        >
-          <AnimateHeight
-            duration={200}
-            height={isOpen ? "auto" : 0}
+    <div
+      style={{
+        position: "relative",
+      }}
+    >
+      <BasePlannerPeriodCourse
+        {...props}
+        ref={drag}
+        isDragging={isDragging}
+        renderSpecifyContent={({
+          onClose,
+          onConfirm,
+          onChange,
+          startDate,
+          endDate,
+          isOpen,
+        }) => (
+          <AnimatedDrawer
+            isOpen={isOpen}
             contentClassName="study-planner__extra-section study-planner__extra-section--specify"
           >
             <h4 className="study-planner__extra-section-title">
@@ -150,14 +147,11 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                 </Button>
               </div>
             </div>
-          </AnimateHeight>
-        </motion.div>
-      )}
-      renderDeleteWarning={({ isOpen, onClose, onConfirm }) => (
-        <motion.div layout="position" style={{ isolation: "isolate" }}>
-          <AnimateHeight
-            duration={200}
-            height={isOpen ? "auto" : 0}
+          </AnimatedDrawer>
+        )}
+        renderDeleteWarning={({ isOpen, onClose, onConfirm }) => (
+          <AnimatedDrawer
+            isOpen={isOpen}
             contentClassName="study-planner__extra-section study-planner__extra-section--specify"
             onTransitionEnd={() => handleTransitionEnd(onConfirm)}
           >
@@ -175,14 +169,11 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                 POISTA KURSSI
               </Button>
             </div>
-          </AnimateHeight>
-        </motion.div>
-      )}
-      renderCourseState={({ isOpen, onClose, courseState }) => (
-        <motion.div layout="position" style={{ isolation: "isolate" }}>
-          <AnimateHeight
-            duration={200}
-            height={isOpen ? "auto" : 0}
+          </AnimatedDrawer>
+        )}
+        renderCourseState={({ isOpen, onClose, courseState }) => (
+          <AnimatedDrawer
+            isOpen={isOpen}
             contentClassName="study-planner__extra-section study-planner__extra-section--specify"
           >
             <div className="study-planner__state-info-row">
@@ -219,10 +210,10 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
               </span>
               <span className="study-planner__state-info-row-value">-</span>
             </div>
-          </AnimateHeight>
-        </motion.div>
-      )}
-    />
+          </AnimatedDrawer>
+        )}
+      />
+    </div>
   );
 };
 

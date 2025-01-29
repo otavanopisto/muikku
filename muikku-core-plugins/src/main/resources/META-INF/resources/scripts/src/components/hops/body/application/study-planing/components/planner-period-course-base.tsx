@@ -231,107 +231,106 @@ const BasePlannerPeriodCourse = React.forwardRef<
   selected && cardModifiers.push("selected");
 
   return (
-    <div>
-      <PlannerCard
-        ref={ref}
-        modifiers={["planned-course", ...cardModifiers]}
-        innerContainerModifiers={[course.mandatory ? "mandatory" : "optional"]}
-        onClick={handleSelectCourse}
-      >
-        <PlannerCardHeader modifiers={["planned-course-card"]}>
-          <span className="study-planner__course-name">
-            <b>{`${course.subjectCode} ${course.courseNumber}. `}</b>
-            {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
-          </span>
-          {hasChanges && (
-            <span className="study-planner__course-unsaved">*</span>
-          )}
-        </PlannerCardHeader>
+    <PlannerCard
+      ref={ref}
+      modifiers={["planned-course", ...cardModifiers]}
+      innerContainerModifiers={[course.mandatory ? "mandatory" : "optional"]}
+      onClick={handleSelectCourse}
+      externalContent={
+        <>
+          {renderSpecifyContent({
+            isOpen: specifyIsOpen,
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            onClose: () => setSpecifyIsOpen(false),
+            onConfirm: handleConfirmSpecify,
+            onChange: handleSpecifyChange,
+            startDate: specifyCourse && specifyCourse.startDate,
+            endDate: specifyCourse && specifyCourse.endDate,
+          })}
 
-        <PlannerCardContent modifiers={["planned-course-card"]}>
-          <PlannerCardLabel
-            modifiers={[course.mandatory ? "mandatory" : "optional"]}
-          >
-            {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
+          {renderDeleteWarning({
+            isOpen: deleteWarningIsOpen,
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            onClose: () => setDeleteWarningIsOpen(false),
+            onConfirm: handleConfirmDelete,
+          })}
+
+          {renderCourseState({
+            isOpen: courseStateIsOpen,
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            onClose: () => setCourseStateIsOpen(false),
+            courseState: studyActivity,
+          })}
+        </>
+      }
+    >
+      <PlannerCardHeader modifiers={["planned-course-card"]}>
+        <span className="study-planner__course-name">
+          <b>{`${course.subjectCode} ${course.courseNumber}. `}</b>
+          {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
+        </span>
+        {hasChanges && <span className="study-planner__course-unsaved">*</span>}
+      </PlannerCardHeader>
+
+      <PlannerCardContent modifiers={["planned-course-card"]}>
+        <PlannerCardLabel
+          modifiers={[course.mandatory ? "mandatory" : "optional"]}
+        >
+          {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
+        </PlannerCardLabel>
+
+        {courseState.state && (
+          <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+            {courseState.label}
           </PlannerCardLabel>
-
-          {courseState.state && (
-            <PlannerCardLabel modifiers={["course-state", courseState.state]}>
-              {courseState.label}
-            </PlannerCardLabel>
-          )}
-
-          <span className="study-planner__course-dates">
-            {calculatedEndDate ? (
-              <>
-                {localize.date(new Date(course.startDate))} -{" "}
-                {localize.date(new Date(calculatedEndDate))}
-              </>
-            ) : (
-              localize.date(new Date(course.startDate))
-            )}
-          </span>
-        </PlannerCardContent>
-
-        {!studyActivity ? (
-          <PlannerCardActions>
-            <Button
-              onClick={handleSpecifyOpen}
-              disabled={
-                courseState.disabled || specifyIsOpen || deleteWarningIsOpen
-              }
-              buttonModifiers={["study-planner-specify"]}
-            >
-              Tarkenna
-            </Button>
-            <Button
-              onClick={handleDeleteOpen}
-              disabled={
-                courseState.disabled || specifyIsOpen || deleteWarningIsOpen
-              }
-              buttonModifiers={["study-planner-delete"]}
-            >
-              Poista
-            </Button>
-          </PlannerCardActions>
-        ) : (
-          <PlannerCardActions modifiers={["planned-course-card"]}>
-            <Button
-              icon="arrow-down"
-              iconPosition="left"
-              onClick={handleCourseStateOpen}
-              buttonModifiers={["study-planner-extra-info-toggle"]}
-            >
-              Lisätietoa
-            </Button>
-          </PlannerCardActions>
         )}
-      </PlannerCard>
 
-      {renderSpecifyContent({
-        isOpen: specifyIsOpen,
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        onClose: () => setSpecifyIsOpen(false),
-        onConfirm: handleConfirmSpecify,
-        onChange: handleSpecifyChange,
-        startDate: specifyCourse && specifyCourse.startDate,
-        endDate: specifyCourse && specifyCourse.endDate,
-      })}
+        <span className="study-planner__course-dates">
+          {calculatedEndDate ? (
+            <>
+              {localize.date(new Date(course.startDate))} -{" "}
+              {localize.date(new Date(calculatedEndDate))}
+            </>
+          ) : (
+            localize.date(new Date(course.startDate))
+          )}
+        </span>
+      </PlannerCardContent>
 
-      {renderDeleteWarning({
-        isOpen: deleteWarningIsOpen,
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        onClose: () => setDeleteWarningIsOpen(false),
-        onConfirm: handleConfirmDelete,
-      })}
-
-      {renderCourseState({
-        isOpen: courseStateIsOpen,
-        // eslint-disable-next-line jsdoc/require-jsdoc
-        onClose: () => setCourseStateIsOpen(false),
-        courseState: studyActivity,
-      })}
-    </div>
+      {!studyActivity ? (
+        <PlannerCardActions>
+          <Button
+            onClick={handleSpecifyOpen}
+            disabled={
+              courseState.disabled || specifyIsOpen || deleteWarningIsOpen
+            }
+            buttonModifiers={["study-planner-specify"]}
+          >
+            Tarkenna
+          </Button>
+          <Button
+            onClick={handleDeleteOpen}
+            disabled={
+              courseState.disabled || specifyIsOpen || deleteWarningIsOpen
+            }
+            buttonModifiers={["study-planner-delete"]}
+          >
+            Poista
+          </Button>
+        </PlannerCardActions>
+      ) : (
+        <PlannerCardActions modifiers={["planned-course-card"]}>
+          <Button
+            icon="arrow-down"
+            iconPosition="left"
+            onClick={handleCourseStateOpen}
+            buttonModifiers={["study-planner-extra-info-toggle"]}
+          >
+            Lisätietoa
+          </Button>
+        </PlannerCardActions>
+      )}
+    </PlannerCard>
   );
 });
 

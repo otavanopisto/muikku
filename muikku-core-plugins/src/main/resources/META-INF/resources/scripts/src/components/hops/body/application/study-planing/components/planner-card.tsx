@@ -9,6 +9,7 @@ interface PlannerCardProps {
   onClick?: () => void;
   ref?: React.Ref<HTMLDivElement>;
   children: React.ReactNode;
+  externalContent?: React.ReactNode;
 }
 
 /**
@@ -23,6 +24,7 @@ const PlannerCard = React.forwardRef<HTMLDivElement, PlannerCardProps>(
       innerContainerModifiers = [],
       onClick,
       children,
+      externalContent,
     } = props;
     return (
       <div
@@ -39,6 +41,7 @@ const PlannerCard = React.forwardRef<HTMLDivElement, PlannerCardProps>(
         >
           {children}
         </div>
+        {externalContent}
       </div>
     );
   }
