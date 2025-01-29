@@ -14,6 +14,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
@@ -47,6 +49,9 @@ public class CourseMetaController {
   /* Subjects */
 
   public Subject findSubjectByCode(String schoolDataSource, String code) {
+    if (StringUtils.isAnyEmpty(schoolDataSource, code)) {
+      return null;
+    }
     if (!subjectCodeCache.containsKey(code)) {
       Subject subject = null;
       CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
@@ -62,6 +67,9 @@ public class CourseMetaController {
   }
   
   public Subject findSubject(SchoolDataIdentifier identifier) {
+    if (identifier == null) {
+      return null;
+    }
     if (!subjectIdentifierCache.containsKey(identifier)) {
       Subject subject = null;
       CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(identifier.getDataSource());
@@ -98,6 +106,9 @@ public class CourseMetaController {
   /* EducationType */
 
   public EducationType findEducationType(SchoolDataIdentifier identifier) {
+    if (identifier == null) {
+      return null;
+    }
     if (!educationTypeCache.containsKey(identifier)) {
       EducationType educationType = null;
       CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(identifier.getDataSource());
@@ -125,6 +136,9 @@ public class CourseMetaController {
   /* CourseLenthUnit */
 
   public CourseLengthUnit findCourseLengthUnit(SchoolDataIdentifier identifier) {
+    if (identifier == null) {
+      return null;
+    }
     if (!courseLengthUnitCache.containsKey(identifier)) {
       CourseLengthUnit courseLengthUnit = null;
       CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(identifier.getDataSource());
@@ -161,6 +175,9 @@ public class CourseMetaController {
   /* Curriculum */
 
   public Curriculum findCurriculum(SchoolDataIdentifier identifier) {
+    if (identifier == null) {
+      return null;
+    }
     if (!curriculumCache.containsKey(identifier)) {
       Curriculum curriculum = null;
       CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(identifier.getDataSource());
@@ -185,9 +202,9 @@ public class CourseMetaController {
     return result;
   }
 
-  public String getCurriculumName(SchoolDataIdentifier curriculumIdentifier) {
-    if (curriculumIdentifier != null) {
-      Curriculum curriculum = findCurriculum(curriculumIdentifier);
+  public String getCurriculumName(SchoolDataIdentifier identifier) {
+    if (identifier != null) {
+      Curriculum curriculum = findCurriculum(identifier);
       return curriculum == null ? null : curriculum.getName();
     }
     return null;
