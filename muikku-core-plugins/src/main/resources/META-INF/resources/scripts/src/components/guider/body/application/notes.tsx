@@ -55,6 +55,12 @@ const GuiderNotes = (props: GuiderNotesProps) => {
     [dispatch]
   );
 
+  /**
+   * onUpdateNotesItemStatus function
+   * @param noteId noteId
+   * @param recipientId recipientId
+   * @param request request
+   */
   const onUpdateNotesItemStatus = React.useCallback(
     (
       noteId: number,

@@ -340,8 +340,8 @@ export const useNotesItem = (
   /**
    * changenotesItemStatus
     @param noteId id of the note,
-    @param newReceiverStatus new status for the recipient,
     @param recipientId recipient id,
+    @param newReceiverStatus new status for the recipient,
     @param onSuccess callback function
    */
   const updateNotesItemStatus = async (
@@ -454,8 +454,8 @@ export const useNotesItem = (
     /**
      * updateNotesItemStatus
     @param noteId id of the note,
-    @param newReceiverStatus new status for the recipient,
     @param recipientId recipient id,
+    @param newReceiverStatus new status for the recipient,
     @param onSuccess callback function
      */
     updateNotesItemStatus: (

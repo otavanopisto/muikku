@@ -26,7 +26,6 @@ import {
   UserGroup,
   Note,
   CreateNoteRequest,
-  NoteStatusType,
   UpdateNoteReceiverRequest,
   UpdateNoteRequest,
   StudentStudyActivity,
@@ -693,10 +692,9 @@ const updateNote: UpdateNoteTriggerType = function updateNote(
 
 /**
  * updateRecipientNoteStatus thunk action creator
- *
- * @param noteId noteId
- * @param recipientId recipientId
- * @param updateNoteRequest createNoteRequest
+ * @param noteId note id
+ * @param recipientId recipient id
+ * @param request request
  * @param onSuccess onSuccess
  */
 const updateRecipientNoteStatus: UpdateNoteRecipientTriggerType =
