@@ -539,6 +539,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             archived={archived}
             loggedUserIsCreator={loggedUserIsCreator}
             loggedUserIsOwner={loggedUserIsOwner}
+            specificRecipient={specificRecipient}
             onPinNotesItemClick={onPinNotesItemClick}
             onArchiveClick={onArchiveClick}
             onUpdateNotesItemStatus={onUpdateNotesItemStatus}
