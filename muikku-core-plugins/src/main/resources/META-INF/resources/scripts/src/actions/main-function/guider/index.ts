@@ -26,9 +26,12 @@ import {
   UserGroup,
   Note,
   CreateNoteRequest,
+  NoteStatusType,
+  UpdateNoteReceiverRequest,
   UpdateNoteRequest,
   StudentStudyActivity,
   FlaggedStudent,
+  NoteReceiver,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -44,12 +47,17 @@ import {
   SKILL_AND_ART_SUBJECTS_CS,
 } from "~/helper-functions/study-matrix";
 
-export type UPDATE_NOTES_STATUS = SpecificActionType<
-  "UPDATE_NOTES_STATUS",
+export type UPDATE_NOTES_STATE = SpecificActionType<
+  "UPDATE_NOTES_STATE",
   LoadingState
 >;
 export type LOAD_NOTES = SpecificActionType<"LOAD_NOTES", Note[]>;
 export type UPDATE_NOTE = SpecificActionType<"UPDATE_NOTE", Note>;
+export type UPDATE_NOTE_RECIPIENT = SpecificActionType<
+  "UPDATE_NOTE_RECIPIENT",
+  { noteId: number; recipient: NoteReceiver }
+>;
+
 export type ADD_NOTE = SpecificActionType<"ADD_NOTE", Note>;
 export type REMOVE_NOTE = SpecificActionType<"REMOVE_NOTE", number>;
 
@@ -480,12 +488,24 @@ export interface CreateNoteTriggerType {
 }
 
 /**
- * CreateNoteTriggerType
+ * UpdateNoteTriggerType
  */
 export interface UpdateNoteTriggerType {
   (
     noteId: number,
     request: UpdateNoteRequest,
+    success?: () => void
+  ): AnyActionType;
+}
+
+/**
+ * UpdateNoteTriggerType
+ */
+export interface UpdateNoteRecipientTriggerType {
+  (
+    noteId: number,
+    recipientId: number,
+    request: UpdateNoteReceiverRequest,
     success?: () => void
   ): AnyActionType;
 }
@@ -564,19 +584,19 @@ const loadNotes: LoadNotesTriggerType = function loadNotes(
       // if (getState().guider.notes.state === "READY") {
       //   return;
       // }
-      dispatch({ type: "UPDATE_NOTES_STATUS", payload: "LOADING" });
+      dispatch({ type: "UPDATE_NOTES_STATE", payload: "LOADING" });
       const NotesApi = MApi.getNotesApi();
       const notes = await NotesApi.getNotesByCreator({
         creatorId,
         listArchived,
       });
       dispatch({ type: "LOAD_NOTES", payload: notes });
-      dispatch({ type: "UPDATE_NOTES_STATUS", payload: "READY" });
+      dispatch({ type: "UPDATE_NOTES_STATE", payload: "READY" });
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;
       }
-      dispatch({ type: "UPDATE_NOTES_STATUS", payload: "ERROR" });
+      dispatch({ type: "UPDATE_NOTES_STATE", payload: "ERROR" });
       dispatch(
         notificationActions.displayNotification(
           i18n.t("notifications.createError", {
@@ -671,6 +691,54 @@ const updateNote: UpdateNoteTriggerType = function updateNote(
   };
 };
 
+/**
+ * updateNote thunk action creator
+ *
+ * @param noteId noteId
+ * @param updateNoteRequest createNoteRequest
+ * @param onSuccess onSuccess
+ */
+const updateRecipientNoteStatus: UpdateNoteRecipientTriggerType =
+  function updateRecipientNoteStatus(
+    noteId: number,
+    recipientId: number,
+    request: UpdateNoteReceiverRequest,
+    onSuccess?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const notesApi = MApi.getNotesApi();
+      try {
+        // Updating and getting updated notesItem
+        const updatedNoteRecipient = await notesApi.updateNoteReceiver({
+          updateNoteReceiverRequest: request,
+          noteId,
+          recipientId,
+        });
+
+        dispatch({
+          type: "UPDATE_NOTE_RECIPIENT",
+          payload: { noteId, recipient: updatedNoteRecipient },
+        });
+        onSuccess && onSuccess();
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateSuccess"),
+            "success"
+          )
+        );
+      } catch (err) {
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateError", { error: err }),
+            "error"
+          )
+        );
+      }
+    };
+  };
 /**
  * Archives one notesItem
  *
@@ -2878,6 +2946,7 @@ export {
   loadNotes,
   createNote,
   updateNote,
+  updateRecipientNoteStatus,
   toggleNoteArchive,
   loadStudents,
   loadMoreStudents,

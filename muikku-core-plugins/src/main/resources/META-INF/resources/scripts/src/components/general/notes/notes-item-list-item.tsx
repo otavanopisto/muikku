@@ -532,9 +532,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             {(specificRecipient || !multiUserNote) && renderUpdateStatus()}
           </div>
         </div>
-
         <div className="notes__item-dates">{renderDates()}</div>
-
         {title && openInformationToDialog ? (
           <NoteInformationDialog
             notesItem={notesItem}
@@ -563,7 +561,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         ) : (
           <div>{title}</div>
         )}
-
         {/* 
             We render notes body even if description is missing as we use the element to push other elements to the 
             bottom to help maintain consistent rendering within the notes element
@@ -572,7 +569,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           className="notes__item-body"
           dangerouslySetInnerHTML={createHtmlMarkup(description)}
         />
-
         {!specificRecipient && (
           <div className="notes__item-recipients">
             {avatars.map((avatar) => (
@@ -580,12 +576,10 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             ))}
           </div>
         )}
-
         {!loggedUserIsCreator && (
           <div className="notes__item-author">{creatorName}</div>
         )}
-
-        {specificRecipient || !multiUserNote && (
+        {(specificRecipient || !multiUserNote) && (
           <div className="notes__item-footer">{renderStatus()}</div>
         )}
       </div>

@@ -301,40 +301,47 @@ export const guider: Reducer<GuiderState> = (
         ...state,
         toolbarLock: true,
       };
-
     case "UNLOCK_TOOLBAR":
       return {
         ...state,
         toolbarLock: false,
       };
-
     case "UPDATE_GUIDER_ACTIVE_FILTERS":
       return {
         ...state,
         activeFilters: action.payload,
       };
-
     case "UPDATE_GUIDER_ALL_PROPS":
       return Object.assign({}, state, action.payload);
-
     case "UPDATE_GUIDER_STATE":
       return {
         ...state,
         studentsState: action.payload,
       };
-
-    case "UPDATE_NOTES_STATUS": {
+    case "UPDATE_NOTES_STATE": {
       const notes = { ...state.notes };
       notes.state = action.payload;
       return { ...state, notes };
     }
-
     case "LOAD_NOTES": {
       const notes = { ...state.notes };
       notes.list = action.payload;
       return { ...state, notes };
     }
-
+    case "UPDATE_NOTE_RECIPIENT": {
+      const { noteId, recipient } = action.payload;
+      const updatedNotes = state.notes.list.map((note) =>
+        note.id === noteId
+          ? {
+              ...note,
+              recipients: note.recipients.map((r) =>
+                r.recipient === recipient.recipient ? recipient : r
+              ),
+            }
+          : note
+      );
+      return { ...state, notes: { ...state.notes, list: updatedNotes } };
+    }
     case "UPDATE_NOTE": {
       const updatedNotes = state.notes.list.map((note) =>
         note.id === action.payload.id ? { ...note, ...action.payload } : note
@@ -358,7 +365,6 @@ export const guider: Reducer<GuiderState> = (
         notes,
       };
     }
-
     case "ADD_TO_GUIDER_SELECTED_STUDENTS": {
       const student = action.payload;
 
@@ -381,7 +387,6 @@ export const guider: Reducer<GuiderState> = (
         ),
       };
     }
-
     case "SET_CURRENT_GUIDER_STUDENT":
       return {
         ...state,

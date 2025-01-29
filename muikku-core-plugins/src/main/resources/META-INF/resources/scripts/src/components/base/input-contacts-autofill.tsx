@@ -222,7 +222,7 @@ export default class c extends React.Component<
             MApi.getUsergroupApi().getUsergroups({
               q: textInput,
               maxResults: 20,
-              archetype,
+              ...(archetype && { archetype }), // Only include archetype if it's not null
             });
 
     /**
