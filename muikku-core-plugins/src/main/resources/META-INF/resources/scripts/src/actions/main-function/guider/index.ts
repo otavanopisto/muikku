@@ -724,8 +724,12 @@ const updateRecipientNoteStatus: UpdateNoteRecipientTriggerType =
         onSuccess && onSuccess();
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.updateSuccess", { ns: "tasks", context: "state" }),
+            i18n.t("notifications.updateSuccess", {
+              ns: "tasks",
+              context: "state",
+            }),
             "success"
+          )
         );
       } catch (err) {
         dispatch(
