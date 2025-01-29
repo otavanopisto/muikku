@@ -7,6 +7,7 @@ import { isPlannedCourseWithIdentifier } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import PlannerPeriodCourseCard from "./planner-period-course";
 import _ from "lodash";
+import { AnimatePresence, motion } from "framer-motion";
 
 /**
  * PlannerPlannedList props
@@ -40,42 +41,65 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
   } = props;
 
   return (
-    <div className="study-planner__month-content">
-      {courses.map((course) => {
-        const isSelected = selectedCourses.some(
-          (c) =>
-            isPlannedCourseWithIdentifier(c) &&
-            c.identifier === course.identifier
-        );
+    <motion.div layout className="study-planner__month-content">
+      <AnimatePresence>
+        {courses.map((course) => {
+          const isSelected = selectedCourses.some(
+            (c) =>
+              isPlannedCourseWithIdentifier(c) &&
+              c.identifier === course.identifier
+          );
 
-        const courseActivity = studyActivity.find(
-          (sa) =>
-            sa.courseNumber === course.courseNumber &&
-            sa.subject === course.subjectCode
-        );
+          const courseActivity = studyActivity.find(
+            (sa) =>
+              sa.courseNumber === course.courseNumber &&
+              sa.subject === course.subjectCode
+          );
 
-        const originalInfo = originalPlannedCourses.find(
-          (c) => c.identifier === course.identifier
-        );
+          const originalInfo = originalPlannedCourses.find(
+            (c) => c.identifier === course.identifier
+          );
 
-        const hasChanges = originalInfo
-          ? !_.isEqual(originalInfo, course)
-          : true;
+          const hasChanges = originalInfo
+            ? !_.isEqual(originalInfo, course)
+            : true;
 
-        return (
-          <PlannerPeriodCourseCard
-            key={course.identifier}
-            course={course}
-            selected={isSelected}
-            hasChanges={hasChanges}
-            curriculumConfig={curriculumConfig}
-            studyActivity={courseActivity}
-            onCourseChange={onCourseChange}
-            onSelectCourse={onSelectCourse}
-          />
-        );
-      })}
-    </div>
+          return (
+            <motion.div
+              layout
+              key={course.identifier}
+              initial={{
+                opacity: 0,
+                scale: 0.8,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0.8,
+              }}
+              transition={{
+                duration: 0.2,
+                ease: "easeInOut",
+              }}
+            >
+              <PlannerPeriodCourseCard
+                key={course.identifier}
+                course={course}
+                selected={isSelected}
+                hasChanges={hasChanges}
+                curriculumConfig={curriculumConfig}
+                studyActivity={courseActivity}
+                onCourseChange={onCourseChange}
+                onSelectCourse={onSelectCourse}
+              />
+            </motion.div>
+          );
+        })}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 

@@ -294,7 +294,9 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
               onSelectCourse={handleSelectCourse}
             />
           )}
-          <div
+          <motion.div
+            variants={dropZoneVariants}
+            animate={pulseDropzone ? "dropIsActive" : "initial"}
             className="study-planner__month-dropzone"
             onClick={handleMoveCourseHereClick}
           />
