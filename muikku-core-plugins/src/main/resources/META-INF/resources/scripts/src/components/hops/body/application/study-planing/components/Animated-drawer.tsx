@@ -9,7 +9,8 @@ interface AnimatedDrawerProps {
   children: React.ReactNode;
   className?: string;
   contentClassName?: string;
-  onTransitionEnd?: () => void;
+  onOpen?: () => void;
+  onClose?: () => void;
 }
 
 /**
@@ -23,11 +24,12 @@ export const AnimatedDrawer = (props: AnimatedDrawerProps) => {
     children,
     className = "",
     contentClassName = "",
-    onTransitionEnd,
+    onOpen,
+    onClose,
   } = props;
 
   return (
-    <AnimatePresence initial={false}>
+    <AnimatePresence initial={false} onExitComplete={onClose}>
       {isOpen && (
         <motion.div
           initial={{ height: 0, opacity: 0 }}
@@ -38,7 +40,7 @@ export const AnimatedDrawer = (props: AnimatedDrawerProps) => {
             duration: 0.2,
           }}
           className={className}
-          onAnimationComplete={onTransitionEnd}
+          onAnimationComplete={onOpen}
           style={{ overflow: "hidden" }}
         >
           <div className={contentClassName}>{children}</div>

@@ -41,8 +41,8 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
   } = props;
 
   return (
-    <motion.div layout className="study-planner__month-content">
-      <AnimatePresence>
+    <ul>
+      <AnimatePresence initial={false}>
         {courses.map((course) => {
           const isSelected = selectedCourses.some(
             (c) =>
@@ -65,8 +65,7 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
             : true;
 
           return (
-            <motion.div
-              layout
+            <motion.li
               key={course.identifier}
               initial={{
                 opacity: 0,
@@ -81,9 +80,11 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
                 scale: 0.8,
               }}
               transition={{
-                duration: 0.2,
-                ease: "easeInOut",
+                duration: 0.4,
+                ease: "easeOut",
               }}
+              style={{ width: "100%" }}
+              layout
             >
               <PlannerPeriodCourseCard
                 key={course.identifier}
@@ -95,11 +96,11 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
                 onCourseChange={onCourseChange}
                 onSelectCourse={onSelectCourse}
               />
-            </motion.div>
+            </motion.li>
           );
         })}
       </AnimatePresence>
-    </motion.div>
+    </ul>
   );
 };
 

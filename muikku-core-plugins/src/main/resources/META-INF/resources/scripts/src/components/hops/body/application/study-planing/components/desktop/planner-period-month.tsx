@@ -298,17 +298,16 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
           onHover={handleDropHover}
           className="study-planner__month-content"
         >
-          {courses.length > 0 && (
-            <PlannerPlannedList
-              courses={courses}
-              selectedCourses={selectedCourses}
-              originalPlannedCourses={originalPlannedCourses}
-              studyActivity={studyActivity}
-              curriculumConfig={curriculumConfig}
-              onCourseChange={handleCourseChange}
-              onSelectCourse={handleSelectCourse}
-            />
-          )}
+          <PlannerPlannedList
+            courses={courses}
+            selectedCourses={selectedCourses}
+            originalPlannedCourses={originalPlannedCourses}
+            studyActivity={studyActivity}
+            curriculumConfig={curriculumConfig}
+            onCourseChange={handleCourseChange}
+            onSelectCourse={handleSelectCourse}
+          />
+
           <motion.div
             variants={dropZoneVariants}
             animate={pulseDropzone ? "dropIsActive" : "initial"}

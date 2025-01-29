@@ -375,17 +375,15 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
           onHover={handleDropHover}
           className="study-planner__month-content"
         >
-          {courses.length > 0 ? (
-            <PlannerPlannedList
-              courses={courses}
-              selectedCourses={selectedCourses}
-              originalPlannedCourses={originalPlannedCourses}
-              studyActivity={studyActivity}
-              curriculumConfig={curriculumConfig}
-              onCourseChange={handleCourseChange}
-              onSelectCourse={handleSelectCourse}
-            />
-          ) : null}
+          <PlannerPlannedList
+            courses={courses}
+            selectedCourses={selectedCourses}
+            originalPlannedCourses={originalPlannedCourses}
+            studyActivity={studyActivity}
+            curriculumConfig={curriculumConfig}
+            onCourseChange={handleCourseChange}
+            onSelectCourse={handleSelectCourse}
+          />
 
           <motion.div
             layout="position"

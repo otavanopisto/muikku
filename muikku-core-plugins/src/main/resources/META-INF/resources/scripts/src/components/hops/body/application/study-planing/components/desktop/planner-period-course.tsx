@@ -29,6 +29,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
   const { course } = props;
 
   const [pendingDelete, setPendingDelete] = React.useState(false);
+  const [pendingSpecify, setPendingSpecify] = React.useState(false);
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
@@ -51,10 +52,30 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
   preview(getEmptyImage(), { captureDraggingState: true });
 
   /**
+   * handleSpecifyCourse
+   * @param callback callback
+   */
+  const handleSpecifyClose = (callback: () => void) => {
+    setPendingSpecify(true);
+    callback();
+  };
+
+  /**
+   * handleSpecifyCourse
+   * @param callback callback
+   */
+  const handleSpecifyCourse = (callback: () => void) => {
+    if (pendingSpecify) {
+      callback();
+      setPendingSpecify(false);
+    }
+  };
+
+  /**
    * handleTransitionEnd
    * @param callback callback
    */
-  const handleTransitionEnd = (callback: () => void) => {
+  const handleClose = (callback: () => void) => {
     if (pendingDelete) {
       callback();
       setPendingDelete(false);
@@ -91,6 +112,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
           <AnimatedDrawer
             isOpen={isOpen}
             contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+            onClose={() => handleSpecifyClose(onConfirm)}
           >
             <h4 className="study-planner__extra-section-title">
               Tarkenna suunnitelmaa
@@ -139,10 +161,22 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
               </div>
 
               <div className="study-planner__extra-section-button-group">
-                <Button buttonModifiers={["secondary"]} onClick={onClose}>
+                <Button
+                  buttonModifiers={["secondary"]}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                >
                   PERUUTA
                 </Button>
-                <Button buttonModifiers={["primary"]} onClick={onConfirm}>
+                <Button
+                  buttonModifiers={["primary"]}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSpecifyCourse(onClose);
+                  }}
+                >
                   TARKENNA
                 </Button>
               </div>
@@ -153,18 +187,27 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
           <AnimatedDrawer
             isOpen={isOpen}
             contentClassName="study-planner__extra-section study-planner__extra-section--specify"
-            onTransitionEnd={() => handleTransitionEnd(onConfirm)}
+            onClose={() => handleClose(onConfirm)}
           >
             <h4 className="study-planner__extra-section-title">
               Haluatko varmasti poistaa kurssin suunnitelmasta?
             </h4>
             <div className="study-planner__extra-section-button-group">
-              <Button buttonModifiers={["secondary"]} onClick={onClose}>
+              <Button
+                buttonModifiers={["secondary"]}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+              >
                 PERUUTA
               </Button>
               <Button
                 buttonModifiers={["primary"]}
-                onClick={() => handleDeleteCard(onClose)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteCard(onClose);
+                }}
               >
                 POISTA KURSSI
               </Button>
