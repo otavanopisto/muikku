@@ -5586,6 +5586,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: List of courses matching the search terms that the user can sign up to
@@ -15598,24 +15599,25 @@ components:
       required:
         - id
         - name
-        - beginDate
+        - startDate
         - endDate
       properties:
         id:
           description: Workspace entity id
-          type: int64
+          type: integer
+          format: int64
         name:
           description: Course name with possible name extension
           type: string
-        beginDate:
-          description: Course begin date
+        startDate:
+          description: Course start date. ISO format (YYYY-MM-DD)
           type: string
-          format: date-time
+          nullable: true
         endDate:
-          description: Course begin date
+          description: Course end date. ISO format (YYYY-MM-DD)
           type: string
-          format: date-time
-    
+          nullable: true
+
     HopsOpsCourse:
       type: object
       description: Subject and course numbers of an available course
@@ -15631,7 +15633,7 @@ components:
           type: array
           items:
             type: integer
-    
+
     PlannedCourse:
       type: object
       description: Planned course object
