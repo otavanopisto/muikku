@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.hops.rest;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -82,8 +81,10 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
+import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
@@ -1133,38 +1134,28 @@ public class HopsRestService {
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
-      SearchResult searchResult = searchProvider.searchWorkspaces()
+      SearchResults<List<IndexedWorkspace>> searchResult = searchProvider.searchWorkspaces()
           .setSubjects(subjectIdentifiers)
           .setCurriculumIdentifiers(curriculumIdentifiers)
           .setOrganizationRestrictions(organizationRestrictions)
           .setAccessUser(sessionController.getLoggedUser())
           .setFirstResult(0)
           .setMaxResults(1000)
-          .search();
-      List<Map<String, Object>> results = searchResult.getResults();
-
-      // List instances
-
+          .searchTyped();
+      
       List<HopsAvailableCourseRestModel> courses = new ArrayList<>();
-      for (Map<String, Object> result : results) {
-        boolean courseNumberMatch = false;
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> resultSubjects = (List<Map<String, Object>>) result.get("subjects");
-        for (Map<String, Object> resultSubject : resultSubjects) {
-          String s2 = (String) resultSubject.get("subjectCode");
-          Integer cn = (Integer) resultSubject.get("courseNumber");
-          courseNumberMatch = s2 != null && cn != null && subject.equals(s2) && courseNumber.equals(cn);
-        }
-        if (!courseNumberMatch) {
+      for (IndexedWorkspace indexedWorkspace : searchResult.getResults()) {
+        // course number match
+        if (indexedWorkspace.getSubjects().stream().filter(sbj -> subject.equals(sbj.getSubjectCode()) && courseNumber.equals(sbj.getCourseNumber())).findFirst().orElse(null) == null) {
           continue;
         }
-        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(SchoolDataIdentifier.fromId((String) result.get("identifier")));
-        String name = (String) result.get("name");
-        if (result.get("nameExtension") != null) {
-          name = String.format("%s %s", name, result.get("nameExtension")); 
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(indexedWorkspace.getIdentifier());
+        String name = indexedWorkspace.getName();
+        if (indexedWorkspace.getNameExtension() != null) {
+          name = String.format("%s %s", name, indexedWorkspace.getNameExtension()); 
         }
-        LocalDate beginDate = result.get("beginDate") == null ? null : Instant.ofEpochSecond(((Double) result.get("beginDate")).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate endDate = result.get("endDate") == null ? null : Instant.ofEpochSecond(((Double) result.get("endDate")).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate beginDate = indexedWorkspace.getBeginDate() == null ? null : indexedWorkspace.getBeginDate().atZoneSameInstant(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endDate = indexedWorkspace.getEndDate() == null ? null : indexedWorkspace.getEndDate().atZoneSameInstant(ZoneId.systemDefault()).toLocalDate();
         if (workspaceEntity != null && workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity)) {
           courses.add(new HopsAvailableCourseRestModel(workspaceEntity.getId(), name, beginDate, endDate));
         }
