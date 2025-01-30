@@ -340,14 +340,14 @@ export const useNotesItem = (
   /**
    * changenotesItemStatus
     @param noteId id of the note,
-    @param newReceiverStatus new status for the recipient,
     @param recipientId recipient id,
+    @param newReceiverStatus new status for the recipient,
     @param onSuccess callback function
    */
   const updateNotesItemStatus = async (
     noteId: number,
-    newReceiverStatus: UpdateNoteReceiverRequest,
     recipientId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
     onSuccess?: () => void
   ) => {
     try {
@@ -454,16 +454,16 @@ export const useNotesItem = (
     /**
      * updateNotesItemStatus
     @param noteId id of the note,
-    @param newReceiverStatus new status for the recipient,
     @param recipientId recipient id,
+    @param newReceiverStatus new status for the recipient,
     @param onSuccess callback function
      */
     updateNotesItemStatus: (
       noteId: number,
-      newReceiverStatus: UpdateNoteReceiverRequest,
       recipientId: number,
+      newReceiverStatus: UpdateNoteReceiverRequest,
       onSuccess?: () => void
     ) =>
-      updateNotesItemStatus(noteId, newReceiverStatus, recipientId, onSuccess),
+      updateNotesItemStatus(noteId, recipientId, newReceiverStatus, onSuccess),
   };
 };

@@ -4,11 +4,15 @@ import { useTranslation } from "react-i18next";
 import {
   loadNotes,
   updateNote,
+  updateRecipientNoteStatus,
   toggleNoteArchive,
 } from "~/actions/main-function/guider";
 import { StateType } from "~/reducers";
 import NotesItemList from "~/components/general/notes/notes-item-list";
-import { UpdateNoteRequest } from "~/generated/client";
+import {
+  UpdateNoteRequest,
+  UpdateNoteReceiverRequest,
+} from "~/generated/client";
 import { GuiderContext } from "../../context";
 import { useFilterNotes } from "~/components/guider/hooks/useFilterNotes";
 /**
@@ -52,6 +56,22 @@ const GuiderNotes = (props: GuiderNotesProps) => {
   );
 
   /**
+   * onUpdateNotesItemStatus function
+   * @param noteId noteId
+   * @param recipientId recipientId
+   * @param request request
+   */
+  const onUpdateNotesItemStatus = React.useCallback(
+    (
+      noteId: number,
+      recipientId: number,
+      request: UpdateNoteReceiverRequest
+    ) => {
+      dispatch(updateRecipientNoteStatus(noteId, recipientId, request));
+    },
+    [dispatch]
+  );
+  /**
    * onNotesItemSaveUpdateClick function
    */
   const onNotesItemSaveUpdateClick = React.useCallback(
@@ -82,6 +102,7 @@ const GuiderNotes = (props: GuiderNotesProps) => {
               notesItems={notes}
               onArchiveClick={onArchiveClick}
               onReturnArchivedClick={onArchiveClick}
+              onUpdateNotesItemStatus={onUpdateNotesItemStatus}
               onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
             />
           )}
