@@ -530,7 +530,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
               />
             )}
             {(specificRecipient || !multiUserNote) &&
-              loggedUserIsCreator &&
+              (loggedUserIsCreator || loggedUserIsOwner) &&
               renderUpdateStatus()}
           </div>
         </div>
