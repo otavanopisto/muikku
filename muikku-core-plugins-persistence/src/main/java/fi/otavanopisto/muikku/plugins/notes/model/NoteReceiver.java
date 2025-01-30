@@ -38,7 +38,7 @@ public class NoteReceiver {
     return pinned;
   }
 
-  public void setPinned(Boolean pinned) {
+  public void setPinned(boolean pinned) {
     this.pinned = pinned;
   }
   
@@ -51,19 +51,19 @@ public class NoteReceiver {
   }
 
   public Long getRecipientGroup() {
-    return recipientGroup_id;
+    return recipientGroupId;
   }
 
-  public void setRecipientGroup(Long recipientGroup_id) {
-    this.recipientGroup_id = recipientGroup_id;
+  public void setRecipientGroup(Long recipientGroupId) {
+    this.recipientGroupId = recipientGroupId;
   }
 
-  public Long getWorkspace_id() {
-    return workspace_id;
+  public Long getWorkspaceId() {
+    return workspaceId;
   }
 
-  public void setWorkspace_id(Long workspace_id) {
-    this.workspace_id = workspace_id;
+  public void setWorkspace_id(Long workspaceId) {
+    this.workspaceId = workspaceId;
   }
   
   @Id
@@ -74,7 +74,7 @@ public class NoteReceiver {
   private Note note;
 
   @Column (nullable=false)
-  private Boolean pinned;
+  private boolean pinned;
   
   @NotNull
   @Column (nullable=false)
@@ -86,8 +86,8 @@ public class NoteReceiver {
   private NoteStatus status;
 
   @Column
-  private Long recipientGroup_id;
+  private Long recipientGroupId;
   
   @Column
-  private Long workspace_id;
+  private Long workspaceId;
 }

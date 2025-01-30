@@ -26,7 +26,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -124,7 +123,7 @@ public class NotesRESTService extends PluginRESTService {
     NoteReceiver newReceiver = null;
     List<NoteReceiverRestModel> receiverList = new ArrayList<NoteReceiverRestModel>();
 
-    Boolean pinned = payload.getNoteReceiver().getPinned();
+    Boolean pinned = payload.isPinned();
 
     // Recipient handling
 
@@ -339,41 +338,46 @@ public class NotesRESTService extends PluginRESTService {
             }
             else {
               // Remove only if receiver is user-specific
-              if (receiver.getRecipientGroup() == null && receiver.getWorkspace_id() == null) {
+              if (receiver.getRecipientGroup() == null && receiver.getWorkspaceId() == null) {
                 noteReceiverController.deleteRecipient(receiver);
               }
               else {
                 // If the receiver already exists, we need to make it user-specific and set the
                 // user group and workspace IDs to null
-                noteReceiverController.updateNoteWorkspaceAndUserGroupRecipient(receiver, null, null);
+                noteReceiverController.updateNoteWorkspaceAndUserGroup(receiver, null, null);
               }
             }
           }
 
           // User groups
           for (UserGroupEntity userGroup : prepareRecipientList.getUserGroups()) {
-            prepareRecipientList.getUserGroupRecipients(userGroup);
+            
+            List<NoteReceiver> receivers = noteReceiverController.listReceiversByNoteAndUserGroup(updatedNote,
+                userGroup.getId());
 
-            List<UserGroupUserEntity> ugue = userGroupEntityController
-                .listUserGroupUserEntitiesByUserGroupEntity(userGroup);
+            // If there are any note recipients associated with a selected user group, they
+            // should all be deleted at once
+            if (!CollectionUtils.isEmpty(receivers)) {
+              for (NoteReceiver receiver : receivers) {
+                noteReceiverController.deleteRecipient(receiver);
+              }
+            } else {
+            List<UserEntity> preparedUserGroupRecipients = prepareRecipientList.getUserGroupRecipients(userGroup);
 
-            for (UserGroupUserEntity userGroupUserEntity : ugue) {
-
-              if (userGroupUserEntity != null) {
-                UserSchoolDataIdentifier userSchoolDataIdentifier = userGroupUserEntity.getUserSchoolDataIdentifier();
-
-                UserEntity groupRecipientEntity = userSchoolDataIdentifier.getUserEntity();
+            for (UserEntity userEntity : preparedUserGroupRecipients) {
+              if (userEntity != null) {
+                UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier());
 
                 if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
                   continue;
                 }
 
-                NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(groupRecipientEntity.getId(),
+                NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(userEntity.getId(),
                     updatedNote);
 
                 if (receiver == null) {
-                  noteReceiverController.createNoteRecipient(false, groupRecipientEntity.getId(), updatedNote,
-                      userGroupUserEntity.getUserGroupEntity().getId(), null);
+                  noteReceiverController.createNoteRecipient(false, userEntity.getId(), updatedNote,
+                      userGroup.getId(), null);
                 }
                 else {
                   // Remove receiver only if it's originally added with a user group id
@@ -383,6 +387,7 @@ public class NotesRESTService extends PluginRESTService {
                 }
               }
             }
+          }
           }
 
           // Workspace members
@@ -473,8 +478,7 @@ public class NotesRESTService extends PluginRESTService {
 
     // Student can edit only 'pinned' (+ status between APPROVAL_PENDING and
     // ONGOING) field if note is created by someone else
-    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
-        && !creatorUSDI.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+    if (sessionController.getLoggedUserEntity().getId().equals(noteReceiver.getRecipient())) {
       NoteStatus status = noteReceiver.getStatus();
       if (noteReceiver.getStatus() != payload.getStatus()) {
         if (noteReceiver.getStatus() == NoteStatus.ONGOING) {
@@ -504,10 +508,7 @@ public class NotesRESTService extends PluginRESTService {
 
     UserEntity userEntity = userEntityController.findUserEntityById(note.getCreator());
     String creatorName = userEntityController.getName(userEntity, true).getDisplayNameWithLine();
-    Boolean multiUserNote = false;
-    if (note.getMultiUserNote() != null) {
-      multiUserNote = note.getMultiUserNote();
-    }
+    
     NoteRestModel restModel = new NoteRestModel();
     restModel.setId(note.getId());
     restModel.setTitle(note.getTitle());
@@ -520,7 +521,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setStartDate(note.getStartDate());
     restModel.setDueDate(note.getDueDate());
     restModel.setIsArchived(note.getArchived());
-    restModel.setMultiUserNote(multiUserNote);
+    restModel.setMultiUserNote(note.getMultiUserNote());
 
     return restModel;
   }
@@ -540,8 +541,8 @@ public class NotesRESTService extends PluginRESTService {
       }
     }
 
-    if (noteReceiver.getWorkspace_id() != null) {
-      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(noteReceiver.getWorkspace_id());
+    if (noteReceiver.getWorkspaceId() != null) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(noteReceiver.getWorkspaceId());
 
       if (workspaceEntity != null) {
 
@@ -566,7 +567,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setStatus(noteReceiver.getStatus());
     restModel.setUserGroupId(noteReceiver.getRecipientGroup());
     restModel.setUserGroupName(groupName);
-    restModel.setWorkspaceId(noteReceiver.getWorkspace_id());
+    restModel.setWorkspaceId(noteReceiver.getWorkspaceId());
     restModel.setWorkspaceName(workspaceName);
     restModel.setHasImage(hasImage);
 
@@ -584,16 +585,17 @@ public class NotesRESTService extends PluginRESTService {
     if (recipientEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
+    
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
+        && !recipient.equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
 
     List<Note> notes = notesController.listByReceiver(recipientEntity, listArchived);
 
     List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
     OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);
 
-    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
-        && !recipient.equals(sessionController.getLoggedUserEntity().getId())) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
 
     for (Note note : notes) {
       UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
@@ -663,15 +665,16 @@ public class NotesRESTService extends PluginRESTService {
 
     OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);
 
+    UserEntity creator = userEntityController.findUserEntityById(userEntity.getId());
+    
+    UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController
+        .findUserSchoolDataIdentifierByUserEntity(creator);
+
+    if (creatorUSDI == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
     for (Note note : notes) {
-      UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
-      UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController
-          .findUserSchoolDataIdentifierByUserEntity(creator);
-
-      if (creatorUSDI == null) {
-        return Response.status(Status.BAD_REQUEST).build();
-      }
-
       // Ignore archived notes older than last two weeks
       if (Boolean.TRUE.equals(listArchived) && note.getLastModified().before(Date.from(inLastTwoWeeks.toInstant()))) {
         continue;

@@ -46,13 +46,6 @@ public class NotesController {
     return noteDAO.findById(id);
   }
   
-  public Note findNoteByIdAndArchived(Long id, boolean archived) {
-    return noteDAO.findByIdAndArchived(id, archived);
-  }
-
-  public List<Note> listByCreatorAndRecipientAndArchived(UserEntity creator, UserEntity recipient, boolean archived) {
-    return noteDAO.listByCreatorAndRecipientAndArchived(creator, recipient, archived);
-  }
   public List<Note> listByReceiver(UserEntity recipient, boolean listArchived) {
     return noteDAO.listByReceiver(recipient, listArchived);
   }

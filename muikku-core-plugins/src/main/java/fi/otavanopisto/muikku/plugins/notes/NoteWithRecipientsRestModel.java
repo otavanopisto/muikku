@@ -38,17 +38,17 @@ public class NoteWithRecipientsRestModel {
   public void setNote(NoteRestModel note) {
     this.note = note;
   }
-
-  public NoteReceiverRestModel getNoteReceiver() {
-    return noteReceiver;
+  
+  public boolean isPinned() {
+    return pinned;
   }
 
-  public void setNoteReceiver(NoteReceiverRestModel noteReceiver) {
-    this.noteReceiver = noteReceiver;
+  public void setPinned(boolean pinned) {
+    this.pinned = pinned;
   }
 
   private Long id;
   private NoteRestModel note;
-  private NoteReceiverRestModel noteReceiver;
+  private boolean pinned;
   private RecipientListRESTModel recipients;
 }

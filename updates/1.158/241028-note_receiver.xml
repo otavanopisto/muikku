@@ -7,8 +7,8 @@
         pinned bit not null,
         recipient bigint not null,
         status varchar(255) not null,
-        recipientGroup_id bigint,
-        workspace_id bigint,
+        recipientGroupId bigint,
+        workspaceId bigint,
         primary key (id)
     );</sql>
   <sql>insert into NoteReceiver (note_id, recipient, pinned, status)

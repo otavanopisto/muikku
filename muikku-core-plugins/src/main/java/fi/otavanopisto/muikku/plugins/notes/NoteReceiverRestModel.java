@@ -20,11 +20,11 @@ public class NoteReceiverRestModel {
     this.noteId = noteId;
   }
 
-  public Boolean getPinned() {
+  public boolean getPinned() {
     return pinned;
   }
 
-  public void setPinned(Boolean pinned) {
+  public void setPinned(boolean pinned) {
     this.pinned = pinned;
   }
 
@@ -84,17 +84,17 @@ public class NoteReceiverRestModel {
     this.workspaceName = workspaceName;
   }
 
-  public Boolean getHasImage() {
+  public boolean getHasImage() {
     return hasImage;
   }
 
-  public void setHasImage(Boolean hasImage) {
+  public void setHasImage(boolean hasImage) {
     this.hasImage = hasImage;
   }
 
   private Long id;
   private Long noteId;
-  private Boolean pinned;
+  private boolean pinned;
   private Long recipient;
   private String recipientName;
   private NoteStatus status;
@@ -102,7 +102,7 @@ public class NoteReceiverRestModel {
   private String userGroupName;
   private Long workspaceId;
   private String workspaceName;
-  private Boolean hasImage;
+  private boolean hasImage;
   
 
 }

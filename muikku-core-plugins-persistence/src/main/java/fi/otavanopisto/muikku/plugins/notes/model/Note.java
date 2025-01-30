@@ -87,11 +87,11 @@ public class Note {
     this.lastModified = lastModified;
   }
 
-  public Boolean getArchived() {
+  public boolean getArchived() {
     return archived;
   }
 
-  public void setArchived(Boolean archived) {
+  public void setArchived(boolean archived) {
     this.archived = archived;
   }
   
@@ -111,11 +111,11 @@ public class Note {
     this.dueDate = dueDate;
   }
   
-  public Boolean getMultiUserNote() {
+  public boolean getMultiUserNote() {
     return multiUserNote;
   }
 
-  public void setMultiUserNote(Boolean multiUserNote) {
+  public void setMultiUserNote(boolean multiUserNote) {
     this.multiUserNote = multiUserNote;
   }
 
@@ -155,7 +155,7 @@ public class Note {
   private Date lastModified;
 
   @Column (nullable = false)
-  private Boolean archived = Boolean.FALSE;
+  private boolean archived;
   
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date startDate;
@@ -164,7 +164,7 @@ public class Note {
   private Date dueDate;
   
   @Column (nullable = false)
-  private Boolean multiUserNote = Boolean.FALSE;
+  private boolean multiUserNote;
 }
 
   

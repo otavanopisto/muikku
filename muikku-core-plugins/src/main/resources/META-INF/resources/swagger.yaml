@@ -11687,13 +11687,13 @@ components:
             type: object
             required:
               - note
-              - noteReceiver
+              - pinned
               - recipients
             properties:
               note:
                 $ref: "#/components/schemas/NoteCreationObject"
-              noteReceiver:
-                $ref: "#/components/schemas/NoteCreationReceiver"
+              pinned:
+                type: boolean
               recipients:
                 $ref: "#/components/schemas/NoteRecipientList"
 
