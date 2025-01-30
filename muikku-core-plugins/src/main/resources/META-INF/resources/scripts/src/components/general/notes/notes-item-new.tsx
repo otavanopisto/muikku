@@ -62,10 +62,7 @@ class NotesItemNew extends SessionStateComponent<
       locked: false,
       recipients: [],
       notesItem: {
-        noteReceiver: {
-          pinned: false,
-          status: "ONGOING",
-        },
+        pinned: false,
         recipients: {
           recipientIds: props.newNoteRecipientId
             ? [props.newNoteRecipientId]
@@ -94,10 +91,7 @@ class NotesItemNew extends SessionStateComponent<
       locked: false,
       recipients: [],
       notesItem: {
-        noteReceiver: {
-          pinned: false,
-          status: "ONGOING",
-        },
+        pinned: false,
         recipients: {
           recipientIds: this.props.newNoteRecipientId
             ? [this.props.newNoteRecipientId]

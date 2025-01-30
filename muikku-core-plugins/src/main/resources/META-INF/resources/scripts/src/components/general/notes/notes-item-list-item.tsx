@@ -529,7 +529,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                 aria-label={t("wcag.archive")}
               />
             )}
-            {(specificRecipient || !multiUserNote) && renderUpdateStatus()}
+            {(specificRecipient || !multiUserNote) &&
+              loggedUserIsCreator &&
+              renderUpdateStatus()}
           </div>
         </div>
         <div className="notes__item-dates">{renderDates()}</div>
