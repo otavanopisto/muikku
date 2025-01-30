@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.hops.rest;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -1151,8 +1152,8 @@ public class HopsRestService {
         if (result.get("nameExtension") != null) {
           name = String.format("%s %s", name, result.get("nameExtension")); 
         }
-        LocalDate beginDate = result.get("beginDate") == null ? null : LocalDate.ofInstant(new Date((Long) result.get("beginDate")).toInstant(), ZoneId.systemDefault());
-        LocalDate endDate = result.get("endDate") == null ? null : LocalDate.ofInstant(new Date((Long) result.get("endDate")).toInstant(), ZoneId.systemDefault());
+        LocalDate beginDate = result.get("beginDate") == null ? null : Instant.ofEpochSecond(((Double) result.get("beginDate")).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endDate = result.get("endDate") == null ? null : Instant.ofEpochSecond(((Double) result.get("endDate")).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
         if (workspaceEntity != null && workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity)) {
           courses.add(new HopsAvailableCourseRestModel(workspaceEntity.getId(), name, beginDate, endDate));
         }
