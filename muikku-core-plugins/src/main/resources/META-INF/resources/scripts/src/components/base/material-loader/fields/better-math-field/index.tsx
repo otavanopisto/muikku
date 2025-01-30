@@ -262,6 +262,7 @@ export default class MathField extends React.Component<
           formulaClassName={this.props.formulaClassName}
           editorClassName={this.props.editorClassName}
           toolbarClassName={this.props.toolbarClassName}
+          createNewLatex={this.createNewLatex}
           onLatexModeOpen={this.openMathExpanded}
           onLatexModeClose={this.closeMathExpanded}
           ref="input"
