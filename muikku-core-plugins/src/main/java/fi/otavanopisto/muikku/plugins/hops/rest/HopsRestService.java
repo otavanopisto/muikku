@@ -1147,6 +1147,17 @@ public class HopsRestService {
 
       List<HopsAvailableCourseRestModel> courses = new ArrayList<>();
       for (Map<String, Object> result : results) {
+        boolean courseNumberMatch = false;
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> resultSubjects = (List<Map<String, Object>>) result.get("subjects");
+        for (Map<String, Object> resultSubject : resultSubjects) {
+          String s2 = (String) resultSubject.get("subjectCode");
+          Integer cn = (Integer) resultSubject.get("courseNumber");
+          courseNumberMatch = s2 != null && cn != null && subject.equals(s2) && courseNumber.equals(cn);
+        }
+        if (!courseNumberMatch) {
+          continue;
+        }
         WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(SchoolDataIdentifier.fromId((String) result.get("identifier")));
         String name = (String) result.get("name");
         if (result.get("nameExtension") != null) {
