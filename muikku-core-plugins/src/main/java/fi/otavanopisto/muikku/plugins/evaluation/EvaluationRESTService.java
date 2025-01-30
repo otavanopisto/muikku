@@ -1814,9 +1814,10 @@ public class EvaluationRESTService extends PluginRESTService {
     Date evaluationDate = compositeAssessmentRequest.getEvaluationDate();
     Boolean graded = evaluationDate != null;
     if (userEntity != null) {
-      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
           userEntity.getId(),
           workspaceEntity.getId(),
+          Boolean.FALSE,
           Boolean.FALSE);
       if (supplementationRequest != null &&
           (evaluationDate == null || evaluationDate.before(supplementationRequest.getRequestDate())) &&

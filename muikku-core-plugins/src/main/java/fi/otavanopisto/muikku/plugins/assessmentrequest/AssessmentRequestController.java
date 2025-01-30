@@ -133,11 +133,12 @@ public class AssessmentRequestController {
     
     // #7000: Requesting assessment sets supplementation request handled so this is vice versa
     
-    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+    SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
         studentEntity.getId(),
         workspaceEntity.getId(),
+        Boolean.TRUE,
         Boolean.FALSE);
-    if (supplementationRequest != null && Boolean.TRUE.equals(supplementationRequest.getHandled())) {
+    if (supplementationRequest != null) {
       evaluationController.markSupplementationRequestUnhandled(supplementationRequest);
     }
     
