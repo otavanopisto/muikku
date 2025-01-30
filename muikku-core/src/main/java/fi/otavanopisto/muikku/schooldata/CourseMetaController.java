@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +37,11 @@ public class CourseMetaController {
   private ConcurrentHashMap<SchoolDataIdentifier, CourseLengthUnit> courseLengthUnitCache;
   private ConcurrentHashMap<SchoolDataIdentifier, Curriculum> curriculumCache;
   private ConcurrentHashMap<SchoolDataIdentifier, EducationType> educationTypeCache;
+  private ConcurrentSkipListSet<String> unknownSubjectCodes;
+  private ConcurrentSkipListSet<SchoolDataIdentifier> unknownSubjects;
+  private ConcurrentSkipListSet<SchoolDataIdentifier> unknownCurriculums;
+  private ConcurrentSkipListSet<SchoolDataIdentifier> unknownEducationTypes;
+  private ConcurrentSkipListSet<SchoolDataIdentifier> unknownCourseLengthUnits;
   
   @PostConstruct
   public void init() {
@@ -44,12 +50,17 @@ public class CourseMetaController {
     courseLengthUnitCache = new ConcurrentHashMap<>();
     curriculumCache = new ConcurrentHashMap<>();
     educationTypeCache = new ConcurrentHashMap<>();
+    unknownSubjectCodes = new ConcurrentSkipListSet<>();
+    unknownSubjects = new ConcurrentSkipListSet<>();
+    unknownCurriculums = new ConcurrentSkipListSet<>();
+    unknownEducationTypes = new ConcurrentSkipListSet<>();
+    unknownCourseLengthUnits = new ConcurrentSkipListSet<>();
   }
 
   /* Subjects */
 
   public Subject findSubjectByCode(String schoolDataSource, String code) {
-    if (StringUtils.isAnyEmpty(schoolDataSource, code)) {
+    if (StringUtils.isAnyEmpty(schoolDataSource, code) || unknownSubjectCodes.contains(code)) {
       return null;
     }
     if (!subjectCodeCache.containsKey(code)) {
@@ -57,9 +68,12 @@ public class CourseMetaController {
       CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
       if (schoolDataBridge != null) {
         subject = schoolDataBridge.findSubjectByCode(code);
-        subjectCodeCache.put(code, subject);
         if (subject != null) {
+          subjectCodeCache.put(code, subject);
           subjectIdentifierCache.put(subject.schoolDataIdentifier(), subject);
+        }
+        else {
+          unknownSubjectCodes.add(code);
         }
       }
     }
@@ -67,7 +81,7 @@ public class CourseMetaController {
   }
   
   public Subject findSubject(SchoolDataIdentifier identifier) {
-    if (identifier == null) {
+    if (identifier == null || unknownSubjects.contains(identifier)) {
       return null;
     }
     if (!subjectIdentifierCache.containsKey(identifier)) {
@@ -77,9 +91,12 @@ public class CourseMetaController {
         subject = schoolDataBridge.findSubject(identifier.getIdentifier());
         if (subject != null) {
           subjectCodeCache.put(subject.getCode(), subject);
+          subjectIdentifierCache.put(identifier, subject);
+        }
+        else {
+          unknownSubjects.add(identifier);
         }
       }
-      subjectIdentifierCache.put(identifier, subject);
     }
     return subjectIdentifierCache.get(identifier);
   }
@@ -106,7 +123,7 @@ public class CourseMetaController {
   /* EducationType */
 
   public EducationType findEducationType(SchoolDataIdentifier identifier) {
-    if (identifier == null) {
+    if (identifier == null || unknownEducationTypes.contains(identifier)) {
       return null;
     }
     if (!educationTypeCache.containsKey(identifier)) {
@@ -114,8 +131,13 @@ public class CourseMetaController {
       CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(identifier.getDataSource());
       if (schoolDataBridge != null) {
         educationType = schoolDataBridge.findEducationType(identifier.getIdentifier());
+        if (educationType != null) {
+          educationTypeCache.put(identifier, educationType);
+        }
+        else {
+          unknownEducationTypes.add(identifier);
+        }
       }
-      educationTypeCache.put(identifier, educationType);
     }
     return educationTypeCache.get(identifier);
   }
@@ -136,7 +158,7 @@ public class CourseMetaController {
   /* CourseLenthUnit */
 
   public CourseLengthUnit findCourseLengthUnit(SchoolDataIdentifier identifier) {
-    if (identifier == null) {
+    if (identifier == null || unknownCourseLengthUnits.contains(identifier)) {
       return null;
     }
     if (!courseLengthUnitCache.containsKey(identifier)) {
@@ -144,8 +166,13 @@ public class CourseMetaController {
       CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(identifier.getDataSource());
       if (schoolDataBridge != null) {
         courseLengthUnit = schoolDataBridge.findCourseLengthUnit(identifier.getIdentifier());
+        if (courseLengthUnit != null) {
+          courseLengthUnitCache.put(identifier, courseLengthUnit);
+        }
+        else {
+          unknownCourseLengthUnits.add(identifier);
+        }
       }
-      courseLengthUnitCache.put(identifier, courseLengthUnit);
     }
     return courseLengthUnitCache.get(identifier);
   }
@@ -175,7 +202,7 @@ public class CourseMetaController {
   /* Curriculum */
 
   public Curriculum findCurriculum(SchoolDataIdentifier identifier) {
-    if (identifier == null) {
+    if (identifier == null || unknownCurriculums.contains(identifier)) {
       return null;
     }
     if (!curriculumCache.containsKey(identifier)) {
@@ -183,8 +210,13 @@ public class CourseMetaController {
       CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(identifier.getDataSource());
       if (schoolDataBridge != null) {
         curriculum = schoolDataBridge.findCurriculum(identifier.getIdentifier());
+        if (curriculum != null) {
+          curriculumCache.put(identifier, curriculum);
+        }
+        else {
+          unknownCurriculums.add(identifier);
+        }
       }
-      curriculumCache.put(identifier, curriculum);
     }
     return curriculumCache.get(identifier);
   }
