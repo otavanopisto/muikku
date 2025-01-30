@@ -34,6 +34,7 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
+  padding: 5px;
 
   &.state-OVERDUE {
     color: $color-fatal;
@@ -59,11 +60,19 @@
 .note__description {
   font-size: 0.9375rem;
   font-weight: 300;
-  padding: 0 0 0 10px;
+  padding: 5px;
+
+  p {
+    margin: 0 0 10px;
+
+    &:last-child {
+      margin: 0;
+    }
+  }
 }
 
 .note__footer {
-  padding: 10px 5px;
+  padding: 5px;
 }
 
 @keyframes border {

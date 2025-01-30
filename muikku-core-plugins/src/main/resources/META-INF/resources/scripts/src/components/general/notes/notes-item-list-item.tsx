@@ -1,14 +1,20 @@
 import * as React from "react";
 import { IconButton } from "~/components/general/button";
 import Link from "~/components/general/link";
-import moment from "moment";
 import Dropdown from "~/components/general/dropdown";
 import NotesItemEdit from "./notes-item-edit";
 import NoteInformationDialog from "./dialogs/note-information-dialog";
 import { isOverdue } from "~/helper-functions/dates";
 import { useTranslation } from "react-i18next";
-import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
-
+import { localize } from "~/locales/i18n";
+import {
+  Note,
+  NoteStatusType,
+  UpdateNoteRequest,
+  UpdateNoteReceiverRequest,
+} from "~/generated/client";
+import Avatar from "../avatar";
+import { useRecipientsToAvatars } from "./hooks/useRecipientsToAvatars";
 /**
  * DropdownItem
  */
@@ -33,15 +39,19 @@ export interface NotesListItemProps
   active?: boolean;
   loggedUserIsCreator?: boolean;
   loggedUserIsOwner?: boolean;
+  specificRecipient?: number;
   onArchiveClick?: (notesItemId: number) => void;
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
-    notesItemId: number,
-    updateNoteRequest: UpdateNoteRequest
+    noteId: number,
+    recipientId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest
   ) => void;
   onUpdateNotesItemStatus?: (
-    notesItemId: number,
-    newStatus: NoteStatusType
+    noteId: number,
+    recipientId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    onSuccess?: () => void
   ) => void;
   onNotesItemSaveUpdateClick?: (
     notesItemId: number,
@@ -79,6 +89,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       archived,
       openInformationToDialog,
       containerModifier,
+      specificRecipient,
       ...restProps
     } = props;
 
@@ -90,12 +101,24 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       description,
       startDate,
       dueDate,
-      status,
+      recipients,
+      multiUserNote,
     } = notesItem;
 
+    const avatars = useRecipientsToAvatars(recipients);
     const { t } = useTranslation("tasks");
     const overdue = isOverdue(dueDate);
     const updatedModifiers = [];
+    const recipientId = specificRecipient
+      ? specificRecipient
+      : recipients[0].recipient;
+    const currentRecipient = recipients.find(
+      (r) => r.recipient === recipientId
+    );
+
+    // Editing is forbidden
+    // if the note is multi-user and there is a specific recipient selected
+    const editForbidden = !!specificRecipient && multiUserNote;
 
     React.useImperativeHandle(
       outerRef,
@@ -116,7 +139,13 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     ) => {
       e.stopPropagation();
 
-      onPinNotesItemClick(id, notesItem);
+      const newReceiverStatus: UpdateNoteReceiverRequest = {
+        ...currentRecipient,
+        pinned: !currentRecipient.pinned,
+      };
+      if (onUpdateNotesItemStatus) {
+        onUpdateNotesItemStatus(id, recipientId, newReceiverStatus);
+      }
     };
 
     /**
@@ -160,8 +189,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * @param newStatus newStatus
      */
     const handleUpdateNotesItemStatusClick = (newStatus: NoteStatusType) => {
+      const newReceiverStatus: UpdateNoteReceiverRequest = {
+        ...currentRecipient,
+        status: newStatus,
+      };
       if (onUpdateNotesItemStatus) {
-        onUpdateNotesItemStatus(id, newStatus);
+        onUpdateNotesItemStatus(id, recipientId, newReceiverStatus);
 
         if (innerRef.current) {
           innerRef.current.focus();
@@ -197,7 +230,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
     }
 
-    if (overdue && status !== "APPROVED") {
+    if (overdue && currentRecipient?.status !== "APPROVED") {
       updatedModifiers.push("overdue");
     }
 
@@ -222,7 +255,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-date">
-              {moment(startDate).format("l")} - {moment(dueDate).format("l")}
+              {localize.date(startDate)} - {localize.date(dueDate)}
             </span>
           </span>
         );
@@ -231,7 +264,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           <span className="notes__item-dates-date-range">
             <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-date">
-              {moment(startDate).format("l")}
+              {localize.date(startDate)}
             </span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
           </span>
@@ -242,7 +275,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             <span className="notes__item-dates-text">{t("labels.active")}</span>
             <span className="notes__item-dates-indicator icon-long-arrow-right"></span>
             <span className="notes__item-dates-date">
-              {moment(dueDate).format("l")}
+              {localize.date(dueDate)}
             </span>
           </span>
         );
@@ -256,7 +289,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      */
     const renderStatus = () => {
       const statuses: JSX.Element[] = [];
-
+      const { status } = currentRecipient;
       if (overdue && status !== "APPROVED") {
         statuses.push(
           <div
@@ -318,6 +351,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       }
 
       if (loggedUserIsOwner) {
+        const { status } = currentRecipient;
         if (status === "ONGOING") {
           items = [
             {
@@ -362,6 +396,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           ];
         }
       } else if (loggedUserIsCreator && !loggedUserIsOwner) {
+        // This must display all of the recipients statuses if this is not a selected recipient
+        const { status } = currentRecipient;
+
         if (status === "ONGOING") {
           return;
         }
@@ -439,90 +476,115 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             : ""
         }`}
       >
-        <div className="notes__item-actions">
-          {loggedUserIsCreator && onNotesItemSaveUpdateClick && (
-            <NotesItemEdit
-              selectedNotesItem={notesItem}
-              onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
-            >
-              <IconButton
-                icon="pencil"
-                buttonModifiers={["notes-action", "notes-edit"]}
-                aria-label={t("wcag.editNote")}
-              />
-            </NotesItemEdit>
-          )}
-
-          {loggedUserIsOwner && onPinNotesItemClick && (
-            <IconButton
-              onClick={handleNotesItemPinClick}
-              icon={notesItem.pinned ? "star-full" : "star-empty"}
-              buttonModifiers={["notes-action", "notes-pin"]}
-            />
-          )}
-
-          {loggedUserIsCreator && onReturnArchivedClick && (
-            <IconButton
-              onClick={handleNotesItemReturnArchiveClick}
-              icon="undo"
-              buttonModifiers={["notes-action", "notes-unarchive"]}
-              aria-label={t("wcag.archiveUndo")}
-            />
-          )}
-
-          {loggedUserIsCreator && !archived && onArchiveClick && (
-            <IconButton
-              onClick={handleNotesItemArchiveClick}
-              icon="trash"
-              buttonModifiers={["notes-action", "notes-archive"]}
-              aria-label={t("wcag.archive")}
-            />
-          )}
-
-          {renderUpdateStatus()}
-        </div>
-
-        <div className="notes__item-dates">{renderDates()}</div>
-        <div
-          className={`notes__item-header ${
-            openInformationToDialog ? "notes__item-header--open-details" : ""
-          }`}
-        >
-          {openInformationToDialog ? (
-            <NoteInformationDialog
-              notesItem={notesItem}
-              archived={archived}
-              loggedUserIsCreator={loggedUserIsCreator}
-              loggedUserIsOwner={loggedUserIsOwner}
-              onPinNotesItemClick={onPinNotesItemClick}
-              onArchiveClick={onArchiveClick}
-              onUpdateNotesItemStatus={onUpdateNotesItemStatus}
-              onReturnArchivedClick={onReturnArchivedClick}
-              onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
-            >
+        <div className="notes__item-hero">
+          {loggedUserIsCreator && (
+            <div className="notes__item-decoration">
               <span
-                role="button"
-                aria-label={t("wcag.showDetails")}
-                tabIndex={0}
-              >
-                {title}
-              </span>
-            </NoteInformationDialog>
-          ) : (
-            <span>{title}</span>
+                className={`
+                  "notes__item-icon" + ${
+                    multiUserNote ? "icon-users" : "icon-user"
+                  }`}
+              />
+            </div>
           )}
-        </div>
+          <div className="notes__item-actions">
+            {loggedUserIsCreator &&
+              onNotesItemSaveUpdateClick &&
+              !editForbidden && (
+                <NotesItemEdit
+                  recipientId={specificRecipient}
+                  selectedNotesItem={notesItem}
+                  onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
+                >
+                  <IconButton
+                    icon="pencil"
+                    buttonModifiers={["notes-action", "notes-edit"]}
+                    aria-label={t("wcag.editNote")}
+                  />
+                </NotesItemEdit>
+              )}
 
-        {description ? (
-          <div
-            className="notes__item-body"
-            dangerouslySetInnerHTML={createHtmlMarkup(description)}
-          />
-        ) : null}
-        <div className="notes__item-author">
-          {!loggedUserIsCreator ? creatorName : null}
+            {loggedUserIsOwner && onPinNotesItemClick && (
+              <IconButton
+                onClick={handleNotesItemPinClick}
+                icon={currentRecipient.pinned ? "star-full" : "star-empty"}
+                buttonModifiers={["notes-action", "notes-pin"]}
+              />
+            )}
+
+            {loggedUserIsCreator && archived && onReturnArchivedClick && (
+              <IconButton
+                onClick={handleNotesItemReturnArchiveClick}
+                icon="undo"
+                buttonModifiers={["notes-action", "notes-unarchive"]}
+                aria-label={t("wcag.archiveUndo")}
+              />
+            )}
+
+            {loggedUserIsCreator && !archived && onArchiveClick && (
+              <IconButton
+                onClick={handleNotesItemArchiveClick}
+                icon="trash"
+                buttonModifiers={["notes-action", "notes-archive"]}
+                aria-label={t("wcag.archive")}
+              />
+            )}
+            {(specificRecipient || !multiUserNote) &&
+              (loggedUserIsCreator || loggedUserIsOwner) &&
+              renderUpdateStatus()}
+          </div>
         </div>
-        <div className="notes__item-footer">{renderStatus()}</div>
+        <div className="notes__item-dates">{renderDates()}</div>
+        {title && openInformationToDialog ? (
+          <NoteInformationDialog
+            notesItem={notesItem}
+            archived={archived}
+            loggedUserIsCreator={loggedUserIsCreator}
+            loggedUserIsOwner={loggedUserIsOwner}
+            specificRecipient={specificRecipient}
+            onPinNotesItemClick={onPinNotesItemClick}
+            onArchiveClick={onArchiveClick}
+            onUpdateNotesItemStatus={onUpdateNotesItemStatus}
+            onReturnArchivedClick={onReturnArchivedClick}
+            onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
+          >
+            <div
+              role="button"
+              tabIndex={0}
+              aria-label={t("wcag.showDetails")}
+              className={`notes__item-header ${
+                openInformationToDialog
+                  ? "notes__item-header--open-details"
+                  : ""
+              }`}
+            >
+              {title}
+            </div>
+          </NoteInformationDialog>
+        ) : (
+          <div>{title}</div>
+        )}
+        {/* 
+            We render notes body even if description is missing as we use the element to push other elements to the 
+            bottom to help maintain consistent rendering within the notes element
+        */}
+        <div
+          className="notes__item-body"
+          dangerouslySetInnerHTML={createHtmlMarkup(description)}
+        />
+        {!specificRecipient && (
+          <div className="notes__item-recipients">
+            {avatars.map((avatar) => (
+              <Avatar key={avatar.id} {...avatar} size="xsmall"></Avatar>
+            ))}
+          </div>
+        )}
+        {!loggedUserIsCreator && (
+          <div className="notes__item-author">{creatorName}</div>
+        )}
+        {(specificRecipient || !multiUserNote) && (
+          <div className="notes__item-footer">{renderStatus()}</div>
+        )}
       </div>
     );
   }

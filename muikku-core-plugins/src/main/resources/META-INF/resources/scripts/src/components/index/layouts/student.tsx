@@ -12,6 +12,10 @@ interface StudentComponentProps {
   studiesEnded: boolean;
 }
 
+/**
+ * Student component
+ * @param props StudentComponentProps
+ */
 const StudentComponent: React.FC<StudentComponentProps> = (props) => {
   const { studiesEnded } = props;
   if (studiesEnded) {

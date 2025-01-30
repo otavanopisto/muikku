@@ -5,5 +5,5 @@ import moment from "moment";
  * @param dueDate due date to check agains
  * @returns Whether note is expired or late
  */
-export const isOverdue = (dueDate: Date | null) =>
+export const isOverdue = (dueDate: string) =>
   dueDate !== null && moment(new Date()).isAfter(new Date(dueDate), "day");
