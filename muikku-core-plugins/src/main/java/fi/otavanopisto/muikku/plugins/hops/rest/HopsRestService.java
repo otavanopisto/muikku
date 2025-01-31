@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.hops.rest;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -82,8 +81,10 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.StudyActivityItemStatus;
+import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
@@ -96,6 +97,7 @@ import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -131,6 +133,9 @@ public class HopsRestService {
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
   private UserSchoolDataController userSchoolDataController;
 
   @Inject
@@ -162,9 +167,7 @@ public class HopsRestService {
   @Path("/isHopsAvailable/{STUDENTIDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE)
   public Response getIsAvailable(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
-    boolean available = hopsController.isHopsAvailable(studentIdentifier) && sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_STUDENT_INFO);
-
-    return Response.ok(available).build();
+    return Response.ok(sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_STUDENT_INFO) && hopsController.isHopsAvailable(studentIdentifier)).build();
   }
 
   @GET
@@ -582,7 +585,7 @@ public class HopsRestService {
             plannedCourse.getMandatory(),
             plannedCourse.getStartDate(),
             plannedCourse.getDuration(),
-            plannedCourse.getWorkspaceEntityId());
+            plannedCourse.getWorkspaceInstance() == null ? null : plannedCourse.getWorkspaceInstance().getId());
       }
       else {
         HopsPlannedCourse existingPlannedCourse = currentPlannedCourses.stream().filter(c -> c.getId().equals(plannedCourse.getId())).findFirst().orElse(null);
@@ -596,7 +599,7 @@ public class HopsRestService {
               plannedCourse.getMandatory(),
               plannedCourse.getStartDate(),
               plannedCourse.getDuration(),
-              plannedCourse.getWorkspaceEntityId());
+              plannedCourse.getWorkspaceInstance() == null ? null : plannedCourse.getWorkspaceInstance().getId());
           currentPlannedCourses.remove(existingPlannedCourse);
         }
       }
@@ -1133,38 +1136,28 @@ public class HopsRestService {
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
-      SearchResult searchResult = searchProvider.searchWorkspaces()
+      SearchResults<List<IndexedWorkspace>> searchResult = searchProvider.searchWorkspaces()
           .setSubjects(subjectIdentifiers)
           .setCurriculumIdentifiers(curriculumIdentifiers)
           .setOrganizationRestrictions(organizationRestrictions)
           .setAccessUser(sessionController.getLoggedUser())
           .setFirstResult(0)
           .setMaxResults(1000)
-          .search();
-      List<Map<String, Object>> results = searchResult.getResults();
-
-      // List instances
-
+          .searchTyped();
+      
       List<HopsAvailableCourseRestModel> courses = new ArrayList<>();
-      for (Map<String, Object> result : results) {
-        boolean courseNumberMatch = false;
-        @SuppressWarnings("unchecked")
-        List<Map<String, Object>> resultSubjects = (List<Map<String, Object>>) result.get("subjects");
-        for (Map<String, Object> resultSubject : resultSubjects) {
-          String s2 = (String) resultSubject.get("subjectCode");
-          Integer cn = (Integer) resultSubject.get("courseNumber");
-          courseNumberMatch = s2 != null && cn != null && subject.equals(s2) && courseNumber.equals(cn);
-        }
-        if (!courseNumberMatch) {
+      for (IndexedWorkspace indexedWorkspace : searchResult.getResults()) {
+        // course number match
+        if (indexedWorkspace.getSubjects().stream().filter(sbj -> subject.equals(sbj.getSubjectCode()) && courseNumber.equals(sbj.getCourseNumber())).findFirst().orElse(null) == null) {
           continue;
         }
-        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(SchoolDataIdentifier.fromId((String) result.get("identifier")));
-        String name = (String) result.get("name");
-        if (result.get("nameExtension") != null) {
-          name = String.format("%s %s", name, result.get("nameExtension")); 
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(indexedWorkspace.getIdentifier());
+        String name = indexedWorkspace.getName();
+        if (indexedWorkspace.getNameExtension() != null) {
+          name = String.format("%s %s", name, indexedWorkspace.getNameExtension()); 
         }
-        LocalDate beginDate = result.get("beginDate") == null ? null : Instant.ofEpochSecond(((Double) result.get("beginDate")).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate endDate = result.get("endDate") == null ? null : Instant.ofEpochSecond(((Double) result.get("endDate")).longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate beginDate = indexedWorkspace.getBeginDate() == null ? null : indexedWorkspace.getBeginDate().atZoneSameInstant(ZoneId.systemDefault()).toLocalDate();
+        LocalDate endDate = indexedWorkspace.getEndDate() == null ? null : indexedWorkspace.getEndDate().atZoneSameInstant(ZoneId.systemDefault()).toLocalDate();
         if (workspaceEntity != null && workspaceEntityController.canSignup(sessionController.getLoggedUser(), workspaceEntity)) {
           courses.add(new HopsAvailableCourseRestModel(workspaceEntity.getId(), name, beginDate, endDate));
         }
@@ -1522,9 +1515,67 @@ public class HopsRestService {
         plannedCourse.getMandatory(),
         new Date(plannedCourse.getStartDate().getTime()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
         plannedCourse.getDuration(),
-        plannedCourse.getWorkspaceEntityId());
+        toRestModel(SchoolDataIdentifier.fromId(plannedCourse.getStudentIdentifier()), plannedCourse.getWorkspaceEntityId()));
   }
+  
+  private HopsPlannedCourseInstanceRestModel toRestModel(SchoolDataIdentifier studentIdentifier, Long workspaceEntityId) {
+    HopsPlannedCourseInstanceRestModel instance = null;
+    if (workspaceEntityId != null) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity != null) {
+        SearchProvider searchProvider = getProvider("elastic-search");
+        if (searchProvider != null) {
 
+          // Enforced organization filter
+
+          List<OrganizationEntity> organizations = new ArrayList<>();
+          UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+          OrganizationEntity loggedUserOrganization = userSchoolDataIdentifier.getOrganization();
+          organizations.add(loggedUserOrganization);
+          List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(
+              organizations,
+              PublicityRestriction.ONLY_PUBLISHED,
+              TemplateRestriction.ONLY_WORKSPACES);
+
+          // Find the course
+
+          SearchResults<List<IndexedWorkspace>> results = searchProvider.searchIndexedWorkspaces(
+              Collections.emptyList(),
+              Collections.singletonList(workspaceEntity.schoolDataIdentifier()),
+              Collections.emptyList(),
+              Collections.emptyList(),
+              organizationRestrictions,
+              null,
+              null,
+              sessionController.getLoggedUser(),
+              0,
+              1,
+              null);
+
+          if (results != null && results.getResults().size() == 1) {
+            IndexedWorkspace workspace = results.getResults().get(0);
+            Long id = workspaceEntity.getId();
+            String name = workspace.getName();
+            if (!StringUtils.isEmpty(workspace.getNameExtension())) {
+              name = String.format("%s %s", name, workspace.getNameExtension());
+            }
+            LocalDate beginDate = workspace.getBeginDate() == null ? null : workspace.getBeginDate().atZoneSameInstant(ZoneId.systemDefault()).toLocalDate();
+            LocalDate endDate = workspace.getEndDate() == null ? null : workspace.getEndDate().atZoneSameInstant(ZoneId.systemDefault()).toLocalDate();
+            // check if user is already in course; if so, exists for sure
+            boolean instanceExists = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(
+                workspaceEntity,
+                studentIdentifier) != null;
+            if (!instanceExists) {
+              // check against signup groups and signup dates
+              instanceExists = workspaceEntityController.canSignup(studentIdentifier, workspaceEntity);
+            }
+            instance = new HopsPlannedCourseInstanceRestModel(id, name, beginDate, endDate, instanceExists);
+          }
+        }
+      }
+    }
+    return instance;
+  }
 
   private HistoryItem toRestModel(HopsHistory historyEntry, Map<String, UserBasicInfo> userMap) {
     HistoryItem historyItem = new HistoryItem();
