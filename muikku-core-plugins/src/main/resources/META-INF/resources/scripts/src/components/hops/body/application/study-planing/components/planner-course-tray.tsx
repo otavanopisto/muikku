@@ -1,23 +1,18 @@
 import * as React from "react";
 import { useMemo } from "react";
-import AnimateHeight from "react-animate-height";
 import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { useLocalStorage } from "usehooks-ts";
 import { Course, CourseFilter } from "~/@types/shared";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
-import {
-  CourseStatus,
-  HopsOpsCourse,
-  StudentStudyActivity,
-} from "~/generated/client";
+import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { filterSubjectsAndCourses } from "../helper";
+import { AnimatedDrawer } from "./Animated-drawer";
 import {
   PlannerCard,
-  PlannerCardActions,
   PlannerCardContent,
   PlannerCardHeader,
   PlannerCardLabel,
@@ -226,8 +221,9 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
             >
               {subject.name}
             </Button>
-            <AnimateHeight
-              height={expandedGroups.includes(subject.subjectCode) ? "auto" : 0}
+            <AnimatedDrawer
+              isOpen={expandedGroups.includes(subject.subjectCode)}
+              onClose={() => handleGroupToggle(subject.subjectCode)}
             >
               <div className="study-planner__course-tray-list">
                 {subject.availableCourses.map((course) => {
@@ -265,7 +261,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                   );
                 })}
               </div>
-            </AnimateHeight>
+            </AnimatedDrawer>
           </div>
         ))}
       </div>
@@ -300,8 +296,6 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     curriculumConfig,
     studyActivity,
   } = props;
-
-  const [isCourseStateOpen, setIsCourseStateOpen] = React.useState(false);
 
   /**
    * Gets course state
@@ -369,16 +363,17 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     onSelectCourse({ ...course, subjectCode });
   };
 
-  /**
-   * Handles course state open
-   * @param e Event
-   */
-  const handleCourseStateOpen = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => {
-    e.stopPropagation();
-    setIsCourseStateOpen(!isCourseStateOpen);
-  };
+  // For later use, do not remove
+  // /**
+  //  * Handles course state open
+  //  * @param e Event
+  //  */
+  // const handleCourseStateOpen = (
+  //   e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  // ) => {
+  //   e.stopPropagation();
+  //   setIsCourseStateOpen(!isCourseStateOpen);
+  // };
 
   const modifiers = [];
 
@@ -415,7 +410,8 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
           )}
         </PlannerCardContent>
 
-        {studyActivity && (
+        {/* For later use, do not remove */}
+        {/* {studyActivity && (
           <PlannerCardActions modifiers={["course-tray"]}>
             <Button
               icon="arrow-down"
@@ -426,10 +422,11 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
               Lisätietoa
             </Button>
           </PlannerCardActions>
-        )}
+        )} */}
       </PlannerCard>
 
-      {studyActivity && (
+      {/* For later use, do not remove */}
+      {/* {studyActivity && (
         <AnimateHeight
           height={isCourseStateOpen ? "auto" : 0}
           animateOpacity={false}
@@ -470,7 +467,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
             <span className="study-planner__state-info-row-value">-</span>
           </div>
         </AnimateHeight>
-      )}
+      )} */}
     </div>
   );
 };

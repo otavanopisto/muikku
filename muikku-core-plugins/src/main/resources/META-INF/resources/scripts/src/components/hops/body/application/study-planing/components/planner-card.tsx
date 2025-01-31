@@ -6,7 +6,7 @@ import * as React from "react";
 interface PlannerCardProps {
   modifiers?: string[];
   innerContainerModifiers?: string[];
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   ref?: React.Ref<HTMLDivElement>;
   children: React.ReactNode;
   externalContent?: React.ReactNode;

@@ -9,6 +9,7 @@ import DatePicker from "react-datepicker";
 import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnimatedDrawer } from "../Animated-drawer";
+import WorkspaceSelect from "../workspace-select";
 
 /**
  * DesktopPlannerPeriodCourseProps
@@ -26,7 +27,7 @@ interface DesktopPlannerPeriodCourseProps
 const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
   props
 ) => {
-  const { course } = props;
+  const { course, curriculumConfig } = props;
 
   const [pendingDelete, setPendingDelete] = React.useState(false);
   const [pendingSpecify, setPendingSpecify] = React.useState(false);
@@ -56,8 +57,10 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
    * @param callback callback
    */
   const handleSpecifyClose = (callback: () => void) => {
-    setPendingSpecify(true);
-    callback();
+    if (pendingSpecify) {
+      callback();
+      setPendingSpecify(false);
+    }
   };
 
   /**
@@ -65,10 +68,8 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
    * @param callback callback
    */
   const handleSpecifyCourse = (callback: () => void) => {
-    if (pendingSpecify) {
-      callback();
-      setPendingSpecify(false);
-    }
+    setPendingSpecify(true);
+    callback();
   };
 
   /**
@@ -108,6 +109,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
           startDate,
           endDate,
           isOpen,
+          workspaceInstanceId,
         }) => (
           <AnimatedDrawer
             isOpen={isOpen}
@@ -128,9 +130,20 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                   Valitse kurssi-ilmentymä, jonka mukaan haluat suorituksen
                   toteuttaa
                 </span>
-                <select className="study-planner__input">
-                  <option>{course.name}</option>
-                </select>
+                <WorkspaceSelect
+                  selectedWorkspaceInstanceId={workspaceInstanceId}
+                  onChange={(selectedWorkspace) => {
+                    onChange(startDate, endDate, selectedWorkspace.value.id);
+                  }}
+                  disabled={false}
+                  id="study-planner-specify-course"
+                  subjectCode={course.subjectCode}
+                  courseNumber={course.courseNumber}
+                  ops={
+                    curriculumConfig.strategy.getCurriculumMatrix()
+                      .curriculumName
+                  }
+                />
               </div>
 
               <div className="study-planner__extra-section-input-group">
@@ -214,47 +227,48 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
             </div>
           </AnimatedDrawer>
         )}
-        renderCourseState={({ isOpen, onClose, courseState }) => (
-          <AnimatedDrawer
-            isOpen={isOpen}
-            contentClassName="study-planner__extra-section study-planner__extra-section--specify"
-          >
-            <div className="study-planner__state-info-row">
-              <span className="study-planner__state-info-row-label">
-                Kurssi suunniteltu
-              </span>
-              <span className="study-planner__state-info-row-value">-</span>
-            </div>
+        // For later use, do not remove
+        // renderCourseState={({ isOpen, onClose, courseState }) => (
+        //   <AnimatedDrawer
+        //     isOpen={isOpen}
+        //     contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+        //   >
+        //     <div className="study-planner__state-info-row">
+        //       <span className="study-planner__state-info-row-label">
+        //         Kurssi suunniteltu
+        //       </span>
+        //       <span className="study-planner__state-info-row-value">-</span>
+        //     </div>
 
-            <div className="study-planner__state-info-row">
-              <span className="study-planner__state-info-row-label">
-                Kurssille ilmoittauduttu
-              </span>
-              <span className="study-planner__state-info-row-value">-</span>
-            </div>
+        //     <div className="study-planner__state-info-row">
+        //       <span className="study-planner__state-info-row-label">
+        //         Kurssille ilmoittauduttu
+        //       </span>
+        //       <span className="study-planner__state-info-row-value">-</span>
+        //     </div>
 
-            <div className="study-planner__state-info-row">
-              <span className="study-planner__state-info-row-label">
-                Kurssilta pyydetty arviointia
-              </span>
-              <span className="study-planner__state-info-row-value">-</span>
-            </div>
+        //     <div className="study-planner__state-info-row">
+        //       <span className="study-planner__state-info-row-label">
+        //         Kurssilta pyydetty arviointia
+        //       </span>
+        //       <span className="study-planner__state-info-row-value">-</span>
+        //     </div>
 
-            <div className="study-planner__state-info-row">
-              <span className="study-planner__state-info-row-label">
-                Kurssi arvioitu
-              </span>
-              <span className="study-planner__state-info-row-value">-</span>
-            </div>
+        //     <div className="study-planner__state-info-row">
+        //       <span className="study-planner__state-info-row-label">
+        //         Kurssi arvioitu
+        //       </span>
+        //       <span className="study-planner__state-info-row-value">-</span>
+        //     </div>
 
-            <div className="study-planner__state-info-row">
-              <span className="study-planner__state-info-row-label">
-                Kurssin arvosana
-              </span>
-              <span className="study-planner__state-info-row-value">-</span>
-            </div>
-          </AnimatedDrawer>
-        )}
+        //     <div className="study-planner__state-info-row">
+        //       <span className="study-planner__state-info-row-label">
+        //         Kurssin arvosana
+        //       </span>
+        //       <span className="study-planner__state-info-row-value">-</span>
+        //     </div>
+        //   </AnimatedDrawer>
+        // )}
       />
     </div>
   );

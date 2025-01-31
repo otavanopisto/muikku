@@ -37,9 +37,14 @@ export interface BasePlannerPeriodCourseProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: () => void;
-    onChange: (startDate: Date, endDate: Date) => void;
+    onChange: (
+      startDate: Date,
+      endDate: Date,
+      workspaceInstanceId?: number
+    ) => void;
     startDate: Date;
     endDate?: Date;
+    workspaceInstanceId?: number;
   }) => React.ReactNode;
   renderDeleteWarning: (props: {
     isOpen: boolean;
@@ -60,7 +65,7 @@ export interface BasePlannerPeriodCourseProps {
 interface SpecifyCourse {
   startDate: Date;
   endDate: Date;
-  workspaceEntityId?: number;
+  workspaceInstanceId?: number;
 }
 
 /**
@@ -128,13 +133,6 @@ const BasePlannerPeriodCourse = React.forwardRef<
   const courseState = getCourseState();
 
   /**
-   * Handles course state open
-   */
-  const handleCourseStateOpen = () => {
-    setCourseStateIsOpen(!courseStateIsOpen);
-  };
-
-  /**
    * Handles specify open
    * @param e event
    */
@@ -151,7 +149,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
         return {
           startDate,
           endDate,
-          workspaceEntityId: course.workspaceEntityId,
+          workspaceInstanceId: course.workspaceEntityId,
         };
       });
       setDeleteWarningIsOpen(false);
@@ -174,9 +172,14 @@ const BasePlannerPeriodCourse = React.forwardRef<
    * Handles specify change
    * @param startDate start date
    * @param endDate end date
+   * @param workspaceInstanceId workspace instance id
    */
-  const handleSpecifyChange = (startDate: Date, endDate: Date) => {
-    setSpecifyCourse({ startDate, endDate });
+  const handleSpecifyChange = (
+    startDate: Date,
+    endDate: Date,
+    workspaceInstanceId?: number
+  ) => {
+    setSpecifyCourse({ startDate, endDate, workspaceInstanceId });
   };
 
   /**
@@ -192,6 +195,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
         duration: specifyCourse.endDate
           ? specifyCourse.endDate.getTime() - specifyCourse.startDate.getTime()
           : null,
+        workspaceEntityId: specifyCourse.workspaceInstanceId,
       },
       "update"
     );
@@ -208,8 +212,12 @@ const BasePlannerPeriodCourse = React.forwardRef<
 
   /**
    * Handles select course
+   * @param e event
    */
-  const handleSelectCourse = () => {
+  const handleSelectCourse = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
     if (courseState.disabled) {
       return;
     }
@@ -246,6 +254,8 @@ const BasePlannerPeriodCourse = React.forwardRef<
             onChange: handleSpecifyChange,
             startDate: specifyCourse && specifyCourse.startDate,
             endDate: specifyCourse && specifyCourse.endDate,
+            workspaceInstanceId:
+              specifyCourse && specifyCourse.workspaceInstanceId,
           })}
 
           {renderDeleteWarning({
@@ -255,12 +265,13 @@ const BasePlannerPeriodCourse = React.forwardRef<
             onConfirm: handleConfirmDelete,
           })}
 
-          {renderCourseState({
-            isOpen: courseStateIsOpen,
-            // eslint-disable-next-line jsdoc/require-jsdoc
-            onClose: () => setCourseStateIsOpen(false),
-            courseState: studyActivity,
-          })}
+          {renderCourseState &&
+            renderCourseState({
+              isOpen: courseStateIsOpen,
+              // eslint-disable-next-line jsdoc/require-jsdoc
+              onClose: () => setCourseStateIsOpen(false),
+              courseState: studyActivity,
+            })}
         </>
       }
     >
@@ -297,7 +308,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
         </span>
       </PlannerCardContent>
 
-      {!studyActivity ? (
+      {!studyActivity && (
         <PlannerCardActions>
           <Button
             onClick={handleSpecifyOpen}
@@ -316,17 +327,6 @@ const BasePlannerPeriodCourse = React.forwardRef<
             buttonModifiers={["study-planner-delete"]}
           >
             Poista
-          </Button>
-        </PlannerCardActions>
-      ) : (
-        <PlannerCardActions modifiers={["planned-course-card"]}>
-          <Button
-            icon="arrow-down"
-            iconPosition="left"
-            onClick={handleCourseStateOpen}
-            buttonModifiers={["study-planner-extra-info-toggle"]}
-          >
-            Lisätietoa
           </Button>
         </PlannerCardActions>
       )}

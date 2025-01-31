@@ -2550,8 +2550,18 @@
   }
 }
 
+.button--study-planner-specify-cancel,
+.button--study-planner-specify-confirm {
+  height: 30px;
+}
+
+.button--study-planner-specify,
+.button--study-planner-delete {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
 .button--study-planner-specify {
-  padding-right: 0;
   color: $color-label-primary;
 
   &.disabled {
@@ -2560,7 +2570,6 @@
 }
 
 .button--study-planner-delete {
-  padding-right: 0;
   color: $color-label-error;
 
   &.disabled {

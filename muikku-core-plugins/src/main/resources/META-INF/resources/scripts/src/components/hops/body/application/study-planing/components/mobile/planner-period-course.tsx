@@ -11,6 +11,7 @@ import "~/sass/elements/form.scss";
 import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import AnimateHeight from "react-animate-height";
+import WorkspaceSelect from "../workspace-select";
 
 /**
  * MobilePlannerPeriodCourseProps
@@ -28,7 +29,7 @@ interface MobilePlannerPeriodCourseProps
 const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
   props
 ) => {
-  const { course } = props;
+  const { course, curriculumConfig } = props;
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
@@ -62,6 +63,7 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
         startDate,
         endDate,
         isOpen,
+        workspaceInstanceId,
       }) => (
         <Dialog
           isOpen={isOpen}
@@ -79,9 +81,20 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
                   <label className="study-planner__extra-section-input-group-label">
                     Valitse kurssi-ilmentymä
                   </label>
-                  <select className="study-planner__input">
-                    <option>{course.name}</option>
-                  </select>
+                  <WorkspaceSelect
+                    selectedWorkspaceInstanceId={workspaceInstanceId}
+                    onChange={(selectedWorkspace) => {
+                      onChange(startDate, endDate, selectedWorkspace.value.id);
+                    }}
+                    disabled={false}
+                    id="study-planner-specify-course"
+                    subjectCode={course.subjectCode}
+                    courseNumber={course.courseNumber}
+                    ops={
+                      curriculumConfig.strategy.getCurriculumMatrix()
+                        .curriculumName
+                    }
+                  />
                 </div>
 
                 <div className="study-planner__extra-section-input-group">
