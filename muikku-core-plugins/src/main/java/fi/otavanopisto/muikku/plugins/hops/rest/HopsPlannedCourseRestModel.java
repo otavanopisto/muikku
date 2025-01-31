@@ -8,7 +8,7 @@ public class HopsPlannedCourseRestModel {
   }
 
   public HopsPlannedCourseRestModel(Long id, String name, Integer courseNumber, Integer length, String lengthSymbol, String subjectCode,
-      Boolean mandatory, LocalDate startDate, Long duration, Long workspaceEntityId) {
+      Boolean mandatory, LocalDate startDate, Long duration, HopsPlannedCourseInstanceRestModel workspaceInstance) {
     this.id = id;
     this.name = name;
     this.courseNumber = courseNumber;
@@ -18,7 +18,7 @@ public class HopsPlannedCourseRestModel {
     this.mandatory = mandatory;
     this.startDate = startDate;
     this.duration = duration;
-    this.workspaceEntityId = workspaceEntityId;
+    this.workspaceInstance = workspaceInstance;
   }
 
   public Long getId() {
@@ -93,12 +93,12 @@ public class HopsPlannedCourseRestModel {
     this.duration = duration;
   }
 
-  public Long getWorkspaceEntityId() {
-    return workspaceEntityId;
+  public HopsPlannedCourseInstanceRestModel getWorkspaceInstance() {
+    return workspaceInstance;
   }
 
-  public void setWorkspaceEntityId(Long workspaceEntityId) {
-    this.workspaceEntityId = workspaceEntityId;
+  public void setWorkspaceInstance(HopsPlannedCourseInstanceRestModel workspaceInstance) {
+    this.workspaceInstance = workspaceInstance;
   }
 
   private Long id;
@@ -110,6 +110,6 @@ public class HopsPlannedCourseRestModel {
   private Boolean mandatory;
   private LocalDate startDate;
   private Long duration;
-  private Long workspaceEntityId;
+  private HopsPlannedCourseInstanceRestModel workspaceInstance;
 
 }
