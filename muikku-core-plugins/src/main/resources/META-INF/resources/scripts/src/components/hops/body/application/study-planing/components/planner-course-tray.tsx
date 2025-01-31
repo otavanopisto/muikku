@@ -223,7 +223,6 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
             </Button>
             <AnimatedDrawer
               isOpen={expandedGroups.includes(subject.subjectCode)}
-              onClose={() => handleGroupToggle(subject.subjectCode)}
             >
               <div className="study-planner__course-tray-list">
                 {subject.availableCourses.map((course) => {

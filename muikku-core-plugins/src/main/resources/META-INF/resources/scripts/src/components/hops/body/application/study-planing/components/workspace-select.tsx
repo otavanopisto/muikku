@@ -88,9 +88,19 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
     })
   );
 
-  const selectedValue = options.find(
-    (option) => option.value.id === selectedWorkspaceInstanceId
-  );
+  const selectedValue = selectedWorkspaceInstanceId
+    ? (options.find(
+        (option) => option.value.id === selectedWorkspaceInstanceId
+      ) ?? {
+        value: {
+          id: selectedWorkspaceInstanceId,
+          startDate: "",
+          endDate: "",
+          instanceExists: false,
+        },
+        label: "Kurssi-ilmentymää ei löytynyt",
+      })
+    : null;
 
   return (
     <Select

@@ -530,6 +530,13 @@
   flex-basis: 100%;
 }
 
+.study-planner__course-workspace-instance-not-available {
+  font-size: 0.750rem;
+  color: red;
+  display: block;
+  flex-basis: 100%;
+}
+
 // Specify animate height
 .study-planner__extra-section-animate-height {
   &.open {

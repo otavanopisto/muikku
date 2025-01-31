@@ -109,7 +109,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
           startDate,
           endDate,
           isOpen,
-          workspaceInstanceId,
+          workspaceInstance,
         }) => (
           <AnimatedDrawer
             isOpen={isOpen}
@@ -131,9 +131,21 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                   toteuttaa
                 </span>
                 <WorkspaceSelect
-                  selectedWorkspaceInstanceId={workspaceInstanceId}
+                  selectedWorkspaceInstanceId={
+                    workspaceInstance && workspaceInstance.id
+                  }
                   onChange={(selectedWorkspace) => {
-                    onChange(startDate, endDate, selectedWorkspace.value.id);
+                    onChange(
+                      startDate,
+                      endDate,
+                      selectedWorkspace && {
+                        id: selectedWorkspace.value.id,
+                        name: selectedWorkspace.value.name,
+                        startDate: selectedWorkspace.value.startDate,
+                        endDate: selectedWorkspace.value.endDate,
+                        instanceExists: true,
+                      }
+                    );
                   }}
                   disabled={false}
                   id="study-planner-specify-course"

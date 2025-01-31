@@ -3,7 +3,10 @@ import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import Button from "~/components/general/button";
-import { StudentStudyActivity } from "~/generated/client";
+import {
+  PlannerCourseWorkspaceInstance,
+  StudentStudyActivity,
+} from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import {
   CourseChangeAction,
@@ -40,11 +43,11 @@ export interface BasePlannerPeriodCourseProps {
     onChange: (
       startDate: Date,
       endDate: Date,
-      workspaceInstanceId?: number
+      workspaceInstance?: PlannerCourseWorkspaceInstance
     ) => void;
     startDate: Date;
     endDate?: Date;
-    workspaceInstanceId?: number;
+    workspaceInstance?: PlannerCourseWorkspaceInstance;
   }) => React.ReactNode;
   renderDeleteWarning: (props: {
     isOpen: boolean;
@@ -65,7 +68,7 @@ export interface BasePlannerPeriodCourseProps {
 interface SpecifyCourse {
   startDate: Date;
   endDate: Date;
-  workspaceInstanceId?: number;
+  workspaceInstance?: PlannerCourseWorkspaceInstance;
 }
 
 /**
@@ -149,7 +152,9 @@ const BasePlannerPeriodCourse = React.forwardRef<
         return {
           startDate,
           endDate,
-          workspaceInstanceId: course.workspaceEntityId,
+          workspaceInstance: {
+            ...course.workspaceInstance,
+          },
         };
       });
       setDeleteWarningIsOpen(false);
@@ -172,14 +177,14 @@ const BasePlannerPeriodCourse = React.forwardRef<
    * Handles specify change
    * @param startDate start date
    * @param endDate end date
-   * @param workspaceInstanceId workspace instance id
+   * @param workspaceInstance workspace instance
    */
   const handleSpecifyChange = (
     startDate: Date,
     endDate: Date,
-    workspaceInstanceId?: number
+    workspaceInstance?: PlannerCourseWorkspaceInstance
   ) => {
-    setSpecifyCourse({ startDate, endDate, workspaceInstanceId });
+    setSpecifyCourse({ startDate, endDate, workspaceInstance });
   };
 
   /**
@@ -195,7 +200,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
         duration: specifyCourse.endDate
           ? specifyCourse.endDate.getTime() - specifyCourse.startDate.getTime()
           : null,
-        workspaceEntityId: specifyCourse.workspaceInstanceId,
+        workspaceInstance: specifyCourse.workspaceInstance,
       },
       "update"
     );
@@ -223,6 +228,31 @@ const BasePlannerPeriodCourse = React.forwardRef<
     }
 
     onSelectCourse(course);
+  };
+
+  /**
+   * Renders workspace instance not available
+   * @returns workspace instance not available
+   */
+  const renderWorkspaceInstanceNotAvailable = () => {
+    // Hide message if user is selecting a new workspace instance
+    const isSelectingNewInstance =
+      specifyCourse &&
+      specifyCourse.workspaceInstance?.id !== course.workspaceInstance?.id;
+
+    if (
+      course.workspaceInstance?.instanceExists === false &&
+      !isSelectingNewInstance
+    ) {
+      return (
+        <span className="study-planner__course-workspace-instance-not-available">
+          Valittu kurssi-ilmentymä ei ole enään saatavilla. Valitse uusi
+          kurssi-ilmentymä ja päivitä suunnitelma.
+        </span>
+      );
+    }
+
+    return null;
   };
 
   const startDate = new Date(course.startDate);
@@ -254,8 +284,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
             onChange: handleSpecifyChange,
             startDate: specifyCourse && specifyCourse.startDate,
             endDate: specifyCourse && specifyCourse.endDate,
-            workspaceInstanceId:
-              specifyCourse && specifyCourse.workspaceInstanceId,
+            workspaceInstance: specifyCourse && specifyCourse.workspaceInstance,
           })}
 
           {renderDeleteWarning({
@@ -306,6 +335,8 @@ const BasePlannerPeriodCourse = React.forwardRef<
             localize.date(new Date(course.startDate))
           )}
         </span>
+
+        {renderWorkspaceInstanceNotAvailable()}
       </PlannerCardContent>
 
       {!studyActivity && (

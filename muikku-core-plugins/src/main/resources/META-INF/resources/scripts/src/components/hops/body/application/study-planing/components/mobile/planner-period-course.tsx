@@ -63,7 +63,7 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
         startDate,
         endDate,
         isOpen,
-        workspaceInstanceId,
+        workspaceInstance,
       }) => (
         <Dialog
           isOpen={isOpen}
@@ -82,9 +82,11 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
                     Valitse kurssi-ilmentymä
                   </label>
                   <WorkspaceSelect
-                    selectedWorkspaceInstanceId={workspaceInstanceId}
+                    selectedWorkspaceInstanceId={
+                      workspaceInstance && workspaceInstance.id
+                    }
                     onChange={(selectedWorkspace) => {
-                      onChange(startDate, endDate, selectedWorkspace.value.id);
+                      onChange(startDate, endDate, selectedWorkspace.value);
                     }}
                     disabled={false}
                     id="study-planner-specify-course"
