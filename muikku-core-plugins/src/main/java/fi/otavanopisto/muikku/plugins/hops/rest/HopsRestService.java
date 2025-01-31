@@ -1521,6 +1521,7 @@ public class HopsRestService {
   private HopsPlannedCourseInstanceRestModel toRestModel(SchoolDataIdentifier studentIdentifier, Long workspaceEntityId) {
     HopsPlannedCourseInstanceRestModel instance = null;
     if (workspaceEntityId != null) {
+      instance = new HopsPlannedCourseInstanceRestModel(workspaceEntityId, null, null, null, false);
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       if (workspaceEntity != null) {
         SearchProvider searchProvider = getProvider("elastic-search");
@@ -1569,7 +1570,10 @@ public class HopsRestService {
               // check against signup groups and signup dates
               instanceExists = workspaceEntityController.canSignup(studentIdentifier, workspaceEntity);
             }
-            instance = new HopsPlannedCourseInstanceRestModel(id, name, beginDate, endDate, instanceExists);
+            instance.setName(name);
+            instance.setStartDate(endDate);
+            instance.setEndDate(endDate);
+            instance.setInstanceExists(instanceExists);
           }
         }
       }
