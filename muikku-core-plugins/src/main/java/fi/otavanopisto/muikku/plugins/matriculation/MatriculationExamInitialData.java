@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.matriculation;
 
+import java.util.List;
+
 public class MatriculationExamInitialData {
 
   public String getName() {
@@ -74,6 +76,14 @@ public class MatriculationExamInitialData {
     this.completedCreditPointsCount = completedCreditPointsCount;
   }
 
+  public List<String> getStudyAdvisors() {
+    return studyAdvisors;
+  }
+
+  public void setStudyAdvisors(List<String> studyAdvisors) {
+    this.studyAdvisors = studyAdvisors;
+  }
+
   private String name;
   private String email;
   private String phone;
@@ -81,6 +91,7 @@ public class MatriculationExamInitialData {
   private String postalCode;
   private String locality;
   private String guidanceCounselor;
+  private List<String> studyAdvisors;
   private String studentIdentifier;
   private Double completedCreditPointsCount;
 

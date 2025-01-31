@@ -14361,6 +14361,11 @@ components:
         guidanceCounselor:
           description: Name of the student's guidance counselor
           type: string
+        studyAdvisors:
+          description: List of Student's Study Advisors
+          type: array
+          items:
+            type: string
         locality:
           type: string
         name:
