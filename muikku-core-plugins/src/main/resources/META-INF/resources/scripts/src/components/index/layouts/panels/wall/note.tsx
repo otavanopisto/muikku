@@ -71,7 +71,7 @@ export const NoteComponent: React.FC<NoteProps> = (props) => {
             </span>
           ) : null}
           {note.dueDate ? (
-            <span>{moment(note.dueDate).format("DD.M.YYYY")}</span>
+            <span>{moment(note.dueDate).format("D.M.YYYY")}</span>
           ) : null}
         </span>
       </div>
