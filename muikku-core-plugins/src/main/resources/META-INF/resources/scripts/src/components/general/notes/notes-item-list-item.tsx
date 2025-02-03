@@ -189,7 +189,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * @param newStatus newStatus
      */
     const handleUpdateNotesItemStatusClick = (newStatus: NoteStatusType) => {
-      const test = newStatus;
       const newReceiverStatus: UpdateNoteReceiverRequest = {
         ...currentRecipient,
         status: newStatus,
