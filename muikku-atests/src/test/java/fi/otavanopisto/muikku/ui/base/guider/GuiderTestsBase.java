@@ -834,7 +834,7 @@ public class GuiderTestsBase extends AbstractUITest {
       waitForVisible(".note__description");
       assertText(".note__description p", "Do some stuff!");
       navigate("/records", false);
-      assertText(".notes .notes__item .notes__item-header span", "Task from guider.");
+      assertText(".notes .notes__item .notes__item-header", "Task from guider.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
       assertText(".notes .notes__item .notes__item-author", "Admin Person");
       waitAndClick(".notes .notes__item .icon-more_vert");
@@ -854,7 +854,7 @@ public class GuiderTestsBase extends AbstractUITest {
       waitAndClick(".notes .notes__item .icon-trash");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       waitAndClick(".tabs--notes #tabControl-archived");
-      assertText("#tabPanel-archived .notes .notes__item .notes__item-header span", "Task from guider.");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-header", "Task from guider.");
       assertText("#tabPanel-archived .notes .notes__item .notes__item-body p", "Do some stuff!");
     } finally {
       archiveUserByEmail(student.getEmail());

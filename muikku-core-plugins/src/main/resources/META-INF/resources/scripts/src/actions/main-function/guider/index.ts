@@ -598,7 +598,7 @@ const loadNotes: LoadNotesTriggerType = function loadNotes(
       dispatch({ type: "UPDATE_NOTES_STATE", payload: "ERROR" });
       dispatch(
         notificationActions.displayNotification(
-          i18n.t("notifications.createError", {
+          i18n.t("notifications.loadError", {
             error: err,
             ns: "tasks",
           }),

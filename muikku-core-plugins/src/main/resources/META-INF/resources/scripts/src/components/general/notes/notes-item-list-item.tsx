@@ -189,6 +189,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * @param newStatus newStatus
      */
     const handleUpdateNotesItemStatusClick = (newStatus: NoteStatusType) => {
+      const test = newStatus;
       const newReceiverStatus: UpdateNoteReceiverRequest = {
         ...currentRecipient,
         status: newStatus,
@@ -395,7 +396,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             },
           ];
         }
-      } else if (loggedUserIsCreator && !loggedUserIsOwner) {
+      } else if (loggedUserIsCreator) {
         // This must display all of the recipients statuses if this is not a selected recipient
         const { status } = currentRecipient;
 
@@ -503,7 +504,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   />
                 </NotesItemEdit>
               )}
-
             {loggedUserIsOwner && onPinNotesItemClick && (
               <IconButton
                 onClick={handleNotesItemPinClick}
@@ -511,7 +511,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                 buttonModifiers={["notes-action", "notes-pin"]}
               />
             )}
-
             {loggedUserIsCreator && archived && onReturnArchivedClick && (
               <IconButton
                 onClick={handleNotesItemReturnArchiveClick}
@@ -520,7 +519,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                 aria-label={t("wcag.archiveUndo")}
               />
             )}
-
             {loggedUserIsCreator && !archived && onArchiveClick && (
               <IconButton
                 onClick={handleNotesItemArchiveClick}
