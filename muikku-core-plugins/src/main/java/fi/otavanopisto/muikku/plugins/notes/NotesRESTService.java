@@ -38,13 +38,13 @@ import fi.otavanopisto.muikku.plugins.notes.model.NoteStatus;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserEntityFileController;
-import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserGroupEntityName;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
+import fi.otavanopisto.muikku.workspaces.WorkspaceEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -80,9 +80,6 @@ public class NotesRESTService extends PluginRESTService {
 
   @Inject
   private UserRecipientController userRecipientController;
-
-  @Inject
-  private UserGroupController userGroupController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -437,9 +434,7 @@ public class NotesRESTService extends PluginRESTService {
     List<NoteReceiver> recipients = noteReceiverController.listByNote(note);
 
     for (NoteReceiver recipient : recipients) {
-      NoteReceiverRestModel recipientRest = toRestModel(recipient);
-
-      recipientsRest.add(recipientRest);
+      recipientsRest.add(toRestModel(recipient));
     }
 
     updatedRestModel.setRecipients(recipientsRest);
@@ -499,9 +494,7 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    NoteReceiverRestModel restModel = toRestModel(updatedNoteReceiver);
-
-    return Response.ok(restModel).build();
+    return Response.ok(toRestModel(updatedNoteReceiver)).build();
   }
 
   private NoteRestModel toRestModel(Note note) {
@@ -528,14 +521,14 @@ public class NotesRESTService extends PluginRESTService {
 
   private NoteReceiverRestModel toRestModel(NoteReceiver noteReceiver) {
     String groupName = null;
-    String workspaceName = null;
+    WorkspaceEntityName workspaceName = null;
     Boolean hasImage = false;
     if (noteReceiver.getRecipientGroup() != null) {
       UserGroupEntity userGroupEntity = userGroupEntityController
           .findUserGroupEntityById(noteReceiver.getRecipientGroup());
 
       if (userGroupEntity != null) {
-        UserGroup usergroup = userGroupController.findUserGroup(userGroupEntity);
+        UserGroupEntityName usergroup = userGroupEntityController.getName(userGroupEntity);
 
         groupName = usergroup.getName();
       }
@@ -546,7 +539,7 @@ public class NotesRESTService extends PluginRESTService {
 
       if (workspaceEntity != null) {
 
-        workspaceName = workspaceController.findWorkspace(workspaceEntity).getName();
+        workspaceName = workspaceEntityController.getName(workspaceEntity);
       }
     }
     String recipientName = null;
@@ -568,7 +561,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setUserGroupId(noteReceiver.getRecipientGroup());
     restModel.setUserGroupName(groupName);
     restModel.setWorkspaceId(noteReceiver.getWorkspaceId());
-    restModel.setWorkspaceName(workspaceName);
+    restModel.setWorkspaceName(workspaceName.getName());
     restModel.setHasImage(hasImage);
 
     return restModel;
@@ -628,12 +621,10 @@ public class NotesRESTService extends PluginRESTService {
 
       List<NoteReceiverRestModel> recipientListRest = new ArrayList<NoteReceiverRestModel>();
       NoteRestModel noteRest = toRestModel(note);
-
-      NoteReceiverRestModel recipientRest = toRestModel(receiver);
-
-      recipientListRest.add(recipientRest);
+      
+      recipientListRest.add(toRestModel(receiver));
+      
       noteRest.setRecipients(recipientListRest);
-      noteRest.setMultiUserNote(noteReceiverController.isMultiUserNote(note));
 
       notesList.add(noteRest);
     }
@@ -693,12 +684,9 @@ public class NotesRESTService extends PluginRESTService {
       NoteRestModel noteRest = toRestModel(note);
 
       for (NoteReceiver recipient : recipients) {
-        NoteReceiverRestModel recipientRest = toRestModel(recipient);
-
-        recipientListRest.add(recipientRest);
+        recipientListRest.add(toRestModel(recipient));
       }
       noteRest.setRecipients(recipientListRest);
-      noteRest.setMultiUserNote(recipientListRest.size() > 1);
 
       notesList.add(noteRest);
     }
@@ -743,13 +731,10 @@ public class NotesRESTService extends PluginRESTService {
 
     List<NoteReceiverRestModel> recipientsRest = new ArrayList<NoteReceiverRestModel>();
     for (NoteReceiver recipient : recipients) {
-      NoteReceiverRestModel recipientRest = toRestModel(recipient);
-
-      recipientsRest.add(recipientRest);
+      recipientsRest.add(toRestModel(recipient));
     }
 
     noteRestModel.setRecipients(recipientsRest);
-    noteRestModel.setMultiUserNote(recipientsRest.size() > 1);
 
     return Response.ok(noteRestModel).build();
 
@@ -767,17 +752,17 @@ public class NotesRESTService extends PluginRESTService {
     if (note == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Note (%d) not found", noteId)).build();
     }
+    
+    // Users can only delete recipients from their own notes.
+    if (!note.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
 
     NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(receiverId, note);
 
     if (receiver == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Note recipient (%d) not found", receiverId))
           .build();
-    }
-
-    // Users can only delete recipients from their own notes.
-    if (!note.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
-      return Response.status(Status.FORBIDDEN).build();
     }
 
     noteReceiverController.deleteRecipient(receiver);

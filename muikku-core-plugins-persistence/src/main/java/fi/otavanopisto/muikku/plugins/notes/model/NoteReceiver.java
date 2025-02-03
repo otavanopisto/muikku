@@ -7,17 +7,24 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-public class NoteReceiver {
+@Table (
+    indexes = {
+      @Index ( columnList = "recipient" )
+    }
+  )
 
+public class NoteReceiver {
 
   public Long getId() {
     return id;
   }
-  
+
   public Note getNote() {
     return note;
   }
@@ -41,11 +48,11 @@ public class NoteReceiver {
   public void setPinned(boolean pinned) {
     this.pinned = pinned;
   }
-  
+
   public NoteStatus getStatus() {
     return status;
   }
-  
+
   public void setStatus(NoteStatus status) {
     this.status = status;
   }
@@ -65,29 +72,29 @@ public class NoteReceiver {
   public void setWorkspace_id(Long workspaceId) {
     this.workspaceId = workspaceId;
   }
-  
+
   @Id
-  @GeneratedValue (strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  
+
   @ManyToOne
   private Note note;
 
-  @Column (nullable=false)
+  @Column(nullable = false)
   private boolean pinned;
-  
+
   @NotNull
-  @Column (nullable=false)
+  @Column(nullable = false)
   private Long recipient;
-  
+
   @NotNull
-  @Column (nullable=false)
-  @Enumerated (EnumType.STRING)
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private NoteStatus status;
 
   @Column
   private Long recipientGroupId;
-  
+
   @Column
   private Long workspaceId;
 }

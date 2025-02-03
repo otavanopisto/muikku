@@ -11,11 +11,16 @@
         workspaceId bigint,
         primary key (id)
     );</sql>
+  <sql>alter table NoteReceiver 
+       add constraint FKoxthecjw1j6e5x6emav466rn9 
+       foreign key (note_id) 
+       references Note (id);</sql>
+  <sql>create index IDX44ua5wiximrw9a6ashdue90kt on NoteReceiver (recipient);</sql>
   <sql>insert into NoteReceiver (note_id, recipient, pinned, status)
        select id, owner, pinned, status
        from Note;</sql>
   <sql>alter table Note drop owner, drop status, drop pinned;</sql>
   <sql>alter table Note add column multiUserNote bit not null;</sql>
   <sql>update Note set multiUserNote=true where id in (select note_id from NoteReceiver group by note_id having count(note_id) > 1);</sql>
-  <sql>alter table note convert to character set utf8mb4 collate utf8mb4_unicode_ci;</sql>
+  <sql>alter table Note convert to character set utf8mb4 collate utf8mb4_unicode_ci;</sql>
 </update>

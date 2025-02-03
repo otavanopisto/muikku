@@ -88,11 +88,11 @@ public class NoteRestModel {
     this.dueDate = dueDate;
   }
 
-  public Boolean getIsArchived() {
+  public boolean getIsArchived() {
     return isArchived;
   }
 
-  public void setIsArchived(Boolean isArchived) {
+  public void setIsArchived(boolean isArchived) {
     this.isArchived = isArchived;
   }
 
@@ -104,11 +104,11 @@ public class NoteRestModel {
     this.recipients = recipients;
   }
 
-  public Boolean getMultiUserNote() {
+  public boolean getMultiUserNote() {
     return multiUserNote;
   }
 
-  public void setMultiUserNote(Boolean multiUserNote) {
+  public void setMultiUserNote(boolean multiUserNote) {
     this.multiUserNote = multiUserNote;
   }
 
@@ -122,8 +122,8 @@ public class NoteRestModel {
   private Date created;
   private Date startDate;
   private Date dueDate;
-  private Boolean isArchived;
+  private boolean isArchived;
   private List<NoteReceiverRestModel> recipients;
-  private Boolean multiUserNote;
+  private boolean multiUserNote;
 
 }
