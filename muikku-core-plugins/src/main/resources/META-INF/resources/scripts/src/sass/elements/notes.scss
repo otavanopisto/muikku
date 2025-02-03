@@ -300,7 +300,12 @@
   display: inline-flex;
   flex-flow: row nowrap;
   font-size: 0.75rem;
+  margin: 0 0 0 10px;
   padding: 2px 8px;
+
+  &:first-child {
+    margin: 0;
+  }
 }
 
 .notes__item-status--overdue {
@@ -311,7 +316,6 @@
 .notes__item-status--ongoing {
   background-color: lighten($color-cancel, 42%);
   color: darken($color-cancel, 15%);
-  margin: 0 0 0 10px;
 }
 
 .notes__item-status--pending {
