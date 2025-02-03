@@ -579,10 +579,6 @@ const loadNotes: LoadNotesTriggerType = function loadNotes(
     getState: () => StateType
   ) => {
     try {
-      // Lets not load something that is already loaded
-      // if (getState().guider.notes.state === "READY") {
-      //   return;
-      // }
       dispatch({ type: "UPDATE_NOTES_STATE", payload: "LOADING" });
       const NotesApi = MApi.getNotesApi();
       const notes = await NotesApi.getNotesByCreator({
@@ -638,9 +634,11 @@ const createNote: CreateNoteTriggerType = function createNote(
         )
       );
     } catch (err) {
-      notificationActions.displayNotification(
-        i18n.t("notifications.createError", { error: err, ns: "tasks" }),
-        "error"
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.createError", { error: err, ns: "tasks" }),
+          "error"
+        )
       );
     }
   };
