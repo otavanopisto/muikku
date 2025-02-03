@@ -41,7 +41,6 @@ import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
 import fi.otavanopisto.muikku.plugins.ceepos.rest.CeeposRedirectRestModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
-import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -126,19 +125,6 @@ public class AssessmentRequestRESTService extends PluginRESTService {
           Boolean.FALSE);
       CeeposAssessmentRequestOrder order = existingOrders.stream().filter(o -> o.getState() == CeeposOrderState.PAID || o.getState() == CeeposOrderState.COMPLETE).findFirst().orElse(null);
       if (order != null) {
-        price.setPrice(0d);
-      }
-    }
-    
-    // Price is reset to zero if the user has an active supplementation request on this workspace
-    
-    if (price != null && price.getPrice() > 0) {
-      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
-          sessionController.getLoggedUserEntity().getId(),
-          workspaceEntityId,
-          Boolean.FALSE,
-          Boolean.FALSE);
-      if (supplementationRequest != null) {
         price.setPrice(0d);
       }
     }
