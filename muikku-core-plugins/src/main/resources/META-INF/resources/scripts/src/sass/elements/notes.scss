@@ -285,9 +285,10 @@
 .notes__item-footer {
   display: flex;
   flex-basis: auto;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   flex-grow: 0;
   flex-shrink: 0;
+  gap: 5px;
   justify-content: flex-end;
   margin: 5px 0;
   width: 100%;
@@ -300,12 +301,7 @@
   display: inline-flex;
   flex-flow: row nowrap;
   font-size: 0.75rem;
-  margin: 0 0 0 10px;
   padding: 2px 8px;
-
-  &:first-child {
-    margin: 0;
-  }
 }
 
 .notes__item-status--overdue {
