@@ -481,7 +481,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             <div className="notes__item-decoration">
               <span
                 className={`
-                  "notes__item-icon" + ${
+                  notes__item-icon ${
                     multiUserNote ? "icon-users" : "icon-user"
                   }`}
               />
