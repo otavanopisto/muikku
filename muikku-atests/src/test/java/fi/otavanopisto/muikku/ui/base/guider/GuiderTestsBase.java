@@ -823,8 +823,7 @@ public class GuiderTestsBase extends AbstractUITest {
       waitAndClick(".button--dialog-execute");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       
-      assertText(".notes .notes__item .notes__item-header span", "Task from guider.");
-      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+      assertText(".notes .notes__item .notes__item-header", "Task from guider.");      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
       
       logout();
       mockBuilder.mockLogin(student);
