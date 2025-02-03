@@ -599,7 +599,6 @@ const loadNotes: LoadNotesTriggerType = function loadNotes(
       dispatch(
         notificationActions.displayNotification(
           i18n.t("notifications.createError", {
-            ns: "users",
             error: err,
             ns: "tasks",
           }),
