@@ -348,7 +348,7 @@ public class NotesRESTService extends PluginRESTService {
 
           // User groups
           for (UserGroupEntity userGroup : prepareRecipientList.getUserGroups()) {
-            
+
             List<NoteReceiver> receivers = noteReceiverController.listReceiversByNoteAndUserGroup(updatedNote,
                 userGroup.getId());
 
@@ -358,33 +358,35 @@ public class NotesRESTService extends PluginRESTService {
               for (NoteReceiver receiver : receivers) {
                 noteReceiverController.deleteRecipient(receiver);
               }
-            } else {
-            List<UserEntity> preparedUserGroupRecipients = prepareRecipientList.getUserGroupRecipients(userGroup);
+            }
+            else {
+              List<UserEntity> preparedUserGroupRecipients = prepareRecipientList.getUserGroupRecipients(userGroup);
 
-            for (UserEntity userEntity : preparedUserGroupRecipients) {
-              if (userEntity != null) {
-                UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier());
+              for (UserEntity userEntity : preparedUserGroupRecipients) {
+                if (userEntity != null) {
+                  UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController
+                      .findUserSchoolDataIdentifierBySchoolDataIdentifier(userEntity.defaultSchoolDataIdentifier());
 
-                if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-                  continue;
-                }
+                  if (!userSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+                    continue;
+                  }
 
-                NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(userEntity.getId(),
-                    updatedNote);
+                  NoteReceiver receiver = noteReceiverController.findByRecipientIdAndNote(userEntity.getId(),
+                      updatedNote);
 
-                if (receiver == null) {
-                  noteReceiverController.createNoteRecipient(false, userEntity.getId(), updatedNote,
-                      userGroup.getId(), null);
-                }
-                else {
-                  // Remove receiver only if it's originally added with a user group id
-                  if (receiver.getRecipientGroup() != null) {
-                    noteReceiverController.deleteRecipient(receiver);
+                  if (receiver == null) {
+                    noteReceiverController.createNoteRecipient(false, userEntity.getId(), updatedNote,
+                        userGroup.getId(), null);
+                  }
+                  else {
+                    // Remove receiver only if it's originally added with a user group id
+                    if (receiver.getRecipientGroup() != null) {
+                      noteReceiverController.deleteRecipient(receiver);
+                    }
                   }
                 }
               }
             }
-          }
           }
 
           // Workspace members
@@ -476,12 +478,17 @@ public class NotesRESTService extends PluginRESTService {
     if (sessionController.getLoggedUserEntity().getId().equals(noteReceiver.getRecipient())) {
       NoteStatus status = noteReceiver.getStatus();
       if (noteReceiver.getStatus() != payload.getStatus()) {
-        if (noteReceiver.getStatus() == NoteStatus.ONGOING) {
-          status = NoteStatus.APPROVAL_PENDING;
+        if (noteReceiver.getRecipient().equals(note.getCreator())) {
+          status = payload.getStatus();
         }
+        else {
+          if (noteReceiver.getStatus() == NoteStatus.ONGOING) {
+            status = NoteStatus.APPROVAL_PENDING;
+          }
 
-        if (noteReceiver.getStatus() == NoteStatus.APPROVAL_PENDING) {
-          status = NoteStatus.ONGOING;
+          if (noteReceiver.getStatus() == NoteStatus.APPROVAL_PENDING) {
+            status = NoteStatus.ONGOING;
+          }
         }
       }
       updatedNoteReceiver = noteReceiverController.updateNoteRecipient(noteReceiver, payload.getPinned(), status);
@@ -501,7 +508,7 @@ public class NotesRESTService extends PluginRESTService {
 
     UserEntity userEntity = userEntityController.findUserEntityById(note.getCreator());
     String creatorName = userEntityController.getName(userEntity, true).getDisplayNameWithLine();
-    
+
     NoteRestModel restModel = new NoteRestModel();
     restModel.setId(note.getId());
     restModel.setTitle(note.getTitle());
@@ -521,7 +528,7 @@ public class NotesRESTService extends PluginRESTService {
 
   private NoteReceiverRestModel toRestModel(NoteReceiver noteReceiver) {
     String groupName = null;
-    WorkspaceEntityName workspaceName = null;
+    String workspaceName = null;
     Boolean hasImage = false;
     if (noteReceiver.getRecipientGroup() != null) {
       UserGroupEntity userGroupEntity = userGroupEntityController
@@ -539,7 +546,8 @@ public class NotesRESTService extends PluginRESTService {
 
       if (workspaceEntity != null) {
 
-        workspaceName = workspaceEntityController.getName(workspaceEntity);
+        WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
+        workspaceName = workspaceEntityName.getName();
       }
     }
     String recipientName = null;
@@ -561,7 +569,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setUserGroupId(noteReceiver.getRecipientGroup());
     restModel.setUserGroupName(groupName);
     restModel.setWorkspaceId(noteReceiver.getWorkspaceId());
-    restModel.setWorkspaceName(workspaceName.getName());
+    restModel.setWorkspaceName(workspaceName);
     restModel.setHasImage(hasImage);
 
     return restModel;
@@ -578,7 +586,7 @@ public class NotesRESTService extends PluginRESTService {
     if (recipientEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
+
     if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
         && !recipient.equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Status.FORBIDDEN).build();
@@ -588,7 +596,6 @@ public class NotesRESTService extends PluginRESTService {
 
     List<NoteRestModel> notesList = new ArrayList<NoteRestModel>();
     OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);
-
 
     for (Note note : notes) {
       UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
@@ -621,9 +628,9 @@ public class NotesRESTService extends PluginRESTService {
 
       List<NoteReceiverRestModel> recipientListRest = new ArrayList<NoteReceiverRestModel>();
       NoteRestModel noteRest = toRestModel(note);
-      
+
       recipientListRest.add(toRestModel(receiver));
-      
+
       noteRest.setRecipients(recipientListRest);
 
       notesList.add(noteRest);
@@ -657,14 +664,14 @@ public class NotesRESTService extends PluginRESTService {
     OffsetDateTime inLastTwoWeeks = OffsetDateTime.now().minusDays(NOTES_FROM_THE_TIME);
 
     UserEntity creator = userEntityController.findUserEntityById(userEntity.getId());
-    
+
     UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController
         .findUserSchoolDataIdentifierByUserEntity(creator);
 
     if (creatorUSDI == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
+
     for (Note note : notes) {
       // Ignore archived notes older than last two weeks
       if (Boolean.TRUE.equals(listArchived) && note.getLastModified().before(Date.from(inLastTwoWeeks.toInstant()))) {
@@ -752,7 +759,7 @@ public class NotesRESTService extends PluginRESTService {
     if (note == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Note (%d) not found", noteId)).build();
     }
-    
+
     // Users can only delete recipients from their own notes.
     if (!note.getCreator().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Status.FORBIDDEN).build();
