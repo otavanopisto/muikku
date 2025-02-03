@@ -1,9 +1,7 @@
 import * as React from "react";
 import { CourseChangeAction } from "~/reducers/hops";
-import { SelectedCourse } from "~/reducers/hops";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import { StudentStudyActivity } from "~/generated/client";
-import { isPlannedCourseWithIdentifier } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import PlannerPeriodCourseCard from "./planner-period-course";
 import _ from "lodash";
@@ -13,11 +11,13 @@ import { AnimatePresence, motion } from "framer-motion";
  * PlannerPlannedList props
  */
 interface PlannerPlannedListProps {
+  disabled: boolean;
   courses: PlannedCourseWithIdentifier[];
-  selectedCourses: SelectedCourse[];
+  selectedCoursesIds: string[];
   originalPlannedCourses: PlannedCourseWithIdentifier[];
   studyActivity: StudentStudyActivity[];
   curriculumConfig: CurriculumConfig;
+
   onCourseChange: (
     course: PlannedCourseWithIdentifier,
     action: CourseChangeAction
@@ -31,12 +31,14 @@ interface PlannerPlannedListProps {
  */
 const PlannerPlannedList = (props: PlannerPlannedListProps) => {
   const {
+    disabled,
     courses,
-    selectedCourses,
+    selectedCoursesIds,
     originalPlannedCourses,
     studyActivity,
     curriculumConfig,
     onCourseChange,
+
     onSelectCourse,
   } = props;
 
@@ -44,10 +46,8 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
     <ul>
       <AnimatePresence initial={false}>
         {courses.map((course) => {
-          const isSelected = selectedCourses.some(
-            (c) =>
-              isPlannedCourseWithIdentifier(c) &&
-              c.identifier === course.identifier
+          const isSelected = selectedCoursesIds.some(
+            (courseIdentifier) => courseIdentifier === course.identifier
           );
 
           const courseActivity = studyActivity.find(
@@ -84,9 +84,10 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
                 ease: "easeOut",
               }}
               style={{ width: "100%" }}
-              layout
+              layout="position"
             >
               <PlannerPeriodCourseCard
+                disabled={disabled}
                 key={course.identifier}
                 course={course}
                 selected={isSelected}

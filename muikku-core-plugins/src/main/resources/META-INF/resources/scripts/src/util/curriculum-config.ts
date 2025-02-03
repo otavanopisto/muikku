@@ -150,6 +150,9 @@ export interface CurriculumStrategy {
     courses: PlannedCourseWithIdentifier[]
   ) => PeriodWorkload; */
   getEmptyPeriod: (type: "SPRING" | "AUTUMN", year: number) => PlannedPeriod;
+  findCourseByIdentifier: (
+    identifier: string
+  ) => (Course & { subjectCode: string }) | undefined;
 }
 
 /**
@@ -164,6 +167,27 @@ export interface CurriculumConfig {
  * Uppersecondary curriculum strategy
  */
 class UppersecondaryCurriculum implements CurriculumStrategy {
+  private matrix: SchoolCurriculumMatrix;
+
+  /**
+   * Constructor
+   */
+  constructor() {
+    // Initialize the base matrix with identifiers
+    this.matrix = {
+      ...schoolCourseTableUppersecondary2021,
+      subjectsTable: schoolCourseTableUppersecondary2021.subjectsTable.map(
+        (subject) => ({
+          ...subject,
+          availableCourses: subject.availableCourses.map((c) => ({
+            ...c,
+            identifier: `ops-course-${uuidv4()}`,
+          })),
+        })
+      ),
+    };
+  }
+
   /**
    * Get curriculum matrix
    * @param options options. Optional parameter to filter the matrix based on.
@@ -174,15 +198,33 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
   ): SchoolCurriculumMatrix {
     if (options?.studyOptions) {
       return {
-        ...schoolCourseTableUppersecondary2021,
+        ...this.matrix,
         subjectsTable: filterUpperSecondarySubjects(
-          schoolCourseTableUppersecondary2021.subjectsTable,
+          this.matrix.subjectsTable,
           options.studyOptions
         ),
       };
     }
+    return this.matrix;
+  }
 
-    return schoolCourseTableUppersecondary2021;
+  /**
+   * Find course by identifier
+   * @param identifier course identifier
+   * @returns course with subject code or undefined if not found
+   */
+  findCourseByIdentifier(
+    identifier: string
+  ): (Course & { subjectCode: string }) | undefined {
+    for (const subject of this.matrix.subjectsTable) {
+      const course = subject.availableCourses.find(
+        (c) => c.identifier === identifier
+      );
+      if (course) {
+        return { ...course, subjectCode: subject.subjectCode };
+      }
+    }
+    return undefined;
   }
 
   /**
@@ -488,24 +530,62 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
  * Compulsory curriculum strategy
  */
 class CompulsoryCurriculum implements CurriculumStrategy {
+  private matrix: SchoolCurriculumMatrix;
+
+  /**
+   * Constructor
+   */
+  constructor() {
+    // Initialize the base matrix with identifiers
+    this.matrix = {
+      ...schoolCourseTableCompulsory2018,
+      subjectsTable: schoolCourseTableCompulsory2018.subjectsTable.map(
+        (subject) => ({
+          ...subject,
+          availableCourses: subject.availableCourses.map((c) => ({
+            ...c,
+            identifier: `ops-course-${uuidv4()}`,
+          })),
+        })
+      ),
+    };
+  }
+
   /**
    * Get curriculum matrix
    * @param options options. Optional parameter to filter the matrix based on.
    * @returns curriculum matrix
    */
-  getCurriculumMatrix(
-    options?: CurriculumMatrixOptions
-  ): SchoolCurriculumMatrix {
+  getCurriculumMatrix(options?: CurriculumMatrixOptions) {
     if (options?.studyOptions) {
       return {
-        ...schoolCourseTableCompulsory2018,
+        ...this.matrix,
         subjectsTable: filterCompulsorySubjects(
-          schoolCourseTableCompulsory2018.subjectsTable,
+          this.matrix.subjectsTable,
           options.studyOptions
         ),
       };
     }
-    return schoolCourseTableCompulsory2018;
+    return this.matrix;
+  }
+
+  /**
+   * Find course by identifier
+   * @param identifier course identifier
+   * @returns course with subject code or undefined if not found
+   */
+  findCourseByIdentifier(
+    identifier: string
+  ): (Course & { subjectCode: string }) | undefined {
+    for (const subject of this.matrix.subjectsTable) {
+      const course = subject.availableCourses.find(
+        (c) => c.identifier === identifier
+      );
+      if (course) {
+        return { ...course, subjectCode: subject.subjectCode };
+      }
+    }
+    return undefined;
   }
 
   /**

@@ -5,10 +5,8 @@ import { useState } from "react";
 import {
   PlannedCourseWithIdentifier,
   PlannedPeriod,
-  SelectedCourse,
   TimeContextSelection,
 } from "~/reducers/hops";
-import { CurriculumConfig } from "~/util/curriculum-config";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import Button from "~/components/general/button";
@@ -18,27 +16,21 @@ import { useDragDropManager } from "react-dnd";
 import { DndProvider } from "react-dnd";
 import "~/sass/elements/study-planner.scss";
 import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
-import PlannerPlanStatus from "../planner-plan-status";
 import PlannerTimelineMobile from "./planner-timeline";
 import { MobilePlannerControls } from "../planner-controls";
-import { StudentStudyActivity } from "~/generated/client";
 
 // Memoized components
 const MemoizedMobilePlannerControls = React.memo(MobilePlannerControls);
-const MemoizedPlannerPlanStatus = React.memo(PlannerPlanStatus);
 const MemoizedPlannerTimelineMobile = React.memo(PlannerTimelineMobile);
 
 /**
  * DesktopStudyPlannerProps
  */
 interface MobileStudyPlannerProps {
-  curriculumConfig: CurriculumConfig;
   plannedCourses: PlannedCourseWithIdentifier[];
   calculatedPeriods: PlannedPeriod[];
   timeContextSelection: TimeContextSelection;
-  selectedCourses: SelectedCourse[];
-  studyActivity: StudentStudyActivity[];
-  studyOptions: string[];
+  selectedCoursesIds: string[];
 }
 
 /**
@@ -47,13 +39,7 @@ interface MobileStudyPlannerProps {
  * @returns JSX.Element
  */
 const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
-  const {
-    calculatedPeriods,
-    curriculumConfig,
-    plannedCourses,
-    studyActivity,
-    studyOptions,
-  } = props;
+  const { calculatedPeriods } = props;
   const manager = useDragDropManager();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -66,16 +52,6 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
   }>(null);
 
   const [shouldRenderPortal, setShouldRenderPortal] = useState(false);
-
-  const memoizedPlanStatistics = React.useMemo(
-    () =>
-      curriculumConfig.strategy.calculatePlanStatistics(
-        plannedCourses,
-        studyActivity,
-        studyOptions
-      ),
-    [curriculumConfig, plannedCourses, studyActivity, studyOptions]
-  );
 
   useEffect(() => {
     if (isOpen) {
@@ -162,10 +138,7 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
                             setShowPlanStatus(!showPlanStatus)
                           }
                         />
-                        <MemoizedPlannerPlanStatus
-                          show={showPlanStatus}
-                          planStatistics={memoizedPlanStatistics}
-                        />
+
                         <div className="study-planner__content">
                           <MemoizedPlannerTimelineMobile
                             calculatedPeriods={calculatedPeriods}

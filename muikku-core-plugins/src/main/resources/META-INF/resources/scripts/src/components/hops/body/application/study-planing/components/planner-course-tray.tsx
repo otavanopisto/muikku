@@ -2,11 +2,13 @@ import * as React from "react";
 import { useMemo } from "react";
 import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
+import { useSelector } from "react-redux";
 import { useLocalStorage } from "usehooks-ts";
 import { Course, CourseFilter } from "~/@types/shared";
 import Button, { IconButton } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
-import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
+import { StudentStudyActivity } from "~/generated/client";
+import { StateType } from "~/reducers";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import { filterSubjectsAndCourses } from "../helper";
@@ -23,12 +25,8 @@ import {
  */
 interface PlannerCourseTrayProps {
   plannedCourses: PlannedCourseWithIdentifier[];
-  studyActivity: StudentStudyActivity[];
-  curriculumConfig: CurriculumConfig;
-  availableOPSCourses: HopsOpsCourse[];
-  studyOptions: string[];
   onCourseClick: (course: Course & { subjectCode: string }) => void;
-  isSelected: (course: Course & { subjectCode: string }) => boolean;
+  isCourseSelected: (course: Course & { subjectCode: string }) => boolean;
 }
 
 /**
@@ -36,13 +34,7 @@ interface PlannerCourseTrayProps {
  * @param props props
  */
 const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
-  const {
-    plannedCourses,
-    studyActivity,
-    curriculumConfig,
-    availableOPSCourses,
-    studyOptions,
-  } = props;
+  const { plannedCourses, onCourseClick } = props;
 
   const [searchTerm, setSearchTerm] = useLocalStorage(
     "hops-planner-search-term",
@@ -56,6 +48,30 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   const [selectedFilters, setSelectedFilters] = useLocalStorage<CourseFilter[]>(
     "hops-planner-selected-filters",
     []
+  );
+
+  const studyOptions = useSelector(
+    (state: StateType) => state.hopsNew.hopsStudyPlanState.studyOptions
+  );
+
+  // Get curriculum config
+  const curriculumConfig = useSelector(
+    (state: StateType) => state.hopsNew.hopsCurriculumConfig
+  );
+
+  // Get available OPS courses
+  const availableOPSCourses = useSelector(
+    (state: StateType) => state.hopsNew.hopsStudyPlanState.availableOPSCourses
+  );
+
+  // Get study activity
+  const studyActivity = useSelector(
+    (state: StateType) => state.hopsNew.hopsStudyPlanState.studyActivity
+  );
+
+  // Disable course tray if in read mode
+  const disabled = useSelector(
+    (state: StateType) => state.hopsNew.hopsMode === "READ"
   );
 
   const matrix = useMemo(
@@ -99,14 +115,6 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
       }
       return [...prev, filter];
     });
-  };
-
-  /**
-   * Handles course click. If the same course is clicked, clear the selection
-   * @param course course
-   */
-  const handleCourseClick = (course: Course & { subjectCode: string }) => {
-    props.onCourseClick(course);
   };
 
   // Filter subjects and courses
@@ -227,7 +235,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
               <div className="study-planner__course-tray-list">
                 {subject.availableCourses.map((course) => {
                   // Check if course tray item is selected
-                  const selected = props.isSelected({
+                  const selected = props.isCourseSelected({
                     ...course,
                     subjectCode: subject.subjectCode,
                   });
@@ -248,14 +256,18 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
 
                   return (
                     <PlannerCourseTrayItem
-                      key={`${subject.subjectCode}${course.courseNumber}`}
+                      key={
+                        course.identifier ||
+                        `${subject.subjectCode}${course.courseNumber}`
+                      }
+                      disabled={disabled}
                       course={course}
                       subjectCode={subject.subjectCode}
                       isPlannedCourse={isPlannedCourse}
                       selected={selected}
                       studyActivity={courseActivity}
                       curriculumConfig={curriculumConfig}
-                      onSelectCourse={handleCourseClick}
+                      onSelectCourse={onCourseClick}
                     />
                   );
                 })}
@@ -272,6 +284,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
  * PlannerSidebarCourse props
  */
 interface PlannerCourseTrayItemProps {
+  disabled: boolean;
   course: Course;
   subjectCode: string;
   isPlannedCourse: boolean;
@@ -287,6 +300,7 @@ interface PlannerCourseTrayItemProps {
  */
 const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
   const {
+    disabled,
     course,
     subjectCode,
     isPlannedCourse,
@@ -305,36 +319,33 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
       switch (studyActivity.status) {
         case "GRADED":
           return studyActivity.passing
-            ? { disabled: true, state: "completed", label: "Suoritettu" }
-            : { disabled: false, state: "failed", label: "Hylätty" };
+            ? { state: "completed", label: "Suoritettu" }
+            : { state: "failed", label: "Hylätty" };
         case "TRANSFERRED":
           return {
-            disabled: true,
             state: "transferred",
             label: "Hyväksiluettu",
           };
         case "ONGOING":
-          return { disabled: true, state: "inprogress", label: "Työnalla" };
+          return { state: "inprogress", label: "Työnalla" };
         case "SUPPLEMENTATIONREQUEST":
           return {
-            disabled: true,
             state: "supplementation-request",
             label: "Täydennettävä",
           };
         default:
-          return { disabled: false, state: null, label: null };
+          return { state: null, label: null };
       }
     }
 
     if (isPlannedCourse) {
-      return { disabled: true, state: "planned", label: "Suunnitelmassa" };
+      return { state: "planned", label: "Suunnitelmassa" };
     }
 
-    return { disabled: false, state: null, label: null };
+    return { state: null, label: null };
   };
 
   const courseState = getCourseState();
-  const isDisabled = courseState.disabled;
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
@@ -348,9 +359,9 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         isDragging: monitor.isDragging(),
       }),
       // eslint-disable-next-line jsdoc/require-jsdoc
-      canDrag: !isDisabled,
+      canDrag: !disabled && !studyActivity,
     }),
-    [isDisabled]
+    [disabled, studyActivity]
   );
 
   preview(getEmptyImage(), { captureDraggingState: true });
@@ -359,6 +370,10 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
    * Handles course select
    */
   const handleSelectCourse = () => {
+    if (disabled || studyActivity) {
+      return;
+    }
+
     onSelectCourse({ ...course, subjectCode });
   };
 
@@ -387,7 +402,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
       <PlannerCard
         modifiers={modifiers}
         innerContainerModifiers={[type]}
-        onClick={!isDisabled ? handleSelectCourse : undefined}
+        onClick={handleSelectCourse}
         ref={drag}
       >
         <PlannerCardHeader modifiers={["sidebar-course-card"]}>
@@ -408,65 +423,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
             </PlannerCardLabel>
           )}
         </PlannerCardContent>
-
-        {/* For later use, do not remove */}
-        {/* {studyActivity && (
-          <PlannerCardActions modifiers={["course-tray"]}>
-            <Button
-              icon="arrow-down"
-              iconPosition="left"
-              onClick={handleCourseStateOpen}
-              buttonModifiers={["study-planner-extra-info-toggle"]}
-            >
-              Lisätietoa
-            </Button>
-          </PlannerCardActions>
-        )} */}
       </PlannerCard>
-
-      {/* For later use, do not remove */}
-      {/* {studyActivity && (
-        <AnimateHeight
-          height={isCourseStateOpen ? "auto" : 0}
-          animateOpacity={false}
-          contentClassName="study-planner__extra-section study-planner__extra-section--specify"
-        >
-          <div className="study-planner__state-info-row">
-            <span className="study-planner__state-info-row-label">
-              Kurssi suunniteltu
-            </span>
-            <span className="study-planner__state-info-row-value">-</span>
-          </div>
-
-          <div className="study-planner__state-info-row">
-            <span className="study-planner__state-info-row-label">
-              Kurssille ilmoittauduttu
-            </span>
-            <span className="study-planner__state-info-row-value">-</span>
-          </div>
-
-          <div className="study-planner__state-info-row">
-            <span className="study-planner__state-info-row-label">
-              Kurssilta pyydetty arviointia
-            </span>
-            <span className="study-planner__state-info-row-value">-</span>
-          </div>
-
-          <div className="study-planner__state-info-row">
-            <span className="study-planner__state-info-row-label">
-              Kurssi arvioitu
-            </span>
-            <span className="study-planner__state-info-row-value">-</span>
-          </div>
-
-          <div className="study-planner__state-info-row">
-            <span className="study-planner__state-info-row-label">
-              Kurssin arvosana
-            </span>
-            <span className="study-planner__state-info-row-value">-</span>
-          </div>
-        </AnimateHeight>
-      )} */}
     </div>
   );
 };

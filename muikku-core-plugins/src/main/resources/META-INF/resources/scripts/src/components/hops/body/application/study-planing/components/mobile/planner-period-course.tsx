@@ -29,7 +29,7 @@ interface MobilePlannerPeriodCourseProps
 const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
   props
 ) => {
-  const { course, curriculumConfig } = props;
+  const { course, disabled, curriculumConfig } = props;
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
@@ -45,8 +45,9 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
       options: {
         dropEffect: "move",
       },
+      canDrag: !disabled,
     }),
-    []
+    [disabled]
   );
 
   preview(getEmptyImage(), { captureDraggingState: true });

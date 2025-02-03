@@ -27,7 +27,7 @@ interface DesktopPlannerPeriodCourseProps
 const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
   props
 ) => {
-  const { course, curriculumConfig } = props;
+  const { course, disabled, curriculumConfig } = props;
 
   const [pendingDelete, setPendingDelete] = React.useState(false);
   const [pendingSpecify, setPendingSpecify] = React.useState(false);
@@ -46,8 +46,9 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
       options: {
         dropEffect: "move",
       },
+      canDrag: !disabled,
     }),
-    []
+    [disabled]
   );
 
   preview(getEmptyImage(), { captureDraggingState: true });

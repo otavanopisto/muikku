@@ -10,7 +10,6 @@ import { createAndAllocateCoursesToPeriods } from "./helper";
 import {
   HopsMode,
   PlannedCourseWithIdentifier,
-  SelectedCourse,
   TimeContextSelection,
 } from "~/reducers/hops";
 import "~/sass/elements/study-planner.scss";
@@ -36,7 +35,7 @@ interface StudyPlanToolProps {
   plannedCourses: PlannedCourseWithIdentifier[];
   editingPlan: PlannedCourseWithIdentifier[];
   timeContextSelection: TimeContextSelection;
-  selectedCourses: SelectedCourse[];
+  selectedCoursesIds: string[];
   studyActivity: StudentStudyActivity[];
   availableOPSCourses: HopsOpsCourse[];
   studyOptions: string[];
@@ -53,10 +52,9 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     editingPlan,
     hopsMode,
     curriculumConfig,
-    selectedCourses,
+    selectedCoursesIds,
     timeContextSelection,
     studyActivity,
-    availableOPSCourses,
     studyOptions,
     updateSelectedCourses,
   } = props;
@@ -261,23 +259,16 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
           <ApplicationSubPanel.Body>
             {isMobile ? (
               <MobileStudyPlanner
-                curriculumConfig={curriculumConfig}
                 plannedCourses={usedPlannedCourses}
                 calculatedPeriods={calculatedPeriods}
                 timeContextSelection={timeContextSelection}
-                selectedCourses={selectedCourses}
-                studyActivity={studyActivity}
-                studyOptions={studyOptions}
+                selectedCoursesIds={selectedCoursesIds}
               />
             ) : (
               <DesktopStudyPlanner
-                curriculumConfig={curriculumConfig}
                 plannedCourses={usedPlannedCourses}
                 calculatedPeriods={calculatedPeriods}
-                selectedCourses={selectedCourses}
-                studyActivity={studyActivity}
-                availableOPSCourses={availableOPSCourses}
-                studyOptions={studyOptions}
+                selectedCoursesIds={selectedCoursesIds}
                 updateSelectedCourses={updateSelectedCourses}
               />
             )}
@@ -298,7 +289,7 @@ function mapStateToProps(state: StateType) {
     curriculumConfig: state.hopsNew.hopsCurriculumConfig,
     plannedCourses: state.hopsNew.hopsStudyPlanState.plannedCourses,
     editingPlan: state.hopsNew.hopsEditing.plannedCourses,
-    selectedCourses: state.hopsNew.hopsEditing.selectedCourses,
+    selectedCoursesIds: state.hopsNew.hopsEditing.selectedCoursesIds,
     timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
     studyActivity: state.hopsNew.hopsStudyPlanState.studyActivity,
     availableOPSCourses: state.hopsNew.hopsStudyPlanState.availableOPSCourses,

@@ -2,6 +2,7 @@ import * as React from "react";
 import Button, { IconButton } from "~/components/general/button";
 import {
   CourseChangeAction,
+  HopsMode,
   isPlannedCourseWithIdentifier,
   PlannedCourseWithIdentifier,
   SelectedCourse,
@@ -31,7 +32,7 @@ import PlannerMonthEditDialog from "./planner-month-edit";
 import Droppable from "../react-dnd/droppable";
 import { Course } from "~/@types/shared";
 import { isPlannedCourse } from "../../helper";
-import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
+import { StudentStudyActivity } from "~/generated/client";
 import PlannerPlannedList from "../planner-planned-list";
 import { AnimatedDrawer } from "../Animated-drawer";
 
@@ -45,14 +46,13 @@ interface MobilePlannerPeriodMonthProps {
   courses: PlannedCourseWithIdentifier[];
 
   //Redux state
+  hopsMode: HopsMode;
   timeContextSelection: TimeContextSelection;
   originalPlannedCourses: PlannedCourseWithIdentifier[];
   editedPlannedCourses: PlannedCourseWithIdentifier[];
   curriculumConfig: CurriculumConfig;
-  selectedCourses: SelectedCourse[];
+  selectedCoursesIds: string[];
   studyActivity: StudentStudyActivity[];
-  studyOptions: string[];
-  availableOPSCourses: HopsOpsCourse[];
   updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType;
   updateTimeContextSelection: UpdateTimeContextSelectionTriggerType;
   updateSelectedCourses: UpdateSelectedCoursesTriggerType;
@@ -84,17 +84,16 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   props
 ) => {
   const {
+    hopsMode,
     monthIndex,
     title,
     year,
     courses,
     originalPlannedCourses,
     curriculumConfig,
-    selectedCourses,
+    selectedCoursesIds,
     editedPlannedCourses,
     studyActivity,
-    studyOptions,
-    availableOPSCourses,
     updateHopsEditingStudyPlan,
     updateSelectedCourses,
     clearSelectedCourses,
@@ -120,29 +119,50 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   };
 
   /**
-   * Handles move course here click
+   * Handles move courses here click
    */
   const handleMoveCoursesHereClick = () => {
     // If there is no selected course, do nothing
-    if (!selectedCourses.length) {
+    if (!selectedCoursesIds.length) {
       return;
     }
 
-    const plannedCourses = selectedCourses.map((course) => {
-      if (isPlannedCourseWithIdentifier(course)) {
-        return {
-          ...course,
-          startDate: moment(new Date(year, monthIndex, 1)).format("YYYY-MM-DD"),
-        };
-      }
+    const targetDate = moment(new Date(year, monthIndex, 1)).format(
+      "YYYY-MM-DD"
+    );
 
-      return {
-        ...curriculumConfig.strategy.createPlannedCourse(
-          course,
-          new Date(year, monthIndex, 1)
-        ),
-      };
-    });
+    const plannedCourses = selectedCoursesIds
+      .map((courseIdentifier) => {
+        // Check if this is an existing planned course
+        const existingPlannedCourse = editedPlannedCourses.find(
+          (course) => course.identifier === courseIdentifier
+        );
+
+        if (existingPlannedCourse) {
+          // Update the date for existing planned course
+          return {
+            ...existingPlannedCourse,
+            startDate: targetDate,
+          };
+        }
+
+        // If not found in planned courses, it must be a new course from tray
+        // Find the course in curriculum config and create a new planned course
+        const courseFromTray =
+          curriculumConfig.strategy.findCourseByIdentifier(courseIdentifier);
+
+        if (!courseFromTray) {
+          return null;
+        }
+
+        return {
+          ...curriculumConfig.strategy.createPlannedCourse(
+            courseFromTray,
+            new Date(year, monthIndex, 1)
+          ),
+        };
+      })
+      .filter((c) => c !== null);
 
     // Create a map of the new/updated courses by identifier for efficient lookup
     const plannedCoursesMap = new Map(
@@ -191,7 +211,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
    * @param course course
    */
   const handleSelectCourse = (course: PlannedCourseWithIdentifier) => {
-    updateSelectedCourses({ course });
+    updateSelectedCourses({ courseIdentifier: course.identifier });
   };
 
   /**
@@ -319,7 +339,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   );
 
   // Pulse dropzone if there are selected courses or the drop indicator is shown
-  const pulseDropzone = selectedCourses.length > 0 || showDropIndicator;
+  const pulseDropzone = selectedCoursesIds.length > 0 || showDropIndicator;
 
   return (
     <div className="study-planner__month">
@@ -347,14 +367,11 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         </Button>
 
         <PlannerMonthEditDialog
+          disabled={hopsMode === "READ"}
           onConfirm={handleMonthEditConfirm}
           plannedCourses={editedPlannedCourses}
-          curriculumConfig={curriculumConfig}
           timeContext={new Date(year, monthIndex, 1)}
           currentSelection={courses}
-          studyActivity={studyActivity}
-          availableOPSCourses={availableOPSCourses}
-          studyOptions={studyOptions}
         >
           <IconButton
             icon="plus"
@@ -376,8 +393,9 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
           className="study-planner__month-content"
         >
           <PlannerPlannedList
+            disabled={hopsMode === "READ"}
             courses={courses}
-            selectedCourses={selectedCourses}
+            selectedCoursesIds={selectedCoursesIds}
             originalPlannedCourses={originalPlannedCourses}
             studyActivity={studyActivity}
             curriculumConfig={curriculumConfig}
@@ -404,14 +422,13 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
  */
 function mapStateToProps(state: StateType) {
   return {
+    hopsMode: state.hopsNew.hopsMode,
     originalPlannedCourses: state.hopsNew.hopsStudyPlanState.plannedCourses,
     editedPlannedCourses: state.hopsNew.hopsEditing.plannedCourses,
     timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
     curriculumConfig: state.hopsNew.hopsCurriculumConfig,
-    selectedCourses: state.hopsNew.hopsEditing.selectedCourses,
+    selectedCoursesIds: state.hopsNew.hopsEditing.selectedCoursesIds,
     studyActivity: state.hopsNew.hopsStudyPlanState.studyActivity,
-    availableOPSCourses: state.hopsNew.hopsStudyPlanState.availableOPSCourses,
-    studyOptions: state.hopsNew.hopsStudyPlanState.studyOptions,
   };
 }
 

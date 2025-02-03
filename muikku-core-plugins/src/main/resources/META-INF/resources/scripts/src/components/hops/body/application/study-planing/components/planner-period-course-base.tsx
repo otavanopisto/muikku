@@ -25,6 +25,7 @@ import {
  * Base planner period course props
  */
 export interface BasePlannerPeriodCourseProps {
+  disabled: boolean;
   course: PlannedCourseWithIdentifier;
   selected: boolean;
   isDragging?: boolean;
@@ -80,6 +81,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
   BasePlannerPeriodCourseProps
 >((props, ref) => {
   const {
+    disabled,
     course,
     selected,
     isDragging = false,
@@ -109,28 +111,26 @@ const BasePlannerPeriodCourse = React.forwardRef<
       switch (studyActivity.status) {
         case "GRADED":
           return studyActivity.passing
-            ? { disabled: true, state: "completed", label: "Suoritettu" }
-            : { disabled: false, state: "failed", label: "Hylätty" };
+            ? { state: "completed", label: "Suoritettu" }
+            : { state: "failed", label: "Hylätty" };
         case "TRANSFERRED":
           return {
-            disabled: true,
             state: "transferred",
             label: "Hyväksiluettu",
           };
         case "ONGOING":
-          return { disabled: true, state: "inprogress", label: "Työnalla" };
+          return { state: "inprogress", label: "Työnalla" };
         case "SUPPLEMENTATIONREQUEST":
           return {
-            disabled: true,
             state: "supplementation-request",
             label: "Täydennettävä",
           };
         default:
-          return { disabled: false, state: null, label: null };
+          return { state: null, label: null };
       }
     }
 
-    return { disabled: false, state: null, label: null };
+    return { state: null, label: null };
   };
 
   const courseState = getCourseState();
@@ -223,7 +223,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    if (courseState.disabled) {
+    if (disabled) {
       return;
     }
 
@@ -339,22 +339,18 @@ const BasePlannerPeriodCourse = React.forwardRef<
         {renderWorkspaceInstanceNotAvailable()}
       </PlannerCardContent>
 
-      {!studyActivity && (
+      {!disabled && !studyActivity && (
         <PlannerCardActions>
           <Button
             onClick={handleSpecifyOpen}
-            disabled={
-              courseState.disabled || specifyIsOpen || deleteWarningIsOpen
-            }
+            disabled={specifyIsOpen || deleteWarningIsOpen}
             buttonModifiers={["study-planner-specify"]}
           >
             Tarkenna
           </Button>
           <Button
             onClick={handleDeleteOpen}
-            disabled={
-              courseState.disabled || specifyIsOpen || deleteWarningIsOpen
-            }
+            disabled={specifyIsOpen || deleteWarningIsOpen}
             buttonModifiers={["study-planner-delete"]}
           >
             Poista

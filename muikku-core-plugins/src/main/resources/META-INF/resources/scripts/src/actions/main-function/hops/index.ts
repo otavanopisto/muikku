@@ -21,13 +21,11 @@ import {
   CourseChangeAction,
   HopsEditingState,
   HopsMode,
-  isPlannedCourseWithIdentifier,
   MatriculationEligibilityWithAbistatus,
   MatriculationSubjectWithEligibility,
   PlannedCourseWithIdentifier,
   ReducerInitializeStatusType,
   ReducerStateType,
-  SelectedCourse,
   TimeContextSelection,
 } from "~/reducers/hops";
 import i18n from "~/locales/i18n";
@@ -244,7 +242,7 @@ export type HOPS_CLEAR_TIME_CONTEXT_SELECTION = SpecificActionType<
 
 export type HOPS_UPDATE_SELECTED_COURSES = SpecificActionType<
   "HOPS_UPDATE_SELECTED_COURSES",
-  SelectedCourse[]
+  string[]
 >;
 
 export type HOPS_CLEAR_SELECTED_COURSES = SpecificActionType<
@@ -487,9 +485,7 @@ export interface ClearTimeContextSelectionTriggerType {
  * UpdateSelectedCoursesTriggerType
  */
 export interface UpdateSelectedCoursesTriggerType {
-  (data: {
-    course: PlannedCourseWithIdentifier | (Course & { subjectCode: string });
-  }): AnyActionType;
+  (data: { courseIdentifier: string }): AnyActionType;
 }
 
 /**
@@ -2239,30 +2235,26 @@ const updateSelectedCourses: UpdateSelectedCoursesTriggerType =
     ) => {
       const state = getState();
 
-      const updatedCourses = [...state.hopsNew.hopsEditing.selectedCourses];
+      const updatedCoursesIds = [
+        ...state.hopsNew.hopsEditing.selectedCoursesIds,
+      ];
 
-      const index = updatedCourses.findIndex((course) => {
-        if (
-          isPlannedCourseWithIdentifier(course) &&
-          isPlannedCourseWithIdentifier(data.course)
-        ) {
-          return course.identifier === data.course.identifier;
+      const index = updatedCoursesIds.findIndex((courseIdentifier) => {
+        if (courseIdentifier === data.courseIdentifier) {
+          return true;
         }
-        return (
-          course.subjectCode === data.course.subjectCode &&
-          course.courseNumber === data.course.courseNumber
-        );
+        return false;
       });
 
       if (index !== -1) {
-        updatedCourses.splice(index, 1);
+        updatedCoursesIds.splice(index, 1);
       } else {
-        updatedCourses.push(data.course);
+        updatedCoursesIds.push(data.courseIdentifier);
       }
 
       dispatch({
         type: "HOPS_UPDATE_SELECTED_COURSES",
-        payload: updatedCourses,
+        payload: updatedCoursesIds,
       });
     };
   };

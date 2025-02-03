@@ -134,27 +134,10 @@ export type SelectedCourse =
  */
 export const isPlannedCourseWithIdentifier = (
   course: SelectedCourse
-): course is PlannedCourseWithIdentifier => "identifier" in course;
+): course is PlannedCourseWithIdentifier =>
+  "identifier" in course && course.identifier.startsWith("planned-");
 
 /**
- * Type guard for unplanned course
- * @param course Course
- */
-export const isUnplannedCourse = (
-  course: SelectedCourse
-): course is Course & { subjectCode: string } => !("identifier" in course);
-
-/**
- * Type guard for period month selection
- * @param selection Selection
- */
-export const isPeriodMonthSelection = (
-  selection: TimeContextSelection
-): selection is {
-  type: "period-month";
-  year: number;
-  monthIndex: number;
-} => selection.type === "period-month";
 
 /**
  * Type guard for no selection
@@ -172,7 +155,7 @@ export interface HopsEditingState {
   hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
   plannedCourses: PlannedCourseWithIdentifier[];
-  selectedCourses: SelectedCourse[];
+  selectedCoursesIds: string[];
   timeContextSelection: TimeContextSelection;
   waitingToBeAllocatedCourses: (Course & { subjectCode: string })[] | null;
 }
@@ -261,7 +244,7 @@ const initialHopsState: HopsState = {
       goalMatriculationExam: false,
     },
     plannedCourses: [],
-    selectedCourses: [],
+    selectedCoursesIds: [],
     timeContextSelection: null,
     waitingToBeAllocatedCourses: null,
   },
@@ -483,6 +466,7 @@ export const hopsNew: Reducer<HopsState> = (
           studyActivity: [],
           availableOPSCourses: [],
           studyOptions: [],
+          studyMatrix: null,
         },
         hopsMatriculation: {
           exams: [],
@@ -584,6 +568,9 @@ export const hopsNew: Reducer<HopsState> = (
           ...state.hopsEditing,
           hopsForm: state.hopsForm,
           matriculationPlan: state.hopsMatriculation.plan,
+          plannedCourses: state.hopsStudyPlanState.plannedCourses,
+          selectedCoursesIds: [],
+          timeContextSelection: null,
         },
       };
 
@@ -645,7 +632,7 @@ export const hopsNew: Reducer<HopsState> = (
         ...state,
         hopsEditing: {
           ...state.hopsEditing,
-          selectedCourses: action.payload,
+          selectedCoursesIds: action.payload,
         },
       };
 
@@ -654,7 +641,7 @@ export const hopsNew: Reducer<HopsState> = (
         ...state,
         hopsEditing: {
           ...state.hopsEditing,
-          selectedCourses: [],
+          selectedCoursesIds: [],
         },
       };
 

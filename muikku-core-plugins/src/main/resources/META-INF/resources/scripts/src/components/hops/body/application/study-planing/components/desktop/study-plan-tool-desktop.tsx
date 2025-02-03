@@ -1,33 +1,23 @@
 import * as React from "react";
 import { useCallback, useRef, useState } from "react";
 import { PlannerControls } from "../planner-controls";
-import {
-  isUnplannedCourse,
-  PlannedCourseWithIdentifier,
-  PlannedPeriod,
-  SelectedCourse,
-} from "~/reducers/hops";
-import { CurriculumConfig } from "~/util/curriculum-config";
+import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 import { motion, Variants } from "framer-motion";
 import PlannerCourseTray from "../planner-course-tray";
 import { UpdateSelectedCoursesTriggerType } from "~/actions/main-function/hops";
 import { Course } from "~/@types/shared";
 import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
-import PlannerPlanStatus from "../planner-plan-status";
 import PlannerTimeline from "./planner-timeline";
-import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
+import { StateType } from "~/reducers";
+import { useSelector } from "react-redux";
 
 /**
  * DesktopStudyPlannerProps
  */
 interface DesktopStudyPlannerProps {
-  curriculumConfig: CurriculumConfig;
   plannedCourses: PlannedCourseWithIdentifier[];
   calculatedPeriods: PlannedPeriod[];
-  selectedCourses: SelectedCourse[];
-  studyActivity: StudentStudyActivity[];
-  availableOPSCourses: HopsOpsCourse[];
-  studyOptions: string[];
+  selectedCoursesIds: string[];
   updateSelectedCourses: UpdateSelectedCoursesTriggerType;
 }
 
@@ -47,7 +37,6 @@ const variants: Variants = {
 };
 
 // Memoized components
-const MemoizedPlannerPlanStatus = React.memo(PlannerPlanStatus);
 const MemoizedPlannerControls = React.memo(PlannerControls);
 const MemoizedPlannerCourseTray = React.memo(PlannerCourseTray);
 const MemoizedPlannerTimeline = React.memo(PlannerTimeline);
@@ -59,20 +48,20 @@ const MemoizedPlannerTimeline = React.memo(PlannerTimeline);
  */
 const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
   const {
-    curriculumConfig,
     plannedCourses,
     calculatedPeriods,
-    selectedCourses,
-    studyActivity,
-    availableOPSCourses,
-    studyOptions,
+    selectedCoursesIds,
     updateSelectedCourses,
   } = props;
+
+  const disabled = useSelector(
+    (state: StateType) => state.hopsNew.hopsMode === "READ"
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [view, setView] = useState<"list" | "table">("list");
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [showPlanStatus, setShowPlanStatus] = useState(false);
+  //const [showPlanStatus, setShowPlanStatus] = useState(false);
 
   const memoizedCalculatedPeriods = React.useMemo(
     () => calculatedPeriods,
@@ -84,26 +73,6 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
     [plannedCourses]
   );
 
-  const memoizedStudyActivity = React.useMemo(
-    () => studyActivity,
-    [studyActivity]
-  );
-
-  const memoizedPlanStatistics = React.useMemo(
-    () =>
-      curriculumConfig.strategy.calculatePlanStatistics(
-        memoizedPlannedCourses,
-        memoizedStudyActivity,
-        studyOptions
-      ),
-    [
-      curriculumConfig,
-      memoizedPlannedCourses,
-      memoizedStudyActivity,
-      studyOptions,
-    ]
-  );
-
   // Get the ref to the timeline component
   const timelineComponentRef = useRef<{
     scrollToAdjacentPeriod: (direction: "next" | "prev") => void;
@@ -113,11 +82,13 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
    * Handles course click
    * @param course course
    */
-  const handleCourseClick = useCallback(
+  const handleCourseSelectClick = useCallback(
     (course: Course & { subjectCode: string }) => {
-      updateSelectedCourses({ course });
+      if (!disabled) {
+        updateSelectedCourses({ courseIdentifier: course.identifier });
+      }
     },
-    [updateSelectedCourses]
+    [disabled, updateSelectedCourses]
   );
 
   /**
@@ -127,13 +98,10 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
    */
   const isSelected = useCallback(
     (course: Course & { subjectCode: string }) =>
-      selectedCourses.some(
-        (c) =>
-          isUnplannedCourse(c) &&
-          c.subjectCode === course.subjectCode &&
-          c.courseNumber === course.courseNumber
+      selectedCoursesIds.some(
+        (courseIdentifier) => courseIdentifier === course.identifier
       ),
-    [selectedCourses]
+    [selectedCoursesIds]
   );
 
   /**
@@ -149,13 +117,6 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
    */
   const handleFullScreen = useCallback(() => {
     setIsFullScreen((prev) => !prev);
-  }, []);
-
-  /**
-   * Handles show plan status
-   */
-  const handleShowPlanStatus = useCallback(() => {
-    setShowPlanStatus((prev) => !prev);
   }, []);
 
   /**
@@ -179,22 +140,13 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
         onViewChange={handleViewChange}
         onPeriodChange={handlePeriodChange}
         onFullScreen={handleFullScreen}
-        onShowPlanStatus={handleShowPlanStatus}
-      />
-      <MemoizedPlannerPlanStatus
-        show={showPlanStatus}
-        planStatistics={memoizedPlanStatistics}
       />
       <div className="study-planner__content">
         <div className="study-planner__sidebar">
           <MemoizedPlannerCourseTray
-            availableOPSCourses={availableOPSCourses}
-            curriculumConfig={curriculumConfig}
             plannedCourses={memoizedPlannedCourses}
-            onCourseClick={handleCourseClick}
-            isSelected={isSelected}
-            studyActivity={memoizedStudyActivity}
-            studyOptions={studyOptions}
+            onCourseClick={handleCourseSelectClick}
+            isCourseSelected={isSelected}
           />
         </div>
 

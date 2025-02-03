@@ -303,6 +303,10 @@ export interface SchoolSubject {
  * Course
  */
 export interface Course {
+  /**
+   * Identifier of the course, that can be added if frontend logic needs it
+   */
+  identifier?: string;
   name: string;
   courseNumber: number;
   length: number;

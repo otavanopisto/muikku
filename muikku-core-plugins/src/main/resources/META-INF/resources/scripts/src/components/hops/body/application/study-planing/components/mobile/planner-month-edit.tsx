@@ -6,24 +6,19 @@ import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
 import { PlannedCourseWithIdentifier, SelectedCourse } from "~/reducers/hops";
 import PlannerCourseTray from "../planner-course-tray";
-import { CurriculumConfig } from "~/util/curriculum-config";
 import { Course } from "~/@types/shared";
 import { DndProvider, useDragDropManager } from "react-dnd";
-import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 
 /**
  * Props for the EditHopsEventDescriptionDialog component
  */
 interface PlannerMonthEditDialogProps {
+  disabled: boolean;
   timeContext: Date;
   onConfirm: (selectedCourses: SelectedCourse[]) => void;
   children?: React.ReactElement;
   plannedCourses: PlannedCourseWithIdentifier[];
   currentSelection: PlannedCourseWithIdentifier[];
-  curriculumConfig: CurriculumConfig;
-  studyActivity: StudentStudyActivity[];
-  availableOPSCourses: HopsOpsCourse[];
-  studyOptions: string[];
 }
 
 /**
@@ -34,17 +29,8 @@ interface PlannerMonthEditDialogProps {
 const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
   props
 ) => {
-  const {
-    onConfirm,
-    children,
-    curriculumConfig,
-    plannedCourses,
-    timeContext,
-    currentSelection,
-    studyActivity,
-    availableOPSCourses,
-    studyOptions,
-  } = props;
+  const { onConfirm, children, plannedCourses, timeContext, currentSelection } =
+    props;
 
   const manager = useDragDropManager();
 
@@ -139,18 +125,14 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
     <DndProvider manager={manager}>
       <PlannerCourseTray
         plannedCourses={plannedCoursesWithoutCurrentSelection}
-        curriculumConfig={curriculumConfig}
         onCourseClick={handleCourseClick}
-        isSelected={(course) =>
+        isCourseSelected={(course) =>
           selectedCourses.some(
             (c) =>
               c.subjectCode === course.subjectCode &&
               c.courseNumber === course.courseNumber
           )
         }
-        studyActivity={studyActivity}
-        availableOPSCourses={availableOPSCourses}
-        studyOptions={studyOptions}
       />
     </DndProvider>
   );
@@ -167,7 +149,7 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
         onClick={handleConfirmClick(closePortal)}
         disabled={!hasChanges}
       >
-        {t("actions.continue", { ns: "hops_new" })}
+        Jatka
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
