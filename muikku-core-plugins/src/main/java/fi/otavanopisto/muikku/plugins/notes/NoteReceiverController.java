@@ -52,8 +52,4 @@ public class NoteReceiverController {
   public void deleteRecipient(NoteReceiver noteReceiver) {
     noteRecipientDAO.deleteReceiver(noteReceiver);
   }
-
-  public boolean isMultiUserNote(Note note) {
-    return noteRecipientDAO.listByNote(note).size() > 1;
-  }
 }
