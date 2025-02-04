@@ -449,7 +449,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           <span>{item.text}</span>
         </Link>
       );
-
+      const 
       return (
         <Dropdown
           items={items.map(
@@ -519,7 +519,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             )}
             {loggedUserIsCreator &&
               !archived &&
-              !multiUserNote &&
+              !editForbidden &&
               onArchiveClick && (
                 <IconButton
                   onClick={handleNotesItemArchiveClick}
