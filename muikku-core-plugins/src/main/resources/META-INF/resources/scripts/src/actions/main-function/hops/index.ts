@@ -444,7 +444,10 @@ export interface UpdateHopsHistoryTriggerType {
 export interface InitializeHopsTriggerType {
   (data: {
     userIdentifier: string;
-    onSuccess?: (currentUserIsEditing: boolean) => void;
+    onSuccess?: (
+      currentUserIsEditing: boolean,
+      uppersecondary: boolean
+    ) => void;
     onFail?: () => void;
   }): AnyActionType;
 }
@@ -2000,7 +2003,18 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
       throw new Error("Invalid student identifier");
     }
 
+    // If not IDLE we know that it is already initialized, or being initialized
+    // Just call onSuccess and end method.
     if (state.hopsNew.initialized !== "IDLE") {
+      const currentUserIsEditing =
+        state.hopsNew.hopsLocked &&
+        state.status.userId === state.hopsNew.hopsLocked.userEntityId;
+
+      const isUppersecondary =
+        state.hopsNew.studentInfo.studyProgrammeEducationType === "lukio";
+
+      data.onSuccess && data.onSuccess(currentUserIsEditing, isUppersecondary);
+
       return;
     }
 
@@ -2057,15 +2071,19 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
       const currentUserIsEditing =
         hopsLocked && state.status.userId === hopsLocked.userEntityId;
 
+      const isUppersecondary =
+        studentInfo.studyProgrammeEducationType === "lukio";
+
       // 5. Handle edit mode if user is the one who has locked HOPS
       // Here is loaded any missing data that is needed for edit mode
       // In case if hopsLocked is ready or loading, this will not be executed
+
       if (currentUserIsEditing) {
         // This will grow as we add more data to load for edit mode later on
 
         const promises = [];
 
-        if (studentInfo.studyProgrammeEducationType === "lukio") {
+        if (isUppersecondary) {
           promises.push(
             dispatch(
               loadMatriculationData({ userIdentifier: studentIdentifier })
@@ -2073,9 +2091,24 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
           );
         }
 
+        promises.push(
+          dispatch(loadStudyPlanData({ userIdentifier: studentIdentifier }))
+        );
+
         await Promise.all(promises);
 
         dispatch({ type: "HOPS_CHANGE_MODE", payload: "EDIT" });
+
+        dispatch(
+          actions.displayNotification(
+            i18n.t("notifications.editingModePersistentInfo", {
+              ns: "hops_new",
+            }),
+            "persistent-info",
+            undefined,
+            "hops-editing-mode-notification"
+          )
+        );
       }
 
       dispatch({
@@ -2083,7 +2116,7 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
         payload: "INITIALIZED",
       });
 
-      data.onSuccess && data.onSuccess(currentUserIsEditing);
+      data.onSuccess && data.onSuccess(currentUserIsEditing, isUppersecondary);
     } catch (err) {
       if (!isMApiError(err)) throw err;
       dispatch({

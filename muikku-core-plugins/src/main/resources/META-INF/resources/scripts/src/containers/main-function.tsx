@@ -131,7 +131,6 @@ import {
 } from "react-dnd-multi-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import StudyProgressWebsocketWatcher from "~/components/general/study-progress-websocket-watcher";
-import { displayNotification } from "~/actions/base/notifications";
 
 const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -391,43 +390,37 @@ export default class MainFunction extends React.Component<
   loadHopsData(tab: string, userId?: string, guardianHops: boolean = false) {
     const givenLocation = tab;
 
-    // Load HOPS locked status and HOPS form history always
+    // Initializing HOPS
     this.props.store.dispatch(
       initializeHops({
         userIdentifier: userId,
+        // Note: Route specific data loading is done after initializing has
+        // returned info which type student is being loaded and if current
+        // user is editing. If user would be editing all necessary data is already
+        // loaded during initializing.
         // eslint-disable-next-line jsdoc/require-jsdoc
-        onSuccess: (currentUserIsEditing: boolean) => {
-          if (currentUserIsEditing) {
-            this.props.store.dispatch({
-              type: "HOPS_CHANGE_MODE",
-              payload: "EDIT",
-            });
-
-            this.props.store.dispatch(
-              displayNotification(
-                i18n.t("notifications.editingModePersistentInfo", {
-                  ns: "hops_new",
-                }),
-                "persistent-info",
-                undefined,
-                "hops-editing-mode-notification"
-              ) as Action
-            );
-          }
-
-          if (
-            givenLocation === "matriculation" ||
-            (guardianHops && !givenLocation) ||
-            currentUserIsEditing
-          ) {
-            this.props.store.dispatch(
-              loadMatriculationData({ userIdentifier: userId }) as Action
-            );
-          }
-          if (givenLocation === "studyplan" || currentUserIsEditing) {
-            this.props.store.dispatch(
-              loadStudyPlanData({ userIdentifier: userId }) as Action
-            );
+        onSuccess: (
+          currentUserIsEditing: boolean,
+          isUppersecondary: boolean
+        ) => {
+          if (!currentUserIsEditing) {
+            if (
+              isUppersecondary &&
+              (givenLocation === "matriculation" ||
+                (guardianHops && !givenLocation))
+            ) {
+              this.props.store.dispatch(
+                loadMatriculationData({ userIdentifier: userId }) as Action
+              );
+            }
+            if (
+              givenLocation === "studyplan" ||
+              (guardianHops && !givenLocation)
+            ) {
+              this.props.store.dispatch(
+                loadStudyPlanData({ userIdentifier: userId }) as Action
+              );
+            }
           }
         },
       }) as Action
