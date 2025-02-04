@@ -85,12 +85,7 @@ const Avatar = (props: AvatarProps) => {
           <span className="avatar__text">{firstName}</span>
         </div>
       ) : showTooltip ? (
-        <Dropdown
-          openByHover
-          key="avatar"
-          content={firstName}
-          tooltipId={`avatar-${id}`}
-        >
+        <Dropdown openByHover key="avatar" content={firstName}>
           {avatarContent}
         </Dropdown>
       ) : (
