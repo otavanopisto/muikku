@@ -759,7 +759,6 @@ const toggleNoteArchive: ArchiveNoteTriggerType = function toggleNoteArchive(
     try {
       const notesApi = MApi.getNotesApi();
 
-      // Updating and getting updated notesItem
       await notesApi.toggleNoteArchived({
         noteId: noteId,
       });
