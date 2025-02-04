@@ -223,7 +223,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     e.stopPropagation();
-    if (disabled) {
+    if (disabled || specifyIsOpen || deleteWarningIsOpen) {
       return;
     }
 
@@ -268,11 +268,15 @@ const BasePlannerPeriodCourse = React.forwardRef<
   isDragging && cardModifiers.push("is-dragging");
   selected && cardModifiers.push("selected");
 
+  const innerContainerModifiers = course.mandatory
+    ? ["mandatory"]
+    : ["optional"];
+
   return (
     <PlannerCard
       ref={ref}
       modifiers={["planned-course", ...cardModifiers]}
-      innerContainerModifiers={[course.mandatory ? "mandatory" : "optional"]}
+      innerContainerModifiers={innerContainerModifiers}
       onClick={handleSelectCourse}
       externalContent={
         <>

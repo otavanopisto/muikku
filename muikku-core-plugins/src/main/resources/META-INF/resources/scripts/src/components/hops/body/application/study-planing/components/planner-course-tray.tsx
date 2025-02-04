@@ -377,44 +377,32 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     onSelectCourse({ ...course, subjectCode });
   };
 
-  // For later use, do not remove
-  // /**
-  //  * Handles course state open
-  //  * @param e Event
-  //  */
-  // const handleCourseStateOpen = (
-  //   e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  // ) => {
-  //   e.stopPropagation();
-  //   setIsCourseStateOpen(!isCourseStateOpen);
-  // };
-
   const modifiers = [];
 
   isDragging && modifiers.push("is-dragging");
   selected && modifiers.push("selected");
   courseState.state && modifiers.push(courseState.state);
 
-  const type = course.mandatory ? "mandatory" : "optional";
+  const typeModifiers = course.mandatory ? ["mandatory"] : ["optional"];
 
   return (
     <div className="study-planner__course-tray-item">
       <PlannerCard
         modifiers={modifiers}
-        innerContainerModifiers={[type]}
+        innerContainerModifiers={typeModifiers}
         onClick={handleSelectCourse}
         ref={drag}
       >
-        <PlannerCardHeader modifiers={["sidebar-course-card"]}>
-          <span className="planner-sidebar-course__name">
+        <PlannerCardHeader modifiers={["course-tray-item"]}>
+          <span className="planner-course-tray-item__name">
             <b>{`${subjectCode} ${course.courseNumber}. `}</b>
             {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
           </span>
         </PlannerCardHeader>
 
         <PlannerCardContent modifiers={["planned-course-card"]}>
-          <PlannerCardLabel modifiers={[type]}>
-            {type === "mandatory" ? "PAKOLLINEN" : "VALINNAINEN"}
+          <PlannerCardLabel modifiers={typeModifiers}>
+            {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
           </PlannerCardLabel>
 
           {courseState.state && (

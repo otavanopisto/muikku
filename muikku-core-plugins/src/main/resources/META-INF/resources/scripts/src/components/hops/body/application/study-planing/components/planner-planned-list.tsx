@@ -5,10 +5,17 @@ import { StudentStudyActivity } from "~/generated/client";
 import { CurriculumConfig } from "~/util/curriculum-config";
 import PlannerPeriodCourseCard from "./planner-period-course";
 import _ from "lodash";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
+
+const variants: Variants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.8 },
+};
 
 /**
  * PlannerPlannedList props
+
  */
 interface PlannerPlannedListProps {
   disabled: boolean;
@@ -17,7 +24,6 @@ interface PlannerPlannedListProps {
   originalPlannedCourses: PlannedCourseWithIdentifier[];
   studyActivity: StudentStudyActivity[];
   curriculumConfig: CurriculumConfig;
-
   onCourseChange: (
     course: PlannedCourseWithIdentifier,
     action: CourseChangeAction
@@ -38,12 +44,11 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
     studyActivity,
     curriculumConfig,
     onCourseChange,
-
     onSelectCourse,
   } = props;
 
   return (
-    <ul>
+    <ul className="study-planner__planned-list">
       <AnimatePresence initial={false}>
         {courses.map((course) => {
           const isSelected = selectedCoursesIds.some(
@@ -67,27 +72,18 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
           return (
             <motion.li
               key={course.identifier}
-              initial={{
-                opacity: 0,
-                scale: 0.8,
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-              }}
-              exit={{
-                opacity: 0,
-                scale: 0.8,
-              }}
+              variants={variants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               transition={{
                 duration: 0.4,
                 ease: "easeOut",
               }}
-              style={{ width: "100%" }}
               layout="position"
             >
               <PlannerPeriodCourseCard
-                disabled={disabled}
+                disabled={disabled || courseActivity !== undefined}
                 key={course.identifier}
                 course={course}
                 selected={isSelected}

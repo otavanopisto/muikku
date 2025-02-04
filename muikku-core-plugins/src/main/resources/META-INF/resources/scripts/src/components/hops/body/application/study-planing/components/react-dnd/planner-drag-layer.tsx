@@ -3,7 +3,7 @@ import { XYCoord, useDragLayer } from "react-dnd";
 import { Course } from "~/@types/shared";
 import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 import PlannerPeriodCourseCardPreview from "./planner-period-course-preview";
-import PlannerSidebarCoursePreview from "./planner-sidebar-course-preview";
+import PlannerCourseTrayItemPreview from "./planner-course-tray-item-preview";
 
 const layerStyles: React.CSSProperties = {
   position: "fixed",
@@ -62,7 +62,7 @@ const renderItem = (type: string, item: any) => {
     case "new-course-card": {
       const course = item.info as Course & { subjectCode: string };
       return (
-        <PlannerSidebarCoursePreview
+        <PlannerCourseTrayItemPreview
           course={course}
           subjectCode={course.subjectCode}
         />
