@@ -230,24 +230,26 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                   </div>
                 </div>
               </div>
-              <div className="study-planner__plan-statistic-item">
-                <h4 className="study-planner__plan-statistic-item-title">
-                  Arvioitu opintoaika (kk).
-                </h4>
-                <div className="study-planner__plan-statistic-item-bar-container">
-                  <ProgressBar
-                    className="study-planner__plan-statistic-item-bar"
-                    completed={50}
-                    maxCompleted={100}
-                    isLabelVisible={false}
-                    bgColor="#de3211"
-                    baseBgColor="#f5f5f5"
-                  />
-                  <div className="study-planner__plan-statistic-item-bar-label">
-                    {`${estimatedTimeToCompletion}kk`}
+              {estimatedTimeToCompletion !== Infinity && (
+                <div className="study-planner__plan-statistic-item">
+                  <h4 className="study-planner__plan-statistic-item-title">
+                    Arvioitu opintoaika (kk).
+                  </h4>
+                  <div className="study-planner__plan-statistic-item-bar-container">
+                    <ProgressBar
+                      className="study-planner__plan-statistic-item-bar"
+                      completed={0}
+                      maxCompleted={100}
+                      isLabelVisible={false}
+                      bgColor="#de3211"
+                      baseBgColor="#f5f5f5"
+                    />
+                    <div className="study-planner__plan-statistic-item-bar-label">
+                      {`${estimatedTimeToCompletion}kk`}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </ApplicationSubPanel>
