@@ -15,7 +15,6 @@ import {
 } from "~/generated/client";
 import Avatar from "../avatar";
 import { useRecipientsToAvatars } from "./hooks/useRecipientsToAvatars";
-import Dropdown from "~/components/general/dropdown";
 
 /**
  * DropdownItem
@@ -479,16 +478,14 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         }`}
       >
         <div className="notes__item-hero">
-          {loggedUserIsCreator && (
-            <div className="notes__item-decoration">
-              <span
-                className={`
+          <div className="notes__item-decoration">
+            <span
+              className={`
                   notes__item-icon ${
                     multiUserNote ? "icon-users" : "icon-user"
                   }`}
-              />
-            </div>
-          )}
+            />
+          </div>
           <div className="notes__item-actions">
             {loggedUserIsCreator &&
               onNotesItemSaveUpdateClick &&
@@ -571,18 +568,27 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           className="notes__item-body"
           dangerouslySetInnerHTML={createHtmlMarkup(description)}
         />
-        {!specificRecipient && (
-          <div className="notes__item-recipients">
-            {avatars.map((avatar) => (
-              <Avatar
-                showTooltip
-                key={avatar.id}
-                {...avatar}
-                size="xsmall"
-              ></Avatar>
-            ))}
-          </div>
-        )}
+        <div className="notes__item-recipients">
+          {!specificRecipient
+            ? avatars.map((avatar) => (
+                <Avatar
+                  showTooltip
+                  key={avatar.id}
+                  {...avatar}
+                  size="xsmall"
+                ></Avatar>
+              ))
+            : avatars
+                .filter((avatar) => avatar.groupAvatar)
+                .map((avatar) => (
+                  <Avatar
+                    showTooltip
+                    key={avatar.id}
+                    {...avatar}
+                    size="xsmall"
+                  ></Avatar>
+                ))}
+        </div>
         {!loggedUserIsCreator && (
           <div className="notes__item-author">{creatorName}</div>
         )}
