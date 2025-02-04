@@ -517,14 +517,17 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                 aria-label={t("wcag.archiveUndo")}
               />
             )}
-            {loggedUserIsCreator && !archived && onArchiveClick && (
-              <IconButton
-                onClick={handleNotesItemArchiveClick}
-                icon="trash"
-                buttonModifiers={["notes-action", "notes-archive"]}
-                aria-label={t("wcag.archive")}
-              />
-            )}
+            {loggedUserIsCreator &&
+              !archived &&
+              !multiUserNote &&
+              onArchiveClick && (
+                <IconButton
+                  onClick={handleNotesItemArchiveClick}
+                  icon="trash"
+                  buttonModifiers={["notes-action", "notes-archive"]}
+                  aria-label={t("wcag.archive")}
+                />
+              )}
             {(specificRecipient || !multiUserNote) &&
               (loggedUserIsCreator || loggedUserIsOwner) &&
               renderUpdateStatus()}
