@@ -79,11 +79,15 @@
 // Timeline
 .study-planner__timeline-container {
   position: relative;
-  overflow-x: auto;
   flex-basis: 100%;
   flex-shrink: 1;
   flex-grow: 1;
   display: flex;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 .study-planner__timeline {
@@ -177,6 +181,24 @@
 // Scrollable container
 .study-planner__scrollable-container {
   overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $color-default-lighter-generic-background;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-default-separator-border;
+    border-radius: 4px;
+
+    &:hover {
+      background: darken($color-default-separator-border, 10%);
+    }
+  }
 }
 
 // Months list

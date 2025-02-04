@@ -3,6 +3,18 @@ import { useCallback, useImperativeHandle, useState, useEffect } from "react";
 import { PlannedPeriod } from "~/reducers/hops";
 import PlannerPeriod from "../planner-period";
 
+// Scroll control constants
+const SCROLL_CONTROLS = {
+  // Initial velocity and immediate scrolling
+  VELOCITY_MULTIPLIER: 5, // Controls how strong the momentum is based on mouse movement
+  IMMEDIATE_SCROLL_SPEED: 4, // Controls how fast the timeline follows the mouse during drag
+
+  // Momentum scrolling
+  MOMENTUM_MULTIPLIER: 32, // Controls how fast the momentum scrolling moves
+  MOMENTUM_DECAY: 0.97, // Controls how quickly the momentum dies off (closer to 1 = longer scroll)
+  MOMENTUM_STOP_THRESHOLD: 0.01, // Controls when to stop the momentum scrolling
+};
+
 const MemoizedPlannerPeriod = React.memo(PlannerPeriod);
 
 /**
@@ -34,10 +46,17 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
   const isMouseOverTimelineRef = React.useRef(false);
   const mousePositionRef = React.useRef({ x: 0 });
 
-  // Update dragStart state to include initial mouse position
+  // Add velocity tracking
+  const velocityRef = React.useRef(0);
+  const lastMouseXRef = React.useRef(0);
+  const lastTimeRef = React.useRef(0);
+  const animationFrameRef = React.useRef<number>();
+
+  // Update dragStart to include timestamp
   const dragStart = React.useRef<{
     mouseX: number;
     scrollLeft: number;
+    timestamp: number;
   } | null>(null);
 
   // Add effect to update overlay width when content changes
@@ -84,21 +103,46 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
         timelineContentRef.current &&
         dragStart.current
       ) {
-        const dx = event.clientX - dragStart.current!.mouseX;
-        const newScrollLeft = dragStart.current!.scrollLeft - dx;
-        timelineContentRef.current!.scrollLeft = newScrollLeft;
+        const deltaX = event.clientX - lastMouseXRef.current;
+        const currentTime = Date.now();
+        const deltaTime = currentTime - lastTimeRef.current;
+
+        if (deltaTime > 0) {
+          velocityRef.current =
+            (deltaX / deltaTime) * SCROLL_CONTROLS.VELOCITY_MULTIPLIER;
+        }
+
+        const dx = event.clientX - dragStart.current.mouseX;
+        const newScrollLeft =
+          dragStart.current.scrollLeft -
+          dx * SCROLL_CONTROLS.IMMEDIATE_SCROLL_SPEED;
+        timelineContentRef.current.scrollLeft = newScrollLeft;
+
+        lastMouseXRef.current = event.clientX;
+        lastTimeRef.current = currentTime;
       }
     },
-    [isDraggingTimeline] // No dependencies needed now
+    [isDraggingTimeline]
   );
 
-  // Clean up event listeners when component unmounts
-  useEffect(
-    () => () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-    },
-    [handleMouseMove]
-  );
+  /**
+   * Applies momentum
+   */
+  const applyMomentum = useCallback(() => {
+    if (
+      !timelineContentRef.current ||
+      Math.abs(velocityRef.current) < SCROLL_CONTROLS.MOMENTUM_STOP_THRESHOLD
+    ) {
+      velocityRef.current = 0;
+      return;
+    }
+
+    timelineContentRef.current.scrollLeft -=
+      velocityRef.current * SCROLL_CONTROLS.MOMENTUM_MULTIPLIER;
+    velocityRef.current *= SCROLL_CONTROLS.MOMENTUM_DECAY;
+
+    animationFrameRef.current = requestAnimationFrame(applyMomentum);
+  }, []);
 
   /**
    * Handles key down. Start dragging when space is pressed
@@ -113,7 +157,14 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
         dragStart.current = {
           mouseX: mousePositionRef.current.x,
           scrollLeft: timelineContentRef.current.scrollLeft,
+          timestamp: Date.now(),
         };
+        lastMouseXRef.current = mousePositionRef.current.x;
+        lastTimeRef.current = Date.now();
+        velocityRef.current = 0;
+
+        // Cancel any ongoing momentum scrolling
+        cancelAnimationFrame(animationFrameRef.current!);
       }
 
       document.addEventListener("mousemove", handleMouseMove);
@@ -130,9 +181,16 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
       dragStart.current = null;
 
       document.removeEventListener("mousemove", handleMouseMove);
+
+      // Start momentum scrolling
+      applyMomentum();
     }
   };
 
+  /**
+   * Scrolls to the adjacent period
+   * @param direction direction
+   */
   const scrollToAdjacentPeriod = useCallback((direction: "next" | "prev") => {
     const container = timelineContentRef.current;
     if (!container) return;
@@ -179,6 +237,15 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
       scrollToAdjacentPeriod,
     }),
     [scrollToAdjacentPeriod]
+  );
+
+  // Clean up event listeners and animation frames when component unmounts
+  useEffect(
+    () => () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameRef.current!);
+    },
+    [handleMouseMove]
   );
 
   return (
