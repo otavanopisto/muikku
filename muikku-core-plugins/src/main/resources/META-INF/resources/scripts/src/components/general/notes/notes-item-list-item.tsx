@@ -449,7 +449,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           <span>{item.text}</span>
         </Link>
       );
-      const 
       return (
         <Dropdown
           items={items.map(
