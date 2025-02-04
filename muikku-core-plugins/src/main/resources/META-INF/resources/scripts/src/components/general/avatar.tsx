@@ -1,6 +1,7 @@
 import * as React from "react";
 import { getUserImageUrl } from "~/util/modifiers";
 import "~/sass/elements/avatar.scss";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * AvatarProps
@@ -14,6 +15,7 @@ export interface AvatarProps {
   userCategory?: number;
   avatarAriaLabel?: string;
   modifier?: string;
+  showTooltip?: boolean;
   avatarAriaHidden?: boolean;
 }
 
@@ -33,6 +35,7 @@ const Avatar = (props: AvatarProps) => {
     avatarAriaLabel,
     avatarAriaHidden,
     groupAvatar,
+    showTooltip,
   } = props;
 
   const category = React.useMemo(() => {
@@ -44,55 +47,54 @@ const Avatar = (props: AvatarProps) => {
     return Math.floor(Math.random() * 10 + 1);
   }, [id, userCategory]);
 
-  return hasImage ? (
+  const avatarContent = hasImage ? (
+    <img
+      src={getUserImageUrl(id)}
+      alt=""
+      aria-label={avatarAriaLabel}
+      className={`avatar avatar-img ${size ? "avatar--" + size : ""} ${
+        modifier ? "avatar--" + modifier : ""
+      }`}
+    />
+  ) : (
+    <div
+      className={`avatar avatar--category-${category} ${
+        size ? "avatar--" + size : ""
+      } ${groupAvatar ? "avatar--" + groupAvatar : ""} ${modifier ? "avatar--" + modifier : ""} `}
+    >
+      {firstName[0]}
+    </div>
+  );
+
+  return (
     <div
       className={`avatar-container ${size ? "avatar-container--" + size : ""} ${
         modifier ? "avatar-container--" + modifier : ""
-      } rs_skip_always`}
-      aria-hidden={avatarAriaHidden}
-    >
-      <img
-        src={getUserImageUrl(id)}
-        alt=""
-        aria-label={avatarAriaLabel}
-        className={`avatar avatar-img ${size ? "avatar--" + size : ""} ${
-          modifier ? "avatar--" + modifier : ""
-        }`}
-      />
-      <div
-        className={`avatar avatar--category-${category} ${
-          size ? "avatar--" + size : ""
-        } ${modifier ? "avatar--" + modifier : ""}`}
-      >
-        {firstName[0]}
-      </div>
-    </div>
-  ) : (
-    <div
-      className={`avatar-container ${size ? "avatar-container--" + size : ""} ${groupAvatar ? "avatar-container--" + groupAvatar : ""} ${
-        modifier ? "avatar-container--" + modifier : ""
-      } rs_skip_always`}
+      } ${groupAvatar ? "avatar-container--group" : ""} rs_skip_always`}
       aria-hidden={avatarAriaHidden}
     >
       {groupAvatar ? (
         <div
           className={`avatar avatar--group ${
             size ? "avatar--" + size : ""
-          } ${groupAvatar ? "avatar--" + groupAvatar : ""} ${modifier ? "avatar--" + modifier : ""} `}
+          } ${"avatar--" + groupAvatar} ${modifier ? "avatar--" + modifier : ""} `}
         >
           <span
             className={`avatar__decoration icon icon-${groupAvatar === "usergroup" ? "users" : "books"}`}
           ></span>
           <span className="avatar__text">{firstName}</span>
         </div>
-      ) : (
-        <div
-          className={`avatar avatar--category-${category} ${
-            size ? "avatar--" + size : ""
-          } ${groupAvatar ? "avatar--" + groupAvatar : ""} ${modifier ? "avatar--" + modifier : ""} `}
+      ) : showTooltip ? (
+        <Dropdown
+          openByHover
+          key="avatar"
+          content={firstName}
+          tooltipId={`avatar-${id}`}
         >
-          {firstName[0]}
-        </div>
+          {avatarContent}
+        </Dropdown>
+      ) : (
+        avatarContent
       )}
     </div>
   );

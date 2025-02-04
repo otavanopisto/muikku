@@ -15,6 +15,8 @@ import {
 } from "~/generated/client";
 import Avatar from "../avatar";
 import { useRecipientsToAvatars } from "./hooks/useRecipientsToAvatars";
+import Dropdown from "~/components/general/dropdown";
+
 /**
  * DropdownItem
  */
@@ -572,7 +574,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         {!specificRecipient && (
           <div className="notes__item-recipients">
             {avatars.map((avatar) => (
-              <Avatar key={avatar.id} {...avatar} size="xsmall"></Avatar>
+              <Avatar
+                showTooltip
+                key={avatar.id}
+                {...avatar}
+                size="xsmall"
+              ></Avatar>
             ))}
           </div>
         )}
