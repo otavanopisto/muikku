@@ -567,7 +567,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             bottom to help maintain consistent rendering within the notes element
         */}
         <div
-          className="notes__item-body"
+          className="notes__item-body rich-text"
           dangerouslySetInnerHTML={createHtmlMarkup(description)}
         />
         <div className="notes__item-recipients">

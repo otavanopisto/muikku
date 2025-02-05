@@ -77,7 +77,7 @@ export const NoteComponent: React.FC<NoteProps> = (props) => {
       </div>
       <AnimateHeight height={showDescription ? "auto" : 0}>
         <div
-          className="note__description"
+          className="note__description rich-text"
           dangerouslySetInnerHTML={{ __html: note.description }}
         ></div>
         <div className="note__footer">

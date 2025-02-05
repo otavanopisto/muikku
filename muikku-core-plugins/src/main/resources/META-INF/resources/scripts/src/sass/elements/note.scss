@@ -58,15 +58,18 @@
 }
 
 .note__description {
-  font-size: 0.9375rem;
-  font-weight: 300;
   padding: 5px;
 
-  p {
-    margin: 0 0 10px;
+  // Override font-size inherited from global .rich-tect rule
+  &.rich-text {
+    font-size: $text-mobile-font-size;
 
-    &:last-child {
-      margin: 0;
+    @include breakpoint($breakpoint-pad) {
+      font-size: $text-desktop-font-size;
+    }
+
+    p:first-child {
+      margin-top: 0;
     }
   }
 }
