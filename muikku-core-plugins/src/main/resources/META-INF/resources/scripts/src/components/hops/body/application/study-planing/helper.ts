@@ -1,5 +1,5 @@
 import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
-import { StudentStudyActivity } from "~/generated/client";
+import { CourseStatus, StudentStudyActivity } from "~/generated/client";
 import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 import { CurriculumStrategy } from "~/util/curriculum-config";
 
@@ -84,8 +84,17 @@ const createAndAllocateCoursesToPeriods = (
 };
 
 /**
+ * Filtered course
+ */
+interface FilteredCourse extends Course {
+  state?: CourseStatus | "PLANNED";
+  studyActivity?: StudentStudyActivity;
+}
+
+/**
  * Filters subjects and courses
  * @param subjects subjects
+
  * @param searchTerm search term
  * @param selectedFilters selected filters
  * @param availableOPSCoursesMap available OPS courses map
@@ -102,24 +111,38 @@ const filterSubjectsAndCourses = (
   plannedCourses: PlannedCourseWithIdentifier[]
 ) =>
   subjects
-    .map((subject) => {
-      let filteredCoursesWithStudyActivity = [...subject.availableCourses].map(
-        (course) => {
-          const studyActivity = studyActivities.find(
-            (sa) =>
-              sa.courseNumber === course.courseNumber &&
-              sa.subject === subject.subjectCode
-          );
+    .map((subject, i) => {
+      let filteredCoursesWithStudyActivity = [
+        ...subject.availableCourses,
+      ].map<FilteredCourse>((course) => {
+        const studyActivity = studyActivities.find(
+          (sa) =>
+            sa.courseNumber === course.courseNumber &&
+            sa.subject === subject.subjectCode
+        );
 
-          const plannedCourse = plannedCourses.find(
-            (pc) =>
-              pc.courseNumber === course.courseNumber &&
-              pc.subjectCode === subject.subjectCode
-          );
+        const plannedCourse = plannedCourses.find(
+          (pc) =>
+            pc.courseNumber === course.courseNumber &&
+            pc.subjectCode === subject.subjectCode
+        );
 
-          return { ...course, studyActivity, planned: !!plannedCourse };
+        let state: CourseStatus | "PLANNED" = undefined;
+
+        if (plannedCourse) {
+          state = "PLANNED";
         }
-      );
+
+        if (studyActivity) {
+          state = studyActivity.status;
+        }
+
+        return {
+          ...course,
+          studyActivity,
+          state,
+        };
+      });
 
       const skipMandatoryChecking =
         selectedFilters.includes("mandatory") &&
@@ -138,27 +161,6 @@ const filterSubjectsAndCourses = (
           );
       }
 
-      filteredCoursesWithStudyActivity =
-        filteredCoursesWithStudyActivity.filter(
-          (course) =>
-            course.studyActivity === undefined ||
-            (selectedFilters.includes("GRADED") &&
-              course.studyActivity.status === "GRADED") ||
-            (selectedFilters.includes("ONGOING") &&
-              course.studyActivity.status === "ONGOING") ||
-            (selectedFilters.includes("SUPPLEMENTATIONREQUEST") &&
-              course.studyActivity.status === "SUPPLEMENTATIONREQUEST") ||
-            (selectedFilters.includes("TRANSFERRED") &&
-              course.studyActivity.status === "TRANSFERRED")
-        );
-
-      // By default filter out planned courses
-      if (!selectedFilters.includes("planned")) {
-        // Filter out planned courses
-        filteredCoursesWithStudyActivity =
-          filteredCoursesWithStudyActivity.filter((course) => !course.planned);
-      }
-
       // Filter available OPS courses
       if (selectedFilters.includes("available")) {
         filteredCoursesWithStudyActivity =
@@ -171,6 +173,21 @@ const filterSubjectsAndCourses = (
             );
           });
       }
+
+      filteredCoursesWithStudyActivity =
+        filteredCoursesWithStudyActivity.filter(
+          (course) =>
+            course.state === undefined ||
+            (selectedFilters.includes("planned") &&
+              course.state === "PLANNED") ||
+            (selectedFilters.includes("GRADED") && course.state === "GRADED") ||
+            (selectedFilters.includes("ONGOING") &&
+              course.state === "ONGOING") ||
+            (selectedFilters.includes("SUPPLEMENTATIONREQUEST") &&
+              course.state === "SUPPLEMENTATIONREQUEST") ||
+            (selectedFilters.includes("TRANSFERRED") &&
+              course.state === "TRANSFERRED")
+        );
 
       // Apply search term
       if (searchTerm !== "") {

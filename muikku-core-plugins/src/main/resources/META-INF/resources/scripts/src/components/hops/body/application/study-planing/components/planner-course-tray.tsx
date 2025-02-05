@@ -240,20 +240,6 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                     subjectCode: subject.subjectCode,
                   });
 
-                  const courseActivity = studyActivity?.find(
-                    (activity) =>
-                      activity.subject === subject.subjectCode &&
-                      activity.courseNumber === course.courseNumber
-                  );
-
-                  // Check if the course is already planned
-                  const isPlannedCourse =
-                    plannedCourses.findIndex(
-                      (plannedCourse) =>
-                        plannedCourse.subjectCode === subject.subjectCode &&
-                        plannedCourse.courseNumber === course.courseNumber
-                    ) !== -1;
-
                   return (
                     <PlannerCourseTrayItem
                       key={
@@ -263,9 +249,9 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                       disabled={disabled}
                       course={course}
                       subjectCode={subject.subjectCode}
-                      isPlannedCourse={isPlannedCourse}
+                      isPlannedCourse={course.state === "PLANNED"}
                       selected={selected}
-                      studyActivity={courseActivity}
+                      studyActivity={course.studyActivity}
                       curriculumConfig={curriculumConfig}
                       onSelectCourse={onCourseClick}
                     />
