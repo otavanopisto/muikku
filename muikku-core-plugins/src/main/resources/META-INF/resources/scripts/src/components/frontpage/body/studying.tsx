@@ -89,7 +89,9 @@ class FrontpageStudying extends React.Component<
                     "frontpage-secondary-school-readmore",
                   ]}
                 >
-                  {this.props.t("actions.tourNettilukio", { ns: "frontPage" })}
+                  {this.props.t("actions.tourNettiperuskoulu", {
+                    ns: "frontPage",
+                  })}
                 </Button>
               </div>
             </div>
