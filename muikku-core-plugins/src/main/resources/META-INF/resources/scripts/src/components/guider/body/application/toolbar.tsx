@@ -174,6 +174,7 @@ class GuiderToolbar extends React.Component<
   /**
    * handleNoteCreation
    * @param request request
+   * @param onSuccess onSuccess
    */
   handleNoteCreation = (request: CreateNoteRequest, onSuccess: () => void) => {
     this.props.createNote(request, onSuccess);
