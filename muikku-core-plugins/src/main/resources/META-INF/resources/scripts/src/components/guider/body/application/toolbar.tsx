@@ -174,9 +174,10 @@ class GuiderToolbar extends React.Component<
   /**
    * handleNoteCreation
    * @param request request
+   * @param onSuccess onSuccess
    */
-  handleNoteCreation = (request: CreateNoteRequest) => {
-    this.props.createNote(request);
+  handleNoteCreation = (request: CreateNoteRequest, onSuccess: () => void) => {
+    this.props.createNote(request, onSuccess);
   };
   /**
    * Removes a user from redux state when the user is removed from a new message dialog on a contacts change
