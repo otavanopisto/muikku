@@ -265,7 +265,7 @@ class NotesItemNew extends SessionStateComponent<
             className="env-dialog__input"
             selected={
               this.state.notesItem.note.startDate
-                ? new Date(this.state.notesItem.note.startDate)
+                ? this.state.notesItem.note.startDate
                 : undefined
             }
             onChange={(date, e) =>

@@ -54,7 +54,6 @@ const GuiderNotes = (props: GuiderNotesProps) => {
     },
     [dispatch]
   );
-
   /**
    * onUpdateNotesItemStatus function
    * @param noteId noteId
