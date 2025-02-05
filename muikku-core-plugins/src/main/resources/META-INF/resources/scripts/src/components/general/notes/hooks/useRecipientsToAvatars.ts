@@ -2,7 +2,7 @@ import { NoteReceiver } from "~/generated/client";
 import { AvatarProps } from "~/components/general/avatar";
 import { useMemo } from "react";
 /**
- * trimNoteRecipients reduces the NoteReceiver array to only the unique recipients
+ * useRecipientsToAvatars turns note recipients into avatars
  * @param recipients recipients
  */
 export const useRecipientsToAvatars = (
@@ -46,7 +46,7 @@ export const useRecipientsToAvatars = (
         workspaceIds.push(workspaceId);
         avatars.push({
           hasImage: false,
-          id: userGroupId,
+          id: workspaceId,
           groupAvatar: "workspace",
           firstName: workspaceName,
         });

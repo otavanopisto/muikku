@@ -108,7 +108,6 @@ export const useNotesItem = (
 
   /**
    * Creates notesItem
-   *
    * @param createNoteRequest newNotesItem
    * @param onSuccess onSuccess
    */
@@ -117,7 +116,6 @@ export const useNotesItem = (
     onSuccess?: () => void
   ) => {
     setNotesItem((notesItems) => ({ ...notesItems, isUpdatingList: true }));
-
     try {
       // Creating and getting created notesItem
       const createdNotesItem = await notesApi.createNote({
@@ -132,7 +130,6 @@ export const useNotesItem = (
 
         // Update list
         updatedArchivedNotesItemList.push(createdNotesItem);
-
         setNotesItem((notesItems) => ({
           ...notesItems,
           notesArchivedItemList: setToDefaultSortingOrder(
@@ -154,9 +151,7 @@ export const useNotesItem = (
           notesItemList: setToDefaultSortingOrder(updatedNotesItemList),
           isUpdatingList: false,
         }));
-
         onSuccess && onSuccess();
-
         displayNotification(t("notifications.createSuccess"), "success");
       }
     } catch (err) {
@@ -199,6 +194,11 @@ export const useNotesItem = (
       const indexOfOldNote = updatedNotesItemList.findIndex(
         (j) => j.id === notesItemId
       );
+
+      if (indexOfOldNote === -1) {
+        displayNotification(t("notifications.noteIndexNotFoundError"), "error");
+        return;
+      }
 
       // Splice it out and replace with updated one
       updatedNotesItemList.splice(indexOfOldNote, 1, updatedNotesItem);
@@ -253,6 +253,11 @@ export const useNotesItem = (
         (j) => j.id === notesItemId
       );
 
+      if (indexOfOldNote === -1) {
+        displayNotification(t("notifications.noteIndexNotFoundError"), "error");
+        return;
+      }
+
       // Update lists by removing and adding updated notesItem
       updatedNotesItemList.splice(indexOfOldNote, 1);
       updatedNotesArchivedItemList.push(updatedNotesItem);
@@ -280,7 +285,6 @@ export const useNotesItem = (
       }));
     }
   };
-
   /**
    * Returns archived notesItems from archived list
    *
@@ -309,6 +313,11 @@ export const useNotesItem = (
       const indexOfOldNote = updatedNotesArchivedItemList.findIndex(
         (j) => j.id === notesItemId
       );
+
+      if (indexOfOldNote === -1) {
+        displayNotification(t("notifications.noteIndexNotFoundError"), "error");
+        return;
+      }
 
       // Update lists by removing and adding updated notesItem
       updatedNotesItemList.push(updatedNotesItem);
@@ -354,7 +363,12 @@ export const useNotesItem = (
       const indexOfNotesItem = notesItems.notesItemList.findIndex(
         (j) => j.id === noteId
       );
-      t;
+
+      if (indexOfNotesItem === -1) {
+        displayNotification(t("notifications.noteIndexNotFoundError"), "error");
+        return;
+      }
+
       const notesItemToUpdate = notesItems.notesItemList[indexOfNotesItem];
 
       // Updating and getting updated notesItem
@@ -373,12 +387,16 @@ export const useNotesItem = (
         (r) => r.recipient === recipientId
       );
 
+      if (recipientToUpdateIndex === -1) {
+        displayNotification(
+          t("notifications.recipientIndexNotFoundError"),
+          "error"
+        );
+        return;
+      }
+
       // Splice out the old recipient and replace with the updated one
-      noteRecipientsListUpdate.splice(
-        recipientToUpdateIndex,
-        1,
-        updatedNoteReceiver
-      );
+      noteRecipientsListUpdate[recipientToUpdateIndex] = updatedNoteReceiver;
 
       // Create a new notesItem object with the updated recipient list
       const updatedNotesItem = {
@@ -387,7 +405,7 @@ export const useNotesItem = (
       };
 
       // Splice out the old notesItem and replace with the updated one
-      noteListUpdate.splice(indexOfNotesItem, 1, updatedNotesItem);
+      noteListUpdate[indexOfNotesItem] = updatedNotesItem;
 
       setNotesItem((notesItems) => ({
         ...notesItems,
