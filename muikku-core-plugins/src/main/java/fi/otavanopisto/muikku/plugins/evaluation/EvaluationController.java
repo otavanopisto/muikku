@@ -226,9 +226,12 @@ public class EvaluationController {
       // Supplementation request, if one exists and is newer than activity date so far
 
       for (WorkspaceAssessmentState assessment : activity.getAssessmentStates()) {
-        SchoolDataIdentifier workspaceSubjectIdentifier = SchoolDataIdentifier.fromId(assessment.getSubjectIdentifier());
-        SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
-            userEntity.getId(), workspaceEntity.getId(), workspaceSubjectIdentifier, Boolean.FALSE);
+        SupplementationRequest supplementationRequest = findLatestSupplementationRequestByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(
+            userEntity.getId(),
+            workspaceEntity.getId(),
+            SchoolDataIdentifier.fromId(assessment.getSubjectIdentifier()),
+            Boolean.FALSE,
+            Boolean.FALSE);
         if (supplementationRequest != null && supplementationRequest.getRequestDate().after(assessment.getDate())) {
           assessment.setText(supplementationRequest.getRequestText());
           assessment.setDate(supplementationRequest.getRequestDate());
@@ -557,7 +560,7 @@ public class EvaluationController {
   }
 
   public void markSupplementationRequestHandled(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier) {
-    List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceAndSubjectAndHandledAndArchived(
+    List<SupplementationRequest> supplementationRequests = supplementationRequestDAO.listByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(
         studentEntityId,
         workspaceEntityId,
         workspaceSubjectIdentifier.toId(),
@@ -699,16 +702,16 @@ public class EvaluationController {
     return supplementationRequestDAO.listByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
   }
 
-  public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndSubjectAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean handled, Boolean archived) {
-    return supplementationRequestDAO.listByStudentAndWorkspaceAndSubjectAndHandledAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier.toId(), handled, archived);
+  public List<SupplementationRequest> listSupplementationRequestsByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier subjectIdentifier, Boolean handled, Boolean archived) {
+    return supplementationRequestDAO.listByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(studentEntityId, workspaceEntityId, subjectIdentifier.toId(), handled, archived);
   }
 
-  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
-    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
+  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean handled, Boolean archived) {
+    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndHandledAndArchived(studentEntityId, workspaceEntityId, handled, archived);
   }
 
-  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier workspaceSubjectIdentifier, Boolean archived) {
-    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, workspaceSubjectIdentifier, archived);
+  public SupplementationRequest findLatestSupplementationRequestByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(Long studentEntityId, Long workspaceEntityId, SchoolDataIdentifier subjectIdentifier, Boolean handled, Boolean archived) {
+    return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(studentEntityId, workspaceEntityId, subjectIdentifier, handled, archived);
   }
 
   /**
