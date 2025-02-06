@@ -58,7 +58,12 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
 
     const result: any = base;
     Object.keys(result).forEach((key) => {
-      result[key] = JSON.parse(internalStorage.recover(key)) || result[key];
+      const recovered = JSON.parse(internalStorage.recover(key));
+      if (result[key] instanceof Date && typeof recovered === "string") {
+        result[key] = recovered ? new Date(recovered) : result[key];
+      } else {
+        result[key] = recovered || result[key];
+      }
     });
 
     this.recovered = JSON.stringify(result) !== baseSerialized;
@@ -81,7 +86,12 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
 
     const result: any = base;
     Object.keys(result).forEach((key) => {
-      result[key] = JSON.parse(internalStorage.recover(key)) || result[key];
+      const recovered = JSON.parse(internalStorage.recover(key));
+      if (result[key] instanceof Date && typeof recovered === "string") {
+        result[key] = recovered ? new Date(recovered) : result[key];
+      } else {
+        result[key] = recovered || result[key];
+      }
     });
 
     const recovered = JSON.stringify(result) !== baseSerialized;
