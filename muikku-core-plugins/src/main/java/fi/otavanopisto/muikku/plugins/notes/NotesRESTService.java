@@ -116,6 +116,14 @@ public class NotesRESTService extends PluginRESTService {
 
     NoteRestModel note = payload.getNote();
 
+    if (note.getTitle().isEmpty()) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing title").build();
+    }
+    
+    if (note.getDescription().isEmpty()) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing description").build();
+    }
+    
     Note newNote = null;
     NoteReceiver newReceiver = null;
     List<NoteReceiverRestModel> receiverList = new ArrayList<NoteReceiverRestModel>();
@@ -547,7 +555,7 @@ public class NotesRESTService extends PluginRESTService {
       if (workspaceEntity != null) {
 
         WorkspaceEntityName workspaceEntityName = workspaceEntityController.getName(workspaceEntity);
-        workspaceName = workspaceEntityName.getName();
+        workspaceName = workspaceEntityName.getDisplayName();
       }
     }
     String recipientName = null;
