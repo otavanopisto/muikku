@@ -48,12 +48,9 @@ const GuiderNotes = (props: GuiderNotesProps) => {
    * onArchiveClick function
    * @param noteId noteId
    */
-  const onArchiveClick = React.useCallback(
-    (noteId: number) => {
-      dispatch(toggleNoteArchive(noteId));
-    },
-    [dispatch]
-  );
+  const onArchiveClick = (noteId: number) => {
+    dispatch(toggleNoteArchive(noteId));
+  };
   /**
    * onUpdateNotesItemStatus function
    * @param noteId noteId
@@ -72,6 +69,9 @@ const GuiderNotes = (props: GuiderNotesProps) => {
   );
   /**
    * onNotesItemSaveUpdateClick function
+   * @param noteId noteId
+   * @param request request
+   * @param onSuccess onSuccess
    */
   const onNotesItemSaveUpdateClick = React.useCallback(
     (noteId: number, request: UpdateNoteRequest, onSuccess?: () => void) => {
@@ -79,6 +79,7 @@ const GuiderNotes = (props: GuiderNotesProps) => {
     },
     [dispatch]
   );
+
   return (
     <div className="notes--full-height">
       {loadingState === "LOADING" && <div className="loader-empty" />}

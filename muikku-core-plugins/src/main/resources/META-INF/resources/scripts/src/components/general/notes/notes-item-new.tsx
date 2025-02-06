@@ -13,6 +13,8 @@ import {
   CreateNoteRequest,
   NoteCreationObject,
   NotePriorityType,
+  NoteRecipientList,
+  NoteCreationType,
 } from "~/generated/client";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill"; // InputContactsAutofillLoaders,
 import { ContactRecipientType } from "~/reducers/user-index";
@@ -37,9 +39,16 @@ interface NotesItemNewProps extends WithTranslation {
  * JournalCenterItemNewState
  */
 interface NotesItemNewState {
-  notesItem: CreateNoteRequest;
-  recipients: ContactRecipientType[];
+  autofillRecipients: ContactRecipientType[];
+  description: string;
+  dueDate: null;
   locked: boolean;
+  pinned: boolean;
+  priority: NotePriorityType;
+  recipients: NoteRecipientList;
+  startDate: Date;
+  title: string;
+  type: NoteCreationType;
 }
 
 /**
@@ -60,26 +69,22 @@ class NotesItemNew extends SessionStateComponent<
 
     this.state = this.getRecoverStoredState({
       locked: false,
-      recipients: [],
-      notesItem: {
-        pinned: false,
-        recipients: {
-          recipientIds: props.newNoteRecipientId
-            ? [props.newNoteRecipientId]
-            : [],
+      autofillRecipients: [],
+      pinned: false,
+      recipients: {
+        recipientIds: props.newNoteRecipientId
+          ? [props.newNoteRecipientId]
+          : [],
 
-          recipientGroupIds: [],
-          recipientStudentsWorkspaceIds: [],
-        },
-        note: {
-          title: "",
-          description: "",
-          type: "MANUAL",
-          priority: "NORMAL",
-          startDate: new Date(),
-          dueDate: null,
-        },
+        recipientGroupIds: [],
+        recipientStudentsWorkspaceIds: [],
       },
+      title: "",
+      description: "",
+      type: "MANUAL",
+      priority: "NORMAL",
+      startDate: new Date(),
+      dueDate: null,
     });
   }
 
@@ -89,25 +94,21 @@ class NotesItemNew extends SessionStateComponent<
   clearUp() {
     this.setStateAndClear({
       locked: false,
-      recipients: [],
-      notesItem: {
-        pinned: false,
-        recipients: {
-          recipientIds: this.props.newNoteRecipientId
-            ? [this.props.newNoteRecipientId]
-            : [],
-          recipientGroupIds: [],
-          recipientStudentsWorkspaceIds: [],
-        },
-        note: {
-          title: "",
-          description: "",
-          type: "MANUAL",
-          priority: "NORMAL",
-          startDate: new Date(),
-          dueDate: null,
-        },
+      autofillRecipients: [],
+      pinned: false,
+      recipients: {
+        recipientIds: this.props.newNoteRecipientId
+          ? [this.props.newNoteRecipientId]
+          : [],
+        recipientGroupIds: [],
+        recipientStudentsWorkspaceIds: [],
       },
+      title: "",
+      description: "",
+      type: "MANUAL",
+      priority: "NORMAL",
+      startDate: new Date(),
+      dueDate: null,
     });
   }
 
@@ -116,8 +117,21 @@ class NotesItemNew extends SessionStateComponent<
    * @param closeDialog closeDialog
    */
   handleSaveClick = (closeDialog: () => void) => () => {
+    const payload: CreateNoteRequest = {
+      note: {
+        title: this.state.title,
+        description: this.state.description,
+        type: this.state.type,
+        priority: this.state.priority,
+        startDate: this.state.startDate,
+        dueDate: this.state.dueDate,
+      },
+      pinned: this.state.pinned,
+      recipients: this.state.recipients,
+    };
+
     this.props.onNotesItemSaveClick &&
-      this.props.onNotesItemSaveClick(this.state.notesItem, () => {
+      this.props.onNotesItemSaveClick(payload, () => {
         this.clearUp();
         closeDialog();
       });
@@ -128,45 +142,41 @@ class NotesItemNew extends SessionStateComponent<
    * @param key name of updated property
    * @param value of updated property
    */
-  handleNotesItemChange = <T extends keyof NoteCreationObject>(
+  handleNotesItemChange = <T extends keyof NotesItemNewState>(
     key: T,
-    value: NoteCreationObject[T]
+    value: NotesItemNewState[T]
   ) => {
-    const updateNotesItem = { ...this.state.notesItem.note };
+    const updateNotesItem = { ...this.state };
 
     updateNotesItem[key] = value;
 
-    this.setStateAndStore({
-      notesItem: { ...this.state.notesItem, note: updateNotesItem },
-    });
+    this.setStateAndStore({ ...this.state, ...updateNotesItem });
   };
 
   /**
    * handleRecipientsChange
-   * @param recipients recipients
+   * @param autofillRecipients recipients
    */
-  handleRecipientsChange = (recipients: ContactRecipientType[]) => {
-    const recipientIds = recipients
+  handleRecipientsChange = (autofillRecipients: ContactRecipientType[]) => {
+    const recipientIds = autofillRecipients
       .filter((recipient) => recipient.type == "user")
       .map((recipient) => recipient.value.id);
 
-    const recipientGroupIds = recipients
+    const recipientGroupIds = autofillRecipients
       .filter((recipient) => recipient.type === "usergroup")
       .map((recipient) => recipient.value.id);
 
-    const recipientStudentsWorkspaceIds = recipients
+    const recipientStudentsWorkspaceIds = autofillRecipients
       .filter((recipient) => recipient.type === "workspace")
       .map((recipient) => recipient.value.id);
 
     this.setStateAndStore({
-      recipients,
-      notesItem: {
-        ...this.state.notesItem,
-        recipients: {
-          recipientIds,
-          recipientGroupIds,
-          recipientStudentsWorkspaceIds,
-        },
+      autofillRecipients,
+      ...this.state,
+      recipients: {
+        recipientIds,
+        recipientGroupIds,
+        recipientStudentsWorkspaceIds,
       },
     });
   };
@@ -198,7 +208,7 @@ class NotesItemNew extends SessionStateComponent<
                 ns: "messaging",
                 count: 0,
               })}
-              selectedItems={this.state.recipients}
+              selectedItems={this.state.autofillRecipients}
               onChange={this.handleRecipientsChange}
               autofocus={false}
             />
@@ -216,7 +226,7 @@ class NotesItemNew extends SessionStateComponent<
             onChange={(e) =>
               this.handleNotesItemChange("title", e.currentTarget.value)
             }
-            value={this.state.notesItem.note.title}
+            value={this.state.title}
           />
         </div>
 
@@ -232,7 +242,7 @@ class NotesItemNew extends SessionStateComponent<
                 e.target.value as NotePriorityType
               )
             }
-            value={this.state.notesItem.note.priority}
+            value={this.state.priority}
           >
             ,
             <option value={NotePriorityType.High}>
@@ -263,11 +273,7 @@ class NotesItemNew extends SessionStateComponent<
           </label>
           <DatePicker
             className="env-dialog__input"
-            selected={
-              this.state.notesItem.note.startDate
-                ? new Date(this.state.notesItem.note.startDate)
-                : undefined
-            }
+            selected={this.state.startDate ? this.state.startDate : undefined}
             onChange={(date, e) =>
               this.handleNotesItemChange("startDate", date)
             }
@@ -282,9 +288,7 @@ class NotesItemNew extends SessionStateComponent<
           <DatePicker
             className="env-dialog__input"
             selected={
-              this.state.notesItem.note.dueDate
-                ? new Date(this.state.notesItem.note.dueDate)
-                : undefined
+              this.state.dueDate ? new Date(this.state.dueDate) : undefined
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
             locale={outputCorrectDatePickerLocale(localize.language)}
@@ -300,7 +304,7 @@ class NotesItemNew extends SessionStateComponent<
           <CKEditor
             onChange={(e) => this.handleNotesItemChange("description", e)}
           >
-            {this.state.notesItem.note.description}
+            {this.state.description}
           </CKEditor>
         </div>
       </div>,
