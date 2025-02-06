@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
 import { GuiderState } from "~/reducers/main-function/guider";
-import LabelUpdateDialog from "../dialogs/label-update";
+import LabelUpdateDialog from "../../../dialogs/label-update";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
@@ -13,7 +13,7 @@ import Navigation, {
 } from "~/components/general/navigation";
 import { UserGroup } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { GuiderContext, GuiderNotesState } from "../context";
+import { GuiderContext, GuiderNotesState } from "../../../context";
 import {
   loadNotes,
   LoadNotesTriggerType,
@@ -207,7 +207,11 @@ class NavigationAside extends React.Component<
 
       return (
         <Navigation>
-          <NavigationTopic name={"Tila"}>
+          <NavigationTopic
+            name={this.props.t("labels.status", {
+              ns: "tasks",
+            })}
+          >
             <NavigationElement
               modifiers="aside-navigation-guider-flag"
               icon="note"
@@ -228,7 +232,11 @@ class NavigationAside extends React.Component<
               })}
             </NavigationElement>
           </NavigationTopic>
-          <NavigationTopic name={"Prioriteetti"}>
+          <NavigationTopic
+            name={this.props.t("labels.priority", {
+              ns: "tasks",
+            })}
+          >
             <NavigationElement
               modifiers="aside-navigation-guider-flag"
               icon="note"
@@ -245,7 +253,6 @@ class NavigationAside extends React.Component<
                 context: "high",
               })}
             </NavigationElement>
-
             <NavigationElement
               modifiers="aside-navigation-guider-flag"
               icon="note"
@@ -262,7 +269,6 @@ class NavigationAside extends React.Component<
                 context: "normal",
               })}
             </NavigationElement>
-
             <NavigationElement
               modifiers="aside-navigation-guider-flag"
               icon="note"

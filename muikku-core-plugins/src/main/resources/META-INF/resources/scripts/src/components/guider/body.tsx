@@ -1,6 +1,7 @@
 import MainFunctionNavbar from "~/components/base/main-function/navbar";
 import Application from "./body/application";
-import Aside from "./body/aside";
+import AsideStudents from "./body/application/aside/students";
+import AsideNotes from "./body/application/aside/notes";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -21,10 +22,9 @@ interface GuiderBodyProps {}
  */
 const GuiderBody = (props: GuiderBodyProps) => {
   const { t } = useTranslation("common");
-  const aside = <Aside />;
   const [view, setView] = React.useState("students" as GuiderView);
   const [filters, dispatch] = React.useReducer(filterReducer, initialState);
-
+  const aside = view === "students" ? <AsideStudents /> : <AsideNotes />;
   return (
     <div>
       <GuiderContext.Provider value={{ view, filters, dispatch, setView }}>

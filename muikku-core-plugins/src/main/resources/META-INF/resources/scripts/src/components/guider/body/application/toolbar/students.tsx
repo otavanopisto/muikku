@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import * as queryString from "query-string";
-import GuiderToolbarLabels from "./toolbar/labels";
+import GuiderToolbarLabels from "./students/labels";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
@@ -24,17 +24,13 @@ import {
   RemoveFromGuiderSelectedStudentsTriggerType,
   toggleAllStudents,
   ToggleAllStudentsTriggerType,
-  createNote,
-  CreateNoteTriggerType,
 } from "~/actions/main-function/guider";
 import MApi from "~/api/api";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { turnSelectedUsersToContacts } from "~/util/users";
-import { GuiderContext } from "../../context";
-import NotesItemNew from "~/components/general/notes//notes-item-new";
-import { CreateNoteRequest } from "~/generated/client";
+import { GuiderContext } from "../../../context";
 import { ContactRecipientType } from "~/reducers/user-index";
 /**
  * GuiderToolbarProps
@@ -42,7 +38,6 @@ import { ContactRecipientType } from "~/reducers/user-index";
 interface GuiderToolbarProps extends WithTranslation {
   guider: GuiderState;
   status: StatusType;
-  createNote: CreateNoteTriggerType;
   toggleAllStudents: ToggleAllStudentsTriggerType;
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType;
 }
@@ -172,14 +167,6 @@ class GuiderToolbar extends React.Component<
     this.setState({ focused: false });
   }
   /**
-   * handleNoteCreation
-   * @param request request
-   * @param onSuccess onSuccess
-   */
-  handleNoteCreation = (request: CreateNoteRequest, onSuccess: () => void) => {
-    this.props.createNote(request, onSuccess);
-  };
-  /**
    * Removes a user from redux state when the user is removed from a new message dialog on a contacts change
    * @param selectedUsers is an Array of ContactRecipientType
    */
@@ -237,84 +224,64 @@ class GuiderToolbar extends React.Component<
    * render
    */
   render() {
-    const view = this.context.view;
-    if (view === "notes") {
-      return (
-        <ApplicationPanelToolbar>
-          <ApplicationPanelToolbarActionsMain>
-            <NotesItemNew onNotesItemSaveClick={this.handleNoteCreation}>
-              <ButtonPill
-                buttonModifiers={["add-note"]}
-                icon="plus"
-                aria-label={this.props.i18n.t("wcag.createNewNote", {
-                  ns: "tasks",
-                })}
-              />
-            </NotesItemNew>
-          </ApplicationPanelToolbarActionsMain>
-        </ApplicationPanelToolbar>
-      );
-    } else if (view === "students") {
-      return (
-        <ApplicationPanelToolbar>
-          <ApplicationPanelToolbarActionsMain>
-            <NewMessage
-              extraNamespace="guider"
-              refreshInitialSelectedItemsOnOpen
-              onRecipientChange={this.onContactsChange}
-              initialSelectedItems={turnSelectedUsersToContacts(
-                this.props.guider.selectedStudents,
-                !this.props.status.isStudent
-              )}
-            >
-              <ButtonPill
-                disabled={this.props.guider.selectedStudentsIds.length < 1}
-                icon="envelope"
-                buttonModifiers="new-message"
-              />
-            </NewMessage>
-            <NewContactEvent
-              userIdentifier={this.props.status.userSchoolDataIdentifier}
-              selectedItems={turnSelectedUsersToContacts(
-                this.props.guider.selectedStudents,
-                !this.props.status.isStudent
-              )}
-              status={this.props.status}
-            >
-              <ButtonPill
-                icon="bubbles"
-                buttonModifiers="create-contact-log-entry"
-              />
-            </NewContactEvent>
+    return (
+      <ApplicationPanelToolbar>
+        <ApplicationPanelToolbarActionsMain>
+          <NewMessage
+            extraNamespace="guider"
+            refreshInitialSelectedItemsOnOpen
+            onRecipientChange={this.onContactsChange}
+            initialSelectedItems={turnSelectedUsersToContacts(
+              this.props.guider.selectedStudents,
+              !this.props.status.isStudent
+            )}
+          >
             <ButtonPill
-              buttonModifiers="toggle"
-              icon="check"
-              disabled={this.props.guider.students.length < 1}
-              onClick={this.props.toggleAllStudents}
+              disabled={this.props.guider.selectedStudentsIds.length < 1}
+              icon="envelope"
+              buttonModifiers="new-message"
             />
-            <GuiderToolbarLabels />
-            <ApplicationPanelToolsContainer>
-              <SearchFormElement
-                updateField={this.updateSearchWithQuery}
-                name="guider-search"
-                id="searchUsers"
-                onFocus={this.onInputFocus}
-                onBlur={this.onInputBlur}
-                placeholder={this.props.i18n.t("labels.search", {
-                  ns: "users",
-                  context: "students",
-                })}
-                value={this.state.searchquery}
-              />
-            </ApplicationPanelToolsContainer>
-          </ApplicationPanelToolbarActionsMain>
-        </ApplicationPanelToolbar>
-      );
-    }
+          </NewMessage>
+          <NewContactEvent
+            userIdentifier={this.props.status.userSchoolDataIdentifier}
+            selectedItems={turnSelectedUsersToContacts(
+              this.props.guider.selectedStudents,
+              !this.props.status.isStudent
+            )}
+            status={this.props.status}
+          >
+            <ButtonPill
+              icon="bubbles"
+              buttonModifiers="create-contact-log-entry"
+            />
+          </NewContactEvent>
+          <ButtonPill
+            buttonModifiers="toggle"
+            icon="check"
+            disabled={this.props.guider.students.length < 1}
+            onClick={this.props.toggleAllStudents}
+          />
+          <GuiderToolbarLabels />
+          <ApplicationPanelToolsContainer>
+            <SearchFormElement
+              updateField={this.updateSearchWithQuery}
+              name="guider-search"
+              id="searchUsers"
+              onFocus={this.onInputFocus}
+              onBlur={this.onInputBlur}
+              placeholder={this.props.i18n.t("labels.search", {
+                ns: "users",
+                context: "students",
+              })}
+              value={this.state.searchquery}
+            />
+          </ApplicationPanelToolsContainer>
+        </ApplicationPanelToolbarActionsMain>
+      </ApplicationPanelToolbar>
+    );
   }
 }
 
-GuiderToolbar.contextType = GuiderContext;
 /**
  * mapStateToProps
  * @param state state
@@ -335,7 +302,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
     {
       removeFromGuiderSelectedStudents,
       toggleAllStudents,
-      createNote,
     },
     dispatch
   );

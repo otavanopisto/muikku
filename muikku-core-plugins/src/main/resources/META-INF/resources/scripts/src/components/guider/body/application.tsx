@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Students from "./application/students";
 import Notes from "./application/notes";
-import Toolbar from "./application/toolbar";
+import StudentsToolbar from "./application/toolbar/students";
+import NotesToolbar from "./application/toolbar/notes";
 import { withTranslation, WithTranslation } from "react-i18next";
 import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
@@ -80,7 +81,8 @@ class GuiderApplication extends React.Component<
    */
   render() {
     const title = this.props.i18n.t("labels.guider");
-    const toolbar = <Toolbar />;
+    const toolbar =
+      this.context.view === "students" ? <StudentsToolbar /> : <NotesToolbar />;
 
     const options = [
       {
