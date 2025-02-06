@@ -11,7 +11,6 @@ import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
   CreateNoteRequest,
-  NoteCreationObject,
   NotePriorityType,
   NoteRecipientList,
   NoteCreationType,
@@ -41,7 +40,7 @@ interface NotesItemNewProps extends WithTranslation {
 interface NotesItemNewState {
   autofillRecipients: ContactRecipientType[];
   description: string;
-  dueDate: null;
+  dueDate: Date | null;
   locked: boolean;
   pinned: boolean;
   priority: NotePriorityType;
