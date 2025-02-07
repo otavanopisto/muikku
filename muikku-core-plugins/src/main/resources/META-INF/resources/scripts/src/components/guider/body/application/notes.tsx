@@ -48,64 +48,56 @@ const GuiderNotes = (props: GuiderNotesProps) => {
    * onArchiveClick function
    * @param noteId noteId
    */
-  const onArchiveClick = React.useCallback(
-    (noteId: number) => {
-      dispatch(toggleNoteArchive(noteId));
-    },
-    [dispatch]
-  );
+  const onArchiveClick = (noteId: number) => {
+    dispatch(toggleNoteArchive(noteId));
+  };
   /**
    * onUpdateNotesItemStatus function
    * @param noteId noteId
    * @param recipientId recipientId
    * @param request request
    */
-  const onUpdateNotesItemStatus = React.useCallback(
-    (
-      noteId: number,
-      recipientId: number,
-      request: UpdateNoteReceiverRequest
-    ) => {
-      dispatch(updateRecipientNoteStatus(noteId, recipientId, request));
-    },
-    [dispatch]
-  );
+  const onUpdateNotesItemStatus = (
+    noteId: number,
+    recipientId: number,
+    request: UpdateNoteReceiverRequest
+  ) => {
+    dispatch(updateRecipientNoteStatus(noteId, recipientId, request));
+  };
+
   /**
    * onNotesItemSaveUpdateClick function
+   * @param noteId noteId
+   * @param request request
+   * @param onSuccess onSuccess
    */
-  const onNotesItemSaveUpdateClick = React.useCallback(
-    (noteId: number, request: UpdateNoteRequest, onSuccess?: () => void) => {
-      dispatch(updateNote(noteId, request, onSuccess));
-    },
-    [dispatch]
-  );
+  const onNotesItemSaveUpdateClick = (
+    noteId: number,
+    request: UpdateNoteRequest,
+    onSuccess?: () => void
+  ) => {
+    dispatch(updateNote(noteId, request, onSuccess));
+  };
+
   return (
     <div className="notes--full-height">
-      {loadingState === "LOADING" && <div className="loader-empty" />}
-      {loadingState === "ERROR" && <div className="loader-error" />}
-      {loadingState === "READY" && (
-        <>
-          <h2 className="notes__title">{t("labels.tasks", { ns: "tasks" })}</h2>
-          {notes.length === 0 ? (
-            <div className="empty">
-              <span>
-                {t("content.empty", { ns: "tasks", context: "tasks" })}
-              </span>
-            </div>
-          ) : (
-            <NotesItemList
-              usePlace={"guider"}
-              filters={defaultFilters}
-              isLoadingList={false}
-              userId={status.userId}
-              notesItems={notes}
-              onArchiveClick={onArchiveClick}
-              onReturnArchivedClick={onArchiveClick}
-              onUpdateNotesItemStatus={onUpdateNotesItemStatus}
-              onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
-            />
-          )}
-        </>
+      <h2 className="notes__title">{t("labels.tasks", { ns: "tasks" })}</h2>
+      {notes.length === 0 ? (
+        <div className="empty">
+          <span>{t("content.empty", { ns: "tasks", context: "tasks" })}</span>
+        </div>
+      ) : (
+        <NotesItemList
+          usePlace={"guider"}
+          filters={defaultFilters}
+          isLoadingList={loadingState === "LOADING"}
+          userId={status.userId}
+          notesItems={notes}
+          onArchiveClick={onArchiveClick}
+          onReturnArchivedClick={onArchiveClick}
+          onUpdateNotesItemStatus={onUpdateNotesItemStatus}
+          onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
+        />
       )}
     </div>
   );

@@ -15403,9 +15403,9 @@ components:
       required:
         - title
         - type
+        - description
         - priority
         - startDate
-        - dueDate
       properties:
         title:
           type: string
