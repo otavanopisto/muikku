@@ -335,7 +335,7 @@ export const guider: Reducer<GuiderState> = (
           ? {
               ...note,
               recipients: note.recipients.map((r) =>
-                r.recipient === recipient.recipient ? recipient : r
+                r.recipientId === recipient.recipientId ? recipient : r
               ),
             }
           : note

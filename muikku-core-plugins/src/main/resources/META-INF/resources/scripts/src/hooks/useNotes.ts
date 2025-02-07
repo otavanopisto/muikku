@@ -65,7 +65,7 @@ export const useOnGoingNotes = (
     try {
       const indexOfNotesItem = notes.findIndex((j) => j.id === noteId);
       const noteRecipient = notes[indexOfNotesItem].recipients.find(
-        (recipient) => recipient.recipient === userId
+        (recipient) => recipient.recipientId === userId
       );
       const updateNoteReceiverRequest = {
         status: newStatus,

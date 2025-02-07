@@ -46,7 +46,7 @@ export const turnNoteRecipientsToContacts = (
       userGroupName,
       workspaceName,
       recipientName,
-      recipient,
+      recipientId,
     } = noteRecipient;
 
     // If the userGroup or workspace is already in the list, skip it
@@ -65,7 +65,7 @@ export const turnNoteRecipientsToContacts = (
     }
 
     const type = workspaceId ? "workspace" : userGroupId ? "usergroup" : "user";
-    const id = workspaceId || userGroupId || recipient;
+    const id = workspaceId || userGroupId || recipientId;
     const name = workspaceName || userGroupName || recipientName;
 
     contacts.push({

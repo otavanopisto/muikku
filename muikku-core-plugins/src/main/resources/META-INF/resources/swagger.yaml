@@ -15457,7 +15457,7 @@ components:
         - id
         - noteId
         - pinned
-        - recipient
+        - recipientId
         - recipientName
         - status
         - userGroupId
@@ -15474,7 +15474,7 @@ components:
           format: int64
         pinned:
           type: boolean
-        recipient:
+        recipientId:
           type: integer
           format: int64
         recipientName:
