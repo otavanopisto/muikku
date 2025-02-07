@@ -621,6 +621,45 @@ const createNote: CreateNoteTriggerType = function createNote(
   ) => {
     const notesApi = MApi.getNotesApi();
     try {
+      const { recipients, note } = createNoteRequest;
+      const hasRecipients =
+        recipients.recipientIds.length +
+          recipients.recipientGroupIds.length +
+          recipients.recipientStudentsWorkspaceIds.length >
+        0;
+
+      if (!note.title) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.caption", { ns: "tasks" }),
+            "error"
+          )
+        );
+      } else if (!note.description) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.content", {
+              ns: "tasks",
+            }),
+            "error"
+          )
+        );
+      } else if (!note.startDate) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.startDate", { ns: "tasks" }),
+            "error"
+          )
+        );
+      } else if (!hasRecipients) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.recipients", { ns: "tasks" }),
+            "error"
+          )
+        );
+      }
+
       // Creating and getting created notesItem
       const newNote = await notesApi.createNote({
         createNoteRequest,
@@ -662,6 +701,43 @@ const updateNote: UpdateNoteTriggerType = function updateNote(
   ) => {
     const notesApi = MApi.getNotesApi();
     try {
+      const { recipients, note } = updateNoteRequest;
+      const hasRecipients =
+        recipients.recipientIds.length +
+          recipients.recipientGroupIds.length +
+          recipients.recipientStudentsWorkspaceIds.length >
+        0;
+      if (!note.title) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.caption", { ns: "tasks" }),
+            "error"
+          )
+        );
+      } else if (!note.description) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.content", {
+              ns: "tasks",
+            }),
+            "error"
+          )
+        );
+      } else if (!note.startDate) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.startDate", { ns: "tasks" }),
+            "error"
+          )
+        );
+      } else if (!hasRecipients) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.recipients", { ns: "tasks" }),
+            "error"
+          )
+        );
+      }
       // Creating and getting created notesItem
       const updatedNote = await notesApi.updateNote({
         noteId,
