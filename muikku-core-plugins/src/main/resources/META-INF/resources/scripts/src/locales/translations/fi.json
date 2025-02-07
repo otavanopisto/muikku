@@ -1773,6 +1773,9 @@
       "teacherMessage": "Viesti kurssin opettajalle",
       "totalAssignments": "Tehtäviä yhteensä",
       "unanswered": "Aloittamattomat",
+      "visibleRestrictionAll": "Näkyy kaikille",
+      "visibleRestrictionLoggedIn": "Näkyy vain kirjautuneille käyttäjille",
+      "visibleRestrictionMembers": "Näkyy vain kurssin jäsenille",
       "wordCount": "Sanoja"
     },
     "notifications": {

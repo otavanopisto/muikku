@@ -1773,6 +1773,9 @@
       "teacherMessage": "Message for the course teacher",
       "totalAssignments": "Total assignments",
       "unanswered": "Unanswered",
+      "visibleRestrictionAll": "Visible to all",
+      "visibleRestrictionLoggedIn": "Visible only to logged in users",
+      "visibleRestrictionMembers": "Visible only to course members",
       "wordCount": "Words"
     },
     "notifications": {
