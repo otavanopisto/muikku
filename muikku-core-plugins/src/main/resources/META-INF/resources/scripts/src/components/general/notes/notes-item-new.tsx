@@ -170,8 +170,8 @@ class NotesItemNew extends SessionStateComponent<
       .map((recipient) => recipient.value.id);
 
     this.setStateAndStore({
-      autofillRecipients,
       ...this.state,
+      autofillRecipients,
       recipients: {
         recipientIds,
         recipientGroupIds,
