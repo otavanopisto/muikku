@@ -86,7 +86,18 @@ class NotesItemEdit extends SessionStateComponent<
    * clearUp
    */
   clearUp() {
+    const { title, description, type, priority, startDate, dueDate } =
+      this.props.selectedNotesItem;
+
     this.setState({
+      note: {
+        title,
+        description,
+        type,
+        priority,
+        startDate: new Date(startDate),
+        dueDate: dueDate && new Date(dueDate),
+      },
       removeLocked: false,
       recipientIds: [],
       recipientGroupIds: [],

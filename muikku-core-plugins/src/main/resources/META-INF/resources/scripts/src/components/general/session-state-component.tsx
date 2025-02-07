@@ -59,7 +59,10 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
     const result: any = base;
     Object.keys(result).forEach((key) => {
       const recovered = JSON.parse(internalStorage.recover(key));
-      if (result[key] instanceof Date && typeof recovered === "string") {
+      if (
+        (result[key] instanceof Date && typeof recovered === "string") ||
+        (result[key] === null && key.toLowerCase().includes("date"))
+      ) {
         result[key] = recovered ? new Date(recovered) : result[key];
       } else {
         result[key] = recovered || result[key];

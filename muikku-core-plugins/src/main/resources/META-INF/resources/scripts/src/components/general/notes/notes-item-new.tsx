@@ -40,7 +40,7 @@ interface NotesItemNewProps extends WithTranslation {
 interface NotesItemNewState {
   autofillRecipients: ContactRecipientType[];
   description: string;
-  dueDate: Date | null;
+  dueDate: Date;
   locked: boolean;
   pinned: boolean;
   priority: NotePriorityType;
@@ -286,9 +286,7 @@ class NotesItemNew extends SessionStateComponent<
           </label>
           <DatePicker
             className="env-dialog__input"
-            selected={
-              this.state.dueDate ? new Date(this.state.dueDate) : undefined
-            }
+            selected={this.state.dueDate ? this.state.dueDate : undefined}
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
