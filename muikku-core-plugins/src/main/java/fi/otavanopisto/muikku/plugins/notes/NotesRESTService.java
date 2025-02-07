@@ -571,7 +571,7 @@ public class NotesRESTService extends PluginRESTService {
     restModel.setId(noteReceiver.getId());
     restModel.setNoteId(noteReceiver.getNote().getId());
     restModel.setPinned(noteReceiver.getPinned());
-    restModel.setRecipient(noteReceiver.getRecipient());
+    restModel.setRecipientId(noteReceiver.getRecipient());
     restModel.setRecipientName(recipientName);
     restModel.setStatus(noteReceiver.getStatus());
     restModel.setUserGroupId(noteReceiver.getRecipientGroup());

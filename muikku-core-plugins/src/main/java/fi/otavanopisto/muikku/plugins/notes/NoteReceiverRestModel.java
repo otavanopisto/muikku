@@ -28,12 +28,12 @@ public class NoteReceiverRestModel {
     this.pinned = pinned;
   }
 
-  public Long getRecipient() {
-    return recipient;
+  public Long getRecipientId() {
+    return recipientId;
   }
 
-  public void setRecipient(Long recipient) {
-    this.recipient = recipient;
+  public void setRecipientId(Long recipientId) {
+    this.recipientId = recipientId;
   }
 
   public String getRecipientName() {
@@ -95,7 +95,7 @@ public class NoteReceiverRestModel {
   private Long id;
   private Long noteId;
   private boolean pinned;
-  private Long recipient;
+  private Long recipientId;
   private String recipientName;
   private NoteStatus status;
   private Long userGroupId;
