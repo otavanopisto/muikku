@@ -262,9 +262,13 @@
 
   .multi-step {
     bottom: 20px;
-    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
   }
 }
+
+
 
 .dialog__window--note-information {
   max-height: 100%;
