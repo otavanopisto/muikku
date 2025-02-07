@@ -163,8 +163,19 @@
   }
 }
 
+.wizard--copy-workspace {
+  height: 100%;
+
+  .wizard__container {
+    height: 100%;
+    position: relative;
+  }
+}
+
 .wizard--matriculation-exam-form {
   display: flex;
+
+
   flex-flow: column nowrap;
   height: 100%;
 
