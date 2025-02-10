@@ -491,4 +491,52 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
     }
   }
   
+  @Test
+  public void courseMaterialHidePageTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try {
+      Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+      mockBuilder
+      .addStaffMember(admin)
+      .addCourse(course1)
+      .mockLogin(admin)
+      .build();
+      login();
+      Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+  
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+      mockBuilder
+        .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .build();
+      try {
+        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+        
+        WorkspaceHtmlMaterial htmlMaterial1 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+            "1.0 Testimateriaali", "text/html;editor=CKEditor", 
+            "<html><body><p>Testi materiaalia:  Lorem ipsum dolor sit amet </p><p>Proin suscipit luctus orci placerat fringilla. Donec hendrerit laoreet risus eget adipiscing. Suspendisse in urna ligula, a volutpat mauris. Sed enim mi, bibendum eu pulvinar vel, sodales vitae dui. Pellentesque sed sapien lorem, at lacinia urna. In hac habitasse platea dictumst. Vivamus vel justo in leo laoreet ullamcorper non vitae lorem</p></body></html>", 
+            "EXERCISE");
+        
+        try {
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
+          selectFinnishLocale();
+          assertPresent(".material-page__title.material-page__title--exercise");
+          waitAndClick("#editingMasterSwitch");
+          waitAndClick(".material-admin-panel--page-functions .icon-eye");
+          waitForElementToAppear(".material-page--exercise.state-HIDDEN", 3, 1000);
+          waitAndClick("#editingMasterSwitch");
+          refresh();
+          assertNotPresent(".material-page__title.material-page__title--exercise");
+        } finally {
+          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial1.getId());
+        }
+        
+      } finally {
+        deleteWorkspace(workspace.getId());
+      }
+    } finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
 }
