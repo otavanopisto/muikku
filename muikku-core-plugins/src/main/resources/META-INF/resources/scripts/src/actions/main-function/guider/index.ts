@@ -701,12 +701,8 @@ const updateNote: UpdateNoteTriggerType = function updateNote(
   ) => {
     const notesApi = MApi.getNotesApi();
     try {
-      const { recipients, note } = updateNoteRequest;
-      const hasRecipients =
-        recipients.recipientIds.length +
-          recipients.recipientGroupIds.length +
-          recipients.recipientStudentsWorkspaceIds.length >
-        0;
+      const { note } = updateNoteRequest;
+
       if (!note.title) {
         return dispatch(
           notificationActions.displayNotification(
@@ -727,13 +723,6 @@ const updateNote: UpdateNoteTriggerType = function updateNote(
         return dispatch(
           notificationActions.displayNotification(
             i18n.t("validation.startDate", { ns: "tasks" }),
-            "error"
-          )
-        );
-      } else if (!hasRecipients) {
-        return dispatch(
-          notificationActions.displayNotification(
-            i18n.t("validation.recipients", { ns: "tasks" }),
             "error"
           )
         );
