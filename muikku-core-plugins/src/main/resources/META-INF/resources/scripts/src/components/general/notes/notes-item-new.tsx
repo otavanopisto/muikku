@@ -18,6 +18,7 @@ import {
 import InputContactsAutofill from "~/components/base/input-contacts-autofill"; // InputContactsAutofillLoaders,
 import { ContactRecipientType } from "~/reducers/user-index";
 import autofillLoaders from "./helpers/autofill-loaders";
+import { string } from "@amcharts/amcharts4/core";
 /**
  * NotesItemNewProps
  */
@@ -40,7 +41,7 @@ interface NotesItemNewProps extends WithTranslation {
 interface NotesItemNewState {
   autofillRecipients: ContactRecipientType[];
   description: string;
-  dueDate: Date;
+  dueDate: Date | string;
   locked: boolean;
   pinned: boolean;
   priority: NotePriorityType;
@@ -123,7 +124,7 @@ class NotesItemNew extends SessionStateComponent<
         type: this.state.type,
         priority: this.state.priority,
         startDate: this.state.startDate,
-        dueDate: this.state.dueDate,
+        dueDate: this.state.dueDate as Date,
       },
       pinned: this.state.pinned,
       recipients: this.state.recipients,
@@ -184,6 +185,10 @@ class NotesItemNew extends SessionStateComponent<
    * render
    */
   render() {
+    const dueDate =
+      typeof this.state.dueDate === "string"
+        ? new Date(this.state.dueDate)
+        : (this.state.dueDate as Date);
     /**
      * content
      * @param closeDialog closeDialog
@@ -286,7 +291,7 @@ class NotesItemNew extends SessionStateComponent<
           </label>
           <DatePicker
             className="env-dialog__input"
-            selected={this.state.dueDate ? this.state.dueDate : undefined}
+            selected={this.state.dueDate ? dueDate : undefined}
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
