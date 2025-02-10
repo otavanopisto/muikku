@@ -18,7 +18,6 @@ import {
 import InputContactsAutofill from "~/components/base/input-contacts-autofill"; // InputContactsAutofillLoaders,
 import { ContactRecipientType } from "~/reducers/user-index";
 import autofillLoaders from "./helpers/autofill-loaders";
-import { string } from "@amcharts/amcharts4/core";
 /**
  * NotesItemNewProps
  */
@@ -117,6 +116,12 @@ class NotesItemNew extends SessionStateComponent<
    * @param closeDialog closeDialog
    */
   handleSaveClick = (closeDialog: () => void) => () => {
+    // Cannot be a string on save, but could be
+    const dueDate =
+      typeof this.state.dueDate === "string"
+        ? new Date(this.state.dueDate)
+        : (this.state.dueDate as Date);
+
     const payload: CreateNoteRequest = {
       note: {
         title: this.state.title,
@@ -124,7 +129,7 @@ class NotesItemNew extends SessionStateComponent<
         type: this.state.type,
         priority: this.state.priority,
         startDate: this.state.startDate,
-        dueDate: this.state.dueDate as Date,
+        dueDate,
       },
       pinned: this.state.pinned,
       recipients: this.state.recipients,
