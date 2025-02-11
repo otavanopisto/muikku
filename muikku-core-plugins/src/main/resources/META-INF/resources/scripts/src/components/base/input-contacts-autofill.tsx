@@ -41,10 +41,14 @@ export interface InputContactsAutofillLoaders {
 export interface InputContactsAutofillProps {
   placeholder?: string;
   label?: string;
-  onChange: (newValue: ContactRecipientType[]) => void;
+  onChange: (
+    newValue: ContactRecipientType[],
+    changedValue?: ContactRecipientType
+  ) => void;
   modifier: string;
   selectedItems: ContactRecipientType[];
   hasGroupPermission?: boolean;
+  groupArchetype?: "USERGROUP" | "STUDYPROGRAMME";
   hasUserPermission?: boolean;
   hasWorkspacePermission?: boolean;
   hasStaffPermission?: boolean;
@@ -56,6 +60,7 @@ export interface InputContactsAutofillProps {
   loaders?: InputContactsAutofillLoaders;
   identifier: string;
   required?: boolean;
+  disableRemove?: boolean;
 }
 
 /**
@@ -122,17 +127,6 @@ export default class c extends React.Component<
 
     this.activeSearchId = null;
     this.activeSearchTimeout = null;
-  }
-
-  /**
-   * UNSAFE_componentWillReceiveProps
-   * @param nextProps nextProps
-   */
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps: InputContactsAutofillProps) {
-    if (nextProps.selectedItems !== this.props.selectedItems) {
-      this.setState({ selectedItems: nextProps.selectedItems });
-    }
   }
 
   /**
@@ -209,7 +203,7 @@ export default class c extends React.Component<
     const searchId = new Date().getTime();
     this.activeSearchId = searchId;
     const loaders = this.props.loaders || {};
-
+    const archetype = this.props.groupArchetype || null;
     /**
      * getStudentsLoader
      */
@@ -228,6 +222,7 @@ export default class c extends React.Component<
             MApi.getUsergroupApi().getUsergroups({
               q: textInput,
               maxResults: 20,
+              ...(archetype && { archetype }), // Only include archetype if it's not null
             });
 
     /**
@@ -383,8 +378,7 @@ export default class c extends React.Component<
       },
       this.setBodyMargin
     );
-
-    this.props.onChange(nfilteredValue);
+    this.props.onChange(nfilteredValue, item);
   }
 
   /**
@@ -406,7 +400,7 @@ export default class c extends React.Component<
         },
         this.setBodyMargin
       );
-      this.props.onChange(nvalue);
+      this.props.onChange(nvalue, item);
     } else {
       this.setState({ isFocused: true });
     }
@@ -417,7 +411,8 @@ export default class c extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    const selectedItems = this.state.selectedItems.map((item) => {
+    const selectedItems = this.state.selectedItems.map((item, index) => {
+      const disabled = this.props.disableRemove;
       if (item.type === "user" || item.type === "staff") {
         return {
           node: (
@@ -433,6 +428,7 @@ export default class c extends React.Component<
             </span>
           ),
           value: item,
+          disabled,
         };
       } else if (item.type === "usergroup") {
         return {
@@ -446,6 +442,7 @@ export default class c extends React.Component<
             </span>
           ),
           value: item,
+          disabled,
         };
       } else if (item.type === "workspace") {
         return {
@@ -456,6 +453,7 @@ export default class c extends React.Component<
             </span>
           ),
           value: item,
+          disabled,
         };
       }
     });

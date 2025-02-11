@@ -374,8 +374,7 @@ public class ToRTestsBase extends AbstractUITest {
       addTextToCKEditor("Do some stuff!");
       waitAndClick(".button--dialog-execute");
       assertPresent(".notification-queue__items .notification-queue__item--success");
-      
-      assertText(".notes .notes__item .notes__item-header span", "Task for myself.");
+      assertText(".notes .notes__item .notes__item-header", "Task for myself.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
 //    "more actions" vertical menu
       waitAndClick(".notes .notes__item .icon-more_vert");
@@ -387,7 +386,7 @@ public class ToRTestsBase extends AbstractUITest {
       waitAndClick(".notes .notes__item .icon-trash");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       waitAndClick(".tabs--notes #tabControl-archived");
-      assertText("#tabPanel-archived .notes .notes__item .notes__item-header span", "Task for myself.");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-header", "Task for myself.");
       assertText("#tabPanel-archived .notes .notes__item .notes__item-body p", "Do some stuff!");
     } finally {
       archiveUserByEmail(student.getEmail());

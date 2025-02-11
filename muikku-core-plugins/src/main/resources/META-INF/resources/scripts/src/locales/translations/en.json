@@ -446,6 +446,7 @@
       "graph_logins": "Logins",
       "graph_passed": "Evaluated as passed",
       "graph_visits": "Course visits",
+      "guiderViewSelect": "Guider view selection",
       "evaluatedWithNonPassingGrade": "Evaluated with a non-passing grade",
       "evaluatedWithPassingGrade": "Evaluated with a passing grade",
       "evaluated_interim": "Interim evaluation given",
@@ -1404,6 +1405,7 @@
       "createError": "Creating the task failed. Please try again. {{error}}",
       "createSuccess": "Creating the task succeeded",
       "loadError": "Loading the tasks failed, try again by refreshing the page. {{error}}",
+      "noteIndexNotFoundError": "Note was not found in the list. Please try again.",
       "pinError": "Pinning the task failed. {{error}}",
       "unarchiveError": "Unarchiving the task failed. Please try again. {{error}}",
       "unarchiveSuccess": "Unarchiving the task succeeded",
@@ -1411,7 +1413,14 @@
       "updateError_state": "Updating the task state failed. Please try again. {{error}}",
       "updateSuccess": "Updating the task succeeded",
       "updateSuccess_state": "Updating the task sate succeeded",
-      "ratingError": "Rating the task failed. Please try again. {{error}}"
+      "ratingError": "Rating the task failed. Please try again. {{error}}",
+      "recipientIndexNotFoundError": "Recipient was not found in the list. Please try again.."
+    },
+    "validation": {
+      "caption": "Task title is mandatory",
+      "content": "Task description is mandatory",
+      "startDate": "Task start date is mandatory",
+      "recipients": "Task must have recipients"
     },
     "wcag": {
       "archive": "Archive task",
