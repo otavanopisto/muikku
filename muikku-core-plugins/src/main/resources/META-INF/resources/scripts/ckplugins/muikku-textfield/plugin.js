@@ -43,15 +43,6 @@
         command : 'muikkutextfield',
         toolbar : 'insert,20'
       });
-      if (editor.addMenuItems) {
-        editor.addMenuItems({
-          muikku : {
-            label : editor.lang.flash.properties,
-            command : 'muikkutextfield',
-            group : 'muikku'
-          }
-        });
-      }
       editor.on('doubleclick', function(evt) {
         var element = evt.data.element;
         if (element.is('img') && element.data('cke-real-element-type') == 'muikkutextfield') {

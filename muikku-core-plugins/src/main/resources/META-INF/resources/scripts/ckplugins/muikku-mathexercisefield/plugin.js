@@ -75,16 +75,6 @@
           editor.insertElement(fakeElement);
         },
       });
-
-      if (editor.addMenuItems) {
-        editor.addMenuItems({
-          muikku: {
-            label: editor.lang.flash.properties,
-            command: "muikkumathexercisefield",
-            group: "muikku",
-          },
-        });
-      }
     },
 
     afterInit: function (editor) {
