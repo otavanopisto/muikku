@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -116,11 +117,15 @@ public class NotesRESTService extends PluginRESTService {
 
     NoteRestModel note = payload.getNote();
 
-    if (note.getTitle().isEmpty()) {
+    if (note == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    if (StringUtils.isBlank(note.getTitle())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing title").build();
     }
     
-    if (note.getDescription().isEmpty()) {
+    if (StringUtils.isBlank(note.getDescription())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing description").build();
     }
     
@@ -156,6 +161,11 @@ public class NotesRESTService extends PluginRESTService {
 
       }
       else { // Note creation by staff
+        
+        if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)){
+          return Response.status(Status.FORBIDDEN).build();
+        }
+        
         UserRecipientList prepareRecipientList = prepareRecipientList(recipientPayload);
 
         if (prepareRecipientList == null || !prepareRecipientList.hasRecipients()) {
@@ -318,7 +328,7 @@ public class NotesRESTService extends PluginRESTService {
 
     // Add/remove recipients (Only available to staff)
 
-    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) || !sessionController.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)) {
       if (payload.getRecipients() != null) {
 
         if (!payload.getRecipients().getRecipientGroupIds().isEmpty()
@@ -596,7 +606,8 @@ public class NotesRESTService extends PluginRESTService {
     }
 
     if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
-        && !recipient.equals(sessionController.getLoggedUserEntity().getId())) {
+        && !recipient.equals(sessionController.getLoggedUserEntity().getId())
+        || sessionController.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 

@@ -24,7 +24,7 @@ public class NoteRecipientDAO extends CorePluginsDAO<NoteReceiver> {
     noteRecipient.setStatus(status);
     noteRecipient.setNote(note);
     noteRecipient.setRecipientGroup(userGroupId);
-    noteRecipient.setWorkspace_id(workspaceId);
+    noteRecipient.setWorkspaceId(workspaceId);
     return persist(noteRecipient);
   }
   
@@ -38,7 +38,7 @@ public class NoteRecipientDAO extends CorePluginsDAO<NoteReceiver> {
   public NoteReceiver updateWorkspaceAndUserGroup(NoteReceiver noteRecipient, Long userGroupId, Long workspaceId){
 
     noteRecipient.setRecipientGroup(userGroupId);
-    noteRecipient.setWorkspace_id(workspaceId);
+    noteRecipient.setWorkspaceId(workspaceId);
     return persist(noteRecipient);
   }
   

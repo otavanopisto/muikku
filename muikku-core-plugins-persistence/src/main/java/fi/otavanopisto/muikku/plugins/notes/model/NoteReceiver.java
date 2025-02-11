@@ -41,7 +41,7 @@ public class NoteReceiver {
     this.recipient = recipient;
   }
 
-  public Boolean getPinned() {
+  public boolean getPinned() {
     return pinned;
   }
 
@@ -69,7 +69,7 @@ public class NoteReceiver {
     return workspaceId;
   }
 
-  public void setWorkspace_id(Long workspaceId) {
+  public void setWorkspaceId(Long workspaceId) {
     this.workspaceId = workspaceId;
   }
 
