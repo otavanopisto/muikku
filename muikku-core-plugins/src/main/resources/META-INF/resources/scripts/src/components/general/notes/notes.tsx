@@ -63,7 +63,6 @@ const Notes: React.FC<NotesProps> = (props) => {
     archiveNotesItem,
     returnArchivedNotesItem,
     updateNotesItemStatus,
-    pinNotesItem,
   } = useNotesItem(studentId, displayNotification);
 
   const [activeNoteFilters, setActiveNoteFilters] =
@@ -124,7 +123,7 @@ const Notes: React.FC<NotesProps> = (props) => {
           <NotesToolbar>
             <div className="notes__toolbar-section">
               <NotesItemNew
-                newNoteOwnerId={studentId}
+                newNoteRecipientId={studentId}
                 onNotesItemSaveClick={createNotesItem}
               >
                 <ButtonPill
@@ -145,9 +144,10 @@ const Notes: React.FC<NotesProps> = (props) => {
             filters={activeNoteFilters}
             isLoadingList={notesItems.isLoadingList}
             notesItems={notesItems.notesItemList}
+            notesRecipientId={studentId}
             userId={userId}
             usePlace={usePlace}
-            onPinNotesItemClick={pinNotesItem}
+            onPinNotesItemClick={updateNotesItemStatus}
             onArchiveClick={archiveNotesItem}
             onUpdateNotesItemStatus={updateNotesItemStatus}
             onNotesItemSaveUpdateClick={updateNotesItem}
@@ -170,7 +170,7 @@ const Notes: React.FC<NotesProps> = (props) => {
           <NotesToolbar>
             <div className="notes__toolbar-section">
               <NotesItemNew
-                newNoteOwnerId={studentId}
+                newNoteRecipientId={studentId}
                 onNotesItemSaveClick={createNotesItem}
               >
                 <ButtonPill

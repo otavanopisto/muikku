@@ -446,6 +446,7 @@
       "graph_logins": "Sisäänkirjautumiset",
       "graph_passed": "Arvioitu hyväksytyksi",
       "graph_visits": "Käynnit kurssilla",
+      "guiderViewSelect": "Ohjaamon näkymän valinta",
       "evaluatedWithNonPassingGrade": "Arvioitu ei-läpäisevällä arvosanalla",
       "evaluatedWithPassingGrade": "Arvioitu läpäisevällä arvosanalla",
       "evaluated_interim": "Välipalaute annettu",
@@ -1404,6 +1405,7 @@
       "createError": "Tehtävän luonti epäonnistui. Yritä uudelleen. {{error}}",
       "createSuccess": "Tehtävä luotiin onnistuneesti",
       "loadError": "Tehtävien lataus epäonnistui. Yritä ladata sivu uudelleen. {{error}}",
+      "noteIndexNotFoundError": "Tehtävää ei löytynyt listasta. Yritä ladata sivu uudelleen.",
       "pinError": "Tehtävän kiinnittäminen epäonnistui: {{error}}",
       "unarchiveError": "Tehtävän palautus epäonnistui. Yritä ladata sivu uudelleen",
       "unarchiveSuccess": "Tehtävän palautus onnistui",
@@ -1411,7 +1413,14 @@
       "updateError_state": " Tehtävän tilan päivitys epäonnistui. Yritä uudelleen. {{error}}",
       "updateSuccess": "Tehtävän muokkaus onnistui",
       "updateSuccess_state": "Tehtävän tila päivitettiin onnistuneesti",
-      "ratingError": "Tehtävän tähditys epäonnistui: {{error}}. Yritä uudelleen."
+      "ratingError": "Tehtävän tähditys epäonnistui: {{error}}. Yritä uudelleen.",
+      "recipientIndexNotFoundError": "Vastaanottajaa ei löytynyt listasta. Yritä ladata sivu uudelleen."
+    },
+    "validation": {
+      "caption": "Tehtävän otsikko on pakollinen tieto",
+      "content": "Tehtävän kuvaus on pakollinen tieto",
+      "startDate": "Tehtävän alkupäivämäärä on pakollinen tieto",
+      "recipients": "Tehtävällä täytyy olla vastaanottajia"
     },
     "wcag": {
       "archive": "Arkistoi tehtävä",
