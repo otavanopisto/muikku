@@ -647,7 +647,7 @@ class StateOfStudies extends React.Component<
                     <div className="empty">
                       <span>
                         {this.props.i18n.t("content.empty", {
-                          ns: "studies",
+                          ns: "guider",
                           context: "counselors",
                         })}
                       </span>
