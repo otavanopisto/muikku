@@ -503,7 +503,7 @@ class NewEditAnnouncement extends SessionStateComponent<
   handleDateChange(stateLocation: string, newDate: Date) {
     const nState: any = {};
     nState[stateLocation] = newDate;
-    (this.setStateAndClear as any)(
+    this.setStateAndStore(
       nState,
       (this.props.announcement ? this.props.announcement.id + "-" : "") +
         (this.props.workspaceId || "")
