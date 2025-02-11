@@ -40,7 +40,7 @@ interface NotesItemNewProps extends WithTranslation {
 interface NotesItemNewState {
   autofillRecipients: ContactRecipientType[];
   description: string;
-  dueDate: Date | null;
+  dueDate: Date | string;
   locked: boolean;
   pinned: boolean;
   priority: NotePriorityType;
@@ -116,6 +116,12 @@ class NotesItemNew extends SessionStateComponent<
    * @param closeDialog closeDialog
    */
   handleSaveClick = (closeDialog: () => void) => () => {
+    // Cannot be a string on save, but could be
+    const dueDate =
+      typeof this.state.dueDate === "string"
+        ? new Date(this.state.dueDate)
+        : (this.state.dueDate as Date);
+
     const payload: CreateNoteRequest = {
       note: {
         title: this.state.title,
@@ -123,7 +129,7 @@ class NotesItemNew extends SessionStateComponent<
         type: this.state.type,
         priority: this.state.priority,
         startDate: this.state.startDate,
-        dueDate: this.state.dueDate,
+        dueDate,
       },
       pinned: this.state.pinned,
       recipients: this.state.recipients,
@@ -170,8 +176,8 @@ class NotesItemNew extends SessionStateComponent<
       .map((recipient) => recipient.value.id);
 
     this.setStateAndStore({
-      autofillRecipients,
       ...this.state,
+      autofillRecipients,
       recipients: {
         recipientIds,
         recipientGroupIds,
@@ -184,6 +190,10 @@ class NotesItemNew extends SessionStateComponent<
    * render
    */
   render() {
+    const dueDate =
+      typeof this.state.dueDate === "string"
+        ? new Date(this.state.dueDate)
+        : (this.state.dueDate as Date);
     /**
      * content
      * @param closeDialog closeDialog
@@ -286,9 +296,7 @@ class NotesItemNew extends SessionStateComponent<
           </label>
           <DatePicker
             className="env-dialog__input"
-            selected={
-              this.state.dueDate ? new Date(this.state.dueDate) : undefined
-            }
+            selected={this.state.dueDate ? dueDate : undefined}
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"

@@ -86,7 +86,18 @@ class NotesItemEdit extends SessionStateComponent<
    * clearUp
    */
   clearUp() {
+    const { title, description, type, priority, startDate, dueDate } =
+      this.props.selectedNotesItem;
+
     this.setState({
+      note: {
+        title,
+        description,
+        type,
+        priority,
+        startDate: new Date(startDate),
+        dueDate: dueDate && new Date(dueDate),
+      },
       removeLocked: false,
       recipientIds: [],
       recipientGroupIds: [],
@@ -324,8 +335,6 @@ class NotesItemEdit extends SessionStateComponent<
             }
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
-            minDate={new Date()}
-            maxDate={new Date(this.state.note.dueDate)}
           />
         </div>
         <div className="env-dialog__form-element-container">
@@ -344,7 +353,7 @@ class NotesItemEdit extends SessionStateComponent<
             dateFormat="P"
             minDate={
               this.state.note.startDate !== null
-                ? new Date(this.state.note.startDate)
+                ? this.state.note.startDate
                 : new Date()
             }
           />

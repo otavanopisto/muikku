@@ -60,6 +60,10 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
     Object.keys(result).forEach((key) => {
       const recovered = JSON.parse(internalStorage.recover(key));
       if (result[key] instanceof Date && typeof recovered === "string") {
+        // Notice, that if result[key] is null (Date can be null),
+        // and recovered Date is a string,
+        // this will destroy all hope with a datepicker that wants a Date
+        // so you should typecheck in the component to avoid a crash
         result[key] = recovered ? new Date(recovered) : result[key];
       } else {
         result[key] = recovered || result[key];

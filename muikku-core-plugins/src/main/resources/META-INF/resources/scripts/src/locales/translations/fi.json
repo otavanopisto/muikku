@@ -1416,6 +1416,12 @@
       "ratingError": "Tehtävän tähditys epäonnistui: {{error}}. Yritä uudelleen.",
       "recipientIndexNotFoundError": "Vastaanottajaa ei löytynyt listasta. Yritä ladata sivu uudelleen."
     },
+    "validation": {
+      "caption": "Tehtävän otsikko on pakollinen tieto",
+      "content": "Tehtävän kuvaus on pakollinen tieto",
+      "startDate": "Tehtävän alkupäivämäärä on pakollinen tieto",
+      "recipients": "Tehtävällä täytyy olla vastaanottajia"
+    },
     "wcag": {
       "archive": "Arkistoi tehtävä",
       "archiveUndo": "Palauta tehtävä",

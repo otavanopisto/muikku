@@ -74,16 +74,18 @@ const Avatar = (props: AvatarProps) => {
       aria-hidden={avatarAriaHidden}
     >
       {groupAvatar ? (
-        <div
-          className={`avatar avatar--group ${
-            size ? "avatar--" + size : ""
-          } ${"avatar--" + groupAvatar} ${modifier ? "avatar--" + modifier : ""} `}
-        >
-          <span
-            className={`avatar__decoration icon icon-${groupAvatar === "usergroup" ? "users" : "books"}`}
-          ></span>
-          <span className="avatar__text">{firstName}</span>
-        </div>
+        <Dropdown openByHover key="avatar" content={firstName}>
+          <div
+            className={`avatar avatar--group ${
+              size ? "avatar--" + size : ""
+            } ${"avatar--" + groupAvatar} ${modifier ? "avatar--" + modifier : ""} `}
+          >
+            <span
+              className={`avatar__decoration icon icon-${groupAvatar === "usergroup" ? "users" : "books"}`}
+            ></span>
+            <span className="avatar__text">{firstName}</span>
+          </div>
+        </Dropdown>
       ) : showTooltip ? (
         <Dropdown openByHover key="avatar" content={firstName}>
           {avatarContent}

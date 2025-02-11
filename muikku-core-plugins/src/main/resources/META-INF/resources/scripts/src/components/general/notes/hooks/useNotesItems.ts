@@ -384,7 +384,7 @@ export const useNotesItem = (
 
       // Find the index of the recipient that was updated
       const recipientToUpdateIndex = noteRecipientsListUpdate.findIndex(
-        (r) => r.recipient === recipientId
+        (r) => r.recipientId === recipientId
       );
 
       if (recipientToUpdateIndex === -1) {

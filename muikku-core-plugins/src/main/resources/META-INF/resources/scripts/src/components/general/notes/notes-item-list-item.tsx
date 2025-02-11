@@ -112,9 +112,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     const updatedModifiers = [];
     const recipientId = specificRecipient
       ? specificRecipient
-      : recipients[0].recipient;
+      : recipients[0].recipientId;
     const currentRecipient = recipients.find(
-      (r) => r.recipient === recipientId
+      (r) => r.recipientId === recipientId
     );
 
     // Editing is forbidden

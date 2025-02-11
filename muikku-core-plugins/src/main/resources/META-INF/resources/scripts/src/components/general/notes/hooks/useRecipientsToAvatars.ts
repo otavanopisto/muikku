@@ -17,7 +17,7 @@ export const useRecipientsToAvatars = (
       const {
         userGroupId,
         workspaceId,
-        recipient,
+        recipientId,
         hasImage,
         recipientName,
         userGroupName,
@@ -54,7 +54,7 @@ export const useRecipientsToAvatars = (
       }
       avatars.push({
         hasImage: hasImage,
-        id: recipient,
+        id: recipientId,
         firstName: recipientName,
       });
     });

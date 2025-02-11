@@ -149,7 +149,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
             loggedUserIsCreator={note.creator === userId}
             loggedUserIsOwner={
               !!note.recipients.find(
-                (receiver) => receiver.recipient === userId
+                (receiver) => receiver.recipientId === userId
               )
             }
             onPinNotesItemClick={onPinNotesItemClick}
