@@ -302,12 +302,16 @@ public class NotesRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateNote(@PathParam("NOTEID") Long noteId, NoteWithRecipientsRestModel payload) {
 
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     Note note = notesController.findNoteById(noteId);
 
     if (note == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-
+    
     UserEntity creator = userEntityController.findUserEntityById(note.getCreator());
     UserSchoolDataIdentifier creatorUSDI = userSchoolDataIdentifierController
         .findUserSchoolDataIdentifierByUserEntity(creator);
@@ -328,7 +332,7 @@ public class NotesRESTService extends PluginRESTService {
 
     // Add/remove recipients (Only available to staff)
 
-    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT) || !sessionController.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       if (payload.getRecipients() != null) {
 
         if (!payload.getRecipients().getRecipientGroupIds().isEmpty()
@@ -605,9 +609,8 @@ public class NotesRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)
-        && !recipient.equals(sessionController.getLoggedUserEntity().getId())
-        || sessionController.hasRole(EnvironmentRoleArchetype.STUDENT_PARENT)) {
+    if (sessionController.hasAnyRole(EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.STUDENT_PARENT)
+        && !recipient.equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
