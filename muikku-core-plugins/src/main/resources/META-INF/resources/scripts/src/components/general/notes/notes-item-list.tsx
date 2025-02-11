@@ -1,6 +1,10 @@
 import * as React from "react";
 import { NotesLocation, NotesItemFilters } from "~/@types/notes";
-import { Note, NoteStatusType, UpdateNoteRequest } from "~/generated/client";
+import {
+  Note,
+  UpdateNoteRequest,
+  UpdateNoteReceiverRequest,
+} from "~/generated/client";
 import { sortNotesItemsBy } from "./helpers/filters";
 import NotesListItem from "./notes-item-list-item";
 import NotesItemListWithoutAnimation from "./notes-list-test";
@@ -12,17 +16,21 @@ interface NotesItemListContentProps {
   notesItems: Note[];
   usePlace: NotesLocation;
   userId: number;
+  notesRecipientId?: number;
   isLoadingList: boolean;
   filters: NotesItemFilters;
-  onArchiveClick?: (notesItemd: number) => void;
-  onReturnArchivedClick?: (notesItemId: number) => void;
+  onArchiveClick?: (noteId: number) => void;
+  onReturnArchivedClick?: (noteId: number) => void;
   onPinNotesItemClick?: (
-    notesItemId: number,
-    updateNoteRequest: UpdateNoteRequest
+    noteId: number,
+    recipientId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest
   ) => void;
   onUpdateNotesItemStatus?: (
-    notesItemId: number,
-    newStatus: NoteStatusType
+    noteId: number,
+    recipientId: number,
+    newReceiverStatus: UpdateNoteReceiverRequest,
+    onSuccess?: () => void
   ) => void;
   onNotesItemSaveUpdateClick?: (
     notesItemId: number,
@@ -41,6 +49,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
     filters,
     userId,
     notesItems,
+    notesRecipientId,
     isLoadingList,
     onArchiveClick,
     onReturnArchivedClick,
@@ -127,17 +136,22 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
   return (
     <div tabIndex={0} onKeyDown={handleListKeyDown} className="notes__content">
       <NotesItemListWithoutAnimation isLoadingList={isLoadingList}>
-        {filteredNotesItemList.map((j, i) => (
+        {filteredNotesItemList.map((note, i) => (
           <NotesListItem
-            key={j.id}
+            key={note.id}
             tabIndex={0}
             ref={(ref) => (itemRefs.current[i] = ref)}
-            notesItem={j}
-            archived={j.isArchived}
+            specificRecipient={notesRecipientId}
+            notesItem={note}
+            archived={note.isArchived}
             onFocus={handleListItemFocus(i)}
             onKeyDown={handleListItemKeyDown}
-            loggedUserIsCreator={j.creator === userId}
-            loggedUserIsOwner={j.owner === userId}
+            loggedUserIsCreator={note.creator === userId}
+            loggedUserIsOwner={
+              !!note.recipients.find(
+                (receiver) => receiver.recipientId === userId
+              )
+            }
             onPinNotesItemClick={onPinNotesItemClick}
             onArchiveClick={onArchiveClick}
             onUpdateNotesItemStatus={onUpdateNotesItemStatus}
