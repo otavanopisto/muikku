@@ -961,9 +961,7 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
-
       this.props.store.dispatch(updateUserGroupFilters() as Action);
-
       this.loadGuiderData();
     }
     return <GuiderBody />;

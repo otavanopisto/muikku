@@ -11,6 +11,15 @@
   padding: 10px 0;
 }
 
+.notes--full-height {
+  max-height: 100%;
+}
+
+.notes__title {
+  font-size: 1.25rem;
+  margin: 0 0 10px;
+}
+
 .notes__toolbar {
   align-items: center;
   display: flex;
@@ -47,13 +56,15 @@
   border-style: solid;
   border-width: 4px 1px 1px;
   box-shadow: 0 0 15px rgba(0 0 0 / 2%);
+  display: flex;
   flex-basis: calc(100% - 16px);
+  flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
-  height: 260px;
+  height: 330px;
   margin: 8px;
   overflow: hidden;
-  padding: 0 10px;
+  padding: 5px 10px;
 
   @include breakpoint($breakpoint-mobile-xl) {
     flex-basis: calc(50% - 16px);
@@ -109,10 +120,8 @@
     flex-shrink: 1;
     height: auto;
     overflow-y: auto;
-    padding: 0 5px 0 0;
     scrollbar-color: lighten($color-default-contrast, 35%) $color-default;
     scrollbar-width: thin;
-    white-space: pre-line;
 
     &::-webkit-scrollbar {
       background-color: $color-default;
@@ -124,8 +133,14 @@
     }
   }
 
+  .notes__item-recipients {
+    height: auto;
+    overflow-y: auto;
+  }
+
   // This removes the item's content's fading effect
-  .notes__item-body::before {
+  .notes__item-body::before,
+  .notes__item-recipients::before {
     display: none;
   }
 }
@@ -142,31 +157,48 @@
   border-top-color: $color-priority-low;
 }
 
+.notes__item-hero {
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  justify-content: space-between;
+  margin: 5px 0;
+  width: 100%;
+}
+
 .notes__item-actions {
   align-items: flex-start;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-end;
+  width: 100%;
+}
+
+.notes__item-dates {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin: 5px 0;
   width: 100%;
 }
 
 .notes__item-header {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   font-weight: 600;
-  line-height: 1.375rem;
   margin: 5px 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 100%;
 }
 
 .notes__item-header--open-details {
   cursor: pointer;
-}
-
-.notes__item-dates {
-  margin: 5px 0;
-  min-height: 1.375rem;
 }
 
 .notes__item-dates-date-range {
@@ -190,19 +222,22 @@
 }
 
 .notes__item-body {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-weight: 300;
   height: calc(5 * 1.375rem);
   line-height: 1.375rem;
   margin: 5px 0;
   overflow: hidden;
   position: relative;
+  width: 100%;
 
   &::before {
-    background:
-      linear-gradient(
-        $color-application-list-item-fade-background 0.5rem,
-        $color-default
-      );
+    background: linear-gradient(
+      $color-application-list-item-fade-background 0.5rem,
+      $color-default
+    );
     bottom: 0;
     content: " ";
     height: 2rem;
@@ -210,21 +245,58 @@
     position: absolute;
     width: 100%;
   }
+
+  // Override font-size inherited from global .rich-tect rule
+  &.rich-text {
+    font-size: $text-mobile-font-size;
+
+    @include breakpoint($breakpoint-pad) {
+      font-size: $text-desktop-font-size;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+.notes__item-recipients {
+  align-items: flex-start;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: row wrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  gap: 4px;
+  margin: 5px 0;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
 }
 
 .notes__item-author {
   align-items: center;
   display: inline-flex;
+  flex-basis: auto;
   flex-flow: row nowrap;
+  flex-grow: 0;
+  flex-shrink: 0;
   font-size: 0.75rem;
   font-style: italic;
+  margin: 5px 0;
+  width: 100%;
 }
 
 .notes__item-footer {
   display: flex;
-  flex-flow: row nowrap;
+  flex-basis: auto;
+  flex-flow: row wrap;
+  flex-grow: 0;
+  flex-shrink: 0;
+  gap: 5px;
   justify-content: flex-end;
   margin: 5px 0;
+  width: 100%;
 }
 
 .notes__item-status {
@@ -245,7 +317,6 @@
 .notes__item-status--ongoing {
   background-color: lighten($color-cancel, 42%);
   color: darken($color-cancel, 15%);
-  margin: 0 0 0 10px;
 }
 
 .notes__item-status--pending {

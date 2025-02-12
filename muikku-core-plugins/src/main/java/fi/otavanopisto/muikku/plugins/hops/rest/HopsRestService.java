@@ -460,9 +460,10 @@ public class HopsRestService {
       List<StudyActivityItemRestModel> items = response.getEntity();
       for (StudyActivityItemRestModel item : items) {
         if (item.getCourseId() != null && studentEntity != null) {
-          SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+          SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
               studentEntity.getId(),
               item.getCourseId(),
+              Boolean.FALSE,
               Boolean.FALSE);
           if (supplementationRequest != null && item.getDate().before(supplementationRequest.getRequestDate())) {
             item.setDate(supplementationRequest.getRequestDate());

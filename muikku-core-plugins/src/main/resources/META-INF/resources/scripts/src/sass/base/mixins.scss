@@ -137,11 +137,9 @@
   border-top: #{$loader-border-width} solid $color-loader-empty-rotating-piece;
   content: " ";
   height: #{$size};
-  left: 50%;
-  margin-left: calc(-#{$size} / 2);
-  margin-top: calc(-#{$size} / 2);
+  left: calc(50% - #{$size} / 2);
   position: absolute;
-  top: 50%;
+  top: calc(50% - #{$size} / 2);
   width: #{$size};
 
   @keyframes spin {
