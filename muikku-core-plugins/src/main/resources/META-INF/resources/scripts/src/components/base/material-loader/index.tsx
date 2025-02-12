@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 //NOTE this is a sandbox file, because the code in the material loader is so complex I created this self contained
 //blackbox environment that makes it so that the material loader behaves like one component, this is bad because
 //it does not have the same capabilities and efficiency as the other components, and cannot be easily modified
@@ -335,6 +329,7 @@ class MaterialLoader extends React.Component<
 > {
   private stateConfiguration: any;
   private answerRegistrySync: { [name: string]: any };
+  private rootRef: React.RefObject<HTMLElement>;
 
   static defaultProps: DefaultMaterialLoaderProps = {
     usedAs: "default",
@@ -367,6 +362,7 @@ class MaterialLoader extends React.Component<
     //A sync version of the answer registry, it can change so fast
     //setStates might stack
     this.answerRegistrySync = {};
+    this.rootRef = React.createRef();
 
     this.onPushAnswer = this.onPushAnswer.bind(this);
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
@@ -538,8 +534,8 @@ class MaterialLoader extends React.Component<
   /**
    * getComponent
    */
-  getComponent(): HTMLDivElement {
-    return this.refs["root"] as HTMLDivElement;
+  getComponent(): HTMLElement | null {
+    return this.rootRef.current;
   }
 
   /**
@@ -715,7 +711,7 @@ class MaterialLoader extends React.Component<
     }
 
     return (
-      <article className={className} ref="root" id={this.props.id}>
+      <article className={className} ref={this.rootRef} id={this.props.id}>
         {content}
       </article>
     );
