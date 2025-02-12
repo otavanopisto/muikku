@@ -113,9 +113,25 @@ export const MatriculationExaminationStudentInformation = () => {
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label={t("labels.counselors", { ns: "users" })}
+              label={t("labels.counselor", { ns: "users" })}
               readOnly
               defaultValue={studentInformation.guidanceCounselor}
+              className="matriculation__input"
+            />
+          </div>
+        </div>
+        <div className="matriculation-container__row">
+          <div className="matriculation__form-element-container">
+            <TextField
+              label={t("labels.studyAdvisors", { ns: "users" })}
+              readOnly
+              defaultValue={
+                studentInformation.studyAdvisors.length > 0
+                  ? studentInformation.studyAdvisors
+                      .map((advisor) => advisor)
+                      .join(", ")
+                  : "—"
+              }
               className="matriculation__input"
             />
           </div>
