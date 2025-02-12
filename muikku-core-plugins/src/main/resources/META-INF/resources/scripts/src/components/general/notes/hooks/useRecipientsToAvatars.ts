@@ -1,5 +1,5 @@
 import { NoteReceiver } from "~/generated/client";
-import { AvatarProps } from "~/components/general/avatar";
+import { AvatarProps } from "~/components/general/avatar/index";
 import { useMemo } from "react";
 /**
  * useRecipientsToAvatars turns note recipients into avatars
@@ -38,7 +38,7 @@ export const useRecipientsToAvatars = (
           hasImage: false,
           id: userGroupId,
           groupAvatar: "usergroup",
-          firstName: userGroupName,
+          name: userGroupName,
         });
         return;
       }
@@ -48,14 +48,14 @@ export const useRecipientsToAvatars = (
           hasImage: false,
           id: workspaceId,
           groupAvatar: "workspace",
-          firstName: workspaceName,
+          name: workspaceName,
         });
         return;
       }
       avatars.push({
         hasImage: hasImage,
         id: recipientId,
-        firstName: recipientName,
+        name: recipientName,
       });
     });
     return avatars;
