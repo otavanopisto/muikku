@@ -35,6 +35,7 @@ import { MaterialCompositeReply } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import MApi from "~/api/api";
 import { connect } from "react-redux";
+import { isEqual } from "lodash";
 
 /* i18n.t("", { ns: "materials" }); */
 
@@ -307,6 +308,7 @@ interface MaterialLoaderState {
 
   //A registry for the right and wrong answers as told by the material
   answerRegistry: { [name: string]: any };
+  stateConfiguration: any;
 }
 
 //A cheap cache for material replies and composite replies used by the hack
@@ -327,7 +329,6 @@ class MaterialLoader extends React.Component<
   MaterialLoaderProps,
   MaterialLoaderState
 > {
-  private stateConfiguration: any;
   private answerRegistrySync: { [name: string]: any };
   private rootRef: React.RefObject<HTMLElement>;
 
@@ -357,6 +358,7 @@ class MaterialLoader extends React.Component<
 
       //The rightness registry start empty
       answerRegistry: {},
+      stateConfiguration: null,
     };
 
     //A sync version of the answer registry, it can change so fast
@@ -369,10 +371,12 @@ class MaterialLoader extends React.Component<
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
 
+    let stateConfiguration = null;
+
     //if it is answerable
     if (props.answerable && props.material) {
       //lets try and get the state configuration
-      this.stateConfiguration = STATES.filter(
+      stateConfiguration = STATES.filter(
         (state: any) =>
           // by assignment type first. If it is not found, then it is not answerable
           // There two type situation. First is for normal workspace material use and
@@ -391,10 +395,7 @@ class MaterialLoader extends React.Component<
       });
 
       //If checks answers, make it with answersChecked and answersVisible starting as true
-      if (
-        this.stateConfiguration &&
-        this.stateConfiguration["checks-answers"]
-      ) {
+      if (stateConfiguration && stateConfiguration["checks-answers"]) {
         state.answersChecked = true;
         if ((props.material.correctAnswers || "ALWAYS") === "ALWAYS") {
           state.answersVisible = true;
@@ -403,7 +404,7 @@ class MaterialLoader extends React.Component<
     }
 
     //set the state
-    this.state = state;
+    this.state = { ...state, stateConfiguration };
   }
   /**
    * componentDidMount
@@ -417,25 +418,46 @@ class MaterialLoader extends React.Component<
     //create the composite replies if using the boolean flag
     this.create();
   }
+
   /**
-   * Handle state configuration and answer checking updates
-   * @param prevProps Previous props
-   * @param prevState Previous state
+   * ShouldComponentUpdate. To prevent unnecessary re-renders and to optimize performance.
+   * @param nextProps nextProps
+   * @param nextState nextState
+   * @returns boolean
    */
-  componentDidUpdate(
-    prevProps: MaterialLoaderProps,
-    prevState: MaterialLoaderState
+  shouldComponentUpdate(
+    nextProps: MaterialLoaderProps,
+    nextState: MaterialLoaderState
   ) {
-    if (!this.props.answerable || !this.props.material) {
-      return;
+    return (
+      !isEqual(this.props.material, nextProps.material) ||
+      !isEqual(this.props.compositeReplies, nextProps.compositeReplies) ||
+      !isEqual(this.state.stateConfiguration, nextState.stateConfiguration) ||
+      this.state.answersVisible !== nextState.answersVisible ||
+      this.state.answersChecked !== nextState.answersChecked
+    );
+  }
+
+  /**
+   * Calculate new state configuration based on props
+   * @param props props
+   * @param state state
+   * @returns Partial<MaterialLoaderState> | null
+   */
+  static getDerivedStateFromProps(
+    props: MaterialLoaderProps,
+    state: MaterialLoaderState
+  ): Partial<MaterialLoaderState> | null {
+    if (!props.answerable || !props.material) {
+      return null;
     }
 
     const compositeReplies =
-      this.props.compositeReplies || this.state.compositeRepliesInState;
+      props.compositeReplies || state.compositeRepliesInState;
 
-    this.stateConfiguration = STATES.filter(
-      (state: any) =>
-        state["assignment-type"] === this.props.material.assignmentType
+    // Calculate new state configuration
+    const newStateConfiguration = STATES.filter(
+      (state: any) => state["assignment-type"] === props.material.assignmentType
     ).find((state: any) => {
       const stateRequired =
         (compositeReplies && compositeReplies.state) || "UNANSWERED";
@@ -446,27 +468,50 @@ class MaterialLoader extends React.Component<
       );
     });
 
-    if (!this.stateConfiguration) {
+    // Only update if configuration changed
+    if (!isEqual(newStateConfiguration, state.stateConfiguration)) {
+      return { stateConfiguration: newStateConfiguration };
+    }
+
+    return null;
+  }
+
+  /**
+   * Handle answer checking logic based on state configuration changes
+   * @param prevProps prevProps
+   * @param prevState prevState
+   */
+  componentDidUpdate(
+    prevProps: MaterialLoaderProps,
+    prevState: MaterialLoaderState
+  ) {
+    if (!this.props.answerable || !this.props.material) {
       return;
     }
 
-    const shouldCheck = this.stateConfiguration["checks-answers"];
-    const isAlwaysShow =
-      (this.props.material.correctAnswers || "ALWAYS") === "ALWAYS";
+    // Handle answer checking logic when stateConfiguration changes
+    if (!isEqual(prevState.stateConfiguration, this.state.stateConfiguration)) {
+      const shouldCheck = this.state.stateConfiguration["checks-answers"];
+      const isAlwaysShow =
+        (this.props.material.correctAnswers || "ALWAYS") === "ALWAYS";
 
-    // Handle transitioning to checked state
-    if (shouldCheck && !this.state.answersChecked) {
-      this.setState({
-        answersVisible: isAlwaysShow,
-        answersChecked: true,
-      });
-    }
-    // Handle transitioning to unchecked state
-    else if (!shouldCheck && this.state.answersChecked) {
-      this.setState({
-        answersVisible: false,
-        answersChecked: false,
-      });
+      if (shouldCheck && !this.state.answersChecked) {
+        if (isAlwaysShow) {
+          this.setState({
+            answersVisible: true,
+            answersChecked: true,
+          });
+        } else {
+          this.setState({
+            answersChecked: true,
+          });
+        }
+      } else if (!shouldCheck && this.state.answersChecked) {
+        this.setState({
+          answersVisible: false,
+          answersChecked: false,
+        });
+      }
     }
   }
 
@@ -532,7 +577,7 @@ class MaterialLoader extends React.Component<
    */
   onPushAnswer(params?: any) {
     //So now we need that juicy success state
-    if (this.stateConfiguration["success-state"]) {
+    if (this.state.stateConfiguration["success-state"]) {
       //Get the composite reply
       const compositeReplies =
         this.props.compositeReplies || this.state.compositeRepliesInState;
@@ -543,13 +588,13 @@ class MaterialLoader extends React.Component<
       //add a worspaceMaterialReplyId if we have one, and hopefully we will, for most of the cases that is
       //We add the success text if we have one, ofc it is a string to translate
       this.props.updateAssignmentState(
-        this.stateConfiguration["success-state"],
+        this.state.stateConfiguration["success-state"],
         false,
         this.props.workspace.id,
         this.props.material.workspaceMaterialId,
         compositeReplies && compositeReplies.workspaceMaterialReplyId,
-        this.stateConfiguration["success-text"]
-          ? this.stateConfiguration["success-text"]
+        this.state.stateConfiguration["success-text"]
+          ? this.state.stateConfiguration["success-text"]
           : undefined,
         this.props.onAssignmentStateModified
       );
@@ -692,7 +737,7 @@ class MaterialLoader extends React.Component<
           onToggleAnswersVisible: this.toggleAnswersVisible,
         },
         this.state,
-        this.stateConfiguration
+        this.state.stateConfiguration
       );
     }
 
