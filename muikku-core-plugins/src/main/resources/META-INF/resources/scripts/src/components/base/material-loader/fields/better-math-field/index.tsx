@@ -99,11 +99,17 @@ export default class MathField extends React.Component<
   }
 
   /**
-   * UNSAFE_componentWillReceiveProps
-   * @param nextProps nextProps
+   * componentDidUpdate
+   * @param prevProps previous props
    */
-  UNSAFE_componentWillReceiveProps(nextProps: MathFieldProps) {
-    this.checkLoadingOfAceAndMQ(nextProps);
+  componentDidUpdate(prevProps: MathFieldProps) {
+    // Only check if relevant props have changed
+    if (
+      prevProps.dontLoadACE !== this.props.dontLoadACE ||
+      prevProps.dontLoadMQ !== this.props.dontLoadMQ
+    ) {
+      this.checkLoadingOfAceAndMQ(this.props);
+    }
   }
 
   /**

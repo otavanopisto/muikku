@@ -418,69 +418,55 @@ class MaterialLoader extends React.Component<
     this.create();
   }
   /**
-   * UNSAFE_componentWillUpdate
-   * @param nextProps nextProps
-   * @param nextState nextState
+   * Handle state configuration and answer checking updates
+   * @param prevProps Previous props
+   * @param prevState Previous state
    */
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillUpdate(
-    nextProps: MaterialLoaderProps,
-    nextState: MaterialLoaderState
+  componentDidUpdate(
+    prevProps: MaterialLoaderProps,
+    prevState: MaterialLoaderState
   ) {
-    //if the component will update we need to do some changes if it's gonna be answerable
-    //and there's a material
-    if (nextProps.answerable && nextProps.material) {
-      //we get the composite replies
-      const compositeReplies =
-        nextProps.compositeReplies || nextState.compositeRepliesInState;
+    if (!this.props.answerable || !this.props.material) {
+      return;
+    }
 
-      //The state configuration
-      this.stateConfiguration = STATES.filter(
-        (state: any) =>
-          state["assignment-type"] === nextProps.material.assignmentType
-      ).find((state: any) => {
-        const stateRequired =
-          (compositeReplies && compositeReplies.state) || "UNANSWERED";
-        const statesInIt = state["state"];
-        return (
-          statesInIt === stateRequired ||
-          (statesInIt instanceof Array && statesInIt.includes(stateRequired))
-        );
+    const compositeReplies =
+      this.props.compositeReplies || this.state.compositeRepliesInState;
+
+    this.stateConfiguration = STATES.filter(
+      (state: any) =>
+        state["assignment-type"] === this.props.material.assignmentType
+    ).find((state: any) => {
+      const stateRequired =
+        (compositeReplies && compositeReplies.state) || "UNANSWERED";
+      const statesInIt = state["state"];
+      return (
+        statesInIt === stateRequired ||
+        (statesInIt instanceof Array && statesInIt.includes(stateRequired))
+      );
+    });
+
+    if (!this.stateConfiguration) {
+      return;
+    }
+
+    const shouldCheck = this.stateConfiguration["checks-answers"];
+    const isAlwaysShow =
+      (this.props.material.correctAnswers || "ALWAYS") === "ALWAYS";
+
+    // Handle transitioning to checked state
+    if (shouldCheck && !this.state.answersChecked) {
+      this.setState({
+        answersVisible: isAlwaysShow,
+        answersChecked: true,
       });
-
-      //There should be one but add this check just in case
-      if (this.stateConfiguration) {
-        //if the thing has the flag to checks-answers but they are not going to be
-        if (
-          this.stateConfiguration["checks-answers"] &&
-          !nextState.answersChecked
-        ) {
-          //Depending on whether rightAnswers are ALWAYS (and the default is always if not set)
-          if ((nextProps.material.correctAnswers || "ALWAYS") === "ALWAYS") {
-            //We set the answers visible and checked
-            this.setState({
-              answersVisible: true,
-              answersChecked: true,
-            });
-          } else {
-            //Otherwise the answers only get checked, this is for example
-            //For the ON_REQUEST or NEVER types
-            this.setState({
-              answersChecked: true,
-            });
-          }
-          //If the opposite is true and they are not with the checks-answers flags but they are currently checked
-        } else if (
-          !this.stateConfiguration["checks-answers"] &&
-          nextState.answersChecked
-        ) {
-          //hide all that, and answersVisible too, it might be active too
-          this.setState({
-            answersVisible: false,
-            answersChecked: false,
-          });
-        }
-      }
+    }
+    // Handle transitioning to unchecked state
+    else if (!shouldCheck && this.state.answersChecked) {
+      this.setState({
+        answersVisible: false,
+        answersChecked: false,
+      });
     }
   }
 

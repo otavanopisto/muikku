@@ -168,18 +168,20 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
 
   /**
-   * UNSAFE_componentWillReceiveProps
-   * @param nextProps nextProps
+   * componentDidUpdate
+   * @param prevProps previous props
    */
-  UNSAFE_componentWillReceiveProps(nextProps: FieldProps) {
-    if (nextProps.className !== this.props.className) {
+  componentDidUpdate(prevProps: FieldProps) {
+    // Handle className changes
+    if (prevProps.className !== this.props.className) {
       if (this.inputRef.current) {
-        this.inputRef.current.className = nextProps.className;
+        this.inputRef.current.className = this.props.className;
       }
     }
 
-    if (nextProps.readOnly !== this.props.readOnly) {
-      if (nextProps.readOnly) {
+    // Handle readOnly changes
+    if (prevProps.readOnly !== this.props.readOnly) {
+      if (this.props.readOnly) {
         if (this.inputRef.current) {
           this.inputRef.current.classList.add("mathfield--readonly");
           this.inputRef.current.removeAttribute("contentEditable");
@@ -196,11 +198,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
     }
 
-    if (nextProps.value === this.value) {
+    if (prevProps.value === this.props.value) {
       return;
     }
 
-    this.value = nextProps.value;
+    // Handle value changes
+    this.value = this.props.value;
     this.createMarkup();
   }
 
