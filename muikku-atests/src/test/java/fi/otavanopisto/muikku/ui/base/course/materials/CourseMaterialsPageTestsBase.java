@@ -793,8 +793,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitAndClick("ol.connectfield__terms-container li:nth-child(2)");
         waitAndClick("span.connectfield__counterpart-data-container[aria-label='Pulla']");
         
-        waitAndClick(".button--muikku-submit-exercise");
-        waitForPresent(".material-page__correct-answers-label");
+        waitAndClickAndConfirm(".button--muikku-submit-exercise", ".material-page__correct-answers-label", 3, 1000);
         sleep(500);
         assertPresent("li.correct-answer span.connectfield__counterpart-data-container[aria-label='Keppi']");
         assertPresent("li.correct-answer span.connectfield__counterpart-data-container[aria-label='Pulla']");
@@ -855,8 +854,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         dragAndDropWithOffSetAndTimeout("span.connectfield__counterpart-data-container[aria-label='Keppi']", "ol.connectfield__terms-container li:first-child", 250, 0);
         dragAndDropWithOffSetAndTimeout("span.connectfield__counterpart-data-container[aria-label='Pulla']", "ol.connectfield__terms-container li:nth-child(2)", 250, 0);
 
-        waitAndClick(".button--muikku-submit-exercise");
-        waitForPresent(".material-page__correct-answers-label");
+        waitAndClickAndConfirm(".button--muikku-submit-exercise", ".material-page__correct-answers-label", 3, 1000);
         sleep(1500);
         assertClassPresent("span.connectfield", "correct-answer");
       } finally {
@@ -995,9 +993,8 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           dragAndDropWithOffSetAndTimeout("div .organizerfield__term:nth-child(3)", ".organizerfield__category:nth-child(1)", 80, 50);
           dragAndDropWithOffSetAndTimeout("div .organizerfield__term:nth-child(4)", ".organizerfield__category:nth-child(2)", 120, 50);
   //        TODO: Remove sleep when concurrent save and submit issue fixed
-          sleep(350);
-          waitAndClick(".button--muikku-submit-exercise");
-          waitForVisible(".material-page__correct-answers");
+          sleep(500);
+          waitAndClickAndConfirm(".button--muikku-submit-exercise", ".material-page__correct-answers", 3, 1000);
           assertTextIgnoreCase(".material-page__correct-answers-data", "0 / 1");
         } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
