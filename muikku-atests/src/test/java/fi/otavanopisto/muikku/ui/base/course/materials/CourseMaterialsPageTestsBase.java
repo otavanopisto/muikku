@@ -854,8 +854,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         dragAndDropWithOffSetAndTimeout("span.connectfield__counterpart-data-container[aria-label='Keppi']", "ol.connectfield__terms-container li:first-child", 250, 0);
         dragAndDropWithOffSetAndTimeout("span.connectfield__counterpart-data-container[aria-label='Pulla']", "ol.connectfield__terms-container li:nth-child(2)", 250, 0);
 
-        waitAndClick(".button--muikku-submit-exercise");
-        waitForPresent(".material-page__correct-answers-label");
+        waitAndClickAndConfirm(".button--muikku-submit-exercise", ".material-page__correct-answers-label", 3, 1000);
         sleep(1500);
         assertClassPresent("span.connectfield", "correct-answer");
       } finally {
