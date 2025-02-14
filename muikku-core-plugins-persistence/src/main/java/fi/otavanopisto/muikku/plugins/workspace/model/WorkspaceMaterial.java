@@ -48,6 +48,14 @@ public class WorkspaceMaterial extends WorkspaceNode {
   public void setMaxPoints(Double maxPoints) {
     this.maxPoints = maxPoints;
   }
+  
+  public WorkspaceMaterialAI getAi() {
+    return ai;
+  }
+  
+  public void setAi(WorkspaceMaterialAI ai) {
+    this.ai = ai;
+  }
 
   @NotNull
   @Column(nullable = false)
@@ -61,5 +69,8 @@ public class WorkspaceMaterial extends WorkspaceNode {
 
   @Column
   private Double maxPoints;
+  
+  @Enumerated (EnumType.STRING)
+  private WorkspaceMaterialAI ai;
   
 }

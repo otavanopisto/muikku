@@ -27,6 +27,7 @@ import {
   WorkspaceMandatority,
   WorkspaceSettings,
   StaffMember,
+  MaterialAI,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -86,6 +87,11 @@ export interface TemplateWorkspaceType {
  * used as lang attribute jsx
  */
 export const languageOptions = Object.values(Language);
+
+/**
+ * Material AI options
+ */
+export const materialAiOptions = Object.values(MaterialAI);
 
 /**
  * WorkspaceDataType
