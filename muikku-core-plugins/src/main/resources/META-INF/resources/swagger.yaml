@@ -14807,6 +14807,13 @@ components:
           description: The id of the workspace material reply
           type: integer
           format: int64
+          
+    MaterialAI:
+      description: Is AI usage allowed
+      type: string
+      enum:
+        - ALLOWED
+        - DISALLOWED
 
     MaterialAssigmentType:
       description: Material assignment type enum
@@ -15089,6 +15096,10 @@ components:
         maxPoints:
           type: number
           format: double
+        ai:
+          description: Is usage of AI allowed
+          $ref: "#/components/schemas/MaterialAI"
+          nullable: true
 
     Message:
       type: object
@@ -17989,6 +18000,9 @@ components:
         maxPoints:
           type: number
           format: double
+        ai:
+          description: Is usage of AI allowed
+          $ref: "#/components/schemas/MaterialAI"
 
     WorkspaceFolder:
       type: object
