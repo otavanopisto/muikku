@@ -4,33 +4,33 @@
 @import "../base/breakpoints";
 
 .study-planner {
+  background: white;
   display: flex;
   flex-direction: column;
   height: 750px;
-  background: white;
 }
 
 .study-planner--mobile-not-open {
-  display: flex;
-  justify-content: center;
   align-items: center;
+  display: flex;
   height: 100%;
+  justify-content: center;
   margin: 1rem 0.5rem;
 }
 
 .study-planner--mobile-open {
   height: 100vh;
-  width: 100%;
-  position: fixed;
   inset: 0;
+  position: fixed;
+  width: 100%;
   z-index: 1000;
 }
 
 .study-planner__controls {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid $color-default-separator-border;
+  display: flex;
+  justify-content: space-between;
 }
 
 .study-planner__control-buttons {
@@ -46,9 +46,9 @@
 .study-planner__control-button {
   background: none;
   border: none;
-  padding: 0.5rem;
-  cursor: pointer;
   color: $color-default-contrast;
+  cursor: pointer;
+  padding: 0.5rem;
 
   &:hover {
     color: $color-info;
@@ -58,9 +58,9 @@
 .study-planner__nav-button {
   background: none;
   border: none;
-  padding: 0.5rem;
-  cursor: pointer;
   color: $color-default-contrast;
+  cursor: pointer;
+  padding: 0.5rem;
 
   &:hover {
     color: $color-info;
@@ -68,32 +68,30 @@
 }
 
 .study-planner__content {
+  border-top: 1px solid #ebebeb;
   display: flex;
   gap: 1rem;
   height: calc(100% - 48px);
   overflow: hidden;
-  border-top: 1px solid #ebebeb;
   padding-top: 0.5rem;
 }
 
-// Timeline
 .study-planner__timeline-container {
-  position: relative;
-  flex-basis: 100%;
-  flex-shrink: 1;
-  flex-grow: 1;
   display: flex;
-
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
   overflow-x: auto;
   overflow-y: hidden;
+  position: relative;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
 .study-planner__timeline {
   display: flex;
-  gap: 1rem;
   flex-flow: row nowrap;
+  gap: 1rem;
 
   &::-webkit-scrollbar {
     height: 8px;
@@ -115,67 +113,67 @@
 }
 
 .study-planner__timeline-overlay {
+  background: transparent;
+  bottom: 0;
+  cursor: grab;
+  left: 0;
   position: absolute;
   top: 0;
-  left: 0;
-  bottom: 0;
   z-index: 1000;
-  cursor: grab;
-  background: transparent;
 }
 
 // Period
 .study-planner__period {
-  display: flex;
-  flex-flow: column nowrap;
-  max-width: 350px;
-  height: 100%;
   background: #F5F5F7;
   border-radius: 10px;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+  max-width: 350px;
   padding: 10px;
 }
 
 .study-planner__collapse-button {
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
   flex-shrink: 0;
   height: 48px;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  border: none;
-  background: transparent;
-  cursor: pointer;
   z-index: 1000;
 }
 
 .study-planner__period-header {
-  position: relative;
-  display: flex;
   align-items: center;
+  display: flex;
   min-height: 48px;
+  position: relative;
 }
 
 .study-planner__period-header--collapsed {
-  height: 100%;
-  position: absolute;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  position: absolute;
 }
 
 .study-planner__period-title {
+  align-items: center;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 600;
+  justify-content: center;
+  margin: 0;
   position: absolute;
   white-space: nowrap;
-  display: flex;
-  align-items: center;
-  margin: 0;
-  font-weight: 600;
-  font-size: 1rem;
-  justify-content: center;
   width: 100%;
 }
 
 .study-planner__period-title--collapsed {
-  writing-mode: vertical-rl;
   margin-top: 50px;
+  writing-mode: vertical-rl;
 }
 
 // Scrollable container
@@ -203,8 +201,8 @@
 
 // Months list
 .study-planner__months-container {
-  padding-right: 4px;
   padding-left: 4px;
+  padding-right: 4px;
   width: calc(350px - 20px);
 
   &::-webkit-scrollbar {
@@ -232,8 +230,8 @@
 }
 
 .study-planner__month-header {
-  display: flex;
   align-items: center;
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -244,19 +242,18 @@
 }
 
 .study-planner__month-toggle {
-  width: 100%;
-  text-align: left;
-  padding: 0.5rem 0;
+  align-items: center;
   background: none;
   border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 500;
-  color: $color-info;
   border-radius: 3px;
   color: #B1296F;
+  cursor: pointer;
+  display: flex;
+  font-weight: 500;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  text-align: left;
+  width: 100%;
 
   i {
     font-size: 0.875rem;
@@ -275,43 +272,43 @@
 }
 
 .study-planner__month-dropzone {
+  align-items: center;
+  border: 3px dashed #808080;
+  border-radius: 10px;
+  color: #B1296F;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   height: 60px;
-  border: 3px dashed #808080;
-  color: #B1296F;
-  border-radius: 10px;
+  justify-content: center;
   padding: 0.5rem;
 }
 
 // Sidebar
 .study-planner__sidebar {
   border-right: 1px solid $color-default-separator-border;
-  padding-right: 1rem;
   display: flex;
-  flex-direction: column;
-  height: 100%;
   flex-basis: 300px;
-  flex-shrink: 0;
+  flex-direction: column;
   flex-grow: 0;
+  flex-shrink: 0;
+  height: 100%;
+  padding-right: 1rem;
 }
 
 // Course tray
 .study-planner__course-tray {
   display: flex;
-  flex-direction: column;
-  height: 100%;
   flex-basis: 300px;
-  flex-shrink: 0;
+  flex-direction: column;
   flex-grow: 0;
+  flex-shrink: 0;
+  height: 100%;
 }
 
 .study-planner__course-tray-header {
+  align-items: center;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 0.25rem;
 }
 
@@ -339,17 +336,17 @@
 }
 
 .study-planner__course-tray-group-toggle {
-  width: 100%;
-  text-align: left;
-  padding: 0.5rem 0.5rem 0.5rem 0rem;
+  align-items: center;
   background: none;
   border: none;
+  color: #B1296F;
   cursor: pointer;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
   font-weight: 500;
-  color: #B1296F;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0;
+  text-align: left;
+  width: 100%;
 
   &:hover {
     background: $color-default-lighter-generic-background;
@@ -386,55 +383,54 @@
 
 // Planner card
 .study-planner__card {
-  cursor: move;
   background: white;
-  border-radius: 0px 5px 5px 0px;
-  opacity: 1;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
+  cursor: move;
   margin-bottom: 10px;
+  opacity: 1;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    transform: translateY(-2px);
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
   }
 }
 
 .study-planner__card--preview,
 .study-planner__card--is-dragging {
-  transform: scale(1.05);
   box-shadow: 0 8px 16px rgba(0,0,0,0.1);
   cursor: move;
   opacity: 0.8;
+  transform: scale(1.05);
 }
 
 .study-planner__card--disabled {
-  opacity: 0.5;
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .study-planner__card--selected {
   position: relative;
 
   &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     border: 2px solid $color-info;
     border-radius: 0 5px 5px 0;
+    bottom: 0;
+    content: '';
+    left: 0;
     pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 }
 
 .study-planner__card-inner-container {
-  position: relative;
-  width: 100%;
+  background: white;
   border-left: 5px solid #8d8d8d;
   padding: 0.5rem;
-  background: white;
+  position: relative;
+  width: 100%;
 }
 
 .study-planner__card-inner-container--mandatory {
@@ -446,8 +442,8 @@
 }
 
 .study-planner__card-header {
-  display: flex;
   align-items: center;
+  display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   margin-bottom: 0.5rem;
@@ -463,8 +459,8 @@
 .study-planner__card-actions {
   display: flex;
   gap: 0.5rem;
-  margin-top: 0.5rem;
   justify-content: flex-end;
+  margin-top: 0.5rem;
 }
 
 .study-planner__card-actions--course-tray {
@@ -476,13 +472,13 @@
 }
 
 .study-planner__card-label {
-  display: flex;
-  padding: 4px 8px;
+  align-items: center;
   border-radius: 4px;
+  display: flex;
   font-size: 12px;
   font-weight: 600;
-  align-items: center;
   max-width: fit-content;
+  padding: 4px 8px;
 }
 
 .study-planner__card-label--mandatory {
@@ -546,17 +542,17 @@
 }
 
 .study-planner__course-dates {
-  font-size: 0.750rem;
   color: $color-default-contrast;
   display: block;
   flex-basis: 100%;
+  font-size: 0.750rem;
 }
 
 .study-planner__course-workspace-instance-not-available {
-  font-size: 0.750rem;
   color: red;
   display: block;
   flex-basis: 100%;
+  font-size: 0.750rem;
 }
 
 // Specify animate height
@@ -572,9 +568,9 @@
 
 // Specify section
 .study-planner__extra-section {
-  padding: 0.5rem;
   background: white;
-  border: 1px solid rgb(224, 224, 224)
+  border: 1px solid rgb(224, 224, 224);
+  padding: 0.5rem;
 }
 
 .study-planner__extra-section-title {
@@ -594,15 +590,15 @@
 }
 
 .study-planner__extra-section-input-group-label {
-  margin-bottom: 0.25rem;
-  font-weight: 600;
   font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
 .study-planner__extra-section-input-group-label-info {
-  margin-bottom: 0.25rem;
-  font-weight: 100;
   font-size: 0.775rem;
+  font-weight: 100;
+  margin-bottom: 0.25rem;
 }
 
 .study-planner__extra-section-date-inputs {
@@ -617,7 +613,6 @@
 }
 
 .study-planner__input {
-  width: 100%;
   background: #ffffff;
   border: 2px solid #f8a1ce;
   border-radius: 3px;
@@ -635,13 +630,13 @@
 }
 
 .study-planner__state-info-row-label {
-  font-weight: 200;
   font-size: 0.875rem;
+  font-weight: 200;
 }
 
 .study-planner__state-info-row-value {
-  font-weight: 800;
   font-size: 0.875rem;
+  font-weight: 800;
 }
 
 // Mobile sidebar
@@ -652,9 +647,9 @@
 }
 
 .study-planner__selection-info {
+  border: 1px solid #f8a1ce;
   display: flex;
   flex-direction: column;
-  border: 1px solid #f8a1ce;
 }
 
 .study-planner__selection-info-text {
@@ -671,29 +666,29 @@
   margin-top: 1rem;
 
   &-title {
-    font-size: 0.9rem;
     color: var(--text-secondary);
+    font-size: 0.9rem;
     margin-bottom: 0.5rem;
   }
 
   &-planned-courses {
     list-style: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
   }
 
   &-course {
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem;
-    border-radius: 4px;
     background-color: var(--background-secondary);
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 0.25rem;
+    padding: 0.5rem;
 
     &-name {
-      margin-right: 0.5rem;
       font-size: 0.9rem;
+      margin-right: 0.5rem;
     }
   }
 }
@@ -716,16 +711,16 @@
 }
 
 .study-planner__plan-status-bar-label {
-  position: absolute;
-  inset: 0;
   display: flex;
+  inset: 0;
   justify-content: center;
+  position: absolute;
 }
 
 .study-planner__plan-status-dates {
   display: flex;
-  justify-content: space-between;
   font-size: 0.875rem;
+  justify-content: space-between;
   margin-bottom: 0.25rem;
 }
 
@@ -736,10 +731,10 @@
 }
 
 .study-planner__plan-statistic-item-value {
-  height: 0.5rem;
-  width: 6rem;
   background-color: $color-success;
   border-radius: 0.25rem;
+  height: 0.5rem;
+  width: 6rem;
 }
 
 .study-planner__plan-statistics {
@@ -765,9 +760,9 @@
 }
 
 .study-planner__plan-statistic-item-bar-container {
+  align-items: center;
   display: flex;
   flex-direction: row;
-  align-items: center;
   position: relative;
 }
 
@@ -777,21 +772,21 @@
 }
 
 .study-planner__plan-statistic-item-bar-label {
-  position: absolute;
-  inset: 0;
   display: flex;
+  inset: 0;
   justify-content: center;
+  position: absolute;
 }
 
 // Planner info
 .study-planner__info {
-  display: flex;
-  gap: 0.75rem;
-  padding: 1rem;
   background-color: #F8F8F8;
   border-left: 5px solid #F8F8F8;
   border-radius: 0 5px 5px 0;
   color: #8c8c8c;
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
 
   &--warning {
     border-color: #fb923c;
@@ -835,15 +830,15 @@
 }
 
 .study-planner__info-icon {
-  font-size: 5rem;
   flex-shrink: 0;
+  font-size: 5rem;
 }
 
 .study-planner__info-content {
-  display: flex;
   align-items: center;
-  font-size: 1.25rem;
+  display: flex;
   flex: 1;
+  font-size: 1.25rem;
 }
 
 .study-planner__planned-list li {
