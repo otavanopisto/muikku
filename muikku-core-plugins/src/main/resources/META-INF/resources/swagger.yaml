@@ -14807,7 +14807,7 @@ components:
           description: The id of the workspace material reply
           type: integer
           format: int64
-          
+
     MaterialAI:
       description: Is AI usage allowed
       type: string
@@ -15024,6 +15024,7 @@ components:
         - contentType
         - contentHiddenForUser
         - assignmentType
+        - ai
       properties:
         title:
           description: The title of the material
