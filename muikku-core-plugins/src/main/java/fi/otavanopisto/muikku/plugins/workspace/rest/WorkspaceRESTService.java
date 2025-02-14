@@ -3982,18 +3982,14 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.setTitle(workspaceJournalEntry.getTitle());
     result.setCreated(workspaceJournalEntry.getCreated());
     result.setCommentCount(workspaceJournalController.getCommentCount(workspaceJournalEntry));
-    result.setIsMaterialField(workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null);
 
     if (workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null) {
-
       String[] identifiers = workspaceJournalEntry.getMaterialFieldReplyIdentifier().split("-");
-
       Long replyId = Long.parseLong(identifiers[1]);
-
       fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
-
       if (reply != null) {
         result.setWorkspaceMaterialReplyState(reply.getState());
+        result.setMaterial(createRestModel(reply.getWorkspaceMaterial()));
       }
     }
 
