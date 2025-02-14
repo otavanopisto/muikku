@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 import * as React from "react";
 import Toolbar, { MathFieldCommandType } from "./toolbar";
 import Field from "./field";
@@ -64,6 +58,10 @@ export default class MathField extends React.Component<
 > {
   private loadedAce: boolean;
   private loadedMq: boolean;
+  private inputRef: React.RefObject<Field>;
+  private baseRef: React.RefObject<HTMLDivElement>;
+  private imgInputRef: React.RefObject<HTMLInputElement>;
+
   /**
    * constructor
    * @param props props
@@ -75,6 +73,10 @@ export default class MathField extends React.Component<
       isFocused: false,
       expandMath: false,
     };
+
+    this.inputRef = React.createRef();
+    this.baseRef = React.createRef();
+    this.imgInputRef = React.createRef();
 
     this.onFocusField = this.onFocusField.bind(this);
     this.onBlurField = this.onBlurField.bind(this);
@@ -91,11 +93,17 @@ export default class MathField extends React.Component<
   }
 
   /**
-   * UNSAFE_componentWillReceiveProps
-   * @param nextProps nextProps
+   * componentDidUpdate
+   * @param prevProps previous props
    */
-  UNSAFE_componentWillReceiveProps(nextProps: MathFieldProps) {
-    this.checkLoadingOfAceAndMQ(nextProps);
+  componentDidUpdate(prevProps: MathFieldProps) {
+    // Only check if relevant props have changed
+    if (
+      prevProps.dontLoadACE !== this.props.dontLoadACE ||
+      prevProps.dontLoadMQ !== this.props.dontLoadMQ
+    ) {
+      this.checkLoadingOfAceAndMQ(this.props);
+    }
   }
 
   /**
@@ -163,7 +171,7 @@ export default class MathField extends React.Component<
    * @param command command
    */
   onCommand(command: MathFieldCommandType) {
-    (this.refs.input as Field).execute(command);
+    this.inputRef.current && this.inputRef.current?.execute(command);
   }
 
   /**
@@ -184,7 +192,7 @@ export default class MathField extends React.Component<
   cancelBlur() {
     //this gets triggered once we have a mousedown event (before the blur)
     //on the toolbar, so we want to cancel it
-    (this.refs.input as Field).focus();
+    this.inputRef.current && this.inputRef.current?.focus();
   }
 
   /**
@@ -210,14 +218,14 @@ export default class MathField extends React.Component<
    */
   createNewLatex() {
     //this will trigger the onLatexModeOpen from the Field so the toolbar will react after all
-    (this.refs.input as Field).createNewLatex();
+    this.inputRef.current && this.inputRef.current.createNewLatex();
   }
 
   /**
    * requestImage
    */
   requestImage() {
-    (this.refs.imginput as HTMLInputElement).click();
+    this.imgInputRef.current?.click();
   }
 
   /**
@@ -227,14 +235,14 @@ export default class MathField extends React.Component<
   onImageRequested(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files[0];
     e.target.value = null;
-    (this.refs.input as Field).insertImage(file);
+    this.inputRef.current && this.inputRef.current.insertImage(file);
   }
 
   /**
    * getBase
    */
-  getBase(): HTMLElement {
-    return this.refs["base"] as HTMLElement;
+  getBase(): HTMLElement | null {
+    return this.baseRef.current;
   }
 
   /**
@@ -242,7 +250,7 @@ export default class MathField extends React.Component<
    */
   render() {
     return (
-      <div ref="base">
+      <div ref={this.baseRef}>
         <Toolbar
           isOpen={this.props.toolbarAlwaysVisible || this.state.isFocused}
           onToolbarAction={this.cancelBlur}
@@ -265,7 +273,7 @@ export default class MathField extends React.Component<
           createNewLatex={this.createNewLatex}
           onLatexModeOpen={this.openMathExpanded}
           onLatexModeClose={this.closeMathExpanded}
-          ref="input"
+          ref={this.inputRef}
           latexPlaceholderText="LaTeX"
           readOnly={this.props.readOnly}
           imageClassName={this.props.imageClassName}
@@ -275,7 +283,7 @@ export default class MathField extends React.Component<
           type="file"
           onChange={this.onImageRequested}
           style={{ display: "none" }}
-          ref="imginput"
+          ref={this.imgInputRef}
           accept="image/*"
         />
       </div>
