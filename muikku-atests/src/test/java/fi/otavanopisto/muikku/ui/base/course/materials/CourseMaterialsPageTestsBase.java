@@ -918,9 +918,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           dragAndDropWithOffSetAndTimeout(".sorterfield__item:first-child", ".sorterfield__item:nth-child(2)", 20, 0);
 
           sleep(1000);
-          waitAndClick(".button--muikku-submit-exercise");
-          
-          waitForPresent(".material-page__correct-answers-data");
+          waitAndClickAndConfirm(".button--muikku-submit-exercise", ".material-page__correct-answers-data", 3, 1000);
           String correctAnswersCount = getElementText(".material-page__correct-answers-data");
           if(StringUtils.equals(correctAnswersCount, "1 / 1")) {
             assertTrue(true);
