@@ -430,8 +430,7 @@ class MaterialLoader extends React.Component<
     nextState: MaterialLoaderState
   ) {
     return (
-      !isEqual(this.props.material, nextProps.material) ||
-      !isEqual(this.props.compositeReplies, nextProps.compositeReplies) ||
+      !isEqual(this.props, nextProps) ||
       !isEqual(this.state.stateConfiguration, nextState.stateConfiguration) ||
       this.state.answersVisible !== nextState.answersVisible ||
       this.state.answersChecked !== nextState.answersChecked
