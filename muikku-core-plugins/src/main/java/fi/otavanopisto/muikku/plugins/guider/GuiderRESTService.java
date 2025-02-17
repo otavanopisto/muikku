@@ -567,6 +567,8 @@ public class GuiderRESTService extends PluginRESTService {
 
     boolean u18Compulsory = userEntityController.isUnder18CompulsoryEducationStudent(studentIdentifier);
     
+    boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
+    
     GuiderStudentRestModel student = new GuiderStudentRestModel(
         studentIdentifier.toId(),
         user.getFirstName(),
@@ -574,7 +576,7 @@ public class GuiderRESTService extends PluginRESTService {
         user.getNickName(),
         user.getStudyProgrammeName(),
         user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
-        false,
+        hasImage,
         user.getNationality(),
         user.getLanguage(),
         user.getMunicipality(),
