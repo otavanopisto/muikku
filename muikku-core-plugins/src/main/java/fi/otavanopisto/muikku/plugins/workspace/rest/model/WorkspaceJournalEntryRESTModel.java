@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
 import java.util.Date;
 
+import fi.otavanopisto.muikku.plugins.material.rest.HtmlRestMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 
 public class WorkspaceJournalEntryRESTModel {
@@ -11,7 +12,7 @@ public class WorkspaceJournalEntryRESTModel {
   }
 
   public WorkspaceJournalEntryRESTModel(Long id, Long workspaceEntityId, Long userEntityId, String firstName,
-      String lastName, String html, String title, Date created, Long commentCount, WorkspaceMaterial material, WorkspaceMaterialReplyState workspaceMaterialReplyState) {
+      String lastName, String html, String title, Date created, Long commentCount, HtmlRestMaterial material, WorkspaceMaterialReplyState workspaceMaterialReplyState) {
     super();
     this.id = id;
     this.workspaceEntityId = workspaceEntityId;
@@ -106,11 +107,11 @@ public class WorkspaceJournalEntryRESTModel {
     this.workspaceMaterialReplyState = workspaceMaterialReplyState;
   }
 
-  public WorkspaceMaterial getMaterial() {
+  public HtmlRestMaterial getMaterial() {
     return material;
   }
 
-  public void setMaterial(WorkspaceMaterial material) {
+  public void setMaterial(HtmlRestMaterial material) {
     this.material = material;
   }
 
@@ -124,6 +125,6 @@ public class WorkspaceJournalEntryRESTModel {
   private Date created;
   private Long commentCount;
   private WorkspaceMaterialReplyState workspaceMaterialReplyState;
-  private WorkspaceMaterial material;
+  private HtmlRestMaterial material;
   
 }
