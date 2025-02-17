@@ -9,29 +9,45 @@ import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { CreateNoteRequest, NotePriorityType } from "~/generated/client";
-
+import {
+  CreateNoteRequest,
+  NotePriorityType,
+  NoteRecipientList,
+  NoteCreationType,
+} from "~/generated/client";
+import InputContactsAutofill from "~/components/base/input-contacts-autofill"; // InputContactsAutofillLoaders,
+import { ContactRecipientType } from "~/reducers/user-index";
+import autofillLoaders from "./helpers/autofill-loaders";
 /**
  * NotesItemNewProps
  */
 interface NotesItemNewProps extends WithTranslation {
   /**
-   * Id of note owner (recipient)
+   * Id of note recipient
+   * if this in not given there will be a recipient field
    */
-  newNoteOwnerId: number;
+  newNoteRecipientId?: number;
   children: React.ReactElement;
   onNotesItemSaveClick?: (
     newNotesItem: CreateNoteRequest,
     onSuccess?: () => void
-  ) => Promise<void>;
+  ) => Promise<void> | void;
 }
 
 /**
  * JournalCenterItemNewState
  */
 interface NotesItemNewState {
-  notesItem: CreateNoteRequest;
+  autofillRecipients: ContactRecipientType[];
+  description: string;
+  dueDate: Date | string;
   locked: boolean;
+  pinned: boolean;
+  priority: NotePriorityType;
+  recipients: NoteRecipientList;
+  startDate: Date;
+  title: string;
+  type: NoteCreationType;
 }
 
 /**
@@ -46,40 +62,52 @@ class NotesItemNew extends SessionStateComponent<
    * @param props props
    */
   constructor(props: NotesItemNewProps) {
-    super(props, "discussion-modify-thread-dialog");
+    super(props, "records-notes-item-new");
 
     this.clearUp = this.clearUp.bind(this);
 
-    this.state = {
+    this.state = this.getRecoverStoredState({
       locked: false,
-      notesItem: {
-        title: "",
-        description: "",
-        type: "MANUAL",
-        priority: "NORMAL",
-        pinned: false,
-        owner: props.newNoteOwnerId,
-        startDate: null,
-        dueDate: null,
+      autofillRecipients: [],
+      pinned: false,
+      recipients: {
+        recipientIds: props.newNoteRecipientId
+          ? [props.newNoteRecipientId]
+          : [],
+
+        recipientGroupIds: [],
+        recipientStudentsWorkspaceIds: [],
       },
-    };
+      title: "",
+      description: "",
+      type: "MANUAL",
+      priority: "NORMAL",
+      startDate: new Date(),
+      dueDate: null,
+    });
   }
 
   /**
    * clearUp
    */
   clearUp() {
-    this.setState({
-      notesItem: {
-        title: "",
-        description: "",
-        type: "MANUAL",
-        priority: "NORMAL",
-        pinned: false,
-        owner: this.props.newNoteOwnerId,
-        startDate: null,
-        dueDate: null,
+    this.setStateAndClear({
+      locked: false,
+      autofillRecipients: [],
+      pinned: false,
+      recipients: {
+        recipientIds: this.props.newNoteRecipientId
+          ? [this.props.newNoteRecipientId]
+          : [],
+        recipientGroupIds: [],
+        recipientStudentsWorkspaceIds: [],
       },
+      title: "",
+      description: "",
+      type: "MANUAL",
+      priority: "NORMAL",
+      startDate: new Date(),
+      dueDate: null,
     });
   }
 
@@ -88,8 +116,27 @@ class NotesItemNew extends SessionStateComponent<
    * @param closeDialog closeDialog
    */
   handleSaveClick = (closeDialog: () => void) => () => {
+    // Cannot be a string on save, but could be
+    const dueDate =
+      typeof this.state.dueDate === "string"
+        ? new Date(this.state.dueDate)
+        : (this.state.dueDate as Date);
+
+    const payload: CreateNoteRequest = {
+      note: {
+        title: this.state.title,
+        description: this.state.description,
+        type: this.state.type,
+        priority: this.state.priority,
+        startDate: this.state.startDate,
+        dueDate,
+      },
+      pinned: this.state.pinned,
+      recipients: this.state.recipients,
+    };
+
     this.props.onNotesItemSaveClick &&
-      this.props.onNotesItemSaveClick(this.state.notesItem, () => {
+      this.props.onNotesItemSaveClick(payload, () => {
         this.clearUp();
         closeDialog();
       });
@@ -100,16 +147,42 @@ class NotesItemNew extends SessionStateComponent<
    * @param key name of updated property
    * @param value of updated property
    */
-  handleNotesItemChange = <T extends keyof CreateNoteRequest>(
+  handleNotesItemChange = <T extends keyof NotesItemNewState>(
     key: T,
-    value: CreateNoteRequest[T]
+    value: NotesItemNewState[T]
   ) => {
-    const updateNotesItem = { ...this.state.notesItem };
+    const updateNotesItem = { ...this.state };
 
     updateNotesItem[key] = value;
 
-    this.setState({
-      notesItem: updateNotesItem,
+    this.setStateAndStore({ ...this.state, ...updateNotesItem });
+  };
+
+  /**
+   * handleRecipientsChange
+   * @param autofillRecipients recipients
+   */
+  handleRecipientsChange = (autofillRecipients: ContactRecipientType[]) => {
+    const recipientIds = autofillRecipients
+      .filter((recipient) => recipient.type == "user")
+      .map((recipient) => recipient.value.id);
+
+    const recipientGroupIds = autofillRecipients
+      .filter((recipient) => recipient.type === "usergroup")
+      .map((recipient) => recipient.value.id);
+
+    const recipientStudentsWorkspaceIds = autofillRecipients
+      .filter((recipient) => recipient.type === "workspace")
+      .map((recipient) => recipient.value.id);
+
+    this.setStateAndStore({
+      ...this.state,
+      autofillRecipients,
+      recipients: {
+        recipientIds,
+        recipientGroupIds,
+        recipientStudentsWorkspaceIds,
+      },
     });
   };
 
@@ -117,11 +190,40 @@ class NotesItemNew extends SessionStateComponent<
    * render
    */
   render() {
+    const dueDate =
+      typeof this.state.dueDate === "string"
+        ? new Date(this.state.dueDate)
+        : (this.state.dueDate as Date);
     /**
      * content
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => never) => [
+      <>
+        {!this.props.newNoteRecipientId && (
+          <div className="env-dialog__form-element-container">
+            <InputContactsAutofill
+              identifier="communicatorRecipients"
+              modifier="new-message"
+              key="new-message-1"
+              showFullNames={true}
+              loaders={autofillLoaders()}
+              hasWorkspacePermission={true}
+              hasGroupPermission={true}
+              placeholder={this.props.t("labels.search", {
+                context: "recipients",
+              })}
+              label={this.props.t("labels.recipients", {
+                ns: "messaging",
+                count: 0,
+              })}
+              selectedItems={this.state.autofillRecipients}
+              onChange={this.handleRecipientsChange}
+              autofocus={false}
+            />
+          </div>
+        )}
+      </>,
       <div key="new-note-1" className="env-dialog__row env-dialog__row--titles">
         <div className="env-dialog__form-element-container">
           <label className="env-dialog__label">
@@ -133,7 +235,7 @@ class NotesItemNew extends SessionStateComponent<
             onChange={(e) =>
               this.handleNotesItemChange("title", e.currentTarget.value)
             }
-            value={this.state.notesItem.title}
+            value={this.state.title}
           />
         </div>
 
@@ -149,8 +251,9 @@ class NotesItemNew extends SessionStateComponent<
                 e.target.value as NotePriorityType
               )
             }
-            value={this.state.notesItem.priority}
+            value={this.state.priority}
           >
+            ,
             <option value={NotePriorityType.High}>
               {this.props.i18n.t("labels.priority", {
                 ns: "tasks",
@@ -179,18 +282,12 @@ class NotesItemNew extends SessionStateComponent<
           </label>
           <DatePicker
             className="env-dialog__input"
-            selected={
-              this.state.notesItem.startDate
-                ? this.state.notesItem.startDate
-                : undefined
-            }
+            selected={this.state.startDate ? this.state.startDate : undefined}
             onChange={(date, e) =>
               this.handleNotesItemChange("startDate", date)
             }
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
-            minDate={new Date()}
-            maxDate={this.state.notesItem.dueDate}
           />
         </div>
         <div className="env-dialog__form-element-container">
@@ -199,19 +296,10 @@ class NotesItemNew extends SessionStateComponent<
           </label>
           <DatePicker
             className="env-dialog__input"
-            selected={
-              this.state.notesItem.dueDate
-                ? this.state.notesItem.dueDate
-                : undefined
-            }
+            selected={this.state.dueDate ? dueDate : undefined}
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
-            minDate={
-              this.state.notesItem.startDate !== null
-                ? this.state.notesItem.startDate
-                : new Date()
-            }
           />
         </div>
       </div>,
@@ -223,7 +311,7 @@ class NotesItemNew extends SessionStateComponent<
           <CKEditor
             onChange={(e) => this.handleNotesItemChange("description", e)}
           >
-            {this.state.notesItem.description}
+            {this.state.description}
           </CKEditor>
         </div>
       </div>,
@@ -234,6 +322,15 @@ class NotesItemNew extends SessionStateComponent<
      */
     const footer = (closeDialog: () => never) => (
       <div className="env-dialog__actions">
+        {this.recovered && (
+          <Button
+            buttonModifiers="dialog-clear"
+            onClick={this.clearUp}
+            disabled={this.state.locked}
+          >
+            {this.props.t("actions.remove", { context: "draft" })}
+          </Button>
+        )}
         <Button
           buttonModifiers={["dialog-execute"]}
           onClick={this.handleSaveClick(closeDialog)}
@@ -252,7 +349,6 @@ class NotesItemNew extends SessionStateComponent<
         title={this.props.i18n.t("labels.create", { ns: "tasks" })}
         content={content}
         footer={footer}
-        onOpen={this.clearUp}
       >
         {this.props.children}
       </EnvironmentDialog>

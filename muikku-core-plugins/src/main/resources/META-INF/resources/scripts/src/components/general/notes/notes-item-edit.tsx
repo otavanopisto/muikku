@@ -9,16 +9,30 @@ import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import "~/sass/elements/notes.scss";
 import CKEditor from "../ckeditor";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Note, NotePriorityType, UpdateNoteRequest } from "~/generated/client";
+import {
+  Note,
+  NotePriorityType,
+  UpdateNoteRequest,
+  NoteCreationObject,
+} from "~/generated/client";
+import { ContactRecipientType } from "~/reducers/user-index";
+import {} from "~/generated/client";
+import InputContactsAutofill, {
+  InputContactsAutofillLoaders,
+} from "~/components/base/input-contacts-autofill";
+import autofillLoaders from "./helpers/autofill-loaders";
+import { turnNoteRecipientsToContacts } from "~/util/users";
 
 /**
  * NotesItemEditProps
  */
 interface NotesItemEditProps extends WithTranslation {
-  selectedNotesItem?: Note;
+  recipientId?: number;
+  selectedNotesItem: Note;
   children: React.ReactElement;
+  loaders?: () => InputContactsAutofillLoaders;
   onNotesItemSaveUpdateClick?: (
-    journalId: number,
+    noteId: number,
     updateNoteRequest: UpdateNoteRequest,
     onSuccess?: () => void
   ) => void;
@@ -28,8 +42,11 @@ interface NotesItemEditProps extends WithTranslation {
  * NotesItemEditState
  */
 interface NotesItemEditState {
-  notesItem: UpdateNoteRequest;
-  locked: boolean;
+  recipientIds: number[];
+  recipientGroupIds: number[];
+  recipientStudentsWorkspaceIds: number[];
+  note: NoteCreationObject;
+  removeLocked: boolean;
 }
 
 /**
@@ -45,12 +62,23 @@ class NotesItemEdit extends SessionStateComponent<
    */
   constructor(props: NotesItemEditProps) {
     super(props, "records-notes-item-edit");
-
     this.clearUp = this.clearUp.bind(this);
+    const { title, description, type, priority, startDate, dueDate } =
+      props.selectedNotesItem;
 
     this.state = {
-      locked: false,
-      notesItem: props.selectedNotesItem,
+      removeLocked: false,
+      recipientIds: [],
+      recipientGroupIds: [],
+      recipientStudentsWorkspaceIds: [],
+      note: {
+        title,
+        description,
+        type,
+        priority,
+        startDate: new Date(startDate),
+        dueDate: dueDate && new Date(dueDate),
+      },
     };
   }
 
@@ -58,8 +86,22 @@ class NotesItemEdit extends SessionStateComponent<
    * clearUp
    */
   clearUp() {
+    const { title, description, type, priority, startDate, dueDate } =
+      this.props.selectedNotesItem;
+
     this.setState({
-      notesItem: this.props.selectedNotesItem,
+      note: {
+        title,
+        description,
+        type,
+        priority,
+        startDate: new Date(startDate),
+        dueDate: dueDate && new Date(dueDate),
+      },
+      removeLocked: false,
+      recipientIds: [],
+      recipientGroupIds: [],
+      recipientStudentsWorkspaceIds: [],
     });
   }
 
@@ -68,10 +110,27 @@ class NotesItemEdit extends SessionStateComponent<
    * @param closeDialog closeDialog
    */
   handleUpdateClick = (closeDialog: () => void) => () => {
+    const {
+      note,
+      recipientIds,
+      recipientGroupIds,
+      recipientStudentsWorkspaceIds,
+    } = this.state;
+    // If the recipient is explicitly given, use it,
+    // otherwise use the autofill recipients
+    const request = {
+      note,
+      recipients: {
+        recipientIds,
+        recipientGroupIds,
+        recipientStudentsWorkspaceIds,
+      },
+    };
+
     this.props.onNotesItemSaveUpdateClick &&
       this.props.onNotesItemSaveUpdateClick(
         this.props.selectedNotesItem.id,
-        this.state.notesItem,
+        request,
         () => {
           this.clearUp();
           closeDialog();
@@ -84,17 +143,88 @@ class NotesItemEdit extends SessionStateComponent<
    * @param key name of updated property
    * @param value of updated property
    */
-  handleNotesItemChange = <T extends keyof UpdateNoteRequest>(
+  handleNotesItemChange = <T extends keyof NoteCreationObject>(
     key: T,
-    value: UpdateNoteRequest[T]
+    value: NoteCreationObject[T]
   ) => {
-    const updateNotesItem = { ...this.state.notesItem };
-
+    const updateNotesItem = { ...this.state.note };
     updateNotesItem[key] = value;
 
     this.setState({
-      notesItem: updateNotesItem,
+      note: updateNotesItem,
     });
+  };
+
+  /**
+   * handleRecipientsChange
+   * @param recipients recipients
+   * @param changedValue changedValue
+   */
+  handleRecipientsChange = (
+    recipients: ContactRecipientType[],
+    changedValue: ContactRecipientType
+  ) => {
+    if (recipients.length === 1) {
+      this.setState({
+        removeLocked: true,
+      });
+    } else if (this.state.removeLocked === true) {
+      this.setState({
+        removeLocked: false,
+      });
+    }
+    if (changedValue.type === "user") {
+      if (this.state.recipientIds.includes(changedValue.value.id)) {
+        // Remove the recipient if it's already in the list
+        this.setState({
+          recipientIds: this.state.recipientIds.filter(
+            (id) => id !== changedValue.value.id
+          ),
+        });
+      } else {
+        // Add the recipient if it's not in the list
+        this.setState({
+          recipientIds: [...this.state.recipientIds, changedValue.value.id],
+        });
+      }
+    } else if (changedValue.type === "usergroup") {
+      // Remove the userGroup if it's already in the list
+      if (changedValue.value.id in this.state.recipientGroupIds) {
+        this.setState({
+          recipientGroupIds: this.state.recipientGroupIds.filter(
+            (id) => id !== changedValue.value.id
+          ),
+        });
+      } else {
+        // Add the userGroup if it's not in the list
+        this.setState({
+          recipientGroupIds: [
+            ...this.state.recipientGroupIds,
+            changedValue.value.id,
+          ],
+        });
+      }
+    } else if (changedValue.type === "workspace") {
+      // Remove the workspace if it's already in the list
+      if (changedValue.value.id in this.state.recipientStudentsWorkspaceIds) {
+        this.setState({
+          recipientStudentsWorkspaceIds:
+            this.state.recipientStudentsWorkspaceIds.filter(
+              (id) => id !== changedValue.value.id
+            ),
+        });
+      } else {
+        // Add the workspace if it's not in the list
+        this.setState({
+          recipientStudentsWorkspaceIds: [
+            ...this.state.recipientStudentsWorkspaceIds,
+            changedValue.value.id,
+          ],
+        });
+      }
+    } else {
+      return;
+    }
   };
 
   /**
@@ -106,6 +236,35 @@ class NotesItemEdit extends SessionStateComponent<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => void) => [
+      <>
+        {!this.props.recipientId &&
+          this.props.selectedNotesItem.multiUserNote && (
+            <div className="env-dialog__form-element-container">
+              <InputContactsAutofill
+                identifier="communicatorRecipients"
+                modifier="new-message"
+                key="new-message-1"
+                disableRemove={this.state.removeLocked}
+                showFullNames={true}
+                loaders={autofillLoaders()}
+                hasWorkspacePermission={true}
+                hasGroupPermission={true}
+                placeholder={this.props.t("labels.search", {
+                  context: "recipients",
+                })}
+                label={this.props.t("labels.recipients", {
+                  ns: "messaging",
+                  count: 0,
+                })}
+                selectedItems={turnNoteRecipientsToContacts(
+                  this.props.selectedNotesItem.recipients
+                )}
+                onChange={this.handleRecipientsChange}
+                autofocus={false}
+              />
+            </div>
+          )}
+      </>,
       <div
         key="edit-note-1"
         className="env-dialog__row env-dialog__row--titles"
@@ -120,7 +279,7 @@ class NotesItemEdit extends SessionStateComponent<
             onChange={(e) =>
               this.handleNotesItemChange("title", e.currentTarget.value)
             }
-            value={this.state.notesItem.title}
+            value={this.state.note.title}
           />
         </div>
 
@@ -136,7 +295,7 @@ class NotesItemEdit extends SessionStateComponent<
                 e.target.value as NotePriorityType
               )
             }
-            value={this.state.notesItem.priority}
+            value={this.state.note.priority}
           >
             <option value={NotePriorityType.High}>
               {this.props.i18n.t("labels.priority", {
@@ -167,8 +326,8 @@ class NotesItemEdit extends SessionStateComponent<
           <DatePicker
             className="env-dialog__input"
             selected={
-              this.state.notesItem.startDate !== null
-                ? new Date(this.state.notesItem.startDate)
+              this.state.note.startDate !== null
+                ? new Date(this.state.note.startDate)
                 : undefined
             }
             onChange={(date, e) =>
@@ -176,8 +335,6 @@ class NotesItemEdit extends SessionStateComponent<
             }
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
-            minDate={new Date()}
-            maxDate={this.state.notesItem.dueDate}
           />
         </div>
         <div className="env-dialog__form-element-container">
@@ -187,16 +344,16 @@ class NotesItemEdit extends SessionStateComponent<
           <DatePicker
             className="env-dialog__input"
             selected={
-              this.state.notesItem.dueDate !== null
-                ? new Date(this.state.notesItem.dueDate)
+              this.state.note.dueDate !== null
+                ? new Date(this.state.note.dueDate)
                 : undefined
             }
             onChange={(date, e) => this.handleNotesItemChange("dueDate", date)}
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
             minDate={
-              this.state.notesItem.startDate !== null
-                ? new Date(this.state.notesItem.startDate)
+              this.state.note.startDate !== null
+                ? this.state.note.startDate
                 : new Date()
             }
           />
@@ -210,7 +367,7 @@ class NotesItemEdit extends SessionStateComponent<
           <CKEditor
             onChange={(e) => this.handleNotesItemChange("description", e)}
           >
-            {this.state.notesItem.description}
+            {this.state.note.description}
           </CKEditor>
         </div>
       </div>,
@@ -239,7 +396,7 @@ class NotesItemEdit extends SessionStateComponent<
         title={this.props.i18n.t("labels.edit", { ns: "tasks" })}
         content={content}
         footer={footer}
-        onOpen={this.clearUp}
+        onClose={this.clearUp}
       >
         {this.props.children}
       </EnvironmentDialog>

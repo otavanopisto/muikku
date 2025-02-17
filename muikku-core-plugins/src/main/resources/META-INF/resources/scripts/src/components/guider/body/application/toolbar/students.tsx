@@ -1,7 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import * as queryString from "query-string";
-import GuiderToolbarLabels from "./toolbar/labels";
+import GuiderToolbarLabels from "./students/labels";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/buttons.scss";
@@ -17,7 +17,6 @@ import { ButtonPill } from "~/components/general/button";
 import { SearchFormElement } from "~/components/general/form-element";
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import NewContactEvent from "~/components/general/contact-logs-dialog";
-import { ContactRecipientType } from "~/reducers/user-index";
 import { StatusType } from "~/reducers/base/status";
 
 import {
@@ -26,11 +25,13 @@ import {
   toggleAllStudents,
   ToggleAllStudentsTriggerType,
 } from "~/actions/main-function/guider";
+import MApi from "~/api/api";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { turnSelectedUsersToContacts } from "~/util/users";
-
+import { GuiderContext } from "../../../context";
+import { ContactRecipientType } from "~/reducers/user-index";
 /**
  * GuiderToolbarProps
  */
@@ -69,9 +70,15 @@ class GuiderToolbar extends React.Component<
     };
 
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
+    this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
+    this.autofillLoaders = this.autofillLoaders.bind(this);
   }
+
+  // These are required to make the types work in the context
+  static contextType = GuiderContext;
+  context!: React.ContextType<typeof GuiderContext>;
 
   /**
    * componentDidUpdate
@@ -159,7 +166,6 @@ class GuiderToolbar extends React.Component<
   onInputBlur() {
     this.setState({ focused: false });
   }
-
   /**
    * Removes a user from redux state when the user is removed from a new message dialog on a contacts change
    * @param selectedUsers is an Array of ContactRecipientType
@@ -194,6 +200,25 @@ class GuiderToolbar extends React.Component<
       this.props.removeFromGuiderSelectedStudents(selectedUser);
     }
   };
+
+  /**
+   * autofillLoaders
+   */
+  autofillLoaders() {
+    const guiderApi = MApi.getGuiderApi();
+
+    return {
+      /**
+       * studentsLoader
+       * @param searchString searchString
+       */
+      studentsLoader: (searchString: string) => () =>
+        guiderApi.getGuiderStudents({
+          q: searchString,
+          maxResults: 10,
+        }),
+    };
+  }
 
   /**
    * render

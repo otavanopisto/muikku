@@ -120,6 +120,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.onDeleteSomethingInMathMode =
       this.onDeleteSomethingInMathMode.bind(this);
     this.handleDrops = this.handleDrops.bind(this);
+    this.handlePaste = this.handlePaste.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
@@ -589,6 +590,20 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
 
   /**
+   * handlePaste
+   * @param e e
+   */
+  handlePaste(e: React.ClipboardEvent) {
+    const file =
+      e.clipboardData && e.clipboardData.files && e.clipboardData.files[0];
+    e.stopPropagation();
+    e.preventDefault();
+    if (file.type.startsWith("image")) {
+      this.insertImage(file);
+    }
+  }
+
+  /**
    * selectFormula
    * @param target target
    */
@@ -874,6 +889,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         spellCheck={false}
         onFocus={this.onFocusField}
         onDrop={this.handleDrops}
+        onPaste={this.handlePaste}
         ref="input"
         onBlur={this.onBlurField}
         onInput={this.onChange}

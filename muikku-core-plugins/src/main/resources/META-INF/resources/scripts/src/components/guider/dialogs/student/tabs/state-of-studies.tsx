@@ -25,7 +25,7 @@ import {
 } from "~/reducers/main-function/guider";
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
-import GuiderToolbarLabels from "../../../body/application/toolbar/labels";
+import GuiderToolbarLabels from "../../../body/application/toolbar/students/labels";
 import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
