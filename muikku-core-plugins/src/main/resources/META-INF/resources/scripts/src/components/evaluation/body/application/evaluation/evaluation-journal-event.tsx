@@ -28,6 +28,7 @@ import {
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
 import { WorkspaceJournal, WorkspaceJournalComment } from "~/generated/client";
 import { localize } from "~/locales/i18n";
+import Button from "~/components/general/button";
 
 /**
  * EvaluationEventContentCardProps
@@ -51,6 +52,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
   const {
     title,
     content,
+    material,
     created,
     open,
     onClickOpen,
@@ -64,6 +66,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
+  const [showMaterial, setShowMaterial] = React.useState(false);
   const [showContent, setShowContent] = React.useState(false);
   const [showComments, setShowComments] = React.useState(false);
 
@@ -96,6 +99,13 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     }
 
     setShowContent(!showContent);
+  };
+
+  /**
+   * Shows and hides material
+   */
+  const handleShowMaterialClick = () => {
+    setShowMaterial(!showMaterial);
   };
 
   /**
@@ -251,7 +261,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
   const comments = props.evaluation.evaluationJournalComments.comments[id];
 
-  const isMandatory = props.isMaterialField;
+  const isMandatory = props.material !== null;
   const isDraft =
     props.workspaceMaterialReplyState &&
     props.workspaceMaterialReplyState === "ANSWERED";
@@ -291,6 +301,27 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </div>
 
       <AnimateHeight duration={400} height={showContent ? "auto" : 0}>
+        {material && (
+          <>
+            <div className="evaluation-modal__item-body-journal-material-toggle">
+              <Button
+                icon={showMaterial ? "arrow-down" : "arrow-right"}
+                onClick={handleShowMaterialClick}
+                buttonModifiers={["journal-material-toggle"]}
+              >
+                {showMaterial
+                  ? t("actions.hideAssignment")
+                  : t("actions.showAssignment")}
+              </Button>
+            </div>
+            <AnimateHeight duration={400} height={showMaterial ? "auto" : 0}>
+              <div className="evaluation-modal__item-body rich-text">
+                <CkeditorContentLoader html={material.html} />
+              </div>
+            </AnimateHeight>
+          </>
+        )}
+
         <div className="evaluation-modal__item-body rich-text">
           <CkeditorContentLoader html={content} />
         </div>

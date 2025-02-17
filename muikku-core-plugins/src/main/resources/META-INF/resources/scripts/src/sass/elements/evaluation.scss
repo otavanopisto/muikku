@@ -606,6 +606,11 @@
   padding: 5px 10px 0;
 }
 
+.evaluation-modal__item-body-journal-material-toggle {
+  display: flex;
+  justify-content: flex-start;
+}
+
 // Evaluation assessment drawer
 .evaluation-modal__evaluate-drawer {
   background: $color-default;

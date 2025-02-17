@@ -17808,7 +17808,7 @@ components:
         - title
         - created
         - commentCount
-        - isMaterialField
+        - material
         - workspaceMaterialReplyState
       properties:
         id:
@@ -17833,9 +17833,10 @@ components:
           format: date-time
         commentCount:
           type: integer
-        isMaterialField:
-          description: Whether journal is "mandatory" assignment and material field
-          type: boolean
+        material:
+          description: Material html content object
+          $ref: "#/components/schemas/MaterialHtml"
+          nullable: true
         workspaceMaterialReplyState:
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
 
