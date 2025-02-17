@@ -231,24 +231,24 @@ type RestrictTypeLocales =
   | "labels.visibleRestrictionMembers";
 
 /**
- * MaterialPageTypeConfic
+ * MaterialPageTypeConfig
  */
-interface MaterialPageTypeConfic {
+interface MaterialPageTypeConfig {
   type: MaterialAssigmentType | null;
   classNameMod: string;
   text: PageTypeLocales;
 }
 
 /**
- * MaterialRestrictTypeConfic
+ * MaterialRestrictTypeConfig
  */
-interface MaterialRestrictTypeConfic {
+interface MaterialRestrictTypeConfig {
   type: MaterialViewRestriction | null;
   classNameMod: string;
   text: RestrictTypeLocales;
 }
 
-const MATERIAL_RESTRICT_TYPE_CONFIGS: MaterialRestrictTypeConfic[] = [
+const MATERIAL_RESTRICT_TYPE_CONFIGS: MaterialRestrictTypeConfig[] = [
   {
     type: MaterialViewRestriction.None,
     classNameMod: "restrict-type-dropdown-enabled",
@@ -267,7 +267,7 @@ const MATERIAL_RESTRICT_TYPE_CONFIGS: MaterialRestrictTypeConfic[] = [
   },
 ];
 
-const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
+const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfig[] = [
   {
     type: "EXERCISE",
     classNameMod: "material-editor-dropdown-exercise",
@@ -765,7 +765,7 @@ class MaterialEditor extends React.Component<
    * @returns renderRestrictTypeButton
    */
   renderRestrictTypeButton = (
-    materialRestrictConfig: MaterialRestrictTypeConfic,
+    materialRestrictConfig: MaterialRestrictTypeConfig,
     key: string | number,
     onClose: () => void
   ) => {
@@ -804,7 +804,7 @@ class MaterialEditor extends React.Component<
    * @returns assignment page type button
    */
   renderAssignmentPageButton = (
-    materialPageConfig: MaterialPageTypeConfic,
+    materialPageConfig: MaterialPageTypeConfig,
     key: string | number,
     onClose: () => void
   ) => {
