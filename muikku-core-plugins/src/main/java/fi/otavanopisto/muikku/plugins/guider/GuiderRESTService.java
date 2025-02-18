@@ -79,8 +79,10 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
+import fi.otavanopisto.muikku.rest.model.GuidanceCounselorRestModel;
 import fi.otavanopisto.muikku.rest.model.GuiderStudentRestModel;
 import fi.otavanopisto.muikku.rest.model.OrganizationRESTModel;
+import fi.otavanopisto.muikku.rest.user.GuidanceCounselorRestModels;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -233,6 +235,9 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private HopsController hopsController;
+
+  @Inject
+  private GuidanceCounselorRestModels guidanceCounselorRestModels;
 
   @GET
   @Path("/students")
@@ -566,8 +571,11 @@ public class GuiderRESTService extends PluginRESTService {
     }
 
     boolean u18Compulsory = userEntityController.isUnder18CompulsoryEducationStudent(studentIdentifier);
-    
     boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
+    
+    String[] propertyArray = new String[] { "profile-phone", "profile-appointmentCalendar", 
+      "profile-whatsapp", "profile-vacation-start", "profile-vacation-end"};
+    List<GuidanceCounselorRestModel> guidanceCounselors = guidanceCounselorRestModels.getGuidanceCounselorRestModels(studentIdentifier, propertyArray);
     
     GuiderStudentRestModel student = new GuiderStudentRestModel(
         studentIdentifier.toId(),
@@ -595,7 +603,8 @@ public class GuiderRESTService extends PluginRESTService {
         userEntity == null ? false : pedagogyController.hasPedagogyForm(userEntity.getId()),
         u18Compulsory,
         user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null,
-        hopsController.getHOPSStudentPermissions(studentIdentifier)
+        hopsController.getHOPSStudentPermissions(studentIdentifier),
+        guidanceCounselors
     );
 
     return Response
