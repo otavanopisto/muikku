@@ -20,6 +20,7 @@ import {
   PedagogyFormAccess,
   HopsUppersecondary,
   ActivityLogEntry,
+  Note,
   StudentCourseChoice,
   OptionalCourseSuggestion,
 } from "~/generated/client";
@@ -39,8 +40,13 @@ export type GuiderStudentsStateType =
   | "LOADING_MORE"
   | "ERROR"
   | "READY";
+
 export type GuiderCurrentStudentStateType = "LOADING" | "ERROR" | "READY";
 
+export type GuiderNotes = {
+  state: LoadingState;
+  list: Note[];
+};
 /**
  * GuiderActiveFiltersType
  */
@@ -132,6 +138,8 @@ export interface GuiderStudentUserProfileType {
 export interface GuiderState {
   students: FlaggedStudent[];
   studentsState: GuiderStudentsStateType;
+  notes: GuiderNotes;
+  noteState: LoadingState;
   activeFilters: GuiderActiveFiltersType;
   availablePurchaseProducts: CeeposPurchaseProduct[];
   availableFilters: GuiderFiltersType;
@@ -205,6 +213,11 @@ function sortOrders(a: CeeposOrder, b: CeeposOrder) {
 const initialGuiderState: GuiderState = {
   studentsState: "LOADING",
   currentStudentState: "LOADING",
+  noteState: "WAITING",
+  notes: {
+    state: "WAITING",
+    list: [],
+  },
   availableFilters: {
     labels: [],
     workspaces: [],
@@ -288,28 +301,70 @@ export const guider: Reducer<GuiderState> = (
         ...state,
         toolbarLock: true,
       };
-
     case "UNLOCK_TOOLBAR":
       return {
         ...state,
         toolbarLock: false,
       };
-
     case "UPDATE_GUIDER_ACTIVE_FILTERS":
       return {
         ...state,
         activeFilters: action.payload,
       };
-
     case "UPDATE_GUIDER_ALL_PROPS":
       return Object.assign({}, state, action.payload);
-
     case "UPDATE_GUIDER_STATE":
       return {
         ...state,
         studentsState: action.payload,
       };
-
+    case "UPDATE_NOTES_STATE": {
+      const notes = { ...state.notes };
+      notes.state = action.payload;
+      return { ...state, notes };
+    }
+    case "LOAD_NOTES": {
+      const notes = { ...state.notes };
+      notes.list = action.payload;
+      return { ...state, notes };
+    }
+    case "UPDATE_NOTE_RECIPIENT": {
+      const { noteId, recipient } = action.payload;
+      const updatedNotes = state.notes.list.map((note) =>
+        note.id === noteId
+          ? {
+              ...note,
+              recipients: note.recipients.map((r) =>
+                r.recipientId === recipient.recipientId ? recipient : r
+              ),
+            }
+          : note
+      );
+      return { ...state, notes: { ...state.notes, list: updatedNotes } };
+    }
+    case "UPDATE_NOTE": {
+      const updatedNotes = state.notes.list.map((note) =>
+        note.id === action.payload.id ? { ...note, ...action.payload } : note
+      );
+      return { ...state, notes: { ...state.notes, list: updatedNotes } };
+    }
+    case "ADD_NOTE": {
+      return {
+        ...state,
+        notes: {
+          ...state.notes,
+          list: [...state.notes.list, action.payload],
+        },
+      };
+    }
+    case "REMOVE_NOTE": {
+      const notes = { ...state.notes };
+      notes.list = notes.list.filter((note) => note.id !== action.payload);
+      return {
+        ...state,
+        notes,
+      };
+    }
     case "ADD_TO_GUIDER_SELECTED_STUDENTS": {
       const student = action.payload;
 
@@ -332,7 +387,6 @@ export const guider: Reducer<GuiderState> = (
         ),
       };
     }
-
     case "SET_CURRENT_GUIDER_STUDENT":
       return {
         ...state,

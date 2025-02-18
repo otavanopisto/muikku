@@ -1,9 +1,11 @@
 import * as React from "react";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
 import { GuiderState } from "~/reducers/main-function/guider";
-import LabelUpdateDialog from "../dialogs/label-update";
+import LabelUpdateDialog from "../../../dialogs/label-update";
 import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
@@ -11,12 +13,20 @@ import Navigation, {
 } from "~/components/general/navigation";
 import { UserGroup } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { GuiderContext, GuiderNotesState } from "../../../context";
+import {
+  loadNotes,
+  LoadNotesTriggerType,
+} from "~/actions/main-function/guider";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * NavigationProps
  */
 interface NavigationProps extends WithTranslation<["common"]> {
+  loadNotes: LoadNotesTriggerType;
   guider: GuiderState;
+  status: StatusType;
 }
 
 /**
@@ -31,6 +41,19 @@ class NavigationAside extends React.Component<
   NavigationProps,
   NavigationState
 > {
+  // These are required to make the types work in the context
+  static contextType = GuiderContext;
+  context!: React.ContextType<typeof GuiderContext>;
+
+  /**
+   * @param filter state filter
+   */
+  handleStateFilterChange = (filter: GuiderNotesState) => {
+    this.context.dispatch({
+      type: "SET_STATE_FILTER",
+      payload: filter,
+    });
+  };
   /**
    * render
    */
@@ -175,6 +198,8 @@ class NavigationAside extends React.Component<
   }
 }
 
+NavigationAside.contextType = GuiderContext;
+
 /**
  * mapStateToProps
  * @param state state
@@ -182,14 +207,21 @@ class NavigationAside extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     guider: state.guider,
+    status: state.status,
   };
 }
 
 /**
  * mapDispatchToProps
+ * @param dispatch dispatch
  */
-function mapDispatchToProps() {
-  return {};
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators(
+    {
+      loadNotes,
+    },
+    dispatch
+  );
 }
 
 export default withTranslation(["guider"])(

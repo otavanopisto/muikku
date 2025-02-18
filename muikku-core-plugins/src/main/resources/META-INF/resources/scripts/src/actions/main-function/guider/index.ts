@@ -24,8 +24,13 @@ import {
   UserStudentFlag,
   UserFlag,
   UserGroup,
+  Note,
+  CreateNoteRequest,
+  UpdateNoteReceiverRequest,
+  UpdateNoteRequest,
   StudentStudyActivity,
   FlaggedStudent,
+  NoteReceiver,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -40,6 +45,20 @@ import {
   OTHER_SUBJECT_OUTSIDE_HOPS_CS,
   SKILL_AND_ART_SUBJECTS_CS,
 } from "~/helper-functions/study-matrix";
+
+export type UPDATE_NOTES_STATE = SpecificActionType<
+  "UPDATE_NOTES_STATE",
+  LoadingState
+>;
+export type LOAD_NOTES = SpecificActionType<"LOAD_NOTES", Note[]>;
+export type UPDATE_NOTE = SpecificActionType<"UPDATE_NOTE", Note>;
+export type UPDATE_NOTE_RECIPIENT = SpecificActionType<
+  "UPDATE_NOTE_RECIPIENT",
+  { noteId: number; recipient: NoteReceiver }
+>;
+
+export type ADD_NOTE = SpecificActionType<"ADD_NOTE", Note>;
+export type REMOVE_NOTE = SpecificActionType<"REMOVE_NOTE", number>;
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -454,7 +473,51 @@ export interface ToggleAllStudentsTriggerType {
 }
 
 /**
- * Interface for the suggested next websocket thunk action creator
+ * LoadNotesTriggerType
+ */
+export interface LoadNotesTriggerType {
+  (userId: number, listArchived: boolean): AnyActionType;
+}
+
+/**
+ * CreateNoteTriggerType
+ */
+export interface CreateNoteTriggerType {
+  (request: CreateNoteRequest, success?: () => void): AnyActionType;
+}
+
+/**
+ * UpdateNoteTriggerType
+ */
+export interface UpdateNoteTriggerType {
+  (
+    noteId: number,
+    request: UpdateNoteRequest,
+    success?: () => void
+  ): AnyActionType;
+}
+
+/**
+ * UpdateNoteTriggerType
+ */
+export interface UpdateNoteRecipientTriggerType {
+  (
+    noteId: number,
+    recipientId: number,
+    request: UpdateNoteReceiverRequest,
+    success?: () => void
+  ): AnyActionType;
+}
+
+/**
+ * CreateNoteTriggerType
+ */
+export interface ArchiveNoteTriggerType {
+  (noteId: number, success?: () => void): AnyActionType;
+}
+
+/**
+ *  Interface for the suggested next websocket thunk action creator
  */
 export interface GuiderStudyProgressSuggestedNextWebsocketType {
   (data: { websocketData: StudentStudyActivity }): AnyActionType;
@@ -502,6 +565,291 @@ const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
   };
 
 /**
+ * loadNotes
+ *
+ * @param creatorId userId
+ * @param listArchived listArchived
+ */
+const loadNotes: LoadNotesTriggerType = function loadNotes(
+  creatorId,
+  listArchived
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    try {
+      dispatch({ type: "UPDATE_NOTES_STATE", payload: "LOADING" });
+      const NotesApi = MApi.getNotesApi();
+      const notes = await NotesApi.getNotesByCreator({
+        creatorId,
+        listArchived,
+      });
+      dispatch({ type: "LOAD_NOTES", payload: notes });
+      dispatch({ type: "UPDATE_NOTES_STATE", payload: "READY" });
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+      dispatch({ type: "UPDATE_NOTES_STATE", payload: "ERROR" });
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.loadError", {
+            error: err,
+            ns: "tasks",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * createNote thunk action creator
+ *
+ * @param createNoteRequest createNoteRequest
+ * @param onSuccess onSuccess
+ */
+const createNote: CreateNoteTriggerType = function createNote(
+  createNoteRequest: CreateNoteRequest,
+  onSuccess?: () => void
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const notesApi = MApi.getNotesApi();
+    try {
+      const { recipients, note } = createNoteRequest;
+      const hasRecipients =
+        recipients.recipientIds.length +
+          recipients.recipientGroupIds.length +
+          recipients.recipientStudentsWorkspaceIds.length >
+        0;
+
+      if (!note.title) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.caption", { ns: "tasks" }),
+            "error"
+          )
+        );
+      } else if (!note.description) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.content", {
+              ns: "tasks",
+            }),
+            "error"
+          )
+        );
+      } else if (!note.startDate) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.startDate", { ns: "tasks" }),
+            "error"
+          )
+        );
+      } else if (!hasRecipients) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.recipients", { ns: "tasks" }),
+            "error"
+          )
+        );
+      }
+
+      // Creating and getting created notesItem
+      const newNote = await notesApi.createNote({
+        createNoteRequest,
+      });
+      onSuccess && onSuccess();
+      dispatch({ type: "ADD_NOTE", payload: newNote });
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.createSuccess", { ns: "tasks" }),
+          "success"
+        )
+      );
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.createError", { error: err, ns: "tasks" }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * updateNote thunk action creator
+ *
+ * @param noteId noteId
+ * @param updateNoteRequest createNoteRequest
+ * @param onSuccess onSuccess
+ */
+const updateNote: UpdateNoteTriggerType = function updateNote(
+  noteId: number,
+  updateNoteRequest: UpdateNoteRequest,
+  onSuccess?: () => void
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const notesApi = MApi.getNotesApi();
+    try {
+      const { note } = updateNoteRequest;
+
+      if (!note.title) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.caption", { ns: "tasks" }),
+            "error"
+          )
+        );
+      } else if (!note.description) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.content", {
+              ns: "tasks",
+            }),
+            "error"
+          )
+        );
+      } else if (!note.startDate) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.startDate", { ns: "tasks" }),
+            "error"
+          )
+        );
+      }
+      // Creating and getting created notesItem
+      const updatedNote = await notesApi.updateNote({
+        noteId,
+        updateNoteRequest,
+      });
+
+      dispatch({ type: "UPDATE_NOTE", payload: updatedNote });
+      onSuccess && onSuccess();
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.updateSuccess", { ns: "tasks" }),
+          "success"
+        )
+      );
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.updateError", { error: err, ns: "tasks" }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * updateRecipientNoteStatus thunk action creator
+ * @param noteId note id
+ * @param recipientId recipient id
+ * @param request request
+ * @param onSuccess onSuccess
+ */
+const updateRecipientNoteStatus: UpdateNoteRecipientTriggerType =
+  function updateRecipientNoteStatus(
+    noteId: number,
+    recipientId: number,
+    request: UpdateNoteReceiverRequest,
+    onSuccess?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const notesApi = MApi.getNotesApi();
+      try {
+        // Updating and getting updated notesItem
+        const updatedNoteRecipient = await notesApi.updateNoteReceiver({
+          updateNoteReceiverRequest: request,
+          noteId,
+          recipientId,
+        });
+
+        dispatch({
+          type: "UPDATE_NOTE_RECIPIENT",
+          payload: { noteId, recipient: updatedNoteRecipient },
+        });
+        onSuccess && onSuccess();
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateSuccess", {
+              ns: "tasks",
+              context: "state",
+            }),
+            "success"
+          )
+        );
+      } catch (err) {
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "tasks",
+              context: "state",
+              error: err,
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+/**
+ * Archives one notesItem
+ *
+ * @param noteId notesItemId
+ * @param onSuccess onSuccess
+ */
+const toggleNoteArchive: ArchiveNoteTriggerType = function toggleNoteArchive(
+  noteId: number,
+  onSuccess?: () => void
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    try {
+      const notesApi = MApi.getNotesApi();
+
+      await notesApi.toggleNoteArchived({
+        noteId: noteId,
+      });
+
+      dispatch({ type: "REMOVE_NOTE", payload: noteId });
+      onSuccess && onSuccess();
+
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.archiveSuccess", { ns: "tasks" }),
+
+          "success"
+        )
+      );
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.archiveError", { ns: "tasks", error: err }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
  * removeFileFromCurrentStudent thunk action creator
  * @param file file to be removed
  * @returns a thunk function for removing a file from a student
@@ -513,7 +861,6 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
-
       try {
         await guiderApi.deleteGuiderFile({
           fileId: file.id,
@@ -536,6 +883,7 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
       }
     };
   };
+
 /**
  * loadStudents thunk action creator
  * @param filters filters to be applied
@@ -2662,6 +3010,11 @@ const guiderStudyProgressAlternativeStudyOptionsWebsocket: GuiderStudyProgressAl
   };
 
 export {
+  loadNotes,
+  createNote,
+  updateNote,
+  updateRecipientNoteStatus,
+  toggleNoteArchive,
   loadStudents,
   loadMoreStudents,
   loadStudent,
