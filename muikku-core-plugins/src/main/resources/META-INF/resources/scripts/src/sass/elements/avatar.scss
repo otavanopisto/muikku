@@ -43,12 +43,30 @@
 
 .avatar-container--group {
   border-radius: 0;
+  user-select: none;
 
   @include breakpoint($breakpoint-pad) {
     width: auto;
   }
 }
 
+.avatar--group-members {
+  cursor: pointer;
+}
+
+.avatar__group-user {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.avatar__group-user-text {
+  min-width: 150px;
+  text-align: left;
+}
+
+.avatar__group-user-actions {
+}
 .avatar-container--chat {
   height: $avatar-mobile-chat-size;
   width: $avatar-mobile-chat-size;

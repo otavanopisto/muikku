@@ -1,7 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/avatar.scss";
 import Dropdown from "~/components/general/dropdown";
-import UserAvatar, { UserAvatarProps } from "./user";
+import GroupAvatarUser, { GroupAvatarUserProps } from "./group-user";
 
 /**
  * AvatarProps
@@ -12,7 +12,8 @@ export interface GroupAvatarProps {
   name: string;
   size?: string;
   groupAvatar?: "usergroup" | "workspace";
-  groupMembers?: UserAvatarProps[];
+  groupMembers?: GroupAvatarUserProps[];
+  groupMemberAction?: (userId: number) => JSX.Element;
   userCategory?: number;
   avatarAriaLabel?: string;
   modifier?: string;
@@ -26,16 +27,32 @@ export interface GroupAvatarProps {
  * @returns JSX.Element
  */
 const GroupAvatar = (props: GroupAvatarProps) => {
-  const { name, size, modifier, showTooltip, groupMembers, groupAvatar } =
-    props;
+  const {
+    name,
+    size,
+    modifier,
+    showTooltip,
+    groupMembers,
+    groupAvatar,
+    groupMemberAction,
+  } = props;
 
-  const groupAvatarMembers =
-    groupMembers &&
-    groupMembers.map((member) => <UserAvatar key={member.id} {...member} />);
+  const groupAvatarMembers = groupMembers && (
+    <div className="avatar__group-members-container">
+      {groupMembers.map((member) => (
+        <GroupAvatarUser
+          key={member.id}
+          size="xsmall"
+          action={groupMemberAction}
+          {...member}
+        />
+      ))}
+    </div>
+  );
 
   const avatarBase = (
     <div
-      className={`avatar avatar--group ${
+      className={`avatar avatar--group ${groupMembers ? "avatar--group-members" : ""} ${
         size ? "avatar--" + size : ""
       } ${"avatar--" + groupAvatar} ${modifier ? "avatar--" + modifier : ""} `}
     >

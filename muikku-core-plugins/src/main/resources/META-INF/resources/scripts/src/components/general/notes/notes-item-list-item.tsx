@@ -13,7 +13,7 @@ import {
   UpdateNoteRequest,
   UpdateNoteReceiverRequest,
 } from "~/generated/client";
-import Avatar from "../avatar";
+import Avatar, { AvatarProps } from "../avatar";
 import { useRecipientsToAvatars } from "./hooks/useRecipientsToAvatars";
 
 /**
@@ -106,7 +106,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       multiUserNote,
     } = notesItem;
 
-    const avatars = useRecipientsToAvatars(recipients);
+    const avatars = useRecipientsToAvatars(recipients, !specificRecipient);
     const { t } = useTranslation("tasks");
     const overdue = isOverdue(dueDate);
     const updatedModifiers = [];
@@ -188,14 +188,23 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     /**
      * handleUpdateNotesItemStatusClick
      * @param newStatus newStatus
+     * @param userId userId
      */
-    const handleUpdateNotesItemStatusClick = (newStatus: NoteStatusType) => {
+    const handleUpdateNotesItemStatusClick = (
+      newStatus: NoteStatusType,
+      userId?: number
+    ) => {
+      const uId = userId ? userId : recipientId;
+      const recipient = userId
+        ? recipients.find((r) => r.recipientId === userId)
+        : currentRecipient;
+
       const newReceiverStatus: UpdateNoteReceiverRequest = {
-        ...currentRecipient,
+        pinned: recipient.pinned,
         status: newStatus,
       };
       if (onUpdateNotesItemStatus) {
-        onUpdateNotesItemStatus(id, recipientId, newReceiverStatus);
+        onUpdateNotesItemStatus(id, uId, newReceiverStatus);
 
         if (innerRef.current) {
           innerRef.current.focus();
@@ -341,18 +350,93 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       return statuses;
     };
 
+    const avatarUpdateStatus = (recipientId: number) => {
+      const status = recipients.find(
+        (r) => r.recipientId === recipientId
+      ).status;
+
+      let items: DropdownItem[] = [];
+      if (status === "ONGOING") {
+        return;
+      }
+      if (status === "APPROVAL_PENDING") {
+        items = [
+          {
+            id: "task-item-approve",
+            text: t("actions.approve"),
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            onClick: () =>
+              handleUpdateNotesItemStatusClick("APPROVED", recipientId),
+          },
+          {
+            id: "task-item-incomplete",
+            text: t("actions.incomplete"),
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            onClick: () =>
+              handleUpdateNotesItemStatusClick("ONGOING", recipientId),
+          },
+        ];
+      }
+      if (status === "APPROVED") {
+        items = [
+          {
+            id: "task-item-incomplete",
+            text: t("actions.incomplete"),
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            onClick: () =>
+              handleUpdateNotesItemStatusClick("APPROVAL_PENDING", recipientId),
+          },
+        ];
+      }
+      /**
+       * Renders item
+       * @param item item
+       * @param onClose onClose
+       */
+      const renderItem = (item: DropdownItem, onClose: () => void) => (
+        <Link
+          key={item.id}
+          className={`link link--full link--tasks-dropdown`}
+          onClick={() => {
+            onClose();
+            item.onClick();
+          }}
+        >
+          <span>{item.text}</span>
+        </Link>
+      );
+      return (
+        <Dropdown
+          items={items.map(
+            (item) => (closeDropdown: () => void) =>
+              renderItem(item, closeDropdown)
+          )}
+        >
+          <div tabIndex={0}>
+            <IconButton
+              icon="more_vert"
+              buttonModifiers={["notes-action", "notes-more"]}
+            />
+          </div>
+        </Dropdown>
+      );
+    };
+
     /**
      * renderUpdateStatus
+     * @param recipientStatus recipientStatus
      */
-    const renderUpdateStatus = () => {
+    const renderUpdateStatus = (recipientStatus?: NoteStatusType) => {
       let items: DropdownItem[] = [];
 
       if (archived) {
         return;
       }
+      const status = recipientStatus
+        ? recipientStatus
+        : currentRecipient.status;
 
       if (loggedUserIsOwner) {
-        const { status } = currentRecipient;
         if (status === "ONGOING") {
           items = [
             {
@@ -397,9 +481,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           ];
         }
       } else if (loggedUserIsCreator) {
-        // This must display all of the recipients statuses if this is not a selected recipient
-        const { status } = currentRecipient;
-
         if (status === "ONGOING") {
           return;
         }
@@ -575,6 +656,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             ? avatars.map((avatar) => (
                 <Avatar
                   showTooltip
+                  groupMemberAction={avatarUpdateStatus}
                   key={avatar.id}
                   {...avatar}
                   size="xsmall"
