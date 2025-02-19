@@ -16587,6 +16587,7 @@ components:
           nullable: true
         roles:
           type: array
+          uniqueItems: true
           items:
             $ref: "#/components/schemas/Role"
         hasImage:
@@ -16610,6 +16611,7 @@ components:
           type: string
         roles:
           type: array
+          uniqueItems: true
           items:
             $ref: "#/components/schemas/Role"
 
@@ -16801,24 +16803,32 @@ components:
           type: string
           nullable: true
         phoneNumbers:
-          type: string
+          type: array
           nullable: true
+          items:
+            type: string
         addresses:
-          type: string
+          type: array
           nullable: true
+          items:
+            type: string
         emails:
-          type: string
+          type: array
           nullable: true
+          items:
+            type: string
         hasImage:
           type: boolean
           nullable: true
         roles:
           type: array
+          uniqueItems: true
           items:
             $ref: "#/components/schemas/Role"
         permissions:
           type: array
           nullable: true
+          uniqueItems: true
           items:
             type: string
         curriculumName:
@@ -16829,15 +16839,18 @@ components:
           nullable: true
         studyTimeEnd:
           type: string
+          format: date-time
           nullable: true
         studyTimeLeftStr:
           type: string
           nullable: true
         studyStartDate:
           type: string
+          format: date-time
           nullable: true
         studyEndDate:
           type: string
+          format: date-time
           nullable: true
         studyProgrammeName:
           type: string
