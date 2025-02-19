@@ -2792,5 +2792,32 @@
       "closeDiscussionError": "Keskustelun sulkeminen epäonnistui",
       "updateSuccess_settings": "Asetukset päivitetty onnistuneesti"
     }
+  },
+  "pageTitles": {
+    "announcements": "Tiedotteet",
+    "announcements_workspace": "{{workspaceName}} | Tiedotteet",
+    "announcer": "Tiedotin",
+    "announcer_workspace": "{{workspaceName}} | Tiedotin",
+    "appName": "Muikku",
+    "ceeposPay": "Maksaminen",
+    "ceeposDone": "Suoritettu maksu",
+    "communicator": "Viestin",
+    "coursepicker": "Kurssipoimuri",
+    "discussions": "Keskustelu",
+    "discussions_workspace": "{{workspaceName}} | Keskustelu",
+    "evaluation": "Arviointi",
+    "evaluation_workspace": "{{workspaceName}} | Arviointi",
+    "guider": "Ohjaamo",
+    "home": "Etusivu",
+    "home_workspace": "{{workspaceName}} | Etusivu",
+    "hops": "HOPS",
+    "instructions": "{{workspaceName}} | Ohjeet",
+    "journal": "{{workspaceName}} | Oppimispäiväkirja",
+    "materials": "{{workspaceName}} | Materiaalit",
+    "profile": "Profiili",
+    "organization": "Organisaatiohallinta",
+    "studies": "Opinnot",
+    "users": "{{workspaceName}} | Käyttäjät",
+    "workspaceManagement": "{{workspaceName}} | Asetukset"
   }
 }

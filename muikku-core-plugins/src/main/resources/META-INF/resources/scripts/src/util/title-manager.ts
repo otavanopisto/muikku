@@ -11,35 +11,13 @@ type Notification = {
 };
 
 /**
- * Represents a favicon that can be shown in the browser tab
- */
-type Favicon = {
-  /** Unique identifier for the favicon */
-  id: string;
-  /** URL path to the favicon file */
-  href: string;
-  /** Optional priority value. Higher priority favicon overrides others */
-  priority?: number;
-};
-
-/**
- * Type for the callback function used in subscribe method
- */
-export type SubscribeCallback = (state: {
-  title: string;
-  favicon: string;
-}) => void;
-
-/**
  * Manages the page title and favicon in the browser tab.
  * Supports multiple notifications and favicons with priority system.
  */
 class TitleManager {
   private baseTitle: string;
-  private baseFavicon: string;
   private notifications: Map<string, Notification>;
-  private favicons: Map<string, Favicon>;
-  private subscribers: Set<SubscribeCallback>;
+  private subscribers: Set<(state: { title: string }) => void>;
   private animationTimer: NodeJS.Timeout | null = null;
   private animationIndex: number = 0;
   private readonly ANIMATION_INTERVAL = 1000; // 1 second
@@ -47,13 +25,10 @@ class TitleManager {
   /**
    * Creates a new TitleManager instance
    * @param baseTitle - The default title to show when no notifications are present
-   * @param baseFavicon - The default favicon path to use when no custom favicons are set
    */
-  constructor(baseTitle = "Muikku", baseFavicon = "/favicon.ico") {
+  constructor(baseTitle = "Muikku") {
     this.baseTitle = baseTitle;
-    this.baseFavicon = baseFavicon;
     this.notifications = new Map();
-    this.favicons = new Map();
     this.subscribers = new Set();
   }
 
@@ -62,7 +37,7 @@ class TitleManager {
    * @param callback - Function to be called when title or favicon changes
    * @returns Cleanup function to unsubscribe
    */
-  subscribe(callback: SubscribeCallback): () => void {
+  subscribe(callback: (state: { title: string }) => void): () => void {
     this.subscribers.add(callback);
     return () => this.subscribers.delete(callback);
   }
@@ -107,24 +82,6 @@ class TitleManager {
   }
 
   /**
-   * Sets a custom favicon
-   * @param favicon - The favicon configuration to set
-   */
-  setFavicon(favicon: Favicon) {
-    this.favicons.set(favicon.id, favicon);
-    this.notifySubscribers();
-  }
-
-  /**
-   * Removes a custom favicon
-   * @param id - The ID of the favicon to remove
-   */
-  removeFavicon(id: string) {
-    this.favicons.delete(id);
-    this.notifySubscribers();
-  }
-
-  /**
    * Gets the current complete title, including any active notifications
    * @returns The current page title
    */
@@ -156,32 +113,10 @@ class TitleManager {
   }
 
   /**
-   * Gets the current favicon path, considering priority
-   * @returns The current favicon path
-   */
-  getCurrentFavicon(): string {
-    const activeFavicons = Array.from(this.favicons.values());
-    if (activeFavicons.length > 0) {
-      return activeFavicons.sort(
-        (a, b) => (b.priority || 0) - (a.priority || 0)
-      )[0].href;
-    }
-    return this.baseFavicon;
-  }
-
-  /**
    * Removes all current notifications while keeping subscriptions intact
    */
   clearNotifications() {
     this.notifications.clear();
-    this.notifySubscribers();
-  }
-
-  /**
-   * Removes all current favicons while keeping subscriptions intact
-   */
-  clearFavicons() {
-    this.favicons.clear();
     this.notifySubscribers();
   }
 
@@ -192,9 +127,7 @@ class TitleManager {
     this.stopTitleAnimation();
     this.subscribers.clear();
     this.notifications.clear();
-    this.favicons.clear();
     this.baseTitle = "Muikku";
-    this.baseFavicon = "/favicon.ico";
   }
 
   /**
@@ -249,7 +182,6 @@ class TitleManager {
   private notifySubscribers() {
     const state = {
       title: this.getCurrentTitle(),
-      favicon: this.getCurrentFavicon(),
     };
     this.subscribers.forEach((callback) => callback(state));
   }
