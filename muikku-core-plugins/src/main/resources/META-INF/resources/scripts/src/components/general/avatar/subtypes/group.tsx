@@ -2,6 +2,8 @@ import * as React from "react";
 import "~/sass/elements/avatar.scss";
 import Dropdown from "~/components/general/dropdown";
 import GroupAvatarUser, { GroupAvatarUserProps } from "./group-user";
+import { filterMatch } from "~/util/modifiers";
+import { useTranslation } from "react-i18next";
 
 /**
  * AvatarProps
@@ -27,6 +29,9 @@ export interface GroupAvatarProps {
  * @returns JSX.Element
  */
 const GroupAvatar = (props: GroupAvatarProps) => {
+  const [filter, setFilter] = React.useState<string>("");
+  const timeOut = React.useRef<NodeJS.Timeout>(null);
+  const { t } = useTranslation();
   const {
     name,
     size,
@@ -37,16 +42,39 @@ const GroupAvatar = (props: GroupAvatarProps) => {
     groupMemberAction,
   } = props;
 
+  /**
+   * Method to debounce filter.
+   * @param e event
+   */
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(timeOut.current);
+    timeOut.current = setTimeout(function () {
+      setFilter(e.target.value);
+    }, 500);
+  };
+
   const groupAvatarMembers = groupMembers && (
-    <div className="avatar__group-members-container">
-      {groupMembers.map((member) => (
-        <GroupAvatarUser
-          key={member.id}
-          size="xsmall"
-          action={groupMemberAction}
-          {...member}
+    <div className="avatar__group-members">
+      <div className="avatar__group-members-search">
+        <input
+          className="form-element__input"
+          onChange={handleInputChange}
+          type="text"
+          placeholder={t("labels.search", {})}
         />
-      ))}
+      </div>
+      <div className="avatar__group-members-container">
+        {groupMembers
+          .filter((m) => filterMatch(m.name, filter))
+          .map((member) => (
+            <GroupAvatarUser
+              key={member.id}
+              size="xsmall"
+              action={groupMemberAction}
+              {...member}
+            />
+          ))}
+      </div>
     </div>
   );
 
@@ -72,7 +100,9 @@ const GroupAvatar = (props: GroupAvatarProps) => {
   );
 
   return groupMembers && groupMembers.length > 0 ? (
-    <Dropdown content={groupAvatarMembers}>{avatar}</Dropdown>
+    <Dropdown modifier="group-members" content={groupAvatarMembers}>
+      {avatar}
+    </Dropdown>
   ) : (
     avatar
   );

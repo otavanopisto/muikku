@@ -54,6 +54,12 @@
   cursor: pointer;
 }
 
+.avatar__group-members-container {
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 10px 0 0 10px;
+}
+
 .avatar__group-user {
   display: flex;
   gap: 5px;
@@ -65,8 +71,6 @@
   text-align: left;
 }
 
-.avatar__group-user-actions {
-}
 .avatar-container--chat {
   height: $avatar-mobile-chat-size;
   width: $avatar-mobile-chat-size;

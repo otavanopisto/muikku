@@ -21,6 +21,7 @@ export const useRecipientsToAvatars = (
         workspaceId,
         recipientId,
         hasImage,
+        status,
         recipientName,
         userGroupName,
         workspaceName,
@@ -32,19 +33,26 @@ export const useRecipientsToAvatars = (
         (workspaceId && workspaceIds.includes(workspaceId))
       ) {
         if (showGroupMembers) {
-          const existingAvatar = avatars.find(
+          // If the userGroup or workspace is already in the list,
+          // add the user to the groupMembers under it
+          const existingGroupAvatar = avatars.find(
             (avatar) =>
               (avatar.groupAvatar === "usergroup" &&
                 avatar.id === userGroupId) ||
               (avatar.groupAvatar === "workspace" && avatar.id === workspaceId)
           );
-
-          if (existingAvatar) {
-            existingAvatar.groupMembers.push({
+          if (existingGroupAvatar) {
+            const newMember = {
               id: recipientId,
               hasImage: hasImage,
               name: recipientName,
-            });
+            };
+            // Put the ones with "APPROVAL_PENDING" status at the top
+            if (status === "APPROVAL_PENDING") {
+              existingGroupAvatar.groupMembers.unshift(newMember);
+            } else {
+              existingGroupAvatar.groupMembers.push(newMember);
+            }
           }
         }
         return;
