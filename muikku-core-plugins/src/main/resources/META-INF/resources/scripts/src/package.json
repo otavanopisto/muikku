@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node esbuild.mjs",
     "build-full": "npm run build-client && npm run build",
-    "build-client": "openapi-generator-cli generate -v -i ../../swagger.yaml -o generated/client -c generator-config.json -g typescript-fetch",
+    "build-client": "openapi-generator-cli generate -i ../../swagger.yaml -o generated/client -c generator-config.json -g typescript-fetch",
     "clean-dist": "rimraf ../dist/* --glob",
     "type-check": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
