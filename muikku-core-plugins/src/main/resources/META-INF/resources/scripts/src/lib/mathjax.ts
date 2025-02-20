@@ -20,8 +20,8 @@ export const MATHJAXCONFIG = {
     extensions: ["mhchem.js"],
   },
   SVG: {
-    useFontCache: true,
-    useGlobalCache: false,
+    useFontCache:      true,
+  useGlobalCache: false,
     EqnChunk: 1000000,
     EqnDelay: 0,
     font: "STIX-Web",

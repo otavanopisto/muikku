@@ -23,7 +23,7 @@ jobs:
         uses: EPMatt/reviewdog-action-prettier@v1
         with:
           github_token: ${{ secrets.github_token }}
-          reporter: github-pr-check
+          reporter: github-pr-review
           workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
           filter_mode: nofilter
           # Change reporter level if you need
