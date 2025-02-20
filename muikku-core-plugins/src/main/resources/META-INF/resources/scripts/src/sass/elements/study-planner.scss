@@ -10,6 +10,10 @@
   height: 750px;
 }
 
+.study-planner--full-screen {
+  padding: 0 10px 10px;
+}
+
 .study-planner--mobile-not-open {
   align-items: center;
   display: flex;
@@ -329,6 +333,10 @@
   display: flex;
   flex-flow: column nowrap;
   gap: 10px;
+}
+
+.study-planner__course-tray-list {
+  margin: 0 0 0 7px;
 }
 
 .study-planner__course-tray-item 

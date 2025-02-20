@@ -130,7 +130,7 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
 
   return (
     <motion.div
-      className="study-planner"
+      className={`study-planner ${isFullScreen ? "study-planner--full-screen" : ""}`}
       variants={variants}
       animate={isFullScreen ? "fullScreen" : "default"}
     >
