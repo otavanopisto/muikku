@@ -3,6 +3,7 @@ import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import Button from "~/components/general/button";
+import Link from "~/components/general/link";
 import {
   PlannerCourseWorkspaceInstance,
   StudentStudyActivity,
@@ -310,7 +311,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
     >
       <PlannerCardHeader modifiers={["planned-course-card"]}>
         <span className="study-planner__course-name">
-          <b>{`${course.subjectCode} ${course.courseNumber}. `}</b>
+          <b>{`${course.subjectCode}${course.courseNumber}`}</b>{" "}
           {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
         </span>
         {hasChanges && <span className="study-planner__course-unsaved">*</span>}
@@ -345,20 +346,20 @@ const BasePlannerPeriodCourse = React.forwardRef<
 
       {!disabled && !studyActivity && (
         <PlannerCardActions>
-          <Button
+          <Link
             onClick={handleSpecifyOpen}
             disabled={specifyIsOpen || deleteWarningIsOpen}
-            buttonModifiers={["study-planner-specify"]}
+            className="link link--study-planner-specify"
           >
             Tarkenna
-          </Button>
-          <Button
+          </Link>
+          <Link
             onClick={handleDeleteOpen}
             disabled={specifyIsOpen || deleteWarningIsOpen}
-            buttonModifiers={["study-planner-delete"]}
+            className="link link--study-planner-delete"
           >
             Poista
-          </Button>
+          </Link>
         </PlannerCardActions>
       )}
     </PlannerCard>

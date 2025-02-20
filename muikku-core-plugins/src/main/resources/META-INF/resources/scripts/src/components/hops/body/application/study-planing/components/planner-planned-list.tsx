@@ -15,7 +15,6 @@ const variants: Variants = {
 
 /**
  * PlannerPlannedList props
-
  */
 interface PlannerPlannedListProps {
   disabled: boolean;
@@ -81,6 +80,7 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
                 ease: "easeOut",
               }}
               layout="position"
+              className="study-planner__planned-list-item"
             >
               <PlannerPeriodCourseCard
                 disabled={disabled || courseActivity !== undefined}

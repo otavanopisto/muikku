@@ -188,22 +188,22 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
 
               <div className="study-planner__extra-section-button-group">
                 <Button
-                  buttonModifiers={["secondary"]}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClose();
-                  }}
-                >
-                  PERUUTA
-                </Button>
-                <Button
-                  buttonModifiers={["primary"]}
+                  buttonModifiers={["standard-ok", "execute"]}
                   onClick={(e) => {
                     e.stopPropagation();
                     handleSpecifyCourse(onClose);
                   }}
                 >
-                  TARKENNA
+                  Tallenna
+                </Button>
+                <Button
+                  buttonModifiers={["standard-cancel", "cancel"]}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                >
+                  Peruuta
                 </Button>
               </div>
             </div>

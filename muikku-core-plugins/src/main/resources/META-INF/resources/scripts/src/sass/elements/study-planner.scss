@@ -4,9 +4,9 @@
 @import "../base/breakpoints";
 
 .study-planner {
-  background: white;
+  background: $color-default;
   display: flex;
-  flex-direction: column;
+  flex-flow: column nowrap;
   height: 750px;
 }
 
@@ -30,6 +30,9 @@
   align-items: center;
   border-bottom: 1px solid $color-default-separator-border;
   display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   justify-content: space-between;
 }
 
@@ -68,12 +71,16 @@
 }
 
 .study-planner__content {
-  border-top: 1px solid #ebebeb;
+  border-top: 1px solid $color-study-plan-tool-accent;
   display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-flow: row nowrap;
+  flex-shrink: 1;
   gap: 1rem;
-  height: calc(100% - 48px);
+  height: 100%;
   overflow: hidden;
-  padding-top: 0.5rem;
+  padding-top: 1rem;
 }
 
 .study-planner__timeline-container {
@@ -84,6 +91,9 @@
   overflow-x: auto;
   overflow-y: hidden;
   position: relative;
+  scrollbar-color: darken($color-default-separator-border, 20%)
+    $color-default-lighter-generic-background;
+  scrollbar-width: thin;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
@@ -92,24 +102,6 @@
   display: flex;
   flex-flow: row nowrap;
   gap: 1rem;
-
-  &::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: $color-default-lighter-generic-background;
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $color-default-separator-border;
-    border-radius: 4px;
-
-    &:hover {
-      background: darken($color-default-separator-border, 10%);
-    }
-  }
 }
 
 .study-planner__timeline-overlay {
@@ -124,32 +116,34 @@
 
 // Period
 .study-planner__period {
-  background: #F5F5F7;
+  background: $color-study-plan-tool-generic-background;
   border-radius: 10px;
   display: flex;
   flex-flow: column nowrap;
   height: 100%;
   max-width: 350px;
-  padding: 10px;
+}
+
+.study-planner__period-header {
+  align-items: center;
+  display: flex;
+  padding: 5px 0;
+  position: relative;
 }
 
 .study-planner__collapse-button {
   align-items: center;
   background: transparent;
   border: none;
+  color: $color-default-helper;
   cursor: pointer;
   display: flex;
   flex-shrink: 0;
-  height: 48px;
+  font-size: 1rem;
+  height: 2.25rem;
   justify-content: center;
+  width: 2.25rem;
   z-index: 1000;
-}
-
-.study-planner__period-header {
-  align-items: center;
-  display: flex;
-  min-height: 48px;
-  position: relative;
 }
 
 .study-planner__period-header--collapsed {
@@ -179,116 +173,68 @@
 // Scrollable container
 .study-planner__scrollable-container {
   overflow-y: auto;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: $color-default-lighter-generic-background;
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $color-default-separator-border;
-    border-radius: 4px;
-
-    &:hover {
-      background: darken($color-default-separator-border, 10%);
-    }
-  }
+  overscroll-behavior: contain;
+  scrollbar-color: darken($color-default-separator-border, 20%)
+    $color-default-lighter-generic-background;
+  scrollbar-width: thin;
 }
 
 // Months list
 .study-planner__months-container {
-  padding-left: 4px;
-  padding-right: 4px;
-  width: calc(350px - 20px);
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: $color-default-lighter-generic-background;
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $color-default-separator-border;
-    border-radius: 4px;
-
-    &:hover {
-      background: darken($color-default-separator-border, 10%);
-    }
-  }
+  width: auto;
 }
 
 // Month
 .study-planner__month {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  padding: 10px;
   position: relative;
 }
 
 .study-planner__month-header {
   align-items: center;
   display: flex;
-  flex-direction: row;
+  flex-flow: row nowrap;
   flex-wrap: wrap;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
   justify-content: space-between;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
 
 .study-planner__month-wrapper {
   position: relative;
 }
 
-.study-planner__month-toggle {
-  align-items: center;
-  background: none;
-  border: none;
-  border-radius: 3px;
-  color: #B1296F;
-  cursor: pointer;
-  display: flex;
-  font-weight: 500;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  text-align: left;
-  width: 100%;
-
-  i {
-    font-size: 0.875rem;
-    transition: transform 0.2s ease;
-  }
-
-  &.is-expanded i {
-    transform: rotate(90deg);
-  }
-}
-
 // Month content
 .study-planner__month-content {
   display: flex;
-  flex-direction: column;
+  flex-flow: column nowrap;
+  gap: 10px;
 }
 
 .study-planner__month-dropzone {
   align-items: center;
-  border: 3px dashed #808080;
-  border-radius: 10px;
-  color: #B1296F;
+  border: 2px dashed $color-study-plan-tool-dropzone-border;
+  border-radius: 5px;
+  color: #b1296f;
   display: flex;
-  flex-direction: column;
-  height: 60px;
+  flex-flow: column nowrap;
+  height: 50px;
   justify-content: center;
   padding: 0.5rem;
 }
 
 // Sidebar
 .study-planner__sidebar {
-  border-right: 1px solid $color-default-separator-border;
-  display: flex;
+  border-right: 1px solid $color-study-plan-tool-accent;
   flex-basis: 300px;
-  flex-direction: column;
   flex-grow: 0;
   flex-shrink: 0;
   height: 100%;
@@ -298,18 +244,20 @@
 // Course tray
 .study-planner__course-tray {
   display: flex;
-  flex-basis: 300px;
-  flex-direction: column;
-  flex-grow: 0;
-  flex-shrink: 0;
+  flex-flow: column nowrap;
+  gap: 10px;
   height: 100%;
+  width: 100%;
 }
 
 .study-planner__course-tray-header {
   align-items: center;
   display: flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-flow: row nowrap;
+  flex-shrink: 0;
   justify-content: space-between;
-  margin-bottom: 0.25rem;
 }
 
 .study-planner__course-tray-header-extra {
@@ -328,18 +276,23 @@
 }
 
 .study-planner__course-tray-search {
-  margin-bottom: 1rem;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  position: relative;
 }
 
 .study-planner__course-tray-group {
-  margin-bottom: 0.5rem;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
 }
 
 .study-planner__course-tray-group-toggle {
   align-items: center;
   background: none;
   border: none;
-  color: #B1296F;
+  color: #b1296f;
   cursor: pointer;
   display: flex;
   font-weight: 500;
@@ -354,51 +307,57 @@
 }
 
 .study-planner__course-tray-groups {
-  flex: 1;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-flow: column nowrap;
+  gap: 10px;
   overflow-y: auto;
-  padding-right: 0.5rem;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: $color-default-lighter-generic-background;
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: $color-default-separator-border;
-    border-radius: 4px;
-
-    &:hover {
-      background: darken($color-default-separator-border, 10%);
-    }
-  }
+  overscroll-behavior: contain;
+  scrollbar-color: darken($color-default-separator-border, 20%)
+    $color-default-lighter-generic-background;
+  scrollbar-width: thin;
 }
 
-.study-planner__course-tray-item {
-  margin-bottom: 0.5rem;
+.study-planner__course-tray-list,
+.study-planner__planned-list {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+}
+
+.study-planner__course-tray-item 
+.study-planner__planned-list-item {
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 100%;
 }
 
 // Planner card
 .study-planner__card {
-  background: white;
+  background: $color-default;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px $color-study-plan-tool-card-boxshadow;
   cursor: move;
-  margin-bottom: 10px;
   opacity: 1;
+  overflow: hidden;
   position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease;
 
   &:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transform: translateY(-2px);
   }
 }
 
+.study-planner__card--course-tray-card {
+  box-shadow: none;
+}
+
 .study-planner__card--preview,
 .study-planner__card--is-dragging {
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   cursor: move;
   opacity: 0.8;
   transform: scale(1.05);
@@ -410,57 +369,51 @@
 }
 
 .study-planner__card--selected {
+  outline: 2px solid lighten($color-study-plan-tool-accent, 20%);
+  outline-offset: -2px;
   position: relative;
 
-  &::after {
-    border: 2px solid $color-info;
-    border-radius: 0 5px 5px 0;
-    bottom: 0;
-    content: '';
-    left: 0;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-    top: 0;
+  .study-planner__card-inner-container {
+    border-color: $color-study-plan-tool-accent;
   }
 }
 
 .study-planner__card-inner-container {
-  background: white;
-  border-left: 5px solid #8d8d8d;
-  padding: 0.5rem;
+  border-left: 3px solid transparent;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  padding: 10px;
   position: relative;
   width: 100%;
 }
 
 .study-planner__card-inner-container--mandatory {
-  border-left: 5px solid $color-mandatory;
+  border-left-color: $color-mandatory;
 }
 
 .study-planner__card-inner-container--optional {
-  border-left: 5px solid $color-optional;
+  border-left-color: $color-optional;
 }
 
 .study-planner__card-header {
   align-items: center;
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  margin-bottom: 0.5rem;
+  flex-flow: row nowrap;
 }
 
 .study-planner__card-content {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-flow: column nowrap;
+  gap: 10px;
 }
 
 .study-planner__card-actions {
+  align-items: center;
   display: flex;
-  gap: 0.5rem;
+  flex-flow: row nowrap;
+  gap: 10px;
   justify-content: flex-end;
-  margin-top: 0.5rem;
 }
 
 .study-planner__card-actions--course-tray {
@@ -483,12 +436,12 @@
 
 .study-planner__card-label--mandatory {
   background: $color-mandatory;
-  color: $color-default;
+  color: darken($color-mandatory, 45%);
 }
 
 .study-planner__card-label--optional {
   background: $color-optional;
-  color: $color-default;
+  color: darken($color-optional, 55%);
 }
 
 .study-planner__card-label--course-length {
@@ -545,14 +498,14 @@
   color: $color-default-contrast;
   display: block;
   flex-basis: 100%;
-  font-size: 0.750rem;
+  font-size: 0.75rem;
 }
 
 .study-planner__course-workspace-instance-not-available {
   color: red;
   display: block;
   flex-basis: 100%;
-  font-size: 0.750rem;
+  font-size: 0.75rem;
 }
 
 // Specify animate height
@@ -568,57 +521,87 @@
 
 // Specify section
 .study-planner__extra-section {
-  background: white;
-  border: 1px solid rgb(224, 224, 224);
+  background: $color-default;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
   padding: 0.5rem;
 }
 
 .study-planner__extra-section-title {
   font-size: 1rem;
-  margin-bottom: 0.25rem;
+  width: 100%;
 }
 
 .study-planner__extra-section-content {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  flex-flow: column nowrap;
+  gap: 10px;
+  width: 100%;
 }
 
 .study-planner__extra-section-input-group {
   display: flex;
-  flex-direction: column;
+  flex-flow: column nowrap;
+  gap: 10px;
+  width: 100%;
 }
 
 .study-planner__extra-section-input-group-label {
   font-size: 0.875rem;
   font-weight: 600;
-  margin-bottom: 0.25rem;
+  width: 100%;
 }
 
 .study-planner__extra-section-input-group-label-info {
   font-size: 0.775rem;
   font-weight: 100;
-  margin-bottom: 0.25rem;
+  width: 100%;
 }
 
 .study-planner__extra-section-date-inputs {
   display: flex;
-  gap: 0.5rem;
+  flex-flow: row nowrap;
+  gap: 10px;
+  width: 100%;
 }
 
 .study-planner__extra-section-button-group {
   display: flex;
-  gap: 0.5rem;
+  flex-flow: row nowrap;
+  gap: 10px;
   justify-content: center;
 }
 
 .study-planner__input {
-  background: #ffffff;
-  border: 2px solid #f8a1ce;
+  background: $color-default;
+  border: 2px solid $color-study-plan-tool-form-element-border;
   border-radius: 3px;
   height: 2.25rem;
   padding: 4px 8px;
   width: 100%;
+}
+
+.study-planner__input--filter-courses {
+  background: $color-study-plan-tool-generic-background;
+  border: 0;
+  border-radius: 20px;
+  height: 2.25rem;
+  padding: 4px 36px 4px 14px;
+  width: 100%;
+}
+
+.study-planner__input-decoration {
+  align-items: center;
+  color: $color-default-helper;
+  display: flex;
+  font-size: 1rem;
+  height: 2.25rem;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  width: 2.25rem;
+  top: 0;
 }
 
 // State info
@@ -732,7 +715,6 @@
 
 .study-planner__plan-statistic-item-value {
   background-color: $color-success;
-  border-radius: 0.25rem;
   height: 0.5rem;
   width: 6rem;
 }
@@ -780,8 +762,8 @@
 
 // Planner info
 .study-planner__info {
-  background-color: #F8F8F8;
-  border-left: 5px solid #F8F8F8;
+  background-color: #f8f8f8;
+  border-left: 5px solid #f8f8f8;
   border-radius: 0 5px 5px 0;
   color: #8c8c8c;
   display: flex;
@@ -839,8 +821,4 @@
   display: flex;
   flex: 1;
   font-size: 1.25rem;
-}
-
-.study-planner__planned-list li {
-  width: 100%;
 }

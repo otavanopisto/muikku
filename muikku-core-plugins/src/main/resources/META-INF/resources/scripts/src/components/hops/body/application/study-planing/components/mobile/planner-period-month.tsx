@@ -67,9 +67,9 @@ const dropZoneVariants: Variants = {
   },
   dropIsActive: {
     opacity: [0.6, 1, 0.6],
-    scale: [1, 1.02, 1],
+    scale: [1, 0.95, 1],
     transition: {
-      duration: 1.5,
+      duration: 2.0,
       repeat: Infinity,
       ease: "easeInOut",
     },
@@ -345,7 +345,6 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     <div className="study-planner__month">
       <div className="study-planner__month-header">
         <Button
-          iconPosition="left"
           icon={isExpanded ? "arrow-down" : "arrow-right"}
           buttonModifiers={["study-planner-month-toggle"]}
           onClick={handleMonthToggle}
@@ -392,16 +391,18 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
           onHover={handleDropHover}
           className="study-planner__month-content"
         >
-          <PlannerPlannedList
-            disabled={hopsMode === "READ"}
-            courses={courses}
-            selectedCoursesIds={selectedCoursesIds}
-            originalPlannedCourses={originalPlannedCourses}
-            studyActivity={studyActivity}
-            curriculumConfig={curriculumConfig}
-            onCourseChange={handleCourseChange}
-            onSelectCourse={handleSelectCourse}
-          />
+          {courses.length < 0 && (
+            <PlannerPlannedList
+              disabled={hopsMode === "READ"}
+              courses={courses}
+              selectedCoursesIds={selectedCoursesIds}
+              originalPlannedCourses={originalPlannedCourses}
+              studyActivity={studyActivity}
+              curriculumConfig={curriculumConfig}
+              onCourseChange={handleCourseChange}
+              onSelectCourse={handleSelectCourse}
+            />
+          )}
 
           <motion.div
             layout="position"

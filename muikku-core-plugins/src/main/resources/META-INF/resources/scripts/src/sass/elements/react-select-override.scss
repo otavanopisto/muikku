@@ -48,7 +48,7 @@
     @include breakpoint($breakpoint-pad) {
       font-size: $text-desktop-font-size;
       height: $select-height-desktop;
-      max-width: 300px;
+      max-width: 320px;
     }
   }
 

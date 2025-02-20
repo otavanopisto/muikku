@@ -288,12 +288,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-workspace-signup-readmore-button-background, 10%);
+    background-color: darken(
+      $color-workspace-signup-readmore-button-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-workspace-signup-readmore-button-background, 20%);
+    background-color: darken(
+      $color-workspace-signup-readmore-button-background,
+      20%
+    );
   }
 }
 
@@ -361,12 +367,18 @@
 
     &:hover,
     &.hover {
-      background-color: darken($color-main-function-button-login-background, 10%);
+      background-color: darken(
+        $color-main-function-button-login-background,
+        10%
+      );
     }
 
     &:active,
     &.active {
-      background-color: darken($color-main-function-button-login-background, 20%);
+      background-color: darken(
+        $color-main-function-button-login-background,
+        20%
+      );
     }
   }
 }
@@ -393,12 +405,18 @@
 
     &:hover,
     &.hover {
-      background-color: darken($color-main-function-button-login-background, 10%);
+      background-color: darken(
+        $color-main-function-button-login-background,
+        10%
+      );
     }
 
     &:active,
     &.active {
-      background-color: darken($color-main-function-button-login-background, 20%);
+      background-color: darken(
+        $color-main-function-button-login-background,
+        20%
+      );
     }
   }
 }
@@ -410,12 +428,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-frontpage-button-upper-secondary-school-readmore-background, 10%);
+    background-color: darken(
+      $color-frontpage-button-upper-secondary-school-readmore-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-frontpage-button-upper-secondary-school-readmore-background, 20%);
+    background-color: darken(
+      $color-frontpage-button-upper-secondary-school-readmore-background,
+      20%
+    );
   }
 }
 
@@ -426,12 +450,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-frontpage-button-secondary-school-readmore-background, 10%);
+    background-color: darken(
+      $color-frontpage-button-secondary-school-readmore-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-frontpage-button-secondary-school-readmore-background, 20%);
+    background-color: darken(
+      $color-frontpage-button-secondary-school-readmore-background,
+      20%
+    );
   }
 }
 
@@ -444,12 +474,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-frontpage-button-open-materials-readmore-background, 10%);
+    background-color: darken(
+      $color-frontpage-button-open-materials-readmore-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-frontpage-button-open-materials-readmore-background, 20%);
+    background-color: darken(
+      $color-frontpage-button-open-materials-readmore-background,
+      20%
+    );
   }
 }
 
@@ -482,16 +518,18 @@
 
   &:hover,
   &.hover {
-    background-color:
-      darken(
-        $color-frontpage-button-newsletter-background,
-        10%
-      );
+    background-color: darken(
+      $color-frontpage-button-newsletter-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-frontpage-button-newsletter-background, 20%);
+    background-color: darken(
+      $color-frontpage-button-newsletter-background,
+      20%
+    );
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -1019,12 +1057,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-environment-button-pill-language-background, 5%);
+    background-color: darken(
+      $color-environment-button-pill-language-background,
+      5%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-environment-button-pill-language-background, 10%);
+    background-color: darken(
+      $color-environment-button-pill-language-background,
+      10%
+    );
   }
 }
 
@@ -1113,12 +1157,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-delete-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-delete-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1150,12 +1200,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-delete-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-delete-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1176,12 +1232,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-edit-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-edit-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-edit-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-edit-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1202,12 +1264,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-label-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-label-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1232,12 +1300,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-label-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-label-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1262,12 +1336,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-toggle-read-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-toggle-read-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-toggle-read-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-toggle-read-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1293,12 +1373,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-go-back-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-go-back-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-go-back-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-go-back-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1325,12 +1411,18 @@
 
     &:hover,
     &.hover {
-      background-color: darken($color-main-function-button-pill-prev-page-background, 10%);
+      background-color: darken(
+        $color-main-function-button-pill-prev-page-background,
+        10%
+      );
     }
 
     &:active,
     &.active {
-      background-color: darken($color-main-function-button-pill-prev-page-background, 20%);
+      background-color: darken(
+        $color-main-function-button-pill-prev-page-background,
+        20%
+      );
     }
 
     &.disabled,
@@ -1354,12 +1446,18 @@
 
     &:hover,
     &.hover {
-      background-color: darken($color-main-function-button-pill-next-page-background, 10%);
+      background-color: darken(
+        $color-main-function-button-pill-next-page-background,
+        10%
+      );
     }
 
     &:active,
     &.active {
-      background-color: darken($color-main-function-button-pill-next-page-background, 20%);
+      background-color: darken(
+        $color-main-function-button-pill-next-page-background,
+        20%
+      );
     }
 
     &.disabled,
@@ -1991,11 +2089,16 @@
   border: 2px solid $color-default;
   border-radius: 10px; // This is half of the whole width of the switch
   display: flex;
-  height: calc(#{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size});
+  height: calc(
+    #{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size}
+  );
   justify-content: center;
   margin-right: 15px;
   position: relative;
-  width: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
+  width: calc(
+    #{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} *
+      2
+  );
 
   &::after {
     background: lighten($color-disabled, 10%);
@@ -2014,8 +2117,13 @@
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 12px; // This is half of the whole width of the switch
-    height: calc(#{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size});
-    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+    height: calc(
+      #{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size}
+    );
+    width: calc(
+      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
+        2
+    );
 
     &::after {
       height: $generic-desktop-switch-size;
@@ -2035,7 +2143,10 @@
   }
 
   @include breakpoint($breakpoint-pad) {
-    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+    width: calc(
+      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
+        2
+    );
 
     &::after {
       top: calc(100% - #{$generic-desktop-switch-size} * 2);
@@ -2052,11 +2163,16 @@
   border-radius: 10px; // This is half of the whole width of the switch
   box-shadow: 0 0 0 1px $color-default-helper;
   display: flex;
-  height: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
+  height: calc(
+    #{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} *
+      2
+  );
   justify-content: center;
   margin: 0;
   position: relative;
-  width: calc(#{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size});
+  width: calc(
+    #{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size}
+  );
 
   &::after {
     background: $color-default-helper;
@@ -2079,8 +2195,13 @@
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 12px; // This is half of the whole width of the switch
-    height: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
-    width: calc(#{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size});
+    height: calc(
+      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
+        2
+    );
+    width: calc(
+      #{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size}
+    );
 
     &::after {
       height: $generic-desktop-switch-size;
@@ -2109,7 +2230,10 @@
   }
 
   @include breakpoint($breakpoint-pad) {
-    height: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+    height: calc(
+      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
+        2
+    );
 
     &::after {
       right: $generic-desktop-switch-size;
@@ -2518,81 +2642,48 @@
   color: $color-default;
 }
 
-.button--planner-course-group-toggle {
-  justify-content: flex-start;
-  color: #B1296F;
-  white-space: wrap;
-  text-transform: none;
-  padding-left: 0;
-  transition: color 0.1s ease-in-out;
-
-  &:hover {
-    color: #F1489F;
-    text-decoration: underline;
-    transition: color 0.1s ease-in-out;
-  }
-}
-
+.button--planner-course-group-toggle,
 .button--study-planner-month-toggle {
-  justify-content: flex-start;
-  color: #B1296F;
-  white-space: wrap;
-  text-transform: none;
-  padding-left: 0;
+  align-items: center;
   background: transparent;
-  font-size: 1rem;
+  color: $color-study-plan-tool-accent;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: $text-mobile-font-size;
+  font-weight: 600;
+  gap: 5px;
+  justify-content: flex-start;
+  padding: 0;
+  text-decoration: none;
+  text-transform: none;
   transition: color 0.1s ease-in-out;
+  white-space: wrap;
+  width: 100%;
 
-  &:hover {
-    color: #F1489F;
-    text-decoration: underline;
-    transition: color 0.1s ease-in-out;
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
   }
-}
 
-.button--study-planner-specify-cancel,
-.button--study-planner-specify-confirm {
-  height: 30px;
-}
-
-.button--study-planner-specify,
-.button--study-planner-delete {
-  padding-right: 5px;
-  padding-left: 5px;
-}
-
-.button--study-planner-specify {
-  color: $color-label-primary;
-
-  &.disabled {
-    color: $color-label-primary;
-  }
-}
-
-.button--study-planner-delete {
-  color: $color-label-error;
-
-  &.disabled {
-    color: $color-label-error;
+  .button__icon {
+    font-size: 0.75rem;
+    margin: 0 3px;
   }
 }
 
 .button--study-planner-extra-info-toggle {
   padding-left: 0;
-  font-size: 0.750rem;
+  font-size: 0.75rem;
 }
 
 .button-icon--study-planner-month-selection {
   background: transparent;
-  color: #B1296F;
+  color: #b1296f;
   font-size: 1rem;
   transition: color 0.1s ease-in-out;
 
   &:hover {
-    color: #F1489F;
+    color: #f1489f;
     text-decoration: underline;
     transition: color 0.1s ease-in-out;
   }
 }
-
-

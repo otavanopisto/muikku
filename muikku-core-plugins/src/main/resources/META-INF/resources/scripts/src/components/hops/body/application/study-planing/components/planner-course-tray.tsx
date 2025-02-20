@@ -205,11 +205,12 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
       <div className="study-planner__course-tray-search">
         <input
           type="text"
-          className="study-planner__input"
+          className="study-planner__input study-planner__input--filter-courses"
           placeholder="Hae opintojaksoja"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <span className="study-planner__input-decoration icon-search" />
       </div>
       <div className="study-planner__course-tray-groups">
         {filteredSubjects.map((subject) => (
@@ -218,7 +219,6 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
             className="study-planner__course-tray-group"
           >
             <Button
-              iconPosition="left"
               icon={
                 expandedGroups.includes(subject.subjectCode)
                   ? "arrow-down"
@@ -232,7 +232,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
             <AnimatedDrawer
               isOpen={expandedGroups.includes(subject.subjectCode)}
             >
-              <div className="study-planner__course-tray-list">
+              <ol className="study-planner__course-tray-list">
                 {subject.availableCourses.map((course) => {
                   // Check if course tray item is selected
                   const selected = props.isCourseSelected({
@@ -257,7 +257,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                     />
                   );
                 })}
-              </div>
+              </ol>
             </AnimatedDrawer>
           </div>
         ))}
@@ -363,7 +363,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     onSelectCourse({ ...course, subjectCode });
   };
 
-  const modifiers = [];
+  const modifiers = ["course-tray-card"];
 
   isDragging && modifiers.push("is-dragging");
   selected && modifiers.push("selected");
@@ -372,7 +372,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
   const typeModifiers = course.mandatory ? ["mandatory"] : ["optional"];
 
   return (
-    <div className="study-planner__course-tray-item">
+    <li className="study-planner__course-tray-item">
       <PlannerCard
         modifiers={modifiers}
         innerContainerModifiers={typeModifiers}
@@ -381,7 +381,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
       >
         <PlannerCardHeader modifiers={["course-tray-item"]}>
           <span className="planner-course-tray-item__name">
-            <b>{`${subjectCode} ${course.courseNumber}. `}</b>
+            <b>{`${subjectCode}${course.courseNumber}`}</b>{" "}
             {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
           </span>
         </PlannerCardHeader>
@@ -398,7 +398,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
           )}
         </PlannerCardContent>
       </PlannerCard>
-    </div>
+    </li>
   );
 };
 

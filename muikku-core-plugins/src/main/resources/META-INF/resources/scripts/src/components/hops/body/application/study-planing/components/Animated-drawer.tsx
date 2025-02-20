@@ -41,7 +41,6 @@ export const AnimatedDrawer = (props: AnimatedDrawerProps) => {
           }}
           className={className}
           onAnimationComplete={onOpen}
-          style={{ overflow: "hidden" }}
         >
           <div className={contentClassName}>{children}</div>
         </motion.div>

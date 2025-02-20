@@ -52,6 +52,14 @@ $color-priority-high: #de3211;
 $color-priority-normal: #24c118;
 $color-priority-low: #7391a7;
 
+// STUDY PLAN TOOL
+$color-study-plan-tool-generic-background: #f5f5f7;
+$color-study-plan-tool-dropzone-border: #d9d9d9;
+$color-study-plan-tool-accent: #ab1566;
+$color-study-plan-tool-card-boxshadow: rgb(0 0 0 / 15%);
+$color-study-plan-tool-card-selected-boxshadow: rgb(0 159 227 / 80%);
+$color-study-plan-tool-form-element-border: #f8a1ce;
+
 // Notes
 $color-notes-action-button: #7391a7;
 
@@ -80,7 +88,6 @@ $color-label-alert: $color-fatal;
 
 // Usergroup
 $color-usergroup: #c10ebe;
-
 
 // Workspace
 $color-workspace: #2fd4af;
@@ -592,7 +599,9 @@ $color-workspace-link-menu-icon-background: $color-workspace-navbar-background;
 $color-menu-default-background: #ffffff;
 $color-menu-default-text: $color-inverse;
 $color-menu-default-header-background: rgb(0 0 0 / 10%);
-$color-menu-default-header-button-close-background-active: rgb(255 255 255 / 30%);
+$color-menu-default-header-button-close-background-active: rgb(
+  255 255 255 / 30%
+);
 $color-menu-default-header-button-close: $color-info;
 
 // SUBPANEL
