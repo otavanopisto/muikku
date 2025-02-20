@@ -23,12 +23,11 @@ jobs:
         uses: EPMatt/reviewdog-action-prettier@v1
         with:
           github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
+          reporter: github-pr-check
           workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
           filter_mode: nofilter
           # Change reporter level if you need
           # [info,warning,error]
           level: warning
-          fail_on_error: true
-          reviewdog_flags: '-fail-level=any' 
+          fail_on_error: true 
           prettier_flags: "*.{ts,tsx}"
