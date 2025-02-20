@@ -11,6 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Filter that forwards certain paths always to a common (x)html 
  * page that is expected to handle the paths routing. The html
@@ -34,12 +36,24 @@ public class SPAForwardingFilter implements Filter {
       "/profile"
   );
 
+  // Partial paths to forward to the SPA Entrypoint
+  private static final String[] FRONTEND_PARTIAL_PATHS = {
+      "/workspace/"
+  };
+  
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
       throws IOException, ServletException {
     if (request instanceof HttpServletRequest) {
       HttpServletRequest httpRequest = (HttpServletRequest) request;
-      if (FRONTEND_PATHS.contains(httpRequest.getServletPath())) {
+      String path = httpRequest.getServletPath();
+      
+      boolean found = FRONTEND_PATHS.contains(path) || StringUtils.startsWithAny(path, FRONTEND_PARTIAL_PATHS);
+      
+      // TODO Remove debug message
+      System.out.println("Polku: " + path + " Löytyi: " + found);
+  
+      if (found) {
         request.getRequestDispatcher(SPA_ENTRYPOINT).forward(httpRequest, response);
         return;
       }
