@@ -9,7 +9,7 @@
  */
 export function queueJax() {
   if ((window as any).MathJax) {
-                                                                      (window as any).MathJax.Hub.Queue(["Typeset", (window as any).MathJax.Hub]);
+                                                                        (window as any).MathJax.Hub.Queue(["Typeset", (window as any).MathJax.Hub]);
   }
 }
 
@@ -20,8 +20,8 @@ export const MATHJAXCONFIG = {
     extensions: ["mhchem.js"],
   },
   SVG: {
-    useFontCache: true
-    ,useGlobalCache: false,
+    useFontCache: true,     
+    useGlobalCache: false,
     EqnChunk: 1000000,
     EqnDelay: 0,
     font: "STIX-Web",
