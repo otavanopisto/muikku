@@ -409,7 +409,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
             animate={pulseDropzone ? "dropIsActive" : "initial"}
             variants={dropZoneVariants}
             onClick={handleMoveCoursesHereClick}
-            className="study-planner__month-dropzone"
+            className={`study-planner__month-dropzone ${pulseDropzone ? "study-planner__month-dropzone--active" : ""}`}
           />
         </Droppable>
       </AnimatedDrawer>

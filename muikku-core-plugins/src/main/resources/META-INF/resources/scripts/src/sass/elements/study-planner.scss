@@ -231,6 +231,10 @@
   padding: 0.5rem;
 }
 
+.study-planner__month-dropzone--active {
+  cursor: pointer;
+}
+
 // Sidebar
 .study-planner__sidebar {
   border-right: 1px solid $color-study-plan-tool-accent;
