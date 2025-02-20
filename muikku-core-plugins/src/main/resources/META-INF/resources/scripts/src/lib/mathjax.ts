@@ -9,7 +9,7 @@
  */
 export function queueJax() {
   if ((window as any).MathJax) {
-                                                                         (window as any).MathJax.Hub.Queue(["Typeset", (window as any).MathJax.Hub]);
+                                                                          (window as any).MathJax.Hub.Queue(["Typeset", (window as any).MathJax.Hub]);
   }
 }
 
