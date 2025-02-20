@@ -20,15 +20,8 @@ jobs:
         working-directory: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
       - name: Running Prettier Code Quality Review
-        uses: EPMatt/reviewdog-action-prettier@v1
+        uses: wearerequired/lint-action@v2
         with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review
-          workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
-          filter_mode: nofilter
-          # Change reporter level if you need
-          # [info,warning,error]
-          level: warning
-          fail_on_error: true
-          reviewdog_flags: -fail-on_error=true
-          prettier_flags: "*.{ts,tsx}"
+          prettier: true
+          prettier_extensions: "ts,tsx"
+          prettier_dir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
