@@ -30,4 +30,3 @@ jobs:
           # [info,warning,error]
           level: warning
           prettier_flags: "*.{ts,tsx}"
-          fail_level: warning
