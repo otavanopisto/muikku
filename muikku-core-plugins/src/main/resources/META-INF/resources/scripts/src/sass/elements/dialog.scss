@@ -510,6 +510,10 @@
   width: 100%;
 }
 
+.dialog__content--note-information {
+  display: flex;
+}
+
 .dialog__content--workspace-signup-dialog {
   display: block;
   width: 100%;
@@ -776,6 +780,20 @@
     @include breakpoint($breakpoint-desktop-xl) {
       width: 1160px;
     }
+  }
+}
+
+.dialog__window--note-information {
+  max-width: none;
+
+  @include breakpoint($breakpoint-pad) {
+    left: auto;
+    right: auto;
+    width: 728px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 984px;
   }
 }
 

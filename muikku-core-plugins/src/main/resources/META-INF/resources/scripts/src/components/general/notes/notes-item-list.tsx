@@ -147,6 +147,7 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
             onFocus={handleListItemFocus(i)}
             onKeyDown={handleListItemKeyDown}
             loggedUserIsCreator={note.creator === userId}
+            showRecipients={true}
             loggedUserIsOwner={
               !!note.recipients.find(
                 (receiver) => receiver.recipientId === userId

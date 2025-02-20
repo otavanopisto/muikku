@@ -28,12 +28,16 @@ const NoteInformationDialog: React.FC<NoteInformationDialogProps> = (props) => {
    * @returns JSX.Element
    */
   const content = (closeDialog: () => never) => (
-    <NotesListItem
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      {...(item as any)}
-      containerModifier={["dialog-information"]}
-      openInformationToDialog={false}
-    />
+    <>
+      <NotesListItem
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        {...(item as any)}
+        showRecipients={false}
+        containerModifier={["dialog-information"]}
+        openInformationToDialog={false}
+      />
+      <div className="dialog__note-recipients">reseptimiehet tähä</div>
+    </>
   );
 
   /**

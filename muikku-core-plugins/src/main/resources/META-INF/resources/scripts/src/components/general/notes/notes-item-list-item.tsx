@@ -41,6 +41,7 @@ export interface NotesListItemProps
   loggedUserIsCreator?: boolean;
   loggedUserIsOwner?: boolean;
   specificRecipient?: number;
+  showRecipients?: boolean;
   onArchiveClick?: (notesItemId: number) => void;
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
@@ -91,6 +92,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       openInformationToDialog,
       containerModifier,
       specificRecipient,
+      showRecipients,
       ...restProps
     } = props;
 
@@ -651,28 +653,30 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           className="notes__item-body rich-text"
           dangerouslySetInnerHTML={createHtmlMarkup(description)}
         />
-        <div className="notes__item-recipients">
-          {!specificRecipient
-            ? avatars.map((avatar) => (
-                <Avatar
-                  showTooltip
-                  groupMemberAction={avatarUpdateStatus}
-                  key={avatar.id}
-                  {...avatar}
-                  size="xsmall"
-                ></Avatar>
-              ))
-            : avatars
-                .filter((avatar) => avatar.groupAvatar)
-                .map((avatar) => (
+        {showRecipients && (
+          <div className="notes__item-recipients">
+            {!specificRecipient
+              ? avatars.map((avatar) => (
                   <Avatar
                     showTooltip
+                    groupMemberAction={avatarUpdateStatus}
                     key={avatar.id}
                     {...avatar}
                     size="xsmall"
                   ></Avatar>
-                ))}
-        </div>
+                ))
+              : avatars
+                  .filter((avatar) => avatar.groupAvatar)
+                  .map((avatar) => (
+                    <Avatar
+                      showTooltip
+                      key={avatar.id}
+                      {...avatar}
+                      size="xsmall"
+                    ></Avatar>
+                  ))}
+          </div>
+        )}
         {!loggedUserIsCreator && (
           <div className="notes__item-author">{creatorName}</div>
         )}

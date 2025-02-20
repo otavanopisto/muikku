@@ -22,7 +22,7 @@ export interface GroupAvatarUserProps {
  * @param props props
  * @returns JSX.Element
  */
-const GroupAvatarUser = <T,>(props: GroupAvatarUserProps) => {
+const GroupAvatarUser = (props: GroupAvatarUserProps) => {
   const {
     id,
     userCategory,
