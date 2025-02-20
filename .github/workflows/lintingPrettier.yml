@@ -31,4 +31,4 @@ jobs:
           level: warning
           fail_on_error: true
           reviewdog_flags: -fail-on_error=true
-          prettier_flags: *.{ts,tsx}
+          prettier_flags: "*.{ts,tsx}"
