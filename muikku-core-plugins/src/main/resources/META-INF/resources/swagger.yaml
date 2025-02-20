@@ -15050,11 +15050,9 @@ components:
         - communicatorMessageId
         - caption
         - categoryName
-        - content
         - created
         - sender
         - tags
-        - unreadMessagesInThread
         - threadLatestMessageDate
         - messageCountInThread
         - labels
@@ -15071,8 +15069,6 @@ components:
         caption:
           type: string
         categoryName:
-          type: string
-        content:
           type: string
         created:
           type: string
