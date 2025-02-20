@@ -354,13 +354,8 @@
   box-shadow: 0 1px 2px $color-study-plan-tool-card-boxshadow;
   cursor: move;
   opacity: 1;
-  overflow: hidden;
   position: relative;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-  }
+  transition: outline 0.2s ease;
 }
 
 .study-planner__card--course-tray-card {
@@ -502,7 +497,9 @@
 
 .study-planner__course-unsaved {
   color: $color-fatal;
-  font-size: 0.875rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
   margin-left: 0.5rem;
 }
 

@@ -2,7 +2,6 @@ import moment from "moment";
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import Button from "~/components/general/button";
 import Link from "~/components/general/link";
 import {
   PlannerCourseWorkspaceInstance,
@@ -313,8 +312,10 @@ const BasePlannerPeriodCourse = React.forwardRef<
         <span className="study-planner__course-name">
           <b>{`${course.subjectCode}${course.courseNumber}`}</b>{" "}
           {`${course.name}, ${curriculumConfig.strategy.getCourseDisplayedLength(course)}`}
+          {hasChanges && (
+            <span className="study-planner__course-unsaved">*</span>
+          )}
         </span>
-        {hasChanges && <span className="study-planner__course-unsaved">*</span>}
       </PlannerCardHeader>
 
       <PlannerCardContent modifiers={["planned-course-card"]}>
