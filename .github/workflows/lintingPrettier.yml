@@ -29,3 +29,4 @@ jobs:
           # Change reporter level if you need
           # [info,warning,error]
           level: warning
+          fail_level: warning
