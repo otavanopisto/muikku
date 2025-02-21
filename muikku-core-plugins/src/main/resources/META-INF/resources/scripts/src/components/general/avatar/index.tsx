@@ -1,7 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/avatar.scss";
 import UserAvatar from "./subtypes/user";
-import { GroupAvatarUserProps } from "./subtypes/group-components/user";
+import { AvatarGroupUser } from "./subtypes/group-components/user";
 import GroupAvatar from "./subtypes/group";
 
 /**
@@ -13,7 +13,7 @@ export interface AvatarProps {
   name: string;
   size?: string;
   groupAvatar?: "usergroup" | "workspace";
-  groupMembers?: GroupAvatarUserProps[];
+  groupMembers?: AvatarGroupUser[];
   groupMemberAction?: (userId: number) => JSX.Element;
   userCategory?: number;
   avatarAriaLabel?: string;
@@ -27,7 +27,7 @@ export interface AvatarProps {
  * @param props props
  * @returns JSX.Element
  */
-const Avatar = <T,>(props: AvatarProps) => {
+const Avatar = (props: AvatarProps) => {
   const { size, modifier, avatarAriaHidden, groupAvatar } = props;
 
   return (

@@ -2,7 +2,7 @@ import * as React from "react";
 import "~/sass/elements/avatar.scss";
 import Dropdown from "~/components/general/dropdown";
 import GroupAvatarUsers from "./group-components/users";
-import { GroupAvatarUserProps } from "./group-components/user";
+import { AvatarGroupUser } from "./group-components/user";
 
 /**
  * AvatarProps
@@ -13,7 +13,7 @@ export interface GroupAvatarProps {
   name: string;
   size?: string;
   groupAvatar?: "usergroup" | "workspace";
-  groupMembers?: GroupAvatarUserProps[];
+  groupMembers?: AvatarGroupUser[];
   groupMemberAction?: (userId: number) => JSX.Element;
   userCategory?: number;
   avatarAriaLabel?: string;

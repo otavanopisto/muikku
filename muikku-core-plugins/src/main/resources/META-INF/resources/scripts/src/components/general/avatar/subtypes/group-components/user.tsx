@@ -3,10 +3,9 @@ import { getUserImageUrl } from "~/util/modifiers";
 import "~/sass/elements/avatar.scss";
 
 /**
- * GroupAvatarUserProps
+ * AvatarGroupUser
  */
-export interface GroupAvatarUserProps {
-  action?: (userId: number) => JSX.Element;
+export interface AvatarGroupUser {
   hasImage: boolean;
   id: number | null;
   name: string;
@@ -15,6 +14,13 @@ export interface GroupAvatarUserProps {
   avatarAriaLabel?: string;
   modifier?: string;
   avatarAriaHidden?: boolean;
+}
+
+/**
+ * GroupAvatarUserProps
+ */
+interface GroupAvatarUserProps extends AvatarGroupUser {
+  action?: (userId: number) => JSX.Element;
 }
 
 /**

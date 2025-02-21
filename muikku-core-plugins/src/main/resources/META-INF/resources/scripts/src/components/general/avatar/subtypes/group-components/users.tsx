@@ -1,6 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/avatar.scss";
-import GroupAvatarUser, { GroupAvatarUserProps } from "./user";
+import GroupAvatarUser, { AvatarGroupUser } from "./user";
 import { filterMatch } from "~/util/modifiers";
 import { useTranslation } from "react-i18next";
 
@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
  * AvatarProps
  */
 export interface GroupAvatarUsersProps {
-  users: GroupAvatarUserProps[];
+  users: AvatarGroupUser[];
   action?: (userId: number) => JSX.Element;
 }
 

@@ -512,6 +512,22 @@
 
 .dialog__content--note-information {
   display: flex;
+  flex-wrap: wrap;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: nowrap;
+  }
+}
+
+.dialog__note-item {
+  flex-grow: 1;
+}
+.dialog__note-recipients {
+  padding: 0 0 0 10px;
+  flex-basis: 100%;
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-basis: 300px;
+  }
 }
 
 .dialog__content--workspace-signup-dialog {

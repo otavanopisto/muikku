@@ -13,7 +13,7 @@ import {
   UpdateNoteRequest,
   UpdateNoteReceiverRequest,
 } from "~/generated/client";
-import Avatar, { AvatarProps } from "../avatar";
+import Avatar from "../avatar";
 import { useRecipientsToAvatars } from "./hooks/useRecipientsToAvatars";
 
 /**
@@ -353,7 +353,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     };
 
     const avatarUpdateStatus = (recipientId: number) => {
-      const status = recipients.find(
+      const test = recipients.find((r) => r.recipientId === recipientId);
+      const status = recipients?.find(
         (r) => r.recipientId === recipientId
       ).status;
 
@@ -623,6 +624,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             loggedUserIsCreator={loggedUserIsCreator}
             loggedUserIsOwner={loggedUserIsOwner}
             specificRecipient={specificRecipient}
+            groupMembersAction={avatarUpdateStatus}
+            recipients={recipients}
             onPinNotesItemClick={onPinNotesItemClick}
             onArchiveClick={onArchiveClick}
             onUpdateNotesItemStatus={onUpdateNotesItemStatus}
