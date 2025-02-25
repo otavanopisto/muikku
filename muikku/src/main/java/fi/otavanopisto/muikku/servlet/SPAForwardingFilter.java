@@ -38,6 +38,7 @@ public class SPAForwardingFilter implements Filter {
 
   // Partial paths to forward to the SPA Entrypoint
   private static final String[] FRONTEND_PARTIAL_PATHS = {
+      "/forgotpassword/",
       "/workspace/"
   };
   
