@@ -97,7 +97,10 @@ export default async function (
   const loadAreaPermissions = () =>
     store.dispatch(<Action>loadEnviromentalForumAreaPermissions());
 
-  if (!options.setupWorkspacePermissions) {
+  const initializeAsWorkspace =
+    window.location.pathname.includes("/workspace/");
+
+  if (!initializeAsWorkspace) {
     return new Promise((resolve) => {
       // eslint-disable-next-line jsdoc/require-jsdoc
       const resolveFn = () => {

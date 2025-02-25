@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Notifications from "../components/base/notifications";
-import DisconnectedWarningDialog from "../components/base/disconnect-warning";
-import { BrowserRouter, Route } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
 import { StateType } from "~/reducers";
@@ -16,7 +13,7 @@ import WorkspaceMaterialsBody from "~/components/workspace/workspaceMaterials";
 import WorkspaceJournalBody from "~/components/workspace/workspaceJournal";
 import WorkspaceManagementBody from "~/components/workspace/workspaceManagement";
 import WorkspaceUsersBody from "~/components/workspace/workspaceUsers";
-import { RouteComponentProps } from "react-router";
+import { Route, RouteComponentProps } from "react-router";
 import {
   setCurrentWorkspace,
   loadStaffMembersOfWorkspace,
@@ -55,7 +52,6 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
-import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { DiscussionStatePatch } from "~/reducers/discussion";
 import { loadCurrentWorkspaceJournalsFromServer } from "~/actions/workspaces/journals";
 import {
@@ -66,9 +62,7 @@ import {
 } from "~/actions/workspaces/material";
 import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
-import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
-import Chat from "~/components/chat";
-import { WindowContextProvider } from "~/context/window-context";
+import { ProtectedRoute } from "~/routes/route";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1168,59 +1162,159 @@ export default class Workspace extends React.Component<
   render() {
     return (
       <ReadspeakerProvider>
-        <div id="root">
-          <WindowContextProvider>
-            <ChatWebsocketContextProvider websocket={this.props.websocket}>
-              <Chat />
-            </ChatWebsocketContextProvider>
-            <Notifications></Notifications>
-            <DisconnectedWarningDialog />
-            <EasyToUseFunctions />
-            <BrowserRouter>
-              <Route
-                exact
-                path="/workspace/:workspaceUrl/"
-                render={this.renderWorkspaceHome}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/help"
-                render={this.renderWorkspaceHelp}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/discussions"
-                render={this.renderWorkspaceDiscussions}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/announcements"
-                render={this.renderWorkspaceAnnouncements}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/announcer"
-                render={this.renderWorkspaceAnnouncer}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/materials"
-                render={this.renderWorkspaceMaterials}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/users"
-                render={this.renderWorkspaceUsers}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/journal"
-                render={this.renderWorkspaceJournal}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/workspace-management"
-                render={this.renderWorkspaceManagement}
-              />
-              <Route
-                path="/workspace/:workspaceUrl/evaluation"
-                render={this.renderWorkspaceEvaluation}
-              />
-            </BrowserRouter>
-          </WindowContextProvider>
-        </div>
+        <Route
+          exact
+          path="/workspace/:workspaceUrl"
+          render={(routeProps) => (
+            <ProtectedRoute
+              hasPermission={
+                this.props.store.getState().status.permissions
+                  .WORKSPACE_HOME_VISIBLE
+              }
+            >
+              {this.renderWorkspaceHome(routeProps)}
+            </ProtectedRoute>
+          )}
+        />
+        <Route
+          path="/workspace/:workspaceUrl/help"
+          render={(routeProps) => (
+            <ProtectedRoute
+              hasPermission={
+                this.props.store.getState().status.permissions
+                  .WORKSPACE_GUIDES_VISIBLE
+              }
+            >
+              {this.renderWorkspaceHelp(routeProps)}
+            </ProtectedRoute>
+          )}
+        />
+
+        <Route
+          path="/workspace/:workspaceUrl/discussions"
+          render={(routeProps) => (
+            <ProtectedRoute
+              requireAuth
+              hasPermission={
+                this.props.store.getState().status.permissions
+                  .WORKSPACE_DISCUSSIONS_VISIBLE
+              }
+              isAuthenticated={this.props.store.getState().status.loggedIn}
+            >
+              {this.renderWorkspaceDiscussions(routeProps)}
+            </ProtectedRoute>
+          )}
+        />
+
+        <Route
+          path="/workspace/:workspaceUrl/announcements"
+          render={(routeProps) => (
+            <ProtectedRoute
+              requireAuth
+              hasPermission={
+                this.props.store.getState().status.permissions
+                  .WORKSPACE_ANNOUNCER_TOOL
+              }
+            >
+              {this.renderWorkspaceAnnouncements(routeProps)}
+            </ProtectedRoute>
+          )}
+        />
+
+        <Route
+          path="/workspace/:workspaceUrl/announcer"
+          render={(routeProps) => (
+            <ProtectedRoute
+              requireAuth
+              hasPermission={
+                this.props.store.getState().status.permissions
+                  .WORKSPACE_ANNOUNCER_TOOL
+              }
+              isAuthenticated={this.props.store.getState().status.loggedIn}
+            >
+              {this.renderWorkspaceAnnouncer(routeProps)}
+            </ProtectedRoute>
+          )}
+        />
+
+        <Route
+          path="/workspace/:workspaceUrl/materials"
+          render={(routeProps) => (
+            <ProtectedRoute
+              requireAuth
+              hasPermission={
+                this.props.store.getState().status.permissions
+                  .WORKSPACE_MATERIALS_VISIBLE
+              }
+            >
+              {this.renderWorkspaceMaterials(routeProps)}
+            </ProtectedRoute>
+          )}
+        />
+
+        <Route
+          path="/workspace/:workspaceUrl/users"
+          render={(routeProps) => (
+            <ProtectedRoute
+              requireAuth
+              hasPermission={
+                this.props.store.getState().status.permissions
+                  .WORKSPACE_USERS_VISIBLE
+              }
+              isAuthenticated={this.props.store.getState().status.loggedIn}
+            >
+              {this.renderWorkspaceUsers(routeProps)}
+            </ProtectedRoute>
+          )}
+        />
+
+        <Route
+          path="/workspace/:workspaceUrl/journal"
+          render={(routeProps) => (
+            <ProtectedRoute
+              requireAuth
+              hasPermission={
+                this.props.store.getState().status.permissions
+                  .WORKSPACE_JOURNAL_VISIBLE
+              }
+              isAuthenticated={this.props.store.getState().status.loggedIn}
+            >
+              {this.renderWorkspaceJournal(routeProps)}
+            </ProtectedRoute>
+          )}
+        />
+
+        <Route
+          path="/workspace/:workspaceUrl/workspace-management"
+          render={(routeProps) => (
+            <ProtectedRoute
+              requireAuth
+              hasPermission={
+                this.props.store.getState().status.permissions
+                  .WORKSPACE_MANAGE_WORKSPACE
+              }
+              isAuthenticated={this.props.store.getState().status.loggedIn}
+            >
+              {this.renderWorkspaceManagement(routeProps)}
+            </ProtectedRoute>
+          )}
+        />
+
+        <Route
+          path="/workspace/:workspaceUrl/evaluation"
+          render={(routeProps) => (
+            <ProtectedRoute
+              requireAuth
+              hasPermission={
+                this.props.store.getState().status.permissions
+                  .EVALUATION_VIEW_INDEX
+              }
+              isAuthenticated={this.props.store.getState().status.loggedIn}
+            >
+              {this.renderWorkspaceEvaluation(routeProps)}
+            </ProtectedRoute>
+          )}
+        />
       </ReadspeakerProvider>
     );
   }

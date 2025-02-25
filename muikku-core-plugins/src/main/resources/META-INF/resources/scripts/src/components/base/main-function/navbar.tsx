@@ -13,6 +13,7 @@ import { AnyActionType } from "~/actions";
 import { Dependant } from "~/reducers/main-function/dependants";
 import { Action, Dispatch } from "redux";
 import Link from "~/components/general/link";
+import { Link as RouterLink } from "react-router-dom";
 
 /**
  * ItemDataElement
@@ -177,34 +178,52 @@ class MainFunctionNavbar extends React.Component<
             modifier: item.modifier,
             item: (
               <Dropdown openByHover key={item.text + i} content={item.text}>
-                <Link
-                  openInNewTab={item.openInNewTab}
-                  as={this.props.activeTrail == item.trail ? "span" : null}
-                  href={
-                    this.props.activeTrail !== item.trail ? item.href : null
-                  }
-                  to={
-                    item.to && this.props.activeTrail !== item.trail
-                      ? item.href
-                      : null
-                  }
-                  className={`link link--icon link--full link--main-function-navbar ${
-                    this.props.activeTrail === item.trail ? "active" : ""
-                  }`}
-                  aria-label={
-                    this.props.activeTrail == item.trail
-                      ? t("wcag.currentPage") + " " + item.text
-                      : item.text
-                  }
-                  role="menuitem"
-                >
-                  <span className={`link__icon icon-${item.icon}`} />
-                  {item.badge ? (
-                    <span className="indicator indicator--main-function">
-                      {item.badge >= 100 ? "99+" : item.badge}
-                    </span>
-                  ) : null}
-                </Link>
+                {item.to ? (
+                  <RouterLink
+                    to={item.href}
+                    className={`link link--icon link--full link--main-function-navbar ${
+                      this.props.activeTrail === item.trail ? "active" : ""
+                    }`}
+                    aria-label={
+                      this.props.activeTrail == item.trail
+                        ? t("wcag.currentPage") + " " + item.text
+                        : item.text
+                    }
+                    role="menuitem"
+                  >
+                    <span className={`link__icon icon-${item.icon}`} />
+                    {item.badge ? (
+                      <span className="indicator indicator--main-function">
+                        {item.badge >= 100 ? "99+" : item.badge}
+                      </span>
+                    ) : null}
+                  </RouterLink>
+                ) : (
+                  <Link
+                    openInNewTab={item.openInNewTab}
+                    as={this.props.activeTrail == item.trail ? "span" : null}
+                    href={
+                      this.props.activeTrail !== item.trail ? item.href : null
+                    }
+                    to={null}
+                    className={`link link--icon link--full link--main-function-navbar ${
+                      this.props.activeTrail === item.trail ? "active" : ""
+                    }`}
+                    aria-label={
+                      this.props.activeTrail == item.trail
+                        ? t("wcag.currentPage") + " " + item.text
+                        : item.text
+                    }
+                    role="menuitem"
+                  >
+                    <span className={`link__icon icon-${item.icon}`} />
+                    {item.badge ? (
+                      <span className="indicator indicator--main-function">
+                        {item.badge >= 100 ? "99+" : item.badge}
+                      </span>
+                    ) : null}
+                  </Link>
+                )}
               </Dropdown>
             ),
           };
@@ -229,11 +248,29 @@ class MainFunctionNavbar extends React.Component<
           if (!item.condition) {
             return null;
           }
-          return (
+          return item.to ? (
+            <RouterLink
+              key={item.modifier}
+              to={item.href}
+              className={`menu__item-link ${
+                this.props.activeTrail === item.trail ? "active" : ""
+              }`}
+              aria-label={item.text}
+              role="menuitem"
+            >
+              <span className={`menu__item-link-icon icon-${item.icon}`} />
+              {item.badge ? (
+                <span className="indicator indicator--main-function">
+                  {item.badge >= 100 ? "99+" : item.badge}
+                </span>
+              ) : null}
+              <span className="menu__item-link-text">{item.text}</span>
+            </RouterLink>
+          ) : (
             <Link
               key={item.modifier}
               openInNewTab={item.openInNewTab}
-              to={item.to ? item.href : null}
+              to={null}
               href={item.href}
               className={`menu__item-link ${
                 this.props.activeTrail === item.trail ? "active" : ""

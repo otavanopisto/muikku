@@ -1,6 +1,4 @@
-import Notifications from "../components/base/notifications";
-import DisconnectedWarningDialog from "../components/base/disconnect-warning";
-import { BrowserRouter, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
 import { StateType } from "~/reducers";
@@ -103,7 +101,6 @@ import {
 import { loadDependants } from "~/actions/main-function/dependants";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
-import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { DiscussionStatePatch } from "~/reducers/discussion";
 import { loadUserWorkspaceOrganizationFiltersFromServer } from "~/actions/workspaces/organization";
 registerLocale("fi", fi);
@@ -113,15 +110,14 @@ import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
 import { Announcement, UserWhoAmI } from "~/generated/client";
-import Chat from "~/components/chat";
-import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
-import { WindowContextProvider } from "~/context/window-context";
 import {
   initializeHops,
   loadMatriculationData,
 } from "~/actions/main-function/hops/";
 import GuardianHopsBody from "~/components/guardian_hops/body";
 import StudyProgressWebsocketWatcher from "~/components/general/study-progress-websocket-watcher";
+import { ProtectedRoute } from "~/routes/route";
+import NotFoundBody from "~/components/not-found/body";
 
 /**
  * MainFunctionProps
@@ -1153,51 +1149,222 @@ export default class MainFunction extends React.Component<
   render() {
     return (
       <StudyProgressWebsocketWatcher>
-        <div id="root">
-          <WindowContextProvider>
-            <ChatWebsocketContextProvider websocket={this.props.websocket}>
-              <Chat />
-            </ChatWebsocketContextProvider>
-            <InfoPopperProvider>
-              <Notifications></Notifications>
-              <DisconnectedWarningDialog />
-              <EasyToUseFunctions />
-              <BrowserRouter>
-                <Route exact path="/" render={this.renderIndexBody} />
-                <Route
-                  path="/organization"
-                  render={this.renderOrganizationAdministrationBody}
-                />
-                <Route
-                  path="/coursepicker"
-                  render={this.renderCoursePickerBody}
-                />
-                <Route
-                  path="/communicator"
-                  render={this.renderCommunicatorBody}
-                />
-                <Route path="/discussion" render={this.renderDiscussionBody} />
-                <Route
-                  path="/announcements"
-                  render={this.renderAnnouncementsBody}
-                />
-                <Route path="/announcer" render={this.renderAnnouncerBody} />
-                <Route path="/guider" render={this.renderGuiderBody} />
-                <Route path="/guardian" render={this.renderGuardianBody} />
-                <Route
-                  path="/guardian_hops"
-                  render={this.renderGuardianHopsBody}
-                />
-                <Route path="/profile" render={this.renderProfileBody} />
-                <Route path="/records" render={this.renderRecordsBody} />
-                <Route path="/hops" render={this.renderHopsBody} />
-                <Route path="/evaluation" render={this.renderEvaluationBody} />
-                <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
-                <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
-              </BrowserRouter>
-            </InfoPopperProvider>
-          </WindowContextProvider>
-        </div>
+        <InfoPopperProvider>
+          {/* PUBLIC ROUTES */}
+          <Route exact path="/" render={this.renderIndexBody} />
+          <Route path="/coursepicker" render={this.renderCoursePickerBody} />
+
+          {/* PROTECTED ROUTES */}
+          <Route
+            path="/organization"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={
+                  this.props.store.getState().status.permissions
+                    .ORGANIZATION_VIEW
+                }
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderOrganizationAdministrationBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/communicator"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={this.props.store.getState().status.isActiveUser}
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderCommunicatorBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/discussion"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={false}
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderDiscussionBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/announcements"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={true}
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderAnnouncementsBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/announcer"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={
+                  this.props.store.getState().status.permissions.ANNOUNCER_TOOL
+                }
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderAnnouncerBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/guider"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={
+                  this.props.store.getState().status.permissions.GUIDER_VIEW
+                }
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderGuiderBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/guardian"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={
+                  this.props.store.getState().status.permissions.GUARDIAN_VIEW
+                }
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderGuardianBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/guardian_hops"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={
+                  this.props.store.getState().status.permissions.GUARDIAN_VIEW
+                }
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderGuardianHopsBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/profile"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={true}
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderProfileBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/records"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={
+                  this.props.store.getState().status.permissions
+                    .TRANSCRIPT_OF_RECORDS_VIEW
+                }
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderRecordsBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/hops"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={
+                  this.props.store.getState().status.services.hops.isAvailable
+                }
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderHopsBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/evaluation"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={
+                  this.props.store.getState().status.permissions
+                    .EVALUATION_VIEW_INDEX
+                }
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderEvaluationBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/ceepos/pay"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderCeeposPayBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/ceepos/done"
+            render={() => (
+              <ProtectedRoute
+                requireAuth
+                isAuthenticated={this.props.store.getState().status.loggedIn}
+              >
+                {this.renderCeeposDoneBody()}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="*"
+            render={() => {
+              if (!this.props.store.getState().status.initialized) {
+                return null;
+              }
+              console.log("404 route hit - rendering NotFoundBody");
+              return <NotFoundBody />;
+            }}
+          />
+        </InfoPopperProvider>
       </StudyProgressWebsocketWatcher>
     );
   }
