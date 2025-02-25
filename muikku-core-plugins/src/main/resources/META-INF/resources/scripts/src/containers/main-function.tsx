@@ -1339,10 +1339,7 @@ export default class MainFunction extends React.Component<
               render={() => (
                 <ProtectedRoute
                   requireAuth
-                  hasPermission={
-                    this.props.store.getState().status.permissions
-                      .EVALUATION_VIEW_INDEX
-                  }
+                  hasPermission={permissions.EVALUATION_VIEW_INDEX}
                   isAuthenticated={isAuthenticated}
                 >
                   {this.renderEvaluationBody}
