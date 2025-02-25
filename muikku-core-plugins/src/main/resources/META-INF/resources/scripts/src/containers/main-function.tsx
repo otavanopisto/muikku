@@ -116,9 +116,10 @@ import {
 } from "~/actions/main-function/hops/";
 import GuardianHopsBody from "~/components/guardian_hops/body";
 import StudyProgressWebsocketWatcher from "~/components/general/study-progress-websocket-watcher";
-import { ProtectedRoute } from "~/routes/route";
+import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
 import FrontpageBody from "~/components/frontpage/body";
+import UserCredentials from "~/containers/user-credentials";
 
 /**
  * MainFunctionProps
@@ -171,6 +172,7 @@ export default class MainFunction extends React.Component<
     this.renderCeeposDoneBody = this.renderCeeposDoneBody.bind(this);
     this.renderCeeposPayBody = this.renderCeeposPayBody.bind(this);
     this.renderFrontpageBody = this.renderFrontpageBody.bind(this);
+    this.renderUserCredentials = this.renderUserCredentials.bind(this);
     this.itsFirstTime = true;
     this.loadedLibs = [];
 
@@ -623,6 +625,14 @@ export default class MainFunction extends React.Component<
   }
 
   /**
+   * renderUserCredentialsBody
+   * @returns JSX.Element
+   */
+  renderUserCredentials() {
+    return <UserCredentials store={this.props.store} />;
+  }
+
+  /**
    * renderFrontpageBody
    * @returns JSX.Element
    */
@@ -905,6 +915,7 @@ export default class MainFunction extends React.Component<
    */
   renderGuiderBody() {
     this.updateFirstTime();
+
     if (this.itsFirstTime) {
       this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
       this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
@@ -1157,6 +1168,10 @@ export default class MainFunction extends React.Component<
    * Component render method
    */
   render() {
+    const isAuthenticated = this.props.store.getState().status.loggedIn;
+    const isActiveUser = this.props.store.getState().status.isActiveUser;
+    const permissions = this.props.store.getState().status.permissions;
+
     return (
       <StudyProgressWebsocketWatcher>
         <InfoPopperProvider>
@@ -1166,7 +1181,7 @@ export default class MainFunction extends React.Component<
               exact
               path="/"
               render={
-                this.props.store.getState().status.loggedIn
+                isAuthenticated
                   ? this.renderIndexBody
                   : this.renderFrontpageBody
               }
@@ -1179,13 +1194,10 @@ export default class MainFunction extends React.Component<
               render={() => (
                 <ProtectedRoute
                   requireAuth
-                  hasPermission={
-                    this.props.store.getState().status.permissions
-                      .ORGANIZATION_VIEW
-                  }
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  hasPermission={permissions.ORGANIZATION_VIEW}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderOrganizationAdministrationBody()}
+                  {this.renderOrganizationAdministrationBody}
                 </ProtectedRoute>
               )}
             />
@@ -1195,12 +1207,10 @@ export default class MainFunction extends React.Component<
               render={() => (
                 <ProtectedRoute
                   requireAuth
-                  hasPermission={
-                    this.props.store.getState().status.isActiveUser
-                  }
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  hasPermission={isActiveUser}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderCommunicatorBody()}
+                  {this.renderCommunicatorBody}
                 </ProtectedRoute>
               )}
             />
@@ -1211,9 +1221,9 @@ export default class MainFunction extends React.Component<
                 <ProtectedRoute
                   requireAuth
                   hasPermission={false}
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderDiscussionBody()}
+                  {this.renderDiscussionBody}
                 </ProtectedRoute>
               )}
             />
@@ -1224,9 +1234,9 @@ export default class MainFunction extends React.Component<
                 <ProtectedRoute
                   requireAuth
                   hasPermission={true}
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderAnnouncementsBody()}
+                  {this.renderAnnouncementsBody}
                 </ProtectedRoute>
               )}
             />
@@ -1236,13 +1246,10 @@ export default class MainFunction extends React.Component<
               render={() => (
                 <ProtectedRoute
                   requireAuth
-                  hasPermission={
-                    this.props.store.getState().status.permissions
-                      .ANNOUNCER_TOOL
-                  }
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  hasPermission={permissions.ANNOUNCER_TOOL}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderAnnouncerBody()}
+                  {this.renderAnnouncerBody}
                 </ProtectedRoute>
               )}
             />
@@ -1252,12 +1259,10 @@ export default class MainFunction extends React.Component<
               render={() => (
                 <ProtectedRoute
                   requireAuth
-                  hasPermission={
-                    this.props.store.getState().status.permissions.GUIDER_VIEW
-                  }
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  hasPermission={permissions.GUIDER_VIEW}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderGuiderBody()}
+                  {this.renderGuiderBody}
                 </ProtectedRoute>
               )}
             />
@@ -1267,12 +1272,10 @@ export default class MainFunction extends React.Component<
               render={() => (
                 <ProtectedRoute
                   requireAuth
-                  hasPermission={
-                    this.props.store.getState().status.permissions.GUARDIAN_VIEW
-                  }
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  hasPermission={permissions.GUARDIAN_VIEW}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderGuardianBody()}
+                  {this.renderGuardianBody}
                 </ProtectedRoute>
               )}
             />
@@ -1282,12 +1285,10 @@ export default class MainFunction extends React.Component<
               render={() => (
                 <ProtectedRoute
                   requireAuth
-                  hasPermission={
-                    this.props.store.getState().status.permissions.GUARDIAN_VIEW
-                  }
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  hasPermission={permissions.GUARDIAN_VIEW}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderGuardianHopsBody()}
+                  {this.renderGuardianHopsBody}
                 </ProtectedRoute>
               )}
             />
@@ -1298,9 +1299,9 @@ export default class MainFunction extends React.Component<
                 <ProtectedRoute
                   requireAuth
                   hasPermission={true}
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderProfileBody()}
+                  {this.renderProfileBody}
                 </ProtectedRoute>
               )}
             />
@@ -1310,13 +1311,10 @@ export default class MainFunction extends React.Component<
               render={() => (
                 <ProtectedRoute
                   requireAuth
-                  hasPermission={
-                    this.props.store.getState().status.permissions
-                      .TRANSCRIPT_OF_RECORDS_VIEW
-                  }
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  hasPermission={permissions.TRANSCRIPT_OF_RECORDS_VIEW}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderRecordsBody()}
+                  {this.renderRecordsBody}
                 </ProtectedRoute>
               )}
             />
@@ -1329,9 +1327,9 @@ export default class MainFunction extends React.Component<
                   hasPermission={
                     this.props.store.getState().status.services.hops.isAvailable
                   }
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderHopsBody()}
+                  {this.renderHopsBody}
                 </ProtectedRoute>
               )}
             />
@@ -1345,9 +1343,9 @@ export default class MainFunction extends React.Component<
                     this.props.store.getState().status.permissions
                       .EVALUATION_VIEW_INDEX
                   }
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
+                  isAuthenticated={isAuthenticated}
                 >
-                  {this.renderEvaluationBody()}
+                  {this.renderEvaluationBody}
                 </ProtectedRoute>
               )}
             />
@@ -1355,11 +1353,8 @@ export default class MainFunction extends React.Component<
             <Route
               path="/ceepos/pay"
               render={() => (
-                <ProtectedRoute
-                  requireAuth
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
-                >
-                  {this.renderCeeposPayBody()}
+                <ProtectedRoute requireAuth isAuthenticated={isAuthenticated}>
+                  {this.renderCeeposPayBody}
                 </ProtectedRoute>
               )}
             />
@@ -1367,13 +1362,15 @@ export default class MainFunction extends React.Component<
             <Route
               path="/ceepos/done"
               render={() => (
-                <ProtectedRoute
-                  requireAuth
-                  isAuthenticated={this.props.store.getState().status.loggedIn}
-                >
-                  {this.renderCeeposDoneBody()}
+                <ProtectedRoute requireAuth isAuthenticated={isAuthenticated}>
+                  {this.renderCeeposDoneBody}
                 </ProtectedRoute>
               )}
+            />
+
+            <Route
+              path="/forgotpassword/reset"
+              render={this.renderUserCredentials}
             />
 
             <Route
@@ -1382,7 +1379,6 @@ export default class MainFunction extends React.Component<
                 if (!this.props.store.getState().status.initialized) {
                   return null;
                 }
-                console.log("404 route hit - rendering NotFoundBody");
                 return <NotFoundBody />;
               }}
             />

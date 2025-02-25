@@ -178,7 +178,9 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/discussions",
         icon: "bubbles",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE,
+        condition:
+          this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE &&
+          this.props.status.loggedIn,
       },
       {
         modifier: "users",
@@ -196,7 +198,9 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/journal",
         icon: "book",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE,
+        condition:
+          this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE &&
+          this.props.status.loggedIn,
       },
       {
         modifier: "announcer",

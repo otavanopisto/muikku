@@ -13,7 +13,7 @@ import WorkspaceMaterialsBody from "~/components/workspace/workspaceMaterials";
 import WorkspaceJournalBody from "~/components/workspace/workspaceJournal";
 import WorkspaceManagementBody from "~/components/workspace/workspaceManagement";
 import WorkspaceUsersBody from "~/components/workspace/workspaceUsers";
-import { Route, RouteComponentProps } from "react-router";
+import { Route, RouteComponentProps, Switch } from "react-router";
 import {
   setCurrentWorkspace,
   loadStaffMembersOfWorkspace,
@@ -62,7 +62,8 @@ import {
 } from "~/actions/workspaces/material";
 import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
-import { ProtectedRoute } from "~/routes/route";
+import { ProtectedRoute } from "~/routes/protected-route";
+import NotFoundBody from "~/components/not-found/body";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1160,161 +1161,163 @@ export default class Workspace extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const isAuthenticated = this.props.store.getState().status.loggedIn;
+    const permissions = this.props.store.getState().status.permissions;
+
     return (
       <ReadspeakerProvider>
-        <Route
-          exact
-          path="/workspace/:workspaceUrl"
-          render={(routeProps) => (
-            <ProtectedRoute
-              hasPermission={
-                this.props.store.getState().status.permissions
-                  .WORKSPACE_HOME_VISIBLE
-              }
-            >
-              {this.renderWorkspaceHome(routeProps)}
-            </ProtectedRoute>
-          )}
-        />
-        <Route
-          path="/workspace/:workspaceUrl/help"
-          render={(routeProps) => (
-            <ProtectedRoute
-              hasPermission={
-                this.props.store.getState().status.permissions
-                  .WORKSPACE_GUIDES_VISIBLE
-              }
-            >
-              {this.renderWorkspaceHelp(routeProps)}
-            </ProtectedRoute>
-          )}
-        />
+        <Switch>
+          <Route
+            exact
+            path="/workspace/:workspaceUrl"
+            render={(routeProps) => (
+              <ProtectedRoute
+                hasPermission={permissions.WORKSPACE_HOME_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceHome}
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/workspace/:workspaceUrl/help"
+            render={(routeProps) => (
+              <ProtectedRoute
+                hasPermission={permissions.WORKSPACE_GUIDES_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceHelp}
+              </ProtectedRoute>
+            )}
+          />
 
-        <Route
-          path="/workspace/:workspaceUrl/discussions"
-          render={(routeProps) => (
-            <ProtectedRoute
-              requireAuth
-              hasPermission={
-                this.props.store.getState().status.permissions
-                  .WORKSPACE_DISCUSSIONS_VISIBLE
-              }
-              isAuthenticated={this.props.store.getState().status.loggedIn}
-            >
-              {this.renderWorkspaceDiscussions(routeProps)}
-            </ProtectedRoute>
-          )}
-        />
+          <Route
+            path="/workspace/:workspaceUrl/discussions"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_DISCUSSIONS_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceDiscussions}
+              </ProtectedRoute>
+            )}
+          />
 
-        <Route
-          path="/workspace/:workspaceUrl/announcements"
-          render={(routeProps) => (
-            <ProtectedRoute
-              requireAuth
-              hasPermission={
-                this.props.store.getState().status.permissions
-                  .WORKSPACE_ANNOUNCER_TOOL
-              }
-            >
-              {this.renderWorkspaceAnnouncements(routeProps)}
-            </ProtectedRoute>
-          )}
-        />
+          <Route
+            path="/workspace/:workspaceUrl/announcements"
+            render={(routeProps) => (
+              <ProtectedRoute
+                hasPermission={permissions.WORKSPACE_ANNOUNCER_TOOL}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceAnnouncements}
+              </ProtectedRoute>
+            )}
+          />
 
-        <Route
-          path="/workspace/:workspaceUrl/announcer"
-          render={(routeProps) => (
-            <ProtectedRoute
-              requireAuth
-              hasPermission={
-                this.props.store.getState().status.permissions
-                  .WORKSPACE_ANNOUNCER_TOOL
-              }
-              isAuthenticated={this.props.store.getState().status.loggedIn}
-            >
-              {this.renderWorkspaceAnnouncer(routeProps)}
-            </ProtectedRoute>
-          )}
-        />
+          <Route
+            path="/workspace/:workspaceUrl/announcer"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_ANNOUNCER_TOOL}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceAnnouncer}
+              </ProtectedRoute>
+            )}
+          />
 
-        <Route
-          path="/workspace/:workspaceUrl/materials"
-          render={(routeProps) => (
-            <ProtectedRoute
-              requireAuth
-              hasPermission={
-                this.props.store.getState().status.permissions
-                  .WORKSPACE_MATERIALS_VISIBLE
-              }
-            >
-              {this.renderWorkspaceMaterials(routeProps)}
-            </ProtectedRoute>
-          )}
-        />
+          <Route
+            path="/workspace/:workspaceUrl/materials"
+            render={(routeProps) => (
+              <ProtectedRoute
+                hasPermission={permissions.WORKSPACE_MATERIALS_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceMaterials}
+              </ProtectedRoute>
+            )}
+          />
 
-        <Route
-          path="/workspace/:workspaceUrl/users"
-          render={(routeProps) => (
-            <ProtectedRoute
-              requireAuth
-              hasPermission={
-                this.props.store.getState().status.permissions
-                  .WORKSPACE_USERS_VISIBLE
-              }
-              isAuthenticated={this.props.store.getState().status.loggedIn}
-            >
-              {this.renderWorkspaceUsers(routeProps)}
-            </ProtectedRoute>
-          )}
-        />
+          <Route
+            path="/workspace/:workspaceUrl/users"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_USERS_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceUsers}
+              </ProtectedRoute>
+            )}
+          />
 
-        <Route
-          path="/workspace/:workspaceUrl/journal"
-          render={(routeProps) => (
-            <ProtectedRoute
-              requireAuth
-              hasPermission={
-                this.props.store.getState().status.permissions
-                  .WORKSPACE_JOURNAL_VISIBLE
-              }
-              isAuthenticated={this.props.store.getState().status.loggedIn}
-            >
-              {this.renderWorkspaceJournal(routeProps)}
-            </ProtectedRoute>
-          )}
-        />
+          <Route
+            path="/workspace/:workspaceUrl/journal"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_JOURNAL_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceJournal}
+              </ProtectedRoute>
+            )}
+          />
 
-        <Route
-          path="/workspace/:workspaceUrl/workspace-management"
-          render={(routeProps) => (
-            <ProtectedRoute
-              requireAuth
-              hasPermission={
-                this.props.store.getState().status.permissions
-                  .WORKSPACE_MANAGE_WORKSPACE
-              }
-              isAuthenticated={this.props.store.getState().status.loggedIn}
-            >
-              {this.renderWorkspaceManagement(routeProps)}
-            </ProtectedRoute>
-          )}
-        />
+          <Route
+            path="/workspace/:workspaceUrl/workspace-management"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_MANAGE_WORKSPACE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceManagement}
+              </ProtectedRoute>
+            )}
+          />
 
-        <Route
-          path="/workspace/:workspaceUrl/evaluation"
-          render={(routeProps) => (
-            <ProtectedRoute
-              requireAuth
-              hasPermission={
-                this.props.store.getState().status.permissions
-                  .EVALUATION_VIEW_INDEX
+          <Route
+            path="/workspace/:workspaceUrl/evaluation"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.EVALUATION_VIEW_INDEX}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceEvaluation}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/workspace/:workspaceUrl/*"
+            render={(routeProps) => {
+              if (!this.props.store.getState().status.initialized) {
+                return null;
               }
-              isAuthenticated={this.props.store.getState().status.loggedIn}
-            >
-              {this.renderWorkspaceEvaluation(routeProps)}
-            </ProtectedRoute>
-          )}
-        />
+              return (
+                <NotFoundBody
+                  context="workspace"
+                  workspaceUrl={routeProps.match.params["workspaceUrl"]}
+                />
+              );
+            }}
+          />
+        </Switch>
       </ReadspeakerProvider>
     );
   }
