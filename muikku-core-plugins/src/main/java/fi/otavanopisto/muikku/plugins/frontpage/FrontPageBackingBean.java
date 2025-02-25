@@ -26,18 +26,20 @@ public class FrontPageBackingBean {
   @Transactional
   public String init() {
     
-    if ("no".equals(pluginSettingsController.getPluginSetting("frontPage", "brandedFrontPage"))) {
-      brandedFrontPage = false;
-    } else {
-      brandedFrontPage = true;
-    }
-   
-    boolean isLoggedIn = sessionController.isLoggedIn();
-    if (!isLoggedIn && brandedFrontPage){
-      return "/index.frontpage.xhtml";
-    } else if (!isLoggedIn){
-      return "/index.frontpage.nonbranded.xhtml";
-    }
+    System.out.println("FrontPageBackingBean commented out, not making any loggedin logic to switch front pages");
+    
+//    if ("no".equals(pluginSettingsController.getPluginSetting("frontPage", "brandedFrontPage"))) {
+//      brandedFrontPage = false;
+//    } else {
+//      brandedFrontPage = true;
+//    }
+//   
+//    boolean isLoggedIn = sessionController.isLoggedIn();
+//    if (!isLoggedIn && brandedFrontPage){
+//      return "/index.frontpage.xhtml";
+//    } else if (!isLoggedIn){
+//      return "/index.frontpage.nonbranded.xhtml";
+//    }
     return null;
   }
 
