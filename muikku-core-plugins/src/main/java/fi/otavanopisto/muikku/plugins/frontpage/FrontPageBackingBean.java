@@ -13,7 +13,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 
 @Named
 @RequestScoped
-@Join(path = "/", to = "/index.jsf")
+//@Join(path = "/", to = "/index.jsf")
 public class FrontPageBackingBean {
   
   @Inject
