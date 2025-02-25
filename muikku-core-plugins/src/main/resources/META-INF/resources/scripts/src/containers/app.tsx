@@ -9,7 +9,7 @@ import Chat from "~/components/chat";
 import Notifications from "~/components/base/notifications";
 import DisconnectedWarningDialog from "~/components/base/disconnect-warning";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
-import AppRoutes from "~/routes/AppRoutes";
+import AppRoutes from "~/routes/app-routes";
 
 /**
  * AppProps
@@ -32,10 +32,10 @@ export default function App(props: AppProps) {
       <WindowContextProvider>
         <ChatWebsocketContextProvider websocket={websocket}>
           <Chat />
-          <Notifications />
-          <DisconnectedWarningDialog />
-          <EasyToUseFunctions />
         </ChatWebsocketContextProvider>
+        <Notifications />
+        <DisconnectedWarningDialog />
+        <EasyToUseFunctions />
         <BrowserRouter>
           <AppRoutes store={store} websocket={websocket} />
         </BrowserRouter>

@@ -1,5 +1,3 @@
-import Notifications from "../components/base/notifications";
-import DisconnectedWarningDialog from "../components/base/disconnect-warning";
 import { StateType } from "~/reducers";
 import { loadCredentials } from "~/actions/base/credentials";
 import { Action, Store } from "redux";
@@ -35,12 +33,6 @@ export default class UserCredentials extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    return (
-      <div id="root">
-        <Notifications></Notifications>
-        <DisconnectedWarningDialog />
-        <Body></Body>
-      </div>
-    );
+    return <Body />;
   }
 }

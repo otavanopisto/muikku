@@ -28,7 +28,7 @@ import { dependants } from "./main-function/dependants";
 import { hopsNew } from "./hops/index";
 import { notebook } from "./notebook/notebook";
 import { journals } from "./workspaces/journals";
-
+import { credentials } from "./base/credentials";
 export default combineReducers({
   announcements,
   ceepos,
@@ -57,4 +57,5 @@ export default combineReducers({
   hopsNew,
   notebook,
   journals,
+  credentials,
 });

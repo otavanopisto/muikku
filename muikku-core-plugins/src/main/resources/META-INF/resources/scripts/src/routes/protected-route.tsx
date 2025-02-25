@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, RouteComponentProps } from "react-router-dom";
 
 /**
  * Props for the ProtectedRoute component
@@ -30,6 +30,16 @@ interface ProtectedRouteProps {
    * @default "/login"
    */
   loginPath?: string;
+  /**
+   * The route props.
+   */
+  routeProps?: RouteComponentProps;
+  /**
+   * The children of the ProtectedRoute component.
+   */
+  children:
+    | React.ReactNode
+    | ((routeProps?: RouteComponentProps) => React.ReactNode);
 }
 
 /**
@@ -58,5 +68,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = (props) => {
     return <Redirect to={redirectPath} />;
   }
 
-  return <>{children}</>;
+  // If the user has permission, render the children
+  // If the children is a function, call it with the route props
+  // Otherwise, render the children directly
+  return (
+    <>
+      {typeof children === "function" ? children(props.routeProps) : children}
+    </>
+  );
 };

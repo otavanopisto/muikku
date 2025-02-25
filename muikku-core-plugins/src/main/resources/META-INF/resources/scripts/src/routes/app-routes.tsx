@@ -28,21 +28,14 @@ export default function AppRoutes(props: AppRoutesProps) {
       {/* Workspace Routes */}
       <Route
         path="/workspace"
-        render={(props) => (
-          <Workspace {...props} store={store} websocket={websocket} />
-        )}
+        render={() => <Workspace store={store} websocket={websocket} />}
       />
 
       {/* Main Function Routes */}
       <Route
         path="/"
-        render={(props) => (
-          <MainFunction {...props} store={store} websocket={websocket} />
-        )}
+        render={() => <MainFunction store={store} websocket={websocket} />}
       />
-
-      {/* Other routes... */}
-      {/* <Route path="*" render={() => <div>404</div>}></Route> */}
     </Switch>
   );
 }
