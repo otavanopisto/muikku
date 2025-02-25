@@ -26,6 +26,9 @@ import { organizationWorkspaces } from "./workspaces/organization";
 import { contacts } from "./base/contacts";
 import { dependants } from "./main-function/dependants";
 import { hopsNew } from "./hops/index";
+import { notebook } from "./notebook/notebook";
+import { journals } from "./workspaces/journals";
+
 export default combineReducers({
   announcements,
   ceepos,
@@ -52,4 +55,6 @@ export default combineReducers({
   websocket,
   workspaces,
   hopsNew,
+  notebook,
+  journals,
 });

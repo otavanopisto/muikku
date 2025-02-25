@@ -1,4 +1,5 @@
-import App from "~/containers/main-function";
+//import App from "~/containers/main-function";
+import App from "~/containers/app";
 import reducer from "~/reducers/main-function";
 import runApp from "../run";
 import { loadLocale } from "~/actions/base/locales";
