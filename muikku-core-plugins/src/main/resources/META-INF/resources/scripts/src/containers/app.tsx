@@ -32,10 +32,10 @@ export default function App(props: AppProps) {
       <WindowContextProvider>
         <ChatWebsocketContextProvider websocket={websocket}>
           <Chat />
-          <Notifications />
-          <DisconnectedWarningDialog />
-          <EasyToUseFunctions />
         </ChatWebsocketContextProvider>
+        <Notifications />
+        <DisconnectedWarningDialog />
+        <EasyToUseFunctions />
         <BrowserRouter>
           <AppRoutes store={store} websocket={websocket} />
         </BrowserRouter>

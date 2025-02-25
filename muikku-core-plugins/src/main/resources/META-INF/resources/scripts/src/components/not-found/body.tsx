@@ -13,7 +13,7 @@ const NotFoundBody = () => {
 
   return (
     <div>
-      <MainFunctionNavbar title="404" activeTrail="404" />
+      <MainFunctionNavbar title="" />
       <NotFoundApplication />
     </div>
   );
