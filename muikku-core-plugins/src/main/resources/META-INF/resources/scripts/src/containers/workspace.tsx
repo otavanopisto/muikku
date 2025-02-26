@@ -1167,6 +1167,13 @@ export default class Workspace extends React.Component<
     return (
       <ReadspeakerProvider>
         <Switch>
+          {/* PUBLIC ROUTEs */}
+          <Route
+            path="/workspace/:workspaceUrl/announcements"
+            render={this.renderWorkspaceAnnouncements}
+          />
+
+          {/* PROTECTED ROUTES */}
           <Route
             exact
             path="/workspace/:workspaceUrl"
@@ -1203,19 +1210,6 @@ export default class Workspace extends React.Component<
                 routeProps={routeProps}
               >
                 {this.renderWorkspaceDiscussions}
-              </ProtectedRoute>
-            )}
-          />
-
-          <Route
-            path="/workspace/:workspaceUrl/announcements"
-            render={(routeProps) => (
-              <ProtectedRoute
-                hasPermission={permissions.WORKSPACE_ANNOUNCER_TOOL}
-                isAuthenticated={isAuthenticated}
-                routeProps={routeProps}
-              >
-                {this.renderWorkspaceAnnouncements}
               </ProtectedRoute>
             )}
           />
@@ -1303,6 +1297,7 @@ export default class Workspace extends React.Component<
             )}
           />
 
+          {/* Fallback route */}
           <Route
             path="/workspace/:workspaceUrl/*"
             render={(routeProps) => {

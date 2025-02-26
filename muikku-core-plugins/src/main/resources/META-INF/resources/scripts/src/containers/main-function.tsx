@@ -1188,6 +1188,15 @@ export default class MainFunction extends React.Component<
             />
             <Route path="/coursepicker" render={this.renderCoursePickerBody} />
 
+            <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
+
+            <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
+
+            <Route
+              path="/forgotpassword/reset"
+              render={this.renderUserCredentials}
+            />
+
             {/* PROTECTED ROUTES */}
             <Route
               path="/organization"
@@ -1347,29 +1356,7 @@ export default class MainFunction extends React.Component<
               )}
             />
 
-            <Route
-              path="/ceepos/pay"
-              render={() => (
-                <ProtectedRoute requireAuth isAuthenticated={isAuthenticated}>
-                  {this.renderCeeposPayBody}
-                </ProtectedRoute>
-              )}
-            />
-
-            <Route
-              path="/ceepos/done"
-              render={() => (
-                <ProtectedRoute requireAuth isAuthenticated={isAuthenticated}>
-                  {this.renderCeeposDoneBody}
-                </ProtectedRoute>
-              )}
-            />
-
-            <Route
-              path="/forgotpassword/reset"
-              render={this.renderUserCredentials}
-            />
-
+            {/* Fallback route */}
             <Route
               path="*"
               render={() => {
