@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 public class SPAForwardingFilter implements Filter {
   
   // Entrypoint (likely html file) that initializes the SPA
-  private static final String SPA_ENTRYPOINT = "/index.xhtml";
+  private static final String SPA_ENTRYPOINT = "/index.html";
   
   // The paths that are redirected to the SPA Entrypoint
   private static final Set<String> FRONTEND_PATHS = Set.of(
