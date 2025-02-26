@@ -1188,6 +1188,10 @@ export default class MainFunction extends React.Component<
             />
             <Route path="/coursepicker" render={this.renderCoursePickerBody} />
 
+            {/* Note that discussion is not used anymore, but because for testing purposes we need to keep it
+            Can be removed after test are reworked */}
+            <Route path="/discussion" render={this.renderDiscussionBody} />
+
             <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
 
             <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
@@ -1220,19 +1224,6 @@ export default class MainFunction extends React.Component<
                   isAuthenticated={isAuthenticated}
                 >
                   {this.renderCommunicatorBody}
-                </ProtectedRoute>
-              )}
-            />
-
-            <Route
-              path="/discussion"
-              render={() => (
-                <ProtectedRoute
-                  requireAuth
-                  hasPermission={false}
-                  isAuthenticated={isAuthenticated}
-                >
-                  {this.renderDiscussionBody}
                 </ProtectedRoute>
               )}
             />
