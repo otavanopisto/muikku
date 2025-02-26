@@ -7,6 +7,7 @@ import Dropdown from "~/components/general/dropdown";
  * UserAvatarProps
  */
 export interface UserAvatarProps {
+  action?: (userId: number) => JSX.Element;
   hasImage: boolean;
   id: number | null;
   name: string;

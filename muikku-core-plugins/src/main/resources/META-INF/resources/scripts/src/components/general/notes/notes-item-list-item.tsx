@@ -15,7 +15,7 @@ import {
 } from "~/generated/client";
 import Avatar from "../avatar";
 import { useRecipientsToAvatars } from "./hooks/useRecipientsToAvatars";
-
+import NoteStatusSetting from "./notes-item-set-status";
 /**
  * DropdownItem
  */
@@ -353,7 +353,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     };
 
     const avatarUpdateStatus = (recipientId: number) => {
-      const test = recipients.find((r) => r.recipientId === recipientId);
       const status = recipients?.find(
         (r) => r.recipientId === recipientId
       ).status;
@@ -391,131 +390,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           },
         ];
       }
-      /**
-       * Renders item
-       * @param item item
-       * @param onClose onClose
-       */
-      const renderItem = (item: DropdownItem, onClose: () => void) => (
-        <Link
-          key={item.id}
-          className={`link link--full link--tasks-dropdown`}
-          onClick={() => {
-            onClose();
-            item.onClick();
-          }}
-        >
-          <span>{item.text}</span>
-        </Link>
-      );
-      return (
-        <Dropdown
-          items={items.map(
-            (item) => (closeDropdown: () => void) =>
-              renderItem(item, closeDropdown)
-          )}
-        >
-          <div tabIndex={0}>
-            <IconButton
-              icon="more_vert"
-              buttonModifiers={["notes-action", "notes-more"]}
-            />
-          </div>
-        </Dropdown>
-      );
-    };
-
-    /**
-     * renderUpdateStatus
-     * @param recipientStatus recipientStatus
-     */
-    const renderUpdateStatus = (recipientStatus?: NoteStatusType) => {
-      let items: DropdownItem[] = [];
-
-      if (archived) {
-        return;
-      }
-      const status = recipientStatus
-        ? recipientStatus
-        : currentRecipient.status;
-
-      if (loggedUserIsOwner) {
-        if (status === "ONGOING") {
-          items = [
-            {
-              id: "task-item-send",
-              text: t("actions.send"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () =>
-                handleUpdateNotesItemStatusClick("APPROVAL_PENDING"),
-            },
-          ];
-
-          if (loggedUserIsCreator) {
-            items = [
-              {
-                id: "task-item-done",
-                text: t("actions.done"),
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
-              },
-            ];
-          }
-        }
-        if (status === "APPROVAL_PENDING") {
-          items = [
-            {
-              id: "task-item-cancel",
-              text: t("actions.cancel"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
-            },
-          ];
-        }
-
-        if (status === "APPROVED") {
-          items = [
-            {
-              id: "task-item-incomplete",
-              text: t("actions.incomplete"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
-            },
-          ];
-        }
-      } else if (loggedUserIsCreator) {
-        if (status === "ONGOING") {
-          return;
-        }
-        if (status === "APPROVAL_PENDING") {
-          items = [
-            {
-              id: "task-item-approve",
-              text: t("actions.approve"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
-            },
-            {
-              id: "task-item-incomplete",
-              text: t("actions.incomplete"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
-            },
-          ];
-        }
-        if (status === "APPROVED") {
-          items = [
-            {
-              id: "task-item-incomplete",
-              text: t("actions.incomplete"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () =>
-                handleUpdateNotesItemStatusClick("APPROVAL_PENDING"),
-            },
-          ];
-        }
-      }
-
       /**
        * Renders item
        * @param item item
@@ -612,8 +486,15 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                 />
               )}
             {(specificRecipient || !multiUserNote) &&
-              (loggedUserIsCreator || loggedUserIsOwner) &&
-              renderUpdateStatus()}
+              (loggedUserIsCreator || loggedUserIsOwner) && (
+                <NoteStatusSetting
+                  isArchived={archived}
+                  status={currentRecipient.status}
+                  loggedUserIsCreator
+                  loggedUserIsOwner
+                  handleSetNoteStatus={handleUpdateNotesItemStatusClick}
+                />
+              )}
           </div>
         </div>
         <div className="notes__item-dates">{renderDates()}</div>
@@ -659,15 +540,43 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         {showRecipients && (
           <div className="notes__item-recipients">
             {!specificRecipient
-              ? avatars.map((avatar) => (
-                  <Avatar
-                    showTooltip
-                    groupMemberAction={avatarUpdateStatus}
-                    key={avatar.id}
-                    {...avatar}
-                    size="xsmall"
-                  ></Avatar>
-                ))
+              ? avatars.map((avatar) => {
+                  const avatarRecipient = recipients?.find(
+                    (r) => r.recipientId === avatar.id
+                  );
+
+                  return avatar.groupAvatar ? (
+                    <Avatar
+                      showTooltip
+                      groupMemberAction={avatarUpdateStatus}
+                      key={avatar.id}
+                      {...avatar}
+                      size="xsmall"
+                    ></Avatar>
+                  ) : (
+                    <NoteStatusSetting
+                      key={avatar.id}
+                      isArchived={archived}
+                      userId={avatar.id}
+                      status={avatarRecipient.status}
+                      loggedUserIsCreator
+                      loggedUserIsOwner
+                      handleSetNoteStatus={handleUpdateNotesItemStatusClick}
+                    >
+                      <div
+                        className={`notes__item-avatar notes__item-avatar--${avatarRecipient.status}`}
+                      >
+                        <Avatar
+                          showTooltip
+                          id={avatar.id}
+                          hasImage={avatar.hasImage}
+                          name={avatar.name}
+                          size="xsmall"
+                        />
+                      </div>
+                    </NoteStatusSetting>
+                  );
+                })
               : avatars
                   .filter((avatar) => avatar.groupAvatar)
                   .map((avatar) => (
