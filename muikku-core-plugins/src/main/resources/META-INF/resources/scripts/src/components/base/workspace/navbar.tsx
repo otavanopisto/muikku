@@ -178,9 +178,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/discussions",
         icon: "bubbles",
         to: true,
-        condition:
-          this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE &&
-          this.props.status.loggedIn,
+        condition: this.props.status.permissions.WORKSPACE_DISCUSSIONS_VISIBLE,
       },
       {
         modifier: "users",

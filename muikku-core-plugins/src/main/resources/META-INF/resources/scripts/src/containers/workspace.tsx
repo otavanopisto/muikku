@@ -1204,9 +1204,7 @@ export default class Workspace extends React.Component<
             path="/workspace/:workspaceUrl/discussions"
             render={(routeProps) => (
               <ProtectedRoute
-                requireAuth
                 hasPermission={permissions.WORKSPACE_DISCUSSIONS_VISIBLE}
-                isAuthenticated={isAuthenticated}
                 routeProps={routeProps}
               >
                 {this.renderWorkspaceDiscussions}
