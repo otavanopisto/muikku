@@ -75,6 +75,7 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -802,6 +803,10 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
+    if (!sessionController.isLoggedIn() && (workspaceEntity.getAccess() == null || WorkspaceAccess.LOGIN_REQUIRED.contains(workspaceEntity.getAccess()))) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
     WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
     if (workspaceBasicInfo == null) {
       return Response.status(Status.NOT_FOUND).build();
