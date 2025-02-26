@@ -52,7 +52,7 @@ public class SPAForwardingFilter implements Filter {
       boolean found = FRONTEND_PATHS.contains(path) || StringUtils.startsWithAny(path, FRONTEND_PARTIAL_PATHS);
       
       // TODO Remove debug message
-      System.out.println("Polku: " + path + " Löytyi: " + found);
+//      System.out.println("Polku: " + path + " Löytyi: " + found);
   
       if (found) {
         request.getRequestDispatcher(SPA_ENTRYPOINT).forward(httpRequest, response);
