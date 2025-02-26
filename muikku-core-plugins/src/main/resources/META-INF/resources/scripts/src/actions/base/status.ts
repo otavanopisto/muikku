@@ -1,6 +1,6 @@
 import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import MApi from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { ChatUser, WorkspaceBasicInfo } from "~/generated/client";
@@ -294,9 +294,21 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
       let workspaceBasicInfo: WorkspaceBasicInfo = undefined;
 
       if (workspaceUrlName) {
-        workspaceBasicInfo = await workspaceApi.getWorkspaceBasicInfo({
-          urlName: workspaceUrlName,
-        });
+        try {
+          workspaceBasicInfo = await workspaceApi.getWorkspaceBasicInfo({
+            urlName: workspaceUrlName,
+          });
+        } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
+          // If the workspace is not found, redirect to the login page
+          // This could happen because user has not permission to access the workspace
+          if (isResponseError(err) && err.response.status === 401) {
+            window.location.href = "/login";
+          }
+        }
       }
 
       dispatch({
