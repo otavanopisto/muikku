@@ -35,7 +35,6 @@ interface NoteStatusSettingProps {
 const NoteStatusSetting = (props: NoteStatusSettingProps) => {
   const {
     status,
-    isArchived,
     userId,
     loggedUserIsCreator,
     loggedUserIsOwner,
@@ -89,9 +88,9 @@ const NoteStatusSetting = (props: NoteStatusSettingProps) => {
         },
       ];
     }
-  } else if (loggedUserIsCreator && !loggedUserIsOwner) {
+  } else if (loggedUserIsCreator) {
     if (status === "ONGOING") {
-      return;
+      items = [];
     }
     if (status === "APPROVAL_PENDING") {
       items = [
@@ -140,25 +139,29 @@ const NoteStatusSetting = (props: NoteStatusSettingProps) => {
     </Link>
   );
   return (
-    !isArchived && (
-      <Dropdown
-        items={items.map(
-          (item) => (closeDropdown: () => void) =>
-            renderItem(item, closeDropdown)
-        )}
-      >
-        {children ? (
-          <div tabIndex={0}>{children}</div>
-        ) : (
-          <div tabIndex={0}>
-            <IconButton
-              icon="more_vert"
-              buttonModifiers={["notes-action", "notes-more"]}
-            />
-          </div>
-        )}
-      </Dropdown>
-    )
+    <>
+      {items.length > 0 ? (
+        <Dropdown
+          items={items.map(
+            (item) => (closeDropdown: () => void) =>
+              renderItem(item, closeDropdown)
+          )}
+        >
+          {children ? (
+            <div tabIndex={0}>{children}</div>
+          ) : (
+            <div tabIndex={0}>
+              <IconButton
+                icon="more_vert"
+                buttonModifiers={["notes-action", "notes-more"]}
+              />
+            </div>
+          )}
+        </Dropdown>
+      ) : (
+        children && children
+      )}
+    </>
   );
 };
 

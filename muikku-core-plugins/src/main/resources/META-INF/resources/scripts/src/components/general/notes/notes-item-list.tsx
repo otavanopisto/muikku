@@ -136,30 +136,31 @@ const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
   return (
     <div tabIndex={0} onKeyDown={handleListKeyDown} className="notes__content">
       <NotesItemListWithoutAnimation isLoadingList={isLoadingList}>
-        {filteredNotesItemList.map((note, i) => (
-          <NotesListItem
-            key={note.id}
-            tabIndex={0}
-            ref={(ref) => (itemRefs.current[i] = ref)}
-            specificRecipient={notesRecipientId}
-            notesItem={note}
-            archived={note.isArchived}
-            onFocus={handleListItemFocus(i)}
-            onKeyDown={handleListItemKeyDown}
-            loggedUserIsCreator={note.creator === userId}
-            showRecipients={true}
-            loggedUserIsOwner={
-              !!note.recipients.find(
-                (receiver) => receiver.recipientId === userId
-              )
-            }
-            onPinNotesItemClick={onPinNotesItemClick}
-            onArchiveClick={onArchiveClick}
-            onUpdateNotesItemStatus={onUpdateNotesItemStatus}
-            onReturnArchivedClick={onReturnArchivedClick}
-            onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
-          />
-        ))}
+        {filteredNotesItemList.map((note, i) => {
+          const isOwner = !!note.recipients.find(
+            (receiver) => receiver.recipientId === userId
+          );
+          return (
+            <NotesListItem
+              key={note.id}
+              tabIndex={0}
+              ref={(ref) => (itemRefs.current[i] = ref)}
+              specificRecipient={notesRecipientId}
+              notesItem={note}
+              archived={note.isArchived}
+              onFocus={handleListItemFocus(i)}
+              onKeyDown={handleListItemKeyDown}
+              loggedUserIsCreator={note.creator === userId}
+              showRecipients={true}
+              loggedUserIsOwner={isOwner}
+              onPinNotesItemClick={onPinNotesItemClick}
+              onArchiveClick={onArchiveClick}
+              onUpdateNotesItemStatus={onUpdateNotesItemStatus}
+              onReturnArchivedClick={onReturnArchivedClick}
+              onNotesItemSaveUpdateClick={onNotesItemSaveUpdateClick}
+            />
+          );
+        })}
       </NotesItemListWithoutAnimation>
     </div>
   );

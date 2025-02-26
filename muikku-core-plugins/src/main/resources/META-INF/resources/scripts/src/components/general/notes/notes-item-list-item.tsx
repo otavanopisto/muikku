@@ -488,10 +488,9 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             {(specificRecipient || !multiUserNote) &&
               (loggedUserIsCreator || loggedUserIsOwner) && (
                 <NoteStatusSetting
-                  isArchived={archived}
                   status={currentRecipient.status}
-                  loggedUserIsCreator
-                  loggedUserIsOwner
+                  loggedUserIsCreator={loggedUserIsCreator}
+                  loggedUserIsOwner={loggedUserIsOwner}
                   handleSetNoteStatus={handleUpdateNotesItemStatusClick}
                 />
               )}
@@ -541,11 +540,13 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           <div className="notes__item-recipients">
             {!specificRecipient
               ? avatars.map((avatar) => {
+                  const testOwner = loggedUserIsOwner;
+                  const testCreator = loggedUserIsCreator;
                   const avatarRecipient = recipients?.find(
                     (r) => r.recipientId === avatar.id
                   );
 
-                  return avatar.groupAvatar ? (
+                  return avatar.groupAvatar || archived ? (
                     <Avatar
                       showTooltip
                       groupMemberAction={avatarUpdateStatus}
@@ -556,11 +557,10 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   ) : (
                     <NoteStatusSetting
                       key={avatar.id}
-                      isArchived={archived}
                       userId={avatar.id}
                       status={avatarRecipient.status}
-                      loggedUserIsCreator
-                      loggedUserIsOwner
+                      loggedUserIsCreator={testCreator}
+                      loggedUserIsOwner={testOwner}
                       handleSetNoteStatus={handleUpdateNotesItemStatusClick}
                     >
                       <div
