@@ -1014,11 +1014,12 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
         for (ForumThreadSubscription sub : subs) {
           forumThreadSubscriptionController.deleteSubscription(sub);
         }
-        while(forumController.getLatestReply(thread) != null) {
-          forumController.deleteReply(forumController.getLatestReply(thread));
+        ForumThreadReply ftr;
+        while((ftr = forumController.getLatestReply(thread)) != null) {
+          forumController.deleteReply(ftr);
         }
         forumController.deleteThread(thread);
-      } 
+      }
     }
     for(WorkspaceForumArea forumArea : forumAreas) {
       forumController.deleteArea(forumArea);      
