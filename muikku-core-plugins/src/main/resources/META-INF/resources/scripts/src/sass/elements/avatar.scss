@@ -99,6 +99,19 @@
   }
 }
 
+.avatar--approval_pending,
+.avatar--approved {
+  cursor: pointer;
+}
+
+.avatar--approval_pending {
+  border: 2px solid $color-info;
+  animation: approval-pending-border-pulse 2s infinite;
+}
+.avatar--approved {
+  border: 2px solid $color-success;
+}
+
 .avatar__decoration {
   margin-right: 5px;
 }
@@ -213,4 +226,16 @@
 
 .avatar--category-10 {
   background-color: $color-main-function-category-10;
+}
+
+// Animations
+// blink
+
+@keyframes approval-pending-border-pulse {
+  50% {
+    border-color: rgba(0, 255, 255, 0);
+  }
+  100% {
+    border-color: $color-info;
+  }
 }

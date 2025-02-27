@@ -8,18 +8,14 @@ import { AvatarGroupUser } from "./group-components/user";
  * AvatarProps
  */
 export interface GroupAvatarProps {
-  hasImage: boolean;
   id: number | null;
   name: string;
   size?: string;
   groupAvatar?: "usergroup" | "workspace";
   groupMembers?: AvatarGroupUser[];
   groupMemberAction?: (userId: number) => JSX.Element;
-  userCategory?: number;
-  avatarAriaLabel?: string;
   modifier?: string;
   showTooltip?: boolean;
-  avatarAriaHidden?: boolean;
 }
 
 /**

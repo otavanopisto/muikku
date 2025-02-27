@@ -352,6 +352,11 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       return statuses;
     };
 
+    /**
+     *  avatarUpdateStatus
+     * @param recipientId
+     * @returns JSX.Element
+     */
     const avatarUpdateStatus = (recipientId: number) => {
       const status = recipients?.find(
         (r) => r.recipientId === recipientId
@@ -564,11 +569,12 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                       handleSetNoteStatus={handleUpdateNotesItemStatusClick}
                     >
                       <div
-                        className={`notes__item-avatar notes__item-avatar--${avatarRecipient.status}`}
+                        className={`notes__item-avatar notes__item-avatar--${avatarRecipient.status.toLocaleLowerCase()}`}
                       >
                         <Avatar
                           showTooltip
                           id={avatar.id}
+                          userAvatarModifier={avatarRecipient.status.toLowerCase()}
                           hasImage={avatar.hasImage}
                           name={avatar.name}
                           size="xsmall"

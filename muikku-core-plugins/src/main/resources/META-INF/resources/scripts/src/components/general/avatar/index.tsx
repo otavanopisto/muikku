@@ -18,6 +18,8 @@ export interface AvatarProps {
   userCategory?: number;
   avatarAriaLabel?: string;
   modifier?: string;
+  groupAvatarModifier?: string;
+  userAvatarModifier?: string;
   showTooltip?: boolean;
   avatarAriaHidden?: boolean;
 }
@@ -28,7 +30,22 @@ export interface AvatarProps {
  * @returns JSX.Element
  */
 const Avatar = (props: AvatarProps) => {
-  const { size, modifier, avatarAriaHidden, groupAvatar } = props;
+  const {
+    hasImage,
+    id,
+    name,
+    size,
+    groupAvatar,
+    groupMembers,
+    groupMemberAction,
+    userCategory,
+    avatarAriaLabel,
+    modifier,
+    groupAvatarModifier,
+    userAvatarModifier,
+    showTooltip,
+    avatarAriaHidden,
+  } = props;
 
   return (
     <div
@@ -37,7 +54,29 @@ const Avatar = (props: AvatarProps) => {
       } ${groupAvatar ? "avatar-container--group" : ""} rs_skip_always`}
       aria-hidden={avatarAriaHidden}
     >
-      {groupAvatar ? <GroupAvatar {...props} /> : <UserAvatar {...props} />}
+      {groupAvatar ? (
+        <GroupAvatar
+          id={id}
+          name={name}
+          size={size}
+          groupAvatar={groupAvatar}
+          groupMembers={groupMembers}
+          groupMemberAction={groupMemberAction}
+          modifier={groupAvatarModifier}
+          showTooltip={showTooltip}
+        />
+      ) : (
+        <UserAvatar
+          id={id}
+          name={name}
+          size={size}
+          hasImage={hasImage}
+          userCategory={userCategory}
+          modifier={userAvatarModifier}
+          avatarAriaLabel={avatarAriaLabel}
+          showTooltip={showTooltip}
+        />
+      )}
     </div>
   );
 };

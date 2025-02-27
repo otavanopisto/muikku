@@ -133,8 +133,6 @@
     }
   }
 
-
-
   // This removes the item's content's fading effect
   .notes__item-body::before,
   .notes__item-recipients::before {
@@ -271,11 +269,6 @@
   position: relative;
   width: 100%;
 }
-
-.notes__item-avatar {
- cursor: pointer; 
-}
-
 
 .notes__item-author {
   align-items: center;

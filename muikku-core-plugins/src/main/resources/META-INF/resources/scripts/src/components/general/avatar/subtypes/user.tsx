@@ -67,9 +67,7 @@ const UserAvatar = (props: UserAvatarProps) => {
 
   return (
     <div
-      className={`avatar-container ${size ? "avatar-container--" + size : ""} ${
-        modifier ? "avatar-container--" + modifier : ""
-      }`}
+      className={`avatar-container ${size ? "avatar-container--" + size : ""}`}
       aria-hidden={avatarAriaHidden}
     >
       {showTooltip ? (
