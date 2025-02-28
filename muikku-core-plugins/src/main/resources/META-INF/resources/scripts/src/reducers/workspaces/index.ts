@@ -112,6 +112,8 @@ export interface WorkspaceDataType {
   //this one is actually also available in the current workspace in workspace/
   isCourseMember?: boolean;
   educationTypeName?: string;
+  courseLength?: number | null;
+  courseLengthSymbol?: string | null;
 
   /**
    * aka "modules", always contains at least one or more if it is combination workspace
