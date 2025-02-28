@@ -115,7 +115,9 @@ class MainFunctionNavbar extends React.Component<
         href: "/hops",
         icon: "compass",
         to: true,
-        condition: this.props.status.services.hops.isAvailable,
+        condition:
+          this.props.status.services &&
+          this.props.status.services.hops.isAvailable,
       },
       {
         modifier: "hops",

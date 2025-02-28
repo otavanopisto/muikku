@@ -24,7 +24,7 @@ export interface StatusType {
   isStudent: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
-  services: UserWhoAmIServices;
+  services: UserWhoAmIServices | null;
   currentWorkspaceInfo?: {
     id: number;
     organizationEntityId: number;
