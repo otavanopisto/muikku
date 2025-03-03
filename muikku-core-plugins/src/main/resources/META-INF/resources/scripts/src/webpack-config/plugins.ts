@@ -19,8 +19,8 @@ const client: webpack.WebpackPluginInstance[] = [
     },
   }),
   new MiniCssExtractPlugin({
-    filename: "[name].[contenthash].css",
-    chunkFilename: "[id].[contenthash].css",
+    filename: "[name].css",
+    chunkFilename: "[id].css",
   }) as unknown as webpack.WebpackPluginInstance,
 ];
 
