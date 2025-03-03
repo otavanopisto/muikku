@@ -57,13 +57,14 @@ const PlannerPeriodCourseCardPreview: React.FC<
       </PlannerCardHeader>
 
       <PlannerCardContent modifiers={["planned-course-card"]}>
-        <PlannerCardLabel
-          modifiers={[course.mandatory ? "mandatory" : "optional"]}
-        >
-          {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
-        </PlannerCardLabel>
-
-        <span className="study-planner__course-dates">
+        <div className="study-planner__course-labels">
+          <PlannerCardLabel
+            modifiers={[course.mandatory ? "mandatory" : "optional"]}
+          >
+            {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
+          </PlannerCardLabel>
+        </div>
+        <div className="study-planner__course-dates">
           {calculatedEndDate ? (
             <>
               {localize.date(startDate)} - {localize.date(calculatedEndDate)}
@@ -71,7 +72,7 @@ const PlannerPeriodCourseCardPreview: React.FC<
           ) : (
             localize.date(startDate)
           )}
-        </span>
+        </div>
       </PlannerCardContent>
     </PlannerCard>
   );

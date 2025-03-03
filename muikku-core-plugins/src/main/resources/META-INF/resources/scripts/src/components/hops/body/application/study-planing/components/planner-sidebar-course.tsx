@@ -89,18 +89,20 @@ const PlannerSidebarCourse: React.FC<PlannerSidebarCourseProps> = (props) => {
       </PlannerCardHeader>
 
       <PlannerCardContent modifiers={["planned-course-card"]}>
-        <PlannerCardLabel modifiers={[type]}>
-          {type === "mandatory" ? "PAKOLLINEN" : "VALINNAINEN"}
-        </PlannerCardLabel>
-        <PlannerCardLabel modifiers={["course-length"]}>
-          {curriculumConfig.strategy.getCourseDisplayedLength(course)}
-        </PlannerCardLabel>
-
-        {plannedCourse && (
-          <PlannerCardLabel modifiers={["already-planned"]}>
-            Suunnitelmassa
+        <div className="study-planner__course-labels">
+          <PlannerCardLabel modifiers={[type]}>
+            {type === "mandatory" ? "PAKOLLINEN" : "VALINNAINEN"}
           </PlannerCardLabel>
-        )}
+          <PlannerCardLabel modifiers={["course-length"]}>
+            {curriculumConfig.strategy.getCourseDisplayedLength(course)}
+          </PlannerCardLabel>
+
+          {plannedCourse && (
+            <PlannerCardLabel modifiers={["already-planned"]}>
+              Suunnitelmassa
+            </PlannerCardLabel>
+          )}
+        </div>
       </PlannerCardContent>
     </PlannerCard>
   );

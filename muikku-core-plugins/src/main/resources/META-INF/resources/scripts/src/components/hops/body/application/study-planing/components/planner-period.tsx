@@ -15,7 +15,7 @@ const periodVariants: Variants = {
     },
   },
   collapsed: {
-    width: "48px",
+    width: "36px",
     transition: {
       duration: 0.4,
       type: "tween",
@@ -38,19 +38,6 @@ const titleVariants: Variants = {
     transition: {
       duration: 0.4,
       ease: "easeInOut",
-    },
-  },
-};
-
-const workloadVariants: Variants = {
-  expanded: {
-    opacity: 1,
-    display: "inline",
-  },
-  collapsed: {
-    opacity: 0,
-    transitionEnd: {
-      display: "none",
     },
   },
 };
@@ -157,6 +144,8 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
               />
               <motion.div className="study-planner__period-title study-planner__period-title--collapsed">
                 {title}
+                {" - "}
+                {workload && workload.displayValue}
               </motion.div>
             </motion.div>
           )}
@@ -185,11 +174,8 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                   variants={titleVariants}
                 >
                   {title}
-                  {workload && (
-                    <motion.span variants={workloadVariants}>
-                      {` - ${workload.displayValue}`}
-                    </motion.span>
-                  )}
+                  {" - "}
+                  {workload && workload.displayValue}
                 </motion.div>
               </motion.div>
 

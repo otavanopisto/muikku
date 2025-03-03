@@ -387,15 +387,17 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         </PlannerCardHeader>
 
         <PlannerCardContent modifiers={["planned-course-card"]}>
-          <PlannerCardLabel modifiers={typeModifiers}>
-            {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
-          </PlannerCardLabel>
-
-          {courseState.state && (
-            <PlannerCardLabel modifiers={["course-state", courseState.state]}>
-              {courseState.label}
+          <div className="study-planner__course-labels">
+            <PlannerCardLabel modifiers={typeModifiers}>
+              {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
             </PlannerCardLabel>
-          )}
+
+            {courseState.state && (
+              <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+                {courseState.label}
+              </PlannerCardLabel>
+            )}
+          </div>
         </PlannerCardContent>
       </PlannerCard>
     </li>

@@ -319,19 +319,21 @@ const BasePlannerPeriodCourse = React.forwardRef<
       </PlannerCardHeader>
 
       <PlannerCardContent modifiers={["planned-course-card"]}>
-        <PlannerCardLabel
-          modifiers={[course.mandatory ? "mandatory" : "optional"]}
-        >
-          {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
-        </PlannerCardLabel>
-
-        {courseState.state && (
-          <PlannerCardLabel modifiers={["course-state", courseState.state]}>
-            {courseState.label}
+        <div className="study-planner__course-labels">
+          <PlannerCardLabel
+            modifiers={[course.mandatory ? "mandatory" : "optional"]}
+          >
+            {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
           </PlannerCardLabel>
-        )}
 
-        <span className="study-planner__course-dates">
+          {courseState.state && (
+            <PlannerCardLabel modifiers={["course-state", courseState.state]}>
+              {courseState.label}
+            </PlannerCardLabel>
+          )}
+        </div>
+
+        <div className="study-planner__course-dates">
           {calculatedEndDate ? (
             <>
               {localize.date(new Date(course.startDate))} -{" "}
@@ -340,7 +342,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
           ) : (
             localize.date(new Date(course.startDate))
           )}
-        </span>
+        </div>
 
         {renderWorkspaceInstanceNotAvailable()}
       </PlannerCardContent>

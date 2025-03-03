@@ -431,14 +431,20 @@
   justify-content: flex-start;
 }
 
+.study-planner__course-labels {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+}
+
 .study-planner__card-label {
   align-items: center;
   border-radius: 4px;
   display: flex;
   font-size: 12px;
-  font-weight: 600;
   max-width: fit-content;
-  padding: 4px 8px;
+  padding: 3px 6px;
+  text-transform: uppercase;
 }
 
 .study-planner__card-label--mandatory {
@@ -462,31 +468,27 @@
 }
 
 .study-planner__card-label--transferred {
-  background: $color-completed;
+  background: $color-passed;
   color: $color-default;
 }
 
 .study-planner__card-label--inprogress {
-  background: $color-default;
-  border: 3px solid $color-info;
-  color: $color-info;
+  background: $color-info;
+  color: $color-default;
 }
 
 .study-planner__card-label--completed {
-  background: $color-completed;
-  border: 3px solid $color-completed-border;
+  background: $color-passed;
   color: $color-default;
 }
 
 .study-planner__card-label--failed {
-  background: $color-passed-failed;
-  border: 3px solid $color-passed-failed-border;
+  background: $color-failed;
   color: $color-default;
 }
 
 .study-planner__card-label--supplementation-request {
-  background: lighten($color-incomplete, 30%);
-  border: 3px solid $color-incomplete;
+  background: $color-incomplete;
   color: $color-default;
 }
 
