@@ -17,6 +17,7 @@ import { useRecordsInfoContext } from "./context/records-info-context";
 import { getAssessmentData } from "~/helper-functions/shared";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
 import AssignmentDetails from "~/components/general/assignment-info-details";
+import { suitabilityMapHelper } from "~/@shared/suitability";
 
 /**
  * RecordsGroupItemProps
@@ -34,8 +35,12 @@ interface RecordsGroupItemProps {
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const { credit, isCombinationWorkspace } = props;
 
-  const { identifier, userEntityId, displayNotification } =
-    useRecordsInfoContext();
+  const {
+    identifier,
+    userEntityId,
+    displayNotification,
+    activeCurriculumName,
+  } = useRecordsInfoContext();
 
   const { t } = useTranslation([
     "studies",
@@ -259,6 +264,69 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
     }
   };
 
+  /**
+   * getSumOfCredits
+   * @returns string
+   */
+  const getSumOfCredits = () => {
+    if (!credit.activity.subjects) {
+      return null;
+    }
+
+    const sumOfCredits = credit.activity.subjects.reduce(
+      (acc, curr) => acc + curr.courseLength,
+      0
+    );
+
+    return `${sumOfCredits} ${credit.activity.subjects[0].courseLengthSymbol}`;
+  };
+
+  /**
+   * Depending what mandatority value is, returns description
+   *
+   * @returns mandatority description
+   */
+  const renderMandatorityDescription = () => {
+    console.log("credit", credit.activity.name);
+    console.log("OPS", activeCurriculumName, credit.activity.mandatority);
+    console.log("credit.lineName", credit.lineName);
+    console.log("--------------------------------");
+
+    // If OPS data and workspace mandatority property is present
+    if (activeCurriculumName && credit.activity.mandatority) {
+      const suitabilityMap = suitabilityMapHelper(t);
+
+      // Create map property from education type name and OPS name that was passed
+      // Strings are changes to lowercase form and any empty spaces are removed
+      const education = `${credit.lineName
+        .toLowerCase()
+        .replace(/ /g, "")}${activeCurriculumName.replace(/ /g, "")}`;
+
+      console.log("education", education);
+
+      // Check if our map contains data with just created education string
+      // Otherwise just return null. There might not be all included values by every OPS created...
+      if (!suitabilityMap[education]) {
+        return null;
+      }
+
+      // Then get correct local string from map by suitability enum value
+      const localString =
+        suitabilityMap[education][credit.activity.mandatority];
+
+      console.log("localString", localString);
+
+      const sumOfCredits = getSumOfCredits();
+
+      // If there is sum of credits, return it with local string
+      if (sumOfCredits) {
+        return ` (${localString}) ${sumOfCredits}`;
+      }
+
+      return ` (${localString})`;
+    }
+  };
+
   const animateOpen = showE ? "auto" : 0;
 
   return (
@@ -286,7 +354,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         <span className="application-list__header-icon icon-books"></span>
         <div className="application-list__header-primary">
           <div className="application-list__header-primary-title">
-            {credit.activity.name}
+            {credit.activity.name} {renderMandatorityDescription()}
           </div>
 
           <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
