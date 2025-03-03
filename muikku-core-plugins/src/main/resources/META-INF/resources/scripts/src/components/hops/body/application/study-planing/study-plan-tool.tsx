@@ -183,7 +183,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                   completed={statistics.totalStudies}
                   maxCompleted={statistics.requiredStudies.totalStudies}
                   isLabelVisible={false}
-                  bgColor="#de3211"
+                  bgColor="#24c118"
                   baseBgColor="#f5f5f5"
                 />
                 <div className="study-planner__plan-status-bar-label">
@@ -204,7 +204,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                     completed={statistics.mandatoryStudies}
                     maxCompleted={statistics.requiredStudies.mandatoryStudies}
                     isLabelVisible={false}
-                    bgColor="#de3211"
+                    bgColor="#24c118"
                     baseBgColor="#f5f5f5"
                   />
                   <div className="study-planner__plan-statistic-item-bar-label">
@@ -222,7 +222,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                     completed={statistics.optionalStudies}
                     maxCompleted={statistics.requiredStudies.optionalStudies}
                     isLabelVisible={false}
-                    bgColor="#de3211"
+                    bgColor="#24c118"
                     baseBgColor="#f5f5f5"
                   />
                   <div className="study-planner__plan-statistic-item-bar-label">
@@ -241,7 +241,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                       completed={0}
                       maxCompleted={100}
                       isLabelVisible={false}
-                      bgColor="#de3211"
+                      bgColor="#24c118"
                       baseBgColor="#f5f5f5"
                     />
                     <div className="study-planner__plan-statistic-item-bar-label">
