@@ -355,7 +355,6 @@
   cursor: move;
   opacity: 1;
   position: relative;
-  transition: outline 0.2s ease;
 }
 
 .study-planner__card--course-tray-card {
@@ -376,6 +375,7 @@
 }
 
 .study-planner__card--selected {
+  overflow: hidden;
   outline: 2px solid lighten($color-study-plan-tool-accent, 20%);
   outline-offset: -2px;
   position: relative;
@@ -563,7 +563,7 @@
 }
 
 .study-planner__extra-section-input-group-label-info {
-  font-size: 0.775rem;
+  font-size: 0.8125rem;
   font-weight: 100;
   width: 100%;
 }

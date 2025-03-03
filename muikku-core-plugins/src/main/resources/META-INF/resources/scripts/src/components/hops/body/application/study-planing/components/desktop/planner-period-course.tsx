@@ -216,27 +216,35 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
             onClose={() => handleClose(onConfirm)}
           >
             <h4 className="study-planner__extra-section-title">
-              Haluatko varmasti poistaa kurssin suunnitelmasta?
+              Poista suunnitelmasta?
             </h4>
-            <div className="study-planner__extra-section-button-group">
-              <Button
-                buttonModifiers={["secondary"]}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClose();
-                }}
-              >
-                PERUUTA
-              </Button>
-              <Button
-                buttonModifiers={["primary"]}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteCard(onClose);
-                }}
-              >
-                POISTA KURSSI
-              </Button>
+            <div className="study-planner__extra-section-content">
+              <div className="study-planner__extra-section-input-group">
+                <span className="study-planner__extra-section-input-group-label-info">
+                  Oletko varma että haluat poistaa kurssin suunnitelmastasi?
+                </span>
+              </div>
+
+              <div className="study-planner__extra-section-button-group">
+                <Button
+                  buttonModifiers={["standard-ok", "fatal"]}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteCard(onClose);
+                  }}
+                >
+                  Poista kurssi
+                </Button>
+                <Button
+                  buttonModifiers={["standard-cancel", "cancel"]}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                  }}
+                >
+                  Peruuta
+                </Button>
+              </div>
             </div>
           </AnimatedDrawer>
         )}

@@ -56,11 +56,11 @@ interface PlannerPeriodMonthProps {
 
 const dropZoneVariants: Variants = {
   initial: {
-    opacity: 0.6,
+    opacity: 0.7,
     scale: 1,
   },
   dropIsActive: {
-    opacity: [0.6, 1, 0.6],
+    opacity: [0.7, 1, 0.7],
     scale: [1, 0.95, 1],
     transition: {
       duration: 2.0,
@@ -299,7 +299,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
               <motion.span
                 className="drop-indicator"
                 initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
+                animate={{ opacity: 1, scale: 1.2 }}
                 exit={{ opacity: 0, scale: 0.5 }}
                 transition={{ duration: 0.2 }}
               >
