@@ -257,6 +257,17 @@
   }
 }
 
+.dialog__window--copy-workspace {
+  height: 100%;
+
+  .multi-step {
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+}
+
 .dialog__window--note-information {
   max-height: 100%;
 

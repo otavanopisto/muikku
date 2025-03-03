@@ -143,15 +143,8 @@ public class NotesRESTService extends PluginRESTService {
 
       // Note creation by student
       if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
-        // Students can create notes only for themselves, so there should be only one
-        // receiver in the payload
-        if (recipientPayload.getRecipientIds().size() != 1) {
-          return Response.status(Status.BAD_REQUEST).build();
-        }
-
-        if (recipientPayload.getRecipientIds().get(0) != sessionController.getLoggedUserEntity().getId()) {
-          return Response.status(Status.BAD_REQUEST).entity("Student and note recipient does not match").build();
-        }
+        // Students can create notes only for themselves
+        
         newNote = notesController.createNote(note.getTitle(), note.getDescription(), note.getType(), note.getPriority(),
             note.getStartDate(), note.getDueDate(), false);
 

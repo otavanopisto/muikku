@@ -41,9 +41,7 @@ class CopyWizardDialog extends React.Component<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => void) => (
-      <div>
-        <CopyWizard onDone={closeDialog} />
-      </div>
+      <CopyWizard onDone={closeDialog} />
     );
     return (
       <Dialog
