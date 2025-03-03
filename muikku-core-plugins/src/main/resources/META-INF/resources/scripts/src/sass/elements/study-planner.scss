@@ -519,24 +519,13 @@
   font-size: 0.75rem;
 }
 
-// Specify animate height
-.study-planner__extra-section-animate-height {
-  &.open {
-    margin-bottom: 0.5rem;
-  }
-
-  &.close {
-    margin-bottom: 0;
-  }
-}
-
 // Specify section
 .study-planner__extra-section {
   background: $color-default;
   display: flex;
   flex-flow: column nowrap;
   gap: 10px;
-  padding: 0.5rem;
+  padding: 10px;
 }
 
 .study-planner__extra-section-title {
