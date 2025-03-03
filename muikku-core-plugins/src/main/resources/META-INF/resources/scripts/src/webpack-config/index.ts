@@ -1,14 +1,13 @@
 import { Configuration as WebpackConfiguration } from "webpack";
 import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
-
 import TerserPlugin from "terser-webpack-plugin";
-
 import resolvePath from "./path";
-
 import rules from "./rules";
 import plugins from "./plugins";
 import devServer from "./dev_server";
 import path from "path";
+
+const SRC_DIR = path.resolve(__dirname, "../../src");
 
 /**
  * Webpack configuration interface
@@ -27,9 +26,7 @@ const extensions = [".js", ".ts", ".jsx", ".tsx"];
 const alias = {
   "@babel/runtime": resolvePath("node_modules/@babel/runtime"),
   "react-dom": "@hot-loader/react-dom",
-  "~": path.resolve(
-    "C:/Otavia/muikku/muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src"
-  ),
+  "~": SRC_DIR,
 };
 
 // Defines the webpack configuration
