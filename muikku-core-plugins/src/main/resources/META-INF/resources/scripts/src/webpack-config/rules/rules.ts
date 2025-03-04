@@ -2,24 +2,28 @@ import * as webpack from "webpack";
 import {
   css as cssLoader,
   scss as scssLoader,
-  babel,
-  typescript,
   style,
+  esbuild,
+  esbuildTypescript,
 } from "./loaders";
 
 const exclude = /node_modules/;
 
-// Defines the js rule loaders
 export const js: webpack.RuleSetRule = {
   test: /.jsx?$/,
-  use: babel,
+  use: [esbuild],
   exclude,
 };
 
-// Defines the ts rule loaders
+export const ts2: webpack.RuleSetRule = {
+  test: /.ts?$/,
+  use: [esbuildTypescript],
+  exclude,
+};
+
 export const ts: webpack.RuleSetRule = {
   test: /.tsx?$/,
-  use: typescript,
+  use: [esbuild],
   exclude,
 };
 

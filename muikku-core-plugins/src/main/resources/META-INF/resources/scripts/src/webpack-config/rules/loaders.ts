@@ -56,6 +56,24 @@ export const typescript: webpack.RuleSetRule = {
   },
 };
 
+// Defines the esbuild loader for the webpack configuration
+export const esbuild: webpack.RuleSetRule = {
+  loader: "esbuild-loader",
+  options: {
+    loader: "tsx",
+    target: "es2015",
+  },
+};
+
+// Defines the esbuild typescript loader for the webpack configuration
+export const esbuildTypescript: webpack.RuleSetRule = {
+  loader: "esbuild-loader",
+  options: {
+    loader: "ts",
+    target: "es2015",
+  },
+};
+
 // Defines the style loader for the webpack configuration
 export const style: webpack.RuleSetRule = {
   loader: "style-loader",

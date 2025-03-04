@@ -1,6 +1,6 @@
 import { Configuration as WebpackConfiguration } from "webpack";
 import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
-import TerserPlugin from "terser-webpack-plugin";
+import { EsbuildPlugin } from "esbuild-loader";
 import resolvePath from "./path";
 import rules from "./rules";
 import plugins from "./plugins";
@@ -54,21 +54,18 @@ const config: Configuration = {
     jquery: "jQuery",
   },
   devServer,
-  devtool: "inline-cheap-module-source-map",
+  devtool: "eval-source-map",
   context,
   optimization: {
     emitOnErrors: true,
     splitChunks: {
       chunks: "all",
     },
-    minimize: true,
+    minimize: false,
     minimizer: [
-      new TerserPlugin({
-        extractComments: false,
-        parallel: true,
-        terserOptions: {
-          // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
-        },
+      new EsbuildPlugin({
+        target: "es2015",
+        css: true,
       }),
     ],
   },
