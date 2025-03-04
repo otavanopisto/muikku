@@ -37,7 +37,10 @@ import {
   updateWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces/material";
-import { MaterialCompositeReply } from "~/generated/client";
+import {
+  MaterialCompositeReply,
+  WorkspaceAssessmentState,
+} from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import MApi from "~/api/api";
 import { connect } from "react-redux";
@@ -205,6 +208,7 @@ const STATES = [
  * MaterialLoaderProps
  */
 export interface MaterialLoaderProps {
+  evaluation: WorkspaceAssessmentState[];
   material: MaterialContentNodeWithIdAndLogic;
   folder?: MaterialContentNodeWithIdAndLogic;
   workspace: WorkspaceDataType;
@@ -364,6 +368,23 @@ class MaterialLoader extends React.Component<
       answerRegistry: {},
     };
 
+    // Find the most current evaluation from the list of evaluations
+    const mostCurrentEvaluation = props.evaluation.reduce((prev, current) => {
+      if (prev === null) {
+        return current;
+      }
+      const currentDate = new Date(current.date);
+      const prevDate = new Date(prev.date);
+      return currentDate > prevDate ? current : prev;
+    }, null);
+
+    // If the most current evaluation is incomplete, disable the withdraw button from submitted evaluables
+    if (mostCurrentEvaluation && mostCurrentEvaluation.state === "incomplete") {
+      STATES.find((s) => {
+        return s["assignment-type"] === "EVALUATED" && s.state === "SUBMITTED";
+      })["button-disabled"] = true;
+    }
+
     //A sync version of the answer registry, it can change so fast
     //setStates might stack
     this.answerRegistrySync = {};
@@ -388,6 +409,7 @@ class MaterialLoader extends React.Component<
           (props.compositeReplies && props.compositeReplies.state) ||
           "UNANSWERED";
         const statesInIt = state["state"];
+
         return (
           statesInIt === stateRequired ||
           (statesInIt instanceof Array && statesInIt.includes(stateRequired))
@@ -729,6 +751,7 @@ class MaterialLoader extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
+    evaluation: state.workspaces.currentWorkspace?.activity?.assessmentStates,
     websocket: state.websocket,
   };
 }
