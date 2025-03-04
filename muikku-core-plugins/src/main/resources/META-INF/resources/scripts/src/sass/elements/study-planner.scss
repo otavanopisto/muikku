@@ -777,43 +777,43 @@
   padding: 10px;
 
   &--warning {
-    border-color: #fb923c;
+    border-color: $color-warn;
 
     .study-planner__info-icon {
-      color: #fb923c;
+      color: $color-warn;
     }
 
     .study-planner__info-content {
-      color: #fb923c;
+      color: $color-warn;
     }
   }
 
   &--info {
-    border-color: #60a5fa;
+    border-color: $color-info;
 
     .study-planner__info-icon {
-      color: #60a5fa;
+      color: $color-info;
     }
 
     .study-planner__info-content {
-      color: #60a5fa;
+      color: $color-info;
     }
   }
 
   &--danger {
-    border-color: #f87171;
+    border-color: $color-fatal;
 
     .study-planner__info-icon {
-      color: #f87171;
+      color: $color-fatal;
     }
 
     .study-planner__info-content {
-      color: #f87171;
+      color: $color-fatal;
     }
   }
 
   &--neutral {
-    border-color: #cccbcb;
+    border-color: $color-default-helper;
   }
 }
 
