@@ -77,13 +77,13 @@ public class WorkspaceAssessmentState {
   public String getSubjectIdentifier() {
     return subject == null ? null : subject.getIdentifier();
   }
-
-  public Long getEvaluator() {
-    return evaluator;
+  
+  public Long getEvaluatorId() {
+    return evaluatorId;
   }
 
-  public void setEvaluator(Long evaluator) {
-    this.evaluator = evaluator;
+  public void setEvaluatorId(Long evaluatorId) {
+    this.evaluatorId = evaluatorId;
   }
 
   public String getEvaluatorName() {
@@ -101,7 +101,7 @@ public class WorkspaceAssessmentState {
   private Date gradeDate;
   private String text;
   private WorkspaceActivitySubject subject;
-  private Long evaluator;
+  private Long evaluatorId;
   private String evaluatorName;
   
 }

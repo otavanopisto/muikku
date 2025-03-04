@@ -337,6 +337,8 @@ public class EvaluationController {
         activity.setEvaluablesTotal(evaluablesTotal);
         activity.setEvaluablesAnswered(evaluablesAnswered);
       }
+      
+      // A search to retrieve the mandatory information and the education type name
       List<SchoolDataIdentifier> workspaceIdentifierFilters = new ArrayList<>();      
       workspaceIdentifierFilters.add(workspaceEntity.schoolDataIdentifier());
       
