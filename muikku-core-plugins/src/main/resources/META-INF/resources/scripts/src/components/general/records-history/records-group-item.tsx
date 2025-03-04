@@ -35,12 +35,8 @@ interface RecordsGroupItemProps {
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const { credit, isCombinationWorkspace } = props;
 
-  const {
-    identifier,
-    userEntityId,
-    displayNotification,
-    activeCurriculumName,
-  } = useRecordsInfoContext();
+  const { identifier, userEntityId, displayNotification } =
+    useRecordsInfoContext();
 
   const { t } = useTranslation([
     "studies",
@@ -113,6 +109,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     {localize.date(a.date)}
                   </span>
                 </div>
+
                 <div className="workspace-assessment__literal">
                   <div className="workspace-assessment__literal-label">
                     {assessmentIsPending
@@ -174,6 +171,21 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                         {localize.date(a.date)}
                       </span>
                     </div>
+
+                    {a.evaluatorName && (
+                      <div className="workspace-assessment__evaluator">
+                        <span className="workspace-assessment__evaluator-label">
+                          {t("labels.assessor", {
+                            ns: "evaluation",
+                          })}
+                          :
+                        </span>
+
+                        <span className="workspace-assessment__evaluator-data">
+                          {a.evaluatorName}
+                        </span>
+                      </div>
+                    )}
                     <div className="workspace-assessment__grade">
                       <span className="workspace-assessment__grade-label">
                         {t("labels.grade", {
@@ -287,22 +299,23 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
    * @returns mandatority description
    */
   const renderMandatorityDescription = () => {
-    console.log("credit", credit.activity.name);
-    console.log("OPS", activeCurriculumName, credit.activity.mandatority);
-    console.log("credit.lineName", credit.lineName);
-    console.log("--------------------------------");
+    // Get first OPS from curriculums there should be only one OPS per workspace
+    // Some old workspaces might have multiple OPS, but that is rare case
+    const OPS = credit.activity.curriculums[0];
 
     // If OPS data and workspace mandatority property is present
-    if (activeCurriculumName && credit.activity.mandatority) {
+    if (
+      OPS &&
+      credit.activity.mandatority &&
+      credit.activity.educationTypeName
+    ) {
       const suitabilityMap = suitabilityMapHelper(t);
 
       // Create map property from education type name and OPS name that was passed
       // Strings are changes to lowercase form and any empty spaces are removed
-      const education = `${credit.lineName
+      const education = `${credit.activity.educationTypeName
         .toLowerCase()
-        .replace(/ /g, "")}${activeCurriculumName.replace(/ /g, "")}`;
-
-      console.log("education", education);
+        .replace(/ /g, "")}${OPS.name.replace(/ /g, "")}`;
 
       // Check if our map contains data with just created education string
       // Otherwise just return null. There might not be all included values by every OPS created...
@@ -311,19 +324,20 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
       }
 
       // Then get correct local string from map by suitability enum value
-      const localString =
-        suitabilityMap[education][credit.activity.mandatority];
-
-      console.log("localString", localString);
+      let localString = suitabilityMap[education][credit.activity.mandatority];
 
       const sumOfCredits = getSumOfCredits();
 
       // If there is sum of credits, return it with local string
       if (sumOfCredits) {
-        return ` (${localString}) ${sumOfCredits}`;
+        localString = `${localString}, ${sumOfCredits}`;
       }
 
-      return ` (${localString})`;
+      return (
+        <div className="label">
+          <div className="label__text">{localString} </div>
+        </div>
+      );
     }
   };
 
@@ -354,7 +368,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
         <span className="application-list__header-icon icon-books"></span>
         <div className="application-list__header-primary">
           <div className="application-list__header-primary-title">
-            {credit.activity.name} {renderMandatorityDescription()}
+            {credit.activity.name}
           </div>
 
           <div className="application-list__header-primary-meta application-list__header-primary-meta--records">
@@ -366,6 +380,8 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 <div className="label__text">{curriculum.name} </div>
               </div>
             ))}
+
+            {renderMandatorityDescription()}
           </div>
         </div>
         <div className="application-list__header-secondary">

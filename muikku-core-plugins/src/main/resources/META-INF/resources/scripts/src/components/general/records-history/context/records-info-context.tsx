@@ -14,10 +14,6 @@ interface RecordsInfo {
    */
   userEntityId: number;
   /**
-   * Students curriculum identifier
-   */
-  activeCurriculumName: string;
-  /**
    * Display notification trigger
    */
   displayNotification: DisplayNotificationTriggerType;

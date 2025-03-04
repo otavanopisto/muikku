@@ -100,7 +100,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           identifier: this.props.status.userSchoolDataIdentifier,
           userEntityId: this.props.status.userId,
           displayNotification: this.props.displayNotification,
-          activeCurriculumName: this.props.status.profile.curriculumName,
         }}
       >
         <ApplicationSubPanel>

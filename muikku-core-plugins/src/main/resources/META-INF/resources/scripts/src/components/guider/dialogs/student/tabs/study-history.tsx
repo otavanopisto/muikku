@@ -157,7 +157,6 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
       value={{
         identifier: basic.id,
         userEntityId: basic.userEntityId,
-        activeCurriculumName: basic.curriculumName,
         displayNotification,
       }}
     >

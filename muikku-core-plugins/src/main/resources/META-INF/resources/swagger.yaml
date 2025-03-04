@@ -17283,6 +17283,7 @@ components:
         - journalEntryCount
         - numVisits
         - mandatority
+        - educationTypeName
       properties:
         id:
           description: The id of the workspace
@@ -17417,6 +17418,9 @@ components:
           description: The mandatority of the workspace
           $ref: "#/components/schemas/WorkspaceMandatority"
           nullable: true
+        educationTypeName:
+          description: The education type name of the workspace
+          type: string
 
     WorkspaceActivityCurriculum:
       type: object
@@ -17474,6 +17478,8 @@ components:
         - passingGrade
         - text
         - subject
+        - evaluatorId
+        - evaluatorName
       properties:
         date:
           description: The date of the assessment
@@ -17500,6 +17506,15 @@ components:
         subject:
           description: The subject. Can be null.
           $ref: "#/components/schemas/WorkspaceActivitySubject"
+          nullable: true
+        evaluatorId:
+          description: The id of the evaluator
+          type: integer
+          format: int64
+          nullable: true
+        evaluatorName:
+          description: The name of the evaluator
+          type: string
           nullable: true
 
     WorkspaceAssessmentStateType:
