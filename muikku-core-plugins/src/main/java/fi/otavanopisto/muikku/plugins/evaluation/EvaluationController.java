@@ -27,6 +27,7 @@ import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.base.Tag;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
@@ -82,10 +83,17 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
+import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.search.SearchResults;
+import fi.otavanopisto.muikku.search.SearchProvider.Sort;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
+import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -177,6 +185,9 @@ public class EvaluationController {
   @Any
   private Instance<SearchProvider> searchProviders;
   
+  @Inject
+  private OrganizationEntityController organizationEntityController;
+  
   /* Workspace activity */
 
   public WorkspaceActivityInfo listWorkspaceActivities(SchoolDataIdentifier studentIdentifier,
@@ -205,7 +216,6 @@ public class EvaluationController {
     }
 
     // Complement the response with data available only in Muikku
-
     for (WorkspaceActivity activity : activityInfo.getActivities()) {
 
       // Skip activity items without a course (basically transfer credits)
@@ -327,6 +337,39 @@ public class EvaluationController {
         activity.setEvaluablesTotal(evaluablesTotal);
         activity.setEvaluablesAnswered(evaluablesAnswered);
       }
+      List<SchoolDataIdentifier> workspaceIdentifierFilters = new ArrayList<>();      
+      workspaceIdentifierFilters.add(workspaceEntity.schoolDataIdentifier());
+      
+      Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+      
+      if (searchProviderIterator.hasNext()) {
+        SearchProvider searchProvider = searchProviderIterator.next();
+        List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
+        TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
+        PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
+        List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
+        // The list is restricted to all of the students' workspaces so list them all
+        organizationRestrictions = organizationRestrictions.stream()
+            .map(organizationRestriction -> new OrganizationRestriction(organizationRestriction.getOrganizationIdentifier(), PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES))
+            .collect(Collectors.toList());
+
+        SearchResults<List<IndexedWorkspace>> searchResults = searchProvider.searchWorkspaces()
+            .setWorkspaceIdentifiers(workspaceIdentifierFilters)
+            .setOrganizationRestrictions(organizationRestrictions)
+            .setMaxResults(500)
+            .addSort(new Sort("name.untouched", Sort.Order.ASC))
+            .searchTyped();
+
+        List<IndexedWorkspace> indexedWorkspaces = searchResults.getResults();
+      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+
+      for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
+        Mandatority mandatority = (educationTypeMapping != null && indexedWorkspace.getEducationSubtypeIdentifier() != null) 
+            ? educationTypeMapping.getMandatority(indexedWorkspace.getEducationSubtypeIdentifier()) : null;
+        activity.setMandatority(mandatority);
+        activity.setEducationTypeName(indexedWorkspace.getEducationTypeName());
+      }
+      }
     }
     return activityInfo;
   }
@@ -370,11 +413,11 @@ public class EvaluationController {
     
     if (showCredits) {
       for (WorkspaceActivity activity : activityInfo.getActivities()) {
-        
         List<WorkspaceAssessmentState> assessmentStatesList = activity.getAssessmentStates();
         
         if (!assessmentStatesList.isEmpty()) {
           for (WorkspaceAssessmentState assessmentState : assessmentStatesList) {
+
             if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
               for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
 
@@ -384,7 +427,6 @@ public class EvaluationController {
                     continue;
                   }
                 }
-
                 // Skip subjects which are mutually exclusive and not selected
                 if (!alternativeStudyOptions.isSelectedSubject(workspaceActivitySubject.getSubjectCode())) {
                   continue;
