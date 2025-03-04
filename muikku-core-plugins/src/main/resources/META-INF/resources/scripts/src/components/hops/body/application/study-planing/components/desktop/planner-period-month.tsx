@@ -57,11 +57,9 @@ interface PlannerPeriodMonthProps {
 const dropZoneVariants: Variants = {
   initial: {
     opacity: 0.7,
-    scale: 1,
   },
   dropIsActive: {
     opacity: [0.7, 1, 0.7],
-    scale: [1, 0.95, 1],
     transition: {
       duration: 2.0,
       repeat: Infinity,
