@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
 import LabelUpdateDialog from "../../../dialogs/label-update";
@@ -9,36 +9,46 @@ import Navigation, {
   NavigationElement,
 } from "~/components/general/navigation";
 import { UserGroup } from "~/generated/client";
-import { GuiderContext, GuiderNotesState } from "../../../context";
+import { GuiderContext } from "../../../context";
 import { useTranslation } from "react-i18next";
+import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
+import { breakpoints } from "~/util/breakpoints";
 
 /**
  * NavigationAside
  */
 const StudentNavigationAside = () => {
-  const { view, filters, dispatch } = React.useContext(GuiderContext);
-  const { status, guider } = useSelector((state: StateType) => state);
-  const actionDispatch = useDispatch();
+  const { view, setView } = React.useContext(GuiderContext);
+  const { guider } = useSelector((state: StateType) => state);
   const { t } = useTranslation(["flags"]);
+  const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
 
-  /**
-   * @param filter state filter
-   */
-  const handleStateFilterChange = (filter: GuiderNotesState) => {
-    dispatch({
-      type: "SET_STATE_FILTER",
-      payload: filter,
-    });
-  };
-  /**
-   * render
-   */
   const locationData = queryString.parse(
     document.location.hash.split("?")[1] || "",
     { arrayFormat: "bracket" }
   );
   return (
     <Navigation>
+      {isMobileWidth && (
+        <NavigationTopic name={t("labels.all", { ns: "users" })}>
+          <NavigationElement
+            modifiers="aside-navigation-guider-flag"
+            icon="flag"
+            isActive={view === "students"}
+            onClick={() => setView("students")}
+          >
+            {t("labels.all", { ns: "users" })}
+          </NavigationElement>
+          <NavigationElement
+            modifiers="aside-navigation-guider-flag"
+            icon="flag"
+            isActive={view === "notes"}
+            onClick={() => setView("notes")}
+          >
+            {t("labels.tasks", { ns: "tasks" })}
+          </NavigationElement>
+        </NavigationTopic>
+      )}
       {guider.availableFilters.labels.length > 0 && (
         <NavigationTopic name={t("labels.flags", { ns: "flags" })}>
           {guider.availableFilters.labels.map((label) => {
