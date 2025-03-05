@@ -25,6 +25,7 @@ import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 import ProgressBar from "@ramonak/react-progress-bar";
 import DatePicker from "react-datepicker";
 import { PlannerInfo } from "./components/planner-info";
+import Application from "../../application";
 
 /**
  * MatriculationPlanProps
@@ -104,13 +105,13 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     );
 
   return (
-    <ApplicationSubPanel>
-      <ApplicationSubPanel.Header>
-        Opintojen suunnittelu
-      </ApplicationSubPanel.Header>
-      <ApplicationSubPanel.Body>
-        {/* Study planning calculator */}
-        <ApplicationSubPanel>
+    <>
+      <ApplicationSubPanel>
+        <ApplicationSubPanel.Header>
+          Opintojen suunnittelu
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          {/* Study planning calculator */}
           <p className="hops-container__description">
             Opintoaikalaskuri vertaa valmistumiselle asettamaasi tavoitetta
             aikaan, joka sinulla on viikottaisin käytössäsi opiskeluun. Yhden
@@ -119,16 +120,17 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             asiaa pohtia uudelleen.
           </p>
 
-          <div className="hops-container__input-row">
-            <div className="hops-container__input-group">
-              <h3 className="hops-container__subheader">
+          <div className="hops-container__row">
+            <div className="hops__form-element-container">
+              <label className="hops__label" htmlFor="graduationGoalDate">
                 Milloin haluat valmistua?
-              </h3>
-              <p className="hops-container__helper-text">
+              </label>
+              <div className="hops-container__helper-text">
                 Arvioi mihin päivämäärään mennessä haluaisit valmistua.
-              </p>
+              </div>
               <DatePicker
                 className="hops__input"
+                id="graduationGoalDate"
                 selected={graduationGoalDate || undefined}
                 onChange={(date) => {
                   // Set to last day of the selected month
@@ -142,16 +144,17 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
               />
             </div>
 
-            <div className="hops-container__input-group">
-              <h3 className="hops-container__subheader">
+            <div className="hops__form-element-container">
+              <label className="hops__label" htmlFor="hoursPerWeek">
                 Kuinka monta tuntia ehdit opiskella viikossa?
-              </h3>
-              <p className="hops-container__helper-text">
+              </label>
+              <div className="hops-container__helper-text">
                 Arvioi montako tuntia viikossa sinulla on aikaa käytettävänä
                 opiskeluun.
-              </p>
+              </div>
               <input
                 type="number"
+                id="hoursPerWeek"
                 className="hops__input"
                 value={hoursPerWeek}
                 onChange={(e) => setHoursPerWeek(Number(e.target.value))}
@@ -168,116 +171,119 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
           </div>
 
           {/* Plan status section */}
-          <div className="study-planner__plan-status-section">
-            <h3 className="study-planner__plan-status-title">
-              Opintojen eteneminen
-            </h3>
-            <div className="study-planner__plan-status-container">
-              <div className="study-planner__plan-status-dates">
-                <span>1.1.2024</span>
-                <span>12.5.2026</span>
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
+
+      <ApplicationSubPanel>
+        <ApplicationSubPanel.Header>
+          Opintojen suunnittelu
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          <div className="study-planner__plan-status-container">
+            <div className="study-planner__plan-status-dates">
+              <span>1.1.2024</span>
+              <span>12.5.2026</span>
+            </div>
+            <div className="study-planner__plan-status-bar-container">
+              <ProgressBar
+                className="study-planner__plan-status-bar"
+                completed={statistics.totalStudies}
+                maxCompleted={statistics.requiredStudies.totalStudies}
+                isLabelVisible={false}
+                bgColor="#24c118"
+                baseBgColor="#f5f5f5"
+              />
+              <div className="study-planner__plan-status-bar-label">
+                {`${statistics.totalStudies} / ${statistics.requiredStudies.totalStudies}`}
               </div>
-              <div className="study-planner__plan-status-bar-container">
+            </div>
+          </div>
+
+          {/* Statistics */}
+          <div className="study-planner__plan-statistics">
+            <div className="study-planner__plan-statistic-item">
+              <h4 className="study-planner__plan-statistic-item-title">
+                Suoritetut pakolliset opintojaksot (op).
+              </h4>
+              <div className="study-planner__plan-statistic-item-bar-container">
                 <ProgressBar
-                  className="study-planner__plan-status-bar"
-                  completed={statistics.totalStudies}
-                  maxCompleted={statistics.requiredStudies.totalStudies}
+                  className="study-planner__plan-statistic-item-bar"
+                  completed={statistics.mandatoryStudies}
+                  maxCompleted={statistics.requiredStudies.mandatoryStudies}
                   isLabelVisible={false}
                   bgColor="#24c118"
                   baseBgColor="#f5f5f5"
                 />
-                <div className="study-planner__plan-status-bar-label">
-                  {`${statistics.totalStudies} / ${statistics.requiredStudies.totalStudies}`}
+                <div className="study-planner__plan-statistic-item-bar-label">
+                  {`${statistics.mandatoryStudies} / ${statistics.requiredStudies.mandatoryStudies}`}
                 </div>
               </div>
             </div>
-
-            {/* Statistics */}
-            <div className="study-planner__plan-statistics">
+            <div className="study-planner__plan-statistic-item">
+              <h4 className="study-planner__plan-statistic-item-title">
+                Suoritetut valinnaisopinnot (op).
+              </h4>
+              <div className="study-planner__plan-statistic-item-bar-container">
+                <ProgressBar
+                  className="study-planner__plan-statistic-item-bar"
+                  completed={statistics.optionalStudies}
+                  maxCompleted={statistics.requiredStudies.optionalStudies}
+                  isLabelVisible={false}
+                  bgColor="#24c118"
+                  baseBgColor="#f5f5f5"
+                />
+                <div className="study-planner__plan-statistic-item-bar-label">
+                  {`${statistics.optionalStudies} / ${statistics.requiredStudies.optionalStudies}`}
+                </div>
+              </div>
+            </div>
+            {estimatedTimeToCompletion !== Infinity && (
               <div className="study-planner__plan-statistic-item">
                 <h4 className="study-planner__plan-statistic-item-title">
-                  Suoritetut pakolliset opintojaksot (op).
+                  Arvioitu opintoaika (kk).
                 </h4>
                 <div className="study-planner__plan-statistic-item-bar-container">
                   <ProgressBar
                     className="study-planner__plan-statistic-item-bar"
-                    completed={statistics.mandatoryStudies}
-                    maxCompleted={statistics.requiredStudies.mandatoryStudies}
+                    completed={0}
+                    maxCompleted={100}
                     isLabelVisible={false}
                     bgColor="#24c118"
                     baseBgColor="#f5f5f5"
                   />
                   <div className="study-planner__plan-statistic-item-bar-label">
-                    {`${statistics.mandatoryStudies} / ${statistics.requiredStudies.mandatoryStudies}`}
+                    {`${estimatedTimeToCompletion}kk`}
                   </div>
                 </div>
               </div>
-              <div className="study-planner__plan-statistic-item">
-                <h4 className="study-planner__plan-statistic-item-title">
-                  Suoritetut valinnaisopinnot (op).
-                </h4>
-                <div className="study-planner__plan-statistic-item-bar-container">
-                  <ProgressBar
-                    className="study-planner__plan-statistic-item-bar"
-                    completed={statistics.optionalStudies}
-                    maxCompleted={statistics.requiredStudies.optionalStudies}
-                    isLabelVisible={false}
-                    bgColor="#24c118"
-                    baseBgColor="#f5f5f5"
-                  />
-                  <div className="study-planner__plan-statistic-item-bar-label">
-                    {`${statistics.optionalStudies} / ${statistics.requiredStudies.optionalStudies}`}
-                  </div>
-                </div>
-              </div>
-              {estimatedTimeToCompletion !== Infinity && (
-                <div className="study-planner__plan-statistic-item">
-                  <h4 className="study-planner__plan-statistic-item-title">
-                    Arvioitu opintoaika (kk).
-                  </h4>
-                  <div className="study-planner__plan-statistic-item-bar-container">
-                    <ProgressBar
-                      className="study-planner__plan-statistic-item-bar"
-                      completed={0}
-                      maxCompleted={100}
-                      isLabelVisible={false}
-                      bgColor="#24c118"
-                      baseBgColor="#f5f5f5"
-                    />
-                    <div className="study-planner__plan-statistic-item-bar-label">
-                      {`${estimatedTimeToCompletion}kk`}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </ApplicationSubPanel>
-
-        <ApplicationSubPanel>
-          <ApplicationSubPanel.Header>
-            Opintojen suunnittelutyökalu
-          </ApplicationSubPanel.Header>
-          <ApplicationSubPanel.Body>
-            {isMobile ? (
-              <MobileStudyPlanner
-                plannedCourses={usedPlannedCourses}
-                calculatedPeriods={calculatedPeriods}
-                timeContextSelection={timeContextSelection}
-                selectedCoursesIds={selectedCoursesIds}
-              />
-            ) : (
-              <DesktopStudyPlanner
-                plannedCourses={usedPlannedCourses}
-                calculatedPeriods={calculatedPeriods}
-                selectedCoursesIds={selectedCoursesIds}
-                updateSelectedCourses={updateSelectedCourses}
-              />
             )}
-          </ApplicationSubPanel.Body>
-        </ApplicationSubPanel>
-      </ApplicationSubPanel.Body>
-    </ApplicationSubPanel>
+          </div>
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
+
+      <ApplicationSubPanel>
+        <ApplicationSubPanel.Header>
+          Opintojen suunnittelutyökalu
+        </ApplicationSubPanel.Header>
+        <ApplicationSubPanel.Body>
+          {isMobile ? (
+            <MobileStudyPlanner
+              plannedCourses={usedPlannedCourses}
+              calculatedPeriods={calculatedPeriods}
+              timeContextSelection={timeContextSelection}
+              selectedCoursesIds={selectedCoursesIds}
+            />
+          ) : (
+            <DesktopStudyPlanner
+              plannedCourses={usedPlannedCourses}
+              calculatedPeriods={calculatedPeriods}
+              selectedCoursesIds={selectedCoursesIds}
+              updateSelectedCourses={updateSelectedCourses}
+            />
+          )}
+        </ApplicationSubPanel.Body>
+      </ApplicationSubPanel>
+    </>
   );
 };
 

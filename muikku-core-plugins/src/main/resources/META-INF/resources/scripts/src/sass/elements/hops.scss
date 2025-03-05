@@ -161,7 +161,7 @@
   display: block;
   font-size: 1.125rem;
   font-weight: 400;
-  margin: 0 5px 10px;
+  margin: 0 0 10px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
@@ -182,7 +182,7 @@
 }
 
 .hops-container__fieldset-description {
-  margin: 0 5px;
+  margin: 0;
 }
 
 .hops-container__list {
@@ -328,6 +328,7 @@
 .hops-container__row {
   display: flex;
   flex-flow: row wrap;
+  gap: 10px;
   margin: 10px 0;
   position: relative;
   width: 100%;
@@ -431,7 +432,6 @@
   flex-flow: column wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  margin: 5px;
   position: relative;
 }
 
@@ -917,24 +917,13 @@
 
 // Study Planning Tool specific styles
 .hops-container__description {
-  margin-bottom: 20px;
-}
-
-.hops-container__input-row {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  margin: 20px 0;
-}
-
-.hops-container__input-group {
-  flex: 1;
+  margin: 0 0 20px;
 }
 
 .hops-container__helper-text {
-  color: $color-default-contrast;
+  color: lighten($color-default-contrast, 30%);
   font-size: 0.875rem;
-  margin: 5px 0;
+  padding: 0 0 5px;
 }
 
 .hops-container__progress-section {

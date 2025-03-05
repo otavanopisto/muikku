@@ -354,7 +354,7 @@
 }
 
 .study-planner__course-tray-list {
-  margin: 0 5px 0 7px;
+  margin: 0 5px;
 }
 
 .study-planner__course-tray-item 
@@ -743,8 +743,8 @@
 
 .study-planner__plan-statistic-item-title {
   font-size: 0.875rem;
-  font-weight: 800;
-  margin-bottom: 10px;
+  font-weight: 600;
+  margin: 0 0 10px;
 }
 
 .study-planner__plan-statistic-item-bar-container {
@@ -773,8 +773,8 @@
   border-radius: 0 5px 5px 0;
   color: #8c8c8c;
   display: flex;
-  gap: 10px;
-  padding: 10px;
+  gap: 15px;
+  padding: 15px;
 
   &--warning {
     border-color: $color-warn;
@@ -819,12 +819,13 @@
 
 .study-planner__info-icon {
   flex-shrink: 0;
-  font-size: 5rem;
+  font-size: 4rem;
 }
 
 .study-planner__info-content {
   align-items: center;
   display: flex;
   flex: 1;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
+  font-weight: 300;
 }
