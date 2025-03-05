@@ -131,6 +131,7 @@
   top: 20px;
 }
 
+.workspace-assessment__evaluator,
 .workspace-assessment__points,
 .workspace-assessment__date,
 .workspace-assessment__subject {
@@ -145,12 +146,14 @@
   margin: 0 0 10px;
 }
 
+.workspace-assessment__evaluator-label,
 .workspace-assessment__points-label,
 .workspace-assessment__date-label {
   font-weight: 600;
   padding: 0 10px 0 0;
 }
 
+.workspace-assessment__evaluator-data,
 .workspace-assessment__points-data,
 .workspace-assessment__date-data,
 .workspace-assessment__subject-data {
