@@ -37,10 +37,7 @@ import {
   updateWorkspaceMaterialContentNode,
   requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces/material";
-import {
-  MaterialCompositeReply,
-  WorkspaceAssessmentState,
-} from "~/generated/client";
+import { MaterialCompositeReply } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import MApi from "~/api/api";
 import { connect } from "react-redux";
@@ -208,7 +205,6 @@ const STATES = [
  * MaterialLoaderProps
  */
 export interface MaterialLoaderProps {
-  evaluation: WorkspaceAssessmentState[];
   material: MaterialContentNodeWithIdAndLogic;
   folder?: MaterialContentNodeWithIdAndLogic;
   workspace: WorkspaceDataType;
@@ -392,7 +388,6 @@ class MaterialLoader extends React.Component<
           (props.compositeReplies && props.compositeReplies.state) ||
           "UNANSWERED";
         const statesInIt = state["state"];
-
         return (
           statesInIt === stateRequired ||
           (statesInIt instanceof Array && statesInIt.includes(stateRequired))
