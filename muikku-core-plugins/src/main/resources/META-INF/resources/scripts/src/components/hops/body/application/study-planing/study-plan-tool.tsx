@@ -25,7 +25,6 @@ import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 import ProgressBar from "@ramonak/react-progress-bar";
 import DatePicker from "react-datepicker";
 import { PlannerInfo } from "./components/planner-info";
-import Application from "../../application";
 
 /**
  * MatriculationPlanProps
