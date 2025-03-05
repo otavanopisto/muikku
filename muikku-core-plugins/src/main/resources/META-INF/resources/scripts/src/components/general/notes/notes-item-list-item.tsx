@@ -15,7 +15,7 @@ import {
 } from "~/generated/client";
 import Avatar from "../avatar";
 import { useRecipientsToAvatars } from "./hooks/useRecipientsToAvatars";
-
+import NoteStatusSetting from "./notes-item-set-status";
 /**
  * DropdownItem
  */
@@ -41,6 +41,7 @@ export interface NotesListItemProps
   loggedUserIsCreator?: boolean;
   loggedUserIsOwner?: boolean;
   specificRecipient?: number;
+  showRecipients?: boolean;
   onArchiveClick?: (notesItemId: number) => void;
   onReturnArchivedClick?: (notesItemId: number) => void;
   onPinNotesItemClick?: (
@@ -91,6 +92,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       openInformationToDialog,
       containerModifier,
       specificRecipient,
+      showRecipients,
       ...restProps
     } = props;
 
@@ -106,7 +108,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
       multiUserNote,
     } = notesItem;
 
-    const avatars = useRecipientsToAvatars(recipients);
+    const avatars = useRecipientsToAvatars(recipients, !specificRecipient);
     const { t } = useTranslation("tasks");
     const overdue = isOverdue(dueDate);
     const updatedModifiers = [];
@@ -188,14 +190,23 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     /**
      * handleUpdateNotesItemStatusClick
      * @param newStatus newStatus
+     * @param userId userId
      */
-    const handleUpdateNotesItemStatusClick = (newStatus: NoteStatusType) => {
+    const handleUpdateNotesItemStatusClick = (
+      newStatus: NoteStatusType,
+      userId?: number
+    ) => {
+      const uId = userId ? userId : recipientId;
+      const recipient = userId
+        ? recipients.find((r) => r.recipientId === userId)
+        : currentRecipient;
+
       const newReceiverStatus: UpdateNoteReceiverRequest = {
-        ...currentRecipient,
+        pinned: recipient.pinned,
         status: newStatus,
       };
       if (onUpdateNotesItemStatus) {
-        onUpdateNotesItemStatus(id, recipientId, newReceiverStatus);
+        onUpdateNotesItemStatus(id, uId, newReceiverStatus);
 
         if (innerRef.current) {
           innerRef.current.focus();
@@ -342,96 +353,48 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     };
 
     /**
-     * renderUpdateStatus
+     *  avatarUpdateStatus
+     * @param recipientId
+     * @returns JSX.Element
      */
-    const renderUpdateStatus = () => {
-      let items: DropdownItem[] = [];
+    const avatarUpdateStatus = (recipientId: number) => {
+      const status = recipients?.find(
+        (r) => r.recipientId === recipientId
+      ).status;
 
-      if (archived) {
+      let items: DropdownItem[] = [];
+      if (status === "ONGOING") {
         return;
       }
-
-      if (loggedUserIsOwner) {
-        const { status } = currentRecipient;
-        if (status === "ONGOING") {
-          items = [
-            {
-              id: "task-item-send",
-              text: t("actions.send"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () =>
-                handleUpdateNotesItemStatusClick("APPROVAL_PENDING"),
-            },
-          ];
-
-          if (loggedUserIsCreator) {
-            items = [
-              {
-                id: "task-item-done",
-                text: t("actions.done"),
-                // eslint-disable-next-line jsdoc/require-jsdoc
-                onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
-              },
-            ];
-          }
-        }
-        if (status === "APPROVAL_PENDING") {
-          items = [
-            {
-              id: "task-item-cancel",
-              text: t("actions.cancel"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
-            },
-          ];
-        }
-
-        if (status === "APPROVED") {
-          items = [
-            {
-              id: "task-item-incomplete",
-              text: t("actions.incomplete"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
-            },
-          ];
-        }
-      } else if (loggedUserIsCreator) {
-        // This must display all of the recipients statuses if this is not a selected recipient
-        const { status } = currentRecipient;
-
-        if (status === "ONGOING") {
-          return;
-        }
-        if (status === "APPROVAL_PENDING") {
-          items = [
-            {
-              id: "task-item-approve",
-              text: t("actions.approve"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () => handleUpdateNotesItemStatusClick("APPROVED"),
-            },
-            {
-              id: "task-item-incomplete",
-              text: t("actions.incomplete"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () => handleUpdateNotesItemStatusClick("ONGOING"),
-            },
-          ];
-        }
-        if (status === "APPROVED") {
-          items = [
-            {
-              id: "task-item-incomplete",
-              text: t("actions.incomplete"),
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              onClick: () =>
-                handleUpdateNotesItemStatusClick("APPROVAL_PENDING"),
-            },
-          ];
-        }
+      if (status === "APPROVAL_PENDING") {
+        items = [
+          {
+            id: "task-item-approve",
+            text: t("actions.approve"),
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            onClick: () =>
+              handleUpdateNotesItemStatusClick("APPROVED", recipientId),
+          },
+          {
+            id: "task-item-incomplete",
+            text: t("actions.incomplete"),
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            onClick: () =>
+              handleUpdateNotesItemStatusClick("ONGOING", recipientId),
+          },
+        ];
       }
-
+      if (status === "APPROVED") {
+        items = [
+          {
+            id: "task-item-incomplete",
+            text: t("actions.incomplete"),
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            onClick: () =>
+              handleUpdateNotesItemStatusClick("APPROVAL_PENDING", recipientId),
+          },
+        ];
+      }
       /**
        * Renders item
        * @param item item
@@ -528,8 +491,14 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                 />
               )}
             {(specificRecipient || !multiUserNote) &&
-              (loggedUserIsCreator || loggedUserIsOwner) &&
-              renderUpdateStatus()}
+              (loggedUserIsCreator || loggedUserIsOwner) && (
+                <NoteStatusSetting
+                  status={currentRecipient.status}
+                  loggedUserIsCreator={loggedUserIsCreator}
+                  loggedUserIsOwner={loggedUserIsOwner}
+                  handleSetNoteStatus={handleUpdateNotesItemStatusClick}
+                />
+              )}
           </div>
         </div>
         <div className="notes__item-dates">{renderDates()}</div>
@@ -540,6 +509,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
             loggedUserIsCreator={loggedUserIsCreator}
             loggedUserIsOwner={loggedUserIsOwner}
             specificRecipient={specificRecipient}
+            groupMembersAction={avatarUpdateStatus}
+            recipients={recipients}
             onPinNotesItemClick={onPinNotesItemClick}
             onArchiveClick={onArchiveClick}
             onUpdateNotesItemStatus={onUpdateNotesItemStatus}
@@ -570,27 +541,60 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           className="notes__item-body rich-text"
           dangerouslySetInnerHTML={createHtmlMarkup(description)}
         />
-        <div className="notes__item-recipients">
-          {!specificRecipient
-            ? avatars.map((avatar) => (
-                <Avatar
-                  showTooltip
-                  key={avatar.id}
-                  {...avatar}
-                  size="xsmall"
-                ></Avatar>
-              ))
-            : avatars
-                .filter((avatar) => avatar.groupAvatar)
-                .map((avatar) => (
-                  <Avatar
-                    showTooltip
-                    key={avatar.id}
-                    {...avatar}
-                    size="xsmall"
-                  ></Avatar>
-                ))}
-        </div>
+        {showRecipients && (
+          <div className="notes__item-recipients">
+            {!specificRecipient
+              ? avatars.map((avatar) => {
+                  const testOwner = loggedUserIsOwner;
+                  const testCreator = loggedUserIsCreator;
+                  const avatarRecipient = recipients?.find(
+                    (r) => r.recipientId === avatar.id
+                  );
+
+                  return avatar.groupAvatar || archived ? (
+                    <Avatar
+                      showTooltip
+                      groupMemberAction={avatarUpdateStatus}
+                      key={avatar.id}
+                      {...avatar}
+                      size="xsmall"
+                    ></Avatar>
+                  ) : (
+                    <NoteStatusSetting
+                      key={avatar.id}
+                      userId={avatar.id}
+                      status={avatarRecipient.status}
+                      loggedUserIsCreator={testCreator}
+                      loggedUserIsOwner={testOwner}
+                      handleSetNoteStatus={handleUpdateNotesItemStatusClick}
+                    >
+                      <div
+                        className={`notes__item-avatar notes__item-avatar--${avatarRecipient.status.toLocaleLowerCase()}`}
+                      >
+                        <Avatar
+                          showTooltip
+                          id={avatar.id}
+                          userAvatarModifier={avatarRecipient.status.toLowerCase()}
+                          hasImage={avatar.hasImage}
+                          name={avatar.name}
+                          size="xsmall"
+                        />
+                      </div>
+                    </NoteStatusSetting>
+                  );
+                })
+              : avatars
+                  .filter((avatar) => avatar.groupAvatar)
+                  .map((avatar) => (
+                    <Avatar
+                      showTooltip
+                      key={avatar.id}
+                      {...avatar}
+                      size="xsmall"
+                    ></Avatar>
+                  ))}
+          </div>
+        )}
         {!loggedUserIsCreator && (
           <div className="notes__item-author">{creatorName}</div>
         )}

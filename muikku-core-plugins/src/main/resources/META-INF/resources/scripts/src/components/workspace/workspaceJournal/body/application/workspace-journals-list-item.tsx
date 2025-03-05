@@ -137,7 +137,7 @@ class WorkspaceJournalsListItem extends React.Component<
               student ? (
                 <Avatar
                   id={student.userEntityId}
-                  firstName={student.firstName}
+                  name={student.firstName}
                   hasImage={student.hasImage}
                 />
               ) : null

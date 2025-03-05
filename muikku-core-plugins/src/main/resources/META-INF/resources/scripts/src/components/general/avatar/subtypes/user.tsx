@@ -4,14 +4,14 @@ import "~/sass/elements/avatar.scss";
 import Dropdown from "~/components/general/dropdown";
 
 /**
- * AvatarProps
+ * UserAvatarProps
  */
-export interface AvatarProps {
+export interface UserAvatarProps {
+  action?: (userId: number) => JSX.Element;
   hasImage: boolean;
   id: number | null;
-  firstName: string;
+  name: string;
   size?: string;
-  groupAvatar?: "usergroup" | "workspace";
   userCategory?: number;
   avatarAriaLabel?: string;
   modifier?: string;
@@ -20,21 +20,20 @@ export interface AvatarProps {
 }
 
 /**
- * Avatar
+ * UserAvatar
  * @param props props
  * @returns JSX.Element
  */
-const Avatar = (props: AvatarProps) => {
+const UserAvatar = (props: UserAvatarProps) => {
   const {
     id,
     userCategory,
     hasImage,
-    firstName,
+    name,
     size,
     modifier,
     avatarAriaLabel,
     avatarAriaHidden,
-    groupAvatar,
     showTooltip,
   } = props;
 
@@ -60,34 +59,19 @@ const Avatar = (props: AvatarProps) => {
     <div
       className={`avatar avatar--category-${category} ${
         size ? "avatar--" + size : ""
-      } ${groupAvatar ? "avatar--" + groupAvatar : ""} ${modifier ? "avatar--" + modifier : ""} `}
+      } ${modifier ? "avatar--" + modifier : ""} `}
     >
-      {firstName[0]}
+      {name[0]}
     </div>
   );
 
   return (
     <div
-      className={`avatar-container ${size ? "avatar-container--" + size : ""} ${
-        modifier ? "avatar-container--" + modifier : ""
-      } ${groupAvatar ? "avatar-container--group" : ""} rs_skip_always`}
+      className={`avatar-container ${size ? "avatar-container--" + size : ""}`}
       aria-hidden={avatarAriaHidden}
     >
-      {groupAvatar ? (
-        <Dropdown openByHover key="avatar" content={firstName}>
-          <div
-            className={`avatar avatar--group ${
-              size ? "avatar--" + size : ""
-            } ${"avatar--" + groupAvatar} ${modifier ? "avatar--" + modifier : ""} `}
-          >
-            <span
-              className={`avatar__decoration icon icon-${groupAvatar === "usergroup" ? "users" : "books"}`}
-            ></span>
-            <span className="avatar__text">{firstName}</span>
-          </div>
-        </Dropdown>
-      ) : showTooltip ? (
-        <Dropdown openByHover key="avatar" content={firstName}>
+      {showTooltip ? (
+        <Dropdown openByHover key="avatar" content={name}>
           {avatarContent}
         </Dropdown>
       ) : (
@@ -97,4 +81,4 @@ const Avatar = (props: AvatarProps) => {
   );
 };
 
-export default Avatar;
+export default UserAvatar;
