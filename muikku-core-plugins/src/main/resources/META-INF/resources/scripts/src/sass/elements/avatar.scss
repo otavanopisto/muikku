@@ -57,7 +57,9 @@
 .avatar__group-members-container {
   max-height: 350px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 10px 0 0 10px;
+  scrollbar-width: thin;
 }
 
 .avatar__group-user {
