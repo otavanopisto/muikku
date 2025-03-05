@@ -39,23 +39,6 @@ export const resolveUrl: webpack.RuleSetRule = {
   loader: "resolve-url-loader",
 };
 
-// Defines the babel loader for the webpack configuration
-export const babel: webpack.RuleSetRule = {
-  loader: "babel-loader",
-  options: {
-    cacheDirectory: true,
-    rootMode: "upward",
-  },
-};
-
-// Defines the typescript loader for the webpack configuration
-export const typescript: webpack.RuleSetRule = {
-  loader: "ts-loader",
-  options: {
-    transpileOnly: true,
-  },
-};
-
 // Defines the esbuild loader for the webpack configuration
 export const esbuild: webpack.RuleSetRule = {
   loader: "esbuild-loader",

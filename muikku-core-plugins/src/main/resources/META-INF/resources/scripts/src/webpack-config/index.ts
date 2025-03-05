@@ -38,7 +38,6 @@ const config: Configuration = {
     "webpack-dev-server/client?hot=true",
     "webpack/hot/only-dev-server",
     "react-hot-loader/patch",
-    "@babel/polyfill",
     "raf/polyfill",
     "./entries/root",
   ],
