@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -11,14 +12,13 @@ import { getStore } from "~/reducers/store";
 const HotApp = hot(App);
 
 // Get store. Note this refrence must be passed from the root level
-// So all other components uses same instance
+// So all other components uses same refrence
 const store = getStore();
 
 /**
  * Renders the root application
  * @param websocketInstance websocketInstance
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderApp = (websocketInstance: any = null) => {
   ReactDOM.render(
     <>
@@ -28,6 +28,7 @@ const renderApp = (websocketInstance: any = null) => {
   );
 };
 
+// Initialize the app
 (async () => {
   const websocketInstance = await initApp(store);
   renderApp(websocketInstance);
