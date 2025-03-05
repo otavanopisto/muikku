@@ -338,40 +338,32 @@ public class EvaluationController {
         activity.setEvaluablesAnswered(evaluablesAnswered);
       }
       
-      // A search to retrieve the mandatory information and the education type name
-      List<SchoolDataIdentifier> workspaceIdentifierFilters = new ArrayList<>();      
-      workspaceIdentifierFilters.add(workspaceEntity.schoolDataIdentifier());
-      
-      Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
-      
-      if (searchProviderIterator.hasNext()) {
-        SearchProvider searchProvider = searchProviderIterator.next();
-        List<OrganizationEntity> loggedUserOrganizations = organizationEntityController.listLoggedUserOrganizations();
-        TemplateRestriction templateRestriction = TemplateRestriction.ONLY_WORKSPACES;
-        PublicityRestriction publicityRestriction = PublicityRestriction.LIST_ALL;
-        List<OrganizationRestriction> organizationRestrictions = organizationEntityController.listUserOrganizationRestrictions(loggedUserOrganizations, publicityRestriction, templateRestriction);
-        // The list is restricted to all of the students' workspaces so list them all
-        organizationRestrictions = organizationRestrictions.stream()
-            .map(organizationRestriction -> new OrganizationRestriction(organizationRestriction.getOrganizationIdentifier(), PublicityRestriction.LIST_ALL, TemplateRestriction.ONLY_WORKSPACES))
-            .collect(Collectors.toList());
-
-        SearchResults<List<IndexedWorkspace>> searchResults = searchProvider.searchWorkspaces()
-            .setWorkspaceIdentifiers(workspaceIdentifierFilters)
-            .setOrganizationRestrictions(organizationRestrictions)
-            .setMaxResults(500)
-            .addSort(new Sort("name.untouched", Sort.Order.ASC))
-            .searchTyped();
-
-        List<IndexedWorkspace> indexedWorkspaces = searchResults.getResults();
+      // Search for finding out course mandatority
       EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+      SearchProvider searchProvider = getProvider("elastic-search");
+      
+      if (searchProvider != null && activity.getId() != null) {
+        SearchResult sr = searchProvider.findWorkspace(workspaceEntity.schoolDataIdentifier());
+        
+        List<Map<String, Object>> results = sr.getResults();
+        for (Map<String, Object> result : results) {
+          
+          String educationTypeId = (String) result.get("educationTypeIdentifier");
 
-      for (IndexedWorkspace indexedWorkspace : indexedWorkspaces) {
-        Mandatority mandatority = (educationTypeMapping != null && indexedWorkspace.getEducationSubtypeIdentifier() != null) 
-            ? educationTypeMapping.getMandatority(indexedWorkspace.getEducationSubtypeIdentifier()) : null;
-        activity.setMandatority(mandatority);
-        activity.setEducationTypeName(indexedWorkspace.getEducationTypeName());
-      }
-      }
+          Mandatority mandatority = null;
+
+          if (StringUtils.isNotBlank(educationTypeId)) {
+            SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
+                                        
+            mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
+                ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
+            
+          }
+          if (mandatority != null) {
+            activity.setMandatority(mandatority);
+          }
+        }
+      } 
     }
     return activityInfo;
   }
