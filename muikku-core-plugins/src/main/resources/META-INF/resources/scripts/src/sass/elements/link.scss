@@ -352,11 +352,32 @@
   }
 }
 
+// Restrict type dropdown links
+.link--restrict-type-dropdown-enabled {
+  .link__icon {
+    color: $color-material-page-admin-panel-enabled-color;
+  }
+}
+
+.link--restrict-type-dropdown-disabled {
+  .link__icon {
+    color: $color-material-page-admin-panel-disabled-color;
+  }
+}
+
+.link--restrict-type-dropdown-members-only {
+  .link__icon {
+    color: $color-tertiary;
+  }
+}
+
 // Material editor's page type dropdown links
 .link--material-editor-dropdown-active {
   background: $color-default-generic-background;
   font-weight: 600;
 }
+
+
 
 .link--material-editor-dropdown-exercise {
   .link__icon {

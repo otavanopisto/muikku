@@ -16266,6 +16266,10 @@ components:
                   type: boolean
                 canEdit:
                   type: boolean
+            guidanceCounselors:
+              type: array
+              items:
+                $ref: "#/components/schemas/GuidanceCounselorContact"
 
     StudentInfo:
       type: object
