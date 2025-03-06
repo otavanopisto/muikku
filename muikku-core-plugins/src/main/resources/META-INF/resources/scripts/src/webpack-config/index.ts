@@ -39,7 +39,7 @@ const config: Configuration = {
     "webpack/hot/only-dev-server",
     "react-hot-loader/patch",
     "raf/polyfill",
-    "./entries/root",
+    "./entries/root.dev",
   ],
   output: {
     filename: "[name].[contenthash].js",
