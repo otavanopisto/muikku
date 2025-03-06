@@ -31,40 +31,11 @@ const StudyPlan = (props: StudyPlanProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useTranslation(["hops_new", "common"]);
 
-  /**
-   * Handles tab change
-   * @param id tab
-   */
-  const handleTabChange = (id: string) => {
-    setActiveTab(id);
-  };
-
   if (!studentInfo || !curriculumConfig) {
     return null;
   }
 
-  const panelTabs: Tab[] = [
-    {
-      id: "PLAN",
-      name: "Opintojen suunnittelu",
-      type: "plan",
-      component: (
-        <ApplicationPanelBody modifier="tabs">
-          <StudyPlanTool />
-        </ApplicationPanelBody>
-      ),
-    },
-  ];
-
-  return (
-    <div className="react-container">
-      <Tabs
-        onTabChange={handleTabChange}
-        activeTab={activeTab}
-        tabs={panelTabs}
-      />
-    </div>
-  );
+  return <StudyPlanTool />;
 };
 
 /**

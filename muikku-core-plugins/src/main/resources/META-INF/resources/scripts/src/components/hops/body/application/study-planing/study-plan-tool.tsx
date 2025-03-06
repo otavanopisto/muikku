@@ -111,53 +111,55 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {/* Study planning calculator */}
-          <p className="hops-container__description">
-            Opintoaikalaskuri vertaa valmistumiselle asettamaasi tavoitetta
-            aikaan, joka sinulla on viikottaisin käytössäsi opiskeluun. Yhden
-            kurssin suorittaminen vie keskimäärin 28 tuntia. Jos valmistuminen
-            ei ole mahdollista ajassa, jonka voit käyttää opiskeluun, kannattaa
-            asiaa pohtia uudelleen.
-          </p>
-
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <label className="hops__label" htmlFor="graduationGoalDate">
-                Milloin haluat valmistua?
-              </label>
-              <div className="hops-container__helper-text">
-                Arvioi mihin päivämäärään mennessä haluaisit valmistua.
-              </div>
-              <DatePicker
-                className="hops__input"
-                id="graduationGoalDate"
-                selected={graduationGoalDate || undefined}
-                onChange={(date) => {
-                  // Set to last day of the selected month
-                  date.setMonth(date.getMonth() + 1);
-                  date.setDate(0);
-
-                  setGraduationGoalDate(date);
-                }}
-                showMonthYearPicker
-                dateFormat="MM/yyyy"
-              />
+          <div className="hops-container">
+            <div className="hops-container__description">
+              Opintoaikalaskuri vertaa valmistumiselle asettamaasi tavoitetta
+              aikaan, joka sinulla on viikottaisin käytössäsi opiskeluun. Yhden
+              kurssin suorittaminen vie keskimäärin 28 tuntia. Jos valmistuminen
+              ei ole mahdollista ajassa, jonka voit käyttää opiskeluun,
+              kannattaa asiaa pohtia uudelleen.
             </div>
 
-            <div className="hops__form-element-container">
-              <label className="hops__label" htmlFor="hoursPerWeek">
-                Kuinka monta tuntia ehdit opiskella viikossa?
-              </label>
-              <div className="hops-container__helper-text">
-                Arvioi montako tuntia viikossa sinulla on aikaa käytettävänä
-                opiskeluun.
+            <div className="hops-container__row">
+              <div className="hops__form-element-container">
+                <label className="hops__label" htmlFor="graduationGoalDate">
+                  Milloin haluat valmistua?
+                </label>
+                <div className="hops-container__helper-text">
+                  Arvioi mihin päivämäärään mennessä haluaisit valmistua.
+                </div>
+                <DatePicker
+                  className="hops__input"
+                  id="graduationGoalDate"
+                  selected={graduationGoalDate || undefined}
+                  onChange={(date) => {
+                    // Set to last day of the selected month
+                    date.setMonth(date.getMonth() + 1);
+                    date.setDate(0);
+
+                    setGraduationGoalDate(date);
+                  }}
+                  showMonthYearPicker
+                  dateFormat="MM/yyyy"
+                />
               </div>
-              <input
-                type="number"
-                id="hoursPerWeek"
-                className="hops__input"
-                value={hoursPerWeek}
-                onChange={(e) => setHoursPerWeek(Number(e.target.value))}
-              />
+
+              <div className="hops__form-element-container">
+                <label className="hops__label" htmlFor="hoursPerWeek">
+                  Kuinka monta tuntia ehdit opiskella viikossa?
+                </label>
+                <div className="hops-container__helper-text">
+                  Arvioi montako tuntia viikossa sinulla on aikaa käytettävänä
+                  opiskeluun.
+                </div>
+                <input
+                  type="number"
+                  id="hoursPerWeek"
+                  className="hops__input"
+                  value={hoursPerWeek}
+                  onChange={(e) => setHoursPerWeek(Number(e.target.value))}
+                />
+              </div>
             </div>
           </div>
 
@@ -175,7 +177,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          Opintojen suunnittelu
+          Opintojen eteneminen
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           <div className="study-planner__plan-status-container">

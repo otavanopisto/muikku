@@ -459,10 +459,14 @@
   align-items: center;
   border-radius: 4px;
   display: flex;
-  font-size: 12px;
+  font-size: $text-mobile-font-size;
   max-width: fit-content;
   padding: 3px 6px;
   text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  } 
 }
 
 .study-planner__card-label--mandatory {
@@ -554,26 +558,30 @@
 .study-planner__extra-section-content {
   display: flex;
   flex-flow: column nowrap;
-  gap: 10px;
+  gap: 15px;
   width: 100%;
 }
 
 .study-planner__extra-section-input-group {
   display: flex;
   flex-flow: column nowrap;
-  gap: 10px;
+  gap: 5px;
   width: 100%;
 }
 
 .study-planner__extra-section-input-group-label {
-  font-size: 0.875rem;
+  font-size: $text-mobile-font-size;
   font-weight: 600;
   width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
 
 .study-planner__extra-section-input-group-label-info {
   font-size: 0.8125rem;
-  font-weight: 100;
+  font-weight: 300;
   width: 100%;
 }
 
@@ -631,80 +639,34 @@
 }
 
 .study-planner__state-info-row-label {
-  font-size: 0.875rem;
-  font-weight: 200;
+  font-size: $text-mobile-font-size;
+  font-weight: 300;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
 
 .study-planner__state-info-row-value {
-  font-size: 0.875rem;
-  font-weight: 800;
-}
-
-// Mobile sidebar
-.study-planner__mobile-sidebar-header-actions {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
-.study-planner__selection-info {
-  border: 1px solid #f8a1ce;
-  display: flex;
-  flex-direction: column;
-}
-
-.study-planner__selection-info-text {
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-.study-planner__selected-period-month {
-  font-size: 1rem;
+  font-size: $text-mobile-font-size;
   font-weight: 600;
-}
 
-.study-planner__will-be-added {
-  margin: 10px 0 0;
-
-  &-title {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
-  }
-
-  &-planned-courses {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  &-course {
-    align-items: center;
-    background-color: var(--background-secondary);
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.25rem;
-    padding: 0.5rem;
-
-    &-name {
-      font-size: 0.9rem;
-      margin-right: 0.5rem;
-    }
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
   }
 }
 
 // Plan status
-.study-planner__plan-status {
-  padding: 10px 0;
-}
-
 .study-planner__plan-status-section {
   margin: 30px 0 0;
 }
 
 .study-planner__plan-status-container {
-  margin: 10px 0 0;
+  margin: 10px 10px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 10px 0 0;
+  }
 }
 
 .study-planner__plan-status-bar-container {
@@ -720,7 +682,6 @@
 
 .study-planner__plan-status-dates {
   display: flex;
-  font-size: 0.875rem;
   justify-content: space-between;
   margin: 0 0 5px;
 }
@@ -729,8 +690,12 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 30px;
-  margin: 10px 0 0;
+  gap: 10px 30px;
+  margin: 10px 10px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 10px 0 0;
+  }
 }
 
 .study-planner__plan-statistic-item {
@@ -742,7 +707,6 @@
 }
 
 .study-planner__plan-statistic-item-title {
-  font-size: 0.875rem;
   font-weight: 600;
   margin: 0 0 10px;
 }
@@ -774,7 +738,12 @@
   color: #8c8c8c;
   display: flex;
   gap: 15px;
+  margin: 0 10px;
   padding: 15px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 0;
+  }
 
   &--warning {
     border-color: $color-warn;
