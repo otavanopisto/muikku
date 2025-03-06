@@ -33,7 +33,6 @@ const StudentNavigationAside = () => {
         <NavigationTopic name={t("labels.all", { ns: "users" })}>
           <NavigationElement
             modifiers="aside-navigation-guider-flag"
-            icon="flag"
             isActive={view === "students"}
             onClick={() => setView("students")}
           >
@@ -41,7 +40,6 @@ const StudentNavigationAside = () => {
           </NavigationElement>
           <NavigationElement
             modifiers="aside-navigation-guider-flag"
-            icon="flag"
             isActive={view === "notes"}
             onClick={() => setView("notes")}
           >

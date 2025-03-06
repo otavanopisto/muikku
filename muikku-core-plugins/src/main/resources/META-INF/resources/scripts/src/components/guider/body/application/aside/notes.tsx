@@ -38,10 +38,9 @@ const NoteNavigationAside = () => {
   return (
     <Navigation>
       {isMobileWidth && (
-        <NavigationTopic name={t("labels.all", { ns: "users" })}>
+        <NavigationTopic name={t("labels.view", { ns: "guider" })}>
           <NavigationElement
             modifiers="aside-navigation-guider-flag"
-            icon="flag"
             isActive={view === "students"}
             onClick={() => setView("students")}
           >
@@ -49,7 +48,6 @@ const NoteNavigationAside = () => {
           </NavigationElement>
           <NavigationElement
             modifiers="aside-navigation-guider-flag"
-            icon="flag"
             isActive={view === "notes"}
             onClick={() => setView("notes")}
           >

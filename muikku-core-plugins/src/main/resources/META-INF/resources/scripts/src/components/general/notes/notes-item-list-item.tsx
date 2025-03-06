@@ -421,6 +421,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         >
           <div tabIndex={0}>
             <IconButton
+              buttonAs={"div"}
               icon="more_vert"
               buttonModifiers={["notes-action", "notes-more"]}
             />
@@ -545,8 +546,6 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
           <div className="notes__item-recipients">
             {!specificRecipient
               ? avatars.map((avatar) => {
-                  const testOwner = loggedUserIsOwner;
-                  const testCreator = loggedUserIsCreator;
                   const avatarRecipient = recipients?.find(
                     (r) => r.recipientId === avatar.id
                   );
@@ -564,8 +563,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                       key={avatar.id}
                       userId={avatar.id}
                       status={avatarRecipient.status}
-                      loggedUserIsCreator={testCreator}
-                      loggedUserIsOwner={testOwner}
+                      loggedUserIsCreator={loggedUserIsCreator}
+                      loggedUserIsOwner={loggedUserIsOwner}
                       handleSetNoteStatus={handleUpdateNotesItemStatusClick}
                     >
                       <div

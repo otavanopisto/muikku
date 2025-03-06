@@ -152,6 +152,7 @@ const NoteStatusSetting = (props: NoteStatusSettingProps) => {
           ) : (
             <div tabIndex={0}>
               <IconButton
+                buttonAs={"div"}
                 icon="more_vert"
                 buttonModifiers={["notes-action", "notes-more"]}
               />
