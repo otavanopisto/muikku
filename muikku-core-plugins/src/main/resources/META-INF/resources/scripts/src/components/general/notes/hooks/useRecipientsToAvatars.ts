@@ -5,7 +5,6 @@ import { useMemo } from "react";
  * useRecipientsToAvatars turns note recipients into avatars
  * @param recipients recipients
  * @param showGroupMembers showGroupMembers
- * @param groupMembersActions groupMembersActions
  */
 export const useRecipientsToAvatars = (
   recipients: NoteReceiver[],

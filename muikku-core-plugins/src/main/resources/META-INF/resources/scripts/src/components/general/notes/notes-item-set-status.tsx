@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NoteReceiver, NoteStatusType } from "~/generated/client";
+import { NoteStatusType } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 import Link from "~/components/general/link";
 import Dropdown from "~/components/general/dropdown";

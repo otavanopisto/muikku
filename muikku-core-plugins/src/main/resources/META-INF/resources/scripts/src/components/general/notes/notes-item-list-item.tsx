@@ -353,7 +353,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     };
 
     /**
-     *  avatarUpdateStatus
+     * avatarUpdateStatus
      * @param recipientId
      * @returns JSX.Element
      */
