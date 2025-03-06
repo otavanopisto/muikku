@@ -49,7 +49,7 @@ const StudyPlan = (props: StudyPlanProps) => {
       name: "Opintojen suunnittelu",
       type: "plan",
       component: (
-        <ApplicationPanelBody>
+        <ApplicationPanelBody modifier="tabs">
           <StudyPlanTool />
         </ApplicationPanelBody>
       ),
