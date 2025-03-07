@@ -379,6 +379,9 @@
   border-radius: 5px;
   box-shadow: 0 1px 2px $color-study-plan-tool-card-boxshadow;
   cursor: move;
+
+  // This will help to prevent card from collapsing when animating open/close of the the period column
+  min-width: 270px;
   opacity: 1;
   position: relative;
 }
