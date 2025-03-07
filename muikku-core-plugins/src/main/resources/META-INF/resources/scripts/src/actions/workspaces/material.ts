@@ -741,18 +741,21 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
           const materialResult: any = {};
           changed = false;
 
-          materialFields.forEach((field) => {
-            if (
-              typeof (data.update as any)[field] !== "undefined" &&
-              (data.material as any)[field] !== (data.update as any)[field]
-            ) {
-              changed = true;
-            }
-            materialResult[field] =
-              typeof (data.update as any)[field] !== "undefined"
-                ? (data.update as any)[field]
-                : (data.material as any)[field];
-          });
+          // Only update if type is html materials
+          if (data.material.type === "html") {
+            materialFields.forEach((field) => {
+              if (
+                typeof (data.update as any)[field] !== "undefined" &&
+                (data.material as any)[field] !== (data.update as any)[field]
+              ) {
+                changed = true;
+              }
+              materialResult[field] =
+                typeof (data.update as any)[field] !== "undefined"
+                  ? (data.update as any)[field]
+                  : (data.material as any)[field];
+            });
+          }
 
           if (changed) {
             await materialsApi.updateMaterial({
@@ -839,6 +842,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               },
             });
           }
+
           localStorage.removeItem(
             "TEMPORARY_LOCAL_DRAFT_" +
               data.material.workspaceMaterialId +

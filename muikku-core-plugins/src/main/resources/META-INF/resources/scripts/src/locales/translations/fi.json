@@ -406,6 +406,7 @@
       "addTaskInstruction": "<p>Plus-ikonista aukeaa editori, jolla voit antaa opiskelijalle uuden tehtävän. Voit ajastaa tehtävän alkamaan ja päättymään tiettynä päivänä. Voit asettaa myös vain toisen päivämäärän tai jättää päivämääräkentät tyhjiksi. Asetetut päivämäärät eivät vaikuta tehtävän näkyvyyteen.</p><p>Kirjoittamasi tehtävä näkyy opiskelijalle Opinnot-näkymän Opintojen yhteenveto -välilehdellä. Kun opiskelija on kuitannut tehtävän tehdyksi, antamassasi tehtävässä lukee \"Odottaa käsittelyä\". Voit hyväksyä tai olla hyväksymättä tehtävän. Sinun pitää lopuksi itse siirtää tehtävä arkistoon (roskakorikuvake).</p>",
       "addAttachmentInstruction": "Lisää liitetiedosto klikkaamalla tästä tai raahamalla tiedosto tähän kenttään",
       "empty": "–",
+      "empty_counselors": "Opiskelijalle ei ole määritelty ohjaajia",
       "lastVisit": "viimeisin: {{value}}",
       "lastAnswered": "viimeisin vastaus: {{value}}",
       "lastMessage": "viimeisin viesti: {{value}}",
@@ -1784,6 +1785,9 @@
       "teacherMessage": "Viesti kurssin opettajalle",
       "totalAssignments": "Tehtäviä yhteensä",
       "unanswered": "Aloittamattomat",
+      "visibleRestrictionAll": "Näkyy kaikille",
+      "visibleRestrictionLoggedIn": "Näkyy vain kirjautuneille käyttäjille",
+      "visibleRestrictionMembers": "Näkyy vain kurssin jäsenille",
       "wordCount": "Sanoja"
     },
     "notifications": {

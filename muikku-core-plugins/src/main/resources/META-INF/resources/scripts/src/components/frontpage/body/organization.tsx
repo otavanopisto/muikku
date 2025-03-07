@@ -18,6 +18,11 @@ class FrontpageOrganization extends React.Component<WithTranslation> {
           ns: "frontPage",
         })}
       >
+        <h2 className="screen-container__header">
+          {this.props.t("labels.organization", {
+            ns: "frontPage",
+          })}
+        </h2>
         <div className="card card--frontpage-organization">
           <div className="ordered-container ordered-container--frontpage-organization-info">
             <div className="ordered-container__item ordered-container__item--organization-logo">
@@ -30,31 +35,6 @@ class FrontpageOrganization extends React.Component<WithTranslation> {
                 />
               </div>
             </div>
-
-            <div className="ordered-container__item ordered-container__item--organization-social-media">
-              <div className="ordered-container__item-subcontainer ordered-container__item-subcontainer--organization-social-media">
-                <h2 className="ordered-container__subcontainer-header--social-media">
-                  {this.props.t("labels.organization", {
-                    ns: "frontPage",
-                  })}
-                </h2>
-                <ButtonSocial
-                  openInNewTab="_blank"
-                  className="icon-twitter"
-                  href="https://twitter.com/otaviafi"
-                >
-                  <span className="visually-hidden">Twitter Otavia</span>
-                </ButtonSocial>
-                <ButtonSocial
-                  openInNewTab="_blank"
-                  className="icon-linkedin"
-                  href="https://www.linkedin.com/company/106028"
-                >
-                  <span className="visually-hidden">Linkedin Otavia</span>
-                </ButtonSocial>
-              </div>
-            </div>
-
             <div className="ordered-container__item ordered-container__item--organization-description">
               <div className="ordered-container__item-subcontainer ordered-container__item-subcontainer--organization-description">
                 <div
@@ -72,6 +52,13 @@ class FrontpageOrganization extends React.Component<WithTranslation> {
                 >
                   www.otavia.fi
                 </Button>
+                <ButtonSocial
+                  openInNewTab="_blank"
+                  className="icon-linkedin"
+                  href="https://www.linkedin.com/company/106028"
+                >
+                  <span className="visually-hidden">Linkedin Otavia</span>
+                </ButtonSocial>
               </div>
             </div>
           </div>
