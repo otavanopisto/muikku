@@ -29,6 +29,7 @@
       "filterContent": "Suodata sisältöä",
       "hide": "Piilota",
       "hideAll": "Piilota kaikki",
+      "hideAssignment": "Piilota tehtävänanto",
       "hide_comments": "Piilota kommentit",
       "load": "Lataa",
       "load_all": "Lataa kaikki",
@@ -53,6 +54,7 @@
       "share": "Jaa",
       "show": "Näytä",
       "showAll": "Näytä kaikki",
+      "showAssignment": "Näytä tehtävänanto",
       "show_comments": "Näytä kommentit",
       "signIn": "Kirjaudu sisään",
       "signOut": "Kirjaudu ulos",
@@ -2280,6 +2282,8 @@
       "remove_evaluationRequest": "Poista arviointipyyntö",
       "remove_interimEvaluationRequest": "Poista välipalautepyyntö",
       "remove_supplementationRequest": "Poista täydennyspyyntö",
+      "journalMaterialShow": "Näytä tehtävänanto",
+      "journalMaterialHide": "Piilota tehtävänanto",
       "unlockEvalRequest": "Poista lukitus"
     },
     "content": {
