@@ -4,6 +4,8 @@
 @import "../base/breakpoints";
 
 .study-planner {
+  @include text;
+
   background: $color-default;
   display: flex;
   flex-flow: column nowrap;
@@ -32,12 +34,16 @@
 
 .study-planner__controls {
   align-items: center;
-  border-bottom: 1px solid $color-default-separator-border;
   display: flex;
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
   justify-content: space-between;
+  padding: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0;
+  }
 }
 
 .study-planner__control-buttons {
@@ -75,7 +81,6 @@
 }
 
 .study-planner__content {
-  border-top: 1px solid $color-study-plan-tool-accent;
   display: flex;
   flex-basis: 100%;
   flex-grow: 1;
@@ -84,7 +89,11 @@
   gap: 10px;
   height: 100%;
   overflow: hidden;
-  padding-top: 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    border-top: 1px solid $color-study-plan-tool-accent;
+    padding: 10px 0 0;
+  }
 }
 
 .study-planner__timeline-container {
@@ -201,7 +210,6 @@
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  flex-wrap: wrap;
   font-size: $text-mobile-font-size;
   font-weight: 400;
   justify-content: space-between;
