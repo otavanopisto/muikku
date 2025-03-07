@@ -259,6 +259,7 @@
 
 .dialog__window--copy-workspace {
   height: 100%;
+  max-width: none;
 
   .multi-step {
     bottom: 20px;
@@ -277,7 +278,14 @@
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 5px;
+    left: auto;
     max-height: calc(100% - 30px);
+    right: auto;
+    width: 728px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 984px;
   }
 }
 
@@ -533,9 +541,11 @@
 .dialog__note-item {
   flex-grow: 1;
 }
+
 .dialog__note-recipients {
-  padding: 0 0 0 10px;
   flex-basis: 100%;
+  padding: 0 0 0 10px;
+
   @include breakpoint($breakpoint-mobile-xl) {
     flex-basis: 300px;
   }
@@ -807,20 +817,6 @@
     @include breakpoint($breakpoint-desktop-xl) {
       width: 1160px;
     }
-  }
-}
-
-.dialog__window--note-information {
-  max-width: none;
-
-  @include breakpoint($breakpoint-pad) {
-    left: auto;
-    right: auto;
-    width: 728px;
-  }
-
-  @include breakpoint($breakpoint-desktop) {
-    width: 984px;
   }
 }
 

@@ -101,15 +101,18 @@
   }
 }
 
+// stylelint-disable-next-line selector-class-pattern
 .avatar--approval_pending,
 .avatar--approved {
   cursor: pointer;
 }
 
+// stylelint-disable-next-line selector-class-pattern
 .avatar--approval_pending {
-  border: 2px solid $color-info;
   animation: approval-pending-border-pulse 2s infinite;
+  border: 2px solid $color-info;
 }
+
 .avatar--approved {
   border: 2px solid $color-success;
 }
@@ -232,11 +235,11 @@
 
 // Animations
 // blink
-
 @keyframes approval-pending-border-pulse {
   50% {
-    border-color: rgba(0, 255, 255, 0);
+    border-color: $color-info-blink;
   }
+
   100% {
     border-color: $color-info;
   }
