@@ -4,23 +4,26 @@ import UserAvatar from "./subtypes/user";
 import { AvatarGroupUser } from "./subtypes/group-components/user";
 import GroupAvatar from "./subtypes/group";
 
-/**
- * AvatarProps
- */
-export interface AvatarProps {
-  hasImage: boolean;
+export interface AvatarEntity {
   id: number | null;
   name: string;
-  size?: string;
+  hasImage: boolean;
+  showTooltip?: boolean;
   groupAvatar?: "usergroup" | "workspace";
   groupMembers?: AvatarGroupUser[];
   groupMemberAction?: (userId: number) => JSX.Element;
+}
+
+/**
+ * AvatarProps
+ */
+interface AvatarProps extends AvatarEntity {
+  size?: string;
   userCategory?: number;
   avatarAriaLabel?: string;
   modifier?: string;
   groupAvatarModifier?: string;
   userAvatarModifier?: string;
-  showTooltip?: boolean;
   avatarAriaHidden?: boolean;
 }
 

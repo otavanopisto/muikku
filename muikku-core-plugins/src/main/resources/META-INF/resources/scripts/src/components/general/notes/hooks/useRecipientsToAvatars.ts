@@ -1,5 +1,5 @@
 import { NoteReceiver } from "~/generated/client";
-import { AvatarProps } from "~/components/general/avatar/index";
+import { AvatarEntity } from "~/components/general/avatar/index";
 import { useMemo } from "react";
 /**
  * useRecipientsToAvatars turns note recipients into avatars
@@ -9,9 +9,9 @@ import { useMemo } from "react";
 export const useRecipientsToAvatars = (
   recipients: NoteReceiver[],
   showGroupMembers?: boolean
-): AvatarProps[] => {
+): AvatarEntity[] => {
   const noteAvatars = useMemo(() => {
-    const avatars: AvatarProps[] = [];
+    const avatars: AvatarEntity[] = [];
     const userGroupIds: number[] = [];
     const workspaceIds: number[] = [];
     recipients.forEach((noteRecipient) => {
