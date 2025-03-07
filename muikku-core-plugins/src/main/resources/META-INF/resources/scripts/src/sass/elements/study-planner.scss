@@ -471,10 +471,6 @@
   max-width: fit-content;
   padding: 3px 6px;
   text-transform: uppercase;
-
-  @include breakpoint($breakpoint-pad) {
-    font-size: $text-desktop-font-size;
-  } 
 }
 
 .study-planner__card-label--mandatory {
