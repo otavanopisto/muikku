@@ -303,7 +303,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       <AnimateHeight duration={400} height={showContent ? "auto" : 0}>
         {material && (
           <>
-            <div className="evaluation-modal__item-body-journal-material-toggle">
+            <div className="evaluation-modal__item-subheader">
               <Button
                 icon={showMaterial ? "arrow-down" : "arrow-right"}
                 onClick={handleShowMaterialClick}
