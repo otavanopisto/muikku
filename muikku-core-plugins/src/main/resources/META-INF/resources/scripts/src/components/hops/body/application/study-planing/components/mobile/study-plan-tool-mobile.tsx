@@ -160,7 +160,7 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
         className="study-planner study-planner--mobile-not-open swiper-no-swiping"
       >
         <Button
-          buttonModifiers={["primary"]}
+          buttonModifiers={["info"]}
           onClick={handleOpenPlanner}
           disabled={isOpen}
         >
