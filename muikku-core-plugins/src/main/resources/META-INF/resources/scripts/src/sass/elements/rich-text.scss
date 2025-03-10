@@ -2,7 +2,7 @@
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-@import "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap";
 
 // This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
 
@@ -16,6 +16,10 @@
   line-height: 1.25rem;
   word-wrap: break-word;
   /* stylelint-enable selector-class-pattern */
+
+  &:lang(ru) {
+    font-family: "Noto Sans", sans-serif;
+  }
 
   // This will prevent ckeditor to screw up toolbar (and other elements) rendering becouse of previous rule
   .cke * {

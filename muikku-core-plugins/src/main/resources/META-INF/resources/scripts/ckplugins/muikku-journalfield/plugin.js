@@ -35,13 +35,6 @@
           object.append(paramType);
           object.append(paramContent);
 
-          // Default UI representation
-
-          var input = new CKEDITOR.dom.element('input');
-          input.setAttribute('name', contentJson.name);
-          input.setAttribute('type', 'file');
-          object.append(input);
-
           // CKEditor UI representation
 
           var fakeElement = editor.createFakeElement(object, 'muikku-journalfield', 'object');
