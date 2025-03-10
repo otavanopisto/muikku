@@ -265,7 +265,14 @@ class DependantApplication extends React.Component<
           pedagogyFormState: state,
         });
       }
+    } else {
+      const firstDependant = this.props.dependants.list[0];
+
+      if (firstDependant) {
+        window.location.hash = firstDependant.identifier;
+      }
     }
+
     /**
      * If page is refreshed, we need to check hash which
      * tab was opened and set that at the start to state as

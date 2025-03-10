@@ -596,9 +596,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   handlePaste(e: React.ClipboardEvent) {
     const file =
       e.clipboardData && e.clipboardData.files && e.clipboardData.files[0];
-    e.stopPropagation();
-    e.preventDefault();
     if (file.type.startsWith("image")) {
+      /* We stop and prevent normal paste bahaviour only if clipboard has image[0] there, everything else will bypass this */
+      e.stopPropagation();
+      e.preventDefault();
       this.insertImage(file);
     }
   }

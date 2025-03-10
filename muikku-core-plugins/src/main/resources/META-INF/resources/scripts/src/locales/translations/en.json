@@ -29,6 +29,7 @@
       "filterContent": "Filter content",
       "hide": "Hide",
       "hideAll": "Hide all",
+      "hideAssignment": "Hide assignment",
       "hide_comments": "Hide comments",
       "load": "Load",
       "load_all": "Load all",
@@ -53,6 +54,7 @@
       "share": "Share",
       "show": "Show",
       "showAll": "Show all",
+      "showAssignment": "Show assignment",
       "show_comments": "Show comments",
       "signIn": "Sign in",
       "signOut": "Sign out",
@@ -404,6 +406,7 @@
       "addTaskInstruction": "Clicking on the plus icon will open the editor where you are able to give a new task to a student. You may schedule the task to start and/or finish at a specified time by setting the start date and/or finish date for the task. You may also leave the date fields empty. The dates will have no impact on the visibility of the task.</p><p>The student will see the task you have given them on the state of studies tab in the Studies view. Once the student has marked the task as done, its status changes to Waiting for approval. You can then approve or reject the task. Finally, you will have to archive the task (by clicking the Trashcan icon).",
       "addAttachmentInstruction": "Add a file by clicking here or by dragging it into this box",
       "empty": "-",
+      "empty_counselors": "The student has no counselors",
       "lastVisit": "Last visit: {{value}}",
       "lastAnswered": "Latest answer: {{value}}",
       "lastMessage": "Latest message: {{value}}",
@@ -1782,6 +1785,9 @@
       "teacherMessage": "Message for the course teacher",
       "totalAssignments": "Total assignments",
       "unanswered": "Unanswered",
+      "visibleRestrictionAll": "Visible to all",
+      "visibleRestrictionLoggedIn": "Visible only to logged in users",
+      "visibleRestrictionMembers": "Visible only to course members",
       "wordCount": "Words"
     },
     "notifications": {
