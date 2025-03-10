@@ -27,14 +27,14 @@ function TitleProvider(props: TitleProviderProps) {
         <link
           rel="icon"
           type="image/png"
-          sizes="32x32"
-          href="/gfx/favicons/favicon-32x32.png"
+          sizes="16x16"
+          href="/gfx/favicons/favicon-16x16.png"
         />
         <link
           rel="icon"
           type="image/png"
-          sizes="16x16"
-          href="/gfx/favicons/favicon-16x16.png"
+          sizes="32x32"
+          href="/gfx/favicons/favicon-32x32.png"
         />
 
         {/* For Google and Android */}
