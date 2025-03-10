@@ -4,6 +4,9 @@ import UserAvatar from "./subtypes/user";
 import { AvatarGroupUser } from "./subtypes/group-components/user";
 import GroupAvatar from "./subtypes/group";
 
+/**
+ * AvatarEntity
+ */
 export interface AvatarEntity {
   id: number | null;
   name: string;
