@@ -1814,9 +1814,10 @@ public class EvaluationRESTService extends PluginRESTService {
     Date evaluationDate = compositeAssessmentRequest.getEvaluationDate();
     Boolean graded = evaluationDate != null;
     if (userEntity != null) {
-      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
+      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndHandledAndArchived(
           userEntity.getId(),
           workspaceEntity.getId(),
+          Boolean.FALSE,
           Boolean.FALSE);
       if (supplementationRequest != null &&
           (evaluationDate == null || evaluationDate.before(supplementationRequest.getRequestDate())) &&
@@ -1885,6 +1886,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setSubjects(subjects);
     boolean hasPedagogyForm = pedagogyController.hasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
+    restAssessmentRequest.setU18Compulsory(userEntityController.isUnder18CompulsoryEducationStudent(workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier()));
     return restAssessmentRequest;
   }
 
@@ -1959,7 +1961,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setSubjects(subjects);
     boolean hasPedagogyForm = pedagogyController.hasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
-    
+    restAssessmentRequest.setU18Compulsory(userEntityController.isUnder18CompulsoryEducationStudent(workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier()));
     return restAssessmentRequest;
   }
   
@@ -2040,7 +2042,7 @@ public class EvaluationRESTService extends PluginRESTService {
     restAssessmentRequest.setSubjects(subjects);
     boolean hasPedagogyForm = pedagogyController.hasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId());
     restAssessmentRequest.setHasPedagogyForm(hasPedagogyForm);
-    
+    restAssessmentRequest.setU18Compulsory(userEntityController.isUnder18CompulsoryEducationStudent(workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier()));
     return restAssessmentRequest;
   }
 

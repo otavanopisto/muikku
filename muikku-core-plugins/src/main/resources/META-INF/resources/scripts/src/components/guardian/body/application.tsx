@@ -4,14 +4,12 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Records from "./application/records";
 import Summary from "./application/summary";
-import Hops from "./application/hops";
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
 import {
   TranscriptOfRecordLocationType,
   RecordsType,
 } from "../../../reducers/main-function/records/index";
-import { HOPSState } from "../../../reducers/main-function/hops";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
 import "~/sass/elements/link.scss";
@@ -21,7 +19,6 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
-import { COMPULSORY_HOPS_VISIBLITY } from "~/components/general/hops-compulsory-education-wizard";
 import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/general/pedagogical-support-form";
 import { withTranslation, WithTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
@@ -32,7 +29,6 @@ import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import { DependantsState } from "~/reducers/main-function/dependants";
 import { GuiderState } from "~/reducers/main-function/guider";
-import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 import {
   clearDependantState,
   clearDependantTriggerType,
@@ -41,10 +37,6 @@ import {
   loadStudentPedagogyFormAccess,
   LoadStudentAccessTriggerType,
 } from "~/actions/main-function/guider";
-import {
-  setHopsPhase,
-  SetHopsPhaseTriggerType,
-} from "~/actions/main-function/hops";
 import { AnyActionType } from "~/actions";
 /**
  * StudiesTab
@@ -52,7 +44,6 @@ import { AnyActionType } from "~/actions";
 type StudiesTab =
   | "RECORDS"
   | "CURRENT_RECORD"
-  | "HOPS"
   | "SUMMARY"
   | "STUDY_INFO"
   | "PEDAGOGY_FORM";
@@ -62,13 +53,11 @@ type StudiesTab =
  */
 interface DependantApplicationProps extends WithTranslation {
   location: TranscriptOfRecordLocationType;
-  hops: HOPSState;
   status: StatusType;
   records: RecordsType;
   guider: GuiderState;
   dependants: DependantsState;
   loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType;
-  setHopsPhase: SetHopsPhaseTriggerType;
   clearDependantState: clearDependantTriggerType;
 }
 
@@ -133,23 +122,8 @@ class DependantApplication extends React.Component<
    */
   isVisible(tab: Tab) {
     const currentDependantIdentifier = this.getCurrentDependantIdentifier();
-    const selectUserStudyProgramme = this.props.dependants.list.find(
-      (dependant) => dependant.identifier === currentDependantIdentifier
-    )?.studyProgrammeName;
+
     switch (tab.id) {
-      case "HOPS":
-        return (
-          COMPULSORY_HOPS_VISIBLITY.includes(selectUserStudyProgramme) ||
-          (this.props.hops.eligibility &&
-            this.props.hops.eligibility.upperSecondarySchoolCurriculum === true)
-        );
-      case "VOPS":
-        return (
-          this.props.status.isActiveUser &&
-          this.props.hops.value &&
-          (this.props.hops.value.goalMatriculationExam === "yes" ||
-            this.props.hops.value.goalMatriculationExam === "maybe")
-        );
       case "PEDAGOGY_FORM":
         return (
           UPPERSECONDARY_PEDAGOGYFORM.includes(
@@ -223,8 +197,6 @@ class DependantApplication extends React.Component<
     )?.userEntityId;
 
     if (dependantUserEntityId) {
-      this.props.setHopsPhase(dependantUserEntityId);
-
       // After clearing the state,
       // we reset everything for the newly selected user
       this.props.loadStudentPedagogyFormAccess(dependantUserEntityId, true);
@@ -248,17 +220,6 @@ class DependantApplication extends React.Component<
       const dependantUserEntityId = this.getDependantUserEntityId(
         currentDependantIdentifier
       );
-
-      // If there's no hopsPhase set and the user has a phased HOPS
-      if (
-        !this.props.hops.hopsPhase &&
-        COMPULSORY_HOPS_VISIBLITY.includes(
-          this.getDependantStudyProgramme(currentDependantIdentifier)
-        ) &&
-        dependantUserEntityId
-      ) {
-        this.props.setHopsPhase(dependantUserEntityId);
-      }
 
       // If there's no pedagogy form state, we load it
       if (
@@ -304,7 +265,14 @@ class DependantApplication extends React.Component<
           pedagogyFormState: state,
         });
       }
+    } else {
+      const firstDependant = this.props.dependants.list[0];
+
+      if (firstDependant) {
+        window.location.hash = firstDependant.identifier;
+      }
     }
+
     /**
      * If page is refreshed, we need to check hash which
      * tab was opened and set that at the start to state as
@@ -321,11 +289,7 @@ class DependantApplication extends React.Component<
           activeTab: "RECORDS",
         });
         break;
-      case "hops":
-        this.setState({
-          activeTab: "HOPS",
-        });
-        break;
+
       case "pedagogy-form":
         this.setState({
           activeTab: "PEDAGOGY_FORM",
@@ -382,31 +346,6 @@ class DependantApplication extends React.Component<
         <span>{selectedDependant?.label}</span>
       );
 
-    const hopsComponent = COMPULSORY_HOPS_VISIBLITY.includes(
-      this.getDependantStudyProgramme(selectedDependantIdentifier)
-    ) ? (
-      !this.props.hops.hopsPhase || this.props.hops.hopsPhase === "0" ? (
-        <div className="empty">
-          <span>
-            {this.props.t("content.hopsNotActivatedByCounselor", {
-              ns: "hops",
-            })}
-          </span>
-        </div>
-      ) : (
-        <CompulsoryEducationHopsWizard
-          user="guardian"
-          usePlace="guardian"
-          disabled={true}
-          studentId={selectedDependantIdentifier}
-          phase={parseInt(this.props.hops.hopsPhase)}
-          superVisorModifies={false}
-        />
-      )
-    ) : (
-      <Hops />
-    );
-
     let panelTabs: Tab[] = [
       {
         id: "SUMMARY",
@@ -431,17 +370,6 @@ class DependantApplication extends React.Component<
         ),
       },
       {
-        id: "HOPS",
-        name: t("labels.hops", { ns: "studies" }),
-        hash: "hops",
-        type: "hops",
-        component: (
-          <ApplicationPanelBody modifier="tabs">
-            {hopsComponent}
-          </ApplicationPanelBody>
-        ),
-      },
-      {
         id: "PEDAGOGY_FORM",
         name: "Pedagogisen tuen suunnitelma",
         hash: "pedagogy-form",
@@ -459,11 +387,6 @@ class DependantApplication extends React.Component<
 
     panelTabs = panelTabs.filter(this.isVisible);
 
-    /**
-     * Just because we need to have all tabs ready first before rendering Application panel
-     */
-    const ready = this.props.hops.status === "READY";
-
     return (
       <>
         <ApplicationPanel
@@ -471,7 +394,7 @@ class DependantApplication extends React.Component<
           panelOptions={dependantSelect}
           onTabChange={this.onTabChange}
           activeTab={this.state.activeTab}
-          panelTabs={ready && panelTabs}
+          panelTabs={panelTabs}
         />
       </>
     );
@@ -485,7 +408,6 @@ class DependantApplication extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     location: state.records.location,
-    hops: state.hops,
     records: state.records,
     guider: state.guider,
     status: state.status,
@@ -499,7 +421,7 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { clearDependantState, setHopsPhase, loadStudentPedagogyFormAccess },
+    { clearDependantState, loadStudentPedagogyFormAccess },
     dispatch
   );
 }

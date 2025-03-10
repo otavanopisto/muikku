@@ -12,6 +12,7 @@ import { useWindowContext } from "~/context/window-context";
 import { useIntersectionObserver } from "usehooks-ts";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
+import { getRoomSettingsKey } from "./chat-helpers";
 
 /**
  * ChatPanelProps
@@ -301,8 +302,12 @@ interface ChatRoomPanelProps extends ChatPanelProps {
 function ChatRoomPanel(props: ChatRoomPanelProps) {
   const { targetRoom } = props;
 
-  const { markMsgsAsRead } = useChatContext();
-
+  const {
+    notificationSettings,
+    markMsgsAsRead,
+    toggleRoomNotificationsImmediate,
+  } = useChatContext();
+  const { t } = useTranslation("chat");
   // Discussion instance to handle instance changes
   const { infoState, instance } = useDiscussionInstance({
     instance: props.discussionInstance,
@@ -438,6 +443,20 @@ function ChatRoomPanel(props: ChatRoomPanelProps) {
     setMsgToEdited(msg);
   };
 
+  /**
+   * Handles toggle notifications.
+   */
+  const handleToggleNotifications = () => {
+    toggleRoomNotificationsImmediate(
+      targetRoom.identifier,
+      targetRoom.type === "WORKSPACE"
+    );
+  };
+
+  const roomNotificationsEnabled = notificationSettings[
+    `${getRoomSettingsKey(targetRoom.type === "WORKSPACE")}Enabled`
+  ].includes(targetRoom.identifier);
+
   return (
     <div className="chat__discussion-panel">
       <div className="chat__discussion-panel-header">
@@ -449,6 +468,37 @@ function ChatRoomPanel(props: ChatRoomPanelProps) {
         <div className="chat__discussion-panel-header-description">
           {targetRoom.description}
         </div>
+        {notificationSettings.notificationsEnabled && (
+          <div className="chat__button-wrapper">
+            {roomNotificationsEnabled ? (
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={<p>{t("actions.muteRoomSounds", { ns: "chat" })}</p>}
+              >
+                <IconButton
+                  icon="sounds_on"
+                  buttonModifiers={["chat"]}
+                  onClick={handleToggleNotifications}
+                />
+              </Dropdown>
+            ) : (
+              <Dropdown
+                alignSelfVertically="top"
+                openByHover
+                content={
+                  <p>{t("actions.activateRoomSounds", { ns: "chat" })}</p>
+                }
+              >
+                <IconButton
+                  icon="sounds_off"
+                  buttonModifiers={["chat"]}
+                  onClick={handleToggleNotifications}
+                />
+              </Dropdown>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="chat__discussion-panel-body" ref={contentRef}>

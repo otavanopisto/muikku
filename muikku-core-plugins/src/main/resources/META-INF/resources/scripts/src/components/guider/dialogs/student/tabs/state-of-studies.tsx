@@ -25,22 +25,21 @@ import {
 } from "~/reducers/main-function/guider";
 import NewMessage from "~/components/communicator/dialogs/new-message";
 import { ButtonPill } from "~/components/general/button";
-import GuiderToolbarLabels from "../../../body/application/toolbar/labels";
+import GuiderToolbarLabels from "../../../body/application/toolbar/students/labels";
 import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
   ApplicationSubPanelItem,
 } from "~/components/general/application-sub-panel";
 import Avatar from "~/components/general/avatar";
-import {
-  UpdateCurrentStudentHopsPhaseTriggerType,
-  updateCurrentStudentHopsPhase,
-} from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
 import Notes from "~/components/general/notes/notes";
 import { Instructions } from "~/components/general/instructions";
-import StudyProgress from "~/components/general/study-progress";
-import StudyProgressContextProvider from "~/components/general/study-progress/context";
 import { withTranslation, WithTranslation } from "react-i18next";
+import StudyProgress from "./study-progress";
+import Dropdown from "~/components/general/dropdown";
+import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
+import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
+import moment from "moment";
 
 /**
  * StateOfStudiesProps
@@ -48,7 +47,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 interface StateOfStudiesProps extends WithTranslation {
   guider: GuiderState;
   status: StatusType;
-  updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -71,15 +69,6 @@ class StateOfStudies extends React.Component<
   constructor(props: StateOfStudiesProps) {
     super(props);
   }
-  /**
-   * handleHopsPhaseChange
-   * @param e e
-   */
-  handleHopsPhaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.updateCurrentStudentHopsPhase({
-      value: e.currentTarget.value,
-    });
-  };
 
   //TODO doesn't anyone notice that nor assessment requested, nor no passed courses etc... is available in this view
   /**
@@ -368,10 +357,76 @@ class StateOfStudies extends React.Component<
           <>
             <ApplicationSubPanel modifier="guider-student-header">
               {studentBasicHeader}
-              {this.props.guider.currentStudent.labels &&
-              this.props.guider.currentStudent.labels.length ? (
+              {(this.props.guider.currentStudent.labels &&
+                this.props.guider.currentStudent.labels.length) ||
+              this.props.guider.currentStudent.basic.hasPedagogyForm ||
+              this.props.guider.currentStudent.basic.u18Compulsory ? (
                 <ApplicationSubPanel.Body modifier="labels">
-                  <div className="labels">{studentLabels}</div>
+                  <div className="labels">
+                    {studentLabels}
+
+                    {this.props.guider.currentStudent.basic.hasPedagogyForm ? (
+                      <Dropdown
+                        alignSelfVertically="top"
+                        openByHover
+                        content={
+                          <span
+                            id={
+                              `pedagogyPlan-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            {this.props.i18n.t("labels.pedagogyPlan", {
+                              ns: "common",
+                            })}
+                          </span>
+                        }
+                      >
+                        <div className="label label--pedagogy-plan">
+                          <span
+                            className="label__text label__text--pedagogy-plan"
+                            aria-labelledby={
+                              `pedagogyPlan-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            P
+                          </span>
+                        </div>
+                      </Dropdown>
+                    ) : null}
+
+                    {this.props.guider.currentStudent.basic.u18Compulsory ? (
+                      <Dropdown
+                        alignSelfVertically="top"
+                        openByHover
+                        content={
+                          <span
+                            id={
+                              `u18Compulsory-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            {this.props.i18n.t("labels.u18Compulsory", {
+                              ns: "common",
+                            })}
+                          </span>
+                        }
+                      >
+                        <div className="label label--u18-compulsory">
+                          <span
+                            className="label__text label__text--u18-compulsory"
+                            aria-labelledby={
+                              `u18Compulsory-` +
+                              this.props.guider.currentStudent.basic.id
+                            }
+                          >
+                            O
+                          </span>
+                        </div>
+                      </Dropdown>
+                    ) : null}
+                  </div>
                 </ApplicationSubPanel.Body>
               ) : null}
             </ApplicationSubPanel>
@@ -403,6 +458,204 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
+            <ApplicationSubPanel modifier="counselors">
+              <ApplicationSubPanel.Header modifier="with-instructions">
+                {this.props.i18n.t("labels.counselors", {
+                  ns: "users",
+                })}
+                <Instructions
+                  modifier="instructions"
+                  alignSelfVertically="top"
+                  openByHover={false}
+                  closeOnClick={true}
+                  closeOnOutsideClick={true}
+                  persistent
+                  content={
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: this.props.i18n.t(
+                          "content.counselorsDescription",
+                          {
+                            ns: "studies",
+                          }
+                        ),
+                      }}
+                    />
+                  }
+                />
+              </ApplicationSubPanel.Header>
+              <ApplicationSubPanel.Body>
+                <div className="item-list item-list--student-counselors">
+                  {this.props.guider.currentStudent.basic.guidanceCounselors
+                    .length > 0 ? (
+                    this.props.guider.currentStudent.basic.guidanceCounselors.map(
+                      (counselor) => {
+                        let displayVacationPeriod =
+                          !!counselor.properties["profile-vacation-start"];
+                        if (counselor.properties["profile-vacation-end"]) {
+                          // we must check for the ending
+                          const vacationEndsAt = moment(
+                            counselor.properties["profile-vacation-end"]
+                          );
+                          const today = moment();
+                          // if it's before or it's today then we display, otherwise nope
+                          displayVacationPeriod =
+                            vacationEndsAt.isAfter(today, "day") ||
+                            vacationEndsAt.isSame(today, "day");
+                        }
+                        return (
+                          <div
+                            className="item-list__item item-list__item--student-counselor"
+                            key={counselor.userEntityId}
+                          >
+                            <div className="item-list__profile-picture">
+                              <Avatar
+                                id={counselor.userEntityId}
+                                userCategory={3}
+                                firstName={counselor.firstName}
+                                hasImage={counselor.hasImage}
+                              />
+                            </div>
+                            <div className="item-list__text-body item-list__text-body--multiline">
+                              <div className="item-list__user-name">
+                                {counselor.firstName} {counselor.lastName}
+                              </div>
+                              <div className="item-list__counselors labels">
+                                {counselor.groupAdvisor && (
+                                  <span className="label">
+                                    <span className="label__text">
+                                      {this.props.i18n.t(
+                                        "labels.groupCounselor",
+                                        {
+                                          ns: "users",
+                                        }
+                                      )}
+                                    </span>
+                                  </span>
+                                )}
+                                {counselor.studyAdvisor && (
+                                  <span className="label">
+                                    <span className="label__text">
+                                      {this.props.i18n.t(
+                                        "labels.studyCounselor",
+                                        {
+                                          ns: "users",
+                                        }
+                                      )}
+                                    </span>
+                                  </span>
+                                )}
+                              </div>
+                              <div className="item-list__user-contact-info">
+                                <div className="item-list__user-email">
+                                  <div className="glyph icon-envelope"></div>
+                                  {counselor.email}
+                                </div>
+                                {counselor.properties["profile-phone"] ? (
+                                  <div className="item-list__user-phone">
+                                    <div className="glyph icon-phone"></div>
+                                    {counselor.properties["profile-phone"]}
+                                  </div>
+                                ) : null}
+                              </div>
+                              {displayVacationPeriod ? (
+                                <div className="item-list__user-vacation-period">
+                                  {this.props.i18n.t("labels.status", {
+                                    context: "xa",
+                                  })}
+                                  &nbsp;
+                                  {localize.date(
+                                    counselor.properties[
+                                      "profile-vacation-start"
+                                    ]
+                                  )}
+                                  {counselor.properties["profile-vacation-end"]
+                                    ? "–" +
+                                      localize.date(
+                                        counselor.properties[
+                                          "profile-vacation-end"
+                                        ]
+                                      )
+                                    : null}
+                                </div>
+                              ) : null}
+                              <div className="item-list__user-actions">
+                                <CommunicatorNewMessage
+                                  extraNamespace="guidance-counselor"
+                                  initialSelectedItems={[
+                                    {
+                                      type: "staff",
+                                      value: {
+                                        id: counselor.userEntityId,
+                                        name: getName(counselor, true),
+                                      },
+                                    },
+                                  ]}
+                                >
+                                  <ButtonPill
+                                    icon="envelope"
+                                    aria-label={this.props.i18n.t(
+                                      "labels.send",
+                                      {
+                                        ns: "messaging",
+                                      }
+                                    )}
+                                    title={this.props.i18n.t("labels.send", {
+                                      ns: "messaging",
+                                    })}
+                                    buttonModifiers={[
+                                      "new-message",
+                                      "new-message-to-staff",
+                                    ]}
+                                  ></ButtonPill>
+                                </CommunicatorNewMessage>
+                                {counselor.properties["profile-phone"] &&
+                                counselor.properties["profile-whatsapp"] ? (
+                                  <WhatsappButtonLink
+                                    mobileNumber={
+                                      counselor.properties["profile-phone"]
+                                    }
+                                  />
+                                ) : null}
+                                {counselor.properties[
+                                  "profile-appointmentCalendar"
+                                ] ? (
+                                  <ButtonPill
+                                    aria-label={this.props.i18n.t(
+                                      "labels.appointment"
+                                    )}
+                                    title={this.props.i18n.t(
+                                      "labels.appointment"
+                                    )}
+                                    icon="clock"
+                                    buttonModifiers="appointment-calendar"
+                                    openInNewTab="_blank"
+                                    href={
+                                      counselor.properties[
+                                        "profile-appointmentCalendar"
+                                      ]
+                                    }
+                                  />
+                                ) : null}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+                    )
+                  ) : (
+                    <div className="empty">
+                      <span>
+                        {this.props.i18n.t("content.empty", {
+                          ns: "guider",
+                          context: "counselors",
+                        })}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </ApplicationSubPanel.Body>
+            </ApplicationSubPanel>
             <ApplicationSubPanel modifier="student-data-container">
               <ApplicationSubPanel>
                 <ApplicationSubPanel.Header>
@@ -410,27 +663,25 @@ class StateOfStudies extends React.Component<
                     ns: "guider",
                   })}
                 </ApplicationSubPanel.Header>
+
                 <ApplicationSubPanel.Body>
-                  <StudyProgressContextProvider
-                    user="supervisor"
-                    useCase="state-of-studies"
-                    studentId={this.props.guider.currentStudent.basic.id}
+                  <StudyProgress
+                    studentIdentifier={
+                      this.props.guider.currentStudent.basic.id
+                    }
                     studentUserEntityId={
                       this.props.guider.currentStudent.basic.userEntityId
                     }
-                    dataToLoad={["studentActivity"]}
-                  >
-                    <StudyProgress
-                      curriculumName={
-                        this.props.guider.currentStudent.basic.curriculumName
-                      }
-                      studyProgrammeName={
-                        this.props.guider.currentStudent.basic
-                          .studyProgrammeName
-                      }
-                      editMode={true}
-                    />
-                  </StudyProgressContextProvider>
+                    curriculumName={
+                      this.props.guider.currentStudent.basic.curriculumName
+                    }
+                    studyProgrammeName={
+                      this.props.guider.currentStudent.basic.studyProgrammeName
+                    }
+                    studyProgress={
+                      this.props.guider.currentStudent.studyProgress
+                    }
+                  />
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
@@ -495,7 +746,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       displayNotification,
-      updateCurrentStudentHopsPhase,
     },
     dispatch
   );

@@ -86,9 +86,11 @@ import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
+import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
+import fi.otavanopisto.muikku.plugins.material.rest.HtmlRestMaterial;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
@@ -194,6 +196,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private HtmlMaterialController htmlMaterialController;
 
   @Inject
   private LocaleController localeController;
@@ -1520,7 +1525,10 @@ public class WorkspaceRESTService extends PluginRESTService {
               elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
               hasImage,
               activeUserIds.contains(workspaceUserEntity.getId()),
-              pedagogyController.hasPedagogyForm(userEntity.getId())));
+              pedagogyController.hasPedagogyForm(userEntity.getId()),
+              userEntityController.isUnder18CompulsoryEducationStudent(workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier())
+            )
+          );
         }
       }
 
@@ -3205,7 +3213,9 @@ public class WorkspaceRESTService extends PluginRESTService {
         elasticUser.get("studyProgrammeName") == null ? null : elasticUser.get("studyProgrammeName").toString(),
         hasImage,
         workspaceUserEntity.getActive(),
-        pedagogyController.hasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId()));
+        pedagogyController.hasPedagogyForm(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId()),
+        userEntityController.isUnder18CompulsoryEducationStudent(workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier())
+    );
 
     return Response.ok(workspaceStudentRestModel).build();
   }
@@ -3977,18 +3987,22 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.setTitle(workspaceJournalEntry.getTitle());
     result.setCreated(workspaceJournalEntry.getCreated());
     result.setCommentCount(workspaceJournalController.getCommentCount(workspaceJournalEntry));
-    result.setIsMaterialField(workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null);
 
     if (workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null) {
-
       String[] identifiers = workspaceJournalEntry.getMaterialFieldReplyIdentifier().split("-");
-
       Long replyId = Long.parseLong(identifiers[1]);
-
       fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
-
       if (reply != null) {
         result.setWorkspaceMaterialReplyState(reply.getState());
+        HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(reply.getWorkspaceMaterial().getMaterialId());
+        if (htmlMaterial != null) {
+          result.setMaterial(new HtmlRestMaterial(htmlMaterial.getId(),
+              htmlMaterial.getTitle(),
+              htmlMaterial.getContentType(),
+              htmlMaterial.getHtml(),
+              htmlMaterial.getLicense(),
+              htmlMaterial.getViewRestrict()));        
+        }
       }
     }
 

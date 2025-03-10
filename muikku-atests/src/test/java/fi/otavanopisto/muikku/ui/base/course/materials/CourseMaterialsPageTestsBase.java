@@ -88,7 +88,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           
           waitForPresent(".file-uploader__item-delete-icon");
           waitAndClick(".file-uploader__item-delete-icon");
-          waitForVisible(".dialog--confirm-remove-answer-dialog .button--standard-ok");
+          waitForVisible(".dialog--confirm-remove-dialog .button--standard-ok");
           waitAndClick(".button--standard-ok");
 //        Timing problem where when debugging everything works fine, but at normal speed it gives error on saving empty field. Hence the sleep.
 //        Watching for below might resolve this.

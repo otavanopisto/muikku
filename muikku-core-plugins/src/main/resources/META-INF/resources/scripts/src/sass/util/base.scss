@@ -27,7 +27,7 @@ body {
     outline-offset: -2px;
   }
 
-  // Removing focus borders from every interactive elements which does not have focus defined when using mouse
+  // Removing focus borders from every interactive element which does not have focus defined when using mouse
   &.using-mouse :focus-visible:not(:focus) {
     outline: none;
   }

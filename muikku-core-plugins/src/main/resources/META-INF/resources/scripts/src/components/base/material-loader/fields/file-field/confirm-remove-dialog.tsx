@@ -108,7 +108,7 @@ class ConfirmRemoveDialog extends React.Component<
 
     return (
       <Dialog
-        modifier="confirm-remove-answer-dialog"
+        modifier="confirm-remove-dialog"
         title={t("labels.remove", { ns: "files" })}
         content={content}
         footer={footer}

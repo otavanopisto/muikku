@@ -163,6 +163,15 @@
   }
 }
 
+.wizard--copy-workspace {
+  height: 100%;
+
+  .wizard__container {
+    height: 100%;
+    position: relative;
+  }
+}
+
 .wizard--matriculation-exam-form {
   display: flex;
   flex-flow: column nowrap;
@@ -171,6 +180,10 @@
   .wizard__container {
     flex-basis: 100%;
     overflow: auto;
+  }
+
+  .wizard__footer {
+    padding: 20px 0 0;
   }
 
   ol.progtrckr li {
@@ -193,13 +206,14 @@
 
 .wizard__container {
   min-height: 400px;
-  overflow: hidden;
+  overflow: clip;
 }
 
 .wizard__footer {
   align-items: center;
   display: flex;
   justify-content: center;
+  padding: 10px;
 
   > * {
     margin: 0 5px;

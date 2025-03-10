@@ -1,10 +1,11 @@
 import { ActionType } from "~/actions";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { LoadingState } from "~/@types/shared";
+import { LoadingState, StudentActivityByStatus } from "~/@types/shared";
 import { Reducer } from "redux";
 import {
   ContactLog,
-  Student,
+  GuiderStudent,
+  FlaggedStudent,
   GuiderStudentNotification,
   UserFile,
   UserStudentFlag,
@@ -19,6 +20,9 @@ import {
   PedagogyFormAccess,
   HopsUppersecondary,
   ActivityLogEntry,
+  Note,
+  StudentCourseChoice,
+  OptionalCourseSuggestion,
 } from "~/generated/client";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
@@ -36,8 +40,13 @@ export type GuiderStudentsStateType =
   | "LOADING_MORE"
   | "ERROR"
   | "READY";
+
 export type GuiderCurrentStudentStateType = "LOADING" | "ERROR" | "READY";
 
+export type GuiderNotes = {
+  state: LoadingState;
+  list: Note[];
+};
 /**
  * GuiderActiveFiltersType
  */
@@ -78,6 +87,15 @@ export interface PedagogyFormAvailability {
 }
 
 /**
+ * GuiderStudentStudyProgress
+ */
+export interface GuiderStudentStudyProgress extends StudentActivityByStatus {
+  studentChoices: StudentCourseChoice[];
+  supervisorOptionalSuggestions: OptionalCourseSuggestion[];
+  options: string[];
+}
+
+/**
  * GuiderStudentUserProfileType
  */
 export interface GuiderStudentUserProfileType {
@@ -87,7 +105,7 @@ export interface GuiderStudentUserProfileType {
   pastWorkspacesState: LoadingState;
   activityLogState: LoadingState;
   pedagogyFormState: LoadingState;
-  basic: Student;
+  basic: GuiderStudent;
   labels: UserStudentFlag[];
   files: UserFile[];
   emails: UserStudentEmail[];
@@ -110,16 +128,18 @@ export interface GuiderStudentUserProfileType {
     showCredits: boolean;
   };
   hopsPhase?: string;
-  hopsAvailable: boolean;
   pedagogyFormAvailable: PedagogyFormAccess;
+  studyProgress: GuiderStudentStudyProgress;
 }
 
 /**
  * GuiderState
  */
 export interface GuiderState {
-  students: Student[];
+  students: FlaggedStudent[];
   studentsState: GuiderStudentsStateType;
+  notes: GuiderNotes;
+  noteState: LoadingState;
   activeFilters: GuiderActiveFiltersType;
   availablePurchaseProducts: CeeposPurchaseProduct[];
   availableFilters: GuiderFiltersType;
@@ -127,7 +147,7 @@ export interface GuiderState {
   toolbarLock: boolean;
   currentStudent: GuiderStudentUserProfileType | null;
   currentStudentState: GuiderCurrentStudentStateType;
-  selectedStudents: Student[];
+  selectedStudents: FlaggedStudent[];
   selectedStudentsIds: Array<string>;
   toggleAllStudentsActive: boolean;
 }
@@ -136,14 +156,14 @@ export interface GuiderState {
  * GuiderStatePatch
  */
 export interface GuiderStatePatch {
-  students?: Student[];
+  students?: FlaggedStudent[];
   studentsState?: GuiderStudentsStateType;
   activeFilters?: GuiderActiveFiltersType;
   availableFilters?: GuiderFiltersType;
   hasMore?: boolean;
   toolbarLock?: boolean;
   currentStudent?: GuiderStudentUserProfileType;
-  selectedStudents?: Student[];
+  selectedStudents?: FlaggedStudent[];
   selectedStudentsIds?: Array<string>;
   currentState?: GuiderCurrentStudentStateType;
 }
@@ -193,6 +213,11 @@ function sortOrders(a: CeeposOrder, b: CeeposOrder) {
 const initialGuiderState: GuiderState = {
   studentsState: "LOADING",
   currentStudentState: "LOADING",
+  noteState: "WAITING",
+  notes: {
+    state: "WAITING",
+    list: [],
+  },
   availableFilters: {
     labels: [],
     workspaces: [],
@@ -233,7 +258,6 @@ const initialGuiderState: GuiderState = {
     pastWorkspaces: [],
     activityLogs: [],
     purchases: [],
-    hopsAvailable: false,
     pedagogyFormAvailable: {
       accessible: false,
       courseTeacher: false,
@@ -244,6 +268,19 @@ const initialGuiderState: GuiderState = {
       completedCourseCredits: 0,
       mandatoryCourseCredits: 0,
       showCredits: false,
+    },
+    studyProgress: {
+      onGoingList: [],
+      transferedList: [],
+      gradedList: [],
+      suggestedNextList: [],
+      skillsAndArt: {},
+      otherLanguageSubjects: {},
+      otherSubjects: {},
+      supervisorOptionalSuggestions: [],
+      studentChoices: [],
+      options: [],
+      needSupplementationList: [],
     },
   },
 };
@@ -264,30 +301,72 @@ export const guider: Reducer<GuiderState> = (
         ...state,
         toolbarLock: true,
       };
-
     case "UNLOCK_TOOLBAR":
       return {
         ...state,
         toolbarLock: false,
       };
-
     case "UPDATE_GUIDER_ACTIVE_FILTERS":
       return {
         ...state,
         activeFilters: action.payload,
       };
-
     case "UPDATE_GUIDER_ALL_PROPS":
       return Object.assign({}, state, action.payload);
-
     case "UPDATE_GUIDER_STATE":
       return {
         ...state,
         studentsState: action.payload,
       };
-
+    case "UPDATE_NOTES_STATE": {
+      const notes = { ...state.notes };
+      notes.state = action.payload;
+      return { ...state, notes };
+    }
+    case "LOAD_NOTES": {
+      const notes = { ...state.notes };
+      notes.list = action.payload;
+      return { ...state, notes };
+    }
+    case "UPDATE_NOTE_RECIPIENT": {
+      const { noteId, recipient } = action.payload;
+      const updatedNotes = state.notes.list.map((note) =>
+        note.id === noteId
+          ? {
+              ...note,
+              recipients: note.recipients.map((r) =>
+                r.recipientId === recipient.recipientId ? recipient : r
+              ),
+            }
+          : note
+      );
+      return { ...state, notes: { ...state.notes, list: updatedNotes } };
+    }
+    case "UPDATE_NOTE": {
+      const updatedNotes = state.notes.list.map((note) =>
+        note.id === action.payload.id ? { ...note, ...action.payload } : note
+      );
+      return { ...state, notes: { ...state.notes, list: updatedNotes } };
+    }
+    case "ADD_NOTE": {
+      return {
+        ...state,
+        notes: {
+          ...state.notes,
+          list: [...state.notes.list, action.payload],
+        },
+      };
+    }
+    case "REMOVE_NOTE": {
+      const notes = { ...state.notes };
+      notes.list = notes.list.filter((note) => note.id !== action.payload);
+      return {
+        ...state,
+        notes,
+      };
+    }
     case "ADD_TO_GUIDER_SELECTED_STUDENTS": {
-      const student: Student = action.payload;
+      const student = action.payload;
 
       return {
         ...state,
@@ -296,7 +375,7 @@ export const guider: Reducer<GuiderState> = (
       };
     }
     case "REMOVE_FROM_GUIDER_SELECTED_STUDENTS": {
-      const student: Student = action.payload;
+      const student = action.payload;
 
       return {
         ...state,
@@ -308,7 +387,6 @@ export const guider: Reducer<GuiderState> = (
         ),
       };
     }
-
     case "SET_CURRENT_GUIDER_STUDENT":
       return {
         ...state,
@@ -341,7 +419,7 @@ export const guider: Reducer<GuiderState> = (
       }
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
             flags: student.flags.concat([action.payload.label]),
@@ -370,7 +448,7 @@ export const guider: Reducer<GuiderState> = (
       }
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         if (student.id === action.payload.studentId) {
           return Object.assign({}, student, {
             flags: student.flags.filter(
@@ -402,7 +480,7 @@ export const guider: Reducer<GuiderState> = (
       };
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         return Object.assign({}, student, {
           flags: student.flags.map(mapFnStudentLabel),
         });
@@ -432,7 +510,7 @@ export const guider: Reducer<GuiderState> = (
       };
 
       // eslint-disable-next-line jsdoc/require-jsdoc
-      const mapFn = function (student: Student) {
+      const mapFn = function (student: FlaggedStudent) {
         return Object.assign({}, student, {
           flags: student.flags.filter(filterFnStudentLabel),
         });

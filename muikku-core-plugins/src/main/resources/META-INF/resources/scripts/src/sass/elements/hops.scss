@@ -21,6 +21,37 @@
   }
 }
 
+.hops-form__toolbar-primary {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 10px 0 0;
+
+  > * {
+    margin: 0 0 0 10px;
+  }
+}
+
+.hops-form__toolbar-secondary {
+  align-items: center;
+  border-left: 1px solid $color-default-separator-border;
+  display: flex;
+  justify-content: center;
+  padding: 0 0 0 10px;
+
+  > * {
+    margin: 0 10px 0 0;
+  }
+}
+
+.hops-form__toolbar {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+  position: relative;
+}
+
 .hops-container__state {
   align-items: flex-start;
   border: 1px solid transparent;
@@ -130,7 +161,7 @@
   display: block;
   font-size: 1.125rem;
   font-weight: 400;
-  margin: 0 0 10px;
+  margin: 0 5px 10px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
@@ -148,6 +179,22 @@
   font-size: 1rem;
   font-weight: 400;
   width: auto;
+}
+
+.hops-container__fieldset-description {
+  margin: 0 5px;
+}
+
+.hops-container__list {
+  display: list-item;
+  margin: 10px 0;
+  padding: 0 20px;
+
+  li {
+    display: list-item;
+    list-style-type: disc;
+    padding: 5px;
+  }
 }
 
 .hops-container__info {
@@ -397,6 +444,7 @@
   flex-shrink: 0;
   justify-content: flex-end;
   margin: 5px 5px 5px 0;
+  min-width: 2.25rem;
 }
 
 .hops__form-element-container--single-row {
@@ -658,42 +706,152 @@
 .hops-container__indicator-item {
   border: 3px solid transparent;
   border-radius: 100%;
-  height: 20px;
+  color: $color-default-contrast;
+  height: 35px;
   margin: 0 5px 0 0;
-  width: 20px;
+  width: 35px;
 }
 
 .hops-container__indicator-item--mandatory {
+  align-items: center;
   background: $color-mandatory;
+  display: flex;
+  justify-content: center;
 }
 
 .hops-container__indicator-item--optional {
+  align-items: center;
   background: $color-optional;
+  display: flex;
+  justify-content: center;
 }
 
 .hops-container__indicator-item--approval {
-  background: $color-success;
-  border-color: $color-approval;
+  background: $color-completed;
+  position: relative;
+
+  &::after {
+    color: $color-great-success;
+    content: "\e62b";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &::before {
+    color: $color-completed-border;
+    content: "\e62c";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 2;
+  }
 }
 
 .hops-container__indicator-item--completed {
-  background: $color-success;
+  background: $color-completed;
+  border-color: $color-completed-border;
+  border-radius: 50% 50% 50% 3px;
+  position: relative;
+
+  &::after {
+    color: $color-great-success;
+    content: "\e62b";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &::before {
+    color: $color-completed-border;
+    content: "\e62c";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 2;
+  }
+}
+
+.hops-container__indicator-item--failed {
+  align-items: center;
+  background: $color-passed-failed;
+  border-color: $color-passed-failed-border;
+  display: flex;
+  justify-content: center;
+  position: relative;
+
+  &::after {
+    color: $color-great-success;
+    content: "\e62b";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 1;
+  }
+
+  &::before {
+    color: $color-completed-border;
+    content: "\e62c";
+    font-family: "muikku";
+    font-size: 1rem;
+    height: 1rem;
+    position: absolute;
+    right: -6px;
+    top: -6px;
+    width: 1rem;
+    z-index: 2;
+  }
+}
+
+.hops-container__indicator-item--aborted {
+  align-items: center;
+  background: $color-passed-aborted;
+  border-color: $color-passed-aborted-border;
+  display: flex;
+  justify-content: center;
+}
+
+.hops-container__indicator-item--supplementationrequest {
+  align-items: center;
+  background: lighten($color-incomplete, 30%);
+  border-color: $color-incomplete;
+  border-width: 3px;
+  display: flex;
+  justify-content: center;
 }
 
 .hops-container__indicator-item--inprogress {
-  background: $color-info;
-}
-
-.hops-container__indicator-item--selected {
-  border-color: $color-optional-selected;
-}
-
-.hops-container__indicator-item--suggested {
-  background: $color-suggested;
+  background: $color-default;
+  border-color: $color-info;
+  border-radius: 50% 3px 50% 50%;
 }
 
 .hops-container__indicator-item--next {
-  background: $color-next;
+  background: lighten($color-next, 50%);
+  border-color: $color-next;
+  border-radius: 50% 3px;
 }
 
 // HOPS study tool dropdown content
@@ -745,5 +903,14 @@
 
 .hops-container__study-tool-button-container {
   display: flex;
+  width: 100%;
+}
+
+.hops-edit__button-row {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  justify-content: flex-end;
   width: 100%;
 }

@@ -20,9 +20,9 @@ import InfoPopover from "~/components/general/info-popover";
 // Component can be renamed to something else if needed later
 import {
   CommunicatorSignature,
+  CommunicatorUserBasicInfo,
   Message as IMessage,
   MessageThreadLabel,
-  User,
 } from "~/generated/client";
 import { Action, Dispatch } from "redux";
 
@@ -67,7 +67,10 @@ class Message extends React.Component<MessageProps, MessageState> {
    * @param userId userId of current logged in user
    * @returns Returns span element with sender name
    */
-  getMessageSender(sender: User, userId: number): JSX.Element {
+  getMessageSender(
+    sender: CommunicatorUserBasicInfo,
+    userId: number
+  ): JSX.Element {
     if (sender.archived === true) {
       return (
         <span key={sender.userEntityId} className="message__user-archived">

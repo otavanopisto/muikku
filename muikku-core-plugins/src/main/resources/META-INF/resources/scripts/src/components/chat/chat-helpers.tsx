@@ -17,11 +17,26 @@ import ChatOverview from "./chat-overview";
 export type ActiveDiscussion = ChatRoom | ChatUser | null;
 
 /**
+ * Notification settings
+ */
+export interface NotificationSettings {
+  notificationsEnabled: boolean;
+  privateMessagesEnabled: boolean;
+  publicRoomEnabled: string[];
+  privateRoomEnabled: string[];
+}
+
+/**
  * ChatPermissions
  */
 export interface ChatPermissions {
   canManagePublicRooms: boolean;
 }
+
+/**
+ * Room type
+ */
+export type RoomType = "privateRoom" | "publicRoom";
 
 /**
  * ChatUserFilter
@@ -48,6 +63,37 @@ export interface ChatRoomFilters {
 export type ChatDashBoardTab = "users" | "rooms" | "blocked";
 
 export type ChatSettingVisibilityOption = OptionDefault<ChatUserVisibilityEnum>;
+
+/**
+ * Get room settings key
+ * @param isPrivate is private
+ * @returns room settings key
+ */
+export const getRoomSettingsKey = (isPrivate: boolean): RoomType =>
+  isPrivate ? "privateRoom" : "publicRoom";
+
+/**
+ * Toggle room notification
+ * @param settings settings
+ * @param roomId room id
+ * @param roomType room type
+ * @returns new settings
+ */
+export const toggleRoomNotification = (
+  settings: NotificationSettings,
+  roomId: string,
+  roomType: RoomType
+): NotificationSettings => {
+  const key = `${roomType}Enabled` as const;
+  const enabledRooms = settings[key];
+
+  return {
+    ...settings,
+    [key]: enabledRooms.includes(roomId)
+      ? enabledRooms.filter((id) => id !== roomId)
+      : [...enabledRooms, roomId],
+  };
+};
 
 /**
  * selectOptions

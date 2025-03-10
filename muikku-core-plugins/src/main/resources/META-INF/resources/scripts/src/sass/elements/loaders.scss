@@ -21,6 +21,24 @@
   }
 }
 
+.loader-error {
+  min-height: calc($loader-size + $loader-size / 2);
+  min-width: calc($loader-size + $loader-size / 2);
+  position: relative;
+
+  &::after {
+    color: $color-fatal;
+    content: "\ea08";
+    font-family: "muikku";
+    font-size: $loader-size;
+    height: $loader-size;
+    left: calc(50% - #{$loader-size} / 2);
+    position: absolute;
+    top:  calc(50% - #{$loader-size} / 2);
+    width: $loader-size;
+  }
+}
+
 .loaded-empty {
   align-items: center;
   display: flex;

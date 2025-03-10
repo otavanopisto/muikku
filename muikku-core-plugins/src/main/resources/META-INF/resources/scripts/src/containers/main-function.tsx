@@ -75,14 +75,12 @@ import GuardianBody from "../components/guardian/body";
 import {
   updateTranscriptOfRecordsFiles,
   updateAllStudentUsersAndSetViewToRecords,
-  setLocationToHopsInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
   setLocationToPedagogyFormInTranscriptOfRecords,
 } from "~/actions/main-function/records";
 import { CKEDITOR_VERSION } from "~/lib/ckeditor";
-import { updateHops } from "~/actions/main-function/hops";
 import { updateStatistics } from "~/actions/main-function/records/statistics";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
@@ -114,12 +112,16 @@ import { loadContactGroup } from "~/actions/base/contacts";
 import "../locales/i18n";
 import i18n from "../locales/i18n";
 import { InfoPopperProvider } from "~/components/general/info-popover/context";
-import { Announcement, User } from "~/generated/client";
+import { Announcement, UserWhoAmI } from "~/generated/client";
 import Chat from "~/components/chat";
 import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
 import { WindowContextProvider } from "~/context/window-context";
-import { loadMatriculationData } from "~/actions/main-function/hops/";
+import {
+  initializeHops,
+  loadMatriculationData,
+} from "~/actions/main-function/hops/";
 import GuardianHopsBody from "~/components/guardian_hops/body";
+import StudyProgressWebsocketWatcher from "~/components/general/study-progress-websocket-watcher";
 
 /**
  * MainFunctionProps
@@ -235,9 +237,7 @@ export default class MainFunction extends React.Component<
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [identifier, tab] = hashArray;
 
-      if (identifier) {
-        this.loadHopsData(tab, identifier);
-      }
+      this.loadHopsData(tab, identifier, true);
     } else if (window.location.pathname.includes("/guardian")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
       const [identifier, tab] = hashArray;
@@ -279,6 +279,15 @@ export default class MainFunction extends React.Component<
           decodeURIComponent(window.location.hash.split("/")[1]).split('"')[0]
         ) as Action
       );
+
+      // Initialize Hops
+      this.props.store.dispatch(
+        initializeHops({
+          userIdentifier: decodeURIComponent(
+            window.location.hash.split("/")[1]
+          ).split('"')[0],
+        }) as Action
+      );
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -300,6 +309,11 @@ export default class MainFunction extends React.Component<
     this.props.store.dispatch(loadStudents(filters) as Action);
     if (originalData.c) {
       this.props.store.dispatch(loadStudent(originalData.c) as Action);
+      this.props.store.dispatch(
+        initializeHops({
+          userIdentifier: originalData.c,
+        }) as Action
+      );
     }
   }
 
@@ -324,11 +338,6 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         updateAllStudentUsersAndSetViewToRecords(userId) as Action
       );
-    } else if (givenLocation === "hops") {
-      this.props.store.dispatch(
-        setLocationToHopsInTranscriptOfRecords() as Action
-      );
-      this.props.store.dispatch(updateHops(null, userId) as Action);
     } else if (givenLocation === "pedagogy-form") {
       this.props.store.dispatch(
         setLocationToPedagogyFormInTranscriptOfRecords() as Action
@@ -344,20 +353,26 @@ export default class MainFunction extends React.Component<
       );
       this.props.store.dispatch(updateSummary(userId) as Action);
     }
-    // Hops needs to be loaded for correct tabs to be seen
-    this.props.store.dispatch(updateHops(null, userId) as Action);
   }
 
   /**
    * loadHopsData
    * @param tab tab
    * @param userId userId
+   * @param guardianHops guardianHops
    */
-  loadHopsData(tab: string, userId?: string) {
+  loadHopsData(tab: string, userId?: string, guardianHops: boolean = false) {
     const givenLocation = tab;
 
-    if (givenLocation === "matriculation" || !givenLocation) {
-      this.props.store.dispatch(loadMatriculationData(userId) as Action);
+    // Load HOPS locked status and HOPS form history always
+    this.props.store.dispatch(
+      initializeHops({ userIdentifier: userId }) as Action
+    );
+
+    if (givenLocation === "matriculation" || (guardianHops && !givenLocation)) {
+      this.props.store.dispatch(
+        loadMatriculationData({ userIdentifier: userId }) as Action
+      );
     }
   }
 
@@ -560,17 +575,17 @@ export default class MainFunction extends React.Component<
 
       /**
        * loadCoursepickerDataByUser
-       * @param user user
+       * @param whoAmI whoAmI
        */
-      const loadCoursepickerDataByUser = (user: User) => {
+      const loadCoursepickerDataByUser = (whoAmI: UserWhoAmI) => {
         if (!currentLocationHasData) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const defaultSelections: any = {};
-          if (user.curriculumIdentifier) {
-            defaultSelections["c"] = [user.curriculumIdentifier];
+          if (whoAmI.curriculumIdentifier) {
+            defaultSelections["c"] = [whoAmI.curriculumIdentifier];
           }
-          if (user.organizationIdentifier) {
-            defaultSelections["o"] = [user.organizationIdentifier];
+          if (whoAmI.organizationIdentifier) {
+            defaultSelections["o"] = [whoAmI.organizationIdentifier];
           }
 
           if (defaultSelections.c || defaultSelections.o) {
@@ -590,16 +605,16 @@ export default class MainFunction extends React.Component<
       if (state.status.loggedIn) {
         if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
           this.props.store.dispatch(
-            loadLoggedUser((user: User) => {
-              loadCoursepickerDataByUser(user);
+            loadLoggedUser((whoAmICallbackValue) => {
+              loadCoursepickerDataByUser(whoAmICallbackValue);
             }) as Action
           );
         } else {
-          const user =
+          const whoAmI =
             state.userIndex.usersBySchoolData[
               state.status.userSchoolDataIdentifier
             ];
-          loadCoursepickerDataByUser(user);
+          loadCoursepickerDataByUser(whoAmI);
         }
       } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, false, false);
@@ -693,16 +708,16 @@ export default class MainFunction extends React.Component<
 
       /**
        * loadWorkspacesByUser
-       * @param user user
+       * @param whoAmI whoAmI
        */
-      const loadWorkspacesByUser = (user: User) => {
+      const loadWorkspacesByUser = (whoAmI: UserWhoAmI) => {
         if (!currentLocationHasData) {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const defaultSelections: any = {
             p: ["PUBLISHED"],
           };
-          if (user.organizationIdentifier) {
-            defaultSelections["o"] = [user.organizationIdentifier];
+          if (whoAmI.organizationIdentifier) {
+            defaultSelections["o"] = [whoAmI.organizationIdentifier];
           }
           if (defaultSelections.c || defaultSelections.o) {
             location.hash =
@@ -721,16 +736,16 @@ export default class MainFunction extends React.Component<
       if (state.status.loggedIn) {
         if (Object.keys(state.userIndex.usersBySchoolData).length === 0) {
           this.props.store.dispatch(
-            loadLoggedUser((user: User) => {
-              loadWorkspacesByUser(user);
+            loadLoggedUser((whoAmICallbackValue) => {
+              loadWorkspacesByUser(whoAmICallbackValue);
             }) as Action
           );
         } else {
-          const user =
+          const whoAmI =
             state.userIndex.usersBySchoolData[
               state.status.userSchoolDataIdentifier
             ];
-          loadWorkspacesByUser(user);
+          loadWorkspacesByUser(whoAmI);
         }
       } else if (!currentLocationHasData) {
         this.loadCoursePickerData(currentLocationData, true, false);
@@ -895,9 +910,7 @@ export default class MainFunction extends React.Component<
 
       this.props.store.dispatch(updateLabelFilters() as Action);
       this.props.store.dispatch(updateWorkspaceFilters() as Action);
-
       this.props.store.dispatch(updateUserGroupFilters() as Action);
-
       this.loadGuiderData();
     }
     return <GuiderBody />;
@@ -1036,10 +1049,8 @@ export default class MainFunction extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      // If there's an identifier, we can load records data, otherwise it's done in the hash change
-      if (identifier) {
-        this.props.store.dispatch(loadMatriculationData(identifier) as Action);
-      }
+      // If there's an identifier, we can load hops data, otherwise it's done in the hash change
+      this.loadHopsData(tab, identifier, true);
     }
     return <GuardianHopsBody />;
   }
@@ -1141,7 +1152,7 @@ export default class MainFunction extends React.Component<
    */
   render() {
     return (
-      <BrowserRouter>
+      <StudyProgressWebsocketWatcher>
         <div id="root">
           <WindowContextProvider>
             <ChatWebsocketContextProvider websocket={this.props.websocket}>
@@ -1151,41 +1162,43 @@ export default class MainFunction extends React.Component<
               <Notifications></Notifications>
               <DisconnectedWarningDialog />
               <EasyToUseFunctions />
-              <Route exact path="/" render={this.renderIndexBody} />
-              <Route
-                path="/organization"
-                render={this.renderOrganizationAdministrationBody}
-              />
-              <Route
-                path="/coursepicker"
-                render={this.renderCoursePickerBody}
-              />
-              <Route
-                path="/communicator"
-                render={this.renderCommunicatorBody}
-              />
-              <Route path="/discussion" render={this.renderDiscussionBody} />
-              <Route
-                path="/announcements"
-                render={this.renderAnnouncementsBody}
-              />
-              <Route path="/announcer" render={this.renderAnnouncerBody} />
-              <Route path="/guider" render={this.renderGuiderBody} />
-              <Route path="/guardian" render={this.renderGuardianBody} />
-              <Route
-                path="/guardian_hops"
-                render={this.renderGuardianHopsBody}
-              />
-              <Route path="/profile" render={this.renderProfileBody} />
-              <Route path="/records" render={this.renderRecordsBody} />
-              <Route path="/hops" render={this.renderHopsBody} />
-              <Route path="/evaluation" render={this.renderEvaluationBody} />
-              <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
-              <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
+              <BrowserRouter>
+                <Route exact path="/" render={this.renderIndexBody} />
+                <Route
+                  path="/organization"
+                  render={this.renderOrganizationAdministrationBody}
+                />
+                <Route
+                  path="/coursepicker"
+                  render={this.renderCoursePickerBody}
+                />
+                <Route
+                  path="/communicator"
+                  render={this.renderCommunicatorBody}
+                />
+                <Route path="/discussion" render={this.renderDiscussionBody} />
+                <Route
+                  path="/announcements"
+                  render={this.renderAnnouncementsBody}
+                />
+                <Route path="/announcer" render={this.renderAnnouncerBody} />
+                <Route path="/guider" render={this.renderGuiderBody} />
+                <Route path="/guardian" render={this.renderGuardianBody} />
+                <Route
+                  path="/guardian_hops"
+                  render={this.renderGuardianHopsBody}
+                />
+                <Route path="/profile" render={this.renderProfileBody} />
+                <Route path="/records" render={this.renderRecordsBody} />
+                <Route path="/hops" render={this.renderHopsBody} />
+                <Route path="/evaluation" render={this.renderEvaluationBody} />
+                <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
+                <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
+              </BrowserRouter>
             </InfoPopperProvider>
           </WindowContextProvider>
         </div>
-      </BrowserRouter>
+      </StudyProgressWebsocketWatcher>
     );
   }
 }

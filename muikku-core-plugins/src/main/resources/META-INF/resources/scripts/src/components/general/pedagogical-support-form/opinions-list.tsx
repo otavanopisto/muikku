@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Opinion, OpinionType } from "~/@types/pedagogy-form";
-import { TextField } from "../hops-compulsory-education-wizard/text-field";
+import { TextField } from "./components/textfield";
 import CKEditor from "../ckeditor";
 import Button from "../button";
 import CkeditorLoaderContent from "../../base/ckeditor-loader/content";
@@ -153,12 +153,12 @@ export const AddNewOpinionBox: React.FC<AddNewActionsBoxProps> = (props) => {
   return (
     <div className="hops-container__row">
       <Button
-        buttonModifiers={"add-pedagogy-row"}
+        buttonModifiers={"add-extra-row"}
         onClick={onClick}
         icon="plus"
         disabled={disabled}
       >
-        {t("actions.add", { ns: "pedagogySupportPlan", context: "row" })}
+        {t("actions.add", { ns: "common", context: "row" })}
       </Button>
     </div>
   );

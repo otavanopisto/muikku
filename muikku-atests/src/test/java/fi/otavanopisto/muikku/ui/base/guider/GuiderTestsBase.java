@@ -154,6 +154,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .addCourse(course1)
     .mockStudentCourseStats(student.getId(), 25)
     .mockMatriculationEligibility(student.getId(), false)
+    .mockIAmCounselor()
     .build();
     login();
     
@@ -288,7 +289,8 @@ public class GuiderTestsBase extends AbstractUITest {
           .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, false)
           .mockCompositeCourseAssessmentRequests()
           .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
-          .mockStaffCompositeCourseAssessmentRequests();
+          .mockStaffCompositeCourseAssessmentRequests()
+          .mockIAmCounselor();
         
         logout();
         mockBuilder.mockLogin(admin);
@@ -347,6 +349,8 @@ public class GuiderTestsBase extends AbstractUITest {
       .addCourse(course1)
       .addCourse(course2)
       .addCourse(course3)
+      .mockEmptyStudyActivity()
+      .mockIAmCounselor()
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -481,6 +485,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStudyProgrammes()
         .mockStudentGroups()
         .mockEmptyStudyActivity()
+        .mockIAmCounselor()
         .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -580,6 +585,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .mockStudyProgrammes()
       .mockStudentGroups()
       .mockEmptyStudyActivity()
+      .mockIAmCounselor()
       .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 12).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -638,6 +644,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStudyProgrammes()
         .mockStudentGroups()
         .mockEmptyStudyActivity()
+        .mockIAmCounselor()
         .build();
       Course course1 = new CourseBuilder().name("Tests").id((long) 13).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -791,6 +798,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockStudentCourseStats(student.getId(), 25)
     .mockMatriculationEligibility(student.getId(), false)
     .mockEmptyStudyActivity()
+    .mockIAmCounselor()
     .build();
     login();
     
@@ -815,8 +823,7 @@ public class GuiderTestsBase extends AbstractUITest {
       waitAndClick(".button--dialog-execute");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       
-      assertText(".notes .notes__item .notes__item-header span", "Task from guider.");
-      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
+      assertText(".notes .notes__item .notes__item-header", "Task from guider.");      assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
       
       logout();
       mockBuilder.mockLogin(student);
@@ -826,7 +833,7 @@ public class GuiderTestsBase extends AbstractUITest {
       waitForVisible(".note__description");
       assertText(".note__description p", "Do some stuff!");
       navigate("/records", false);
-      assertText(".notes .notes__item .notes__item-header span", "Task from guider.");
+      assertText(".notes .notes__item .notes__item-header", "Task from guider.");
       assertText(".notes .notes__item .notes__item-body p", "Do some stuff!");
       assertText(".notes .notes__item .notes__item-author", "Admin Person");
       waitAndClick(".notes .notes__item .icon-more_vert");
@@ -846,7 +853,7 @@ public class GuiderTestsBase extends AbstractUITest {
       waitAndClick(".notes .notes__item .icon-trash");
       assertPresent(".notification-queue__items .notification-queue__item--success");
       waitAndClick(".tabs--notes #tabControl-archived");
-      assertText("#tabPanel-archived .notes .notes__item .notes__item-header span", "Task from guider.");
+      assertText("#tabPanel-archived .notes .notes__item .notes__item-header", "Task from guider.");
       assertText("#tabPanel-archived .notes .notes__item .notes__item-body p", "Do some stuff!");
     } finally {
       archiveUserByEmail(student.getEmail());

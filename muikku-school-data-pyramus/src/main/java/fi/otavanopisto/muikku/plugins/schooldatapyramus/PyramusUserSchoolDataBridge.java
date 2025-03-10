@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -49,6 +51,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
@@ -329,9 +332,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
 
       if (student.getPersonId() != null) {
-        Person person = pyramusClient.get(
-            "/persons/persons/" + student.getPersonId(),
-            Person.class);
+        Person person = findPyramusPerson(student.getPersonId());
         if (person != null) {
           hidden = person.getSecureInfo() != null ? person.getSecureInfo() : false;
         }
@@ -356,7 +357,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           hidden,
           curriculumIdentifier,
           organizationIdentifier,
-          student.getMatriculationEligibility() != null ? student.getMatriculationEligibility().isUpperSecondarySchoolCurriculum() : false));
+          student.getMatriculationEligibility() != null ? student.getMatriculationEligibility().isUpperSecondarySchoolCurriculum() : false
+        )
+      );
     }
 
     return users;
@@ -913,7 +916,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           case STUDENT:
             return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/students", userGroupId), StudentGroupStudent[].class));
           case STAFF_MEMBER:
-            return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/staffmembers", userGroupId), StudentGroupUser[].class));
+            return entityFactory.createEntities(GroupUser.class, pyramusClient.get(String.format("/students/studentGroups/%d/staffmembers", userGroupId), StudentGroupUser[].class));
           }
         }
       break;
@@ -927,7 +930,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
-  public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
+  public List<GroupStaffMember> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
     Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
     
     String path = String.format("/students/students/%d/guidanceCounselors", pyramusStudentId);
@@ -935,7 +938,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       path += "?onlyMessageRecipients=" + onlyMessageReceivers.toString().toLowerCase();
     }
     
-    return entityFactory.createEntities(pyramusClient.get(path, StudentGroupUser[].class));
+    return entityFactory.createEntities(GroupStaffMember.class, pyramusClient.get(path, StudentGroupUser[].class));
   }
   
   @Override
@@ -1293,8 +1296,14 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       List<UserStudyPeriod> userStudyPeriods = new ArrayList<>();
       
       for (StudentStudyPeriod studyPeriod : studyPeriods) {
-        if (studyPeriod.getType() == StudentStudyPeriodType.TEMPORARILY_SUSPENDED) {
-          userStudyPeriods.add(new UserStudyPeriod(studyPeriod.getBegin(), studyPeriod.getEnd(), UserStudyPeriodType.TEMPORARILY_SUSPENDED));
+        UserStudyPeriodType studyPeriodType = studyPeriod.getType() != null 
+            ? EnumUtils.getEnum(UserStudyPeriodType.class, studyPeriod.getType().name()) : null;
+        
+        if (studyPeriodType != null) {
+          userStudyPeriods.add(new UserStudyPeriod(studyPeriod.getBegin(), studyPeriod.getEnd(), studyPeriodType));
+        }
+        else {
+          logger.log(Level.WARNING, String.format("Invalid study period type received from Pyramus (%s)", studyPeriod.getType()));
         }
       }
       
@@ -1304,10 +1313,32 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return Collections.emptyList();
   }
 
+  @Override
+  public LocalDate getBirthday(SchoolDataIdentifier studentIdentifier) {
+    PyramusUserType userType = identifierMapper.getIdentifierUserType(studentIdentifier);
+
+    // This method may be called for non-students, just return false
+    if (userType != PyramusUserType.STUDENT) {
+      return null;
+    }
+    
+    Long pyramusStudentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
+    
+    Student student = findPyramusStudent(pyramusStudentId);
+    if (student.getPersonId() != null) {
+      Person person = findPyramusPerson(student.getPersonId());
+      if (person != null) {
+        return person.getBirthday() != null ? person.getBirthday().toLocalDate() : null;
+      }
+    }
+    
+    return null;
+  }
+
   private StudentStudyPeriod[] listStudentStudyPeriods(Long pyramusStudentId) {
     return pyramusClient.get(String.format("/students/students/%d/studyPeriods", pyramusStudentId), StudentStudyPeriod[].class);
   }
-
+  
   private Long toUserEntityId(Long pyramusStaffMemberId) {
     SchoolDataIdentifier identifier = identifierMapper.getStaffIdentifier(pyramusStaffMemberId);
 
@@ -1829,4 +1860,5 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     
     return result;
   }
+
 }

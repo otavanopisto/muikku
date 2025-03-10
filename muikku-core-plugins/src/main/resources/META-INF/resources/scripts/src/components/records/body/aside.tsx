@@ -10,7 +10,6 @@ import { StateType } from "~/reducers";
 import NavigationMenu, {
   NavigationElement,
 } from "~/components/general/navigation";
-import { HOPSState } from "~/reducers/main-function/hops";
 import { StatusType } from "~/reducers/base/status";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -19,7 +18,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface NavigationProps extends WithTranslation {
   location: TranscriptOfRecordLocationType;
-  hops: HOPSState;
   status: StatusType;
   records: RecordsType;
 }
@@ -46,23 +44,6 @@ class Navigation extends React.Component<
    * @returns boolean whether section with given hash should be visible or not
    */
   isVisible(hash: string) {
-    switch (hash) {
-      case "hops":
-        return (
-          this.props.status.isActiveUser &&
-          this.props.hops.eligibility &&
-          this.props.hops.eligibility.upperSecondarySchoolCurriculum === true
-        );
-      case "vops":
-      case "yo":
-        return (
-          this.props.status.isActiveUser &&
-          this.props.hops.value &&
-          (this.props.hops.value.goalMatriculationExam === "yes" ||
-            this.props.hops.value.goalMatriculationExam === "maybe")
-        );
-    }
-
     return true;
   }
 
@@ -116,7 +97,6 @@ class Navigation extends React.Component<
 function mapStateToProps(state: StateType) {
   return {
     location: state.records.location,
-    hops: state.hops,
     records: state.records,
     status: state.status,
   };

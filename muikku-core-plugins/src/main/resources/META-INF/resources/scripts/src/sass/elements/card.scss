@@ -29,11 +29,23 @@
   width: 100%;
 }
 
+.card--counselors {
+  border: 0;
+}
+
 .card__hero {
   padding: 1.1rem;
 
   @include breakpoint($breakpoint-pad) {
     padding: 1.6rem;
+  }
+}
+
+.card__hero--counselors {
+  padding: 10px 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
   }
 }
 
@@ -66,6 +78,14 @@
     font-size: $text-desktop-font-size;
     line-height: 1.375rem;
     padding: 1.6rem;
+  }
+}
+
+.card__content--counselors {
+  padding: 0 0 10px;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 0 10px;
   }
 }
 

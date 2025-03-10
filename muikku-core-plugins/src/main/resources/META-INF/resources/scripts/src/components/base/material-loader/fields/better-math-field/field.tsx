@@ -28,6 +28,7 @@ interface FieldProps {
   onBlur: () => any;
   onFocus: () => any;
   onLatexModeOpen: () => any;
+  createNewLatex?: () => void;
   onLatexModeClose: () => any;
   readOnly?: boolean;
   userId: number;
@@ -119,6 +120,8 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.onDeleteSomethingInMathMode =
       this.onDeleteSomethingInMathMode.bind(this);
     this.handleDrops = this.handleDrops.bind(this);
+    this.handlePaste = this.handlePaste.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   /**
@@ -129,6 +132,25 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     return false;
   }
 
+  /**
+   * isFieldFocused
+   * @returns true if ref has a focused class
+   */
+  isFieldFocused() {
+    return (this.refs.input as HTMLElement).classList.contains("focused");
+  }
+
+  /**
+   * handleKeyDown handles keyboard events
+   * @param e keyboard event
+   */
+  handleKeyDown(e: KeyboardEvent) {
+    if (e.ctrlKey && e.key === "e" && this.isFieldFocused()) {
+      e.preventDefault();
+      this.props.createNewLatex();
+      this.props.onLatexModeOpen();
+    }
+  }
   /**
    * componentDidMount
    */
@@ -141,6 +163,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
     if (!this.props.readOnly) {
       document.body.addEventListener("click", this.handleAllClicks);
+      document.addEventListener("keydown", this.handleKeyDown);
     } else {
       (this.refs.input as HTMLElement).classList.add("mathfield--readonly");
     }
@@ -160,12 +183,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         (this.refs.input as HTMLElement).classList.add("mathfield--readonly");
         (this.refs.input as HTMLElement).removeAttribute("contentEditable");
         document.body.removeEventListener("click", this.handleAllClicks);
+        document.removeEventListener("keydown", this.handleKeyDown);
       } else {
         (this.refs.input as HTMLElement).classList.remove(
           "mathfield--readonly"
         );
         (this.refs.input as HTMLElement).contentEditable = "true";
         document.body.addEventListener("click", this.handleAllClicks);
+        document.addEventListener("keydown", this.handleKeyDown);
       }
     }
 
@@ -565,6 +590,21 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
 
   /**
+   * handlePaste
+   * @param e e
+   */
+  handlePaste(e: React.ClipboardEvent) {
+    const file =
+      e.clipboardData && e.clipboardData.files && e.clipboardData.files[0];
+    if (file.type.startsWith("image")) {
+      /* We stop and prevent normal paste bahaviour only if clipboard has image[0] there, everything else will bypass this */
+      e.stopPropagation();
+      e.preventDefault();
+      this.insertImage(file);
+    }
+  }
+
+  /**
    * selectFormula
    * @param target target
    */
@@ -825,6 +865,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
    */
   componentWillUnmount() {
     document.body.removeEventListener("click", this.handleAllClicks);
+    document.removeEventListener("keydown", this.handleKeyDown);
   }
 
   /**
@@ -849,6 +890,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         spellCheck={false}
         onFocus={this.onFocusField}
         onDrop={this.handleDrops}
+        onPaste={this.handlePaste}
         ref="input"
         onBlur={this.onBlurField}
         onInput={this.onChange}

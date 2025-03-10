@@ -57,13 +57,6 @@ export interface SetLocationToSummaryInTranscriptOfRecordsTriggerType {
 }
 
 /**
- * SetLocationToYoInTranscriptOfRecordsTriggerType
- */
-export interface SetLocationToYoInTranscriptOfRecordsTriggerType {
-  (): AnyActionType;
-}
-
-/**
  * UpdateAllStudentUsersAndSetViewToRecordsTriggerType
  */
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
@@ -75,13 +68,6 @@ export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
  */
 export interface SetCurrentStudentUserViewAndWorkspaceTriggerType {
   (userEntityId: number, userId: string, workspaceId: number): AnyActionType;
-}
-
-/**
- * SetLocationToVopsInTranscriptOfRecordsTriggerType
- */
-export interface SetLocationToVopsInTranscriptOfRecordsTriggerType {
-  (): AnyActionType;
 }
 
 /**
@@ -324,39 +310,6 @@ const setLocationToSummaryInTranscriptOfRecords: SetLocationToSummaryInTranscrip
   };
 
 /**
- * setLocationToYoInTranscriptOfRecords
- */
-const setLocationToYoInTranscriptOfRecords: SetLocationToYoInTranscriptOfRecordsTriggerType =
-  function setLocationToYoInTranscriptOfRecords() {
-    return {
-      type: "UPDATE_RECORDS_LOCATION",
-      payload: <TranscriptOfRecordLocationType>"yo",
-    };
-  };
-
-/**
- * setLocationToVopsInTranscriptOfRecords
- */
-const setLocationToVopsInTranscriptOfRecords: SetLocationToVopsInTranscriptOfRecordsTriggerType =
-  function setLocationToVopsInTranscriptOfRecords() {
-    return {
-      type: "UPDATE_RECORDS_LOCATION",
-      payload: <TranscriptOfRecordLocationType>"vops",
-    };
-  };
-
-/**
- * setLocationToHopsInTranscriptOfRecords
- */
-const setLocationToHopsInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
-  function setLocationToHopsInTranscriptOfRecords() {
-    return {
-      type: "UPDATE_RECORDS_LOCATION",
-      payload: <TranscriptOfRecordLocationType>"hops",
-    };
-  };
-
-/**
  * setLocationToPedagogyFormInTranscriptOfRecords
  */
 const setLocationToPedagogyFormInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
@@ -402,10 +355,7 @@ const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType 
 
 export {
   updateAllStudentUsersAndSetViewToRecords,
-  setLocationToVopsInTranscriptOfRecords,
   setLocationToStatisticsInTranscriptOfRecords,
-  setLocationToYoInTranscriptOfRecords,
-  setLocationToHopsInTranscriptOfRecords,
   setLocationToSummaryInTranscriptOfRecords,
   setLocationToInfoInTranscriptOfRecords,
   setLocationToPedagogyFormInTranscriptOfRecords,

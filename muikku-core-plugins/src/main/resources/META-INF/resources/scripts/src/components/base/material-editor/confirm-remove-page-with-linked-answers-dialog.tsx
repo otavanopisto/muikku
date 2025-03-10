@@ -154,7 +154,7 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
 
     return (
       <Dialog
-        modifier="confirm-remove-answer-dialog"
+        modifier="confirm-remove-page-with-linked-answers-dialog"
         isOpen={
           this.props.materialEditor.showRemoveLinkedAnswersDialogForPublish
         }

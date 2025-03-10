@@ -85,7 +85,7 @@ class WarningDialog extends React.Component<
 
     return (
       <Dialog
-        modifier="confirm-remove-answer-dialog"
+        modifier="warning-dialog"
         disableScroll={true}
         title={this.props.title}
         content={content}

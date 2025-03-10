@@ -26,7 +26,7 @@ export interface DialogProps {
   title: string | React.ReactElement<any>;
   executing?: boolean;
   executeContent?: React.ReactElement<any>;
-  modifier?: string | Array<string>;
+  modifier: string | Array<string>;
   localElementId?: string;
   content: (closePortal: () => void) => JSX.Element | JSX.Element[];
   disableScroll?: boolean;
@@ -178,7 +178,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                       }
                       aria-modal="true"
                       aria-label="Dialog"
-                      aria-labelledby={`dialog-title--${modifiers[0]}`}
+                      aria-labelledby={`dialogTitle--${modifiers[0]}`}
                     >
                       {/* Execution container is missing from here */}
                       <section
@@ -206,7 +206,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                         >
                           <div
                             className="dialog__title"
-                            id={`dialog-title--${modifiers[0]}`}
+                            id={`dialogTitle--${modifiers[0]}`}
                           >
                             {this.props.title}
                           </div>
@@ -244,6 +244,74 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
           </Portal>
         )}
       </ReactReduxContext.Consumer>
+    );
+  }
+}
+
+/**
+ * DialogColumnContainerProps
+ */
+interface DialogColumnContainerProps {
+  modifier?: string;
+}
+
+/**
+ * DialogColumnContainer
+ * @param props DialogColumnContainerProps
+ * @returns  JSX.Element
+ */
+export const DialogColumnContainer: React.FC<DialogColumnContainerProps> = (
+  props
+) => (
+  <div
+    className={`dialog__content-column-container${
+      props.modifier
+        ? "dialog__content-column-container--" + props.modifier
+        : ""
+    }`}
+  >
+    {props.children}
+  </div>
+);
+
+/**
+ * DialogColumnProps
+ */
+interface DialogColumnProps {
+  modifiers?: string | Array<string>;
+}
+
+/**
+ * DialogColumnState
+ */
+interface DialogColumnState {}
+
+/**
+ * DialogColumn
+ */
+export class DialogColumn extends React.Component<
+  DialogColumnProps,
+  DialogColumnState
+> {
+  /**
+   * render
+   * @returns JSX.Element
+   */
+  render() {
+    const modifiers =
+      this.props.modifiers && this.props.modifiers instanceof Array
+        ? this.props.modifiers
+        : [this.props.modifiers];
+    return (
+      <div
+        className={`dialog__content-column ${
+          this.props.modifiers
+            ? modifiers.map((m) => `dialog__content-column--${m}`).join(" ")
+            : ""
+        }`}
+      >
+        {this.props.children}
+      </div>
     );
   }
 }

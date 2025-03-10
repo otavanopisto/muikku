@@ -1,0 +1,102 @@
+import Dialog from "~/components/general/dialog";
+import React from "react";
+import "~/sass/elements/form.scss";
+import "~/sass/elements/wizard.scss";
+import Button from "~/components/general/button";
+import { useTranslation } from "react-i18next";
+
+/**
+ * Props for the EditHopsEventDescriptionDialog component
+ */
+interface PendingChangesWarningDialogProps {
+  isOpen: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+  children?: React.ReactElement;
+}
+
+/**
+ * A dialog component for editing the description of a HOPS event
+ * @param props - The component props
+ * @returns A React functional component
+ */
+const PendingChangesWarningDialog: React.FC<
+  PendingChangesWarningDialogProps
+> = (props) => {
+  const { isOpen, onConfirm, onCancel, children } = props;
+
+  const { t } = useTranslation(["hops_new", "common"]);
+
+  /**
+   * Handles the save button click
+   * @param closePortal - Function to close the dialog
+   * @returns Click event handler
+   */
+  const handleConfirmClick =
+    (closePortal: () => void) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      onConfirm();
+    };
+
+  /**
+   * Handles the cancel button click
+   * @param closePortal - Function to close the dialog
+   * @returns Click event handler
+   */
+  const handleCancelClick =
+    (closePortal: () => void) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      onCancel();
+    };
+
+  /**
+   * Renders the dialog content
+   * @returns The dialog content
+   */
+  const dialogContent = () => (
+    <div className="hops-container__row">
+      <div className="hops__form-element-container">
+        <p>{t("content.hopsPendingChangesWarning", { ns: "hops_new" })}</p>
+      </div>
+    </div>
+  );
+
+  /**
+   * Renders the dialog footer
+   * @param closePortal - Function to close the dialog
+   * @returns The dialog footer
+   */
+  const footer = (closePortal: () => void) => (
+    <div className="dialog__button-set">
+      <Button
+        buttonModifiers={["standard-ok", "fatal"]}
+        onClick={handleConfirmClick(closePortal)}
+      >
+        {t("actions.continue", { ns: "common" })}
+      </Button>
+      <Button
+        buttonModifiers={["standard-cancel", "cancel"]}
+        onClick={handleCancelClick(closePortal)}
+      >
+        {t("actions.cancel")}
+      </Button>
+    </div>
+  );
+
+  return (
+    <Dialog
+      modifier="pended-changes-warning-dialog"
+      disableScroll={true}
+      title={t("labels.hopsPendingChangesTitle", { ns: "hops_new" })}
+      onClose={onCancel}
+      content={dialogContent}
+      footer={footer}
+      closeOnOverlayClick={false}
+      isOpen={isOpen}
+    >
+      {children}
+    </Dialog>
+  );
+};
+
+export default PendingChangesWarningDialog;

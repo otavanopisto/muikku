@@ -17,354 +17,281 @@ import {
 } from "~/reducers/main-function/guider";
 import StateOfStudies from "./student/tabs/state-of-studies";
 import StudyHistory from "./student/tabs/study-history";
-import StudyPlan from "./student/tabs/study-plan";
 import GuidanceRelation from "./student/tabs/guidance-relation";
 import {
   loadStudentHistory,
   LoadStudentTriggerType,
   loadStudentContactLogs,
   LoadContactLogsTriggerType,
-  UpdateCurrentStudentHopsPhaseTriggerType,
-  updateCurrentStudentHopsPhase,
 } from "~/actions/main-function/guider";
 import { getName } from "~/util/modifiers";
-import CompulsoryEducationHopsWizard from "../../general/hops-compulsory-education-wizard";
 import Button from "~/components/general/button";
-import { COMPULSORY_HOPS_VISIBLITY } from "../../general/hops-compulsory-education-wizard/index";
-import { withTranslation, WithTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm, {
   UPPERSECONDARY_PEDAGOGYFORM,
 } from "~/components/general/pedagogical-support-form";
 import { PedagogyFormAccess } from "~/generated/client";
+import HopsApplication from "./student/hops/hops";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
+import {
+  ResetHopsDataTriggerType,
+  resetHopsData,
+} from "~/actions/main-function/hops/";
+import { HopsState } from "~/reducers/hops";
 
 export type tabs =
   | "STUDIES"
   | "STUDY_PLAN"
   | "GUIDANCE_RELATIONS"
   | "STUDY_HISTORY"
-  | "PEDAGOGICAL_SUPPORT"
-  | "HOPS";
+  | "PEDAGOGICAL_SUPPORT";
+
+/**
+ * Dialog view modes
+ */
+type DialogViewMode = "TABS" | "HOPS_VIEW";
 
 /**
  * StudentDialogProps
  */
-interface StudentDialogProps extends WithTranslation<["common"]> {
+interface StudentDialogProps {
   isOpen?: boolean;
   student: GuiderStudentUserProfileType;
   guider: GuiderState;
   currentStudentStatus: GuiderCurrentStudentStateType;
+  hops: HopsState;
   onClose?: () => void;
   onOpen?: () => void;
   status: StatusType;
   loadStudentHistory: LoadStudentTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
-  updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType;
+  resetHopsData: ResetHopsDataTriggerType;
 }
 
 /**
- * StudentDialogState
+ * Student Dialog Component
+ *
+ * Displays detailed information about a student in a modal dialog format.
+ * Contains multiple tabs for different aspects of student information:
+ * - Studies (current situation)
+ * - Guidance Relations
+ * - Study History
+ * - HOPS (Personal Study Plan)
+ * - Pedagogical Support (if applicable)
+ *
+ * @param props - Component props
+ * @returns React component
  */
-interface StudentDialogState {
-  activeTab: string;
-  editHops: boolean;
-}
+const StudentDialog: React.FC<StudentDialogProps> = (props) => {
+  const {
+    isOpen,
+    student,
+    guider,
+    onClose,
+    loadStudentHistory,
+    loadStudentContactLogs,
+    resetHopsData,
+  } = props;
 
-/**
- * Student dialog for evaluation
- */
-class StudentDialog extends React.Component<
-  StudentDialogProps,
-  StudentDialogState
-> {
-  // This definition is the source of truth for every child component
-  private contactLogsPerPage = 10;
+  const { t } = useTranslation(["common"]);
 
-  /**
-   * constructor
-   * @param props props for the constructor
-   */
+  /** Number of contact logs to display per page */
+  const contactLogsPerPage = 10;
 
-  /**
-   * constructor
-   * @param props StudentDialogProps
-   */
-  constructor(props: StudentDialogProps) {
-    super(props);
+  /** Current active tab state */
+  const [activeTab, setActiveTab] = React.useState<string>("STUDIES");
 
-    this.state = {
-      activeTab: "STUDIES",
-      editHops: false,
-    };
-  }
+  /** Current view mode state */
+  const [viewMode, setViewMode] = React.useState<DialogViewMode>("TABS");
 
   /**
-   * handleHopsPhaseChange
-   * @param e e
+   * Toggles between HOPS and regular view
    */
-  handleHopsPhaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    this.props.updateCurrentStudentHopsPhase({
-      value: e.currentTarget.value,
-    });
+  const toggleViewMode = () => {
+    setViewMode((prevMode) => (prevMode === "TABS" ? "HOPS_VIEW" : "TABS"));
   };
 
   /**
-   * Tab change function
-   * @param id tab id
+   * Handles tab changes and loads necessary data for the selected tab
+   *
+   * @param id - Tab identifier
    */
-  onTabChange = (id: tabs) => {
-    const studentId = this.props.student.basic.id;
-    const studentUserEntityId = this.props.student.basic.userEntityId;
-    this.setState({ activeTab: id });
+  const onTabChange = (id: tabs) => {
+    const studentId = student.basic.id;
+    const studentUserEntityId = student.basic.userEntityId;
+    setActiveTab(id);
     switch (id) {
       case "STUDY_HISTORY": {
-        this.props.loadStudentHistory(studentId);
+        loadStudentHistory(studentId);
         break;
       }
       case "GUIDANCE_RELATIONS": {
-        this.props.loadStudentContactLogs(
-          studentUserEntityId,
-          this.contactLogsPerPage,
-          0
-        );
+        loadStudentContactLogs(studentUserEntityId, contactLogsPerPage, 0);
         break;
       }
     }
   };
 
   /**
-   * onClickEditHops
+   * Handles dialog close
+   * Resets active tab to Studies and view mode to TABS and calls onClose callback
    */
-  onClickEditHops = () => {
-    this.setState({
-      editHops: !this.state.editHops,
+  const closeDialog = () => {
+    unstable_batchedUpdates(() => {
+      setActiveTab("STUDIES");
+      setViewMode("TABS");
     });
+    resetHopsData();
+    onClose && onClose();
   };
 
-  /**
-   * closeDialog resets the component state and forwards onClose()
-   */
-  closeDialog = () => {
-    this.setState({ activeTab: "STUDIES" });
-    this.props.onClose();
-  };
+  // Render logic
+  if (!student) {
+    return null;
+  }
+
+  const tabs = [
+    {
+      id: "STUDIES",
+      name: t("labels.situation", { ns: "guider" }),
+      type: "guider-student",
+      component: <StateOfStudies />,
+    },
+    {
+      id: "GUIDANCE_RELATIONS",
+      name: t("labels.relations", { ns: "guider" }),
+      type: "guider-student",
+      component: <GuidanceRelation contactLogsPerPage={contactLogsPerPage} />,
+    },
+    {
+      id: "STUDY_HISTORY",
+      name: t("labels.studyHistory", { ns: "guider" }),
+      type: "guider-student",
+      component: <StudyHistory />,
+    },
+  ];
+
+  if (
+    guider.currentStudent &&
+    guider.currentStudent.basic &&
+    UPPERSECONDARY_PEDAGOGYFORM.includes(
+      guider.currentStudent.basic.studyProgrammeName
+    ) &&
+    guider.currentStudent.pedagogyFormAvailable &&
+    guider.currentStudent.pedagogyFormAvailable.accessible
+  ) {
+    tabs.splice(1, 0, {
+      id: "PEDAGOGICAL_SUPPORT",
+      name: t("labels.title", { ns: "pedagogySupportPlan" }),
+      type: "guider-student",
+      component: (
+        <UpperSecondaryPedagogicalSupportWizardForm
+          userRole={userRoleForForm(
+            guider.currentStudent.pedagogyFormAvailable
+          )}
+          studentUserEntityId={guider.currentStudent.basic.userEntityId}
+        />
+      ),
+    });
+  }
 
   /**
-   * Component render method
+   * Content
    * @returns JSX.Element
    */
-  render() {
-    const hopsModifyStateModifiers = ["modify-hops"];
+  const content = () => (
+    <>
+      {viewMode === "TABS" ? (
+        <Tabs
+          modifier="guider-student"
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={onTabChange}
+        />
+      ) : guider.currentStudent && guider.currentStudent.basic ? (
+        <HopsApplication studentIdentifier={student.basic.id} />
+      ) : null}
+    </>
+  );
 
-    if (this.state.editHops) {
-      hopsModifyStateModifiers.push("modify-hops-active");
-    }
-
-    const tabs = [
-      {
-        id: "STUDIES",
-        name: this.props.i18n.t("labels.situation", { ns: "guider" }),
-        type: "guider-student",
-        component: <StateOfStudies />,
-      },
-      {
-        id: "GUIDANCE_RELATIONS",
-        name: this.props.i18n.t("labels.relations", { ns: "guider" }),
-        type: "guider-student",
-        component: (
-          <GuidanceRelation contactLogsPerPage={this.contactLogsPerPage} />
-        ),
-      },
-      {
-        id: "STUDY_HISTORY",
-        name: this.props.i18n.t("labels.studyHistory", { ns: "guider" }),
-        type: "guider-student",
-        component: <StudyHistory />,
-      },
-    ];
-
-    if (
-      this.props.guider.currentStudent &&
-      this.props.guider.currentStudent.basic &&
-      UPPERSECONDARY_PEDAGOGYFORM.includes(
-        this.props.guider.currentStudent.basic.studyProgrammeName
-      ) &&
-      this.props.guider.currentStudent.pedagogyFormAvailable &&
-      this.props.guider.currentStudent.pedagogyFormAvailable.accessible
-    ) {
-      tabs.splice(1, 0, {
-        id: "PEDAGOGICAL_SUPPORT",
-        name: this.props.t("labels.title", { ns: "pedagogySupportPlan" }),
-        type: "guider-student",
-        component: (
-          <UpperSecondaryPedagogicalSupportWizardForm
-            userRole={userRoleForForm(
-              this.props.guider.currentStudent.pedagogyFormAvailable
-            )}
-            studentUserEntityId={
-              this.props.guider.currentStudent.basic.userEntityId
+  const studyProgrammeName = student.basic && student.basic.studyProgrammeName;
+  const dialogTitle = (
+    <DialogTitleContainer>
+      <DialogTitleItem modifier="user">
+        {getName(student.basic, true)}
+      </DialogTitleItem>
+      <DialogTitleItem modifier="studyprogramme">
+        {"(" + studyProgrammeName + ")"}
+      </DialogTitleItem>
+      {/* Hops toggle. */}
+      {student.basic && student.basic.permissions.isAvailable && (
+        <DialogTitleItem modifier="hops-toggle">
+          <Button
+            className={
+              viewMode === "HOPS_VIEW" ? "button--info active" : "button--info"
             }
-          />
-        ),
-      });
-    }
-
-    if (
-      this.props.guider.currentStudent &&
-      this.props.guider.currentStudent.basic &&
-      this.props.guider.currentStudent.hopsAvailable
-    ) {
-      // Hops is shown only if basic info is there,
-      // current guider has permissions to use/see (hopsAvailable)
-      // Compulsory hops
-      if (
-        COMPULSORY_HOPS_VISIBLITY.includes(
-          this.props.guider.currentStudent.basic.studyProgrammeName
-        )
-      ) {
-        tabs.splice(1, 0, {
-          id: "HOPS",
-          name: "Hops",
-          type: "guider-student",
-          component: (
-            <>
-              <div className="tabs__header-actions tabs__header-actions--hops">
-                <Button
-                  onClick={this.onClickEditHops}
-                  buttonModifiers={hopsModifyStateModifiers}
-                >
-                  Muokkaustila
-                </Button>
-
-                <select
-                  className="form-element__select"
-                  value={
-                    this.props.guider.currentStudent.hopsPhase
-                      ? this.props.guider.currentStudent.hopsPhase
-                      : 0
-                  }
-                  onChange={this.handleHopsPhaseChange}
-                >
-                  <option value={0}>HOPS - Ei aktivoitu</option>
-                  <option value={1}>HOPS - esitäyttö</option>
-                  <option value={2}>HOPS - opintojen suunnittelu</option>
-                </select>
-              </div>
-
-              {this.state.editHops ? (
-                <CompulsoryEducationHopsWizard
-                  user="supervisor"
-                  usePlace="guider"
-                  disabled={false}
-                  studentId={this.props.guider.currentStudent.basic.id}
-                  superVisorModifies
-                />
-              ) : (
-                <CompulsoryEducationHopsWizard
-                  user="supervisor"
-                  usePlace="guider"
-                  disabled={true}
-                  studentId={this.props.guider.currentStudent.basic.id}
-                  superVisorModifies={false}
-                />
-              )}
-            </>
-          ),
-        });
-      }
-      // If student has HOPS, specifically for uppersecondary school
-      else if (
-        this.props.guider.currentStudent.hops &&
-        this.props.guider.currentStudent.hops.optedIn
-      ) {
-        tabs.splice(1, 0, {
-          id: "HOPS",
-          name: "Hops",
-          type: "guider-student",
-          component: <StudyPlan />,
-        });
-      }
-    }
-
-    if (!this.props.student) {
-      return null;
-    }
-
-    /**
-     * Content
-     * @returns JSX.Element
-     */
-    const content = () => (
-      <Tabs
-        modifier="guider-student"
-        tabs={tabs}
-        activeTab={this.state.activeTab}
-        onTabChange={this.onTabChange}
-      ></Tabs>
-    );
-
-    const studyProgrammeName =
-      this.props.student.basic && this.props.student.basic.studyProgrammeName;
-    const dialogTitle = (
-      <DialogTitleContainer>
-        <DialogTitleItem modifier="user">
-          {getName(this.props.student.basic, true)}
+            icon="compass"
+            onClick={toggleViewMode}
+          >
+            HOPS
+          </Button>
         </DialogTitleItem>
-        <DialogTitleItem modifier="studyprogramme">
-          {"(" + studyProgrammeName + ")"}
-        </DialogTitleItem>
-      </DialogTitleContainer>
-    );
+      )}
+    </DialogTitleContainer>
+  );
 
-    return (
-      <Dialog
-        isOpen={this.props.isOpen}
-        onClose={this.closeDialog}
-        modifier="guider-student"
-        title={dialogTitle}
-        content={content}
-        closeOnOverlayClick={false}
-        disableScroll
-      />
-    );
-  }
-}
+  return (
+    <Dialog
+      isOpen={isOpen}
+      onClose={closeDialog}
+      modifier="guider-student"
+      title={dialogTitle}
+      content={content}
+      closeOnOverlayClick={false}
+      disableScroll
+    />
+  );
+};
 
 /**
- * mapStateToProps
- * @param state application state
+ * Maps Redux state to component props
+ *
+ * @param state - Application state
+ * @returns Object containing mapped state properties
  */
 function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     currentStudentStatus: state.guider.currentStudentState,
     guider: state.guider,
+    hops: state.hopsNew,
   };
 }
 
 /**
- * mapDispatchToProps
- * @param dispatch action dispatch
+ * Maps Redux dispatch actions to component props
+ *
+ * @param dispatch - Redux dispatch function
+ * @returns Object containing mapped dispatch actions
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadStudentHistory,
       loadStudentContactLogs,
-      updateCurrentStudentHopsPhase,
+      resetHopsData,
     },
     dispatch
   );
 }
 
-export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(StudentDialog)
-);
-
 /**
- * Returns role string for pedagogical support form
+ * Returns the appropriate user role for the pedagogical support form
+ * based on the user's access permissions
  *
- * @param pedagogyFormAvailable pedagogyFormAvailable
- * @returns role
+ * @param pedagogyFormAvailable - Object containing user's pedagogy form access permissions
+ * @returns User role string or undefined if no matching role
  */
 const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAccess) => {
   if (pedagogyFormAvailable.specEdTeacher) {
@@ -380,3 +307,5 @@ const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAccess) => {
     return "STUDENT_PARENT";
   }
 };
+
+export default connect(mapStateToProps, mapDispatchToProps)(StudentDialog);

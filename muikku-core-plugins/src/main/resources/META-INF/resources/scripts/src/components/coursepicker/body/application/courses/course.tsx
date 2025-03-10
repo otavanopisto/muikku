@@ -398,6 +398,7 @@ class Course extends React.Component<CourseProps, CourseState> {
                     nameExtension: this.props.workspace.nameExtension,
                     urlName: this.props.workspace.urlName,
                   }}
+                  redirectOnSuccess
                 >
                   <Button
                     aria-label={this.props.t("wcag.signUpWorkspace", {

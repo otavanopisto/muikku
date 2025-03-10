@@ -6,6 +6,7 @@ import {
   GuiderStudentUserProfileType,
   GuiderCurrentStudentStateType,
   GuiderState,
+  GuiderStudentStudyProgress,
 } from "~/reducers/main-function/guider";
 import { loadStudentsHelper } from "./helpers";
 import { UserFileType } from "reducers/user-index";
@@ -20,10 +21,16 @@ import {
   CeeposPurchaseProduct,
   ContactLog,
   ContactType,
-  Student,
   UserStudentFlag,
   UserFlag,
   UserGroup,
+  Note,
+  CreateNoteRequest,
+  UpdateNoteReceiverRequest,
+  UpdateNoteRequest,
+  StudentStudyActivity,
+  FlaggedStudent,
+  NoteReceiver,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -31,6 +38,27 @@ import {
   RecordWorkspaceActivitiesWithLineCategory,
   RecordWorkspaceActivityByLine,
 } from "~/components/general/records-history/types";
+import {
+  filterActivity,
+  filterActivityBySubjects,
+  LANGUAGE_SUBJECTS_CS,
+  OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+  SKILL_AND_ART_SUBJECTS_CS,
+} from "~/helper-functions/study-matrix";
+
+export type UPDATE_NOTES_STATE = SpecificActionType<
+  "UPDATE_NOTES_STATE",
+  LoadingState
+>;
+export type LOAD_NOTES = SpecificActionType<"LOAD_NOTES", Note[]>;
+export type UPDATE_NOTE = SpecificActionType<"UPDATE_NOTE", Note>;
+export type UPDATE_NOTE_RECIPIENT = SpecificActionType<
+  "UPDATE_NOTE_RECIPIENT",
+  { noteId: number; recipient: NoteReceiver }
+>;
+
+export type ADD_NOTE = SpecificActionType<"ADD_NOTE", Note>;
+export type REMOVE_NOTE = SpecificActionType<"REMOVE_NOTE", number>;
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<
   "UPDATE_GUIDER_ACTIVE_FILTERS",
@@ -46,11 +74,11 @@ export type UPDATE_GUIDER_STATE = SpecificActionType<
 >;
 export type ADD_TO_GUIDER_SELECTED_STUDENTS = SpecificActionType<
   "ADD_TO_GUIDER_SELECTED_STUDENTS",
-  Student
+  FlaggedStudent
 >;
 export type REMOVE_FROM_GUIDER_SELECTED_STUDENTS = SpecificActionType<
   "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
-  Student
+  FlaggedStudent
 >;
 export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<
   "SET_CURRENT_GUIDER_STUDENT",
@@ -165,6 +193,11 @@ export type TOGGLE_ALL_STUDENTS = SpecificActionType<
 export type DELETE_CONTACT_EVENT = SpecificActionType<
   "DELETE_CONTACT_EVENT",
   number
+>;
+
+export type GUIDER_UPDATE_STUDENT_STUDY_PROGRESS = SpecificActionType<
+  "GUIDER_UPDATE_STUDENT_STUDY_PROGRESS",
+  GuiderStudentStudyProgress
 >;
 
 export type DELETE_CONTACT_EVENT_COMMENT = SpecificActionType<
@@ -307,14 +340,14 @@ export interface EditContactLogEventCommentTriggerType {
  * AddToGuiderSelectedStudentsTriggerType action creator type
  */
 export interface AddToGuiderSelectedStudentsTriggerType {
-  (student: Student): AnyActionType;
+  (student: FlaggedStudent): AnyActionType;
 }
 
 /**
  * RemoveFromGuiderSelectedStudentsTriggerType action creator type
  */
 export interface RemoveFromGuiderSelectedStudentsTriggerType {
-  (student: Student): AnyActionType;
+  (student: FlaggedStudent): AnyActionType;
 }
 
 /**
@@ -394,13 +427,6 @@ export interface UpdateGuiderFilterLabelTriggerType {
 }
 
 /**
- * UpdateCurrentStudentHopsPhaseTriggerType action creator type
- */
-export interface UpdateCurrentStudentHopsPhaseTriggerType {
-  (data: { value: string }): AnyActionType;
-}
-
-/**
  * RemoveGuiderFilterLabelTriggerType action creator type
  */
 export interface RemoveGuiderFilterLabelTriggerType {
@@ -447,6 +473,73 @@ export interface ToggleAllStudentsTriggerType {
 }
 
 /**
+ * LoadNotesTriggerType
+ */
+export interface LoadNotesTriggerType {
+  (userId: number, listArchived: boolean): AnyActionType;
+}
+
+/**
+ * CreateNoteTriggerType
+ */
+export interface CreateNoteTriggerType {
+  (request: CreateNoteRequest, success?: () => void): AnyActionType;
+}
+
+/**
+ * UpdateNoteTriggerType
+ */
+export interface UpdateNoteTriggerType {
+  (
+    noteId: number,
+    request: UpdateNoteRequest,
+    success?: () => void
+  ): AnyActionType;
+}
+
+/**
+ * UpdateNoteTriggerType
+ */
+export interface UpdateNoteRecipientTriggerType {
+  (
+    noteId: number,
+    recipientId: number,
+    request: UpdateNoteReceiverRequest,
+    success?: () => void
+  ): AnyActionType;
+}
+
+/**
+ * CreateNoteTriggerType
+ */
+export interface ArchiveNoteTriggerType {
+  (noteId: number, success?: () => void): AnyActionType;
+}
+
+/**
+ *  Interface for the suggested next websocket thunk action creator
+ */
+export interface GuiderStudyProgressSuggestedNextWebsocketType {
+  (data: { websocketData: StudentStudyActivity }): AnyActionType;
+}
+
+/**
+ * Interface for the workspace signup websocket thunk action creator
+ */
+export interface GuiderStudyProgressWorkspaceSignupWebsocketType {
+  (data: {
+    websocketData: StudentStudyActivity | StudentStudyActivity[];
+  }): AnyActionType;
+}
+
+/**
+ * Interface for the alternative study options websocket thunk action creator
+ */
+export interface GuiderStudyProgressAlternativeStudyOptionsWebsocketType {
+  (data: { websocketData: string[] }): AnyActionType;
+}
+
+/**
  * toggleAllStudents thunk action creator
  * @returns a thunk function for toggling all students selection
  */
@@ -472,6 +565,291 @@ const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
   };
 
 /**
+ * loadNotes
+ *
+ * @param creatorId userId
+ * @param listArchived listArchived
+ */
+const loadNotes: LoadNotesTriggerType = function loadNotes(
+  creatorId,
+  listArchived
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    try {
+      dispatch({ type: "UPDATE_NOTES_STATE", payload: "LOADING" });
+      const NotesApi = MApi.getNotesApi();
+      const notes = await NotesApi.getNotesByCreator({
+        creatorId,
+        listArchived,
+      });
+      dispatch({ type: "LOAD_NOTES", payload: notes });
+      dispatch({ type: "UPDATE_NOTES_STATE", payload: "READY" });
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+      dispatch({ type: "UPDATE_NOTES_STATE", payload: "ERROR" });
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.loadError", {
+            error: err,
+            ns: "tasks",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * createNote thunk action creator
+ *
+ * @param createNoteRequest createNoteRequest
+ * @param onSuccess onSuccess
+ */
+const createNote: CreateNoteTriggerType = function createNote(
+  createNoteRequest: CreateNoteRequest,
+  onSuccess?: () => void
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const notesApi = MApi.getNotesApi();
+    try {
+      const { recipients, note } = createNoteRequest;
+      const hasRecipients =
+        recipients.recipientIds.length +
+          recipients.recipientGroupIds.length +
+          recipients.recipientStudentsWorkspaceIds.length >
+        0;
+
+      if (!note.title) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.caption", { ns: "tasks" }),
+            "error"
+          )
+        );
+      } else if (!note.description) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.content", {
+              ns: "tasks",
+            }),
+            "error"
+          )
+        );
+      } else if (!note.startDate) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.startDate", { ns: "tasks" }),
+            "error"
+          )
+        );
+      } else if (!hasRecipients) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.recipients", { ns: "tasks" }),
+            "error"
+          )
+        );
+      }
+
+      // Creating and getting created notesItem
+      const newNote = await notesApi.createNote({
+        createNoteRequest,
+      });
+      onSuccess && onSuccess();
+      dispatch({ type: "ADD_NOTE", payload: newNote });
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.createSuccess", { ns: "tasks" }),
+          "success"
+        )
+      );
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.createError", { error: err, ns: "tasks" }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * updateNote thunk action creator
+ *
+ * @param noteId noteId
+ * @param updateNoteRequest createNoteRequest
+ * @param onSuccess onSuccess
+ */
+const updateNote: UpdateNoteTriggerType = function updateNote(
+  noteId: number,
+  updateNoteRequest: UpdateNoteRequest,
+  onSuccess?: () => void
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const notesApi = MApi.getNotesApi();
+    try {
+      const { note } = updateNoteRequest;
+
+      if (!note.title) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.caption", { ns: "tasks" }),
+            "error"
+          )
+        );
+      } else if (!note.description) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.content", {
+              ns: "tasks",
+            }),
+            "error"
+          )
+        );
+      } else if (!note.startDate) {
+        return dispatch(
+          notificationActions.displayNotification(
+            i18n.t("validation.startDate", { ns: "tasks" }),
+            "error"
+          )
+        );
+      }
+      // Creating and getting created notesItem
+      const updatedNote = await notesApi.updateNote({
+        noteId,
+        updateNoteRequest,
+      });
+
+      dispatch({ type: "UPDATE_NOTE", payload: updatedNote });
+      onSuccess && onSuccess();
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.updateSuccess", { ns: "tasks" }),
+          "success"
+        )
+      );
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.updateError", { error: err, ns: "tasks" }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
+ * updateRecipientNoteStatus thunk action creator
+ * @param noteId note id
+ * @param recipientId recipient id
+ * @param request request
+ * @param onSuccess onSuccess
+ */
+const updateRecipientNoteStatus: UpdateNoteRecipientTriggerType =
+  function updateRecipientNoteStatus(
+    noteId: number,
+    recipientId: number,
+    request: UpdateNoteReceiverRequest,
+    onSuccess?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const notesApi = MApi.getNotesApi();
+      try {
+        // Updating and getting updated notesItem
+        const updatedNoteRecipient = await notesApi.updateNoteReceiver({
+          updateNoteReceiverRequest: request,
+          noteId,
+          recipientId,
+        });
+
+        dispatch({
+          type: "UPDATE_NOTE_RECIPIENT",
+          payload: { noteId, recipient: updatedNoteRecipient },
+        });
+        onSuccess && onSuccess();
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateSuccess", {
+              ns: "tasks",
+              context: "state",
+            }),
+            "success"
+          )
+        );
+      } catch (err) {
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateError", {
+              ns: "tasks",
+              context: "state",
+              error: err,
+            }),
+            "error"
+          )
+        );
+      }
+    };
+  };
+/**
+ * Archives one notesItem
+ *
+ * @param noteId notesItemId
+ * @param onSuccess onSuccess
+ */
+const toggleNoteArchive: ArchiveNoteTriggerType = function toggleNoteArchive(
+  noteId: number,
+  onSuccess?: () => void
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    try {
+      const notesApi = MApi.getNotesApi();
+
+      await notesApi.toggleNoteArchived({
+        noteId: noteId,
+      });
+
+      dispatch({ type: "REMOVE_NOTE", payload: noteId });
+      onSuccess && onSuccess();
+
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.archiveSuccess", { ns: "tasks" }),
+
+          "success"
+        )
+      );
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.archiveError", { ns: "tasks", error: err }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
  * removeFileFromCurrentStudent thunk action creator
  * @param file file to be removed
  * @returns a thunk function for removing a file from a student
@@ -483,7 +861,6 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
       getState: () => StateType
     ) => {
       const guiderApi = MApi.getGuiderApi();
-
       try {
         await guiderApi.deleteGuiderFile({
           fileId: file.id,
@@ -506,6 +883,7 @@ const removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType =
       }
     };
   };
+
 /**
  * loadStudents thunk action creator
  * @param filters filters to be applied
@@ -627,8 +1005,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
     getState: () => StateType
   ) => {
-    const hopsApi = MApi.getHopsApi();
-    const hopsUppersecondaryApi = MApi.getHopsUpperSecondaryApi();
     const guiderApi = MApi.getGuiderApi();
     const userApi = MApi.getUserApi();
     const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
@@ -636,6 +1012,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
     const pedagogyApi = MApi.getPedagogyApi();
     const usergroupApi = MApi.getUsergroupApi();
     const activitylogsApi = MApi.getActivitylogsApi();
+    const hopsApi = MApi.getHopsApi();
 
     try {
       const currentUserSchoolDataIdentifier =
@@ -652,6 +1029,50 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
         payload: <GuiderCurrentStudentStateType>"LOADING",
       });
+
+      /**
+       * Study progress promise
+       */
+      const studyProgressPromise = async () => {
+        const studentActivity = await hopsApi.getStudentStudyActivity({
+          studentIdentifier: id,
+        });
+
+        const studentOptions = await hopsApi.getStudentAlternativeStudyOptions({
+          studentIdentifier: id,
+        });
+
+        const skillAndArtCourses = filterActivityBySubjects(
+          SKILL_AND_ART_SUBJECTS_CS,
+          studentActivity
+        );
+
+        const otherLanguageSubjects = filterActivityBySubjects(
+          LANGUAGE_SUBJECTS_CS,
+          studentActivity
+        );
+
+        const otherSubjects = filterActivityBySubjects(
+          OTHER_SUBJECT_OUTSIDE_HOPS_CS,
+          studentActivity
+        );
+
+        const studentActivityByStatus = filterActivity(studentActivity);
+
+        dispatch({
+          type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+          payload: {
+            property: "studyProgress",
+            value: {
+              skillsAndArt: skillAndArtCourses,
+              otherLanguageSubjects: otherLanguageSubjects,
+              otherSubjects: otherSubjects,
+              ...studentActivityByStatus,
+              options: studentOptions,
+            },
+          },
+        });
+      };
 
       await Promise.all([
         guiderApi
@@ -672,37 +1093,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
               dispatch(updateAvailablePurchaseProducts());
             }
 
-            // After basic data is loaded, check if current user of guider has permissions
-            // to see/use current student hops
-            hopsApi
-              .isHopsAvailable({
-                studentIdentifier: id,
-              })
-              .then(async (hopsAvailable) => {
-                dispatch({
-                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                  payload: {
-                    property: "hopsAvailable",
-                    value: hopsAvailable,
-                  },
-                });
-
-                // after basic data is loaded and hops availability checked, then check if hopsPhase property
-                // is used and what values it contains
-                const hopsPhase = await userApi.getUserProperties({
-                  userEntityId: student.userEntityId,
-                  properties: "hopsPhase",
-                });
-
-                dispatch({
-                  type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-                  payload: {
-                    property: "hopsPhase",
-                    value: hopsPhase[0].value,
-                  },
-                });
-              });
-
             pedagogyApi
               .getPedagogyFormAccess({
                 userEntityId: student.userEntityId,
@@ -717,6 +1107,8 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
                 });
               });
           }),
+
+        studyProgressPromise(),
 
         usergroupApi
           .getUsergroups({ userIdentifier: id })
@@ -770,17 +1162,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             dispatch({
               type: "SET_CURRENT_GUIDER_STUDENT_PROP",
               payload: { property: "files", value: files },
-            });
-          }),
-
-        hopsUppersecondaryApi
-          .getHopsByUser({
-            userIdentifier: id,
-          })
-          .then((hops) => {
-            dispatch({
-              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-              payload: { property: "hops", value: hops },
             });
           }),
 
@@ -1855,52 +2236,6 @@ const editContactLogEventComment: EditContactLogEventCommentTriggerType =
   };
 
 /**
- *
- * Updates and return hops phase for current student
- *
- * @param data data
- */
-const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
-  function updateCurrentStudentHopsPhase(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const userApi = MApi.getUserApi();
-
-      try {
-        const properties = await userApi.setUserProperty({
-          setUserPropertyRequest: {
-            key: "hopsPhase",
-            value: data.value,
-            userEntityId: getState().guider.currentStudent.basic.userEntityId,
-          },
-        });
-
-        dispatch({
-          type: "UPDATE_CURRENT_GUIDER_STUDENT_HOPS_PHASE",
-          payload: {
-            property: "hopsPhase",
-            value: properties.value,
-          },
-        });
-
-        dispatch(
-          notificationActions.displayNotification(
-            "HOPS-vaiheen päivittäminen onnistui.",
-            "success"
-          )
-        );
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-        dispatch(notificationActions.displayNotification(err.message, "error"));
-      }
-    };
-  };
-
-/**
  * removeLabelFromUserUtil utility function
  * @param student student
  * @param flags student flags
@@ -1909,7 +2244,7 @@ const updateCurrentStudentHopsPhase: UpdateCurrentStudentHopsPhaseTriggerType =
  * @param getState getstate method
  */
 async function removeLabelFromUserUtil(
-  student: Student,
+  student: FlaggedStudent,
   flags: UserStudentFlag[],
   label: UserFlag,
   dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
@@ -1957,7 +2292,7 @@ async function removeLabelFromUserUtil(
  * @param getState getstate method
  */
 async function addLabelToUserUtil(
-  student: Student,
+  student: FlaggedStudent,
   flags: UserStudentFlag[],
   label: UserFlag,
   dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
@@ -2057,7 +2392,7 @@ const addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType =
       getState: () => StateType
     ) => {
       const guider: GuiderState = getState().guider;
-      guider.selectedStudents.forEach((student: Student) => {
+      guider.selectedStudents.forEach((student) => {
         addLabelToUserUtil(student, student.flags, label, dispatch, getState);
       });
     };
@@ -2074,7 +2409,7 @@ const removeGuiderLabelFromSelectedUsers: RemoveGuiderLabelFromSelectedUsersTrig
       getState: () => StateType
     ) => {
       const guider: GuiderState = getState().guider;
-      guider.selectedStudents.forEach((student: Student) => {
+      guider.selectedStudents.forEach((student) => {
         removeLabelFromUserUtil(
           student,
           student.flags,
@@ -2527,7 +2862,159 @@ const completeOrderFromCurrentStudent: CompleteOrderFromCurrentStudentTriggerTyp
     };
   };
 
+/**
+ * Thunk action creator for the suggested next websocket
+ * @param data data
+ */
+const guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNextWebsocketType =
+  function guiderStudyProgressSuggestedNextWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { suggestedNextList } = currentStudent.studyProgress;
+
+      const updatedSuggestedNextList: StudentStudyActivity[] = [].concat(
+        suggestedNextList
+      );
+
+      // If course id is null, meaning that delete existing activity course by
+      // finding that specific course with subject code and course number and splice it out
+      const indexOfCourse = updatedSuggestedNextList.findIndex(
+        (item) =>
+          item.courseId === websocketData.courseId &&
+          websocketData.subject === item.subject
+      );
+
+      if (indexOfCourse !== -1) {
+        updatedSuggestedNextList.splice(indexOfCourse, 1);
+      } else {
+        // Add new
+        updatedSuggestedNextList.push(websocketData);
+      }
+
+      const studyProgress: GuiderStudentStudyProgress = {
+        ...state.guider.currentStudent.studyProgress,
+        suggestedNextList: updatedSuggestedNextList,
+      };
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: {
+            ...studyProgress,
+            suggestedNextList: updatedSuggestedNextList,
+          },
+        },
+      });
+    };
+  };
+
+/**
+ * Thunk action creator for the workspace signup websocket
+ * @param data data
+ */
+const guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceSignupWebsocketType =
+  function guiderStudyProgressWorkspaceSignupWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { studyProgress } = currentStudent;
+      const { suggestedNextList, onGoingList, gradedList, transferedList } =
+        studyProgress;
+
+      // Combine all course lists and filter out the updated course
+      let allCourses = [
+        ...onGoingList,
+        ...gradedList,
+        ...transferedList,
+        ...suggestedNextList,
+      ];
+      const courseIdToFilter = Array.isArray(websocketData)
+        ? websocketData[0].courseId
+        : websocketData.courseId;
+      allCourses = allCourses.filter(
+        (item) => item.courseId !== courseIdToFilter
+      );
+
+      // Add the new course(s)
+      allCourses = allCourses.concat(websocketData);
+
+      // Get filtered course lists
+      const categorizedCourses = {
+        ...filterActivity(allCourses), // This adds suggestedNextList, onGoingList, gradedList, transferedList
+      };
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: {
+            ...studyProgress,
+            ...categorizedCourses,
+          },
+        },
+      });
+    };
+  };
+
+/**
+ * Thunk action creator for the alternative study options websocket
+ * @param data data
+ */
+const guiderStudyProgressAlternativeStudyOptionsWebsocket: GuiderStudyProgressAlternativeStudyOptionsWebsocketType =
+  function guiderStudyProgressAlternativeStudyOptionsWebsocket(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const currentStudent = state.guider.currentStudent;
+
+      if (!currentStudent) {
+        return null;
+      }
+
+      const { websocketData } = data;
+
+      const { studyProgress } = currentStudent;
+
+      dispatch({
+        type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+        payload: {
+          property: "studyProgress",
+          value: { ...studyProgress, options: websocketData },
+        },
+      });
+    };
+  };
+
 export {
+  loadNotes,
+  createNote,
+  updateNote,
+  updateRecipientNoteStatus,
+  toggleNoteArchive,
   loadStudents,
   loadMoreStudents,
   loadStudent,
@@ -2551,7 +3038,6 @@ export {
   removeFileFromCurrentStudent,
   updateLabelFilters,
   updateWorkspaceFilters,
-  updateCurrentStudentHopsPhase,
   createGuiderFilterLabel,
   updateGuiderFilterLabel,
   removeGuiderFilterLabel,
@@ -2561,4 +3047,7 @@ export {
   doOrderForCurrentStudent,
   deleteOrderFromCurrentStudent,
   completeOrderFromCurrentStudent,
+  guiderStudyProgressSuggestedNextWebsocket,
+  guiderStudyProgressWorkspaceSignupWebsocket,
+  guiderStudyProgressAlternativeStudyOptionsWebsocket,
 };

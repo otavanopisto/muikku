@@ -6,13 +6,13 @@ import {
   ApplicationListItemContentWrapper,
   ApplicationListItemContentData,
 } from "~/components/general/application-list";
-import { User } from "~/generated/client";
+import { Student, StaffMember } from "~/generated/client";
 
 /**
  * UserProps
  */
 interface UserProps {
-  user: User;
+  user: Student | StaffMember;
   actions: React.ReactElement<any>;
 }
 

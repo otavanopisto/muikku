@@ -7,12 +7,13 @@ public class WorkspaceStudentRestModel extends WorkspaceUserRestModel {
   public WorkspaceStudentRestModel() {
   }
 
-  public WorkspaceStudentRestModel(Long workspaceUserEntityId, Long userEntityId, SchoolDataIdentifier userIdentifier, String firstName, String nickname, String lastName, String studyProgrammeName, Boolean hasImage, Boolean active, Boolean hasPedagogyForm) {
+  public WorkspaceStudentRestModel(Long workspaceUserEntityId, Long userEntityId, SchoolDataIdentifier userIdentifier, String firstName, String nickname, String lastName, String studyProgrammeName, boolean hasImage, boolean active, boolean hasPedagogyForm, boolean u18Compulsory) {
     super(workspaceUserEntityId, userEntityId, userIdentifier, firstName, lastName, hasImage);
     this.studyProgrammeName = studyProgrammeName;
     this.nickname = nickname;
     this.active = active;
     this.hasPedagogyForm = hasPedagogyForm;
+    this.u18Compulsory = u18Compulsory;
   }
 
   public String getStudyProgrammeName() {
@@ -47,9 +48,17 @@ public class WorkspaceStudentRestModel extends WorkspaceUserRestModel {
     this.hasPedagogyForm = hasPedagogyForm;
   }
 
+  public boolean isU18Compulsory() {
+    return u18Compulsory;
+  }
+
+  public void setU18Compulsory(boolean u18Compulsory) {
+    this.u18Compulsory = u18Compulsory;
+  }
+
   private String nickname;
   private String studyProgrammeName;
-  private Boolean active;
-  private Boolean hasPedagogyForm;
- 
+  private boolean active;
+  private boolean hasPedagogyForm;
+  private boolean u18Compulsory;
 }

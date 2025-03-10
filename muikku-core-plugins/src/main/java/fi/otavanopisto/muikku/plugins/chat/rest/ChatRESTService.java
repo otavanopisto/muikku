@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -46,14 +47,10 @@ import fi.otavanopisto.muikku.plugins.chat.model.ChatRoomType;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUser;
 import fi.otavanopisto.muikku.plugins.chat.model.ChatUserVisibility;
 import fi.otavanopisto.muikku.rest.ISO8601UTCTimestamp;
-import fi.otavanopisto.muikku.rest.model.GuidanceCounselorRestModel;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.rest.user.GuidanceCounselorRestModels;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
-import fi.otavanopisto.muikku.users.UserGroupGuidanceController;
 import fi.otavanopisto.muikku.users.UserProfilePictureController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -99,13 +96,7 @@ public class ChatRESTService {
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
-  private UserGroupGuidanceController userGroupGuidanceController;
-
-  @Inject
-  private UserEntityFileController userEntityFileController;
-
-  @Inject
-  private UserEmailEntityController userEmailEntityController;
+  private GuidanceCounselorRestModels guidanceCounselorRestModels;
 
   @Inject
   private HttpServletRequest httpRequest;
@@ -648,34 +639,13 @@ public class ChatRESTService {
     if (loggedUser == null || !loggedUser.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       return Response.ok(Collections.emptyList()).build();
     }
-    
-    List<UserEntity> guidanceCouncelors = userGroupGuidanceController.getGuidanceCounselors(sessionController.getLoggedUser(), false);
-    
-    List<GuidanceCounselorRestModel> guidanceCounselorRestModels = new ArrayList<>();
-    
-    for (UserEntity userEntity : guidanceCouncelors) {
+
+    Predicate<UserEntity> userEntityFilter = userEntity -> {
       ChatUser chatUser = chatController.getChatUser(userEntity);
-      boolean chatEnabled = chatUser != null && chatUser.getVisibility() == ChatUserVisibility.ALL;
-      if (!chatEnabled) {
-        continue;
-      }
-      
-      boolean hasImage = userEntityFileController.hasProfilePicture(userEntity);
-      SchoolDataIdentifier schoolDataIdentifier = userEntity.defaultSchoolDataIdentifier();
-      UserEntityName userEntityName = userEntityController.getName(userEntity, true);
-      String email = userEmailEntityController.getUserDefaultEmailAddress(schoolDataIdentifier, false);
-      
-      guidanceCounselorRestModels.add(new GuidanceCounselorRestModel(
-          userEntity.defaultSchoolDataIdentifier().toId(),
-          userEntity.getId(),
-          userEntityName.getFirstName(),
-          userEntityName.getLastName(),
-          email,
-          Collections.emptyMap(),
-          hasImage));
-    }
+      return chatUser != null && chatUser.getVisibility() == ChatUserVisibility.ALL;
+    };
     
-    return Response.ok(guidanceCounselorRestModels).build();
+    return Response.ok(guidanceCounselorRestModels.getGuidanceCounselorRestModels(sessionController.getLoggedUser(), null, userEntityFilter)).build();
   }
 
   private boolean isUserIdentifier(String identifier) {

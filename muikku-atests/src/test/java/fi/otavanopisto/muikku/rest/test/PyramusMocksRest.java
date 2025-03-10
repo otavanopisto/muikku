@@ -654,7 +654,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
 
     addPayload(payloads, objectMapper.writeValueAsString(new WebhookStudentGroupCreatePayload(groupId)));
 
-    StudentGroupUser studentGroupStaffMember = new StudentGroupUser(1l, 4l);
+    StudentGroupUser studentGroupStaffMember = new StudentGroupUser(1l, 4l, false, false, false);
     StudentGroupUser[] studentGroupStaffMembers = { studentGroupStaffMember };
     
     stubFor(get(urlEqualTo(String.format("/1/students/studentGroups/%d/staffmembers", groupId)))

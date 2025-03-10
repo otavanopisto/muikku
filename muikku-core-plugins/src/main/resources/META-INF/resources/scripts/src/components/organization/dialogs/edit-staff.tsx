@@ -15,7 +15,7 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
-import { User, Role } from "~/generated/client";
+import { StaffMember, UpdateStaffMemberRequest } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 
@@ -26,7 +26,7 @@ interface OrganizationUserProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   status: StatusType;
-  data?: User;
+  data?: StaffMember;
   studyprogrammes: StudyprogrammeTypes;
   updateStaffmember: UpdateStaffmemberTriggerType;
 }
@@ -35,12 +35,7 @@ interface OrganizationUserProps extends WithTranslation {
  * OrganizationUserState
  */
 interface OrganizationUserState {
-  user: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    roles: Role[];
-  };
+  user: Partial<StaffMember>;
   locked: boolean;
   firstNameValid: number;
   lastNameValid: number;
@@ -136,16 +131,19 @@ class OrganizationUser extends React.Component<
         locked: true,
       });
 
-      const data = {
-        identifier: this.props.data.id,
-        firstName: this.state.user.firstName,
-        lastName: this.state.user.lastName,
-        email: this.state.user.email,
-        roles: this.state.user.roles,
+      const data: UpdateStaffMemberRequest = {
+        staffMemberIdentifier: this.props.data.id,
+        userStaffCreatePayload: {
+          identifier: this.props.data.id,
+          firstName: this.state.user.firstName,
+          lastName: this.state.user.lastName,
+          email: this.state.user.email,
+          roles: this.state.user.roles,
+        },
       };
 
       this.props.updateStaffmember({
-        staffmember: data,
+        updateRequest: data,
         /**
          *
          */

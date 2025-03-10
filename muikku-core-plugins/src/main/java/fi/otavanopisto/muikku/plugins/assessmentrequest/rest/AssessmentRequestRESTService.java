@@ -41,7 +41,6 @@ import fi.otavanopisto.muikku.plugins.ceepos.model.CeeposProductType;
 import fi.otavanopisto.muikku.plugins.ceepos.rest.CeeposRedirectRestModel;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
-import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -130,18 +129,6 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       }
     }
     
-    // Price is reset to zero if the user has an active supplementation request on this workspace
-    
-    if (price != null && price.getPrice() > 0) {
-      SupplementationRequest supplementationRequest = evaluationController.findLatestSupplementationRequestByStudentAndWorkspaceAndArchived(
-          sessionController.getLoggedUserEntity().getId(),
-          workspaceEntityId,
-          Boolean.FALSE);
-      if (supplementationRequest != null) {
-        price.setPrice(0d);
-      }
-    }
-    
     return Response.ok(price).build();
   }
 
@@ -149,32 +136,22 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   @Path("/workspace/{WORKSPACEENTITYID}/assessmentRequests")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createAssessmentRequest(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, AssessmentRequestRESTModel newAssessmentRequest) {
-
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(Status.NOT_FOUND).entity("Course not found").build();
     }
-    
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-    WorkspaceAssessmentRequest assessmentRequest = null;
-    
-    SchoolDataIdentifier workspaceIdentifier = workspaceEntity.schoolDataIdentifier();
-    assessmentRequest = assessmentRequestController.findLatestAssessmentRequestByWorkspaceAndStudent(workspaceIdentifier, sessionController.getLoggedUser());
-    
-    if (assessmentRequest != null) {
-      if (assessmentRequest.getHandled().equals(Boolean.FALSE)) {
-        return Response.noContent().build();
-      }
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Course user not found").build();
     }
-    
     try {
-      assessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(workspaceUserEntity, newAssessmentRequest.getRequestText());
+      WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(workspaceUserEntity, newAssessmentRequest.getRequestText());
       communicatorAssessmentRequestController.sendAssessmentRequestMessage(sessionController.getLocale(), assessmentRequest);
       return Response.ok(assessmentRequestController.restModel(assessmentRequest)).build();
     }
     catch (Exception e) {
       logger.log(Level.SEVERE, "Couldn't create workspace assessment request.", e);
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     } 
   }
   

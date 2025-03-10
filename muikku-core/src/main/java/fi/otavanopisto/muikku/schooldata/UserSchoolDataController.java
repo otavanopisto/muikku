@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.schooldata;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -9,6 +10,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.rest.OrganizationContactPerson;
@@ -16,6 +19,7 @@ import fi.otavanopisto.muikku.rest.StudentContactLogEntryBatch;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryCommentRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogEntryRestModel;
 import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
+import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
@@ -370,6 +374,14 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).listStudentStudyPeriods(userIdentifier);
   }
 
+  public LocalDate getBirthday(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).getBirthday(studentIdentifier);
+  }
+
   private UserSchoolDataBridge getUserBridge(SchoolDataSource schoolDataSource) {
     return getUserBridge(schoolDataSource.getIdentifier());
   }
@@ -444,7 +456,7 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).amICounselor(studentIdentifier.getIdentifier());
   }
 
-  public List<GroupUser> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
+  public List<GroupStaffMember> listStudentGuidanceCounselors(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
     if (schoolDataSource == null) {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
@@ -468,7 +480,25 @@ public class UserSchoolDataController {
     }
     return getUserBridge(schoolDataSource).listStudentSpecEdTeachers(studentIdentifier, includeGuidanceCouncelors, onlyMessageReceivers);
   }
+
+  /**
+   * Returns true, if the given identifier is a guardian for any active students.
+   * 
+   * @param guardianUserIdentifier guardian, should be of role STUDENT_PARENT
+   * @return true if the given identifier points to an active guardian
+   */
+  public boolean isActiveGuardian(SchoolDataIdentifier guardianUserIdentifier) {
+    // Loads a list of dependents for the guardian, this could be optimized
+    List<GuardiansDependent> guardiansDependents = listGuardiansDependents(guardianUserIdentifier);
+    return CollectionUtils.isNotEmpty(guardiansDependents);
+  }
   
+  /**
+   * Lists students for who the given user is a active guardian for.
+   * 
+   * @param guardianUserIdentifier guardian, should be of role STUDENT_PARENT
+   * @return guardians' students
+   */
   public List<GuardiansDependent> listGuardiansDependents(SchoolDataIdentifier guardianUserIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(guardianUserIdentifier.getDataSource());
     if (schoolDataSource == null) {
