@@ -43,7 +43,7 @@ const getRouteTitles = (t: TFunction, workspace: WorkspaceDataType | null) => {
     "/hops": `${t("hops", { ns: "pageTitles" })} | ${appName}`,
     "/organization": `${t("organization", { ns: "pageTitles" })} | ${appName}`,
     "/profile": `${t("profile", { ns: "pageTitles" })} | ${appName}`,
-    "/studies": `${t("studies", { ns: "pageTitles" })} | ${appName}`,
+    "/records": `${t("studies", { ns: "pageTitles" })} | ${appName}`,
   };
 
   // Dynamic workspace routes with pattern

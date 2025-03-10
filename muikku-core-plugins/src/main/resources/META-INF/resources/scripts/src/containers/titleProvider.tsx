@@ -28,13 +28,13 @@ function TitleProvider(props: TitleProviderProps) {
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="favicon-32x32.png"
+          href="/gfx/favicons/favicon-32x32.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="favicon-16x16.png"
+          href="/gfx/favicons/favicon-16x16.png"
         />
 
         {/* For Google and Android */}
@@ -42,13 +42,13 @@ function TitleProvider(props: TitleProviderProps) {
           rel="icon"
           type="image/png"
           sizes="48x48"
-          href="favicon-48x48.png"
+          href="/gfx/favicons/favicon-48x48.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="192x192"
-          href="favicon-192x192.png"
+          href="/gfx/favicons/favicon-192x192.png"
         />
 
         {/* For iPad */}
@@ -56,13 +56,13 @@ function TitleProvider(props: TitleProviderProps) {
           rel="apple-touch-icon"
           type="image/png"
           sizes="167x167"
-          href="favicon-167x167.png"
+          href="/gfx/favicons/favicon-167x167.png"
         />
         <link
           rel="apple-touch-icon"
           type="image/png"
           sizes="180x180"
-          href="favicon-180x180.png"
+          href="/gfx/favicons/favicon-180x180.png"
         />
       </Helmet>
       {children}
