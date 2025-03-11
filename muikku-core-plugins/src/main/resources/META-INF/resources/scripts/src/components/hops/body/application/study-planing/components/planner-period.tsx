@@ -189,13 +189,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                   ease: "easeInOut",
                 }}
               >
-                <div
-                  className="study-planner__months-container"
-                  style={{
-                    position: "relative",
-                    isolation: "isolate",
-                  }}
-                >
+                <div className="study-planner__months-container">
                   {months.map((monthName, index) => {
                     const monthCourses = getCoursesByMonth(monthName);
                     const monthKey = `${monthName}-${year}-${type}`;

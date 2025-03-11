@@ -94,204 +94,199 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
   };
 
   return (
-    <div
-      style={{
-        position: "relative",
-      }}
-    >
-      <BasePlannerPeriodCourse
-        {...props}
-        ref={drag}
-        isDragging={isDragging}
-        renderSpecifyContent={({
-          onClose,
-          onConfirm,
-          onChange,
-          startDate,
-          endDate,
-          isOpen,
-          workspaceInstance,
-        }) => (
-          <AnimatedDrawer
-            isOpen={isOpen}
-            contentClassName="study-planner__extra-section study-planner__extra-section--specify"
-            onClose={() => handleSpecifyClose(onConfirm)}
-          >
-            <h4 className="study-planner__extra-section-title">
-              Tarkenna suunnitelmaa
-            </h4>
+    <BasePlannerPeriodCourse
+      {...props}
+      ref={drag}
+      isDragging={isDragging}
+      renderSpecifyContent={({
+        onClose,
+        onConfirm,
+        onChange,
+        startDate,
+        endDate,
+        isOpen,
+        workspaceInstance,
+      }) => (
+        <AnimatedDrawer
+          isOpen={isOpen}
+          contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+          onClose={() => handleSpecifyClose(onConfirm)}
+        >
+          <h4 className="study-planner__extra-section-title">
+            Tarkenna suunnitelmaa
+          </h4>
 
-            <div className="study-planner__extra-section-content">
-              <div className="study-planner__extra-section-input-group">
-                <label className="study-planner__extra-section-input-group-label">
-                  Valitse kurssi-ilmentymä
-                </label>
+          <div className="study-planner__extra-section-content">
+            <div className="study-planner__extra-section-input-group">
+              <label className="study-planner__extra-section-input-group-label">
+                Valitse kurssi-ilmentymä
+              </label>
 
-                <span className="study-planner__extra-section-input-group-label-info">
-                  Valitse kurssi-ilmentymä, jonka mukaan haluat suorituksen
-                  toteuttaa
-                </span>
-                <WorkspaceSelect
-                  selectedWorkspaceInstanceId={
-                    workspaceInstance && workspaceInstance.id
-                  }
-                  onChange={(selectedWorkspace) => {
-                    onChange(
-                      startDate,
-                      endDate,
-                      selectedWorkspace && {
-                        id: selectedWorkspace.value.id,
-                        name: selectedWorkspace.value.name,
-                        startDate: selectedWorkspace.value.startDate,
-                        endDate: selectedWorkspace.value.endDate,
-                        instanceExists: true,
-                      }
-                    );
-                  }}
-                  disabled={false}
-                  id="study-planner-specify-course"
-                  subjectCode={course.subjectCode}
-                  courseNumber={course.courseNumber}
-                  ops={
-                    curriculumConfig.strategy.getCurriculumMatrix()
-                      .curriculumName
-                  }
+              <span className="study-planner__extra-section-input-group-label-info">
+                Valitse kurssi-ilmentymä, jonka mukaan haluat suorituksen
+                toteuttaa
+              </span>
+              <WorkspaceSelect
+                selectedWorkspaceInstanceId={
+                  workspaceInstance && workspaceInstance.id
+                }
+                onChange={(selectedWorkspace) => {
+                  onChange(
+                    startDate,
+                    endDate,
+                    selectedWorkspace && {
+                      id: selectedWorkspace.value.id,
+                      name: selectedWorkspace.value.name,
+                      startDate: selectedWorkspace.value.startDate,
+                      endDate: selectedWorkspace.value.endDate,
+                      instanceExists: true,
+                    }
+                  );
+                }}
+                disabled={false}
+                id="study-planner-specify-course"
+                subjectCode={course.subjectCode}
+                courseNumber={course.courseNumber}
+                ops={
+                  curriculumConfig.strategy.getCurriculumMatrix().curriculumName
+                }
+              />
+            </div>
+
+            <div className="study-planner__extra-section-input-group">
+              <label className="study-planner__extra-section-input-group-label">
+                Valitse ajankohta
+              </label>
+              <span className="study-planner__extra-section-input-group-label-info">
+                Ajasta kurssi sinulle sopivaan ajankohtaan
+              </span>
+              <div className="study-planner__extra-section-date-inputs">
+                <DatePicker
+                  portalId="datepicker-portal"
+                  className="study-planner__input"
+                  placeholderText="Alkaa"
+                  selected={startDate}
+                  onChange={(date) => onChange(date, endDate)}
+                  locale={outputCorrectDatePickerLocale(localize.language)}
+                  dateFormat="P"
+                />
+                <DatePicker
+                  portalId="datepicker-portal"
+                  className="study-planner__input"
+                  placeholderText="Päättyy"
+                  selected={endDate}
+                  onChange={(date) => onChange(startDate, date)}
+                  locale={outputCorrectDatePickerLocale(localize.language)}
+                  dateFormat="P"
                 />
               </div>
-
-              <div className="study-planner__extra-section-input-group">
-                <label className="study-planner__extra-section-input-group-label">
-                  Valitse ajankohta
-                </label>
-                <span className="study-planner__extra-section-input-group-label-info">
-                  Ajasta kurssi sinulle sopivaan ajankohtaan
-                </span>
-                <div className="study-planner__extra-section-date-inputs">
-                  <DatePicker
-                    className="study-planner__input"
-                    placeholderText="Alkaa"
-                    selected={startDate}
-                    onChange={(date) => onChange(date, endDate)}
-                    locale={outputCorrectDatePickerLocale(localize.language)}
-                    dateFormat="P"
-                  />
-                  <DatePicker
-                    className="study-planner__input"
-                    placeholderText="Päättyy"
-                    selected={endDate}
-                    onChange={(date) => onChange(startDate, date)}
-                    locale={outputCorrectDatePickerLocale(localize.language)}
-                    dateFormat="P"
-                  />
-                </div>
-              </div>
-
-              <div className="study-planner__extra-section-button-group">
-                <Button
-                  buttonModifiers={["standard-ok", "execute"]}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSpecifyCourse(onClose);
-                  }}
-                >
-                  Tallenna
-                </Button>
-                <Button
-                  buttonModifiers={["standard-cancel", "cancel"]}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClose();
-                  }}
-                >
-                  Peruuta
-                </Button>
-              </div>
             </div>
-          </AnimatedDrawer>
-        )}
-        renderDeleteWarning={({ isOpen, onClose, onConfirm }) => (
-          <AnimatedDrawer
-            isOpen={isOpen}
-            contentClassName="study-planner__extra-section study-planner__extra-section--specify"
-            onClose={() => handleClose(onConfirm)}
-          >
-            <h4 className="study-planner__extra-section-title">
-              Poista suunnitelmasta?
-            </h4>
-            <div className="study-planner__extra-section-content">
-              <div className="study-planner__extra-section-input-group">
-                <span className="study-planner__extra-section-input-group-label-info">
-                  Oletko varma että haluat poistaa kurssin suunnitelmastasi?
-                </span>
-              </div>
 
-              <div className="study-planner__extra-section-button-group">
-                <Button
-                  buttonModifiers={["standard-ok", "fatal"]}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteCard(onClose);
-                  }}
-                >
-                  Poista kurssi
-                </Button>
-                <Button
-                  buttonModifiers={["standard-cancel", "cancel"]}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onClose();
-                  }}
-                >
-                  Peruuta
-                </Button>
-              </div>
+            <div className="study-planner__extra-section-button-group">
+              <Button
+                buttonModifiers={["standard-ok", "execute"]}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSpecifyCourse(onClose);
+                }}
+              >
+                Tallenna
+              </Button>
+              <Button
+                buttonModifiers={["standard-cancel", "cancel"]}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+              >
+                Peruuta
+              </Button>
             </div>
-          </AnimatedDrawer>
-        )}
-        // For later use, do not remove
-        // renderCourseState={({ isOpen, onClose, courseState }) => (
-        //   <AnimatedDrawer
-        //     isOpen={isOpen}
-        //     contentClassName="study-planner__extra-section study-planner__extra-section--specify"
-        //   >
-        //     <div className="study-planner__state-info-row">
-        //       <span className="study-planner__state-info-row-label">
-        //         Kurssi suunniteltu
-        //       </span>
-        //       <span className="study-planner__state-info-row-value">-</span>
-        //     </div>
+          </div>
+        </AnimatedDrawer>
+      )}
+      renderDeleteWarning={({ isOpen, onClose, onConfirm }) => (
+        <AnimatedDrawer
+          isOpen={isOpen}
+          contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+          onClose={() => handleClose(onConfirm)}
+        >
+          <h4 className="study-planner__extra-section-title">
+            Poista suunnitelmasta?
+          </h4>
+          <div className="study-planner__extra-section-content">
+            <div className="study-planner__extra-section-input-group">
+              <span className="study-planner__extra-section-input-group-label-info">
+                Oletko varma että haluat poistaa kurssin suunnitelmastasi?
+              </span>
+            </div>
 
-        //     <div className="study-planner__state-info-row">
-        //       <span className="study-planner__state-info-row-label">
-        //         Kurssille ilmoittauduttu
-        //       </span>
-        //       <span className="study-planner__state-info-row-value">-</span>
-        //     </div>
+            <div className="study-planner__extra-section-button-group">
+              <Button
+                buttonModifiers={["standard-ok", "fatal"]}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteCard(onClose);
+                }}
+              >
+                Poista kurssi
+              </Button>
+              <Button
+                buttonModifiers={["standard-cancel", "cancel"]}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+              >
+                Peruuta
+              </Button>
+            </div>
+          </div>
+        </AnimatedDrawer>
+      )}
+      // For later use, do not remove
+      // renderCourseState={({ isOpen, onClose, courseState }) => (
+      //   <AnimatedDrawer
+      //     isOpen={isOpen}
+      //     contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+      //   >
+      //     <div className="study-planner__state-info-row">
+      //       <span className="study-planner__state-info-row-label">
+      //         Kurssi suunniteltu
+      //       </span>
+      //       <span className="study-planner__state-info-row-value">-</span>
+      //     </div>
 
-        //     <div className="study-planner__state-info-row">
-        //       <span className="study-planner__state-info-row-label">
-        //         Kurssilta pyydetty arviointia
-        //       </span>
-        //       <span className="study-planner__state-info-row-value">-</span>
-        //     </div>
+      //     <div className="study-planner__state-info-row">
+      //       <span className="study-planner__state-info-row-label">
+      //         Kurssille ilmoittauduttu
+      //       </span>
+      //       <span className="study-planner__state-info-row-value">-</span>
+      //     </div>
 
-        //     <div className="study-planner__state-info-row">
-        //       <span className="study-planner__state-info-row-label">
-        //         Kurssi arvioitu
-        //       </span>
-        //       <span className="study-planner__state-info-row-value">-</span>
-        //     </div>
+      //     <div className="study-planner__state-info-row">
+      //       <span className="study-planner__state-info-row-label">
+      //         Kurssilta pyydetty arviointia
+      //       </span>
+      //       <span className="study-planner__state-info-row-value">-</span>
+      //     </div>
 
-        //     <div className="study-planner__state-info-row">
-        //       <span className="study-planner__state-info-row-label">
-        //         Kurssin arvosana
-        //       </span>
-        //       <span className="study-planner__state-info-row-value">-</span>
-        //     </div>
-        //   </AnimatedDrawer>
-        // )}
-      />
-    </div>
+      //     <div className="study-planner__state-info-row">
+      //       <span className="study-planner__state-info-row-label">
+      //         Kurssi arvioitu
+      //       </span>
+      //       <span className="study-planner__state-info-row-value">-</span>
+      //     </div>
+
+      //     <div className="study-planner__state-info-row">
+      //       <span className="study-planner__state-info-row-label">
+      //         Kurssin arvosana
+      //       </span>
+      //       <span className="study-planner__state-info-row-value">-</span>
+      //     </div>
+      //   </AnimatedDrawer>
+      // )}
+    />
   );
 };
 

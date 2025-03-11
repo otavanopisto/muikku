@@ -365,7 +365,7 @@
   margin: 0 5px;
 }
 
-.study-planner__course-tray-item 
+.study-planner__course-tray-item
 .study-planner__planned-list-item {
   flex-basis: auto;
   flex-grow: 0;
@@ -384,6 +384,11 @@
   min-width: 270px;
   opacity: 1;
   position: relative;
+  transition: transform 0.2s ease-in-out;
+}
+
+.study-planner__card:hover {
+  transform: translateY(-2px);
 }
 
 .study-planner__card--course-tray-card {
