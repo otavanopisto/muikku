@@ -2800,5 +2800,34 @@
       "closeDiscussionError": "Failed to close the discussion",
       "updateSuccess_settings": "Chat settings updated successfully"
     }
+  },
+  "pageTitles": {
+    "announcements": "Announcements",
+    "announcements_workspace": "{{workspaceName}} | Announcements",
+    "announcer": "Announcer",
+    "announcer_workspace": "{{workspaceName}} | Announcer",
+    "appName": "Muikku",
+    "ceeposPay": "Payment",
+    "ceeposDone": "Payment completed",
+    "communicator": "Communicator",
+    "coursepicker": "Course picker",
+    "discussions": "Discussions",
+    "discussions_workspace": "{{workspaceName}} | Discussions",
+    "evaluation": "Evaluation",
+    "evaluation_workspace": "{{workspaceName}} | Evaluation",
+    "error": "Error",
+    "guider": "Guider",
+    "home": "Home",
+    "home_workspace": "{{workspaceName}} | Home",
+    "hops": "HOPS",
+    "instructions": "{{workspaceName}} | Instructions",
+    "journal": "{{workspaceName}} | Journal",
+    "materials": "{{workspaceName}} | Materials",
+    "profile": "Profile",
+    "organization": "Organization management",
+    "studies": "Studies",
+    "users": "{{workspaceName}} | Users",
+    "userCredentialsReset": "Reset credentials",
+    "workspaceManagement": "{{workspaceName}} | Workspace management"
   }
 }
