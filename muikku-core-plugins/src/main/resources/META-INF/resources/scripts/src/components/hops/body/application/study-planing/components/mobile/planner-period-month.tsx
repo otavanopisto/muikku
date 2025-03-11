@@ -403,7 +403,6 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
           )}
 
           <motion.div
-            layout="position"
             animate={pulseDropzone ? "dropIsActive" : "initial"}
             variants={dropZoneVariants}
             onClick={handleMoveCoursesHereClick}
