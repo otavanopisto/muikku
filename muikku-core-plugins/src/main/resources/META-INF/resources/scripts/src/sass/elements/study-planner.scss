@@ -604,8 +604,15 @@
 .study-planner__extra-section-date-inputs {
   display: flex;
   flex-flow: row nowrap;
-  gap: 10px;
   width: 100%;
+
+  .react-datepicker-wrapper:first-child {
+    margin: 0 5px 0 0;
+  }
+
+  .react-datepicker-wrapper {
+    margin: 0 0 0 5px;
+  }
 }
 
 .study-planner__extra-section-button-group {

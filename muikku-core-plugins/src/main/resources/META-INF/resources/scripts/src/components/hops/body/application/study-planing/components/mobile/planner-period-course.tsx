@@ -106,7 +106,6 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
                   </label>
                   <div className="study-planner__extra-section-date-inputs">
                     <DatePicker
-                      portalId="datepicker-portal"
                       className="study-planner__input"
                       placeholderText="Alkaa"
                       selected={startDate}
@@ -115,7 +114,6 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
                       dateFormat="P"
                     />
                     <DatePicker
-                      portalId="datepicker-portal"
                       className="study-planner__input"
                       placeholderText="Päättyy"
                       selected={endDate}

@@ -162,7 +162,6 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
               </span>
               <div className="study-planner__extra-section-date-inputs">
                 <DatePicker
-                  portalId="datepicker-portal"
                   className="study-planner__input"
                   placeholderText="Alkaa"
                   selected={startDate}
@@ -171,7 +170,6 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                   dateFormat="P"
                 />
                 <DatePicker
-                  portalId="datepicker-portal"
                   className="study-planner__input"
                   placeholderText="Päättyy"
                   selected={endDate}
