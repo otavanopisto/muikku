@@ -385,10 +385,14 @@
   opacity: 1;
   position: relative;
   transition: transform 0.2s ease-in-out;
-}
 
-.study-planner__card:hover {
-  transform: translateY(-2px);
+  &:has(.react-datepicker) {
+    z-index: 9;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .study-planner__card--course-tray-card {
