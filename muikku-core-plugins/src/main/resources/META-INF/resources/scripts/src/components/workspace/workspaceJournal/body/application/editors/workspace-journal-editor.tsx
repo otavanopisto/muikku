@@ -229,7 +229,7 @@ class WorkspaceJournalEditor extends SessionStateComponent<
                       onChange={this.handleTitleChange}
                       autoFocus={!this.props.journal}
                       maxLength={255}
-                      disabled={this.props.journal.isMaterialField}
+                      disabled={this.props.journal.material !== null}
                     />
                   </div>
                 </div>

@@ -176,12 +176,12 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
     // If only one of the other
     if (showMandatory) {
       return evaluation.evaluationDiaryEntries.data.filter(
-        (j) => j.isMaterialField
+        (j) => j.material !== null
       );
     }
     if (showOthers) {
       return evaluation.evaluationDiaryEntries.data.filter(
-        (j) => !j.isMaterialField
+        (j) => j.material === null
       );
     }
   };

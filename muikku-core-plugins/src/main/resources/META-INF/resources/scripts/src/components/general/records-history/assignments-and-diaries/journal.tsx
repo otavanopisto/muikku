@@ -113,7 +113,7 @@ const Journal: React.FC<JournalProps> = (props) => {
       >
         <div
           className={`application-list__item-header-main application-list__item-header-main--journal-entry ${
-            journal.isMaterialField
+            journal.material
               ? "application-list__item-header-main--journal-entry-mandatory"
               : ""
           }`}
