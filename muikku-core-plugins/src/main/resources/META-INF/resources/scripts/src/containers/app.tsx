@@ -11,6 +11,8 @@ import AppRoutes from "~/routes/app-routes";
 import { Provider } from "react-redux";
 import { StateType } from "~/reducers";
 import { Store } from "redux";
+import { HelmetProvider } from "react-helmet-async";
+import TitleProvider from "./titleProvider";
 
 /**
  * AppProps
@@ -29,21 +31,25 @@ function App(props: AppProps) {
   const { websocket, store } = props;
 
   return (
-    <Provider store={store}>
-      <div id="root">
-        <WindowContextProvider>
-          <ChatWebsocketContextProvider websocket={websocket}>
-            <Chat />
-          </ChatWebsocketContextProvider>
-          <Notifications />
-          <DisconnectedWarningDialog />
-          <EasyToUseFunctions />
-          <BrowserRouter>
-            <AppRoutes store={store} websocket={websocket} />
-          </BrowserRouter>
-        </WindowContextProvider>
-      </div>
-    </Provider>
+    <HelmetProvider>
+      <Provider store={store}>
+        <div id="root">
+          <WindowContextProvider>
+            <ChatWebsocketContextProvider websocket={websocket}>
+              <Chat />
+            </ChatWebsocketContextProvider>
+            <Notifications />
+            <DisconnectedWarningDialog />
+            <EasyToUseFunctions />
+            <BrowserRouter>
+              <TitleProvider>
+                <AppRoutes store={store} websocket={websocket} />
+              </TitleProvider>
+            </BrowserRouter>
+          </WindowContextProvider>
+        </div>
+      </Provider>
+    </HelmetProvider>
   );
 }
 
