@@ -65,19 +65,12 @@ const UserAvatar = (props: UserAvatarProps) => {
     </div>
   );
 
-  return (
-    <div
-      className={`avatar-container ${size ? "avatar-container--" + size : ""}`}
-      aria-hidden={avatarAriaHidden}
-    >
-      {showTooltip ? (
-        <Dropdown openByHover key="avatar" content={name}>
-          {avatarContent}
-        </Dropdown>
-      ) : (
-        avatarContent
-      )}
-    </div>
+  return showTooltip ? (
+    <Dropdown openByHover key="avatar" content={name}>
+      {avatarContent}
+    </Dropdown>
+  ) : (
+    avatarContent
   );
 };
 
