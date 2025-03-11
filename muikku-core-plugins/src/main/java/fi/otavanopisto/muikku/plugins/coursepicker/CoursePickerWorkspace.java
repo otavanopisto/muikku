@@ -26,7 +26,9 @@ public class CoursePickerWorkspace {
       boolean isCourseMember, 
       boolean hasCustomImage,
       OrganizationRESTModel organization,
-      List<String> curriculumIdentifiers) {
+      List<String> curriculumIdentifiers,
+      Double courseLength,
+      String courseLengthSymbol) {
     super();
     this.id = id;
     this.urlName = urlName;
@@ -43,6 +45,8 @@ public class CoursePickerWorkspace {
     this.hasCustomImage = hasCustomImage;
     this.organization = organization;
     this.curriculumIdentifiers = curriculumIdentifiers;
+    this.courseLength = courseLength;
+    this.courseLengthSymbol = courseLengthSymbol;
   }
 
   public Long getId() {
@@ -165,6 +169,22 @@ public class CoursePickerWorkspace {
     this.curriculumIdentifiers = curriculumIdentifiers;
   }
 
+  public Double getCourseLength() {
+    return courseLength;
+  }
+
+  public void setCourseLength(Double courseLength) {
+    this.courseLength = courseLength;
+  }
+
+  public String getCourseLengthSymbol() {
+    return courseLengthSymbol;
+  }
+
+  public void setCourseLengthSymbol(String courseLengthSymbol) {
+    this.courseLengthSymbol = courseLengthSymbol;
+  }
+
   private Long id;
   private String urlName;
   private Boolean archived;
@@ -180,5 +200,7 @@ public class CoursePickerWorkspace {
   private boolean hasCustomImage;
   private OrganizationRESTModel organization;
   private List<String> curriculumIdentifiers;
+  private Double courseLength;
+  private String courseLengthSymbol;
 
 }
