@@ -48,7 +48,7 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
 
   return (
     <ul className="study-planner__planned-list">
-      <AnimatePresence initial={false}>
+      <AnimatePresence>
         {courses.map((course) => {
           const isSelected = selectedCoursesIds.some(
             (courseIdentifier) => courseIdentifier === course.identifier

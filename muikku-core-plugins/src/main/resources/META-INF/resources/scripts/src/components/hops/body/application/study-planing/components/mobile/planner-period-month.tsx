@@ -391,7 +391,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
           onHover={handleDropHover}
           className="study-planner__month-content"
         >
-          {courses.length < 0 && (
+          {courses.length > 0 && (
             <PlannerPlannedList
               disabled={hopsMode === "READ"}
               courses={courses}
