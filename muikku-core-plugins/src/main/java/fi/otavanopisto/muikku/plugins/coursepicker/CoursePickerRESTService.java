@@ -407,19 +407,15 @@ public class CoursePickerRESTService extends PluginRESTService {
                 String educationTypeId = (String) result.get("educationTypeIdentifier");
                 String educationTypeName = (String) result.get("educationTypeName");
                 SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
-                SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId((String) result.get("identifier"));
-                
+
                 @SuppressWarnings("unchecked")
                 List<Map<String, Object>> subjectList = (List<Map<String, Object>>) result.get("subjects");
                 Double courseLength = null;
                 String courseLengthUnit = null;
+                
                 for (Map<String, Object> s : subjectList) {
-                  if (schoolDataIdentifier.equals(workspaceIdentifier)) {
-                   courseLength = (Double) s.get("length");
-                   courseLengthUnit = (String) s.get("lengthUnitSymbol");
-                   break;
-               
-                  }
+                  courseLength = (Double) s.get("length");
+                  courseLengthUnit = (String) s.get("lengthUnitSymbol");
                 }
                 @SuppressWarnings("unchecked")
                 ArrayList<String> curriculumIdentifiersList = (ArrayList<String>) result.get("curriculumIdentifiers");
