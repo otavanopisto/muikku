@@ -308,39 +308,38 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
         </Button>
       </div>
 
-      {
-        <AnimatedDrawer
-          isOpen={isExpanded}
-          className="study-planner__month-wrapper"
+      <AnimatedDrawer
+        isOpen={isExpanded}
+        className="study-planner__month-wrapper"
+      >
+        <Droppable
+          accept={["planned-course-card", "new-course-card"]}
+          onDrop={handleDrop}
+          onHover={handleDropHover}
+          className="study-planner__month-content"
         >
-          <Droppable
-            accept={["planned-course-card", "new-course-card"]}
-            onDrop={handleDrop}
-            onHover={handleDropHover}
-            className="study-planner__month-content"
-          >
-            {courses.length > 0 && (
-              <PlannerPlannedList
-                disabled={hopsMode === "READ"}
-                courses={courses}
-                selectedCoursesIds={selectedCoursesIds}
-                originalPlannedCourses={originalPlannedCourses}
-                studyActivity={studyActivity}
-                curriculumConfig={curriculumConfig}
-                onCourseChange={handleCourseChange}
-                onSelectCourse={handleSelectCourse}
-              />
-            )}
-
-            <motion.div
-              variants={dropZoneVariants}
-              animate={pulseDropzone ? "dropIsActive" : "initial"}
-              className={`study-planner__month-dropzone ${pulseDropzone ? "study-planner__month-dropzone--active" : ""}`}
-              onClick={handleMoveCourseHereClick}
+          {courses.length > 0 && (
+            <PlannerPlannedList
+              disabled={hopsMode === "READ"}
+              courses={courses}
+              selectedCoursesIds={selectedCoursesIds}
+              originalPlannedCourses={originalPlannedCourses}
+              studyActivity={studyActivity}
+              curriculumConfig={curriculumConfig}
+              onCourseChange={handleCourseChange}
+              onSelectCourse={handleSelectCourse}
             />
-          </Droppable>
-        </AnimatedDrawer>
-      }
+          )}
+
+          <motion.div
+            layout="position"
+            variants={dropZoneVariants}
+            animate={pulseDropzone ? "dropIsActive" : "initial"}
+            className={`study-planner__month-dropzone ${pulseDropzone ? "study-planner__month-dropzone--active" : ""}`}
+            onClick={handleMoveCourseHereClick}
+          />
+        </Droppable>
+      </AnimatedDrawer>
     </div>
   );
 };
