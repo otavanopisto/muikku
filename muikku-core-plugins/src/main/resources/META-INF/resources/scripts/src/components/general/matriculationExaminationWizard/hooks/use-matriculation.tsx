@@ -59,6 +59,7 @@ export const useMatriculation = (
       postalCode: "",
       studentIdentifier: "",
       guidanceCounselor: "",
+      studyAdvisors: [],
       locality: "",
       completedCreditPointsCount: 0,
     },

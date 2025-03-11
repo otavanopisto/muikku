@@ -64,6 +64,11 @@ import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
 import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
+import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
+import Chat from "~/components/chat";
+import { WindowContextProvider } from "~/context/window-context";
+import { HelmetProvider } from "react-helmet-async";
+import TitleProvider from "./titleProvider";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
