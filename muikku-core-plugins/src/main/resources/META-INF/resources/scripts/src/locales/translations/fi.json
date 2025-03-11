@@ -1525,6 +1525,8 @@
       "specialEducationTeacher_one": "Erityisopettaja",
       "specialEducationTeacher_other": "Erityisopettajat",
       "SSN": "Sosiaaliturvatunnus",
+      "studyAdvisor": "Opinto-ohjaaja",
+      "studyAdvisors": "Opinto-ohjaajat",
       "studyProgramme": "Opinto-ohjelma",
       "staff": "Henkilökunta",
       "staff_organization": "Organisaation henkilökunta",
