@@ -2815,6 +2815,7 @@
     "discussions_workspace": "{{workspaceName}} | Keskustelu",
     "evaluation": "Arviointi",
     "evaluation_workspace": "{{workspaceName}} | Arviointi",
+    "error": "Virhe",
     "guider": "Ohjaamo",
     "home": "Etusivu",
     "home_workspace": "{{workspaceName}} | Etusivu",
@@ -2826,6 +2827,7 @@
     "organization": "Organisaatiohallinta",
     "studies": "Opinnot",
     "users": "{{workspaceName}} | Käyttäjät",
+    "userCredentialsReset": "Tunnusten palautus",
     "workspaceManagement": "{{workspaceName}} | Asetukset"
   }
 }

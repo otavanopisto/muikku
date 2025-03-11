@@ -2813,6 +2813,7 @@
     "discussions_workspace": "{{workspaceName}} | Discussions",
     "evaluation": "Evaluation",
     "evaluation_workspace": "{{workspaceName}} | Evaluation",
+    "error": "Error",
     "guider": "Guider",
     "home": "Home",
     "home_workspace": "{{workspaceName}} | Home",
@@ -2824,6 +2825,7 @@
     "organization": "Organization management",
     "studies": "Studies",
     "users": "{{workspaceName}} | Users",
+    "userCredentialsReset": "Reset credentials",
     "workspaceManagement": "{{workspaceName}} | Workspace management"
   }
 }
