@@ -1,7 +1,15 @@
 package fi.otavanopisto.muikku.plugins.material.dao;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
+import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial_;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 
 public class HtmlMaterialDAO extends CorePluginsDAO<HtmlMaterial> {
@@ -23,6 +31,20 @@ public class HtmlMaterialDAO extends CorePluginsDAO<HtmlMaterial> {
 
 	public void delete(HtmlMaterial htmlMaterial) {
 	  super.delete(htmlMaterial);
+	}
+	
+	public List<HtmlMaterial> listByLike(String like, int maxResults) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<HtmlMaterial> criteria = criteriaBuilder.createQuery(HtmlMaterial.class);
+    Root<HtmlMaterial> root = criteria.from(HtmlMaterial.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.like(root.get(HtmlMaterial_.html), "%" + like + "%")
+    );
+   
+    return entityManager.createQuery(criteria).setMaxResults(maxResults).getResultList();
 	}
 
   public HtmlMaterial updateData(HtmlMaterial htmlMaterial, String html) {

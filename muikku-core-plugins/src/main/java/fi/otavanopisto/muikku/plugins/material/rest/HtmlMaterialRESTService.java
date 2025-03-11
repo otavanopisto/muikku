@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.material.rest;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
@@ -20,11 +22,17 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
+import fi.otavanopisto.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -44,6 +52,15 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
+
+  @Inject
+  private HtmlMaterialDAO htmlMaterialDAO;
+  
+  @Inject
+  private WorkspaceMaterialDAO workspaceMaterialDAO;
+
+  @Inject
+  private WorkspaceNodeDAO workspaceNodeDAO;
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -132,6 +149,88 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
     return Response.ok(createRestModel(htmlMaterial)).build();
+  }
+  
+  @GET
+  @Path("/fixSources")
+  @Produces("text/plain")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response fixSources(@QueryParam ("count") Integer count) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    int documentCount = count == null ? 10 : count;
+    StringBuffer response = new StringBuffer();
+    List<HtmlMaterial> materials = htmlMaterialDAO.listByLike("src=\"/workspace/", documentCount);
+    response.append(String.format("Processing %d documents\n\n", materials.size()));
+    for (HtmlMaterial material : materials) {
+      fixMaterial(material, "src=\"/workspace/", response);
+    }
+    return Response.ok(response.toString()).build();  
+  }
+
+  @GET
+  @Path("/fixHrefs")
+  @Produces("text/plain")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response fixHrefs(@QueryParam ("count") Integer count) {
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    int documentCount = count == null ? 10 : count;
+    StringBuffer response = new StringBuffer();
+    List<HtmlMaterial> materials = htmlMaterialDAO.listByLike("href=\"/workspace/", documentCount);
+    response.append(String.format("Processing %d documents\n\n", materials.size()));
+    for (HtmlMaterial material : materials) {
+      fixMaterial(material, "href=\"/workspace/", response);
+    }
+    return Response.ok(response.toString()).build();  
+  }
+  
+  private void fixMaterial(HtmlMaterial material, String searchPart, StringBuffer response) {
+    response.append(String.format("%d: Processing\n", material.getId()));
+    String html = material.getHtml();
+    boolean changesMade = false;
+    boolean everythingsFine = true;
+    while (everythingsFine) {
+      int linkIndex = html.indexOf(searchPart); // e.g. src="/workspace/ or href="/workspace/
+      if (linkIndex == -1) {
+        // No more faulty links found \o/
+        response.append(String.format("%d: Fixed\n", material.getId()));
+        break;
+      }
+      int linkStart = html.indexOf("\"", linkIndex) + 1; // src="/workspace/ or href="/workspace/ -> the first /
+      int linkEnd = html.indexOf("\"", linkStart); // hopefully the " ending the src attribute
+      if (linkEnd <= linkStart) {
+        response.append(String.format("%d: Failed to parse faulty link\n", material.getId()));
+        break;
+      }
+      String faultyLink = html.substring(linkStart, linkEnd); // now we perhaps have something like /workspace/workspace-name/materials/folder-name/page-name/attachment.jpg
+      String attachmentName = StringUtils.substringAfterLast(faultyLink, "/"); // attachment.jpg
+      
+      // Let's check every workspace material that uses this html and make sure they have the attachment
+      
+      List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByMaterialId(material.getId());
+      for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+        response.append(String.format("%d: Processing workspace material %d (%s)\n", material.getId(), workspaceMaterial.getId(), workspaceMaterialController.getCompletePath(workspaceMaterial)));
+        WorkspaceNode attachmentNode = workspaceNodeDAO.findByParentAndUrlName(workspaceMaterial, attachmentName);
+        if (attachmentNode == null) {
+          response.append(String.format("%d: Failed because workspace material %d has no attachment named %s\n", material.getId(), workspaceMaterial.getId(), attachmentName));
+          everythingsFine = false;
+          break; // out of the for loop
+        }
+      }
+      if (!everythingsFine) {
+        break; // out of the while loop
+      }
+      // All workspace materials have the attachment, so the link can be changed
+      html = html.replaceAll(faultyLink, attachmentName);
+      changesMade = true;
+    }
+    if (everythingsFine && changesMade) {
+      htmlMaterialDAO.updateData(material, html);
+    }
+    response.append("\n");
   }
 
   private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial) {
