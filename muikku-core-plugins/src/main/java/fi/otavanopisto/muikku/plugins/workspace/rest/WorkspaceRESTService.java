@@ -804,12 +804,21 @@ public class WorkspaceRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceBasicInfo(@PathParam("URLNAME") String urlName) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
+    // TODO Make a generic status check method for all these access checks
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-
-    if (!sessionController.isLoggedIn() && (workspaceEntity.getAccess() == null || WorkspaceAccess.LOGIN_REQUIRED.contains(workspaceEntity.getAccess()))) {
+    if (!workspaceEntity.getPublished() && !sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!sessionController.isLoggedIn() && (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE)) {
       return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (workspaceEntity.getAccess() == WorkspaceAccess.MEMBERS_ONLY) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+      if (workspaceUserEntity == null && !sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
     WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
