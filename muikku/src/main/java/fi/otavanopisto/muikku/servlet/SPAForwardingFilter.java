@@ -38,9 +38,11 @@ public class SPAForwardingFilter implements Filter {
 
   // Partial paths to forward to the SPA Entrypoint
   private static final String[] FRONTEND_PARTIAL_PATHS = {
-      "/forgotpassword/",
-      "/workspace/"
+      "/forgotpassword/"
   };
+  
+  // Workspace path with special handling for specific subpaths
+  private static final String WORKSPACE_ROOT = "/workspace/";
   
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -49,11 +51,17 @@ public class SPAForwardingFilter implements Filter {
       HttpServletRequest httpRequest = (HttpServletRequest) request;
       String path = httpRequest.getServletPath();
       
-      boolean found = FRONTEND_PATHS.contains(path) || StringUtils.startsWithAny(path, FRONTEND_PARTIAL_PATHS);
+      boolean found = 
+          FRONTEND_PATHS.contains(path) 
+          || StringUtils.startsWithAny(path, FRONTEND_PARTIAL_PATHS) 
+          || isSPAWorkspacePath(path);
       
-      // TODO Remove debug message
+      // TODO Remove debug messages
 //      System.out.println("Polku: " + path + " Löytyi: " + found);
-  
+//      if (StringUtils.startsWith(path, WORKSPACE_ROOT)) {
+//        System.out.println("Polku: " + path + " WSP: " + isSPAWorkspacePath(path));
+//      }
+      
       if (found) {
         request.getRequestDispatcher(SPA_ENTRYPOINT).forward(httpRequest, response);
         return;
@@ -61,6 +69,33 @@ public class SPAForwardingFilter implements Filter {
     }
     
     chain.doFilter(request, response);
+  }
+
+  /**
+   * Returns true if the path is a workspace path that should be
+   * handled by the SPA application routing.
+   * 
+   * Specifically, returns false for paths that point to a media
+   * resource within materials as those should be handled by the
+   * backend. 
+   * 
+   * These paths are of the form 
+   * /workspace/{workspaceName}/materials/{materialname}/{attachmentName}.
+   * 
+   * @param path
+   * @return
+   */
+  private boolean isSPAWorkspacePath(String path) {
+    if (StringUtils.startsWith(path, WORKSPACE_ROOT)) {
+      String[] pathSegments = path.split("/");
+      return !(
+          pathSegments.length >= 5 
+          && StringUtils.equals(pathSegments[1], "workspace")
+          && StringUtils.equals(pathSegments[3], "materials")
+      );
+    }
+    
+    return false;
   }
 
 }
