@@ -226,16 +226,49 @@ type PageTypeLocales =
   | "labels.interimEvaluation"
   | "labels.theoryPage";
 
+type RestrictTypeLocales =
+  | "labels.visibleRestrictionAll"
+  | "labels.visibleRestrictionLoggedIn"
+  | "labels.visibleRestrictionMembers";
+
 /**
- * MaterialPageTypeConfic
+ * MaterialPageTypeConfig
  */
-interface MaterialPageTypeConfic {
+interface MaterialPageTypeConfig {
   type: MaterialAssigmentType | null;
   classNameMod: string;
   text: PageTypeLocales;
 }
 
-const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfic[] = [
+/**
+ * MaterialRestrictTypeConfig
+ */
+interface MaterialRestrictTypeConfig {
+  type: MaterialViewRestriction | null;
+  classNameMod: string;
+  text: RestrictTypeLocales;
+}
+
+const MATERIAL_RESTRICT_TYPE_CONFIGS: MaterialRestrictTypeConfig[] = [
+  {
+    type: MaterialViewRestriction.None,
+    classNameMod: "restrict-type-dropdown-enabled",
+    text: "labels.visibleRestrictionAll",
+  },
+  {
+    type: MaterialViewRestriction.WorkspaceMembers,
+    classNameMod: "restrict-type-dropdown-members-only",
+    text: "labels.visibleRestrictionLoggedIn",
+  },
+
+  {
+    type: MaterialViewRestriction.LoggedIn,
+    classNameMod: "restrict-type-dropdown-disabled",
+    text: "labels.visibleRestrictionLoggedIn",
+  },
+];
+
+const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfig[] = [
   {
     type: "EXERCISE",
     classNameMod: "material-editor-dropdown-exercise",
@@ -281,8 +314,8 @@ class MaterialEditor extends React.Component<
   constructor(props: MaterialEditorProps) {
     super(props);
     this.toggleHiddenStatus = this.toggleHiddenStatus.bind(this);
-    this.cycleViewRestrictionStatus =
-      this.cycleViewRestrictionStatus.bind(this);
+    // this.cycleViewRestrictionStatus =
+    //   this.cycleViewRestrictionStatus.bind(this);
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
@@ -367,30 +400,6 @@ class MaterialEditor extends React.Component<
   }
 
   /**
-   * cycleViewRestrictionStatus
-   */
-  cycleViewRestrictionStatus() {
-    this.props.updateWorkspaceMaterialContentNode({
-      workspace: this.props.editorState.currentNodeWorkspace,
-      material: this.props.editorState.currentDraftNodeValue,
-      update: {
-        viewRestrict:
-          this.props.editorState.currentDraftNodeValue.viewRestrict ===
-          MaterialViewRestriction.None
-            ? MaterialViewRestriction.WorkspaceMembers
-            : this.props.editorState.currentDraftNodeValue.viewRestrict ===
-                MaterialViewRestriction.WorkspaceMembers
-              ? MaterialViewRestriction.LoggedIn
-              : this.props.editorState.currentDraftNodeValue.viewRestrict ===
-                  MaterialViewRestriction.LoggedIn
-                ? MaterialViewRestriction.None
-                : MaterialViewRestriction.None,
-      },
-      isDraft: true,
-    });
-  }
-
-  /**
    * cycleAssignmentType
    * @param type type
    * @param onClose onClose
@@ -403,6 +412,25 @@ class MaterialEditor extends React.Component<
         material: this.props.editorState.currentDraftNodeValue,
         update: {
           assignmentType: type,
+        },
+        isDraft: true,
+      });
+      onClose();
+    };
+
+  /**
+   * handleChangeRestrictType
+   * @param type type
+   * @param onClose onClose
+   */
+  handleChangeRestrictType =
+    (type: MaterialViewRestriction, onClose: () => void) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      this.props.updateWorkspaceMaterialContentNode({
+        workspace: this.props.editorState.currentNodeWorkspace,
+        material: this.props.editorState.currentDraftNodeValue,
+        update: {
+          viewRestrict: type,
         },
         isDraft: true,
       });
@@ -619,85 +647,6 @@ class MaterialEditor extends React.Component<
   }
 
   /**
-   * Builds locale string depending what page component is used
-   * and if page is already view restricted
-   * @param viewRestriction viewRestriction
-   * @returns localeString
-   */
-  buildRestrictViewLocale = (
-    viewRestriction: MaterialViewRestriction
-  ): string => {
-    const { t } = this.props;
-
-    let localeString: string;
-    switch (this.props.locationPage) {
-      case "Help": {
-        switch (viewRestriction) {
-          case MaterialViewRestriction.None:
-            localeString = t("labels.restrict", {
-              ns: "materials",
-              context: "materialVisibilityForMemebers",
-            });
-            break;
-
-          case MaterialViewRestriction.WorkspaceMembers:
-            localeString = t("labels.restrict", {
-              ns: "materials",
-              context: "instructionVisibility",
-            });
-            break;
-
-          case MaterialViewRestriction.LoggedIn:
-            localeString = t("labels.remove", {
-              ns: "materials",
-              context: "instructionVisibilityRestriction",
-            });
-            break;
-
-          default:
-            break;
-        }
-
-        break;
-      }
-      case "Materials": {
-        switch (viewRestriction) {
-          case MaterialViewRestriction.None:
-            localeString = t("labels.restrict", {
-              ns: "materials",
-              context: "materialVisibilityForMemebers",
-            });
-            break;
-
-          case MaterialViewRestriction.WorkspaceMembers:
-            localeString = t("labels.restrict", {
-              ns: "materials",
-              context: "materialVisibilityForLoggedIn",
-            });
-            break;
-
-          case MaterialViewRestriction.LoggedIn:
-            localeString = t("labels.remove", {
-              ns: "materials",
-              context: "materialVisibilityRestriction",
-            });
-            break;
-
-          default:
-            break;
-        }
-
-        break;
-      }
-      default:
-        localeString = "";
-        break;
-    }
-
-    return localeString;
-  };
-
-  /**
    * updateUploadingValues
    * @param updatedValues updatedValues
    */
@@ -780,22 +729,45 @@ class MaterialEditor extends React.Component<
   }
 
   /**
+   * restrictType
+   * @returns restrictType
+   */
+  restrictType = () => {
+    if (this.props.editorState.currentDraftNodeValue.viewRestrict) {
+      switch (this.props.editorState.currentDraftNodeValue.viewRestrict) {
+        case MaterialViewRestriction.None:
+          return "enabled";
+
+        case MaterialViewRestriction.WorkspaceMembers:
+          return "members-only";
+
+        case MaterialViewRestriction.LoggedIn:
+          return "disabled";
+
+        default:
+          return "none";
+      }
+    }
+    return "none";
+  };
+
+  /**
    * assignmentPageType
    * @returns assignment page type
    */
   assignmentPageType = () => {
     if (this.props.editorState.currentDraftNodeValue.assignmentType) {
       switch (this.props.editorState.currentDraftNodeValue.assignmentType) {
-        case "EXERCISE":
+        case MaterialAssigmentType.Exercise:
           return "exercise";
 
-        case "EVALUATED":
+        case MaterialAssigmentType.Evaluated:
           return "assignment";
 
-        case "JOURNAL":
+        case MaterialAssigmentType.Journal:
           return "journal";
 
-        case "INTERIM_EVALUATION":
+        case MaterialAssigmentType.InterimEvaluation:
           return "interim-evaluation";
 
         default:
@@ -806,6 +778,45 @@ class MaterialEditor extends React.Component<
   };
 
   /**
+   * renderRestrictTypeButton
+   * @param materialRestrictConfig materialRestrictConfig
+   * @param key key
+   * @param onClose onClose
+   * @returns renderRestrictTypeButton
+   */
+  renderRestrictTypeButton = (
+    materialRestrictConfig: MaterialRestrictTypeConfig,
+    key: string | number,
+    onClose: () => void
+  ) => {
+    const { type, classNameMod, text } = materialRestrictConfig;
+
+    const isActive =
+      this.props.editorState.currentDraftNodeValue.viewRestrict === type;
+
+    const restrictTypeClassName = classNameMod ? "link--" + classNameMod : "";
+
+    const activePageTypeClassName = isActive
+      ? "link--material-editor-dropdown-active"
+      : "";
+
+    return (
+      <Link
+        key={key}
+        className={`link link--full link--material-editor-dropdown ${restrictTypeClassName} ${activePageTypeClassName}`}
+        onClick={this.handleChangeRestrictType(type, onClose)}
+      >
+        <span className="link__icon icon-restriction"></span>
+        <span>
+          {this.props.t(text, {
+            ns: "materials",
+          })}
+        </span>
+      </Link>
+    );
+  };
+
+  /**
    * renderAssignmentPageButton
    * @param materialPageConfig materialPageConfig
    * @param key key
@@ -813,7 +824,7 @@ class MaterialEditor extends React.Component<
    * @returns assignment page type button
    */
   renderAssignmentPageButton = (
-    materialPageConfig: MaterialPageTypeConfic,
+    materialPageConfig: MaterialPageTypeConfig,
     key: string | number,
     onClose: () => void
   ) => {
@@ -871,6 +882,10 @@ class MaterialEditor extends React.Component<
 
     const assignmentPageType = "material-editor-" + materialPageType;
 
+    const restrictType = this.restrictType();
+
+    const restrictTypeClassName = "material-editor-" + restrictType;
+
     const comparerPoints: (keyof MaterialContentNodeWithIdAndLogic)[] = [
       "assignmentType",
       "correctAnswers",
@@ -924,28 +939,6 @@ class MaterialEditor extends React.Component<
       hideShowButtonModifiers.push("material-editor-enabled");
     }
 
-    const viewRestrictionButtonModifiers = [
-      "material-editor-restrict-page",
-      "material-editor",
-    ];
-
-    switch (this.props.editorState.currentDraftNodeValue.viewRestrict) {
-      case MaterialViewRestriction.None:
-        viewRestrictionButtonModifiers.push("material-editor-enabled");
-        break;
-
-      case MaterialViewRestriction.LoggedIn:
-        viewRestrictionButtonModifiers.push("material-editor-disabled");
-        break;
-
-      case MaterialViewRestriction.WorkspaceMembers:
-        viewRestrictionButtonModifiers.push("material-editor-members-only");
-        break;
-
-      default:
-        break;
-    }
-
     const exerciseRevealType =
       !this.props.editorState.currentDraftNodeValue.correctAnswers ||
       this.props.editorState.currentDraftNodeValue.correctAnswers === "ALWAYS"
@@ -969,10 +962,6 @@ class MaterialEditor extends React.Component<
             "ON_REQUEST"
           ? t("labels.showAnswersOnRequest", { ns: "materials" })
           : t("labels.showAnswersNever", { ns: "materials" });
-
-    const canRestrictViewLocale = this.buildRestrictViewLocale(
-      this.props.editorState.currentDraftNodeValue.viewRestrict
-    );
 
     const editorButtonSet = (
       <div className="material-editor__buttonset">
@@ -998,14 +987,21 @@ class MaterialEditor extends React.Component<
           ) : null}
           {this.props.editorState.canRestrictView ? (
             <Dropdown
-              openByHover
-              modifier="material-management-tooltip"
-              content={canRestrictViewLocale}
+              openByHover={false}
+              modifier="material-editor-restriction-type"
+              persistent
+              items={MATERIAL_RESTRICT_TYPE_CONFIGS.map(
+                (config, index) => (closeDropdown: () => void) =>
+                  this.renderRestrictTypeButton(config, index, closeDropdown)
+              )}
             >
               <ButtonPill
-                buttonModifiers={viewRestrictionButtonModifiers}
+                buttonModifiers={[
+                  "material-editor-restrict-page",
+                  "material-editor",
+                  restrictTypeClassName,
+                ]}
                 icon="restriction"
-                onClick={this.cycleViewRestrictionStatus}
               />
             </Dropdown>
           ) : null}
