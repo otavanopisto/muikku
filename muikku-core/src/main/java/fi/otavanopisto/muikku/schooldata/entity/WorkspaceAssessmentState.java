@@ -77,14 +77,6 @@ public class WorkspaceAssessmentState {
   public String getSubjectIdentifier() {
     return subject == null ? null : subject.getIdentifier();
   }
-  
-  public Long getEvaluatorId() {
-    return evaluatorId;
-  }
-
-  public void setEvaluatorId(Long evaluatorId) {
-    this.evaluatorId = evaluatorId;
-  }
 
   public String getEvaluatorName() {
     return evaluatorName;
@@ -101,7 +93,6 @@ public class WorkspaceAssessmentState {
   private Date gradeDate;
   private String text;
   private WorkspaceActivitySubject subject;
-  private Long evaluatorId;
   private String evaluatorName;
   
 }

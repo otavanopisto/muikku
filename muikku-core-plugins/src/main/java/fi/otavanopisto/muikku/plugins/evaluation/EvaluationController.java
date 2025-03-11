@@ -27,7 +27,6 @@ import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.base.Tag;
-import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
@@ -83,17 +82,10 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
-import fi.otavanopisto.muikku.search.IndexedWorkspace;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
-import fi.otavanopisto.muikku.search.SearchResults;
-import fi.otavanopisto.muikku.search.SearchProvider.Sort;
-import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.OrganizationRestriction;
-import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction;
-import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -184,9 +176,7 @@ public class EvaluationController {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
-  
-  @Inject
-  private OrganizationEntityController organizationEntityController;
+
   
   /* Workspace activity */
 
@@ -214,6 +204,9 @@ public class EvaluationController {
     if (activityInfo == null) {
       return null;
     }
+    
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    SearchProvider searchProvider = getProvider("elastic-search");
 
     // Complement the response with data available only in Muikku
     for (WorkspaceActivity activity : activityInfo.getActivities()) {
@@ -339,8 +332,7 @@ public class EvaluationController {
       }
       
       // Search for finding out course mandatority
-      EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
-      SearchProvider searchProvider = getProvider("elastic-search");
+
       
       if (searchProvider != null && activity.getId() != null) {
         SearchResult sr = searchProvider.findWorkspace(workspaceEntity.schoolDataIdentifier());

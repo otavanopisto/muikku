@@ -17482,7 +17482,6 @@ components:
         - passingGrade
         - text
         - subject
-        - evaluatorId
         - evaluatorName
       properties:
         date:
@@ -17510,11 +17509,6 @@ components:
         subject:
           description: The subject. Can be null.
           $ref: "#/components/schemas/WorkspaceActivitySubject"
-          nullable: true
-        evaluatorId:
-          description: The id of the evaluator
-          type: integer
-          format: int64
           nullable: true
         evaluatorName:
           description: The name of the evaluator
