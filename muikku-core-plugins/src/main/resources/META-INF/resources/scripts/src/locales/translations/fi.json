@@ -29,6 +29,7 @@
       "filterContent": "Suodata sisältöä",
       "hide": "Piilota",
       "hideAll": "Piilota kaikki",
+      "hideAssignment": "Piilota tehtävänanto",
       "hide_comments": "Piilota kommentit",
       "load": "Lataa",
       "load_all": "Lataa kaikki",
@@ -53,6 +54,7 @@
       "share": "Jaa",
       "show": "Näytä",
       "showAll": "Näytä kaikki",
+      "showAssignment": "Näytä tehtävänanto",
       "show_comments": "Näytä kommentit",
       "signIn": "Kirjaudu sisään",
       "signOut": "Kirjaudu ulos",
@@ -1523,6 +1525,8 @@
       "specialEducationTeacher_one": "Erityisopettaja",
       "specialEducationTeacher_other": "Erityisopettajat",
       "SSN": "Sosiaaliturvatunnus",
+      "studyAdvisor": "Opinto-ohjaaja",
+      "studyAdvisors": "Opinto-ohjaajat",
       "studyProgramme": "Opinto-ohjelma",
       "staff": "Henkilökunta",
       "staff_organization": "Organisaation henkilökunta",
@@ -1783,6 +1787,9 @@
       "teacherMessage": "Viesti kurssin opettajalle",
       "totalAssignments": "Tehtäviä yhteensä",
       "unanswered": "Aloittamattomat",
+      "visibleRestrictionAll": "Näkyy kaikille",
+      "visibleRestrictionLoggedIn": "Näkyy vain kirjautuneille käyttäjille",
+      "visibleRestrictionMembers": "Näkyy vain kurssin jäsenille",
       "wordCount": "Sanoja"
     },
     "notifications": {
@@ -2277,6 +2284,8 @@
       "remove_evaluationRequest": "Poista arviointipyyntö",
       "remove_interimEvaluationRequest": "Poista välipalautepyyntö",
       "remove_supplementationRequest": "Poista täydennyspyyntö",
+      "journalMaterialShow": "Näytä tehtävänanto",
+      "journalMaterialHide": "Piilota tehtävänanto",
       "unlockEvalRequest": "Poista lukitus"
     },
     "content": {
@@ -2793,5 +2802,34 @@
       "closeDiscussionError": "Keskustelun sulkeminen epäonnistui",
       "updateSuccess_settings": "Asetukset päivitetty onnistuneesti"
     }
+  },
+  "pageTitles": {
+    "announcements": "Tiedotteet",
+    "announcements_workspace": "{{workspaceName}} | Tiedotteet",
+    "announcer": "Tiedotin",
+    "announcer_workspace": "{{workspaceName}} | Tiedotin",
+    "appName": "Muikku",
+    "ceeposPay": "Maksaminen",
+    "ceeposDone": "Suoritettu maksu",
+    "communicator": "Viestin",
+    "coursepicker": "Kurssipoimuri",
+    "discussions": "Keskustelu",
+    "discussions_workspace": "{{workspaceName}} | Keskustelu",
+    "evaluation": "Arviointi",
+    "evaluation_workspace": "{{workspaceName}} | Arviointi",
+    "error": "Virhe",
+    "guider": "Ohjaamo",
+    "home": "Etusivu",
+    "home_workspace": "{{workspaceName}} | Etusivu",
+    "hops": "HOPS",
+    "instructions": "{{workspaceName}} | Ohjeet",
+    "journal": "{{workspaceName}} | Oppimispäiväkirja",
+    "materials": "{{workspaceName}} | Materiaalit",
+    "profile": "Profiili",
+    "organization": "Organisaatiohallinta",
+    "studies": "Opinnot",
+    "users": "{{workspaceName}} | Käyttäjät",
+    "userCredentialsReset": "Tunnusten palautus",
+    "workspaceManagement": "{{workspaceName}} | Asetukset"
   }
 }

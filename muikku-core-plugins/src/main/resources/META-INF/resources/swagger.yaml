@@ -14423,6 +14423,7 @@ components:
         - address
         - email
         - guidanceCounselor
+        - studyAdvisors
         - locality
         - name
         - phone
@@ -14436,6 +14437,11 @@ components:
         guidanceCounselor:
           description: Name of the student's guidance counselor
           type: string
+        studyAdvisors:
+          description: List of Student's Study Advisors
+          type: array
+          items:
+            type: string
         locality:
           type: string
         name:
@@ -17812,7 +17818,7 @@ components:
         - title
         - created
         - commentCount
-        - isMaterialField
+        - material
         - workspaceMaterialReplyState
       properties:
         id:
@@ -17837,9 +17843,10 @@ components:
           format: date-time
         commentCount:
           type: integer
-        isMaterialField:
-          description: Whether journal is "mandatory" assignment and material field
-          type: boolean
+        material:
+          description: Material html content object
+          $ref: "#/components/schemas/MaterialHtml"
+          nullable: true
         workspaceMaterialReplyState:
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
 
