@@ -5,8 +5,6 @@ import Body from "../components/credentials/body";
 import * as React from "react";
 import "~/sass/util/base.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Helmet } from "react-helmet-async";
-import { HelmetProvider } from "react-helmet-async";
 
 /**
  * UserCredentialsProps
