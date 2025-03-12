@@ -1019,6 +1019,19 @@ public class WorkspaceRESTService extends PluginRESTService {
       .ok(createRestModel(workspaceController.listWorkspaceMaterialProducers(workspaceEntity).toArray(new WorkspaceMaterialProducer[0])))
       .build();
   }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/visit")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response visitWorkspace(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity != null) {
+        workspaceVisitController.visit(workspaceEntity);
+      }
+    }
+    return Response.noContent().build();
+  }
 
   @PUT
   @Path("/workspaces/{ID}/details")
