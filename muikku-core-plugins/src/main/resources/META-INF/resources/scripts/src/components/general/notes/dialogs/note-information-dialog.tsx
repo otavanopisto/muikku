@@ -33,6 +33,7 @@ const NoteInformationDialog: React.FC<NoteInformationDialogProps> = (props) => {
       hasImage: recipient.hasImage,
       id: recipient.recipientId,
       name: recipient.recipientName,
+      modifier: recipient.status.toLowerCase(),
     };
     if (recipient.status === "APPROVAL_PENDING") avatarUsers.unshift(user);
     else avatarUsers.push(user);

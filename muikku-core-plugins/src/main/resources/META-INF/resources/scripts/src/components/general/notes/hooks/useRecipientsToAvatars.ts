@@ -45,6 +45,7 @@ export const useRecipientsToAvatars = (
               id: recipientId,
               hasImage: hasImage,
               name: recipientName,
+              modifier: status.toLowerCase(),
             };
             // Put the ones with "APPROVAL_PENDING" status at the top
             if (status === "APPROVAL_PENDING") {
@@ -63,6 +64,7 @@ export const useRecipientsToAvatars = (
           hasImage: hasImage,
           showTooltip: true,
           name: recipientName,
+          modifier: status.toLowerCase(),
         };
         userGroupIds.push(userGroupId);
         avatars.push({
@@ -80,6 +82,7 @@ export const useRecipientsToAvatars = (
           id: recipientId,
           hasImage: hasImage,
           name: recipientName,
+          modifier: status.toLowerCase(),
         };
         workspaceIds.push(workspaceId);
         avatars.push({
