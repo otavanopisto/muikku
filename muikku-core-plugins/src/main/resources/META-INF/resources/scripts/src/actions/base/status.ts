@@ -308,6 +308,16 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
           if (isResponseError(err) && err.response.status === 401) {
             window.location.href = "/login";
           }
+
+          // If the workspace is forbidden, redirect to the error page
+          if (isResponseError(err) && err.response.status === 403) {
+            window.location.href = "/error";
+          }
+
+          // If the workspace is not found, redirect to the error page
+          if (isResponseError(err) && err.response.status === 404) {
+            window.location.href = "/error";
+          }
         }
       }
 
