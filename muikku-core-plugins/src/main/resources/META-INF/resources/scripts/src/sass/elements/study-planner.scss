@@ -747,9 +747,11 @@
 }
 
 .study-planner__plan-statistic-item-bar-label {
+  align-items: center;
   display: flex;
   inset: 0;
   justify-content: center;
+  line-height: 1;
   position: absolute;
 }
 
