@@ -9200,6 +9200,24 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/workspace/workspaces/{workspaceId}/visit:
+    get:
+      operationId: visitWorkspace
+      summary: Adds one to the number of workspace visits by the current user
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: No content
+
   /rest/workspace/workspaces/{workspaceId}/details:
     get:
       operationId: getWorkspaceDetails
