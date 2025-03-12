@@ -1022,9 +1022,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/visit")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  @RESTPermit (handling = Handling.INLINE)
   public Response visitWorkspace(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    if (sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+    if (sessionController.isLoggedIn() && sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       if (workspaceEntity != null) {
         workspaceVisitController.visit(workspaceEntity);
