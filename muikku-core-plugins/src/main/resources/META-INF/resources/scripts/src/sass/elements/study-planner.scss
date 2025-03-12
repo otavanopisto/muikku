@@ -412,6 +412,14 @@
   opacity: 0.5;
 }
 
+.study-planner__card--completed,
+.study-planner__card--transferred,
+.study-planner__card--failed,
+.study-planner__card--supplementation-request,
+.study-planner__card--inprogress {
+  cursor: default;
+}
+
 .study-planner__card--selected {
   overflow: hidden;
   outline: 2px solid lighten($color-study-plan-tool-accent, 20%);
@@ -461,14 +469,6 @@
   justify-content: flex-end;
 }
 
-.study-planner__card-actions--course-tray {
-  justify-content: flex-start;
-}
-
-.study-planner__card-actions--planned-course-card {
-  justify-content: flex-start;
-}
-
 .study-planner__course-labels {
   display: flex;
   flex-flow: row wrap;
@@ -500,9 +500,9 @@
   color: $color-default;
 }
 
-.study-planner__card-label--already-planned {
-  background: $color-info;
-  color: $color-default;
+.study-planner__card-label--planned {
+  background: lighten($color-passed, 50%);
+  color: $color-default-contrast;
 }
 
 .study-planner__card-label--transferred {

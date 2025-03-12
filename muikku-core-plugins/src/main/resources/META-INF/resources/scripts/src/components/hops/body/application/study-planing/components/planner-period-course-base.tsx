@@ -267,6 +267,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
   const cardModifiers = [];
   isDragging && cardModifiers.push("is-dragging");
   selected && cardModifiers.push("selected");
+  courseState.state && cardModifiers.push(courseState.state);
 
   const innerContainerModifiers = course.mandatory
     ? ["mandatory"]
@@ -275,7 +276,7 @@ const BasePlannerPeriodCourse = React.forwardRef<
   return (
     <PlannerCard
       ref={ref}
-      modifiers={["planned-course", ...cardModifiers]}
+      modifiers={["planned", ...cardModifiers]}
       innerContainerModifiers={innerContainerModifiers}
       onClick={handleSelectCourse}
       externalContent={
