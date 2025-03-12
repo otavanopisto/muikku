@@ -1,20 +1,25 @@
-import Body from "../components/error/body";
 import * as React from "react";
-import "~/sass/util/base.scss";
-import { HelmetProvider, Helmet } from "react-helmet-async";
-import { useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet-async";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 /**
- * Error
+ * Props for the TitleProvider component
  */
-const Error = () => {
-  const { t } = useTranslation(["common"]);
+interface TitleProviderProps {
+  children: React.ReactNode;
+}
 
-  const appName = t("appName", { ns: "pageTitles" });
-  const title = `${t("error", { ns: "pageTitles" })} | ${appName}`;
+/**
+ * Provider for managing page title
+ * @param props - The component props
+ * @returns The rendered component
+ */
+function TitleProvider(props: TitleProviderProps) {
+  const { children } = props;
+  const { title } = usePageTitle();
 
   return (
-    <HelmetProvider>
+    <>
       <Helmet>
         <title>{title}</title>
 
@@ -60,11 +65,9 @@ const Error = () => {
           href="/gfx/favicons/favicon-180x180.png"
         />
       </Helmet>
-      <div id="root">
-        <Body></Body>
-      </div>
-    </HelmetProvider>
+      {children}
+    </>
   );
-};
+}
 
-export default Error;
+export default TitleProvider;

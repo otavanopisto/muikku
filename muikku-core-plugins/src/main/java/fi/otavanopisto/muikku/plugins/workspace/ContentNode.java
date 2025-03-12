@@ -6,6 +6,7 @@ import java.util.List;
 import fi.otavanopisto.muikku.plugins.material.rest.MaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAI;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 
@@ -15,7 +16,7 @@ public class ContentNode {
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
       Long parentId, Long nextSiblingId, Boolean hidden, String html,  String path,
       String license, List<MaterialProducer> producers, MaterialViewRestrict viewRestrict, Boolean contentHiddenForUser,
-      WorkspaceLanguage titleLanguage, Double maxPoints) {
+      WorkspaceLanguage titleLanguage, Double maxPoints, WorkspaceMaterialAI ai) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -37,6 +38,7 @@ public class ContentNode {
     this.contentHiddenForUser = contentHiddenForUser;
     this.titleLanguage = titleLanguage;
     this.maxPoints = maxPoints;
+    this.setAi(ai);
   }
 
   public void addChild(ContentNode child) {
@@ -175,6 +177,14 @@ public class ContentNode {
     this.maxPoints = maxPoints;
   }
 
+  public WorkspaceMaterialAI getAi() {
+    return ai;
+  }
+
+  public void setAi(WorkspaceMaterialAI ai) {
+    this.ai = ai;
+  }
+
   private String title;
   private String type;
   private String contentType;
@@ -195,5 +205,6 @@ public class ContentNode {
   private Boolean contentHiddenForUser;
   private WorkspaceLanguage titleLanguage;
   private Double maxPoints;
+  private WorkspaceMaterialAI ai;
 
 }

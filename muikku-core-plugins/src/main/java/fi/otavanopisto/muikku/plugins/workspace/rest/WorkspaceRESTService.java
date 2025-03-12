@@ -86,9 +86,11 @@ import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
+import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
+import fi.otavanopisto.muikku.plugins.material.rest.HtmlRestMaterial;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
@@ -194,6 +196,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private HtmlMaterialController htmlMaterialController;
 
   @Inject
   private LocaleController localeController;
@@ -1990,7 +1995,8 @@ public class WorkspaceRESTService extends PluginRESTService {
           entity.getAssignmentType(),
           entity.getCorrectAnswers(),
           entity.getTitleLanguage(),
-          entity.getMaxPoints());
+          entity.getMaxPoints(),
+          entity.getAi());
       if (entity.getNextSiblingId() != null) {
         WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeById(entity.getNextSiblingId());
         if (nextSibling == null) {
@@ -2025,7 +2031,8 @@ public class WorkspaceRESTService extends PluginRESTService {
                     workspaceMaterial.getAssignmentType(),
                     workspaceMaterial.getCorrectAnswers(),
                     workspaceMaterial.getLanguage(),
-                    workspaceMaterial.getMaxPoints());
+                    workspaceMaterial.getMaxPoints(),
+                    workspaceMaterial.getAi());
               }
             }
           }
@@ -2740,7 +2747,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(),
-        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints());
+        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
@@ -3082,7 +3089,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         restWorkspaceMaterial.getCorrectAnswers(),
         restWorkspaceMaterial.getTitle(),
         restWorkspaceMaterial.getTitleLanguage(),
-        restWorkspaceMaterial.getMaxPoints());
+        restWorkspaceMaterial.getMaxPoints(),
+        restWorkspaceMaterial.getAi());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
 
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
@@ -3982,18 +3990,22 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.setTitle(workspaceJournalEntry.getTitle());
     result.setCreated(workspaceJournalEntry.getCreated());
     result.setCommentCount(workspaceJournalController.getCommentCount(workspaceJournalEntry));
-    result.setIsMaterialField(workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null);
 
     if (workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null) {
-
       String[] identifiers = workspaceJournalEntry.getMaterialFieldReplyIdentifier().split("-");
-
       Long replyId = Long.parseLong(identifiers[1]);
-
       fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
-
       if (reply != null) {
         result.setWorkspaceMaterialReplyState(reply.getState());
+        HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(reply.getWorkspaceMaterial().getMaterialId());
+        if (htmlMaterial != null) {
+          result.setMaterial(new HtmlRestMaterial(htmlMaterial.getId(),
+              htmlMaterial.getTitle(),
+              htmlMaterial.getContentType(),
+              htmlMaterial.getHtml(),
+              htmlMaterial.getLicense(),
+              htmlMaterial.getViewRestrict()));        
+        }
       }
     }
 

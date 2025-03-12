@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
 import java.util.Date;
 
+import fi.otavanopisto.muikku.plugins.material.rest.HtmlRestMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 
 public class WorkspaceJournalEntryRESTModel {
@@ -11,7 +12,7 @@ public class WorkspaceJournalEntryRESTModel {
   }
 
   public WorkspaceJournalEntryRESTModel(Long id, Long workspaceEntityId, Long userEntityId, String firstName,
-      String lastName, String html, String title, Date created, Long commentCount, Boolean isMaterialField, WorkspaceMaterialReplyState workspaceMaterialReplyState) {
+      String lastName, String html, String title, Date created, Long commentCount, HtmlRestMaterial material, WorkspaceMaterialReplyState workspaceMaterialReplyState) {
     super();
     this.id = id;
     this.workspaceEntityId = workspaceEntityId;
@@ -22,7 +23,7 @@ public class WorkspaceJournalEntryRESTModel {
     this.title = title;
     this.created = created;
     this.commentCount = commentCount;
-    this.isMaterialField = isMaterialField;
+    this.material = material;
     this.workspaceMaterialReplyState = workspaceMaterialReplyState;
   }
 
@@ -98,20 +99,20 @@ public class WorkspaceJournalEntryRESTModel {
     this.commentCount = commentCount;
   }
 
-  public Boolean getIsMaterialField() {
-    return isMaterialField;
-  }
-
-  public void setIsMaterialField(Boolean isMaterialField) {
-    this.isMaterialField = isMaterialField;
-  }
-
   public WorkspaceMaterialReplyState getWorkspaceMaterialReplyState() {
     return workspaceMaterialReplyState;
   }
 
   public void setWorkspaceMaterialReplyState(WorkspaceMaterialReplyState workspaceMaterialReplyState) {
     this.workspaceMaterialReplyState = workspaceMaterialReplyState;
+  }
+
+  public HtmlRestMaterial getMaterial() {
+    return material;
+  }
+
+  public void setMaterial(HtmlRestMaterial material) {
+    this.material = material;
   }
 
   private Long id;
@@ -123,6 +124,7 @@ public class WorkspaceJournalEntryRESTModel {
   private String title;
   private Date created;
   private Long commentCount;
-  private Boolean isMaterialField;
   private WorkspaceMaterialReplyState workspaceMaterialReplyState;
+  private HtmlRestMaterial material;
+  
 }
