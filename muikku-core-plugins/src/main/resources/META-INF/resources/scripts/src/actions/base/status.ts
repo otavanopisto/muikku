@@ -334,6 +334,11 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
         }
       }
 
+      // Statistic endpoint
+      await workspaceApi.visitWorkspace({
+        workspaceId: workspaceBasicInfo.id,
+      });
+
       dispatch({
         type: "UPDATE_STATUS_WORKSPACEID",
         payload: workspaceBasicInfo.id,
