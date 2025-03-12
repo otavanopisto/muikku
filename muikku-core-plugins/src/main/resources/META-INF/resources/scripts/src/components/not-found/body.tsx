@@ -3,7 +3,6 @@ import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import NotFoundApplication from "./body/application";
-
 /**
  * NotFoundBodyProps
  */

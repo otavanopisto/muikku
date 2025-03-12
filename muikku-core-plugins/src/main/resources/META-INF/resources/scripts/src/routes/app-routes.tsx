@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import { Store } from "redux";
 import { StateType } from "~/reducers";
 import Websocket from "~/util/websocket";
+import ErrorBody from "~/components/error/body";
 
 // Convert regular imports to lazy imports
 const MainFunction = React.lazy(() => import("~/containers/main-function"));
@@ -34,6 +35,9 @@ export default function AppRoutes(props: AppRoutesProps) {
           path="/workspace"
           render={() => <Workspace store={store} websocket={websocket} />}
         />
+
+        {/* Error Routes */}
+        <Route path="/error/:status" render={() => <ErrorBody />} />
 
         {/* Main Function Routes */}
         <Route

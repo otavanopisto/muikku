@@ -36,6 +36,14 @@ export type UPDATE_STATUS_WORKSPACEID = SpecificActionType<
   number
 >;
 
+export type UPDATE_STATUS_WORKSPACE_ERROR = SpecificActionType<
+  "UPDATE_STATUS_WORKSPACE_ERROR",
+  {
+    error: string;
+    status: number;
+  }
+>;
+
 /**
  * LoadStatusType
  */
@@ -303,20 +311,25 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
             throw err;
           }
 
-          // If the workspace is not found, redirect to the login page
-          // This could happen because user has not permission to access the workspace
-          if (isResponseError(err) && err.response.status === 401) {
-            window.location.href = "/login";
-          }
+          // Handling workspace errors
+          if (isResponseError(err)) {
+            const status = err.response.status;
 
-          // If the workspace is forbidden, redirect to the error page
-          if (isResponseError(err) && err.response.status === 403) {
-            window.location.href = "/error";
-          }
-
-          // If the workspace is not found, redirect to the error page
-          if (isResponseError(err) && err.response.status === 404) {
-            window.location.href = "/error";
+            switch (status) {
+              case 401:
+                window.location.href = "/login";
+                break;
+              case 403:
+                window.location.href = `/error/403?workspace=true`;
+                break;
+              case 404:
+                window.location.href = `/error/404?workspace=true`;
+                break;
+              default:
+                window.location.href = `/error/${status}?workspace=true`;
+                break;
+            }
+            return;
           }
         }
       }

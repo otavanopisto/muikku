@@ -97,8 +97,12 @@ export default async function (
   const loadAreaPermissions = () =>
     store.dispatch(<Action>loadEnviromentalForumAreaPermissions());
 
-  const initializeAsWorkspace =
-    window.location.pathname.includes("/workspace/");
+  const isWorkspace = window.location.pathname.includes("/workspace/");
+  const workspaceUrl = window.location.pathname.split("/")[2];
+
+  // If the user is trying to access a workspace,
+  // and the workspace URL is defined, initialize as workspace
+  const initializeAsWorkspace = isWorkspace && workspaceUrl !== undefined;
 
   if (!initializeAsWorkspace) {
     return new Promise((resolve) => {
