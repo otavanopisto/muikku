@@ -120,7 +120,7 @@ import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
 import FrontpageBody from "~/components/frontpage/body";
 import UserCredentials from "~/containers/user-credentials";
-import ErrorBody from "~/components/error/body";
+//import ErrorBody from "~/components/error/body";
 
 /**
  * MainFunctionProps
