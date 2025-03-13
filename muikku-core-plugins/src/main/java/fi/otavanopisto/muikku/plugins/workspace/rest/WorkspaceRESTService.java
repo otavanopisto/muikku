@@ -3996,6 +3996,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       Long replyId = Long.parseLong(identifiers[1]);
       fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
       if (reply != null) {
+        result.setWorkspaceMaterialId(reply.getWorkspaceMaterial().getId());
         result.setWorkspaceMaterialReplyState(reply.getState());
         HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(reply.getWorkspaceMaterial().getMaterialId());
         if (htmlMaterial != null) {
