@@ -16,7 +16,8 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/evaluation", to = "/jsf/evaluation/index.jsf") // TODO refactor to /evaluation
+//TODO Remove this file and its xhtml completely
+//@Join(path = "/evaluation", to = "/jsf/evaluation/index.jsf") // TODO refactor to /evaluation
 @LoggedIn
 public class EvaluationMainViewBackingBean {
 

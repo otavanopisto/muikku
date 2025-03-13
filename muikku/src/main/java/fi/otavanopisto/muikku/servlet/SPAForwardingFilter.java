@@ -27,18 +27,27 @@ public class SPAForwardingFilter implements Filter {
   
   // The paths that are redirected to the SPA Entrypoint
   private static final Set<String> FRONTEND_PATHS = Set.of(
+      "/announcements", // TODO Really?
       "/announcer",
       "/communicator",
       "/coursepicker",
       "/evaluation",
+      "/discussion", // TODO Remove?
       "/guider",
+      "/guardian_hops",
+      "/guardian",
+      "/hops",
       "/organization",
-      "/profile"
+      "/profile",
+      "/records"
   );
 
   // Partial paths to forward to the SPA Entrypoint
   private static final String[] FRONTEND_PARTIAL_PATHS = {
-      "/forgotpassword/"
+      "/forgotpassword/",
+      "/ceepos/",
+      "/error/", // Frontend error pages
+      "/system" // TODO Maybe rework these as REST endpoints?
   };
   
   // Workspace path with special handling for specific subpaths

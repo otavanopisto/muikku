@@ -13,7 +13,8 @@ import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @RequestScoped
-@Join(path = "/communicator", to = "/jsf/communicator/index.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join(path = "/communicator", to = "/jsf/communicator/index.jsf")
 @LoggedIn
 public class CommunicatorIndexBackingBean {
 

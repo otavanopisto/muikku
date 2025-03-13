@@ -9,7 +9,8 @@ import org.ocpsoft.rewrite.annotation.Join;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/coursepicker", to = "/jsf/coursepicker/index.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join (path = "/coursepicker", to = "/jsf/coursepicker/index.jsf")
 public class CoursePickerBackingBean {
   
 }

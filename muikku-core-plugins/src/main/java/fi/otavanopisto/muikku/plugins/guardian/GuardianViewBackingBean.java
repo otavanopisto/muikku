@@ -15,7 +15,8 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/guardian", to = "/jsf/guardian/index.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join(path = "/guardian", to = "/jsf/guardian/index.jsf")
 @LoggedIn
 public class GuardianViewBackingBean {
 

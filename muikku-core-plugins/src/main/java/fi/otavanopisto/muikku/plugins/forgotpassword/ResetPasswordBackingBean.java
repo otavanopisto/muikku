@@ -15,7 +15,8 @@ import fi.otavanopisto.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped  
-@Join (path = "/forgotpassword/reset", to = "/jsf/forgotpassword/reset.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join (path = "/forgotpassword/reset", to = "/jsf/forgotpassword/reset.jsf")
 public class ResetPasswordBackingBean {
 
   @Parameter ("h")

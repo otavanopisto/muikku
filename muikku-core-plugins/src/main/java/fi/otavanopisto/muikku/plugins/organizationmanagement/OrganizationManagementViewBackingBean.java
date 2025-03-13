@@ -14,7 +14,8 @@ import fi.otavanopisto.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/organization", to = "/jsf/organization/index.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join(path = "/organization", to = "/jsf/organization/index.jsf")
 public class OrganizationManagementViewBackingBean {
 
   @Inject

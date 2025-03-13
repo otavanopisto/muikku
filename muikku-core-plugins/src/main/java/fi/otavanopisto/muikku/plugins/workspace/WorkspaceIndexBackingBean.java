@@ -32,7 +32,8 @@ import fi.otavanopisto.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/workspace/{workspaceUrlName}", to = "/jsf/workspace/workspace.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join(path = "/workspace/{workspaceUrlName}", to = "/jsf/workspace/workspace.jsf")
 public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
 
   @Parameter

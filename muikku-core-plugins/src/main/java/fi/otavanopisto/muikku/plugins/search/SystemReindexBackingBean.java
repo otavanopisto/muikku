@@ -24,7 +24,8 @@ import fi.otavanopisto.muikku.session.SessionController;
 @RequestScoped
 @Stateful
 @Named
-@Join (path = "/system/search/reindex", to = "/jsf/system/search-reindex.jsf")
+//TODO Remove this file and its xhtml completely AND make a REST endpoint for it!!
+//@Join (path = "/system/search/reindex", to = "/jsf/system/search-reindex.jsf")
 public class SystemReindexBackingBean {
   
   @Parameter

@@ -12,7 +12,8 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/profile", to = "/jsf/profile/profile.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join (path = "/profile", to = "/jsf/profile/profile.jsf")
 public class ProfileBackingBean {
   
   @RequestAction

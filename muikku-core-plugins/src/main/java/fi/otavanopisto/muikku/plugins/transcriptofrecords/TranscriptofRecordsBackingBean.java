@@ -15,7 +15,8 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/records", to = "/jsf/records/index.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join(path = "/records", to = "/jsf/records/index.jsf")
 @LoggedIn
 public class TranscriptofRecordsBackingBean {
   

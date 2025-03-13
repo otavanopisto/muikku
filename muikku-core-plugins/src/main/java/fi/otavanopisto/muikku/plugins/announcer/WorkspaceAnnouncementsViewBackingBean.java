@@ -30,7 +30,8 @@ import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/workspace/{workspaceUrlName}/announcements", to = "/jsf/workspace/workspace_announcements.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join(path = "/workspace/{workspaceUrlName}/announcements", to = "/jsf/workspace/workspace_announcements.jsf")
 public class WorkspaceAnnouncementsViewBackingBean {
 
   @Parameter
