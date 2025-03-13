@@ -26,14 +26,22 @@ import {
   CreateEvaluationJournalCommentTriggerType,
   createEvaluationJournalComment,
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
-import { WorkspaceJournal, WorkspaceJournalComment } from "~/generated/client";
+import {
+  WorkspaceJournalEntry,
+  WorkspaceJournalComment,
+} from "~/generated/client";
 import { localize } from "~/locales/i18n";
-import Button from "~/components/general/button";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
+import EvaluationMaterial from "./evaluation-material";
 
 /**
  * EvaluationEventContentCardProps
  */
-interface EvaluationDiaryEventProps extends WorkspaceJournal {
+interface EvaluationDiaryEventProps extends WorkspaceJournalEntry {
+  workspace: WorkspaceDataType;
   open: boolean;
   onClickOpen?: (diaryId: number) => void;
   evaluation: EvaluationState;
@@ -60,13 +68,13 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     workspaceEntityId,
     id,
     commentCount,
+    workspaceMaterialId,
     createEvaluationJournalComment,
     updateEvaluationJournalComment,
   } = props;
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
-  const [showMaterial, setShowMaterial] = React.useState(false);
   const [showContent, setShowContent] = React.useState(false);
   const [showComments, setShowComments] = React.useState(false);
 
@@ -99,13 +107,6 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     }
 
     setShowContent(!showContent);
-  };
-
-  /**
-   * Shows and hides material
-   */
-  const handleShowMaterialClick = () => {
-    setShowMaterial(!showMaterial);
   };
 
   /**
@@ -247,6 +248,44 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     });
   };
 
+  /**
+   * Renders content depending whether entry is Journal assignment or not
+   * @returns JSX.Element
+   */
+  const renderDiaryContent = () => {
+    // If material with workspaceMaterialId from entry is present, entry is Journal assignment
+    if (material && workspaceMaterialId && props.workspace) {
+      // Composite reply holds answers for specific journal assignment entry
+      const compositeReply =
+        props.evaluation.evaluationCompositeReplies?.data?.find(
+          (cReply) => cReply.workspaceMaterialId === workspaceMaterialId
+        );
+
+      // Material content node, that MaterialLoader expects
+      const materialContentNode: MaterialContentNodeWithIdAndLogic = {
+        ...material,
+        contentHiddenForUser: false,
+        assignmentType: "JOURNAL",
+        ai: "DISALLOWED",
+      };
+
+      return (
+        <EvaluationMaterial
+          material={materialContentNode}
+          workspace={props.workspace}
+          compositeReply={compositeReply}
+          userEntityId={userEntityId}
+        />
+      );
+    }
+
+    return (
+      <div className="evaluation-modal__item-body rich-text">
+        <CkeditorContentLoader html={content} />
+      </div>
+    );
+  };
+
   const formatedDate = `${localize.date(created)} - ${localize.date(
     created,
     "h:mm"
@@ -301,31 +340,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </div>
 
       <AnimateHeight duration={400} height={showContent ? "auto" : 0}>
-        {material && (
-          <>
-            <div className="evaluation-modal__item-subheader">
-              <Button
-                icon={showMaterial ? "arrow-down" : "arrow-right"}
-                onClick={handleShowMaterialClick}
-                buttonModifiers={["journal-material-toggle"]}
-              >
-                {showMaterial
-                  ? t("actions.hideAssignment")
-                  : t("actions.showAssignment")}
-              </Button>
-            </div>
-            <AnimateHeight duration={400} height={showMaterial ? "auto" : 0}>
-              <div className="evaluation-modal__item-body rich-text">
-                <CkeditorContentLoader html={material.html} />
-              </div>
-            </AnimateHeight>
-          </>
-        )}
-
-        <div className="evaluation-modal__item-body rich-text">
-          <CkeditorContentLoader html={content} />
-        </div>
-
+        {renderDiaryContent()}
         <>
           <div
             className="evaluation-modal__item-subheader evaluation-modal__item-subheader--journal-comment"

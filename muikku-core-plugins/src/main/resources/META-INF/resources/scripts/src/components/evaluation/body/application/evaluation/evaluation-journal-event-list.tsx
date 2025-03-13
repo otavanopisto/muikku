@@ -19,16 +19,18 @@ import Button, { ButtonPill } from "~/components/general/button";
 import { EvaluationJournalFilters } from "~/@types/evaluation";
 import Dropdown from "~/components/general/dropdown";
 import {
-  WorkspaceJournal,
+  WorkspaceJournalEntry,
   EvaluationAssessmentRequest,
 } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { useTranslation } from "react-i18next";
+import { WorkspaceDataType } from "~/reducers/workspaces";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface EvaluationDiaryEventListProps {
+  workspaces: WorkspaceDataType[];
   selectedAssessment: EvaluationAssessmentRequest;
   evaluation: EvaluationState;
   deleteEvaluationJournalFeedback: DeleteEvaluationJournalFeedbackTriggerType;
@@ -143,7 +145,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
    * @param a a
    * @param b b
    */
-  const sortByDate = (a: WorkspaceJournal, b: WorkspaceJournal) => {
+  const sortByDate = (a: WorkspaceJournalEntry, b: WorkspaceJournalEntry) => {
     const dateA = new Date(a.created);
     const dateB = new Date(b.created);
 
@@ -191,6 +193,10 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
     props.evaluation.evaluationDiaryEntries.state === "READY";
   const journalEntries = props.evaluation.evaluationDiaryEntries.data;
 
+  const workspace = props.workspaces.find(
+    (eWorkspace) => eWorkspace.id === props.selectedAssessment.workspaceEntityId
+  );
+
   const evaluationDiaryEvents =
     journalEntries && journalEntries.length > 0 ? (
       filterJournals()
@@ -203,6 +209,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
               key={item.id}
               open={isOpen}
               {...item}
+              workspace={workspace}
               onClickOpen={handleOpenDiaryEntryClick}
             />
           );

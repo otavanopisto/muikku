@@ -17880,10 +17880,12 @@ components:
           nullable: true
         workspaceMaterialReplyState:
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
+          nullable: true
         workspaceMaterialId:
           description: Id of the actual workspace page containing the journal field
           type: integer
           format: int64
+          nullable: true
 
     WorkspaceJournalComment:
       type: object

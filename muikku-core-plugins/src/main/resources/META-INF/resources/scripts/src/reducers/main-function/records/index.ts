@@ -6,7 +6,7 @@ import {
 import { ActionType } from "actions";
 import { Reducer } from "redux";
 import { MaterialCompositeReply, Curriculum } from "~/generated/client";
-import { WorkspaceJournal } from "~/generated/client";
+import { WorkspaceJournalEntry } from "~/generated/client";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
 export type RecordWorkspaceState = "GRADED" | "UNGRADED" | "UNASSESSED";
@@ -18,7 +18,7 @@ export interface CurrentRecordType {
   workspace: WorkspaceDataType;
   materials: MaterialContentNodeWithIdAndLogic[];
   compositeReplies: MaterialCompositeReply[];
-  journals: WorkspaceJournal[];
+  journals: WorkspaceJournalEntry[];
 }
 
 export type AllStudentUsersDataStatusType =
