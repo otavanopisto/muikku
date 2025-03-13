@@ -47,7 +47,7 @@ public class SPAForwardingFilter implements Filter {
       "/forgotpassword/",
       "/ceepos/",
       "/error/", // Frontend error pages
-      "/system" // TODO Maybe rework these as REST endpoints?
+      "/system/" // TODO Maybe rework these as REST endpoints?
   };
   
   // Workspace path with special handling for specific subpaths
