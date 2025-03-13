@@ -55,9 +55,7 @@ export const useRecipientsToAvatars = (
               const lastPendingIndex = existingGroupAvatar.groupMembers
                 .map((member, index) => ({ member, index }))
                 .reverse()
-                .find(
-                  (item) => item.member.modifier === "approval_pending"
-                )?.index;
+                .find((item) => item.member.modifier === "ongoing")?.index;
 
               // If found, you can do something with it
               if (lastPendingIndex !== undefined) {

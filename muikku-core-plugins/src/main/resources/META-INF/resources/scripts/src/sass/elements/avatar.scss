@@ -65,12 +65,14 @@
 .avatar__group-user {
   display: flex;
   gap: 5px;
+  justify-content: space-between;
   margin-bottom: 10px;
 }
 
 .avatar__group-user-text {
   min-width: 150px;
   text-align: left;
+  flex-grow: 1;
 }
 
 .avatar-container--chat {

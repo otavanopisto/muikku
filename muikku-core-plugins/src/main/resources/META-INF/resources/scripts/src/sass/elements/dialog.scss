@@ -541,6 +541,7 @@
 
 .dialog__note-item {
   flex-grow: 1;
+  flex-basis: 0;
 }
 
 .dialog__note-recipients {
@@ -548,7 +549,7 @@
   padding: 0 0 0 10px;
 
   @include breakpoint($breakpoint-mobile-xl) {
-    flex-basis: 300px;
+    flex-basis: 340px;
   }
 }
 
