@@ -27,7 +27,7 @@ interface ProtectedRouteProps {
   redirectPath?: string;
   /**
    * The path to redirect to if the user is not authenticated. Optional, defaults to "/login".
-   * @default "/login"
+   * @default `/login?redirectUrl=${window.location.pathname}`
    */
   loginPath?: string;
   /**
