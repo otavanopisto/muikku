@@ -109,7 +109,7 @@
 
 // stylelint-disable-next-line selector-class-pattern
 .avatar--approval_pending {
-  animation: approval-pending-border-pulse 2s infinite;
+  animation: approval-pending-border-pulse 1s infinite;
   border: 2px solid $color-info;
 }
 
@@ -237,10 +237,10 @@
 // blink
 @keyframes approval-pending-border-pulse {
   50% {
-    border-color: $color-info-blink;
+    opacity: 20%;
   }
 
   100% {
-    border-color: $color-info;
+    opacity: 100%;
   }
 }

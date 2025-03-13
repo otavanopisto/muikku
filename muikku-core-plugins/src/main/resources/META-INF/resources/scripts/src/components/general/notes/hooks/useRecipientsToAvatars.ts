@@ -50,6 +50,27 @@ export const useRecipientsToAvatars = (
             // Put the ones with "APPROVAL_PENDING" status at the top
             if (status === "APPROVAL_PENDING") {
               existingGroupAvatar.groupMembers.unshift(newMember);
+            } else if (status === "APPROVED") {
+              // Find the last group member with "APPROVAL_PENDING" status
+              const lastPendingIndex = existingGroupAvatar.groupMembers
+                .map((member, index) => ({ member, index }))
+                .reverse()
+                .find(
+                  (item) => item.member.modifier === "approval_pending"
+                )?.index;
+
+              // If found, you can do something with it
+              if (lastPendingIndex !== undefined) {
+                // Insert the approved member after the last pending one
+                existingGroupAvatar.groupMembers.splice(
+                  lastPendingIndex + 1,
+                  0,
+                  newMember
+                );
+              } else {
+                // If no pending member found, just push it to the top
+                existingGroupAvatar.groupMembers.unshift(newMember);
+              }
             } else {
               existingGroupAvatar.groupMembers.push(newMember);
             }
