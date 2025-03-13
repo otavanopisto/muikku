@@ -52,7 +52,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = (props) => {
     requireAuth = false,
     isAuthenticated = false,
     hasPermission = false,
-    loginPath = "/login",
+    loginPath = `/login?redirectUrl=${window.location.pathname}`,
     redirectPath = "/",
     children,
   } = props;

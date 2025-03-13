@@ -317,7 +317,7 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
 
             switch (status) {
               case 401:
-                window.location.href = "/login";
+                window.location.href = `/login?redirectUrl=${window.location.pathname}`;
                 break;
               case 403:
                 window.location.href = `/error/403?workspace=true`;
