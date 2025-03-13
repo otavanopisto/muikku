@@ -15,7 +15,8 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/announcer", to = "/jsf/announcer/index.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join (path = "/announcer", to = "/jsf/announcer/index.jsf")
 public class AnnouncerBackingBean {
 
   

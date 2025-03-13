@@ -15,7 +15,8 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/guider", to = "/jsf/guider/index.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join (path = "/guider", to = "/jsf/guider/index.jsf")
 @LoggedIn
 public class GuiderBackingBean {
 

@@ -22,7 +22,8 @@ import fi.otavanopisto.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/workspace/{workspaceUrlName}/announcer", to = "/jsf/workspace/workspace_announcer.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join(path = "/workspace/{workspaceUrlName}/announcer", to = "/jsf/workspace/workspace_announcer.jsf")
 public class WorkspaceAnnouncerBackingBean {
 
   @Parameter

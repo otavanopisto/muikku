@@ -27,7 +27,8 @@ import fi.otavanopisto.muikku.users.UserEntityController;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/ceepos/done", to = "/jsf/ceepos/index.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join(path = "/ceepos/done", to = "/jsf/ceepos/index.jsf")
 @LoggedInWithQueryParams
 public class CeeposDoneViewBackingBean {
 

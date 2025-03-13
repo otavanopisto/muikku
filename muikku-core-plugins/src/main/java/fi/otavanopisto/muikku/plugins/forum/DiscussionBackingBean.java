@@ -16,7 +16,8 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/discussion", to = "/jsf/discussion/index.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join (path = "/discussion", to = "/jsf/discussion/index.jsf")
 @LoggedIn
 public class DiscussionBackingBean {
   

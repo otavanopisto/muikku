@@ -14,7 +14,8 @@ import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 
 @Named
-@Join (path = "/system/cache/flush", to = "/jsf/system/cache-flush.jsf")
+//TODO Remove this file and its xhtml completely AND replace it with a REST endpoint!!
+//@Join (path = "/system/cache/flush", to = "/jsf/system/cache-flush.jsf")
 public class SystemCacheFlushBackingBean {
   
   @Inject

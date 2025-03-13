@@ -10,7 +10,7 @@ import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
 
-@RewriteConfiguration
+//@RewriteConfiguration // TODO Remove this whole file?
 public class WorkspaceRedirectsRewriteConfiguration extends HttpConfigurationProvider {
 
   @Override

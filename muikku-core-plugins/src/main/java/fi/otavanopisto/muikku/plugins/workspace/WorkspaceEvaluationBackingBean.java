@@ -20,7 +20,8 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}/evaluation", to = "/jsf/workspace/evaluation.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join (path = "/workspace/{workspaceUrlName}/evaluation", to = "/jsf/workspace/evaluation.jsf")
 @LoggedIn
 public class WorkspaceEvaluationBackingBean extends AbstractWorkspaceBackingBean {
 

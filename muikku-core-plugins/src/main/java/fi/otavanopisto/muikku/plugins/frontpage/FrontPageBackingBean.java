@@ -13,6 +13,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 
 @Named
 @RequestScoped
+//TODO Remove this file and its xhtml completely
 //@Join(path = "/", to = "/index.jsf")
 public class FrontPageBackingBean {
   

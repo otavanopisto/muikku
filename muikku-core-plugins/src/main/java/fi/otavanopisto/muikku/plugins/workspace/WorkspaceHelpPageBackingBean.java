@@ -21,7 +21,8 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/workspace/{workspaceUrlName}/help", to = "/jsf/workspace/help.jsf")
+//TODO Remove this file and its xhtml completely
+//@Join(path = "/workspace/{workspaceUrlName}/help", to = "/jsf/workspace/help.jsf")
 public class WorkspaceHelpPageBackingBean extends AbstractWorkspaceBackingBean {
 
   @Inject
