@@ -27,12 +27,12 @@ public class SPAForwardingFilter implements Filter {
   
   // The paths that are redirected to the SPA Entrypoint
   private static final Set<String> FRONTEND_PATHS = Set.of(
-      "/announcements", // TODO Really?
+      "/announcements",
       "/announcer",
       "/communicator",
       "/coursepicker",
       "/evaluation",
-      "/discussion", // TODO Remove?
+      "/discussion",
       "/guider",
       "/guardian_hops",
       "/guardian",
@@ -46,8 +46,7 @@ public class SPAForwardingFilter implements Filter {
   private static final String[] FRONTEND_PARTIAL_PATHS = {
       "/forgotpassword/",
       "/ceepos/",
-      "/error/", // Frontend error pages
-      "/system/" // TODO Maybe rework these as REST endpoints?
+      "/error/"
   };
   
   // Workspace path with special handling for specific subpaths
@@ -64,12 +63,6 @@ public class SPAForwardingFilter implements Filter {
           FRONTEND_PATHS.contains(path) 
           || StringUtils.startsWithAny(path, FRONTEND_PARTIAL_PATHS) 
           || isSPAWorkspacePath(path);
-      
-      // TODO Remove debug messages
-//      System.out.println("Polku: " + path + " Löytyi: " + found);
-//      if (StringUtils.startsWith(path, WORKSPACE_ROOT)) {
-//        System.out.println("Polku: " + path + " WSP: " + isSPAWorkspacePath(path));
-//      }
       
       if (found) {
         request.getRequestDispatcher(SPA_ENTRYPOINT).forward(httpRequest, response);
