@@ -10194,7 +10194,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WorkspaceJournal"
+                  $ref: "#/components/schemas/WorkspaceJournalEntry"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -10222,7 +10222,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WorkspaceJournal"
+                $ref: "#/components/schemas/WorkspaceJournalEntry"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -10258,7 +10258,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WorkspaceJournal"
+                $ref: "#/components/schemas/WorkspaceJournalEntry"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -17835,9 +17835,9 @@ components:
           description: The first result
           type: integer
 
-    WorkspaceJournal:
+    WorkspaceJournalEntry:
       type: object
-      description: WorkspaceJournal object
+      description: Representation of a single journal entry
       required:
         - id
         - workspaceEntityId
@@ -17850,6 +17850,7 @@ components:
         - commentCount
         - material
         - workspaceMaterialReplyState
+        - workspaceMaterialId
       properties:
         id:
           type: integer
@@ -17879,6 +17880,10 @@ components:
           nullable: true
         workspaceMaterialReplyState:
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
+        workspaceMaterialId:
+          description: Id of the actual workspace page containing the journal field
+          type: integer
+          format: int64
 
     WorkspaceJournalComment:
       type: object
