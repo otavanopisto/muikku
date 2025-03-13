@@ -176,6 +176,7 @@ public class EvaluationController {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+
   
   /* Workspace activity */
 
@@ -203,9 +204,11 @@ public class EvaluationController {
     if (activityInfo == null) {
       return null;
     }
+    
+    EducationTypeMapping educationTypeMapping = workspaceEntityController.getEducationTypeMapping();
+    SearchProvider searchProvider = getProvider("elastic-search");
 
     // Complement the response with data available only in Muikku
-
     for (WorkspaceActivity activity : activityInfo.getActivities()) {
 
       // Skip activity items without a course (basically transfer credits)
@@ -327,6 +330,32 @@ public class EvaluationController {
         activity.setEvaluablesTotal(evaluablesTotal);
         activity.setEvaluablesAnswered(evaluablesAnswered);
       }
+      
+      // Search for finding out course mandatority
+
+      
+      if (searchProvider != null && activity.getId() != null) {
+        SearchResult sr = searchProvider.findWorkspace(workspaceEntity.schoolDataIdentifier());
+        
+        List<Map<String, Object>> results = sr.getResults();
+        for (Map<String, Object> result : results) {
+          
+          String educationTypeId = (String) result.get("educationTypeIdentifier");
+
+          Mandatority mandatority = null;
+
+          if (StringUtils.isNotBlank(educationTypeId)) {
+            SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
+                                        
+            mandatority = (educationTypeMapping != null && educationSubtypeId != null) 
+                ? educationTypeMapping.getMandatority(educationSubtypeId) : null;
+            
+          }
+          if (mandatority != null) {
+            activity.setMandatority(mandatority);
+          }
+        }
+      } 
     }
     return activityInfo;
   }
@@ -370,11 +399,11 @@ public class EvaluationController {
     
     if (showCredits) {
       for (WorkspaceActivity activity : activityInfo.getActivities()) {
-        
         List<WorkspaceAssessmentState> assessmentStatesList = activity.getAssessmentStates();
         
         if (!assessmentStatesList.isEmpty()) {
           for (WorkspaceAssessmentState assessmentState : assessmentStatesList) {
+
             if (assessmentState.getState() == WorkspaceAssessmentState.PASS || assessmentState.getState() == WorkspaceAssessmentState.TRANSFERRED) {
               for (WorkspaceActivitySubject workspaceActivitySubject : activity.getSubjects()) {
 
@@ -384,7 +413,6 @@ public class EvaluationController {
                     continue;
                   }
                 }
-
                 // Skip subjects which are mutually exclusive and not selected
                 if (!alternativeStudyOptions.isSelectedSubject(workspaceActivitySubject.getSubjectCode())) {
                   continue;

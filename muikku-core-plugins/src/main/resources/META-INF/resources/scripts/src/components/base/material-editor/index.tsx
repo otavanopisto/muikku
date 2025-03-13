@@ -43,6 +43,7 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
   Language,
+  MaterialAI,
   MaterialAssigmentType,
   MaterialViewRestriction,
 } from "~/generated/client";
@@ -318,6 +319,7 @@ class MaterialEditor extends React.Component<
     this.cycleCorrectAnswers = this.cycleCorrectAnswers.bind(this);
     this.updateContent = this.updateContent.bind(this);
     this.updateTitle = this.updateTitle.bind(this);
+    this.updateMaterialAiUse = this.updateMaterialAiUse.bind(this);
     this.updateMaxPoints = this.updateMaxPoints.bind(this);
     this.updateTitleLanguage = this.updateTitleLanguage.bind(this);
     this.close = this.close.bind(this);
@@ -484,6 +486,24 @@ class MaterialEditor extends React.Component<
         titleLanguage:
           e.currentTarget.value !== ""
             ? (e.currentTarget.value as Language)
+            : null,
+      },
+      isDraft: true,
+    });
+  }
+
+  /**
+   * updateMaterialAiUse
+   * @param e e
+   */
+  updateMaterialAiUse(e: React.ChangeEvent<HTMLSelectElement>) {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        ai:
+          e.currentTarget.value !== ""
+            ? (e.currentTarget.value as MaterialAI)
             : null,
       },
       isDraft: true,
@@ -879,6 +899,7 @@ class MaterialEditor extends React.Component<
       "viewRestrict",
       "titleLanguage",
       "maxPoints",
+      "ai",
     ];
 
     let canPublish = false;
@@ -1250,6 +1271,41 @@ class MaterialEditor extends React.Component<
                           })}
                         </option>
                       ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="material-editor__sub-section">
+              <h3 className="material-editor__sub-title">
+                {this.props.i18n.t("labels.materialAiUse", { ns: "materials" })}
+              </h3>
+              <div className="material-editor__select-locale-container">
+                <div className="form__row">
+                  <div className="form-element">
+                    <select
+                      className="form-element__select form-element__select--material-editor"
+                      onChange={this.updateMaterialAiUse}
+                      value={
+                        this.props.editorState.currentDraftNodeValue.ai || ""
+                      }
+                    >
+                      <option value="">
+                        {this.props.i18n.t("labels.materialAiNotDefined", {
+                          ns: "materials",
+                        })}
+                      </option>
+                      <option value="ALLOWED">
+                        {this.props.i18n.t("labels.materialAiAllowed", {
+                          ns: "materials",
+                        })}
+                      </option>
+                      <option value="NOT_ALLOWED">
+                        {this.props.i18n.t("labels.materialAiNotAllowed", {
+                          ns: "materials",
+                        })}
+                      </option>
                     </select>
                   </div>
                 </div>
