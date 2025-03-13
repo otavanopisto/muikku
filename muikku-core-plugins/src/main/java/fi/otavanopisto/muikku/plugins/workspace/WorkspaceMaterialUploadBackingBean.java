@@ -32,7 +32,8 @@ import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/workspace/{workspaceUrlName}/material-upload", to = "/jsf/workspace/material-upload.jsf")
+//TODO Remove this whole file and its xhtml
+//@Join(path = "/workspace/{workspaceUrlName}/material-upload", to = "/jsf/workspace/material-upload.jsf")
 public class WorkspaceMaterialUploadBackingBean extends AbstractWorkspaceBackingBean {
 
   @Parameter
