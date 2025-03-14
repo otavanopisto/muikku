@@ -256,15 +256,14 @@ const MATERIAL_RESTRICT_TYPE_CONFIGS: MaterialRestrictTypeConfig[] = [
     text: "labels.visibleRestrictionAll",
   },
   {
-    type: MaterialViewRestriction.WorkspaceMembers,
-    classNameMod: "restrict-type-dropdown-members-only",
-    text: "labels.visibleRestrictionLoggedIn",
-  },
-
-  {
     type: MaterialViewRestriction.LoggedIn,
     classNameMod: "restrict-type-dropdown-disabled",
     text: "labels.visibleRestrictionLoggedIn",
+  },
+  {
+    type: MaterialViewRestriction.WorkspaceMembers,
+    classNameMod: "restrict-type-dropdown-members-only",
+    text: "labels.visibleRestrictionMembers",
   },
 ];
 

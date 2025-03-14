@@ -11,7 +11,7 @@ import { Dispatch, Action } from "redux";
 import {
   CreateWorkspaceJournalCommentRequest,
   UpdateWorkspaceJournalCommentRequest,
-  WorkspaceJournal,
+  WorkspaceJournalEntry,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -131,7 +131,7 @@ export interface CreateWorkspaceJournalForCurrentWorkspaceTriggerType {
  */
 export interface UpdateWorkspaceJournalInCurrentWorkspaceTriggerType {
   (data: {
-    journal: WorkspaceJournal;
+    journal: WorkspaceJournalEntry;
     title: string;
     content: string;
     success?: () => void;
@@ -144,7 +144,7 @@ export interface UpdateWorkspaceJournalInCurrentWorkspaceTriggerType {
  */
 export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
   (data: {
-    journal: WorkspaceJournal;
+    journal: WorkspaceJournalEntry;
     success?: () => void;
     fail?: () => void;
   }): AnyActionType;
@@ -204,7 +204,7 @@ export interface DeleteWorkspaceJournalCommentTriggerType {
  * SetCurrentJournal
  */
 export interface SetCurrentJournalTriggerType {
-  (data: { currentJournal: WorkspaceJournal }): AnyActionType;
+  (data: { currentJournal: WorkspaceJournalEntry }): AnyActionType;
 }
 
 // Journal feedback trigger types

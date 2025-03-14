@@ -125,11 +125,9 @@ export const MatriculationExaminationStudentInformation = () => {
             <TextField
               label={t("labels.studyAdvisors", { ns: "users" })}
               readOnly
-              defaultValue={
+              value={
                 studentInformation.studyAdvisors.length > 0
-                  ? studentInformation.studyAdvisors
-                      .map((advisor) => advisor)
-                      .join(", ")
+                  ? studentInformation.studyAdvisors.join(", ")
                   : "—"
               }
               className="matriculation__input"
