@@ -165,6 +165,11 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
   // Check if journal entries reducer is ready
   const journalEntriesIsReady =
     props.evaluation.evaluationDiaryEntries.state === "READY";
+
+  // Check if evaluation composite replies reducer is ready
+  const evaluationCompositeRepliesIsReady =
+    props.evaluation.evaluationCompositeReplies.state === "READY";
+
   const journalEntries = props.evaluation.evaluationDiaryEntries.data;
 
   const workspace = props.workspaces.find(
@@ -344,7 +349,7 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
         ) : null}
       </div>
       <div className="evaluation-modal__content-body">
-        {journalEntriesIsReady ? (
+        {journalEntriesIsReady && evaluationCompositeRepliesIsReady ? (
           evaluationDiaryEvents
         ) : (
           <div className="loader-empty" />
