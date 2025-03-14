@@ -67,6 +67,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     userEntityId,
     workspaceEntityId,
     id,
+    workspaceMaterialPath,
     commentCount,
     workspaceMaterialId,
     createEvaluationJournalComment,
@@ -267,6 +268,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
         contentHiddenForUser: false,
         assignmentType: "JOURNAL",
         ai: "DISALLOWED",
+        path: workspaceMaterialPath,
       };
 
       return (
