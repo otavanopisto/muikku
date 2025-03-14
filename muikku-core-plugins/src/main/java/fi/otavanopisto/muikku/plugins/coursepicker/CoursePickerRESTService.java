@@ -409,6 +409,15 @@ public class CoursePickerRESTService extends PluginRESTService {
                 SchoolDataIdentifier educationSubtypeId = SchoolDataIdentifier.fromId((String) result.get("educationSubtypeIdentifier"));
 
                 @SuppressWarnings("unchecked")
+                List<Map<String, Object>> subjectList = (List<Map<String, Object>>) result.get("subjects");
+                Double courseLength = null;
+                String courseLengthUnit = null;
+                
+                for (Map<String, Object> s : subjectList) {
+                  courseLength = (Double) s.get("length");
+                  courseLengthUnit = (String) s.get("lengthUnitSymbol");
+                }
+                @SuppressWarnings("unchecked")
                 ArrayList<String> curriculumIdentifiersList = (ArrayList<String>) result.get("curriculumIdentifiers");
   
                 Mandatority mandatority = null;
@@ -422,7 +431,7 @@ public class CoursePickerRESTService extends PluginRESTService {
                   }
                 }
                 if (StringUtils.isNotBlank(name)) {
-                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, mandatority, isCourseMember, curriculumIdentifiersList));
+                  workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, educationTypeName, mandatority, isCourseMember, curriculumIdentifiersList, courseLength, courseLengthUnit));
                 } else {
                   logger.severe(String.format("Search index contains workspace %s that does not have a name", workspaceIdentifier));
                 }
@@ -513,7 +522,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     for (SchoolDataIdentifier curriculumIdentifier : workspace.getCurriculumIdentifiers()) {
       curriculumIdentifiersList.add(curriculumIdentifier.toId());
     }
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, mandatority, isCourseMember, curriculumIdentifiersList)).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), educationTypeName, mandatority, isCourseMember, curriculumIdentifiersList, null, null)).build();
   }
   
   @GET
@@ -764,7 +773,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     return isEvaluated;
   }
   
-  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, Mandatority mandatority, Boolean isCourseMember, List<String> curriculumIdentifiers) {
+  private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, Mandatority mandatority, Boolean isCourseMember, List<String> curriculumIdentifiers, Double courseLength, String courseLengthUnit) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
@@ -787,7 +796,9 @@ public class CoursePickerRESTService extends PluginRESTService {
         isCourseMember,
         hasCustomImage, 
         organization, 
-        curriculumIdentifiers);
+        curriculumIdentifiers,
+        courseLength,
+        courseLengthUnit);
   }
   
   private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {

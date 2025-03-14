@@ -12,7 +12,8 @@ public class WorkspaceJournalEntryRESTModel {
   }
 
   public WorkspaceJournalEntryRESTModel(Long id, Long workspaceEntityId, Long userEntityId, String firstName,
-      String lastName, String html, String title, Date created, Long commentCount, HtmlRestMaterial material, WorkspaceMaterialReplyState workspaceMaterialReplyState) {
+      String lastName, String html, String title, Date created, Long commentCount, HtmlRestMaterial material,
+      Long workspaceMaterialId, String workspaceMaterialPath, WorkspaceMaterialReplyState workspaceMaterialReplyState) {
     super();
     this.id = id;
     this.workspaceEntityId = workspaceEntityId;
@@ -24,6 +25,8 @@ public class WorkspaceJournalEntryRESTModel {
     this.created = created;
     this.commentCount = commentCount;
     this.material = material;
+    this.workspaceMaterialId = workspaceMaterialId;
+    this.workspaceMaterialPath = workspaceMaterialPath;
     this.workspaceMaterialReplyState = workspaceMaterialReplyState;
   }
 
@@ -115,6 +118,22 @@ public class WorkspaceJournalEntryRESTModel {
     this.material = material;
   }
 
+  public Long getWorkspaceMaterialId() {
+    return workspaceMaterialId;
+  }
+
+  public void setWorkspaceMaterialId(Long workspaceMaterialId) {
+    this.workspaceMaterialId = workspaceMaterialId;
+  }
+
+  public String getWorkspaceMaterialPath() {
+    return workspaceMaterialPath;
+  }
+
+  public void setWorkspaceMaterialPath(String workspaceMaterialPath) {
+    this.workspaceMaterialPath = workspaceMaterialPath;
+  }
+
   private Long id;
   private Long workspaceEntityId;
   private Long userEntityId;
@@ -126,5 +145,7 @@ public class WorkspaceJournalEntryRESTModel {
   private Long commentCount;
   private WorkspaceMaterialReplyState workspaceMaterialReplyState;
   private HtmlRestMaterial material;
+  private Long workspaceMaterialId;
+  private String workspaceMaterialPath;
   
 }

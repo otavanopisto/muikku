@@ -672,6 +672,7 @@ export class Evaluation extends React.Component<
               selectedAssessment={this.props.selectedAssessment}
             />
             <EvaluationJournalEventList
+              workspaces={workspaces}
               selectedAssessment={this.props.selectedAssessment}
             />
           </div>

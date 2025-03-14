@@ -1,32 +1,27 @@
-import Notifications from "../components/base/notifications";
-import DisconnectedWarningDialog from "../components/base/disconnect-warning";
-import Body from "../components/frontpage/body";
 import * as React from "react";
-import "~/sass/util/base.scss";
-import { registerLocale } from "react-datepicker";
-import { enGB, fi } from "date-fns/locale";
-import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
-import "../locales/i18n";
-import { HelmetProvider, Helmet } from "react-helmet-async";
-import { useTranslation } from "react-i18next";
-registerLocale("fi", fi);
-registerLocale("enGB", enGB);
+import { Helmet } from "react-helmet-async";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 /**
- * IndexFrontpage
+ * Props for the TitleProvider component
  */
-const IndexFrontpage = () => {
-  const { t } = useTranslation(["common"]);
+interface TitleProviderProps {
+  children: React.ReactNode;
+}
 
-  const appName = t("appName", { ns: "pageTitles" });
+/**
+ * Provider for managing page title
+ * @param props - The component props
+ * @returns The rendered component
+ */
+function TitleProvider(props: TitleProviderProps) {
+  const { children } = props;
+  const { title } = usePageTitle();
 
   return (
-    /**
-     * render
-     */
-    <HelmetProvider>
+    <>
       <Helmet>
-        <title>{appName}</title>
+        <title>{title}</title>
 
         {/* For all browsers */}
         <link
@@ -70,13 +65,9 @@ const IndexFrontpage = () => {
           href="/gfx/favicons/favicon-180x180.png"
         />
       </Helmet>
-      <div id="root">
-        <Notifications></Notifications>
-        <DisconnectedWarningDialog />
-        <EasyToUseFunctions />
-        <Body></Body>
-      </div>
-    </HelmetProvider>
+      {children}
+    </>
   );
-};
-export default IndexFrontpage;
+}
+
+export default TitleProvider;
