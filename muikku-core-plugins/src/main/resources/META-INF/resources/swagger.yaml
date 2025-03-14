@@ -17851,6 +17851,7 @@ components:
         - material
         - workspaceMaterialReplyState
         - workspaceMaterialId
+        - workspaceMaterialPath
       properties:
         id:
           type: integer
@@ -17886,6 +17887,9 @@ components:
           type: integer
           format: int64
           nullable: true
+        workspaceMaterialPath:
+          description: Base path for relative URLs in the workspace material
+          type: string
 
     WorkspaceJournalComment:
       type: object
