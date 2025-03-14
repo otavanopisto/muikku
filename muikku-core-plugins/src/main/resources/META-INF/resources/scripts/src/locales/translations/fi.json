@@ -2824,8 +2824,6 @@
     "evaluation_workspace": "{{workspaceName}} | Arviointi",
     "error": "Virhe",
     "guider": "Ohjaamo",
-    "home": "Etusivu",
-    "home_workspace": "{{workspaceName}} | Etusivu",
     "hops": "HOPS",
     "instructions": "{{workspaceName}} | Ohjeet",
     "journal": "{{workspaceName}} | Oppimispäiväkirja",

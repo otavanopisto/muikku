@@ -2822,8 +2822,6 @@
     "evaluation_workspace": "{{workspaceName}} | Evaluation",
     "error": "Error",
     "guider": "Guider",
-    "home": "Home",
-    "home_workspace": "{{workspaceName}} | Home",
     "hops": "HOPS",
     "instructions": "{{workspaceName}} | Instructions",
     "journal": "{{workspaceName}} | Journal",
