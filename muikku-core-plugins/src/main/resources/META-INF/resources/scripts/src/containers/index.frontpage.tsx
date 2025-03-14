@@ -19,7 +19,6 @@ const IndexFrontpage = () => {
   const { t } = useTranslation(["common"]);
 
   const appName = t("appName", { ns: "pageTitles" });
-  const title = `${t("home", { ns: "pageTitles" })} | ${appName}`;
 
   return (
     /**
@@ -27,7 +26,7 @@ const IndexFrontpage = () => {
      */
     <HelmetProvider>
       <Helmet>
-        <title>{title}</title>
+        <title>{appName}</title>
 
         {/* For all browsers */}
         <link
