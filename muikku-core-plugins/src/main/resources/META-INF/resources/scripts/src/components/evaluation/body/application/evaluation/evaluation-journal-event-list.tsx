@@ -5,7 +5,9 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
-import EvaluationJournalEvent from "./evaluation-journal-event";
+import EvaluationJournalEvent, {
+  EvaluationJournalEventRef,
+} from "./evaluation-journal-event";
 import Link from "~/components/general/link";
 import JournalFeedbackEditor from "./editors/journal-feedback-editor";
 import SlideDrawer from "./slide-drawer";
@@ -49,7 +51,6 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
 
   const { t } = useTranslation(["journal", "evaluation", "common"]);
 
-  const [listOfDiaryIds, setListOfDiaryIds] = React.useState<number[]>([]);
   const [journalFilters, setJournalFilters] =
     React.useState<EvaluationJournalFilters>({
       showMandatory: false,
@@ -62,20 +63,9 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
     "asc" | "desc"
   >("asc");
 
-  React.useEffect(() => {
-    if (
-      evaluation.evaluationDiaryEntries.state === "READY" &&
-      evaluation.evaluationDiaryEntries.data &&
-      evaluation.evaluationDiaryEntries.data.length > 0
-    ) {
-      setListOfDiaryIds(
-        evaluation.evaluationDiaryEntries.data.map((dEntry) => dEntry.id)
-      );
-    }
-  }, [
-    evaluation.evaluationDiaryEntries.data,
-    evaluation.evaluationDiaryEntries.state,
-  ]);
+  const evaluationJournalEventsRefs = React.useRef<EvaluationJournalEventRef[]>(
+    []
+  );
 
   /**
    * Handles journal feedback editor change click
@@ -99,37 +89,15 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
     };
 
   /**
-   * Handles open diary entry click
-   *
-   * @param id id
-   */
-  const handleOpenDiaryEntryClick = (id: number) => {
-    const updatedList = [...listOfDiaryIds];
-
-    const index = updatedList.findIndex((itemId) => itemId === id);
-
-    if (index !== -1) {
-      updatedList.splice(index, 1);
-    } else {
-      updatedList.push(id);
-    }
-
-    setListOfDiaryIds(updatedList);
-  };
-
-  /**
    * Handles open all diary entries click
    */
   const handleOpenAllDiaryEntriesClick = () => {
-    if (
-      evaluation.evaluationDiaryEntries &&
-      evaluation.evaluationDiaryEntries.data
-    ) {
-      const numberList = evaluation.evaluationDiaryEntries.data.map(
-        (item) => item.id
-      );
-
-      setListOfDiaryIds(numberList);
+    if (evaluationJournalEventsRefs.current.length > 0) {
+      for (const ref of evaluationJournalEventsRefs.current) {
+        if (ref) {
+          ref.toggleOpen("open");
+        }
+      }
     }
   };
 
@@ -137,7 +105,13 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
    * Handles close all material contents click
    */
   const handleCloseAllDiaryEntriesClick = () => {
-    setListOfDiaryIds([]);
+    if (evaluationJournalEventsRefs.current.length > 0) {
+      for (const ref of evaluationJournalEventsRefs.current) {
+        if (ref) {
+          ref.toggleOpen("close");
+        }
+      }
+    }
   };
 
   /**
@@ -201,19 +175,16 @@ const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
     journalEntries && journalEntries.length > 0 ? (
       filterJournals()
         .sort(sortByDate)
-        .map((item) => {
-          const isOpen = listOfDiaryIds.includes(item.id);
-
-          return (
-            <EvaluationJournalEvent
-              key={item.id}
-              open={isOpen}
-              {...item}
-              workspace={workspace}
-              onClickOpen={handleOpenDiaryEntryClick}
-            />
-          );
-        })
+        .map((item, index) => (
+          <EvaluationJournalEvent
+            ref={(ref) => {
+              evaluationJournalEventsRefs.current[index] = ref;
+            }}
+            key={item.id}
+            {...item}
+            workspace={workspace}
+          />
+        ))
     ) : (
       <div className="empty">
         <span>{t("content.empty", { ns: "journal", context: "entries" })}</span>
