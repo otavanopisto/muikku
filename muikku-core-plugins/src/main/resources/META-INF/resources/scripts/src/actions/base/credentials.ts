@@ -90,7 +90,7 @@ const updateCredentials: UpdateCredentialsTriggerType =
 
       try {
         await credentialsApi.updateCredentials({
-          updateCredentialsRequest: credentials,
+          credentials: credentials,
         });
 
         dispatch({
