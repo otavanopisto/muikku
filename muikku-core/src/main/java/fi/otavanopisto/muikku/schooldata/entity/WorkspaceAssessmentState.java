@@ -78,6 +78,14 @@ public class WorkspaceAssessmentState {
     return subject == null ? null : subject.getIdentifier();
   }
 
+  public String getEvaluatorName() {
+    return evaluatorName;
+  }
+
+  public void setEvaluatorName(String evaluatorName) {
+    this.evaluatorName = evaluatorName;
+  }
+
   private Date date;
   private String state;
   private String grade;
@@ -85,5 +93,6 @@ public class WorkspaceAssessmentState {
   private Date gradeDate;
   private String text;
   private WorkspaceActivitySubject subject;
+  private String evaluatorName;
   
 }

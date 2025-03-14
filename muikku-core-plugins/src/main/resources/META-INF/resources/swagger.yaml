@@ -10218,7 +10218,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WorkspaceJournal"
+                  $ref: "#/components/schemas/WorkspaceJournalEntry"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -10246,7 +10246,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WorkspaceJournal"
+                $ref: "#/components/schemas/WorkspaceJournalEntry"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -10282,7 +10282,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WorkspaceJournal"
+                $ref: "#/components/schemas/WorkspaceJournalEntry"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -14838,6 +14838,13 @@ components:
           type: integer
           format: int64
 
+    MaterialAI:
+      description: Is AI usage allowed
+      type: string
+      enum:
+        - ALLOWED
+        - DISALLOWED
+
     MaterialAssigmentType:
       description: Material assignment type enum
       type: string
@@ -15047,6 +15054,7 @@ components:
         - contentType
         - contentHiddenForUser
         - assignmentType
+        - ai
       properties:
         title:
           description: The title of the material
@@ -15119,6 +15127,10 @@ components:
         maxPoints:
           type: number
           format: double
+        ai:
+          description: Is usage of AI allowed
+          $ref: "#/components/schemas/MaterialAI"
+          nullable: true
 
     Message:
       type: object
@@ -17296,6 +17308,7 @@ components:
       description: Contains activity information of the workspace
       required:
         - id
+        - identifier
         - name
         - assessmentStates
         - evaluablesAnswered
@@ -17315,11 +17328,16 @@ components:
         - exercisesUnanswered
         - journalEntryCount
         - numVisits
+        - mandatority
+        - educationTypeName
       properties:
         id:
           description: The id of the workspace
           type: integer
           format: int64
+        identifier:
+          description: The id of the workspace as string for some reason (?)
+          type: string
         name:
           description: The name of the workspace
           type: string
@@ -17442,6 +17460,13 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceActivityCurriculum"
+        mandatority:
+          description: The mandatority of the workspace
+          $ref: "#/components/schemas/WorkspaceMandatority"
+          nullable: true
+        educationTypeName:
+          description: The education type name of the workspace
+          type: string
 
     WorkspaceActivityCurriculum:
       type: object
@@ -17483,7 +17508,7 @@ components:
           nullable: true
         courseLength:
           description: The length value of the course
-          type: string
+          type: integer
         courseLengthSymbol:
           description: The symbol data related to course length
           type: string
@@ -17499,6 +17524,7 @@ components:
         - passingGrade
         - text
         - subject
+        - evaluatorName
       properties:
         date:
           description: The date of the assessment
@@ -17525,6 +17551,10 @@ components:
         subject:
           description: The subject. Can be null.
           $ref: "#/components/schemas/WorkspaceActivitySubject"
+          nullable: true
+        evaluatorName:
+          description: The name of the evaluator
+          type: string
           nullable: true
 
     WorkspaceAssessmentStateType:
@@ -17829,9 +17859,9 @@ components:
           description: The first result
           type: integer
 
-    WorkspaceJournal:
+    WorkspaceJournalEntry:
       type: object
-      description: WorkspaceJournal object
+      description: Representation of a single journal entry
       required:
         - id
         - workspaceEntityId
@@ -17844,6 +17874,8 @@ components:
         - commentCount
         - material
         - workspaceMaterialReplyState
+        - workspaceMaterialId
+        - workspaceMaterialPath
       properties:
         id:
           type: integer
@@ -17873,6 +17905,15 @@ components:
           nullable: true
         workspaceMaterialReplyState:
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
+          nullable: true
+        workspaceMaterialId:
+          description: Id of the actual workspace page containing the journal field
+          type: integer
+          format: int64
+          nullable: true
+        workspaceMaterialPath:
+          description: Base path for relative URLs in the workspace material
+          type: string
 
     WorkspaceJournalComment:
       type: object
@@ -18024,6 +18065,9 @@ components:
         maxPoints:
           type: number
           format: double
+        ai:
+          description: Is usage of AI allowed
+          $ref: "#/components/schemas/MaterialAI"
 
     WorkspaceFolder:
       type: object

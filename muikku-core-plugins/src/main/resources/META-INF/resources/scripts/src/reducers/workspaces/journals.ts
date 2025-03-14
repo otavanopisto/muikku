@@ -1,7 +1,7 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
 import {
-  WorkspaceJournal,
+  WorkspaceJournalEntry,
   WorkspaceJournalComment,
   EvaluationJournalFeedback,
 } from "~/generated/client";
@@ -11,7 +11,7 @@ export type ReducerStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 /**
  * WorkspaceJournalWithComments
  */
-export interface WorkspaceJournalWithComments extends WorkspaceJournal {
+export interface WorkspaceJournalWithComments extends WorkspaceJournalEntry {
   comments?: WorkspaceJournalComment[];
 }
 
