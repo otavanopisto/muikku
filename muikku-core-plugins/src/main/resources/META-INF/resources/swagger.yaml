@@ -16307,6 +16307,12 @@ components:
           type: string
         lastName:
           type: string
+        studyStartDate:
+          nullable: true
+          type: string
+        studyEndDate:
+          nullable: true
+          type: string
         studyTimeEnd:
           nullable: true
           type: string

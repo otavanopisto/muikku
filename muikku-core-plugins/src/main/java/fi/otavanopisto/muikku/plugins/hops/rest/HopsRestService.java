@@ -1391,6 +1391,8 @@ public class HopsRestService {
         student.getFirstName(),
         student.getLastName(),
         student.getStudyProgrammeEducationType(),
+        student.getStudyStartDate(),
+        student.getStudyEndDate(),
         student.getStudyTimeEnd(),
         counselorList,
         student.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(student.getCurriculumIdentifier()) : null
@@ -1403,6 +1405,8 @@ public class HopsRestService {
       String firstName,
       String lastName,
       String studyProgrammeEducationType,
+      OffsetDateTime studyStartDate,
+      OffsetDateTime studyEndDate,
       OffsetDateTime studyTimeEnd,
       List<String> counselorList,
       String curriculumName) {
@@ -1411,6 +1415,8 @@ public class HopsRestService {
         firstName,
         lastName,
         studyProgrammeEducationType,
+        studyStartDate,
+        studyEndDate,
         studyTimeEnd,
         counselorList,
         curriculumName);
@@ -1571,8 +1577,9 @@ public class HopsRestService {
               // check against signup groups and signup dates
               instanceExists = workspaceEntityController.canSignup(studentIdentifier, workspaceEntity);
             }
+            instance.setId(id);
             instance.setName(name);
-            instance.setStartDate(endDate);
+            instance.setStartDate(beginDate);
             instance.setEndDate(endDate);
             instance.setInstanceExists(instanceExists);
           }
