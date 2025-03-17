@@ -135,6 +135,8 @@
   flex-flow: column nowrap;
   height: 100%;
   max-width: 350px;
+  overflow: hidden;
+  position: relative;
 }
 
 .study-planner__period-header {
