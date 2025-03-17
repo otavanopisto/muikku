@@ -235,7 +235,7 @@ class DDiscussionThreads extends React.Component<
             <Avatar
               key={thread.id}
               id={user.id}
-              firstName={user.firstName}
+              name={user.firstName}
               hasImage={user.hasImage}
               userCategory={userCategory}
               avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {

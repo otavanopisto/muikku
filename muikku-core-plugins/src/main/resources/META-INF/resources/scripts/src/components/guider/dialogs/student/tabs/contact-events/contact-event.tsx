@@ -59,7 +59,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
           id={creatorId}
           hasImage={hasImage}
           size="small"
-          firstName={creatorName}
+          name={creatorName}
         ></Avatar>{" "}
         <div className="contact-event__title">
           <div className="contact-event__creator">{creatorName}</div>
@@ -125,7 +125,7 @@ const ContactEvent: React.FC<ContactEventProps> = (props) => {
                   id={comment.creatorId}
                   hasImage={comment.hasImage}
                   size="small"
-                  firstName={comment.creatorName}
+                  name={comment.creatorName}
                 ></Avatar>
                 <div className="contact-event__title">
                   <div className="contact-event__creator">

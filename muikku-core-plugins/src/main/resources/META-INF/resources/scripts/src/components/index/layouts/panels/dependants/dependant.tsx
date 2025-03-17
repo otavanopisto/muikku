@@ -47,7 +47,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
           <div className="dependant__header">
             <Avatar
               hasImage={dependant.hasImage}
-              firstName={dependant.firstName}
+              name={dependant.firstName}
               id={dependant.userEntityId}
             />
             <div className="dependant__header-text-container">

@@ -258,7 +258,7 @@ class DiscussionCurrentThread extends React.Component<
         <Avatar
           key={userCreator.id}
           id={userCreator.id}
-          firstName={userCreator.firstName}
+          name={userCreator.firstName}
           hasImage={userCreator.hasImage}
           userCategory={userCategory}
           avatarAriaLabel={this.props.i18n.t("wcag.OPUserAvatar", {
@@ -489,7 +489,7 @@ class DiscussionCurrentThread extends React.Component<
               <Avatar
                 key={reply.id}
                 id={user.id}
-                firstName={user.firstName}
+                name={user.firstName}
                 hasImage={user.hasImage}
                 userCategory={userCategory}
               />

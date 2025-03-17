@@ -105,11 +105,7 @@ export const WorkspaceJournalCommentListItem: React.FC<
         className="application-list__item-header--journal-comment"
         tabIndex={0}
       >
-        <Avatar
-          id={authorId}
-          firstName={firstName}
-          hasImage={status.hasImage}
-        />
+        <Avatar id={authorId} name={firstName} hasImage={status.hasImage} />
         <div className="application-list__item-header-main application-list__item-header-main--journal-comment">
           <span className="application-list__item-header-main-content application-list__item-header-main-content--journal-comment-creator">
             {creatorName}

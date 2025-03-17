@@ -113,7 +113,7 @@ export default function WorkspaceUser(props: workspaceUserProps) {
             <div className="item-list__profile-picture">
               <Avatar
                 id={props.student.userEntityId}
-                firstName={props.student.firstName}
+                name={props.student.firstName}
                 hasImage={props.student.hasImage}
               />
             </div>

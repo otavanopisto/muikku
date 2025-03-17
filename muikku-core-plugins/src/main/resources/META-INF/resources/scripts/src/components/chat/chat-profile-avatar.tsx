@@ -37,7 +37,7 @@ function ChatProfileAvatar(props: ChatProfileAvatarProps) {
 
   return (
     <div className="chat__profile-avatar-container">
-      <Avatar modifier="chat" firstName={nick} hasImage={hasImage} id={id} />
+      <Avatar modifier="chat" name={nick} hasImage={hasImage} id={id} />
 
       {statusColorModifier && (
         <div

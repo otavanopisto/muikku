@@ -100,7 +100,7 @@ class WorkspaceTeachers extends React.Component<
                     <div className="item-list__profile-picture">
                       <Avatar
                         id={teacher.userEntityId}
-                        firstName={teacher.firstName}
+                        name={teacher.firstName}
                         hasImage={teacher.hasImage}
                       ></Avatar>
                     </div>

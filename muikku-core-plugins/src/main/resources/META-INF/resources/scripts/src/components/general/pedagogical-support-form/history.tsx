@@ -51,7 +51,7 @@ export const HistoryEntryItem: React.FC<HistoryEntryItemProps> = (props) => {
           <span className="hops-container__history-event-author">
             <Avatar
               id={historyEntry.modifierId}
-              firstName={historyEntry.modifierName}
+              name={historyEntry.modifierName}
               hasImage={historyEntry.modifierHasAvatar}
               size="small"
             />
