@@ -60,12 +60,10 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
   } = props;
 
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const { t } = useTranslation(["hops_new"]);
 
   const [hoursPerWeek, setHoursPerWeek] = React.useState(0);
   const [graduationGoalDate, setGraduationGoalDate] = React.useState(null);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { t } = useTranslation(["hops_new", "common"]);
 
   // Used planned courses in use
   const usedPlannedCourses = React.useMemo(() => {
@@ -107,26 +105,30 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     <>
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          Opintojen suunnittelu
+          {t("labels.studyPlannerFormTitle", {
+            ns: "hops_new",
+          })}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {/* Study planning calculator */}
           <div className="hops-container">
             <div className="hops-container__description">
-              Opintoaikalaskuri vertaa valmistumiselle asettamaasi tavoitetta
-              aikaan, joka sinulla on viikottaisin käytössäsi opiskeluun. Yhden
-              kurssin suorittaminen vie keskimäärin 28 tuntia. Jos valmistuminen
-              ei ole mahdollista ajassa, jonka voit käyttää opiskeluun,
-              kannattaa asiaa pohtia uudelleen.
+              {t("labels.studyPlannerFormDescription", {
+                ns: "hops_new",
+              })}
             </div>
 
             <div className="hops-container__row">
               <div className="hops__form-element-container">
                 <label className="hops__label" htmlFor="graduationGoalDate">
-                  Milloin haluat valmistua?
+                  {t("labels.studyPlannerFormGraduationDateTitle", {
+                    ns: "hops_new",
+                  })}
                 </label>
                 <div className="hops-container__helper-text">
-                  Arvioi mihin päivämäärään mennessä haluaisit valmistua.
+                  {t("labels.studyPlannerFormGraduationDateDescription", {
+                    ns: "hops_new",
+                  })}
                 </div>
                 <DatePicker
                   className="hops__input"
@@ -146,11 +148,14 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
               <div className="hops__form-element-container">
                 <label className="hops__label" htmlFor="hoursPerWeek">
-                  Kuinka monta tuntia ehdit opiskella viikossa?
+                  {t("labels.studyPlannerFormHoursPerWeekTitle", {
+                    ns: "hops_new",
+                  })}
                 </label>
                 <div className="hops-container__helper-text">
-                  Arvioi montako tuntia viikossa sinulla on aikaa käytettävänä
-                  opiskeluun.
+                  {t("labels.studyPlannerFormHoursPerWeekDescription", {
+                    ns: "hops_new",
+                  })}
                 </div>
                 <input
                   type="number"
@@ -177,13 +182,15 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          Opintojen eteneminen
+          {t("labels.studyPlannerStatisticTitle", {
+            ns: "hops_new",
+          })}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           <div className="study-planner__plan-status-container">
             <div className="study-planner__plan-status-dates">
-              <span>1.1.2024</span>
-              <span>12.5.2026</span>
+              <span>BIRD!</span>
+              <span>I R BABOON</span>
             </div>
             <div className="study-planner__plan-status-bar-container">
               <ProgressBar
@@ -204,7 +211,9 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
           <div className="study-planner__plan-statistics">
             <div className="study-planner__plan-statistic-item">
               <h4 className="study-planner__plan-statistic-item-title">
-                Suoritetut pakolliset opintojaksot (op).
+                {t("labels.studyPlannerStatisticMandatoryCompleted", {
+                  ns: "hops_new",
+                })}
               </h4>
               <div className="study-planner__plan-statistic-item-bar-container">
                 <ProgressBar
@@ -222,7 +231,9 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             </div>
             <div className="study-planner__plan-statistic-item">
               <h4 className="study-planner__plan-statistic-item-title">
-                Suoritetut valinnaisopinnot (op).
+                {t("labels.studyPlannerStatisticOptionalCompleted", {
+                  ns: "hops_new",
+                })}
               </h4>
               <div className="study-planner__plan-statistic-item-bar-container">
                 <ProgressBar
@@ -241,7 +252,9 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             {estimatedTimeToCompletion !== Infinity && (
               <div className="study-planner__plan-statistic-item">
                 <h4 className="study-planner__plan-statistic-item-title">
-                  Arvioitu opintoaika (kk).
+                  {t("labels.studyPlannerStatisticEstimatedStudyTime", {
+                    ns: "hops_new",
+                  })}
                 </h4>
                 <div className="study-planner__plan-statistic-item-bar-container">
                   <ProgressBar
@@ -264,7 +277,9 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
       <ApplicationSubPanel>
         <ApplicationSubPanel.Header>
-          Opintojen suunnittelutyökalu
+          {t("labels.studyPlannerToolTitle", {
+            ns: "hops_new",
+          })}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           {isMobile ? (

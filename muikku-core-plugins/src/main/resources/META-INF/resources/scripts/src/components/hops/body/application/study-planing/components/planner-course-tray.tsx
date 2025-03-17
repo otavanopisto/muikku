@@ -19,6 +19,7 @@ import {
   PlannerCardHeader,
   PlannerCardLabel,
 } from "./planner-card";
+import { useTranslation } from "react-i18next";
 
 /**
  * PlannerSidebarProps
@@ -35,6 +36,8 @@ interface PlannerCourseTrayProps {
  */
 const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   const { plannedCourses, onCourseClick } = props;
+
+  const { t } = useTranslation(["hops_new", "common"]);
 
   const [searchTerm, setSearchTerm] = useLocalStorage(
     "hops-planner-search-term",
@@ -141,35 +144,51 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   // Filter options
   const filterOptions: { label: string; value: CourseFilter }[] = [
     {
-      label: "Saatavilla",
+      label: t("labels.available", {
+        ns: "common",
+      }),
       value: "available",
     },
     {
-      label: "Pakolliset",
+      label: t("labels.mandatory", {
+        ns: "common",
+      }),
       value: "mandatory",
     },
     {
-      label: "Valinnaiset",
+      label: t("labels.optional", {
+        ns: "common",
+      }),
       value: "optional",
     },
     {
-      label: "Suunniteltu",
+      label: t("labels.planned", {
+        ns: "common",
+      }),
       value: "planned",
     },
     {
-      label: "Suoritettu",
+      label: t("labels.completed", {
+        ns: "common",
+      }),
       value: "GRADED",
     },
     {
-      label: "Täydennettävä",
+      label: t("labels.incomplete", {
+        ns: "common",
+      }),
       value: "SUPPLEMENTATIONREQUEST",
     },
     {
-      label: "Hyväksiluettu",
+      label: t("labels.transferredCredit", {
+        ns: "common",
+      }),
       value: "TRANSFERRED",
     },
     {
-      label: "Työnalla",
+      label: t("labels.inProgress", {
+        ns: "common",
+      }),
       value: "ONGOING",
     },
   ];
@@ -177,7 +196,11 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
   return (
     <div className="study-planner__course-tray">
       <div className="study-planner__course-tray-header">
-        <h3 className="study-planner__course-tray-title">Opintojaksot</h3>
+        <h3 className="study-planner__course-tray-title">
+          {t("labels.studyPlannerToolTrayTitle", {
+            ns: "hops_new",
+          })}
+        </h3>
         <div className="study-planner__course-tray-filters">
           <Dropdown
             items={filterOptions.map((filter) => (
@@ -296,6 +319,8 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     studyActivity,
   } = props;
 
+  const { t } = useTranslation(["common"]);
+
   /**
    * Gets course state
    * @returns course state
@@ -305,19 +330,38 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
       switch (studyActivity.status) {
         case "GRADED":
           return studyActivity.passing
-            ? { state: "completed", label: "Suoritettu" }
-            : { state: "failed", label: "Hylätty" };
+            ? {
+                state: "completed",
+                label: t("labels.completed", {
+                  ns: "common",
+                }),
+              }
+            : {
+                state: "failed",
+                label: t("labels.failed", {
+                  ns: "common",
+                }),
+              };
         case "TRANSFERRED":
           return {
             state: "transferred",
-            label: "Hyväksiluettu",
+            label: t("labels.transferredCredit", {
+              ns: "common",
+            }),
           };
         case "ONGOING":
-          return { state: "inprogress", label: "Työnalla" };
+          return {
+            state: "inprogress",
+            label: t("labels.inProgress", {
+              ns: "common",
+            }),
+          };
         case "SUPPLEMENTATIONREQUEST":
           return {
             state: "supplementation-request",
-            label: "Täydennettävä",
+            label: t("labels.incomplete", {
+              ns: "common",
+            }),
           };
         default:
           return { state: null, label: null };
@@ -325,7 +369,12 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
     }
 
     if (isPlannedCourse) {
-      return { state: "planned", label: "Suunnitelmassa" };
+      return {
+        state: "planned",
+        label: t("labels.planned", {
+          ns: "common",
+        }),
+      };
     }
 
     return { state: null, label: null };
@@ -389,7 +438,13 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         <PlannerCardContent modifiers={["planned-course-card"]}>
           <div className="study-planner__course-labels">
             <PlannerCardLabel modifiers={typeModifiers}>
-              {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
+              {course.mandatory
+                ? t("labels.mandatory", {
+                    ns: "common",
+                  })
+                : t("labels.optional", {
+                    ns: "common",
+                  })}
             </PlannerCardLabel>
 
             {courseState.state && (

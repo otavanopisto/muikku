@@ -90,7 +90,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     isPendingChangesWarningDialogOpen,
     setIsPendingChangesWarningDialogOpen,
   ] = React.useState(false);
-  const { t } = useTranslation(["studies", "common", "hops_new"]);
+  const { t } = useTranslation(["common", "hops_new"]);
   const [
     isPendingChangesDetailsDialogOpen,
     setIsPendingChangesDetailsDialogOpen,
@@ -321,7 +321,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     },
     {
       id: "STUDYPLAN",
-      name: "Opintojen suunnittelu",
+      name: t("labels.hopsStudyPlanning", { ns: "hops_new" }),
       hash: "studyplan",
       type: "studyplan",
       component: (

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props of the planner info
@@ -21,15 +22,16 @@ interface PlannerInfoProps {
  */
 export function PlannerInfo(props: PlannerInfoProps) {
   const { graduationGoalDate, estimatedTimeToCompletion } = props;
+  const { t } = useTranslation(["hops_new"]);
 
   // If estimated time to completion is Infinity, show info that the user has not filled in the hours per week
   if (estimatedTimeToCompletion === Infinity) {
     return (
       <PlannerInfoNotification variant="info">
         <p>
-          Laskuri ei pysty laskemaan valmistumisajankohtaa, koska et ole
-          syöttänyt tietoa, kuinka monta tuntia sinulla on viikottaisin
-          käytössäsi opiskeluun.
+          {t("content.studyPlannerInfoCannotCalculate", {
+            ns: "hops_new",
+          })}
         </p>
       </PlannerInfoNotification>
     );
@@ -40,7 +42,10 @@ export function PlannerInfo(props: PlannerInfoProps) {
     return (
       <PlannerInfoNotification variant="info">
         <p>
-          {`Arvioitu valmistumisaika on ${estimatedTimeToCompletion} kuukautta. Tarkentamalla valmistumistavoitetta voit saada paremman arvion.`}
+          {t("content.studyPlannerInfoBeMoreSpecific", {
+            ns: "hops_new",
+            estimatedTimeToCompletion: estimatedTimeToCompletion,
+          })}
         </p>
       </PlannerInfoNotification>
     );
@@ -59,7 +64,12 @@ export function PlannerInfo(props: PlannerInfoProps) {
     return (
       <PlannerInfoNotification variant="info">
         <p>
-          {`Valmistuminen tavoiteajassa ${graduationGoalDate.toLocaleDateString()} (${monthsUntilGoal} kk) on mahdollista. Arvioitu valmistumisaika on ${estimatedTimeToCompletion} kuukautta.`}
+          {t("content.studyPlannerInfoGraduationPossible", {
+            ns: "hops_new",
+            graduationGoalDate: graduationGoalDate.toLocaleDateString("fi-Fi"),
+            monthsUntilGoal: monthsUntilGoal,
+            estimatedTimeToCompletion: estimatedTimeToCompletion,
+          })}
         </p>
       </PlannerInfoNotification>
     );
@@ -69,7 +79,12 @@ export function PlannerInfo(props: PlannerInfoProps) {
   return (
     <PlannerInfoNotification variant="warning">
       <p>
-        {`Valmistuminen ei ole mahdollista tavoiteajassa ${graduationGoalDate.toLocaleDateString()} (${monthsUntilGoal} kk). Tarvitset vähintään ${estimatedTimeToCompletion} kuukautta opintojen suorittamiseen.`}
+        {t("content.studyPlannerInfoGraduationNotPossible", {
+          ns: "hops_new",
+          graduationGoalDate: graduationGoalDate.toLocaleDateString("fi-Fi"),
+          monthsUntilGoal: monthsUntilGoal,
+          estimatedTimeToCompletion: estimatedTimeToCompletion,
+        })}
       </p>
     </PlannerInfoNotification>
   );

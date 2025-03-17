@@ -53,7 +53,7 @@ interface WorkspaceSelectProps {
  * @param props props
  */
 const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
-  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
+  const { t } = useTranslation(["common"]);
   const {
     selectedWorkspaceInstanceId,
     id,
@@ -98,7 +98,9 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
           endDate: "",
           instanceExists: false,
         },
-        label: "Kurssi-ilmentymää ei löytynyt",
+        label: t("content.studyPlannerCourseInstanceNotFound", {
+          ns: "hops_new",
+        }),
       })
     : null;
 
@@ -109,7 +111,7 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
       classNamePrefix="react-select-override"
       isClearable
       placeholder={t("labels.search", {
-        ns: "pedagogySupportPlan",
+        ns: "hops_new",
         context: "course",
       })}
       options={options}

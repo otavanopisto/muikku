@@ -42,28 +42,6 @@ const titleVariants: Variants = {
   },
 };
 
-/* const periodMonthsVariants: Variants = {
-  expanded: {
-    opacity: 1,
-    transition: {
-      duration: 0.4,
-      type: "tween",
-      ease: "easeInOut",
-    },
-  },
-  collapsed: {
-    opacity: 0,
-    transition: {
-      duration: 0.4,
-      type: "tween",
-      ease: "easeInOut",
-    },
-  },
-  initial: {
-    opacity: 0,
-  },
-}; */
-
 const AUTUMN_MONTHS = ["Elokuu", "Syyskuu", "Lokakuu", "Marraskuu", "Joulukuu"];
 const SPRING_MONTHS = [
   "Tammikuu",

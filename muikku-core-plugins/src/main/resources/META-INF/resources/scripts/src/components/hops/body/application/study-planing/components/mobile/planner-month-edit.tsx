@@ -145,17 +145,19 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
   const footer = (closePortal: () => void) => (
     <div className="dialog__button-set">
       <Button
-        buttonModifiers={["standard-ok", "fatal"]}
+        buttonModifiers={["standard-ok", "execute"]}
         onClick={handleConfirmClick(closePortal)}
         disabled={!hasChanges}
       >
-        Jatka
+        {t("actions.save", { ns: "common" })}
       </Button>
       <Button
         buttonModifiers={["standard-cancel", "cancel"]}
         onClick={handleCancelClick(closePortal)}
       >
-        {t("actions.cancel")}
+        {t("actions.cancel", {
+          ns: "common",
+        })}
       </Button>
     </div>
   );
@@ -164,7 +166,7 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
     <Dialog
       modifier="confirm-remove-answer-dialog"
       disableScroll={true}
-      title={`Ajankohta ${timeContext.toLocaleDateString("fi-FI", {
+      title={`${timeContext.toLocaleDateString("fi-FI", {
         month: "long",
         year: "numeric",
       })}`}

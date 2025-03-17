@@ -20,6 +20,7 @@ import {
   PlannerCardHeader,
   PlannerCardLabel,
 } from "./planner-card";
+import { useTranslation } from "react-i18next";
 
 /**
  * Base planner period course props
@@ -99,6 +100,8 @@ const BasePlannerPeriodCourse = React.forwardRef<
   const [deleteWarningIsOpen, setDeleteWarningIsOpen] = React.useState(false);
   const [courseStateIsOpen, setCourseStateIsOpen] = React.useState(false);
 
+  const { t } = useTranslation(["hops_new", "common"]);
+
   const [specifyCourse, setSpecifyCourse] =
     React.useState<SpecifyCourse | null>(null);
 
@@ -111,19 +114,38 @@ const BasePlannerPeriodCourse = React.forwardRef<
       switch (studyActivity.status) {
         case "GRADED":
           return studyActivity.passing
-            ? { state: "completed", label: "Suoritettu" }
-            : { state: "failed", label: "Hylätty" };
+            ? {
+                state: "completed",
+                label: t("labels.completed", {
+                  ns: "common",
+                }),
+              }
+            : {
+                state: "failed",
+                label: t("labels.failed", {
+                  ns: "common",
+                }),
+              };
         case "TRANSFERRED":
           return {
             state: "transferred",
-            label: "Hyväksiluettu",
+            label: t("labels.transferredCredit", {
+              ns: "common",
+            }),
           };
         case "ONGOING":
-          return { state: "inprogress", label: "Työnalla" };
+          return {
+            state: "inprogress",
+            label: t("labels.inProgress", {
+              ns: "common",
+            }),
+          };
         case "SUPPLEMENTATIONREQUEST":
           return {
             state: "supplementation-request",
-            label: "Täydennettävä",
+            label: t("labels.incomplete", {
+              ns: "common",
+            }),
           };
         default:
           return { state: null, label: null };
@@ -246,8 +268,9 @@ const BasePlannerPeriodCourse = React.forwardRef<
     ) {
       return (
         <span className="study-planner__course-workspace-instance-not-available">
-          Valittu kurssi-ilmentymä ei ole enään saatavilla. Valitse uusi
-          kurssi-ilmentymä ja päivitä suunnitelma.
+          {t("content.studyPlannerCourseNotAvailable", {
+            ns: "hops_new",
+          })}
         </span>
       );
     }
@@ -324,7 +347,13 @@ const BasePlannerPeriodCourse = React.forwardRef<
           <PlannerCardLabel
             modifiers={[course.mandatory ? "mandatory" : "optional"]}
           >
-            {course.mandatory ? "PAKOLLINEN" : "VALINNAINEN"}
+            {course.mandatory
+              ? t("labels.mandatory", {
+                  ns: "common",
+                })
+              : t("labels.optional", {
+                  ns: "common",
+                })}
           </PlannerCardLabel>
 
           {courseState.state && (
@@ -355,14 +384,18 @@ const BasePlannerPeriodCourse = React.forwardRef<
             disabled={specifyIsOpen || deleteWarningIsOpen}
             className="link link--study-planner-specify"
           >
-            Tarkenna
+            {t("actions.specify", {
+              ns: "common",
+            })}
           </Link>
           <Link
             onClick={handleDeleteOpen}
             disabled={specifyIsOpen || deleteWarningIsOpen}
             className="link link--study-planner-delete"
           >
-            Poista
+            {t("actions.remove", {
+              ns: "common",
+            })}
           </Link>
         </PlannerCardActions>
       )}

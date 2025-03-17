@@ -10,6 +10,7 @@ import { localize } from "~/locales/i18n";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnimatedDrawer } from "../Animated-drawer";
 import WorkspaceSelect from "../workspace-select";
+import { useTranslation } from "react-i18next";
 
 /**
  * DesktopPlannerPeriodCourseProps
@@ -31,6 +32,8 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
 
   const [pendingDelete, setPendingDelete] = React.useState(false);
   const [pendingSpecify, setPendingSpecify] = React.useState(false);
+
+  const { t } = useTranslation(["hops_new", "common"]);
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
@@ -113,18 +116,26 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
           onClose={() => handleSpecifyClose(onConfirm)}
         >
           <h4 className="study-planner__extra-section-title">
-            Tarkenna suunnitelmaa
+            {t("labels.studyPlannerSpecifyPlanTitle", {
+              ns: "hops_new",
+            })}
           </h4>
 
           <div className="study-planner__extra-section-content">
             <div className="study-planner__extra-section-input-group">
               <label className="study-planner__extra-section-input-group-label">
-                Valitse kurssi-ilmentymä
+                {t("labels.studyPlannerSpecifySelectCourseInstanceLabel", {
+                  ns: "hops_new",
+                })}
               </label>
 
               <span className="study-planner__extra-section-input-group-label-info">
-                Valitse kurssi-ilmentymä, jonka mukaan haluat suorituksen
-                toteuttaa
+                {t(
+                  "labels.studyPlannerSpecifySelectCourseInstanceDescription",
+                  {
+                    ns: "hops_new",
+                  }
+                )}
               </span>
               <WorkspaceSelect
                 selectedWorkspaceInstanceId={
@@ -155,10 +166,14 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
 
             <div className="study-planner__extra-section-input-group">
               <label className="study-planner__extra-section-input-group-label">
-                Valitse ajankohta
+                {t("labels.studyPlannerSpecifySelectDateLabel", {
+                  ns: "hops_new",
+                })}
               </label>
               <span className="study-planner__extra-section-input-group-label-info">
-                Ajasta kurssi sinulle sopivaan ajankohtaan
+                {t("labels.studyPlannerSpecifySelectDateDescription", {
+                  ns: "hops_new",
+                })}
               </span>
               <div className="study-planner__extra-section-date-inputs">
                 <DatePicker
@@ -188,7 +203,9 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                   handleSpecifyCourse(onClose);
                 }}
               >
-                Tallenna
+                {t("actions.save", {
+                  ns: "common",
+                })}
               </Button>
               <Button
                 buttonModifiers={["standard-cancel", "cancel"]}
@@ -197,7 +214,9 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                   onClose();
                 }}
               >
-                Peruuta
+                {t("actions.cancel", {
+                  ns: "common",
+                })}
               </Button>
             </div>
           </div>
@@ -210,12 +229,16 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
           onClose={() => handleClose(onConfirm)}
         >
           <h4 className="study-planner__extra-section-title">
-            Poista suunnitelmasta?
+            {t("labels.studyPlannerRemoveFromPlanTitle", {
+              ns: "hops_new",
+            })}
           </h4>
           <div className="study-planner__extra-section-content">
             <div className="study-planner__extra-section-input-group">
               <span className="study-planner__extra-section-input-group-label-info">
-                Oletko varma että haluat poistaa kurssin suunnitelmastasi?
+                {t("labels.studyPlannerRemoveFromPlanDescription", {
+                  ns: "hops_new",
+                })}
               </span>
             </div>
 
@@ -227,7 +250,9 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                   handleDeleteCard(onClose);
                 }}
               >
-                Poista kurssi
+                {t("actions.remove", {
+                  ns: "common",
+                })}
               </Button>
               <Button
                 buttonModifiers={["standard-cancel", "cancel"]}
@@ -236,7 +261,9 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                   onClose();
                 }}
               >
-                Peruuta
+                {t("actions.cancel", {
+                  ns: "common",
+                })}
               </Button>
             </div>
           </div>

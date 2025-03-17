@@ -83,7 +83,7 @@ const StudyProgress: React.FC<StudyProgressProps> = (props) => {
             {t("labels.abortedShorthand", { ns: "studyMatrix" })}
           </div>
           <div className="hops-container__indicator-item-label">
-            {t("labels.discontinued", { ns: "studyMatrix" })}
+            {t("labels.aborted", { ns: "studyMatrix" })}
           </div>
         </div>
         <div className="hops-container__study-tool-indicator-container ">
