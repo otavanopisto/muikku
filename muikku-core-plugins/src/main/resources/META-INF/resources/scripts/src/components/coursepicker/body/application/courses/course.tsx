@@ -138,6 +138,14 @@ class Course extends React.Component<CourseProps, CourseState> {
       const localString =
         suitabilityMap[education][this.props.workspace.mandatority];
 
+      const courseLength = this.props.workspace.courseLength;
+      const courseLengthSymbol = this.props.workspace.courseLengthSymbol;
+
+      // If course length and course length symbol are present, add them to the string
+      if (courseLength && courseLengthSymbol) {
+        return ` (${localString} ${courseLength} ${courseLengthSymbol})`;
+      }
+
       return ` (${localString})`;
     }
   };

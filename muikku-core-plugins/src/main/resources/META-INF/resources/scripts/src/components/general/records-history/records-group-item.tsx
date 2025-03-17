@@ -17,6 +17,7 @@ import { useRecordsInfoContext } from "./context/records-info-context";
 import { getAssessmentData } from "~/helper-functions/shared";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
 import AssignmentDetails from "~/components/general/assignment-info-details";
+import { suitabilityMapHelper } from "~/@shared/suitability";
 
 /**
  * RecordsGroupItemProps
@@ -108,6 +109,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                     {localize.date(a.date)}
                   </span>
                 </div>
+
                 <div className="workspace-assessment__literal">
                   <div className="workspace-assessment__literal-label">
                     {assessmentIsPending
@@ -169,6 +171,21 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                         {localize.date(a.date)}
                       </span>
                     </div>
+
+                    {a.evaluatorName && (
+                      <div className="workspace-assessment__evaluator">
+                        <span className="workspace-assessment__evaluator-label">
+                          {t("labels.assessor", {
+                            ns: "evaluation",
+                          })}
+                          :
+                        </span>
+
+                        <span className="workspace-assessment__evaluator-data">
+                          {a.evaluatorName}
+                        </span>
+                      </div>
+                    )}
                     <div className="workspace-assessment__grade">
                       <span className="workspace-assessment__grade-label">
                         {t("labels.grade", {
@@ -259,6 +276,71 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
     }
   };
 
+  /**
+   * getSumOfCredits
+   * @returns string
+   */
+  const getSumOfCredits = () => {
+    if (!credit.activity.subjects) {
+      return null;
+    }
+
+    const sumOfCredits = credit.activity.subjects.reduce(
+      (acc, curr) => acc + curr.courseLength,
+      0
+    );
+
+    return `${sumOfCredits} ${credit.activity.subjects[0].courseLengthSymbol}`;
+  };
+
+  /**
+   * Depending what mandatority value is, returns description
+   *
+   * @returns mandatority description
+   */
+  const renderMandatorityDescription = () => {
+    // Get first OPS from curriculums there should be only one OPS per workspace
+    // Some old workspaces might have multiple OPS, but that is rare case
+    const OPS = credit.activity.curriculums[0];
+
+    // If OPS data and workspace mandatority property is present
+    if (
+      OPS &&
+      credit.activity.mandatority &&
+      credit.activity.educationTypeName
+    ) {
+      const suitabilityMap = suitabilityMapHelper(t);
+
+      // Create map property from education type name and OPS name that was passed
+      // Strings are changes to lowercase form and any empty spaces are removed
+      const education = `${credit.activity.educationTypeName
+        .toLowerCase()
+        .replace(/ /g, "")}${OPS.name.replace(/ /g, "")}`;
+
+      // Check if our map contains data with just created education string
+      // Otherwise just return null. There might not be all included values by every OPS created...
+      if (!suitabilityMap[education]) {
+        return null;
+      }
+
+      // Then get correct local string from map by suitability enum value
+      let localString = suitabilityMap[education][credit.activity.mandatority];
+
+      const sumOfCredits = getSumOfCredits();
+
+      // If there is sum of credits, return it with local string
+      if (sumOfCredits) {
+        localString = `${localString}, ${sumOfCredits}`;
+      }
+
+      return (
+        <div className="label">
+          <div className="label__text">{localString} </div>
+        </div>
+      );
+    }
+  };
+
   const animateOpen = showE ? "auto" : 0;
 
   return (
@@ -298,6 +380,8 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
                 <div className="label__text">{curriculum.name} </div>
               </div>
             ))}
+
+            {renderMandatorityDescription()}
           </div>
         </div>
         <div className="application-list__header-secondary">

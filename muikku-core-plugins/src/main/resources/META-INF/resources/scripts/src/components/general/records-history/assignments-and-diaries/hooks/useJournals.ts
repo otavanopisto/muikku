@@ -1,7 +1,7 @@
 import * as React from "react";
 import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
 import { WorkspaceJournalFeedback } from "~/reducers/workspaces/journals";
-import { WorkspaceJournal } from "~/generated/client";
+import { WorkspaceJournalEntry } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { useTranslation } from "react-i18next";
 
@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
  */
 export interface UseDiariesState {
   isLoading: boolean;
-  journals: WorkspaceJournal[];
+  journals: WorkspaceJournalEntry[];
   journalFeedback: WorkspaceJournalFeedback | null;
 }
 

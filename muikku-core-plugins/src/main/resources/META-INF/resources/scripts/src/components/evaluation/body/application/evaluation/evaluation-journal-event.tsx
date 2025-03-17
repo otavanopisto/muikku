@@ -26,20 +26,31 @@ import {
   CreateEvaluationJournalCommentTriggerType,
   createEvaluationJournalComment,
 } from "../../../../../actions/main-function/evaluation/evaluationActions";
-import { WorkspaceJournal, WorkspaceJournalComment } from "~/generated/client";
+import {
+  WorkspaceJournalEntry,
+  WorkspaceJournalComment,
+} from "~/generated/client";
 import { localize } from "~/locales/i18n";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
+import EvaluationMaterial from "./evaluation-material";
 
 /**
  * EvaluationEventContentCardProps
  */
-interface EvaluationDiaryEventProps extends WorkspaceJournal {
-  open: boolean;
-  onClickOpen?: (diaryId: number) => void;
+interface EvaluationDiaryEventProps extends WorkspaceJournalEntry {
+  workspace: WorkspaceDataType;
   evaluation: EvaluationState;
   loadEvaluationJournalCommentsFromServer: LoadEvaluationJournalCommentsFromServerTriggerType;
   createEvaluationJournalComment: CreateEvaluationJournalCommentTriggerType;
   updateEvaluationJournalComment: UpdateEvaluationJournalCommentTriggerType;
 }
+
+export type EvaluationJournalEventRef = {
+  toggleOpen: (type?: "open" | "close") => void;
+};
 
 /**
  * Creates evaluation diary event component
@@ -47,24 +58,28 @@ interface EvaluationDiaryEventProps extends WorkspaceJournal {
  * @param props props
  * @returns JSX.Element
  */
-const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
+const EvaluationJournalEvent = React.forwardRef<
+  EvaluationJournalEventRef,
+  EvaluationDiaryEventProps
+>((props, ref) => {
   const {
     title,
     content,
+    material,
     created,
-    open,
-    onClickOpen,
     userEntityId,
     workspaceEntityId,
     id,
+    workspaceMaterialPath,
     commentCount,
+    workspaceMaterialId,
     createEvaluationJournalComment,
     updateEvaluationJournalComment,
   } = props;
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
-  const [showContent, setShowContent] = React.useState(false);
+  const [showContent, setShowContent] = React.useState(true);
   const [showComments, setShowComments] = React.useState(false);
 
   const [createNewActive, setCreateNewActive] = React.useState(false);
@@ -75,26 +90,37 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
   const { t } = useTranslation(["evaluation", "journal", "common"]);
 
-  React.useEffect(() => {
-    if (!createNewActive && commentToEdit === undefined) {
-      setShowContent(open);
-    }
-  }, [open, createNewActive, commentToEdit]);
-
+  // Scrolls to element when new comment editor is opened
   React.useEffect(() => {
     if (showContent && createNewActive) {
       handleExecuteScrollToElement();
     }
-  }, [createNewActive, open, showContent]);
+  }, [createNewActive, showContent]);
+
+  /**
+   * Toggles open state
+   * @param type "open" | "handle"
+   */
+  const toggleContent = (type?: "open" | "close") => {
+    if (type) {
+      setShowContent(type === "open" ? true : false);
+    } else {
+      setShowContent(!showContent);
+    }
+  };
+
+  // Way to expose toggleHeight and refs to parent component
+  React.useImperativeHandle(ref, () => ({
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    toggleOpen: (type) => {
+      toggleContent(type);
+    },
+  }));
 
   /**
    * Shows diary content
    */
   const handleOpenContentClick = () => {
-    if (onClickOpen) {
-      onClickOpen(id);
-    }
-
     setShowContent(!showContent);
   };
 
@@ -237,6 +263,50 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
     });
   };
 
+  // Composite reply holds answers for specific journal assignment entry
+  const compositeReply =
+    props.evaluation.evaluationCompositeReplies?.data?.find(
+      (cReply) => cReply.workspaceMaterialId === workspaceMaterialId
+    );
+
+  /**
+   * Renders content depending whether entry is Journal assignment or not
+   * @returns JSX.Element
+   */
+  const renderDiaryContent = () => {
+    // If material with workspaceMaterialId from entry is present, entry is Journal assignment
+    if (
+      material &&
+      workspaceMaterialId &&
+      workspaceMaterialPath &&
+      props.workspace
+    ) {
+      // Material content node, that MaterialLoader expects
+      const materialContentNode: MaterialContentNodeWithIdAndLogic = {
+        ...material,
+        contentHiddenForUser: false,
+        assignmentType: "JOURNAL",
+        ai: "DISALLOWED",
+        path: workspaceMaterialPath,
+      };
+
+      return (
+        <EvaluationMaterial
+          material={materialContentNode}
+          workspace={props.workspace}
+          compositeReply={compositeReply}
+          userEntityId={userEntityId}
+        />
+      );
+    }
+
+    return (
+      <div className="evaluation-modal__item-body rich-text">
+        <CkeditorContentLoader html={content} />
+      </div>
+    );
+  };
+
   const formatedDate = `${localize.date(created)} - ${localize.date(
     created,
     "h:mm"
@@ -251,7 +321,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
 
   const comments = props.evaluation.evaluationJournalComments.comments[id];
 
-  const isMandatory = props.isMaterialField;
+  const isMandatory = props.material !== null;
   const isDraft =
     props.workspaceMaterialReplyState &&
     props.workspaceMaterialReplyState === "ANSWERED";
@@ -291,10 +361,7 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </div>
 
       <AnimateHeight duration={400} height={showContent ? "auto" : 0}>
-        <div className="evaluation-modal__item-body rich-text">
-          <CkeditorContentLoader html={content} />
-        </div>
-
+        {renderDiaryContent()}
         <>
           <div
             className="evaluation-modal__item-subheader evaluation-modal__item-subheader--journal-comment"
@@ -385,7 +452,9 @@ const EvaluationJournalEvent: React.FC<EvaluationDiaryEventProps> = (props) => {
       </SlideDrawer>
     </div>
   );
-};
+});
+
+EvaluationJournalEvent.displayName = "EvaluationJournalEvent";
 
 /**
  * mapStateToProps
@@ -412,7 +481,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EvaluationJournalEvent);
+export default connect(mapStateToProps, mapDispatchToProps, null, {
+  forwardRef: true,
+})(EvaluationJournalEvent);

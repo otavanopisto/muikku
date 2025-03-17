@@ -14,7 +14,7 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import JournalComment from "./journalComment";
-import { WorkspaceJournal } from "~/generated/client";
+import { WorkspaceJournalEntry } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 import { useJournalComments } from "./hooks/useJournalComments";
@@ -24,7 +24,7 @@ import { useJournalComments } from "./hooks/useJournalComments";
  */
 interface JournalProps {
   displayNotification: DisplayNotificationTriggerType;
-  journal: WorkspaceJournal;
+  journal: WorkspaceJournalEntry;
   open: boolean;
   onJournalOpen: (id: number) => void;
 }
@@ -113,7 +113,7 @@ const Journal: React.FC<JournalProps> = (props) => {
       >
         <div
           className={`application-list__item-header-main application-list__item-header-main--journal-entry ${
-            journal.isMaterialField
+            journal.material
               ? "application-list__item-header-main--journal-entry-mandatory"
               : ""
           }`}

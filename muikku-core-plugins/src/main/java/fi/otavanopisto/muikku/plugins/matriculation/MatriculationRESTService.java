@@ -50,6 +50,7 @@ import fi.otavanopisto.muikku.schooldata.MatriculationExamListFilter;
 import fi.otavanopisto.muikku.schooldata.MatriculationSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentChangeLogEntry;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollmentState;
@@ -245,27 +246,62 @@ public class MatriculationRESTService {
   @GET
   @RESTPermit(MatriculationPermissions.MATRICULATION_GET_INITIALDATA)
   @Path("/students/{STUDENTIDENTIFIER}/initialData")
-  public Response fetchInitialData(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
+  public Response fetchInitialData(@PathParam("STUDENTIDENTIFIER") SchoolDataIdentifier studentIdentifier) {
     MatriculationExamInitialData result = new MatriculationExamInitialData();
-    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
-    if (identifier == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid user id").build();
-    }
+
     SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
-    if (!identifier.equals(loggedUserIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), identifier)) {
+    if (!studentIdentifier.equals(loggedUserIdentifier) && !userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Student is not logged in").build();
     }
-    User user = userController.findUserByIdentifier(identifier);
+    User user = userController.findUserByIdentifier(studentIdentifier);
     if (user == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
-    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
     List<UserAddress> userAddresses = userController.listUserAddresses(user);
     List<UserPhoneNumber> phoneNumbers = userController.listUserPhoneNumbers(user);
-    UserEntity guidanceCounselor = userGroupGuidanceController.getGuidanceCounselorPreferMessageReceiver(identifier);
-    UserEntityName guidanceCounselorName = userEntity != null ? userEntityController.getName(guidanceCounselor, false) : null;
-    StudentCourseStats studentCourseStats = transcriptOfRecordsController.fetchStudentCourseStats(identifier);
+    StudentCourseStats studentCourseStats = transcriptOfRecordsController.fetchStudentCourseStats(studentIdentifier);
+
+    // Group and Study Advisors
+
+    String guidanceCounselorName = null;
+    List<String> studyAdvisors = new ArrayList<>();
     
+    List<GroupStaffMember> guidanceCounselors = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier);
+    
+    // The first Group Advisor with MessageReceiver is designated as Group Advisor here
+    GroupStaffMember primaryGroupAdvisor = guidanceCounselors.stream()
+      .filter(GroupStaffMember::isGroupAdvisor)
+      .filter(GroupStaffMember::isMessageReceiver)
+      .findFirst()
+      .orElse(null);
+    
+    if (primaryGroupAdvisor != null) {
+      UserEntity guidanceCounselorUserEntity = userEntityController.findUserEntityByUserIdentifier(primaryGroupAdvisor.userSchoolDataIdentifier());
+      UserEntityName guidanceCounselorUserEntityName = userEntityController.getName(guidanceCounselorUserEntity, false);
+      guidanceCounselorName = guidanceCounselorUserEntityName != null ? guidanceCounselorUserEntityName.getDisplayName() : null;
+      guidanceCounselors.remove(primaryGroupAdvisor);
+    }
+
+    // Rest of the guidance counselors
+    for (GroupStaffMember guidanceCounselor : guidanceCounselors) {
+      // Fallback for if there was no messageReceiver GroupAdvisor; however we only take the first GroupAdvisor ever
+      if (guidanceCounselor.isGroupAdvisor() && guidanceCounselorName == null) {
+        UserEntity guidanceCounselorUserEntity = userEntityController.findUserEntityByUserIdentifier(guidanceCounselor.userSchoolDataIdentifier());
+        UserEntityName guidanceCounselorUserEntityName = userEntityController.getName(guidanceCounselorUserEntity, false);
+        guidanceCounselorName = guidanceCounselorUserEntityName != null ? guidanceCounselorUserEntityName.getDisplayName() : null;
+        continue;
+      }
+      
+      if (guidanceCounselor.isStudyAdvisor()) {
+        UserEntity guidanceCounselorUserEntity = userEntityController.findUserEntityByUserIdentifier(guidanceCounselor.userSchoolDataIdentifier());
+        UserEntityName guidanceCounselorUserEntityName = userEntityController.getName(guidanceCounselorUserEntity, false);
+        if (guidanceCounselorUserEntityName != null) {
+          studyAdvisors.add(guidanceCounselorUserEntityName.getDisplayName());
+        }
+      }
+    }
+
     String address = "";
     String postalCode = "";
     String locality = "";
@@ -297,8 +333,9 @@ public class MatriculationRESTService {
     result.setAddress(address);
     result.setPostalCode(postalCode);
     result.setLocality(locality);
-    result.setGuidanceCounselor(guidanceCounselorName != null ? guidanceCounselorName.getDisplayName() : "");
-    result.setStudentIdentifier(identifier.toId());
+    result.setGuidanceCounselor(guidanceCounselorName);
+    result.setStudyAdvisors(studyAdvisors);
+    result.setStudentIdentifier(studentIdentifier.toId());
     result.setCompletedCreditPointsCount(studentCourseStats != null ? studentCourseStats.getSumMandatoryCompletedCreditPoints() : null);
     
     return Response.ok(result).build();

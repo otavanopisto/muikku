@@ -94,6 +94,14 @@ public class WorkspaceActivity {
     this.mandatority = mandatority;
   }
 
+  public String getEducationTypeName() {
+    return educationTypeName;
+  }
+
+  public void setEducationTypeName(String educationTypeName) {
+    this.educationTypeName = educationTypeName;
+  }
+
   private Long id;
   private String identifier;
   private List<WorkspaceActivitySubject> subjects;
@@ -105,5 +113,6 @@ public class WorkspaceActivity {
   private Integer evaluablesTotal;
   private Integer evaluablesAnswered;
   private Mandatority mandatority;
+  private String educationTypeName;
 
 }

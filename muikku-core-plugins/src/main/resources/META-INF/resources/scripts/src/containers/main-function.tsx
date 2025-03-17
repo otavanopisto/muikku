@@ -131,6 +131,8 @@ import {
 } from "react-dnd-multi-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import StudyProgressWebsocketWatcher from "~/components/general/study-progress-websocket-watcher";
+import { HelmetProvider } from "react-helmet-async";
+import TitleProvider from "./titleProvider";
 
 const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -1203,64 +1205,77 @@ export default class MainFunction extends React.Component<
    */
   render() {
     return (
-      <DndProvider options={HTML5toTouch}>
-        <StudyProgressWebsocketWatcher>
-          <div id="root">
-            <WindowContextProvider>
-              <ChatWebsocketContextProvider websocket={this.props.websocket}>
-                <Chat />
-              </ChatWebsocketContextProvider>
-              <InfoPopperProvider>
-                <Notifications></Notifications>
-                <DisconnectedWarningDialog />
-                <EasyToUseFunctions />
-                <BrowserRouter>
-                  <Route exact path="/" render={this.renderIndexBody} />
-                  <Route
-                    path="/organization"
-                    render={this.renderOrganizationAdministrationBody}
-                  />
-                  <Route
-                    path="/coursepicker"
-                    render={this.renderCoursePickerBody}
-                  />
-                  <Route
-                    path="/communicator"
-                    render={this.renderCommunicatorBody}
-                  />
-                  <Route
-                    path="/discussion"
-                    render={this.renderDiscussionBody}
-                  />
-                  <Route
-                    path="/announcements"
-                    render={this.renderAnnouncementsBody}
-                  />
-                  <Route path="/announcer" render={this.renderAnnouncerBody} />
-                  <Route path="/guider" render={this.renderGuiderBody} />
-                  <Route path="/guardian" render={this.renderGuardianBody} />
-                  <Route
-                    path="/guardian_hops"
-                    render={this.renderGuardianHopsBody}
-                  />
-                  <Route path="/profile" render={this.renderProfileBody} />
-                  <Route path="/records" render={this.renderRecordsBody} />
-                  <Route path="/hops" render={this.renderHopsBody} />
-                  <Route
-                    path="/evaluation"
-                    render={this.renderEvaluationBody}
-                  />
-                  <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
-                  <Route
-                    path="/ceepos/done"
-                    render={this.renderCeeposDoneBody}
-                  />
-                </BrowserRouter>
-              </InfoPopperProvider>
-            </WindowContextProvider>
-          </div>
-        </StudyProgressWebsocketWatcher>
-      </DndProvider>
+      <HelmetProvider>
+        <DndProvider options={HTML5toTouch}>
+          <StudyProgressWebsocketWatcher>
+            <div id="root">
+              <WindowContextProvider>
+                <ChatWebsocketContextProvider websocket={this.props.websocket}>
+                  <Chat />
+                </ChatWebsocketContextProvider>
+                <InfoPopperProvider>
+                  <Notifications></Notifications>
+                  <DisconnectedWarningDialog />
+                  <EasyToUseFunctions />
+                  <BrowserRouter>
+                    <TitleProvider>
+                      <Route exact path="/" render={this.renderIndexBody} />
+                      <Route
+                        path="/organization"
+                        render={this.renderOrganizationAdministrationBody}
+                      />
+                      <Route
+                        path="/coursepicker"
+                        render={this.renderCoursePickerBody}
+                      />
+                      <Route
+                        path="/communicator"
+                        render={this.renderCommunicatorBody}
+                      />
+                      <Route
+                        path="/discussion"
+                        render={this.renderDiscussionBody}
+                      />
+                      <Route
+                        path="/announcements"
+                        render={this.renderAnnouncementsBody}
+                      />
+                      <Route
+                        path="/announcer"
+                        render={this.renderAnnouncerBody}
+                      />
+                      <Route path="/guider" render={this.renderGuiderBody} />
+                      <Route
+                        path="/guardian"
+                        render={this.renderGuardianBody}
+                      />
+                      <Route
+                        path="/guardian_hops"
+                        render={this.renderGuardianHopsBody}
+                      />
+                      <Route path="/profile" render={this.renderProfileBody} />
+                      <Route path="/records" render={this.renderRecordsBody} />
+                      <Route path="/hops" render={this.renderHopsBody} />
+                      <Route
+                        path="/evaluation"
+                        render={this.renderEvaluationBody}
+                      />
+                      <Route
+                        path="/ceepos/pay"
+                        render={this.renderCeeposPayBody}
+                      />
+                      <Route
+                        path="/ceepos/done"
+                        render={this.renderCeeposDoneBody}
+                      />
+                    </TitleProvider>
+                  </BrowserRouter>
+                </InfoPopperProvider>
+              </WindowContextProvider>
+            </div>
+          </StudyProgressWebsocketWatcher>
+        </DndProvider>
+      </HelmetProvider>
     );
   }
 }

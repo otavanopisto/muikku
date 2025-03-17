@@ -7,8 +7,6 @@ import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections.CollectionUtils;
-
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -25,40 +23,6 @@ public class UserGroupGuidanceController {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
-  /**
-   * Returns a (pseudo) random Guidance Couselor UserEntity of given student which is member of any role archetype.
-   * 
-   * Prefers to return a Guidance Counselor which is a message receiver, but if none are found
-   * tries to find one that isn't a message receiver. If none are still found, null is returned.
-   * 
-   * @param studentIdentifier
-   * @return
-   */
-  public UserEntity getGuidanceCounselorPreferMessageReceiver(SchoolDataIdentifier studentIdentifier) {
-    // TODO We are potentially loading two lists in order to just get one member out of them, could this be optimized?
-    List<UserEntity> guidanceCounselors = getGuidanceCounselorUserEntities(studentIdentifier, true);
-    if (CollectionUtils.isNotEmpty(guidanceCounselors)) {
-      return guidanceCounselors.get(0);
-    }
-    
-    guidanceCounselors = getGuidanceCounselorUserEntities(studentIdentifier, false);
-    return CollectionUtils.isNotEmpty(guidanceCounselors) ? guidanceCounselors.get(0) : null;
-  }
-
-  /**
-   * Returns a (pseudo) random Guidance Couselor UserEntity of given student which is
-   * - member of any role archetype
-   * - specified as message receiver if so wanted
-   * 
-   * @param studentIdentifier
-   * @param onlyMessageReceivers
-   * @return
-   */
-  public UserEntity getGuidanceCounselorUserEntity(SchoolDataIdentifier studentIdentifier, Boolean onlyMessageReceivers) {
-    List<UserEntity> guidanceCounselors = getGuidanceCounselorUserEntities(studentIdentifier, onlyMessageReceivers);
-    return CollectionUtils.isNotEmpty(guidanceCounselors) ? guidanceCounselors.get(0) : null;
-  }
-  
   /**
    * Returns Guidance Couselors of given student which are
    * - members of any role archetype
@@ -115,6 +79,16 @@ public class UserGroupGuidanceController {
     return councelorList;
   }
 
+  /**
+   * Returns all Guidance Counselors of a student.
+   * 
+   * @param studentIdentifier Students identifier
+   * @return
+   */
+  public List<GroupStaffMember> getGuidanceCounselors(SchoolDataIdentifier studentIdentifier) {
+    return getGuidanceCounselors(studentIdentifier, EnumSet.allOf(EnvironmentRoleArchetype.class), null, null);
+  }
+  
   /**
    * Returns all Guidance Counselors of a student. By default doesn't filter by any roles.
    * 

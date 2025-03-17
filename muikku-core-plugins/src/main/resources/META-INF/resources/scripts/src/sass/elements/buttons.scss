@@ -2449,6 +2449,11 @@
   }
 }
 
+.button--journal-material-toggle {
+  color: $color-info;
+  text-transform: none;
+}
+
 .button--add-extra-row,
 .button--load-all-hops-events,
 .button--back-to-hops-start {
