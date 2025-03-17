@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 import * as React from "react";
 import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown";
@@ -71,12 +65,18 @@ interface TextFieldState {
  * TextField
  */
 class TextField extends React.Component<TextFieldProps, TextFieldState> {
+  // Add ref declaration
+  private baseRef: React.RefObject<HTMLSpanElement>;
+
   /**
    * constructor
    * @param props props
    */
   constructor(props: TextFieldProps) {
     super(props);
+
+    // Initialize ref
+    this.baseRef = React.createRef<HTMLSpanElement>();
 
     this.state = {
       // Set the initial value
@@ -293,7 +293,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
               context: "text",
             })}
           />
-          <span ref="base" className="textfield-wrapper rs_skip_always">
+          <span ref={this.baseRef} className="textfield-wrapper rs_skip_always">
             <span className="textfield">
               <input readOnly />
             </span>
@@ -487,6 +487,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
           })}
         />
         <span
+          ref={this.baseRef}
           className={`textfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer

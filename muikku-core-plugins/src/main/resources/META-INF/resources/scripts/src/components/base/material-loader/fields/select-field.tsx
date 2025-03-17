@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 import * as React from "react";
 import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown";
@@ -71,12 +65,18 @@ interface SelectFieldState {
  * SelectField
  */
 class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
+  // Add ref declarations
+  private baseRef: React.RefObject<HTMLSpanElement>;
+
   /**
    * constructor
    * @param props props
    */
   constructor(props: SelectFieldProps) {
     super(props);
+
+    // Initialize refs
+    this.baseRef = React.createRef<HTMLSpanElement>();
 
     this.onSelectChange = this.onSelectChange.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
@@ -255,7 +255,10 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
               context: "select",
             })}
           />
-          <span className="radiobuttonfield-wrapper rs_skip_always" ref="base">
+          <span
+            ref={this.baseRef}
+            className="radiobuttonfield-wrapper rs_skip_always"
+          >
             {this.props.content.options.map((o) => (
               <span
                 className={`radiobuttonfield__items-wrapper radiobuttonfield__items-wrapper--${
@@ -377,6 +380,7 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
             })}
           />
           <span
+            ref={this.baseRef}
             className={`selectfield-wrapper selectfield-wrapper--${selectFieldType} ${fieldSavedStateClass} rs_skip_always`}
           >
             <Synchronizer
@@ -424,6 +428,7 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
           })}
         />
         <span
+          ref={this.baseRef}
           className={`radiobuttonfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer

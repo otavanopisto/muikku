@@ -270,17 +270,27 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    * componentDidMount - When it mounts we setup everything
    */
   componentDidMount() {
-    this.setupEverything(this.props, this.state.elements);
+    // Register websocket event listeners
+    if (this.props.websocketState.websocket) {
+      this.props.websocketState.websocket.addEventCallback(
+        "workspace:field-answer-saved",
+        this.onAnswerSavedAtServer
+      );
+      this.props.websocketState.websocket.addEventCallback(
+        "workspace:field-answer-error",
+        this.onAnswerSavedAtServer
+      );
+    }
   }
 
   /**
-   * UNSAFE_componentWillReceiveProps - To update everything if we get a brand new html we unmount and remount
-   * @param nextProps nextProps
+   * componentDidUpdate - Updates everything if we get brand new HTML
+   * @param prevProps previous props
    */
-  UNSAFE_componentWillReceiveProps(nextProps: BaseProps) {
-    if (nextProps.material.html !== this.props.material.html) {
+  componentDidUpdate(prevProps: BaseProps) {
+    if (this.props.material.html !== prevProps.material.html) {
       const elements = preprocessor(
-        $(nextProps.material.html)
+        $(this.props.material.html)
       ).toArray() as Array<HTMLElement>;
       this.setState({
         elements,
@@ -323,40 +333,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       originalAnswerCheckable !== this.answerCheckable
     ) {
       this.props.onAnswerCheckableChange(this.answerCheckable);
-    }
-  }
-  /**
-   * UNSAFE_componentWillMount
-   */
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillMount() {
-    // When we mount we need to register the websocket event for the answer saved
-    if (this.props.websocketState.websocket) {
-      this.props.websocketState.websocket.addEventCallback(
-        "workspace:field-answer-saved",
-        this.onAnswerSavedAtServer
-      );
-      this.props.websocketState.websocket.addEventCallback(
-        "workspace:field-answer-error",
-        this.onAnswerSavedAtServer
-      );
-    }
-  }
-
-  /**
-   * componentWillUnmount
-   */
-  componentWillUnmount() {
-    // and we unregister that on unmount and of course unmount all the will be orphaned react components in the dom
-    if (this.props.websocketState.websocket) {
-      this.props.websocketState.websocket.removeEventCallback(
-        "workspace:field-answer-saved",
-        this.onAnswerSavedAtServer
-      );
-      this.props.websocketState.websocket.removeEventCallback(
-        "workspace:field-answer-error",
-        this.onAnswerSavedAtServer
-      );
     }
   }
 

@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 import * as React from "react";
 import {
   HTMLtoReactComponent,
@@ -46,6 +40,8 @@ interface ImageState {
  */
 class Image extends React.Component<ImageProps, ImageState> {
   private predictedAspectRatio: number;
+  private imgRef: React.RefObject<HTMLImageElement>;
+
   /**
    * constructor
    * @param props props
@@ -60,6 +56,8 @@ class Image extends React.Component<ImageProps, ImageState> {
       predictedHeight: null,
       maxWidth: null,
     };
+
+    this.imgRef = React.createRef();
 
     if (!isNaN(aspectRatio) && isFinite(aspectRatio)) {
       this.predictedAspectRatio = aspectRatio;
@@ -95,10 +93,9 @@ class Image extends React.Component<ImageProps, ImageState> {
    * calculatePredictedHeight
    */
   calculatePredictedHeight() {
-    if (this.predictedAspectRatio && this.refs["img"]) {
+    if (this.predictedAspectRatio && this.imgRef.current) {
       const predictedHeight =
-        (this.refs["img"] as HTMLImageElement).offsetWidth /
-        this.predictedAspectRatio;
+        this.imgRef.current.offsetWidth / this.predictedAspectRatio;
       if (
         predictedHeight !== this.state.predictedHeight &&
         !isNaN(predictedHeight) &&
@@ -114,7 +111,7 @@ class Image extends React.Component<ImageProps, ImageState> {
    * calculateMaxWidth
    */
   calculateMaxWidth() {
-    const image = this.refs["img"] as HTMLImageElement;
+    const image = this.imgRef.current;
     if (image && image.src) {
       const maxWidth = image.naturalWidth;
       if (maxWidth !== this.state.maxWidth) {
@@ -275,7 +272,7 @@ class Image extends React.Component<ImageProps, ImageState> {
         props.style.height = this.state.predictedHeight;
         props.width = null;
         props.height = null;
-        props.ref = "img";
+        props.ref = this.imgRef;
         props.onLoad = this.calculateMaxWidth;
       },
       /**

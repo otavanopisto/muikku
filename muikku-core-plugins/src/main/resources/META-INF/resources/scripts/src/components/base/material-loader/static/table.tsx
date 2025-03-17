@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be refactored
- */
-
 import * as React from "react";
 
 /**
@@ -22,28 +16,47 @@ export default class Table extends React.Component<
   TableProps,
   Record<string, unknown>
 > {
+  private tableRef: React.RefObject<HTMLTableElement>;
+
   /**
    * constructor
-   * @param props
+   * @param props props
    */
   constructor(props: TableProps) {
     super(props);
+    this.tableRef = React.createRef();
   }
 
   /**
    * componentDidMount
    */
   componentDidMount() {
-    (this.refs["table"] as any).border = (this.props.element as any).border;
-    (this.refs["table"] as any).align = (this.props.element as any).align;
+    if (this.tableRef.current) {
+      this.tableRef.current.setAttribute(
+        "border",
+        (this.props.element as any).border
+      );
+      this.tableRef.current.setAttribute(
+        "align",
+        (this.props.element as any).align
+      );
+    }
   }
 
   /**
    * componentDidUpdate
    */
   componentDidUpdate() {
-    (this.refs["table"] as any).border = (this.props.element as any).border;
-    (this.refs["table"] as any).align = (this.props.element as any).align;
+    if (this.tableRef.current) {
+      this.tableRef.current.setAttribute(
+        "border",
+        (this.props.element as any).border
+      );
+      this.tableRef.current.setAttribute(
+        "align",
+        (this.props.element as any).align
+      );
+    }
   }
 
   /**
@@ -51,7 +64,7 @@ export default class Table extends React.Component<
    */
   render() {
     return (
-      <table ref="table" {...this.props.props}>
+      <table ref={this.tableRef} {...this.props.props}>
         {this.props.children}
       </table>
     );

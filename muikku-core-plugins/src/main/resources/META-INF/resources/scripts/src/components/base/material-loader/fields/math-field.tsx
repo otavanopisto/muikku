@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 import * as React from "react";
 import MathField from "./better-math-field";
 import "~/sass/elements/mathfield.scss";
@@ -54,12 +48,18 @@ interface MathFieldState {
  * TextField
  */
 class TextField extends React.Component<MathFieldProps, MathFieldState> {
+  // Add ref declaration
+  private baseRef: React.RefObject<MathField>;
+
   /**
    * constructor
    * @param props props
    */
   constructor(props: MathFieldProps) {
     super(props);
+
+    // Initialize ref
+    this.baseRef = React.createRef<MathField>();
 
     this.state = {
       value: props.initialValue || "",
@@ -162,7 +162,7 @@ class TextField extends React.Component<MathFieldProps, MathFieldState> {
           </span>
           {/* WARNING: previous .material-page__mathfield-formula and current .mathfield__formula classNames are written to the DB and cannot be changed */}
           <MathField
-            ref="base"
+            ref={this.baseRef}
             className="mathfield"
             userId={this.props.userId}
             value={this.state.value}
