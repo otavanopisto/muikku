@@ -17,10 +17,6 @@
   word-wrap: break-word;
   /* stylelint-enable selector-class-pattern */
 
-  *:lang("ru") {
-    font-family: "Noto Sans", sans-serif;
-  }
-
   // This will prevent ckeditor to screw up toolbar (and other elements) rendering becouse of previous rule
   .cke * {
     clear: unset;
