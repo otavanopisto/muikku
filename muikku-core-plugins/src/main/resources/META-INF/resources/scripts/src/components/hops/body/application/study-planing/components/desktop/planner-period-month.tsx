@@ -2,7 +2,6 @@ import * as React from "react";
 import { Course } from "~/@types/shared";
 import {
   CourseChangeAction,
-  HopsMode,
   isPlannedCourseWithIdentifier,
   PlannedCourseWithIdentifier,
   SelectedCourse,
@@ -10,24 +9,15 @@ import {
 import Droppable from "../react-dnd/droppable";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { isPlannedCourse } from "../../helper";
-import { bindActionCreators } from "redux";
-import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { Action, Dispatch } from "redux";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   clearSelectedCourses,
-  ClearSelectedCoursesTriggerType,
   updateEditingStudyPlanBatch,
-  UpdateEditingStudyPlanBatchTriggerType,
   updateHopsEditingStudyPlan,
-  UpdateHopsEditingStudyPlanTriggerType,
   updateSelectedCourses,
-  UpdateSelectedCoursesTriggerType,
 } from "~/actions/main-function/hops";
-import { CurriculumConfig } from "~/util/curriculum-config";
 import moment from "moment";
-import { StudentStudyActivity } from "~/generated/client";
 import { AnimatedDrawer } from "../Animated-drawer";
 import PlannerPlannedList from "../planner-planned-list";
 import Button from "~/components/general/button";
@@ -40,18 +30,6 @@ interface PlannerPeriodMonthProps {
   monthIndex: number;
   year: number;
   courses: PlannedCourseWithIdentifier[];
-
-  //Redux state
-  hopsMode: HopsMode;
-  originalPlannedCourses: PlannedCourseWithIdentifier[];
-  editedPlannedCourses: PlannedCourseWithIdentifier[];
-  curriculumConfig: CurriculumConfig;
-  selectedCoursesIds: string[];
-  studyActivity: StudentStudyActivity[];
-  updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType;
-  updateEditingStudyPlanBatch: UpdateEditingStudyPlanBatchTriggerType;
-  updateSelectedCourses: UpdateSelectedCoursesTriggerType;
-  clearSelectedCourses: ClearSelectedCoursesTriggerType;
 }
 
 const dropZoneVariants: Variants = {
@@ -73,23 +51,22 @@ const dropZoneVariants: Variants = {
  * @param props props
  */
 const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
-  const {
-    hopsMode,
-    monthIndex,
-    title,
-    year,
-    courses,
-    originalPlannedCourses,
-    curriculumConfig,
-    selectedCoursesIds,
-    editedPlannedCourses,
-    studyActivity,
-    updateEditingStudyPlanBatch,
-    updateHopsEditingStudyPlan,
-    updateSelectedCourses,
-    clearSelectedCourses,
-  } = props;
+  const { monthIndex, title, year, courses } = props;
 
+  // Selectors
+  const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
+    (state: StateType) => state.hopsNew
+  );
+  const { plannedCourses: originalPlannedCourses, studyActivity } = useSelector(
+    (state: StateType) => state.hopsNew.hopsStudyPlanState
+  );
+  const { plannedCourses: editedPlannedCourses, selectedCoursesIds } =
+    useSelector((state: StateType) => state.hopsNew.hopsEditing);
+
+  // Dispatch
+  const dispatch = useDispatch();
+
+  // State
   const [isExpanded, setIsExpanded] = React.useState(true);
   const [showDropIndicator, setShowDropIndicator] = React.useState(false);
 
@@ -173,12 +150,14 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     );
 
     // Update the editing study plan with batch thunk
-    updateEditingStudyPlanBatch({
-      plannedCourses: [...updatedList, ...newCourses],
-    });
+    dispatch(
+      updateEditingStudyPlanBatch({
+        plannedCourses: [...updatedList, ...newCourses],
+      })
+    );
 
     // Clear the selected course
-    clearSelectedCourses();
+    dispatch(clearSelectedCourses());
   };
 
   /**
@@ -212,10 +191,12 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
       action = "add";
     }
 
-    updateHopsEditingStudyPlan({
-      updatedCourse,
-      action,
-    });
+    dispatch(
+      updateHopsEditingStudyPlan({
+        updatedCourse,
+        action,
+      })
+    );
   };
 
   /**
@@ -227,10 +208,12 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     course: PlannedCourseWithIdentifier,
     action: CourseChangeAction
   ) => {
-    updateHopsEditingStudyPlan({
-      updatedCourse: course,
-      action,
-    });
+    dispatch(
+      updateHopsEditingStudyPlan({
+        updatedCourse: course,
+        action,
+      })
+    );
   };
 
   /**
@@ -238,7 +221,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
    * @param course course
    */
   const handleSelectCourse = (course: PlannedCourseWithIdentifier) => {
-    updateSelectedCourses({ courseIdentifier: course.identifier });
+    dispatch(updateSelectedCourses({ courseIdentifier: course.identifier }));
   };
 
   /**
@@ -343,36 +326,4 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    hopsMode: state.hopsNew.hopsMode,
-    originalPlannedCourses: state.hopsNew.hopsStudyPlanState.plannedCourses,
-    editedPlannedCourses: state.hopsNew.hopsEditing.plannedCourses,
-    timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
-    curriculumConfig: state.hopsNew.hopsCurriculumConfig,
-    selectedCoursesIds: state.hopsNew.hopsEditing.selectedCoursesIds,
-    studyActivity: state.hopsNew.hopsStudyPlanState.studyActivity,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators(
-    {
-      updateHopsEditingStudyPlan,
-      updateSelectedCourses,
-      updateEditingStudyPlanBatch,
-      clearSelectedCourses,
-    },
-    dispatch
-  );
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PlannerPeriodMonth);
+export default PlannerPeriodMonth;

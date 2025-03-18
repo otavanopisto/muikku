@@ -2,37 +2,24 @@ import * as React from "react";
 import Button, { IconButton } from "~/components/general/button";
 import {
   CourseChangeAction,
-  HopsMode,
   isPlannedCourseWithIdentifier,
   PlannedCourseWithIdentifier,
   SelectedCourse,
-  TimeContextSelection,
 } from "~/reducers/hops";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { bindActionCreators } from "redux";
-import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { Action, Dispatch } from "redux";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   clearSelectedCourses,
-  ClearSelectedCoursesTriggerType,
   updateEditingStudyPlanBatch,
-  UpdateEditingStudyPlanBatchTriggerType,
   updateHopsEditingStudyPlan,
-  UpdateHopsEditingStudyPlanTriggerType,
   updateSelectedCourses,
-  UpdateSelectedCoursesTriggerType,
-  updateTimeContextSelection,
-  UpdateTimeContextSelectionTriggerType,
 } from "~/actions/main-function/hops";
-import { CurriculumConfig } from "~/util/curriculum-config";
 import moment from "moment";
 import PlannerMonthEditDialog from "./planner-month-edit";
 import Droppable from "../react-dnd/droppable";
 import { Course } from "~/@types/shared";
 import { isPlannedCourse } from "../../helper";
-import { StudentStudyActivity } from "~/generated/client";
 import PlannerPlannedList from "../planner-planned-list";
 import { AnimatedDrawer } from "../Animated-drawer";
 
@@ -44,20 +31,6 @@ interface MobilePlannerPeriodMonthProps {
   monthIndex: number;
   year: number;
   courses: PlannedCourseWithIdentifier[];
-
-  //Redux state
-  hopsMode: HopsMode;
-  timeContextSelection: TimeContextSelection;
-  originalPlannedCourses: PlannedCourseWithIdentifier[];
-  editedPlannedCourses: PlannedCourseWithIdentifier[];
-  curriculumConfig: CurriculumConfig;
-  selectedCoursesIds: string[];
-  studyActivity: StudentStudyActivity[];
-  updateHopsEditingStudyPlan: UpdateHopsEditingStudyPlanTriggerType;
-  updateTimeContextSelection: UpdateTimeContextSelectionTriggerType;
-  updateSelectedCourses: UpdateSelectedCoursesTriggerType;
-  clearSelectedCourses: ClearSelectedCoursesTriggerType;
-  updateEditingStudyPlanBatch: UpdateEditingStudyPlanBatchTriggerType;
 }
 
 const dropZoneVariants: Variants = {
@@ -81,22 +54,20 @@ const dropZoneVariants: Variants = {
 const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   props
 ) => {
-  const {
-    hopsMode,
-    monthIndex,
-    title,
-    year,
-    courses,
-    originalPlannedCourses,
-    curriculumConfig,
-    selectedCoursesIds,
-    editedPlannedCourses,
-    studyActivity,
-    updateHopsEditingStudyPlan,
-    updateSelectedCourses,
-    clearSelectedCourses,
-    updateEditingStudyPlanBatch,
-  } = props;
+  const { monthIndex, title, year, courses } = props;
+
+  // Selectors
+  const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
+    (state: StateType) => state.hopsNew
+  );
+  const { plannedCourses: originalPlannedCourses, studyActivity } = useSelector(
+    (state: StateType) => state.hopsNew.hopsStudyPlanState
+  );
+  const { plannedCourses: editedPlannedCourses, selectedCoursesIds } =
+    useSelector((state: StateType) => state.hopsNew.hopsEditing);
+
+  // Dispatch
+  const dispatch = useDispatch();
 
   const [isExpanded, setIsExpanded] = React.useState(true);
   const [showDropIndicator, setShowDropIndicator] = React.useState(false);
@@ -181,12 +152,14 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     );
 
     // Update the editing study plan with batch thunk
-    updateEditingStudyPlanBatch({
-      plannedCourses: [...updatedList, ...newCourses],
-    });
+    dispatch(
+      updateEditingStudyPlanBatch({
+        plannedCourses: [...updatedList, ...newCourses],
+      })
+    );
 
     // Clear the selected course
-    clearSelectedCourses();
+    dispatch(clearSelectedCourses());
   };
 
   /**
@@ -198,10 +171,12 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     course: PlannedCourseWithIdentifier,
     action: CourseChangeAction
   ) => {
-    updateHopsEditingStudyPlan({
-      updatedCourse: course,
-      action,
-    });
+    dispatch(
+      updateHopsEditingStudyPlan({
+        updatedCourse: course,
+        action,
+      })
+    );
   };
 
   /**
@@ -209,7 +184,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
    * @param course course
    */
   const handleSelectCourse = (course: PlannedCourseWithIdentifier) => {
-    updateSelectedCourses({ courseIdentifier: course.identifier });
+    dispatch(updateSelectedCourses({ courseIdentifier: course.identifier }));
   };
 
   /**
@@ -255,9 +230,11 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
     ];
 
     // Update the editing study plan with batch thunk
-    updateEditingStudyPlanBatch({
-      plannedCourses: updatedFullCourseList,
-    });
+    dispatch(
+      updateEditingStudyPlanBatch({
+        plannedCourses: updatedFullCourseList,
+      })
+    );
   };
 
   /**
@@ -291,10 +268,12 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
       action = "add";
     }
 
-    updateHopsEditingStudyPlan({
-      updatedCourse,
-      action,
-    });
+    dispatch(
+      updateHopsEditingStudyPlan({
+        updatedCourse,
+        action,
+      })
+    );
   };
 
   /**
@@ -414,40 +393,4 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    hopsMode: state.hopsNew.hopsMode,
-    originalPlannedCourses: state.hopsNew.hopsStudyPlanState.plannedCourses,
-    editedPlannedCourses: state.hopsNew.hopsEditing.plannedCourses,
-    timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
-    curriculumConfig: state.hopsNew.hopsCurriculumConfig,
-    selectedCoursesIds: state.hopsNew.hopsEditing.selectedCoursesIds,
-    studyActivity: state.hopsNew.hopsStudyPlanState.studyActivity,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators(
-    {
-      updateTimeContextSelection,
-      updateHopsEditingStudyPlan,
-      updateSelectedCourses,
-      clearSelectedCourses,
-      updateEditingStudyPlanBatch,
-    },
-    dispatch
-  );
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MobilePlannerPeriodMonth);
+export default MobilePlannerPeriodMonth;

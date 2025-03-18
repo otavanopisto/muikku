@@ -4,12 +4,12 @@ import { PlannerControls } from "../planner-controls";
 import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 import { motion, Variants } from "framer-motion";
 import PlannerCourseTray from "../planner-course-tray";
-import { UpdateSelectedCoursesTriggerType } from "~/actions/main-function/hops";
+import { updateSelectedCourses } from "~/actions/main-function/hops";
 import { Course } from "~/@types/shared";
 import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
 import PlannerTimeline from "./planner-timeline";
 import { StateType } from "~/reducers";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 /**
  * DesktopStudyPlannerProps
@@ -17,8 +17,6 @@ import { useSelector } from "react-redux";
 interface DesktopStudyPlannerProps {
   plannedCourses: PlannedCourseWithIdentifier[];
   calculatedPeriods: PlannedPeriod[];
-  selectedCoursesIds: string[];
-  updateSelectedCourses: UpdateSelectedCoursesTriggerType;
 }
 
 const variants: Variants = {
@@ -47,16 +45,17 @@ const MemoizedPlannerTimeline = React.memo(PlannerTimeline);
  * @returns JSX.Element
  */
 const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
-  const {
-    plannedCourses,
-    calculatedPeriods,
-    selectedCoursesIds,
-    updateSelectedCourses,
-  } = props;
+  const { plannedCourses, calculatedPeriods } = props;
+
+  const { selectedCoursesIds } = useSelector(
+    (state: StateType) => state.hopsNew.hopsEditing
+  );
 
   const disabled = useSelector(
     (state: StateType) => state.hopsNew.hopsMode === "READ"
   );
+
+  const dispatch = useDispatch();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [view, setView] = useState<"list" | "table">("list");
@@ -85,10 +84,12 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
   const handleCourseSelectClick = useCallback(
     (course: Course & { subjectCode: string }) => {
       if (!disabled) {
-        updateSelectedCourses({ courseIdentifier: course.identifier });
+        dispatch(
+          updateSelectedCourses({ courseIdentifier: course.identifier })
+        );
       }
     },
-    [disabled, updateSelectedCourses]
+    [disabled, dispatch]
   );
 
   /**

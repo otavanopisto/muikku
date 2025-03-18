@@ -2,11 +2,7 @@ import * as React from "react";
 import { useEffect, useRef } from "react";
 import { useCallback } from "react";
 import { useState } from "react";
-import {
-  PlannedCourseWithIdentifier,
-  PlannedPeriod,
-  TimeContextSelection,
-} from "~/reducers/hops";
+import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import Button from "~/components/general/button";
@@ -29,8 +25,6 @@ const MemoizedPlannerTimelineMobile = React.memo(PlannerTimelineMobile);
 interface MobileStudyPlannerProps {
   plannedCourses: PlannedCourseWithIdentifier[];
   calculatedPeriods: PlannedPeriod[];
-  timeContextSelection: TimeContextSelection;
-  selectedCoursesIds: string[];
 }
 
 /**
@@ -40,6 +34,7 @@ interface MobileStudyPlannerProps {
  */
 const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
   const { calculatedPeriods } = props;
+
   const manager = useDragDropManager();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

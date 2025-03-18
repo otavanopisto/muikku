@@ -1,27 +1,14 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { useSelector } from "react-redux";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { useMemo } from "react";
 import { createAndAllocateCoursesToPeriods } from "./helper";
-import {
-  HopsMode,
-  PlannedCourseWithIdentifier,
-  TimeContextSelection,
-} from "~/reducers/hops";
 import "~/sass/elements/study-planner.scss";
-import { CurriculumConfig } from "~/util/curriculum-config";
 import { useMediaQuery } from "usehooks-ts";
 import DesktopStudyPlanner from "./components/desktop/study-plan-tool-desktop";
 import MobileStudyPlanner from "./components/mobile/study-plan-tool-mobile";
-import {
-  UpdateSelectedCoursesTriggerType,
-  updateSelectedCourses,
-} from "~/actions/main-function/hops";
-import { HopsOpsCourse, StudentStudyActivity } from "~/generated/client";
 import ProgressBar from "@ramonak/react-progress-bar";
 import DatePicker from "react-datepicker";
 import { PlannerInfo } from "./components/planner-info";
@@ -29,18 +16,7 @@ import { PlannerInfo } from "./components/planner-info";
 /**
  * MatriculationPlanProps
  */
-interface StudyPlanToolProps {
-  hopsMode: HopsMode;
-  curriculumConfig: CurriculumConfig | null;
-  plannedCourses: PlannedCourseWithIdentifier[];
-  editingPlan: PlannedCourseWithIdentifier[];
-  timeContextSelection: TimeContextSelection;
-  selectedCoursesIds: string[];
-  studyActivity: StudentStudyActivity[];
-  availableOPSCourses: HopsOpsCourse[];
-  studyOptions: string[];
-  updateSelectedCourses: UpdateSelectedCoursesTriggerType;
-}
+interface StudyPlanToolProps {}
 
 /**
  * MatriculationPlan
@@ -48,16 +24,18 @@ interface StudyPlanToolProps {
  */
 const StudyPlanTool = (props: StudyPlanToolProps) => {
   const {
-    plannedCourses,
-    editingPlan,
     hopsMode,
-    curriculumConfig,
-    selectedCoursesIds,
-    timeContextSelection,
-    studyActivity,
-    studyOptions,
-    updateSelectedCourses,
-  } = props;
+    hopsCurriculumConfig: curriculumConfig,
+    studentInfo,
+  } = useSelector((state: StateType) => state.hopsNew);
+
+  const { plannedCourses, studyActivity, studyOptions } = useSelector(
+    (state: StateType) => state.hopsNew.hopsStudyPlanState
+  );
+
+  const { plannedCourses: editingPlan } = useSelector(
+    (state: StateType) => state.hopsNew.hopsEditing
+  );
 
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { t } = useTranslation(["hops_new"]);
@@ -76,15 +54,23 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     }
   }, [plannedCourses, editingPlan, hopsMode]);
 
+  // Calculate the periods
   const calculatedPeriods = useMemo(
     () =>
       createAndAllocateCoursesToPeriods(
+        {
+          studyStartDate: new Date(studentInfo.studyStartDate),
+          studyTimeEnd: studentInfo.studyTimeEnd
+            ? new Date(studentInfo.studyTimeEnd)
+            : null,
+        },
         usedPlannedCourses,
         curriculumConfig.strategy
       ),
-    [usedPlannedCourses, curriculumConfig]
+    [usedPlannedCourses, curriculumConfig, studentInfo]
   );
 
+  // Calculate the statistics
   const statistics = useMemo(
     () =>
       curriculumConfig.strategy.calculateStatistics(
@@ -94,6 +80,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     [curriculumConfig.strategy, studyActivity, studyOptions]
   );
 
+  // Calculate the estimated time to completion
   const estimatedTimeToCompletion =
     curriculumConfig.strategy.calculateEstimatedTimeToCompletion(
       hoursPerWeek,
@@ -286,15 +273,11 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             <MobileStudyPlanner
               plannedCourses={usedPlannedCourses}
               calculatedPeriods={calculatedPeriods}
-              timeContextSelection={timeContextSelection}
-              selectedCoursesIds={selectedCoursesIds}
             />
           ) : (
             <DesktopStudyPlanner
               plannedCourses={usedPlannedCourses}
               calculatedPeriods={calculatedPeriods}
-              selectedCoursesIds={selectedCoursesIds}
-              updateSelectedCourses={updateSelectedCourses}
             />
           )}
         </ApplicationSubPanel.Body>
@@ -303,35 +286,4 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    hopsMode: state.hopsNew.hopsMode,
-    curriculumConfig: state.hopsNew.hopsCurriculumConfig,
-    plannedCourses: state.hopsNew.hopsStudyPlanState.plannedCourses,
-    editingPlan: state.hopsNew.hopsEditing.plannedCourses,
-    selectedCoursesIds: state.hopsNew.hopsEditing.selectedCoursesIds,
-    timeContextSelection: state.hopsNew.hopsEditing.timeContextSelection,
-    studyActivity: state.hopsNew.hopsStudyPlanState.studyActivity,
-    availableOPSCourses: state.hopsNew.hopsStudyPlanState.availableOPSCourses,
-    studyOptions: state.hopsNew.hopsStudyPlanState.studyOptions,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators(
-    {
-      updateSelectedCourses,
-    },
-    dispatch
-  );
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(StudyPlanTool);
+export default StudyPlanTool;
