@@ -51,6 +51,20 @@ interface HopsStudyPlanState {
 }
 
 /**
+ * StudentDateInfo
+ */
+export interface StudentDateInfo {
+  /**
+   * Start date of the study
+   */
+  studyStartDate: Date;
+  /**
+   * End date when student study time expires
+   */
+  studyTimeEnd?: Date | null;
+}
+
+/**
  * PlannedCourseWithIdentifier
  */
 export interface PlannedCourseWithIdentifier extends PlannedCourse {

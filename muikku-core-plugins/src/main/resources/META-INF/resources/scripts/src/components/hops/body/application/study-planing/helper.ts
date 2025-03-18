@@ -1,26 +1,39 @@
 import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
 import { CourseStatus, StudentStudyActivity } from "~/generated/client";
-import { PlannedCourseWithIdentifier, PlannedPeriod } from "~/reducers/hops";
+import {
+  PlannedCourseWithIdentifier,
+  PlannedPeriod,
+  StudentDateInfo,
+} from "~/reducers/hops";
 import { CurriculumStrategy } from "~/util/curriculum-config";
 
 /**
  * Convert planned course to period
- * @param plannedCourses planned course
+ * @param studentDateInfo student date info
  * @param curriculumStrategy curriculum strategy
  * @returns period
  */
 const createPeriods = (
-  plannedCourses: PlannedCourseWithIdentifier[],
+  studentDateInfo: StudentDateInfo,
   curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
-  // Get all unique years from planned courses
-  /* const years = [
-    ...new Set(
-      plannedCourses.map((course) => new Date(course.startDate).getFullYear())
-    ),
-  ]; */
+  // Calculate start and end years based on studentDateInfo
+  const startYear = studentDateInfo.studyStartDate.getFullYear();
 
-  const years = [2024, 2025, 2026, 2027, 2028, 2029, 2030];
+  let endYear: number;
+
+  if (studentDateInfo.studyTimeEnd) {
+    endYear = studentDateInfo.studyTimeEnd.getFullYear();
+  } else {
+    // Default to 4 years from start date if no end date provided
+    endYear = startYear + 4;
+  }
+
+  // Generate array of years between start and end (inclusive)
+  const years = Array.from(
+    { length: endYear - startYear + 1 },
+    (_, i) => startYear + i
+  );
 
   const periods: PlannedPeriod[] = [];
 
@@ -38,16 +51,18 @@ const createPeriods = (
 
 /**
  * Creates and allocates planned courses to academic periods
+ * @param studentDateInfo student date info
  * @param plannedCourses List of planned courses to allocate
  * @param curriculumStrategy curriculum strategy
  * @returns List of periods with allocated courses and calculated credits
  */
 const createAndAllocateCoursesToPeriods = (
+  studentDateInfo: StudentDateInfo,
   plannedCourses: PlannedCourseWithIdentifier[],
   curriculumStrategy: CurriculumStrategy
 ): PlannedPeriod[] => {
   // Convert all planned courses to periods to get date ranges
-  const periods = createPeriods(plannedCourses, curriculumStrategy);
+  const periods = createPeriods(studentDateInfo, curriculumStrategy);
 
   // Allocate courses to periods
   plannedCourses.forEach((course) => {
@@ -75,12 +90,18 @@ const createAndAllocateCoursesToPeriods = (
     }
   });
 
-  // Remove empty periods and sort by date
-  /* return periods
-    .filter((period) => period.plannedCourses.length > 0)
-    .sort((a, b) => a.year - b.year); */
+  // Only trim empty periods from the start
+  const trimmedPeriods = [...periods];
 
-  return periods.sort((a, b) => a.year - b.year);
+  // Trim from start
+  while (
+    trimmedPeriods.length > 0 &&
+    trimmedPeriods[0].plannedCourses.length === 0
+  ) {
+    trimmedPeriods.shift();
+  }
+
+  return trimmedPeriods;
 };
 
 /**
