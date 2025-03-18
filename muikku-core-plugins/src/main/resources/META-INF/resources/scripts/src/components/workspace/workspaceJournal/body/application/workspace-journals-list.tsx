@@ -75,10 +75,10 @@ class WorkspaceJournalsList extends BodyScrollLoader<
 
     // If only one of the other
     if (showMandatory) {
-      return journals.filter((j) => j.isMaterialField);
+      return journals.filter((j) => j.material !== null);
     }
     if (showOthers) {
-      return journals.filter((j) => !j.isMaterialField);
+      return journals.filter((j) => j.material === null);
     }
   };
 

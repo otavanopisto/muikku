@@ -60,10 +60,12 @@ export class EvaluationMaterial extends React.Component<
    */
   render() {
     const isAssignment =
-      this.props.material.assignment.assignmentType === "EVALUATED" ||
-      this.props.material.assignment.assignmentType === "EXERCISE";
+      this.props.material.assignmentType &&
+      (this.props.material.assignmentType === "EVALUATED" ||
+        this.props.material.assignmentType === "EXERCISE");
 
     const isInterimEvaluation =
+      this.props.material.assignment &&
       this.props.material.assignment.assignmentType === "INTERIM_EVALUATION";
 
     const hasEvaluation =
