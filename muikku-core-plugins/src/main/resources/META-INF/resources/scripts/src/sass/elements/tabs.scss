@@ -152,10 +152,10 @@
   margin: 0;
 
   &.active {
+    border-bottom: 2px solid $color-default;
     border-left: 1px solid $color-application-panel-box-border;
     border-right: 1px solid $color-application-panel-box-border;
     border-top: 1px solid $color-application-panel-box-border;
-    border-bottom: 2px solid $color-default;
   }
 }
 
