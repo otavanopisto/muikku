@@ -825,3 +825,57 @@
   font-size: 1.125rem;
   font-weight: 300;
 }
+
+// Timeline
+.study-planner__timeline-progress-container {
+  width: 100%;
+  padding: 20px 0;
+}
+
+.study-planner__timeline-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #666;
+  font-size: 14px;
+}
+
+.study-planner__flag {
+  position: absolute;
+  transform: translateX(-50%);
+  bottom: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.study-planner__flag-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.study-planner__flag-line {
+  width: 2px;
+  height: 20px;
+  background-color: currentColor;
+}
+
+.study-planner__flag--current {
+  color: #2196f3;
+}
+
+.study-planner__flag--goal {
+  color: #4caf50;
+}
+
+.study-planner__flag--estimated {
+  color: #ff9800;
+}
+
+.study-planner__progress-label {
+  text-align: center;
+  color: #666;
+  margin-top: 5px;
+  font-size: 14px;
+}

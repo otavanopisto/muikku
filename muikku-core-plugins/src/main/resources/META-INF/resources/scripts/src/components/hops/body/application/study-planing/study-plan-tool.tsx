@@ -12,6 +12,7 @@ import MobileStudyPlanner from "./components/mobile/study-plan-tool-mobile";
 import ProgressBar from "@ramonak/react-progress-bar";
 import DatePicker from "react-datepicker";
 import { PlannerInfo } from "./components/planner-info";
+import PlannerTimelineProgress from "./components/planner-timeline-progress";
 
 /**
  * MatriculationPlanProps
@@ -158,6 +159,11 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
           {/* Plan info section */}
           <div className="study-planner__plan-status-section">
             <PlannerInfo
+              studyEndTimeDate={
+                studentInfo.studyTimeEnd
+                  ? new Date(studentInfo.studyTimeEnd)
+                  : null
+              }
               graduationGoalDate={graduationGoalDate}
               estimatedTimeToCompletion={estimatedTimeToCompletion}
             />
@@ -175,23 +181,18 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
           <div className="study-planner__plan-status-container">
-            <div className="study-planner__plan-status-dates">
-              <span>BIRD!</span>
-              <span>I R BABOON</span>
-            </div>
-            <div className="study-planner__plan-status-bar-container">
-              <ProgressBar
-                className="study-planner__plan-status-bar"
-                completed={statistics.totalStudies}
-                maxCompleted={statistics.requiredStudies.totalStudies}
-                isLabelVisible={false}
-                bgColor="#24c118"
-                baseBgColor="#f5f5f5"
-              />
-              <div className="study-planner__plan-status-bar-label">
-                {`${statistics.totalStudies} / ${statistics.requiredStudies.totalStudies}`}
-              </div>
-            </div>
+            <PlannerTimelineProgress
+              studyStartDate={new Date(studentInfo.studyStartDate)}
+              studyEndTimeDate={
+                studentInfo.studyTimeEnd
+                  ? new Date(studentInfo.studyTimeEnd)
+                  : null
+              }
+              graduationGoalDate={graduationGoalDate}
+              estimatedTimeToCompletion={estimatedTimeToCompletion}
+              completedStudies={statistics.totalStudies}
+              requiredStudies={statistics.requiredStudies.totalStudies}
+            />
           </div>
 
           {/* Statistics */}
