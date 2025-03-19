@@ -3,8 +3,8 @@ import { PlannedPeriod } from "~/reducers/hops";
 import PlannerPeriodMonth from "./desktop/planner-period-month";
 import MobilePlannerPeriodMonth from "./mobile/planner-period-month";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
+import { getPeriodMonthNames } from "../helper";
 
 // Animate period to collapse
 const periodVariants: Variants = {
@@ -45,32 +45,6 @@ const titleVariants: Variants = {
 };
 
 /**
- * Gets period month names by type
- * @param type type of period
- * @param t translation function
- */
-const getPeriodMonthNames = (type: "AUTUMN" | "SPRING", t: TFunction) => {
-  const AUTUMN_MONTHS = [
-    t("labels.month_august", { ns: "common" }),
-    t("labels.month_september", { ns: "common" }),
-    t("labels.month_october", { ns: "common" }),
-    t("labels.month_november", { ns: "common" }),
-    t("labels.month_december", { ns: "common" }),
-  ];
-  const SPRING_MONTHS = [
-    t("labels.month_january", { ns: "common" }),
-    t("labels.month_february", { ns: "common" }),
-    t("labels.month_march", { ns: "common" }),
-    t("labels.month_april", { ns: "common" }),
-    t("labels.month_may", { ns: "common" }),
-    t("labels.month_june", { ns: "common" }),
-    t("labels.month_july", { ns: "common" }),
-  ];
-
-  return type === "AUTUMN" ? AUTUMN_MONTHS : SPRING_MONTHS;
-};
-
-/**
  * PlannerPeriodProps
  */
 export interface PlannerPeriodProps {
@@ -96,7 +70,8 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
 
     const { period, renderMobile } = props;
 
-    const { title, workload, type, year, plannedCourses } = period;
+    const { title, workload, type, year, plannedCourses, isPastPeriod } =
+      period;
 
     const months = getPeriodMonthNames(type, t);
 
@@ -136,7 +111,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                 setIsCollapsed={setIsCollapsed}
               />
               <motion.div className="study-planner__period-title study-planner__period-title--collapsed">
-                {title}
+                {title} {isPastPeriod && "(Past)"}
                 {workload && ` - ${workload.displayValue}`}
               </motion.div>
             </motion.div>
@@ -165,7 +140,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                   className="study-planner__period-title"
                   variants={titleVariants}
                 >
-                  {title}
+                  {title} {isPastPeriod && "(Past)"}
                   {workload && ` - ${workload.displayValue}`}
                 </motion.div>
               </motion.div>

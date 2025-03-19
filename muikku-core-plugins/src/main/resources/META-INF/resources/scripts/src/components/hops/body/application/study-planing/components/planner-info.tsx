@@ -1,16 +1,21 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { localize } from "~/locales/i18n";
 
 /**
  * Props of the planner info
  */
 interface PlannerInfoProps {
   /**
+   * Study end time date
+   */
+  studyEndTimeDate: Date | null;
+  /**
    * Graduation goal date
    */
   graduationGoalDate: Date | null;
   /**
-   * Estimated time to completion. Value of Infinity means that the user has not filled in the hours per week.
+   * Estimated time to completion. Value of Infinity means that the user has not filled the hours per week field.
    */
   estimatedTimeToCompletion: number;
 }
@@ -21,10 +26,11 @@ interface PlannerInfoProps {
  * @returns Planner info component
  */
 export function PlannerInfo(props: PlannerInfoProps) {
-  const { graduationGoalDate, estimatedTimeToCompletion } = props;
+  const { graduationGoalDate, estimatedTimeToCompletion, studyEndTimeDate } =
+    props;
   const { t } = useTranslation(["hops_new"]);
 
-  // If estimated time to completion is Infinity, show info that the user has not filled in the hours per week
+  // If estimated time to completion is Infinity, show info that the user has not filled the hours per week field
   if (estimatedTimeToCompletion === Infinity) {
     return (
       <PlannerInfoNotification variant="info">
@@ -59,6 +65,21 @@ export function PlannerInfo(props: PlannerInfoProps) {
   );
   const isGraduationPossible = monthsUntilGoal >= estimatedTimeToCompletion;
 
+  const estimatedDate = new Date(today);
+  estimatedDate.setMonth(today.getMonth() + estimatedTimeToCompletion);
+
+  if (localize.getLocalizedMoment(estimatedDate).isAfter(studyEndTimeDate)) {
+    return (
+      <PlannerInfoNotification variant="danger">
+        <p>
+          Laskurin mukaan valmistuminen ei ole mahdollista, koska se tapahtuu
+          opiskeluoikeuden päättymisen jälkeen. Pohdi ja muuta viikossa
+          käytettävissä olevaa tuntimäärää.
+        </p>
+      </PlannerInfoNotification>
+    );
+  }
+
   // If graduation is possible, show info with info about it
   if (isGraduationPossible) {
     return (
@@ -66,8 +87,9 @@ export function PlannerInfo(props: PlannerInfoProps) {
         <p>
           {t("content.studyPlannerInfoGraduationPossible", {
             ns: "hops_new",
-            graduationGoalDate: graduationGoalDate.toLocaleDateString("fi-Fi"),
+            graduationGoalDate: localize.date(graduationGoalDate),
             monthsUntilGoal: monthsUntilGoal,
+            estimatedDateOfCompletion: localize.date(estimatedDate),
             estimatedTimeToCompletion: estimatedTimeToCompletion,
           })}
         </p>
@@ -81,8 +103,9 @@ export function PlannerInfo(props: PlannerInfoProps) {
       <p>
         {t("content.studyPlannerInfoGraduationNotPossible", {
           ns: "hops_new",
-          graduationGoalDate: graduationGoalDate.toLocaleDateString("fi-Fi"),
+          graduationGoalDate: localize.date(graduationGoalDate),
           monthsUntilGoal: monthsUntilGoal,
+          estimatedDateOfCompletion: localize.date(estimatedDate),
           estimatedTimeToCompletion: estimatedTimeToCompletion,
         })}
       </p>

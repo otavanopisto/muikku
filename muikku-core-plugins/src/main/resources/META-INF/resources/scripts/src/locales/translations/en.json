@@ -918,8 +918,8 @@
       "matriculationFormSaveStateFailed": "<p>Saving the registration data failed. Please ensure that you are logged in by returning to the form via Muikku.</p>",
       "studyPlannerCourseNotAvailable": "Valittu kurssi-ilmentymä ei ole enään saatavilla. Valitse uusi kurssi-ilmentymä ja päivitä suunnitelma.",
       "studyPlannerCourseInstanceNotFound": "Course instance not found",
-      "studyPlannerInfoGraduationPossible": "Valmistuminen tavoiteajassa {{graduationGoalDate}} ({{monthsUntilGoal}} kk) on mahdollista. Arvioitu valmistumisaika on {{estimatedTimeToCompletion}} kuukautta.",
-      "studyPlannerInfoGraduationNotPossible": "Valmistuminen ei ole mahdollista tavoiteajassa {{graduationGoalDate}} ({{monthsUntilGoal}} kk). Tarvitset vähintään {{estimatedTimeToCompletion}} kuukautta opintojen suorittamiseen.",
+      "studyPlannerInfoGraduationPossible": "Valmistuminen tavoiteajassa {{graduationGoalDate}} ({{monthsUntilGoal}} kk) on mahdollista. Arvioitu valmistumisaika on {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} kuukautta).",
+      "studyPlannerInfoGraduationNotPossible": "Valmistuminen ei ole mahdollista tavoiteajassa {{graduationGoalDate}} ({{monthsUntilGoal}} kk). Arvioitu valmistumisaika on {{estimatedDateOfCompletion}}. Tarvitset vähintään {{estimatedTimeToCompletion}} kuukautta opintojen suorittamiseen.",
       "studyPlannerInfoCannotCalculate": "Laskuri ei pysty laskemaan valmistumisajankohtaa, koska et ole syöttänyt tietoa, kuinka monta tuntia sinulla on viikottaisin käytössäsi opiskeluun.",
       "studyPlannerInfoBeMoreSpecific": "Arvioitu valmistumisaika on {{estimatedTimeToCompletion}} kuukautta. Tarkentamalla valmistumistavoitetta voit saada paremman arvion."
     },

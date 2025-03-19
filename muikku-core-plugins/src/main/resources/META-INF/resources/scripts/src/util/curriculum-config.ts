@@ -499,6 +499,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
       title: `${year} ${type === "SPRING" ? "common:labels.spring" : "common:labels.fall"}`,
       plannedCourses: [],
       workloadType: "credits",
+      isPastPeriod: false,
     };
   }
 
@@ -820,6 +821,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
       title: `${year} ${type === "SPRING" ? "common:labels.spring" : "common:labels.fall"}`,
       plannedCourses: [],
       workloadType: "courses",
+      isPastPeriod: false,
     };
   }
 
