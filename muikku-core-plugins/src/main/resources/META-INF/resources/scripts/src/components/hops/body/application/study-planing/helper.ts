@@ -1,3 +1,4 @@
+import { TFunction } from "i18next";
 import { Course, CourseFilter, SchoolSubject } from "~/@types/shared";
 import { CourseStatus, StudentStudyActivity } from "~/generated/client";
 import {
@@ -6,6 +7,56 @@ import {
   StudentDateInfo,
 } from "~/reducers/hops";
 import { CurriculumStrategy } from "~/util/curriculum-config";
+
+/**
+ * Gets period month names by type
+ * @param type type of period
+ * @param t translation function
+ */
+const getPeriodMonthNames = (type: "AUTUMN" | "SPRING", t: TFunction) => {
+  const AUTUMN_MONTHS = [
+    t("labels.month_august", { ns: "common" }),
+    t("labels.month_september", { ns: "common" }),
+    t("labels.month_october", { ns: "common" }),
+    t("labels.month_november", { ns: "common" }),
+    t("labels.month_december", { ns: "common" }),
+  ];
+  const SPRING_MONTHS = [
+    t("labels.month_january", { ns: "common" }),
+    t("labels.month_february", { ns: "common" }),
+    t("labels.month_march", { ns: "common" }),
+    t("labels.month_april", { ns: "common" }),
+    t("labels.month_may", { ns: "common" }),
+    t("labels.month_june", { ns: "common" }),
+    t("labels.month_july", { ns: "common" }),
+  ];
+
+  return type === "AUTUMN" ? AUTUMN_MONTHS : SPRING_MONTHS;
+};
+
+/**
+ * Checks if the period is in the past
+ * @param period period
+ * @returns true if the period is in the past
+ */
+const periodIsInThePast = (period: PlannedPeriod) => {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth(); // 0-11
+
+  const { year, type } = period;
+
+  if (year < currentYear) return true;
+  if (year > currentYear) return false;
+
+  // For same year, check if we're past the period
+  if (type === "AUTUMN") {
+    return currentMonth > 11; // Past December
+  } else {
+    // SPRING
+    return currentMonth > 6; // Past July
+  }
+};
 
 /**
  * Convert planned course to period
@@ -39,10 +90,20 @@ const createPeriods = (
 
   // Create spring and fall periods for each year
   years.forEach((year) => {
-    periods.push(
-      curriculumStrategy.getEmptyPeriod("SPRING", year),
-      curriculumStrategy.getEmptyPeriod("AUTUMN", year)
-    );
+    let springPeriod = curriculumStrategy.getEmptyPeriod("SPRING", year);
+    let autumnPeriod = curriculumStrategy.getEmptyPeriod("AUTUMN", year);
+
+    // Check if the period is in the past
+    springPeriod = {
+      ...springPeriod,
+      isPastPeriod: periodIsInThePast(springPeriod),
+    };
+    autumnPeriod = {
+      ...autumnPeriod,
+      isPastPeriod: periodIsInThePast(autumnPeriod),
+    };
+
+    periods.push(springPeriod, autumnPeriod);
   });
 
   // Sort periods by years
@@ -248,4 +309,5 @@ export {
   filterSubjectsAndCourses,
   isPlannedCourse,
   selectedIsPlannedCourse,
+  getPeriodMonthNames,
 };

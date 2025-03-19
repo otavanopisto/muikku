@@ -90,6 +90,7 @@ export interface PlannedPeriod {
   plannedCourses: PlannedCourseWithIdentifier[];
   workloadType: "credits" | "courses";
   workload?: PeriodWorkload;
+  isPastPeriod: boolean;
 }
 
 /**
