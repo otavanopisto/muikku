@@ -102,7 +102,7 @@ export const ImplementedActionsListItem: React.FC<
           </label>
           <Select
             id="implemenetedSupportActionAction"
-            className="react-select-override react-select-override--hops"
+            className="react-select-override react-select-override--pedagogy-form"
             classNamePrefix="react-select-override"
             value={supportActionsOptions.find(
               (option) => option.value === implemenetedSupportAction.action

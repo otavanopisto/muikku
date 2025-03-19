@@ -2682,13 +2682,6 @@
 
 .button-icon--study-planner-month-selection {
   background: transparent;
-  color: #b1296f;
+  color: $color-study-plan-tool-accent;
   font-size: 1rem;
-  transition: color 0.1s ease-in-out;
-
-  &:hover {
-    color: #f1489f;
-    text-decoration: underline;
-    transition: color 0.1s ease-in-out;
-  }
 }

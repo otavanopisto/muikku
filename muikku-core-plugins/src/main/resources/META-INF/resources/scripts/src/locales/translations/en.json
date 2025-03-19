@@ -87,6 +87,7 @@
       "appointment": "Book an appointment",
       "approved": "Approved",
       "archived": "Archived",
+      "autumn": "Autumn {{year}}",
       "available": "Available",
       "beginDate": "Begin date",
       "billing": "Billing",
@@ -202,6 +203,7 @@
       "status_xa": "Not available",
       "settings": "Settings",
       "site": "Muikku",
+      "spring": "Spring {{year}}",
       "staff": "Staff",
       "stats": "Statistics",
       "studies": "Studies",
@@ -578,6 +580,7 @@
     "actions": {
       "addSubject": "Add a subject",
       "confirmRegistration": "Confirm registration",
+      "openStudyPlanner": "Open Study Planner",
       "showSummary": "Show summary",
       "showOldSummary": "Show old summary",
       "showChangeLog": "Show registration change history",
@@ -585,6 +588,7 @@
       "supplementRegistration": "Supplement registration"
     },
     "labels": {
+      "endDate": "Ends",
       "other": "Other",
       "otherPlace": "Other place",
       "grade": "Grade:",
@@ -641,7 +645,7 @@
       "hopsFormSelfAssessmentLevel4_description": "4 = Poorly",
       "hopsFormSelfAssessmentLevel5": "Very poorly",
       "hopsFormSelfAssessmentLevel5_description": "5 = Very poorly",
-      "hopsCompulsoryEntryAssessmentTitle1": "Previous studies and language skills",
+      "hoAlkaapsCompulsoryEntryAssessmentTitle1": "Previous studies and language skills",
       "hopsCompulsoryEntryAssessmentTitle2": "Language skills",
       "hopsCompulsorySelfAssessmentTitle1": "Evaluate how well or poorly the following study methods help you in your studies:",
       "hopsCompulsorySelfAssessmentTitle2": "Who supports you in your studies besides the advisors and teachers at the Nettiperuskoulu?",
@@ -812,6 +816,7 @@
       "matriculationSubjects": "Subjects:",
       "search": "$t(common:labels.search)",
       "search_course": "Search courses",
+      "startDate": "Starts",
       "studyPlannerFormTitle": "Study Time Calculator",
       "studyPlannerFormDescription": "Opintoaikalaskuri vertaa valmistumiselle asettamaasi tavoitetta aikaan, joka sinulla on viikottaisin käytössäsi opiskeluun. Yhden kurssin suorittaminen vie keskimäärin 28 tuntia. Jos valmistuminen ei ole mahdollista ajassa, jonka voit käyttää opiskeluun, kannattaa asiaa pohtia uudelleen.",
       "studyPlannerFormGraduationDateTitle": "Milloin haluat valmistua?",

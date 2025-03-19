@@ -112,24 +112,24 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
       }) => (
         <AnimatedDrawer
           isOpen={isOpen}
-          contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+          contentClassName="study-planner__extra-section"
           onClose={() => handleSpecifyClose(onConfirm)}
         >
-          <h4 className="study-planner__extra-section-title">
+          <div className="study-planner__extra-section-title">
             {t("labels.studyPlannerSpecifyPlanTitle", {
               ns: "hops_new",
             })}
-          </h4>
+          </div>
 
           <div className="study-planner__extra-section-content">
-            <div className="study-planner__extra-section-input-group">
-              <label className="study-planner__extra-section-input-group-label">
+            <div className="study-planner__extra-section-group">
+              <label className="study-planner__extra-section-group-label">
                 {t("labels.studyPlannerSpecifySelectCourseInstanceLabel", {
                   ns: "hops_new",
                 })}
               </label>
 
-              <span className="study-planner__extra-section-input-group-label-info">
+              <span className="study-planner__extra-section-group-label-info">
                 {t(
                   "labels.studyPlannerSpecifySelectCourseInstanceDescription",
                   {
@@ -164,13 +164,13 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
               />
             </div>
 
-            <div className="study-planner__extra-section-input-group">
-              <label className="study-planner__extra-section-input-group-label">
+            <div className="study-planner__extra-section-group">
+              <label className="study-planner__extra-section-group-label">
                 {t("labels.studyPlannerSpecifySelectDateLabel", {
                   ns: "hops_new",
                 })}
               </label>
-              <span className="study-planner__extra-section-input-group-label-info">
+              <span className="study-planner__extra-section-group-label-info">
                 {t("labels.studyPlannerSpecifySelectDateDescription", {
                   ns: "hops_new",
                 })}
@@ -178,7 +178,9 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
               <div className="study-planner__extra-section-date-inputs">
                 <DatePicker
                   className="study-planner__input"
-                  placeholderText="Alkaa"
+                  placeholderText={t("labels.startDate", {
+                    ns: "hops_new",
+                  })}
                   selected={startDate}
                   onChange={(date) => onChange(date, endDate)}
                   locale={outputCorrectDatePickerLocale(localize.language)}
@@ -186,7 +188,9 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                 />
                 <DatePicker
                   className="study-planner__input"
-                  placeholderText="Päättyy"
+                  placeholderText={t("labels.endDate", {
+                    ns: "hops_new",
+                  })}
                   selected={endDate}
                   onChange={(date) => onChange(startDate, date)}
                   locale={outputCorrectDatePickerLocale(localize.language)}
@@ -195,7 +199,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
               </div>
             </div>
 
-            <div className="study-planner__extra-section-button-group">
+            <div className="study-planner__extra-section-group study-planner__extra-section-group--button-set">
               <Button
                 buttonModifiers={["standard-ok", "execute"]}
                 onClick={(e) => {
@@ -225,24 +229,24 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
       renderDeleteWarning={({ isOpen, onClose, onConfirm }) => (
         <AnimatedDrawer
           isOpen={isOpen}
-          contentClassName="study-planner__extra-section study-planner__extra-section--specify"
+          contentClassName="study-planner__extra-section"
           onClose={() => handleClose(onConfirm)}
         >
-          <h4 className="study-planner__extra-section-title">
+          <div className="study-planner__extra-section-title">
             {t("labels.studyPlannerRemoveFromPlanTitle", {
               ns: "hops_new",
             })}
-          </h4>
+          </div>
           <div className="study-planner__extra-section-content">
-            <div className="study-planner__extra-section-input-group">
-              <span className="study-planner__extra-section-input-group-label-info">
+            <div className="study-planner__extra-section-group">
+              <span className="study-planner__extra-section-group-label-info">
                 {t("labels.studyPlannerRemoveFromPlanDescription", {
                   ns: "hops_new",
                 })}
               </span>
             </div>
 
-            <div className="study-planner__extra-section-button-group">
+            <div className="study-planner__extra-section-group study-planner__extra-section-group--button-set">
               <Button
                 buttonModifiers={["standard-ok", "fatal"]}
                 onClick={(e) => {

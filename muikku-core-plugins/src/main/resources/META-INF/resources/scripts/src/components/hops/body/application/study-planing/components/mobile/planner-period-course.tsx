@@ -12,6 +12,7 @@ import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import AnimateHeight from "react-animate-height";
 import WorkspaceSelect from "../workspace-select";
+import { useTranslation } from "react-i18next";
 
 /**
  * MobilePlannerPeriodCourseProps
@@ -30,6 +31,8 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
   props
 ) => {
   const { course, disabled, curriculumConfig } = props;
+
+  const { t } = useTranslation(["hops_new", "common"]);
 
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
@@ -69,19 +72,27 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
         <Dialog
           isOpen={isOpen}
           onClose={onClose}
-          title="Tarkenna suunnitelmaa"
+          title={t("labels.studyPlannerSpecifyPlanTitle", {
+            ns: "hops_new",
+          })}
           modifier="study-planner-specify-course"
           content={() => (
-            <>
-              <h4 className="study-planner__extra-section-title">
-                Tarkenna suunnitelmaa
-              </h4>
-
+            <div className="study-planner__extra-section">
               <div className="study-planner__extra-section-content">
-                <div className="study-planner__extra-section-input-group">
-                  <label className="study-planner__extra-section-input-group-label">
-                    Valitse kurssi-ilmentymä
+                <div className="study-planner__extra-section-group">
+                  <label className="study-planner__extra-section-group-label">
+                    {t("labels.studyPlannerSpecifySelectCourseInstanceLabel", {
+                      ns: "hops_new",
+                    })}
                   </label>
+                  <span className="study-planner__extra-section-group-label-info">
+                    {t(
+                      "labels.studyPlannerSpecifySelectCourseInstanceDescription",
+                      {
+                        ns: "hops_new",
+                      }
+                    )}
+                  </span>
                   <WorkspaceSelect
                     selectedWorkspaceInstanceId={
                       workspaceInstance && workspaceInstance.id
@@ -100,14 +111,23 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
                   />
                 </div>
 
-                <div className="study-planner__extra-section-input-group">
-                  <label className="study-planner__extra-section-input-group-label">
-                    Valitse ajankohta
+                <div className="study-planner__extra-section-group">
+                  <label className="study-planner__extra-section-group-label">
+                    {t("labels.studyPlannerSpecifySelectDateLabel", {
+                      ns: "hops_new",
+                    })}
                   </label>
+                  <span className="study-planner__extra-section-group-label-info">
+                    {t("labels.studyPlannerSpecifySelectDateDescription", {
+                      ns: "hops_new",
+                    })}
+                  </span>
                   <div className="study-planner__extra-section-date-inputs">
                     <DatePicker
                       className="study-planner__input"
-                      placeholderText="Alkaa"
+                      placeholderText={t("labels.startDate", {
+                        ns: "hops_new",
+                      })}
                       selected={startDate}
                       onChange={(date) => onChange(date, endDate)}
                       locale={outputCorrectDatePickerLocale(localize.language)}
@@ -115,7 +135,9 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
                     />
                     <DatePicker
                       className="study-planner__input"
-                      placeholderText="Päättyy"
+                      placeholderText={t("labels.endDate", {
+                        ns: "hops_new",
+                      })}
                       selected={endDate}
                       onChange={(date) => onChange(startDate, date)}
                       locale={outputCorrectDatePickerLocale(localize.language)}
@@ -124,15 +146,21 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           )}
           footer={() => (
-            <div className="study-planner__extra-section-button-group">
-              <Button buttonModifiers={["secondary"]} onClick={onClose}>
-                PERUUTA
+            <div className="dialog__button-set">
+              <Button
+                buttonModifiers={["standard-ok", "execute"]}
+                onClick={onConfirm}
+              >
+                {t("actions.save", { ns: "common" })}
               </Button>
-              <Button buttonModifiers={["primary"]} onClick={onConfirm}>
-                TARKENNA
+              <Button
+                buttonModifiers={["standard-cancel", "cancel"]}
+                onClick={onClose}
+              >
+                {t("actions.cancel", { ns: "common" })}
               </Button>
             </div>
           )}
@@ -143,21 +171,31 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
           isOpen={isOpen}
           onClose={onClose}
           modifier="study-planner-delete-course"
-          title="Vahvista poisto"
+          title={t("labels.studyPlannerRemoveFromPlanTitle", {
+            ns: "hops_new",
+          })}
           content={(closePortal) => (
-            <>
-              <h4 className="study-planner__extra-section-title">
-                Haluatko varmasti poistaa kurssin suunnitelmasta?
-              </h4>
-            </>
+            <div>
+              <span>
+                {t("labels.studyPlannerRemoveFromPlanDescription", {
+                  ns: "hops_new",
+                })}
+              </span>
+            </div>
           )}
           footer={() => (
-            <div className="study-planner__extra-section-button-group">
-              <Button buttonModifiers={["secondary"]} onClick={onClose}>
-                PERUUTA
+            <div className="dialog__button-set">
+              <Button
+                buttonModifiers={["standard-ok", "fatal"]}
+                onClick={onConfirm}
+              >
+                {t("actions.remove", { ns: "common" })}
               </Button>
-              <Button buttonModifiers={["primary"]} onClick={onConfirm}>
-                POISTA KURSSI
+              <Button
+                buttonModifiers={["standard-cancel", "cancel"]}
+                onClick={onClose}
+              >
+                {t("actions.cancel", { ns: "common" })}
               </Button>
             </div>
           )}

@@ -496,7 +496,7 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
     return {
       type,
       year,
-      title: `${year} ${type === "SPRING" ? "Spring" : "Fall"}`,
+      title: `${year} ${type === "SPRING" ? "common:labels.spring" : "common:labels.fall"}`,
       plannedCourses: [],
       workloadType: "credits",
     };
@@ -817,7 +817,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
     return {
       type,
       year,
-      title: `${year} ${type === "SPRING" ? "Spring" : "Fall"}`,
+      title: `${year} ${type === "SPRING" ? "common:labels.spring" : "common:labels.fall"}`,
       plannedCourses: [],
       workloadType: "courses",
     };

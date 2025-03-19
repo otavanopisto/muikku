@@ -13,7 +13,7 @@
 }
 
 // If lang is ru we change the font globally so certain characters render properly
-*:lang("ru") {
+*:lang(ru) {
   font-family: "Noto Sans", sans-serif;
 }
 

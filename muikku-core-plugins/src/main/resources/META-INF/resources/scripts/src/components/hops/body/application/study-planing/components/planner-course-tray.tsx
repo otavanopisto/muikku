@@ -229,7 +229,10 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
         <input
           type="text"
           className="study-planner__input study-planner__input--filter-courses"
-          placeholder="Hae opintojaksoja"
+          placeholder={t("labels.search", {
+            ns: "hops_new",
+            context: "course",
+          })}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

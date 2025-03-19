@@ -565,7 +565,11 @@
   display: flex;
   flex-flow: column nowrap;
   gap: 10px;
-  padding: 10px;
+  padding: 0;
+
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px;
+  }
 }
 
 .study-planner__extra-section-title {
@@ -580,14 +584,14 @@
   width: 100%;
 }
 
-.study-planner__extra-section-input-group {
+.study-planner__extra-section-group {
   display: flex;
   flex-flow: column nowrap;
   gap: 5px;
   width: 100%;
 }
 
-.study-planner__extra-section-input-group-label {
+.study-planner__extra-section-group-label {
   font-size: $text-mobile-font-size;
   font-weight: 600;
   width: 100%;
@@ -597,7 +601,7 @@
   }
 }
 
-.study-planner__extra-section-input-group-label-info {
+.study-planner__extra-section-group-label-info {
   font-size: 0.8125rem;
   font-weight: 300;
   width: 100%;
@@ -617,7 +621,7 @@
   }
 }
 
-.study-planner__extra-section-button-group {
+.study-planner__extra-section-group--button-set {
   display: flex;
   flex-flow: row nowrap;
   gap: 10px;

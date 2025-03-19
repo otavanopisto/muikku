@@ -14,6 +14,7 @@ import "~/sass/elements/study-planner.scss";
 import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
 import PlannerTimelineMobile from "./planner-timeline";
 import { MobilePlannerControls } from "../planner-controls";
+import { useTranslation } from "react-i18next";
 
 // Memoized components
 const MemoizedMobilePlannerControls = React.memo(MobilePlannerControls);
@@ -36,6 +37,8 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
   const { calculatedPeriods } = props;
 
   const manager = useDragDropManager();
+
+  const { t } = useTranslation(["hops_new"]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [view, setView] = useState<"list" | "table">("list");
@@ -159,7 +162,9 @@ const MobileStudyPlanner = (props: MobileStudyPlannerProps) => {
           onClick={handleOpenPlanner}
           disabled={isOpen}
         >
-          Avaa suunnittelmatyökalu
+          {t("actions.openStudyPlanner", {
+            ns: "hops_new",
+          })}
         </Button>
       </motion.div>
     </>

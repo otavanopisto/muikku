@@ -164,7 +164,7 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
 
   return (
     <Dialog
-      modifier="confirm-remove-answer-dialog"
+      modifier="study-planner-edit-month"
       disableScroll={true}
       title={`${timeContext.toLocaleDateString("fi-FI", {
         month: "long",
