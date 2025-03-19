@@ -112,9 +112,7 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
       }
 
       // Fallback
-      const defaultEndDate = new Date(
-        Math.max(currentDate.getTime(), studyStartDate.getTime())
-      );
+      const defaultEndDate = new Date(studyStartDate);
       defaultEndDate.setFullYear(defaultEndDate.getFullYear() + 4);
       return {
         effectiveEndDate: defaultEndDate,
