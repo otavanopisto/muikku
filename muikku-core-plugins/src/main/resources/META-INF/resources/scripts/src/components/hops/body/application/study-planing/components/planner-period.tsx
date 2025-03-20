@@ -70,8 +70,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
 
     const { period, renderMobile } = props;
 
-    const { title, workload, type, year, plannedCourses, isPastPeriod } =
-      period;
+    const { workload, type, year, plannedCourses, isPastPeriod } = period;
 
     const months = getPeriodMonthNames(type, t);
 
@@ -85,6 +84,15 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
         const monthIndex = startDate.getMonth();
         return months[monthIndex - (type === "AUTUMN" ? 7 : 0)] === monthName;
       });
+
+    const title =
+      type === "AUTUMN"
+        ? t("labels.autumn", {
+            year: year,
+          })
+        : t("labels.spring", {
+            year: year,
+          });
 
     return (
       <motion.div

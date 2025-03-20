@@ -10,6 +10,8 @@ interface PlannerTimelineMobileProps {
   calculatedPeriods: PlannedPeriod[];
 }
 
+const MemoizedPlannerPeriod = React.memo(PlannerPeriod);
+
 /**
  * PlannerTimeline component
  * @param props props
@@ -87,15 +89,15 @@ const PlannerTimelineMobile = React.forwardRef(
       >
         <div className="study-planner__timeline">
           {calculatedPeriods.map((period) => (
-            <PlannerPeriod
-              key={period.title}
+            <MemoizedPlannerPeriod
+              key={`${period.type}-${period.year}`}
               period={period}
               renderMobile={true}
               ref={(el) => {
                 if (el) {
-                  periodRefs.current.set(period.title, el);
+                  periodRefs.current.set(`${period.type}-${period.year}`, el);
                 } else {
-                  periodRefs.current.delete(period.title);
+                  periodRefs.current.delete(`${period.type}-${period.year}`);
                 }
               }}
             />

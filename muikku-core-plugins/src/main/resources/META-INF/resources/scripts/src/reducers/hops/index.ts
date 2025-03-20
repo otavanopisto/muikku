@@ -84,7 +84,6 @@ export type CourseChangeAction = "add" | "update" | "delete";
  * Period
  */
 export interface PlannedPeriod {
-  title: string;
   year: number;
   type: "AUTUMN" | "SPRING";
   plannedCourses: PlannedCourseWithIdentifier[];
