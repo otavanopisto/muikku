@@ -1,16 +1,11 @@
 import * as React from "react";
 import StudyPlanTool from "./study-plan-tool";
 import { StateType } from "~/reducers";
-import { StudentInfo } from "~/generated/client";
-import { CurriculumConfig } from "~/util/curriculum-config";
 import { useSelector } from "react-redux";
 /**
  * StudyPlanProps
  */
-interface StudyPlanProps {
-  studentInfo: StudentInfo;
-  curriculumConfig: CurriculumConfig | null;
-}
+interface StudyPlanProps {}
 
 /**
  * StudyPlan component

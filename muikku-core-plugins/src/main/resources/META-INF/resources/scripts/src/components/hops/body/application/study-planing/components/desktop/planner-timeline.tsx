@@ -268,13 +268,13 @@ const PlannerTimeline = React.forwardRef((props: PlannerTimelineProps, ref) => {
       <div className="study-planner__timeline" ref={timelineRef}>
         {calculatedPeriods.map((period) => (
           <MemoizedPlannerPeriod
-            key={period.title}
+            key={`${period.type}-${period.year}`}
             period={period}
             ref={(el) => {
               if (el) {
-                periodRefs.current.set(period.title, el);
+                periodRefs.current.set(`${period.type}-${period.year}`, el);
               } else {
-                periodRefs.current.delete(period.title);
+                periodRefs.current.delete(`${period.type}-${period.year}`);
               }
             }}
           />
