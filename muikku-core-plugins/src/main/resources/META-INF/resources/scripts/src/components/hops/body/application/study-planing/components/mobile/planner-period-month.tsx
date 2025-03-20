@@ -343,10 +343,10 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         </Button>
 
         <PlannerMonthEditDialog
+          title={`${title} ${year}`}
           disabled={hopsMode === "READ"}
           onConfirm={handleMonthEditConfirm}
           plannedCourses={editedPlannedCourses}
-          timeContext={new Date(year, monthIndex, 1)}
           currentSelection={courses}
         >
           <IconButton

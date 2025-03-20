@@ -13,8 +13,8 @@ import { DndProvider, useDragDropManager } from "react-dnd";
  * Props for the EditHopsEventDescriptionDialog component
  */
 interface PlannerMonthEditDialogProps {
+  title: string;
   disabled: boolean;
-  timeContext: Date;
   onConfirm: (selectedCourses: SelectedCourse[]) => void;
   children?: React.ReactElement;
   plannedCourses: PlannedCourseWithIdentifier[];
@@ -29,7 +29,7 @@ interface PlannerMonthEditDialogProps {
 const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
   props
 ) => {
-  const { onConfirm, children, plannedCourses, timeContext, currentSelection } =
+  const { onConfirm, children, plannedCourses, currentSelection, title } =
     props;
 
   const manager = useDragDropManager();
@@ -166,10 +166,7 @@ const PlannerMonthEditDialog: React.FC<PlannerMonthEditDialogProps> = (
     <Dialog
       modifier="study-planner-edit-month"
       disableScroll={true}
-      title={`${timeContext.toLocaleDateString("fi-FI", {
-        month: "long",
-        year: "numeric",
-      })}`}
+      title={title}
       content={dialogContent}
       footer={footer}
       closeOnOverlayClick={false}
