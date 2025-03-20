@@ -589,11 +589,8 @@
     },
     "labels": {
       "endDate": "Ends",
-      "other": "Other",
-      "otherPlace": "Other place",
       "grade": "Grade:",
       "grades": "Grades",
-      "retake": "Retake",
       "hopsSelect": "Select...",
       "hopsTellMore": "Tell us more",
       "hopsBackground": "Background",
@@ -814,6 +811,10 @@
       "matriculationHistory_title": "Matriculation Examination History",
       "matriculationSubject": "Subject",
       "matriculationSubjects": "Subjects:",
+      "other": "Other",
+      "otherPlace": "Other place",
+      "pastPeriodLabel": "Past",
+      "retake": "Retake",
       "search": "$t(common:labels.search)",
       "search_course": "Search courses",
       "startDate": "Starts",
@@ -835,7 +836,8 @@
       "studyPlannerSpecifySelectCourseInstanceLabel": "Select course instance",
       "studyPlannerSpecifySelectCourseInstanceDescription": "Select specific course instance which you want to complete",
       "studyPlannerSpecifySelectDateLabel": "Select date",
-      "studyPlannerSpecifySelectDateDescription": "Select desired date when you want to complete the course"
+      "studyPlannerSpecifySelectDateDescription": "Select desired date when you want to complete the course",
+      "unblockPastPeriod": "Unlock for editing"
     },
     "content": {
       "hopsFormUnsavedChanges": "You have made changes to HOPS. If you leave the page, you will lose all unsaved changes.",

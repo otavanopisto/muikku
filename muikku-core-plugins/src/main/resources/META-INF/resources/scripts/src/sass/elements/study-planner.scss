@@ -139,11 +139,42 @@
   position: relative;
 }
 
+.study-planner__period--past {
+
+  .study-planner__months-container,
+  .study-planner__period-header {
+    &::after {
+      background-color: $color-default;
+      bottom: 0;
+      content: " ";
+      cursor: not-allowed;
+      left: 0;
+      opacity: 0.6;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 2;
+    }
+  }
+}
+
 .study-planner__period-header {
   align-items: center;
   display: flex;
   padding: 5px 0;
   position: relative;
+}
+
+.study-planner__period-past-label {
+  background: lighten($color-fatal, 30%);
+  border: 1px solid lighten($color-fatal, 15%);
+  border-radius: 3px;
+  color: darken($color-fatal, 20%);
+  font-size: 0.75rem;
+  font-weight: 300;
+  line-height: 1;
+  margin: 0 5px;
+  padding: 4px;
 }
 
 .study-planner__collapse-button {
@@ -189,13 +220,65 @@
 .study-planner__scrollable-container {
   overflow-y: auto;
   overscroll-behavior: contain;
+  position: relative;
   scrollbar-color: darken($color-default-separator-border, 20%)
     $color-default-lighter-generic-background;
   scrollbar-width: thin;
 }
 
+.study-planner__past-period-unlock-wrapper {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 100px;
+  width: 100%;
+}
+
+// Past period's unlock container
+.study-planner__past-period-unlock {
+  align-items: center;
+  background: $color-default;
+  border: 1px solid $color-info;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px $color-study-plan-tool-card-boxshadow;
+  cursor: pointer;
+  display: flex;
+  flex-basis: auto;
+  flex-grow: 0; 
+  flex-shrink: 0;
+  gap: 10px;
+  padding: 10px;
+  z-index: 3;
+
+  &:hover {
+    background: $color-info;
+
+    .study-planner__past-period-unlock-icon,
+    .study-planner__past-period-unlock-label {
+      color: $color-default;
+    }    
+  }
+}
+
+.study-planner__past-period-unlock-icon {
+  color: $color-info;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.study-planner__past-period-unlock-label {
+  font-size: 0.75rem;
+}
+
 // Months list
 .study-planner__months-container {
+  position: relative;
   width: auto;
 }
 

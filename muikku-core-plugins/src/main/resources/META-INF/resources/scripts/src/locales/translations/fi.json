@@ -589,11 +589,8 @@
     },
     "labels": {
       "endDate": "Päättyy",
-      "other": "Muu",
-      "otherPlace": "Muu paikka",
       "grade": "Arvosana:",
       "grades": "Arvosanat",
-      "retake": "Uusiminen",
       "hopsSelect": "Valitse...",
       "hopsTellMore": "Kerro tarkemmin",
       "hopsBackground": "Taustatiedot",
@@ -814,6 +811,10 @@
       "matriculationHistory_title": "Yo-koehistoria",
       "matriculationSubject": "Aine",
       "matriculationSubjects": "Aineet:",
+      "other": "Muu",
+      "otherPlace": "Muu paikka",
+      "pastPeriodLabel": "Mennyt",
+      "retake": "Uusiminen",
       "search": "$t(common:labels.search)",
       "search_course": "Hae opintojaksoja",
       "startDate": "Alkaa",
@@ -835,7 +836,8 @@
       "studyPlannerSpecifySelectCourseInstanceLabel": "Valitse kurssi-ilmentymä",
       "studyPlannerSpecifySelectCourseInstanceDescription": "Valitse kurssi-ilmentymä, jonka mukaan haluat suorituksen toteuttaa",
       "studyPlannerSpecifySelectDateLabel": "Valitse ajankohta",
-      "studyPlannerSpecifySelectDateDescription": "Ajasta kurssi sinulle sopivaan ajankohtaan"
+      "studyPlannerSpecifySelectDateDescription": "Ajasta kurssi sinulle sopivaan ajankohtaan",
+      "unblockPastPeriod": "Avaa lukitus muokataksesi"
     },
     "content": {
       "hopsFormUnsavedChanges": "Olet muokkannut HOPS:ia. Jos siirryt pois sivulta menetät kaikki tekemäsi tallentamattomat muutokset.",

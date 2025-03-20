@@ -96,7 +96,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
 
     return (
       <motion.div
-        className="study-planner__period"
+        className={`study-planner__period ${isPastPeriod ? "study-planner__period--past" : ""}`}
         ref={ref}
         variants={periodVariants}
         animate={isCollapsed ? "collapsed" : "expanded"}
@@ -119,7 +119,14 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                 setIsCollapsed={setIsCollapsed}
               />
               <motion.div className="study-planner__period-title study-planner__period-title--collapsed">
-                {title} {isPastPeriod && "(Past)"}
+                {title}{" "}
+                {isPastPeriod && (
+                  <span className="study-planner__period-past-label">
+                    {t("labels.pastPeriodLabel", {
+                      ns: "hops_new",
+                    })}
+                  </span>
+                )}
                 {workload && ` - ${workload.displayValue}`}
               </motion.div>
             </motion.div>
@@ -148,10 +155,30 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                   className="study-planner__period-title"
                   variants={titleVariants}
                 >
-                  {title} {isPastPeriod && "(Past)"}
+                  {title}{" "}
+                  {isPastPeriod && (
+                    <span className="study-planner__period-past-label">
+                      {t("labels.pastPeriodLabel", {
+                        ns: "hops_new",
+                      })}
+                    </span>
+                  )}
                   {workload && ` - ${workload.displayValue}`}
                 </motion.div>
               </motion.div>
+
+              {isPastPeriod && (
+                <div className="study-planner__past-period-unlock-wrapper">
+                  <div className="study-planner__past-period-unlock">
+                    <span className="study-planner__past-period-unlock-icon icon-lock" />
+                    <span className="study-planner__past-period-unlock-label">
+                      {t("labels.unblockPastPeriod", {
+                        ns: "hops_new",
+                      })}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               <motion.div
                 className="study-planner__scrollable-container"
