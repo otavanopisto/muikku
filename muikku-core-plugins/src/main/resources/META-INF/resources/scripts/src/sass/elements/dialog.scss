@@ -372,6 +372,12 @@
   }
 }
 
+.dialog__header--study-planner-delete-course,
+.dialog__header--study-planner-specify-course,
+.dialog__header--study-planner-edit-month {
+  padding: 10px;
+}
+
 .dialog__header--guider-student {
   @include breakpoint($breakpoint-pad) {
     position: sticky;
@@ -519,6 +525,12 @@
   overscroll-behavior: contain;
   padding: $dialog-content-padding;
   width: 100%;
+}
+
+.dialog__content--study-planner-edit-month,
+.dialog__content--study-planner-specify-course,
+.dialog__content--study-planner-delete-course {
+  padding: 10px;
 }
 
 .dialog__content--workspace-signup-dialog {
