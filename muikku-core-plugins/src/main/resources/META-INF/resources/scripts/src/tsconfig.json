@@ -20,6 +20,7 @@
     "paths": {
       "~/*": ["./*"]
     },
+    "types": ["node", "webpack-env"],
     "moduleResolution": "node"
   },
   "exclude": ["node_modules"]

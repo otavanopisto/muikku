@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.model.workspace;
 
+import java.util.EnumSet;
+
 public enum WorkspaceAccess {
 
   /* Workspace is listed and can be accessed only by workspace staff members and workspace students */
@@ -12,6 +14,10 @@ public enum WorkspaceAccess {
   
   /* Workspace is listed and can be accessed by anyone */
   
-  ANYONE
-  
+  ANYONE;
+
+  /**
+   * EnumSet of WorkspaceAccess' that by default require the user to be logged in.
+   */
+  public static final EnumSet<WorkspaceAccess> LOGIN_REQUIRED = EnumSet.of(LOGGED_IN, MEMBERS_ONLY);
 }
