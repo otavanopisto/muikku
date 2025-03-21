@@ -183,9 +183,33 @@ const ProgressTimelineBar = (props: ProgressTimelineBarProps) => {
 
   return (
     <div className="study-planner__timeline-progress-container">
-      <div className="study-planner__timeline-labels">
-        <span>{localize.date(startDate)}</span>
-        <span>{localize.date(endDate)}</span>
+      <div className="study-planner__timeline-progress-flags">
+        <div className="study-planner__timeline-progress-flag study-planner__timeline-progress-flag--start-date">
+          <div className="study-planner__timeline-progress-flag-label">
+            {localize.date(startDate)}
+          </div>
+          <div className="study-planner__timeline-progress-flag-line" />
+        </div>
+        <div className="study-planner__timeline-progress-flag study-planner__timeline-progress-flag--end-date">
+          <div className="study-planner__timeline-progress-flag-label">
+            {localize.date(endDate)}
+          </div>
+          <div className="study-planner__timeline-progress-flag-line" />
+        </div>
+
+        <Flag position={currentPosition} date={currentTime} variant="current" />
+
+        {goalPosition && (
+          <Flag position={goalPosition} date={goalDate} variant="goal" />
+        )}
+
+        {estimatedPosition && (
+          <Flag
+            position={estimatedPosition}
+            date={estimatedCompletionDate}
+            variant="estimated"
+          />
+        )}
       </div>
 
       <div className="study-planner__plan-status-bar-container">
@@ -202,21 +226,6 @@ const ProgressTimelineBar = (props: ProgressTimelineBarProps) => {
         <div className="study-planner__plan-status-bar-label">
           {`${completedStudies} / ${requiredStudies}`}
         </div>
-
-        {/* Flags */}
-        <Flag position={currentPosition} date={currentTime} variant="current" />
-
-        {goalPosition && (
-          <Flag position={goalPosition} date={goalDate} variant="goal" />
-        )}
-
-        {estimatedPosition && (
-          <Flag
-            position={estimatedPosition}
-            date={estimatedCompletionDate}
-            variant="estimated"
-          />
-        )}
       </div>
     </div>
   );
@@ -264,7 +273,7 @@ const Flag: React.FC<FlagProps> = (props) => {
 
   return (
     <motion.div
-      className={`study-planner__flag study-planner__flag--${variant}`}
+      className={`study-planner__timeline-progress-flag study-planner__timeline-progress-flag--${variant}`}
       style={{ left: `${position}%` }}
       initial="initial"
       animate="animate"
@@ -273,10 +282,16 @@ const Flag: React.FC<FlagProps> = (props) => {
       layout // This will animate position changes
       layoutId={`flag-${variant}`} // This helps with smooth transitions
     >
-      <motion.div className="study-planner__flag-label" layout>
+      <motion.div
+        className="study-planner__timeline-progress-flag-label"
+        layout
+      >
         {localize.date(date)}
       </motion.div>
-      <motion.div className="study-planner__flag-line" layout />
+      <motion.div
+        className="study-planner__timeline-progress-flag-line"
+        layout
+      />
     </motion.div>
   );
 };
