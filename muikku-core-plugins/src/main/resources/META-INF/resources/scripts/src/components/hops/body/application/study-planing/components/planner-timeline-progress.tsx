@@ -317,9 +317,17 @@ interface FlagProps {
 const Flag: React.FC<FlagProps> = (props) => {
   const { position, date, variants, icon } = props;
 
-  const flagsToModifiers = variants
-    .map((variant) => `study-planner__timeline-progress-flag--${variant}`)
-    .join(" ");
+  // Determine if the flag is closer to the left or right edge
+  const isRightSide = position > 50;
+
+  const flagsToModifiers = [
+    ...variants.map(
+      (variant) => `study-planner__timeline-progress-flag--${variant}`
+    ),
+    isRightSide
+      ? "study-planner__timeline-progress-flag--on-right-side"
+      : "study-planner__timeline-progress-flag--on-left-side",
+  ].join(" ");
 
   return (
     <motion.div
@@ -329,8 +337,8 @@ const Flag: React.FC<FlagProps> = (props) => {
       animate="animate"
       exit="exit"
       variants={flagVariants}
-      layout // This will animate position changes
-      layoutId={`flag-${variants.join("-")}`} // This helps with smooth transitions
+      layout
+      layoutId={`flag-${variants.join("-")}`}
     >
       <motion.div
         className="study-planner__timeline-progress-flag-label"
