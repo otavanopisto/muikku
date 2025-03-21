@@ -18,6 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "@amcharts/amcharts4": "4.10.39",
+    "@ckeditor/ckeditor5-react": "^9.5.0",
     "@esbuild-plugins/tsconfig-paths": "0.1.2",
     "@floating-ui/react": "0.24.0",
     "@fullcalendar/interaction": "5.10.1",
@@ -29,6 +30,7 @@
     "@react-pdf/renderer": "3.1.6",
     "@redux-devtools/extension": "3.2.3",
     "audio-recorder-polyfill": "0.4.1",
+    "ckeditor5": "^44.3.0",
     "deep-equal": "2.0.5",
     "esbuild": "0.19.12",
     "esbuild-plugin-polyfill-node": "0.3.0",

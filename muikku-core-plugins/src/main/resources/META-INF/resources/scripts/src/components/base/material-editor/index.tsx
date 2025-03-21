@@ -48,6 +48,7 @@ import {
   MaterialViewRestriction,
 } from "~/generated/client";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
+import CKEditor5 from "~/components/general/ckeditor5";
 
 /**
  * MaterialEditorProps
@@ -1171,20 +1172,21 @@ class MaterialEditor extends React.Component<
                 id="materialEditorContainer"
                 className="material-editor__editor-container"
               >
-                <CKEditor
-                  ancestorHeight={this.state.height}
-                  configuration={CKEditorConfig(
-                    this.props.locale.current,
-                    this.props.status.contextPath,
-                    this.props.editorState.currentNodeWorkspace,
-                    this.props.editorState.currentDraftNodeValue,
-                    this.props.editorState.disablePlugins
-                  )}
+                <CKEditor5
+                  // ancestorHeight={this.state.height}
+                  // configuration={CKEditorConfig(
+                  //   this.props.locale.current,
+                  //   this.props.status.contextPath,
+                  //   this.props.editorState.currentNodeWorkspace,
+                  //   this.props.editorState.currentDraftNodeValue,
+                  //   this.props.editorState.disablePlugins
+                  // )}
+                  // onChange={this.updateContent}
+                  // onDrop={this.refreshAttachments}
                   onChange={this.updateContent}
-                  onDrop={this.refreshAttachments}
                 >
                   {this.props.editorState.currentDraftNodeValue.html}
-                </CKEditor>
+                </CKEditor5>
               </div>
             ) : null}
           </div>
