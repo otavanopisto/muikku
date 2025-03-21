@@ -935,7 +935,6 @@
 .study-planner__timeline-progress-flag-label {
   align-items: center;
   border-radius: 5px;
-  box-shadow: 0 1px 2px $color-study-plan-tool-card-boxshadow;
   display: flex;
   flex-flow: row nowrap;
   gap: 3px;
@@ -950,7 +949,7 @@
 }
 
 // Flag for students start date of studies
-.study-planner__timeline-progress-flag--start-date {
+.study-planner__timeline-progress-flag--start {
   align-items: flex-start;
   color: #000;
   left: 0;
@@ -968,7 +967,7 @@
 }
 
 // Flag for students end of "right to study" date of studies
-.study-planner__timeline-progress-flag--end-date {
+.study-planner__timeline-progress-flag--end {
   align-items: flex-end;
   color: #0099ff;
   right: 0;
