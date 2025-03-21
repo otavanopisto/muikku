@@ -80,7 +80,7 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
             ? estimatedDate
             : null,
         variants: ["end", "estimated"],
-        estimated: estimatedDate,
+        estimated: null,
         goal: graduationGoalDate,
       },
       {
@@ -97,7 +97,7 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
       {
         date: estimatedDate,
         variants: ["end", "estimated"],
-        estimated: estimatedDate,
+        estimated: null,
         goal: null,
       },
       {
