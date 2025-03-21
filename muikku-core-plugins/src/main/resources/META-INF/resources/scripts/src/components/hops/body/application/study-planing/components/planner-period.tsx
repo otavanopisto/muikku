@@ -5,6 +5,9 @@ import MobilePlannerPeriodMonth from "./mobile/planner-period-month";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { getPeriodMonthNames } from "../helper";
+import { PlannedCourse, StudentStudyActivity } from "~/generated/client";
+import { useSelector } from "react-redux";
+import { StateType } from "~/reducers";
 
 // Animate period to collapse
 const periodVariants: Variants = {
@@ -26,23 +29,24 @@ const periodVariants: Variants = {
   },
 };
 
-// Update title variants for the flip animation
-const titleVariants: Variants = {
-  expanded: {
-    opacity: 1,
-    transition: {
-      duration: 0.4,
-      ease: "easeInOut",
-    },
-  },
-  collapsed: {
-    opacity: 0,
-    transition: {
-      duration: 0.4,
-      ease: "easeInOut",
-    },
-  },
-};
+/**
+ * PeriodHasPlannedCourses
+ * @param plannedCourses planned courses
+ * @param studyActivity study activity
+ * @returns true if the period has only planned courses
+ */
+const PeriodHasPlannedCourses = (
+  plannedCourses: PlannedCourse[],
+  studyActivity: StudentStudyActivity[]
+) =>
+  plannedCourses.some(
+    (course) =>
+      studyActivity.find(
+        (sa) =>
+          sa.courseNumber === course.courseNumber &&
+          sa.subject === course.subjectCode
+      ) === undefined
+  );
 
 /**
  * PlannerPeriodProps
@@ -64,15 +68,55 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
   (props, ref) => {
     props = { ...defaultProps, ...props };
 
-    const { t } = useTranslation(["common"]);
-
-    const [isCollapsed, setIsCollapsed] = React.useState(false);
-
     const { period, renderMobile } = props;
-
     const { workload, type, year, plannedCourses, isPastPeriod } = period;
 
+    const { t } = useTranslation(["common"]);
+
+    const studyActivity = useSelector(
+      (state: StateType) => state.hopsNew.hopsStudyPlanState.studyActivity
+    );
+    const hopsMode = useSelector((state: StateType) => state.hopsNew.hopsMode);
+
+    const [isUnlocked, setIsUnlocked] = React.useState(false);
+    const [isCollapsed, setIsCollapsed] = React.useState(false);
+
     const months = getPeriodMonthNames(type, t);
+
+    // Check if the period has planned courses
+    const hasPlannedCourses = React.useMemo(
+      () => PeriodHasPlannedCourses(plannedCourses, studyActivity),
+      [plannedCourses, studyActivity]
+    );
+
+    // Lock the period if there are no planned courses
+    // anymore to edit or if the mode is read
+    React.useEffect(() => {
+      if (isPastPeriod && (!hasPlannedCourses || hopsMode === "READ")) {
+        setIsUnlocked(false);
+      }
+    }, [isPastPeriod, hasPlannedCourses, hopsMode]);
+
+    // Check if the period unlock button should be shown
+    const showUnlockButton = React.useMemo(() => {
+      if (
+        isPastPeriod &&
+        hasPlannedCourses &&
+        hopsMode !== "READ" &&
+        !isUnlocked
+      ) {
+        return true;
+      }
+
+      return false;
+    }, [isPastPeriod, hasPlannedCourses, hopsMode, isUnlocked]);
+
+    /**
+     * Handles unlock
+     */
+    const handleUnlock = () => {
+      setIsUnlocked(true);
+    };
 
     /**
      * Gets courses by month
@@ -96,7 +140,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
 
     return (
       <motion.div
-        className={`study-planner__period ${isPastPeriod ? "study-planner__period--past" : ""}`}
+        className={`study-planner__period ${isPastPeriod && !isUnlocked ? "study-planner__period--past" : ""}`}
         ref={ref}
         variants={periodVariants}
         animate={isCollapsed ? "collapsed" : "expanded"}
@@ -153,7 +197,13 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                 />
                 <motion.div
                   className="study-planner__period-title"
-                  variants={titleVariants}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    ease: "easeInOut",
+                  }}
                 >
                   {title}{" "}
                   {isPastPeriod && (
@@ -167,18 +217,30 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                 </motion.div>
               </motion.div>
 
-              {isPastPeriod && (
-                <div className="study-planner__past-period-unlock-wrapper">
-                  <div className="study-planner__past-period-unlock">
-                    <span className="study-planner__past-period-unlock-icon icon-lock" />
-                    <span className="study-planner__past-period-unlock-label">
-                      {t("labels.unblockPastPeriod", {
-                        ns: "hops_new",
-                      })}
-                    </span>
-                  </div>
-                </div>
-              )}
+              <AnimatePresence>
+                {showUnlockButton && (
+                  <motion.div
+                    className="study-planner__past-period-unlock-wrapper"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      duration: 0.3,
+                      ease: "easeInOut",
+                    }}
+                    onClick={handleUnlock}
+                  >
+                    <div className="study-planner__past-period-unlock">
+                      <span className="study-planner__past-period-unlock-icon icon-lock" />
+                      <span className="study-planner__past-period-unlock-label">
+                        {t("labels.unblockPastPeriod", {
+                          ns: "hops_new",
+                        })}
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <motion.div
                 className="study-planner__scrollable-container"
@@ -202,6 +264,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                         monthIndex={index + (type === "AUTUMN" ? 7 : 0)}
                         year={year}
                         courses={monthCourses}
+                        isPast={isPastPeriod}
                       />
                     ) : (
                       <PlannerPeriodMonth
@@ -210,6 +273,8 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                         monthIndex={index + (type === "AUTUMN" ? 7 : 0)}
                         year={year}
                         courses={monthCourses}
+                        isPast={isPastPeriod}
+                        disabled={isPastPeriod && !isUnlocked}
                       />
                     );
                   })}

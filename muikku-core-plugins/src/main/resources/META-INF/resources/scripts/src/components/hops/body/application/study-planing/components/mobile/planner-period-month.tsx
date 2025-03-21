@@ -31,6 +31,7 @@ interface MobilePlannerPeriodMonthProps {
   monthIndex: number;
   year: number;
   courses: PlannedCourseWithIdentifier[];
+  isPast: boolean;
 }
 
 const dropZoneVariants: Variants = {
@@ -54,7 +55,7 @@ const dropZoneVariants: Variants = {
 const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   props
 ) => {
-  const { monthIndex, title, year, courses } = props;
+  const { monthIndex, title, year, courses, isPast } = props;
 
   // Selectors
   const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
@@ -92,7 +93,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
    */
   const handleMoveCoursesHereClick = () => {
     // If there is no selected course, do nothing
-    if (!selectedCoursesIds.length) {
+    if (!selectedCoursesIds.length || isPast) {
       return;
     }
 
@@ -316,7 +317,8 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
   );
 
   // Pulse dropzone if there are selected courses or the drop indicator is shown
-  const pulseDropzone = selectedCoursesIds.length > 0 || showDropIndicator;
+  const pulseDropzone =
+    !isPast && (selectedCoursesIds.length > 0 || showDropIndicator);
 
   return (
     <div className="study-planner__month">
@@ -342,18 +344,20 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
           </AnimatePresence>
         </Button>
 
-        <PlannerMonthEditDialog
-          title={`${title} ${year}`}
-          disabled={hopsMode === "READ"}
-          onConfirm={handleMonthEditConfirm}
-          plannedCourses={editedPlannedCourses}
-          currentSelection={courses}
-        >
-          <IconButton
-            icon="plus"
-            buttonModifiers={["study-planner-month-selection"]}
-          />
-        </PlannerMonthEditDialog>
+        {!isPast && (
+          <PlannerMonthEditDialog
+            title={`${title} ${year}`}
+            disabled={hopsMode === "READ"}
+            onConfirm={handleMonthEditConfirm}
+            plannedCourses={editedPlannedCourses}
+            currentSelection={courses}
+          >
+            <IconButton
+              icon="plus"
+              buttonModifiers={["study-planner-month-selection"]}
+            />
+          </PlannerMonthEditDialog>
+        )}
       </div>
 
       <AnimatedDrawer
@@ -363,7 +367,7 @@ const MobilePlannerPeriodMonth: React.FC<MobilePlannerPeriodMonthProps> = (
         <Droppable<
           PlannedCourseWithIdentifier | (Course & { subjectCode: string })
         >
-          accept={["planned-course-card", "new-course-card"]}
+          accept={!isPast ? ["planned-course-card", "new-course-card"] : []}
           onDrop={handleDrop}
           onHover={handleDropHover}
           className="study-planner__month-content"

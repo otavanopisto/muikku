@@ -287,6 +287,42 @@ const filterSubjectsAndCourses = (
     .filter((subject) => subject.availableCourses.length > 0); // Remove subjects with no matching courses
 
 /**
+ * Gets the current active period
+ * @param periods periods
+ * @returns current active period
+ */
+export const getCurrentActivePeriod = (periods: PlannedPeriod[]) => {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+
+  return periods.find(
+    (period) =>
+      period.year === currentYear &&
+      period.type === "AUTUMN" &&
+      currentMonth >= 7 &&
+      currentMonth <= 11
+  );
+};
+
+/**
+ * Gets the current active period date range
+ * @param periods periods
+ * @returns current active period date range
+ */
+export const getCurrentActivePeriodDateRange = (periods: PlannedPeriod[]) => {
+  const currentActivePeriod = getCurrentActivePeriod(periods);
+
+  if (!currentActivePeriod) {
+    return new Date();
+  }
+
+  const { year, type } = currentActivePeriod;
+
+  return type === "AUTUMN" ? new Date(year, 7, 1) : new Date(year, 0, 0);
+};
+
+/**
  * Checks if the course is a planned course
  * @param course course
  * @returns true if the course is a planned course
