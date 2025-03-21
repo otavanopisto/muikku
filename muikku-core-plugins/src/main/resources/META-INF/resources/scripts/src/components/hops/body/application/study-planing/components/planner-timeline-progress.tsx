@@ -197,7 +197,12 @@ const ProgressTimelineBar = (props: ProgressTimelineBarProps) => {
           <div className="study-planner__timeline-progress-flag-line" />
         </div>
 
-        <Flag position={currentPosition} date={currentTime} variant="current" />
+        <Flag
+          position={currentPosition}
+          date={currentTime}
+          variant="current"
+          icon="location"
+        />
 
         {goalPosition && (
           <Flag position={goalPosition} date={goalDate} variant="goal" />
@@ -261,6 +266,7 @@ interface FlagProps {
   position: number;
   date: Date;
   variant: "current" | "goal" | "estimated";
+  icon?: string;
 }
 
 /**
@@ -269,7 +275,7 @@ interface FlagProps {
  * @returns JSX.Element
  */
 const Flag: React.FC<FlagProps> = (props) => {
-  const { position, date, variant } = props;
+  const { position, date, variant, icon } = props;
 
   return (
     <motion.div
@@ -286,7 +292,8 @@ const Flag: React.FC<FlagProps> = (props) => {
         className="study-planner__timeline-progress-flag-label"
         layout
       >
-        {localize.date(date)}
+        {icon ? <span className={`icon-${icon}`} /> : null}
+        <span>{localize.date(date)}</span>
       </motion.div>
       <motion.div
         className="study-planner__timeline-progress-flag-line"

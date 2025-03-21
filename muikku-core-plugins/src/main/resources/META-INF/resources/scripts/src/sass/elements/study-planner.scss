@@ -933,11 +933,15 @@
 }
 
 .study-planner__timeline-progress-flag-label {
-  border-radius: 3px;
+  align-items: center;
+  border-radius: 5px;
   box-shadow: 0 1px 2px $color-study-plan-tool-card-boxshadow;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 3px;
   font-size: 0.75rem;
   line-height: 1;
-  padding: 4px;
+  padding: 5px;
 }
 
 .study-planner__timeline-progress-flag-line {
@@ -959,7 +963,7 @@
 
   .study-planner__timeline-progress-flag-line {
     background: $color-study-plan-studies-start-color;
-    transform: translateX(5px);
+    transform: translateX(10px);
    }
 }
 
@@ -977,7 +981,7 @@
 
   .study-planner__timeline-progress-flag-line {
     background: $color-study-plan-studies-end-color;
-    transform: translateX(-5px);
+    transform: translateX(-10px);
    }
 }
 
