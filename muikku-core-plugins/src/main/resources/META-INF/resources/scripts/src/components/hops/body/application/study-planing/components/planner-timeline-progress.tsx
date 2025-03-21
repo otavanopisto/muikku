@@ -19,9 +19,10 @@ interface PlannerTimelineProgressProps {
  * TimelineDates
  */
 interface TimelineDates {
-  effectiveEndDate: Date;
-  estimatedCompletionFlagDate: Date | null;
-  goalFlagDate: Date | null;
+  date: Date;
+  variants: FlagVariant;
+  estimated: Date | null;
+  goal: Date | null;
 }
 
 /**
@@ -64,69 +65,105 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
       ? calculateEstimatedCompletionDate(estimatedTimeToCompletion)
       : null;
 
-  // Determine which dates to use for end date and flags
-  const { effectiveEndDate, estimatedCompletionFlagDate, goalFlagDate } =
-    ((): TimelineDates => {
-      // If we have both estimated and goal dates, compare them
-      if (estimatedDate && graduationGoalDate) {
-        if (estimatedDate > graduationGoalDate) {
-          return {
-            effectiveEndDate: estimatedDate,
-            estimatedCompletionFlagDate: null,
-            goalFlagDate: graduationGoalDate,
-          };
-        } else {
-          return {
-            effectiveEndDate: graduationGoalDate,
-            goalFlagDate: null,
-            estimatedCompletionFlagDate: estimatedDate,
-          };
-        }
-      }
+  /**
+   * Determine timeline dates
+   * @returns timeline dates
+   */
+  const determineTimelineDates = (): TimelineDates => {
+    // Order dates by priority and use the first valid one
+    const endDateOptions: TimelineDates[] = [
+      {
+        date:
+          estimatedDate &&
+          graduationGoalDate &&
+          estimatedDate > graduationGoalDate
+            ? estimatedDate
+            : null,
+        variants: ["end", "estimated"],
+        estimated: estimatedDate,
+        goal: graduationGoalDate,
+      },
+      {
+        date:
+          estimatedDate &&
+          graduationGoalDate &&
+          estimatedDate <= graduationGoalDate
+            ? graduationGoalDate
+            : null,
+        variants: ["end", "goal"],
+        estimated: estimatedDate,
+        goal: null,
+      },
+      {
+        date: estimatedDate,
+        variants: ["end", "estimated"],
+        estimated: estimatedDate,
+        goal: null,
+      },
+      {
+        date:
+          graduationGoalDate && graduationGoalDate > currentDate
+            ? graduationGoalDate
+            : null,
+        variants: ["end", "goal"],
+        estimated: null,
+        goal: null,
+      },
+      {
+        date:
+          studyEndTimeDate && studyEndTimeDate > currentDate
+            ? studyEndTimeDate
+            : null,
+        variants: ["end"],
+        estimated: null,
+        goal: null,
+      },
+    ];
 
-      // If we only have estimated date
-      if (estimatedDate) {
-        return {
-          effectiveEndDate: estimatedDate,
-          estimatedCompletionFlagDate: estimatedDate,
-          goalFlagDate: null,
-        };
-      }
+    const validOption = endDateOptions.find((option) => option.date !== null);
 
-      // If we only have graduation goal date
-      if (graduationGoalDate && graduationGoalDate > currentDate) {
-        return {
-          effectiveEndDate: graduationGoalDate,
-          estimatedCompletionFlagDate: null,
-          goalFlagDate: null,
-        };
-      }
+    if (validOption) {
+      return validOption;
+    }
 
-      // If we have study end time date
-      if (studyEndTimeDate && studyEndTimeDate > currentDate) {
-        return {
-          effectiveEndDate: studyEndTimeDate,
-          estimatedCompletionFlagDate: null,
-          goalFlagDate: null,
-        };
-      }
+    // Fallback case
+    const defaultEndDate = new Date(studyStartDate);
+    defaultEndDate.setFullYear(defaultEndDate.getFullYear() + 4);
+    return {
+      date: defaultEndDate,
+      variants: ["end"],
+      estimated: null,
+      goal: null,
+    };
+  };
 
-      // Fallback
-      const defaultEndDate = new Date(studyStartDate);
-      defaultEndDate.setFullYear(defaultEndDate.getFullYear() + 4);
-      return {
-        effectiveEndDate: defaultEndDate,
-        estimatedCompletionFlagDate: null,
-        goalFlagDate: null,
-      };
-    })();
+  const {
+    date: effectiveEndDate,
+    variants: effectiveEndDateVariants,
+    estimated,
+    goal,
+  } = determineTimelineDates();
+
+  const startFlag = (
+    <Flag position={0} date={studyStartDate} variants={["start"]} />
+  );
+
+  const endFlag = (
+    <Flag
+      position={100}
+      date={effectiveEndDate}
+      variants={effectiveEndDateVariants}
+    />
+  );
 
   return (
     <ProgressTimelineBar
+      startFlag={startFlag}
+      endFlag={endFlag}
       startDate={studyStartDate}
       endDate={effectiveEndDate}
-      goalDate={goalFlagDate}
-      estimatedCompletionDate={estimatedCompletionFlagDate}
+      goalDate={goal}
+      estimatedCompletionDate={estimated}
       completedStudies={completedStudies}
       requiredStudies={requiredStudies}
     />
@@ -139,6 +176,8 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
 interface ProgressTimelineBarProps {
   startDate: Date;
   endDate: Date;
+  startFlag: React.ReactNode;
+  endFlag: React.ReactNode;
   goalDate?: Date | null;
   estimatedCompletionDate?: Date | null;
   completedStudies: number;
@@ -152,6 +191,8 @@ interface ProgressTimelineBarProps {
  */
 const ProgressTimelineBar = (props: ProgressTimelineBarProps) => {
   const {
+    startFlag,
+    endFlag,
     startDate,
     endDate,
     goalDate,
@@ -184,35 +225,25 @@ const ProgressTimelineBar = (props: ProgressTimelineBarProps) => {
   return (
     <div className="study-planner__timeline-progress-container">
       <div className="study-planner__timeline-progress-flags">
-        <div className="study-planner__timeline-progress-flag study-planner__timeline-progress-flag--start-date">
-          <div className="study-planner__timeline-progress-flag-label">
-            {localize.date(startDate)}
-          </div>
-          <div className="study-planner__timeline-progress-flag-line" />
-        </div>
-        <div className="study-planner__timeline-progress-flag study-planner__timeline-progress-flag--end-date">
-          <div className="study-planner__timeline-progress-flag-label">
-            {localize.date(endDate)}
-          </div>
-          <div className="study-planner__timeline-progress-flag-line" />
-        </div>
+        {startFlag}
+        {endFlag}
 
         <Flag
           position={currentPosition}
           date={currentTime}
-          variant="current"
+          variants={["current"]}
           icon="location"
         />
 
         {goalPosition && (
-          <Flag position={goalPosition} date={goalDate} variant="goal" />
+          <Flag position={goalPosition} date={goalDate} variants={["goal"]} />
         )}
 
         {estimatedPosition && (
           <Flag
             position={estimatedPosition}
             date={estimatedCompletionDate}
-            variant="estimated"
+            variants={["estimated"]}
           />
         )}
       </div>
@@ -259,13 +290,22 @@ const flagVariants = {
   },
 };
 
+type FlagVariant =
+  | ["start"]
+  | ["end"]
+  | ["current"]
+  | ["goal"]
+  | ["estimated"]
+  | ["end", "goal"]
+  | ["end", "estimated"];
+
 /**
  * FlagProps
  */
 interface FlagProps {
   position: number;
   date: Date;
-  variant: "current" | "goal" | "estimated";
+  variants: FlagVariant;
   icon?: string;
 }
 
@@ -275,18 +315,22 @@ interface FlagProps {
  * @returns JSX.Element
  */
 const Flag: React.FC<FlagProps> = (props) => {
-  const { position, date, variant, icon } = props;
+  const { position, date, variants, icon } = props;
+
+  const flagsToModifiers = variants
+    .map((variant) => `study-planner__timeline-progress-flag--${variant}`)
+    .join(" ");
 
   return (
     <motion.div
-      className={`study-planner__timeline-progress-flag study-planner__timeline-progress-flag--${variant}`}
+      className={`study-planner__timeline-progress-flag ${flagsToModifiers}`}
       style={{ left: `${position}%` }}
       initial="initial"
       animate="animate"
       exit="exit"
       variants={flagVariants}
       layout // This will animate position changes
-      layoutId={`flag-${variant}`} // This helps with smooth transitions
+      layoutId={`flag-${variants.join("-")}`} // This helps with smooth transitions
     >
       <motion.div
         className="study-planner__timeline-progress-flag-label"
