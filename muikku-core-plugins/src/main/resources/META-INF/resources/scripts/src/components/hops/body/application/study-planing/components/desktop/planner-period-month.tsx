@@ -30,6 +30,8 @@ interface PlannerPeriodMonthProps {
   monthIndex: number;
   year: number;
   courses: PlannedCourseWithIdentifier[];
+  disabled: boolean;
+  isPast: boolean;
 }
 
 const dropZoneVariants: Variants = {
@@ -51,7 +53,7 @@ const dropZoneVariants: Variants = {
  * @param props props
  */
 const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
-  const { monthIndex, title, year, courses } = props;
+  const { monthIndex, title, year, courses, disabled, isPast } = props;
 
   // Selectors
   const { hopsMode, hopsCurriculumConfig: curriculumConfig } = useSelector(
@@ -90,7 +92,7 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
    */
   const handleMoveCourseHereClick = () => {
     // If there is no selected course, do nothing
-    if (!selectedCoursesIds.length) {
+    if (!selectedCoursesIds.length || disabled || isPast) {
       return;
     }
 
@@ -263,8 +265,12 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
     [isAlreadyInMonth]
   );
 
+  const isDisabled = hopsMode === "READ" || disabled;
+
   // Pulse dropzone if there are selected courses or the drop indicator is shown
-  const pulseDropzone = selectedCoursesIds.length > 0 || showDropIndicator;
+  // and the period is not past
+  const pulseDropzone =
+    !isPast && (selectedCoursesIds.length > 0 || showDropIndicator);
 
   return (
     <div className="study-planner__month">
@@ -296,14 +302,14 @@ const PlannerPeriodMonth: React.FC<PlannerPeriodMonthProps> = (props) => {
         className="study-planner__month-wrapper"
       >
         <Droppable
-          accept={["planned-course-card", "new-course-card"]}
+          accept={!isPast ? ["planned-course-card", "new-course-card"] : []}
           onDrop={handleDrop}
           onHover={handleDropHover}
           className="study-planner__month-content"
         >
           {courses.length > 0 && (
             <PlannerPlannedList
-              disabled={hopsMode === "READ"}
+              disabled={isDisabled}
               courses={courses}
               selectedCoursesIds={selectedCoursesIds}
               originalPlannedCourses={originalPlannedCourses}

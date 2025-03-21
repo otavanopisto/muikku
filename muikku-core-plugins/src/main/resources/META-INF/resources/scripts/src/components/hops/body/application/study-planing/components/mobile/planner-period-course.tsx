@@ -13,6 +13,7 @@ import { getEmptyImage } from "react-dnd-html5-backend";
 import AnimateHeight from "react-animate-height";
 import WorkspaceSelect from "../workspace-select";
 import { useTranslation } from "react-i18next";
+import { useActivePeriod } from "../../context/active-period-context";
 
 /**
  * MobilePlannerPeriodCourseProps
@@ -31,6 +32,8 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
   props
 ) => {
   const { course, disabled, curriculumConfig } = props;
+
+  const { activePeriodStartDate } = useActivePeriod();
 
   const { t } = useTranslation(["hops_new", "common"]);
 
@@ -128,6 +131,7 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
                       placeholderText={t("labels.startDate", {
                         ns: "hops_new",
                       })}
+                      minDate={activePeriodStartDate}
                       selected={startDate}
                       onChange={(date) => onChange(date, endDate)}
                       locale={outputCorrectDatePickerLocale(localize.language)}
@@ -138,6 +142,7 @@ const MobilePlannerPeriodCourse: React.FC<MobilePlannerPeriodCourseProps> = (
                       placeholderText={t("labels.endDate", {
                         ns: "hops_new",
                       })}
+                      minDate={startDate}
                       selected={endDate}
                       onChange={(date) => onChange(startDate, date)}
                       locale={outputCorrectDatePickerLocale(localize.language)}

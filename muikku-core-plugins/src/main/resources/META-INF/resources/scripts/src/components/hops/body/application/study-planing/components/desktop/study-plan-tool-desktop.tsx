@@ -10,6 +10,7 @@ import StudyPlannerDragLayer from "../react-dnd/planner-drag-layer";
 import PlannerTimeline from "./planner-timeline";
 import { StateType } from "~/reducers";
 import { useDispatch, useSelector } from "react-redux";
+import { ActivePeriodProvider } from "../../context/active-period-context";
 
 /**
  * DesktopStudyPlannerProps
@@ -130,33 +131,35 @@ const DesktopStudyPlanner = (props: DesktopStudyPlannerProps) => {
   }, []);
 
   return (
-    <motion.div
-      className={`study-planner ${isFullScreen ? "study-planner--full-screen" : ""}`}
-      variants={variants}
-      animate={isFullScreen ? "fullScreen" : "default"}
-    >
-      <StudyPlannerDragLayer />
-      <MemoizedPlannerControls
-        fullScreen={isFullScreen}
-        onViewChange={handleViewChange}
-        onPeriodChange={handlePeriodChange}
-        onFullScreen={handleFullScreen}
-      />
-      <div className="study-planner__content">
-        <div className="study-planner__sidebar">
-          <MemoizedPlannerCourseTray
-            plannedCourses={memoizedPlannedCourses}
-            onCourseClick={handleCourseSelectClick}
-            isCourseSelected={isSelected}
+    <ActivePeriodProvider calculatedPeriods={memoizedCalculatedPeriods}>
+      <motion.div
+        className={`study-planner ${isFullScreen ? "study-planner--full-screen" : ""}`}
+        variants={variants}
+        animate={isFullScreen ? "fullScreen" : "default"}
+      >
+        <StudyPlannerDragLayer />
+        <MemoizedPlannerControls
+          fullScreen={isFullScreen}
+          onViewChange={handleViewChange}
+          onPeriodChange={handlePeriodChange}
+          onFullScreen={handleFullScreen}
+        />
+        <div className="study-planner__content">
+          <div className="study-planner__sidebar">
+            <MemoizedPlannerCourseTray
+              plannedCourses={memoizedPlannedCourses}
+              onCourseClick={handleCourseSelectClick}
+              isCourseSelected={isSelected}
+            />
+          </div>
+
+          <MemoizedPlannerTimeline
+            ref={timelineComponentRef}
+            calculatedPeriods={memoizedCalculatedPeriods}
           />
         </div>
-
-        <MemoizedPlannerTimeline
-          ref={timelineComponentRef}
-          calculatedPeriods={memoizedCalculatedPeriods}
-        />
-      </div>
-    </motion.div>
+      </motion.div>
+    </ActivePeriodProvider>
   );
 };
 

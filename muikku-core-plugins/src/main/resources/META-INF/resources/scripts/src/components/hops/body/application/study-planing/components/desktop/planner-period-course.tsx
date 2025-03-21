@@ -11,6 +11,7 @@ import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { AnimatedDrawer } from "../Animated-drawer";
 import WorkspaceSelect from "../workspace-select";
 import { useTranslation } from "react-i18next";
+import { useActivePeriod } from "../../context/active-period-context";
 
 /**
  * DesktopPlannerPeriodCourseProps
@@ -29,6 +30,8 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
   props
 ) => {
   const { course, disabled, curriculumConfig } = props;
+
+  const { activePeriodStartDate } = useActivePeriod();
 
   const [pendingDelete, setPendingDelete] = React.useState(false);
   const [pendingSpecify, setPendingSpecify] = React.useState(false);
@@ -100,6 +103,8 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
     <BasePlannerPeriodCourse
       {...props}
       ref={drag}
+      // This is mandatory for the drag to notice the changes when disabled has changed
+      key={`${course.identifier}-${disabled}`}
       isDragging={isDragging}
       renderSpecifyContent={({
         onClose,
@@ -182,6 +187,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                     ns: "hops_new",
                   })}
                   selected={startDate}
+                  minDate={activePeriodStartDate}
                   onChange={(date) => onChange(date, endDate)}
                   locale={outputCorrectDatePickerLocale(localize.language)}
                   dateFormat="P"
@@ -192,6 +198,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                     ns: "hops_new",
                   })}
                   selected={endDate}
+                  minDate={startDate}
                   onChange={(date) => onChange(startDate, date)}
                   locale={outputCorrectDatePickerLocale(localize.language)}
                   dateFormat="P"
