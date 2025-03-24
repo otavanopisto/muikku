@@ -207,7 +207,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
       HtmlMaterial htmlMaterial = htmlMaterialDAO.findById(faultyMaterial.getId());
       if (htmlMaterial == null) {
-        response.append("<p>Html material not found</p>");
+        response.append("<p>Html material not found</p><hr/>");
         continue;
       }
       String html = htmlMaterial.getHtml();
@@ -260,9 +260,9 @@ public class HtmlMaterialRESTService extends PluginRESTService {
             response.append(String.format("<p>Workspace material %d <a href=\"%s\" target=\"_blank\">%s</a> (%s)</p>", workspaceMaterial.getId(), workspacePath, workspaceName.getDisplayName(), materialTitle));
           }
           workspacesPrinted = true;
-          if (!everythingsFine) {
-            break; // out of the while loop
-          }
+        }
+        if (!everythingsFine) {
+          break; // out of the while loop
         }
         
         // Start going through the faulty stuff
