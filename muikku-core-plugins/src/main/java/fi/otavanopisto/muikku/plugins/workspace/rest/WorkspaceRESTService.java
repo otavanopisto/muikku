@@ -1995,7 +1995,8 @@ public class WorkspaceRESTService extends PluginRESTService {
           entity.getAssignmentType(),
           entity.getCorrectAnswers(),
           entity.getTitleLanguage(),
-          entity.getMaxPoints());
+          entity.getMaxPoints(),
+          entity.getAi());
       if (entity.getNextSiblingId() != null) {
         WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeById(entity.getNextSiblingId());
         if (nextSibling == null) {
@@ -2030,7 +2031,8 @@ public class WorkspaceRESTService extends PluginRESTService {
                     workspaceMaterial.getAssignmentType(),
                     workspaceMaterial.getCorrectAnswers(),
                     workspaceMaterial.getLanguage(),
-                    workspaceMaterial.getMaxPoints());
+                    workspaceMaterial.getMaxPoints(),
+                    workspaceMaterial.getAi());
               }
             }
           }
@@ -2745,7 +2747,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(),
-        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints());
+        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
@@ -3087,7 +3089,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         restWorkspaceMaterial.getCorrectAnswers(),
         restWorkspaceMaterial.getTitle(),
         restWorkspaceMaterial.getTitleLanguage(),
-        restWorkspaceMaterial.getMaxPoints());
+        restWorkspaceMaterial.getMaxPoints(),
+        restWorkspaceMaterial.getAi());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
 
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
@@ -3993,6 +3996,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       Long replyId = Long.parseLong(identifiers[1]);
       fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
       if (reply != null) {
+        result.setWorkspaceMaterialId(reply.getWorkspaceMaterial().getId());
+        result.setWorkspaceMaterialPath(reply.getWorkspaceMaterial().getPath());
         result.setWorkspaceMaterialReplyState(reply.getState());
         HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(reply.getWorkspaceMaterial().getMaterialId());
         if (htmlMaterial != null) {

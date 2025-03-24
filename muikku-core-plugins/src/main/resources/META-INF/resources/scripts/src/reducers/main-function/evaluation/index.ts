@@ -15,7 +15,7 @@ import {
   EvaluationGradeScale,
   EvaluationJournalFeedback,
   MaterialCompositeReply,
-  WorkspaceJournal,
+  WorkspaceJournalEntry,
 } from "~/generated/client";
 import _ from "lodash";
 
@@ -44,7 +44,7 @@ export interface EvaluationState {
   evaluationSelectedAssessmentId?: EvaluationAssessmentRequest;
   evaluationAssessmentEvents?: EvaluationStateAndData<EvaluationEvent[]>;
   evaluationJournalFeedback?: EvaluationStateAndData<EvaluationJournalFeedback>;
-  evaluationDiaryEntries?: EvaluationStateAndData<WorkspaceJournal[]>;
+  evaluationDiaryEntries?: EvaluationStateAndData<WorkspaceJournalEntry[]>;
   evaluationJournalComments: {
     comments: EvaluationJournalCommentsByJournal;
     commentsLoaded: number[];

@@ -14,6 +14,7 @@ import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAI;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial_;
@@ -25,7 +26,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 
   public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String title, String urlName, Integer orderNumber,
       Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
-      WorkspaceLanguage language, Double maxPoints) {
+      WorkspaceLanguage language, Double maxPoints, WorkspaceMaterialAI ai) {
 
     WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
     workspaceMaterial.setParent(parent);
@@ -38,6 +39,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     workspaceMaterial.setTitle(title);
     workspaceMaterial.setLanguage(language);
     workspaceMaterial.setMaxPoints(maxPoints);
+    workspaceMaterial.setAi(ai);
 
     return persist(workspaceMaterial);
   }
@@ -172,6 +174,11 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 
   public WorkspaceMaterial updateMaxPoints(WorkspaceMaterial workspaceMaterial, Double maxPoints) {
     workspaceMaterial.setMaxPoints(maxPoints);
+    return persist(workspaceMaterial);
+  }
+  
+  public WorkspaceMaterial updateAi(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialAI ai) {
+    workspaceMaterial.setAi(ai);
     return persist(workspaceMaterial);
   }
 

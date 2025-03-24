@@ -98,6 +98,7 @@
 }
 
 .tabs__tab-labels--workspace-materials {
+  align-items: flex-start;
   border-bottom: 1px solid $color-application-panel-box-border;
 }
 
@@ -124,11 +125,11 @@
   z-index: 1;
 
   &:first-child {
-    margin: 2px 2px 2px 0;
+    margin: 0 2px 0 0;
   }
 
   &:last-child {
-    margin: 2px 0 2px 2px;
+    margin: 0 0 0 2px;
   }
 
   &.active {
@@ -151,6 +152,7 @@
   margin: 0;
 
   &.active {
+    border-bottom: 2px solid $color-default;
     border-left: 1px solid $color-application-panel-box-border;
     border-right: 1px solid $color-application-panel-box-border;
     border-top: 1px solid $color-application-panel-box-border;

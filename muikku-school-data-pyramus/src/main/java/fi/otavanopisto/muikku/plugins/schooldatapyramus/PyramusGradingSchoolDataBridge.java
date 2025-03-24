@@ -467,6 +467,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
           assessment.setPassingGrade(caa.getPassingGrade());
           assessment.setState(caa.getState().toString());
           assessment.setText(caa.getText());
+          assessment.setEvaluatorName(caa.getEvaluatorName());
           assessments.add(assessment);
         }
       }
