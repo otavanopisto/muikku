@@ -12,14 +12,14 @@ import fi.otavanopisto.muikku.plugins.material.model.FaultyMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.FaultyMaterial_;
 
 public class FaultyMaterialDAO extends CorePluginsDAO<FaultyMaterial> {
-	
-	private static final long serialVersionUID = -4795805032852772786L;
+  
+  private static final long serialVersionUID = -4795805032852772786L;
 
   public void delete(FaultyMaterial faultyMaterial) {
-	  super.delete(faultyMaterial);
-	}
+    super.delete(faultyMaterial);
+  }
 
-	public List<FaultyMaterial> list(Long fromId, int maxResults) {
+  public List<FaultyMaterial> list(Long fromId, int maxResults) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -34,6 +34,6 @@ public class FaultyMaterialDAO extends CorePluginsDAO<FaultyMaterial> {
     criteria.orderBy(criteriaBuilder.asc(root.get(FaultyMaterial_.id)));
    
     return entityManager.createQuery(criteria).setMaxResults(maxResults).getResultList();
-	}
-	
+  }
+  
 }
