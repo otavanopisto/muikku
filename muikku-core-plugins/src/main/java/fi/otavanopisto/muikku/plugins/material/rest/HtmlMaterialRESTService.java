@@ -207,7 +207,8 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
       HtmlMaterial htmlMaterial = htmlMaterialDAO.findById(faultyMaterial.getId());
       if (htmlMaterial == null) {
-        response.append("<p>Html material not found</p><hr/>");
+        response.append("<p><b><font color=\"green\">Html material not found</font></b></p><hr/>");
+        faultyMaterialDAO.delete(faultyMaterial);
         continue;
       }
       String html = htmlMaterial.getHtml();
@@ -306,12 +307,14 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         html = StringUtils.replace(html, faultyLink, attachmentName);
         changesMade = true;
       }
-      if (everythingsFine && changesMade) {
-        htmlMaterialDAO.updateData(htmlMaterial, html);
+      if (everythingsFine) {
+        if (changesMade) {
+          htmlMaterialDAO.updateData(htmlMaterial, html);
+        }
         faultyMaterialDAO.delete(faultyMaterial);
         response.append("<p><b><font color=\"green\">Fixed</font></b></p>");
       }
-      else if (!everythingsFine) {
+      else {
         response.append("<p><b><font color=\"red\">Fix manually or dismiss</font></b></p>");
       }
       response.append("<hr/>");
