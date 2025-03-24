@@ -173,7 +173,6 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   
   @GET
   @Path("/deleteFaultyMaterial/{ID}")
-  @Produces("text/html")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteFaultyMaterial(@PathParam("ID") Long id) {
     if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
