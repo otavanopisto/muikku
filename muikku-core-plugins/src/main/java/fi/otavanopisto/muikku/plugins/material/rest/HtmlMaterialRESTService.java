@@ -216,7 +216,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       boolean workspacesPrinted = false;
       List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByMaterialId(htmlMaterial.getId());
       if (workspaceMaterials.isEmpty()) {
-        response.append("<p>Html material not used in any workspace</p><hr/>");
+        response.append("<p><b><font color=\"green\">Html material not used in any workspace</font></b></p><hr/>");
         faultyMaterialDAO.delete(faultyMaterial);
         continue;
       }
@@ -309,10 +309,10 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       if (everythingsFine && changesMade) {
         htmlMaterialDAO.updateData(htmlMaterial, html);
         faultyMaterialDAO.delete(faultyMaterial);
-        response.append("<p>Fixed</p>");
+        response.append("<p><b><font color=\"green\">Fixed</font></b></p>");
       }
       else if (!everythingsFine) {
-        response.append("<p>Fix manually or dismiss</p>");
+        response.append("<p><b><font color=\"red\">Fix manually or dismiss</font></b></p>");
       }
       response.append("<hr/>");
     }
