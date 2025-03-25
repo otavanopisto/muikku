@@ -29,7 +29,7 @@ import {
   UpdateWorkspaceAssigmentAssessmentRequest,
   CreateWorkspaceJournalCommentRequest,
   UpdateWorkspaceJournalCommentRequest,
-  WorkspaceJournal,
+  WorkspaceJournalEntry,
   MaterialCompositeReply,
   UpdateBilledPriceRequest,
   InterimEvaluationRequest,
@@ -202,7 +202,7 @@ export type EVALUATION_JOURNAL_STATE_UPDATE = SpecificActionType<
 
 export type EVALUATION_JOURNAL_EVENTS_LOAD = SpecificActionType<
   "EVALUATION_JOURNAL_EVENTS_LOAD",
-  WorkspaceJournal[]
+  WorkspaceJournalEntry[]
 >;
 
 // EVALUATION JOURNAL COMMENTS
@@ -223,7 +223,7 @@ export type EVALUATION_JOURNAL_COMMENTS_LOAD = SpecificActionType<
 export type EVALUATION_JOURNAL_COMMENTS_CREATE = SpecificActionType<
   "EVALUATION_JOURNAL_COMMENTS_CREATE",
   {
-    updatedJournalEntryList: WorkspaceJournal[];
+    updatedJournalEntryList: WorkspaceJournalEntry[];
     updatedCommentsList: EvaluationJournalCommentsByJournal;
   }
 >;
@@ -238,7 +238,7 @@ export type EVALUATION_JOURNAL_COMMENTS_UPDATE = SpecificActionType<
 export type EVALUATION_JOURNAL_COMMENTS_DELETE = SpecificActionType<
   "EVALUATION_JOURNAL_COMMENTS_DELETE",
   {
-    updatedJournalEntryList: WorkspaceJournal[];
+    updatedJournalEntryList: WorkspaceJournalEntry[];
     updatedCommentsList: EvaluationJournalCommentsByJournal;
   }
 >;

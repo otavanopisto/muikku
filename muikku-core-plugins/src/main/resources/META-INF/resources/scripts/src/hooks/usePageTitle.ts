@@ -30,7 +30,7 @@ const getRouteTitles = (t: TFunction, workspace: WorkspaceDataType | null) => {
 
   // Static routes
   const baseRoutes: Record<string, string> = {
-    "/": `${t("home", { ns: "pageTitles" })} | ${appName}`,
+    "/": `${appName}`,
     "/announcements": `${t("announcements", { ns: "pageTitles" })} | ${appName}`,
     "/announcer": `${t("announcer", { ns: "pageTitles" })} | ${appName}`,
     "/ceepos/done": `${t("ceeposDone", { ns: "pageTitles" })} | ${appName}`,
@@ -48,7 +48,7 @@ const getRouteTitles = (t: TFunction, workspace: WorkspaceDataType | null) => {
 
   // Dynamic workspace routes with pattern
   const workspaceRoutes: Record<string, string> = {
-    "/workspace/:workspaceUrl": `${t("home", { ns: "pageTitles", context: "workspace", workspaceName: workspaceTitle })} | ${appName}`,
+    "/workspace/:workspaceUrl": `${workspaceTitle} | ${appName}`,
     "/workspace/:workspaceUrl/help": `${t("instructions", { ns: "pageTitles", context: "workspace", workspaceName: workspaceTitle })} | ${appName}`,
     "/workspace/:workspaceUrl/materials": `${t("materials", { ns: "pageTitles", context: "workspace", workspaceName: workspaceTitle })} | ${appName}`,
     "/workspace/:workspaceUrl/discussions": `${t("discussions", { ns: "pageTitles", context: "workspace", workspaceName: workspaceTitle })} | ${appName}`,
