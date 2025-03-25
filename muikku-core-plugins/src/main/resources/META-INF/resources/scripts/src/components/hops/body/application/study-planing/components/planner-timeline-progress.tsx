@@ -232,7 +232,6 @@ const ProgressTimelineBar = (props: ProgressTimelineBarProps) => {
           position={currentPosition}
           date={currentTime}
           variants={["current"]}
-          icon="location"
         />
 
         {goalPosition && (
@@ -306,7 +305,6 @@ interface FlagProps {
   position: number;
   date: Date;
   variants: FlagVariant;
-  icon?: string;
 }
 
 /**
@@ -315,7 +313,7 @@ interface FlagProps {
  * @returns JSX.Element
  */
 const Flag: React.FC<FlagProps> = (props) => {
-  const { position, date, variants, icon } = props;
+  const { position, date, variants } = props;
 
   // Determine if the flag is closer to the left or right edge
   const isRightSide = position > 50;
@@ -332,7 +330,9 @@ const Flag: React.FC<FlagProps> = (props) => {
   return (
     <motion.div
       className={`study-planner__timeline-progress-flag ${flagsToModifiers}`}
-      style={{ left: `${position}%` }}
+      style={
+        isRightSide ? { right: `${100 - position}%` } : { left: `${position}%` }
+      }
       initial="initial"
       animate="animate"
       exit="exit"
@@ -341,11 +341,14 @@ const Flag: React.FC<FlagProps> = (props) => {
       layoutId={`flag-${variants.join("-")}`}
     >
       <motion.div
-        className="study-planner__timeline-progress-flag-label"
         layout
+        className="study-planner__timeline-progress-flag-icon"
+      />
+      <motion.div
+        layout
+        className="study-planner__timeline-progress-flag-label"
       >
-        {icon ? <span className={`icon-${icon}`} /> : null}
-        <span>{localize.date(date)}</span>
+        {localize.date(date)}
       </motion.div>
       <motion.div
         className="study-planner__timeline-progress-flag-line"

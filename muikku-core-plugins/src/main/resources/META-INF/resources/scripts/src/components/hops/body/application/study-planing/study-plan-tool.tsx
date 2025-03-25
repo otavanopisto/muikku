@@ -108,15 +108,20 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
             <div className="hops-container__row">
               <div className="hops__form-element-container">
-                <label className="hops__label" htmlFor="graduationGoalDate">
-                  {t("labels.studyPlannerFormGraduationDateTitle", {
-                    ns: "hops_new",
-                  })}
-                </label>
-                <div className="hops-container__helper-text">
-                  {t("labels.studyPlannerFormGraduationDateDescription", {
-                    ns: "hops_new",
-                  })}
+                <div className="hops__form-element-field-title-container">
+                  <div className="hops__form-element-icon hops__form-element-icon--goal"></div>
+                  <div className="hops__form-element-label-container">
+                    <label className="hops__label" htmlFor="graduationGoalDate">
+                      {t("labels.studyPlannerFormGraduationDateTitle", {
+                        ns: "hops_new",
+                      })}
+                    </label>
+                    <div className="hops-container__helper-text">
+                      {t("labels.studyPlannerFormGraduationDateDescription", {
+                        ns: "hops_new",
+                      })}
+                    </div>
+                  </div>
                 </div>
                 <DatePicker
                   className="hops__input"
@@ -135,15 +140,20 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
               </div>
 
               <div className="hops__form-element-container">
-                <label className="hops__label" htmlFor="hoursPerWeek">
-                  {t("labels.studyPlannerFormHoursPerWeekTitle", {
-                    ns: "hops_new",
-                  })}
-                </label>
-                <div className="hops-container__helper-text">
-                  {t("labels.studyPlannerFormHoursPerWeekDescription", {
-                    ns: "hops_new",
-                  })}
+                <div className="hops__form-element-field-title-container">
+                  <div className="hops__form-element-icon hops__form-element-icon--estimated"></div>
+                  <div className="hops__form-element-label-container">
+                    <label className="hops__label" htmlFor="hoursPerWeek">
+                      {t("labels.studyPlannerFormHoursPerWeekTitle", {
+                        ns: "hops_new",
+                      })}
+                    </label>
+                    <div className="hops-container__helper-text">
+                      {t("labels.studyPlannerFormHoursPerWeekDescription", {
+                        ns: "hops_new",
+                      })}
+                    </div>
+                  </div>
                 </div>
                 <input
                   type="number"

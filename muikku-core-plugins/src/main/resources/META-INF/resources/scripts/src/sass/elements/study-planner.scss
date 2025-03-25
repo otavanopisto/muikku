@@ -919,8 +919,8 @@
 }
 
 .study-planner__timeline-progress-flags {
-  height: 40px;
-  margin: 0 0 3px;
+  height: 76px;
+  margin: 0 0 2px;
   position: relative;
 }
 
@@ -930,57 +930,107 @@
   flex-flow: column nowrap;
   position: absolute;
   transform: translateX(-50%);
+  z-index: 2;
+
+  &:hover {
+    z-index: 3;
+  }
+}
+
+.study-planner__timeline-progress-flag-icon {
+  background-position: center;
+  background-repeat: no-repeat;  
+  background-size: contain;
+  height: 36px;
+  width: 100%;
+}
+
+.study-planner__timeline-progress-flag--start {
+  .study-planner__timeline-progress-flag-icon {
+    background-image: url("/gfx/icons/temp/start.png");
+  }
+}
+
+.study-planner__timeline-progress-flag--end {
+  .study-planner__timeline-progress-flag-icon {
+    background-image: url("/gfx/icons/temp/end.png");
+  }
+}
+
+.study-planner__timeline-progress-flag--goal {
+  .study-planner__timeline-progress-flag-icon {
+    background-image: url("/gfx/icons/temp/goal.png");
+  }
+}
+
+.study-planner__timeline-progress-flag--estimated {
+  .study-planner__timeline-progress-flag-icon {
+    background-image: url("/gfx/icons/temp/estimated.png");
+  }
+}
+
+.study-planner__timeline-progress-flag--current {
+  .study-planner__timeline-progress-flag-icon {
+    background-image: url("/gfx/icons/temp/current.png");
+  }
 }
 
 .study-planner__timeline-progress-flag-label {
   align-items: center;
-  border-radius: 5px;
+  border-radius: 3px;
+  color: $color-default;
   display: flex;
   flex-flow: row nowrap;
-  gap: 4px;
   font-size: 0.75rem;
+  gap: 4px;
   line-height: 1;
-  padding: 6px;
+  padding: 3px;
 }
 
 .study-planner__timeline-progress-flag-line {
   width: 2px;
-  height: 20px;
+  height: 16px;
+}
+
+// Flag's that are on the left side of the timeline
+.study-planner__timeline-progress-flag--on-left-side {
+  align-items: flex-start;
+
+  .study-planner__timeline-progress-flag-line {
+    margin: 0 0 0 5px;
+   }
+}
+
+// Flag's that are on the right side of the timeline
+.study-planner__timeline-progress-flag--on-right-side {
+  align-items: flex-end;
+
+  .study-planner__timeline-progress-flag-line {
+    margin: 0 5px 0 0;
+   }
 }
 
 // Flag for students start date of studies
 .study-planner__timeline-progress-flag--start {
-  align-items: flex-start;
-  color: #000;
-  left: 0;
-  transform: translateX(0);
-
   .study-planner__timeline-progress-flag-label {
     background: $color-study-plan-studies-start-color;
-    color: $color-default;
   }
 
   .study-planner__timeline-progress-flag-line {
     background: $color-study-plan-studies-start-color;
-    transform: translateX(10px);
    }
 }
 
 // Flag for students end of "right to study" date of studies
 .study-planner__timeline-progress-flag--end {
-  align-items: flex-end;
-  color: #0099ff;
   right: 0;
-  transform: translateX(0);
 
   .study-planner__timeline-progress-flag-label {
     background: $color-study-plan-studies-end-color;
-    color: $color-default;
   }
 
   .study-planner__timeline-progress-flag-line {
     background: $color-study-plan-studies-end-color;
-    transform: translateX(-10px);
    }
 }
 
@@ -988,7 +1038,6 @@
 .study-planner__timeline-progress-flag--current {
   .study-planner__timeline-progress-flag-label {
     background: $color-study-plan-current-color;
-    color: $color-default;
   }
 
   .study-planner__timeline-progress-flag-line {
@@ -1000,7 +1049,6 @@
 .study-planner__timeline-progress-flag--goal {
   .study-planner__timeline-progress-flag-label {
     background: $color-study-plan-goal-color;
-    color: $color-default;
   }
 
   .study-planner__timeline-progress-flag-line {
@@ -1012,7 +1060,6 @@
 .study-planner__timeline-progress-flag--estimated {
   .study-planner__timeline-progress-flag-label {
     background: $color-study-plan-estimated-color;
-    color: $color-default;
   }
 
   .study-planner__timeline-progress-flag-line {

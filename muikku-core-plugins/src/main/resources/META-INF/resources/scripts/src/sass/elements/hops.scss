@@ -460,6 +460,33 @@
   }
 }
 
+.hops__form-element-field-title-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+}
+
+.hops__form-element-icon {
+  background-position: center;
+  background-repeat: no-repeat;  
+  background-size: contain;
+  flex-basis: 36px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: 36px;
+  margin: 0 0 5px;
+  width: 36px;
+}
+
+.hops__form-element-icon--goal {
+  background-image: url("/gfx/icons/temp/goal.png");
+}
+
+.hops__form-element-icon--estimated {
+  background-image: url("/gfx/icons/temp/estimated.png");
+}
+
 // HOPS form label
 .hops__label {
   display: block;
