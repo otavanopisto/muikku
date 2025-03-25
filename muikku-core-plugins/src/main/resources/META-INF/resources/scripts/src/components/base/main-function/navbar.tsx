@@ -117,6 +117,15 @@ class MainFunctionNavbar extends React.Component<
         condition: this.props.status.services.hops.isAvailable,
       },
       {
+        modifier: "language-profile",
+        trail: "language-profile",
+        text: t("labels.languageProfile"),
+        href: "/language-profile",
+        icon: "bubbles",
+        to: true,
+        condition: true,
+      },
+      {
         modifier: "hops",
         trail: "guardian_hops",
         text: "Hops",

@@ -85,6 +85,7 @@ import { updateStatistics } from "~/actions/main-function/records/statistics";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
 import EvaluationBody from "../components/evaluation/body";
+import LanguageProfileBody from "../components/language-profile/body";
 import CeeposDone from "../components/ceepos/done";
 import CeeposPay from "../components/ceepos/pay";
 import {
@@ -99,7 +100,6 @@ import {
   loadCeeposPurchase,
   loadCeeposPurchaseAndPay,
 } from "~/actions/main-function/ceepos";
-
 import { loadDependants } from "~/actions/main-function/dependants";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
@@ -173,6 +173,7 @@ export default class MainFunction extends React.Component<
     this.renderHopsBody = this.renderHopsBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
     this.renderEvaluationBody = this.renderEvaluationBody.bind(this);
+    this.renderLanguageProfileBody = this.renderLanguageProfileBody.bind(this);
     this.renderCeeposDoneBody = this.renderCeeposDoneBody.bind(this);
     this.renderCeeposPayBody = this.renderCeeposPayBody.bind(this);
     this.itsFirstTime = true;
@@ -232,6 +233,8 @@ export default class MainFunction extends React.Component<
       this.loadGuiderData();
     } else if (window.location.pathname.includes("/records")) {
       this.loadRecordsData(window.location.hash.replace("#", ""));
+    } else if (window.location.pathname.includes("/language-profile")) {
+      this.loadLanguageProfileData(window.location.hash.replace("#", ""));
     } else if (window.location.pathname.includes("/hops")) {
       this.loadHopsData(window.location.hash.replace("#", ""));
     } else if (window.location.pathname.includes("/guardian_hops")) {
@@ -354,6 +357,23 @@ export default class MainFunction extends React.Component<
         setLocationToInfoInTranscriptOfRecords() as Action
       );
       this.props.store.dispatch(updateSummary(userId) as Action);
+    }
+  }
+
+  /**
+   * loadRecordsData
+   * @param tab records tab
+   * @param userId userId
+   */
+  loadLanguageProfileData(tab: string) {
+    const givenLocation = tab;
+
+    if (givenLocation === "initalize" || !givenLocation) {
+      console.log("load survey");
+    } else if (givenLocation === "languages") {
+      console.log("load languages");
+    } else if (givenLocation === "language-cv") {
+      console.log("load language-cv");
     }
   }
 
@@ -1093,6 +1113,22 @@ export default class MainFunction extends React.Component<
   }
 
   /**
+   * renderEvaluationBody
+   */
+  renderLanguageProfileBody() {
+    this.updateFirstTime();
+    if (this.itsFirstTime) {
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+      );
+    }
+
+    return <LanguageProfileBody />;
+  }
+
+  /**
    * renderCeeposDoneBody
    * @returns JSX.Element
    */
@@ -1204,6 +1240,10 @@ export default class MainFunction extends React.Component<
                     <Route
                       path="/evaluation"
                       render={this.renderEvaluationBody}
+                    />
+                    <Route
+                      path="/language-profile"
+                      render={this.renderLanguageProfileBody}
                     />
                     <Route
                       path="/ceepos/pay"

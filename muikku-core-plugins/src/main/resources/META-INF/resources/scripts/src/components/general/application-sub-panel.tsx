@@ -247,4 +247,5 @@ ApplicationSubPanel.ViewHeader = ApplicationSubPanelViewHeader;
 ApplicationSubPanel.Body = ApplicationSubPanelBody;
 ApplicationSubPanelItem.Content = ApplicationSubPanelItemData;
 ApplicationSubPanelItem.SubItem = ApplicationSubPanelSubItem;
+
 export default ApplicationSubPanel;

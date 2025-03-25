@@ -134,6 +134,7 @@
       "language": "Language",
       "language_en": "English (EN)",
       "language_fi": "Finnish (FI)",
+      "languageProfile": "Language profile",
       "languageShort": "Language abbreviation",
       "languageShort_en": "EN",
       "languageShort_fi": "FI",
@@ -2825,6 +2826,7 @@
     "hops": "HOPS",
     "instructions": "{{workspaceName}} | Instructions",
     "journal": "{{workspaceName}} | Journal",
+    "languageProfile": "Language profile",
     "materials": "{{workspaceName}} | Materials",
     "profile": "Profile",
     "organization": "Organization management",
@@ -2832,5 +2834,12 @@
     "users": "{{workspaceName}} | Users",
     "userCredentialsReset": "Reset credentials",
     "workspaceManagement": "{{workspaceName}} | Workspace management"
+  },
+  "languageProfile": {
+    "labels": {
+      "initialization": "Initialization",
+      "languages": "Languages",
+      "cv": "Language-cv"
+    }
   }
 }

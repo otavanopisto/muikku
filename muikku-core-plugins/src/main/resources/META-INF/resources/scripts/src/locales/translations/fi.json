@@ -134,6 +134,7 @@
       "language": "Kieli",
       "language_en": "Englanniksi (EN)",
       "language_fi": "Suomeksi (FI)",
+      "languageProfile": "Kieliprofiili",
       "languageShort": "Kielilyhenne",
       "languageShort_en": "EN",
       "languageShort_fi": "FI",
@@ -2827,6 +2828,7 @@
     "hops": "HOPS",
     "instructions": "{{workspaceName}} | Ohjeet",
     "journal": "{{workspaceName}} | Oppimispäiväkirja",
+    "languageProfile": "Kieliprofiili",
     "materials": "{{workspaceName}} | Materiaalit",
     "profile": "Profiili",
     "organization": "Organisaatiohallinta",
@@ -2834,5 +2836,12 @@
     "users": "{{workspaceName}} | Käyttäjät",
     "userCredentialsReset": "Tunnusten palautus",
     "workspaceManagement": "{{workspaceName}} | Asetukset"
+  },
+  "languageProfile": {
+    "labels": {
+      "initialization": "Alkukartoitus",
+      "languages": "Kielet",
+      "cv": "Kieli-cv"
+    }
   }
 }

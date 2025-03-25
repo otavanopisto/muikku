@@ -16,7 +16,7 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/languageprofile", to = "/jsf/records/index.jsf")
+@Join(path = "/languageprofile", to = "/jsf/language-profile/index.jsf")
 @LoggedIn
 public class LanguageProfileBackingBean {
   
