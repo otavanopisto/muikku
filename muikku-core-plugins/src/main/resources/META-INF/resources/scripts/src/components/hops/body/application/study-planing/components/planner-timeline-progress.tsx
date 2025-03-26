@@ -316,15 +316,15 @@ const Flag: React.FC<FlagProps> = (props) => {
   const { position, date, variants } = props;
 
   // Determine if the flag is closer to the left or right edge
-  const isRightSide = position > 50;
+  const isRightSide = position > 88;
+  const isLeftSide = position < 12;
 
   const flagsToModifiers = [
     ...variants.map(
       (variant) => `study-planner__timeline-progress-flag--${variant}`
     ),
-    isRightSide
-      ? "study-planner__timeline-progress-flag--on-right-side"
-      : "study-planner__timeline-progress-flag--on-left-side",
+    isRightSide ? "study-planner__timeline-progress-flag--on-right-side" : "",
+    isLeftSide ? "study-planner__timeline-progress-flag--on-left-side" : "",
   ].join(" ");
 
   return (
@@ -342,13 +342,18 @@ const Flag: React.FC<FlagProps> = (props) => {
     >
       <motion.div
         layout
-        className="study-planner__timeline-progress-flag-icon"
-      />
-      <motion.div
-        layout
-        className="study-planner__timeline-progress-flag-label"
+        className="study-planner__timeline-progress-flag-label-container"
       >
-        {localize.date(date)}
+        <motion.div
+          layout
+          className="study-planner__timeline-progress-flag-label"
+        >
+          {localize.date(date)}
+        </motion.div>
+        <motion.div
+          layout
+          className="study-planner__timeline-progress-flag-icon"
+        />
       </motion.div>
       <motion.div
         className="study-planner__timeline-progress-flag-line"

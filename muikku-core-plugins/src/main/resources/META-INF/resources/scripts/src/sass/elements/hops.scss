@@ -470,21 +470,24 @@
 .hops__form-element-icon {
   background-position: center;
   background-repeat: no-repeat;  
-  background-size: contain;
-  flex-basis: 36px;
+  background-size: 36px;
+  border-radius: 5px;
+  flex-basis: 42px;
   flex-grow: 0;
   flex-shrink: 0;
-  height: 36px;
+  height: 42px;
   margin: 0 0 5px;
-  width: 36px;
+  width: 42px;
 }
 
 .hops__form-element-icon--goal {
   background-image: url("/gfx/icons/temp/goal.png");
+  border: 1px solid $color-study-plan-goal-color;
 }
 
 .hops__form-element-icon--estimated {
   background-image: url("/gfx/icons/temp/estimated.png");
+  border: 1px solid $color-study-plan-estimated-color;
 }
 
 // HOPS form label
