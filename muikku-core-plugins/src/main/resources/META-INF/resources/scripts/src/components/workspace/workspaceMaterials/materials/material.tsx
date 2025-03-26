@@ -13,22 +13,22 @@ import {
   SetCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { Action, bindActionCreators, Dispatch } from "redux";
-import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
-import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
-import { MaterialLoaderContent } from "~/components/base/material-loader/content";
-import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
-import { MaterialLoaderButtons } from "~/components/base/material-loader/buttons";
-import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
-import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
-import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
-import { MaterialLoaderDate } from "~/components/base/material-loader/date";
+import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/components/editor-buttonset";
+import { MaterialLoaderTitle } from "~/components/base/material-loader/components/title";
+import { MaterialLoaderContent } from "~/components/base/material-loader/components/content";
+import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/components/producers-license";
+import { MaterialLoaderButtons } from "~/components/base/material-loader/components/buttons";
+import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/components/correct-answer-counter";
+import { MaterialLoaderAssesment } from "~/components/base/material-loader/components/assesment";
+import { MaterialLoaderGrade } from "~/components/base/material-loader/components/grade";
+import { MaterialLoaderDate } from "~/components/base/material-loader/components/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
-import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
+import { MaterialLoaderExternalContent } from "~/components/base/material-loader/components/external-content";
 import { MaterialCompositeReply } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { MaterialLoaderPoints } from "~/components/base/material-loader/points";
+import { MaterialLoaderPoints } from "~/components/base/material-loader/components/points";
 
 /**
  * WorkspaceMaterialProps

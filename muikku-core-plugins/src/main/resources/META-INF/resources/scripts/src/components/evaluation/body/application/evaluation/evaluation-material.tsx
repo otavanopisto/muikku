@@ -4,15 +4,15 @@ import {
   MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
 import MaterialLoader from "~/components/base/material-loader";
-import { MaterialLoaderContent } from "~/components/base/material-loader/content";
+import { MaterialLoaderContent } from "~/components/base/material-loader/components/content";
 import "~/sass/elements/evaluation.scss";
-import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
+import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/components/correct-answer-counter";
 import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
 import { AnyActionType } from "~/actions/index";
 import { Action, bindActionCreators, Dispatch } from "redux";
-import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
-import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
+import { MaterialLoaderAssesment } from "~/components/base/material-loader/components/assesment";
+import { MaterialLoaderExternalContent } from "~/components/base/material-loader/components/external-content";
 import {
   InterimEvaluationRequest,
   MaterialCompositeReply,

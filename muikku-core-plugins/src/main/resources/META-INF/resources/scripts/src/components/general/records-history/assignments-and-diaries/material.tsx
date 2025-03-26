@@ -7,10 +7,10 @@ import {
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade } from "~/util/modifiers";
 import { StatusType } from "~/reducers/base/status";
-import { MaterialLoaderContent } from "~/components/base/material-loader/content";
-import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
-import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
-import { MaterialLoaderDate } from "~/components/base/material-loader/date";
+import { MaterialLoaderContent } from "~/components/base/material-loader/components/content";
+import { MaterialLoaderAssesment } from "~/components/base/material-loader/components/assesment";
+import { MaterialLoaderGrade } from "~/components/base/material-loader/components/grade";
+import { MaterialLoaderDate } from "~/components/base/material-loader/components/date";
 import {
   ApplicationListItem,
   ApplicationListItemHeader,
@@ -23,7 +23,7 @@ import {
   MaterialCompositeReply,
 } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { MaterialLoaderPoints } from "~/components/base/material-loader/points";
+import { MaterialLoaderPoints } from "~/components/base/material-loader/components/points";
 
 /**
  * MaterialProps

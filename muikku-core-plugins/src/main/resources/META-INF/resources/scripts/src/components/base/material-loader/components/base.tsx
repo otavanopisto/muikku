@@ -1,31 +1,31 @@
-import TextField from "../fields/text-field";
-import SelectField from "../fields/select-field";
-import MultiSelectField from "../fields/multiselect-field";
-import MemoField from "../fields/memo-field";
+import TextField from "./fields/text-field";
+import SelectField from "./fields/select-field";
+import MultiSelectField from "./fields/multiselect-field";
+import MemoField from "./fields/memo-field";
 import * as React from "react";
 import $ from "~/lib/jquery";
-import FileField from "../fields/file-field";
-import ConnectField from "../fields/connect-field";
-import OrganizerField from "../fields/organizer-field";
-import AudioField from "../fields/audio-field";
-import JournalField from "../fields/journal-field";
-import SorterField from "../fields/sorter-field";
+import FileField from "./fields/file-field";
+import ConnectField from "./fields/connect-field";
+import OrganizerField from "./fields/organizer-field";
+import AudioField from "./fields/audio-field";
+import JournalField from "./fields/journal-field";
+import SorterField from "./fields/sorter-field";
 import { StatusType } from "~/reducers/base/status";
-import Image from "../static/image";
-import WordDefinition from "../static/word-definition";
-import IFrame from "../static/iframe";
+import Image from "./static/image";
+import WordDefinition from "./static/word-definition";
+import IFrame from "./static/iframe";
 import { extractDataSet, HTMLToReactComponentRule } from "~/util/modifiers";
-import MathField from "../fields/math-field";
+import MathField from "./fields/math-field";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
 } from "~/reducers/workspaces";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import Link from "~/components/base/material-loader-copy/static/link";
+import Link from "./static/link";
 import { HTMLtoReactComponent } from "~/util/modifiers";
-import Table from "~/components/base/material-loader-copy/static/table";
-import MathJAX from "~/components/base/material-loader-copy/static/mathjax";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import Table from "./static/table";
+import MathJAX from "./static/mathjax";
+import { UsedAs } from "~/@types/shared";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { MaterialCompositeReply } from "~/generated/client";
 
@@ -196,24 +196,6 @@ function preprocessor($html: any): any {
   });
 
   return $newHTML;
-}
-
-/**
- * createFieldSavedStateClass
- * @param state state
- * @returns string
- */
-export function createFieldSavedStateClass(state: FieldStateStatus) {
-  let fieldSavedStateClass = "";
-  if (state === "ERROR") {
-    fieldSavedStateClass = "state-ERROR";
-  } else if (state === "SAVING") {
-    fieldSavedStateClass = "state-SAVING";
-  } else if (state === "SAVED") {
-    fieldSavedStateClass = "state-SAVED";
-  }
-
-  return fieldSavedStateClass;
 }
 
 /**

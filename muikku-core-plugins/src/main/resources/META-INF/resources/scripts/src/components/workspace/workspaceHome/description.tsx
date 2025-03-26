@@ -9,10 +9,10 @@ import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import "~/sass/elements/material-admin.scss";
 import MaterialLoader from "~/components/base/material-loader";
-import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
-import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
-import { MaterialLoaderContent } from "~/components/base/material-loader/content";
-import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
+import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/components/editor-buttonset";
+import { MaterialLoaderTitle } from "~/components/base/material-loader/components/title";
+import { MaterialLoaderContent } from "~/components/base/material-loader/components/content";
+import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/components/producers-license";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
   displayNotification,
