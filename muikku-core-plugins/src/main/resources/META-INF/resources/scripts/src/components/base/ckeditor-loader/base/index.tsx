@@ -115,14 +115,13 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   }
 
   /**
-   * UNSAFE_componentWillReceiveProps - To update everything if we get a brand new html we unmount and remount
-   * @param nextProps nextProps
+   * Updates the component when new HTML content is received
+   * @param prevProps Previous props
    */
-  // eslint-disable-next-line react/no-deprecated
-  UNSAFE_componentWillReceiveProps(nextProps: BaseProps) {
-    if (nextProps.html !== this.props.html) {
+  componentDidUpdate(prevProps: BaseProps) {
+    if (prevProps.html !== this.props.html) {
       const elements = preprocessor(
-        $(nextProps.html)
+        $(this.props.html)
       ).toArray() as Array<HTMLElement>;
       this.setState({
         elements,
