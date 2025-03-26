@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import TextField from "../fields/text-field";
 import SelectField from "../fields/select-field";
 import MultiSelectField from "../fields/multiselect-field";
@@ -824,6 +825,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => (
+          // eslint-disable-next-line react/no-children-prop
           <MathJAX key={props.key} invisible={invisible} children={children} />
         ),
       },
@@ -880,6 +882,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
             key={props.key}
             element={element}
             props={props}
+            // eslint-disable-next-line react/no-children-prop
             children={children}
           />
         ),

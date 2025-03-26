@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
@@ -918,11 +919,11 @@ class ConnectField extends React.Component<
                       : "correct-answer"
                     : "";
 
-                const notSelectable =
-                  this.props.readOnly ||
-                  (this.state.selectedField &&
-                    this.state.selectedField.name !== field.name &&
-                    !this.state.selectedIsCounterpart);
+                // const notSelectable =
+                //   this.props.readOnly ||
+                //   (this.state.selectedField &&
+                //     this.state.selectedField.name !== field.name &&
+                //     !this.state.selectedIsCounterpart);
 
                 // the basic class name
                 let className = `connectfield__counterpart`;

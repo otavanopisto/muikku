@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
@@ -192,7 +193,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * replaceNewlinesWithBreaks
-   * @param str
+   * @param str - string
    * @returns string with \ replaced with <br />
    */
   replaceNewlinesWithBreaks = (str: string): string =>
@@ -229,7 +230,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * trimPastedContent - Trims the pasted content if it exceeds the character or word limit
-   * @param content
+   * @param content - string
    * @returns trimmed content
    */
   trimPastedContent(content: string): string {
@@ -281,7 +282,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * A function tha checks if it is the last word we are writing
-   * @param value
+   * @param value - string
    * @returns boolean
    */
   isInsideLastWord = (value: string) => {
@@ -302,8 +303,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * onInputPaste - paste handling for memofield
-   *
-   * @param e e
    */
   onInputPaste() {
     this.setState({ isPasting: true });
@@ -361,8 +360,6 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * onCkeditorPaste
-   * @param event ckeditor event
-   * @param isPasting isPasting state
    */
   onCkeditorPaste() {
     this.setState({
@@ -501,22 +498,22 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
     ) {
       let unloadedField;
       if (this.props.readOnly) {
-        const value = (unloadedField = !this.props.content.richedit ? (
-          <textarea
-            readOnly
-            maxLength={
-              this.props.content.maxChars &&
-              parseInt(this.props.content.maxChars)
-            }
-            className="memofield"
-            rows={parseInt(this.props.content.rows)}
-          />
-        ) : (
-          <span
-            className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
-            dangerouslySetInnerHTML={{ __html: ckeditorValue }}
-          />
-        ));
+        // const value = (unloadedField = !this.props.content.richedit ? (
+        //   <textarea
+        //     readOnly
+        //     maxLength={
+        //       this.props.content.maxChars &&
+        //       parseInt(this.props.content.maxChars)
+        //     }
+        //     className="memofield"
+        //     rows={parseInt(this.props.content.rows)}
+        //   />
+        // ) : (
+        //   <span
+        //     className="memofield__ckeditor-replacement memofield__ckeditor-replacement--readonly"
+        //     dangerouslySetInnerHTML={{ __html: ckeditorValue }}
+        //   />
+        // ));
       } else {
         unloadedField = (
           <textarea

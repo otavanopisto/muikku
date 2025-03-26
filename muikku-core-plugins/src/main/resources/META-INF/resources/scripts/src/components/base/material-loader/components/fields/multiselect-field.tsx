@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown";

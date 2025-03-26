@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import MathField from "./better-math-field";
 import "~/sass/elements/mathfield.scss";
@@ -104,7 +105,7 @@ class TextField extends React.Component<MathFieldProps, MathFieldState> {
 
   /**
    * setValue
-   * @param newValue
+   * @param newValue - string
    */
   setValue(newValue: string) {
     this.setState({

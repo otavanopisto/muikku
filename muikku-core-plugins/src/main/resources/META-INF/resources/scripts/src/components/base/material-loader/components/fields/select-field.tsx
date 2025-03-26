@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown";
@@ -282,7 +283,7 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
     }
 
     // Select field is able to mark what were meant to be the correct answers in the field itself
-    let markcorrectAnswers = false;
+    //let markcorrectAnswers = false;
 
     // It also has a summary component of what the correct answers were meant to be
     let correctAnswersummaryComponent = null;
@@ -299,7 +300,7 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
       // if we have some correct answers
       if (correctAnswersFound.length) {
         // We say we will mark those that are correct
-        markcorrectAnswers = true;
+        //markcorrectAnswers = true;
         // we make the summary component, note we might have an explanation
         // For some reason it saves to no explanation
         correctAnswersummaryComponent = (

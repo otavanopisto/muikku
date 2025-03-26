@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { shuffle, arrayToObject } from "~/util/modifiers";
 import Draggable, { Droppable } from "~/components/general/draggable";
