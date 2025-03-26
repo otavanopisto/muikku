@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 import * as React from "react";
 import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
@@ -152,12 +146,18 @@ function getWords(rawText: string) {
  * MemoField
  */
 class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
+  // Add ref declaration
+  private baseRef: React.RefObject<HTMLDivElement>;
+
   /**
    * constructor
    * @param props props
    */
   constructor(props: MemoFieldProps) {
     super(props);
+
+    // Initialize ref
+    this.baseRef = React.createRef<HTMLDivElement>();
 
     //get the initial value
     const value = props.initialValue || "";
@@ -531,7 +531,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       }
 
       return (
-        <span ref="base" className="memofield-wrapper">
+        <span ref={this.baseRef} className="memofield-wrapper">
           {unloadedField}
           <span className="memofield__counter-wrapper" />
           {answerExampleComponent}
@@ -633,6 +633,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           })}
         />
         <span
+          ref={this.baseRef}
           className={`memofield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
