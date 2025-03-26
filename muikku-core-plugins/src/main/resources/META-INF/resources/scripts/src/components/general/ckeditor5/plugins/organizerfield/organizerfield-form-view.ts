@@ -5,17 +5,10 @@ import {
   createLabeledInputText,
   ButtonView,
   submitHandler,
-  ViewCollection,
-} from "@ckeditor/ckeditor5-ui";
-import { icons } from "@ckeditor/ckeditor5-core";
-import { Locale } from "@ckeditor/ckeditor5-utils";
-import {
-  OrganizerFieldData,
-  CategoryData,
-  TermData,
-  FormData,
-  CategoryElementData,
-} from "./organizerfield";
+} from "ckeditor5";
+import { icons } from "ckeditor5";
+import { Locale } from "ckeditor5";
+import { CategoryData, TermData, FormData, CategoryElementData } from ".";
 
 /**
  * @module muikku-organizerfield
@@ -322,6 +315,14 @@ export default class OrganizerFieldFormView extends View {
     }
   }
 
+  /**
+   * Create a delete term button
+   * @param termElement - The term element
+   * @param term - The term
+   * @param categoryData - The category data
+   * @returns The delete term button
+   * @private
+   */
   private _createDeleteTermButton(
     termElement: HTMLElement,
     term: TermData,
@@ -339,6 +340,13 @@ export default class OrganizerFieldFormView extends View {
     return deleteButton;
   }
 
+  /**
+   * Create a delete category button
+   * @param categoryElement - The category element
+   * @param categoryData - The category data
+   * @returns The delete category button
+   * @private
+   */
   private _createDeleteCategoryButton(
     categoryElement: HTMLElement,
     categoryData: CategoryElementData

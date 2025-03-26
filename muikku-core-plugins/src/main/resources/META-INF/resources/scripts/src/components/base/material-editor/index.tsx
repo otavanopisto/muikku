@@ -1183,6 +1183,9 @@ class MaterialEditor extends React.Component<
                   // )}
                   // onChange={this.updateContent}
                   // onDrop={this.refreshAttachments}
+                  initialData={
+                    this.props.editorState.currentDraftNodeValue.html
+                  }
                   onChange={this.updateContent}
                 >
                   {this.props.editorState.currentDraftNodeValue.html}

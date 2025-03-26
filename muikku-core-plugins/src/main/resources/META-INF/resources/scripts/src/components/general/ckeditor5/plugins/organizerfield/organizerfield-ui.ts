@@ -1,15 +1,8 @@
-import { Plugin, Editor } from "@ckeditor/ckeditor5-core";
-import {
-  ButtonView,
-  ContextualBalloon,
-  clickOutsideHandler,
-} from "@ckeditor/ckeditor5-ui";
-import { Element } from "@ckeditor/ckeditor5-engine";
-import {
-  FormData,
-  OrganizerFieldAttributes,
-  BalloonPositionData,
-} from "./organizerfield";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Plugin, Editor } from "ckeditor5";
+import { ButtonView } from "ckeditor5";
+import { Element } from "ckeditor5";
+import { FormData, OrganizerFieldAttributes } from ".";
 import OrganizerFieldFormView from "./organizerfield-form-view";
 //import organizerFieldIcon from "./icons/organizerfield.svg";
 
@@ -18,22 +11,21 @@ import OrganizerFieldFormView from "./organizerfield-form-view";
  */
 export default class OrganizerFieldUI extends Plugin {
   // Properties for the UI plugin
-  private _balloon: ContextualBalloon;
   private _form: OrganizerFieldFormView;
   readonly editor: Editor;
 
   /**
-   * Require the ContextualBalloon plugin for the popup form
+   * Get the plugin name
    * @inheritDoc
    */
-  static get requires() {
-    return [ContextualBalloon];
-  }
-
   static get pluginName(): string {
     return "OrganizerFieldUI";
   }
 
+  /**
+   * Constructor
+   * @param editor - The editor instance
+   */
   constructor(editor: Editor) {
     super(editor);
     this.editor = editor;
@@ -43,9 +35,6 @@ export default class OrganizerFieldUI extends Plugin {
    * @inheritDoc
    */
   init(): void {
-    // Get the balloon instance
-    this._balloon = this.editor.plugins.get(ContextualBalloon);
-
     // Create the form view
     this._form = this._createFormView();
 
@@ -93,17 +82,8 @@ export default class OrganizerFieldUI extends Plugin {
       this._clearForm();
     }
 
-    // Add form to balloon
-    /* this._balloon.add({
-      view: this._form,
-      position: this._getBalloonPositionData(),
-    });
- */
     // Focus the form
     this._form.focus();
-
-    // Handle clicking outside the balloon
-    this._enableClickOutsideHandler();
   }
 
   /**
@@ -134,24 +114,10 @@ export default class OrganizerFieldUI extends Plugin {
   }
 
   /**
-   * Enable the click outside handler
-   * @private
-   */
-  private _enableClickOutsideHandler(): void {
-    clickOutsideHandler({
-      emitter: this._form,
-      activator: () => this._balloon.hasView(this._form),
-      contextElements: [this._balloon.view.element],
-      callback: () => this._hideUI(),
-    });
-  }
-
-  /**
    * Hide the editing interface
    * @private
    */
   private _hideUI(): void {
-    this._balloon.remove(this._form);
     this.editor.editing.view.focus();
   }
 
@@ -256,37 +222,6 @@ export default class OrganizerFieldUI extends Plugin {
 
     return selectedElement?.name === "organizerField" ? selectedElement : null;
   }
-
-  /**
-   * Get position data for the balloon
-   * @private
-   */
-  /* private _getBalloonPositionData(): BalloonPositionData {
-    const view = this.editor.editing.view;
-    const viewDocument = view.document;
-    const selectedElement = viewDocument.selection.getSelectedElement();
-    const parentElement = viewDocument.selection.anchor?.parent;
-
-    let targetView = selectedElement || parentElement;
-
-    // Ensure we have a valid view element
-    if (!targetView?.is("element")) {
-      targetView = parentElement
-        ?.getAncestors()
-        .find((ancestor) => ancestor.is("element"));
-    }
-
-    if (!targetView) {
-      // Fallback to root element if no valid target is found
-      targetView = viewDocument.getRoot();
-    }
-
-    const target = view.domConverter.viewToDom(targetView);
-
-    return {
-      target,
-    };
-  } */
 
   /**
    * Generate a unique name for new organizer fields

@@ -1,4 +1,4 @@
-import { Plugin } from "@ckeditor/ckeditor5-core";
+import { Plugin } from "ckeditor5";
 import OrganizerFieldEditing from "./organizerfield-editing";
 import OrganizerFieldUI from "./organizerfield-ui";
 
@@ -71,14 +71,14 @@ export default class OrganizerField extends Plugin {
   /**
    * @inheritDoc
    */
-  static get pluginName() {
-    return "MuikkuOrganizerField";
+  static get requires() {
+    return [OrganizerFieldEditing, OrganizerFieldUI];
   }
 
   /**
    * @inheritDoc
    */
-  static get requires() {
-    return [OrganizerFieldEditing, OrganizerFieldUI];
+  static get pluginName() {
+    return "MuikkuOrganizerField";
   }
 }

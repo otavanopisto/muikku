@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { EditorConfig } from "@ckeditor/ckeditor5-core/src/editor/editorconfig";
+import { EditorConfig } from "ckeditor5";
 import { ClassicEditor } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
 import { testConfig } from "./configs";
@@ -41,44 +41,8 @@ const CKEditor5: React.FC<CKEditorProps> = (props) => {
       return { editorConfig: null };
     }
 
-    return { editorConfig: { ...config } };
-  }, [config, isLayoutReady]);
-
-  // useEffect(() => {
-  //   // Initialize CKEditor
-  //   ClassicEditor.create(elementRef.current!, config)
-  //     .then((editor) => {
-  //       editorRef.current = editor;
-
-  //       // Set initial data if provided
-  //       editor.setData(initialData);
-
-  //       // Set up change handler
-  //       editor.model.document.on("change:data", () => {
-  //         const data = editor.getData();
-  //         onChange?.(data);
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error initializing CKEditor:", error);
-  //     });
-
-  //   // Cleanup on component unmount
-  //   return () => {
-  //     editorRef.current
-  //       ?.destroy()
-  //       .then(() => {
-  //         editorRef.current = null;
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error destroying CKEditor:", error);
-  //       });
-  //   };
-  // }, [config, initialData, onChange]); // Empty dependency array as we only want to initialize once
-
-  //return <div ref={elementRef} />;
-
-  console.log("Is there config?", editorConfig);
+    return { editorConfig: { ...config, initialData: props.initialData } };
+  }, [config, isLayoutReady, props.initialData]);
 
   return (
     <div
@@ -89,28 +53,41 @@ const CKEditor5: React.FC<CKEditorProps> = (props) => {
         <div ref={editorRef}>
           {editorConfig && (
             <CKEditor
+              data={props.initialData || initialData}
               onReady={(editor) => {
-                const wordCount = editor.plugins.get("WordCount");
-                editorWordCountRef.current.appendChild(
-                  wordCount.wordCountContainer
-                );
+                if (!editor) {
+                  return;
+                }
 
-                editorMenuBarRef.current.appendChild(
-                  editor.ui.view.menuBarView.element
-                );
+                const wordCount = editor.plugins.get("WordCount");
+                if (editorWordCountRef.current) {
+                  editorWordCountRef.current.appendChild(
+                    wordCount.wordCountContainer
+                  );
+                }
+
+                if (editorMenuBarRef.current) {
+                  editorMenuBarRef.current.appendChild(
+                    editor.ui.view.menuBarView.element
+                  );
+                }
               }}
               onAfterDestroy={() => {
                 Array.from(editorWordCountRef.current.children).forEach(
                   (child) => child.remove()
                 );
 
-                Array.from(editorMenuBarRef.current.children).forEach((child) =>
-                  child.remove()
-                );
+                if (editorMenuBarRef.current) {
+                  Array.from(editorMenuBarRef.current.children).forEach(
+                    (child) => child.remove()
+                  );
+                }
               }}
               onChange={(event, editor) => {
-                console.log("Editor changed", editor.getData());
                 onChange?.(editor.getData());
+              }}
+              onError={(error, { phase }) => {
+                console.error("CKEditor error:", { error, phase });
               }}
               editor={ClassicEditor}
               config={editorConfig}

@@ -1,5 +1,5 @@
-import { Plugin } from "@ckeditor/ckeditor5-core";
-import { Widget, toWidget } from "@ckeditor/ckeditor5-widget";
+import { Plugin } from "ckeditor5";
+import { Widget, toWidget } from "ckeditor5";
 
 /**
  * @module muikku-organizerfield

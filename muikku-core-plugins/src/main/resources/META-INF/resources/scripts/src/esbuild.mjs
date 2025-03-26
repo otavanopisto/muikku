@@ -47,6 +47,7 @@ const build = _build({
     ".eot": "dataurl",
     ".ttf": "dataurl",
     ".wav": "dataurl",
+    ".gif": "dataurl",
   },
   // commons file name
   chunkNames: "commons-[hash]",
