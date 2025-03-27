@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderProps } from "~/components/base/material-loader-copy";
 
 type MaterialLoaderGradeProps = MaterialLoaderProps;
 

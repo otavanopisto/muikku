@@ -3,7 +3,7 @@ import { StatusType } from "~/reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import FileUploader from "~/components/general/file-uploader";
-import Synchronizer from "../base/synchronizer";
+import Synchronizer from "../synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../../utils";
 import { WithTranslation, withTranslation } from "react-i18next";

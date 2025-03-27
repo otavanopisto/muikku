@@ -2,7 +2,7 @@
 import * as React from "react";
 import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown";
-import Synchronizer from "./base/synchronizer";
+import Synchronizer from "./synchronizer";
 import AutosizeInput from "react-input-autosize";
 import { UsedAs } from "~/@types/shared";
 import { FieldStateStatus } from "~/@types/shared";

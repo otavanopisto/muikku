@@ -3,7 +3,7 @@ import * as React from "react";
 import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
-import Synchronizer from "./base/synchronizer";
+import Synchronizer from "./synchronizer";
 import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../utils";

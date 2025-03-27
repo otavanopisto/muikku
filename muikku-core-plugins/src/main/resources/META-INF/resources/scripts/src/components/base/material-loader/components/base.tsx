@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import TextField from "./fields/text-field";
 import SelectField from "./fields/select-field";
 import MultiSelectField from "./fields/multiselect-field";
@@ -10,24 +11,19 @@ import OrganizerField from "./fields/organizer-field";
 import AudioField from "./fields/audio-field";
 import JournalField from "./fields/journal-field";
 import SorterField from "./fields/sorter-field";
-import { StatusType } from "~/reducers/base/status";
 import Image from "./static/image";
 import WordDefinition from "./static/word-definition";
 import IFrame from "./static/iframe";
 import { extractDataSet, HTMLToReactComponentRule } from "~/util/modifiers";
 import MathField from "./fields/math-field";
-import {
-  MaterialContentNodeWithIdAndLogic,
-  WorkspaceDataType,
-} from "~/reducers/workspaces";
-import { WebsocketStateType } from "~/reducers/util/websocket";
 import Link from "./static/link";
 import { HTMLtoReactComponent } from "~/util/modifiers";
 import Table from "./static/table";
 import MathJAX from "./static/mathjax";
-import { UsedAs } from "~/@types/shared";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
-import { MaterialCompositeReply } from "~/generated/client";
+import { getParser } from "../utils";
+import CKEditor4Parser from "./fields/parser/ckeditor4";
+import { FieldData, MaterialLoaderBaseData } from "./fields/types";
 
 //These are all our supported objects as for now
 const objects: { [key: string]: any } = {
@@ -90,24 +86,7 @@ const answerCheckables: { [key: string]: (params: any) => boolean } = {
 /**
  * BaseProps
  */
-interface BaseProps {
-  material: MaterialContentNodeWithIdAndLogic;
-  status: StatusType;
-  workspace: WorkspaceDataType;
-  websocketState: WebsocketStateType;
-  answerable: boolean;
-  compositeReplies?: MaterialCompositeReply;
-  readOnly?: boolean;
-  onConfirmedAndSyncedModification?: () => any;
-  onModification?: () => any;
-  displayCorrectAnswers: boolean;
-  checkAnswers: boolean;
-  onAnswerChange: (name: string, status: boolean) => any;
-  onAnswerCheckableChange: (status: boolean) => any;
-  usedAs: UsedAs;
-  invisible: boolean;
-  answerRegistry?: { [name: string]: any };
-}
+interface BaseProps extends MaterialLoaderBaseData {}
 
 /**
  * BaseState
@@ -198,11 +177,15 @@ function preprocessor($html: any): any {
   return $newHTML;
 }
 
+const defaultParser = getParser("ckeditor4");
+
 /**
  * Base
  */
 export default class Base extends React.Component<BaseProps, BaseState> {
   private answerCheckable: boolean;
+
+  private fieldParser: CKEditor4Parser = defaultParser;
 
   // whenever a field changes we save it as timeout not to send every keystroke to the server
   // every keystroke cancels the previous timeout given by the TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT
@@ -302,6 +285,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           props
         );
 
+        console.log("rElement.type", rElement.props);
+
         const newAnswerCheckableState =
           answerCheckables[element.getAttribute("type")] &&
           answerCheckables[element.getAttribute("type")](rElement.props);
@@ -395,72 +380,13 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       );
     }
 
-    // So now we get the parameters of that thing, due to all the updates we gotta unify here
-    // eslint-disable-next-line prefer-const
-    let parameters: { [key: string]: any } = {};
-    // basically we need to get all the params
-    element.querySelectorAll("param").forEach((node) => {
-      // and add the value to a list of parameters
-      parameters[node.getAttribute("name")] = node.getAttribute("value");
-    });
-
-    // if the type of json
-    if (parameters["type"] === "application/json") {
-      try {
-        // Then we try to parse the content if there's a content, hmmm
-        // some fields come differently but hey this works out
-        parameters["content"] =
-          parameters["content"] && JSON.parse(parameters["content"]);
-        // eslint-disable-next-line no-empty
-      } catch (e) {}
-    }
-
-    if (!parameters["type"]) {
-      parameters["type"] = "application/json";
-    }
-
-    if (!parameters["content"]) {
-      parameters["content"] = null;
-    }
-
-    // we add our default parameters form redux
-    parameters["status"] = props.status;
-    parameters["readOnly"] = props.readOnly;
-
-    /**
-     * Passing used as default value a.k.a "materials or evaluation tool"
-     */
-    parameters["usedAs"] = props.usedAs;
-
-    // We set the value if we have one in composite replies
-    parameters["initialValue"] = null;
-    if (props.compositeReplies && props.compositeReplies.answers) {
-      parameters["initialValue"] = props.compositeReplies.answers.find(
-        (answer) =>
-          answer.fieldName === (parameters.content && parameters.content.name)
-      );
-    }
-
-    // And sometimes the value comes weird in a .value field so we pick that one if its there
-    if (
-      parameters["initialValue"] &&
-      typeof parameters["initialValue"].value !== "undefined"
-    ) {
-      parameters["initialValue"] = parameters["initialValue"].value;
-    }
-
-    // We add the onChange function that will make us try to sync with the server
-    parameters["onChange"] = this.onValueChange.bind(this);
-
-    parameters["displayCorrectAnswers"] = props.displayCorrectAnswers;
-    parameters["checkAnswers"] = props.checkAnswers;
-    parameters["onAnswerChange"] = props.onAnswerChange;
-
-    parameters["invisible"] = props.invisible;
-    parameters["userId"] = props.status.userId;
+    const fieldData: FieldData = this.fieldParser.parseFieldData(
+      element,
+      props
+    );
 
     // and we return that thing
-    return <ActualElement {...parameters} key={key} />;
+    return <ActualElement {...fieldData.parameters} key={key} />;
   }
 
   /**
@@ -806,6 +732,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => (
+          // eslint-disable-next-line react/no-children-prop
           <MathJAX key={props.key} invisible={invisible} children={children} />
         ),
       },
@@ -862,6 +789,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
             key={props.key}
             element={element}
             props={props}
+            // eslint-disable-next-line react/no-children-prop
             children={children}
           />
         ),

@@ -1,7 +1,7 @@
 import * as React from "react";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderProps } from "~/components/base/material-loader-copy";
 import Base from "~/components/base/material-loader-copy/base";
-import BinaryMaterialLoader from "~/components/base/material-loader/components/binary";
+import BinaryMaterialLoader from "~/components/base/material-loader-copy/binary";
 import i18n from "~/locales/i18n";
 
 /**

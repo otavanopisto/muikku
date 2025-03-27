@@ -2,7 +2,7 @@
 import * as React from "react";
 import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown";
-import Synchronizer from "./base/synchronizer";
+import Synchronizer from "./synchronizer";
 import { v4 as uuidv4 } from "uuid";
 import { StrMathJAX } from "../static/strmathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";

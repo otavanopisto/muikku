@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderProps } from "~/components/base/material-loader-copy";
 import RecordingsList from "../../general/voice-recorder/recordings-list";
 import { RecordValue } from "../../../@types/recorder";
 import { useTranslation } from "react-i18next";

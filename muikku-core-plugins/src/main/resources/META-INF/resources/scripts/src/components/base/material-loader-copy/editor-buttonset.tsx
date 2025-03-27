@@ -1,5 +1,5 @@
 import * as React from "react";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { MaterialLoaderProps } from "~/components/base/material-loader-copy";
 import Dropdown from "~/components/general/dropdown";
 import { ButtonPill } from "~/components/general/button";
 import { useTranslation } from "react-i18next";

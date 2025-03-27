@@ -4,7 +4,7 @@ import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
-import Synchronizer from "./base/synchronizer";
+import Synchronizer from "./synchronizer";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../utils";
 import { withTranslation, WithTranslation } from "react-i18next";

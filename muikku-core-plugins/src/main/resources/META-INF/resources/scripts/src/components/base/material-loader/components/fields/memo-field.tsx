@@ -4,7 +4,7 @@ import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
-import Synchronizer from "./base/synchronizer";
+import Synchronizer from "./synchronizer";
 import TextareaAutosize from "react-textarea-autosize";
 import { connect } from "react-redux";
 import { StrMathJAX } from "../static/strmathjax";

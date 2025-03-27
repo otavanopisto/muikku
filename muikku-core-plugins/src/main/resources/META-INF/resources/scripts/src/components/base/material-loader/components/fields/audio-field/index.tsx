@@ -4,7 +4,7 @@ import $ from "~/lib/jquery";
 import { StatusType } from "reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
-import Synchronizer from "../base/synchronizer";
+import Synchronizer from "../synchronizer";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../../utils";
