@@ -280,6 +280,13 @@ export interface StudentSelfImage {
   somethingElse?: string;
   wishesForTeachersAndSupervisors?: string;
 }
+/**
+ * Languages
+ */
+export interface Language {
+  code: string;
+  name: string;
+}
 
 /**
  * SchoolSubjectMatrix

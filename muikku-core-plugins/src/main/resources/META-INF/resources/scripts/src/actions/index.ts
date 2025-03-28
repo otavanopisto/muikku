@@ -355,6 +355,7 @@ import {
   HOPS_CANCEL_EDITING,
   HOPS_UPDATE_INITIALIZE_STATUS,
 } from "./main-function/hops/";
+import { UPDATE_LANGUAGE_PROFILE_VALUES, UPDATE_LANGUAGE_PROFILE_LANGUAGES } from "./main-function/language-profile";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD
@@ -631,6 +632,8 @@ export type ActionType =
   | UPDATE_NOTE
   | ADD_NOTE
   | REMOVE_NOTE
-  | UPDATE_NOTE_RECIPIENT;
+  | UPDATE_NOTE_RECIPIENT
+  | UPDATE_LANGUAGE_PROFILE_VALUES
+  | UPDATE_LANGUAGE_PROFILE_LANGUAGES;
 
 export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;

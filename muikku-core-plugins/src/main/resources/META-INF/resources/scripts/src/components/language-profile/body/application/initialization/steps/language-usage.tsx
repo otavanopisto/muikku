@@ -1,6 +1,11 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { InitializationContext } from "../../initialization";
+import { useDispatch, useSelector } from "react-redux";
+import { StateType } from "~/reducers";
+import { LanguageProfileData } from "~/reducers/main-function/language-profile";
+import { SpecificActionType, ActionType } from "~/actions";
+import { Dispatch, Action } from "redux";
+import { Language } from "~/@types/shared";
 
 // Conponent that uses useReducer to handle internal state where you set the languages you can speak
 // and the languages you can understand the languages are in rows and you can add a new row
@@ -9,9 +14,53 @@ import { InitializationContext } from "../../initialization";
 // the radio button values are "native", "excellent", "good", "satisfactory", "beginner" - by the addde language
 
 const LanguageUsage = () => {
-  const { t } = useTranslation("languageProfile");
-  const context = React.useContext(InitializationContext);
-  const { state, dispatch } = context;
+  // const { t } = useTranslation("languageProfile");
+  // const context = React.useContext(InitializationContext);
+
+  const dispatch = useDispatch();
+  const { languageProfile } = useSelector((state: StateType) => state);
+
+  // Create a ref to store the timeout ID
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // Debounced field change handler
+  const handleFieldChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    field: keyof LanguageProfileData
+  ) => {
+    // Get the current value
+    const value = e.target.value;
+
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    // Set a new timeout
+    timeoutRef.current = setTimeout(() => {
+      dispatch({
+        type: "UPDATE_LANGUAGE_PROFILE_VALUES",
+        payload: { [field]: value },
+      } as ActionType);
+    }, 300); // 300ms debounce time
+  };
+
+  const handleAddLanguage = (language: Language) => {
+    dispatch({
+      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
+      payload: language,
+    } as ActionType);
+  };
+
+  // Clean up the timeout when the component unmounts
+  React.useEffect(
+    () => () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    },
+    []
+  );
 
   return (
     <div>
@@ -28,9 +77,42 @@ const LanguageUsage = () => {
         interdum, neque vitae luctus ultricies, massa nibh congue est, quis
         accumsan velit odio sed elit.
       </p>
-      <div></div>
-      <div></div>
-      <div></div>
+      <form>
+        <div>
+          <h2>Kielet</h2>
+          <div></div>
+          <input
+            type="text"
+            id="language"
+            className="form-element__input"
+            onChange={(e) => handleFieldChange(e, "languageUsage")}
+          />
+        </div>
+        <div>
+          <h2>Kielten käyttäminen</h2>
+          <textarea
+            id="languageUsage"
+            className="form-element__textarea"
+            onChange={(e) => handleFieldChange(e, "languageUsage")}
+          />
+        </div>
+        <div>
+          <h2>Motivaatio opiskelussa</h2>
+          <textarea
+            id="studyMotivation"
+            className="form-element__textarea"
+            onChange={(e) => handleFieldChange(e, "studyMotivation")}
+          />
+        </div>
+        <div>
+          <h2>Kielten oppimien</h2>
+          <textarea
+            id="messageForTeacher"
+            className="form-element__textarea"
+            onChange={(e) => handleFieldChange(e, "languageLearning")}
+          />
+        </div>
+      </form>
     </div>
   );
 };
