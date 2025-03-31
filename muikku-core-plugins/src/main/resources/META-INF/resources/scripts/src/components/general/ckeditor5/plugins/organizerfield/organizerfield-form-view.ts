@@ -5,6 +5,8 @@ import {
   createLabeledInputText,
   submitHandler,
   InputTextView,
+  ButtonView,
+  icons,
 } from "ckeditor5";
 import { Locale } from "ckeditor5";
 import { OrganizerFormData } from "../types";
@@ -14,7 +16,20 @@ import { OrganizerFormData } from "../types";
  * @module muikku-organizerfield
  */
 export default class OrganizerFieldFormView extends View {
+  /**
+   * The title input field
+   */
   public titleInput: LabeledFieldView<InputTextView>;
+
+  /**
+   * Button to add new categories
+   */
+  public addCategoryButton: ButtonView;
+
+  /**
+   * Container for category elements
+   */
+  public categoriesContainer: HTMLDivElement;
 
   /**
    * Constructor
@@ -23,8 +38,10 @@ export default class OrganizerFieldFormView extends View {
   constructor(locale: Locale) {
     super(locale);
 
-    // Create a simple input field
-    this.titleInput = this._createInput("Title");
+    // Create form elements
+    this.titleInput = this._createInput("Termien otsikko");
+    this.addCategoryButton = this._createAddCategoryButton();
+    this.categoriesContainer = this._createCategoriesContainer();
 
     // Set up the form template
     this.setTemplate({
@@ -34,6 +51,7 @@ export default class OrganizerFieldFormView extends View {
         tabindex: "-1",
       },
       children: [
+        // Title section
         {
           tag: "div",
           attributes: {
@@ -41,14 +59,39 @@ export default class OrganizerFieldFormView extends View {
           },
           children: [this.titleInput],
         },
+        // Categories section
+        {
+          tag: "div",
+          attributes: {
+            class: ["ck", "ck-form__row"],
+          },
+          children: [
+            {
+              tag: "label",
+              attributes: {
+                class: ["ck", "ck-label"],
+              },
+              children: ["Ryhmät"],
+            },
+            this.categoriesContainer,
+          ],
+        },
+        {
+          tag: "div",
+          attributes: {
+            class: ["ck", "ck-form__row"],
+          },
+          children: [this.addCategoryButton],
+        },
       ],
     });
   }
 
   /**
    * Creates a labeled input field
-   * @param label - The label
+   * @param label - The label text
    * @returns The labeled input field
+   * @private
    */
   private _createInput(label: string): LabeledFieldView<InputTextView> {
     const labeledInput = new LabeledFieldView(
@@ -57,6 +100,39 @@ export default class OrganizerFieldFormView extends View {
     );
     labeledInput.label = label;
     return labeledInput;
+  }
+
+  /**
+   * Creates the add category button
+   * @returns The button view
+   * @private
+   */
+  private _createAddCategoryButton(): ButtonView {
+    const button = new ButtonView(this.locale);
+
+    button.set({
+      label: "Lisää ryhmä",
+      icon: icons.plus,
+      tooltip: true,
+      withText: true,
+    });
+
+    button.on("execute", () => {
+      console.log("Add category button clicked");
+    });
+
+    return button;
+  }
+
+  /**
+   * Creates the categories container
+   * @returns The container element
+   * @private
+   */
+  private _createCategoriesContainer(): HTMLDivElement {
+    const container = document.createElement("div");
+    container.classList.add("ck-organizer-categories-container");
+    return container;
   }
 
   /**
@@ -70,11 +146,8 @@ export default class OrganizerFieldFormView extends View {
    * Resets the form
    */
   reset(): void {
-    this.setData({
-      termTitle: "",
-      categories: [],
-      terms: [],
-    });
+    this.titleInput.fieldView.element.value = "";
+    this.categoriesContainer.innerHTML = "";
   }
 
   /**
@@ -84,16 +157,17 @@ export default class OrganizerFieldFormView extends View {
   getData() {
     return {
       title: this.titleInput.fieldView.element.value,
+      //categories: [], // We'll implement this later
     };
   }
 
   /**
    * Sets the form field values
-   * @param data - TextFieldFormData object containing values to set
+   * @param data - OrganizerFormData object containing values to set
    */
   setData(data: OrganizerFormData): void {
-    // Clear existing answers
     this.titleInput.fieldView.value = data.termTitle || "";
+    this.categoriesContainer.innerHTML = ""; // Clear categories
   }
 
   /**
