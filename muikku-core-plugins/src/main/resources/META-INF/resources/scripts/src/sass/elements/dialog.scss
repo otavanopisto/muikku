@@ -545,7 +545,9 @@
 }
 
 .dialog__note-recipients {
+  border-left: 1px solid $color-default-separator-border;
   flex-basis: 100%;
+  margin: 0 0 0 10px;
   padding: 0 0 0 10px;
 
   @include breakpoint($breakpoint-mobile-xl) {

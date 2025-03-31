@@ -54,6 +54,12 @@
   cursor: pointer;
 }
 
+.avatar__group-members-search {
+  input {
+    width: 100%;
+  }
+}
+
 .avatar__group-members-container {
   max-height: 350px;
   overflow-y: auto;
