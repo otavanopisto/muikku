@@ -11,44 +11,14 @@ import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import "~/sass/elements/organizerfield.scss";
-
-/**
- * TermType
- */
-interface TermType {
-  id: string;
-  name: string;
-}
-
-/**
- * CategoryType
- */
-interface CategoryType {
-  id: string;
-  name: string;
-}
-
-/**
- * CategoryTerm
- */
-interface CategoryTerm {
-  category: string;
-  terms: Array<string>;
-}
+import { OrganizerFieldContent } from "./types";
 
 /**
  * OrganizerFieldProps
  */
 interface OrganizerFieldProps extends WithTranslation {
   type: string;
-  content: {
-    name: string;
-    termTitle: string;
-    terms: Array<TermType>;
-    categories: Array<CategoryType>;
-    categoryTerms: Array<CategoryTerm>;
-  };
-
+  content: OrganizerFieldContent;
   usedAs: UsedAs;
   readOnly?: boolean;
   initialValue?: string;
@@ -57,11 +27,9 @@ interface OrganizerFieldProps extends WithTranslation {
     name: string,
     newValue: any
   ) => any;
-
   displayCorrectAnswers?: boolean;
   checkAnswers?: boolean;
   onAnswerChange?: (name: string, value: boolean) => any;
-
   invisible?: boolean;
 }
 
@@ -427,7 +395,7 @@ class OrganizerField extends React.Component<
    * selectBox
    * @param box box
    */
-  selectBox(box: CategoryType) {
+  selectBox(box: OrganizerFieldContent["categories"][0]) {
     if (this.state.selectedItemId) {
       this.onDropDraggableItem(this.state.selectedItemId, box.id);
       this.setState({
@@ -585,7 +553,8 @@ class OrganizerField extends React.Component<
    * @param category category
    */
   handleCategoryListKeyDown =
-    (category: CategoryType) => (e: React.KeyboardEvent) => {
+    (category: OrganizerFieldContent["categories"][0]) =>
+    (e: React.KeyboardEvent) => {
       if (
         e.key === "ArrowUp" ||
         e.key === "ArrowDown" ||

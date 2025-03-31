@@ -69,3 +69,23 @@ export interface TextFieldContent {
     text: string;
   }>;
 }
+
+/**
+ * OrganizerField specific interfaces
+ */
+export interface OrganizerFieldContent {
+  name: string;
+  termTitle: string;
+  terms: Array<{
+    id: string;
+    name: string;
+  }>;
+  categories: Array<{
+    id: string;
+    name: string;
+  }>;
+  categoryTerms: Array<{
+    category: string;
+    terms: Array<string>;
+  }>;
+}

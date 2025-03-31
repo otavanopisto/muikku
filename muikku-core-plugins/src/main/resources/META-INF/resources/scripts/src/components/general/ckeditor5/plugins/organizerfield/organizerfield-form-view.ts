@@ -5,22 +5,23 @@ import {
   createLabeledInputText,
   ButtonView,
   submitHandler,
+  InputTextView,
 } from "ckeditor5";
 import { icons } from "ckeditor5";
 import { Locale } from "ckeditor5";
-import { CategoryData, TermData, FormData, CategoryElementData } from ".";
+import { OrganizerCategory, OrganizerFormData, OrganizerTerm } from "../types";
 
 /**
  * @module muikku-organizerfield
  */
 export default class OrganizerFieldFormView extends View {
   // Declare form elements
-  public termTitleInput: LabeledFieldView;
+  public termTitleInput: LabeledFieldView<InputTextView>;
+  public addGroupButton: ButtonView;
+  public groupsContainer: HTMLDivElement;
   public saveButton: ButtonView;
   public cancelButton: ButtonView;
-  public categoryContainer: HTMLElement;
-  public addCategoryButton: ButtonView;
-  private _categories: CategoryData[];
+  private _groups: OrganizerCategory[] = [];
   readonly locale: Locale;
 
   /**
@@ -31,73 +32,96 @@ export default class OrganizerFieldFormView extends View {
     super(locale);
 
     this.locale = locale;
-    this._categories = [];
 
-    // Create UI elements
-    this._createInputs();
-    this._createButtons();
-    this._createCategoryList();
+    // Create form elements
+    this.termTitleInput = this._createInput("Termien otsikko");
+    this.addGroupButton = this._createAddGroupButton();
+    this.groupsContainer = this._createGroupsContainer();
 
-    // Create the form template
-    this._createFormTemplate();
+    // Create form template
+    this.setTemplate({
+      tag: "form",
+      attributes: {
+        class: ["ck", "ck-organizer-field-form"],
+        tabindex: "-1",
+      },
+      children: [
+        // Title section
+        {
+          tag: "div",
+          attributes: {
+            class: ["ck", "ck-form__row"],
+          },
+          children: [this.termTitleInput],
+        },
+        // Groups section
+        {
+          tag: "div",
+          attributes: {
+            class: ["ck", "ck-form__row"],
+          },
+          children: [
+            {
+              tag: "label",
+              attributes: {
+                class: ["ck", "ck-label"],
+              },
+              children: ["Ryhmät"],
+            },
+            this.groupsContainer,
+            this.addGroupButton,
+          ],
+        },
+      ],
+    });
 
-    // Set up event handling
-    this._setupEventHandling();
+    // Initialize event handling
+    this._initializeActions();
   }
 
   /**
    * Create input fields
-   * @private
+   * @param label - The label for the input field
    */
-  private _createInputs() {
+  private _createInput(label: string) {
     // Create term title input
     this.termTitleInput = new LabeledFieldView(
       this.locale,
       createLabeledInputText
     );
     this.termTitleInput.placeholder = "Enter term title...";
+
+    return this.termTitleInput;
   }
 
   /**
-   * Create form buttons
-   * @private
+   * Create add group button
+   * @returns ButtonView instance
    */
-  private _createButtons() {
-    const t = this.locale.t;
-
-    // Save button
-    this.saveButton = new ButtonView(this.locale);
-    this.saveButton.set({
-      type: "submit",
-      label: t("Save"),
-      icon: icons.check,
-      class: "ck-button-save",
-    });
-
-    // Cancel button
-    this.cancelButton = new ButtonView(this.locale);
-    this.cancelButton.set({
-      label: t("Cancel"),
-      icon: icons.cancel,
-      class: "ck-button-cancel",
-    });
-
-    // Add category button
-    this.addCategoryButton = new ButtonView(this.locale);
-    this.addCategoryButton.set({
-      label: t("Add Category"),
+  private _createAddGroupButton(): ButtonView {
+    const button = new ButtonView(this.locale);
+    button.set({
+      label: "Lisää ryhmä",
       icon: icons.plus,
-      class: "ck-button-add-category",
+      tooltip: true,
+      class: "ck-button-add-group",
     });
+
+    button.on("execute", () => {
+      this._addNewGroup(this._createEmptyCategoryData());
+    });
+
+    return button;
   }
 
   /**
    * Create the category management section
    * @private
    */
-  private _createCategoryList() {
-    this.categoryContainer = document.createElement("div");
-    this.categoryContainer.classList.add("organizer-field-categories");
+  private _createGroupsContainer(): HTMLDivElement {
+    const container = document.createElement("div");
+    container.classList.add("ck-organizer-groups-container");
+    return container;
   }
 
   /**
@@ -126,8 +150,8 @@ export default class OrganizerFieldFormView extends View {
               },
               children: [this.locale.t("Categories")],
             },
-            this.categoryContainer,
-            this.addCategoryButton,
+            this.groupsContainer,
+            this.addGroupButton,
           ],
         },
         {
@@ -142,37 +166,16 @@ export default class OrganizerFieldFormView extends View {
   }
 
   /**
-   * Set up event handlers
-   * @private
-   */
-  private _setupEventHandling() {
-    // Handle form submission
-    submitHandler({
-      view: this,
-    });
-
-    // Add category button handler
-    this.addCategoryButton.on("execute", () => {
-      this.addCategory();
-    });
-
-    // Cancel button handler
-    this.cancelButton.on("execute", () => {
-      this.fire("cancel");
-    });
-  }
-
-  /**
    * Add a new category
    * @param categoryData - The category data
    * @private
    */
   public addCategory(
-    categoryData: CategoryElementData = this._createEmptyCategoryData()
+    categoryData: OrganizerCategory = this._createEmptyCategoryData()
   ): void {
     const categoryElement = this._createCategoryElement(categoryData);
-    this.categoryContainer.appendChild(categoryElement);
-    this._categories.push(categoryData);
+    this.groupsContainer.appendChild(categoryElement);
+    this._groups.push(categoryData);
   }
 
   /**
@@ -180,7 +183,7 @@ export default class OrganizerFieldFormView extends View {
    * @returns The empty category data
    * @private
    */
-  private _createEmptyCategoryData(): CategoryElementData {
+  private _createEmptyCategoryData(): OrganizerCategory {
     return {
       id: this._generateUniqueId(),
       name: "",
@@ -189,15 +192,25 @@ export default class OrganizerFieldFormView extends View {
   }
 
   /**
+   * Create an empty term data
+   * @returns The empty term data
+   * @private
+   */
+  private _createEmptyTermData(): OrganizerTerm {
+    return {
+      id: this._generateUniqueId(),
+      text: "",
+    };
+  }
+
+  /**
    * Create a category element
    * @param categoryData - The category data
    * @private
    */
-  private _createCategoryElement(
-    categoryData: CategoryElementData
-  ): HTMLElement {
+  private _createCategoryElement(categoryData: OrganizerCategory): HTMLElement {
     const categoryDiv = document.createElement("div");
-    categoryDiv.classList.add("organizer-field-category");
+    categoryDiv.classList.add("ck-organizer-group");
     categoryDiv.dataset.categoryId = categoryData.id;
 
     const nameInput = this._createCategoryNameInput(categoryData);
@@ -219,13 +232,13 @@ export default class OrganizerFieldFormView extends View {
    * @private
    */
   private _createCategoryNameInput(
-    categoryData: CategoryElementData
+    categoryData: OrganizerCategory
   ): HTMLInputElement {
     const nameInput = document.createElement("input");
     nameInput.type = "text";
     nameInput.value = categoryData.name;
-    nameInput.placeholder = "Category name...";
-    nameInput.classList.add("ck-input", "category-name-input");
+    nameInput.placeholder = "Ryhmän otsikko...";
+    nameInput.classList.add("ck-input", "ck-group-title");
 
     nameInput.addEventListener("change", () => {
       categoryData.name = nameInput.value;
@@ -239,11 +252,9 @@ export default class OrganizerFieldFormView extends View {
    * @param categoryData - The category data
    * @private
    */
-  private _createTermsContainer(
-    categoryData: CategoryElementData
-  ): HTMLElement {
+  private _createTermsContainer(categoryData: OrganizerCategory): HTMLElement {
     const termsContainer = document.createElement("div");
-    termsContainer.classList.add("category-terms");
+    termsContainer.classList.add("ck-group-terms");
 
     categoryData.terms.forEach((term) => {
       this._addTermToCategory(termsContainer, term, categoryData);
@@ -260,7 +271,7 @@ export default class OrganizerFieldFormView extends View {
    */
   private _createTermInput(
     termsContainer: HTMLElement,
-    categoryData: CategoryElementData
+    categoryData: OrganizerCategory
   ): HTMLInputElement {
     const termInput = document.createElement("input");
     termInput.type = "text";
@@ -272,7 +283,7 @@ export default class OrganizerFieldFormView extends View {
         e.preventDefault();
         const termText = termInput.value.trim();
         if (termText) {
-          const newTerm: TermData = {
+          const newTerm: OrganizerTerm = {
             id: this._generateUniqueId(),
             text: termText,
           };
@@ -294,8 +305,8 @@ export default class OrganizerFieldFormView extends View {
    */
   private _addTermToCategory(
     container: HTMLElement,
-    term: TermData,
-    categoryData: CategoryElementData
+    term: OrganizerTerm,
+    categoryData: OrganizerCategory
   ): void {
     const termSpan = document.createElement("span");
     termSpan.classList.add("category-term");
@@ -325,8 +336,8 @@ export default class OrganizerFieldFormView extends View {
    */
   private _createDeleteTermButton(
     termElement: HTMLElement,
-    term: TermData,
-    categoryData: CategoryElementData
+    term: OrganizerTerm,
+    categoryData: OrganizerCategory
   ): HTMLButtonElement {
     const deleteButton = document.createElement("button");
     deleteButton.classList.add("term-delete");
@@ -349,17 +360,15 @@ export default class OrganizerFieldFormView extends View {
    */
   private _createDeleteCategoryButton(
     categoryElement: HTMLElement,
-    categoryData: CategoryElementData
+    categoryData: OrganizerCategory
   ): HTMLButtonElement {
     const deleteButton = document.createElement("button");
-    deleteButton.classList.add("ck-button", "category-delete");
+    deleteButton.classList.add("ck-button", "ck-delete-group");
     deleteButton.innerHTML = "×";
 
     deleteButton.addEventListener("click", () => {
       categoryElement.remove();
-      this._categories = this._categories.filter(
-        (c) => c.id !== categoryData.id
-      );
+      this._groups = this._groups.filter((c) => c.id !== categoryData.id);
     });
 
     return deleteButton;
@@ -369,22 +378,34 @@ export default class OrganizerFieldFormView extends View {
    * Get form data
    * @returns The form data
    */
-  public getData(): FormData {
-    const terms: TermData[] = [];
-    this._categories.forEach((category) => {
-      category.terms.forEach((term) => {
-        terms.push(term);
-      });
-    });
+  public getData(): OrganizerFormData {
+    const categories = Array.from(this.groupsContainer.children).map(
+      (categoryEl) => {
+        const titleInput = categoryEl.querySelector(
+          ".ck-group-title"
+        ) as HTMLInputElement;
+        const termInputs = categoryEl.querySelectorAll(
+          ".ck-term-input"
+        ) as NodeListOf<HTMLInputElement>;
+
+        return {
+          id: "",
+          name: titleInput.value,
+          // eslint-disable-next-line arrow-body-style
+          terms: Array.from(termInputs).map((input) => {
+            return {
+              id: "",
+              text: input.value,
+            };
+          }),
+        };
+      }
+    );
 
     return {
-      termTitle: this.termTitleInput.fieldView.element.getAttribute("value"),
-      categories: this._categories.map((category) => ({
-        id: category.id,
-        name: category.name,
-        terms: category.terms,
-      })),
-      terms: terms,
+      termTitle: this.termTitleInput.fieldView.element.value,
+      categories,
+      terms: [],
     };
   }
 
@@ -392,20 +413,23 @@ export default class OrganizerFieldFormView extends View {
    * Set form data
    * @param data - The form data
    */
-  public setData(data: Partial<FormData>): void {
-    this.termTitleInput.fieldView.element.setAttribute(
-      "value",
-      data.termTitle || ""
-    );
-    this._categories = [];
-    this.categoryContainer.innerHTML = "";
+  public setData(data: OrganizerFormData): void {
+    this.termTitleInput.fieldView.element.value = data.termTitle || "";
+    this.groupsContainer.innerHTML = "";
 
     (data.categories || []).forEach((category) => {
-      this.addCategory({
-        id: category.id || this._generateUniqueId(),
-        name: category.name,
-        terms: category.terms || [],
-      });
+      this._addNewGroup(category);
+    });
+  }
+
+  /**
+   * Resets the form
+   */
+  reset(): void {
+    this.setData({
+      termTitle: "",
+      categories: [],
+      terms: [],
     });
   }
 
@@ -423,5 +447,82 @@ export default class OrganizerFieldFormView extends View {
    */
   private _generateUniqueId(): string {
     return `id-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  /**
+   * Add a new group
+   * @param categoryData - The category data
+   * @private
+   */
+  private _addNewGroup(categoryData: OrganizerCategory): void {
+    const groupElement = document.createElement("div");
+    groupElement.classList.add("ck-organizer-group");
+
+    // Group title input
+    const titleInput = document.createElement("input");
+    titleInput.type = "text";
+    titleInput.classList.add("ck-input", "ck-group-title");
+    titleInput.placeholder = "Ryhmän otsikko...";
+    titleInput.value = categoryData.name;
+
+    // Terms container
+    const termsContainer = document.createElement("div");
+    termsContainer.classList.add("ck-group-terms");
+
+    // Add term button
+    const addTermButton = document.createElement("button");
+    addTermButton.classList.add("ck-button", "ck-add-term");
+    addTermButton.innerHTML = "+";
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    addTermButton.onclick = () => this._addNewTerm(termsContainer);
+
+    // Delete group button
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add("ck-button", "ck-delete-group");
+    deleteButton.innerHTML = "×";
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    deleteButton.onclick = () => groupElement.remove();
+
+    groupElement.append(
+      titleInput,
+      deleteButton,
+      termsContainer,
+      addTermButton
+    );
+    this.groupsContainer.appendChild(groupElement);
+  }
+
+  /**
+   * Add a new term
+   * @param container - The container element
+   * @param termText - The term text
+   * @private
+   */
+  private _addNewTerm(container: HTMLElement, termText = ""): void {
+    const termElement = document.createElement("div");
+    termElement.classList.add("ck-term");
+
+    const termInput = document.createElement("input");
+    termInput.type = "text";
+    termInput.classList.add("ck-input", "ck-term-input");
+    termInput.placeholder = "Termi...";
+    termInput.value = termText;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.classList.add("ck-button", "ck-delete-term");
+    deleteButton.innerHTML = "×";
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    deleteButton.onclick = () => termElement.remove();
+
+    termElement.append(termInput, deleteButton);
+    container.appendChild(termElement);
+  }
+
+  /**
+   * Initialize event handlers
+   * @private
+   */
+  private _initializeActions(): void {
+    submitHandler({ view: this });
   }
 }

@@ -65,6 +65,7 @@ import {
   Underline,
   WordCount,
 } from "ckeditor5";
+import OrganizerField from "./plugins/organizerfield";
 import TextField from "./plugins/Textfield";
 
 const LICENSE_KEY = "GPL";
@@ -228,10 +229,12 @@ export const testConfig: EditorConfig = {
       "indent",
       "|",
       "muikku-textfield",
+      "muikku-organizerfield",
     ],
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    OrganizerField,
     TextField,
     Alignment,
     AutoImage,

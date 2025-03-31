@@ -1,7 +1,6 @@
 import { Plugin, Dialog, uid, ButtonView } from "ckeditor5";
 import TextFieldFormView from "./textfield-form-view";
 import { TextFieldAnswerChoice } from "../types";
-import textfieldIcon from "./icons/muikkutextfield.png";
 
 /**
  * Textfield UI plugin
@@ -41,7 +40,6 @@ export default class TextFieldUI extends Plugin {
 
       button.set({
         label: "Text Field",
-        icon: textfieldIcon,
         tooltip: true,
         withText: true,
       });
