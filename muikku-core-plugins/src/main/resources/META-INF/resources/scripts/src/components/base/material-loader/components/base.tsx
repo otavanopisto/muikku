@@ -21,9 +21,13 @@ import { HTMLtoReactComponent } from "~/util/modifiers";
 import Table from "./static/table";
 import MathJAX from "./static/mathjax";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
-import { getParser } from "../utils";
 import CKEditor4Parser from "./fields/parser/ckeditor4";
-import { FieldData, MaterialLoaderBaseData } from "./fields/types";
+import {
+  FieldData,
+  FieldDataParser,
+  MaterialLoaderBaseData,
+} from "./fields/types";
+import CKEditor5Parser from "./fields/parser/ckeditor5";
 
 //These are all our supported objects as for now
 const objects: { [key: string]: any } = {
@@ -177,15 +181,16 @@ function preprocessor($html: any): any {
   return $newHTML;
 }
 
-const defaultParser = getParser("ckeditor4");
-
 /**
  * Base
  */
 export default class Base extends React.Component<BaseProps, BaseState> {
   private answerCheckable: boolean;
 
-  private fieldParser: CKEditor4Parser = defaultParser;
+  private fieldParsers: Map<string, FieldDataParser> = new Map([
+    ["ckeditor4", new CKEditor4Parser()],
+    ["ckeditor5", new CKEditor5Parser()],
+  ]);
 
   // whenever a field changes we save it as timeout not to send every keystroke to the server
   // every keystroke cancels the previous timeout given by the TIME_IT_TAKES_FOR_AN_ANSWER_TO_BE_SAVED_WHILE_THE_USER_MODIFIES_IT
@@ -229,6 +234,18 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     this.onAnswerSavedAtServer = this.onAnswerSavedAtServer.bind(this);
 
     this.answerCheckable = null;
+  }
+
+  /**
+   * Detects the editor version of the element
+   * @param element element
+   * @returns string
+   */
+  private detectEditorVersion(element: HTMLElement): string {
+    if (element.querySelectorAll("param").length > 0) {
+      return "ckeditor4";
+    }
+    return "ckeditor5";
   }
 
   /**
@@ -285,8 +302,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           props
         );
 
-        console.log("rElement.type", rElement.props);
-
         const newAnswerCheckableState =
           answerCheckables[element.getAttribute("type")] &&
           answerCheckables[element.getAttribute("type")](rElement.props);
@@ -310,6 +325,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
   onAnswerSavedAtServer(data: any) {
     // For some reason the data comes as string
     const actualData = JSON.parse(data);
+
     // we check the data for a match for this specific page, given that a lot of callbacks will be registered
     // and we are going to get all those events indiscrimately of wheter which page it belongs to as we are
     // registering this event on all the field-answer-saved events
@@ -380,13 +396,19 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       );
     }
 
-    const fieldData: FieldData = this.fieldParser.parseFieldData(
-      element,
-      props
-    );
+    const editorVersion = this.detectEditorVersion(element);
+
+    const fieldData: FieldData = this.fieldParsers
+      .get(editorVersion)
+      .parseFieldData(element, props);
+
+    const parameters = {
+      ...fieldData.parameters,
+      onChange: this.onValueChange.bind(this),
+    };
 
     // and we return that thing
-    return <ActualElement {...fieldData.parameters} key={key} />;
+    return <ActualElement {...parameters} key={key} />;
   }
 
   /**
@@ -415,6 +437,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       context.setState({ synced: true });
       return;
     }
+
     context.setState({ synced: false });
 
     this.props.onModification && this.props.onModification();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FieldDataParser, MaterialLoaderBaseData } from "../types";
 
 /**
@@ -27,6 +28,7 @@ export default class CKEditor4Parser implements FieldDataParser {
         parameters["content"] =
           parameters["content"] && JSON.parse(parameters["content"]);
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error("Failed to parse field content", e);
       }
     }

@@ -1,8 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-
-import MaterialLoader from "~/components/base/material-loader-copy";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
@@ -13,22 +11,39 @@ import {
   SetCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces";
 import { Action, bindActionCreators, Dispatch } from "redux";
-import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader-copy/editor-buttonset";
-import { MaterialLoaderTitle } from "~/components/base/material-loader-copy/title";
-import { MaterialLoaderContent } from "~/components/base/material-loader-copy/content";
-import { MaterialLoaderProducersLicense } from "~/components/base/material-loader-copy/producers-license";
-import { MaterialLoaderButtons } from "~/components/base/material-loader-copy/buttons";
-import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader-copy/correct-answer-counter";
-import { MaterialLoaderAssesment } from "~/components/base/material-loader-copy/assesment";
-import { MaterialLoaderGrade } from "~/components/base/material-loader-copy/grade";
-import { MaterialLoaderDate } from "~/components/base/material-loader-copy/date";
 import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
-import { MaterialLoaderExternalContent } from "~/components/base/material-loader-copy/external-content";
 import { MaterialCompositeReply } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { MaterialLoaderPoints } from "~/components/base/material-loader-copy/points";
+
+// OLD LOADERS
+// import MaterialLoader from "~/components/base/material-loader-copy";
+// import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader-copy/editor-buttonset";
+// import { MaterialLoaderTitle } from "~/components/base/material-loader-copy/title";
+// import { MaterialLoaderContent } from "~/components/base/material-loader-copy/content";
+// import { MaterialLoaderProducersLicense } from "~/components/base/material-loader-copy/producers-license";
+// import { MaterialLoaderButtons } from "~/components/base/material-loader-copy/buttons";
+// import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader-copy/correct-answer-counter";
+// import { MaterialLoaderAssesment } from "~/components/base/material-loader-copy/assesment";
+// import { MaterialLoaderGrade } from "~/components/base/material-loader-copy/grade";
+// import { MaterialLoaderDate } from "~/components/base/material-loader-copy/date";
+// import { MaterialLoaderExternalContent } from "~/components/base/material-loader-copy/external-content";
+// import { MaterialLoaderPoints } from "~/components/base/material-loader-copy/points";
+
+// NEW LOADERS
+import MaterialLoader from "~/components/base/material-loader";
+import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/components/editor-buttonset";
+import { MaterialLoaderExternalContent } from "~/components/base/material-loader/components/external-content";
+import { MaterialLoaderButtons } from "~/components/base/material-loader/components/buttons";
+import { MaterialLoaderTitle } from "~/components/base/material-loader/components/title";
+import { MaterialLoaderContent } from "~/components/base/material-loader/components/content";
+import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/components/correct-answer-counter";
+import { MaterialLoaderPoints } from "~/components/base/material-loader/components/points";
+import { MaterialLoaderDate } from "~/components/base/material-loader/components/date";
+import { MaterialLoaderAssesment } from "~/components/base/material-loader/components/assesment";
+import { MaterialLoaderGrade } from "~/components/base/material-loader/components/grade";
+import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/components/producers-license";
 
 /**
  * WorkspaceMaterialProps

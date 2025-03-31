@@ -55,33 +55,12 @@ export interface MaterialLoaderBaseData {
 }
 
 /**
- * Base interface for all field data
- */
-export interface BaseFieldData {
-  type: string;
-  name: string;
-  readOnly?: boolean;
-  initialValue?: any;
-  usedAs: UsedAs;
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  invisible?: boolean;
-  content: any;
-  onAnswerChange?: (name: string, value: boolean) => void;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => void;
-}
-
-/**
  * TextField specific interfaces
  */
 export interface TextFieldContent {
   autogrow: boolean;
   columns: string;
-  hint?: string;
+  hint: string;
   name: string;
   rightAnswers: Array<{
     caseSensitive: boolean;
@@ -89,20 +68,4 @@ export interface TextFieldContent {
     normalizeWhitespace: boolean;
     text: string;
   }>;
-}
-
-/**
- * TextField specific data
- */
-export interface TextFieldData extends BaseFieldData {
-  content: TextFieldContent;
-}
-
-/**
- * Type guard for TextField
- * @param field - The field data to check
- * @returns True if the field is a TextField, false otherwise
- */
-export function isTextFieldData(field: BaseFieldData): field is TextFieldData {
-  return field.type === "application/vnd.muikku.field.text";
 }

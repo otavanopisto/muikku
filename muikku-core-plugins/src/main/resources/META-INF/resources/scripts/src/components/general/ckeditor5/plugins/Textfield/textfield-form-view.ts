@@ -9,34 +9,7 @@ import {
   ButtonView,
   icons,
 } from "ckeditor5";
-
-/**
- * Interface for answer choice
- */
-export interface AnswerRow {
-  input: InputTextView;
-  correctSwitch: SwitchButtonView;
-  deleteButton: ButtonView;
-  element: HTMLDivElement;
-}
-
-/**
- * Interface for answer choice
- */
-export interface AnswerChoice {
-  text: string;
-  isCorrect: boolean;
-}
-
-/**
- * Interface defining the data structure for the TextField form
- */
-export interface TextFieldFormData {
-  width?: string;
-  autoGrow?: boolean;
-  hint?: string;
-  answerChoices?: AnswerChoice[];
-}
+import { TextFieldAnswerRow, TextFieldFormData } from "../types";
 
 /**
  * Form view class for the TextField plugin.
@@ -49,7 +22,7 @@ export default class TextFieldFormView extends View {
   public autoGrowCheckbox: ButtonView;
   public answersContainer: HTMLDivElement;
   public addAnswerButton: ButtonView;
-  private answerRows: AnswerRow[] = [];
+  private answerRows: TextFieldAnswerRow[] = [];
 
   /**
    * Creates an instance of TextFieldFormView.
@@ -295,11 +268,11 @@ export default class TextFieldFormView extends View {
    */
   getData(): TextFieldFormData {
     return {
-      width: this.widthInput.fieldView.value,
+      width: this.widthInput.fieldView.element.value,
       autoGrow: this.autoGrowCheckbox.isOn,
-      hint: this.hintInput.fieldView.value,
+      hint: this.hintInput.fieldView.element.value,
       answerChoices: this.answerRows.map((row) => ({
-        text: row.input.value,
+        text: row.input.element.value,
         isCorrect: row.correctSwitch.isOn,
       })),
     };
@@ -310,10 +283,20 @@ export default class TextFieldFormView extends View {
    * @param data - TextFieldFormData object containing values to set
    */
   setData(data: TextFieldFormData): void {
+    // Clear existing answers
     this.widthInput.fieldView.value = data.width || "";
     this.autoGrowCheckbox.isOn = data.autoGrow || false;
     this.hintInput.fieldView.value = data.hint || "";
+
+    // Clear existing answers rows
+    this.answerRows.forEach((row) => {
+      row.element.remove(); // Remove DOM element
+      row.input.destroy(); // Destroy CKEditor components
+      row.correctSwitch.destroy();
+      row.deleteButton.destroy();
+    });
     this.answerRows = [];
+    this.answersContainer.innerHTML = "";
 
     (data.answerChoices || []).forEach((answer) => {
       this._addNewAnswer(answer.text, answer.isCorrect);

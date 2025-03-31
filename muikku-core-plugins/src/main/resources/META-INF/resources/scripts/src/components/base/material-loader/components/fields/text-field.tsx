@@ -10,24 +10,14 @@ import { createFieldSavedStateClass } from "../../utils";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import "~/sass/elements/textfield.scss";
+import { TextFieldContent } from "./types";
 
 /**
  * TextFieldProps
  */
 interface TextFieldProps extends WithTranslation {
   type: string;
-  content: {
-    autogrow: boolean;
-    columns: string;
-    hint: string;
-    name: string;
-    rightAnswers: Array<{
-      caseSensitive: boolean;
-      correct: boolean;
-      normalizeWhitespace: boolean;
-      text: string;
-    }>;
-  };
+  content: TextFieldContent;
   onChange?: (
     context: React.Component<any, any>,
     name: string,

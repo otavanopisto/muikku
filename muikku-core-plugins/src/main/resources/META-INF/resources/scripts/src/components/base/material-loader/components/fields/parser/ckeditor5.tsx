@@ -1,4 +1,5 @@
-import { FieldDataParser } from "../types";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FieldData, FieldDataParser, MaterialLoaderBaseData } from "../types";
 
 /**
  * CKEditor 5 parser that handles all field types
@@ -7,25 +8,77 @@ export default class CKEditor5Parser implements FieldDataParser {
   /**
    * Parse field data from a CKEditor 5 element
    * @param element - The CKEditor 5 element to parse
+   * @param materialBaseData - The props of the MaterialLoader
    * @returns The parsed field data
    */
-  parseFieldData(element: HTMLElement) {
-    let content = null;
-    const contentAttr = element.getAttribute("data-field-content");
+  parseFieldData(
+    element: HTMLElement,
+    materialBaseData?: MaterialLoaderBaseData
+  ): FieldData {
+    const parameters: Record<string, any> = {};
 
-    if (contentAttr) {
+    // Parse all params from the element
+    element.querySelectorAll("param").forEach((node) => {
+      parameters[node.getAttribute("name")] = node.getAttribute("value");
+    });
+
+    // Handle JSON content parsing
+    if (parameters["type"] === "application/json") {
       try {
-        content = JSON.parse(contentAttr);
+        parameters["content"] =
+          parameters["content"] && JSON.parse(parameters["content"]);
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error("Failed to parse field content", e);
       }
     }
 
+    // Set defaults
+    if (!parameters["type"]) {
+      parameters["type"] = "application/json";
+    }
+
+    if (!parameters["content"]) {
+      parameters["content"] = null;
+    }
+
+    // Handle composite replies if props are provided
+    if (materialBaseData) {
+      parameters["initialValue"] = null;
+      if (materialBaseData.compositeReplies?.answers) {
+        parameters["initialValue"] =
+          materialBaseData.compositeReplies.answers.find(
+            (answer) =>
+              answer.fieldName ===
+              (parameters.content && parameters.content.name)
+          );
+
+        // Handle .value field case
+        if (
+          parameters["initialValue"] &&
+          typeof parameters["initialValue"].value !== "undefined"
+        ) {
+          parameters["initialValue"] = parameters["initialValue"].value;
+        }
+      }
+
+      // Add props-based parameters
+      Object.assign(parameters, {
+        status: materialBaseData.status,
+        readOnly: materialBaseData.readOnly,
+        usedAs: materialBaseData.usedAs,
+        displayCorrectAnswers: materialBaseData.displayCorrectAnswers,
+        checkAnswers: materialBaseData.checkAnswers,
+        onAnswerChange: materialBaseData.onAnswerChange,
+        invisible: materialBaseData.invisible,
+        userId: materialBaseData.status.userId,
+      });
+    }
+
     return {
-      type: element.getAttribute("data-field-type") || "",
-      content,
-      parameters: JSON.parse(element.getAttribute("data-field-params") || "{}"),
+      type: element.getAttribute("type") || "",
+      content: parameters.content,
+      parameters,
     };
   }
 }

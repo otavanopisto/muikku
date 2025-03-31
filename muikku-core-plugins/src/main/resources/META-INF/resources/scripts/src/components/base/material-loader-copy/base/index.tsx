@@ -310,15 +310,11 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     const originalAnswerCheckable = this.answerCheckable;
     this.answerCheckable = false;
 
-    console.log("setupEverything", elements);
-
     // First we find all the interactive
     $(elements)
       .find("object")
       .addBack("object")
       .each((index: number, element: HTMLElement) => {
-        console.log("element", element);
-
         // We get the object element as in, the react component that it will be replaced with
         const rElement: React.ReactElement<any> = this.getObjectElement(
           element,

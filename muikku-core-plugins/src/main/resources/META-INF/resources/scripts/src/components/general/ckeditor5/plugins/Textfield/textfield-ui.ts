@@ -1,6 +1,7 @@
-import { Plugin, Dialog } from "ckeditor5";
-import { ButtonView } from "ckeditor5";
-import TextFieldFormView, { AnswerChoice } from "./textfield-form-view";
+import { Plugin, Dialog, uid, ButtonView } from "ckeditor5";
+import TextFieldFormView from "./textfield-form-view";
+import { TextFieldAnswerChoice } from "../types";
+import textfieldIcon from "./icons/muikkutextfield.png";
 
 /**
  * Textfield UI plugin
@@ -40,6 +41,7 @@ export default class TextFieldUI extends Plugin {
 
       button.set({
         label: "Text Field",
+        icon: textfieldIcon,
         tooltip: true,
         withText: true,
       });
@@ -62,13 +64,16 @@ export default class TextFieldUI extends Plugin {
     const form = new TextFieldFormView(editor.locale);
 
     // Handle form submission
-    form.on("submit", () => {
+    form.listenTo(form, "submit", () => {
       const formData = form.getData();
       const textField = this._getSelectedTextField();
 
       editor.model.change((writer) => {
         if (textField) {
+          const name = textField.getAttribute("name") as string;
+
           // Update existing text field
+          writer.setAttribute("name", name, textField);
           writer.setAttribute("width", formData.width, textField);
           writer.setAttribute("autoGrow", formData.autoGrow, textField);
           writer.setAttribute("hint", formData.hint, textField);
@@ -77,14 +82,17 @@ export default class TextFieldUI extends Plugin {
             formData.answerChoices,
             textField
           );
+          //writer.setAttribute("name", name, textField);
         } else {
+          const name = `muikku-field-${uid()}`;
+
           // Create new text field
           const textField = writer.createElement("textField", {
-            name: `text-field-${Date.now()}`,
-            width: formData.width,
-            autoGrow: formData.autoGrow,
-            hint: formData.hint,
-            answerChoices: formData.answerChoices,
+            name,
+            width: formData.width || "",
+            autoGrow: formData.autoGrow || false,
+            hint: formData.hint || "",
+            answerChoices: formData.answerChoices || [],
           });
           editor.model.insertContent(textField);
         }
@@ -114,7 +122,9 @@ export default class TextFieldUI extends Plugin {
         autoGrow: (textField.getAttribute("autoGrow") as boolean) || false,
         hint: (textField.getAttribute("hint") as string) || "",
         answerChoices:
-          (textField.getAttribute("answerChoices") as AnswerChoice[]) || [],
+          (textField.getAttribute(
+            "answerChoices"
+          ) as TextFieldAnswerChoice[]) || [],
       });
     } else {
       // Creating new field - clear form
