@@ -231,19 +231,6 @@ export default class TextFieldFormView extends View {
   }
 
   /**
-   * Renders the form
-   */
-  render(): void {
-    super.render();
-
-    // Submit the form when the user clicked the save button
-    // or pressed enter in the input.
-    submitHandler({
-      view: this,
-    });
-  }
-
-  /**
    * Focuses the width input field
    */
   focus(): void {
@@ -300,6 +287,19 @@ export default class TextFieldFormView extends View {
 
     (data.answerChoices || []).forEach((answer) => {
       this._addNewAnswer(answer.text, answer.isCorrect);
+    });
+  }
+
+  /**
+   * Renders the form
+   */
+  render(): void {
+    super.render();
+
+    // Submit the form when the user clicked the save button
+    // or pressed enter in the input.
+    submitHandler({
+      view: this,
     });
   }
 }

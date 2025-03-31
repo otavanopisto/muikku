@@ -1,4 +1,5 @@
-import { Plugin } from "ckeditor5";
+/* eslint-disable no-console */
+import { Plugin, uid } from "ckeditor5";
 import { Widget } from "ckeditor5";
 import placeholderImage from "./gfx/muikku-placeholder-organizerfield.gif";
 
@@ -30,8 +31,9 @@ export default class OrganizerFieldEditing extends Plugin {
     schema.register("organizerField", {
       isObject: true,
       isInline: true,
+      allowChildren: ["param"],
       allowWhere: "$text",
-      allowAttributes: ["name"],
+      allowAttributes: ["name", "title"],
     });
   }
 
@@ -41,16 +43,49 @@ export default class OrganizerFieldEditing extends Plugin {
   _defineConverters() {
     const conversion = this.editor.conversion;
 
-    // Upcast (HTML -> Model)
+    // Upcast (loading) - convert from HTML to editor model
     conversion.for("upcast").elementToElement({
-      // eslint-disable-next-line jsdoc/require-jsdoc
-      model: (viewElement, { writer: modelWriter }) =>
-        modelWriter.createElement("organizerField", {
-          name: viewElement.getAttribute("data-name"),
-        }),
       view: {
-        name: "div",
-        classes: "muikku-organizer-field",
+        name: "object",
+        attributes: {
+          type: "application/vnd.muikku.field.organizer",
+        },
+      },
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      model: (viewElement, { writer: modelWriter }) => {
+        let content;
+
+        // Because Ckeditor 5 probably doesn't know what to do with param tags,
+        // they are included in the custom properties of the object element.
+        // We need to extract the content from the object element manually.
+        const rawContentArray = viewElement.getCustomProperties().next().value;
+
+        // If there is a content param, parse it
+        if (rawContentArray && rawContentArray[1]) {
+          // Create a temporary div to parse the HTML
+          // and insert custom properties into it because it is html tags (at least in this case)
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = rawContentArray[1];
+
+          // Find the content param element
+          const contentParam = tempDiv.querySelector('param[name="content"]');
+
+          // If the content param exists, parse it
+          if (contentParam && contentParam.getAttribute("value")) {
+            try {
+              content = JSON.parse(contentParam.getAttribute("value"));
+            } catch (e) {
+              // eslint-disable-next-line no-console
+              console.error("Failed to parse content", e);
+            }
+          }
+        }
+
+        // Always return a valid model element with defaults
+        return modelWriter.createElement("organizerField", {
+          name: content.name || `muikku-field-${uid()}`,
+          title: content.title || "",
+        });
       },
     });
 
@@ -58,11 +93,44 @@ export default class OrganizerFieldEditing extends Plugin {
     conversion.for("dataDowncast").elementToElement({
       model: "organizerField",
       // eslint-disable-next-line jsdoc/require-jsdoc
-      view: (modelElement, { writer: viewWriter }) =>
-        viewWriter.createContainerElement("div", {
-          class: "muikku-organizer-field",
-          "data-name": modelElement.getAttribute("name"),
-        }),
+      view: (modelElement, { writer: viewWriter }) => {
+        const content = {
+          name:
+            (modelElement.getAttribute("name") as string) ||
+            `muikku-field-${uid()}`,
+          termTitle: (modelElement.getAttribute("title") as string) || "",
+        };
+
+        // Create the object element
+        const objectElement = viewWriter.createContainerElement("object", {
+          type: "application/vnd.muikku.field.organizer",
+        });
+
+        // Add type param
+        const typeParam = viewWriter.createContainerElement("param", {
+          name: "type",
+          value: "application/json",
+        });
+
+        // Add content param
+        const contentParam = viewWriter.createContainerElement("param", {
+          name: "content",
+          value: JSON.stringify(content),
+        });
+
+        // Add params to object
+        viewWriter.insert(
+          viewWriter.createPositionAt(objectElement, 0),
+          typeParam
+        );
+
+        viewWriter.insert(
+          viewWriter.createPositionAt(objectElement, "end"),
+          contentParam
+        );
+
+        return objectElement;
+      },
     });
 
     // EditingDowncast (Model -> Editing View)
