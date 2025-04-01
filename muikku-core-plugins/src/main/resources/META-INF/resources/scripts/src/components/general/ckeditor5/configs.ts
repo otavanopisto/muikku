@@ -65,6 +65,7 @@ import {
   Underline,
   WordCount,
 } from "ckeditor5";
+import ConnectField from "./plugins/connectfield";
 import OrganizerField from "./plugins/organizerfield";
 import TextField from "./plugins/Textfield";
 
@@ -230,10 +231,12 @@ export const testConfig: EditorConfig = {
       "|",
       "muikku-textfield",
       "muikku-organizerfield",
+      "muikku-connectfield",
     ],
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    ConnectField,
     OrganizerField,
     TextField,
     Alignment,
