@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Plugin, ButtonView, uid, Dialog } from "ckeditor5";
-import { OrganizerCategory, OrganizerTerm } from "../types";
+import {
+  OrganizerCategory,
+  OrganizerCategoryTerm,
+  OrganizerTerm,
+} from "../types";
 import OrganizerFieldFormView from "./organizerfield-form-view";
 
 /**
@@ -74,13 +78,28 @@ export default class OrganizerFieldUI extends Plugin {
           const name = organizerField.getAttribute("name") as string;
 
           writer.setAttribute("name", name, organizerField);
-          writer.setAttribute("title", formData.title, organizerField);
+          writer.setAttribute("termTitle", formData.termTitle, organizerField);
+          writer.setAttribute(
+            "categories",
+            formData.categories,
+            organizerField
+          );
+          writer.setAttribute("terms", formData.terms, organizerField);
+          writer.setAttribute(
+            "categoryTerms",
+            formData.categoryTerms,
+            organizerField
+          );
         } else {
           const name = `muikku-field-${uid()}`;
 
           // Create new text field
           const organizerField = writer.createElement("organizerField", {
             name,
+            termTitle: formData.termTitle || "",
+            categories: formData.categories || [],
+            terms: formData.terms || [],
+            categoryTerms: formData.categoryTerms || [],
           });
           editor.model.insertContent(organizerField);
         }
@@ -104,11 +123,15 @@ export default class OrganizerFieldUI extends Plugin {
     if (organizerField) {
       // Editing existing field - populate form
       this._form.setData({
-        termTitle: (organizerField.getAttribute("title") as string) || "",
+        termTitle: (organizerField.getAttribute("termTitle") as string) || "",
         categories:
           (organizerField.getAttribute("categories") as OrganizerCategory[]) ||
           [],
         terms: (organizerField.getAttribute("terms") as OrganizerTerm[]) || [],
+        categoryTerms:
+          (organizerField.getAttribute(
+            "categoryTerms"
+          ) as OrganizerCategoryTerm[]) || [],
       });
     } else {
       // Creating new field - clear form
@@ -116,6 +139,7 @@ export default class OrganizerFieldUI extends Plugin {
         termTitle: "",
         categories: [],
         terms: [],
+        categoryTerms: [],
       });
     }
 

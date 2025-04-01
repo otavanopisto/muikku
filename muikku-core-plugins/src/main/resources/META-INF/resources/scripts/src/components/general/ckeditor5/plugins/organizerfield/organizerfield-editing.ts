@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 import { Plugin, uid } from "ckeditor5";
 import { Widget } from "ckeditor5";
+import { OrganizerCategoryTerm, OrganizerFieldDataContent } from "../types";
+import { OrganizerCategory, OrganizerTerm } from "../types";
 import placeholderImage from "./gfx/muikku-placeholder-organizerfield.gif";
 
 /**
@@ -33,7 +35,13 @@ export default class OrganizerFieldEditing extends Plugin {
       isInline: true,
       allowChildren: ["param"],
       allowWhere: "$text",
-      allowAttributes: ["name", "title"],
+      allowAttributes: [
+        "name",
+        "termTitle",
+        "categories",
+        "terms",
+        "categoryTerms",
+      ],
     });
   }
 
@@ -53,7 +61,7 @@ export default class OrganizerFieldEditing extends Plugin {
       },
       // eslint-disable-next-line jsdoc/require-jsdoc
       model: (viewElement, { writer: modelWriter }) => {
-        let content;
+        let content: OrganizerFieldDataContent;
 
         // Because Ckeditor 5 probably doesn't know what to do with param tags,
         // they are included in the custom properties of the object element.
@@ -84,7 +92,10 @@ export default class OrganizerFieldEditing extends Plugin {
         // Always return a valid model element with defaults
         return modelWriter.createElement("organizerField", {
           name: content.name || `muikku-field-${uid()}`,
-          title: content.title || "",
+          termTitle: content.termTitle || "",
+          categories: content.categories || [],
+          terms: content.terms || [],
+          categoryTerms: content.categoryTerms || [],
         });
       },
     });
@@ -94,11 +105,19 @@ export default class OrganizerFieldEditing extends Plugin {
       model: "organizerField",
       // eslint-disable-next-line jsdoc/require-jsdoc
       view: (modelElement, { writer: viewWriter }) => {
-        const content = {
+        const content: OrganizerFieldDataContent = {
           name:
             (modelElement.getAttribute("name") as string) ||
             `muikku-field-${uid()}`,
-          termTitle: (modelElement.getAttribute("title") as string) || "",
+          termTitle: (modelElement.getAttribute("termTitle") as string) || "",
+          categories:
+            (modelElement.getAttribute("categories") as OrganizerCategory[]) ||
+            [],
+          terms: (modelElement.getAttribute("terms") as OrganizerTerm[]) || [],
+          categoryTerms:
+            (modelElement.getAttribute(
+              "categoryTerms"
+            ) as OrganizerCategoryTerm[]) || [],
         };
 
         // Create the object element

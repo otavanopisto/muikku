@@ -4,6 +4,9 @@ import {
   ButtonView,
   ViewNode,
   ViewElement,
+  ViewCollection,
+  LabeledFieldView,
+  View,
 } from "ckeditor5";
 
 // OTHER GENERAL TYPES and FUNCTIONS
@@ -74,8 +77,8 @@ export interface TextFieldRightAnswer {
  * Interface for the data of the organizer field
  */
 export interface OrganizerFieldData {
-  name?: string;
-  termTitle: string;
+  categoryTerms: OrganizerCategoryTerm[];
+  terms: OrganizerTerm[];
   categories: OrganizerCategory[];
 }
 
@@ -85,7 +88,6 @@ export interface OrganizerFieldData {
 export interface OrganizerCategory {
   id: string;
   name: string;
-  terms: OrganizerTerm[];
 }
 
 /**
@@ -93,7 +95,21 @@ export interface OrganizerCategory {
  */
 export interface OrganizerTerm {
   id: string;
-  text: string;
+  name: string;
+}
+
+/**
+ * Interface for the category term of the organizer field
+ */
+export interface OrganizerCategoryTerm {
+  /**
+   * The id of the category
+   */
+  category: string;
+  /**
+   * The ids of the terms
+   */
+  terms: string[];
 }
 
 /**
@@ -103,6 +119,26 @@ export interface OrganizerFormData {
   termTitle: string;
   categories: OrganizerCategory[];
   terms: OrganizerTerm[];
+  categoryTerms: OrganizerCategoryTerm[];
+}
+
+/**
+ * Interface for the category data of the organizer field
+ */
+export interface OrganizerFormCategoryData {
+  id: string;
+  view: View;
+  nameInput: LabeledFieldView<InputTextView>;
+  termsCollection: ViewCollection;
+}
+
+/**
+ * Interface for the term data of the organizer field
+ */
+export interface OrganizerForTermmData {
+  id: string;
+  text: string;
+  categoryId: string;
 }
 
 /**
