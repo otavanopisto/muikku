@@ -14662,6 +14662,7 @@ components:
       required:
         - id
         - state
+        - locked
       properties:
         id:
           description: The id of the material reply
@@ -14670,6 +14671,9 @@ components:
         state:
           description: State of the material assignment
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
+        locked:
+          description: Is the material now locked for the user
+          type: boolean
 
     MaterialEvaluationGradeType:
       description: Material evaluation grade type enum
@@ -14775,6 +14779,7 @@ components:
         - submitted
         - workspaceMaterialId
         - workspaceMaterialReplyId
+        - locked
       properties:
         answers:
           description: Answers of the material assignment
@@ -14813,6 +14818,9 @@ components:
           description: The id of the workspace material reply
           type: integer
           format: int64
+        locked:
+          description: Is the material now locked for the user
+          type: boolean
 
     MaterialAI:
       description: Is AI usage allowed

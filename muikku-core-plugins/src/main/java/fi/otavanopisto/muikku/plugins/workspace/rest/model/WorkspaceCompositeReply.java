@@ -11,12 +11,14 @@ public class WorkspaceCompositeReply {
   public WorkspaceCompositeReply(){
   }
   
-  public WorkspaceCompositeReply(Long workspaceMaterialId, Long workspaceMaterialReplyId, WorkspaceMaterialReplyState state, Date submitted, List<WorkspaceMaterialFieldAnswer> answers) {
+  public WorkspaceCompositeReply(Long workspaceMaterialId, Long workspaceMaterialReplyId, WorkspaceMaterialReplyState state, Date submitted,
+      List<WorkspaceMaterialFieldAnswer> answers, boolean locked) {
     this.workspaceMaterialId = workspaceMaterialId;
     this.workspaceMaterialReplyId = workspaceMaterialReplyId;
     this.state = state;
     this.answers = answers;
     this.submitted = submitted;
+    this.locked = locked;
   }
   
   public Long getWorkspaceMaterialId() {
@@ -63,11 +65,20 @@ public class WorkspaceCompositeReply {
     this.submitted = submitted;
   }
 
+  public boolean isLocked() {
+    return locked;
+  }
+
+  public void setLocked(boolean locked) {
+    this.locked = locked;
+  }
+
   private Long workspaceMaterialId;
   private Long workspaceMaterialReplyId;
   private WorkspaceMaterialReplyState state;
   private List<WorkspaceMaterialFieldAnswer> answers;
   private RestAssignmentEvaluation evaluationInfo;
   private Date submitted;
+  private boolean locked;
 
 }
