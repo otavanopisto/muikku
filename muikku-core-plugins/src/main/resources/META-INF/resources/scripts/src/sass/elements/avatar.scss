@@ -117,7 +117,7 @@
 
 // stylelint-disable-next-line selector-class-pattern
 .avatar--approval_pending {
-  animation: approval-pending-border-pulse 1s infinite;
+  animation: approval-pending-border-pulse 1.75s infinite;
   border: 2px solid $color-info;
 }
 

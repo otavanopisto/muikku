@@ -58,7 +58,7 @@ const GroupAvatarUser = (props: GroupAvatarUserProps) => {
         }`}
         aria-hidden={avatarAriaHidden}
       >
-        {hasImage && (
+        {hasImage ? (
           <img
             src={getUserImageUrl(id)}
             alt=""
@@ -67,14 +67,15 @@ const GroupAvatarUser = (props: GroupAvatarUserProps) => {
               modifier ? "avatar--" + modifier : ""
             }`}
           />
+        ) : (
+          <div
+            className={`avatar avatar--category-${category} ${
+              size ? "avatar--" + size : ""
+            } ${modifier ? "avatar--" + modifier : ""} `}
+          >
+            {name[0]}
+          </div>
         )}
-        <div
-          className={`avatar avatar--category-${category} ${
-            size ? "avatar--" + size : ""
-          } ${modifier ? "avatar--" + modifier : ""} `}
-        >
-          {name[0]}
-        </div>
       </div>
       <div className="avatar__group-user-text">{name}</div>
       <div className="avatar__group-user-actions">{action(id)}</div>

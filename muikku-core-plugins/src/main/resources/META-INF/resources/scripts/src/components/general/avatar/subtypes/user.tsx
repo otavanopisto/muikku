@@ -33,7 +33,6 @@ const UserAvatar = (props: UserAvatarProps) => {
     size,
     modifier,
     avatarAriaLabel,
-    avatarAriaHidden,
     showTooltip,
   } = props;
 
