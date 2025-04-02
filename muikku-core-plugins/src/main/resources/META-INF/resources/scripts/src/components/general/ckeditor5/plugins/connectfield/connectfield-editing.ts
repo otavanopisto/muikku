@@ -1,4 +1,5 @@
-import { Plugin, toWidget, uid, Widget } from "ckeditor5";
+import { Plugin, uid, Widget } from "ckeditor5";
+import { ConnectedField, ConnectFieldDataContent, Connection } from "../types";
 import placeholderImage from "./gfx/muikku-placeholder-connectfield.gif";
 
 /**
@@ -39,7 +40,7 @@ export class ConnectFieldEditing extends Plugin {
       isObject: true,
       allowWhere: "$text",
       allowChildren: ["param"],
-      allowAttributes: ["name"],
+      allowAttributes: ["name", "connections", "fields", "counterparts"],
     });
   }
 
@@ -60,8 +61,9 @@ export class ConnectFieldEditing extends Plugin {
           type: "application/vnd.muikku.field.connect",
         },
       },
+      // eslint-disable-next-line jsdoc/require-jsdoc
       model: (viewElement, { writer: modelWriter }) => {
-        let content: any;
+        let content: ConnectFieldDataContent;
 
         // Because Ckeditor 5 probably doesn't know what to do with param tags,
         // they are included in the custom properties of the object element.
@@ -92,6 +94,9 @@ export class ConnectFieldEditing extends Plugin {
         // Always return a valid model element with defaults
         return modelWriter.createElement("connectField", {
           name: content.name || `muikku-field-${uid()}`,
+          fields: content.fields || [],
+          counterparts: content.counterparts || [],
+          connections: content.connections || [],
         });
       },
     });
@@ -99,11 +104,22 @@ export class ConnectFieldEditing extends Plugin {
     // DataDowncast (saving) - convert from model to HTML storage format
     conversion.for("dataDowncast").elementToElement({
       model: "connectField",
+      // eslint-disable-next-line jsdoc/require-jsdoc
       view: (modelElement, { writer: viewWriter }) => {
         // Create the content object
-        const content = {};
+        const content: ConnectFieldDataContent = {
+          name:
+            (modelElement.getAttribute("name") as string) ||
+            `muikku-field-${uid()}`,
+          fields:
+            (modelElement.getAttribute("fields") as ConnectedField[]) || [],
+          counterparts:
+            (modelElement.getAttribute("counterparts") as ConnectedField[]) ||
+            [],
+          connections:
+            (modelElement.getAttribute("connections") as Connection[]) || [],
+        };
 
-        // Create the object element
         const objectElement = viewWriter.createContainerElement("object", {
           type: "application/vnd.muikku.field.connect",
         });
@@ -134,7 +150,7 @@ export class ConnectFieldEditing extends Plugin {
       },
     });
 
-    // EditingDowncast remains the same (showing as img)
+    // EditingDowncast (Model -> Editing View)
     conversion.for("editingDowncast").elementToElement({
       model: "connectField",
       // eslint-disable-next-line jsdoc/require-jsdoc

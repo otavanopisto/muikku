@@ -160,3 +160,83 @@ export interface OrganizerFieldDataContent {
     terms: Array<string>;
   }>;
 }
+
+// CONNECTFIELD PLUGIN TYPES
+
+/**
+ * Interface for connection between fields
+ */
+export interface Connection {
+  /**
+   * The name a.k.a id of the counterpart field
+   */
+  counterpart: string;
+  /**
+   * The name a.k.a id of the field
+   */
+  field: string;
+}
+
+/**
+ * Interface for connected field
+ */
+export interface ConnectedField {
+  /**
+   * The name a.k.a id of the connected field
+   */
+  name: string;
+  /**
+   * The text value of the connected field
+   */
+  text: string;
+}
+
+/**
+ * Interface for the content of the connect field
+ */
+export interface ConnectFieldDataContent {
+  name: string;
+  /**
+   * The fields of the connect field
+   */
+  fields: ConnectedField[];
+  /**
+   * The counterparts of the connect field
+   */
+  counterparts: ConnectedField[];
+  /**
+   * The connections of the connect field
+   */
+  connections: Connection[];
+}
+
+/**
+ * Interface for the form data of the connect field
+ */
+export interface ConnectFieldFormData {
+  connections: Connection[];
+  fields: ConnectedField[];
+  counterparts: ConnectedField[];
+}
+
+/**
+ * Interface for the pair of the connect field
+ */
+export interface ConnectFieldPairData {
+  id: string;
+  view: View;
+  fieldInput: LabeledFieldView<InputTextView>;
+  counterpartInput: LabeledFieldView<InputTextView>;
+  fieldId: string;
+  counterpartId: string;
+}
+
+/**
+ * The options for the add pair method
+ */
+export interface ConnectFieldAddPairOptions {
+  fieldId?: string;
+  counterpartId?: string;
+  fieldText?: string;
+  counterpartText?: string;
+}

@@ -3,6 +3,7 @@
  */
 
 import { Plugin, ButtonView, Dialog, uid } from "ckeditor5";
+import { Connection, ConnectedField } from "../types";
 import ConnectFieldFormView from "./connectfield-form-view";
 
 /**
@@ -79,6 +80,17 @@ export class ConnectFieldUI extends Plugin {
         if (connectField) {
           const name = connectField.getAttribute("name") as string;
 
+          writer.setAttribute(
+            "connections",
+            formData.connections,
+            connectField
+          );
+          writer.setAttribute("fields", formData.fields, connectField);
+          writer.setAttribute(
+            "counterparts",
+            formData.counterparts,
+            connectField
+          );
           // Update existing text field
           writer.setAttribute("name", name, connectField);
 
@@ -89,6 +101,9 @@ export class ConnectFieldUI extends Plugin {
           // Create new text field
           const connectField = writer.createElement("connectField", {
             name,
+            connections: formData.connections || [],
+            fields: formData.fields || [],
+            counterparts: formData.counterparts || [],
           });
           editor.model.insertContent(connectField);
         }
@@ -113,23 +128,20 @@ export class ConnectFieldUI extends Plugin {
 
     if (connectField) {
       // Editing existing field - populate form
-      /* this._form.setData({
-        width: (textField.getAttribute("width") as string) || "",
-        autoGrow: (textField.getAttribute("autoGrow") as boolean) || false,
-        hint: (textField.getAttribute("hint") as string) || "",
-        answerChoices:
-          (textField.getAttribute(
-            "answerChoices"
-          ) as TextFieldAnswerChoice[]) || [],
-      }); */
+      this._form.setData({
+        connections:
+          (connectField.getAttribute("connections") as Connection[]) || [],
+        fields: (connectField.getAttribute("fields") as ConnectedField[]) || [],
+        counterparts:
+          (connectField.getAttribute("counterparts") as ConnectedField[]) || [],
+      });
     } else {
       // Creating new field - clear form
-      /* this._form.setData({
-        width: "",
-        autoGrow: false,
-        hint: "",
-        answerChoices: [],
-      }); */
+      this._form.setData({
+        connections: [],
+        fields: [],
+        counterparts: [],
+      });
     }
 
     // Show dialog with the form
@@ -158,8 +170,6 @@ export class ConnectFieldUI extends Plugin {
         },
       ],
     });
-
-    //this._form.focus();
   }
 
   /**

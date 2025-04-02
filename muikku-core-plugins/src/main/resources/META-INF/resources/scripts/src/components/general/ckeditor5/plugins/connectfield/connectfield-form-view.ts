@@ -6,16 +6,40 @@ import {
   submitHandler,
   icons,
   Locale,
-  InputTextView,
+  uid,
+  ViewCollection,
 } from "ckeditor5";
+import {
+  ConnectedField,
+  ConnectFieldAddPairOptions,
+  ConnectFieldFormData,
+  Connection,
+  ConnectFieldPairData,
+} from "../types";
 
 /**
  * The form view for the connect field dialog.
  */
 export default class ConnectFieldFormView extends View {
-  private pairs: Array<PairRowView>;
+  /**
+   * Collection of pair views
+   */
+  private readonly _pairsViewCollection: ViewCollection;
 
-  private addButton: ButtonView;
+  /**
+   * The container view for pairs
+   */
+  public pairsView: View;
+
+  /**
+   * Button to add new pairs
+   */
+  public addButton: ButtonView;
+
+  /**
+   * Maps to store pair data
+   */
+  private readonly _pairs: Map<string, ConnectFieldPairData> = new Map();
 
   /**
    * Constructor
@@ -24,8 +48,9 @@ export default class ConnectFieldFormView extends View {
   constructor(locale: Locale) {
     super(locale);
 
-    // Initialize properties
-    this.pairs = [];
+    // Initialize collections
+    this._pairsViewCollection = new ViewCollection();
+    this.pairsView = this._createPairsContainer();
     this.addButton = this._createAddButton();
 
     this.setTemplate({
@@ -47,17 +72,19 @@ export default class ConnectFieldFormView extends View {
             },
           ],
         },
+        // Pairs container
         {
           tag: "div",
           attributes: {
-            class: ["ck", "ck-connectfield-pairs-container"],
+            class: ["ck", "ck-form__row"],
           },
-          children: this.pairs,
+          children: [this.pairsView],
         },
+        // Add button
         {
           tag: "div",
           attributes: {
-            class: ["ck", "ck-form__row", "ck-autogrow-row"],
+            class: ["ck", "ck-form__row"],
           },
           children: [this.addButton],
         },
@@ -66,9 +93,27 @@ export default class ConnectFieldFormView extends View {
   }
 
   /**
+   * Creates the pairs container
+   */
+  private _createPairsContainer(): View {
+    const containerView = new View(this.locale);
+
+    containerView.setTemplate({
+      tag: "div",
+      attributes: {
+        class: ["ck-connectfield-pairs-container"],
+      },
+      // Bind children to the pairs collection
+      children: this._pairsViewCollection,
+    });
+
+    return containerView;
+  }
+
+  /**
    * Creates an add button
    */
-  private _createAddButton() {
+  private _createAddButton(): ButtonView {
     const button = new ButtonView(this.locale);
     button.set({
       label: "Add Pair",
@@ -78,134 +123,169 @@ export default class ConnectFieldFormView extends View {
     });
 
     button.on("execute", () => {
-      this.addPair();
+      this.addNewPair();
     });
 
     return button;
   }
 
   /**
-   * Creates a new pair row and adds it to the form
+   * Adds a new pair to the form
+   * @param options - The options for the pair
    */
-  addPair() {
-    const pairRow = new PairRowView(this.locale);
-    this.pairs.push(pairRow);
+  addPair(options: ConnectFieldAddPairOptions = {}): void {
+    const pairView = new View(this.locale);
+    const pairId = `pair-${uid()}`;
+    const fieldId = options.fieldId || `field-${uid()}`;
+    const counterpartId = options.counterpartId || `counterpart-${uid()}`;
 
-    this.listenTo(pairRow, "remove", () => {
-      this.removePair(pairRow);
-    });
+    // Create inputs
+    const fieldInput = new LabeledFieldView(
+      this.locale,
+      createLabeledInputText
+    );
+    fieldInput.label = "Field";
+    fieldInput.fieldView.value = options.fieldText || "";
 
-    // If the view is already rendered, we need to manually render the new row
-    if (this.element) {
-      const container = this.element.querySelector(
-        ".ck-connectfield-pairs-container"
-      );
-      pairRow.render();
-      container.appendChild(pairRow.element);
-    }
+    const counterpartInput = new LabeledFieldView(
+      this.locale,
+      createLabeledInputText
+    );
+    counterpartInput.label = "Counterpart";
+    counterpartInput.fieldView.value = options.counterpartText || "";
 
-    return pairRow;
-  }
-
-  /**
-   * Removes a pair row from the form
-   * @param pairRow - The pair row to remove
-   */
-  removePair(pairRow: PairRowView) {
-    const index = this.pairs.indexOf(pairRow);
-    if (index > -1) {
-      this.pairs.splice(index, 1);
-      pairRow.element?.remove();
-      pairRow.destroy();
-    }
-  }
-
-  /**
-   * Gets the data from the form
-   */
-  getData() {
-    return {
-      pairs: [] as any[],
-    };
-  }
-
-  /**
-   * Sets the data to the form
-   * @param data - The data to set
-   */
-  setData(data: any) {
-    this.pairs = data.pairs.map((pair: any) => new PairRowView(this.locale));
-  }
-
-  /**
-   * Renders the form
-   */
-  render() {
-    super.render();
-    submitHandler({
-      view: this,
-    });
-  }
-}
-
-/**
- * A single pair row view containing two input fields and a delete button
- */
-class PairRowView extends View {
-  private leftInput: LabeledFieldView<InputTextView>;
-  private rightInput: LabeledFieldView<InputTextView>;
-  private deleteButton: ButtonView;
-
-  /**
-   * Constructor
-   * @param locale - The locale
-   */
-  constructor(locale: Locale) {
-    super(locale);
-
-    this.leftInput = this._createInput("Left");
-    this.rightInput = this._createInput("Right");
-    this.deleteButton = this._createDeleteButton();
-
-    this.setTemplate({
-      tag: "div",
-      attributes: {
-        class: ["ck", "ck-connectfield-pair-row"],
-        style: "display: flex; margin-bottom: 10px;",
-      },
-      children: [this.leftInput, this.rightInput, this.deleteButton],
-    });
-  }
-
-  /**
-   * Creates a delete button
-   */
-  private _createDeleteButton() {
-    const button = new ButtonView(this.locale);
-    button.set({
+    // Create delete button
+    const deleteButton = new ButtonView(this.locale);
+    deleteButton.set({
       icon: icons.remove,
       tooltip: "Delete pair",
       class: "ck-button-delete-pair",
     });
 
-    button.on("execute", () => {
-      // Find the parent form view and remove this row
-      this.fire("remove");
+    // Set up pair view template
+    pairView.setTemplate({
+      tag: "div",
+      attributes: {
+        class: ["ck-connectfield-pair-row"],
+        style: "display: flex; margin-bottom: 10px;",
+        "data-pair-id": pairId,
+      },
+      children: [fieldInput, counterpartInput, deleteButton],
     });
 
-    return button;
+    // Handle deletion
+    deleteButton.on("execute", () => {
+      this._pairs.delete(pairId);
+      this._pairsViewCollection.remove(pairView);
+      pairView.destroy();
+    });
+
+    // Add to collections
+    this._pairsViewCollection.add(pairView);
+
+    // Store all related data together
+    this._pairs.set(pairId, {
+      id: pairId,
+      view: pairView,
+      fieldInput,
+      counterpartInput,
+      fieldId,
+      counterpartId,
+    });
   }
 
   /**
-   * Creates an input
-   * @param label - The label of the input
+   * Adds a new empty pair
    */
-  private _createInput(label: string): LabeledFieldView<InputTextView> {
-    const labeledInput = new LabeledFieldView(
-      this.locale,
-      createLabeledInputText
-    );
-    labeledInput.label = label;
-    return labeledInput;
+  addNewPair(): void {
+    this.addPair();
+  }
+
+  /**
+   * Gets the form data
+   */
+  getData(): ConnectFieldFormData {
+    const fields: ConnectedField[] = [];
+    const counterparts: ConnectedField[] = [];
+    const connections: Connection[] = [];
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    for (const [_, pairData] of this._pairs) {
+      fields.push({
+        name: pairData.fieldId,
+        text: pairData.fieldInput.fieldView.element.value,
+      });
+
+      counterparts.push({
+        name: pairData.counterpartId,
+        text: pairData.counterpartInput.fieldView.element.value,
+      });
+
+      connections.push({
+        field: pairData.fieldId,
+        counterpart: pairData.counterpartId,
+      });
+    }
+
+    return {
+      connections,
+      fields,
+      counterparts,
+    };
+  }
+
+  /**
+   * Sets the form data
+   * @param data - The form data
+   */
+  setData(data: ConnectFieldFormData): void {
+    // Clear existing data
+    this._pairs.forEach((pairData) => {
+      pairData.view.destroy();
+    });
+    this._pairs.clear();
+    this._pairsViewCollection.clear();
+
+    // Create pairs from data
+    data.connections.forEach((connection) => {
+      const field = data.fields.find((f) => f.name === connection.field);
+      const counterpart = data.counterparts.find(
+        (c) => c.name === connection.counterpart
+      );
+
+      if (field && counterpart) {
+        this.addPair({
+          fieldId: field.name,
+          counterpartId: counterpart.name,
+          fieldText: field.text,
+          counterpartText: counterpart.text,
+        });
+      }
+    });
+  }
+
+  /**
+   * @inheritDoc
+   */
+  destroy(): void {
+    // Properly destroy all pair views and their components
+    this._pairs.forEach((pairData) => {
+      pairData.fieldInput.destroy();
+      pairData.counterpartInput.destroy();
+      pairData.view.destroy();
+    });
+    this._pairs.clear();
+    this._pairsViewCollection.clear();
+    super.destroy();
+  }
+
+  /**
+   * Renders the form
+   */
+  render(): void {
+    super.render();
+    submitHandler({
+      view: this,
+    });
   }
 }
