@@ -67,6 +67,7 @@ import {
 } from "ckeditor5";
 import ConnectField from "./plugins/connectfield";
 import OrganizerField from "./plugins/organizerfield";
+import SorterField from "./plugins/sorterfield";
 import TextField from "./plugins/Textfield";
 
 const LICENSE_KEY = "GPL";
@@ -232,10 +233,12 @@ export const testConfig: EditorConfig = {
       "muikku-textfield",
       "muikku-organizerfield",
       "muikku-connectfield",
+      "muikku-sorterfield",
     ],
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    SorterField,
     ConnectField,
     OrganizerField,
     TextField,
