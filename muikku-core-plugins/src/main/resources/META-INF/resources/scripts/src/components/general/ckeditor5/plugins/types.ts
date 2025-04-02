@@ -240,3 +240,56 @@ export interface ConnectFieldAddPairOptions {
   fieldText?: string;
   counterpartText?: string;
 }
+
+// SORTERFIELD PLUGIN TYPES
+
+/**
+ * Interface for the item of the sorter field
+ */
+export interface SorterFieldItem {
+  id: string;
+  name: string;
+}
+
+/**
+ * Interface for the content of the sorter field
+ */
+export interface SorterFieldDataContent {
+  name: string;
+  orientation: "vertical" | "horizontal";
+  capitalize: boolean;
+  items: Array<SorterFieldItem>;
+}
+
+/**
+ * Interface for the form data of the sorter field
+ */
+export interface SorterFieldFormData {
+  orientation: "vertical" | "horizontal";
+  capitalize: boolean;
+  items: Array<SorterFieldItem>;
+}
+
+/**
+ * Interface for the item data of the sorter field
+ */
+export interface SorterFieldItemData {
+  id: string;
+  name: string;
+  view: View;
+  nameInput: LabeledFieldView<InputTextView>;
+}
+
+/**
+ * The options for the add term method
+ */
+export interface SorterFieldAddTermOptions {
+  /**
+   * The id of the term
+   */
+  id?: string;
+  /**
+   * The name of the term
+   */
+  name?: string;
+}

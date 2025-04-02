@@ -1,4 +1,5 @@
 import { Plugin, uid, Widget } from "ckeditor5";
+import { SorterFieldDataContent, SorterFieldItem } from "../types";
 import placeholderImage from "./gfx/muikku-placeholder-sorterfield.gif";
 
 /**
@@ -34,7 +35,8 @@ export default class SorterFieldEditing extends Plugin {
       isInline: true,
       isObject: true,
       allowWhere: "$text",
-      allowAttributes: ["name"],
+      allowChildren: ["param"],
+      allowAttributes: ["name", "items", "capitalize", "orientation"],
     });
   }
 
@@ -53,10 +55,42 @@ export default class SorterFieldEditing extends Plugin {
         },
       },
       // eslint-disable-next-line jsdoc/require-jsdoc
-      model: (viewElement, { writer: modelWriter }) =>
-        modelWriter.createElement("sorterField", {
-          name: `muikku-sorter-${uid()}`,
-        }),
+      model: (viewElement, { writer: modelWriter }) => {
+        let content: SorterFieldDataContent;
+
+        // Because Ckeditor 5 probably doesn't know what to do with param tags,
+        // they are included in the custom properties of the object element.
+        // We need to extract the content from the object element manually.
+        const rawContentArray = viewElement.getCustomProperties().next().value;
+
+        if (rawContentArray && rawContentArray[1]) {
+          // Create a temporary div to parse the HTML
+          // and insert custom properties into it because it is html tags (at least in this case)
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = rawContentArray[1];
+
+          // Find the content param element
+          const contentParam = tempDiv.querySelector('param[name="content"]');
+
+          // If the content param exists, parse it
+          if (contentParam && contentParam.getAttribute("value")) {
+            try {
+              content = JSON.parse(contentParam.getAttribute("value"));
+            } catch (e) {
+              // eslint-disable-next-line no-console
+              console.error("Failed to parse content", e);
+            }
+          }
+        }
+
+        // Always return a valid model element with defaults
+        return modelWriter.createElement("sorterField", {
+          name: content.name || `muikku-field-${uid()}`,
+          orientation: content.orientation || "vertical",
+          capitalize: content.capitalize || false,
+          items: content.items || [],
+        });
+      },
     });
 
     // DataDowncast (saving) - convert from model to HTML storage format
@@ -73,8 +107,16 @@ export default class SorterFieldEditing extends Plugin {
           value: "application/json",
         });
 
-        const content = {
-          name: modelElement.getAttribute("name"),
+        const content: SorterFieldDataContent = {
+          name: (modelElement.getAttribute("name") as string) || "",
+          orientation:
+            (modelElement.getAttribute("orientation") as
+              | "vertical"
+              | "horizontal") || "vertical",
+          capitalize:
+            (modelElement.getAttribute("capitalize") as boolean) || false,
+          items:
+            (modelElement.getAttribute("items") as SorterFieldItem[]) || [],
         };
 
         const contentParam = viewWriter.createContainerElement("param", {
