@@ -120,7 +120,7 @@
 					<version>3.1.1</version>
 					<configuration>
 						<mavenExecutorId>forked-path</mavenExecutorId>
-						<releaseProfiles>jndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins</releaseProfiles>
+						<releaseProfiles>jndi-mail-plugin,elastic-search-plugin,timed-notifications-plugin,pyramus-plugins</releaseProfiles>
             <tagNameFormat>@{project.version}</tagNameFormat>
             <autoVersionSubmodules>true</autoVersionSubmodules>
 					</configuration>
