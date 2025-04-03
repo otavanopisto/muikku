@@ -67,6 +67,7 @@ import {
 } from "ckeditor5";
 import ConnectField from "./plugins/connectfield";
 import OrganizerField from "./plugins/organizerfield";
+import SelectionField from "./plugins/selectionfield";
 import SorterField from "./plugins/sorterfield";
 import TextField from "./plugins/Textfield";
 
@@ -234,10 +235,12 @@ export const testConfig: EditorConfig = {
       "muikku-organizerfield",
       "muikku-connectfield",
       "muikku-sorterfield",
+      "muikku-selectionfield",
     ],
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    SelectionField,
     SorterField,
     ConnectField,
     OrganizerField,

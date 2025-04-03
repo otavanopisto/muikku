@@ -293,3 +293,39 @@ export interface SorterFieldAddTermOptions {
    */
   name?: string;
 }
+
+// SELECTIONFIELD PLUGIN TYPES
+
+export type SelectionFieldType =
+  | "dropdown"
+  | "list"
+  | "radio-horizontal"
+  | "radio-vertical"
+  | "checkbox-horizontal"
+  | "checkbox-vertical";
+
+/**
+ * Interface for the form data of the selection field
+ */
+export interface SelectionFieldFormData {
+  listType: SelectionFieldType;
+}
+
+/**
+ * Interface for the content of the selection field
+ */
+export interface SelectionFieldDataContent {
+  name: string;
+  listType: SelectionFieldType;
+  options: SelectionFieldOption[];
+  explanations: string;
+}
+
+/**
+ * Interface for the option of the selection field
+ */
+export interface SelectionFieldOption {
+  name: string;
+  text: string;
+  correct: boolean;
+}
