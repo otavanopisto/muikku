@@ -55,9 +55,9 @@ export const SUBJECT_CODES = [
   "ITC",
   "POC",
   "LAC",
-  "SM_DC",
-  "SM_ICC",
-  "SM_QC",
+  "Z",
+  "I",
+  "W",
 ];
 
 export const EXAMINATION_GRADES_MAP: ExaminationGrade = {

@@ -316,9 +316,9 @@
       "ITC": "Italia, lyhyt oppimäärä",
       "POC": "Portugali, lyhyt oppimäärä",
       "LAC": "Latina, lyhyt oppimäärä",
-      "SM_DC": "Pohjoissaame, lyhyt oppimäärä",
-      "SM_ICC": "Inarinsaame, lyhyt oppimäärä",
-      "SM_QC": "Koltansaame, lyhyt oppimäärä"
+      "Z": "Pohjoissaame, lyhyt oppimäärä",
+      "I": "Inarinsaame, lyhyt oppimäärä",
+      "W": "Koltansaame, lyhyt oppimäärä"
     }
   },
   "profile": {

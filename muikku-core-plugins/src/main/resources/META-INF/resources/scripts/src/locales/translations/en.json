@@ -316,9 +316,9 @@
       "ITC": "Italian, C-level",
       "POC": "Portuguese, C-level",
       "LAC": "Latin, C-level",
-      "SM_DC": "North-Sami, C-level",
-      "SM_ICC": "Inari-Sami, C-level",
-      "SM_QC": "Kolta-Sami, C-level"
+      "Z": "North-Sami, C-level",
+      "I": "Inari-Sami, C-level",
+      "W": "Kolta-Sami, C-level"
     }
   },
   "profile": {
