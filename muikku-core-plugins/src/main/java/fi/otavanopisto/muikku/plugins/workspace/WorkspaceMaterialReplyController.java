@@ -37,7 +37,7 @@ public class WorkspaceMaterialReplyController {
   private WorkspaceMaterialController workspaceMaterialController;
 
   public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial,
-      WorkspaceMaterialReplyState state, UserEntity userEntity) {
+      WorkspaceMaterialReplyState state, UserEntity userEntity, boolean locked) {
 
     // #5013: Race condition with field save websocket messages might mean this user
     // already has a reply for this page
@@ -49,7 +49,7 @@ public class WorkspaceMaterialReplyController {
       Date submitted = state == WorkspaceMaterialReplyState.SUBMITTED ? new Date() : null;
       Date withdrawn = state == WorkspaceMaterialReplyState.WITHDRAWN ? new Date() : null;
       reply = workspaceMaterialReplyDAO.create(workspaceMaterial, state, userEntity.getId(), 1L, created, created,
-          submitted, withdrawn);
+          submitted, withdrawn, locked);
 
       // Activity logging
 
@@ -138,6 +138,12 @@ public class WorkspaceMaterialReplyController {
 
     return workspaceMaterialReplyDAO.updateState(workspaceMaterialReply, state);
   }
+  
+  public WorkspaceMaterialReply updateWorkspaceMaterialReplyLocked(
+      fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply,
+      boolean locked) {
+    return workspaceMaterialReplyDAO.updateLocked(workspaceMaterialReply, locked);
+  }
 
   private void logAssignmentActivity(Long userEntityId, WorkspaceMaterial workspaceMaterial) {
     WorkspaceRootFolder root = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
@@ -150,6 +156,8 @@ public class WorkspaceMaterialReplyController {
       case EXERCISE:
         activityLogController.createActivityLog(userEntityId, ActivityLogType.MATERIAL_EXERCISEDONE,
             root.getWorkspaceEntityId(), null);
+        break;
+      default:
         break;
       }
     }

@@ -2208,7 +2208,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           reply.getState(),
           reply.getSubmitted(),
           answers,
-          reply.getLocked());
+          reply.getLocked()); // this endpoint is only used in evaluation, so no need for enforced lock logic here 
 
       // Evaluation info for evaluable materials
 
@@ -2245,7 +2245,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("UserEntity not found").build();
     }
     
-    // #7352: Figure out scenarios where a page is locked
+    // #7352: Figure out scenarios in which a page is locked
     
     boolean enforcedLock = false;
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
@@ -2279,7 +2279,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       for (WorkspaceMaterialReply reply : replies) {
         List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
 
-        // If enforced lock is already active or a page has already been evaluated, it is locked. Otherwise honor the lock of the page
+        // #7352: If enforced lock is already active or a page has already been evaluated, it is locked. Otherwise honor the lock of the page
         
         boolean pageLocked = enforcedLock;
         if (!pageLocked) {
@@ -2679,7 +2679,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build();
     }
 
-    WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser);
+    WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser, false);
 
     return Response.ok(createRestModel(workspaceMaterialReply)).build();
   }
