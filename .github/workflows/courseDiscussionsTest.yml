@@ -1,4 +1,4 @@
-name: Discussions headless tests
+name: Course Discussions headless tests
 on: 
   pull_request:
     branches: [devel, master]
@@ -20,4 +20,4 @@ jobs:
       - name: Test with headless chrome
         run: |
             cd muikku-atests
-            mvn clean verify -Dmaven.javadoc.skip=true -Dit.browser=chrome_headless -Dit.package="discussions" -Pui-it
+            mvn clean verify -Dmaven.javadoc.skip=true -Dit.browser=chrome_headless -Dit.package="course/discussions" -Pui-it
