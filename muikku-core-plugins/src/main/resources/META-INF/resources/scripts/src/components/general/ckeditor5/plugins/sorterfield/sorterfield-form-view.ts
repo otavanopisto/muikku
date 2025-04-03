@@ -238,6 +238,13 @@ export default class SorterFieldFormView extends View {
     const termView = new View(this.locale);
     const termId = options.id || `sorter-term-${uid()}`;
 
+    // Create drag handle
+    const dragHandle = new ButtonView(this.locale);
+    dragHandle.set({
+      icon: icons.dragIndicator,
+      class: ["ck-sorter-term-handle"],
+    });
+
     // Create term input
     const termInput = new LabeledFieldView(this.locale, createLabeledInputText);
     termInput.label = "Termi";
@@ -258,10 +265,11 @@ export default class SorterFieldFormView extends View {
       tag: "div",
       attributes: {
         class: ["ck-sorter-term"],
-        style: "display: flex; gap: 4px;",
+        style: "display: flex; gap: 4px; align-items: center;",
         "data-term-id": termId,
+        draggable: "true",
       },
-      children: [termInput, deleteButton],
+      children: [dragHandle, termInput, deleteButton],
     });
 
     // Handle term deletion
@@ -281,6 +289,140 @@ export default class SorterFieldFormView extends View {
 
     // Add to collection
     this._termsViewCollection.add(termView);
+
+    // Set up drag and drop after rendering
+    termView.on("render", () => {
+      this._setupDragAndDrop(termView);
+    });
+
+    // If the view is already rendered, set up drag and drop immediately
+    if (termView.element) {
+      this._setupDragAndDrop(termView);
+    }
+  }
+
+  /**
+   * Sets up drag and drop functionality for a term view
+   * @param termView The term view to set up drag and drop for
+   */
+  private _setupDragAndDrop(termView: View): void {
+    const element = termView.element;
+    if (!element) {
+      return;
+    }
+
+    // Find the handle element
+    const handleElement = element.querySelector(".ck-sorter-term-handle");
+    if (!handleElement) {
+      return;
+    }
+
+    // Only allow dragging from the handle
+    // by adding the draggable attribute to the handle element
+    handleElement.addEventListener("mousedown", () => {
+      element.setAttribute("draggable", "true");
+    });
+
+    // Remove the draggable attribute when the mouse is released
+    element.addEventListener("mouseup", () => {
+      element.setAttribute("draggable", "false");
+    });
+
+    // When the drag starts, store the term ID in the data transfer
+    element.addEventListener("dragstart", (evt) => {
+      if (evt.dataTransfer) {
+        // Store the term ID in the data transfer
+        evt.dataTransfer.setData(
+          "application/term-id",
+          element.dataset.termId || ""
+        );
+        evt.dataTransfer.effectAllowed = "move";
+      }
+      element.classList.add("ck-sorter-term--dragging");
+    });
+
+    // When the mouse is over an element, add an indicator of where the element will be dropped
+    element.addEventListener("dragover", (evt) => {
+      evt.preventDefault();
+
+      // Get the term ID from the data transfer
+      const draggedId = evt.dataTransfer.types.includes("application/term-id")
+        ? evt.dataTransfer.getData("application/term-id")
+        : null;
+
+      if (!draggedId || draggedId === element.dataset.termId) return;
+
+      const rect = element.getBoundingClientRect();
+      const dropPosition =
+        evt.clientY < rect.top + rect.height / 2 ? "above" : "below";
+
+      // Remove indicators from all elements
+      document.querySelectorAll(".ck-sorter-term").forEach((term) => {
+        term.classList.remove(
+          "ck-sorter-term--drop-above",
+          "ck-sorter-term--drop-below"
+        );
+      });
+
+      // Add indicator to current element
+      element.classList.add(`ck-sorter-term--drop-${dropPosition}`);
+    });
+
+    // When the element is dropped, move the term to the new position
+    element.addEventListener("drop", (evt) => {
+      evt.preventDefault();
+
+      const draggedId = evt.dataTransfer.getData("application/term-id");
+      if (!draggedId || draggedId === element.dataset.termId) return;
+
+      const rect = element.getBoundingClientRect();
+      const dropPosition =
+        evt.clientY < rect.top + rect.height / 2 ? "above" : "below";
+
+      // Find indices using term IDs instead of elements
+      const items = Array.from(this._termsViewCollection);
+      const draggedIndex = items.findIndex(
+        (view) => view.element.dataset.termId === draggedId
+      );
+      let dropIndex = items.findIndex(
+        (view) => view.element?.dataset.termId === element.dataset.termId
+      );
+
+      if (dropPosition === "below") {
+        dropIndex++;
+      }
+
+      if (draggedIndex !== -1) {
+        const draggedView = this._termsViewCollection.get(draggedIndex);
+        if (draggedView) {
+          this._termsViewCollection.remove(draggedView);
+          this._termsViewCollection.add(
+            draggedView,
+            dropIndex > draggedIndex ? dropIndex - 1 : dropIndex
+          );
+        }
+      }
+
+      // Clean up
+      document.querySelectorAll(".ck-sorter-term").forEach((term) => {
+        term.classList.remove(
+          "ck-sorter-term--drop-above",
+          "ck-sorter-term--drop-below",
+          "ck-sorter-term--dragging"
+        );
+      });
+    });
+
+    // When the drag ends, clean up any remaining visual states
+    element.addEventListener("dragend", () => {
+      document.querySelectorAll(".ck-sorter-term").forEach((term) => {
+        term.classList.remove(
+          "ck-sorter-term--drop-above",
+          "ck-sorter-term--drop-below",
+          "ck-sorter-term--dragging"
+        );
+      });
+    });
   }
 
   /**
@@ -295,14 +437,21 @@ export default class SorterFieldFormView extends View {
    * @returns Form data
    */
   getData(): SorterFieldFormData {
-    const terms: SorterFieldItem[] = [];
+    // Get terms in the order they appear in the ViewCollection
+    const terms: SorterFieldItem[] = Array.from(this._termsViewCollection)
+      .map((view) => {
+        const termId = view.element.dataset.termId;
+        if (!termId) return null;
 
-    for (const [termId, termData] of this._terms) {
-      terms.push({
-        id: termId,
-        name: termData.nameInput.fieldView.element.value,
-      });
-    }
+        const termData = this._terms.get(termId);
+        if (!termData) return null;
+
+        return {
+          id: termId,
+          name: termData.nameInput.fieldView.element.value,
+        };
+      })
+      .filter((term): term is SorterFieldItem => term !== null);
 
     return {
       orientation: this.orientationValue,
