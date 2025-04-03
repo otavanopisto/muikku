@@ -23,7 +23,7 @@ export const ADVANCED_SUBJECTS = [
   "VEA",
 ];
 
-export const FINNISH_SUBJECTS = ["AI", "S2"];
+export const FINNISH_SUBJECTS = ["AI", "S2", "Z", "I", "W"];
 export const SUBJECT_CODES = [
   "AI",
   "S2",
@@ -58,6 +58,9 @@ export const SUBJECT_CODES = [
   "SM_DC",
   "SM_ICC",
   "SM_QC",
+  "Z",
+  "I",
+  "W",
 ];
 
 export const EXAMINATION_GRADES_MAP: ExaminationGrade = {
