@@ -750,6 +750,15 @@ public class EvaluationRESTService extends PluginRESTService {
       }
     }
 
+    // #7352: If a page is evaluated as supplementation requested, make sure it becomes unlocked
+    
+    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST) {
+      WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+      if (reply != null && reply.getLocked()) {
+        workspaceMaterialReplyController.updateWorkspaceMaterialReplyLocked(reply, false);
+      }
+    }
+
     // WorkspaceMaterialEvaluation to RestAssessment
     
     List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(workspaceMaterialEvaluation);
