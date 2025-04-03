@@ -316,9 +316,12 @@
       "ITC": "Italian, C-level",
       "POC": "Portuguese, C-level",
       "LAC": "Latin, C-level",
-      "Z": "North-Sami, C-level",
-      "I": "Inari-Sami, C-level",
-      "W": "Kolta-Sami, C-level"
+      "SM_DC": "North-Sami, C-level",
+      "SM_ICC": "Inari-Sami, C-level",
+      "SM_QC": "Koltansaame, C-level",
+      "Z": "Mother tongue and literature, Northern Sámi",
+      "I": "Mother tongue and literature, Inari Sámi",
+      "W": "Mother tongue and literature, Skolt Sámi"
     }
   },
   "profile": {

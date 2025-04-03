@@ -80,9 +80,9 @@ const REQUIRED_GROUPS = [
     "ITC",
     "POC",
     "LAC",
-    "Z",
-    "I",
-    "W",
+    "SM_DC",
+    "SM_ICC",
+    "SM_QC",
   ],
   ["MAA", "RUA", "ENA", "RAA", "ESA", "SAA", "VEA"],
   ["UE", "ET", "YO", "KE", "GE", "TT", "PS", "FI", "HI", "FY", "BI"],
@@ -419,7 +419,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const isConflictingAttendances = React.useCallback((): string[][] => {
     // Can't enroll to two subjects that are in the same group
     const conflictingGroups = [
-      ["AI", "S2"],
+      ["AI", "S2", "Z", "I", "W"],
       ["UE", "ET", "YO", "KE", "GE", "TT"],
       ["RUA", "RUB"],
       ["PS", "FI", "HI", "FY", "BI"],
