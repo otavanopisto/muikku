@@ -1,5 +1,5 @@
 import { Plugin, ButtonView, uid, Dialog } from "ckeditor5";
-import { SelectionFieldType } from "../types";
+import { SelectionFieldOption, SelectionFieldType } from "../types";
 import SelectionFieldFormView from "./selectionfield-form-view";
 import placeholderCheckbox from "./gfx/muikku-placeholder-checkbox.gif";
 import placeholderRadio from "./gfx/muikku-placeholder-radio.gif";
@@ -76,6 +76,12 @@ export default class SelectionFieldUI extends Plugin {
 
           writer.setAttribute("name", name, selectionField);
           writer.setAttribute("listType", formData.listType, selectionField);
+          writer.setAttribute("options", formData.options, selectionField);
+          writer.setAttribute(
+            "explanation",
+            formData.explanation,
+            selectionField
+          );
 
           // Get the view element
           const viewElement =
@@ -116,6 +122,8 @@ export default class SelectionFieldUI extends Plugin {
           const selectionField = writer.createElement("selectionField", {
             name,
             listType: formData.listType,
+            options: formData.options,
+            explanation: formData.explanation,
           });
           editor.model.insertContent(selectionField);
         }
@@ -139,12 +147,21 @@ export default class SelectionFieldUI extends Plugin {
     if (selectionField) {
       // Editing existing field - populate form
       this._form.setData({
-        listType: selectionField.getAttribute("listType") as SelectionFieldType,
+        listType:
+          (selectionField.getAttribute("listType") as SelectionFieldType) ||
+          "dropdown",
+        options:
+          (selectionField.getAttribute("options") as SelectionFieldOption[]) ||
+          [],
+        explanation:
+          (selectionField.getAttribute("explanation") as string) || "",
       });
     } else {
       // Creating new field - clear form
       this._form.setData({
         listType: "dropdown",
+        options: [],
+        explanation: "",
       });
     }
 

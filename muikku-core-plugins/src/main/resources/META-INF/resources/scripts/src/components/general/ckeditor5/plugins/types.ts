@@ -309,6 +309,8 @@ export type SelectionFieldType =
  */
 export interface SelectionFieldFormData {
   listType: SelectionFieldType;
+  options: SelectionFieldOption[];
+  explanation: string;
 }
 
 /**
@@ -318,7 +320,7 @@ export interface SelectionFieldDataContent {
   name: string;
   listType: SelectionFieldType;
   options: SelectionFieldOption[];
-  explanations: string;
+  explanation: string;
 }
 
 /**
@@ -328,4 +330,24 @@ export interface SelectionFieldOption {
   name: string;
   text: string;
   correct: boolean;
+}
+
+/**
+ * Interface for the options of the selection field
+ */
+export interface SelectionFieldOptionData {
+  id: string;
+  name: string;
+  view: View;
+  nameInput: LabeledFieldView<InputTextView>;
+  correctSwitch: SwitchButtonView;
+}
+
+/**
+ * Interface for the params of the add options method
+ */
+export interface SelectionFieldAddOptionsParams {
+  id?: string;
+  name?: string;
+  isCorrect?: boolean;
 }

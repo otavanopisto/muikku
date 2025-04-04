@@ -1,4 +1,4 @@
-import { Plugin, uid, Widget } from "ckeditor5";
+import { Plugin, uid, Widget, ViewElement, Writer } from "ckeditor5";
 import placeholderCheckbox from "./gfx/muikku-placeholder-checkbox.gif";
 import placeholderRadio from "./gfx/muikku-placeholder-radio.gif";
 import placeholderDropdown from "./gfx/muikku-placeholder-dropdown.gif";
@@ -39,8 +39,44 @@ export default class SelectionFieldEditing extends Plugin {
       isObject: true,
       allowWhere: "$text",
       allowChildren: ["param"],
-      allowAttributes: ["name", "listType", "explanations", "options"],
+      allowAttributes: ["name", "listType", "explanation", "options"],
     });
+  }
+
+  /**
+   * Parse the content from the view element
+   * @param viewElement - The view element
+   * @returns The content of the selection field
+   */
+  private _parseContentFromViewElement(
+    viewElement: ViewElement
+  ): SelectionFieldDataContent | null {
+    // Because Ckeditor 5 probably doesn't know what to do with param tags,
+    // they are included in the custom properties of the object element.
+    // We need to extract the content from the object element manually.
+    const rawContentArray = viewElement.getCustomProperties().next().value;
+
+    // If there is a content param, parse it
+    if (rawContentArray && rawContentArray[1]) {
+      // Create a temporary div to parse the HTML
+      // and insert custom properties into it because it is html tags (at least in this case)
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = rawContentArray[1];
+
+      // Find the content param element
+      const contentParam = tempDiv.querySelector('param[name="content"]');
+
+      // If the content param exists, parse it
+      if (contentParam && contentParam.getAttribute("value")) {
+        try {
+          return JSON.parse(contentParam.getAttribute("value"));
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error("Failed to parse content", e);
+        }
+      }
+    }
+    return null;
   }
 
   /**
@@ -48,6 +84,33 @@ export default class SelectionFieldEditing extends Plugin {
    */
   private _defineConverters() {
     const conversion = this.editor.conversion;
+
+    /**
+     * Create a selection field model element with appropriate defaults
+     * @param modelWriter - The model writer
+     * @param content - The content of the selection field
+     * @param defaultListType - The default list type
+     * @returns The selection field model element
+     */
+    const createSelectionFieldModel = (
+      modelWriter: Writer,
+      content: SelectionFieldDataContent | null,
+      defaultListType: SelectionFieldType
+    ) =>
+      modelWriter.createElement("selectionField", {
+        name: content?.name || `muikku-field-${uid()}`,
+        listType: content?.listType || defaultListType,
+        explanation: content?.explanation || "",
+        options: content?.options || [],
+      });
+
+    /**
+     * Check if the list type is a multiselect
+     * @param listType - The list type
+     * @returns True if the list type is a multiselect, false otherwise
+     */
+    const isMultiselect = (listType: SelectionFieldType) =>
+      listType === "checkbox-horizontal" || listType === "checkbox-vertical";
 
     // Upcast (loading) - convert from HTML to editor model
     conversion.for("upcast").elementToElement({
@@ -59,41 +122,27 @@ export default class SelectionFieldEditing extends Plugin {
       },
       // eslint-disable-next-line jsdoc/require-jsdoc
       model: (viewElement, { writer: modelWriter }) => {
-        let content: SelectionFieldDataContent;
+        const content = this._parseContentFromViewElement(viewElement);
+        return createSelectionFieldModel(modelWriter, content, "dropdown");
+      },
+    });
 
-        // Because Ckeditor 5 probably doesn't know what to do with param tags,
-        // they are included in the custom properties of the object element.
-        // We need to extract the content from the object element manually.
-        const rawContentArray = viewElement.getCustomProperties().next().value;
-
-        // If there is a content param, parse it
-        if (rawContentArray && rawContentArray[1]) {
-          // Create a temporary div to parse the HTML
-          // and insert custom properties into it because it is html tags (at least in this case)
-          const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = rawContentArray[1];
-
-          // Find the content param element
-          const contentParam = tempDiv.querySelector('param[name="content"]');
-
-          // If the content param exists, parse it
-          if (contentParam && contentParam.getAttribute("value")) {
-            try {
-              content = JSON.parse(contentParam.getAttribute("value"));
-            } catch (e) {
-              // eslint-disable-next-line no-console
-              console.error("Failed to parse content", e);
-            }
-          }
-        }
-
-        // Always return a valid model element with defaults
-        return modelWriter.createElement("selectionField", {
-          name: content.name || `muikku-field-${uid()}`,
-          listType: content.listType || "checkbox",
-          explanations: content.explanations || [],
-          options: content.options || [],
-        });
+    // Upcast (loading) - convert from HTML to editor model
+    conversion.for("upcast").elementToElement({
+      view: {
+        name: "object",
+        attributes: {
+          type: "application/vnd.muikku.field.multiselect",
+        },
+      },
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      model: (viewElement, { writer: modelWriter }) => {
+        const content = this._parseContentFromViewElement(viewElement);
+        return createSelectionFieldModel(
+          modelWriter,
+          content,
+          "checkbox-vertical"
+        );
       },
     });
 
@@ -110,13 +159,15 @@ export default class SelectionFieldEditing extends Plugin {
           options:
             (modelElement.getAttribute("options") as SelectionFieldOption[]) ||
             [],
-          explanations:
-            (modelElement.getAttribute("explanations") as string) || "",
+          explanation:
+            (modelElement.getAttribute("explanation") as string) || "",
         };
 
         // Create the object element
         const objectElement = viewWriter.createContainerElement("object", {
-          type: "application/vnd.muikku.field.select",
+          type: isMultiselect(content.listType)
+            ? "application/vnd.muikku.field.multiselect"
+            : "application/vnd.muikku.field.select",
         });
 
         // Add type param
@@ -152,7 +203,9 @@ export default class SelectionFieldEditing extends Plugin {
       // eslint-disable-next-line jsdoc/require-jsdoc
       view: (modelElement, { writer: viewWriter }) => {
         // Get the list type from the model element
-        const listType = modelElement.getAttribute("listType") || "dropdown";
+        const listType: SelectionFieldType =
+          (modelElement.getAttribute("listType") as SelectionFieldType) ||
+          "dropdown";
 
         // Determine which placeholder image to use
         let placeholderSrc;
@@ -179,7 +232,9 @@ export default class SelectionFieldEditing extends Plugin {
           src: placeholderSrc,
           class: "muikku-selection-field",
           alt: "Selection Field",
-          type: "application/vnd.muikku.field.select",
+          type: isMultiselect(listType)
+            ? "application/vnd.muikku.field.multiselect"
+            : "application/vnd.muikku.field.select",
         });
       },
     });
