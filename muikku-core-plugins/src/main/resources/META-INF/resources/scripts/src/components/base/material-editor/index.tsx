@@ -48,7 +48,7 @@ import {
   MaterialViewRestriction,
 } from "~/generated/client";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
-import CKEditor5 from "~/components/general/ckeditor5";
+import CKEditor5 from "~/editors/ckeditor5";
 
 /**
  * MaterialEditorProps

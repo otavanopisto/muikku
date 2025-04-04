@@ -70,7 +70,7 @@ import MemoField from "./plugins/memofield";
 import OrganizerField from "./plugins/organizerfield";
 import SelectionField from "./plugins/selectionfield";
 import SorterField from "./plugins/sorterfield";
-import TextField from "./plugins/Textfield";
+import TextField from "./plugins/textfield";
 
 const LICENSE_KEY = "GPL";
 
