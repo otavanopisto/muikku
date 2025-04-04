@@ -385,3 +385,12 @@ export interface MemoFieldDataContent {
 export interface AudioFieldDataContent {
   name: string;
 }
+
+// FILEFIELD PLUGIN TYPES
+
+/**
+ * Interface for the content of the file field
+ */
+export interface FileFieldDataContent {
+  name: string;
+}

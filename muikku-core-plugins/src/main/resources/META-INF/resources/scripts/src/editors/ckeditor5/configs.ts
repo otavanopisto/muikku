@@ -65,13 +65,16 @@ import {
   Underline,
   WordCount,
 } from "ckeditor5";
-import { AudioField } from "./plugins";
-import ConnectField from "./plugins/connectfield";
-import MemoField from "./plugins/memofield";
-import OrganizerField from "./plugins/organizerfield";
-import SelectionField from "./plugins/selectionfield";
-import SorterField from "./plugins/sorterfield";
-import TextField from "./plugins/textfield";
+import {
+  AudioField,
+  ConnectField,
+  FileField,
+  MemoField,
+  OrganizerField,
+  SelectionField,
+  SorterField,
+  TextField,
+} from "./plugins";
 
 const LICENSE_KEY = "GPL";
 
@@ -240,10 +243,12 @@ export const testConfig: EditorConfig = {
       "muikku-selectionfield",
       "muikku-memofield",
       "muikku-audiofield",
+      "muikku-filefield",
     ],
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    FileField,
     AudioField,
     MemoField,
     SelectionField,

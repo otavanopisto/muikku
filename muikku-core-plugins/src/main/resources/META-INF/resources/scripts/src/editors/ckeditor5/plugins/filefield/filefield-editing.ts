@@ -1,11 +1,11 @@
 import { Plugin, uid, Widget } from "ckeditor5";
-import { AudioFieldDataContent } from "../types";
-import placeholderImage from "./gfx/muikku-placeholder-audio.gif";
+import { FileFieldDataContent } from "../types";
+import placeholderImage from "./gfx/muikku-placeholder-file.gif";
 
 /**
- * Audio field editing plugin
+ * File field editing plugin
  */
-export default class AudioFieldEditing extends Plugin {
+export default class FileFieldEditing extends Plugin {
   /**
    * Required plugins
    */
@@ -18,7 +18,7 @@ export default class AudioFieldEditing extends Plugin {
    */
   init() {
     if (!this.editor) {
-      throw new Error("Editor instance is not available in AudioFieldEditing");
+      throw new Error("Editor instance is not available in FileFieldEditing");
     }
 
     this._defineSchema();
@@ -26,12 +26,12 @@ export default class AudioFieldEditing extends Plugin {
   }
 
   /**
-   * Defines the data model schema for the audio field
+   * Defines the data model schema for the file field
    */
   _defineSchema() {
     const schema = this.editor.model.schema;
 
-    schema.register("audioField", {
+    schema.register("fileField", {
       isInline: true,
       isObject: true,
       allowWhere: "$text",
@@ -40,7 +40,7 @@ export default class AudioFieldEditing extends Plugin {
   }
 
   /**
-   * Defines converters for the audio field
+   * Defines converters for the file field
    */
   _defineConverters() {
     const conversion = this.editor.conversion;
@@ -50,12 +50,12 @@ export default class AudioFieldEditing extends Plugin {
       view: {
         name: "object",
         attributes: {
-          type: "application/vnd.muikku.field.audio",
+          type: "application/vnd.muikku.field.file",
         },
       },
       // eslint-disable-next-line jsdoc/require-jsdoc
       model: (viewElement, { writer: modelWriter }) => {
-        let content: AudioFieldDataContent;
+        let content: FileFieldDataContent;
 
         // Because Ckeditor 5 probably doesn't know what to do with param tags,
         // they are included in the custom properties of the object element.
@@ -84,7 +84,7 @@ export default class AudioFieldEditing extends Plugin {
         }
 
         // Always return a valid model element with defaults
-        return modelWriter.createElement("audioField", {
+        return modelWriter.createElement("fileField", {
           name: content.name || `muikku-field-${uid()}`,
         });
       },
@@ -92,11 +92,11 @@ export default class AudioFieldEditing extends Plugin {
 
     // DataDowncast (saving) - convert from model to HTML storage format
     conversion.for("dataDowncast").elementToElement({
-      model: "audioField",
+      model: "fileField",
       // eslint-disable-next-line jsdoc/require-jsdoc
       view: (modelElement, { writer: viewWriter }) => {
         // Create the content object
-        const content: AudioFieldDataContent = {
+        const content: FileFieldDataContent = {
           name:
             (modelElement.getAttribute("name") as string) ||
             `muikku-field-${uid()}`,
@@ -104,7 +104,7 @@ export default class AudioFieldEditing extends Plugin {
 
         // Create the object element
         const objectElement = viewWriter.createContainerElement("object", {
-          type: "application/vnd.muikku.field.audio",
+          type: "application/vnd.muikku.field.file",
         });
 
         // Add type param
@@ -119,11 +119,9 @@ export default class AudioFieldEditing extends Plugin {
           value: JSON.stringify(content),
         });
 
-        const audioInput = viewWriter.createContainerElement("input", {
+        const fileInput = viewWriter.createContainerElement("input", {
           name: content.name,
           type: "file",
-          accept: "audio/*",
-          capture: "microphone",
         });
 
         // Add params to object
@@ -137,7 +135,7 @@ export default class AudioFieldEditing extends Plugin {
         );
         viewWriter.insert(
           viewWriter.createPositionAt(objectElement, "end"),
-          audioInput
+          fileInput
         );
 
         return objectElement;
@@ -146,15 +144,15 @@ export default class AudioFieldEditing extends Plugin {
 
     // EditingDowncast remains the same (showing as img)
     conversion.for("editingDowncast").elementToElement({
-      model: "audioField",
+      model: "fileField",
       // eslint-disable-next-line jsdoc/require-jsdoc
       view: (modelElement, { writer: viewWriter }) =>
         // Create the placeholder image element
         viewWriter.createEmptyElement("img", {
           src: placeholderImage,
-          class: "muikku-audio-field",
-          alt: "Audio Field",
-          type: "application/vnd.muikku.field.audio",
+          class: "muikku-file-field",
+          alt: "File Field",
+          type: "application/vnd.muikku.field.file",
         }),
     });
   }
