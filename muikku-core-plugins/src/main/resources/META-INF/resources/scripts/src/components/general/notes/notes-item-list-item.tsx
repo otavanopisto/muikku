@@ -14,6 +14,7 @@ import {
   UpdateNoteReceiverRequest,
 } from "~/generated/client";
 import Avatar from "../avatar";
+import GroupAvatar from "../avatar/group-avatar";
 import { useRecipientsToAvatars } from "./hooks/useRecipientsToAvatars";
 import NoteStatusSetting from "./notes-item-set-status";
 /**
@@ -109,6 +110,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     } = notesItem;
 
     const avatars = useRecipientsToAvatars(recipients, !specificRecipient);
+
     const { t } = useTranslation("tasks");
     const overdue = isOverdue(dueDate);
     const updatedModifiers = [];
@@ -551,13 +553,13 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                   );
 
                   return avatar.groupAvatar || archived ? (
-                    <Avatar
+                    <GroupAvatar
                       showTooltip
                       groupMemberAction={avatarUpdateStatus}
                       key={avatar.id}
                       {...avatar}
                       size="xsmall"
-                    ></Avatar>
+                    ></GroupAvatar>
                   ) : (
                     <NoteStatusSetting
                       key={avatar.id}
@@ -573,7 +575,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
                         <Avatar
                           showTooltip
                           id={avatar.id}
-                          userAvatarModifier={avatarRecipient.status.toLowerCase()}
+                          modifier={avatarRecipient.status.toLowerCase()}
                           hasImage={avatar.hasImage}
                           name={avatar.name}
                           size="xsmall"

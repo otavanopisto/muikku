@@ -1,5 +1,5 @@
 import { NoteReceiver } from "~/generated/client";
-import { AvatarEntity } from "~/components/general/avatar/index";
+import { AvatarEntity } from "~/components/general/avatar";
 import { useMemo } from "react";
 /**
  * useRecipientsToAvatars turns note recipients into avatars
@@ -56,20 +56,20 @@ export const useRecipientsToAvatars = (
               case "APPROVED": {
                 // Find the last group member with "APPROVAL_PENDING" status
                 const lastPendingIndex = existingGroupAvatar.groupMembers
+                  .map((member, index) => ({ member, index }))
                   .reverse()
-                  .findIndex((item) => item.modifier === "ongoing");
-                // If found, you can do something with it
-                if (lastPendingIndex !== undefined) {
-                  // Insert the approved member after the last pending one
-                  existingGroupAvatar.groupMembers.splice(
-                    lastPendingIndex + 1,
-                    0,
-                    newMember
-                  );
-                } else {
-                  // If no pending member found, just push it to the top
-                  existingGroupAvatar.groupMembers.unshift(newMember);
-                }
+                  .findIndex((item) => item.member.modifier === "ongoing");
+
+                // Find out the index to insert the new member
+                const insertIndex =
+                  lastPendingIndex === -1 ? 0 : lastPendingIndex + 1;
+
+                // Insert the approved member accordingly
+                existingGroupAvatar.groupMembers.splice(
+                  insertIndex,
+                  0,
+                  newMember
+                );
                 break;
               }
 
@@ -79,49 +79,49 @@ export const useRecipientsToAvatars = (
           }
           return;
         }
-        // Not in the list, add it
-        if (userGroupId) {
-          const groupMember = {
-            id: recipientId,
-            hasImage: hasImage,
-            showTooltip: true,
-            name: recipientName,
-            modifier: status.toLowerCase(),
-          };
-          userGroupIds.push(userGroupId);
-          avatars.push({
-            hasImage: false,
-            id: userGroupId,
-            groupAvatar: "usergroup",
-            showTooltip: true,
-            groupMembers: showGroupMembers && [groupMember],
-            name: userGroupName,
-          });
-          return;
-        }
-        if (workspaceId) {
-          const workspaceMember = {
-            id: recipientId,
-            hasImage: hasImage,
-            name: recipientName,
-            modifier: status.toLowerCase(),
-          };
-          workspaceIds.push(workspaceId);
-          avatars.push({
-            hasImage: false,
-            id: workspaceId,
-            groupAvatar: "workspace",
-            groupMembers: showGroupMembers && [workspaceMember],
-            name: workspaceName,
-          });
-          return;
-        }
-        avatars.push({
-          hasImage: hasImage,
-          id: recipientId,
-          name: recipientName,
-        });
       }
+      // Not in the list, add it
+      if (userGroupId) {
+        const groupMember = {
+          id: recipientId,
+          hasImage: hasImage,
+          showTooltip: true,
+          name: recipientName,
+          modifier: status.toLowerCase(),
+        };
+        userGroupIds.push(userGroupId);
+        avatars.push({
+          hasImage: false,
+          id: userGroupId,
+          groupAvatar: "usergroup",
+          showTooltip: true,
+          groupMembers: showGroupMembers && [groupMember],
+          name: userGroupName,
+        });
+        return;
+      }
+      if (workspaceId) {
+        const workspaceMember = {
+          id: recipientId,
+          hasImage: hasImage,
+          name: recipientName,
+          modifier: status.toLowerCase(),
+        };
+        workspaceIds.push(workspaceId);
+        avatars.push({
+          hasImage: false,
+          id: workspaceId,
+          groupAvatar: "workspace",
+          groupMembers: showGroupMembers && [workspaceMember],
+          name: workspaceName,
+        });
+        return;
+      }
+      avatars.push({
+        hasImage: hasImage,
+        id: recipientId,
+        name: recipientName,
+      });
     });
     return avatars;
   }, [recipients, showGroupMembers]);

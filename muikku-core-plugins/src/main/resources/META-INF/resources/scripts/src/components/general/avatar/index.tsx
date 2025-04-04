@@ -1,8 +1,8 @@
 import * as React from "react";
+import { getUserImageUrl } from "~/util/modifiers";
 import "~/sass/elements/avatar.scss";
-import UserAvatar from "./subtypes/user";
-import { AvatarGroupUser } from "./subtypes/group-components/group-avatar-user";
-import GroupAvatar from "./subtypes/group";
+import Dropdown from "~/components/general/dropdown";
+import { AvatarGroupUser } from "./group-avatar/group-avatar-user";
 
 /**
  * AvatarEntity
@@ -18,73 +18,83 @@ export interface AvatarEntity {
 }
 
 /**
- * AvatarProps
+ * UserAvatarProps
  */
-interface AvatarProps extends AvatarEntity {
+export interface UserAvatarProps {
+  action?: (userId: number) => JSX.Element;
+  hasImage: boolean;
+  id: number | null;
+  name: string;
   size?: string;
   userCategory?: number;
   avatarAriaLabel?: string;
   modifier?: string;
-  groupAvatarModifier?: string;
-  userAvatarModifier?: string;
+  showTooltip?: boolean;
   avatarAriaHidden?: boolean;
 }
 
 /**
- * Avatar
+ * UserAvatar
  * @param props props
  * @returns JSX.Element
  */
-const Avatar = (props: AvatarProps) => {
+const UserAvatar = (props: UserAvatarProps) => {
   const {
-    hasImage,
     id,
+    userCategory,
+    hasImage,
     name,
     size,
-    groupAvatar,
-    groupMembers,
-    groupMemberAction,
-    userCategory,
-    avatarAriaLabel,
     modifier,
-    groupAvatarModifier,
-    userAvatarModifier,
-    showTooltip,
+    avatarAriaLabel,
     avatarAriaHidden,
+    showTooltip,
   } = props;
+
+  const category = React.useMemo(() => {
+    if (userCategory) return userCategory;
+    if (id) {
+      return id > 10 ? (id % 10) + 1 : id;
+    }
+    // This is a nullcheck. Makes the avatar readable (and colourful!) if the id is "null"
+    return Math.floor(Math.random() * 10 + 1);
+  }, [id, userCategory]);
+
+  const avatarContent = hasImage ? (
+    <img
+      src={getUserImageUrl(id)}
+      alt=""
+      aria-label={avatarAriaLabel}
+      className={`avatar avatar-img ${size ? "avatar--" + size : ""} ${
+        modifier ? "avatar--" + modifier : ""
+      }`}
+    />
+  ) : (
+    <div
+      className={`avatar avatar--category-${category} ${
+        size ? "avatar--" + size : ""
+      } ${modifier ? "avatar--" + modifier : ""} `}
+    >
+      {name[0]}
+    </div>
+  );
 
   return (
     <div
       className={`avatar-container ${size ? "avatar-container--" + size : ""} ${
         modifier ? "avatar-container--" + modifier : ""
-      } ${groupAvatar ? "avatar-container--group" : ""} rs_skip_always`}
+      } rs_skip_always`}
       aria-hidden={avatarAriaHidden}
     >
-      {groupAvatar ? (
-        <GroupAvatar
-          id={id}
-          name={name}
-          size={size}
-          groupAvatar={groupAvatar}
-          groupMembers={groupMembers}
-          groupMemberAction={groupMemberAction}
-          modifier={groupAvatarModifier}
-          showTooltip={showTooltip}
-        />
+      {showTooltip ? (
+        <Dropdown openByHover key="avatar" content={name}>
+          {avatarContent}
+        </Dropdown>
       ) : (
-        <UserAvatar
-          id={id}
-          name={name}
-          size={size}
-          hasImage={hasImage}
-          userCategory={userCategory}
-          modifier={userAvatarModifier}
-          avatarAriaLabel={avatarAriaLabel}
-          showTooltip={showTooltip}
-        />
+        avatarContent
       )}
     </div>
   );
 };
 
-export default Avatar;
+export default UserAvatar;

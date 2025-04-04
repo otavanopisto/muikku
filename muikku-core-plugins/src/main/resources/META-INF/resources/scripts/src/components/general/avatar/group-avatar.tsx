@@ -1,8 +1,8 @@
 import * as React from "react";
 import "~/sass/elements/avatar.scss";
 import Dropdown from "~/components/general/dropdown";
-import GroupAvatarUsers from "./group-components/group-avatar-users";
-import { AvatarGroupUser } from "./group-components/group-avatar-user";
+import GroupAvatarUsers from "./group-avatar/group-avatar-users";
+import { AvatarGroupUser } from "./group-avatar/group-avatar-user";
 
 /**
  * AvatarProps
@@ -55,17 +55,26 @@ const GroupAvatar = (props: GroupAvatarProps) => {
     avatarBase
   );
 
-  return groupMembers && groupMembers.length > 0 ? (
-    <Dropdown
-      modifier="group-members"
-      content={
-        <GroupAvatarUsers users={groupMembers} action={groupMemberAction} />
-      }
+  return (
+    <div
+      className={`avatar-container ${size ? "avatar-container--" + size : ""} ${
+        modifier ? "avatar-container--" + modifier : ""
+      } ${groupAvatar ? "avatar-container--group" : ""} rs_skip_always`}
     >
-      {avatar}
-    </Dropdown>
-  ) : (
-    avatar
+      {" "}
+      {groupMembers && groupMembers.length > 0 ? (
+        <Dropdown
+          modifier="group-members"
+          content={
+            <GroupAvatarUsers users={groupMembers} action={groupMemberAction} />
+          }
+        >
+          {avatar}
+        </Dropdown>
+      ) : (
+        avatar
+      )}
+    </div>
   );
 };
 export default GroupAvatar;
