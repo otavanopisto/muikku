@@ -3065,7 +3065,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/evaluation/workspaceuser/{WORKSPACEUSERENTITYID}/lock:
+  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/lock:
     put:
       operationId: updateEvaluablePageLocks
       summary: Toggles the lock of all (or just one) evaluable pages in the workspace for the given user
