@@ -394,3 +394,12 @@ export interface AudioFieldDataContent {
 export interface FileFieldDataContent {
   name: string;
 }
+
+// JOURNALFIELD PLUGIN TYPES
+
+/**
+ * Interface for the content of the journal field
+ */
+export interface JournalFieldDataContent {
+  name: string;
+}

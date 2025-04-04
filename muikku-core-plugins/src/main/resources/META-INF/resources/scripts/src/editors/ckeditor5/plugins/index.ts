@@ -6,3 +6,4 @@ export { default as SorterField } from "./sorterfield";
 export { default as TextField } from "./textfield";
 export { default as AudioField } from "./audiofield";
 export { default as FileField } from "./filefield";
+export { default as JournalField } from "./journalfield";
