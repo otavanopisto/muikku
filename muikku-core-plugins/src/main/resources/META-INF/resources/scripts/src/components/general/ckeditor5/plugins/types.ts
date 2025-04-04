@@ -351,3 +351,28 @@ export interface SelectionFieldAddOptionsParams {
   name?: string;
   isCorrect?: boolean;
 }
+
+// MEMOFIELD PLUGIN TYPES
+
+/**
+ * Interface for the form data of the memo field
+ */
+export interface MemoFieldFormData {
+  rows: string;
+  maxChars: string;
+  maxWords: string;
+  example: string;
+  richEdit: boolean;
+}
+
+/**
+ * Interface for the content of the memo field
+ */
+export interface MemoFieldDataContent {
+  name: string;
+  rows: string;
+  maxChars: string;
+  maxWords: string;
+  example: string;
+  richedit: boolean;
+}

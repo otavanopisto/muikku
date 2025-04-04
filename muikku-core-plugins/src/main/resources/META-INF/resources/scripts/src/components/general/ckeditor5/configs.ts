@@ -66,6 +66,7 @@ import {
   WordCount,
 } from "ckeditor5";
 import ConnectField from "./plugins/connectfield";
+import MemoField from "./plugins/memofield";
 import OrganizerField from "./plugins/organizerfield";
 import SelectionField from "./plugins/selectionfield";
 import SorterField from "./plugins/sorterfield";
@@ -236,10 +237,12 @@ export const testConfig: EditorConfig = {
       "muikku-connectfield",
       "muikku-sorterfield",
       "muikku-selectionfield",
+      "muikku-memofield",
     ],
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    MemoField,
     SelectionField,
     SorterField,
     ConnectField,
