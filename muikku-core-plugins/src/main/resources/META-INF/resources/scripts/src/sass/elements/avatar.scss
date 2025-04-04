@@ -76,9 +76,11 @@
 }
 
 .avatar__group-user-text {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   min-width: 150px;
   text-align: left;
-  flex-grow: 1;
 }
 
 .avatar-container--chat {
