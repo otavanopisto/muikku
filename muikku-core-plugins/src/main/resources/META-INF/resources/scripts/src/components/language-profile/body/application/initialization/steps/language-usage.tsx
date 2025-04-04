@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { LanguageProfileData } from "~/reducers/main-function/language-profile";
-import { SpecificActionType, ActionType } from "~/actions";
-import { Dispatch, Action } from "redux";
+import { ActionType } from "~/actions";
 import { Language } from "~/@types/shared";
+import AddLanguage from "./components/add-language";
+import DisplayLanguages from "./components/display-languages";
 
 // Conponent that uses useReducer to handle internal state where you set the languages you can speak
 // and the languages you can understand the languages are in rows and you can add a new row
@@ -45,13 +46,6 @@ const LanguageUsage = () => {
     }, 300); // 300ms debounce time
   };
 
-  const handleAddLanguage = (language: Language) => {
-    dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
-      payload: language,
-    } as ActionType);
-  };
-
   // Clean up the timeout when the component unmounts
   React.useEffect(
     () => () => {
@@ -61,6 +55,13 @@ const LanguageUsage = () => {
     },
     []
   );
+
+  const removeLanguage = (language: Language) => {
+    dispatch({
+      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
+      payload: language,
+    } as ActionType);
+  };
 
   return (
     <div>
@@ -80,13 +81,8 @@ const LanguageUsage = () => {
       <form>
         <div>
           <h2>Kielet</h2>
-          <div></div>
-          <input
-            type="text"
-            id="language"
-            className="form-element__input"
-            onChange={(e) => handleFieldChange(e, "languageUsage")}
-          />
+          <DisplayLanguages onItemClick={removeLanguage} />
+          <AddLanguage />
         </div>
         <div>
           <h2>Kielten käyttäminen</h2>

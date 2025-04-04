@@ -4,7 +4,12 @@ import { Dispatch, Action } from "redux";
 import { StatusType } from "~/reducers/base/status";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError } from "~/api/api";
-import { LanguageProfileData } from "~/reducers/main-function/language-profile";
+import {
+  LanguageProfileData,
+  LanguageProfileLanguage,
+  LanguageLevelItem,
+  LanguageLevels,
+} from "~/reducers/main-function/language-profile";
 import { Language } from "~/@types/shared";
 
 export type UPDATE_LANGUAGE_PROFILE_VALUES = SpecificActionType<
@@ -14,7 +19,12 @@ export type UPDATE_LANGUAGE_PROFILE_VALUES = SpecificActionType<
 
 export type UPDATE_LANGUAGE_PROFILE_LANGUAGES = SpecificActionType<
   "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
-  Language
+  LanguageProfileLanguage
+>;
+
+export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_LEVELS = SpecificActionType<
+  "UPDATE_LANGUAGE_PROFILE_LANGUAGE_LEVELS",
+  { code: string; cellId: string; value: LanguageLevels }
 >;
 
 /**

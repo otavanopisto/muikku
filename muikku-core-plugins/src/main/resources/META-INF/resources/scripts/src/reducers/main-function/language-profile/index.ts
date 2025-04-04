@@ -3,11 +3,33 @@ import { Reducer } from "redux";
 import { LoadingState } from "~/@types/shared";
 import { Language } from "~/@types/shared";
 
+export type LanguageLevels =
+  | "A11"
+  | "A12"
+  | "A13"
+  | "A21"
+  | "A22"
+  | "B11"
+  | "B12"
+  | "B21"
+  | "C11";
+
+export type SkillLevels = "N" | "E" | "H" | "K" | "V";
+
+export type LanguagesItem<T> = {
+  [key: string]: T;
+};
+
+export interface LanguageProfileLanguage extends Language {
+  levels: LanguagesItem<LanguageLevels>[];
+  skills: LanguagesItem<SkillLevels>[];
+}
+
 export type LanguageProfileData = {
   languageUsage: string;
   studyMotivation: string;
   languageLearning: string;
-  languages: Language[];
+  languages: LanguageProfileLanguage[];
 };
 /**
  * Redux state interface.
@@ -67,6 +89,79 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       return {
         ...state,
         data: { ...state.data, languages: updatedLanguages },
+      };
+    }
+    case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_LEVELS": {
+      const { payload } = action;
+
+      const languagesUpdate = [...state.data.languages];
+      // find the language to update
+      const languageIndex = languagesUpdate.findIndex(
+        (language) => language.code === payload.code
+      );
+      const currentLanguage = languagesUpdate[languageIndex];
+
+      // Check if there are levels
+      const currentLevels = currentLanguage.levels
+        ? currentLanguage.levels
+        : [];
+
+      const levelIndex = currentLevels.findIndex((level) =>
+        Object.keys(level).includes(payload.cellId)
+      );
+
+      if (levelIndex !== -1) {
+        // If it exists, remove from the array
+        currentLevels.splice(levelIndex, 1);
+      }
+
+      const updatedLanguage = {
+        ...currentLanguage,
+        levels: [...currentLevels, { [payload.cellId]: payload.value }],
+      };
+
+      languagesUpdate[languageIndex] = updatedLanguage;
+
+      return {
+        ...state,
+        data: { ...state.data, languages: languagesUpdate },
+      };
+    }
+
+    case "UPDATE_LANGUAGE_PROFILE_SKILLS": {
+      const { payload } = action;
+
+      const languagesUpdate = [...state.data.languages];
+      // find the language to update
+      const languageIndex = languagesUpdate.findIndex(
+        (language) => language.code === payload.code
+      );
+      const currentLanguage = languagesUpdate[languageIndex];
+
+      // Check if there are levels
+      const currentLevels = currentLanguage.levels
+        ? currentLanguage.levels
+        : [];
+
+      const levelIndex = currentLevels.findIndex((level) =>
+        Object.keys(level).includes(payload.cellId)
+      );
+
+      if (levelIndex !== -1) {
+        // If it exists, remove from the array
+        currentLevels.splice(levelIndex, 1);
+      }
+
+      const updatedLanguage = {
+        ...currentLanguage,
+        skills: [...currentLevels, { [payload.cellId]: payload.value }],
+      };
+
+      languagesUpdate[languageIndex] = updatedLanguage;
+
+      return {
+        ...state,
+        data: { ...state.data, languages: languagesUpdate },
       };
     }
 

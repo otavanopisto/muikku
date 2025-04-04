@@ -1,0 +1,56 @@
+.language-profile {
+}
+
+.language-profile__filter-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.language-profile__add-language {
+  position: relative;
+}
+
+.language-profile__language-dropdown {
+  background-color: #fff;
+  max-height: 200px;
+  left: 0;
+  overflow-y: scroll;
+  padding: 10px;
+  position: absolute;
+  top: auto;
+  width: 300px;
+}
+
+.language-profile__dropdown-item {
+  cursor: pointer;
+  padding: 5 0;
+}
+.language-profile__languages-wrapper {
+  border: 1px solid #ededed;
+  border-radius: 5px;
+}
+
+.language-profile__languages {
+  border-collapse: collapse;
+  width: 100%;
+  thead {
+    th {
+      padding: 5px;
+      border-bottom: 1px solid #ec00f0;
+    }
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+}
+
+.language-profile__language-label {
+  padding: 0.5rem;
+  align-items: center;
+}
+
+.language-profile__language-data {
+}
