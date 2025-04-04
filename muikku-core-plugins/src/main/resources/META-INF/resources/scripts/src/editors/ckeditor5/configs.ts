@@ -65,6 +65,7 @@ import {
   Underline,
   WordCount,
 } from "ckeditor5";
+import { AudioField } from "./plugins";
 import ConnectField from "./plugins/connectfield";
 import MemoField from "./plugins/memofield";
 import OrganizerField from "./plugins/organizerfield";
@@ -238,10 +239,12 @@ export const testConfig: EditorConfig = {
       "muikku-sorterfield",
       "muikku-selectionfield",
       "muikku-memofield",
+      "muikku-audiofield",
     ],
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    AudioField,
     MemoField,
     SelectionField,
     SorterField,

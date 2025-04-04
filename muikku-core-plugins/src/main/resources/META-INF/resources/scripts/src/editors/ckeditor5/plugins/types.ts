@@ -376,3 +376,12 @@ export interface MemoFieldDataContent {
   example: string;
   richedit: boolean;
 }
+
+// AUDIOFIELD PLUGIN TYPES
+
+/**
+ * Interface for the content of the audio field
+ */
+export interface AudioFieldDataContent {
+  name: string;
+}
