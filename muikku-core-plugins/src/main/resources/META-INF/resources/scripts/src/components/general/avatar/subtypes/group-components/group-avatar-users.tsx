@@ -1,6 +1,6 @@
 import * as React from "react";
 import "~/sass/elements/avatar.scss";
-import GroupAvatarUser, { AvatarGroupUser } from "./user";
+import GroupAvatarUser, { AvatarGroupUser } from "./group-avatar-user";
 import { filterMatch } from "~/util/modifiers";
 import { useTranslation } from "react-i18next";
 

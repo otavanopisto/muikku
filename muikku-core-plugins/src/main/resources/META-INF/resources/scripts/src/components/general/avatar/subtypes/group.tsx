@@ -1,8 +1,8 @@
 import * as React from "react";
 import "~/sass/elements/avatar.scss";
 import Dropdown from "~/components/general/dropdown";
-import GroupAvatarUsers from "./group-components/users";
-import { AvatarGroupUser } from "./group-components/user";
+import GroupAvatarUsers from "./group-components/group-avatar-users";
+import { AvatarGroupUser } from "./group-components/group-avatar-user";
 
 /**
  * AvatarProps

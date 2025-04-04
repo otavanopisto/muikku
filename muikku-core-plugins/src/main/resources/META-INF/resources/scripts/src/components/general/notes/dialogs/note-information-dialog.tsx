@@ -4,9 +4,9 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
 import NotesListItem, { NotesListItemProps } from "../notes-item-list-item";
-import GroupAvatarUsers from "~/components/general/avatar/subtypes/group-components/users";
+import GroupAvatarUsers from "~/components/general/avatar/subtypes/group-components/group-avatar-users";
 import { useTranslation } from "react-i18next";
-import { AvatarGroupUser } from "~/components/general/avatar/subtypes/group-components/user";
+import { AvatarGroupUser } from "~/components/general/avatar/subtypes/group-components/group-avatar-user";
 import { NoteReceiver } from "~/generated/client";
 /**
  * NoteInformationDialogProps

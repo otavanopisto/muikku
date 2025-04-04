@@ -1,7 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/avatar.scss";
 import UserAvatar from "./subtypes/user";
-import { AvatarGroupUser } from "./subtypes/group-components/user";
+import { AvatarGroupUser } from "./subtypes/group-components/group-avatar-user";
 import GroupAvatar from "./subtypes/group";
 
 /**
