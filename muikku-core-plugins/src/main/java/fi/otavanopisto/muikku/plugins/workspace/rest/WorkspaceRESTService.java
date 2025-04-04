@@ -2248,23 +2248,25 @@ public class WorkspaceRESTService extends PluginRESTService {
     // #7352: Figure out scenarios in which a page is locked
     
     boolean enforcedLock = false;
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
-    if (workspaceUserEntity != null) {
-      List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
-      for (WorkspaceAssessmentState assessmentState : assessmentStates) {
-        // If workspace has been assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
-        if (assessmentState.isAssessed()) {
-          enforcedLock = true;
-          break;
-        }
-        else if (assessmentState.isPending()) {
-          // If the workspace is being assessed and the assessment request has been locked, the page is locked
-          WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findLatestAssessmentRequestByWorkspaceAndStudent(
-              workspaceEntity.schoolDataIdentifier(),
-              userEntity.defaultSchoolDataIdentifier());
-          if (assessmentRequest != null && assessmentRequest.getLocked()) {
+    if (userEntityController.isStudent(userEntity)) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
+      if (workspaceUserEntity != null) {
+        List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+        for (WorkspaceAssessmentState assessmentState : assessmentStates) {
+          // If workspace has been assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
+          if (assessmentState.isAssessed()) {
             enforcedLock = true;
             break;
+          }
+          else if (assessmentState.isPending()) {
+            // If the workspace is being assessed and the assessment request has been locked, the page is locked
+            WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findLatestAssessmentRequestByWorkspaceAndStudent(
+                workspaceEntity.schoolDataIdentifier(),
+                userEntity.defaultSchoolDataIdentifier());
+            if (assessmentRequest != null && assessmentRequest.getLocked()) {
+              enforcedLock = true;
+              break;
+            }
           }
         }
       }
