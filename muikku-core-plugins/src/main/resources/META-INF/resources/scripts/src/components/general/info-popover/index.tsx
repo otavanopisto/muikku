@@ -156,7 +156,7 @@ const InfoPopover = (props: InfoPopoverProps) => {
             <div className="item-list__profile-picture">
               <Avatar
                 id={parseInt(data.info.userId)}
-                firstName={data.info.firstName}
+                name={data.info.firstName}
                 hasImage={data.info.hasAvatar === "true"}
               ></Avatar>
             </div>

@@ -439,7 +439,7 @@ class WorkspaceUsers extends React.Component<
                             <Avatar
                               id={staff.userEntityId}
                               hasImage={staff.hasImage}
-                              firstName={staff.firstName}
+                              name={staff.firstName}
                             />
                           </div>
                         }

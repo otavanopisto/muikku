@@ -133,11 +133,6 @@
     }
   }
 
-  .notes__item-recipients {
-    height: auto;
-    overflow-y: auto;
-  }
-
   // This removes the item's content's fading effect
   .notes__item-body::before,
   .notes__item-recipients::before {
@@ -268,6 +263,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   gap: 4px;
+  height: auto;
   margin: 5px 0;
   overflow: hidden;
   position: relative;
