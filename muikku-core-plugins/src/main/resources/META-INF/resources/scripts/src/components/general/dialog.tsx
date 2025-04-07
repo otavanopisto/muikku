@@ -768,7 +768,7 @@ export class DialogRemoveUsers extends React.Component<
                                 ? user.variables.boolean
                                 : false
                             }
-                            firstName={user.label}
+                            name={user.label}
                             size="small"
                           />
                         }
@@ -837,7 +837,7 @@ export class DialogRemoveUsers extends React.Component<
                                   ? user.variables.boolean
                                   : false
                               }
-                              firstName={user.label}
+                              name={user.label}
                               size="small"
                             />
                           }
