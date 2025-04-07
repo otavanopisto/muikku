@@ -419,7 +419,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
   const isConflictingAttendances = React.useCallback((): string[][] => {
     // Can't enroll to two subjects that are in the same group
     const conflictingGroups = [
-      ["AI", "S2"],
+      ["AI", "S2", "Z", "I", "W"],
       ["UE", "ET", "YO", "KE", "GE", "TT"],
       ["RUA", "RUB"],
       ["PS", "FI", "HI", "FY", "BI"],

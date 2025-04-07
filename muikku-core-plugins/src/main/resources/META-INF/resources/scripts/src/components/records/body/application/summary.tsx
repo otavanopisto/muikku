@@ -170,7 +170,7 @@ class Summary extends React.Component<SummaryProps, SummaryState> {
                         <Avatar
                           id={counselor.userEntityId}
                           userCategory={3}
-                          firstName={counselor.firstName}
+                          name={counselor.firstName}
                           hasImage={counselor.hasImage}
                         />
                       </div>

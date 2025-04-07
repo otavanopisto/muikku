@@ -146,7 +146,7 @@ export const ChangeLogItem: React.FC<ChangeLogItemProps> = (props) => {
           <span className="hops-container__history-event-author">
             <Avatar
               id={logEntry.modifier.id}
-              firstName={logEntry.modifier.firstName}
+              name={logEntry.modifier.firstName}
               hasImage={logEntry.modifier.hasImage}
               size="small"
             />

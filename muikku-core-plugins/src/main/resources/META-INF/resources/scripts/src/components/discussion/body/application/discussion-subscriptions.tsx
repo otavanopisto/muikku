@@ -590,7 +590,7 @@ class DiscussionSubscriptions extends React.Component<
         <Avatar
           key={subscribredThread.id}
           id={user.id}
-          firstName={user.firstName}
+          name={user.firstName}
           hasImage={user.hasImage}
           userCategory={userCategory}
           avatarAriaLabel={this.props.t("wcag.OPUserAvatar", {

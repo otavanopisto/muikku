@@ -345,7 +345,10 @@
       "LAC": "Latina, lyhyt oppimäärä",
       "SM_DC": "Pohjoissaame, lyhyt oppimäärä",
       "SM_ICC": "Inarinsaame, lyhyt oppimäärä",
-      "SM_QC": "Koltansaame, lyhyt oppimäärä"
+      "SM_QC": "Koltansaame, lyhyt oppimäärä",
+      "Z": "Äidinkieli ja kirjallisuus, pohjoissaame",
+      "I": "Äidinkieli ja kirjallisuus, inarinsaame",
+      "W": "Äidinkieli ja kirjallisuus, koltansaame"
     }
   },
   "profile": {
@@ -503,6 +506,7 @@
       "studyProgress": "Opintojen edistyminen",
       "submittedAssignments": "Palautetut",
       "unanswered": "Aloittamattomat",
+      "view": "Näkymä",
       "workspaceVisits": "Käynyt kurssilla"
     },
     "notifications": {
