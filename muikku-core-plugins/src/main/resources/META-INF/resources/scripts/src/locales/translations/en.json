@@ -318,7 +318,10 @@
       "LAC": "Latin, C-level",
       "SM_DC": "North-Sami, C-level",
       "SM_ICC": "Inari-Sami, C-level",
-      "SM_QC": "Kolta-Sami, C-level"
+      "SM_QC": "Koltansaame, C-level",
+      "Z": "Mother tongue and literature, Northern Sámi",
+      "I": "Mother tongue and literature, Inari Sámi",
+      "W": "Mother tongue and literature, Skolt Sámi"
     }
   },
   "profile": {
@@ -477,6 +480,7 @@
       "studyProgress": "Study progress",
       "submittedAssignments": "Returned",
       "unanswered": "Unanswered",
+      "view": "View",
       "workspaceVisits": "Visited the course"
     },
     "notifications": {

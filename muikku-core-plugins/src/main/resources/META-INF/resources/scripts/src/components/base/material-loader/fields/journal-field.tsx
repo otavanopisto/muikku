@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 import * as React from "react";
 import CKEditor from "~/components/general/ckeditor";
 import { MATHJAXSRC } from "~/lib/mathjax";
@@ -126,12 +120,18 @@ class JournalField extends React.Component<
   JournalFieldProps,
   JournalFieldState
 > {
+  // Add ref declaration
+  private baseRef: React.RefObject<HTMLSpanElement>;
+
   /**
    * constructor
    * @param props props
    */
   constructor(props: JournalFieldProps) {
     super(props);
+
+    // Initialize ref
+    this.baseRef = React.createRef<HTMLSpanElement>();
 
     //get the initial value
     const value = props.initialValue || "";
@@ -227,7 +227,7 @@ class JournalField extends React.Component<
       }
 
       return (
-        <span ref="base" className="journalfield-wrapper">
+        <span ref={this.baseRef} className="journalfield-wrapper">
           {unloadedField}
         </span>
       );
@@ -308,6 +308,7 @@ class JournalField extends React.Component<
           })}
         />
         <span
+          ref={this.baseRef}
           className={`journalfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer

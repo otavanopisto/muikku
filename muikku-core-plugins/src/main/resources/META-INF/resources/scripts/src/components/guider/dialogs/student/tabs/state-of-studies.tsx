@@ -99,7 +99,7 @@ class StateOfStudies extends React.Component<
           this.props.guider.currentStudent.basic &&
           this.props.guider.currentStudent.basic.hasImage
         }
-        firstName={
+        name={
           this.props.guider.currentStudent.basic &&
           this.props.guider.currentStudent.basic.firstName
         }
@@ -512,7 +512,7 @@ class StateOfStudies extends React.Component<
                               <Avatar
                                 id={counselor.userEntityId}
                                 userCategory={3}
-                                firstName={counselor.firstName}
+                                name={counselor.firstName}
                                 hasImage={counselor.hasImage}
                               />
                             </div>
