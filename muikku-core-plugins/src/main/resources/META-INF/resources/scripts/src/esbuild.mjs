@@ -22,14 +22,7 @@ const build = _build({
       process.env.NODE_ENV || "development"
     ),
   },
-  entryPoints: [
-    "./entries/error.ts",
-    "./entries/index.frontpage.ts",
-    "./entries/main-function.ts",
-    "./entries/polyfill-mediarecorder.ts",
-    "./entries/user-credentials.ts",
-    "./entries/workspace.ts",
-  ],
+  entryPoints: ["./entries/root.tsx", "./entries/polyfill-mediarecorder.ts"],
   format: "esm",
   entryNames: "[name]",
   outdir: path.resolve(path.join("../dist")),
