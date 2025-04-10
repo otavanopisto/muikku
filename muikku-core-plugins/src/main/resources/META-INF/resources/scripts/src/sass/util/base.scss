@@ -12,6 +12,11 @@
   padding: 0;
 }
 
+// If lang is ru we change the font globally so certain characters render properly
+*:lang("ru") {
+  font-family: "Noto Sans", sans-serif;
+}
+
 html {
   height: 100%;
   width: 100%;

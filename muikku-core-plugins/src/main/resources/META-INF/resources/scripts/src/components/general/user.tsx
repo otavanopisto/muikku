@@ -33,7 +33,7 @@ export default function User(props: UserProps) {
           <Avatar
             id={props.user.userEntityId}
             hasImage={props.user.hasImage}
-            firstName={props.user.firstName}
+            name={props.user.firstName}
           />
         }
       >

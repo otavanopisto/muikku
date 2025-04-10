@@ -143,7 +143,7 @@ class Course extends React.Component<CourseProps, CourseState> {
 
       // If course length and course length symbol are present, add them to the string
       if (courseLength && courseLengthSymbol) {
-        return ` (${localString} ${courseLength} ${courseLengthSymbol})`;
+        return ` (${localString}, ${courseLength} ${courseLengthSymbol})`;
       }
 
       return ` (${localString})`;

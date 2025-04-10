@@ -20,6 +20,10 @@
   }
 }
 
+.dropdown--group-members .dropdown__container {
+  max-height: none;
+}
+
 .dropdown__container {
   background-color: $color-dropdown-default-background;
   border-radius: 5px;
