@@ -283,9 +283,10 @@ export interface StudentSelfImage {
 /**
  * Languages
  */
-export interface Language {
-  code: string;
+export interface LanguageData {
+  identifier: string;
   name: string;
+  code?: string;
 }
 
 /**

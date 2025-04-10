@@ -21,6 +21,12 @@
     border: 2px solid $color-form-element-border;
   }
 
+  &.wizard--language-profile {
+    .wizard__container {
+      overflow: visible;
+    }
+  }
+
   &.wizard--hops-form,
   &.wizard--pedagogy-form {
     .cke {

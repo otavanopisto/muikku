@@ -1,14 +1,14 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
-import DisplayLanguages from "./components/display-languages";
+import DisplayLanguages from "./components/language-profile-data-displayer";
 import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import {
   LanguageLevels,
   SkillLevels,
 } from "~/reducers/main-function/language-profile";
-import { LanguageCode } from "./components/display-languages";
+import { LanguageCode } from "./components/language-profile-data-displayer";
 import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 
@@ -16,6 +16,9 @@ const LanguageMapping = () => {
   const { t } = useTranslation("languageProfile");
   const dispatch = useDispatch();
   const { data } = useSelector((state: StateType) => state.languageProfile);
+  const { languages } = useSelector(
+    (state: StateType) => state.languageProfile.data
+  );
 
   const languageLevelOptions: OptionDefault<LanguageLevels>[] = [
     { label: "A1.1", value: "A11" },
@@ -85,20 +88,20 @@ const LanguageMapping = () => {
       <Select
         value={selectedValue}
         onChange={(value) =>
-          handleLanguageLevelsSelectChange(value.value, cellId, languageCode)
+          handleSkillsSelectChange(value.value, cellId, languageCode)
         }
-        options={options}
+        options={skillsOptions}
       />
     );
   };
 
   const handleSkillsSelectChange = (
-    value: LanguageLevels,
+    value: SkillLevels,
     cellId: string,
     code: string
   ) => {
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_LEVELS",
+      type: "UPDATE_LANGUAGE_PROFILE_SKILL_LEVELS",
       payload: {
         code,
         cellId,
@@ -125,6 +128,7 @@ const LanguageMapping = () => {
         consequa
       </div>
       <DisplayLanguages
+        rows={languages}
         labels={[
           "Taito toimia vuorovaikutuksessa",
           "Taito tulkita tekstejä",
@@ -148,7 +152,9 @@ const LanguageMapping = () => {
         consequa
       </div>
       <DisplayLanguages
+        rows={languages}
         labels={["Ääntäminen", "Kielioppi", "Sanasto", "Variantit"]}
+        cellAction={skillsSelect}
       />
     </div>
   );

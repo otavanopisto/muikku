@@ -10,6 +10,7 @@ import { WizardProvider } from "~/components/general/wizard/context/wizard-conte
 import { Step1, Step2, Step3, Step4 } from "./initialization/index";
 import Header from "./initialization/header";
 import Footer from "./initialization/footer";
+
 /**
  * initializationProps
  */
@@ -26,6 +27,7 @@ const Initialization = (props: initializationProps) => {
     "languageProfile"
   );
 
+
   const handleStepChange = (step: WizardStep) => {};
   const { ...wizardValues } = useWizard({
     preventNextIfInvalid: true,
@@ -37,7 +39,7 @@ const Initialization = (props: initializationProps) => {
   return (
     <WizardProvider value={wizardValues}>
       <Wizard
-        modifiers={["pedagogy-form"]}
+        modifiers={["language-profile"]}
         header={<Header />}
         footer={<Footer />}
         wrapper={<div>wrapper</div>}

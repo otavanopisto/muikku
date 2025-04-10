@@ -2,6 +2,9 @@ import * as React from "react";
 import Button from "~/components/general/button";
 import { useWizardContext } from "~/components/general/wizard/context/wizard-context";
 import { useTranslation } from "react-i18next";
+import { saveLanguageProfile } from "~/actions/main-function/language-profile";
+import { useSelector, useDispatch } from "react-redux";
+import { StateType } from "~/reducers";
 
 /**
  * PedagogyFormWizardFooter
@@ -17,6 +20,8 @@ interface PedagogyFormWizardFooterProps {}
 const InitializationFooter = (props: PedagogyFormWizardFooterProps) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { previous, next, isFirstStep, isLastStep } = useWizardContext();
+  const dispatch = useDispatch();
+  const { languageProfile, status } = useSelector((state: StateType) => state);
 
   /**
    * handleNextStep
@@ -30,6 +35,10 @@ const InitializationFooter = (props: PedagogyFormWizardFooterProps) => {
    */
   const handlePreviousStep = () => {
     previous();
+  };
+
+  const handleSave = () => {
+    dispatch(saveLanguageProfile(status.userId, languageProfile.data));
   };
 
   return (
@@ -51,6 +60,11 @@ const InitializationFooter = (props: PedagogyFormWizardFooterProps) => {
           disabled={isLastStep}
         >
           {t("actions.next", { ns: "common" })}
+        </Button>
+      )}
+      {isLastStep && (
+        <Button onClick={handleSave} buttonModifiers={["info"]}>
+          {t("actions.save", { ns: "common" })}
         </Button>
       )}
     </>

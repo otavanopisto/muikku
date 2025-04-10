@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { LanguageProfileData } from "~/reducers/main-function/language-profile";
 import { ActionType } from "~/actions";
-import { Language } from "~/@types/shared";
-import AddLanguage from "./components/add-language";
-import DisplayLanguages from "./components/display-languages";
+import { LanguageData } from "~/@types/shared";
+import AddBase from "./components/language-profile-add-field";
+import LanguageProfileDataDisplayer from "./components/language-profile-data-displayer";
+import { availableLanguages } from "~/mock/mock-data";
 
 // Conponent that uses useReducer to handle internal state where you set the languages you can speak
 // and the languages you can understand the languages are in rows and you can add a new row
@@ -19,7 +20,9 @@ const LanguageUsage = () => {
   // const context = React.useContext(InitializationContext);
 
   const dispatch = useDispatch();
-  const { languageProfile } = useSelector((state: StateType) => state);
+  const { languages } = useSelector(
+    (state: StateType) => state.languageProfile.data
+  );
 
   // Create a ref to store the timeout ID
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -46,6 +49,17 @@ const LanguageUsage = () => {
     }, 300); // 300ms debounce time
   };
 
+  /**
+   * handleAddLanguage
+   * @param language the language to add
+   */
+  const handleLanguage = (language: LanguageData) => {
+    dispatch({
+      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
+      payload: language,
+    } as ActionType);
+  };
+
   // Clean up the timeout when the component unmounts
   React.useEffect(
     () => () => {
@@ -55,13 +69,6 @@ const LanguageUsage = () => {
     },
     []
   );
-
-  const removeLanguage = (language: Language) => {
-    dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
-      payload: language,
-    } as ActionType);
-  };
 
   return (
     <div>
@@ -81,8 +88,15 @@ const LanguageUsage = () => {
       <form>
         <div>
           <h2>Kielet</h2>
-          <DisplayLanguages onItemClick={removeLanguage} />
-          <AddLanguage />
+          <LanguageProfileDataDisplayer
+            rows={languages}
+            onItemClick={handleLanguage}
+          />
+          <AddBase
+            action={handleLanguage}
+            allItems={availableLanguages}
+            selectedItems={languages}
+          />
         </div>
         <div>
           <h2>Kielten käyttäminen</h2>

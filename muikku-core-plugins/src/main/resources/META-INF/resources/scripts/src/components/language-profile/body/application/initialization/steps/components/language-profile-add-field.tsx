@@ -1,35 +1,22 @@
 import * as React from "react";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/language-profile.scss";
-import { availableLanguages } from "~/mock/mock-data";
-import { ActionType } from "~/actions";
-import { useDispatch, useSelector } from "react-redux";
-import { StateType } from "~/reducers";
 import { filterMatch } from "~/util/modifiers";
-import { Language } from "~/@types/shared";
+import { LanguageData } from "~/@types/shared";
 
-const AddLanguage = () => {
-  const dispatch = useDispatch();
+interface AddBaseProps {
+  action: (item: LanguageData | string) => void;
+  allItems: LanguageData[];
+  selectedItems: LanguageData[];
+}
+
+const AddBase = (props: AddBaseProps) => {
+  const { action, selectedItems, allItems } = props;
   const [filter, setFilter] = React.useState<string>("");
   const [active, setActive] = React.useState<boolean>(false);
 
-  const { languages } = useSelector(
-    (state: StateType) => state.languageProfile.data
-  );
   // Create a ref to store the timeout ID
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
-  /**
-   * handleAddLanguage
-   * @param language the language to add
-   */
-  const handleLanguage = (language: Language) => {
-    dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
-      payload: language,
-    } as ActionType);
-    setActive(false);
-  };
 
   /**
    * filterLanguages
@@ -51,6 +38,15 @@ const AddLanguage = () => {
     setActive(visible);
   };
 
+  /**
+   * handleAdd
+   * @param item the item to add
+   */
+  const handleAdd = (item: LanguageData) => {
+    action(item);
+    setActive(false);
+  };
+
   return (
     <div className="language-profile__add-language">
       <input
@@ -62,19 +58,16 @@ const AddLanguage = () => {
       />
       {active && filter && (
         <div className="language-profile__language-dropdown">
-          {availableLanguages
-            .filter((language) => filterMatch(language.name, filter))
-            .filter(
-              (language) =>
-                !languages.some((lang) => lang.code === language.code)
-            )
-            .map((language) => (
+          {allItems
+            .filter((item) => filterMatch(item.name, filter))
+            .filter((item) => !selectedItems.some((i) => i.code === item.code))
+            .map((item) => (
               <div
-                key={language.code}
+                key={item.code}
                 className="language-profile__dropdown-item"
-                onClick={() => handleLanguage(language)}
+                onClick={() => handleAdd(item)}
               >
-                {language.name}
+                {item.name}
               </div>
             ))}
         </div>
@@ -83,4 +76,4 @@ const AddLanguage = () => {
   );
 };
 
-export default AddLanguage;
+export default AddBase;

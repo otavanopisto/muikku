@@ -2,24 +2,27 @@ import * as React from "react";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { useTranslation } from "react-i18next";
-import { Language } from "~/@types/shared";
+import { LanguageData } from "~/@types/shared";
 import { LanguageLevels } from "~/reducers/main-function/language-profile";
 import { availableLanguages } from "~/mock/mock-data";
 
 export type LanguageCode = (typeof availableLanguages)[number]["code"];
 
-interface DisplayLanguageProps {
+interface LanguageProfileDataDisplayerProps {
   labels?: string[];
-  cellAction?: (languageCode: LanguageCode, cellId: string) => React.ReactNode;
-  onItemClick?: (language: Language) => void;
+  title?: string;
+  rows: LanguageData[];
+  cellAction?: (
+    languageCode: LanguageCode,
+    cellId: string,
+    index: number
+  ) => React.ReactNode;
+  onItemClick?: (language: LanguageData) => void;
 }
 
-const DisplayLanguages = (props: DisplayLanguageProps) => {
+const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
   //   const { t } = useTranslation("languageProfile");
-  const { labels, cellAction, onItemClick } = props;
-  const { languages } = useSelector(
-    (state: StateType) => state.languageProfile.data
-  );
+  const { labels, rows, title, cellAction, onItemClick } = props;
 
   return (
     <div className="language-profile__languages-wrapper">
@@ -27,7 +30,9 @@ const DisplayLanguages = (props: DisplayLanguageProps) => {
         {labels && (
           <thead>
             <tr className="language-profile__languages-header">
-              <th className="language-profile__languages-label">Kieli</th>
+              <th className="language-profile__languages-label">
+                {title ? title : "Kieli"}
+              </th>
               {labels.map((label) => (
                 <th key={label} className="language-profile__languages-label">
                   {label}
@@ -37,27 +42,24 @@ const DisplayLanguages = (props: DisplayLanguageProps) => {
           </thead>
         )}
         <tbody>
-          {languages.map((language) => (
+          {rows.map((item) => (
             <tr
-              key={language.code}
-              onClick={() => onItemClick?.(language)}
+              key={item.code}
+              onClick={() => onItemClick?.(item)}
               className="language-profile__language"
             >
-              <td
-                className="language-profile__language-label"
-                key={language.code}
-              >
-                {language.name}
+              <td className="language-profile__language-label" key={item.code}>
+                {item.name}
               </td>
               {labels &&
                 labels.map((label, index) => (
                   <td
                     key={label}
-                    id={language.code + index}
+                    id={item.code + index}
                     className="language-profile__language-data"
                   >
                     {cellAction &&
-                      cellAction(language.code, language.code + index)}
+                      cellAction(item.code, item.code + "-" + index, index)}
                   </td>
                 ))}
             </tr>
