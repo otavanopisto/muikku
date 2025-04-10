@@ -1,6 +1,10 @@
 .language-profile {
 }
 
+.language-profile__language-sample { 
+  
+}
+
 .language-profile__filter-input {
   width: 100%;
   padding: 0.5rem;
@@ -52,5 +56,10 @@
   align-items: center;
 }
 
-.language-profile__language-data {
-}
+.language-profile__footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+
+} 

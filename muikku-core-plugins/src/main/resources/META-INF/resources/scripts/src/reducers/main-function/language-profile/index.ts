@@ -232,6 +232,15 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
+    case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLES": {
+      const { payload } = action;
+
+      return {
+        ...state,
+        data: { ...state.data, languageSamples: payload },
+      };
+    }
+
     default:
       return state;
   }

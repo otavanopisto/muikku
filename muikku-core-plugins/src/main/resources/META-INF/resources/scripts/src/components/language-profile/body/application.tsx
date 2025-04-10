@@ -4,6 +4,7 @@ import ApplicationPanelBody from "../../general/application-panel/components/app
 import { useTranslation } from "react-i18next";
 import { Tab } from "~/components/general/tabs";
 import Initialization from "./application/initialization";
+import LanguageSample from "./application/languages";
 
 /**
  * LanguageProfileBodyProps
@@ -42,7 +43,7 @@ const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
       type: "languages",
       component: (
         <ApplicationPanelBody modifier="tabs">
-          <div>Langs</div>
+          <LanguageSample />
         </ApplicationPanelBody>
       ),
     },
