@@ -152,8 +152,6 @@ export const isPlannedCourseWithIdentifier = (
   "identifier" in course && course.identifier.startsWith("planned-");
 
 /**
-
-/**
  * Type guard for no selection
  * @param selection Selection
  */
