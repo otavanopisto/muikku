@@ -15,7 +15,7 @@ jobs:
           ssh-key: ${{ secrets.GA_DEPLOY_KEY }}
           ssh-strict: false
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 17

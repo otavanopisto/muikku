@@ -5,9 +5,9 @@ if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from ot
   ssh-add - <<< "${GA_DEPLOY_KEY}"
   git config --global user.name "Github Actions Bot"
   git config --global user.email "github-actions[bot]@users.noreply.github.com"
-  # Use default merge strategy
+  # Use default merge strategy.
   git config --global pull.rebase false
-  # Push one branch at a time
+  # Push one branch at a time.
   git config --global push.default simple
   git checkout master
   git reset --hard
