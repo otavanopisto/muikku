@@ -133,8 +133,8 @@ export default class UserPanel extends React.Component<
                         <span className="icon-pencil"></span>
                       </StudentDialog>
                     </div>
-                  ) : user.roles.includes(Role.Administrator) ||
-                    user.roles.includes(Role.StudyProgrammeLeader) ? (
+                  ) : user.roles.has(Role.Administrator) ||
+                    user.roles.has(Role.StudyProgrammeLeader) ? (
                     /*
                      * TODO does this need the title-attribute? .. title={data.roles}
                      */

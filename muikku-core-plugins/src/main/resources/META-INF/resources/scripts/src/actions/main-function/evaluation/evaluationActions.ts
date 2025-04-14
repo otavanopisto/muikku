@@ -2335,7 +2335,7 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
       await workspaceApi.updateWorkspaceStudent({
         workspaceEntityId: workspaceEntityId,
         studentId: workspaceUserEntityId,
-        updateWorkspaceStudentRequest: student,
+        workspaceStudent: student,
       });
 
       onSuccess && onSuccess();
@@ -2759,7 +2759,7 @@ const lockAssessmentRequest: LockAssessmentRequest =
           await evaluationApi.lockWorkspaceUserEvaluationRequest({
             workspaceUserEntityId: assessment.workspaceUserEntityId,
             assessmentRequestIdentifier: assessment.identifier,
-            lockWorkspaceUserEvaluationRequestRequest: {
+            evaluationAssessmentRequest: {
               ...assessment,
               locked,
             },

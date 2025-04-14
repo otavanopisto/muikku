@@ -324,7 +324,7 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
           try {
             await workspaceNotesApi.updateWorkspaceNote({
               id: noteToUpdate.id,
-              updateWorkspaceNoteRequest: {
+              workspaceNote: {
                 ...noteToUpdate,
                 nextSiblingId: nextSiblingNote ? nextSiblingNote.id : null,
               },
@@ -518,7 +518,7 @@ const updateEditedNotebookEntry: UpdateEditNotebookEntry =
       try {
         const updatedEntry = await workspaceNotesApi.updateWorkspaceNote({
           id: data.editedEntry.id,
-          updateWorkspaceNoteRequest: data.editedEntry,
+          workspaceNote: data.editedEntry,
         });
 
         const updatedList = [...state.notebook.notes];

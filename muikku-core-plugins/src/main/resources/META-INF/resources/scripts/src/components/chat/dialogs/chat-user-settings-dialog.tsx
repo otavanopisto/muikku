@@ -95,7 +95,7 @@ function ChatUserSettingsDialog(props: ChatUserSettingDialogProps) {
 
       try {
         const updatedData = await chatApi.updateChatSettings({
-          updateChatSettingsRequest: {
+          chatUser: {
             ...currentUser,
             nick: currentNickValue.trim(),
             visibility: currentSelectValue,
