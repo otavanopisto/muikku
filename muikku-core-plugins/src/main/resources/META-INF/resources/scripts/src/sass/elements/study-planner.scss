@@ -852,6 +852,7 @@
   color: #8c8c8c;
   display: flex;
   gap: 15px;
+  line-height: 1.5rem;
   margin: 0 10px;
   padding: 15px;
 
@@ -859,15 +860,15 @@
     margin: 0;
   }
 
-  &--warning {
-    border-color: $color-warn;
+  &--neutral {
+    border-color: $color-default-separator-border;
 
     .study-planner__info-icon {
-      color: $color-warn;
+      display: none;
     }
 
     .study-planner__info-content {
-      color: $color-warn;
+      color: darken($color-default-helper, 25%);
     }
   }
 
@@ -895,8 +896,16 @@
     }
   }
 
-  &--neutral {
-    border-color: $color-default-helper;
+  &--success {
+    border-color: $color-success;
+
+    .study-planner__info-icon {
+      color: $color-success;
+    }
+
+    .study-planner__info-content {
+      color: $color-success;
+    }
   }
 }
 

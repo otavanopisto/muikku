@@ -30,90 +30,109 @@ export function PlannerInfo(props: PlannerInfoProps) {
     props;
   const { t } = useTranslation(["hops_new"]);
 
-  // If estimated time to completion is Infinity, show info that the user has not filled the hours per week field
-  if (estimatedTimeToCompletion === Infinity) {
+  // Only Graduation goal is set
+  if (estimatedTimeToCompletion === Infinity && graduationGoalDate) {
     return (
       <PlannerInfoNotification variant="info">
-        <p>
-          {t("content.studyPlannerInfoCannotCalculate", {
-            ns: "hops_new",
-          })}
-        </p>
+        {t("content.studyPlannerInfoOnlyGraduationGoalSet", {
+          ns: "hops_new",
+          graduationGoalDate: localize.date(graduationGoalDate),
+        })}
       </PlannerInfoNotification>
     );
   }
 
-  // If graduation goal date is null, show only estimated time to completion
-  if (graduationGoalDate === null) {
-    return (
-      <PlannerInfoNotification variant="info">
-        <p>
-          {t("content.studyPlannerInfoBeMoreSpecific", {
-            ns: "hops_new",
-            estimatedTimeToCompletion: estimatedTimeToCompletion,
-          })}
-        </p>
-      </PlannerInfoNotification>
-    );
-  }
-
-  // Calculate if graduation is possible by the goal date
   const today = new Date();
   const monthsUntilGoal = Math.ceil(
-    (graduationGoalDate.getTime() - today.getTime()) /
+    (graduationGoalDate?.getTime() - today.getTime()) /
       (1000 * 60 * 60 * 24 * 30)
   );
-  const isGraduationPossible = monthsUntilGoal >= estimatedTimeToCompletion;
 
   const estimatedDate = new Date(today);
   estimatedDate.setMonth(today.getMonth() + estimatedTimeToCompletion);
 
-  if (localize.getLocalizedMoment(estimatedDate).isAfter(studyEndTimeDate)) {
+  // Calculate if graduation is possible by the goal date and estimated date
+  // and to not exceed end date of right to study
+  const isGraduationPossible =
+    monthsUntilGoal >= estimatedTimeToCompletion &&
+    estimatedDate <= studyEndTimeDate &&
+    graduationGoalDate >= estimatedDate;
+
+  // Calculate if graduation is possible only by the estimated hours
+  const isGraduationPossibleWithoutGraduationGoal =
+    studyEndTimeDate >= estimatedDate;
+
+  // Calculated estimated graduation date based on estimated
+  // hours exceeds end date of right to study period
+  if (localize.getLocalizedMoment(estimatedDate).isAfter(graduationGoalDate)) {
     return (
       <PlannerInfoNotification variant="danger">
-        <p>
-          Laskurin mukaan valmistuminen ei ole mahdollista, koska se tapahtuu
-          opiskeluoikeuden päättymisen jälkeen. Pohdi ja muuta viikossa
-          käytettävissä olevaa tuntimäärää.
-        </p>
-      </PlannerInfoNotification>
-    );
-  }
-
-  // If graduation is possible, show info with info about it
-  if (isGraduationPossible) {
-    return (
-      <PlannerInfoNotification variant="info">
-        <p>
-          {t("content.studyPlannerInfoGraduationPossible", {
-            ns: "hops_new",
-            graduationGoalDate: localize.date(graduationGoalDate),
-            monthsUntilGoal: monthsUntilGoal,
-            estimatedDateOfCompletion: localize.date(estimatedDate),
-            estimatedTimeToCompletion: estimatedTimeToCompletion,
-          })}
-        </p>
-      </PlannerInfoNotification>
-    );
-  }
-
-  // If graduation is not possible, show info what are the requirements
-  return (
-    <PlannerInfoNotification variant="warning">
-      <p>
-        {t("content.studyPlannerInfoGraduationNotPossible", {
+        {t("content.studyPlannerInfoGraduationNotPossibleTooLowHours", {
           ns: "hops_new",
           graduationGoalDate: localize.date(graduationGoalDate),
           monthsUntilGoal: monthsUntilGoal,
           estimatedDateOfCompletion: localize.date(estimatedDate),
           estimatedTimeToCompletion: estimatedTimeToCompletion,
         })}
-      </p>
+      </PlannerInfoNotification>
+    );
+  }
+
+  // Date of graduation goal exceeds the right to study date
+  if (localize.getLocalizedMoment(estimatedDate).isAfter(studyEndTimeDate)) {
+    return (
+      <PlannerInfoNotification variant="danger">
+        {t("content.studyPlannerInfoGraduationNotPossibleExceedsRightToStudy", {
+          ns: "hops_new",
+          estimatedDateOfCompletion: localize.date(estimatedDate),
+          studyEndTimeDate: localize.date(studyEndTimeDate),
+        })}
+      </PlannerInfoNotification>
+    );
+  }
+
+  // Graduation is possible when calculated graduation date based on estimated hours
+  // are within the right to study period
+  if (isGraduationPossibleWithoutGraduationGoal && !graduationGoalDate) {
+    return (
+      <PlannerInfoNotification variant="success">
+        {t("content.studyPlannerInfoGraduationPossibleWithoutGraduationGoal", {
+          ns: "hops_new",
+          estimatedDateOfCompletion: localize.date(estimatedDate),
+          estimatedTimeToCompletion: estimatedTimeToCompletion,
+          studyEndTimeDate: localize.date(studyEndTimeDate),
+        })}
+      </PlannerInfoNotification>
+    );
+  }
+
+  // Graduation is possible when calculated dates of graduation goal and
+  // estimated hours are within the right to study period
+  if (isGraduationPossible) {
+    return (
+      <PlannerInfoNotification variant="success">
+        {t("content.studyPlannerInfoGraduationPossible", {
+          ns: "hops_new",
+          graduationGoalDate: localize.date(graduationGoalDate),
+          monthsUntilGoal: monthsUntilGoal,
+          estimatedDateOfCompletion: localize.date(estimatedDate),
+          estimatedTimeToCompletion: estimatedTimeToCompletion,
+        })}
+      </PlannerInfoNotification>
+    );
+  }
+
+  // Default
+  return (
+    <PlannerInfoNotification variant="neutral">
+      {t("content.studyPlannerInfoDefault", {
+        ns: "hops_new",
+      })}
     </PlannerInfoNotification>
   );
 }
 
-type PlannerInfoVariant = "warning" | "info" | "danger" | "neutral";
+type PlannerInfoVariant = "neutral" | "info" | "danger" | "success";
 
 /**
  * Props of the planner info
@@ -131,7 +150,7 @@ interface PlannerInfoNotificationProps {
 
 // Icon variants for the notification. Can be changed to use different icons.
 const variantStyles = {
-  warning: {
+  neutral: {
     icon: "notification",
   },
   info: {
@@ -140,8 +159,8 @@ const variantStyles = {
   danger: {
     icon: "notification",
   },
-  neutral: {
-    icon: "notification",
+  success: {
+    icon: "thumb-up",
   },
 };
 
@@ -151,7 +170,7 @@ const variantStyles = {
  * @returns Planner info component
  */
 export function PlannerInfoNotification(props: PlannerInfoNotificationProps) {
-  const { variant = "neutral", children } = props;
+  const { variant = "info", children } = props;
 
   const icon = variantStyles[variant].icon;
 

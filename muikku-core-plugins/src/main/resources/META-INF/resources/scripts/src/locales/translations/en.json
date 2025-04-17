@@ -822,12 +822,11 @@
       "search": "$t(common:labels.search)",
       "search_course": "Search courses",
       "startDate": "Starts",
-      "studyPlannerFormTitle": "Study Time Calculator",
-      "studyPlannerFormDescription": "Opintoaikalaskuri vertaa valmistumiselle asettamaasi tavoitetta aikaan, joka sinulla on viikottaisin käytössäsi opiskeluun. Yhden kurssin suorittaminen vie keskimäärin 28 tuntia. Jos valmistuminen ei ole mahdollista ajassa, jonka voit käyttää opiskeluun, kannattaa asiaa pohtia uudelleen.",
-      "studyPlannerFormGraduationDateTitle": "Milloin haluat valmistua?",
-      "studyPlannerFormGraduationDateDescription": "Arvioi mihin päivämäärään mennessä haluaisit valmistua.",
-      "studyPlannerFormHoursPerWeekTitle": "Kuinka monta tuntia ehdit opiskella viikossa?",
-      "studyPlannerFormHoursPerWeekDescription": "Arvioi montako tuntia viikossa sinulla on aikaa käytettävänä opiskeluun.",
+      "studyPlannerFormTitle": "Study time calculator",
+      "studyPlannerFormGraduationDateTitle": "When do you want to graduate?",
+      "studyPlannerFormGraduationDateDescription": "Set your target graduation date.",
+      "studyPlannerFormHoursPerWeekTitle": "How many hours a week do you have time to study?",
+      "studyPlannerFormHoursPerWeekDescription": "Estimate how many hours per week you can spend on studying.",
       "studyPlannerStatisticTitle": "Progress of Your Studies",
       "studyPlannerStatisticMandatoryCompleted": "Completed mandatory courses (op).",
       "studyPlannerStatisticOptionalCompleted": "Completed optional courses (op).",
@@ -864,7 +863,7 @@
       "matriculationPlanGuides1": "Finnish language and literature or Finnish as a second language and literature (S2) + at least four (4) other exams, chosen from at least three (3) subject groups:",
       "matriculationPlanGuides2": "<b>Note.&nbsp;</b>The examination required one (1) advanced level exam (e.g., advanced (long) mathematics or an A-level (long) foreign language).",
       "matriculationPlanGuides3": "<p>Try using&nbsp;<a href='https://ilmo.ylioppilastutkinto.fi/fi' target='_blank'>the ILMO tool</a> to explore different subject combinations for completing the matriculation examination.</p>",
-      "matriculationPlanGuideSubject1": "Foreign language (long or short)",
+      "matriculationPlanGuideSubj      ect1": "Foreign language (long or short)",
       "matriculationPlanGuideSubject2": "Mathematics (long or short)",
       "matriculationPlanGuideSubject3": "The second national language, Swedish (long or intermediate)",
       "matriculationPlanGuideSubject4": "One exam in a subject of general studies",
@@ -924,10 +923,19 @@
       "matriculationFormSaveStateFailed": "<p>Saving the registration data failed. Please ensure that you are logged in by returning to the form via Muikku.</p>",
       "studyPlannerCourseNotAvailable": "Valittu kurssi-ilmentymä ei ole enään saatavilla. Valitse uusi kurssi-ilmentymä ja päivitä suunnitelma.",
       "studyPlannerCourseInstanceNotFound": "Course instance not found",
-      "studyPlannerInfoGraduationPossible": "Valmistuminen tavoiteajassa {{graduationGoalDate}} ({{monthsUntilGoal}} kk) on mahdollista. Arvioitu valmistumisaika on {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} kuukautta).",
-      "studyPlannerInfoGraduationNotPossible": "Valmistuminen ei ole mahdollista tavoiteajassa {{graduationGoalDate}} ({{monthsUntilGoal}} kk). Arvioitu valmistumisaika on {{estimatedDateOfCompletion}}. Tarvitset vähintään {{estimatedTimeToCompletion}} kuukautta opintojen suorittamiseen.",
-      "studyPlannerInfoCannotCalculate": "Laskuri ei pysty laskemaan valmistumisajankohtaa, koska et ole syöttänyt tietoa, kuinka monta tuntia sinulla on viikottaisin käytössäsi opiskeluun.",
-      "studyPlannerInfoBeMoreSpecific": "Arvioitu valmistumisaika on {{estimatedTimeToCompletion}} kuukautta. Tarkentamalla valmistumistavoitetta voit saada paremman arvion."
+      "studyPlannerFormDescription": "<p>Using the study time calculator, you can estimate how much you should study per week to graduate according to your target schedule. The calculator provides an estimate and does not, for example, take into account holiday periods or individual differences in learning. However, it helps you to figure out the required study pace.</p><p>The calculation is based on the estimate that completing one credit point requires an average of 19 hours of work. Therefore, a two-credit course corresponds to approximately 38 hours of work.</p>",
+
+      "studyPlannerInfoDefault": "The study progress timeline shows your study start date, the present time, and your study right end date. It also displays your completed studies. You can set a different target graduation date under \"When do you want to graduate?\". You can also estimate how much time you have to study weekly, at which point an estimated graduation date will appear on the timeline.",
+
+      "studyPlannerInfoOnlyGraduationGoalSet": "The target graduation date {{graduationGoalDate}} you set is now visible on the timeline illustrating the progress of your studies. You can still experiment with how many hours per week you need to study on average to make your set target achievable.",
+
+      "studyPlannerInfoGraduationNotPossibleTooLowHours": "Graduation is not possible within the target time of {{graduationGoalDate}} ({{monthsUntilGoal}} months). The estimated graduation date is {{estimatedDateOfCompletion}}. You need at least {{estimatedTimeToCompletion}} months to complete your studies. Change your estimated weekly hours in the calculator to see how it affects the estimated graduation date.",
+
+      "studyPlannerInfoGraduationNotPossibleExceedsRightToStudy": "The estimated graduation time of {{estimatedDateOfCompletion}} exceeds your study right expiration date of {{studyEndTimeDate}}. Therefore, you would not be able to graduate with your planned weekly study pace before your study right ends. Change your estimated weekly hours in the calculator to see how it affects the estimated graduation date.",
+
+      "studyPlannerInfoGraduationPossible": "Graduation within the target time of {{graduationGoalDate}} ({{monthsUntilGoal}} months) is possible. The estimated graduation time is {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} months).",
+
+      "studyPlannerInfoGraduationPossibleWithoutGraduationGoal": "The estimated graduation time is {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} months). This fits well within your study right, which expires on {{studyEndTimeDate}}. You can also set a target graduation date and adjust your weekly study pace to align with your goal."
     },
     "matriculationTerms": {
       "AUTUMN": "Autumn {{year}}",

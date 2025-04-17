@@ -100,11 +100,14 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
         <ApplicationSubPanel.Body>
           {/* Study planning calculator */}
           <div className="hops-container">
-            <div className="hops-container__description">
-              {t("labels.studyPlannerFormDescription", {
-                ns: "hops_new",
-              })}
-            </div>
+            <div
+              className="hops-container__description"
+              dangerouslySetInnerHTML={{
+                __html: t("content.studyPlannerFormDescription", {
+                  ns: "hops_new",
+                }),
+              }}
+            ></div>
 
             <div className="hops-container__row">
               <div className="hops__form-element-container">
