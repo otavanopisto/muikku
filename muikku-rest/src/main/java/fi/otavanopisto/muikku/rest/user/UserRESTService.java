@@ -82,6 +82,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContact;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
@@ -706,6 +707,34 @@ public class UserRESTService extends AbstractRESTService {
     return Response.ok(createRestModel(addresses.toArray(new UserAddress[0]))).build();
   }
 
+  @GET
+  @Path("/contacts/{ID}/contacts")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listUserContacts(@PathParam("ID") String id) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(id);
+    if (userIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid userIdentifier %s", id)).build();
+    }
+    
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+    if (userEntity == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
+    }
+   
+    if (!userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.FIND_STUDENT)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    List<UserContact> userContacts = userController.listUserContacts(userIdentifier);
+    
+    return Response.ok(userContacts).build();
+  }
   @PUT
   @Path("/students/{ID}/addresses/{ADDRESSID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)

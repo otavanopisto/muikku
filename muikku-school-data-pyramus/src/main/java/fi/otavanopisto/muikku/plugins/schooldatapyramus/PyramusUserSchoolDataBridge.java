@@ -61,6 +61,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContact;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
@@ -1861,4 +1862,41 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return result;
   }
 
+  @Override
+  public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier) {
+
+    BridgeResponse<fi.otavanopisto.pyramus.rest.model.UserContact[]> userContacts = null;
+    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
+    if (studentId != null) {
+      userContacts = pyramusClient.responseGet(String.format("/contacts/users/%d/contacts", studentId),
+          fi.otavanopisto.pyramus.rest.model.UserContact[].class);
+    }
+    else {
+      Long staffId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
+      if (staffId != null) {
+        userContacts = pyramusClient.responseGet(String.format("/contacts/users/%d/contacts", staffId),
+            fi.otavanopisto.pyramus.rest.model.UserContact[].class);
+      }
+      else {
+        logger.severe(String.format("PyramusUserSchoolDataBridge.listUserContacts malformed user identifier %s\n%s",
+            userIdentifier, ExceptionUtils.getStackTrace(new Throwable())));
+      }
+    }
+
+    if (userContacts != null) {
+      List<UserContact> result = new ArrayList<>();
+
+      for (fi.otavanopisto.pyramus.rest.model.UserContact userContact : userContacts.getEntity()) {
+
+        UserContact contact = new UserContact(userContact.getName(), userContact.getPhoneNumber(),
+            userContact.getEmail(), userContact.getAddress(), userContact.getContactType());
+        
+        result.add(contact);
+      }
+
+      return result;
+    }
+
+    return Collections.emptyList();
+  }
 }
