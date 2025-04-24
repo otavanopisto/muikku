@@ -346,14 +346,14 @@ const Flag: React.FC<FlagProps> = (props) => {
       >
         <motion.div
           layout
+          className="study-planner__timeline-progress-flag-icon"
+        />
+        <motion.div
+          layout
           className="study-planner__timeline-progress-flag-label"
         >
           {localize.date(date)}
         </motion.div>
-        <motion.div
-          layout
-          className="study-planner__timeline-progress-flag-icon"
-        />
       </motion.div>
       <motion.div
         className="study-planner__timeline-progress-flag-line"

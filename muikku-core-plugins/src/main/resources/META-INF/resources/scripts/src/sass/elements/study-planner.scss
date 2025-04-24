@@ -946,13 +946,22 @@
   }
 }
 
+.study-planner__timeline-progress-flag-label-container {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
+
 .study-planner__timeline-progress-flag-icon {
+  background-color: $color-default;
   background-position: center;
   background-repeat: no-repeat;  
-  background-size: contain;
+  background-size: 30px 30px;
+  border-radius: 5px;
   height: 36px;
   margin: 2px 0;
-  width: 100%;
+  width: 36px;
 }
 
 .study-planner__timeline-progress-flag--start {
@@ -985,21 +994,16 @@
   }
 }
 
-.study-planner__timeline-progress-flag-label-container {
-  background: $color-default;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-}
-
 .study-planner__timeline-progress-flag-label {
   align-items: center;
+  border-radius: 12px;
   color: $color-default;
   display: flex;
   flex-flow: row nowrap;
   font-size: 0.75rem;
   gap: 4px;
   line-height: 1;
-  padding: 3px;
+  padding: 4px 8px;
 }
 
 .study-planner__timeline-progress-flag-line {
@@ -1014,6 +1018,11 @@
   .study-planner__timeline-progress-flag-line {
     margin: 0 0 0 5px;
    }
+
+   .study-planner__timeline-progress-flag-label {
+    border-radius: 4px 12px 12px 4px;
+    padding: 4px 8px 4px 4px;
+   }
 }
 
 // Flag's that are on the right side of the timeline
@@ -1023,16 +1032,19 @@
   .study-planner__timeline-progress-flag-line {
     margin: 0 5px 0 0;
    }
+
+   .study-planner__timeline-progress-flag-label {
+    border-radius: 12px 4px 4px 12px;
+    padding: 4px 4px 4px 8px;
+   }
 }
 
 // Flag for students start date of studies
 .study-planner__timeline-progress-flag--start {
-  .study-planner__timeline-progress-flag-label-container {
-    border-bottom-color: $color-study-plan-studies-start-color; 
-  }
-
   .study-planner__timeline-progress-flag-label {
-    color: darken($color-study-plan-studies-start-color, 20%);
+    background-color: lighten($color-study-plan-studies-start-color, 45%); 
+    border: 1px solid $color-study-plan-studies-start-color;
+    color: darken($color-study-plan-studies-start-color, 15%);
   }
 
   .study-planner__timeline-progress-flag-line {
@@ -1044,12 +1056,10 @@
 .study-planner__timeline-progress-flag--end {
   right: 0;
 
-  .study-planner__timeline-progress-flag-label-container {
-    border-bottom-color: $color-study-plan-studies-end-color; 
-  }
-
   .study-planner__timeline-progress-flag-label {
-    color: darken($color-study-plan-studies-end-color, 20%);
+    background-color: lighten($color-study-plan-studies-end-color, 35%); 
+    border: 1px solid $color-study-plan-studies-end-color;
+    color: darken($color-study-plan-studies-end-color, 15%); 
   }
 
   .study-planner__timeline-progress-flag-line {
@@ -1060,12 +1070,10 @@
 // Flag for current date
 .study-planner__timeline-progress-flag--current {
 
-  .study-planner__timeline-progress-flag-label-container {
-    border-bottom-color: $color-study-plan-current-color; 
-  }
-
   .study-planner__timeline-progress-flag-label {
-    color: darken($color-study-plan-current-color, 20%);
+    background-color: lighten($color-study-plan-current-color, 40%); 
+    border: 1px solid $color-study-plan-current-color;
+    color: darken($color-study-plan-current-color, 15%); 
   }
 
   .study-planner__timeline-progress-flag-line {
@@ -1076,12 +1084,10 @@
 // Flag for students goal of graduation date
 .study-planner__timeline-progress-flag--goal {
 
-  .study-planner__timeline-progress-flag-label-container {
-    border-bottom-color: $color-study-plan-goal-color; 
-  }
-
   .study-planner__timeline-progress-flag-label {
-    color: darken($color-study-plan-goal-color, 20%);
+    background-color: lighten($color-study-plan-goal-color, 42%); 
+    border: 1px solid $color-study-plan-goal-color;
+    color: darken($color-study-plan-goal-color, 18%); 
   }
 
   .study-planner__timeline-progress-flag-line {
@@ -1092,11 +1098,9 @@
 // Flag for students estimated graduation date
 .study-planner__timeline-progress-flag--estimated {
 
-  .study-planner__timeline-progress-flag-label-container {
-    border-bottom-color: $color-study-plan-estimated-color; 
-  }
-
   .study-planner__timeline-progress-flag-label {
+    background-color: lighten($color-study-plan-estimated-color, 30%); 
+    border: 1px solid $color-study-plan-estimated-color;
     color: darken($color-study-plan-estimated-color, 30%);
   }
 
