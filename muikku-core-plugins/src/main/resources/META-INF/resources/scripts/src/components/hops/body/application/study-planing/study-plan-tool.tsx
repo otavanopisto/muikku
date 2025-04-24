@@ -129,6 +129,11 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                 <DatePicker
                   className="hops__input"
                   id="graduationGoalDate"
+                  maxDate={
+                    studentInfo.studyTimeEnd
+                      ? new Date(studentInfo.studyTimeEnd)
+                      : null
+                  }
                   selected={graduationGoalDate || undefined}
                   onChange={(date) => {
                     // Set to last day of the selected month
