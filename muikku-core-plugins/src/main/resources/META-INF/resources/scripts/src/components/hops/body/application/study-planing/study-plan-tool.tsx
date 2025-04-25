@@ -134,6 +134,11 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                       ? new Date(studentInfo.studyTimeEnd)
                       : null
                   }
+                  minDate={
+                    studentInfo.studyTimeEnd
+                      ? new Date(studentInfo.studyStartDate)
+                      : null
+                  }
                   selected={graduationGoalDate || undefined}
                   onChange={(date) => {
                     // Set to last day of the selected month
