@@ -433,7 +433,8 @@ class MaterialLoader extends React.Component<
       !isEqual(this.props, nextProps) ||
       !isEqual(this.state.stateConfiguration, nextState.stateConfiguration) ||
       this.state.answersVisible !== nextState.answersVisible ||
-      this.state.answersChecked !== nextState.answersChecked
+      this.state.answersChecked !== nextState.answersChecked ||
+      this.state.answerRegistry !== nextState.answerRegistry
     );
   }
 
