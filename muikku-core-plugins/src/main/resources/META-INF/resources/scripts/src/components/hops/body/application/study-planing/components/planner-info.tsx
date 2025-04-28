@@ -30,7 +30,7 @@ export function PlannerInfo(props: PlannerInfoProps) {
     props;
   const { t } = useTranslation(["hops_new"]);
 
-  // Only Graduation goal is set
+  // If user hasn't filled hours per week but has set a graduation goal
   if (estimatedTimeToCompletion === Infinity && graduationGoalDate) {
     return (
       <PlannerInfoNotification variant="info">
@@ -43,43 +43,41 @@ export function PlannerInfo(props: PlannerInfoProps) {
   }
 
   const today = new Date();
-  const monthsUntilGoal = Math.ceil(
-    (graduationGoalDate?.getTime() - today.getTime()) /
-      (1000 * 60 * 60 * 24 * 30)
-  );
+  const monthsUntilGoal = graduationGoalDate
+    ? Math.ceil(
+        (graduationGoalDate.getTime() - today.getTime()) /
+          (1000 * 60 * 60 * 24 * 30)
+      )
+    : undefined;
 
+  // Calculate estimated completion date from today
   const estimatedDate = new Date(today);
   estimatedDate.setMonth(today.getMonth() + estimatedTimeToCompletion);
 
-  // Calculate if graduation is possible by the goal date and estimated date
-  // and to not exceed end date of right to study
-  const isGraduationPossible =
-    monthsUntilGoal >= estimatedTimeToCompletion &&
-    estimatedDate <= studyEndTimeDate &&
-    graduationGoalDate >= estimatedDate;
+  // Moment objects for the dates
+  const estimatedMoment = localize.getLocalizedMoment(estimatedDate);
+  const graduationGoalMoment = graduationGoalDate
+    ? localize.getLocalizedMoment(graduationGoalDate)
+    : null;
+  const studyEndMoment = localize.getLocalizedMoment(studyEndTimeDate);
 
-  // Calculate if graduation is possible only by the estimated hours
-  const isGraduationPossibleWithoutGraduationGoal =
-    studyEndTimeDate >= estimatedDate;
-
-  // Calculated estimated graduation date based on estimated
-  // hours exceeds end date of right to study period
-  if (localize.getLocalizedMoment(estimatedDate).isAfter(graduationGoalDate)) {
+  // Impossible: estimated completion after graduation goal
+  if (graduationGoalMoment && estimatedMoment.isAfter(graduationGoalMoment)) {
     return (
       <PlannerInfoNotification variant="danger">
         {t("content.studyPlannerInfoGraduationNotPossibleTooLowHours", {
           ns: "hops_new",
           graduationGoalDate: localize.date(graduationGoalDate),
-          monthsUntilGoal: monthsUntilGoal,
+          monthsUntilGoal,
           estimatedDateOfCompletion: localize.date(estimatedDate),
-          estimatedTimeToCompletion: estimatedTimeToCompletion,
+          estimatedTimeToCompletion,
         })}
       </PlannerInfoNotification>
     );
   }
 
-  // Date of graduation goal exceeds the right to study date
-  if (localize.getLocalizedMoment(estimatedDate).isAfter(studyEndTimeDate)) {
+  // Impossible: estimated completion after right to study period
+  if (estimatedMoment.isAfter(studyEndMoment)) {
     return (
       <PlannerInfoNotification variant="danger">
         {t("content.studyPlannerInfoGraduationNotPossibleExceedsRightToStudy", {
@@ -91,32 +89,34 @@ export function PlannerInfo(props: PlannerInfoProps) {
     );
   }
 
-  // Graduation is possible when calculated graduation date based on estimated hours
-  // are within the right to study period
-  if (isGraduationPossibleWithoutGraduationGoal && !graduationGoalDate) {
+  // Possible: no graduation goal, but can finish before study end
+  if (!graduationGoalDate && estimatedMoment.isSameOrBefore(studyEndMoment)) {
     return (
       <PlannerInfoNotification variant="success">
         {t("content.studyPlannerInfoGraduationPossibleWithoutGraduationGoal", {
           ns: "hops_new",
           estimatedDateOfCompletion: localize.date(estimatedDate),
-          estimatedTimeToCompletion: estimatedTimeToCompletion,
+          estimatedTimeToCompletion,
           studyEndTimeDate: localize.date(studyEndTimeDate),
         })}
       </PlannerInfoNotification>
     );
   }
 
-  // Graduation is possible when calculated dates of graduation goal and
-  // estimated hours are within the right to study period
-  if (isGraduationPossible) {
+  // Possible: can finish before both graduation goal and study end
+  if (
+    graduationGoalMoment &&
+    estimatedMoment.isSameOrBefore(graduationGoalMoment) &&
+    estimatedMoment.isSameOrBefore(studyEndMoment)
+  ) {
     return (
       <PlannerInfoNotification variant="success">
         {t("content.studyPlannerInfoGraduationPossible", {
           ns: "hops_new",
           graduationGoalDate: localize.date(graduationGoalDate),
-          monthsUntilGoal: monthsUntilGoal,
+          monthsUntilGoal,
           estimatedDateOfCompletion: localize.date(estimatedDate),
-          estimatedTimeToCompletion: estimatedTimeToCompletion,
+          estimatedTimeToCompletion,
         })}
       </PlannerInfoNotification>
     );
@@ -125,9 +125,7 @@ export function PlannerInfo(props: PlannerInfoProps) {
   // Default
   return (
     <PlannerInfoNotification variant="neutral">
-      {t("content.studyPlannerInfoDefault", {
-        ns: "hops_new",
-      })}
+      {t("content.studyPlannerInfoDefault", { ns: "hops_new" })}
     </PlannerInfoNotification>
   );
 }

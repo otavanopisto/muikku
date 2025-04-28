@@ -135,7 +135,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                       : null
                   }
                   minDate={
-                    studentInfo.studyTimeEnd
+                    studentInfo.studyStartDate
                       ? new Date(studentInfo.studyStartDate)
                       : null
                   }
