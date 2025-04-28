@@ -151,24 +151,24 @@ const createAndAllocateCoursesToPeriods = (
     }
   });
 
-  // ToDo Commented following trimmedPeriods handling as it currently prevents
-  // new users to access timeline a.k.a no periods will render as they appear empty by default.
-  // Also it seems to trim prediods even if there's possibility to still add vourses to them a.k.a spring 2025
-
   // Only trim empty periods from the start
-  /* const trimmedPeriods = [...periods]; */
+  const trimmedPeriods = [...periods];
+
+  const currentPeriod = curriculumStrategy.getCurrentPeriod();
 
   // Trim from start
-  /* while (
+  while (
     trimmedPeriods.length > 0 &&
+    !(
+      trimmedPeriods[0].year === currentPeriod.year &&
+      trimmedPeriods[0].type === currentPeriod.type
+    ) &&
     trimmedPeriods[0].plannedCourses.length === 0
   ) {
     trimmedPeriods.shift();
   }
 
-  return trimmedPeriods; */
-
-  return periods;
+  return trimmedPeriods;
 };
 
 /**

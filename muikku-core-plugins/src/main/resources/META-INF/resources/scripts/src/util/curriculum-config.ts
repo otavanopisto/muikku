@@ -83,6 +83,13 @@ export interface CurriculumStrategy {
   getCurriculumMatrix: (
     options?: CurriculumMatrixOptions
   ) => SchoolCurriculumMatrix;
+
+  /**
+   * Get current period
+   * @returns current period
+   */
+  getCurrentPeriod: () => PlannedPeriod;
+
   /**
    * Create planned course
    * @param course course
@@ -146,10 +153,20 @@ export interface CurriculumStrategy {
    * @returns displayed length
    */
   getCourseDisplayedLength: (course: Course) => string;
-  /* calculateTotalWorkload: (
-    courses: PlannedCourseWithIdentifier[]
-  ) => PeriodWorkload; */
+
+  /**
+   * Get empty period
+   * @param type period type
+   * @param year period year
+   * @returns empty period
+   */
   getEmptyPeriod: (type: "SPRING" | "AUTUMN", year: number) => PlannedPeriod;
+
+  /**
+   * Find course by identifier
+   * @param identifier course identifier
+   * @returns course with subject code or undefined if not found
+   */
   findCourseByIdentifier: (
     identifier: string
   ) => (Course & { subjectCode: string }) | undefined;
@@ -503,6 +520,22 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
   }
 
   /**
+   * Get current period
+   * @returns current period
+   */
+  getCurrentPeriod(): PlannedPeriod {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    if (currentMonth >= 0 && currentMonth <= 6) {
+      return this.getEmptyPeriod("SPRING", currentYear);
+    }
+
+    return this.getEmptyPeriod("AUTUMN", currentYear);
+  }
+
+  /**
    * Create planned course
    * @param course course
    * @param startDate start date
@@ -821,6 +854,22 @@ class CompulsoryCurriculum implements CurriculumStrategy {
       workloadType: "courses",
       isPastPeriod: false,
     };
+  }
+
+  /**
+   * Get current period
+   * @returns current period
+   */
+  getCurrentPeriod(): PlannedPeriod {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    if (currentMonth >= 0 && currentMonth <= 6) {
+      return this.getEmptyPeriod("SPRING", currentYear);
+    }
+
+    return this.getEmptyPeriod("AUTUMN", currentYear);
   }
 
   /**
