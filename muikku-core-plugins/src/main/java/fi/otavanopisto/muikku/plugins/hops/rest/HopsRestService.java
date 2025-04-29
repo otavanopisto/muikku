@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.plugins.hops.ws.HopsGoalsWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsHistoryItemWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsLockWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsOptionalSuggestionWSMessage;
+import fi.otavanopisto.muikku.plugins.hops.ws.HopsPlannedCoursesWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsStudentChoiceWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsSuggestionWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsWithLatestChangeWSMessage;
@@ -547,7 +548,7 @@ public class HopsRestService {
     for (HopsPlannedCourse plannedCourse : plannedCourses) {
       restPlannedCourses.add(toRestModel(plannedCourse));
     }
-
+    
     return Response.ok(restPlannedCourses).build();
   }
 
@@ -613,6 +614,11 @@ public class HopsRestService {
     for (HopsPlannedCourse plannedCourse : plannedCourses) {
       restPlannedCourses.add(toRestModel(plannedCourse));
     }
+    
+    HopsPlannedCoursesWSMessage msg = new HopsPlannedCoursesWSMessage();
+    msg.setPlannedCourses(restPlannedCourses);
+    msg.setStudentIdentifier(studentIdentifierStr);
+    hopsWebSocketMessenger.sendMessage(studentIdentifierStr, "hops:planned-courses-updated", msg);
 
     return Response.ok(restPlannedCourses).build();
   }
