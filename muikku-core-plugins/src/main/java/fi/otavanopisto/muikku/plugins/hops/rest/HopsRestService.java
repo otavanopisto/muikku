@@ -365,7 +365,7 @@ public class HopsRestService {
 
     HopsGoals goals = hopsController.findHopsGoalsByStudentIdentifier(studentIdentifierStr);
     if (goals == null || StringUtils.isEmpty(goals.getGoals())) {
-      return Response.noContent().build();
+      return Response.ok(new HopsGoalsRestModel()).build();
     }
     else {
       try {
