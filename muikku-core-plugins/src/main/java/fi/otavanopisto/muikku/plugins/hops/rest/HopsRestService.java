@@ -336,7 +336,7 @@ public class HopsRestService {
     msg.setFormData(hopsWithChange.getFormData());
     msg.setLatestChange(hopsWithChange.getLatestChange());
     msg.setStudentIdentifier(studentIdentifier);
-    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:hops-updated", msg);
+    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:updated", msg);
 
     return Response.ok(hopsWithChange).build();
   }
@@ -415,7 +415,7 @@ public class HopsRestService {
     msg.setStudyHours(payload.getStudyHours());
     msg.setStudentIdentifier(studentIdentifier);
 
-    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:hops-goals", msg);
+    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:goals-updated", msg);
 
     return Response.ok(payload).build();
   }
