@@ -57,7 +57,6 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsPlannedCourse;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsGoalsWSMessage;
 import fi.otavanopisto.muikku.plugins.hops.ws.HopsHistoryItemWSMessage;
@@ -372,7 +371,8 @@ public class HopsRestService {
         return Response.ok(new ObjectMapper().readValue(goals.getGoals(), HopsGoalsRestModel.class)).build();
       }
       catch (Exception e) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Cannot deserialize goals").build();
+        // Database might have deprecated data structures, so we replace them with a new object 
+        return Response.ok(new HopsGoalsRestModel()).build();
       }
     }
   }
@@ -410,13 +410,8 @@ public class HopsRestService {
     }
 
     HopsGoalsWSMessage msg = new HopsGoalsWSMessage();
-    msg.setFollowUpGoal(payload.getFollowUpGoal());
-    msg.setFollowUpPlanExtraInfo(payload.getFollowUpPlanExtraInfo());
-    msg.setFollowUpStudies(payload.getFollowUpStudies());
-    msg.setFollowUpStudiesElse(payload.getFollowUpStudiesElse());
     msg.setGraduationGoal(payload.getGraduationGoal());
-    msg.setStudySector(payload.getStudySector());
-    msg.setStudySectorElse(payload.getStudySectorElse());
+    msg.setStudyHours(payload.getStudyHours());
     msg.setStudentIdentifier(studentIdentifier);
 
     hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:hops-goals", msg);
@@ -1420,69 +1415,6 @@ public class HopsRestService {
         studyTimeEnd,
         counselorList,
         curriculumName);
-  }
-
-  @POST
-  @Path("/student/{STUDENTIDENTIFIER}/studyHours")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createOrUpdateStudyHours(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, StudyHoursRestModel payload) {
-    if(!hopsController.isHopsAvailable(studentIdentifier)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_EDIT)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifier).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-    Integer hours = null;
-
-    if (payload.getStudyHours() != null) {
-      hours = payload.getStudyHours();
-    }
-    // Create or update
-    HopsStudyHours hopsStudyHours = hopsController.findHopsStudyHoursByStudentIdentifier(studentIdentifier);
-    if (hopsStudyHours == null) {
-      hopsStudyHours = hopsController.createHopsStudyHours(studentIdentifier, hours);
-    }
-    else {
-      hopsStudyHours = hopsController.updateHopsStudyHours(hopsStudyHours, studentIdentifier, hours);
-    }
-
-    StudyHoursRestModel studyHoursRestModel = new StudyHoursRestModel();
-    studyHoursRestModel.setId(hopsStudyHours.getId());
-    studyHoursRestModel.setStudentIdentifier(hopsStudyHours.getStudentIdentifier());
-    studyHoursRestModel.setStudyHours(hopsStudyHours.getStudyHours());
-
-    hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:studyhours", studyHoursRestModel);
-
-    return Response.ok(hopsStudyHours).build();
-  }
-
-  @GET
-  @Path("/student/{STUDENTIDENTIFIER}/studyHours")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response findStudyHours(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr) {
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
-    if (studentIdentifier == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    // Access check
-    if(!hopsController.isHopsAvailable(studentIdentifierStr)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.HOPS_VIEW)) {
-      if (!StringUtils.equals(SchoolDataIdentifier.fromId(studentIdentifierStr).getIdentifier(), sessionController.getLoggedUserIdentifier())) {
-        if (!userController.isGuardianOfStudent(sessionController.getLoggedUser(), studentIdentifier)) {
-          return Response.status(Status.FORBIDDEN).build();
-        }
-      }
-    }
-
-    HopsStudyHours hopsStudyHours = hopsController.findHopsStudyHoursByStudentIdentifier(studentIdentifierStr);
-    return hopsStudyHours == null ? Response.noContent().build() : Response.ok(hopsStudyHours.getStudyHours()).build();
   }
 
   @GET

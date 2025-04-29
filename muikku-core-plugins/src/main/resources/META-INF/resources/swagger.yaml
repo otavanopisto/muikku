@@ -5772,59 +5772,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/hops/student/{studentIdentifier}/studyHours:
-    get:
-      operationId: getStudentStudyHours
-      summary: Get student study hours
-      description: Get student study hours
-      tags:
-        - Hops
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Student study hours
-          content:
-            application/json:
-              schema:
-                type: integer
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-    post:
-      operationId: saveStudentStudyHours
-      summary: Save student study hours
-      description: Save student study hours
-      tags:
-        - Hops
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student identifier
-          required: true
-          schema:
-            type: string
-      requestBody:
-        $ref: "#/components/requestBodies/StudentStudyHoursSaveRequestBody"
-      responses:
-        "200":
-          description: Student study hours saved successfully
-          content:
-            application/json:
-              schema:
-                type: integer
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/hops/student/{studentIdentifier}/toggleSuggestion:
     post:
       operationId: toggleSuggestion
@@ -11657,19 +11604,6 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/StudentCourseChoice"
-
-    StudentStudyHoursSaveRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            description: StudentStudyHoursSaveRequestBody object
-            required:
-              - studyHours
-            properties:
-              studyHours:
-                type: integer
 
     ToggleSuggestionCreateRequestBody:
       required: true

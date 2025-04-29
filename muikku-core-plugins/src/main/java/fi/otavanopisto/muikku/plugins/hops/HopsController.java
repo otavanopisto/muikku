@@ -23,7 +23,6 @@ import fi.otavanopisto.muikku.plugins.hops.dao.HopsHistoryDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsOptionalSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsPlannedCourseDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudentChoiceDAO;
-import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudyHoursDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
@@ -31,7 +30,6 @@ import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsPlannedCourse;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.rest.model.HopsStudentPermissionsRestModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -66,9 +64,6 @@ public class HopsController {
   
   @Inject
   private HopsStudentChoiceDAO hopsStudentChoiceDAO;
-  
-  @Inject
-  private HopsStudyHoursDAO hopsStudyHoursDAO;
   
   @Inject
   private HopsOptionalSuggestionDAO hopsOptionalSuggestionDAO;
@@ -199,21 +194,6 @@ public class HopsController {
   public HopsGoals updateHopsGoals(HopsGoals hopsGoals, String studentIdentifier, String goals) {
     hopsGoalsDAO.updateGoalsData(hopsGoals, goals);
     return hopsGoals;
-  }
-  
-  public HopsStudyHours findHopsStudyHoursByStudentIdentifier(String studentIdentifier) {
-    return hopsStudyHoursDAO.findByStudentIdentifier(studentIdentifier);
-  }
-  
-  public HopsStudyHours createHopsStudyHours(String studentIdentifier, Integer hours) {
-    HopsStudyHours hopsStudyHours = hopsStudyHoursDAO.create(studentIdentifier, hours);
-
-    return hopsStudyHours;
-  }
-
-  public HopsStudyHours updateHopsStudyHours(HopsStudyHours hopsStudyHours, String studentIdentifier, Integer hours) {
-    hopsStudyHoursDAO.updateStudyHours(hopsStudyHours, hours);
-    return hopsStudyHours;
   }
   
   public List<HopsStudentChoice> listStudentChoiceByStudentIdentifier(String studentIdentifeir) {

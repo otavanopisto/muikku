@@ -17,6 +17,8 @@
       primary key (id)
     );
   </sql>
-  <sql>create index IDXq5u4v18v3jl2ub6mg45rmagbl on HopsPlannedCourse (studentIdentifier);</sql>  
+  <sql>create index IDXq5u4v18v3jl2ub6mg45rmagbl on HopsPlannedCourse (studentIdentifier);</sql>
+  
+  <sql>drop table HopsStudyHours;</sql>  
 
 </update> 
