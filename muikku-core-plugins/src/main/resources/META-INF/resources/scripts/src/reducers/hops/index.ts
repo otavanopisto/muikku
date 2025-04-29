@@ -17,6 +17,7 @@ import {
   HopsHistoryEntry,
   StudentStudyActivity,
   HopsOpsCourse,
+  HopsGoals,
 } from "~/generated/client";
 import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 
@@ -48,6 +49,7 @@ interface HopsStudyPlanState {
   availableOPSCourses: HopsOpsCourse[];
   studyActivity: StudentStudyActivity[];
   studyOptions: string[];
+  goals: HopsGoals;
 }
 
 /**
@@ -167,6 +169,7 @@ export interface HopsEditingState {
   hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
   plannedCourses: PlannedCourseWithIdentifier[];
+  goals: HopsGoals;
   selectedCoursesIds: string[];
   timeContextSelection: TimeContextSelection;
   waitingToBeAllocatedCourses: (Course & { subjectCode: string })[] | null;
@@ -225,6 +228,10 @@ const initialHopsState: HopsState = {
     studyActivity: [],
     availableOPSCourses: [],
     studyOptions: [],
+    goals: {
+      graduationGoal: null,
+      studyHours: 0,
+    },
   },
   hopsCurriculumConfigStatus: "IDLE",
   hopsCurriculumConfig: null,
@@ -256,6 +263,10 @@ const initialHopsState: HopsState = {
       goalMatriculationExam: false,
     },
     plannedCourses: [],
+    goals: {
+      graduationGoal: null,
+      studyHours: 0,
+    },
     selectedCoursesIds: [],
     timeContextSelection: null,
     waitingToBeAllocatedCourses: null,
@@ -479,6 +490,10 @@ export const hopsNew: Reducer<HopsState> = (
           availableOPSCourses: [],
           studyOptions: [],
           studyMatrix: null,
+          goals: {
+            graduationGoal: null,
+            studyHours: 0,
+          },
         },
         hopsMatriculation: {
           exams: [],
@@ -499,6 +514,10 @@ export const hopsNew: Reducer<HopsState> = (
           matriculationPlan: {
             plannedSubjects: [],
             goalMatriculationExam: false,
+          },
+          goals: {
+            graduationGoal: null,
+            studyHours: 0,
           },
           plannedCourses: [],
           selectedCourse: null,
@@ -581,6 +600,7 @@ export const hopsNew: Reducer<HopsState> = (
           hopsForm: state.hopsForm,
           matriculationPlan: state.hopsMatriculation.plan,
           plannedCourses: state.hopsStudyPlanState.plannedCourses,
+          goals: state.hopsStudyPlanState.goals,
           selectedCoursesIds: [],
           timeContextSelection: null,
         },
@@ -618,6 +638,19 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           plannedCourses: action.payload,
+        },
+      };
+
+    case "HOPS_STUDYPLAN_UPDATE_GOALS":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          goals: action.payload,
+        },
+        hopsEditing: {
+          ...state.hopsEditing,
+          goals: action.payload,
         },
       };
 
@@ -663,6 +696,15 @@ export const hopsNew: Reducer<HopsState> = (
         hopsEditing: {
           ...state.hopsEditing,
           plannedCourses: action.payload.plannedCourses,
+        },
+      };
+
+    case "HOPS_UPDATE_EDITING_GOALS":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          goals: action.payload,
         },
       };
 

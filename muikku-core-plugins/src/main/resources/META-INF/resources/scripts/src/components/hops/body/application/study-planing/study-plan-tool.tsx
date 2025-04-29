@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { useMemo } from "react";
@@ -13,6 +13,7 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import DatePicker from "react-datepicker";
 import { PlannerInfo } from "./components/planner-info";
 import PlannerTimelineProgress from "./components/planner-timeline-progress";
+import { updateEditingGoals } from "~/actions/main-function/hops";
 
 /**
  * MatriculationPlanProps
@@ -30,19 +31,18 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     studentInfo,
   } = useSelector((state: StateType) => state.hopsNew);
 
-  const { plannedCourses, studyActivity, studyOptions } = useSelector(
+  const dispatch = useDispatch();
+
+  const { plannedCourses, studyActivity, studyOptions, goals } = useSelector(
     (state: StateType) => state.hopsNew.hopsStudyPlanState
   );
 
-  const { plannedCourses: editingPlan } = useSelector(
+  const { plannedCourses: editingPlan, goals: editingGoals } = useSelector(
     (state: StateType) => state.hopsNew.hopsEditing
   );
 
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { t } = useTranslation(["hops_new"]);
-
-  const [hoursPerWeek, setHoursPerWeek] = React.useState(0);
-  const [graduationGoalDate, setGraduationGoalDate] = React.useState(null);
 
   // Used planned courses in use
   const usedPlannedCourses = React.useMemo(() => {
@@ -54,6 +54,14 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
       return editingPlan;
     }
   }, [plannedCourses, editingPlan, hopsMode]);
+
+  const usedGoalInfo = useMemo(() => {
+    if (hopsMode === "READ") {
+      return goals;
+    } else {
+      return editingGoals;
+    }
+  }, [hopsMode, goals, editingGoals]);
 
   // Calculate the periods
   const calculatedPeriods = useMemo(
@@ -84,10 +92,44 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
   // Calculate the estimated time to completion
   const estimatedTimeToCompletion =
     curriculumConfig.strategy.calculateEstimatedTimeToCompletion(
-      hoursPerWeek,
+      usedGoalInfo.studyHours,
       studyActivity,
       studyOptions
     );
+
+  /**
+   * Handle hours per week change
+   * @param e event
+   */
+  const handleHoursPerWeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      updateEditingGoals({
+        goals: {
+          studyHours: Number(e.target.value),
+          graduationGoal: usedGoalInfo.graduationGoal,
+        },
+      })
+    );
+  };
+
+  /**
+   * Handle graduation goal date change
+   * @param date date
+   */
+  const handleGraduationGoalDateChange = (date: Date) => {
+    // Set to last day of the selected month
+    date.setMonth(date.getMonth() + 1);
+    date.setDate(0);
+
+    dispatch(
+      updateEditingGoals({
+        goals: {
+          graduationGoal: date,
+          studyHours: usedGoalInfo.studyHours,
+        },
+      })
+    );
+  };
 
   return (
     <>
@@ -139,14 +181,9 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                       ? new Date(studentInfo.studyStartDate)
                       : null
                   }
-                  selected={graduationGoalDate || undefined}
-                  onChange={(date) => {
-                    // Set to last day of the selected month
-                    date.setMonth(date.getMonth() + 1);
-                    date.setDate(0);
-
-                    setGraduationGoalDate(date);
-                  }}
+                  selected={usedGoalInfo.graduationGoal || undefined}
+                  onChange={handleGraduationGoalDateChange}
+                  disabled={hopsMode === "READ"}
                   showMonthYearPicker
                   dateFormat="MM/yyyy"
                 />
@@ -172,8 +209,9 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                   type="number"
                   id="hoursPerWeek"
                   className="hops__input"
-                  value={hoursPerWeek}
-                  onChange={(e) => setHoursPerWeek(Number(e.target.value))}
+                  value={usedGoalInfo.studyHours}
+                  onChange={handleHoursPerWeekChange}
+                  disabled={hopsMode === "READ"}
                 />
               </div>
             </div>
@@ -187,7 +225,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                   ? new Date(studentInfo.studyTimeEnd)
                   : null
               }
-              graduationGoalDate={graduationGoalDate}
+              graduationGoalDate={usedGoalInfo.graduationGoal}
               estimatedTimeToCompletion={estimatedTimeToCompletion}
             />
           </div>
@@ -211,7 +249,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                   ? new Date(studentInfo.studyTimeEnd)
                   : null
               }
-              graduationGoalDate={graduationGoalDate}
+              graduationGoalDate={usedGoalInfo.graduationGoal}
               estimatedTimeToCompletion={estimatedTimeToCompletion}
               completedStudies={statistics.totalStudies}
               requiredStudies={statistics.requiredStudies.totalStudies}

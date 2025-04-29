@@ -14202,19 +14202,11 @@ components:
         graduationGoal:
           nullable: true
           type: string
-          format: date-time
-        followUpGoal:
-          type: string
-        followUpStudies:
-          type: string
-        followUpStudiesElse:
-          type: string
-        studySector:
-          type: string
-        studySectorElse:
-          type: string
-        followUpPlanExtraInfo:
-          type: string
+          format: date
+        studyHours:
+          nullable: true
+          type: integer
+          format: int64
 
     InterimEvaluationRequest:
       type: object

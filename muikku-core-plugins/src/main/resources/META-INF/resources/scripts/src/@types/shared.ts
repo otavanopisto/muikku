@@ -421,5 +421,5 @@ export type HopsWebsocketMessage =
   | "hops:workspace-suggested"
   | "hops:workspace-signup"
   | "hops:alternative-study-options"
-  | "hops:optionalsuggestion-updated"
+  | "hops:optional-suggestion-updated"
   | "hops:studentchoice-updated";

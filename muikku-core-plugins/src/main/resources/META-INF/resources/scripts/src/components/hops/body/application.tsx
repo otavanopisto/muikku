@@ -138,8 +138,13 @@ const HopsApplication = (props: HopsApplicationProps) => {
       !_.isEqual(
         hops.hopsEditing.plannedCourses,
         hops.hopsStudyPlanState.plannedCourses
-      ),
-    [hops.hopsEditing.plannedCourses, hops.hopsStudyPlanState.plannedCourses]
+      ) || !_.isEqual(hops.hopsEditing.goals, hops.hopsStudyPlanState.goals),
+    [
+      hops.hopsEditing.goals,
+      hops.hopsEditing.plannedCourses,
+      hops.hopsStudyPlanState.goals,
+      hops.hopsStudyPlanState.plannedCourses,
+    ]
   );
 
   // Check if any of the HOPS data has changes
