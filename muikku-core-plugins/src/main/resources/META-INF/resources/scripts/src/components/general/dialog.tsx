@@ -17,6 +17,31 @@ import PagerV2 from "~/components/general/pagerV2";
 import FocusTrap from "focus-trap-react";
 import { IconButton } from "./button";
 import { Provider, ReactReduxContext } from "react-redux";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import {
+  MouseTransition,
+  MultiBackendOptions,
+  TouchTransition,
+  DndProvider,
+} from "react-dnd-multi-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
+
+const HTML5toTouch: MultiBackendOptions = {
+  backends: [
+    {
+      id: "html5",
+      backend: HTML5Backend,
+      transition: MouseTransition,
+    },
+    {
+      id: "touch",
+      backend: TouchBackend,
+      options: { enableMouseEvents: true },
+      preview: true,
+      transition: TouchTransition,
+    },
+  ],
+};
 
 /**
  * DialogProps
@@ -154,90 +179,92 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                   : this.props.modifier;
               return (
                 <Provider store={store}>
-                  <FocusTrap
-                    active={this.state.visible}
-                    focusTrapOptions={{
-                      allowOutsideClick: true,
-                      clickOutsideDeactivates: true,
-                      // There are some issues with the focus trap and the dialog that causes scrolling issues e.g evaluation dialog
-                      // because there is multiple FocusTrap components in the same page
-                      preventScroll: true,
-                    }}
-                  >
-                    <div
-                      role="dialog"
-                      className={`dialog ${(modifiers || [])
-                        .map((s) => `dialog--${s}`)
-                        .join(" ")} ${
-                        this.state.visible ? "dialog--visible" : ""
-                      }`}
-                      onClick={
-                        closeOnOverlayClick
-                          ? this.onOverlayClick.bind(this, closePortal)
-                          : null
-                      }
-                      aria-modal="true"
-                      aria-label="Dialog"
-                      aria-labelledby={`dialogTitle--${modifiers[0]}`}
+                  <DndProvider options={HTML5toTouch}>
+                    <FocusTrap
+                      active={this.state.visible}
+                      focusTrapOptions={{
+                        allowOutsideClick: true,
+                        clickOutsideDeactivates: true,
+                        // There are some issues with the focus trap and the dialog that causes scrolling issues e.g evaluation dialog
+                        // because there is multiple FocusTrap components in the same page
+                        preventScroll: true,
+                      }}
                     >
-                      {/* Execution container is missing from here */}
-                      <section
-                        className={`dialog__window ${(modifiers || [])
-                          .map((s) => `dialog__window--${s}`)
-                          .join(" ")}`}
+                      <div
+                        role="dialog"
+                        className={`dialog ${(modifiers || [])
+                          .map((s) => `dialog--${s}`)
+                          .join(" ")} ${
+                          this.state.visible ? "dialog--visible" : ""
+                        }`}
+                        onClick={
+                          closeOnOverlayClick
+                            ? this.onOverlayClick.bind(this, closePortal)
+                            : null
+                        }
+                        aria-modal="true"
+                        aria-label="Dialog"
+                        aria-labelledby={`dialogTitle--${modifiers[0]}`}
                       >
-                        {this.props.executing &&
-                        this.props.executing === true ? (
-                          <div className="dialog__overlay dialog__overlay--executing">
-                            {this.props.executeContent ? (
-                              <div className="dialog__overlay-content">
-                                <div className="loader__executing--dialog"></div>
-                                {this.props.executeContent}
-                              </div>
-                            ) : (
-                              <div className="loader__executing"></div>
-                            )}
-                          </div>
-                        ) : null}
-                        <header
-                          className={`dialog__header ${(modifiers || [])
-                            .map((s) => `dialog__header--${s}`)
-                            .join(" ")}`}
-                        >
-                          <div
-                            className="dialog__title"
-                            id={`dialogTitle--${modifiers[0]}`}
-                          >
-                            {this.props.title}
-                          </div>
-                          <IconButton
-                            aria-label="Sulje"
-                            buttonModifiers={["dialog-close"]}
-                            role="button"
-                            icon="cross"
-                            onClick={closePortal}
-                          />
-                        </header>
+                        {/* Execution container is missing from here */}
                         <section
-                          className={`dialog__content ${(modifiers || [])
-                            .map((s) => `dialog__content--${s}`)
+                          className={`dialog__window ${(modifiers || [])
+                            .map((s) => `dialog__window--${s}`)
                             .join(" ")}`}
                         >
-                          {this.props.content(closePortal)}
-                        </section>
-                        {this.props.footer ? (
-                          <footer
-                            className={`dialog__footer ${(modifiers || [])
-                              .map((s) => `dialog__footer--${s}`)
+                          {this.props.executing &&
+                          this.props.executing === true ? (
+                            <div className="dialog__overlay dialog__overlay--executing">
+                              {this.props.executeContent ? (
+                                <div className="dialog__overlay-content">
+                                  <div className="loader__executing--dialog"></div>
+                                  {this.props.executeContent}
+                                </div>
+                              ) : (
+                                <div className="loader__executing"></div>
+                              )}
+                            </div>
+                          ) : null}
+                          <header
+                            className={`dialog__header ${(modifiers || [])
+                              .map((s) => `dialog__header--${s}`)
                               .join(" ")}`}
                           >
-                            {this.props.footer &&
-                              this.props.footer(closePortal)}
-                          </footer>
-                        ) : null}
-                      </section>
-                    </div>
-                  </FocusTrap>
+                            <div
+                              className="dialog__title"
+                              id={`dialogTitle--${modifiers[0]}`}
+                            >
+                              {this.props.title}
+                            </div>
+                            <IconButton
+                              aria-label="Sulje"
+                              buttonModifiers={["dialog-close"]}
+                              role="button"
+                              icon="cross"
+                              onClick={closePortal}
+                            />
+                          </header>
+                          <section
+                            className={`dialog__content ${(modifiers || [])
+                              .map((s) => `dialog__content--${s}`)
+                              .join(" ")}`}
+                          >
+                            {this.props.content(closePortal)}
+                          </section>
+                          {this.props.footer ? (
+                            <footer
+                              className={`dialog__footer ${(modifiers || [])
+                                .map((s) => `dialog__footer--${s}`)
+                                .join(" ")}`}
+                            >
+                              {this.props.footer &&
+                                this.props.footer(closePortal)}
+                            </footer>
+                          ) : null}
+                        </section>
+                      </div>
+                    </FocusTrap>
+                  </DndProvider>
                 </Provider>
               );
             }}

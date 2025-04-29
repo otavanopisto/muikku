@@ -47,6 +47,7 @@ import { isCompulsoryStudiesHops } from "~/@types/hops";
 import { unstable_batchedUpdates } from "react-dom";
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
 import NewHopsEventDescriptionDialog from "~/components/hops/dialogs/new-hops-event-description-dialog";
+import StudyPlan from "~/components/hops/body/application/study-planing/study-plan";
 
 /**
  * Represents the available tabs in the HOPS application
@@ -122,6 +123,15 @@ const HopsApplication = (props: HopsApplicationProps) => {
     [hops.hopsForm, hops.hopsEditing.hopsForm]
   );
 
+  const hopsStudyPlanHasChanges = React.useMemo(
+    () =>
+      !_.isEqual(
+        hops.hopsStudyPlanState.plannedCourses,
+        hops.hopsEditing.plannedCourses
+      ) || !_.isEqual(hops.hopsStudyPlanState.goals, hops.hopsEditing.goals),
+    [hops.hopsStudyPlanState, hops.hopsEditing]
+  );
+
   // Check if the matriculation plan has changes
   const hopsMatriculationHasChanges = React.useMemo(() => {
     // If study programme is not upper secondary, return false by default
@@ -146,8 +156,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   // Check if any of the HOPS data has changes
   const hopsHasChanges = React.useMemo(
-    () => hopsMatriculationHasChanges || hopsFormHasChanges,
-    [hopsFormHasChanges, hopsMatriculationHasChanges]
+    () =>
+      hopsMatriculationHasChanges ||
+      hopsFormHasChanges ||
+      hopsStudyPlanHasChanges,
+    [hopsFormHasChanges, hopsMatriculationHasChanges, hopsStudyPlanHasChanges]
   );
 
   // Load data on demand depending on the active tab
@@ -290,6 +303,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     switch (tab) {
       case "BACKGROUND":
       case "POSTGRADUATE":
+      case "STUDYPLAN":
         return studentInfo.permissions.canViewDetails;
 
       case "MATRICULATION":
@@ -315,6 +329,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
       component: (
         <ApplicationPanelBody modifier="tabs">
           <Background />
+        </ApplicationPanelBody>
+      ),
+    },
+    {
+      id: "STUDYPLAN",
+      name: t("labels.hopsStudyPlanning", { ns: "hops_new" }),
+      hash: "studyplan",
+      type: "studyplan",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <StudyPlan />
         </ApplicationPanelBody>
       ),
     },
