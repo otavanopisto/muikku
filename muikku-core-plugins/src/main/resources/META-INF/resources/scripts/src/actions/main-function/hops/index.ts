@@ -2281,7 +2281,10 @@ const loadStudyPlanData: LoadStudyPlanDataTriggerType =
 
       dispatch({
         type: "HOPS_STUDYPLAN_UPDATE_GOALS",
-        payload: goals,
+        payload: {
+          graduationGoal: goals.graduationGoal,
+          studyHours: goals.studyHours || 0,
+        },
       });
 
       dispatch({
