@@ -1059,7 +1059,7 @@ public class HopsRestService {
       msg.setSubject(hopsOptionalSuggestionRestModel.getSubject());
       msg.setStudentIdentifier(studentIdentifier);
 
-      hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:optionalsuggestion-updated", msg);
+      hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:optional-suggestion-updated", msg);
 
       return Response.ok(hopsOptionalSuggestionRestModel).build();
     }
@@ -1071,7 +1071,7 @@ public class HopsRestService {
       msg.setSubject(hopsOptionalSuggestion.getSubject());
       msg.setStudentIdentifier(studentIdentifier);
 
-      hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:optionalsuggestion-updated", msg);
+      hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:optional-suggestion-updated", msg);
 
       return Response.noContent().build();
     }
@@ -1309,7 +1309,7 @@ public class HopsRestService {
       msg.setSubject(hopsStudentChoice.getSubject());
       msg.setStudentIdentifier(studentIdentifier);
 
-      hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:studentchoice-updated", msg);
+      hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:student-choice-updated", msg);
 
       return Response.ok(hopsStudentChoice).build();
     }
@@ -1321,7 +1321,7 @@ public class HopsRestService {
       msg.setSubject(hopsStudentChoice.getSubject());
       msg.setStudentIdentifier(studentIdentifier);
 
-      hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:studentchoice-updated", msg);
+      hopsWebSocketMessenger.sendMessage(studentIdentifier, "hops:student-choice-updated", msg);
 
       return Response.noContent().build();
     }
