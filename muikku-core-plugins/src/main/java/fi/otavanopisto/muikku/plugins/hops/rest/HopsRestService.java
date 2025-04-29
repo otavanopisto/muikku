@@ -606,10 +606,6 @@ public class HopsRestService {
     }
 
     List<HopsPlannedCourse> plannedCourses = hopsController.listPlannedCoursesByStudentIdentifier(studentIdentifierStr);
-    if (plannedCourses.isEmpty()) {
-      return Response.ok(Collections.emptyList()).build();
-    }
-
     List<HopsPlannedCourseRestModel> restPlannedCourses = new ArrayList<>();
     for (HopsPlannedCourse plannedCourse : plannedCourses) {
       restPlannedCourses.add(toRestModel(plannedCourse));
