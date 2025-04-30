@@ -30,6 +30,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
     hopsMode,
     hopsCurriculumConfig: curriculumConfig,
     studentInfo,
+    hopsStudyPlanStatus,
   } = useSelector((state: StateType) => state.hopsNew);
 
   const dispatch = useDispatch();
@@ -334,16 +335,20 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
           })}
         </ApplicationSubPanel.Header>
         <ApplicationSubPanel.Body>
-          {isMobile ? (
-            <MobileStudyPlanner
-              plannedCourses={usedPlannedCourses}
-              calculatedPeriods={calculatedPeriods}
-            />
+          {hopsStudyPlanStatus === "READY" ? (
+            isMobile ? (
+              <MobileStudyPlanner
+                plannedCourses={usedPlannedCourses}
+                calculatedPeriods={calculatedPeriods}
+              />
+            ) : (
+              <DesktopStudyPlanner
+                plannedCourses={usedPlannedCourses}
+                calculatedPeriods={calculatedPeriods}
+              />
+            )
           ) : (
-            <DesktopStudyPlanner
-              plannedCourses={usedPlannedCourses}
-              calculatedPeriods={calculatedPeriods}
-            />
+            <div className="loader-empty" />
           )}
         </ApplicationSubPanel.Body>
       </ApplicationSubPanel>
