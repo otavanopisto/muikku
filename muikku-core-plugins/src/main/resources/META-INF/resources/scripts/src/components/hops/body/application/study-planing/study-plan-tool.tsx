@@ -159,12 +159,20 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
           <div className="hops-container">
             <div
               className="hops-container__description"
-              dangerouslySetInnerHTML={{
-                __html: t("content.studyPlannerFormDescription", {
-                  ns: "hops_new",
-                }),
-              }}
-            ></div>
+              dangerouslySetInnerHTML={
+                curriculumConfig.type === "uppersecondary"
+                  ? {
+                      __html: t("content.studyPlannerFormDescription", {
+                        ns: "hops_new",
+                      }),
+                    }
+                  : {
+                      __html: t("content.studyPlannerFormDescription", {
+                        ns: "hops_new",
+                      }),
+                    }
+              }
+            />
 
             <div className="hops-container__row">
               <div className="hops__form-element-container">
