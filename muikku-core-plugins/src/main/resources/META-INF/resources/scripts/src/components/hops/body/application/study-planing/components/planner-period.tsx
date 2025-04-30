@@ -69,9 +69,13 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
     props = { ...defaultProps, ...props };
 
     const { period, renderMobile } = props;
-    const { workload, type, year, plannedCourses, isPastPeriod } = period;
+    const { type, year, plannedCourses, isPastPeriod } = period;
 
     const { t } = useTranslation(["common"]);
+
+    const curriculumStrategy = useSelector(
+      (state: StateType) => state.hopsNew.hopsCurriculumConfig.strategy
+    );
 
     const studyActivity = useSelector(
       (state: StateType) => state.hopsNew.hopsStudyPlanState.studyActivity
@@ -138,6 +142,12 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
             year: year,
           });
 
+    // Calculate workload
+    const workload = curriculumStrategy.calculatePeriodWorkload(
+      plannedCourses,
+      t
+    );
+
     return (
       <motion.div
         className={`study-planner__period ${isPastPeriod && !isUnlocked ? "study-planner__period--past" : ""}`}
@@ -171,7 +181,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                     })}
                   </span>
                 )}
-                {workload && ` - ${workload.displayValue}`}
+                {` - ${workload.displayValue}`}
               </motion.div>
             </motion.div>
           )}
@@ -213,7 +223,7 @@ const PlannerPeriod = React.forwardRef<HTMLDivElement, PlannerPeriodProps>(
                       })}
                     </span>
                   )}
-                  {workload && ` - ${workload.displayValue}`}
+                  {` - ${workload.displayValue}`}
                 </motion.div>
               </motion.div>
 
