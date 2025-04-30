@@ -14,6 +14,7 @@ import DatePicker from "react-datepicker";
 import { PlannerInfo } from "./components/planner-info";
 import PlannerTimelineProgress from "./components/planner-timeline-progress";
 import { updateEditingGoals } from "~/actions/main-function/hops";
+import { NumberFormatValues, NumericFormat } from "react-number-format";
 
 /**
  * MatriculationPlanProps
@@ -99,13 +100,13 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
 
   /**
    * Handle hours per week change
-   * @param e event
+   * @param values values
    */
-  const handleHoursPerWeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHoursPerWeekChange = (values: NumberFormatValues) => {
     dispatch(
       updateEditingGoals({
         goals: {
-          studyHours: Number(e.target.value),
+          studyHours: values.floatValue || 0,
           graduationGoal: usedGoalInfo.graduationGoal,
         },
       })
@@ -205,13 +206,15 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                     </div>
                   </div>
                 </div>
-                <input
-                  type="number"
-                  id="hoursPerWeek"
+
+                <NumericFormat
                   className="hops__input"
                   value={usedGoalInfo.studyHours}
-                  onChange={handleHoursPerWeekChange}
+                  allowNegative={false}
+                  decimalScale={0}
+                  onValueChange={handleHoursPerWeekChange}
                   disabled={hopsMode === "READ"}
+                  defaultValue={0}
                 />
               </div>
             </div>
