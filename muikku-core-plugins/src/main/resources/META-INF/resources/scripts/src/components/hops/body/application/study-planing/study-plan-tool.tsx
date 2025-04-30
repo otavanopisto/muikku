@@ -224,6 +224,7 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                 </div>
 
                 <NumericFormat
+                  id="hoursPerWeek"
                   className="hops__input"
                   value={usedGoalInfo.studyHours}
                   allowNegative={false}
