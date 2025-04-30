@@ -15,6 +15,8 @@ import { PlannerInfo } from "./components/planner-info";
 import PlannerTimelineProgress from "./components/planner-timeline-progress";
 import { updateEditingGoals } from "~/actions/main-function/hops";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
+import { localize } from "~/locales/i18n";
+import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 
 /**
  * MatriculationPlanProps
@@ -118,19 +120,30 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
    * Handle graduation goal date change
    * @param date date
    */
-  const handleGraduationGoalDateChange = (date: Date) => {
-    // Set to last day of the selected month
-    date.setMonth(date.getMonth() + 1);
-    date.setDate(0);
+  const handleGraduationGoalDateChange = (date: Date | null) => {
+    if (!date) {
+      dispatch(
+        updateEditingGoals({
+          goals: {
+            graduationGoal: null,
+            studyHours: usedGoalInfo.studyHours,
+          },
+        })
+      );
+    } else {
+      // Set to last day of the selected month
+      date.setMonth(date.getMonth() + 1);
+      date.setDate(0);
 
-    dispatch(
-      updateEditingGoals({
-        goals: {
-          graduationGoal: date,
-          studyHours: usedGoalInfo.studyHours,
-        },
-      })
-    );
+      dispatch(
+        updateEditingGoals({
+          goals: {
+            graduationGoal: date,
+            studyHours: usedGoalInfo.studyHours,
+          },
+        })
+      );
+    }
   };
 
   return (
@@ -185,9 +198,11 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                   }
                   selected={usedGoalInfo.graduationGoal || undefined}
                   onChange={handleGraduationGoalDateChange}
-                  disabled={hopsMode === "READ"}
                   showMonthYearPicker
                   dateFormat="MM/yyyy"
+                  locale={outputCorrectDatePickerLocale(localize.language)}
+                  disabled={hopsMode === "READ"}
+                  isClearable={hopsMode !== "READ"}
                 />
               </div>
 

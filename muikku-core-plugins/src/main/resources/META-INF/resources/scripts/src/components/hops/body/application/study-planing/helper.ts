@@ -143,11 +143,6 @@ const createAndAllocateCoursesToPeriods = (
 
     if (period) {
       period.plannedCourses.push(course);
-      // Update workload using strategy
-      const workload = curriculumStrategy.calculatePeriodWorkload(
-        period.plannedCourses
-      );
-      period.workload = workload;
     }
   });
 

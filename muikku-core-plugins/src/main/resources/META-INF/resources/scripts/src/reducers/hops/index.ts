@@ -2,7 +2,7 @@ import { Reducer } from "redux";
 import { HopsForm } from "~/@types/hops";
 import { Course } from "~/@types/shared";
 import { ActionType } from "~/actions";
-import { CurriculumConfig, PeriodWorkload } from "~/util/curriculum-config";
+import { CurriculumConfig } from "~/util/curriculum-config";
 import {
   HopsLocked,
   MatriculationEligibilityStatus,
@@ -89,8 +89,6 @@ export interface PlannedPeriod {
   year: number;
   type: "AUTUMN" | "SPRING";
   plannedCourses: PlannedCourseWithIdentifier[];
-  workloadType: "credits" | "courses";
-  workload?: PeriodWorkload;
   isPastPeriod: boolean;
 }
 

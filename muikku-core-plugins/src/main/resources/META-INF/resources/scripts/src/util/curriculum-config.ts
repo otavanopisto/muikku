@@ -11,6 +11,7 @@ import {
   filterCompulsorySubjects,
   filterUpperSecondarySubjects,
 } from "~/helper-functions/study-matrix";
+import { TFunction } from "i18next";
 
 // Uppersecondary curriculum has 88 credits required
 const UPPER_SECONDARY_TOTAL_REQUIRED_STUDIES = 88;
@@ -25,13 +26,15 @@ const UPPER_SECONDARY_REQUIRED_EXCEPTION = ["BI", "FY", "KE", "GE"];
 // Compulsory curriculum has 45 courses required
 const COMPULSORY_TOTAL_REQUIRED_STUDIES = 45;
 
+type WorkloadUnit = "credits" | "courses";
+
 /**
  * Period workload
  */
 export interface PeriodWorkload {
   displayValue: string;
   numericValue: number;
-  unit: string;
+  unit: WorkloadUnit;
 }
 
 /**
@@ -41,7 +44,7 @@ export interface Statistics {
   mandatoryStudies: number;
   optionalStudies: number;
   totalStudies: number;
-  unit: string;
+  unit: WorkloadUnit;
   requiredStudies: {
     mandatoryStudies: number;
     optionalStudies: number;
@@ -56,7 +59,7 @@ export interface PlanStatistics {
   plannedMandatoryStudies: number;
   plannedOptionalStudies: number;
   plannedTotalStudies: number;
-  unit: string;
+  unit: WorkloadUnit;
   requiredStudies: {
     plannedMandatoryStudies: number;
     plannedOptionalStudies: number;
@@ -107,7 +110,8 @@ export interface CurriculumStrategy {
    * @returns workload
    */
   calculatePeriodWorkload: (
-    courses: PlannedCourseWithIdentifier[]
+    courses: PlannedCourseWithIdentifier[],
+    t: TFunction
   ) => PeriodWorkload;
 
   /**
@@ -277,10 +281,12 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
   /**
    * Calculate workload
    * @param courses courses
+   * @param t translation function
    * @returns workload
    */
   calculatePeriodWorkload(
-    courses: PlannedCourseWithIdentifier[]
+    courses: PlannedCourseWithIdentifier[],
+    t: TFunction
   ): PeriodWorkload {
     const credits = courses.reduce(
       (sum, course) => sum + (course.length || 0),
@@ -514,7 +520,6 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
       type,
       year,
       plannedCourses: [],
-      workloadType: "credits",
       isPastPeriod: false,
     };
   }
@@ -654,10 +659,12 @@ class CompulsoryCurriculum implements CurriculumStrategy {
   /**
    * Calculate workload
    * @param courses courses
+   * @param t translation function
    * @returns workload
    */
   calculatePeriodWorkload(
-    courses: PlannedCourseWithIdentifier[]
+    courses: PlannedCourseWithIdentifier[],
+    t: TFunction
   ): PeriodWorkload {
     return {
       displayValue: `${courses.length} courses`,
@@ -851,7 +858,6 @@ class CompulsoryCurriculum implements CurriculumStrategy {
       type,
       year,
       plannedCourses: [],
-      workloadType: "courses",
       isPastPeriod: false,
     };
   }
