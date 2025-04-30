@@ -1152,7 +1152,7 @@ public class HopsRestService {
         WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(indexedWorkspace.getIdentifier());
         String name = indexedWorkspace.getName();
         if (indexedWorkspace.getNameExtension() != null) {
-          name = String.format("%s %s", name, indexedWorkspace.getNameExtension()); 
+          name = String.format("%s (%s)", name, indexedWorkspace.getNameExtension()); 
         }
         LocalDate beginDate = indexedWorkspace.getBeginDate() == null ? null : indexedWorkspace.getBeginDate().atZoneSameInstant(ZoneId.systemDefault()).toLocalDate();
         LocalDate endDate = indexedWorkspace.getEndDate() == null ? null : indexedWorkspace.getEndDate().atZoneSameInstant(ZoneId.systemDefault()).toLocalDate();
