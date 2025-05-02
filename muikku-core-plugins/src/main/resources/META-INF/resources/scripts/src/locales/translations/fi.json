@@ -102,12 +102,15 @@
       "content_vacationMessage": "Lomaviestin sisältö",
       "copy": "Kopioi",
       "course": "Kurssi",
+      "courses": "Kurssia",
       "coursepicker": "Kurssipoimuri",
       "create": "Luo uusi",
       "create_comment": "Uusi kommentti",
       "create_room": "Luo uusi huone",
       "created": "Luotu",
       "credentials": "Aseta tunnuksesi",
+      "credit": "Opintopiste",
+      "credits": "Opintopistettä",
       "signIn": "Kirjautuminen",
       "date": "Päivämäärä",
       "dateOfBirth": "Syntymäaika",
@@ -928,18 +931,13 @@
       "matriculationFormSaveStateFailed": "<p>Ilmoittautumislomakkeen tietojen tallennus epäonnistui. Varmista, että olet kirjautunut sisään palaamalla lomakkeelle uudelleen Muikun kautta.</p>",
       "studyPlannerCourseNotAvailable": "Valittu kurssi-ilmentymä ei ole enään saatavilla. Valitse uusi kurssi-ilmentymä ja päivitä suunnitelma.",
       "studyPlannerCourseInstanceNotFound": "Kurssi-ilmentymää ei löytynyt",
-      "studyPlannerFormDescription": "<p>Opintoaikalaskurin avulla voit arvioida, kuinka paljon sinun tulisi opiskella viikossa, jotta valmistut tavoiteaikataulussasi. Laskuri on suuntaa-antava, eikä se huomioi esimerkiksi loma-aikoja tai henkilökohtaisia eroja oppimisessa. Se auttaa kuitenkin hahmottamaan tarvittavaa opiskelutahtia.</p><p>Laskelma perustuu arvioon, että yhden opintopisteen suorittaminen vaatii keskimäärin 19 tuntia työtä. Kahden opintopisteen lukio-opintojakso tarkoittaa siis noin 38 tunnin työpanosta.</p>",
-
+      "studyPlannerFormDescriptionUpper": "<p>Opintoaikalaskurin avulla voit arvioida, kuinka paljon sinun tulisi opiskella viikossa, jotta valmistut tavoiteaikataulussasi. Laskuri on suuntaa-antava, eikä se huomioi esimerkiksi loma-aikoja tai henkilökohtaisia eroja oppimisessa. Se auttaa kuitenkin hahmottamaan tarvittavaa opiskelutahtia.</p><p>Laskelma perustuu arvioon, että yhden opintopisteen suorittaminen vaatii keskimäärin 19 tuntia työtä. Kahden opintopisteen lukio-opintojakso tarkoittaa siis noin 38 tunnin työpanosta.</p>",
+      "studyPlannerFormDescriptionCompulsory": "<p>Opintoaikalaskurin avulla voit arvioida, kuinka paljon sinun tulisi opiskella viikossa, jotta valmistut tavoiteaikataulussasi. Laskuri on suuntaa-antava, eikä se huomioi esimerkiksi loma-aikoja tai henkilökohtaisia eroja oppimisessa. Se auttaa kuitenkin hahmottamaan tarvittavaa opiskelutahtia.</p><p>Laskelma perustuu arvioon, että yhden kurssin suorittaminen vaatii keskimäärin 28 tuntia työtä.</p>",
       "studyPlannerInfoDefault": "Opintojesi edistymistä kuvaava aikajana näyttää opintojesi alkamispäivän, nykyhetken ja opinto-oikeutesi päättymispäivän. Se näyttää myös suorittamasi opinnot. Voit asettaa valmistumisellesi muun tavoiteajan kohdassa \"Milloin haluat valmistua?\" Voit myös arvioida, kuinka paljon sinulla on aikaa opiskella viikottain, jolloin aikajanalle ilmestyy arvio valmistumisajasta.",
-
       "studyPlannerInfoOnlyGraduationGoalSet": "Asettamasi valmistumisen tavoiteaika {{graduationGoalDate}} näkyy nyt opintojen etenemistä kuvaavalla aikajanalla. Voit vielä kokeilla, kuinka monta tuntia viikossa sinun on keskimäärin opiskeltava, jotta asettamasi tavoite on mahdollinen.",
-
       "studyPlannerInfoGraduationNotPossibleTooLowHours": "Valmistuminen ei ole mahdollista tavoiteajassa {{graduationGoalDate}} ({{monthsUntilGoal}} kk). Arvioitu valmistumisaika on {{estimatedDateOfCompletion}}. Tarvitset vähintään {{estimatedTimeToCompletion}} kuukautta opintojen suorittamiseen. Muuta laskuriin arvioimaasi viikoittaista tuntimäärää ja katso, miten se vaikuttaa arvioituun valmistumisaikaan.",
-
       "studyPlannerInfoGraduationNotPossibleExceedsRightToStudy": "Arvioitu valmistumisaika {{estimatedDateOfCompletion}} ylittää opinto-oikeutesi päättymispäivän {{studyEndTimeDate}}. Et siis ehtisi valmistua suunnittelemallasi viikoittaisella opiskelutahdilla ennen opinto-oikeutesi päättymispäivää. Muuta laskuriin arvioimaasi viikoittaista tuntimäärää ja katso, miten se vaikuttaa arvioituun valmistumisaikaan.",
-
       "studyPlannerInfoGraduationPossible": "Valmistuminen tavoiteajassa {{graduationGoalDate}} ({{monthsUntilGoal}} kk) on mahdollista. Arvioitu valmistumisaika on {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} kuukautta).",
-
       "studyPlannerInfoGraduationPossibleWithoutGraduationGoal": "Arvioitu valmistumisaika on {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} kuukautta). Se sopii hyvin opinto-oikeuteesi, joka päättyy {{studyEndTimeDate}}. Voit myös asettaa valmistumiselle tavoiteajan ja säätää viikoittaista opiskelutahtia sopimaan tavoitteeseesi."
     },
     "matriculationTerms": {

@@ -102,12 +102,15 @@
       "content_vacationMessage": "Vacation message content",
       "copy": "Copy",
       "course": "Course",
+      "courses": "Courses",
       "coursepicker": "Coursepicker",
       "create": "Create new",
       "create_comment": "New comment",
       "create_room": "Create a room",
       "created": "Created",
       "credentials": "Set your credentials",
+      "credit": "Credit",
+      "credits": "Credits",
       "signIn": "Sign in",
       "date": "Date",
       "dateOfBirth": "Date of birth",
@@ -928,18 +931,13 @@
       "matriculationFormSaveStateFailed": "<p>Saving the registration data failed. Please ensure that you are logged in by returning to the form via Muikku.</p>",
       "studyPlannerCourseNotAvailable": "Valittu kurssi-ilmentymä ei ole enään saatavilla. Valitse uusi kurssi-ilmentymä ja päivitä suunnitelma.",
       "studyPlannerCourseInstanceNotFound": "Course instance not found",
-      "studyPlannerFormDescription": "<p>Using the study time calculator, you can estimate how much you should study per week to graduate according to your target schedule. The calculator provides an estimate and does not, for example, take into account holiday periods or individual differences in learning. However, it helps you to figure out the required study pace.</p><p>The calculation is based on the estimate that completing one credit point requires an average of 19 hours of work. Therefore, a two-credit course corresponds to approximately 38 hours of work.</p>",
-
+      "studyPlannerFormDescriptionUpper": "<p>Using the study time calculator, you can estimate how much you should study per week to graduate according to your target schedule. The calculator provides an estimate and does not, for example, take into account holiday periods or individual differences in learning. However, it helps you to figure out the required study pace.</p><p>The calculation is based on the estimate that completing one credit point requires an average of 19 hours of work. Therefore, a two-credit course corresponds to approximately 38 hours of work.</p>",
+      "studyPlannerFormDescriptionCompulsory": "<p>Using the study time calculator, you can estimate how much you should study per week to graduate according to your target schedule. The calculator provides an estimate and does not, for example, take into account holiday periods or individual differences in learning. However, it helps you to figure out the required study pace.</p><p>The calculation is based on the estimate that completing one course requires an average of 28 hours of work.</p>",
       "studyPlannerInfoDefault": "The study progress timeline shows your study start date, the present time, and your study right end date. It also displays your completed studies. You can set a different target graduation date under \"When do you want to graduate?\". You can also estimate how much time you have to study weekly, at which point an estimated graduation date will appear on the timeline.",
-
       "studyPlannerInfoOnlyGraduationGoalSet": "The target graduation date {{graduationGoalDate}} you set is now visible on the timeline illustrating the progress of your studies. You can still experiment with how many hours per week you need to study on average to make your set target achievable.",
-
       "studyPlannerInfoGraduationNotPossibleTooLowHours": "Graduation is not possible within the target time of {{graduationGoalDate}} ({{monthsUntilGoal}} months). The estimated graduation date is {{estimatedDateOfCompletion}}. You need at least {{estimatedTimeToCompletion}} months to complete your studies. Change your estimated weekly hours in the calculator to see how it affects the estimated graduation date.",
-
       "studyPlannerInfoGraduationNotPossibleExceedsRightToStudy": "The estimated graduation time of {{estimatedDateOfCompletion}} exceeds your study right expiration date of {{studyEndTimeDate}}. Therefore, you would not be able to graduate with your planned weekly study pace before your study right ends. Change your estimated weekly hours in the calculator to see how it affects the estimated graduation date.",
-
       "studyPlannerInfoGraduationPossible": "Graduation within the target time of {{graduationGoalDate}} ({{monthsUntilGoal}} months) is possible. The estimated graduation time is {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} months).",
-
       "studyPlannerInfoGraduationPossibleWithoutGraduationGoal": "The estimated graduation time is {{estimatedDateOfCompletion}} ({{estimatedTimeToCompletion}} months). This fits well within your study right, which expires on {{studyEndTimeDate}}. You can also set a target graduation date and adjust your weekly study pace to align with your goal."
     },
     "matriculationTerms": {

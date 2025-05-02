@@ -162,14 +162,17 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
               dangerouslySetInnerHTML={
                 curriculumConfig.type === "uppersecondary"
                   ? {
-                      __html: t("content.studyPlannerFormDescription", {
+                      __html: t("content.studyPlannerFormDescriptionUpper", {
                         ns: "hops_new",
                       }),
                     }
                   : {
-                      __html: t("content.studyPlannerFormDescription", {
-                        ns: "hops_new",
-                      }),
+                      __html: t(
+                        "content.studyPlannerFormDescriptionCompulsory",
+                        {
+                          ns: "hops_new",
+                        }
+                      ),
                     }
               }
             />

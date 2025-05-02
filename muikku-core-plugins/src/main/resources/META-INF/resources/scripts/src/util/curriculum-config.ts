@@ -293,7 +293,15 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
       0
     );
     return {
-      displayValue: `${credits} op`,
+      displayValue: `${credits} ${
+        courses.length === 1
+          ? t("labels.credit", {
+              ns: "common",
+            })
+          : t("labels.credits", {
+              ns: "common",
+            })
+      }`,
       numericValue: credits,
       unit: "credits",
     };
@@ -667,7 +675,15 @@ class CompulsoryCurriculum implements CurriculumStrategy {
     t: TFunction
   ): PeriodWorkload {
     return {
-      displayValue: `${courses.length} courses`,
+      displayValue: `${courses.length} ${
+        courses.length === 1
+          ? t("labels.course", {
+              ns: "common",
+            })
+          : t("labels.courses", {
+              ns: "common",
+            })
+      }`,
       numericValue: courses.length,
       unit: "courses",
     };
