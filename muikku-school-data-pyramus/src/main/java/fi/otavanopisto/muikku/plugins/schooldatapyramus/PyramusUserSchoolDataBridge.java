@@ -1888,8 +1888,8 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
       for (fi.otavanopisto.pyramus.rest.model.UserContact userContact : userContacts.getEntity()) {
 
-        UserContact contact = new UserContact(userContact.getName(), userContact.getPhoneNumber(),
-            userContact.getEmail(), userContact.getAddress(), userContact.getContactType());
+        UserContact contact = new UserContact(userContact.getId() ,userContact.getName(), userContact.getPhoneNumber(),
+            userContact.getEmail(), userContact.getStreetAddress(), userContact.getPostalCode(), userContact.getCity(), userContact.getCountry(), userContact.getContactType(), userContact.isDefaultContact());
         
         result.add(contact);
       }

@@ -13950,10 +13950,15 @@ components:
       type: object
       description: UserContact object
       required:
+        - id
         - name
         - email
-        - address
+        - streetAddress
+        - postalCode
+        - city
+        - country
         - contactType
+        - defaultContact
       properties:
         name:
           type: string
@@ -13961,10 +13966,18 @@ components:
           type: string
         email:
           type: string
-        address:
+        streetAddress:
+          type: string
+        postalCode:
+          type: string
+        city:
+          type: string
+        country:
           type: string
         contactType:
           type: string
+        defaultContact:
+          type: boolean
 
     GuidanceCounselorContact:
       type: object

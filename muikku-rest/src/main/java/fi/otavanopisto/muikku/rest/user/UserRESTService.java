@@ -1591,11 +1591,16 @@ public class UserRESTService extends AbstractRESTService {
   
   private fi.otavanopisto.muikku.rest.model.UserContact createRestModel(UserContact userContact) {
     return new fi.otavanopisto.muikku.rest.model.UserContact(
+        userContact.getId(),
         userContact.getName(), 
         userContact.getPhoneNumber(), 
         userContact.getEmail(), 
-        userContact.getAddress(), 
-        userContact.getContactType());
+        userContact.getStreetAddress(),
+        userContact.getPostalCode(),
+        userContact.getCity(),
+        userContact.getCountry(),
+        userContact.getContactType(),
+        userContact.isDefaultContact());
   }
   
   private String toId(SchoolDataIdentifier identifier) {
