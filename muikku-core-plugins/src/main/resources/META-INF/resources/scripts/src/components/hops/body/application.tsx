@@ -45,6 +45,7 @@ import {
 } from "./application/wizard/helpers";
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
 import { isCompulsoryStudiesHops } from "~/@types/hops";
+import "~/sass/elements/react-datepicker-override.scss";
 
 /**
  * Represents the available tabs in the HOPS application.

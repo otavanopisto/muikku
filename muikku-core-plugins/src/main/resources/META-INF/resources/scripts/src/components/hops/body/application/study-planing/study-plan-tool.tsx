@@ -192,7 +192,9 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
                   </div>
                 </div>
                 <DatePicker
+                  clearButtonClassName="react-datepicker-override__close-button"
                   className="hops__input"
+                  wrapperClassName="react-datepicker-override"
                   id="graduationGoalDate"
                   maxDate={
                     studentInfo.studyTimeEnd
