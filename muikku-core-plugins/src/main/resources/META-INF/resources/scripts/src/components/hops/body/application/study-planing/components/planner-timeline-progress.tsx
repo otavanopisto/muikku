@@ -2,6 +2,8 @@ import ProgressBar from "@ramonak/react-progress-bar";
 import * as React from "react";
 import { localize } from "~/locales/i18n";
 import { motion } from "framer-motion";
+import Dropdown from "~/components/general/dropdown";
+import { t } from "i18next";
 
 /**
  * TimelineProgressProps
@@ -20,7 +22,7 @@ interface PlannerTimelineProgressProps {
  */
 interface TimelineDates {
   date: Date;
-  variants: FlagVariant;
+  variant: FlagVariant;
   estimated: Date | null;
   goal: Date | null;
 }
@@ -79,7 +81,7 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
           estimatedDate > graduationGoalDate
             ? estimatedDate
             : null,
-        variants: ["end", "estimated"],
+        variant: "estimated",
         estimated: null,
         goal: graduationGoalDate,
       },
@@ -90,13 +92,13 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
           estimatedDate <= graduationGoalDate
             ? graduationGoalDate
             : null,
-        variants: ["end", "goal"],
+        variant: "goal",
         estimated: estimatedDate,
         goal: null,
       },
       {
         date: estimatedDate,
-        variants: ["end", "estimated"],
+        variant: "estimated",
         estimated: null,
         goal: null,
       },
@@ -105,7 +107,7 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
           graduationGoalDate && graduationGoalDate > currentDate
             ? graduationGoalDate
             : null,
-        variants: ["end", "goal"],
+        variant: "goal",
         estimated: null,
         goal: null,
       },
@@ -114,7 +116,7 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
           studyEndTimeDate && studyEndTimeDate > currentDate
             ? studyEndTimeDate
             : null,
-        variants: ["end"],
+        variant: "end",
         estimated: null,
         goal: null,
       },
@@ -131,7 +133,7 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
     defaultEndDate.setFullYear(defaultEndDate.getFullYear() + 4);
     return {
       date: defaultEndDate,
-      variants: ["end"],
+      variant: "end",
       estimated: null,
       goal: null,
     };
@@ -139,20 +141,20 @@ const PlannerTimelineProgress: React.FC<PlannerTimelineProgressProps> = (
 
   const {
     date: effectiveEndDate,
-    variants: effectiveEndDateVariants,
+    variant: effectiveEndDateVariant,
     estimated,
     goal,
   } = determineTimelineDates();
 
   const startFlag = (
-    <Flag position={0} date={studyStartDate} variants={["start"]} />
+    <Flag position={0} date={studyStartDate} variant={"start"} />
   );
 
   const endFlag = (
     <Flag
       position={100}
       date={effectiveEndDate}
-      variants={effectiveEndDateVariants}
+      variant={effectiveEndDateVariant}
     />
   );
 
@@ -231,18 +233,18 @@ const ProgressTimelineBar = (props: ProgressTimelineBarProps) => {
         <Flag
           position={currentPosition}
           date={currentTime}
-          variants={["current"]}
+          variant={"current"}
         />
 
         {goalPosition && (
-          <Flag position={goalPosition} date={goalDate} variants={["goal"]} />
+          <Flag position={goalPosition} date={goalDate} variant={"goal"} />
         )}
 
         {estimatedPosition && (
           <Flag
             position={estimatedPosition}
             date={estimatedCompletionDate}
-            variants={["estimated"]}
+            variant={"estimated"}
           />
         )}
       </div>
@@ -290,13 +292,13 @@ const flagVariants = {
 };
 
 type FlagVariant =
-  | ["start"]
-  | ["end"]
-  | ["current"]
-  | ["goal"]
-  | ["estimated"]
-  | ["end", "goal"]
-  | ["end", "estimated"];
+  | "start"
+  | "end"
+  | "current"
+  | "goal"
+  | "estimated"
+  | "goal"
+  | "estimated";
 
 /**
  * FlagProps
@@ -304,7 +306,7 @@ type FlagVariant =
 interface FlagProps {
   position: number;
   date: Date;
-  variants: FlagVariant;
+  variant: FlagVariant;
 }
 
 /**
@@ -313,53 +315,91 @@ interface FlagProps {
  * @returns JSX.Element
  */
 const Flag: React.FC<FlagProps> = (props) => {
-  const { position, date, variants } = props;
+  const { position, date, variant } = props;
 
   // Determine if the flag is closer to the left or right edge
   const isRightSide = position > 88;
   const isLeftSide = position < 12;
 
   const flagsToModifiers = [
-    ...variants.map(
-      (variant) => `study-planner__timeline-progress-flag--${variant}`
-    ),
     isRightSide ? "study-planner__timeline-progress-flag--on-right-side" : "",
     isLeftSide ? "study-planner__timeline-progress-flag--on-left-side" : "",
   ].join(" ");
 
-  return (
-    <motion.div
-      className={`study-planner__timeline-progress-flag ${flagsToModifiers}`}
-      style={
-        isRightSide ? { right: `${100 - position}%` } : { left: `${position}%` }
+  /**
+   * Tooltip's text based on the flag variant
+   * @returns locale string
+   */
+  const getTooltipForFlag = () => {
+    if (variant) {
+      switch (variant) {
+        case "start":
+          return t("labels.studyPlannerTooltipStartDate", {
+            ns: "hops_new",
+          });
+        case "end":
+          return t("labels.studyPlannerTooltipEndDate", {
+            ns: "hops_new",
+          });
+        case "current":
+          return t("labels.studyPlannerTooltipPrecentDate", {
+            ns: "hops_new",
+          });
+        case "goal":
+          return t("labels.studyPlannerTooltipGraduationGoalDate", {
+            ns: "hops_new",
+          });
+        case "estimated":
+          return t("labels.studyPlannerTooltipEstimatedDGraduationDate", {
+            ns: "hops_new",
+          });
+        default:
+          "";
       }
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      variants={flagVariants}
-      layout
-      layoutId={`flag-${variants.join("-")}`}
+    }
+  };
+
+  return (
+    <Dropdown
+      alignSelfVertically="top"
+      openByHover
+      content={getTooltipForFlag()}
     >
       <motion.div
+        className={`study-planner__timeline-progress-flag study-planner__timeline-progress-flag--${variant} ${flagsToModifiers}`}
+        style={
+          isRightSide
+            ? { right: `${100 - position}%` }
+            : { left: `${position}%` }
+        }
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={flagVariants}
         layout
-        className="study-planner__timeline-progress-flag-label-container"
+        layoutId={`flag-${variant}`}
       >
         <motion.div
           layout
-          className="study-planner__timeline-progress-flag-icon"
-        />
-        <motion.div
-          layout
-          className="study-planner__timeline-progress-flag-label"
+          className="study-planner__timeline-progress-flag-label-container"
         >
-          {localize.date(date)}
+          <motion.div
+            layout
+            className="study-planner__timeline-progress-flag-icon"
+          />
+          <motion.div
+            layout
+            className="study-planner__timeline-progress-flag-label"
+          >
+            {localize.date(date)}
+          </motion.div>
         </motion.div>
+        <motion.div
+          className="study-planner__timeline-progress-flag-line"
+          layout
+        />
       </motion.div>
-      <motion.div
-        className="study-planner__timeline-progress-flag-line"
-        layout
-      />
-    </motion.div>
+    </Dropdown>
   );
 };
 
