@@ -35,6 +35,8 @@ const UPPERSECONDARY_PROGRAMMES = [
   "Aineopiskelu/yo-tutkinto",
   "Aineopiskelu/lukio",
   "Aineopiskelu/lukio (oppivelvolliset)",
+  "Aineopiskelu/valmistuneet",
+  "Kahden tutkinnon opinnot",
 ];
 
 /**
