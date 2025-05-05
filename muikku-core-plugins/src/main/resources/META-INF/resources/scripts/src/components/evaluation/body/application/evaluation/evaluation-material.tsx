@@ -108,7 +108,7 @@ export class EvaluationMaterial extends React.Component<
         readOnly
         answersVisible
         modifiers="evaluation-material-page"
-        usedAs={"evaluationTool"}
+        usedAs="evaluationTool"
         userEntityId={this.props.userEntityId}
         answerable={true}
       >
