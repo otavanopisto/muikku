@@ -10,13 +10,14 @@ public class WorkspaceMaterialCompositeReply {
   public WorkspaceMaterialCompositeReply(){
   }
   
-  public WorkspaceMaterialCompositeReply(List<WorkspaceMaterialFieldAnswer> answers, WorkspaceMaterialReplyState state, Date created, Date lastModified, Date submitted, Date withdrawn) {
+  public WorkspaceMaterialCompositeReply(List<WorkspaceMaterialFieldAnswer> answers, WorkspaceMaterialReplyState state, Date created, Date lastModified, Date submitted, Date withdrawn, boolean locked) {
     this.answers = answers;
     this.state = state;
     this.created = created;
     this.lastModified = lastModified;
     this.submitted = submitted;
     this.withdrawn = withdrawn;
+    this.locked = locked;
   }
   
   public WorkspaceMaterialReplyState getState() {
@@ -67,10 +68,20 @@ public class WorkspaceMaterialCompositeReply {
     this.withdrawn = withdrawn;
   }
 
+  public boolean getLocked() {
+    return locked;
+  }
+
+  public void setLocked(boolean locked) {
+    this.locked = locked;
+  }
+
   private List<WorkspaceMaterialFieldAnswer> answers;
   private WorkspaceMaterialReplyState state;
   private Date created;
   private Date lastModified;
   private Date submitted;
   private Date withdrawn;
+  private boolean locked;
+
 }

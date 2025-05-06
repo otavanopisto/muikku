@@ -2388,7 +2388,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         reply != null ? reply.getCreated() : null,
         reply != null ? reply.getLastModified() : null,
         reply != null ? reply.getSubmitted() : null,
-        reply != null ? reply.getWithdrawn() : null
+        reply != null ? reply.getWithdrawn() : null,
+        reply != null ? reply.getLocked() : false
       );
 
       return Response.ok(result).build();
