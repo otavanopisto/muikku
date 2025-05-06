@@ -75,6 +75,7 @@ import {
   SelectionField,
   SorterField,
   TextField,
+  MStyles,
 } from "./plugins";
 
 const LICENSE_KEY = "GPL";
@@ -203,6 +204,7 @@ export const testConfig: EditorConfig = {
       "|",
       "heading",
       "style",
+      "muikku-m-styles",
       "|",
       "fontSize",
       "fontFamily",
@@ -250,6 +252,7 @@ export const testConfig: EditorConfig = {
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    MStyles,
     JournalField,
     FileField,
     AudioField,
@@ -436,6 +439,12 @@ export const testConfig: EditorConfig = {
   placeholder: "Type or paste your content here!",
   style: {
     definitions: [
+      {
+        // This style will convert the element to a blockquote
+        name: "Convert to Quote",
+        element: "blockquote",
+        classes: ["special-quote"],
+      },
       {
         name: "Article category",
         element: "h3",

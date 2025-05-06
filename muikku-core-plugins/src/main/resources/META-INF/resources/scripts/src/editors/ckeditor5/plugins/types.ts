@@ -403,3 +403,14 @@ export interface FileFieldDataContent {
 export interface JournalFieldDataContent {
   name: string;
 }
+
+// M-STYLES PLUGIN TYPES
+
+/**
+ * Interface for the content of the m-styles field
+ */
+export interface MuikkuStyleDefinition {
+  name: string;
+  element: string;
+  attributes: Record<string, unknown>;
+}

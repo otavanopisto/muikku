@@ -7,3 +7,4 @@ export { default as TextField } from "./textfield";
 export { default as AudioField } from "./audiofield";
 export { default as FileField } from "./filefield";
 export { default as JournalField } from "./journalfield";
+export { default as MStyles } from "./m-styles";
