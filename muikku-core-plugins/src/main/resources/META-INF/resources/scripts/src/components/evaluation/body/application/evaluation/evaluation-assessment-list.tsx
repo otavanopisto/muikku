@@ -1,10 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
-import { AnyActionType } from "~/actions";
-import { connect } from "react-redux";
-import { Action, Dispatch } from "redux";
-import { EvaluationState } from "~/reducers/main-function/evaluation";
+import { useDispatch, useSelector } from "react-redux";
 import Link from "~/components/general/link";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
@@ -14,12 +11,13 @@ import {
   MaterialCompositeReply,
 } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import Button from "~/components/general/button";
+import { toggleLockedAssignment } from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
  * EvaluationEventContentCardProps
  */
 interface AssessmentListProps {
-  evaluation: EvaluationState;
   workspaces: WorkspaceDataType[];
   selectedAssessment: EvaluationAssessmentRequest;
 }
@@ -31,13 +29,17 @@ interface AssessmentListProps {
  * @returns JSX.Element
  */
 const AssessmentList: React.FC<AssessmentListProps> = (props) => {
-  const { evaluation, workspaces, selectedAssessment } = props;
+  const { workspaces, selectedAssessment } = props;
 
   const { t } = useTranslation(["evaluation", "materials", "common"]);
 
   const [listOfAssignmentIds, setListOfAssignmentIds] = React.useState<
     number[]
   >([]);
+
+  const evaluation = useSelector((state: StateType) => state.evaluations);
+
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     if (
@@ -227,6 +229,26 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
           ) : null}
         </>
       </div>
+
+      {evaluation.evaluationCurrentStudentAssigments.state === "READY" && (
+        <div className="evaluation-modal__content-main-actions">
+          <Button
+            onClick={() => {
+              dispatch(toggleLockedAssignment({ action: "lock" }));
+            }}
+          >
+            Lock all
+          </Button>
+          <Button
+            onClick={() => {
+              dispatch(toggleLockedAssignment({ action: "unlock" }));
+            }}
+          >
+            Unlock all
+          </Button>
+        </div>
+      )}
+
       <div className="evaluation-modal__content-body">
         {evaluation.evaluationCurrentStudentAssigments.state === "READY" &&
         evaluation.evaluationCompositeReplies.state === "READY" ? (
@@ -239,22 +261,4 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    evaluation: state.evaluations,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AssessmentList);
+export default AssessmentList;

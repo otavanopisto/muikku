@@ -122,6 +122,14 @@
   }
 }
 
+.evaluation-modal__content-main-actions {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
 .evaluation-modal__content-actions {
   align-items: center;
   display: flex;

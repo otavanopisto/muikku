@@ -16,6 +16,8 @@ import { StateType } from "~/reducers/index";
 import {
   UpdateOpenedAssignmentEvaluationId,
   updateOpenedAssignmentEvaluation,
+  ToggleLockedAssigment,
+  toggleLockedAssignment,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import ExerciseEditor from "./editors/exercise-editor";
@@ -39,6 +41,7 @@ interface EvaluationAssessmentAssignmentProps extends WithTranslation {
   evaluations: EvaluationState;
   selectedAssessment: EvaluationAssessmentRequest;
   updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
+  toggleLockedAssignment: ToggleLockedAssigment;
   showAsHidden: boolean;
   compositeReply?: MaterialCompositeReply;
   onClickOpen?: (id: number) => void;
@@ -241,6 +244,17 @@ class EvaluationAssessmentAssignment extends React.Component<
     this.setState({
       openDrawer: false,
       openAssignmentType: undefined,
+    });
+  };
+
+  /**
+   * handleToggleLockedAssignment
+   * @param action action
+   */
+  handleToggleLockedAssignment = (action: "lock" | "unlock") => () => {
+    this.props.toggleLockedAssignment({
+      action,
+      workspaceMaterialId: this.props.assigment.id,
     });
   };
 
@@ -554,6 +568,31 @@ class EvaluationAssessmentAssignment extends React.Component<
             {this.renderAssignmentMeta(compositeReply)}
           </div>
           <div className="evaluation-modal__item-functions">
+            {this.props.assigment.assignmentType === "EVALUATED" && (
+              <ButtonPill
+                aria-label={t("actions.evaluateAssignment", {
+                  ns: "evaluation",
+                })}
+                onClick={this.handleToggleLockedAssignment(
+                  (
+                    this.props.evaluations.evaluationCurrentStudentAssigments
+                      .data?.idListOfLockedAssigments || []
+                  ).includes(this.props.assigment.id)
+                    ? "unlock"
+                    : "lock"
+                )}
+                buttonModifiers={["evaluate"]}
+                icon={
+                  (
+                    this.props.evaluations.evaluationCurrentStudentAssigments
+                      .data?.idListOfLockedAssigments || []
+                  ).includes(this.props.assigment.id)
+                    ? "lock-open"
+                    : "lock"
+                }
+              />
+            )}
+
             {this.props.assigment.assignmentType === "EVALUATED" ||
             this.props.assigment.assignmentType === "EXERCISE" ? (
               compositeReply &&
@@ -659,7 +698,13 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ updateOpenedAssignmentEvaluation }, dispatch);
+  return bindActionCreators(
+    {
+      updateOpenedAssignmentEvaluation,
+      toggleLockedAssignment,
+    },
+    dispatch
+  );
 }
 
 export default withTranslation([

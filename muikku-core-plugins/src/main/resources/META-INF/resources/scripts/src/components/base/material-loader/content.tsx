@@ -94,57 +94,6 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
       "material-page__content material-page__content--view-restricted";
   }
 
-  /**
-   * isReadOnly. Helper function to check if the material is read only.
-   * @returns boolean
-   */
-  const isReadOnly = () => {
-    // Parent props readOnly is true
-    if (props.readOnly) {
-      return true;
-    }
-
-    // If the material is locked, it is read only
-    if (props.compositeReplies) {
-      if (props.compositeReplies.locked) {
-        return true;
-      }
-    }
-
-    // If the material is answerable by parent props, and existing state configuration
-    // has fields-read-only set to true, it is read only
-    if (
-      props.answerable &&
-      props.stateConfiguration &&
-      props.stateConfiguration["fields-read-only"]
-    ) {
-      return true;
-    }
-    return false;
-  };
-
-  /**
-   * isAnswerable. Helper function to check if the material is answerable.
-   * Note that priority of conditions is different than isReadOnly.
-   * @returns boolean
-   */
-  const isAnswerable = () => {
-    // If the material is locked, it is not answerable
-    if (props.compositeReplies) {
-      if (props.compositeReplies.locked) {
-        return false;
-      }
-    }
-
-    // If parent props answerable is true, it is answerable
-    if (props.answerable) {
-      return true;
-    }
-
-    // Defaults to false
-    return false;
-  };
-
   return (
     <>
       <div
@@ -175,8 +124,8 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
             onAnswerChange={props.onAnswerChange}
             onAnswerCheckableChange={props.onAnswerCheckableChange}
             invisible={props.invisible}
-            readOnly={isReadOnly()}
-            answerable={isAnswerable()}
+            readOnly={props.readOnly}
+            answerable={props.answerable}
             answerRegistry={props.answerRegistry}
           />
         )}
