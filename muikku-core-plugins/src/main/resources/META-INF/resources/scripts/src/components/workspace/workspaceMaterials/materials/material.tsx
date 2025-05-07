@@ -37,7 +37,6 @@ import { MaterialLoaderPoints } from "~/components/base/material-loader/points";
 interface WorkspaceMaterialProps extends WithTranslation {
   status: StatusType;
   workspaceEditMode: WorkspaceEditModeStateType;
-  materialsAreDisabled: boolean;
   materialContentNode: MaterialContentNodeWithIdAndLogic;
   folder: MaterialContentNodeWithIdAndLogic;
   compositeReplies: MaterialCompositeReply;
@@ -152,12 +151,8 @@ class WorkspaceMaterial extends React.Component<
             material={this.props.materialContentNode}
             workspace={this.props.workspace}
             compositeReplies={this.props.compositeReplies}
-            answerable={
-              this.props.status.loggedIn && !this.props.materialsAreDisabled
-            }
-            readOnly={
-              !this.props.status.loggedIn || this.props.materialsAreDisabled
-            }
+            answerable={this.props.status.loggedIn}
+            readOnly={!this.props.status.loggedIn}
             onAssignmentStateModified={this.updateWorkspaceActivity}
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
@@ -222,7 +217,6 @@ function mapStateToProps(state: StateType) {
   return {
     workspaceEditMode: state.workspaces.editMode,
     status: state.status,
-    materialsAreDisabled: state.workspaces.materialsAreDisabled,
   };
 }
 

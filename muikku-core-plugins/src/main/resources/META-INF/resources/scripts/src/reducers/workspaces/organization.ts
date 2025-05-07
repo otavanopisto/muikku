@@ -6,7 +6,6 @@ import { Reducer } from "redux";
  * initialOrganizationWorkspacesState
  */
 const initialOrganizationWorkspacesState: WorkspacesState = {
-  materialsAreDisabled: false,
   workspaceIsBeingEvaluated: false,
   availableWorkspaces: [],
   templateWorkspaces: [],

@@ -2,9 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { useTranslation } from "react-i18next";
-import { WorkspaceAssessmentState } from "~/generated/client/models/WorkspaceAssessmentState";
-import { WorkspaceSubject } from "~/generated/client/models/WorkspaceSubject";
-import { localize } from "~/locales/i18n";
 import "~/sass/elements/workspace-assessment.scss";
 
 /**

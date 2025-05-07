@@ -142,11 +142,6 @@ export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_ST
     }
   >;
 
-export type UPDATE_MATERIALS_ARE_DISABLED = SpecificActionType<
-  "UPDATE_MATERIALS_ARE_DISABLED",
-  boolean
->;
-
 export type UPDATE_WORKSPACE_IS_BEING_EVALUATED = SpecificActionType<
   "UPDATE_WORKSPACE_IS_BEING_EVALUATED",
   boolean
@@ -657,10 +652,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         workspace.isCourseMember = isCourseMember;
         workspace.details = details;
 
-        const isMaterialsDisabled = shouldMaterialsBeDisabled(
-          workspace.activity
-        );
-
         const isBeingEvaluatedValue = isBeingEvaluated(
           workspace.activity,
           workspace.assessmentRequests
@@ -669,11 +660,6 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         dispatch({
           type: "SET_CURRENT_WORKSPACE",
           payload: workspace,
-        });
-
-        dispatch({
-          type: "UPDATE_MATERIALS_ARE_DISABLED",
-          payload: isMaterialsDisabled,
         });
 
         dispatch({
@@ -767,8 +753,6 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
             studentEntityId: state.status.userSchoolDataIdentifier,
           });
 
-          const isMaterialsDisabled = shouldMaterialsBeDisabled(activity);
-
           const isBeingEvaluatedValue = isBeingEvaluated(
             activity,
             state.workspaces.currentWorkspace.assessmentRequests
@@ -777,11 +761,6 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
           dispatch({
             type: "UPDATE_CURRENT_WORKSPACE_ACTIVITY",
             payload: activity,
-          });
-
-          dispatch({
-            type: "UPDATE_MATERIALS_ARE_DISABLED",
-            payload: isMaterialsDisabled,
           });
 
           dispatch({
@@ -2458,49 +2437,6 @@ const isBeingEvaluated = (
   }
 
   return assessmentRequests[assessmentRequests.length - 1].locked;
-};
-
-/**
- * Returns true if the materials should be disabled.
- * @param activity activity
- */
-const shouldMaterialsBeDisabled = (activity?: WorkspaceActivity) => {
-  let isDisabled = false;
-
-  if (!activity) {
-    return isDisabled;
-  }
-
-  // Values to indicate pending state
-  const pendingValues: WorkspaceAssessmentStateType[] = [
-    "pending",
-    "pending_fail",
-    "pending_pass",
-  ];
-
-  // Get the number of modules
-  const valueToCheck = activity.assessmentStates.length;
-  let passValueCount = 0;
-
-  activity.assessmentStates.forEach((activity) => {
-    // Check if any of the modules are in pending state
-    if (pendingValues.includes(activity.state)) {
-      isDisabled = true;
-    }
-    // Check if module is passed and increment counter
-    if (activity.state === "pass") {
-      passValueCount++;
-    }
-  });
-
-  // there must be at least one assessmentState and
-  // If all modules are passed, materials are disabled.
-  // This is to prevent students from changing their answers after passing grades are given
-  if (valueToCheck > 0 && passValueCount === valueToCheck) {
-    isDisabled = true;
-  }
-
-  return isDisabled;
 };
 
 export {
