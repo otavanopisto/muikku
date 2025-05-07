@@ -5,8 +5,7 @@ import { useTranslation } from "react-i18next";
 import { LanguageData } from "~/@types/shared";
 import { LanguageLevels } from "~/reducers/main-function/language-profile";
 import { availableLanguages } from "~/mock/mock-data";
-
-export type LanguageCode = (typeof availableLanguages)[number]["code"];
+import { LanguageCode } from "~/@types/shared";
 
 interface LanguageProfileDataDisplayerProps {
   labels?: string[];

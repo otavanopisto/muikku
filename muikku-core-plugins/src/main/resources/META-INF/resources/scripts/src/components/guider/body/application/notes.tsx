@@ -51,7 +51,7 @@ const GuiderNotes = (props: GuiderNotesProps) => {
   const onArchiveClick = (noteId: number) => {
     dispatch(toggleNoteArchive(noteId));
   };
-  
+
   /**
    * onUpdateNotesItemStatus function
    * @param noteId noteId

@@ -8,7 +8,7 @@ import {
   LanguageLevels,
   SkillLevels,
 } from "~/reducers/main-function/language-profile";
-import { LanguageCode } from "./components/language-profile-data-displayer";
+import { LanguageCode } from "~/@types/shared";
 import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 

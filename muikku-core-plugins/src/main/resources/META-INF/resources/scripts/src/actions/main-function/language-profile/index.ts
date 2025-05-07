@@ -12,7 +12,11 @@ import {
   Subjects,
   LanguageLevels,
 } from "~/reducers/main-function/language-profile";
-import { LoadingState, SaveState } from "~/@types/shared";
+import { LoadingState, SaveState, LanguageCode } from "~/@types/shared";
+import {
+  LanguageProfileSample,
+  CreateLanguageProfileSampleRequest,
+} from "~/generated/client";
 
 export type LanguageProfileLanguagePayload = {
   code: string;
@@ -59,6 +63,26 @@ export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SUBJECTS = SpecificActionType<
   { code: string; cellId: string; value: Subjects }
 >;
 
+export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLES = SpecificActionType<
+  "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLES",
+  LanguageProfileSample[]
+>;
+
+export type ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<
+  "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+  LanguageProfileSample
+>;
+
+export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<
+  "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+  LanguageProfileSample
+>;
+
+export type DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<
+  "DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+  { userEntityId: number; sampleId: number }
+>;
+
 /**
  * loadLanguageProfileData
  */
@@ -67,12 +91,38 @@ export interface loadLanguageProfileTriggerType {
 }
 
 /**
- * saveInitalizationWizardData
+ * saveLanguageProfileData
  */
 export interface saveLanguageProfileTriggerType {
   (
     userEntityId: number,
     data: LanguageProfileData,
+    success?: () => void,
+    fail?: () => void
+  ): AnyActionType;
+}
+
+export interface SaveLanguageProfileSamplesTriggerType {
+  (
+    userEntityId: number,
+    samples: LanguageProfileSample[],
+    success?: () => void,
+    fail?: () => void
+  ): AnyActionType;
+}
+
+export interface DeleteLanguageProfileSamplesTriggerType {
+  (
+    userEntityId: number,
+    sampleIds: number[],
+    success?: () => void,
+    fail?: () => void
+  ): AnyActionType;
+}
+export interface CreateLanguageProfileSampleTriggerType {
+  (
+    userEntityId: number,
+    sample: CreateLanguageProfileSampleRequest,
     success?: () => void,
     fail?: () => void
   ): AnyActionType;
@@ -198,4 +248,328 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
     };
   };
 
-export { loadLanguageProfile, saveLanguageProfile };
+/**
+ * createLanguageSample
+ * @param userEntityId student id
+ * @param sample request sample
+ * @param success executed on success
+ * @param fail executed on faoö
+ */
+const createLanguageSample: CreateLanguageProfileSampleTriggerType =
+  function createLanguageSample(
+    userEntityId: number,
+    sample: CreateLanguageProfileSampleRequest,
+    success?: () => void,
+    fail?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          payload: "IN_PROGRESS",
+        });
+
+        const LanguageProfileApi = MApi.getLanguageProfile();
+
+        // Create a new sample
+        const newSample = await LanguageProfileApi.createLanguageProfileSample({
+          userEntityId,
+          createLanguageProfileSampleRequest: {
+            language: sample.language,
+            value: sample.value,
+          },
+        });
+
+        dispatch({
+          type: "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+          payload: newSample,
+        });
+
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          payload: "SUCCESS",
+        });
+        success && success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          payload: "FAILED",
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              error: err,
+              ns: "languageProfile",
+            }),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+/**
+ * createLanguageSample
+ * @param userEntityId student id
+ * @param sample request sample
+ * @param success executed on success
+ * @param fail executed on faoö
+ */
+const deleteLanguageSample: CreateLanguageProfileSampleTriggerType =
+  function deleteLanguageSample(
+    userEntityId: number,
+    sample: CreateLanguageProfileSampleRequest,
+    success?: () => void,
+    fail?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          payload: "IN_PROGRESS",
+        });
+
+        const LanguageProfileApi = MApi.getLanguageProfile();
+
+        // Create a new sample
+        const newSample = await LanguageProfileApi.createLanguageProfileSample({
+          userEntityId,
+          createLanguageProfileSampleRequest: {
+            language: sample.language,
+            value: sample.value,
+          },
+        });
+
+        dispatch({
+          type: "DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+          payload: newSample,
+        });
+
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          payload: "SUCCESS",
+        });
+        success && success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          payload: "FAILED",
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              error: err,
+              ns: "languageProfile",
+            }),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+/**
+ * saveLanguageProfileData
+ * @param userEntityId student id
+ * @param data formData
+ * @param success executed on success
+ * @param fail executed on faoö
+ */
+const saveLanguageSamples: SaveLanguageProfileSamplesTriggerType =
+  function saveLanguageSamples(
+    userEntityId: number,
+    samples: LanguageProfileSample[],
+    success?: () => void,
+    fail?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      await Promise.all(
+        samples.map(async (sample) => {
+          if (!sample.value) {
+            return;
+          }
+          try {
+            dispatch({
+              type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+              payload: "IN_PROGRESS",
+            });
+
+            const LanguageProfileApi = MApi.getLanguageProfile();
+
+            // Check if the sample already exists
+
+            await LanguageProfileApi.updateLanguageProfileSample({
+              userEntityId,
+              sampleId: sample.id,
+              updateLanguageProfileSampleRequest: {
+                value: sample.value,
+              },
+            });
+          } catch (err) {
+            if (!isMApiError(err)) {
+              throw err;
+            }
+            dispatch({
+              type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+              payload: "FAILED",
+            });
+            dispatch(
+              notificationActions.displayNotification(
+                i18n.t("notifications.loadError", {
+                  error: err,
+                  ns: "languageProfile",
+                }),
+                "error"
+              )
+            );
+            fail && fail();
+          }
+        })
+      );
+    };
+  };
+
+/**
+ * removeLanguageSamples
+ * @param userEntityId student id
+ * @param data formData
+ * @param success executed on success
+ * @param fail executed on faoö
+ */
+const deleteLanguageSamples: DeleteLanguageProfileSamplesTriggerType =
+  function deleteLanguageSamples(
+    userEntityId: number,
+    sampleIds: number[],
+    success?: () => void,
+    fail?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      await Promise.all(
+        sampleIds.map(async (id) => {
+          try {
+            dispatch({
+              type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+              payload: "IN_PROGRESS",
+            });
+
+            const LanguageProfileApi = MApi.getLanguageProfile();
+
+            await LanguageProfileApi.deleteLanguageProfileSample({
+              userEntityId,
+              sampleId: id,
+            });
+            dispatch({
+              type: "DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+              payload: {
+                userEntityId,
+                sampleId: id,
+              },
+            });
+          } catch (err) {
+            if (!isMApiError(err)) {
+              throw err;
+            }
+            dispatch({
+              type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+              payload: "FAILED",
+            });
+            dispatch(
+              notificationActions.displayNotification(
+                i18n.t("notifications.loadError", {
+                  error: err,
+                  ns: "languageProfile",
+                }),
+                "error"
+              )
+            );
+            fail && fail();
+          }
+        })
+      );
+    };
+  };
+
+/**
+ * loadLanguageProfileData
+ * @param userEntityId userEntityId
+ * @param success success
+ * @param fail fail
+ */
+const loadLanguageSamples: loadLanguageProfileTriggerType =
+  function loadLanguageProfile(
+    userEntityId: number,
+    success?: () => void,
+    fail?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          payload: "LOADING",
+        });
+        const LanguageProfileApi = MApi.getLanguageProfile();
+        const data = await LanguageProfileApi.getLanguageProfileSamples({
+          userEntityId,
+        });
+        dispatch({
+          type: "UPDATE_LANGUAGE_PROFILE_VALUES",
+          payload: { samples: data },
+        });
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          payload: "READY",
+        });
+        success && success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          payload: "ERROR",
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              error: err,
+              ns: "languageProfile",
+            }),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+export {
+  loadLanguageProfile,
+  saveLanguageProfile,
+  saveLanguageSamples,
+  loadLanguageSamples,
+  deleteLanguageSamples,
+  createLanguageSample,
+};

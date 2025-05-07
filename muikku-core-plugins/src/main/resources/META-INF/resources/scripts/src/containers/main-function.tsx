@@ -30,7 +30,10 @@ import {
 import { WorkspacesActiveFiltersType } from "~/reducers/workspaces";
 import OrganizationAdministrationBody from "../components/organization/body";
 import CommunicatorBody from "../components/communicator/body";
-import { loadLanguageProfile } from "~/actions/main-function/language-profile";
+import {
+  loadLanguageProfile,
+  loadLanguageSamples,
+} from "~/actions/main-function/language-profile";
 import {
   loadNewlyReceivedMessage,
   loadMessageThreads,
@@ -1128,6 +1131,9 @@ export default class MainFunction extends React.Component<
 
     this.props.store.dispatch(
       loadLanguageProfile(this.props.store.getState().status.userId) as Action
+    );
+    this.props.store.dispatch(
+      loadLanguageSamples(this.props.store.getState().status.userId) as Action
     );
 
     return <LanguageProfileBody />;

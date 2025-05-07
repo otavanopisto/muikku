@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { LanguageProfileData } from "~/reducers/main-function/language-profile";
@@ -20,9 +19,8 @@ const LanguageUsage = () => {
   // const context = React.useContext(InitializationContext);
 
   const dispatch = useDispatch();
-  const { languages } = useSelector(
-    (state: StateType) => state.languageProfile.data
-  );
+  const { languages, languageUsage, languageLearning, studyMotivation } =
+    useSelector((state: StateType) => state.languageProfile.data);
 
   // Create a ref to store the timeout ID
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -102,6 +100,7 @@ const LanguageUsage = () => {
           <h2>Kielten käyttäminen</h2>
           <textarea
             id="languageUsage"
+            defaultValue={languageUsage || ""}
             className="form-element__textarea"
             onChange={(e) => handleFieldChange(e, "languageUsage")}
           />
@@ -110,6 +109,7 @@ const LanguageUsage = () => {
           <h2>Motivaatio opiskelussa</h2>
           <textarea
             id="studyMotivation"
+            defaultValue={studyMotivation || ""}
             className="form-element__textarea"
             onChange={(e) => handleFieldChange(e, "studyMotivation")}
           />
@@ -118,6 +118,7 @@ const LanguageUsage = () => {
           <h2>Kielten oppimien</h2>
           <textarea
             id="messageForTeacher"
+            defaultValue={languageLearning || ""}
             className="form-element__textarea"
             onChange={(e) => handleFieldChange(e, "languageLearning")}
           />

@@ -2,7 +2,7 @@ import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { LoadingState, SaveState } from "~/@types/shared";
 import { LanguageData } from "~/@types/shared";
-import c from "~/components/base/input-contacts-autofill";
+import { LanguageProfileSample } from "~/generated/client";
 
 export type LanguageLevels =
   | "A11"
@@ -38,7 +38,9 @@ export type LanguageProfileData = {
   studyMotivation: string;
   languageLearning: string;
   languages: LanguageProfileLanguage[];
+  samples: LanguageProfileSample[];
 };
+
 /**
  * Redux state interface.
  * Object that combines the results of the student and staff search
@@ -58,6 +60,7 @@ const initializeDependantState: LanguageProfileState = {
     studyMotivation: "",
     languageLearning: "",
     languages: [],
+    samples: [],
   },
   loading: "WAITING",
   saving: "PENDING",
@@ -232,12 +235,49 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
-    case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLES": {
+    case "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE": {
       const { payload } = action;
 
       return {
         ...state,
-        data: { ...state.data, languageSamples: payload },
+        data: {
+          ...state.data,
+          samples: [...state.data.samples, payload],
+        },
+      };
+    }
+
+    case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE": {
+      const { payload } = action;
+
+      const samplesUpdate = [...state.data.samples];
+      const sampleIndex = samplesUpdate.findIndex(
+        (sample) => sample.id === payload.id
+      );
+
+      samplesUpdate.splice(sampleIndex, 1, payload);
+
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          samples: samplesUpdate,
+        },
+      };
+    }
+
+    case "DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE": {
+      const { payload } = action;
+      const newSamples = [...state.data.samples];
+
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          samples: newSamples.filter(
+            (sample) => sample.id !== payload.sampleId
+          ),
+        },
       };
     }
 
