@@ -1577,8 +1577,8 @@ public class UserRESTService extends AbstractRESTService {
         toId(transferCredit.getCurriculumIdentifier()));
   }
   
-  private List<fi.otavanopisto.muikku.rest.model.UserContact> createRestModel(UserContact[] userContacts) {
-    List<fi.otavanopisto.muikku.rest.model.UserContact> result = new ArrayList<>();
+  private List<fi.otavanopisto.muikku.rest.model.UserContactRestModel> createRestModel(UserContact[] userContacts) {
+    List<fi.otavanopisto.muikku.rest.model.UserContactRestModel> result = new ArrayList<>();
     
     if (userContacts != null) {
       for (UserContact userContact : userContacts) {
@@ -1589,8 +1589,8 @@ public class UserRESTService extends AbstractRESTService {
     return result;
   }
   
-  private fi.otavanopisto.muikku.rest.model.UserContact createRestModel(UserContact userContact) {
-    return new fi.otavanopisto.muikku.rest.model.UserContact(
+  private fi.otavanopisto.muikku.rest.model.UserContactRestModel createRestModel(UserContact userContact) {
+    return new fi.otavanopisto.muikku.rest.model.UserContactRestModel(
         userContact.getId(),
         userContact.getName(), 
         userContact.getPhoneNumber(), 

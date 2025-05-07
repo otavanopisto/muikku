@@ -1866,21 +1866,19 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier) {
 
     BridgeResponse<fi.otavanopisto.pyramus.rest.model.UserContact[]> userContacts = null;
-    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
-    if (studentId != null) {
-      userContacts = pyramusClient.responseGet(String.format("/contacts/users/%d/contacts", studentId),
+    Long userId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
+    // If a user matching the student's ID is not found, an attempt will be made to
+    // get among the staff members
+    if (userId == null) {
+      userId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
+    }
+    if (userId != null) {
+      userContacts = pyramusClient.responseGet(String.format("/contacts/users/%d/contacts", userId),
           fi.otavanopisto.pyramus.rest.model.UserContact[].class);
     }
     else {
-      Long staffId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
-      if (staffId != null) {
-        userContacts = pyramusClient.responseGet(String.format("/contacts/users/%d/contacts", staffId),
-            fi.otavanopisto.pyramus.rest.model.UserContact[].class);
-      }
-      else {
-        logger.severe(String.format("PyramusUserSchoolDataBridge.listUserContacts malformed user identifier %s\n%s",
-            userIdentifier, ExceptionUtils.getStackTrace(new Throwable())));
-      }
+      logger.severe(String.format("PyramusUserSchoolDataBridge.listUserContacts malformed user identifier %s\n%s",
+          userIdentifier, ExceptionUtils.getStackTrace(new Throwable())));
     }
 
     if (userContacts != null) {
