@@ -30,6 +30,7 @@ import { MaterialLoaderExternalContent } from "~/components/base/material-loader
 import { MaterialCompositeReply } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MaterialLoaderPoints } from "~/components/base/material-loader/points";
+import { MaterialLoaderAssignmentLock } from "~/components/base/material-loader/assigment-lock";
 
 /**
  * WorkspaceMaterialProps
@@ -186,6 +187,7 @@ class WorkspaceMaterial extends React.Component<
                   />
                 ) : null}
                 <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
+                <MaterialLoaderAssignmentLock {...props} {...state} />
                 {isAssignment && hasEvaluation ? (
                   <div
                     className={`material-page__assignment-assessment ${evalStateClassName} rs_skip_always`}
