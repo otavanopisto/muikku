@@ -9,6 +9,7 @@ import EvaluationAssessmentInterminEvaluation from "./evaluation-assessment-inte
 import {
   EvaluationAssessmentRequest,
   MaterialCompositeReply,
+  WorkspaceMaterial,
 } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
@@ -23,226 +24,188 @@ interface AssessmentListProps {
 }
 
 /**
- * Creates evaluation diary event component
+ * Creates evaluation assessment list component
  *
  * @param props props
  * @returns JSX.Element
  */
-const AssessmentList: React.FC<AssessmentListProps> = (props) => {
+const AssessmentList = (props: AssessmentListProps) => {
   const { workspaces, selectedAssessment } = props;
 
   const { t } = useTranslation(["evaluation", "materials", "common"]);
 
-  const [listOfAssignmentIds, setListOfAssignmentIds] = React.useState<
-    number[]
-  >([]);
+  const [openAssignmentIds, setOpenAssignmentIds] = React.useState<number[]>(
+    []
+  );
 
   const evaluation = useSelector((state: StateType) => state.evaluations);
 
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
-    if (
-      evaluation.evaluationDiaryEntries.state === "READY" &&
-      evaluation.evaluationDiaryEntries.data &&
-      evaluation.evaluationDiaryEntries.data.length > 0
-    ) {
-      setListOfAssignmentIds(
-        evaluation.evaluationDiaryEntries.data.map((dEntry) => dEntry.id)
-      );
-    }
-  }, [
-    evaluation.evaluationDiaryEntries.data,
-    evaluation.evaluationDiaryEntries.state,
-  ]);
+  // Memoized evaluated assignments
+  const evaluatedAssignments = React.useMemo(
+    () =>
+      (
+        evaluation.evaluationCurrentStudentAssigments.data?.assigments || []
+      ).filter((assignment) => assignment.assignmentType === "EVALUATED"),
+    [evaluation.evaluationCurrentStudentAssigments.data]
+  );
 
-  /**
-   * Handles close all material contents click
-   */
-  const handleCloseAllMaterialContentClick = () => {
-    setListOfAssignmentIds([]);
-  };
-
-  /**
-   * Handles open all material contents click
-   */
-  const handleOpenAllMaterialContentClick = () => {
-    if (
-      evaluation.evaluationCurrentStudentAssigments &&
+  // Memoized locked assignments
+  const lockedAssignmentIds = React.useMemo(
+    () =>
       evaluation.evaluationCurrentStudentAssigments.data
-    ) {
-      const numberList =
-        evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
-          (item) => item.id
-        );
+        ?.idListOfLockedAssigments || [],
+    [evaluation.evaluationCurrentStudentAssigments.data]
+  );
 
-      setListOfAssignmentIds(numberList);
-    }
+  // Combined state check into a single variable
+  // whether data is ready to be displayed
+  const isDataReady =
+    evaluation.evaluationCurrentStudentAssigments.state === "READY" &&
+    evaluation.evaluationCompositeReplies.state === "READY";
+
+  /**
+   * Handles closing all assignments
+   */
+  const handleCloseAll = () => setOpenAssignmentIds([]);
+
+  /**
+   * Handles opening all assignments
+   */
+  const handleOpenAll = () => {
+    const allIds =
+      evaluation.evaluationCurrentStudentAssigments.data?.assigments.map(
+        (item) => item.id
+      ) || [];
+    setOpenAssignmentIds(allIds);
   };
 
   /**
-   * Shows hidden evaluation assignment if it's has been submitted and assignment
-   * is set to be hidden or even if student has answered it before it was set to hidden then
-   * other states are also shown as they are part of evaluation
-   *
-   * @param compositeReply assignment compositereply
-   * @returns boolean whether to show assignment or not
+   * Handles toggling an assignment
+   * @param id id
+   */
+  const handleToggleAssignment = (id: number) => {
+    setOpenAssignmentIds((prev) =>
+      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+    );
+  };
+
+  /**
+   * Shows hidden assignment if it is submitted or student has answered to it
+   * before it was hidden
+   * @param compositeReply compositeReply
+   * @returns boolean
    */
   const showAsHiddenEvaluationAssignment = (
     compositeReply?: MaterialCompositeReply
   ): boolean =>
     compositeReply &&
     (compositeReply.submitted !== null ||
-      compositeReply.state === "ANSWERED" ||
-      compositeReply.state === "SUBMITTED" ||
-      compositeReply.state === "WITHDRAWN" ||
-      compositeReply.state === "PASSED" ||
-      compositeReply.state === "FAILED" ||
-      compositeReply.state === "INCOMPLETE");
+      [
+        "ANSWERED",
+        "SUBMITTED",
+        "WITHDRAWN",
+        "PASSED",
+        "FAILED",
+        "INCOMPLETE",
+      ].includes(compositeReply.state));
 
   /**
-   * Handles close specific material content
-   *
-   * @param materialId materialId
+   * Renders assignments
+   * @returns JSX.Element
    */
-  const handleCloseSpecificMaterialContent = (materialId: number) => {
-    const updatedList = listOfAssignmentIds.filter((id) => id !== materialId);
-
-    setListOfAssignmentIds(updatedList);
-  };
-
-  /**
-   * Handles open Material click
-   *
-   * @param id id
-   */
-  const handleOpenMaterialClick = (id: number) => {
-    const updatedList = [...listOfAssignmentIds];
-
-    const index = updatedList.findIndex((itemId) => itemId === id);
-
-    if (index !== -1) {
-      updatedList.splice(index, 1);
-    } else {
-      updatedList.push(id);
+  const renderAssignments = () => {
+    // If there are no assignments, return empty message
+    if (
+      !evaluation.evaluationCurrentStudentAssigments.data?.assigments.length
+    ) {
+      return (
+        <div className="empty">
+          <span>
+            {t("content.empty", { ns: "evaluation", context: "assignments" })}
+          </span>
+        </div>
+      );
     }
 
-    setListOfAssignmentIds(updatedList);
-  };
-
-  // renderEvaluationAssessmentAssignments
-  const renderEvaluationAssessmentAssignments =
-    evaluation.evaluationCurrentStudentAssigments.data &&
-    evaluation.evaluationCurrentStudentAssigments.data.assigments.length > 0 ? (
-      evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
-        (item, i) => {
-          // Possible composite reply
-          const compositeReply =
-            evaluation.evaluationCompositeReplies &&
-            evaluation.evaluationCompositeReplies.data &&
-            evaluation.evaluationCompositeReplies.data.find(
-              (cReply) => cReply.workspaceMaterialId === item.id
-            );
-
-          let showAsHidden = false;
-
-          // If item is set to be hidden check is student has submitted it before
-          // it was set to hidden
-          if (item.hidden) {
-            showAsHidden = showAsHiddenEvaluationAssignment(compositeReply);
-          }
-
-          // Don't show assignment
-          if (item.hidden && !showAsHidden) {
-            return null;
-          }
-
-          const workspace = workspaces.find(
-            (eWorkspace) =>
-              eWorkspace.id === selectedAssessment.workspaceEntityId
+    // Render assignments
+    return evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
+      (item, i) => {
+        const compositeReply =
+          evaluation.evaluationCompositeReplies?.data?.find(
+            (cReply) => cReply.workspaceMaterialId === item.id
           );
 
-          const open = listOfAssignmentIds.includes(item.id);
+        const showAsHidden = item.hidden
+          ? showAsHiddenEvaluationAssignment(compositeReply)
+          : false;
 
-          // For simplicity, we'll use intermin evaluation as its own component
-          if (item.assignmentType === "INTERIM_EVALUATION") {
-            return (
-              <EvaluationAssessmentInterminEvaluation
-                key={i}
-                workspace={workspace}
-                open={open}
-                assigment={item}
-                compositeReply={compositeReply}
-                showAsHidden={showAsHidden}
-                onClickOpen={handleOpenMaterialClick}
-                onSave={handleCloseSpecificMaterialContent}
-                selectedAssessment={selectedAssessment}
-              />
-            );
-          }
+        // If assignment is hidden and condition to show as hidden is not met, return null
+        if (item.hidden && !showAsHidden) return null;
 
-          // Otherwise, it's an assignment component which includes EVALAUTE and EXERCISE type assignments
-          return (
-            <EvaluationAssessmentAssignment
-              key={i}
-              workspace={workspace}
-              open={open}
-              assigment={item}
-              compositeReply={compositeReply}
-              showAsHidden={showAsHidden}
-              onClickOpen={handleOpenMaterialClick}
-              onSave={handleCloseSpecificMaterialContent}
-              selectedAssessment={selectedAssessment}
-            />
-          );
-        }
-      )
-    ) : (
-      <div className="empty">
-        <span>
-          {t("content.empty", { ns: "evaluation", context: "assignments" })}
-        </span>
-      </div>
+        // Get workspace
+        const workspace = workspaces.find(
+          (eWorkspace) => eWorkspace.id === selectedAssessment.workspaceEntityId
+        );
+
+        // Render assignment
+        return (
+          <AssignmentItem
+            key={i}
+            item={item}
+            workspace={workspace}
+            compositeReply={compositeReply}
+            showAsHidden={showAsHidden}
+            isOpen={openAssignmentIds.includes(item.id)}
+            onOpenClick={handleToggleAssignment}
+            onSave={handleCloseAll}
+            selectedAssessment={selectedAssessment}
+          />
+        );
+      }
     );
+  };
 
   return (
     <div className="evaluation-modal__content">
       <div className="evaluation-modal__content-title">
         <>
           {t("labels.assignments", { ns: "materials" })}
-          {evaluation.evaluationCurrentStudentAssigments.state === "READY" &&
-          evaluation.evaluationCompositeReplies.state === "READY" ? (
+          {isDataReady && (
             <div className="evaluation-modal__content-actions">
               <Link
                 className="link link--evaluation link--evaluation-open-close"
-                onClick={handleCloseAllMaterialContentClick}
+                onClick={handleCloseAll}
               >
                 {t("actions.closeAll")}
               </Link>
               <Link
                 className="link link--evaluation link--evaluation-open-close"
-                onClick={handleOpenAllMaterialContentClick}
+                onClick={handleOpenAll}
               >
                 {t("actions.openAll", { ns: "evaluation" })}
               </Link>
             </div>
-          ) : null}
+          )}
         </>
       </div>
 
-      {evaluation.evaluationCurrentStudentAssigments.state === "READY" && (
+      {isDataReady && evaluatedAssignments.length > 0 && (
         <div className="evaluation-modal__content-main-actions">
           <Button
-            onClick={() => {
-              dispatch(toggleLockedAssignment({ action: "lock" }));
-            }}
+            onClick={() => dispatch(toggleLockedAssignment({ action: "lock" }))}
+            disabled={
+              evaluatedAssignments.length === lockedAssignmentIds.length
+            }
           >
             Lock all
           </Button>
           <Button
-            onClick={() => {
-              dispatch(toggleLockedAssignment({ action: "unlock" }));
-            }}
+            onClick={() =>
+              dispatch(toggleLockedAssignment({ action: "unlock" }))
+            }
+            disabled={lockedAssignmentIds.length === 0}
           >
             Unlock all
           </Button>
@@ -250,14 +213,69 @@ const AssessmentList: React.FC<AssessmentListProps> = (props) => {
       )}
 
       <div className="evaluation-modal__content-body">
-        {evaluation.evaluationCurrentStudentAssigments.state === "READY" &&
-        evaluation.evaluationCompositeReplies.state === "READY" ? (
-          renderEvaluationAssessmentAssignments
-        ) : (
-          <div className="loader-empty" />
-        )}
+        {isDataReady ? renderAssignments() : <div className="loader-empty" />}
       </div>
     </div>
+  );
+};
+
+/**
+ * AssignmentItemProps
+ */
+interface AssignmentItemProps {
+  item: WorkspaceMaterial;
+  workspace: WorkspaceDataType | undefined;
+  compositeReply: MaterialCompositeReply | undefined;
+  showAsHidden: boolean;
+  isOpen: boolean;
+  onOpenClick: (id: number) => void;
+  onSave: (id: number) => void;
+  selectedAssessment: EvaluationAssessmentRequest;
+}
+
+/**
+ * AssignmentItem
+ * @param props props
+ * @returns JSX.Element
+ */
+const AssignmentItem = (props: AssignmentItemProps) => {
+  const {
+    item,
+    workspace,
+    compositeReply,
+    showAsHidden,
+    isOpen,
+    onOpenClick,
+    onSave,
+    selectedAssessment,
+  } = props;
+
+  if (item.assignmentType === "INTERIM_EVALUATION") {
+    return (
+      <EvaluationAssessmentInterminEvaluation
+        workspace={workspace}
+        open={isOpen}
+        assigment={item}
+        compositeReply={compositeReply}
+        showAsHidden={showAsHidden}
+        onClickOpen={onOpenClick}
+        onSave={onSave}
+        selectedAssessment={selectedAssessment}
+      />
+    );
+  }
+
+  return (
+    <EvaluationAssessmentAssignment
+      workspace={workspace}
+      open={isOpen}
+      assigment={item}
+      compositeReply={compositeReply}
+      showAsHidden={showAsHidden}
+      onClickOpen={onOpenClick}
+      onSave={onSave}
+      selectedAssessment={selectedAssessment}
+    />
   );
 };
 
