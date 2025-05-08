@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: 20.11.1
 
@@ -26,6 +26,6 @@ jobs:
           reporter: github-pr-review
           eslint_flags: '. --ext .ts,.tsx'
           level: error
-          fail-level: error
+          fail_level: error
           workdir: muikku-core-plugins/src/main/resources/META-INF/resources/scripts/src
 
