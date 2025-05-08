@@ -110,41 +110,4 @@ export default class MStylesUI extends Plugin {
       return dropdownView;
     });
   }
-
-  /**
-   * Updates the active state of the dropdown items
-   * @param dropdownItems - The dropdown items
-   */
-  /* private _updateDropdownActiveState(
-    dropdownItems: Collection<ListDropdownItemDefinition>
-  ) {
-    console.log("updateDropdownActiveState");
-
-    const selection = this.editor.model.document.selection;
-    const selectedElement =
-      selection.getSelectedElement() || selection.getFirstPosition().parent;
-
-    dropdownItems.forEach((item) => {
-      const styleDef = (
-        item as unknown as { model: { styleDefinition: MuikkuStyleDefinition } }
-      ).model.styleDefinition;
-      let isActive = false;
-
-      if (
-        selectedElement &&
-        selectedElement.is("element") &&
-        selectedElement.name === styleDef.name
-      ) {
-        // Check if all attributes match
-        isActive = Object.entries(styleDef.attributes || {}).every(
-          ([key, value]) => selectedElement.getAttribute(key) === value
-        );
-
-        console.log("isActive", selectedElement, isActive);
-      }
-
-      // Update the isOn property
-      (item as unknown as { model: { isOn: boolean } }).model.isOn = isActive;
-    });
-  } */
 }

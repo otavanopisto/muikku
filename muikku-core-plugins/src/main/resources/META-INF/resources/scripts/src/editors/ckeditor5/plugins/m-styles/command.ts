@@ -14,7 +14,7 @@ const ATTRIBUTES_TO_MATCH = ["class"];
  * @param styleClass - The style class
  * @returns True if the classes match, false otherwise
  */
-function classesMatch(elementClasses: string[], styleClass: string) {
+function classesMatch(elementClasses?: string[], styleClass?: string) {
   if (!elementClasses && !styleClass) return true;
   if (!elementClasses || !styleClass) return false;
   // Convert both to arrays
@@ -58,7 +58,7 @@ export default class MStylesCommand extends Command {
               // In case of class, we need to check if the classes match because Ckeditor 5
               // returns an array of classes and check if classes matches
               match = classesMatch(
-                elementAttr["classes"] as string[],
+                (elementAttr?.classes as string[]) || undefined,
                 style.attributes[key] as string
               );
             }
@@ -90,7 +90,7 @@ export default class MStylesCommand extends Command {
         model.document.selection.getFirstPosition().parent;
 
       if (selectedElement && selectedElement.is("element")) {
-        const targetModelName = modelMap[styleDefinition.name];
+        const targetModelName = modelMap[styleDefinition.element];
 
         if (!targetModelName) {
           return;
@@ -99,11 +99,32 @@ export default class MStylesCommand extends Command {
         // Change the element type
         writer.rename(selectedElement, targetModelName);
 
-        // Set/overwrite attributes
-        for (const [key, value] of Object.entries(
-          styleDefinition.attributes || {}
-        )) {
-          writer.setAttribute(key, value, selectedElement);
+        // Handle attributes properly
+        if (styleDefinition.attributes) {
+          // Initialize htmlDivAttributes if it doesn't exist
+          const existingAttrs = (selectedElement.getAttribute(
+            "htmlDivAttributes"
+          ) || {}) as Record<string, unknown>;
+
+          // Create new attributes object with default structure
+          const newAttrs: Record<string, unknown> = {
+            ...existingAttrs,
+            classes: [], // Initialize classes array
+          };
+
+          for (const [key, value] of Object.entries(
+            styleDefinition.attributes
+          )) {
+            if (key === "class") {
+              // Special handling for class attribute
+              newAttrs.classes = (value as string).split(" ");
+            } else {
+              // Handle all other attributes
+              newAttrs[key] = value;
+            }
+          }
+          // Set the htmlDivAttributes
+          writer.setAttribute("htmlDivAttributes", newAttrs, selectedElement);
         }
       }
     });
