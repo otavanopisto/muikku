@@ -6,28 +6,34 @@ import "~/sass/elements/buttons.scss";
 import "~/sass/elements/ordered-container.scss";
 import "~/sass/elements/panel.scss";
 import { useLocation, useParams } from "react-router-dom";
-
+import { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 /**
  * getDefaultMessage
  * @param code code of the error
  * @param isWorkspace whether the error is for a workspace
+ * @param t i18next instance
  */
-const getDefaultMessage = (code: number, isWorkspace: boolean) => {
+const getDefaultMessage = (
+  code: number,
+  isWorkspace: boolean,
+  t: TFunction
+) => {
   switch (code) {
     case 401:
       return isWorkspace
-        ? "Sinun täytyy kirjautua sisään nähdäksesi tämän työtilan"
-        : "Sinun täytyy kirjautua sisään nähdäksesi tämän sivun";
+        ? t("notifications.401_workspace")
+        : t("notifications.401_page");
     case 403:
       return isWorkspace
-        ? "Sinulla ei ole pääsyä tähän työtilaan"
-        : "Sinulla ei ole pääsyä tähän sivulle";
+        ? t("notifications.403_workspace")
+        : t("notifications.403_page");
     case 404:
       return isWorkspace
-        ? "Haluamasi työtila ei löytynyt"
-        : "Haluamasi sivua ei löytynyt";
+        ? t("notifications.404_workspace")
+        : t("notifications.404_page");
     default:
-      return "Tapahtui odottamaton virhe";
+      return t("notifications.unexpected_error");
   }
 };
 
@@ -35,6 +41,8 @@ const getDefaultMessage = (code: number, isWorkspace: boolean) => {
  * ErrorBody
  */
 const ErrorBody = () => {
+  const { t } = useTranslation();
+
   const { status } = useParams<{ status: string }>();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -56,7 +64,7 @@ const ErrorBody = () => {
             <div className="panel__header-title">{status}</div>
           </div>
           <div className="panel__body panel__body--error">
-            {getDefaultMessage(parseInt(status), isWorkspace)}
+            {getDefaultMessage(parseInt(status), isWorkspace, t)}
           </div>
         </div>
       </ScreenContainer>
