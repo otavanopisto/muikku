@@ -135,7 +135,7 @@ const HopsHistoryEvent: React.FC<HopsHistoryEventProps> = (props) => {
         <span className="hops-container__history-event-author">
           <Avatar
             id={historyEntry.modifierId}
-            firstName={historyEntry.modifier}
+            name={historyEntry.modifier}
             hasImage={historyEntry.modifierHasImage}
             size="small"
           />
