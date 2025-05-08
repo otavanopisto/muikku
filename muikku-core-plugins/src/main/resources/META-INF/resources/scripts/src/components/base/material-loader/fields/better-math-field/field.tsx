@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 import * as React from "react";
 import { MathFieldCommandType } from "./toolbar";
 import { toSVG, loadMathJax, getMQInterface } from "~/lib/mathjax";
@@ -63,7 +57,7 @@ function checkIsParentOrSelf(
 
 /**
  * Escape selected characters to html entities so mathjax can render formulas correctly
- * @param mathFormula
+ * @param mathFormula math formula
  */
 function escapeCharactersToHTMLEntities(mathFormula: string) {
   return mathFormula
@@ -79,6 +73,7 @@ function escapeCharactersToHTMLEntities(mathFormula: string) {
  * MathField
  */
 export default class MathField extends React.Component<FieldProps, FieldState> {
+  private inputRef: React.RefObject<HTMLDivElement>;
   value: string;
   imgUrls: string[];
   MQInterface: any;
@@ -102,6 +97,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   constructor(props: FieldProps) {
     super(props);
 
+    this.inputRef = React.createRef<HTMLDivElement>();
     this.value = props.value;
     this.imgUrls = [];
     this.MQInterface = getMQInterface;
@@ -126,10 +122,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
   /**
    * shouldComponentUpdate
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
-  shouldComponentUpdate() {
-    // this field is uncontrolled by react
-    return false;
+  shouldComponentUpdate(nextProps: FieldProps, nextState: FieldState) {
+    return nextProps.readOnly !== this.props.readOnly;
   }
 
   /**
@@ -137,7 +134,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
    * @returns true if ref has a focused class
    */
   isFieldFocused() {
-    return (this.refs.input as HTMLElement).classList.contains("focused");
+    return this.inputRef.current?.classList.contains("focused") || false;
   }
 
   /**
@@ -165,40 +162,49 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       document.body.addEventListener("click", this.handleAllClicks);
       document.addEventListener("keydown", this.handleKeyDown);
     } else {
-      (this.refs.input as HTMLElement).classList.add("mathfield--readonly");
+      if (this.inputRef.current) {
+        this.inputRef.current.classList.add("mathfield--readonly");
+      }
     }
   }
 
   /**
-   * UNSAFE_componentWillReceiveProps
-   * @param nextProps nextProps
+   * componentDidUpdate
+   * @param prevProps previous props
    */
-  UNSAFE_componentWillReceiveProps(nextProps: FieldProps) {
-    if (nextProps.className !== this.props.className) {
-      (this.refs.input as HTMLElement).className = nextProps.className;
+  componentDidUpdate(prevProps: FieldProps) {
+    // Handle className changes
+    if (prevProps.className !== this.props.className) {
+      if (this.inputRef.current) {
+        this.inputRef.current.className = this.props.className;
+      }
     }
 
-    if (nextProps.readOnly !== this.props.readOnly) {
-      if (nextProps.readOnly) {
-        (this.refs.input as HTMLElement).classList.add("mathfield--readonly");
-        (this.refs.input as HTMLElement).removeAttribute("contentEditable");
+    // Handle readOnly changes
+    if (prevProps.readOnly !== this.props.readOnly) {
+      if (this.props.readOnly) {
+        if (this.inputRef.current) {
+          this.inputRef.current.classList.add("mathfield--readonly");
+          this.inputRef.current.removeAttribute("contentEditable");
+        }
         document.body.removeEventListener("click", this.handleAllClicks);
         document.removeEventListener("keydown", this.handleKeyDown);
       } else {
-        (this.refs.input as HTMLElement).classList.remove(
-          "mathfield--readonly"
-        );
-        (this.refs.input as HTMLElement).contentEditable = "true";
+        if (this.inputRef.current) {
+          this.inputRef.current.classList.remove("mathfield--readonly");
+          this.inputRef.current.contentEditable = "true";
+        }
         document.body.addEventListener("click", this.handleAllClicks);
         document.addEventListener("keydown", this.handleKeyDown);
       }
     }
 
-    if (nextProps.value === this.value) {
+    if (prevProps.value === this.props.value) {
       return;
     }
 
-    this.value = nextProps.value;
+    // Handle value changes
+    this.value = this.props.value;
     this.createMarkup();
   }
 
@@ -211,25 +217,27 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.unselect();
 
     // straightforward process we find all the formulas and convert it to svg
-    (this.refs.input as HTMLInputElement).innerHTML = this.value;
+    if (this.inputRef.current) {
+      this.inputRef.current.innerHTML = this.value;
 
-    // WARNING: previous .material-page__mathfield-formula and current .mathfield__formula classNames are written to the DB and cannot be changed
-    Array.from(
-      (this.refs.input as HTMLInputElement).querySelectorAll(
-        `.${this.props.formulaClassName}, .material-page__mathfield-formula`
-      )
-    ).forEach((element: HTMLElement) => {
-      toSVG(element, warningImage, null, loadingImage);
-    });
+      // WARNING: previous .material-page__mathfield-formula and current .mathfield__formula classNames are written to the DB and cannot be changed
+      Array.from(
+        this.inputRef.current.querySelectorAll(
+          `.${this.props.formulaClassName}, .material-page__mathfield-formula`
+        )
+      ).forEach((element: HTMLElement) => {
+        toSVG(element, warningImage, null, loadingImage);
+      });
 
-    this.imgUrls = [];
-    Array.from(
-      (this.refs.input as HTMLInputElement).querySelectorAll(
-        "img." + this.props.imageClassName
-      )
-    ).forEach((element: HTMLImageElement) => {
-      this.imgUrls.push(element.src);
-    });
+      this.imgUrls = [];
+      Array.from(
+        this.inputRef.current.querySelectorAll(
+          "img." + this.props.imageClassName
+        )
+      ).forEach((element: HTMLImageElement) => {
+        this.imgUrls.push(element.src);
+      });
+    }
   }
 
   /**
@@ -273,7 +281,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.lastMouseedDownElement = null;
 
     // And trigger the onfocus event for the parent (it will make the toolbar visible and stuff)
-    (this.refs.input as HTMLElement).classList.add("focused");
+    if (this.inputRef.current) {
+      (this.inputRef.current as HTMLElement).classList.add("focused");
+    }
+
     this.props.onFocus();
   }
 
@@ -296,7 +307,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   calculateOutput() {
     const oldImgUrls = this.imgUrls;
     this.imgUrls = [];
-    this.value = Array.from((this.refs.input as HTMLDivElement).childNodes)
+    this.value = Array.from(this.inputRef.current?.childNodes || [])
       .map((node) => {
         if (node.nodeType === Node.TEXT_NODE) {
           return escapeCharactersToHTMLEntities(node.textContent);
@@ -400,7 +411,9 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
 
       this.unselect();
-      (this.refs.input as HTMLElement).classList.remove("focused");
+      if (this.inputRef.current) {
+        (this.inputRef.current as HTMLElement).classList.remove("focused");
+      }
       this.props.onBlur();
     };
 
@@ -452,10 +465,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         this.selectedMathField.focus();
       }
     } else {
-      (this.refs.input as HTMLDivElement).focus();
+      if (this.inputRef.current) {
+        (this.inputRef.current as HTMLDivElement).focus();
+      }
     }
 
-    (this.refs.input as HTMLElement).classList.add("focused");
+    if (this.inputRef.current) {
+      (this.inputRef.current as HTMLElement).classList.add("focused");
+    }
   }
 
   /**
@@ -492,7 +509,9 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   execute(command: MathFieldCommandType) {
     // This is called by the parent on the case of a toolbar executed command
     if (!this.selectedFormula) {
-      (this.refs.input as HTMLDivElement).focus();
+      if (this.inputRef.current) {
+        (this.inputRef.current as HTMLDivElement).focus();
+      }
       if (command.html) {
         // Simple as pie in the case of the contenteditable
         document.execCommand("insertHTML", false, command.html);
@@ -536,9 +555,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       `<img class="${this.props.formulaClassName}"/>`
     );
     const image: HTMLImageElement = (
-      this.refs.input as HTMLDivElement
+      this.inputRef.current as HTMLDivElement
     ).querySelector("img:not([alt]):not([src])") as HTMLImageElement;
-    this.selectFormula(image);
+    if (image) {
+      this.selectFormula(image);
+    }
   }
 
   /**
@@ -760,7 +781,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     // If we didn't click a formula  we need to check whether this is the field
     const areWeInsideTheElement = checkIsParentOrSelf(
       clickedTarget,
-      this.refs.input as HTMLElement
+      this.inputRef.current as HTMLElement
     );
 
     // If this is the field
@@ -891,7 +912,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         onFocus={this.onFocusField}
         onDrop={this.handleDrops}
         onPaste={this.handlePaste}
-        ref="input"
+        ref={this.inputRef}
         onBlur={this.onBlurField}
         onInput={this.onChange}
         onMouseDown={this.checkTheFocus}

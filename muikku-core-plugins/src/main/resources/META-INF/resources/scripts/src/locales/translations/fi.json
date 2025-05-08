@@ -325,7 +325,10 @@
       "LAC": "Latina, lyhyt oppimäärä",
       "SM_DC": "Pohjoissaame, lyhyt oppimäärä",
       "SM_ICC": "Inarinsaame, lyhyt oppimäärä",
-      "SM_QC": "Koltansaame, lyhyt oppimäärä"
+      "SM_QC": "Koltansaame, lyhyt oppimäärä",
+      "Z": "Äidinkieli ja kirjallisuus, pohjoissaame",
+      "I": "Äidinkieli ja kirjallisuus, inarinsaame",
+      "W": "Äidinkieli ja kirjallisuus, koltansaame"
     }
   },
   "profile": {
@@ -484,6 +487,7 @@
       "studyProgress": "Opintojen edistyminen",
       "submittedAssignments": "Palautetut",
       "unanswered": "Aloittamattomat",
+      "view": "Näkymä",
       "workspaceVisits": "Käynyt kurssilla"
     },
     "notifications": {
@@ -1651,6 +1655,8 @@
       "add": "Lisää",
       "add_file": "Lisää tiedosto klikkaamalla tästä tai raahaamalla se tähän kenttään. Voit palauttaa kenttään useamman tiedoston. Suurin sallittu tiedostokoko on 10 Mt.",
       "add_producers": "Lisää tuottaja",
+      "aiAllowed": "Tekoälyn käyttö sallittu tehtävän ohjeiden mukaisesti",
+      "aiDisallowed": "Tekoälyn käyttö kielletty tässä tehtävässä",
       "confirm": "Julkaiseminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
       "confirm_pageRemoval": "Sivun poistaminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
       "empty": "$t(common:content.empty)",
@@ -1749,7 +1755,7 @@
       "materials": "Materiaalit",
       "materialAiUse": "Tekoälyn käyttö tehtävässä",
       "materialAiAllowed": "Saa käyttää tekoälyä",
-      "materialAiNotAllowed": "Ei saa käyttää tekoälyä",
+      "materialAiDisallowed": "Ei saa käyttää tekoälyä",
       "materialAiNotDefined": "Ei määritetty",
       "maxWordCount": "Sanarajoitus: {{amount}}",
       "maxCharacterCount": "Merkkirajoitus: {{amount}}",

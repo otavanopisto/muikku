@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 import * as React from "react";
 import { shuffle } from "~/util/modifiers";
 import Draggable from "~/components/general/draggable";
@@ -77,8 +71,10 @@ interface SorterFieldState {
  * SorterField
  */
 class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
-  itemRefs: HTMLSpanElement[];
-  focusIndexRef: number;
+  // Add ref declarations
+  private baseRef: React.RefObject<HTMLSpanElement>;
+  private itemRefs: Array<HTMLSpanElement>;
+  private focusIndexRef: number;
 
   /**
    * constructor
@@ -86,6 +82,11 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
    */
   constructor(props: SorterFieldProps) {
     super(props);
+
+    // Initialize refs
+    this.baseRef = React.createRef<HTMLSpanElement>();
+    this.itemRefs = [];
+    this.focusIndexRef = 0;
 
     let value = null;
     let items: Array<SorterFieldItemType>;
@@ -131,9 +132,6 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
     this.selectItem = this.selectItem.bind(this);
     this.cancelSelectedItem = this.cancelSelectedItem.bind(this);
     this.onFieldSavedStateChange = this.onFieldSavedStateChange.bind(this);
-
-    this.itemRefs = [];
-    this.focusIndexRef = 0;
   }
 
   /**
@@ -493,7 +491,10 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               context: "sorter",
             })}
           />
-          <span ref="base" className="sorterfield-wrapper rs_skip_always">
+          <span
+            ref={this.baseRef}
+            className="sorterfield-wrapper rs_skip_always"
+          >
             <span className={`sorterfield sorterfield--${elementClassName}`}>
               {filler}
             </span>
@@ -532,6 +533,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
           })}
         />
         <span
+          ref={this.baseRef}
           className={`sorterfield-wrapper ${fieldSavedStateClass} rs_skip_always`}
         >
           <Synchronizer
