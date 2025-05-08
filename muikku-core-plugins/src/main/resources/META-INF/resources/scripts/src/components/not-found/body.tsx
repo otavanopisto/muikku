@@ -1,7 +1,6 @@
 import MainFunctionNavbar from "~/components/base/main-function/navbar";
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
 import NotFoundApplication from "./body/application";
 /**
  * NotFoundBodyProps
@@ -24,9 +23,6 @@ interface NotFoundBodyProps {
 const NotFoundBody = (props: NotFoundBodyProps) => {
   const { context = "main-function", workspaceUrl } = props;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { t } = useTranslation("common");
-
   return (
     <div>
       {context === "workspace" && workspaceUrl ? (
@@ -35,7 +31,7 @@ const NotFoundBody = (props: NotFoundBodyProps) => {
         <MainFunctionNavbar title="" />
       )}
 
-      <NotFoundApplication />
+      <NotFoundApplication context={context} />
     </div>
   );
 };

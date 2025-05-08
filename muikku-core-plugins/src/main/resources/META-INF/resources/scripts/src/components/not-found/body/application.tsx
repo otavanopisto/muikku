@@ -9,6 +9,10 @@ import "~/sass/elements/link.scss";
 interface NotFoundApplicationProps {
   /** React element to be rendered as an aside */
   aside?: React.ReactElement;
+  /**
+   * Context of the page. Optional. Default is "main-function".
+   */
+  context?: "workspace" | "main-function";
 }
 
 /**
@@ -29,8 +33,11 @@ const NotFoundApplication = (props: NotFoundApplicationProps) => {
   return (
     <ApplicationPanel title={title}>
       <div>
-        <h1>Etsimääsi sivua ei löytynyt</h1>
-        <p>Valitettavasti etsimääsi sivua ei löytynyt.</p>
+        <h1>
+          {props.context === "workspace"
+            ? t("notifications.404_workspace")
+            : t("notifications.404_page")}
+        </h1>
       </div>
     </ApplicationPanel>
   );
