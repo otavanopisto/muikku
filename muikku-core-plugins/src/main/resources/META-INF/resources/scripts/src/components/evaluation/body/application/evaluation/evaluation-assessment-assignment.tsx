@@ -581,14 +581,21 @@ class EvaluationAssessmentAssignment extends React.Component<
                     ? "unlock"
                     : "lock"
                 )}
-                buttonModifiers={["evaluate"]}
+                buttonModifiers={
+                  (
+                    this.props.evaluations.evaluationCurrentStudentAssigments
+                      .data?.idListOfLockedAssigments || []
+                  ).includes(this.props.assigment.id)
+                    ? "assignment-unlocked"
+                    : "assignment-locked"
+                }
                 icon={
                   (
                     this.props.evaluations.evaluationCurrentStudentAssigments
                       .data?.idListOfLockedAssigments || []
                   ).includes(this.props.assigment.id)
                     ? "lock-open"
-                    : "lock"
+                    : "lock "
                 }
               />
             )}

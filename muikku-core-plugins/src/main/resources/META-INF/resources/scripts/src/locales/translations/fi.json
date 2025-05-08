@@ -2284,6 +2284,7 @@
       "grade_overall": "Anna kokonaispalaute",
       "grade_workspace": "Anna kurssiarvio",
       "improveGrade": "Anna korotus",
+      "lockAssignments": "Lukitse tehtävät",
       "lockEvalRequest": "Lukitse arviointipyyntö",
       "markNonImportant": "Merkitse vähemmän tärkeäksi",
       "markImportant": "Merkitse tärkeäksi",
@@ -2296,7 +2297,8 @@
       "remove_supplementationRequest": "Poista täydennyspyyntö",
       "journalMaterialShow": "Näytä tehtävänanto",
       "journalMaterialHide": "Piilota tehtävänanto",
-      "unlockEvalRequest": "Poista lukitus"
+      "unlockAssignments": "Avaa tehtävät",
+      "unlockEvalRequest": "Avaa arviointipyyntö"
     },
     "content": {
       "archive_student": "Haluatko arkistoida opiskelijan <b>{{studentName}}</b> kurssilta?",
@@ -2429,8 +2431,7 @@
       "evaluationAssessmentPassed": "Hyväksytty arviointi",
       "evaluationAssessmentPoints": "Arviointi pisteillä",
       "evaluationAssessmentIncomplete": "Täydennettävä arviointi",
-      "evaluationAssessmentUnassessed": "Arvioimaton",
-      "evalRequestLockSwitch": "Arviointipyynnön lukitseminen"
+      "evaluationAssessmentUnassessed": "Arvioimaton"
     }
   },
   "calendar": {

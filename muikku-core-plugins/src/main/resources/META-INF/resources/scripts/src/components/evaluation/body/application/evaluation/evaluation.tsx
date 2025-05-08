@@ -920,32 +920,41 @@ export class Evaluation extends React.Component<
                   {(this.props.selectedAssessment.state === "pending" ||
                     this.props.selectedAssessment.state === "pending_fail" ||
                     this.props.selectedAssessment.state === "pending_pass") && (
-                    <>
-                      <label
-                        htmlFor="evalRequestLockSwitch"
-                        className="visually-hidden"
-                      >
-                        {t("wcag.evalRequestLockSwitch", { ns: "evaluation" })}
-                      </label>
-                      <Button
-                        className={
-                          this.props.selectedAssessment.locked
-                            ? "button--evaluation-unlock-request"
-                            : "button--evaluation-lock-request"
-                        }
-                        onClick={this.handleLockChange}
-                        // checked={this.props.selectedAssessment.locked}
-                      >
-                        {this.props.selectedAssessment.locked
-                          ? t("actions.unlockEvalRequest", {
-                              ns: "evaluation",
-                            })
-                          : t("actions.lockEvalRequest", {
-                              ns: "evaluation",
-                            })}
-                      </Button>
-                    </>
+                    <Button
+                      className={
+                        this.props.selectedAssessment.locked
+                          ? "button--evaluation-unlock-request"
+                          : "button--evaluation-lock-request"
+                      }
+                      onClick={this.handleLockChange}
+                      // checked={this.props.selectedAssessment.locked}
+                    >
+                      {this.props.selectedAssessment.locked
+                        ? t("actions.unlockEvalRequest", {
+                            ns: "evaluation",
+                          })
+                        : t("actions.lockEvalRequest", {
+                            ns: "evaluation",
+                          })}
+                    </Button>
                   )}
+                  <Button
+                    className={
+                      this.props.selectedAssessment.locked
+                        ? "button--evaluation-unlock-assignments"
+                        : "button--evaluation-lock-assignments"
+                    }
+                  >
+                    {this.props.selectedAssessment.locked
+                      ? t("actions.unlockAssignments", {
+                          ns: "evaluation",
+                        })
+                      : t("actions.lockAssignments", {
+                          ns: "evaluation",
+                        })}
+                  </Button>
+                </div>
+                <div className="evaluation-modal__content-buttonset">
                   <Button
                     onClick={this.handleOpenWorkspaceEvaluationDrawer}
                     buttonModifiers={["evaluation-add-assessment"]}

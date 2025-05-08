@@ -2284,6 +2284,7 @@
       "grade_overall": "Grade overall",
       "grade_workspace": "Course grade",
       "improveGrade": "Improve grade",
+      "lockAssignments": "Lock assignments",
       "lockEvalRequest": "Lock evaluation request",
       "markNonImportant": "Mark as less important",
       "markImportant": "Mark as important",
@@ -2294,6 +2295,7 @@
       "remove_evaluationRequest": "Delete the evaluation request",
       "remove_interimEvaluationRequest": "Delete the interim evaluation request",
       "remove_supplementationRequest": "Delete the supplementation request",
+      "unlockAssignments": "Unlock assignments",
       "unlockEvalRequest": "Unlock evaluation request"
     },
     "content": {
@@ -2427,8 +2429,7 @@
       "evaluationAssessmentPassed": "Passed assessment",
       "evaluationAssessmentPoints": "Assessment with points",
       "evaluationAssessmentIncomplete": "Incomplete assessment",
-      "evaluationAssessmentUnassessed": "Unassessed assessment",
-      "evalRequestLockSwitch": "Evaluation request locking"
+      "evaluationAssessmentUnassessed": "Unassessed assessment"
     }
   },
   "calendar": {
