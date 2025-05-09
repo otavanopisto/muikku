@@ -2424,6 +2424,8 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_evaluation": "Virhe arvioinnin päivittämisessä: {{error}}",
       "updateError_locking": "Virhe arviointipyynnön lukitsemisessa: {{error}}",
+      "updateError_assignmentLocking": "Virhe tehtävän lukituksen päivittämisessä: {{error}}",
+      "updateError_assignmentAllLocking": "Virhe tehtävien lukituksen päivittämisessä: {{error}}",
       "updateError_pricing": "Virhe kurssin maksutietojen päivittämisessä: {{error}}",
       "updateError_sorting": "Virhe lajittelutietojen päivittämisessä: {{error}}"
     },

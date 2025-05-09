@@ -2422,6 +2422,8 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_evaluation": "Updating the evaluation failed: {{error}}",
       "updateError_locking": "Locking the evaluation request failed: {{error}}",
+      "updateError_assignmentLocking": "Locking the assignment failed: {{error}}",
+      "updateError_assignmentAllLocking": "Locking all assignments failed: {{error}}",
       "updateError_pricing": "Updating the course pricing information failed: {{error}}",
       "updateError_sorting": "Updating the sorting information failed: {{error}}"
     },

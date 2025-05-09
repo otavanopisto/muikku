@@ -1984,28 +1984,34 @@ const toggleLockedAssignment: ToggleLockedAssigment =
             payload: allAssignmentIds,
           });
         }
-
-        dispatch(
-          notificationActions.displayNotification(
-            "Successfully updated locked assignments",
-            "success"
-          )
-        );
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;
         }
 
-        dispatch(
-          notificationActions.displayNotification(
-            i18n.t("notifications.updateError", {
-              ns: "evaluation",
-              context: "locking",
-              error: err.message,
-            }),
-            "error"
-          )
-        );
+        if (data.workspaceMaterialId) {
+          dispatch(
+            notificationActions.displayNotification(
+              i18n.t("notifications.updateError", {
+                ns: "evaluation",
+                context: "assignmentLocking",
+                error: err.message,
+              }),
+              "error"
+            )
+          );
+        } else {
+          dispatch(
+            notificationActions.displayNotification(
+              i18n.t("notifications.updateError", {
+                ns: "evaluation",
+                context: "assignmentAllLocking",
+                error: err.message,
+              }),
+              "error"
+            )
+          );
+        }
       }
     };
   };
