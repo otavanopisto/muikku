@@ -1,75 +1,75 @@
 import MainFunctionNavbar from "~/components/base/main-function/navbar";
+import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import ScreenContainer from "~/components/general/screen-container";
-
 import "~/sass/elements/buttons.scss";
-
 import "~/sass/elements/ordered-container.scss";
 import "~/sass/elements/panel.scss";
-
-import { StateType } from "~/reducers";
-import { connect } from "react-redux";
-import { ErrorType } from "~/reducers/base/error";
-import { Action, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
-
+import { useLocation, useParams } from "react-router-dom";
+import { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 /**
- * ErrorBodyProps
+ * getDefaultMessage
+ * @param code code of the error
+ * @param isWorkspace whether the error is for a workspace
+ * @param t i18next instance
  */
-interface ErrorBodyProps {
-  error: ErrorType;
-}
-
-/**
- * ErrorBodyState
- */
-interface ErrorBodyState {}
+const getDefaultMessage = (
+  code: number,
+  isWorkspace: boolean,
+  t: TFunction
+) => {
+  switch (code) {
+    case 401:
+      return isWorkspace
+        ? t("notifications.401_workspace")
+        : t("notifications.401_page");
+    case 403:
+      return isWorkspace
+        ? t("notifications.403_workspace")
+        : t("notifications.403_page");
+    case 404:
+      return isWorkspace
+        ? t("notifications.404_workspace")
+        : t("notifications.404_page");
+    default:
+      return t("notifications.unexpected_error");
+  }
+};
 
 /**
  * ErrorBody
  */
-class ErrorBody extends React.Component<ErrorBodyProps, ErrorBodyState> {
-  /**
-   * render
-   */
-  render() {
-    return (
-      <div>
-        <MainFunctionNavbar title={this.props.error.title} />
-        <ScreenContainer viewModifiers="error">
-          <div className="panel panel--error">
-            <div className="panel__header">
-              <div className="panel__header-icon panel__header-icon--error icon-error"></div>
-              <div className="panel__header-title">
-                {this.props.error.title}
-              </div>
-            </div>
-            <div className="panel__body panel__body--error">
-              {this.props.error.description}
-            </div>
+const ErrorBody = () => {
+  const { t } = useTranslation();
+
+  const { status } = useParams<{ status: string }>();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const workspace = params.get("workspace");
+
+  const isWorkspace = workspace === "true";
+
+  return (
+    <div>
+      {isWorkspace ? (
+        <WorkspaceNavbar title={status} workspaceUrl={""} />
+      ) : (
+        <MainFunctionNavbar title={status} />
+      )}
+      <ScreenContainer viewModifiers="error">
+        <div className="panel panel--error">
+          <div className="panel__header">
+            <div className="panel__header-icon panel__header-icon--error icon-error"></div>
+            <div className="panel__header-title">{status}</div>
           </div>
-        </ScreenContainer>
-      </div>
-    );
-  }
-}
+          <div className="panel__body panel__body--error">
+            {getDefaultMessage(parseInt(status), isWorkspace, t)}
+          </div>
+        </div>
+      </ScreenContainer>
+    </div>
+  );
+};
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    error: state.error,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ErrorBody);
+export default ErrorBody;

@@ -1,0 +1,110 @@
+<!-- This is for specifically webpack dev server -->
+<!doctype html>
+<html>
+  <head>
+    <title>Muikku</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta
+      content="width=device-width, initial-scale=1, user-scalable=yes"
+      name="viewport"
+    />
+
+    <script>
+      var place = "INDEX";
+    </script>
+
+    <script type="text/javascript">
+      window.rsConf = {
+        general: {
+          usePost: true,
+          enableSkipAlways: true,
+          skipHiddenContent: true,
+        },
+        ui: {
+          tools: {
+            translation: false,
+            dictionary: false,
+            pagemask: false,
+            download: false,
+            clicklisten: false,
+            enlarge: false,
+            skipbuttons: false,
+          },
+        },
+      };
+    </script>
+
+    <script type="text/javascript">
+      var CONTEXTPATH = "";
+    </script>
+
+    <!-- jQuery -->
+    <script
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/jquery/2.1.3/jquery.min.js"
+    ></script>
+
+    <!-- jQuery UI -->
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js"
+    ></script>
+
+    <!-- Async
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/async/0.9.0/async.js" />-->
+
+    <!-- ObjectPath, jQuery REST -->
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/interpreter.js"
+    ></script>
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/parse.js"
+    ></script>
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/objectpathjs/0.0.1/tokens.js"
+    ></script>
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/jquery.rest/1.0.2/jquery.rest.min.js"
+    ></script>
+
+    <!-- Heartbeat -->
+    <script
+      defer="defer"
+      type="text/javascript"
+      src="/scripts/gui/heartbeat.js"
+    ></script>
+
+    <!-- Muikku icons -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.4.9/style.css"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&amp;display=swap"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div id="app"></div>
+  </body>
+</html>

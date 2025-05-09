@@ -117,7 +117,8 @@ const ChatContent = () => {
  */
 function mapStateToProps(state: StateType) {
   return {
-    chatAvailable: state.status.services.chat.isAvailable,
+    chatAvailable:
+      state.status.services && state.status.services.chat.isAvailable,
     chatPermissions: {
       canManagePublicRooms: state.status.permissions.CHAT_MANAGE_PUBLIC_ROOMS,
     } as ChatPermissions,
