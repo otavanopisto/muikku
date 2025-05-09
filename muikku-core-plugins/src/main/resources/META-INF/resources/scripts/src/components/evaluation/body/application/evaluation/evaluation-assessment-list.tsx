@@ -1,7 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Link from "~/components/general/link";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import EvaluationAssessmentAssignment from "./evaluation-assessment-assignment";
@@ -12,8 +12,6 @@ import {
   WorkspaceMaterial,
 } from "~/generated/client";
 import { useTranslation } from "react-i18next";
-
-import { toggleLockedAssignment } from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
  * EvaluationEventContentCardProps
@@ -39,25 +37,6 @@ const AssessmentList = (props: AssessmentListProps) => {
   );
 
   const evaluation = useSelector((state: StateType) => state.evaluations);
-
-  const dispatch = useDispatch();
-
-  // Memoized evaluated assignments
-  const evaluatedAssignments = React.useMemo(
-    () =>
-      (
-        evaluation.evaluationCurrentStudentAssigments.data?.assigments || []
-      ).filter((assignment) => assignment.assignmentType === "EVALUATED"),
-    [evaluation.evaluationCurrentStudentAssigments.data]
-  );
-
-  // Memoized locked assignments
-  const lockedAssignmentIds = React.useMemo(
-    () =>
-      evaluation.evaluationCurrentStudentAssigments.data
-        ?.idListOfLockedAssigments || [],
-    [evaluation.evaluationCurrentStudentAssigments.data]
-  );
 
   // Combined state check into a single variable
   // whether data is ready to be displayed
