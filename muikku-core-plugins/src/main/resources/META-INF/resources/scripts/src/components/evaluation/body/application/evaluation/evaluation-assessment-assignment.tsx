@@ -586,16 +586,16 @@ class EvaluationAssessmentAssignment extends React.Component<
                     this.props.evaluations.evaluationCurrentStudentAssigments
                       .data?.idListOfLockedAssigments || []
                   ).includes(this.props.assigment.id)
-                    ? "assignment-unlocked"
-                    : "assignment-locked"
+                    ? "assignment-locked"
+                    : "assignment-unlocked"
                 }
                 icon={
                   (
                     this.props.evaluations.evaluationCurrentStudentAssigments
                       .data?.idListOfLockedAssigments || []
                   ).includes(this.props.assigment.id)
-                    ? "lock-open"
-                    : "lock "
+                    ? "lock"
+                    : "lock-open"
                 }
               />
             )}
