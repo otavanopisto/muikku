@@ -1483,7 +1483,7 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
 
         // Update the settings on server
         await workspaceApi.updateWorkspaceSettings({
-          updateWorkspaceSettingsRequest: workspaceSettings,
+          workspaceSettings: workspaceSettings,
           workspaceId: data.workspace.id,
         });
 
@@ -1746,7 +1746,7 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
         await workspaceApi.updateWorkspaceStudent({
           workspaceEntityId: data.workspace.id,
           studentId: newStudent.workspaceUserEntityId,
-          updateWorkspaceStudentRequest: newStudent,
+          workspaceStudent: newStudent,
         });
 
         if (newStudents) {
@@ -2041,7 +2041,7 @@ const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurren
 
         await workspaceApi.updateWorkspaceDetails({
           workspaceId: state.workspaces.currentWorkspace.id,
-          updateWorkspaceDetailsRequest: data.newDetails,
+          workspaceDetails: data.newDetails,
         });
 
         const currentWorkspace = getState().workspaces.currentWorkspace;
@@ -2277,7 +2277,7 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
         // Update the details to cloned workspace
         cloneWorkspace.details = await workspaceApi.updateWorkspaceDetails({
           workspaceId: cloneWorkspace.id,
-          updateWorkspaceDetailsRequest: {
+          workspaceDetails: {
             ...cloneWorkspace.details,
             beginDate: data.beginDate,
             endDate: data.endDate,

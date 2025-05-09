@@ -126,7 +126,7 @@ class CheckContactInfoDialog extends React.Component<
       await userApi.updateStudentAddress({
         studentId: this.props.status.userSchoolDataIdentifier,
         addressId: this.state.address.identifier,
-        updateStudentAddressRequest: this.state.address,
+        userStudentAddress: this.state.address,
       });
     } catch (err) {
       if (!isMApiError(err)) {
