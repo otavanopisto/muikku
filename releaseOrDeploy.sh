@@ -29,10 +29,4 @@ if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from ot
   git commit -m "Updated latest snapshot releases"
   git pull
   git push
-elif [[ ($commitmessage == *"[maven-release-plugin] prepare release"*) ]]; then
-  echo Deploying
-  pushd .
-  cd muikku
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin -Dclassifier=otavanopisto
-  popd
 fi;
