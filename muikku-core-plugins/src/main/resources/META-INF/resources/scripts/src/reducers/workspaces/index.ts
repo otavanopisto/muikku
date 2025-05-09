@@ -312,6 +312,8 @@ export interface WorkspacesState {
 
   // Workspace material editor and boolean to indicate if edit mode is active
   editMode?: WorkspaceEditModeStateType;
+  // Whether workspace materials are disabled (e.g. being evaluated or all modules are in pass state)
+  materialsAreDisabled: boolean;
   // Whether workspace is being evaluated (affects whether active assement request can be cancelled)
   workspaceIsBeingEvaluated: boolean;
   materialEditor?: WorkspaceMaterialEditorType;
@@ -388,6 +390,7 @@ const initialWorkspacesState: WorkspacesState = {
   materialExtraTools: {
     opened: false,
   },
+  materialsAreDisabled: false,
   workspaceIsBeingEvaluated: false,
 };
 
@@ -411,6 +414,12 @@ export const workspaces: Reducer<WorkspacesState> = (
 
     case "UPDATE_LAST_WORKSPACES":
       return { ...state, lastWorkspaces: action.payload };
+
+    case "UPDATE_MATERIALS_ARE_DISABLED":
+      return {
+        ...state,
+        materialsAreDisabled: action.payload,
+      };
 
     case "UPDATE_WORKSPACE_IS_BEING_EVALUATED":
       return {
