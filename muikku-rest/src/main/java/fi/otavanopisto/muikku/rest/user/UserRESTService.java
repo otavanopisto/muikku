@@ -68,6 +68,7 @@ import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.rest.model.StudentAddress;
 import fi.otavanopisto.muikku.rest.model.StudentEmail;
 import fi.otavanopisto.muikku.rest.model.StudentPhoneNumber;
+import fi.otavanopisto.muikku.rest.model.UserContactRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -711,9 +712,6 @@ public class UserRESTService extends AbstractRESTService {
   @Path("/contacts/{ID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserContacts(@PathParam("ID") String id) {
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.UNAUTHORIZED).build();
-    }
     
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(id);
     if (userIdentifier == null) {
@@ -1577,7 +1575,7 @@ public class UserRESTService extends AbstractRESTService {
         toId(transferCredit.getCurriculumIdentifier()));
   }
   
-  private List<fi.otavanopisto.muikku.rest.model.UserContactRestModel> createRestModel(UserContact[] userContacts) {
+  private List<UserContactRestModel> createRestModel(UserContact[] userContacts) {
     List<fi.otavanopisto.muikku.rest.model.UserContactRestModel> result = new ArrayList<>();
     
     if (userContacts != null) {
@@ -1589,7 +1587,7 @@ public class UserRESTService extends AbstractRESTService {
     return result;
   }
   
-  private fi.otavanopisto.muikku.rest.model.UserContactRestModel createRestModel(UserContact userContact) {
+  private UserContactRestModel createRestModel(UserContact userContact) {
     return new fi.otavanopisto.muikku.rest.model.UserContactRestModel(
         userContact.getId(),
         userContact.getName(), 
