@@ -1650,6 +1650,7 @@
       "add_producers": "Add a producer",
       "aiAllowed": "AI use allowed according to the assignment instructions",
       "aiDisallowed": "AI use not allowed in this assignment",
+      "assignmentLocked": "Teacher has locked your assignment for evaluation.",
       "confirm": "Publishing this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
       "confirm_pageRemoval": "Deleting this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
       "empty": "$t(common:content.empty)",

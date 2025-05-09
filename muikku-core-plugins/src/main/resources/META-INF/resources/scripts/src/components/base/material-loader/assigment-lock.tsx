@@ -26,13 +26,10 @@ export function MaterialLoaderAssignmentLock(
   }
 
   return (
-    <div className={`material-page__assignment-assessment rs_skip_always`}>
-      <div
-        className={`material-page__assignment-assessment-icon icon-lock`}
-      ></div>
-      <div className="material-page__assignment-assessment-text">
-        Opettaja on lukinnut tehtävän arvioinnin ajaksi. Odota kunnes arviointi
-        on valmis.
+    <div className={`material-page__assignment-locked rs_skip_always`}>
+      <div className={`material-page__assignment-locked-icon icon-lock`}></div>
+      <div className="material-page__assignment-locked-text">
+        {t("content.assignmentLocked", { ns: "materials" })}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ import {
   WorkspaceMaterial,
 } from "~/generated/client";
 import { useTranslation } from "react-i18next";
-import Button from "~/components/general/button";
+
 import { toggleLockedAssignment } from "~/actions/main-function/evaluation/evaluationActions";
 
 /**
@@ -190,27 +190,6 @@ const AssessmentList = (props: AssessmentListProps) => {
           )}
         </>
       </div>
-
-      {isDataReady && evaluatedAssignments.length > 0 && (
-        <div className="evaluation-modal__content-main-actions">
-          <Button
-            onClick={() => dispatch(toggleLockedAssignment({ action: "lock" }))}
-            disabled={
-              evaluatedAssignments.length === lockedAssignmentIds.length
-            }
-          >
-            Lock all
-          </Button>
-          <Button
-            onClick={() =>
-              dispatch(toggleLockedAssignment({ action: "unlock" }))
-            }
-            disabled={lockedAssignmentIds.length === 0}
-          >
-            Unlock all
-          </Button>
-        </div>
-      )}
 
       <div className="evaluation-modal__content-body">
         {isDataReady ? renderAssignments() : <div className="loader-empty" />}

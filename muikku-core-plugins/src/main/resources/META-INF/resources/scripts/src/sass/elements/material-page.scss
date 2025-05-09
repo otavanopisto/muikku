@@ -591,6 +591,28 @@ mark[data-muikku-word-definition] {
   }
 }
 
+.material-page__assignment-locked {
+  background: lighten($color-info, 50%);
+  border-left-color: $color-info;
+  border-left-style: solid;
+  border-left-width: 5px;
+  border-top: 1px solid $color-default-item-separator-border;
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 20px 0 0;
+  padding: 10px;
+  position: relative;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 20px 0 0;
+    padding: 20px;
+  }
+  
+  .material-page__assignment-locked-icon {
+    color: $color-info;
+  }
+}
+
 .material-page__assignment-assessment--incomplete {
   background: lighten($color-incomplete, 45%);
   border-left-color: $color-incomplete;
@@ -699,7 +721,8 @@ mark[data-muikku-word-definition] {
   text-transform: uppercase;
 }
 
-.material-page__assignment-assessment-icon {
+.material-page__assignment-assessment-icon,
+.material-page__assignment-locked-icon {
   font-size: 2rem;
   line-height: 1;
   opacity: 40%;

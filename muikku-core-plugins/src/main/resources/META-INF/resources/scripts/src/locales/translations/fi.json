@@ -1650,6 +1650,7 @@
       "add_producers": "Lisää tuottaja",
       "aiAllowed": "Tekoälyn käyttö sallittu tehtävän ohjeiden mukaisesti",
       "aiDisallowed": "Tekoälyn käyttö kielletty tässä tehtävässä",
+      "assignmentLocked": "Opettaja on lukinnut tehtävän arvioinnin ajaksi. Odota kunnes arviointi on valmis.",
       "confirm": "Julkaiseminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
       "confirm_pageRemoval": "Sivun poistaminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
       "empty": "$t(common:content.empty)",
