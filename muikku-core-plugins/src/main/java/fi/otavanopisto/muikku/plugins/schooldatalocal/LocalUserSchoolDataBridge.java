@@ -38,6 +38,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContact;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
@@ -568,6 +569,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public LocalDate getBirthday(SchoolDataIdentifier studentIdentifier) {
+    throw new SchoolDataBridgeInternalException("Not supported");
+  }
+
+  @Override
+  public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier) {
     throw new SchoolDataBridgeInternalException("Not supported");
   }
 
