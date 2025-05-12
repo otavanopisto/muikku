@@ -154,7 +154,6 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
@@ -2253,20 +2252,10 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (workspaceUserEntity != null) {
         List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
         for (WorkspaceAssessmentState assessmentState : assessmentStates) {
-          // If workspace has been assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
-          if (assessmentState.isAssessed()) {
+          // If workspace has been assessed or is being assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
+          if (assessmentState.isAssessed() || assessmentState.isPending()) {
             enforcedLock = true;
             break;
-          }
-          else if (assessmentState.isPending()) {
-            // If the workspace is being assessed and the assessment request has been locked, the page is locked
-            WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findLatestAssessmentRequestByWorkspaceAndStudent(
-                workspaceEntity.schoolDataIdentifier(),
-                userEntity.defaultSchoolDataIdentifier());
-            if (assessmentRequest != null && assessmentRequest.getLocked()) {
-              enforcedLock = true;
-              break;
-            }
           }
         }
       }
