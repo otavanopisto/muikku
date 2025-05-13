@@ -52,3 +52,11 @@ export const cssDependencies: webpack.RuleSetRule = {
   include: /node_modules/,
   use: [style, cssLoader, postcss],
 };
+
+export const image: webpack.RuleSetRule = {
+  test: /\.(png|svg|jpg|jpeg|gif)$/i,
+  type: "asset/resource",
+  generator: {
+    filename: "images/[name][ext]",
+  },
+};
