@@ -18,6 +18,7 @@ $color-warn-contrast: $color-default;
 $color-notice: #ffce65;
 $color-notice-contrast: $color-default;
 $color-info: #009fe3;
+$color-info-blink: rgb(0 159 227 / 0%);
 $color-info-contrast: $color-default;
 $color-fatal: #de3211;
 $color-fatal-contrast: $color-default;
@@ -81,7 +82,6 @@ $color-label-alert: $color-fatal;
 // Usergroup
 $color-usergroup: #c10ebe;
 
-
 // Workspace
 $color-workspace: #2fd4af;
 $color-workspace-hero-shadow: rgb(0 0 0 / 10%);
@@ -136,6 +136,8 @@ $color-taskfield-explanation-background: #fafeff;
 $color-taskfield-hint-border: #d6d823;
 $color-taskfield-hint-background: #ffffe1;
 $color-mobile-toc-default-shadow: rgb(0 0 0 / 20%);
+$color-ai-use-disallowed: #da0000;
+$color-ai-use-allowed: #1093bc;
 
 // Calendar
 $color-approved: $color-passed;
@@ -592,7 +594,9 @@ $color-workspace-link-menu-icon-background: $color-workspace-navbar-background;
 $color-menu-default-background: #ffffff;
 $color-menu-default-text: $color-inverse;
 $color-menu-default-header-background: rgb(0 0 0 / 10%);
-$color-menu-default-header-button-close-background-active: rgb(255 255 255 / 30%);
+$color-menu-default-header-button-close-background-active: rgb(
+  255 255 255 / 30%
+);
 $color-menu-default-header-button-close: $color-info;
 
 // SUBPANEL

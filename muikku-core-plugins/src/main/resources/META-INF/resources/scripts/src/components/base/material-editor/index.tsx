@@ -256,15 +256,14 @@ const MATERIAL_RESTRICT_TYPE_CONFIGS: MaterialRestrictTypeConfig[] = [
     text: "labels.visibleRestrictionAll",
   },
   {
-    type: MaterialViewRestriction.WorkspaceMembers,
-    classNameMod: "restrict-type-dropdown-members-only",
-    text: "labels.visibleRestrictionLoggedIn",
-  },
-
-  {
     type: MaterialViewRestriction.LoggedIn,
     classNameMod: "restrict-type-dropdown-disabled",
     text: "labels.visibleRestrictionLoggedIn",
+  },
+  {
+    type: MaterialViewRestriction.WorkspaceMembers,
+    classNameMod: "restrict-type-dropdown-members-only",
+    text: "labels.visibleRestrictionMembers",
   },
 ];
 
@@ -1301,8 +1300,8 @@ class MaterialEditor extends React.Component<
                           ns: "materials",
                         })}
                       </option>
-                      <option value="NOT_ALLOWED">
-                        {this.props.i18n.t("labels.materialAiNotAllowed", {
+                      <option value="DISALLOWED">
+                        {this.props.i18n.t("labels.materialAiDisallowed", {
                           ns: "materials",
                         })}
                       </option>

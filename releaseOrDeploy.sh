@@ -5,9 +5,9 @@ if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from ot
   ssh-add - <<< "${GA_DEPLOY_KEY}"
   git config --global user.name "Github Actions Bot"
   git config --global user.email "github-actions[bot]@users.noreply.github.com"
-  # Use default merge strategy
+  # Use default merge strategy.
   git config --global pull.rebase false
-  # Push one branch at a time
+  # Push one branch at a time.
   git config --global push.default simple
   git checkout master
   git reset --hard
@@ -29,10 +29,4 @@ if [[ ($commitmessage == *"Merge pull request"*) && ($commitmessage == *"from ot
   git commit -m "Updated latest snapshot releases"
   git pull
   git push
-elif [[ ($commitmessage == *"[maven-release-plugin] prepare release"*) ]]; then
-  echo Deploying
-  pushd .
-  cd muikku
-  mvn clean deploy --settings ~/.m2/mySettings.xml -Pjndi-mail-plugin,elastic-search-plugin,evaluation-plugin,timed-notifications-plugin,pyramus-plugins,matriculation-plugin -Dclassifier=otavanopisto
-  popd
 fi;

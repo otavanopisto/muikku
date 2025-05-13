@@ -15,6 +15,7 @@ import {
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
 import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
+import { MaterialLoaderAI } from "~/components/base/material-loader/ai";
 import { MaterialLoaderContent } from "~/components/base/material-loader/content";
 import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
 import { MaterialLoaderButtons } from "~/components/base/material-loader/buttons";
@@ -167,6 +168,9 @@ class WorkspaceMaterial extends React.Component<
               <div>
                 <MaterialLoaderEditorButtonSet {...props} {...state} />
                 <MaterialLoaderTitle {...props} {...state} />
+                {props.material.ai && !props.material.contentHiddenForUser ? (
+                  <MaterialLoaderAI {...props} {...state} />
+                ) : null}
                 <MaterialLoaderContent
                   {...props}
                   {...state}
