@@ -14839,6 +14839,14 @@ components:
         - PASSED
         - FAILED
         - INCOMPLETE
+        
+    MaterialCompositeReplyLockType:
+      description: Describes how the page this reply refers to is locked
+      type: string
+      enum:
+        - NONE
+        - SOFT
+        - HARD
 
     MaterialCompositeReply:
       type: object
@@ -14851,7 +14859,7 @@ components:
         - submitted
         - workspaceMaterialId
         - workspaceMaterialReplyId
-        - locked
+        - lock
       properties:
         answers:
           description: Answers of the material assignment
@@ -14890,9 +14898,9 @@ components:
           description: The id of the workspace material reply
           type: integer
           format: int64
-        locked:
-          description: Is the material now locked for the user
-          type: boolean
+        lock:
+          description: How the material is now locked for the user
+          $ref: "#/components/schemas/MaterialCompositeReplyLockType"
 
     MaterialAI:
       description: Is AI usage allowed

@@ -118,6 +118,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmen
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyLock;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
@@ -2207,7 +2208,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           reply.getState(),
           reply.getSubmitted(),
           answers,
-          reply.getLocked()); // this endpoint is only used in evaluation, so no need for enforced lock logic here 
+          WorkspaceMaterialReplyLock.NONE); // this endpoint is only used in evaluation, so no need for enforced lock logic here 
 
       // Evaluation info for evaluable materials
 
@@ -2246,7 +2247,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // #7352: Figure out scenarios in which a page is locked
     
-    boolean enforcedLock = false;
+    WorkspaceMaterialReplyLock lock = WorkspaceMaterialReplyLock.NONE;
     if (userEntityController.isStudent(userEntity)) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
       if (workspaceUserEntity != null) {
@@ -2254,7 +2255,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         for (WorkspaceAssessmentState assessmentState : assessmentStates) {
           // If workspace has been assessed or is being assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
           if (assessmentState.isAssessed() || assessmentState.isPending()) {
-            enforcedLock = true;
+            lock = WorkspaceMaterialReplyLock.SOFT;
             break;
           }
         }
@@ -2270,16 +2271,16 @@ public class WorkspaceRESTService extends PluginRESTService {
       for (WorkspaceMaterialReply reply : replies) {
         List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
 
-        // #7352: If enforced lock is already active or a page has already been evaluated, it is locked. Otherwise honor the lock of the page
-        
-        boolean pageLocked = enforcedLock;
-        if (!pageLocked) {
-          if (reply.getState() == WorkspaceMaterialReplyState.PASSED || reply.getState() == WorkspaceMaterialReplyState.FAILED) {
-            pageLocked = true;
-          }
-          else {
-            pageLocked = reply.getLocked();
-          }
+        // #7352: If the material has been evaluated then it's a soft lock. If soft lock not yet present but reply is locked, then it's a hard lock.
+        // NONE = material is not locked
+        // SOFT = material is locked because it has been evaluated, workspace has been evaluated, or workspace evaluation has been requested
+        // HARD = material is locked simply because teacher has said so
+
+        if (reply.getState() == WorkspaceMaterialReplyState.PASSED || reply.getState() == WorkspaceMaterialReplyState.FAILED) {
+          lock = WorkspaceMaterialReplyLock.SOFT;
+        }
+        else if (lock == WorkspaceMaterialReplyLock.NONE && reply.getLocked()) {
+          lock = WorkspaceMaterialReplyLock.HARD;
         }
 
         List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
@@ -2296,7 +2297,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             reply.getState(),
             reply.getSubmitted(),
             answers,
-            pageLocked);
+            lock);
 
         // Evaluation info for evaluable materials
 

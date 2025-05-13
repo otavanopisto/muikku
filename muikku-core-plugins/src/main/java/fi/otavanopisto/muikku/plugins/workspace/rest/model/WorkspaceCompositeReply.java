@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyLock;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 
 public class WorkspaceCompositeReply {
@@ -12,13 +13,13 @@ public class WorkspaceCompositeReply {
   }
   
   public WorkspaceCompositeReply(Long workspaceMaterialId, Long workspaceMaterialReplyId, WorkspaceMaterialReplyState state, Date submitted,
-      List<WorkspaceMaterialFieldAnswer> answers, boolean locked) {
+      List<WorkspaceMaterialFieldAnswer> answers, WorkspaceMaterialReplyLock lock) {
     this.workspaceMaterialId = workspaceMaterialId;
     this.workspaceMaterialReplyId = workspaceMaterialReplyId;
     this.state = state;
     this.answers = answers;
     this.submitted = submitted;
-    this.locked = locked;
+    this.lock = lock;
   }
   
   public Long getWorkspaceMaterialId() {
@@ -65,12 +66,12 @@ public class WorkspaceCompositeReply {
     this.submitted = submitted;
   }
 
-  public boolean isLocked() {
-    return locked;
+  public WorkspaceMaterialReplyLock getLock() {
+    return lock;
   }
 
-  public void setLocked(boolean locked) {
-    this.locked = locked;
+  public void setLock(WorkspaceMaterialReplyLock lock) {
+    this.lock = lock;
   }
 
   private Long workspaceMaterialId;
@@ -79,6 +80,6 @@ public class WorkspaceCompositeReply {
   private List<WorkspaceMaterialFieldAnswer> answers;
   private RestAssignmentEvaluation evaluationInfo;
   private Date submitted;
-  private boolean locked;
+  private WorkspaceMaterialReplyLock lock;
 
 }
