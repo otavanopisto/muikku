@@ -60,9 +60,9 @@ export interface ProfileStatusType {
   addresses: Array<string>;
   phoneNumbers: Array<string>;
   studyTimeLeftStr: string;
-  studyStartDate: string;
-  studyEndDate: string;
-  studyTimeEnd: string;
+  studyStartDate: Date;
+  studyEndDate: Date;
+  studyTimeEnd: Date;
   studyProgrammeName: string;
   studyProgrammeIdentifier: string;
   permissions: string[];
