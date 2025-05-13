@@ -1,6 +1,6 @@
 import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import MApi from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { ChatUser, WorkspaceBasicInfo } from "~/generated/client";
@@ -34,6 +34,14 @@ export type UPDATE_STATUS_WORKSPACE_PERMISSIONS = SpecificActionType<
 export type UPDATE_STATUS_WORKSPACEID = SpecificActionType<
   "UPDATE_STATUS_WORKSPACEID",
   number
+>;
+
+export type UPDATE_STATUS_WORKSPACE_ERROR = SpecificActionType<
+  "UPDATE_STATUS_WORKSPACE_ERROR",
+  {
+    error: string;
+    status: number;
+  }
 >;
 
 /**
@@ -294,10 +302,42 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
       let workspaceBasicInfo: WorkspaceBasicInfo = undefined;
 
       if (workspaceUrlName) {
-        workspaceBasicInfo = await workspaceApi.getWorkspaceBasicInfo({
-          urlName: workspaceUrlName,
-        });
+        try {
+          workspaceBasicInfo = await workspaceApi.getWorkspaceBasicInfo({
+            urlName: workspaceUrlName,
+          });
+        } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
+          // Handling workspace errors
+          if (isResponseError(err)) {
+            const status = err.response.status;
+
+            switch (status) {
+              case 401:
+                window.location.href = `/login?redirectUrl=${window.location.pathname}`;
+                break;
+              case 403:
+                window.location.href = `/error/403?workspace=true`;
+                break;
+              case 404:
+                window.location.href = `/error/404?workspace=true`;
+                break;
+              default:
+                window.location.href = `/error/${status}?workspace=true`;
+                break;
+            }
+            return;
+          }
+        }
       }
+
+      // Statistic endpoint
+      await workspaceApi.visitWorkspace({
+        workspaceId: workspaceBasicInfo.id,
+      });
 
       dispatch({
         type: "UPDATE_STATUS_WORKSPACEID",

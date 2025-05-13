@@ -1,4 +1,4 @@
-import Body from "../components/error/body";
+import Body from "../components/error/body2";
 import * as React from "react";
 import "~/sass/util/base.scss";
 import { HelmetProvider, Helmet } from "react-helmet-async";

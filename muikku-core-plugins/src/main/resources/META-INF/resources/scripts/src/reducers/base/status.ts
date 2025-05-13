@@ -13,6 +13,7 @@ import { ChatUser, Role, UserWhoAmIServices } from "~/generated/client";
  * StatusType
  */
 export interface StatusType {
+  initialized: boolean;
   loggedIn: boolean;
   userId: number;
   userSchoolDataIdentifier: string;
@@ -23,7 +24,7 @@ export interface StatusType {
   isStudent: boolean;
   hasFees: boolean;
   profile: ProfileStatusType;
-  services: UserWhoAmIServices;
+  services: UserWhoAmIServices | null;
   currentWorkspaceInfo?: {
     id: number;
     organizationEntityId: number;
@@ -76,6 +77,7 @@ export interface ProfileStatusType {
  */
 export default function status(
   state: StatusType = {
+    initialized: false, // whoami loading is done
     loggedIn: false, //whoami.id is checked if exists
     userId: null, // whoami.id
     userSchoolDataIdentifier: null, // whoami.identifier
@@ -149,6 +151,7 @@ export default function status(
       return {
         ...state,
         ...actionPayloadWoPermissions,
+        initialized: true,
         loggedIn: !!action.payload.userId,
         isActiveUser: action.payload.isActiveUser,
         permissions: { ...state.permissions, ...action.payload.permissions },
