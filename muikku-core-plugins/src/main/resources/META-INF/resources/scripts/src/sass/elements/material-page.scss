@@ -86,6 +86,55 @@
   height: 1.5rem;
 }
 
+.material-page__ai-warning-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 10px 20px;
+}
+
+.material-page__ai-warning-icon {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 32px 32px;
+  height: 32px;
+  width: 32px;
+}
+
+.material-page__ai-warning-text {
+  font-size: $text-mobile-font-size;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-richtext-font-size;
+  }
+}
+
+.material-page__ai-warning-container--allowed {
+  background-color: lighten($color-ai-use-allowed, 55%);
+
+  .material-page__ai-warning-icon {
+    background-image: url("/gfx/icons/64x64/ai-allowed.png");
+  }
+
+  .material-page__ai-warning-text {
+    color: $color-ai-use-allowed;
+  }
+}
+
+.material-page__ai-warning-container--disallowed {
+  background-color: lighten($color-ai-use-disallowed, 53%);
+
+  .material-page__ai-warning-icon {
+    background-image: url("/gfx/icons/64x64/ai-disallowed.png");
+  }
+
+  .material-page__ai-warning-text {
+    color: $color-ai-use-disallowed;
+  }
+}
+
 // Sets different paddings for left as there is extra border
 .material-page__title--exercise,
 .material-page__title--assignment,

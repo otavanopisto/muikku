@@ -186,7 +186,7 @@ export const useStudentChoices = (
     try {
       await hopsApi.saveStudentCourseChoices({
         studentIdentifier: studentId,
-        saveStudentCourseChoicesRequest: {
+        studentCourseChoice: {
           subject: subject,
           courseNumber: courseNumber,
         },

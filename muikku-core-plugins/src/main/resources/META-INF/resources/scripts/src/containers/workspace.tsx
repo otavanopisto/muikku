@@ -1,7 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import Notifications from "../components/base/notifications";
-import DisconnectedWarningDialog from "../components/base/disconnect-warning";
-import { BrowserRouter, Route } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
 import { StateType } from "~/reducers";
@@ -16,7 +13,7 @@ import WorkspaceMaterialsBody from "~/components/workspace/workspaceMaterials";
 import WorkspaceJournalBody from "~/components/workspace/workspaceJournal";
 import WorkspaceManagementBody from "~/components/workspace/workspaceManagement";
 import WorkspaceUsersBody from "~/components/workspace/workspaceUsers";
-import { RouteComponentProps } from "react-router";
+import { Route, RouteComponentProps, Switch } from "react-router";
 import {
   setCurrentWorkspace,
   loadStaffMembersOfWorkspace,
@@ -55,7 +52,6 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
-import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import { DiscussionStatePatch } from "~/reducers/discussion";
 import { loadCurrentWorkspaceJournalsFromServer } from "~/actions/workspaces/journals";
 import {
@@ -66,11 +62,8 @@ import {
 } from "~/actions/workspaces/material";
 import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
-import { ChatWebsocketContextProvider } from "~/components/chat/context/chat-websocket-context";
-import Chat from "~/components/chat";
-import { WindowContextProvider } from "~/context/window-context";
-import { HelmetProvider } from "react-helmet-async";
-import TitleProvider from "./titleProvider";
+import { ProtectedRoute } from "~/routes/protected-route";
+import NotFoundBody from "~/components/not-found/body";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1168,66 +1161,157 @@ export default class Workspace extends React.Component<
    * @returns JSX.Element
    */
   render() {
+    const isAuthenticated = this.props.store.getState().status.loggedIn;
+    const permissions = this.props.store.getState().status.permissions;
+
     return (
-      <HelmetProvider>
-        <ReadspeakerProvider>
-          <div id="root">
-            <WindowContextProvider>
-              <ChatWebsocketContextProvider websocket={this.props.websocket}>
-                <Chat />
-              </ChatWebsocketContextProvider>
-              <Notifications></Notifications>
-              <DisconnectedWarningDialog />
-              <EasyToUseFunctions />
-              <BrowserRouter>
-                <TitleProvider>
-                  <Route
-                    exact
-                    path="/workspace/:workspaceUrl/"
-                    render={this.renderWorkspaceHome}
-                  />
-                  <Route
-                    path="/workspace/:workspaceUrl/help"
-                    render={this.renderWorkspaceHelp}
-                  />
-                  <Route
-                    path="/workspace/:workspaceUrl/discussions"
-                    render={this.renderWorkspaceDiscussions}
-                  />
-                  <Route
-                    path="/workspace/:workspaceUrl/announcements"
-                    render={this.renderWorkspaceAnnouncements}
-                  />
-                  <Route
-                    path="/workspace/:workspaceUrl/announcer"
-                    render={this.renderWorkspaceAnnouncer}
-                  />
-                  <Route
-                    path="/workspace/:workspaceUrl/materials"
-                    render={this.renderWorkspaceMaterials}
-                  />
-                  <Route
-                    path="/workspace/:workspaceUrl/users"
-                    render={this.renderWorkspaceUsers}
-                  />
-                  <Route
-                    path="/workspace/:workspaceUrl/journal"
-                    render={this.renderWorkspaceJournal}
-                  />
-                  <Route
-                    path="/workspace/:workspaceUrl/workspace-management"
-                    render={this.renderWorkspaceManagement}
-                  />
-                  <Route
-                    path="/workspace/:workspaceUrl/evaluation"
-                    render={this.renderWorkspaceEvaluation}
-                  />
-                </TitleProvider>
-              </BrowserRouter>
-            </WindowContextProvider>
-          </div>
-        </ReadspeakerProvider>
-      </HelmetProvider>
+      <ReadspeakerProvider>
+        <Switch>
+          {/* PUBLIC ROUTEs */}
+          <Route
+            path="/workspace/:workspaceUrl/announcements"
+            render={this.renderWorkspaceAnnouncements}
+          />
+
+          {/* PROTECTED ROUTES */}
+          <Route
+            exact
+            path="/workspace/:workspaceUrl"
+            render={(routeProps) => (
+              <ProtectedRoute
+                hasPermission={permissions.WORKSPACE_HOME_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceHome}
+              </ProtectedRoute>
+            )}
+          />
+          <Route
+            path="/workspace/:workspaceUrl/help"
+            render={(routeProps) => (
+              <ProtectedRoute
+                hasPermission={permissions.WORKSPACE_GUIDES_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceHelp}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/workspace/:workspaceUrl/discussions"
+            render={(routeProps) => (
+              <ProtectedRoute
+                hasPermission={permissions.WORKSPACE_DISCUSSIONS_VISIBLE}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceDiscussions}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/workspace/:workspaceUrl/announcer"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_ANNOUNCER_TOOL}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceAnnouncer}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/workspace/:workspaceUrl/materials"
+            render={(routeProps) => (
+              <ProtectedRoute
+                hasPermission={permissions.WORKSPACE_MATERIALS_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceMaterials}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/workspace/:workspaceUrl/users"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_USERS_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceUsers}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/workspace/:workspaceUrl/journal"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_JOURNAL_VISIBLE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceJournal}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/workspace/:workspaceUrl/workspace-management"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_MANAGE_WORKSPACE}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceManagement}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/workspace/:workspaceUrl/evaluation"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={permissions.WORKSPACE_ACCESS_EVALUATION}
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceEvaluation}
+              </ProtectedRoute>
+            )}
+          />
+
+          {/* Fallback route */}
+          <Route
+            path="/workspace/:workspaceUrl/*"
+            render={(routeProps) => {
+              if (!this.props.store.getState().status.initialized) {
+                return null;
+              }
+              return (
+                <NotFoundBody
+                  context="workspace"
+                  workspaceUrl={routeProps.match.params["workspaceUrl"]}
+                />
+              );
+            }}
+          />
+        </Switch>
+      </ReadspeakerProvider>
     );
   }
 }

@@ -103,7 +103,7 @@ class ChatSettings extends React.Component<
 
     try {
       await chatApi.updateChatSettings({
-        updateChatSettingsRequest: {
+        chatUser: {
           ...chatUserSettings,
           nick: chatNick.trim(),
           visibility: chatVisiblity,
