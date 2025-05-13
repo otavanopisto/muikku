@@ -182,6 +182,9 @@ class WorkspaceMaterial extends React.Component<
               <div>
                 <MaterialLoaderEditorButtonSet {...props} {...state} />
                 <MaterialLoaderTitle {...props} {...state} />
+                {props.material.ai && !props.material.contentHiddenForUser ? (
+                  <MaterialLoaderAI {...props} {...state} />
+                ) : null}
                 <MaterialLoaderContent
                   {...props}
                   {...state}

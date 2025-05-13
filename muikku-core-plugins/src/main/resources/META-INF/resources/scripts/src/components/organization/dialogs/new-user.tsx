@@ -206,7 +206,7 @@ class OrganizationUser extends React.Component<
               firstName: this.state.user.firstName,
               lastName: this.state.user.lastName,
               email: this.state.user.email,
-              roles: this.state.user.roles,
+              roles: new Set(this.state.user.roles),
             },
           },
           /**

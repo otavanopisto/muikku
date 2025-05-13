@@ -122,10 +122,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
 
   /**
    * shouldComponentUpdate
+   * @param nextProps nextProps
+   * @param nextState nextState
    */
-  shouldComponentUpdate() {
-    // this field is uncontrolled by react
-    return false;
+  shouldComponentUpdate(nextProps: FieldProps, nextState: FieldState) {
+    return nextProps.readOnly !== this.props.readOnly;
   }
 
   /**

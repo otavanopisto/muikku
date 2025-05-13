@@ -1313,8 +1313,8 @@ class MaterialEditor extends React.Component<
                           ns: "materials",
                         })}
                       </option>
-                      <option value="NOT_ALLOWED">
-                        {this.props.i18n.t("labels.materialAiNotAllowed", {
+                      <option value="DISALLOWED">
+                        {this.props.i18n.t("labels.materialAiDisallowed", {
                           ns: "materials",
                         })}
                       </option>
