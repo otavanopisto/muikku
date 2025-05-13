@@ -49,6 +49,7 @@ import {
 } from "~/generated/client";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import CKEditor5 from "~/editors/ckeditor5";
+import { CKEditorConfig } from "~/editors/ckeditor5/configs";
 
 /**
  * MaterialEditorProps
@@ -82,143 +83,143 @@ interface MaterialEditorState {
  * @param materialNode materialNode
  * @param disablePlugins disablePlugins
  */
-const CKEditorConfig = (
-  /* eslint-disable camelcase */
-  locale: string,
-  contextPath: string,
-  workspace: WorkspaceDataType,
-  materialNode: MaterialContentNodeWithIdAndLogic,
-  disablePlugins: boolean
-) => ({
-  uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
-  linkShowTargetTab: true,
-  language: locale,
-  language_list: [
-    "fi:Suomi",
-    "en:Englanti",
-    "sv:Ruotsi",
-    "de:Saksa",
-    "es:Espanja",
-    "ru:Venäjä",
-    "ja:Japani",
-    "fr:Ranska",
-    "it:Italia",
-    "la:Latina",
-    "el:Kreikka",
-  ],
-  stylesSet:
-    "workspace-material-styles:" +
-    contextPath +
-    "/scripts/ckplugins/styles/workspace-material-styles.js",
-  baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
-  mathJaxLib: MATHJAXSRC,
-  mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
-  disallowedContent:
-    "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[-*]; *[--*]; *[on*]; *{white-space}; *{flex*};",
-  toolbar: [
-    { name: "document", items: ["Source"] },
-    {
-      name: "clipboard",
-      items: [
-        "Cut",
-        "Copy",
-        "Paste",
-        "PasteText",
-        "PasteFromWord",
-        "-",
-        "Undo",
-        "Redo",
-      ],
-    },
-    {
-      name: "editing",
-      items: [
-        "Find",
-        "-",
-        "SelectAll",
-        "-",
-        "Scayt",
-        "-",
-        "Language",
-        "-",
-        "A11ychecker",
-      ],
-    },
-    {
-      name: "basicstyles",
-      items: [
-        "Bold",
-        "Italic",
-        "Underline",
-        "Strike",
-        "Subscript",
-        "Superscript",
-        "-",
-        "RemoveFormat",
-      ],
-    },
-    "/",
-    { name: "styles", items: ["Styles", "Format"] },
-    {
-      name: "insert",
-      items: [
-        "Image",
-        "Audio",
-        "oembed",
-        "Muikku-mathjax",
-        "Table",
-        "Iframe",
-        "Smiley",
-        "SpecialChar",
-        "CreateDiv",
-        "Muikku-details",
-      ],
-    },
-    { name: "links", items: ["Link", "Unlink", "Anchor"] },
-    { name: "colors", items: ["TextColor", "BGColor"] },
-    "/",
-    {
-      name: "forms",
-      items: [
-        "MuikkuTextField",
-        "muikku-selection",
-        "MuikkuMemoField",
-        "muikku-filefield",
-        "muikku-audiofield",
-        "muikku-connectfield",
-        "muikku-organizerfield",
-        "muikku-sorterfield",
-        "muikku-mathexercisefield",
-        "muikku-journalfield",
-      ],
-    },
-    {
-      name: "paragraph",
-      items: [
-        "NumberedList",
-        "BulletedList",
-        "-",
-        "Outdent",
-        "Indent",
-        "Blockquote",
-        "-",
-        "JustifyLeft",
-        "JustifyCenter",
-        "JustifyRight",
-        "JustifyBlock",
-        "-",
-        "BidiLtr",
-        "BidiRtl",
-      ],
-    },
-    { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] },
-  ],
-  resize_enabled: false,
-  removePlugins: "image,exportpdf,wsc",
-  extraPlugins: disablePlugins
-    ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax,muikku-details"
-    : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax,muikku-journalfield,muikku-details",
-});
+// const CKEditorConfig = (
+//   /* eslint-disable camelcase */
+//   locale: string,
+//   contextPath: string,
+//   workspace: WorkspaceDataType,
+//   materialNode: MaterialContentNodeWithIdAndLogic,
+//   disablePlugins: boolean
+// ) => ({
+//   uploadUrl: `/materialAttachmentUploadServlet/workspace/${workspace.urlName}/materials/${materialNode.path}`,
+//   linkShowTargetTab: true,
+//   language: locale,
+//   language_list: [
+//     "fi:Suomi",
+//     "en:Englanti",
+//     "sv:Ruotsi",
+//     "de:Saksa",
+//     "es:Espanja",
+//     "ru:Venäjä",
+//     "ja:Japani",
+//     "fr:Ranska",
+//     "it:Italia",
+//     "la:Latina",
+//     "el:Kreikka",
+//   ],
+//   stylesSet:
+//     "workspace-material-styles:" +
+//     contextPath +
+//     "/scripts/ckplugins/styles/workspace-material-styles.js",
+//   baseHref: `/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
+//   mathJaxLib: MATHJAXSRC,
+//   mathJaxClass: "math-tex", // This CANNOT be changed as cke saves this to database as part of documents html (wraps the formula in a span with specified className). Don't touch it! ... STOP TOUCHING IT!
+//   disallowedContent:
+//     "*(dialog*, bubble*, button*, avatar*, pager*, panel*, tab*, zoom*, card*, carousel*, course*, message*, drawer*, filter*, footer*, label*, link*, menu*, meta*, navbar*, toc*, application*); *[-*]; *[--*]; *[on*]; *{white-space}; *{flex*};",
+//   toolbar: [
+//     { name: "document", items: ["Source"] },
+//     {
+//       name: "clipboard",
+//       items: [
+//         "Cut",
+//         "Copy",
+//         "Paste",
+//         "PasteText",
+//         "PasteFromWord",
+//         "-",
+//         "Undo",
+//         "Redo",
+//       ],
+//     },
+//     {
+//       name: "editing",
+//       items: [
+//         "Find",
+//         "-",
+//         "SelectAll",
+//         "-",
+//         "Scayt",
+//         "-",
+//         "Language",
+//         "-",
+//         "A11ychecker",
+//       ],
+//     },
+//     {
+//       name: "basicstyles",
+//       items: [
+//         "Bold",
+//         "Italic",
+//         "Underline",
+//         "Strike",
+//         "Subscript",
+//         "Superscript",
+//         "-",
+//         "RemoveFormat",
+//       ],
+//     },
+//     "/",
+//     { name: "styles", items: ["Styles", "Format"] },
+//     {
+//       name: "insert",
+//       items: [
+//         "Image",
+//         "Audio",
+//         "oembed",
+//         "Muikku-mathjax",
+//         "Table",
+//         "Iframe",
+//         "Smiley",
+//         "SpecialChar",
+//         "CreateDiv",
+//         "Muikku-details",
+//       ],
+//     },
+//     { name: "links", items: ["Link", "Unlink", "Anchor"] },
+//     { name: "colors", items: ["TextColor", "BGColor"] },
+//     "/",
+//     {
+//       name: "forms",
+//       items: [
+//         "MuikkuTextField",
+//         "muikku-selection",
+//         "MuikkuMemoField",
+//         "muikku-filefield",
+//         "muikku-audiofield",
+//         "muikku-connectfield",
+//         "muikku-organizerfield",
+//         "muikku-sorterfield",
+//         "muikku-mathexercisefield",
+//         "muikku-journalfield",
+//       ],
+//     },
+//     {
+//       name: "paragraph",
+//       items: [
+//         "NumberedList",
+//         "BulletedList",
+//         "-",
+//         "Outdent",
+//         "Indent",
+//         "Blockquote",
+//         "-",
+//         "JustifyLeft",
+//         "JustifyCenter",
+//         "JustifyRight",
+//         "JustifyBlock",
+//         "-",
+//         "BidiLtr",
+//         "BidiRtl",
+//       ],
+//     },
+//     { name: "tools", items: ["Maximize", "ShowBlocks", "-", "About"] },
+//   ],
+//   resize_enabled: false,
+//   removePlugins: "image,exportpdf,wsc",
+//   extraPlugins: disablePlugins
+//     ? "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-mathjax,muikku-details"
+//     : "divarea,language,oembed,audio,image2,muikku-embedded,muikku-image-details,muikku-image-target,muikku-word-definition,muikku-audio-defaults,muikku-image-target,widget,lineutils,filetools,uploadwidget,uploadimage,muikku-fields,muikku-textfield,muikku-memofield,muikku-filefield,muikku-audiofield,muikku-selection,muikku-connectfield,muikku-organizerfield,muikku-sorterfield,muikku-mathexercisefield,muikku-mathjax,muikku-journalfield,muikku-details",
+// });
 
 type PageTypeLocales =
   | "labels.exercise"
@@ -1187,6 +1188,13 @@ class MaterialEditor extends React.Component<
                     this.props.editorState.currentDraftNodeValue.html
                   }
                   onChange={this.updateContent}
+                  config={CKEditorConfig(
+                    this.props.locale.current,
+                    this.props.status.contextPath,
+                    this.props.editorState.currentNodeWorkspace,
+                    this.props.editorState.currentDraftNodeValue,
+                    this.props.editorState.disablePlugins
+                  )}
                 >
                   {this.props.editorState.currentDraftNodeValue.html}
                 </CKEditor5>

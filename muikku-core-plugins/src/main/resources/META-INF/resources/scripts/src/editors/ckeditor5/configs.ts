@@ -65,6 +65,8 @@ import {
   Underline,
   WordCount,
 } from "ckeditor5";
+import { WorkspaceDataType } from "~/reducers/workspaces";
+import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 import {
   AudioField,
   ConnectField,
@@ -76,12 +78,20 @@ import {
   SorterField,
   TextField,
   MStyles,
+  ImageSrcResolver,
 } from "./plugins";
+
+/**
+ * MuikkuCkeditorConfig
+ */
+export interface MuikkuCkeditorConfig extends EditorConfig {
+  baseImageUrl?: string;
+}
 
 const LICENSE_KEY = "GPL";
 
 // Base configuration that all editor instances will extend
-export const baseConfig: EditorConfig = {
+export const baseConfig: MuikkuCkeditorConfig = {
   toolbar: {
     items: [
       "heading",
@@ -178,7 +188,7 @@ export const fullEditorConfig: EditorConfig = {
 };
 
 // Configuration for a comment editor
-export const commentEditorConfig: EditorConfig = {
+export const commentEditorConfig: MuikkuCkeditorConfig = {
   ...baseConfig,
   toolbar: {
     items: ["bold", "italic", "link", "bulletedList", "emoji", "mention"],
@@ -195,7 +205,7 @@ export const commentEditorConfig: EditorConfig = {
   placeholder: "Write a comment...",
 };
 
-export const testConfig: EditorConfig = {
+export const testConfig: MuikkuCkeditorConfig = {
   toolbar: {
     items: [
       "sourceEditing",
@@ -252,6 +262,7 @@ export const testConfig: EditorConfig = {
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    ImageSrcResolver,
     MStyles,
     JournalField,
     FileField,
@@ -502,3 +513,25 @@ export const testConfig: EditorConfig = {
     ],
   },
 };
+
+/**
+ * CKEditorConfig
+ *
+ * @param locale - The locale of the editor
+ * @param contextPath - The context path of the editor
+ * @param workspace - The workspace of the editor
+ * @param materialNode - The material node of the editor
+ * @param disablePlugins - Whether to disable plugins
+ * @returns The CKEditor config
+ */
+export const CKEditorConfig = (
+  /* eslint-disable camelcase */
+  locale: string,
+  contextPath: string,
+  workspace: WorkspaceDataType,
+  materialNode: MaterialContentNodeWithIdAndLogic,
+  disablePlugins: boolean
+) => ({
+  ...testConfig,
+  baseImageUrl: `${contextPath}/workspace/${workspace.urlName}/materials/${materialNode.path}/`,
+});

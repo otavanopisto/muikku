@@ -4,7 +4,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { EditorConfig } from "ckeditor5";
 import { ClassicEditor } from "ckeditor5";
 import "ckeditor5/ckeditor5.css";
-import { testConfig } from "./configs";
+import { testConfig, MuikkuCkeditorConfig } from "./configs";
 import "./ckeditor5.css";
 
 /**
@@ -13,7 +13,7 @@ import "./ckeditor5.css";
 interface CKEditorProps {
   initialData?: string;
   onChange?: (data: string) => void;
-  config?: EditorConfig;
+  config?: MuikkuCkeditorConfig;
 }
 
 /**
@@ -36,7 +36,9 @@ const CKEditor5: React.FC<CKEditorProps> = (props) => {
     return () => setIsLayoutReady(false);
   }, []);
 
-  const { editorConfig } = useMemo((): { editorConfig: EditorConfig } => {
+  const { editorConfig } = useMemo((): {
+    editorConfig: MuikkuCkeditorConfig;
+  } => {
     if (!isLayoutReady) {
       return { editorConfig: null };
     }
@@ -84,6 +86,7 @@ const CKEditor5: React.FC<CKEditorProps> = (props) => {
                 }
               }}
               onChange={(event, editor) => {
+                console.log("CKEditor onChange", editor.getData());
                 onChange?.(editor.getData());
               }}
               onError={(error, { phase }) => {
