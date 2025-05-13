@@ -17,8 +17,6 @@ import Footer from "./initialization/footer";
 interface initializationProps {}
 
 const Initialization = (props: initializationProps) => {
-  // const { t } = useTranslation("languageProfile");
-
   /**
    * StepZilla steps
    */
@@ -26,7 +24,6 @@ const Initialization = (props: initializationProps) => {
     [Step1, Step2, Step3, Step4],
     "languageProfile"
   );
-
 
   const handleStepChange = (step: WizardStep) => {};
   const { ...wizardValues } = useWizard({
