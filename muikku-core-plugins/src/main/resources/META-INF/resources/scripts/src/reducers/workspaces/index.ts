@@ -415,18 +415,6 @@ export const workspaces: Reducer<WorkspacesState> = (
     case "UPDATE_LAST_WORKSPACES":
       return { ...state, lastWorkspaces: action.payload };
 
-    case "UPDATE_MATERIALS_ARE_DISABLED":
-      return {
-        ...state,
-        materialsAreDisabled: action.payload,
-      };
-
-    case "UPDATE_WORKSPACE_IS_BEING_EVALUATED":
-      return {
-        ...state,
-        workspaceIsBeingEvaluated: action.payload,
-      };
-
     case "SET_CURRENT_WORKSPACE":
       return {
         ...state,

@@ -433,16 +433,6 @@ export interface RemoveWorkspaceEvent {
 }
 
 /**
- * LockAssessmentRequest
- */
-export interface LockAssessmentRequest {
-  (data: {
-    assessment: EvaluationAssessmentRequest;
-    locked: boolean;
-  }): AnyActionType;
-}
-
-/**
  * DeleteAssessmentRequest
  */
 export interface DeleteAssessmentRequest {
@@ -630,6 +620,7 @@ export interface DeleteEvaluationJournalCommentTriggerType {
     fail?: () => void;
   }): AnyActionType;
 }
+
 // Actions
 
 /**
@@ -1932,7 +1923,7 @@ const toggleLockedAssignment: ToggleLockedAssigment =
             workspaceUserEntityId:
               state.evaluations.evaluationSelectedAssessmentId
                 .workspaceUserEntityId,
-            updateEvaluablePageLocksRequest: {
+            evaluationPageLock: {
               workspaceMaterialId: data.workspaceMaterialId,
               locked: data.action === "lock",
             },
@@ -1963,25 +1954,22 @@ const toggleLockedAssignment: ToggleLockedAssigment =
             workspaceUserEntityId:
               state.evaluations.evaluationSelectedAssessmentId
                 .workspaceUserEntityId,
-            updateEvaluablePageLocksRequest: {
+            evaluationPageLock: {
               locked: data.action === "lock",
             },
           });
 
-          // Depending action, we'll get all EVALUATED assignment IDs from assingment lists
-          // or reset the list of locked assignments. This is then used to update redux state
-          const allAssignmentIds =
-            data.action === "lock"
-              ? state.evaluations.evaluationCurrentStudentAssigments.data?.assigments
-                  .filter(
-                    (assignment) => assignment.assignmentType === "EVALUATED"
-                  )
-                  .map((assignment) => assignment.id) || []
-              : [];
+          // Get updated list of locked assignments
+          const updatedLockedAssignments =
+            await evaluationApi.getEvaluablePagesLocks({
+              workspaceUserEntityId:
+                state.evaluations.evaluationSelectedAssessmentId
+                  .workspaceUserEntityId,
+            });
 
           dispatch({
             type: "EVALUATION_LOCKED_ASSIGNMENTS_UPDATE",
-            payload: allAssignmentIds,
+            payload: updatedLockedAssignments,
           });
         }
       } catch (err) {
@@ -2183,22 +2171,6 @@ const setSelectedAssessmentAndLoadEvents: UpdateEvaluationSelectedAssessment =
           assessment: data.assessment,
         })
       );
-    };
-  };
-
-/**
- * Updates selected assessment
- * @param data data
- */
-const updateSelectedAassessment: UpdateEvaluationSelectedAssessment =
-  function updateSelectedAssessment(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
-      dispatch({
-        type: "EVALUATION_ASSESSMENT_UPDATE",
-        payload: data.assessment,
-      });
     };
   };
 
@@ -2879,53 +2851,6 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
     };
   };
 
-/**
- * lockAssessmentRequest
- * @param data data
- */
-const lockAssessmentRequest: LockAssessmentRequest =
-  function lockAssessmentRequest(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const { assessment, locked } = data;
-
-      const evaluationApi = MApi.getEvaluationApi();
-
-      try {
-        const updatedAssessmentRequest =
-          await evaluationApi.lockWorkspaceUserEvaluationRequest({
-            workspaceUserEntityId: assessment.workspaceUserEntityId,
-            assessmentRequestIdentifier: assessment.identifier,
-            evaluationAssessmentRequest: {
-              ...assessment,
-              locked,
-            },
-          });
-
-        dispatch(
-          updateSelectedAassessment({ assessment: updatedAssessmentRequest })
-        );
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-
-        dispatch(
-          notificationActions.displayNotification(
-            i18n.t("notifications.updateError", {
-              ns: "evaluation",
-              context: "locking",
-              error: err.message,
-            }),
-            "error"
-          )
-        );
-      }
-    };
-  };
-
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -2962,6 +2887,5 @@ export {
   createOrUpdateEvaluationJournalFeedback,
   deleteEvaluationJournalFeedback,
   deleteSupplementationRequest,
-  lockAssessmentRequest,
   toggleLockedAssignment,
 };

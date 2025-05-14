@@ -10,7 +10,6 @@ import { useMemo } from "react";
 import { EvaluationLatestSubjectEvaluationIndex } from "~/@types/evaluation";
 import {
   loadEvaluationAssessmentEventsFromServer,
-  lockAssessmentRequest,
   toggleLockedAssignment,
 } from "~/actions/main-function/evaluation/evaluationActions";
 
@@ -147,18 +146,6 @@ export const useEvaluationLogic = (
   }, [dispatch, evaluatedAssignments, lockedAssignmentIds]);
 
   /**
-   * Handle lock change
-   */
-  const handleLockChange = useCallback(() => {
-    dispatch(
-      lockAssessmentRequest({
-        assessment: selectedAssessment,
-        locked: !selectedAssessment.locked,
-      })
-    );
-  }, [dispatch, selectedAssessment]);
-
-  /**
    * Handle click edit
    * @param eventId event id
    * @param workspaceSubjectIdentifier workspace subject identifier
@@ -281,7 +268,6 @@ export const useEvaluationLogic = (
   return {
     getLatestEvaluatedEventIndex,
     isLatestEventSupplementationRequest,
-    handleLockChange,
     handleClickEdit,
     handleWorkspaceSuccesfulSave,
     handleOpenWorkspaceEvaluationDrawer,

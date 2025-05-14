@@ -132,7 +132,6 @@ const Evaluation = (props: EvaluationDrawerProps) => {
   const {
     getLatestEvaluatedEventIndex,
     isLatestEventSupplementationRequest,
-    handleLockChange,
     handleClickEdit,
     handleWorkspaceSuccesfulSave,
     handleCloseWorkspaceEvaluationDrawer,
@@ -557,26 +556,6 @@ const Evaluation = (props: EvaluationDrawerProps) => {
                 ) : null}
               </div>
               <div className="evaluation-modal__content-buttonset">
-                {(selectedAssessment.state === "pending" ||
-                  selectedAssessment.state === "pending_fail" ||
-                  selectedAssessment.state === "pending_pass") && (
-                  <Button
-                    className={
-                      selectedAssessment.locked
-                        ? "button--evaluation-unlock-request"
-                        : "button--evaluation-lock-request"
-                    }
-                    onClick={handleLockChange}
-                  >
-                    {selectedAssessment.locked
-                      ? t("actions.unlockEvalRequest", {
-                          ns: "evaluation",
-                        })
-                      : t("actions.lockEvalRequest", {
-                          ns: "evaluation",
-                        })}
-                  </Button>
-                )}
                 <Button
                   className={
                     isAllAssignmentsLocked

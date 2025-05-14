@@ -537,6 +537,13 @@ class EvaluationAssessmentAssignment extends React.Component<
         ? "assignment"
         : "exercise";
 
+    const showLockButton =
+      this.props.compositeReply &&
+      this.props.assigment.assignmentType === "EVALUATED" &&
+      ["UNANSWERED", "WITHDRAWN", "SUBMITTED", "ANSWERED"].includes(
+        this.props.compositeReply.state
+      );
+
     return (
       <div className={`evaluation-modal__item `}>
         <div
@@ -568,7 +575,7 @@ class EvaluationAssessmentAssignment extends React.Component<
             {this.renderAssignmentMeta(compositeReply)}
           </div>
           <div className="evaluation-modal__item-functions">
-            {this.props.assigment.assignmentType === "EVALUATED" && (
+            {showLockButton && (
               <ButtonPill
                 aria-label={t("actions.evaluateAssignment", {
                   ns: "evaluation",

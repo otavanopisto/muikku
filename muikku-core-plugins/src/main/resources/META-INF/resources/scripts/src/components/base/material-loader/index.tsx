@@ -705,7 +705,7 @@ class MaterialLoader extends React.Component<
 
     // If the material is locked, it is read only
     if (this.props.compositeReplies) {
-      if (this.props.compositeReplies.locked) {
+      if (this.props.compositeReplies.lock !== "NONE") {
         return true;
       }
     }
@@ -730,7 +730,7 @@ class MaterialLoader extends React.Component<
   isAnswerable = () => {
     // If the material is locked, it is not answerable
     if (this.props.compositeReplies) {
-      if (this.props.compositeReplies.locked) {
+      if (this.props.compositeReplies.lock !== "NONE") {
         return false;
       }
     }
