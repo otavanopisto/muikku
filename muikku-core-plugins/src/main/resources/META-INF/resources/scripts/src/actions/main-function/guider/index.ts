@@ -2631,7 +2631,7 @@ const updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType =
       try {
         await userApi.updateFlag({
           flagId: data.label.id,
-          updateFlagRequest: newLabel,
+          userFlag: newLabel,
         });
 
         dispatch({

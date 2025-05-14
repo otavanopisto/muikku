@@ -1,6 +1,6 @@
 import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import MApi from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { ChatUser, WorkspaceBasicInfo } from "~/generated/client";
@@ -34,6 +34,14 @@ export type UPDATE_STATUS_WORKSPACE_PERMISSIONS = SpecificActionType<
 export type UPDATE_STATUS_WORKSPACEID = SpecificActionType<
   "UPDATE_STATUS_WORKSPACEID",
   number
+>;
+
+export type UPDATE_STATUS_WORKSPACE_ERROR = SpecificActionType<
+  "UPDATE_STATUS_WORKSPACE_ERROR",
+  {
+    error: string;
+    status: number;
+  }
 >;
 
 /**
@@ -92,71 +100,70 @@ async function loadWhoAMI(
       hasImage: whoAmI.hasImage,
       hasFees: whoAmI.hasEvaluationFees,
       isActiveUser: whoAmI.isActive,
-      roles: whoAmI.roles,
-      isStudent: whoAmI.roles.includes(Role.Student),
+      roles: Array.from(whoAmI.roles),
+      isStudent: whoAmI.roles.has(Role.Student),
       userSchoolDataIdentifier: whoAmI.identifier,
       services: whoAmI.services,
       permissions: {
-        ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.includes(
+        ANNOUNCER_CAN_PUBLISH_ENVIRONMENT: whoAmI.permissions.has(
           "CREATE_ANNOUNCEMENT"
         ),
-        ANNOUNCER_CAN_PUBLISH_GROUPS: whoAmI.permissions.includes(
+        ANNOUNCER_CAN_PUBLISH_GROUPS: whoAmI.permissions.has(
           "CREATE_ANNOUNCEMENT"
         ),
         ANNOUNCER_CAN_PUBLISH_WORKSPACES: true,
-        ANNOUNCER_TOOL: whoAmI.permissions.includes("ANNOUNCER_TOOL"),
-        CHAT_MANAGE_PUBLIC_ROOMS: whoAmI.permissions.includes(
+        ANNOUNCER_TOOL: whoAmI.permissions.has("ANNOUNCER_TOOL"),
+        CHAT_MANAGE_PUBLIC_ROOMS: whoAmI.permissions.has(
           "CHAT_MANAGE_PUBLIC_ROOMS"
         ),
-        COMMUNICATOR_GROUP_MESSAGING: whoAmI.permissions.includes(
+        COMMUNICATOR_GROUP_MESSAGING: whoAmI.permissions.has(
           "COMMUNICATOR_GROUP_MESSAGING"
         ),
-        EVALUATION_VIEW_INDEX: whoAmI.permissions.includes("ACCESS_EVALUATION"),
-        FORUM_LOCK_STICKY_PERMISSION: whoAmI.permissions.includes(
+        EVALUATION_VIEW_INDEX: whoAmI.permissions.has("ACCESS_EVALUATION"),
+        FORUM_LOCK_STICKY_PERMISSION: whoAmI.permissions.has(
           "FORUM_LOCK_OR_STICKIFY_MESSAGES"
         ),
-        FORUM_SHOW_FULL_NAME_PERMISSION: whoAmI.permissions.includes(
+        FORUM_SHOW_FULL_NAME_PERMISSION: whoAmI.permissions.has(
           "FORUM_SHOW_FULL_NAMES"
         ),
-        FORUM_UPDATEENVIRONMENTFORUM: whoAmI.permissions.includes(
+        FORUM_UPDATEENVIRONMENTFORUM: whoAmI.permissions.has(
           "FORUM_UPDATEENVIRONMENTFORUM"
         ),
-        GUARDIAN_VIEW: whoAmI.permissions.includes("GUARDIAN_VIEW"),
-        GUIDER_VIEW: whoAmI.permissions.includes("GUIDER_VIEW"),
-        ORGANIZATION_VIEW: whoAmI.permissions.includes("ORGANIZATION_VIEW"),
-        TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.includes(
+        GUARDIAN_VIEW: whoAmI.permissions.has("GUARDIAN_VIEW"),
+        GUIDER_VIEW: whoAmI.permissions.has("GUIDER_VIEW"),
+        ORGANIZATION_VIEW: whoAmI.permissions.has("ORGANIZATION_VIEW"),
+        TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.has(
           "TRANSCRIPT_OF_RECORDS_VIEW"
         ),
-        LIST_USER_ORDERS: whoAmI.permissions.includes("LIST_USER_ORDERS"),
-        FIND_ORDER: whoAmI.permissions.includes("FIND_ORDER"),
-        REMOVE_ORDER: whoAmI.permissions.includes("REMOVE_ORDER"),
-        CREATE_ORDER: whoAmI.permissions.includes("CREATE_ORDER"),
-        PAY_ORDER: whoAmI.permissions.includes("PAY_ORDER"),
-        LIST_PRODUCTS: whoAmI.permissions.includes("LIST_PRODUCTS"),
-        COMPLETE_ORDER: whoAmI.permissions.includes("COMPLETE_ORDER"),
-        FORUM_ACCESSENVIRONMENTFORUM: whoAmI.permissions.includes(
+        LIST_USER_ORDERS: whoAmI.permissions.has("LIST_USER_ORDERS"),
+        FIND_ORDER: whoAmI.permissions.has("FIND_ORDER"),
+        REMOVE_ORDER: whoAmI.permissions.has("REMOVE_ORDER"),
+        CREATE_ORDER: whoAmI.permissions.has("CREATE_ORDER"),
+        PAY_ORDER: whoAmI.permissions.has("PAY_ORDER"),
+        LIST_PRODUCTS: whoAmI.permissions.has("LIST_PRODUCTS"),
+        COMPLETE_ORDER: whoAmI.permissions.has("COMPLETE_ORDER"),
+        FORUM_ACCESSENVIRONMENTFORUM: whoAmI.permissions.has(
           "FORUM_ACCESSENVIRONMENTFORUM"
         ),
-        FORUM_CREATEENVIRONMENTFORUM: whoAmI.permissions.includes(
+        FORUM_CREATEENVIRONMENTFORUM: whoAmI.permissions.has(
           "FORUM_CREATEENVIRONMENTFORUM"
         ),
-        FORUM_DELETEENVIRONMENTFORUM: whoAmI.permissions.includes(
+        FORUM_DELETEENVIRONMENTFORUM: whoAmI.permissions.has(
           "FORUM_DELETEENVIRONMENTFORUM"
         ),
         WORKLIST_AVAILABLE: whoAmI.services.worklist.isAvailable,
       },
       profile: {
-        addresses: (whoAmI.addresses && JSON.parse(whoAmI.addresses)) || [],
-        emails: (whoAmI.emails && JSON.parse(whoAmI.emails)) || [],
+        addresses: whoAmI.addresses,
+        emails: whoAmI.emails,
         displayName: whoAmI.displayName,
         loggedUserName: whoAmI.displayName,
-        phoneNumbers:
-          (whoAmI.phoneNumbers && JSON.parse(whoAmI.phoneNumbers)) || [],
+        phoneNumbers: whoAmI.phoneNumbers,
         studyEndDate: whoAmI.studyEndDate,
         studyStartDate: whoAmI.studyStartDate,
         studyTimeEnd: whoAmI.studyTimeEnd,
         studyTimeLeftStr: whoAmI.studyTimeLeftStr,
-        permissions: whoAmI.permissions,
+        permissions: Array.from(whoAmI.permissions),
         studyProgrammeName: whoAmI.studyProgrammeName,
         studyProgrammeIdentifier: whoAmI.studyProgrammeIdentifier,
         curriculumName: whoAmI.curriculumName,
@@ -294,10 +301,42 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
       let workspaceBasicInfo: WorkspaceBasicInfo = undefined;
 
       if (workspaceUrlName) {
-        workspaceBasicInfo = await workspaceApi.getWorkspaceBasicInfo({
-          urlName: workspaceUrlName,
-        });
+        try {
+          workspaceBasicInfo = await workspaceApi.getWorkspaceBasicInfo({
+            urlName: workspaceUrlName,
+          });
+        } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+
+          // Handling workspace errors
+          if (isResponseError(err)) {
+            const status = err.response.status;
+
+            switch (status) {
+              case 401:
+                window.location.href = `/login?redirectUrl=${window.location.pathname}`;
+                break;
+              case 403:
+                window.location.href = `/error/403?workspace=true`;
+                break;
+              case 404:
+                window.location.href = `/error/404?workspace=true`;
+                break;
+              default:
+                window.location.href = `/error/${status}?workspace=true`;
+                break;
+            }
+            return;
+          }
+        }
       }
+
+      // Statistic endpoint
+      await workspaceApi.visitWorkspace({
+        workspaceId: workspaceBasicInfo.id,
+      });
 
       dispatch({
         type: "UPDATE_STATUS_WORKSPACEID",
