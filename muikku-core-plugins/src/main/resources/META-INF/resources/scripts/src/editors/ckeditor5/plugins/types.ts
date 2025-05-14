@@ -414,3 +414,16 @@ export interface MuikkuStyleDefinition {
   element: string;
   attributes: Record<string, unknown>;
 }
+
+// AUDIO PLUGIN TYPES
+
+/**
+ * Interface for the form data of the audio field
+ */
+export interface AudioFormData {
+  src: string;
+  autoplay: boolean;
+  loop: boolean;
+  audioType: "audio/wav" | "audio/mpeg";
+  controls: "active" | "hidden";
+}

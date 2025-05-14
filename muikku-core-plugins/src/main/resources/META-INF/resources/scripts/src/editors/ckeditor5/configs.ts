@@ -79,6 +79,7 @@ import {
   TextField,
   MStyles,
   ImageSrcResolver,
+  Audio,
 } from "./plugins";
 
 /**
@@ -258,10 +259,12 @@ export const testConfig: MuikkuCkeditorConfig = {
       "muikku-audiofield",
       "muikku-filefield",
       "muikku-journalfield",
+      "muikku-audio",
     ],
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    Audio,
     ImageSrcResolver,
     MStyles,
     JournalField,

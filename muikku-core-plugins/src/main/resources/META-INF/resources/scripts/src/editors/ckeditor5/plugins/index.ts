@@ -8,4 +8,5 @@ export { default as AudioField } from "./audiofield";
 export { default as FileField } from "./filefield";
 export { default as JournalField } from "./journalfield";
 export { default as MStyles } from "./m-styles";
+export { default as Audio } from "./audiop";
 export { default as ImageSrcResolver } from "./imagefield/imagefield-resolver";
