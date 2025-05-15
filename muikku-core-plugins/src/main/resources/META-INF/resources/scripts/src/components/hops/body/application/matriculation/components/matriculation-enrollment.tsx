@@ -258,6 +258,19 @@ const MatriculationSubmittedEnrollment = (
             {localize.date(new Date(exam.ends))}
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
+
+        {exam.confirmDate && (
+          <ApplicationSubPanelItem
+            title={t("labels.matriculationEnrollmentDeadline", {
+              ns: "hops_new",
+            })}
+          >
+            <ApplicationSubPanelItem.Content>
+              {localize.date(new Date(exam.confirmDate))}
+            </ApplicationSubPanelItem.Content>
+          </ApplicationSubPanelItem>
+        )}
+
         <ApplicationSubPanelItem
           title={t("labels.matriculationEnrollmentStatus", {
             ns: "hops_new",
