@@ -24,6 +24,8 @@ import {
   SaveHopsTriggerType,
   CancelEditingTriggerType,
   cancelEditing,
+  loadStudyPlanData,
+  LoadStudyPlanDataTriggerType,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
@@ -45,11 +47,12 @@ import { isCompulsoryStudiesHops } from "~/@types/hops";
 import { unstable_batchedUpdates } from "react-dom";
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
 import NewHopsEventDescriptionDialog from "~/components/hops/dialogs/new-hops-event-description-dialog";
+import StudyPlan from "~/components/hops/body/application/study-planing/study-plan";
 
 /**
  * Represents the available tabs in the HOPS application
  */
-type HopsTab = "MATRICULATION" | "BACKGROUND" | "POSTGRADUATE";
+type HopsTab = "MATRICULATION" | "BACKGROUND" | "POSTGRADUATE" | "STUDYPLAN";
 
 /**
  * Props interface for the HopsApplication component
@@ -65,6 +68,8 @@ interface HopsApplicationProps {
   studentIdentifier: string;
   /** Function to load matriculation data */
   loadMatriculationData: LoadMatriculationDataTriggerType;
+  /** Function to load study plan data */
+  loadStudyPlanData: LoadStudyPlanDataTriggerType;
   /** Function to enable editing mode */
   startEditing: StartEditingTriggerType;
   /** Function to disable editing mode */
@@ -84,6 +89,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
   const {
     studentIdentifier,
     loadMatriculationData,
+    loadStudyPlanData,
     startEditing,
     saveHops,
     cancelEditing,
@@ -117,6 +123,15 @@ const HopsApplication = (props: HopsApplicationProps) => {
     [hops.hopsForm, hops.hopsEditing.hopsForm]
   );
 
+  const hopsStudyPlanHasChanges = React.useMemo(
+    () =>
+      !_.isEqual(
+        hops.hopsStudyPlanState.plannedCourses,
+        hops.hopsEditing.plannedCourses
+      ) || !_.isEqual(hops.hopsStudyPlanState.goals, hops.hopsEditing.goals),
+    [hops.hopsStudyPlanState, hops.hopsEditing]
+  );
+
   // Check if the matriculation plan has changes
   const hopsMatriculationHasChanges = React.useMemo(() => {
     // If study programme is not upper secondary, return false by default
@@ -141,8 +156,11 @@ const HopsApplication = (props: HopsApplicationProps) => {
 
   // Check if any of the HOPS data has changes
   const hopsHasChanges = React.useMemo(
-    () => hopsMatriculationHasChanges || hopsFormHasChanges,
-    [hopsFormHasChanges, hopsMatriculationHasChanges]
+    () =>
+      hopsMatriculationHasChanges ||
+      hopsFormHasChanges ||
+      hopsStudyPlanHasChanges,
+    [hopsFormHasChanges, hopsMatriculationHasChanges, hopsStudyPlanHasChanges]
   );
 
   // Load data on demand depending on the active tab
@@ -156,11 +174,21 @@ const HopsApplication = (props: HopsApplicationProps) => {
       loadMatriculationData({
         userIdentifier: studentIdentifier,
       });
+    } else if (
+      activeTab === "STUDYPLAN" &&
+      hops.hopsStudyPlanStatus !== "LOADING" &&
+      hops.hopsStudyPlanStatus !== "READY"
+    ) {
+      loadStudyPlanData({
+        userIdentifier: studentIdentifier,
+      });
     }
   }, [
     activeTab,
     hops.hopsMatriculationStatus,
+    hops.hopsStudyPlanStatus,
     loadMatriculationData,
+    loadStudyPlanData,
     studentIdentifier,
   ]);
 
@@ -275,6 +303,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     switch (tab) {
       case "BACKGROUND":
       case "POSTGRADUATE":
+      case "STUDYPLAN":
         return studentInfo.permissions.canViewDetails;
 
       case "MATRICULATION":
@@ -302,6 +331,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
       component: (
         <ApplicationPanelBody modifier="tabs">
           <Background />
+        </ApplicationPanelBody>
+      ),
+    },
+    {
+      id: "STUDYPLAN",
+      name: t("labels.hopsStudyPlanning", { ns: "hops_new" }),
+      hash: "studyplan",
+      type: "studyplan",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <StudyPlan />
         </ApplicationPanelBody>
       ),
     },
@@ -458,6 +498,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       loadMatriculationData,
+      loadStudyPlanData,
       startEditing,
       saveHops,
       cancelEditing,

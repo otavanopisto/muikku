@@ -622,8 +622,8 @@ legend {
   cursor: pointer;
   height: 1.8rem;
   position: absolute;
-  right: 39px;
-  top: 4px;
+  right: 41px;
+  top: calc(50% - 0.9rem);
   width: 1.8rem;
 
   &::before {
@@ -638,8 +638,7 @@ legend {
   }
 
   @include breakpoint($breakpoint-pad) {
-    right: 44px;
-    top: 6px;
+    right: 46px;
   }
 }
 

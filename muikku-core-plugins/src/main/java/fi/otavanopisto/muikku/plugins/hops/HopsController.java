@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.hops;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -20,15 +21,15 @@ import fi.otavanopisto.muikku.plugins.hops.dao.HopsDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsGoalsDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsHistoryDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsOptionalSuggestionDAO;
+import fi.otavanopisto.muikku.plugins.hops.dao.HopsPlannedCourseDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudentChoiceDAO;
-import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudyHoursDAO;
 import fi.otavanopisto.muikku.plugins.hops.dao.HopsSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsOptionalSuggestion;
+import fi.otavanopisto.muikku.plugins.hops.model.HopsPlannedCourse;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsStudentChoice;
-import fi.otavanopisto.muikku.plugins.hops.model.HopsStudyHours;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsSuggestion;
 import fi.otavanopisto.muikku.rest.model.HopsStudentPermissionsRestModel;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -56,13 +57,13 @@ public class HopsController {
   private HopsHistoryDAO hopsHistoryDAO;
   
   @Inject
+  private HopsPlannedCourseDAO hopsPlannedCourseDAO;
+
+  @Inject
   private HopsSuggestionDAO hopsSuggestionDAO;
   
   @Inject
   private HopsStudentChoiceDAO hopsStudentChoiceDAO;
-  
-  @Inject
-  private HopsStudyHoursDAO hopsStudyHoursDAO;
   
   @Inject
   private HopsOptionalSuggestionDAO hopsOptionalSuggestionDAO;
@@ -195,21 +196,6 @@ public class HopsController {
     return hopsGoals;
   }
   
-  public HopsStudyHours findHopsStudyHoursByStudentIdentifier(String studentIdentifier) {
-    return hopsStudyHoursDAO.findByStudentIdentifier(studentIdentifier);
-  }
-  
-  public HopsStudyHours createHopsStudyHours(String studentIdentifier, Integer hours) {
-    HopsStudyHours hopsStudyHours = hopsStudyHoursDAO.create(studentIdentifier, hours);
-
-    return hopsStudyHours;
-  }
-
-  public HopsStudyHours updateHopsStudyHours(HopsStudyHours hopsStudyHours, String studentIdentifier, Integer hours) {
-    hopsStudyHoursDAO.updateStudyHours(hopsStudyHours, hours);
-    return hopsStudyHours;
-  }
-  
   public List<HopsStudentChoice> listStudentChoiceByStudentIdentifier(String studentIdentifeir) {
     return hopsStudentChoiceDAO.listByStudentIdentifier(studentIdentifeir);
   }
@@ -236,8 +222,44 @@ public class HopsController {
     }
   }
   
-  public List<HopsOptionalSuggestion> listOptionalSuggestionsByStudentIdentifier(String studentIdentifeir) {
-    return hopsOptionalSuggestionDAO.listByStudentIdentifier(studentIdentifeir);
+  public List<HopsPlannedCourse> listPlannedCoursesByStudentIdentifier(String studentIdentifier) {
+    return hopsPlannedCourseDAO.listByStudentIdentifier(studentIdentifier);
+  }
+  
+  public HopsPlannedCourse createPlannedCourse(String studentIdentifier, String name, Integer courseNumber, Integer length, String lengthSymbol,
+      String subjectCode, Boolean mandatory, LocalDate startDate, Long duration, Long workspaceEntityId) {
+    return hopsPlannedCourseDAO.create(studentIdentifier,
+        name,
+        courseNumber,
+        length,
+        lengthSymbol,
+        subjectCode,
+        mandatory,
+        startDate == null ? null : java.sql.Date.valueOf(startDate),
+        duration,
+        workspaceEntityId);
+  }
+  
+  public HopsPlannedCourse updatePlannedCourse(HopsPlannedCourse hopsPlannedCourse, String name, Integer courseNumber, Integer length, String lengthSymbol,
+      String subjectCode, Boolean mandatory, LocalDate startDate, Long duration, Long workspaceEntityId) {
+    return hopsPlannedCourseDAO.update(hopsPlannedCourse,
+        name,
+        courseNumber,
+        length,
+        lengthSymbol,
+        subjectCode,
+        mandatory,
+        startDate == null ? null : java.sql.Date.valueOf(startDate),
+        duration,
+        workspaceEntityId);
+  }
+  
+  public void deletePlannedCourse(HopsPlannedCourse hopsPlannedCourse) {
+    hopsPlannedCourseDAO.delete(hopsPlannedCourse);
+  }
+  
+  public List<HopsOptionalSuggestion> listOptionalSuggestionsByStudentIdentifier(String studentIdentifier) {
+    return hopsOptionalSuggestionDAO.listByStudentIdentifier(studentIdentifier);
   }
   
   public HopsOptionalSuggestion findOptionalSuggestionByStudentIdentifier(String studentIdentifier, String subject, Integer courseNumber) {

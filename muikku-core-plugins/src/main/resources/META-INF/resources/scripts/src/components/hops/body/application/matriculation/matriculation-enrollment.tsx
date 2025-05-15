@@ -30,7 +30,7 @@ interface MatriculationEnrollmentProps {
 const MatriculationEntrollment = (props: MatriculationEnrollmentProps) => {
   const { hops } = props;
 
-  const { t } = useTranslation(["hops", "guider", "common"]);
+  const { t } = useTranslation(["hops_new", "guider", "common"]);
 
   if (hops.hopsMatriculationStatus !== "READY") {
     return <div className="loader-empty" />;

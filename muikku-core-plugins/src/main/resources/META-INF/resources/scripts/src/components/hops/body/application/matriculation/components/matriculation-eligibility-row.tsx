@@ -29,7 +29,7 @@ const MatriculationEligibilityRow = (
 ) => {
   const { eligibility, label, description } = props;
 
-  const { t } = useTranslation(["hops", "studies", "common"]);
+  const { t } = useTranslation(["hops_new", "studies", "common"]);
 
   return (
     <div className="application-sub-panel__summary-item application-sub-panel__summary-item--subject-eligibility">
