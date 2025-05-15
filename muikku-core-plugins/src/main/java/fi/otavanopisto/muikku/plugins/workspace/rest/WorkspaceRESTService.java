@@ -2274,7 +2274,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     // #7352: Figure out scenarios in which a page is locked
     
-    WorkspaceMaterialReplyLock lock = WorkspaceMaterialReplyLock.NONE;
+    WorkspaceMaterialReplyLock workspaceLock = WorkspaceMaterialReplyLock.NONE;
     if (userEntityController.isStudent(userEntity)) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
       if (workspaceUserEntity != null) {
@@ -2282,7 +2282,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         for (WorkspaceAssessmentState assessmentState : assessmentStates) {
           // If workspace has been assessed or is being assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
           if (assessmentState.isAssessed() || assessmentState.isPending()) {
-            lock = WorkspaceMaterialReplyLock.SOFT;
+            workspaceLock = WorkspaceMaterialReplyLock.SOFT;
             break;
           }
         }
@@ -2296,6 +2296,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           userEntity);
 
       for (WorkspaceMaterialReply reply : replies) {
+        WorkspaceMaterialReplyLock pageLock = workspaceLock;
         List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
 
         // #7352: If the material has been evaluated then it's a soft lock. If soft lock not yet present but reply is locked, then it's a hard lock.
@@ -2304,10 +2305,10 @@ public class WorkspaceRESTService extends PluginRESTService {
         // HARD = material is locked simply because teacher has said so
 
         if (reply.getState() == WorkspaceMaterialReplyState.PASSED || reply.getState() == WorkspaceMaterialReplyState.FAILED) {
-          lock = WorkspaceMaterialReplyLock.SOFT;
+          pageLock = WorkspaceMaterialReplyLock.SOFT;
         }
-        else if (lock == WorkspaceMaterialReplyLock.NONE && reply.getLocked()) {
-          lock = WorkspaceMaterialReplyLock.HARD;
+        else if (workspaceLock == WorkspaceMaterialReplyLock.NONE && reply.getLocked()) {
+          pageLock = WorkspaceMaterialReplyLock.HARD;
         }
 
         List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
@@ -2324,7 +2325,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             reply.getState(),
             reply.getSubmitted(),
             answers,
-            lock);
+            pageLock);
 
         // Evaluation info for evaluable materials
 
