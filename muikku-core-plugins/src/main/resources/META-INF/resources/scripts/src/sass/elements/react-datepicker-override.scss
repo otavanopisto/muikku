@@ -5,7 +5,6 @@
 
 // We need to nest this whole "react-datepicker" component's custom styles as it's default classes are put to last always O_o
 .react-datepicker-override {
-
   .react-datepicker__close-icon {
     align-items: center;
     background: $color-default-generic-background;

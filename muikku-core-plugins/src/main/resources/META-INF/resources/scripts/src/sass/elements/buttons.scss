@@ -2089,16 +2089,11 @@
   border: 2px solid $color-default;
   border-radius: 10px; // This is half of the whole width of the switch
   display: flex;
-  height: calc(
-    #{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size}
-  );
+  height: calc(#{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size});
   justify-content: center;
   margin-right: 15px;
   position: relative;
-  width: calc(
-    #{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} *
-      2
-  );
+  width: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
 
   &::after {
     background: lighten($color-disabled, 10%);
@@ -2117,13 +2112,8 @@
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 12px; // This is half of the whole width of the switch
-    height: calc(
-      #{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size}
-    );
-    width: calc(
-      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
-        2
-    );
+    height: calc(#{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size});
+    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
 
     &::after {
       height: $generic-desktop-switch-size;
@@ -2143,10 +2133,7 @@
   }
 
   @include breakpoint($breakpoint-pad) {
-    width: calc(
-      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
-        2
-    );
+    width: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
 
     &::after {
       top: calc(100% - #{$generic-desktop-switch-size} * 2);
@@ -2163,16 +2150,11 @@
   border-radius: 10px; // This is half of the whole width of the switch
   box-shadow: 0 0 0 1px $color-default-helper;
   display: flex;
-  height: calc(
-    #{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} *
-      2
-  );
+  height: calc(#{$generic-mobile-switch-size} + #{$generic-mobile-switch-container-border-size} * 2);
   justify-content: center;
   margin: 0;
   position: relative;
-  width: calc(
-    #{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size}
-  );
+  width: calc(#{$generic-mobile-switch-size} * 2 + #{$generic-mobile-switch-container-border-size});
 
   &::after {
     background: $color-default-helper;
@@ -2195,13 +2177,8 @@
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 12px; // This is half of the whole width of the switch
-    height: calc(
-      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
-        2
-    );
-    width: calc(
-      #{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size}
-    );
+    height: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
+    width: calc(#{$generic-desktop-switch-size} * 2 + #{$generic-desktop-switch-container-border-size});
 
     &::after {
       height: $generic-desktop-switch-size;
@@ -2230,10 +2207,7 @@
   }
 
   @include breakpoint($breakpoint-pad) {
-    height: calc(
-      #{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} *
-        2
-    );
+    height: calc(#{$generic-desktop-switch-size} + #{$generic-desktop-switch-container-border-size} * 2);
 
     &::after {
       right: $generic-desktop-switch-size;
@@ -2676,8 +2650,8 @@
 }
 
 .button--study-planner-extra-info-toggle {
-  padding-left: 0;
   font-size: 0.75rem;
+  padding-left: 0;
 }
 
 .button-icon--study-planner-month-selection {
