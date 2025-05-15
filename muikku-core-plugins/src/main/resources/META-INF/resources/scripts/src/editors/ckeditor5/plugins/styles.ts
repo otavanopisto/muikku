@@ -1,4 +1,4 @@
-import { MuikkuStyleDefinition } from "../types";
+import { MuikkuStyleDefinition } from "./types";
 
 export const stylesSet: MuikkuStyleDefinition[] = [
   {

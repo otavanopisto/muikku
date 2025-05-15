@@ -1,6 +1,6 @@
 import { Command } from "ckeditor5";
 import { MuikkuStyleDefinition } from "../types";
-import { stylesSet } from "./styles";
+import { stylesSet } from "../styles";
 
 const modelMap: Record<string, string> = {
   div: "htmlDivParagraph",

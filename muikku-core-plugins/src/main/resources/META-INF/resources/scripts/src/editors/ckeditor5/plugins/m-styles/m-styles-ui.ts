@@ -9,7 +9,7 @@ import {
   Command,
 } from "ckeditor5";
 import { MuikkuStyleDefinition } from "../types";
-import { stylesSet } from "./styles";
+import { stylesSet } from "../styles";
 
 /**
  * Checks if the item is a ListDropdownButtonDefinition
