@@ -191,9 +191,9 @@ const Evaluation = (props: EvaluationDrawerProps) => {
   // Memoize evaluated assignments
   const evaluateAssignments = useMemo(
     () =>
-      evaluation.evaluationCurrentStudentAssigments.data?.assigments.filter(
-        (assignment) => assignment.assignmentType === "EVALUATED"
-      ) || [],
+      (
+        evaluation.evaluationCurrentStudentAssigments.data?.assigments || []
+      ).filter((assignment) => assignment.assignmentType === "EVALUATED"),
     [evaluation.evaluationCurrentStudentAssigments.data]
   );
 
@@ -236,7 +236,7 @@ const Evaluation = (props: EvaluationDrawerProps) => {
     );
   }, [
     evaluateAssignments,
-    evaluation.evaluationCurrentStudentAssigments.data.idListOfLockedAssigments,
+    evaluation.evaluationCurrentStudentAssigments.data,
     evaluatedOrSupplementedAssignmentIds,
   ]);
 
