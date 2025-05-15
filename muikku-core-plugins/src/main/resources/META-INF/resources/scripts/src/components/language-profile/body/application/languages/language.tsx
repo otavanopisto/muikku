@@ -28,7 +28,8 @@ const LanguageComponent = (props: LanguageComponentProps) => {
     changed,
     setChanged,
   } = props;
-
+  const [filteredSamples, setFilteredSamples] =
+    React.useState<LanguageProfileSample[]>(samples);
   const [sampleType, setSampleType] = React.useState<SampleTypes>("");
   const dispatch = useDispatch();
 
@@ -36,6 +37,14 @@ const LanguageComponent = (props: LanguageComponentProps) => {
   //   samples && samples.filter((sample) => sample.language === language.code);
 
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  React.useEffect(() => {
+    if (samples) {
+      setFilteredSamples(
+        samples.filter((sample) => sample.language === language.code)
+      );
+    }
+  }, [samples, language.code]);
 
   const handleFieldChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
@@ -95,20 +104,18 @@ const LanguageComponent = (props: LanguageComponentProps) => {
         onClose={() => setSampleType("")}
         language={language.code as LanguageCode}
       />
-      {samples &&
-        samples
-          .filter((sample) => sample.language === language.code)
-          .map((sample) => (
-            <Sample
-              key={sample.id}
-              sample={sample}
-              taggedForRemoval={samplesToRemove.some(
-                (sampleId) => sampleId === sample.id
-              )}
-              onChange={handleFieldChange}
-              onDelete={handleToggleDelete}
-            />
-          ))}
+      {filteredSamples &&
+        filteredSamples.map((sample) => (
+          <Sample
+            key={sample.id}
+            sample={sample}
+            taggedForRemoval={samplesToRemove.some(
+              (sampleId) => sampleId === sample.id
+            )}
+            onChange={handleFieldChange}
+            onDelete={handleToggleDelete}
+          />
+        ))}
     </div>
   );
 };

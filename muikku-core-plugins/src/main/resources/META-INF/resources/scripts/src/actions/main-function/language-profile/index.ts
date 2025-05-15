@@ -17,6 +17,7 @@ import {
   LanguageProfileSample,
   CreateLanguageProfileSampleRequest,
 } from "~/generated/client";
+import { RecordValue } from "~/@types/recorder";
 
 export type LanguageProfileLanguagePayload = {
   code: string;
@@ -123,6 +124,15 @@ export interface CreateLanguageProfileSampleTriggerType {
   (
     userEntityId: number,
     sample: CreateLanguageProfileSampleRequest,
+    success?: () => void,
+    fail?: () => void
+  ): AnyActionType;
+}
+export interface CreateLanguageProfileAudioSampleTriggerType {
+  (
+    userEntityId: number,
+    sample: RecordValue[],
+    language: LanguageCode,
     success?: () => void,
     fail?: () => void
   ): AnyActionType;
@@ -316,16 +326,17 @@ const createLanguageSample: CreateLanguageProfileSampleTriggerType =
   };
 
 /**
- * createLanguageSample
+ * createLanguageAudioSample
  * @param userEntityId student id
  * @param sample request sample
  * @param success executed on success
  * @param fail executed on faoö
  */
-const deleteLanguageSample: CreateLanguageProfileSampleTriggerType =
-  function deleteLanguageSample(
+const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
+  function createLanguageAudioSamples(
     userEntityId: number,
-    sample: CreateLanguageProfileSampleRequest,
+    samples: RecordValue[],
+    language: LanguageCode,
     success?: () => void,
     fail?: () => void
   ) {
@@ -333,51 +344,85 @@ const deleteLanguageSample: CreateLanguageProfileSampleTriggerType =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      try {
-        dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
-          payload: "IN_PROGRESS",
-        });
+      dispatch({
+        type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+        payload: "IN_PROGRESS",
+      });
+      //  Can't be done in parallel, because of the file upload
+      //  and the server can't handle multiple file uploads at once
+      for (const sample of samples) {
+        try {
+          // const contextPath = getState().status.contextPath;
+          const formData = new FormData();
 
-        const LanguageProfileApi = MApi.getLanguageProfile();
+          formData.append("userEntityId", userEntityId.toString());
+          formData.append("language", language);
+          formData.append("type", "AUDIO");
+          formData.append("fileName", sample.name);
+          formData.append("file", sample.blob);
 
-        // Create a new sample
-        const newSample = await LanguageProfileApi.createLanguageProfileSample({
-          userEntityId,
-          createLanguageProfileSampleRequest: {
-            language: sample.language,
-            value: sample.value,
-          },
-        });
+          // Make the POST request
+          const response = await new Promise<LanguageProfileSample>(
+            (resolve, reject) => {
+              const xhr = new XMLHttpRequest();
 
-        dispatch({
-          type: "DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
-          payload: newSample,
-        });
+              // Set up the request
+              xhr.open("POST", `/languageProfileSampleServlet`, true);
 
+              // Handle response
+              xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                  try {
+                    const data = JSON.parse(xhr.responseText);
+                    resolve(data);
+                  } catch (e) {
+                    reject(new Error("Invalid JSON response"));
+                  }
+                } else {
+                  reject(new Error(`HTTP Error: ${xhr.status}`));
+                }
+              };
+
+              // Handle error
+              xhr.onerror = () => {
+                reject(new Error("Network Error"));
+              };
+
+              // Send the request
+              xhr.send(formData);
+            }
+          );
+
+          dispatch({
+            type: "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+            payload: response,
+          });
+          // Add small delay between processing next file
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+          dispatch({
+            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            payload: "FAILED",
+          });
+          dispatch(
+            notificationActions.displayNotification(
+              i18n.t("notifications.loadError", {
+                error: err,
+                ns: "languageProfile",
+              }),
+              "error"
+            )
+          );
+          fail && fail();
+        }
         dispatch({
           type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
           payload: "SUCCESS",
         });
         success && success();
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-        dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
-          payload: "FAILED",
-        });
-        dispatch(
-          notificationActions.displayNotification(
-            i18n.t("notifications.loadError", {
-              error: err,
-              ns: "languageProfile",
-            }),
-            "error"
-          )
-        );
-        fail && fail();
       }
     };
   };
@@ -572,4 +617,5 @@ export {
   loadLanguageSamples,
   deleteLanguageSamples,
   createLanguageSample,
+  createLanguageAudioSamples,
 };

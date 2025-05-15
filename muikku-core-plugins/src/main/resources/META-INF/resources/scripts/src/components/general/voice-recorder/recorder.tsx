@@ -23,9 +23,11 @@ interface RecorderProps extends WithTranslation {
   /**
    * Handles changes is recording changes
    */
+  onDeleteAudio?: (recordId: string | number) => void;
   onIsRecordingChange?: (isRecording: boolean) => void;
   onChange?: (audioAssessments: RecordValue[]) => void;
   values?: RecordValue[];
+  saveTempfile?: boolean;
 }
 
 // this is the maximum recording time in seconds
@@ -37,11 +39,12 @@ const MAX_RECORDING_TIME_IN_SECONDS = 60 * 5;
  * @returns JSX.Element
  */
 function Recorder(props: RecorderProps) {
-  const { onIsRecordingChange, onChange, values, t } = props;
+  const { onIsRecordingChange, onChange, values, t, onDeleteAudio } = props;
 
   const { recorderState, ...handlers }: UseRecorder = useRecorder({
     status: props.status,
     values: props.values,
+    saveTempFile: props.saveTempfile,
   });
 
   /* const { recordings, deleteAudio } = useRecordingsList(recorderState.values); */
@@ -117,7 +120,7 @@ function Recorder(props: RecorderProps) {
       </AnimateHeight>
       <RecordingsList
         records={recorderState.values}
-        deleteAudio={handlers.deleteAudio}
+        deleteAudio={onDeleteAudio ? onDeleteAudio : handlers.deleteAudio}
       />
     </div>
   );

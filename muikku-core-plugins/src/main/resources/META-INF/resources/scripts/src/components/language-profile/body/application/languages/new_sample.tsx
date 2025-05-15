@@ -3,7 +3,10 @@ import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
 import { useSelector, useDispatch } from "react-redux";
 import { StateType } from "~/reducers";
-import { createLanguageSample } from "~/actions/main-function/language-profile";
+import {
+  createLanguageSample,
+  createLanguageAudioSamples,
+} from "~/actions/main-function/language-profile";
 import { SampleTypes } from "./language";
 import { LanguageCode } from "~/@types/shared";
 import Recorder from "~/components/general/voice-recorder/recorder";
@@ -60,7 +63,19 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
     );
   };
 
-  const handleAudioSave = () => {};
+  const handleAudioSave = () => {
+    dispatch(createLanguageAudioSamples(status.userId, audioSamples, language));
+    setAudioSamples([]);
+    onClose();
+  };
+
+  const handleDeleteAudio = (index: number) => {
+    setAudioSamples((prevSamples) => {
+      const newSamples = [...prevSamples];
+      newSamples.splice(index, 1);
+      return newSamples;
+    });
+  };
 
   if (!visible) {
     return null;
@@ -100,8 +115,12 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
       case "AUDIO":
         return (
           <div>
-            <Recorder />
-            <Recorder values={audioSamples} onChange={handleRecorderChange} />
+            <Recorder
+              saveTempfile={false}
+              values={audioSamples}
+              onDeleteAudio={handleDeleteAudio}
+              onChange={handleRecorderChange}
+            />
             <Button onClick={handleAudioSave}>Tallenna</Button>
             <Button onClick={handleCancel}>Peruuta</Button>
           </div>
