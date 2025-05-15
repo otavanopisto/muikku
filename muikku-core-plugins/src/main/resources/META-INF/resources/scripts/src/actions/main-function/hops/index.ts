@@ -2002,7 +2002,7 @@ const saveStudyPlanData: SaveStudyPlanDataTriggerType =
 
       const goals = await hopsApi.saveStudentHopsGoals({
         studentIdentifier: state.hopsNew.currentStudentIdentifier,
-        saveStudentHopsGoalsRequest: {
+        hopsGoals: {
           graduationGoal: state.hopsNew.hopsEditing.goals.graduationGoal,
           studyHours: state.hopsNew.hopsEditing.goals.studyHours,
         },
