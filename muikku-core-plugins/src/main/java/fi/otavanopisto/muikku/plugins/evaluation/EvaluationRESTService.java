@@ -1517,7 +1517,11 @@ public class EvaluationRESTService extends PluginRESTService {
     List<WorkspaceMaterialReply> workspaceMaterialReplies = workspaceMaterialReplyController.listWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, userEntity);
     for (WorkspaceMaterialReply workspaceMaterialReply : workspaceMaterialReplies) {
       if (workspaceMaterialReply.getLocked()) {
-        workspaceMaterialIds.add(workspaceMaterialReply.getWorkspaceMaterial().getId());
+        WorkspaceMaterialReplyState state = workspaceMaterialReply.getState();
+        // #7352: For pages that have already been evaluated or marked incomplete, their lock state is irrelevant 
+        if (state != WorkspaceMaterialReplyState.PASSED && state != WorkspaceMaterialReplyState.FAILED && state != WorkspaceMaterialReplyState.INCOMPLETE) {
+          workspaceMaterialIds.add(workspaceMaterialReply.getWorkspaceMaterial().getId());
+        }
       }
     }
     
