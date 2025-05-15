@@ -537,12 +537,17 @@ class EvaluationAssessmentAssignment extends React.Component<
         ? "assignment"
         : "exercise";
 
+    // Show lock button if assignment is evaluated
+    // and its state is one of the following in the list
+    // or if compositeReply is completely undefined, meaning that student
+    // has not submitted the assignment yet
     const showLockButton =
-      this.props.compositeReply &&
       this.props.assigment.assignmentType === "EVALUATED" &&
-      ["UNANSWERED", "WITHDRAWN", "SUBMITTED", "ANSWERED"].includes(
-        this.props.compositeReply.state
-      );
+      ((this.props.compositeReply &&
+        ["UNANSWERED", "WITHDRAWN", "SUBMITTED", "ANSWERED"].includes(
+          this.props.compositeReply.state
+        )) ||
+        this.props.compositeReply === undefined);
 
     return (
       <div className={`evaluation-modal__item `}>
