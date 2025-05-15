@@ -314,6 +314,8 @@ const HopsApplication = (props: HopsApplicationProps) => {
           "Aineopiskelu/yo-tutkinto",
           "Aineopiskelu/lukio",
           "Aineopiskelu/lukio (oppivelvolliset)",
+          "Aineopiskelu/valmistuneet",
+          "Kahden tutkinnon opinnot",
         ].includes(studyProgrammeName);
       default:
         return true;

@@ -956,7 +956,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
       try {
         await matriculationApi.setStudentMatriculationPlan({
           studentIdentifier,
-          setStudentMatriculationPlanRequest: data.plan,
+          matriculationPlan: data.plan,
         });
 
         // After saving the plan, we need to update the eligibility for the subjects
