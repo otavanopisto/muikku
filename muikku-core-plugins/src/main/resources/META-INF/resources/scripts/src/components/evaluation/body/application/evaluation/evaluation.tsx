@@ -130,6 +130,7 @@ const Evaluation = (props: EvaluationDrawerProps) => {
   const { state, updateState } = useEvaluationState(selectedAssessment);
 
   const {
+    isAllAssignmentsLocked,
     getLatestEvaluatedEventIndex,
     isLatestEventSupplementationRequest,
     handleClickEdit,
@@ -187,58 +188,6 @@ const Evaluation = (props: EvaluationDrawerProps) => {
         e.workspaceSubjectIdentifier ===
           state.subjectToBeEvaluated.identifier && e.grade !== null
     );
-
-  // Memoize evaluated assignments
-  const evaluateAssignments = useMemo(
-    () =>
-      (
-        evaluation.evaluationCurrentStudentAssigments.data?.assigments || []
-      ).filter((assignment) => assignment.assignmentType === "EVALUATED"),
-    [evaluation.evaluationCurrentStudentAssigments.data]
-  );
-
-  // Create list of evaluated assignments that are either evaluated or supplemented
-  const evaluatedOrSupplementedAssignmentIds = useMemo(() => {
-    const assigmentCompositeReplies =
-      evaluation.evaluationCompositeReplies.data || [];
-
-    return evaluateAssignments.map((assignment) => {
-      const assigmentCompositeReply = assigmentCompositeReplies.find(
-        (reply) => reply.workspaceMaterialId === assignment.id
-      );
-
-      if (
-        assigmentCompositeReply &&
-        ["PASSED", "FAILED", "INCOMPLETE"].includes(
-          assigmentCompositeReply.state
-        )
-      ) {
-        return assignment.id;
-      }
-    });
-  }, [evaluateAssignments, evaluation.evaluationCompositeReplies.data]);
-
-  // Check if all assignments are locked
-  const isAllAssignmentsLocked = useMemo(() => {
-    // Filter out assignments that are evaluated ("PASSED", "FAILED", "INCOMPLETE")
-    const comparableList = evaluateAssignments.filter(
-      (assignment) =>
-        !evaluatedOrSupplementedAssignmentIds.includes(assignment.id)
-    );
-
-    const lockedAssignmentIds =
-      evaluation.evaluationCurrentStudentAssigments.data
-        ?.idListOfLockedAssigments || [];
-
-    return (
-      lockedAssignmentIds.length > 0 &&
-      lockedAssignmentIds.length === comparableList.length
-    );
-  }, [
-    evaluateAssignments,
-    evaluation.evaluationCurrentStudentAssigments.data,
-    evaluatedOrSupplementedAssignmentIds,
-  ]);
 
   // Memoize latest evaluated event indices
   const latestEvaluatedEventIndexPerSubject = useMemo(

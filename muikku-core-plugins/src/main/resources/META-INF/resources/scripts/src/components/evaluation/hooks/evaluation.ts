@@ -84,6 +84,45 @@ export const useEvaluationLogic = (
     [evaluation.evaluationCurrentStudentAssigments.data]
   );
 
+  // Create list of evaluated assignments that are either evaluated or supplemented
+  const evaluatedOrSupplementedAssignmentIds = useMemo(() => {
+    const assigmentCompositeReplies =
+      evaluation.evaluationCompositeReplies.data || [];
+
+    return evaluatedAssignments.map((assignment) => {
+      const assigmentCompositeReply = assigmentCompositeReplies.find(
+        (reply) => reply.workspaceMaterialId === assignment.id
+      );
+
+      if (
+        assigmentCompositeReply &&
+        ["PASSED", "FAILED", "INCOMPLETE"].includes(
+          assigmentCompositeReply.state
+        )
+      ) {
+        return assignment.id;
+      }
+    });
+  }, [evaluatedAssignments, evaluation.evaluationCompositeReplies.data]);
+
+  // Check if all assignments are locked
+  const isAllAssignmentsLocked = useMemo(() => {
+    // Filter out assignments that are evaluated ("PASSED", "FAILED", "INCOMPLETE")
+    const comparableList = evaluatedAssignments.filter(
+      (assignment) =>
+        !evaluatedOrSupplementedAssignmentIds.includes(assignment.id)
+    );
+
+    return (
+      lockedAssignmentIds.length > 0 &&
+      lockedAssignmentIds.length === comparableList.length
+    );
+  }, [
+    evaluatedAssignments,
+    lockedAssignmentIds,
+    evaluatedOrSupplementedAssignmentIds,
+  ]);
+
   /**
    * Get latest evaluated event index
    * @param identifier identifier
@@ -132,18 +171,14 @@ export const useEvaluationLogic = (
    */
   const handleToggleAllLockedAssignment = useCallback(() => {
     // Unlock only if every assignment is locked
-    const action =
-      lockedAssignmentIds.length > 0 &&
-      lockedAssignmentIds.length === evaluatedAssignments.length
-        ? "unlock"
-        : "lock";
+    const action = isAllAssignmentsLocked ? "unlock" : "lock";
 
     dispatch(
       toggleLockedAssignment({
         action,
       })
     );
-  }, [dispatch, evaluatedAssignments, lockedAssignmentIds]);
+  }, [dispatch, isAllAssignmentsLocked]);
 
   /**
    * Handle click edit
@@ -266,6 +301,7 @@ export const useEvaluationLogic = (
   }, [dispatch, selectedAssessment, updateState]);
 
   return {
+    isAllAssignmentsLocked,
     getLatestEvaluatedEventIndex,
     isLatestEventSupplementationRequest,
     handleClickEdit,
