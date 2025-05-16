@@ -66,8 +66,7 @@ public class WorkspaceMaterialReplyController {
     return workspaceMaterialReplyDAO.findByWorkspaceMaterialAndUserEntityId(workspaceMaterial, userEntity.getId());
   }
 
-  public fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply findWorkspaceMaterialReplyById(
-      Long workspaceMaterialReplyId) {
+  public WorkspaceMaterialReply findWorkspaceMaterialReplyById(Long workspaceMaterialReplyId) {
     return workspaceMaterialReplyDAO.findById(workspaceMaterialReplyId);
   }
 
@@ -116,14 +115,11 @@ public class WorkspaceMaterialReplyController {
     workspaceMaterialReplyDAO.update(workspaceMaterialReply, workspaceMaterialReply.getNumberOfTries() + 1, new Date());
   }
 
-  public WorkspaceMaterialReply updateWorkspaceMaterialReplyModified(
-      fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply, Date lastModified) {
+  public WorkspaceMaterialReply updateWorkspaceMaterialReplyModified(WorkspaceMaterialReply workspaceMaterialReply, Date lastModified) {
     return workspaceMaterialReplyDAO.updateLastModified(workspaceMaterialReply, lastModified);
   }
 
-  public WorkspaceMaterialReply updateWorkspaceMaterialReply(
-      fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply,
-      WorkspaceMaterialReplyState state) {
+  public WorkspaceMaterialReply updateWorkspaceMaterialReply(WorkspaceMaterialReply workspaceMaterialReply, WorkspaceMaterialReplyState state) {
     switch (state) {
     case SUBMITTED:
       logAssignmentActivity(workspaceMaterialReply.getUserEntityId(), workspaceMaterialReply.getWorkspaceMaterial());
@@ -139,9 +135,7 @@ public class WorkspaceMaterialReplyController {
     return workspaceMaterialReplyDAO.updateState(workspaceMaterialReply, state);
   }
   
-  public WorkspaceMaterialReply updateWorkspaceMaterialReplyLocked(
-      fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply,
-      boolean locked) {
+  public WorkspaceMaterialReply updateWorkspaceMaterialReplyLocked(WorkspaceMaterialReply workspaceMaterialReply, boolean locked) {
     return workspaceMaterialReplyDAO.updateLocked(workspaceMaterialReply, locked);
   }
 

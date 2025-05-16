@@ -119,13 +119,13 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmen
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyLock;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReplyLock;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFeeInfo;
@@ -2219,6 +2219,32 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Reply not found").build();
     }
 
+    // #7352: Figure out scenarios in which the page is locked
+    
+    WorkspaceCompositeReplyLock lock = WorkspaceCompositeReplyLock.NONE;
+    if (userEntityController.isStudent(userEntity)) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
+      if (workspaceUserEntity != null) {
+        // Unavoidable Pyramus call
+        List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+        for (WorkspaceAssessmentState assessmentState : assessmentStates) {
+          // If workspace has been or is being assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
+          if (assessmentState.isAssessed() || assessmentState.isPending()) {
+            lock = WorkspaceCompositeReplyLock.SOFT;
+            break;
+          }
+        }
+      }
+    }
+    if (reply.getState() == WorkspaceMaterialReplyState.PASSED || reply.getState() == WorkspaceMaterialReplyState.FAILED) {
+      // Page is locked because it has been evaluated
+      lock = WorkspaceCompositeReplyLock.SOFT;
+    }
+    else if (lock == WorkspaceCompositeReplyLock.NONE && reply.getLocked()) {
+      // Page is locked simply because the teacher said so
+      lock = WorkspaceCompositeReplyLock.HARD;
+    }
+
     List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
     try {
       List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
@@ -2235,7 +2261,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           reply.getState(),
           reply.getSubmitted(),
           answers,
-          WorkspaceMaterialReplyLock.NONE); // this endpoint is only used in evaluation, so no need for enforced lock logic here 
+          lock); 
 
       // Evaluation info for evaluable materials
 
@@ -2272,17 +2298,18 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("UserEntity not found").build();
     }
     
-    // #7352: Figure out scenarios in which a page is locked
+    // #7352: Figure out scenarios in which all pages would be locked
     
-    WorkspaceMaterialReplyLock workspaceLock = WorkspaceMaterialReplyLock.NONE;
+    WorkspaceCompositeReplyLock workspaceLock = WorkspaceCompositeReplyLock.NONE;
     if (userEntityController.isStudent(userEntity)) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
       if (workspaceUserEntity != null) {
+        // Unavoidable Pyramus call
         List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
         for (WorkspaceAssessmentState assessmentState : assessmentStates) {
-          // If workspace has been assessed or is being assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
+          // If workspace has been or is being assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
           if (assessmentState.isAssessed() || assessmentState.isPending()) {
-            workspaceLock = WorkspaceMaterialReplyLock.SOFT;
+            workspaceLock = WorkspaceCompositeReplyLock.SOFT;
             break;
           }
         }
@@ -2296,19 +2323,18 @@ public class WorkspaceRESTService extends PluginRESTService {
           userEntity);
 
       for (WorkspaceMaterialReply reply : replies) {
-        WorkspaceMaterialReplyLock pageLock = workspaceLock;
+        WorkspaceCompositeReplyLock pageLock = workspaceLock;
         List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
 
-        // #7352: If the material has been evaluated then it's a soft lock. If soft lock not yet present but reply is locked, then it's a hard lock.
-        // NONE = material is not locked
-        // SOFT = material is locked because it has been evaluated, workspace has been evaluated, or workspace evaluation has been requested
-        // HARD = material is locked simply because teacher has said so
+        // #7352: Figure out scenarios in which a single page would be locked
 
         if (reply.getState() == WorkspaceMaterialReplyState.PASSED || reply.getState() == WorkspaceMaterialReplyState.FAILED) {
-          pageLock = WorkspaceMaterialReplyLock.SOFT;
+          // Page is locked because it has been evaluated
+          pageLock = WorkspaceCompositeReplyLock.SOFT;
         }
-        else if (workspaceLock == WorkspaceMaterialReplyLock.NONE && reply.getLocked()) {
-          pageLock = WorkspaceMaterialReplyLock.HARD;
+        else if (workspaceLock == WorkspaceCompositeReplyLock.NONE && reply.getLocked()) {
+          // Page is locked simply because the teacher said so
+          pageLock = WorkspaceCompositeReplyLock.HARD;
         }
 
         List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
