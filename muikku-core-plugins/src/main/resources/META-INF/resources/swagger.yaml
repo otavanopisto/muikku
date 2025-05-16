@@ -9802,45 +9802,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/compositeMaterialReplies:
-    get:
-      operationId: getWorkspaceCompositeMaterialReplies
-      summary: Returns one workspace composite material reply
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: workspaceMaterialId
-          in: path
-          description: Workspace material id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: userEntityId
-          in: query
-          description: User entity id
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Workspace composite material replies results object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MaterialCompositeReply"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/replies:
     get:
       operationId: getWorkspaceMaterialReplies
@@ -14760,7 +14721,7 @@ components:
         - PASSED
         - FAILED
         - INCOMPLETE
-        
+
     MaterialCompositeReplyLockType:
       description: Describes how the page this reply refers to is locked
       type: string
