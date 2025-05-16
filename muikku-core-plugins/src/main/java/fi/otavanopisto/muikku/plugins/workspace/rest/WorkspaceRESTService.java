@@ -131,7 +131,6 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRE
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFeeInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalCommentRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReplyRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
@@ -2381,66 +2380,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         .ok(result)
         .cacheControl(cacheControl)
         .build();
-  }
-
-  @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/compositeMaterialReplies")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
-
-    // Request validation
-
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("Workspace material not found").build();
-    }
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build();
-    }
-    if (userEntityId == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing userEntityId").build();
-    }
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    if (userEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("User entity not found").build();
-    }
-
-    // Access check
-
-    if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-
-    List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
-    try {
-      WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-      if (reply != null) {
-        List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
-        for (WorkspaceMaterialField field : fields) {
-          String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
-          Material material = field.getQueryField().getMaterial();
-          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(workspaceMaterial.getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
-          answers.add(answer);
-        }
-      }
-
-      WorkspaceMaterialCompositeReply result = new WorkspaceMaterialCompositeReply(answers,
-        reply != null ? reply.getState() : null,
-        reply != null ? reply.getCreated() : null,
-        reply != null ? reply.getLastModified() : null,
-        reply != null ? reply.getSubmitted() : null,
-        reply != null ? reply.getWithdrawn() : null,
-        reply != null ? reply.getLocked() : false
-      );
-
-      return Response.ok(result).build();
-    }
-    catch (WorkspaceFieldIOException e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error occurred while retrieving field answers: " + e.getMessage()).build();
-    }
   }
 
   @GET
