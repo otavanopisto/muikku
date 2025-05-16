@@ -1,6 +1,6 @@
-package fi.otavanopisto.muikku.plugins.workspace.model;
+package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
-public enum WorkspaceMaterialReplyLock {
+public enum WorkspaceCompositeReplyLock {
 
   /* Material represented by this reply is not locked */
   
