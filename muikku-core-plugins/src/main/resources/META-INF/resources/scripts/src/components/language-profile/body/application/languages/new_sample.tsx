@@ -5,13 +5,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import {
   createLanguageSample,
+  createLanguageFileSamples,
   createLanguageAudioSamples,
 } from "~/actions/main-function/language-profile";
 import { SampleTypes } from "./language";
 import { LanguageCode } from "~/@types/shared";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import { RecordValue } from "~/@types/recorder";
-
+import FileUploader from "~/components/general/file-uploader";
 interface LanguageSampleProps {
   visible: boolean;
   sampleType: SampleTypes;
@@ -44,7 +45,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
-      setSelectedFiles(Array.from(files));
+      setSelectedFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
     }
   };
 
@@ -61,6 +62,10 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
     dispatch(
       createLanguageSample(status.userId, { language: language, value: sample })
     );
+  };
+
+  const handleFilesSave = () => {
+    dispatch(createLanguageFileSamples(status.userId, selectedFiles, language));
   };
 
   const handleAudioSave = () => {
@@ -109,7 +114,55 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
                 <span key={"file" + index}>{file.name}</span>
               ))}
             </div>
+            <Button onClick={handleFilesSave}>Tallenna</Button>
             <Button onClick={handleCancel}>Peruuta</Button>
+            {/* <FileUploader
+              // emptyText={
+              //   this.props.readOnly ? t("content.empty", { ns: "files" }) : null
+              // }
+              // readOnly={this.props.readOnly}
+              // url={this.props.status.contextPath + "/tempFileUploadServlet"}
+              displayNotificationOnError
+              // formDataGenerator={formDataGenerator}
+              onFileSuccess={(file: File, data: any) => {
+                onFileAdded(file, data);
+              }}
+              hintText={t("content.add", { ns: "materials", context: "file" })}
+              fileTooLargeErrorText={t("notifications.sizeTooLarge", {
+                ns: "files",
+              })}
+              // deleteFileText={t("actions.remove")}
+              // downloadFileText={t("actions.download")}
+              files={[]}
+              fileIdKey="fileId"
+              fileNameKey="name"
+              fileUrlGenerator={(f) => `/rest/workspace/fileanswer/${f.fileId}`}
+              // fileDownloadAllUrlGenerator={(f) =>
+              //   "/rest/workspace/allfileanswers/" +
+              //   f[0].fileId +
+              //   "?archiveName=" +
+              //   t("labels.zipFileName", { ns: "files" })
+              // }
+              fileDownloadAllLabel={t("actions.download", {
+                ns: "common",
+                context: "all",
+              })}
+              deleteDialogElement={<div>Muu</div>}
+              // deleteDialogElementProps={{ onConfirm: this.removeFile }}
+              modifier="taskfield"
+              uploadingTextProcesser={(percent: number) =>
+                t("content.statusUploading", {
+                  ns: "materials",
+                  progress: percent,
+                })
+              }
+              // invisible={this.props.invisible}
+              notificationOfSuccessText={t("notifications.uploadSuccess", {
+                ns: "files",
+              })}
+              displayNotificationOnSuccess
+            />
+         */}
           </form>
         );
       case "AUDIO":
@@ -128,53 +181,6 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
       default:
         return null;
     }
-
-    //   <FileUploader
-    //   // emptyText={
-    //   //   this.props.readOnly ? t("content.empty", { ns: "files" }) : null
-    //   // }
-    //   // readOnly={this.props.readOnly}
-    //   // url={this.props.status.contextPath + "/tempFileUploadServlet"}
-    //   displayNotificationOnError
-    //   // formDataGenerator={formDataGenerator}
-    //   onFileSuccess={(file: File, data: any) => {
-    //     onFileAdded(file, data);
-    //   }}
-    //   hintText={t("content.add", { ns: "materials", context: "file" })}
-    //   fileTooLargeErrorText={t("notifications.sizeTooLarge", {
-    //     ns: "files",
-    //   })}
-    //   // deleteFileText={t("actions.remove")}
-    //   // downloadFileText={t("actions.download")}
-    //   files={[]}
-    //   fileIdKey="fileId"
-    //   fileNameKey="name"
-    //   fileUrlGenerator={(f) => `/rest/workspace/fileanswer/${f.fileId}`}
-    //   fileDownloadAllUrlGenerator={(f) =>
-    //     "/rest/workspace/allfileanswers/" +
-    //     f[0].fileId +
-    //     "?archiveName=" +
-    //     t("labels.zipFileName", { ns: "files" })
-    //   }
-    //   fileDownloadAllLabel={t("actions.download", {
-    //     ns: "common",
-    //     context: "all",
-    //   })}
-    //   deleteDialogElement={<div>Muu</div>}
-    //   // deleteDialogElementProps={{ onConfirm: this.removeFile }}
-    //   modifier="taskfield"
-    //   uploadingTextProcesser={(percent: number) =>
-    //     t("content.statusUploading", {
-    //       ns: "materials",
-    //       progress: percent,
-    //     })
-    //   }
-    //   // invisible={this.props.invisible}
-    //   notificationOfSuccessText={t("notifications.uploadSuccess", {
-    //     ns: "files",
-    //   })}
-    //   displayNotificationOnSuccess
-    // />
   };
 
   return (

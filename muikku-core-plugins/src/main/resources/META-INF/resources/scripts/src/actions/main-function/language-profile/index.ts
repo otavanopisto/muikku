@@ -18,6 +18,7 @@ import {
   CreateLanguageProfileSampleRequest,
 } from "~/generated/client";
 import { RecordValue } from "~/@types/recorder";
+import form from "~/components/workspace/workspaceManagement/body/copyWizard/form";
 
 export type LanguageProfileLanguagePayload = {
   code: string;
@@ -132,6 +133,16 @@ export interface CreateLanguageProfileAudioSampleTriggerType {
   (
     userEntityId: number,
     sample: RecordValue[],
+    language: LanguageCode,
+    success?: () => void,
+    fail?: () => void
+  ): AnyActionType;
+}
+
+export interface CreateLanguageProfileFileSampleTriggerType {
+  (
+    userEntityId: number,
+    files: File[],
     language: LanguageCode,
     success?: () => void,
     fail?: () => void
@@ -428,6 +439,110 @@ const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
   };
 
 /**
+ * createLanguageFileSamples
+ * @param userEntityId student id
+ * @param files request files
+ * @param language language code
+ * @param success executed on success
+ * @param fail executed on faoö
+ */
+const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
+  function createLanguageFileSamples(
+    userEntityId: number,
+    files: File[],
+    language: LanguageCode,
+    success?: () => void,
+    fail?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      dispatch({
+        type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+        payload: "IN_PROGRESS",
+      });
+      //  Can't be done in parallel, because of the file upload
+      //  and the server can't handle multiple file uploads at once
+      for (const file of files) {
+        try {
+          // const contextPath = getState().status.contextPath;
+          const formData = new FormData();
+
+          formData.append("file", file);
+          formData.append("language", language);
+          formData.append("type", "FILE");
+          formData.append("fileName", file.name);
+          formData.append("description", "");
+          formData.append("userEntityId", userEntityId.toString());
+
+          // Make the POST request
+          const response = await new Promise<LanguageProfileSample>(
+            (resolve, reject) => {
+              const xhr = new XMLHttpRequest();
+
+              // Set up the request
+              xhr.open("POST", `/languageProfileSampleServlet`, true);
+
+              // Handle response
+              xhr.onload = () => {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                  try {
+                    const data = JSON.parse(xhr.responseText);
+                    resolve(data);
+                  } catch (e) {
+                    reject(new Error("Invalid JSON response"));
+                  }
+                } else {
+                  reject(new Error(`HTTP Error: ${xhr.status}`));
+                }
+              };
+
+              // Handle error
+              xhr.onerror = () => {
+                reject(new Error("Network Error"));
+              };
+
+              // Send the request
+              xhr.send(formData);
+            }
+          );
+
+          dispatch({
+            type: "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+            payload: response,
+          });
+          // Add small delay between processing next file
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        } catch (err) {
+          if (!isMApiError(err)) {
+            throw err;
+          }
+          dispatch({
+            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            payload: "FAILED",
+          });
+          dispatch(
+            notificationActions.displayNotification(
+              i18n.t("notifications.loadError", {
+                error: err,
+                ns: "languageProfile",
+              }),
+              "error"
+            )
+          );
+          fail && fail();
+        }
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          payload: "SUCCESS",
+        });
+        success && success();
+      }
+    };
+  };
+
+/**
  * saveLanguageProfileData
  * @param userEntityId student id
  * @param data formData
@@ -618,4 +733,5 @@ export {
   deleteLanguageSamples,
   createLanguageSample,
   createLanguageAudioSamples,
+  createLanguageFileSamples,
 };

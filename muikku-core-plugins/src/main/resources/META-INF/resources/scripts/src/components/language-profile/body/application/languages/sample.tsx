@@ -31,16 +31,12 @@ const Sample = (props: LanguageSampleProps) => {
             onChange={(e) => onChange(e, sample)}
           />
         );
-
       case "FILE":
         return (
           <div>
-            <span>{sample.fileName}</span>
-            <Button onClick={() => onDelete(sample.id)}>
-              {taggedForRemoval
-                ? t("actions.cancel", { ns: "common" })
-                : t("actions.remove", { ns: "common" })}
-            </Button>
+            <a href={`/languageProfileSampleServlet?sampleId=${sample.id}`}>
+              {sample.fileName}
+            </a>
           </div>
         );
       case "AUDIO":
