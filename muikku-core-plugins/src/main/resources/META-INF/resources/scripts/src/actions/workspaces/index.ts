@@ -39,6 +39,7 @@ import {
   WorkspaceSettings,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
+import { loadWorkspaceCompositeMaterialReplies } from "./material";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -141,6 +142,11 @@ export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_ST
       workspaceMaterialReplyId: number;
     }
   >;
+
+export type UPDATE_MATERIALS_ARE_DISABLED = SpecificActionType<
+  "UPDATE_MATERIALS_ARE_DISABLED",
+  boolean
+>;
 
 /**
  * SelectItem
@@ -647,6 +653,15 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
         workspace.isCourseMember = isCourseMember;
         workspace.details = details;
 
+        const isMaterialsDisabled = shouldMaterialsBeDisabled(
+          workspace.activity
+        );
+
+        dispatch({
+          type: "UPDATE_MATERIALS_ARE_DISABLED",
+          payload: isMaterialsDisabled,
+        });
+
         dispatch({
           type: "SET_CURRENT_WORKSPACE",
           payload: workspace,
@@ -736,6 +751,13 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
           const activity = await evaluationApi.getWorkspaceStudentActivity({
             workspaceId: state.workspaces.currentWorkspace.id,
             studentEntityId: state.status.userSchoolDataIdentifier,
+          });
+
+          const isMaterialsDisabled = shouldMaterialsBeDisabled(activity);
+
+          dispatch({
+            type: "UPDATE_MATERIALS_ARE_DISABLED",
+            payload: isMaterialsDisabled,
           });
 
           dispatch({
@@ -876,6 +898,10 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
           newAssessmentState = "pending";
         }
 
+        // Composite replies must be loaded after assessment request is created
+        // so material assigments locked state is updated
+        dispatch(loadWorkspaceCompositeMaterialReplies(data.workspace.id));
+
         // Must be done for now. To update activity when assessmentRequest is being made.
         // In future changing state locally is better options one combination workspace module specific
         // request are implemented
@@ -972,6 +998,10 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         } else if (newAssessmentState == "pending_fail") {
           newAssessmentState = "fail";
         }
+
+        // Composite replies must be loaded after assessment request is deleted
+        // so material assigments locked state is updated
+        dispatch(loadWorkspaceCompositeMaterialReplies(data.workspace.id));
 
         // Must be done for now. To update activity when assessmentRequest is being made.
         // In future changing state locally is better options one combination workspace module specific
@@ -2358,6 +2388,49 @@ const updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType =
       payload: data,
     };
   };
+
+/**
+ * Returns true if the materials should be disabled.
+ * @param activity activity
+ */
+const shouldMaterialsBeDisabled = (activity?: WorkspaceActivity) => {
+  let isDisabled = false;
+
+  if (!activity) {
+    return isDisabled;
+  }
+
+  // Values to indicate pending state
+  const pendingValues: WorkspaceAssessmentStateType[] = [
+    "pending",
+    "pending_fail",
+    "pending_pass",
+  ];
+
+  // Get the number of modules
+  const valueToCheck = activity.assessmentStates.length;
+  let passValueCount = 0;
+
+  activity.assessmentStates.forEach((activity) => {
+    // Check if any of the modules are in pending state
+    if (pendingValues.includes(activity.state)) {
+      isDisabled = true;
+    }
+    // Check if module is passed and increment counter
+    if (activity.state === "pass") {
+      passValueCount++;
+    }
+  });
+
+  // there must be at least one assessmentState and
+  // If all modules are passed, materials are disabled.
+  // This is to prevent students from changing their answers after passing grades are given
+  if (valueToCheck > 0 && passValueCount === valueToCheck) {
+    isDisabled = true;
+  }
+
+  return isDisabled;
+};
 
 export {
   loadUserWorkspaceCurriculumFiltersFromServer,

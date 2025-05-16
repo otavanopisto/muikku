@@ -421,6 +421,12 @@ export const workspaces: Reducer<WorkspacesState> = (
         currentWorkspace: action.payload,
       };
 
+    case "UPDATE_MATERIALS_ARE_DISABLED":
+      return {
+        ...state,
+        materialsAreDisabled: action.payload,
+      };
+
     case "UPDATE_CURRENT_WORKSPACE_ACTIVITY":
       return {
         ...state,
