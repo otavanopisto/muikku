@@ -1,8 +1,9 @@
+@import "../base/colors";
+
 .language-profile {
 }
 
-.language-profile__language-sample { 
-  
+.language-profile__language-sample {
 }
 
 .language-profile__filter-input {
@@ -61,5 +62,46 @@
   justify-content: center;
   align-items: center;
   height: 40px;
+}
 
-} 
+.language-profile__sample-file {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  flex-basis: 50%;
+}
+
+.language-profile__file-uploader-field {
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  opacity: 0%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+}
+
+.language-profile__file-uploader-container {
+  background: $color-default;
+  border: 2px solid $taskfield-border-color;
+  border-radius: 2px;
+  display: block;
+  margin: 4px 0 0;
+  padding: 40px;
+  position: relative;
+  width: 100%;
+}
+
+.language-profile__remove-button {
+  background: transparent;
+  color: $color-fatal;
+  cursor: pointer;
+  font-size: 1.0625rem;
+  height: auto;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  text-decoration: none;
+  width: auto;
+}

@@ -12,7 +12,6 @@ import { SampleTypes } from "./language";
 import { LanguageCode } from "~/@types/shared";
 import Recorder from "~/components/general/voice-recorder/recorder";
 import { RecordValue } from "~/@types/recorder";
-import FileUploader from "~/components/general/file-uploader";
 interface LanguageSampleProps {
   visible: boolean;
   sampleType: SampleTypes;
@@ -47,6 +46,14 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
     if (files && files.length > 0) {
       setSelectedFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
     }
+  };
+
+  const removeFileFromQueue = (index: number) => {
+    setSelectedFiles((prevFiles) => {
+      const newFiles = [...prevFiles];
+      newFiles.splice(index, 1);
+      return newFiles;
+    });
   };
 
   const handleRecorderChange = (recordedAudio: RecordValue[]) => {
@@ -103,66 +110,32 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
       case "FILE":
         return (
           <form className="language-profile__file-uploader">
-            <input
-              aria-labelledby={"filesample-" + language}
-              type="file"
-              className="language-profile__file-uploader-field"
-              onChange={handleFileChange}
-            />
+            <div className="language-profile__file-uploader-container">
+              <div>
+                {t("content.add", { ns: "materials", context: "file" })}
+              </div>
+              <input
+                type="file"
+                className="language-profile__file-uploader-field"
+                onChange={handleFileChange}
+              />
+            </div>
             <div className="language-profile__file-uploader-files">
               {selectedFiles.map((file, index) => (
-                <span key={"file" + index}>{file.name}</span>
+                <div
+                  className="language-profile__sample-file"
+                  key={"file" + index}
+                >
+                  <span>{file.name}</span>
+                  <a
+                    className="language-profile__remove-button icon-trash"
+                    onClick={() => removeFileFromQueue(index)}
+                  ></a>
+                </div>
               ))}
             </div>
             <Button onClick={handleFilesSave}>Tallenna</Button>
             <Button onClick={handleCancel}>Peruuta</Button>
-            {/* <FileUploader
-              // emptyText={
-              //   this.props.readOnly ? t("content.empty", { ns: "files" }) : null
-              // }
-              // readOnly={this.props.readOnly}
-              // url={this.props.status.contextPath + "/tempFileUploadServlet"}
-              displayNotificationOnError
-              // formDataGenerator={formDataGenerator}
-              onFileSuccess={(file: File, data: any) => {
-                onFileAdded(file, data);
-              }}
-              hintText={t("content.add", { ns: "materials", context: "file" })}
-              fileTooLargeErrorText={t("notifications.sizeTooLarge", {
-                ns: "files",
-              })}
-              // deleteFileText={t("actions.remove")}
-              // downloadFileText={t("actions.download")}
-              files={[]}
-              fileIdKey="fileId"
-              fileNameKey="name"
-              fileUrlGenerator={(f) => `/rest/workspace/fileanswer/${f.fileId}`}
-              // fileDownloadAllUrlGenerator={(f) =>
-              //   "/rest/workspace/allfileanswers/" +
-              //   f[0].fileId +
-              //   "?archiveName=" +
-              //   t("labels.zipFileName", { ns: "files" })
-              // }
-              fileDownloadAllLabel={t("actions.download", {
-                ns: "common",
-                context: "all",
-              })}
-              deleteDialogElement={<div>Muu</div>}
-              // deleteDialogElementProps={{ onConfirm: this.removeFile }}
-              modifier="taskfield"
-              uploadingTextProcesser={(percent: number) =>
-                t("content.statusUploading", {
-                  ns: "materials",
-                  progress: percent,
-                })
-              }
-              // invisible={this.props.invisible}
-              notificationOfSuccessText={t("notifications.uploadSuccess", {
-                ns: "files",
-              })}
-              displayNotificationOnSuccess
-            />
-         */}
           </form>
         );
       case "AUDIO":
