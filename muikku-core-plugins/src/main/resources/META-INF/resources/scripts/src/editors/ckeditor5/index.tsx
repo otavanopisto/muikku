@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import { EditorConfig } from "ckeditor5";
 import { ClassicEditor } from "ckeditor5";
+import CKEditorInspector from "@ckeditor/ckeditor5-inspector";
 import "ckeditor5/ckeditor5.css";
 import { testConfig, MuikkuCkeditorConfig } from "./configs";
 import "./ckeditor5.css";
@@ -60,6 +60,9 @@ const CKEditor5: React.FC<CKEditorProps> = (props) => {
                 if (!editor) {
                   return;
                 }
+
+                // Attach the inspector to the editor
+                CKEditorInspector.attach(editor);
 
                 const wordCount = editor.plugins.get("WordCount");
                 if (editorWordCountRef.current) {

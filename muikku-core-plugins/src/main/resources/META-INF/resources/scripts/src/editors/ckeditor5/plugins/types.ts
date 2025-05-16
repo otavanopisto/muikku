@@ -19,6 +19,16 @@ export function isParamElement(node: ViewNode): node is ViewElement {
   return node.is("element", "param");
 }
 
+// GENERAL
+
+/**
+ * Dropdown option interface
+ */
+export interface DropdownOption {
+  label: string;
+  value: string;
+}
+
 // TEXTFIELD PLUGIN TYPES
 
 /**
@@ -426,4 +436,17 @@ export interface AudioFormData {
   loop: boolean;
   audioType: "audio/wav" | "audio/mpeg";
   controls: "active" | "hidden";
+}
+
+// DIVBLOCK PLUGIN TYPES
+
+/**
+ * Interface for the form data of the div block field
+ */
+export interface DivBlockFormData {
+  styleSet: string;
+  title?: string;
+  id?: string;
+  lang: string;
+  dir: string;
 }

@@ -32,12 +32,6 @@ export default class MStylesEditing extends Plugin {
   _defineSchema() {
     const schema = this.editor.model.schema;
 
-    schema.register("mStyles", {
-      allowWhere: "$block",
-      allowContentOf: "$block",
-      allowAttributes: ["class", "data-show", "data-name"],
-    });
-
     schema.extend("$block", {
       allowAttributes: ["htmlDivAttributes"],
     });

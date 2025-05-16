@@ -80,7 +80,27 @@ import {
   MStyles,
   ImageSrcResolver,
   Audio,
+  DivBlock,
 } from "./plugins";
+
+export const directionOptions = [
+  { title: "Oikea-vasen", direction: "ltr" },
+  { title: "Vasen-oikea", direction: "rtl" },
+];
+
+export const textPartLanguages = [
+  { title: "Suomi", languageCode: "fi" },
+  { title: "Englanti", languageCode: "en" },
+  { title: "Ruotsi", languageCode: "sv" },
+  { title: "Saksa", languageCode: "de" },
+  { title: "Espanja", languageCode: "es" },
+  { title: "Venäjä", languageCode: "ru" },
+  { title: "Japani", languageCode: "ja" },
+  { title: "Ranska", languageCode: "fr" },
+  { title: "Italia", languageCode: "it" },
+  { title: "Latina", languageCode: "la" },
+  { title: "Kreikka", languageCode: "el" },
+];
 
 /**
  * MuikkuCkeditorConfig
@@ -260,10 +280,12 @@ export const testConfig: MuikkuCkeditorConfig = {
       "muikku-filefield",
       "muikku-journalfield",
       "muikku-audio",
+      "muikku-divblock",
     ],
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    DivBlock,
     Audio,
     ImageSrcResolver,
     MStyles,
@@ -425,7 +447,10 @@ export const testConfig: MuikkuCkeditorConfig = {
     ],
   },
   initialData: "<h2>Congratulations on setting up CKEditor 5! 🎉</h2>",
-  language: "fi",
+  language: {
+    ui: "fi",
+    textPartLanguage: textPartLanguages,
+  },
   licenseKey: LICENSE_KEY,
   link: {
     addTargetToExternalLinks: true,

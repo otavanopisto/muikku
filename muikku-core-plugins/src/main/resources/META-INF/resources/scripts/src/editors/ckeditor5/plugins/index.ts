@@ -10,3 +10,4 @@ export { default as JournalField } from "./journalfield";
 export { default as MStyles } from "./m-styles";
 export { default as Audio } from "./audiop";
 export { default as ImageSrcResolver } from "./imagefield/imagefield-resolver";
+export { default as DivBlock } from "./divblock";
