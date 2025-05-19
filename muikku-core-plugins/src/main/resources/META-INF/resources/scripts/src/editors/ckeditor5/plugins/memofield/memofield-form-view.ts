@@ -135,6 +135,7 @@ export default class MemoFieldFormView extends View {
       label,
       tooltip: true,
       isToggleable: true,
+      withText: true,
     });
 
     // Handle the execute event to toggle the switch state
