@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.user.rest;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -23,9 +23,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.codec.binary.StringUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.model.security.Permission;
@@ -45,7 +42,6 @@ import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -167,49 +163,23 @@ public class WhoAmIRESTService extends AbstractRESTService {
         curriculumName = curriculum == null ? null : curriculum.getName();
       }
     }
-    // Damn emails, addresses, and phoneNumbers as json
     
-    String emails = null;
+    // Emails, addresses, and phoneNumbers
+    
+    List<String> emails = Collections.emptyList();
+    List<String> addresses = Collections.emptyList();
+    List<String> phoneNumbers = Collections.emptyList();
+
     if (userIdentifier != null) {
-      List<String> foundEmails = userEmailEntityController.getUserEmailAddresses(userIdentifier).stream().map(UserEmailEntity::getAddress).collect(Collectors.toList());
-      try {
-        emails = new ObjectMapper().writeValueAsString(foundEmails);
-      }
-      catch (JsonProcessingException e) {
-        emails = null;
-      }
+      emails = userEmailEntityController.getUserEmailAddresses(userIdentifier).stream().map(UserEmailEntity::getAddress).collect(Collectors.toList());
+      phoneNumbers = userController.listUserPhoneNumbers(user).stream().map(UserPhoneNumber::getNumber).collect(Collectors.toList());
+      addresses = userController.listUserAddresses(user).stream()
+          .map(userAddress -> String.format("%s %s %s %s", userAddress.getStreet(), userAddress.getPostalCode(),
+              userAddress.getCity(), userAddress.getCountry()))
+          .collect(Collectors.toList());
     }
     
-    String addresses = null;
-    if (userIdentifier != null) {
-      List<UserAddress> userAddresses = userController.listUserAddresses(user);
-      ArrayList<String> foundAddresses = new ArrayList<>();
-      for (UserAddress userAddress : userAddresses) {
-        foundAddresses.add(String.format("%s %s %s %s", userAddress.getStreet(), userAddress.getPostalCode(),
-            userAddress.getCity(), userAddress.getCountry()));
-      }
-      try {
-        addresses = new ObjectMapper().writeValueAsString(foundAddresses);
-      } 
-      catch (JsonProcessingException e) {
-        addresses = null;
-      }
-    }
-    
-    String phoneNumbers = null;
-    if (userIdentifier != null) {
-      List<UserPhoneNumber> userPhoneNumbers = userIdentifier == null ? null :  userController.listUserPhoneNumbers(user);
-      ArrayList<String> foundPhoneNumbers = new ArrayList<>();
-      for (UserPhoneNumber userPhoneNumber : userPhoneNumbers) {
-        foundPhoneNumbers.add(userPhoneNumber.getNumber());
-      }
-      try {
-        phoneNumbers = new ObjectMapper().writeValueAsString(foundPhoneNumbers);
-      }
-      catch (JsonProcessingException e) {
-        phoneNumbers = null;
-      }
-    }
+    // Locale
     
     Locale localeObj = sessionController.getLocale();
     String locale = (localeObj == null || localeObj.getLanguage() == null) ? "fi" : localeObj.getLanguage().toLowerCase();

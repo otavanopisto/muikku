@@ -428,7 +428,7 @@ const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
         if (newDetails) {
           await workspaceApi.updateWorkspaceDetails({
             workspaceId: data.workspace.id,
-            updateWorkspaceDetailsRequest: newDetails,
+            workspaceDetails: newDetails,
           });
 
           data.progress && data.progress("add-details");
@@ -536,7 +536,7 @@ const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
 
         workspace.details = await workspaceApi.updateWorkspaceDetails({
           workspaceId: workspace.id,
-          updateWorkspaceDetailsRequest: {
+          workspaceDetails: {
             ...workspace.details,
             beginDate: data.beginDate,
             endDate: data.endDate,

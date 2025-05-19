@@ -1,9 +1,3 @@
-/* eslint-disable react/no-string-refs */
-
-/**
- * Deprecated refs should be reractored
- */
-
 //NOTE this is a sandbox file, because the code in the material loader is so complex I created this self contained
 //blackbox environment that makes it so that the material loader behaves like one component, this is bad because
 //it does not have the same capabilities and efficiency as the other components, and cannot be easily modified
@@ -41,6 +35,7 @@ import { MaterialCompositeReply } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import MApi from "~/api/api";
 import { connect } from "react-redux";
+import { isEqual } from "lodash";
 
 /* i18n.t("", { ns: "materials" }); */
 
@@ -313,6 +308,7 @@ interface MaterialLoaderState {
 
   //A registry for the right and wrong answers as told by the material
   answerRegistry: { [name: string]: any };
+  stateConfiguration: any;
 }
 
 //A cheap cache for material replies and composite replies used by the hack
@@ -333,8 +329,8 @@ class MaterialLoader extends React.Component<
   MaterialLoaderProps,
   MaterialLoaderState
 > {
-  private stateConfiguration: any;
   private answerRegistrySync: { [name: string]: any };
+  private rootRef: React.RefObject<HTMLElement>;
 
   static defaultProps: DefaultMaterialLoaderProps = {
     usedAs: "default",
@@ -362,21 +358,25 @@ class MaterialLoader extends React.Component<
 
       //The rightness registry start empty
       answerRegistry: {},
+      stateConfiguration: null,
     };
 
     //A sync version of the answer registry, it can change so fast
     //setStates might stack
     this.answerRegistrySync = {};
+    this.rootRef = React.createRef();
 
     this.onPushAnswer = this.onPushAnswer.bind(this);
     this.toggleAnswersVisible = this.toggleAnswersVisible.bind(this);
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
 
+    let stateConfiguration = null;
+
     //if it is answerable
     if (props.answerable && props.material) {
       //lets try and get the state configuration
-      this.stateConfiguration = STATES.filter(
+      stateConfiguration = STATES.filter(
         (state: any) =>
           // by assignment type first. If it is not found, then it is not answerable
           // There two type situation. First is for normal workspace material use and
@@ -395,10 +395,7 @@ class MaterialLoader extends React.Component<
       });
 
       //If checks answers, make it with answersChecked and answersVisible starting as true
-      if (
-        this.stateConfiguration &&
-        this.stateConfiguration["checks-answers"]
-      ) {
+      if (stateConfiguration && stateConfiguration["checks-answers"]) {
         state.answersChecked = true;
         if ((props.material.correctAnswers || "ALWAYS") === "ALWAYS") {
           state.answersVisible = true;
@@ -407,7 +404,7 @@ class MaterialLoader extends React.Component<
     }
 
     //set the state
-    this.state = state;
+    this.state = { ...state, stateConfiguration };
   }
   /**
    * componentDidMount
@@ -421,69 +418,99 @@ class MaterialLoader extends React.Component<
     //create the composite replies if using the boolean flag
     this.create();
   }
+
   /**
-   * UNSAFE_componentWillUpdate
+   * ShouldComponentUpdate. To prevent unnecessary re-renders and to optimize performance.
    * @param nextProps nextProps
    * @param nextState nextState
+   * @returns boolean
    */
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillUpdate(
+  shouldComponentUpdate(
     nextProps: MaterialLoaderProps,
     nextState: MaterialLoaderState
   ) {
-    //if the component will update we need to do some changes if it's gonna be answerable
-    //and there's a material
-    if (nextProps.answerable && nextProps.material) {
-      //we get the composite replies
-      const compositeReplies =
-        nextProps.compositeReplies || nextState.compositeRepliesInState;
+    return (
+      !isEqual(this.props, nextProps) ||
+      !isEqual(this.state.stateConfiguration, nextState.stateConfiguration) ||
+      this.state.answersVisible !== nextState.answersVisible ||
+      this.state.answersChecked !== nextState.answersChecked ||
+      this.state.answerRegistry !== nextState.answerRegistry
+    );
+  }
 
-      //The state configuration
-      this.stateConfiguration = STATES.filter(
-        (state: any) =>
-          state["assignment-type"] === nextProps.material.assignmentType
-      ).find((state: any) => {
-        const stateRequired =
-          (compositeReplies && compositeReplies.state) || "UNANSWERED";
-        const statesInIt = state["state"];
-        return (
-          statesInIt === stateRequired ||
-          (statesInIt instanceof Array && statesInIt.includes(stateRequired))
-        );
-      });
+  /**
+   * Calculate new state configuration based on props
+   * @param props props
+   * @param state state
+   * @returns Partial<MaterialLoaderState> | null
+   */
+  static getDerivedStateFromProps(
+    props: MaterialLoaderProps,
+    state: MaterialLoaderState
+  ): Partial<MaterialLoaderState> | null {
+    if (!props.answerable || !props.material) {
+      return null;
+    }
 
-      //There should be one but add this check just in case
-      if (this.stateConfiguration) {
-        //if the thing has the flag to checks-answers but they are not going to be
-        if (
-          this.stateConfiguration["checks-answers"] &&
-          !nextState.answersChecked
-        ) {
-          //Depending on whether rightAnswers are ALWAYS (and the default is always if not set)
-          if ((nextProps.material.correctAnswers || "ALWAYS") === "ALWAYS") {
-            //We set the answers visible and checked
-            this.setState({
-              answersVisible: true,
-              answersChecked: true,
-            });
-          } else {
-            //Otherwise the answers only get checked, this is for example
-            //For the ON_REQUEST or NEVER types
-            this.setState({
-              answersChecked: true,
-            });
-          }
-          //If the opposite is true and they are not with the checks-answers flags but they are currently checked
-        } else if (
-          !this.stateConfiguration["checks-answers"] &&
-          nextState.answersChecked
-        ) {
-          //hide all that, and answersVisible too, it might be active too
+    const compositeReplies =
+      props.compositeReplies || state.compositeRepliesInState;
+
+    // Calculate new state configuration
+    const newStateConfiguration = STATES.filter(
+      (state: any) => state["assignment-type"] === props.material.assignmentType
+    ).find((state: any) => {
+      const stateRequired =
+        (compositeReplies && compositeReplies.state) || "UNANSWERED";
+      const statesInIt = state["state"];
+      return (
+        statesInIt === stateRequired ||
+        (statesInIt instanceof Array && statesInIt.includes(stateRequired))
+      );
+    });
+
+    // Only update if configuration changed
+    if (!isEqual(newStateConfiguration, state.stateConfiguration)) {
+      return { stateConfiguration: newStateConfiguration };
+    }
+
+    return null;
+  }
+
+  /**
+   * Handle answer checking logic based on state configuration changes
+   * @param prevProps prevProps
+   * @param prevState prevState
+   */
+  componentDidUpdate(
+    prevProps: MaterialLoaderProps,
+    prevState: MaterialLoaderState
+  ) {
+    if (!this.props.answerable || !this.props.material) {
+      return;
+    }
+
+    // Handle answer checking logic when stateConfiguration changes
+    if (!isEqual(prevState.stateConfiguration, this.state.stateConfiguration)) {
+      const shouldCheck = this.state.stateConfiguration["checks-answers"];
+      const isAlwaysShow =
+        (this.props.material.correctAnswers || "ALWAYS") === "ALWAYS";
+
+      if (shouldCheck && !this.state.answersChecked) {
+        if (isAlwaysShow) {
           this.setState({
-            answersVisible: false,
-            answersChecked: false,
+            answersVisible: true,
+            answersChecked: true,
+          });
+        } else {
+          this.setState({
+            answersChecked: true,
           });
         }
+      } else if (!shouldCheck && this.state.answersChecked) {
+        this.setState({
+          answersVisible: false,
+          answersChecked: false,
+        });
       }
     }
   }
@@ -538,8 +565,8 @@ class MaterialLoader extends React.Component<
   /**
    * getComponent
    */
-  getComponent(): HTMLDivElement {
-    return this.refs["root"] as HTMLDivElement;
+  getComponent(): HTMLElement | null {
+    return this.rootRef.current;
   }
 
   /**
@@ -550,7 +577,7 @@ class MaterialLoader extends React.Component<
    */
   onPushAnswer(params?: any) {
     //So now we need that juicy success state
-    if (this.stateConfiguration["success-state"]) {
+    if (this.state.stateConfiguration["success-state"]) {
       //Get the composite reply
       const compositeReplies =
         this.props.compositeReplies || this.state.compositeRepliesInState;
@@ -561,13 +588,13 @@ class MaterialLoader extends React.Component<
       //add a worspaceMaterialReplyId if we have one, and hopefully we will, for most of the cases that is
       //We add the success text if we have one, ofc it is a string to translate
       this.props.updateAssignmentState(
-        this.stateConfiguration["success-state"],
+        this.state.stateConfiguration["success-state"],
         false,
         this.props.workspace.id,
         this.props.material.workspaceMaterialId,
         compositeReplies && compositeReplies.workspaceMaterialReplyId,
-        this.stateConfiguration["success-text"]
-          ? this.stateConfiguration["success-text"]
+        this.state.stateConfiguration["success-text"]
+          ? this.state.stateConfiguration["success-text"]
           : undefined,
         this.props.onAssignmentStateModified
       );
@@ -710,12 +737,12 @@ class MaterialLoader extends React.Component<
           onToggleAnswersVisible: this.toggleAnswersVisible,
         },
         this.state,
-        this.stateConfiguration
+        this.state.stateConfiguration
       );
     }
 
     return (
-      <article className={className} ref="root" id={this.props.id}>
+      <article className={className} ref={this.rootRef} id={this.props.id}>
         {content}
       </article>
     );

@@ -857,13 +857,13 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
               workspaceentityId: discussion.workspaceId,
               areaId: data.thread.forumAreaId,
               threadId: data.thread.id,
-              updateDiscussionThreadRequest: payload,
+              discussionThread: payload,
             });
         } else {
           updatedThread = await discussionApi.updateDiscussionThread({
             areaId: data.thread.forumAreaId,
             threadId: data.thread.id,
-            updateDiscussionThreadRequest: payload,
+            discussionThread: payload,
           });
         }
 
@@ -1226,7 +1226,7 @@ const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
       const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
       try {
-        const updateRequest: UpdateDiscussionThreadReplyRequest = {
+        const updateDiscussionThreadReply: DiscussionThreadReply = {
           ...data.reply,
           message: data.message,
         };
@@ -1240,14 +1240,14 @@ const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
               areaId: discussion.current.forumAreaId,
               threadId: discussion.current.id,
               replyId: data.reply.id,
-              updateDiscussionThreadReplyRequest: updateRequest,
+              discussionThreadReply: updateDiscussionThreadReply,
             });
         } else {
           updatedReply = await discussionApi.updateDiscussionThreadReply({
             areaId: discussion.current.forumAreaId,
             threadId: discussion.current.id,
             replyId: data.reply.id,
-            updateDiscussionThreadReplyRequest: updateRequest,
+            discussionThreadReply: updateDiscussionThreadReply,
           });
         }
 

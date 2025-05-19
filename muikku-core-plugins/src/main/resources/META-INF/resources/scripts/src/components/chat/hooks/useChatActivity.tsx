@@ -7,9 +7,10 @@ import MApi, { isMApiError } from "~/api/api";
 import { useWindowContext } from "~/context/window-context";
 import { ChatActivity, ChatMessage, ChatRoom } from "~/generated/client";
 import i18n from "~/locales/i18n";
+import generateKey from "~/util/generate-keys";
+import { titleManager } from "~/util/title-manager";
 import { NotificationSettings } from "../chat-helpers";
 import { useChatWebsocketContext } from "../context/chat-websocket-context";
-import { useDocumentTitle } from "./useDocumentTitle";
 
 const chatApi = MApi.getChatApi();
 
@@ -43,9 +44,10 @@ function useChatActivity(
 
   const minimized = useReadLocalStorage<boolean>("chat-minimized");
 
-  const { setTitle, resetTitle } = useDocumentTitle();
   const [newMsgNotification, setNewMsgNotification] =
     React.useState<ChatMessage | null>(null);
+
+  const notificationIdsRef = React.useRef<Set<string>>(new Set());
 
   React.useCallback(
     () => () => {
@@ -196,49 +198,74 @@ function useChatActivity(
     fetchChatActivity();
   }, [displayNotification]);
 
-  // Document title handling
+  // Handle new message notifications
   React.useEffect(() => {
-    if (!browserIsVisibleAndFocused && newMsgNotification) {
-      if (newMsgNotification.targetIdentifier.startsWith("room-")) {
-        const room = rooms.find(
-          (room) => room.identifier === newMsgNotification.targetIdentifier
-        );
-
-        if (!room) {
-          return;
-        }
-
-        setTitle(
-          `🔔 ${i18n.t("notifications.newMessage_room", {
-            ns: "chat",
-            nick: newMsgNotification.nick,
-            roomName: room.name,
-            context: "room",
-          })}`
-        );
-      } else {
-        setTitle(
-          `🔔 ${i18n.t("notifications.newMessage", {
-            ns: "chat",
-            nick: newMsgNotification.nick,
-          })}`
-        );
-      }
-    } else if (browserIsVisibleAndFocused) {
-      setNewMsgNotification(null);
-      resetTitle();
+    // If no new message notification or browser is visible and focused, do nothing
+    if (!newMsgNotification || browserIsVisibleAndFocused) {
+      return;
     }
 
-    return () => {
-      resetTitle();
-    };
-  }, [
-    newMsgNotification,
-    browserIsVisibleAndFocused,
-    setTitle,
-    resetTitle,
-    rooms,
-  ]);
+    // Generate notification ID that we can track
+    const notificationId = newMsgNotification.targetIdentifier.startsWith(
+      "room-"
+    )
+      ? `new-message-room-${generateKey()}`
+      : `new-message-${generateKey()}`;
+
+    notificationIdsRef.current.add(notificationId);
+
+    // Handle room messages
+    if (newMsgNotification.targetIdentifier.startsWith("room-")) {
+      const room = rooms.find(
+        (room) => room.identifier === newMsgNotification.targetIdentifier
+      );
+
+      if (!room) {
+        return;
+      }
+
+      titleManager.addNotification({
+        id: notificationId,
+        text: `🔔 ${i18n.t("notifications.newMessage_room", {
+          ns: "chat",
+          nick: newMsgNotification.nick,
+          roomName: room.name,
+          context: "room",
+        })}`,
+      });
+    } else {
+      // Handle direct messages
+      titleManager.addNotification({
+        id: notificationId,
+        text: `🔔 ${i18n.t("notifications.newMessage", {
+          ns: "chat",
+          nick: newMsgNotification.nick,
+        })}`,
+      });
+    }
+  }, [newMsgNotification, browserIsVisibleAndFocused, rooms]);
+
+  // Handle browser visibility changes
+  React.useEffect(() => {
+    // If browser is visible and focused, clear notifications
+    if (browserIsVisibleAndFocused) {
+      setNewMsgNotification(null);
+      notificationIdsRef.current.forEach((id) => {
+        titleManager.removeNotification(id);
+      });
+      notificationIdsRef.current.clear();
+    }
+  }, [browserIsVisibleAndFocused]);
+
+  // Cleanup existing chat msg notifications when component unmounts
+  React.useEffect(
+    () => () => {
+      notificationIdsRef.current.forEach((id) => {
+        titleManager.removeNotification(id);
+      });
+    },
+    []
+  );
 
   // New message websocket handling
   React.useEffect(() => {

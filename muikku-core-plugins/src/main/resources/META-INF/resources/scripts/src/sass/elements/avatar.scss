@@ -43,10 +43,44 @@
 
 .avatar-container--group {
   border-radius: 0;
+  user-select: none;
 
   @include breakpoint($breakpoint-pad) {
     width: auto;
   }
+}
+
+.avatar--group-members {
+  cursor: pointer;
+}
+
+.avatar__group-members-search {
+  input {
+    width: 100%;
+  }
+}
+
+.avatar__group-members-container {
+  max-height: 350px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px 0 0 10px;
+  scrollbar-width: thin;
+}
+
+.avatar__group-user {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.avatar__group-user-text {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 150px;
+  text-align: left;
 }
 
 .avatar-container--chat {
@@ -75,6 +109,22 @@
   @include breakpoint($breakpoint-pad) {
     font-size: $avatar-desktop-font-size;
   }
+}
+
+// stylelint-disable-next-line selector-class-pattern
+.avatar--approval_pending,
+.avatar--approved {
+  cursor: pointer;
+}
+
+// stylelint-disable-next-line selector-class-pattern
+.avatar--approval_pending {
+  animation: approval-pending-border-pulse 1.75s infinite;
+  border: 2px solid $color-info;
+}
+
+.avatar--approved {
+  border: 2px solid $color-success;
 }
 
 .avatar__decoration {
@@ -191,4 +241,16 @@
 
 .avatar--category-10 {
   background-color: $color-main-function-category-10;
+}
+
+// Animations
+// blink
+@keyframes approval-pending-border-pulse {
+  50% {
+    opacity: 20%;
+  }
+
+  100% {
+    opacity: 100%;
+  }
 }

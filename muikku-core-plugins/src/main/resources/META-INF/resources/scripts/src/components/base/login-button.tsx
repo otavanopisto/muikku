@@ -46,7 +46,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
         className={`button button--login ${
           this.props.modifier ? "button--" + this.props.modifier : ""
         }`}
-        href="/login"
+        href={`/login?redirectUrl=${window.location.pathname}`}
       >
         <span>{t("actions.signIn")}</span>
       </Link>

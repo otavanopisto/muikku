@@ -104,7 +104,7 @@ class WorkspaceJournalsListItem extends React.Component<
         (s) => s.userEntityId === this.props.journal.userEntityId
       );
 
-    const isMandatory = this.props.journal.isMaterialField;
+    const isMandatory = this.props.journal.material !== null;
     const isDraft =
       this.props.journal.workspaceMaterialReplyState &&
       this.props.journal.workspaceMaterialReplyState === "ANSWERED";
@@ -137,7 +137,7 @@ class WorkspaceJournalsListItem extends React.Component<
               student ? (
                 <Avatar
                   id={student.userEntityId}
-                  firstName={student.firstName}
+                  name={student.firstName}
                   hasImage={student.hasImage}
                 />
               ) : null

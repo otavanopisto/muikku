@@ -75,6 +75,7 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -86,9 +87,11 @@ import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
+import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
+import fi.otavanopisto.muikku.plugins.material.rest.HtmlRestMaterial;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
@@ -194,6 +197,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private HtmlMaterialController htmlMaterialController;
 
   @Inject
   private LocaleController localeController;
@@ -798,10 +804,23 @@ public class WorkspaceRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceBasicInfo(@PathParam("URLNAME") String urlName) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
+    // TODO Make a generic status check method for all these access checks
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-
+    if (!workspaceEntity.getPublished() && !sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!sessionController.isLoggedIn() && (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE)) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (workspaceEntity.getAccess() == WorkspaceAccess.MEMBERS_ONLY) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+      if (workspaceUserEntity == null && !sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
     WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
     if (workspaceBasicInfo == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -999,6 +1018,19 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response
       .ok(createRestModel(workspaceController.listWorkspaceMaterialProducers(workspaceEntity).toArray(new WorkspaceMaterialProducer[0])))
       .build();
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/visit")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response visitWorkspace(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    if (sessionController.isLoggedIn() && sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity != null) {
+        workspaceVisitController.visit(workspaceEntity);
+      }
+    }
+    return Response.noContent().build();
   }
 
   @PUT
@@ -1990,7 +2022,8 @@ public class WorkspaceRESTService extends PluginRESTService {
           entity.getAssignmentType(),
           entity.getCorrectAnswers(),
           entity.getTitleLanguage(),
-          entity.getMaxPoints());
+          entity.getMaxPoints(),
+          entity.getAi());
       if (entity.getNextSiblingId() != null) {
         WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeById(entity.getNextSiblingId());
         if (nextSibling == null) {
@@ -2025,7 +2058,8 @@ public class WorkspaceRESTService extends PluginRESTService {
                     workspaceMaterial.getAssignmentType(),
                     workspaceMaterial.getCorrectAnswers(),
                     workspaceMaterial.getLanguage(),
-                    workspaceMaterial.getMaxPoints());
+                    workspaceMaterial.getMaxPoints(),
+                    workspaceMaterial.getAi());
               }
             }
           }
@@ -2740,7 +2774,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(),
-        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints());
+        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
@@ -3082,7 +3116,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         restWorkspaceMaterial.getCorrectAnswers(),
         restWorkspaceMaterial.getTitle(),
         restWorkspaceMaterial.getTitleLanguage(),
-        restWorkspaceMaterial.getMaxPoints());
+        restWorkspaceMaterial.getMaxPoints(),
+        restWorkspaceMaterial.getAi());
     restWorkspaceMaterial.setPath(workspaceNode.getPath());
 
     // #6440: If the material is a journal page whose title is changed, update respective journal entry titles
@@ -3982,18 +4017,24 @@ public class WorkspaceRESTService extends PluginRESTService {
     result.setTitle(workspaceJournalEntry.getTitle());
     result.setCreated(workspaceJournalEntry.getCreated());
     result.setCommentCount(workspaceJournalController.getCommentCount(workspaceJournalEntry));
-    result.setIsMaterialField(workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null);
 
     if (workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null) {
-
       String[] identifiers = workspaceJournalEntry.getMaterialFieldReplyIdentifier().split("-");
-
       Long replyId = Long.parseLong(identifiers[1]);
-
       fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
-
       if (reply != null) {
+        result.setWorkspaceMaterialId(reply.getWorkspaceMaterial().getId());
+        result.setWorkspaceMaterialPath(reply.getWorkspaceMaterial().getPath());
         result.setWorkspaceMaterialReplyState(reply.getState());
+        HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(reply.getWorkspaceMaterial().getMaterialId());
+        if (htmlMaterial != null) {
+          result.setMaterial(new HtmlRestMaterial(htmlMaterial.getId(),
+              htmlMaterial.getTitle(),
+              htmlMaterial.getContentType(),
+              htmlMaterial.getHtml(),
+              htmlMaterial.getLicense(),
+              htmlMaterial.getViewRestrict()));        
+        }
       }
     }
 

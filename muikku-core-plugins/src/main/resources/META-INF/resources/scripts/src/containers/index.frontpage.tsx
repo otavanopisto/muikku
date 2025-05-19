@@ -13,21 +13,12 @@ registerLocale("enGB", enGB);
 /**
  * IndexFrontpage
  */
-export default class IndexFrontpage extends React.Component<
-  Record<string, unknown>,
-  Record<string, unknown>
-> {
-  /**
-   * render
-   */
-  render() {
-    return (
-      <div id="root">
-        <Notifications></Notifications>
-        <DisconnectedWarningDialog />
-        <EasyToUseFunctions />
-        <Body></Body>
-      </div>
-    );
-  }
-}
+const IndexFrontpage = () => (
+  <div id="root">
+    <Notifications></Notifications>
+    <DisconnectedWarningDialog />
+    <EasyToUseFunctions />
+    <Body></Body>
+  </div>
+);
+export default IndexFrontpage;

@@ -257,8 +257,21 @@
   }
 }
 
+.dialog__window--copy-workspace {
+  height: 100%;
+  max-width: none;
+
+  .multi-step {
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    top: 0;
+  }
+}
+
 .dialog__window--note-information {
   max-height: 100%;
+  max-width: none;
 
   .dialog__content {
     padding: 20px 15px 20px 20px;
@@ -266,7 +279,14 @@
 
   @include breakpoint($breakpoint-pad) {
     border-radius: 5px;
+    left: auto;
     max-height: calc(100% - 30px);
+    right: auto;
+    width: 728px;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 984px;
   }
 }
 
@@ -508,6 +528,32 @@
   overscroll-behavior: contain;
   padding: $dialog-content-padding;
   width: 100%;
+}
+
+.dialog__content--note-information {
+  display: flex;
+  flex-wrap: wrap;
+
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: nowrap;
+  }
+}
+
+.dialog__note-item {
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.dialog__note-recipients {
+  border-left: 1px solid $color-default-separator-border;
+  flex-basis: 100%;
+  margin: 0 0 0 10px;
+  padding: 0 0 0 10px;
+
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-basis: 340px;
+  }
 }
 
 .dialog__content--workspace-signup-dialog {
