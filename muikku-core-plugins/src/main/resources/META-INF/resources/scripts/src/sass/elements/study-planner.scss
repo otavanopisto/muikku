@@ -83,8 +83,8 @@
 .study-planner__content {
   display: flex;
   flex-basis: 100%;
-  flex-grow: 1;
   flex-flow: row nowrap;
+  flex-grow: 1;
   flex-shrink: 1;
   gap: 10px;
   height: 100%;
@@ -101,14 +101,14 @@
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
+  -webkit-overflow-scrolling: touch;
   overflow-x: auto;
   overflow-y: hidden;
   position: relative;
+  scroll-behavior: smooth;
   scrollbar-color: darken($color-default-separator-border, 20%)
     $color-default-lighter-generic-background;
   scrollbar-width: thin;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
 }
 
 .study-planner__timeline {
@@ -140,7 +140,6 @@
 }
 
 .study-planner__period--past {
-
   .study-planner__months-container,
   .study-planner__period-header {
     &::after {
@@ -149,7 +148,7 @@
       content: " ";
       cursor: not-allowed;
       left: 0;
-      opacity: 0.6;
+      opacity: 60%;
       position: absolute;
       right: 0;
       top: 0;
@@ -334,7 +333,7 @@
     font-size: 1.5rem;
     height: 1.5rem;
     left: calc(50% - 0.75rem);
-    opacity: 0;
+    opacity: 0%;
     position: absolute;
     top: calc(50% - 0.75rem);
     transition: opacity ease-in-out 0.3s;
@@ -346,7 +345,7 @@
   cursor: pointer;
 
   &::after {
-    opacity: 1;
+    opacity: 100%;
   }
 }
 
@@ -373,8 +372,8 @@
   align-items: center;
   display: flex;
   flex-basis: auto;
-  flex-grow: 0;
   flex-flow: row nowrap;
+  flex-grow: 0;
   flex-shrink: 0;
   justify-content: space-between;
 }
@@ -407,30 +406,12 @@
   gap: 10px;
 }
 
-.study-planner__course-tray-group-toggle {
-  align-items: center;
-  background: none;
-  border: none;
-  color: #b1296f;
-  cursor: pointer;
-  display: flex;
-  font-weight: 500;
-  gap: 0.5rem;
-  padding: 0.5rem 0.5rem 0.5rem 0;
-  text-align: left;
-  width: 100%;
-
-  &:hover {
-    background: $color-default-lighter-generic-background;
-  }
-}
-
 .study-planner__course-tray-groups {
   display: flex;
   flex-basis: auto;
+  flex-flow: column nowrap;
   flex-grow: 1;
   flex-shrink: 1;
-  flex-flow: column nowrap;
   gap: 10px;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -467,7 +448,7 @@
 
   // This will help to prevent card from collapsing when animating open/close of the the period column
   min-width: 270px;
-  opacity: 1;
+  opacity: 100%;
   position: relative;
   transition: transform 0.2s ease-in-out;
 
@@ -486,15 +467,15 @@
 
 .study-planner__card--preview,
 .study-planner__card--is-dragging {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0 0 0 / 10%);
   cursor: move;
-  opacity: 0.8;
+  opacity: 80%;
   transform: scale(1.05);
 }
 
 .study-planner__card--disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 50%;
 }
 
 .study-planner__card--completed,
@@ -506,9 +487,9 @@
 }
 
 .study-planner__card--selected {
-  overflow: hidden;
   outline: 2px solid lighten($color-study-plan-tool-accent, 20%);
   outline-offset: -2px;
+  overflow: hidden;
   position: relative;
 
   .study-planner__card-inner-container {
@@ -636,7 +617,7 @@
 }
 
 .study-planner__course-workspace-instance-not-available {
-  color: red;
+  color: $color-fatal;
   display: block;
   flex-basis: 100%;
   font-size: 0.75rem;
@@ -738,8 +719,8 @@
   justify-content: center;
   position: absolute;
   right: 0;
-  width: 2.25rem;
   top: 0;
+  width: 2.25rem;
 }
 
 // State info
@@ -849,7 +830,6 @@
   background-color: $color-default-lighter-generic-background;
   border-left: 5px solid $color-default-lighter-generic-background;
   border-radius: 0 5px 5px 0;
-  color: #8c8c8c;
   display: flex;
   gap: 15px;
   line-height: 1.5rem;
@@ -964,36 +944,6 @@
   width: 36px;
 }
 
-.study-planner__timeline-progress-flag--start {
-  .study-planner__timeline-progress-flag-icon {
-    background-image: url("/gfx/icons/temp/start.png");
-  }
-}
-
-.study-planner__timeline-progress-flag--end {
-  .study-planner__timeline-progress-flag-icon {
-    background-image: url("/gfx/icons/temp/end.png");
-  }
-}
-
-.study-planner__timeline-progress-flag--goal {
-  .study-planner__timeline-progress-flag-icon {
-    background-image: url("/gfx/icons/temp/goal.png");
-  }
-}
-
-.study-planner__timeline-progress-flag--estimated {
-  .study-planner__timeline-progress-flag-icon {
-    background-image: url("/gfx/icons/temp/estimated.png");
-  }
-}
-
-.study-planner__timeline-progress-flag--current {
-  .study-planner__timeline-progress-flag-icon {
-    background-image: url("/gfx/icons/temp/current.png");
-  }
-}
-
 .study-planner__timeline-progress-flag-label {
   align-items: center;
   border-radius: 12px;
@@ -1007,8 +957,95 @@
 }
 
 .study-planner__timeline-progress-flag-line {
-  width: 2px;
   height: 16px;
+  width: 2px;
+}
+
+// Flag that represents date when studies started
+.study-planner__timeline-progress-flag--start {
+  .study-planner__timeline-progress-flag-icon {
+    background-image: url("/gfx/icons/temp/start.png");
+  }
+
+  .study-planner__timeline-progress-flag-label {
+    background-color: lighten($color-study-plan-studies-start-color, 45%); 
+    border: 1px solid $color-study-plan-studies-start-color;
+    color: darken($color-study-plan-studies-start-color, 15%);
+  }
+
+  .study-planner__timeline-progress-flag-line {
+    background: $color-study-plan-studies-start-color;
+   }
+}
+
+// Flag that represents end of right to study date
+.study-planner__timeline-progress-flag--end {
+  right: 0;
+
+  .study-planner__timeline-progress-flag-icon {
+    background-image: url("/gfx/icons/temp/end.png");
+  }
+
+  .study-planner__timeline-progress-flag-label {
+    background-color: lighten($color-study-plan-studies-end-color, 35%); 
+    border: 1px solid $color-study-plan-studies-end-color;
+    color: darken($color-study-plan-studies-end-color, 15%); 
+  }
+
+  .study-planner__timeline-progress-flag-line {
+    background: $color-study-plan-studies-end-color;
+   }
+}
+
+// Flag that represents graduation goal date
+.study-planner__timeline-progress-flag--goal {
+  .study-planner__timeline-progress-flag-icon {
+    background-image: url("/gfx/icons/temp/goal.png");
+  }
+
+  .study-planner__timeline-progress-flag-label {
+    background-color: lighten($color-study-plan-goal-color, 42%); 
+    border: 1px solid $color-study-plan-goal-color;
+    color: darken($color-study-plan-goal-color, 18%); 
+  }
+
+  .study-planner__timeline-progress-flag-line {
+    background: $color-study-plan-goal-color;
+  }
+}
+
+// Flag that represents estimated graduation date
+.study-planner__timeline-progress-flag--estimated {
+  .study-planner__timeline-progress-flag-icon {
+    background-image: url("/gfx/icons/temp/estimated.png");
+  }
+
+  .study-planner__timeline-progress-flag-label {
+    background-color: lighten($color-study-plan-estimated-color, 30%); 
+    border: 1px solid $color-study-plan-estimated-color;
+    color: darken($color-study-plan-estimated-color, 30%);
+  }
+
+  .study-planner__timeline-progress-flag-line {
+    background: $color-study-plan-estimated-color;
+  }
+}
+
+// Flag that represents current date
+.study-planner__timeline-progress-flag--current {
+  .study-planner__timeline-progress-flag-icon {
+    background-image: url("/gfx/icons/temp/current.png");
+  }
+
+  .study-planner__timeline-progress-flag-label {
+    background-color: lighten($color-study-plan-current-color, 40%); 
+    border: 1px solid $color-study-plan-current-color;
+    color: darken($color-study-plan-current-color, 15%); 
+  }
+
+  .study-planner__timeline-progress-flag-line {
+    background: $color-study-plan-current-color;
+  }
 }
 
 // Flag's that are on the left side of the timeline
@@ -1037,74 +1074,4 @@
     border-radius: 12px 4px 4px 12px;
     padding: 4px 4px 4px 8px;
    }
-}
-
-// Flag for students start date of studies
-.study-planner__timeline-progress-flag--start {
-  .study-planner__timeline-progress-flag-label {
-    background-color: lighten($color-study-plan-studies-start-color, 45%); 
-    border: 1px solid $color-study-plan-studies-start-color;
-    color: darken($color-study-plan-studies-start-color, 15%);
-  }
-
-  .study-planner__timeline-progress-flag-line {
-    background: $color-study-plan-studies-start-color;
-   }
-}
-
-// Flag for students end of "right to study" date of studies
-.study-planner__timeline-progress-flag--end {
-  right: 0;
-
-  .study-planner__timeline-progress-flag-label {
-    background-color: lighten($color-study-plan-studies-end-color, 35%); 
-    border: 1px solid $color-study-plan-studies-end-color;
-    color: darken($color-study-plan-studies-end-color, 15%); 
-  }
-
-  .study-planner__timeline-progress-flag-line {
-    background: $color-study-plan-studies-end-color;
-   }
-}
-
-// Flag for current date
-.study-planner__timeline-progress-flag--current {
-
-  .study-planner__timeline-progress-flag-label {
-    background-color: lighten($color-study-plan-current-color, 40%); 
-    border: 1px solid $color-study-plan-current-color;
-    color: darken($color-study-plan-current-color, 15%); 
-  }
-
-  .study-planner__timeline-progress-flag-line {
-    background: $color-study-plan-current-color;
-  }
-}
-
-// Flag for students goal of graduation date
-.study-planner__timeline-progress-flag--goal {
-
-  .study-planner__timeline-progress-flag-label {
-    background-color: lighten($color-study-plan-goal-color, 42%); 
-    border: 1px solid $color-study-plan-goal-color;
-    color: darken($color-study-plan-goal-color, 18%); 
-  }
-
-  .study-planner__timeline-progress-flag-line {
-    background: $color-study-plan-goal-color;
-  }
-}
-
-// Flag for students estimated graduation date
-.study-planner__timeline-progress-flag--estimated {
-
-  .study-planner__timeline-progress-flag-label {
-    background-color: lighten($color-study-plan-estimated-color, 30%); 
-    border: 1px solid $color-study-plan-estimated-color;
-    color: darken($color-study-plan-estimated-color, 30%);
-  }
-
-  .study-planner__timeline-progress-flag-line {
-    background: $color-study-plan-estimated-color;
-  }
 }
