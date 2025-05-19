@@ -1564,9 +1564,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
-  protected void cleanUpWorkspaceDiscussions(Long workspaceEntityId) {
+  protected void cleanUpWorkspaceDiscussions() {
     asAdmin()
-      .delete("/test/workspaces/{WORKSPACEENTITYID}/discussions/cleanup", workspaceEntityId)
+      .delete("/test/workspaces/discussions/cleanup")
       .then()
       .statusCode(204);
   }

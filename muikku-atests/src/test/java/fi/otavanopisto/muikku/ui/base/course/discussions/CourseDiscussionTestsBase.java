@@ -7,6 +7,7 @@ import java.time.ZoneOffset;
 
 import org.junit.Test;
 
+import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Discussion;
 import fi.otavanopisto.muikku.atests.DiscussionGroup;
@@ -20,6 +21,8 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseActivityState;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
+import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
@@ -29,10 +32,21 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   public void courseDiscussionSendMessageTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .build();
+    
     login();
     
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
+    
     DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
     Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
     try {
@@ -47,8 +61,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       waitForPresent(".application-list__item-body .rich-text>p");
       assertTextIgnoreCase(".application-list__item-body .rich-text>p", "Test text for discussion.");
     } finally {
-      deleteWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), discussion.getId());
-      cleanUpWorkspaceDiscussions(workspace.getId());
+      cleanUpWorkspaceDiscussions();
       deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();
     }
@@ -58,12 +71,16 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   public void courseDiscussionStudentCreateMessageTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course for testing").buildCourse();
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).addCourse(course1).build();
     login();
     
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
     Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
     try {
@@ -84,8 +101,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       assertTextIgnoreCase(".application-list__item-body .rich-text>p", "Test text for discussion.");
     }finally {
       archiveUserByEmail(student.getEmail());
-      deleteWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), discussion.getId());
-      cleanUpWorkspaceDiscussions(workspace.getId());
+      cleanUpWorkspaceDiscussions();
       deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();
     }
@@ -95,9 +111,18 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   public void courseDiscussionAdminCreateAreaTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .build();
     login();    
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("Test", "test course for testing", "3", Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
     Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
     try {
@@ -110,11 +135,10 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       waitAndClick(".env-dialog__actions .button--dialog-execute");
       waitUntilElementGoesAway(".env-dialog__actions", 10);
       waitAndClick(".application-panel__toolbar .react-select-override .react-select-override__control");
-      waitUntilCountOfElements(".application-panel__toolbar .react-select-override .react-select-override__menu .react-select-override__option", 3);
-      assertText(".application-panel__toolbar .react-select-override .react-select-override__menu .react-select-override__option:nth-child(3) .react-select-override__option-label", "Test area");
+      waitUntilCountOfElements(".application-panel__toolbar .react-select-override .react-select-override__menu .react-select-override__option", 4);
+      assertText(".application-panel__toolbar .react-select-override .react-select-override__menu .react-select-override__option:nth-child(4) .react-select-override__option-label", "Test area");
     } finally {
-      deleteWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), discussion.getId());
-      cleanUpWorkspaceDiscussions(workspace.getId());
+      cleanUpWorkspaceDiscussions();
       deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();
     }
@@ -124,12 +148,16 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   public void courseDiscussionReplyAndSubscribeTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Course course1 = new CourseBuilder().name("testcourse").id((long) 1).description("test course for testing").buildCourse();
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).addCourse(course1).build();
     login();
     
     Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
     Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
     DiscussionThread thread = createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
@@ -163,7 +191,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       assertText(".application-list__item--discussion-reply .application-list__item-body p", "Student checking in.");
     } finally {
       archiveUserByEmail(student.getEmail());
-      cleanUpWorkspaceDiscussions(workspace.getId());
+      cleanUpWorkspaceDiscussions();
       deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();
     }
@@ -171,12 +199,20 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   
   @Test
   public void courseDiscussionDeleteThreadTest() throws Exception {
-    Long courseId = 1l;
     MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourses", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+    Workspace workspace = createWorkspace("Test", "test course for testing", "3", Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
     Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
     createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
@@ -191,7 +227,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       waitForVisible(".application-panel__content .application-panel__content-main.loader-empty");
       assertTextIgnoreCase(".application-panel__content .application-panel__content-main.loader-empty .empty span", "Ei viestejä");
     } finally {
-      cleanUpWorkspaceDiscussions(workspace.getId());
+      cleanUpWorkspaceDiscussions();
       deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();
     }
@@ -201,15 +237,24 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   public void courseDiscussionReplyReplyTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace("Test", "test course for testing", "3", Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
     Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
     createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
     try {
       navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
-      waitAndClick(".application-list__item-header .discussion-category>span");
+      waitAndClick(".application-list__item-header");
       waitAndClick(".link--application-list:nth-child(1)");
       addTextToCKEditor("Test reply for test.");
       click(".button--dialog-execute");
@@ -220,7 +265,84 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
       waitForVisible(".application-list__item--discussion-reply-of-reply .application-list__item-body .rich-text>p");
       assertText(".application-list__item--discussion-reply-of-reply .application-list__item-body .rich-text>p", "Test reply to reply.");
     }finally {
-      cleanUpWorkspaceDiscussions(workspace.getId());
+      cleanUpWorkspaceDiscussions();
+      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void courseDiscussionQuoteTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .build();
+    login();
+    Workspace workspace = createWorkspace("Test", "test course for testing", "3", Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
+    DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
+    Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+    createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
+    try {
+      navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
+      waitAndClick(".application-list__item-header .discussion-category>span");
+      waitAndClick(".link--application-list:nth-child(2)");
+      addToEndCKEditor("Test with quote.");
+      waitAndClick(".button--dialog-execute");
+      waitForPresent(".application-list__item--discussion-reply .rich-text blockquote p strong");
+      assertText(".application-list__item--discussion-reply .rich-text blockquote p strong", "Admin User");
+      assertText(".application-list__item--discussion-reply .rich-text blockquote p:nth-child(2)", "Testing testing daa daa");
+      assertText(".application-list__item--discussion-reply .rich-text>p", "Test with quote.");
+    } finally {
+      cleanUpWorkspaceDiscussions();
+      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
+    }
+  }
+  
+  @Test
+  public void courseDiscussionEditTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(4l, 4l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    Course course1 = new CourseBuilder().name("Test").id((long) 3).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .mockLogin(admin)
+    .addCourse(course1)
+    .build();
+    login();
+    Workspace workspace = createWorkspace("Test", "test course for testing", "3", Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
+    DiscussionGroup discussionGroup = createWorkspaceDiscussionGroup(workspace.getId(), "test group");
+    Discussion discussion = createWorkspaceDiscussion(workspace.getId(), discussionGroup.getId(), "test discussion");
+    createWorkspaceDiscussionThread(workspace.getId(), discussionGroup.getId(), discussion.getId(), "Testing", "<p>Testing testing daa daa</p>", false, false);
+    try {
+      navigate(String.format("/workspace/%s/discussions", workspace.getName()), false);
+      selectFinnishLocale();
+      waitAndClick(".application-list__item-header .discussion-category>span");
+      waitAndClick(".link--application-list:nth-child(3)");
+      waitAndClick("input.env-dialog__input--new-discussion-thread-title");
+      sendKeys("input.env-dialog__input--new-discussion-thread-title", "ing");
+      addToEndCKEditor("ing");
+      waitAndClick(".button--dialog-execute");
+      waitForVisible(".application-list__title");
+      assertText(".application-list__title-main", "Testinging");
+      waitForPresent(".application-list__item-content-main .application-list__item-body .rich-text>p");
+      assertTextIgnoreCase(".application-list__item-content-main .application-list__item-body .rich-text>p", "Testing testing daa daaing");
+      waitForPresent(".application-list__item-edited");
+      assertTextStartsWith(".application-list__item-edited", "Muokattu:");
+    } finally {
+      cleanUpWorkspaceDiscussions();
       deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();
     }

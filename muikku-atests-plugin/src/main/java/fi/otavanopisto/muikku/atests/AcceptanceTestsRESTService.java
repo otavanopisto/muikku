@@ -1000,32 +1000,28 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   }
   
   @DELETE
-  @Path("/workspaces/{WORKSPACEENTITYID}/discussions/cleanup")
+  @Path("/workspaces/discussions/cleanup")
   @RESTPermit (handling = Handling.UNSECURED)
-  public Response cleanupWorkspaceDiscussions(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId) {
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-    List<WorkspaceForumArea> forumAreas = forumController.listWorkspaceForumAreas(workspaceEntity);
-    List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
-    List<ForumThread> threads = new ArrayList<>();
-    for(WorkspaceForumArea forumArea : forumAreas) {
-      threads = forumController.listForumThreads(forumArea  , 0, Integer.MAX_VALUE, true); 
-      for (ForumThread thread : threads) {
-        List<ForumThreadSubscription> subs = forumThreadSubscriptionController.listByThread(thread);
-        for (ForumThreadSubscription sub : subs) {
-          forumThreadSubscriptionController.deleteSubscription(sub);
+  public Response cleanupWorkspaceDiscussions() {
+    List<WorkspaceEntity> workspaces = workspaceController.listWorkspaceEntities();
+    for(WorkspaceEntity workspaceEntity : workspaces) {
+      List<WorkspaceForumArea> forumAreas = forumController.listWorkspaceForumAreas(workspaceEntity);
+      List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
+      List<ForumThread> threads = new ArrayList<>();
+      for(WorkspaceForumArea forumArea : forumAreas) {
+        threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE, true); 
+        for (ForumThread thread : threads) {
+          List<ForumThreadSubscription> subs = forumThreadSubscriptionController.listByThread(thread);
+          for (ForumThreadSubscription sub : subs) {
+            forumThreadSubscriptionController.deleteSubscription(sub);
+          }       
+          forumController.deleteThread(thread);
         }
-        ForumThreadReply ftr;
-        while((ftr = forumController.getLatestReply(thread)) != null) {
-          forumController.deleteReply(ftr);
-        }
-        forumController.deleteThread(thread);
+        forumController.deleteArea(forumArea);   
       }
-    }
-    for(WorkspaceForumArea forumArea : forumAreas) {
-      forumController.deleteArea(forumArea);      
-    }
-    for (ForumAreaGroup group : groups) {
-      forumController.deleteAreaGroup(group);
+      for (ForumAreaGroup group : groups) {
+        forumController.deleteAreaGroup(group);
+      }
     }
     return Response.noContent().build();
   }
