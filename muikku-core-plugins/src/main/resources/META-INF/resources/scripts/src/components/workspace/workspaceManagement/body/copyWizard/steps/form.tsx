@@ -1,7 +1,6 @@
 import * as React from "react";
-import { WorkspaceDataType } from "~/reducers/workspaces";
 import { useTranslation } from "react-i18next";
-import { CopyWizardState } from "./hooks/useCopyWorkspace";
+import { CopyWizardState } from "../hooks/useCopyWorkspace";
 
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 
@@ -12,22 +11,16 @@ import CKEditor from "~/components/general/ckeditor";
 /**
  * Step1Props
  */
-interface Step1Props {
+interface FormProps {
   state: CopyWizardState;
   updateState: (updates: Partial<CopyWizardState>) => void;
-  workspace: WorkspaceDataType;
-  onDone: () => void;
 }
 
 /**
  * Step1
  * @param props props
-
-
-
-
  */
-const Step1: React.FC<Step1Props> = (props) => {
+const Form = (props: FormProps) => {
   const { state, updateState } = props;
 
   const { t } = useTranslation(["common", "workspace"]);
@@ -228,4 +221,4 @@ const Step1: React.FC<Step1Props> = (props) => {
   );
 };
 
-export default Step1;
+export default Form;

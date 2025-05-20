@@ -1,30 +1,23 @@
 import * as React from "react";
-import { WorkspaceDataType } from "~/reducers/workspaces";
 import { localize } from "~/locales/i18n";
-import { CopyWizardState } from "./hooks/useCopyWorkspace";
-import { CopyCurrentWorkspaceStepType } from "~/actions/workspaces";
+import { CopyWizardState } from "../hooks/useCopyWorkspace";
 import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
 
 /**
  * StepProps
  */
-interface StepProps {
-  workspace: WorkspaceDataType;
+interface SummaryProps {
   state: CopyWizardState;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updateState: (u: Partial<CopyWizardState>) => any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onDone: () => any;
-  resultingWorkspace?: WorkspaceDataType;
-  step?: CopyCurrentWorkspaceStepType;
+  updateState: (u: Partial<CopyWizardState>) => void;
+  onDone: () => void;
 }
 
 /**
  * Step
  * @param props props
  */
-const Step: React.FC<StepProps> = (props) => {
+const Summary = (props: SummaryProps) => {
   const { t } = useTranslation(["workspace", "common"]);
 
   const copyMaterials = props.state.copyMaterials;
@@ -102,7 +95,7 @@ const Step: React.FC<StepProps> = (props) => {
           ) : null}
         </ul>
       </div>
-      {props.step === "done" && props.resultingWorkspace ? (
+      {props.state.step === "done" && props.state.resultingWorkspace ? (
         <div className="wizard__summary-row">
           <Button
             className="button button--primary-function-content"
@@ -112,13 +105,13 @@ const Step: React.FC<StepProps> = (props) => {
           </Button>
           <Button
             className="button button--primary-function-content"
-            href={`/workspace/${props.resultingWorkspace.urlName}`}
+            href={`/workspace/${props.state.resultingWorkspace.urlName}`}
           >
             {t("actions.openInMuikku", { ns: "workspace" })}
           </Button>
           <Button
             className="button button--primary-function-content"
-            href={props.resultingWorkspace.details.externalViewUrl}
+            href={props.state.resultingWorkspace.details.externalViewUrl}
             openInNewTab="_blank"
           >
             {t("actions.openInPyramus", { ns: "workspace" })}
@@ -129,4 +122,4 @@ const Step: React.FC<StepProps> = (props) => {
   );
 };
 
-export default Step;
+export default Summary;
