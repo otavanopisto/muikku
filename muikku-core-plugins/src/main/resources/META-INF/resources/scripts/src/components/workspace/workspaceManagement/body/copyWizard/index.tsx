@@ -20,17 +20,18 @@ import { AnimatePresence } from "framer-motion";
 import AnimatedStep from "~/components/general/wizard/AnimateStep";
 
 /**
- * CopyWizardProps
+ * CopyWorkspaceWizardProps
  */
-interface CopyWizardProps {
+interface CopyWorkspaceWizardProps {
   onDone: () => void;
 }
 
 /**
- * CopyWizard
+ * CopyWorkspaceWizard. Workspace copy wizard with predefined steps that
+ * guides user through the process of copying a workspace.
  * @param props props
  */
-const CopyWizard: React.FC<CopyWizardProps> = (props) => {
+const CopyWorkspaceWizard: React.FC<CopyWorkspaceWizardProps> = (props) => {
   const workspace = useSelector(
     (state: StateType) => state.workspaces.currentWorkspace
   );
@@ -212,4 +213,4 @@ const CopyWizardFooter = (props: CopyWizardFooterProps) => {
   );
 };
 
-export default CopyWizard;
+export default CopyWorkspaceWizard;

@@ -5,7 +5,7 @@ import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
 
 /**
- * StepProps
+ * SummaryProps
  */
 interface SummaryProps {
   state: CopyWizardState;
@@ -14,7 +14,7 @@ interface SummaryProps {
 }
 
 /**
- * Step
+ * Copy wizard summary
  * @param props props
  */
 const Summary = (props: SummaryProps) => {

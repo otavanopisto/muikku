@@ -9,7 +9,7 @@ import DatePicker from "react-datepicker";
 import CKEditor from "~/components/general/ckeditor";
 
 /**
- * Step1Props
+ * FormProps
  */
 interface FormProps {
   state: CopyWizardState;
@@ -17,7 +17,7 @@ interface FormProps {
 }
 
 /**
- * Step1
+ * Copy wizard form
  * @param props props
  */
 const Form = (props: FormProps) => {

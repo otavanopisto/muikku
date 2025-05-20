@@ -30,7 +30,6 @@ export interface CopyWizardState {
 }
 
 /**
- * useCopyWorkspaceWizardState
  * Hook for managing the state of the copy workspace wizard
  * @param workspace workspace
  */
@@ -80,7 +79,6 @@ export const useCopyWorkspaceWizardState = (workspace: WorkspaceDataType) => {
 };
 
 /**
- * useCopyWorkspaceWizardLogic
  * Hook for managing the business logic of the copy workspace wizard
  * @param state state
  * @param updateState updateState
@@ -110,6 +108,7 @@ export const useCopyWorkspaceWizardLogic = (
         copyBackgroundPicture: state.copyBackgroundPicture,
         // eslint-disable-next-line jsdoc/require-jsdoc
         success: (step, workspace) => {
+          // Update state
           updateState({
             step,
             ...(step === "done" ? { resultingWorkspace: workspace } : {}),

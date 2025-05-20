@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
-import CopyWizard from "~/components/workspace/workspaceManagement/body/copyWizard";
+import CopyWorkspaceWizard from "~/components/workspace/workspaceManagement/body/copyWizard";
 import { StateType } from "~/reducers";
 import { withTranslation, WithTranslation } from "react-i18next";
 
@@ -41,7 +41,7 @@ class CopyWizardDialog extends React.Component<
      * @param closeDialog closeDialog
      */
     const content = (closeDialog: () => void) => (
-      <CopyWizard onDone={closeDialog} />
+      <CopyWorkspaceWizard onDone={closeDialog} />
     );
     return (
       <Dialog
