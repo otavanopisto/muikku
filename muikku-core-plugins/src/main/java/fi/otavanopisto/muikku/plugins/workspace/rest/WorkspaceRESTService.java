@@ -2767,7 +2767,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   private WorkspaceMaterialReplyRestModel createRestModel(WorkspaceMaterialReply entity) {
-    return new WorkspaceMaterialReplyRestModel(entity.getId(), entity.getState(), entity.getLocked());
+    return new WorkspaceMaterialReplyRestModel(entity.getId(), entity.getState());
   }
 
   private List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial> createRestModel(WorkspaceMaterial... entries) {

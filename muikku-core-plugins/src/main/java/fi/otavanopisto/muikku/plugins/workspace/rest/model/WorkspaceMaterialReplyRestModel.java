@@ -7,10 +7,9 @@ public class WorkspaceMaterialReplyRestModel {
   public WorkspaceMaterialReplyRestModel() {
   }
   
-  public WorkspaceMaterialReplyRestModel(Long id, WorkspaceMaterialReplyState state, boolean locked) {
+  public WorkspaceMaterialReplyRestModel(Long id, WorkspaceMaterialReplyState state) {
     this.id = id;
     this.state = state;
-    this.locked = locked;
   }
   
   public Long getId() {
@@ -29,16 +28,7 @@ public class WorkspaceMaterialReplyRestModel {
     this.state = state;
   }
 
-  public boolean isLocked() {
-    return locked;
-  }
-
-  public void setLocked(boolean locked) {
-    this.locked = locked;
-  }
-
   private Long id;
   private WorkspaceMaterialReplyState state;
-  private boolean locked;
 
 }

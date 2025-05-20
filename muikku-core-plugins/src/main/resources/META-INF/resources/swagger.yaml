@@ -14616,7 +14616,6 @@ components:
       required:
         - id
         - state
-        - locked
       properties:
         id:
           description: The id of the material reply
@@ -14625,9 +14624,6 @@ components:
         state:
           description: State of the material assignment
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
-        locked:
-          description: Is the material now locked for the user
-          type: boolean
 
     MaterialEvaluationGradeType:
       description: Material evaluation grade type enum
