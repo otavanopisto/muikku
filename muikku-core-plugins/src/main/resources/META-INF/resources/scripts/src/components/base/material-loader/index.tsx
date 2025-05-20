@@ -705,12 +705,6 @@ class MaterialLoader extends React.Component<
 
     // If the material is locked, it is read only
     if (this.props.compositeReplies) {
-      // When answering first time, the composite reply is not fully created
-      // meaning that lock is undefined
-      if (this.props.compositeReplies.lock === undefined) {
-        return false;
-      }
-
       if (this.props.compositeReplies.lock !== "NONE") {
         return true;
       }
@@ -736,12 +730,6 @@ class MaterialLoader extends React.Component<
   isAnswerable = () => {
     // If the material is locked, it is not answerable
     if (this.props.compositeReplies) {
-      // When answering first time, the composite reply is not fully created
-      // meaning that lock is undefined
-      if (this.props.compositeReplies.lock === undefined) {
-        return true;
-      }
-
       if (this.props.compositeReplies.lock !== "NONE") {
         return false;
       }

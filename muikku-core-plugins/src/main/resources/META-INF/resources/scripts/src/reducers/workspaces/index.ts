@@ -546,7 +546,7 @@ export const workspaces: Reducer<WorkspacesState> = (
       );
       if (!wasUpdated) {
         newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([
-          <MaterialCompositeReply>{ ...action.payload },
+          <MaterialCompositeReply>{ ...action.payload, lock: "NONE" },
         ]);
       }
       return { ...state, currentMaterialsReplies: newCurrentMaterialsReplies };

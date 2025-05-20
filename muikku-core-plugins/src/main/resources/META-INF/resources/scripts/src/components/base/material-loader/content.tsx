@@ -46,7 +46,8 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
       props.workspace.id,
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
-      props.stateConfiguration["success-text"]
+      props.stateConfiguration &&
+        props.stateConfiguration["success-text"] !== undefined
         ? i18n.t(props.stateConfiguration["success-text"], { ns: "materials" })
         : undefined
     );
@@ -74,7 +75,8 @@ function onModification(props: MaterialLoaderContentProps) {
       props.workspace.id,
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
-      props.stateConfiguration["success-text"]
+      props.stateConfiguration &&
+        props.stateConfiguration["success-text"] !== undefined
         ? i18n.t(props.stateConfiguration["success-text"], { ns: "materials" })
         : undefined,
       props.onAssignmentStateModified
