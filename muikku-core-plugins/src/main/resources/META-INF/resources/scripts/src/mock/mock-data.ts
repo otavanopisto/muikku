@@ -1,4 +1,18 @@
 import { SchoolCurriculumMatrix, LanguageData } from "../@types/shared";
+import { OptionDefault } from "~/components/general/react-select/types";
+import { LanguageLevels } from "~/reducers/main-function/language-profile";
+
+export const languageLevelOptions: OptionDefault<LanguageLevels>[] = [
+  { label: "A1.1", value: "A11" },
+  { label: "A1.2", value: "A12" },
+  { label: "A1.3", value: "A13" },
+  { label: "A2.1", value: "A21" },
+  { label: "A2.2", value: "A22" },
+  { label: "B1.1", value: "B11" },
+  { label: "B1.2", value: "B12" },
+  { label: "B2.1", value: "B21" },
+  { label: "C1.1", value: "C11" },
+];
 
 export const availableLanguages: LanguageData[] = [
   { identifier: "aa", code: "aa", name: "Afar" },

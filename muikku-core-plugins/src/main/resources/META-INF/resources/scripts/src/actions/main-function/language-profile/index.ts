@@ -1,7 +1,7 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { Dispatch, Action } from "redux";
-import { StatusType } from "~/reducers/base/status";
+
 import notificationActions from "~/actions/base/notifications";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError } from "~/api/api";
@@ -11,6 +11,8 @@ import {
   SkillLevels,
   Subjects,
   LanguageLevels,
+  CVLanguage,
+  Experience,
 } from "~/reducers/main-function/language-profile";
 import { LoadingState, SaveState, LanguageCode } from "~/@types/shared";
 import {
@@ -18,7 +20,6 @@ import {
   CreateLanguageProfileSampleRequest,
 } from "~/generated/client";
 import { RecordValue } from "~/@types/recorder";
-import form from "~/components/workspace/workspaceManagement/body/copyWizard/form";
 
 export type LanguageProfileLanguagePayload = {
   code: string;
@@ -65,6 +66,11 @@ export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SUBJECTS = SpecificActionType<
   { code: string; cellId: string; value: Subjects }
 >;
 
+export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<
+  "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+  LanguageProfileSample
+>;
+
 export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLES = SpecificActionType<
   "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLES",
   LanguageProfileSample[]
@@ -75,14 +81,19 @@ export type ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<
   LanguageProfileSample
 >;
 
-export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<
-  "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
-  LanguageProfileSample
->;
-
 export type DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<
   "DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
   { userEntityId: number; sampleId: number }
+>;
+
+export type UPDATE_LANGUAGE_PROFILE_CV_GENERAL = SpecificActionType<
+  "UPDATE_LANGUAGE_PROFILE_CV_GENERAL",
+  string
+>;
+
+export type UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE = SpecificActionType<
+  "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
+  CVLanguage
 >;
 
 /**
@@ -239,7 +250,7 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
           userEntityId,
         });
         dispatch({
-          type: "SET_LANGUAGE_PROFILE",
+          type: "UPDATE_LANGUAGE_PROFILE_VALUES",
           payload: JSON.parse(data.formData) as LanguageProfileData,
         });
         dispatch({

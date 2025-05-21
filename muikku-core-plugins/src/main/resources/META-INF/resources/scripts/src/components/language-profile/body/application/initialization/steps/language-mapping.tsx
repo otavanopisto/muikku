@@ -11,6 +11,7 @@ import {
 import { LanguageCode } from "~/@types/shared";
 import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
+import { languageLevelOptions } from "~/mock/mock-data";
 
 const LanguageMapping = () => {
   const { t } = useTranslation("languageProfile");
@@ -20,17 +21,17 @@ const LanguageMapping = () => {
     (state: StateType) => state.languageProfile.data
   );
 
-  const languageLevelOptions: OptionDefault<LanguageLevels>[] = [
-    { label: "A1.1", value: "A11" },
-    { label: "A1.2", value: "A12" },
-    { label: "A1.3", value: "A13" },
-    { label: "A2.1", value: "A21" },
-    { label: "A2.2", value: "A22" },
-    { label: "B1.1", value: "B11" },
-    { label: "B1.2", value: "B12" },
-    { label: "B2.1", value: "B21" },
-    { label: "C1.1", value: "C11" },
-  ];
+  // export const languageLevelOptions: OptionDefault<LanguageLevels>[] = [
+  //   { label: "A1.1", value: "A11" },
+  //   { label: "A1.2", value: "A12" },
+  //   { label: "A1.3", value: "A13" },
+  //   { label: "A2.1", value: "A21" },
+  //   { label: "A2.2", value: "A22" },
+  //   { label: "B1.1", value: "B11" },
+  //   { label: "B1.2", value: "B12" },
+  //   { label: "B2.1", value: "B21" },
+  //   { label: "C1.1", value: "C11" },
+  // ];
 
   const skillsOptions: OptionDefault<SkillLevels>[] = [
     { label: "Natiivi", value: "N" },

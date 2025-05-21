@@ -1,10 +1,5 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { StateType } from "~/reducers";
-import { useTranslation } from "react-i18next";
 import { LanguageData } from "~/@types/shared";
-import { LanguageLevels } from "~/reducers/main-function/language-profile";
-import { availableLanguages } from "~/mock/mock-data";
 import { LanguageCode } from "~/@types/shared";
 
 interface LanguageProfileDataDisplayerProps {

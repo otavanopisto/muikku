@@ -2,7 +2,7 @@ import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { LoadingState, SaveState } from "~/@types/shared";
 import { LanguageData } from "~/@types/shared";
-import { LanguageProfileSample } from "~/generated/client";
+import { Language, LanguageProfileSample } from "~/generated/client";
 
 export type LanguageLevels =
   | "A11"
@@ -33,12 +33,37 @@ export interface LanguageProfileLanguage
   extends LanguageProfileLanguageData,
     LanguageData {}
 
+export interface Experience {
+  interaction: number;
+  vocal: number;
+  writing: number;
+  reading: number;
+  listening: number;
+  general: LanguageLevels;
+}
+export interface CVLanguage {
+  code: string;
+  description: string;
+  interaction: number;
+  vocal: number;
+  writing: number;
+  reading: number;
+  listening: number;
+  general: LanguageLevels;
+  samples: string[];
+}
+export interface LanguageProfileCV {
+  general: string;
+  languages: CVLanguage[];
+}
+
 export type LanguageProfileData = {
   languageUsage: string;
   studyMotivation: string;
   languageLearning: string;
   languages: LanguageProfileLanguage[];
   samples: LanguageProfileSample[];
+  cv: LanguageProfileCV;
 };
 
 /**
@@ -54,13 +79,17 @@ export interface LanguageProfileState {
 /**
  * initialUserGroupsState
  */
-const initializeDependantState: LanguageProfileState = {
+const initializeLanguageProfileState: LanguageProfileState = {
   data: {
     languageUsage: "",
     studyMotivation: "",
     languageLearning: "",
     languages: [],
     samples: [],
+    cv: {
+      general: "",
+      languages: [],
+    },
   },
   loading: "WAITING",
   saving: "PENDING",
@@ -74,7 +103,7 @@ const initializeDependantState: LanguageProfileState = {
  * @returns State of users
  */
 export const languageProfile: Reducer<LanguageProfileState> = (
-  state = initializeDependantState,
+  state = initializeLanguageProfileState,
   action: ActionType
 ) => {
   switch (action.type) {
@@ -90,6 +119,8 @@ export const languageProfile: Reducer<LanguageProfileState> = (
         saving: action.payload,
       };
     }
+
+    // Probably not needed
     case "SET_LANGUAGE_PROFILE":
       return {
         ...state,
@@ -280,6 +311,81 @@ export const languageProfile: Reducer<LanguageProfileState> = (
         },
       };
     }
+
+    case "UPDATE_LANGUAGE_PROFILE_CV_GENERAL": {
+      const { payload } = action;
+
+      const updatedCv = { ...state.data.cv, general: payload };
+
+      return {
+        ...state,
+        data: { ...state.data, cv: updatedCv },
+      };
+    }
+
+    case "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE": {
+      const { payload } = action;
+
+      const updatedCV = { ...state.data.cv };
+
+      const updatedLanguages = [...updatedCV.languages];
+
+      const languageIndex = updatedLanguages.findIndex(
+        (language) => language.code === payload.code
+      );
+
+      if (languageIndex === -1) {
+        // If the language doesn't exist, add it
+        updatedLanguages.push(payload);
+      } else {
+        updatedLanguages[languageIndex] = payload;
+      }
+
+      updatedCV.languages = updatedLanguages;
+
+      return {
+        ...state,
+        data: { ...state.data, cv: updatedCV },
+      };
+    }
+
+    // case "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE_SKILL_LEVELS": {
+    //   const { payload } = action;
+    //   const updatedCV = { ...state.data.cv };
+    //   const updatedLanguages = [...updatedCV.languages];
+    //   const languageIndex = updatedLanguages.findIndex(
+    //     (language) => language.code === payload.code
+    //   );
+
+    //   updatedLanguages[languageIndex] = payload;
+    //   updatedCV.languages = updatedLanguages;
+
+    //   return {
+    //     ...state,
+    //     data: { ...state.data, cv: updatedCV },
+    //   };
+    // }
+
+    // case "UPDATE_LANGUAGE_PROFILE_CV_LINK": {
+    //   const { payload } = action;
+    //   const updatedLanguages = [...state.data.cv.languages];
+    //   // Check if the language already exists in the array
+    //   const existingLanguageIndex = updatedLanguages.findIndex(
+    //     (language) => language.code === payload.code
+    //   );
+
+    //   if (existingLanguageIndex !== -1) {
+    //     // If it exists, remove from the array
+    //     updatedLanguages.splice(existingLanguageIndex, 1);
+    //   } else {
+    //     updatedLanguages.push(payload);
+    //   }
+
+    //   return {
+    //     ...state,
+    //     data: { ...state.data, languages: updatedLanguages },
+    //   };
+    // }
 
     default:
       return state;

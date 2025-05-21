@@ -4,6 +4,7 @@ import ApplicationPanelBody from "../../general/application-panel/components/app
 import { useTranslation } from "react-i18next";
 import { Tab } from "~/components/general/tabs";
 import Initialization from "./application/initialization";
+import LanguageCV from "./application/cv";
 import LanguageSample from "./application/languages";
 
 /**
@@ -54,7 +55,7 @@ const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
       type: "cv",
       component: (
         <ApplicationPanelBody modifier="tabs">
-          <div>CV</div>
+          <LanguageCV />
         </ApplicationPanelBody>
       ),
     },
