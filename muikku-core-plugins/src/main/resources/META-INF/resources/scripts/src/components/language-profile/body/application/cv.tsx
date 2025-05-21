@@ -4,21 +4,19 @@ import { StateType } from "~/reducers";
 import { LanguageProfileData } from "~/reducers/main-function/language-profile";
 import { ActionType } from "~/actions";
 import SkillLevel from "./cv/skill-level";
+import { saveLanguageProfile } from "~/actions/main-function/language-profile";
+import Button from "~/components/general/button";
 
 const LanguageCv = () => {
   const dispatch = useDispatch();
-  const { languages, languageUsage, languageLearning, studyMotivation } =
-    useSelector((state: StateType) => state.languageProfile.data);
-  const { languageProfile } = useSelector((state: StateType) => state);
+  const { languageProfile, status } = useSelector((state: StateType) => state);
+  const { languages, cv } = languageProfile.data;
 
   // Create a ref to store the timeout ID
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // Debounced field change handler
-  const handleFieldChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-    field: keyof LanguageProfileData
-  ) => {
+  const handleFieldChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     // Get the current value
     const value = e.target.value;
 
@@ -46,6 +44,10 @@ const LanguageCv = () => {
     []
   );
 
+  const handleSave = () => {
+    dispatch(saveLanguageProfile(status.userId, languageProfile.data));
+  };
+
   return (
     <div>
       <h1>Kieli cv</h1>
@@ -54,13 +56,18 @@ const LanguageCv = () => {
           <h2>Yleistä</h2>
           <textarea
             id="cv"
-            defaultValue={languageUsage || ""}
+            defaultValue={cv.general || ""}
             className="form-element__textarea"
-            onChange={(e) => handleFieldChange(e, "languageUsage")}
+            onChange={(e) => handleFieldChange(e)}
           />
           {languages.map((language) => (
             <SkillLevel key={language.code} language={language} />
           ))}
+        </div>
+        <div>
+          <Button onClick={handleSave} buttonModifiers={["info"]}>
+            Tallenna
+          </Button>
         </div>
       </form>
     </div>

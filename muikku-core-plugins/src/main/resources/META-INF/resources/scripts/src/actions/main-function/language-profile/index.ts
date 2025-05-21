@@ -12,7 +12,6 @@ import {
   Subjects,
   LanguageLevels,
   CVLanguage,
-  Experience,
 } from "~/reducers/main-function/language-profile";
 import { LoadingState, SaveState, LanguageCode } from "~/@types/shared";
 import {

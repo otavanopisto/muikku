@@ -44,11 +44,11 @@ export interface Experience {
 export interface CVLanguage {
   code: string;
   description: string;
-  interaction: number;
-  vocal: number;
-  writing: number;
-  reading: number;
-  listening: number;
+  interaction: string;
+  vocal: string;
+  writing: string;
+  reading: string;
+  listening: string;
   general: LanguageLevels;
   samples: string[];
 }
