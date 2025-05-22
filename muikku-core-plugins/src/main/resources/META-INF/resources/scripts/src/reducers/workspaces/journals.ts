@@ -61,9 +61,9 @@ const initialJournalsState: JournalsState = {
  * @param state state
  * @param action action
  */
-export const journals: Reducer<JournalsState> = (
+export const journals: Reducer<JournalsState, ActionType> = (
   state = initialJournalsState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "JOURNALS_LOAD": {

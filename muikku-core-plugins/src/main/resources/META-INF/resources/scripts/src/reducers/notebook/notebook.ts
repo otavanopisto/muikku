@@ -35,9 +35,9 @@ const initialJournalsState: NoteBookState = {
  * @param state state
  * @param action action
  */
-export const notebook: Reducer<NoteBookState> = (
+export const notebook: Reducer<NoteBookState, ActionType> = (
   state = initialJournalsState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "NOTEBOOK_UPDATE_STATE":

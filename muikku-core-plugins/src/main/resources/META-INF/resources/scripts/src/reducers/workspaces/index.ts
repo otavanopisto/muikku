@@ -401,9 +401,9 @@ const initialWorkspacesState: WorkspacesState = {
  * @param action action
  * @returns State of workspaces
  */
-export const workspaces: Reducer<WorkspacesState> = (
+export const workspaces: Reducer<WorkspacesState, ActionType> = (
   state = initialWorkspacesState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_USER_WORKSPACES":

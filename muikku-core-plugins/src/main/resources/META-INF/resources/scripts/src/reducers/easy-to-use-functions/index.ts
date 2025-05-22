@@ -33,9 +33,9 @@ const initialState: EasyToUseFunctionState = {
  * @param action action
  * @returns state
  */
-export const easyToUse: Reducer<EasyToUseFunctionState> = (
+export const easyToUse: Reducer<EasyToUseFunctionState, ActionType> = (
   state = initialState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "SET_ACTIVE_EASY_TO_USE_TOOL":

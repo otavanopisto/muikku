@@ -147,9 +147,9 @@ const initialMessagesState: MessagesState = {
  * @param action action
  * @returns State of messages
  */
-export const messages: Reducer<MessagesState> = (
+export const messages: Reducer<MessagesState, ActionType> = (
   state = initialMessagesState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_MESSAGE_THREADS":

@@ -110,9 +110,9 @@ export const initialState: EvaluationState = {
  * @param action action
  * @returns State of evaluation
  */
-export const evaluations: Reducer<EvaluationState> = (
+export const evaluations: Reducer<EvaluationState, ActionType> = (
   state = initialState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "EVALUATION_STATE_UPDATE":

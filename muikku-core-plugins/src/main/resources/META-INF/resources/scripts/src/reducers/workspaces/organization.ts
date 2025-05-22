@@ -36,9 +36,9 @@ const initialOrganizationWorkspacesState: WorkspacesState = {
  * @param action action
  * @returns State of organizationWorkspaces
  */
-export const organizationWorkspaces: Reducer<WorkspacesState> = (
+export const organizationWorkspaces: Reducer<WorkspacesState, ActionType> = (
   state = initialOrganizationWorkspacesState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_EDUCATION_TYPES":

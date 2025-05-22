@@ -39,10 +39,10 @@ const initialOrganizationSummaryState: OrganizationSummaryType = {
  * @param action action
  * @returns State of reducer
  */
-export const organizationSummary: Reducer<OrganizationSummaryType> = (
-  state = initialOrganizationSummaryState,
-  action: ActionType
-) => {
+export const organizationSummary: Reducer<
+  OrganizationSummaryType,
+  ActionType
+> = (state = initialOrganizationSummaryState, action) => {
   switch (action.type) {
     case "UPDATE_SUMMARY_STATUS":
       return Object.assign({}, state, {

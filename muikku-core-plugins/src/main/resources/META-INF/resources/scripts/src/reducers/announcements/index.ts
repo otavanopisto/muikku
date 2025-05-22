@@ -97,9 +97,9 @@ const initialAnnouncementsState: AnnouncementsState = {
  * @param action action
  * @returns State of announcements
  */
-export const announcements: Reducer<AnnouncementsState> = (
+export const announcements: Reducer<AnnouncementsState, ActionType> = (
   state = initialAnnouncementsState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_ANNOUNCEMENTS":

@@ -25,9 +25,9 @@ const initialLocalesState: LocaleState = {
  * @param action action
  * @returns State of locales
  */
-export const locales: Reducer<LocaleState> = (
+export const locales: Reducer<LocaleState, ActionType> = (
   state = initialLocalesState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "LOCALE_SET":

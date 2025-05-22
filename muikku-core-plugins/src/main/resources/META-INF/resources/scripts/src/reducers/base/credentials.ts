@@ -31,9 +31,9 @@ const initialCredentialsState: CredentialsState = {
  * @param action action
  * @returns State of credentials
  */
-export const credentials: Reducer<CredentialsState> = (
+export const credentials: Reducer<CredentialsState, ActionType> = (
   state = initialCredentialsState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "LOAD_CREDENTIALS":

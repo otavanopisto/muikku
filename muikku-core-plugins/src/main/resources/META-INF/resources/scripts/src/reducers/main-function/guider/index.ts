@@ -291,9 +291,9 @@ const initialGuiderState: GuiderState = {
  * @param action action
  * @returns Guider state
  */
-export const guider: Reducer<GuiderState> = (
+export const guider: Reducer<GuiderState, ActionType> = (
   state = initialGuiderState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "LOCK_TOOLBAR":

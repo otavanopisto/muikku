@@ -35,9 +35,9 @@ const initialState: StatisticsType = {
  * @param action action
  * @returns State of statistic
  */
-export const statistics: Reducer<StatisticsType> = (
+export const statistics: Reducer<StatisticsType, ActionType> = (
   state = initialState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_STUDIES_STATISTICS_STATUS":

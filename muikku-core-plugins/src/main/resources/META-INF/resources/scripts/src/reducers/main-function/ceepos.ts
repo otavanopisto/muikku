@@ -30,9 +30,9 @@ const initialCeeposState: CeeposState = {
  * @param action action
  * @returns State of ceepos
  */
-export const ceepos: Reducer<CeeposState> = (
+export const ceepos: Reducer<CeeposState, ActionType> = (
   state = initialCeeposState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_CEEPOS_STATE":

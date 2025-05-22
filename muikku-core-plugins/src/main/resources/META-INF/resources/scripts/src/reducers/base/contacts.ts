@@ -39,9 +39,9 @@ const initialContactsState: ContactsState = {
  * @param action action
  * @returns State of credentials
  */
-export const contacts: Reducer<ContactsState> = (
+export const contacts: Reducer<ContactsState, ActionType> = (
   state = initialContactsState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "CONTACT_LOAD_GROUP": {

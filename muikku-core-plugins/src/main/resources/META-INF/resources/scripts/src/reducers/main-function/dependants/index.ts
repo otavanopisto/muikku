@@ -55,9 +55,9 @@ const initializeDependantState: DependantsState = {
  * @param action action
  * @returns State of users
  */
-export const dependants: Reducer<DependantsState> = (
+export const dependants: Reducer<DependantsState, ActionType> = (
   state = initializeDependantState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "DEPENDANTS_UPDATE":

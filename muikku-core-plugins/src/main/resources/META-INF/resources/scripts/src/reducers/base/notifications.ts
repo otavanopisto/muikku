@@ -46,9 +46,9 @@ const initialNotificationState: NotificationState = {
  * @param action action
  * @returns State of notifications
  */
-export const notifications: Reducer<NotificationState> = (
+export const notifications: Reducer<NotificationState, ActionType> = (
   state: NotificationState = initialNotificationState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "ADD_NOTIFICATION": {

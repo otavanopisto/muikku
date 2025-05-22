@@ -72,9 +72,9 @@ const initialProfileState: ProfileState = {
  * @param action action
  * @returns State of profileReducer
  */
-export const profile: Reducer<ProfileState> = (
+export const profile: Reducer<ProfileState, ActionType> = (
   state = initialProfileState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "SET_PROFILE_USER_PROPERTY": {

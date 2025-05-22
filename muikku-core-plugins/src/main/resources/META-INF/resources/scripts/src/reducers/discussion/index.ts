@@ -77,9 +77,9 @@ const initialDiscussionState: DiscussionState = {
  * @param action action
  * @returns State of discussion
  */
-export const discussion: Reducer<DiscussionState> = (
+export const discussion: Reducer<DiscussionState, ActionType> = (
   state = initialDiscussionState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_DISCUSSION_THREADS_STATE":

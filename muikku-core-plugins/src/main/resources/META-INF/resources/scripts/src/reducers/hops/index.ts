@@ -172,9 +172,9 @@ const initialHopsState: HopsState = {
  * @param state state
  * @param action action
  */
-export const hopsNew: Reducer<HopsState> = (
+export const hopsNew: Reducer<HopsState, ActionType> = (
   state = initialHopsState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "HOPS_UPDATE_INITIALIZE_STATUS":

@@ -179,9 +179,9 @@ const initializeUsersState: UsersState = {
  * @param action action
  * @returns State of users
  */
-export const organizationUsers: Reducer<UsersState> = (
+export const organizationUsers: Reducer<UsersState, ActionType> = (
   state = initializeUsersState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_STUDENT_USERS":
@@ -220,9 +220,9 @@ const initialUserGroupsState: UserGroupsState = {
  * @param action action
  * @returns State of user groups
  */
-export const userGroups: Reducer<UserGroupsState> = (
+export const userGroups: Reducer<UserGroupsState, ActionType> = (
   state = initialUserGroupsState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_USER_GROUPS":
@@ -282,9 +282,9 @@ const initialUserSelectState: UsersSelectState = {
  * @param action action
  * @returns State of user Select
  */
-export const userSelect: Reducer<UsersSelectState> = (
+export const userSelect: Reducer<UsersSelectState, ActionType> = (
   state = initialUserSelectState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_STUDENT_SELECTOR":
@@ -328,9 +328,9 @@ const initialStudyProgrammesState: StudyprogrammeTypes = {
  * @param action action
  * @returns State of evaluation
  */
-export const studyprogrammes: Reducer<StudyprogrammeTypes> = (
+export const studyprogrammes: Reducer<StudyprogrammeTypes, ActionType> = (
   state = initialStudyProgrammesState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_STUDYPROGRAMME_TYPES":

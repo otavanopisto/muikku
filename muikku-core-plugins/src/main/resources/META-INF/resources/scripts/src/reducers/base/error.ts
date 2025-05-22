@@ -24,9 +24,9 @@ const initialErrorState: ErrorType = {
  * @param action action
  * @returns State of error
  */
-export const error: Reducer<ErrorType> = (
+export const error: Reducer<ErrorType, ActionType> = (
   state = initialErrorState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_ERROR":
