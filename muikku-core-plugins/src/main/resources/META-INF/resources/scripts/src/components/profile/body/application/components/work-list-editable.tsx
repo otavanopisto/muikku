@@ -44,6 +44,7 @@ interface WorkListEditableProps extends WithTranslation {
   base: WorklistTemplate | WorklistItem;
   isEditMode: boolean;
   currentMonthDayLimit: number;
+  children?: React.ReactNode;
 }
 
 /**

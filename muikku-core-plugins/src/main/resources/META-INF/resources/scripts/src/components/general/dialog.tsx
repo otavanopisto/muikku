@@ -253,6 +253,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
  */
 interface DialogColumnContainerProps {
   modifier?: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -279,6 +280,7 @@ export const DialogColumnContainer: React.FC<DialogColumnContainerProps> = (
  */
 interface DialogColumnProps {
   modifiers?: string | Array<string>;
+  children?: React.ReactNode;
 }
 
 /**
@@ -321,6 +323,7 @@ export class DialogColumn extends React.Component<
  */
 interface DialogRowProps {
   modifiers?: string | Array<string>;
+  children?: React.ReactNode;
 }
 
 /**
@@ -360,6 +363,7 @@ export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
  */
 interface DialogTitleContainerProps {
   modifier?: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -384,6 +388,7 @@ export const DialogTitleContainer: React.FC<DialogTitleContainerProps> = (
  */
 interface DialogTitleProps {
   modifier?: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -473,6 +478,7 @@ export class DialogRowHeader extends React.Component<
  */
 interface DialogRowContentProps {
   modifiers?: string | Array<string>;
+  children?: React.ReactNode;
 }
 
 /**

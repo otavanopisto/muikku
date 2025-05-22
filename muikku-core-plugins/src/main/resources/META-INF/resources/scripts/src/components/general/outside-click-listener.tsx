@@ -8,6 +8,7 @@ interface OutsideClickListenerProps {
   containerStyle?: React.CSSProperties;
   modifiers?: string[];
   onClickOutside: () => void;
+  children?: React.ReactNode;
 }
 
 /**

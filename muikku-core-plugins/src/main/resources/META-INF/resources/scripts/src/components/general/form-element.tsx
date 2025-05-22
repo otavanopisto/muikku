@@ -28,6 +28,7 @@ export type FormElementPlaceholder = {
 interface FormElementProps {
   modifiers?: string | Array<string>;
   label?: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -78,6 +79,7 @@ export default class FormElement extends React.Component<
  */
 interface FormElementRowProps {
   modifiers?: string | Array<string>;
+  children?: React.ReactNode;
 }
 
 /**
@@ -580,6 +582,7 @@ interface SelectFormElementProps {
   valid?: number;
   modifiers?: string | Array<string>;
   updateField: (value: string, valid: boolean, name: string) => any;
+  children?: React.ReactNode;
 }
 
 /**

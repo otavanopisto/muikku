@@ -12,6 +12,7 @@ interface ApplicationListProps {
   sortKey?: string;
   sortData?: any;
   footer?: React.ReactElement<any>;
+  children?: React.ReactNode;
 }
 
 /**
@@ -602,6 +603,7 @@ export class ApplicationListItemContentWrapper extends React.Component<
  */
 interface ApplicationListItemContentActionsProps {
   modifiers?: string | Array<string>;
+  children?: React.ReactNode;
 }
 
 /**

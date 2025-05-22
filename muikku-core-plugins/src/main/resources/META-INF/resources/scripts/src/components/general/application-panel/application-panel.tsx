@@ -134,7 +134,9 @@ export default class ApplicationPanel extends React.Component<
 /**
  * ApplicationPanelToolbarProps
  */
-interface ApplicationPanelToolbarProps {}
+interface ApplicationPanelToolbarProps {
+  children?: React.ReactNode;
+}
 
 /**
  * ApplicationPanelToolbarState
@@ -164,6 +166,7 @@ export class ApplicationPanelToolbar extends React.Component<
  */
 interface ApplicationPanelToolbarActionsMainProps {
   modifier?: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -200,7 +203,9 @@ export class ApplicationPanelToolbarActionsMain extends React.Component<
 /**
  * ApplicationPanelToolbarActionsAsideProps
  */
-interface ApplicationPanelToolbarActionsAsideProps {}
+interface ApplicationPanelToolbarActionsAsideProps {
+  children?: React.ReactNode;
+}
 
 /**
  * ApplicationPanelToolbarActionsAsideState
@@ -230,7 +235,9 @@ export class ApplicationPanelToolbarActionsAside extends React.Component<
 /**
  * ApplicationPanelToolsContainerProps
  */
-interface ApplicationPanelToolsContainerProps {}
+interface ApplicationPanelToolsContainerProps {
+  children?: React.ReactNode;
+}
 
 /**
  * ApplicationPanelToolsContainerState

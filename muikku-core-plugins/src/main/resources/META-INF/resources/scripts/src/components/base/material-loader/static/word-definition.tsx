@@ -9,6 +9,7 @@ interface WordDefinitionProps {
     muikkuWordDefinition: string;
   };
   invisible?: boolean;
+  children?: React.ReactNode;
 }
 
 /**

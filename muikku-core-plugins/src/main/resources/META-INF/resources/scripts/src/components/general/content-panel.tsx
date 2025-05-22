@@ -25,6 +25,7 @@ interface ContentPanelProps extends WithTranslation {
   aside?: React.ReactElement<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpenNavigation?: () => any;
+  children?: React.ReactNode;
 }
 
 /**
@@ -344,6 +345,7 @@ export default class ContentPanel extends React.Component<
 interface ContentPanelItemProps {
   id?: string;
   scrollMarginTopOffset?: number;
+  children?: React.ReactNode;
 }
 
 /**

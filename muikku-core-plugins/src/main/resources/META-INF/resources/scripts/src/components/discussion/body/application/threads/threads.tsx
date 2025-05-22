@@ -10,10 +10,17 @@ import ApplicationList, {
 } from "~/components/general/application-list";
 
 /**
+ * DiscussionThreadsProps
+ */
+interface DiscussionThreadsProps {
+  children?: React.ReactNode;
+}
+
+/**
  * DiscussionThreads
  */
 export class DiscussionThreads extends React.Component<
-  Record<string, unknown>,
+  DiscussionThreadsProps,
   Record<string, unknown>
 > {
   /**
@@ -32,6 +39,7 @@ interface DiscussionThreadProps {
   onClick: (event: React.MouseEvent<HTMLDivElement>) => any;
   onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
   avatar: JSX.Element;
+  children?: React.ReactNode;
 }
 
 /**
@@ -68,6 +76,7 @@ export class DiscussionThread extends React.Component<
  */
 interface DiscussionThreadHeaderProps {
   aside?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 /**
@@ -106,6 +115,7 @@ export class DiscussionThreadHeader extends React.Component<
  */
 interface DiscussionThreadBodyProps {
   html?: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -132,6 +142,7 @@ export class DiscussionThreadBody extends React.Component<
  */
 interface DiscussionThreadFooterProps {
   hasActions?: boolean;
+  children?: React.ReactNode;
 }
 
 /**
@@ -160,6 +171,7 @@ interface DiscussionCurrentThreadProps {
   title: React.ReactNode;
   sticky: boolean;
   locked: boolean;
+  children?: React.ReactNode;
 }
 
 /**
@@ -200,6 +212,7 @@ interface DiscussionCurrentThreadElementProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   avatar: any;
   hidden: boolean;
+  children?: React.ReactNode;
 }
 
 /**
@@ -240,6 +253,7 @@ export class DiscussionCurrentThreadElement extends React.Component<
  */
 interface DiscussionThreadsListHeaderProps {
   aside?: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 /**

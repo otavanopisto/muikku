@@ -20,6 +20,7 @@ interface AutocompleteProps {
   }[];
   pixelsOffset?: number;
   modifier: string;
+  children?: React.ReactNode;
 }
 
 /**
@@ -54,6 +55,7 @@ export default class Autocomplete extends React.Component<
    * UNSAFE_componentWillReceiveProps
    * @param nextProps nextProps
    */
+  // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: AutocompleteProps) {
     if (nextProps.opened && !this.props.opened) {
       const autocomplete: HTMLDivElement = this.refs[

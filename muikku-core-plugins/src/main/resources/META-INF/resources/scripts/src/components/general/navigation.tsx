@@ -10,10 +10,17 @@ import { ButtonPill } from "~/components/general/button";
 import "~/sass/elements/item-list.scss";
 
 /**
+ * NavigationProps
+ */
+interface NavigationProps {
+  children?: React.ReactNode;
+}
+
+/**
  * Navigation
  */
 export default class Navigation extends React.Component<
-  Record<string, unknown>,
+  NavigationProps,
   Record<string, unknown>
 > {
   /**
@@ -35,6 +42,7 @@ export default class Navigation extends React.Component<
 interface NavigationTopicProps {
   name: string;
   classModifier?: string;
+  children?: React.ReactNode;
 }
 
 /**

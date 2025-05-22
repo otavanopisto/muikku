@@ -6,6 +6,7 @@ import "~/sass/elements/zoom.scss";
  */
 interface ZoomProps {
   imgsrc: string;
+  children?: React.ReactNode;
 }
 
 /**
