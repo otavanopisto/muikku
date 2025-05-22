@@ -1,4 +1,4 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import { UserStatusType } from "reducers/main-function/users";
 import notificationActions from "~/actions/base/notifications";
 import MApi, { isMApiError } from "~/api/api";
@@ -33,25 +33,25 @@ export type DEPENDANT_WORKSPACES_STATUS_UPDATE = SpecificActionType<
  * LoadDependantsTriggerType
  */
 export interface LoadDependantsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 /**
  * setCurrentDependantTriggerType
  */
 export interface setCurrentDependantTriggerType {
-  (identifier: string): AnyActionType;
+  (identifier: string): AppThunkAction;
 }
 /**
  * setCurrentDependantTriggerType
  */
 export interface clearDependantTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 /**
  * LoadDependantWorkspacesTriggerType
  */
 export interface LoadDependantWorkspacesTriggerType {
-  (dependantIdentifier: string): AnyActionType;
+  (dependantIdentifier: string): AppThunkAction;
 }
 
 /**

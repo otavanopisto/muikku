@@ -1,5 +1,5 @@
 import actions from "../base/notifications";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import MApi, { isMApiError } from "~/api/api";
 import {
   OrganizationContact,
@@ -12,7 +12,7 @@ import i18n from "~/locales/i18n";
  * LoadSummaryTriggerType
  */
 export interface LoadSummaryTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 export type OrganizationSummaryStatusType =

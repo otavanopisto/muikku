@@ -1,6 +1,6 @@
 import actions, { hideNotification } from "../../base/notifications";
 import {
-  AnyActionType,
+  AppThunkAction,
   AnyActionTypeDispatch,
   SpecificActionType,
 } from "~/actions";
@@ -182,14 +182,14 @@ export type HOPS_UPDATE_EDITING = SpecificActionType<
  * UpdateHopsEditingTriggerType
  */
 export interface UpdateHopsEditingTriggerType {
-  (data: { updates: Partial<HopsEditingState> }): AnyActionType;
+  (data: { updates: Partial<HopsEditingState> }): AppThunkAction;
 }
 
 /**
  * StartEditingTriggerType
  */
 export interface StartEditingTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -200,14 +200,14 @@ export interface SaveHopsTriggerType {
     details: string;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * CancelEditingTriggerType
  */
 export interface CancelEditingTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -218,14 +218,14 @@ export interface LoadMatriculationDataTriggerType {
     userIdentifier?: string;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * resetMatriculationDataTriggerType
  */
 export interface ResetHopsDataTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -236,7 +236,7 @@ export interface VerifyMatriculationExamTriggerType {
     examId: number;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -247,7 +247,7 @@ export interface LoadMatriculationExamHistoryTriggerType {
     examId: number;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -258,7 +258,7 @@ export interface SaveMatriculationPlanTriggerType {
     plan: MatriculationPlan;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -269,21 +269,21 @@ export interface UpdateMatriculationExaminationTriggerType {
     examId: number;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadStudentHopsFormTriggerType
  */
 export interface LoadStudentHopsFormTriggerType {
-  (data: { userIdentifier?: string }): AnyActionType;
+  (data: { userIdentifier?: string }): AppThunkAction;
 }
 
 /**
  * Trigger type for loading HOPS form history
  */
 export interface LoadHopsFormHistoryTriggerType {
-  (data: { userIdentifier?: string }): AnyActionType;
+  (data: { userIdentifier?: string }): AppThunkAction;
 }
 
 /**
@@ -296,7 +296,7 @@ export interface UpdateHopsFormHistoryEntryTriggerType {
     updatedEntry: Partial<HopsHistoryEntry>;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -308,49 +308,49 @@ export interface UpdateMatriculationPlanTriggerType {
     studentIdentifier: string;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * Load more HOPS form history data trigger type
  */
 export interface LoadMoreHopsFormHistoryTriggerType {
-  (data: { userIdentifier?: string }): AnyActionType;
+  (data: { userIdentifier?: string }): AppThunkAction;
 }
 
 /**
  * Save HOPS form trigger type
  */
 export interface SaveHopsFormTriggerType {
-  (data: { details: string; editedFields: string[] }): AnyActionType;
+  (data: { details: string; editedFields: string[] }): AppThunkAction;
 }
 
 /**
  * UpdateHopsLockedTriggerType
  */
 export interface UpdateHopsLockedTriggerType {
-  (data: { locked: HopsLocked }): AnyActionType;
+  (data: { locked: HopsLocked }): AppThunkAction;
 }
 
 /**
  * UpdateHopsFormTriggerType
  */
 export interface UpdateHopsFormTriggerType {
-  (data: { form: HopsForm }): AnyActionType;
+  (data: { form: HopsForm }): AppThunkAction;
 }
 
 /**
  * UpdateHopsHistoryTriggerType
  */
 export interface UpdateHopsHistoryTriggerType {
-  (data: { history: HopsHistoryEntry }): AnyActionType;
+  (data: { history: HopsHistoryEntry }): AppThunkAction;
 }
 
 /**
  * InitializeHopsLockedTriggerType
  */
 export interface InitializeHopsTriggerType {
-  (data: { userIdentifier: string }): AnyActionType;
+  (data: { userIdentifier: string }): AppThunkAction;
 }
 
 /**

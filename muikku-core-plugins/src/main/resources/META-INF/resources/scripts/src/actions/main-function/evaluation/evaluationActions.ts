@@ -1,4 +1,4 @@
-import { SpecificActionType, AnyActionType } from "../../index";
+import { SpecificActionType, AppThunkAction } from "../../index";
 import notificationActions, {
   displayNotification,
 } from "~/actions/base/notifications";
@@ -246,49 +246,49 @@ export type EVALUATION_JOURNAL_COMMENTS_DELETE = SpecificActionType<
  * LoadEvaluationSystem
  */
 export interface LoadEvaluationSystem {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadEvaluationAssessmentRequest
  */
 export interface LoadEvaluationAssessmentRequest {
-  (useFromWorkspace?: boolean): AnyActionType;
+  (useFromWorkspace?: boolean): AppThunkAction;
 }
 
 /**
  * LoadEvaluationWorkspaces
  */
 export interface LoadEvaluationWorkspaces {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadEvaluationImportantAssessment
  */
 export interface LoadEvaluationImportantAssessment {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadEvaluationUnimportantAssessment
  */
 export interface LoadEvaluationUnimportantAssessment {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadEvaluationSortFunction
  */
 export interface LoadEvaluationSortFunction {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadEvaluationCurrentStudentAssigments
  */
 export interface LoadEvaluationCurrentStudentAssigments {
-  (data: { workspaceId: number }): AnyActionType;
+  (data: { workspaceId: number }): AppThunkAction;
 }
 
 /**
@@ -299,7 +299,7 @@ export interface UpdateCurrentStudentEvaluationCompositeRepliesData {
     workspaceId: number;
     userEntityId: number;
     workspaceMaterialId: number;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -310,28 +310,28 @@ export interface LoadEvaluationAssessmentEvent {
     assessment: EvaluationAssessmentRequest;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadEvaluationAssignment
  */
 export interface LoadEvaluationAssignment {
-  (data: { assessment: EvaluationAssessmentRequest }): AnyActionType;
+  (data: { assessment: EvaluationAssessmentRequest }): AppThunkAction;
 }
 
 /**
  * LoadEvaluationJournalEvents
  */
 export interface LoadEvaluationJournalEvents {
-  (data: { assessment: EvaluationAssessmentRequest }): AnyActionType;
+  (data: { assessment: EvaluationAssessmentRequest }): AppThunkAction;
 }
 
 /**
  * LoadBilledPrice
  */
 export interface LoadBilledPrice {
-  (data: { workspaceEntityId: number }): AnyActionType;
+  (data: { workspaceEntityId: number }): AppThunkAction;
 }
 
 /**
@@ -343,14 +343,14 @@ export interface LoadEvaluationCompositeReplies {
     workspaceId: number;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadBasePrice
  */
 export interface LoadBasePrice {
-  (data: { workspaceEntityId: number }): AnyActionType;
+  (data: { workspaceEntityId: number }): AppThunkAction;
 }
 
 // Other
@@ -358,7 +358,7 @@ export interface LoadBasePrice {
  * UpdateEvaluationSortFunction
  */
 export interface UpdateEvaluationSortFunction {
-  (data: { sortFunction: EvaluationSort }): AnyActionType;
+  (data: { sortFunction: EvaluationSort }): AppThunkAction;
 }
 
 /**
@@ -373,14 +373,14 @@ export interface UpdateWorkspaceEvaluation {
     billingPrice?: string;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * UpdateEvaluationEvent
  */
 export interface UpdateEvaluationEvent {
-  (data: UpdateBilledPriceRequest): AnyActionType;
+  (data: UpdateBilledPriceRequest): AppThunkAction;
 }
 
 /**
@@ -394,7 +394,7 @@ export interface UpdateWorkspaceSupplementation {
       | UpdateWorkspaceUserSupplementationRequestRequest;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -406,7 +406,7 @@ export interface RemoveWorkspaceEvent {
     eventType: EvaluationEventType;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -416,7 +416,7 @@ export interface LockAssessmentRequest {
   (data: {
     assessment: EvaluationAssessmentRequest;
     locked: boolean;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -427,7 +427,7 @@ export interface DeleteAssessmentRequest {
     workspaceUserEntityId: number;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -438,7 +438,7 @@ export interface DeleteInterimEvaluationRequest {
     interimEvaluatiomRequestId: number;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -450,7 +450,7 @@ export interface DeleteSupplementationRequest {
     supplementationRequestId: number;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -462,42 +462,42 @@ export interface ArchiveStudent {
     workspaceUserEntityId: number;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * SetEvaluationSelectedWorkspace
  */
 export interface SetEvaluationSelectedWorkspace {
-  (data: { workspaceId?: number }): AnyActionType;
+  (data: { workspaceId?: number }): AppThunkAction;
 }
 
 /**
  * SetEvaluationSortFunction
  */
 export interface SetEvaluationSortFunction {
-  (data: { sortFunction: string }): AnyActionType;
+  (data: { sortFunction: string }): AppThunkAction;
 }
 
 /**
  * SetEvaluationFilters
  */
 export interface SetEvaluationFilters {
-  (data: { evaluationFilters: EvaluationFilters }): AnyActionType;
+  (data: { evaluationFilters: EvaluationFilters }): AppThunkAction;
 }
 
 /**
  * UpdateEvaluationSearch
  */
 export interface UpdateEvaluationSearch {
-  (data: { searchString: string }): AnyActionType;
+  (data: { searchString: string }): AppThunkAction;
 }
 
 /**
  * UpdateEvaluationSelectedAssessment
  */
 export interface UpdateEvaluationSelectedAssessment {
-  (data: { assessment: EvaluationAssessmentRequest }): AnyActionType;
+  (data: { assessment: EvaluationAssessmentRequest }): AppThunkAction;
 }
 
 /**
@@ -507,21 +507,21 @@ export interface UpdateImportance {
   (data: {
     importantAssessments: EvaluationImportance;
     unimportantAssessments: EvaluationImportance;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * UpdateOpenedAssignmentEvaluationId
  */
 export interface UpdateOpenedAssignmentEvaluationId {
-  (data: { assignmentId?: number }): AnyActionType;
+  (data: { assignmentId?: number }): AppThunkAction;
 }
 
 /**
  * UpdateNeedsReloadEvaluationRequests
  */
 export interface UpdateNeedsReloadEvaluationRequests {
-  (data: { value: boolean }): AnyActionType;
+  (data: { value: boolean }): AppThunkAction;
 }
 
 /**
@@ -533,7 +533,7 @@ export interface LoadEvaluationJournalFeedbackFromServerTriggerType {
     workspaceEntityId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -546,7 +546,7 @@ export interface CreateOrUpdateEvaluationJournalFeedbackTriggerType {
     feedback: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -559,14 +559,14 @@ export interface DeleteEvaluationJournalFeedbackTriggerType {
     feedbackId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadWorkspaceJournalCommentsFromServerTriggerType
  */
 export interface LoadEvaluationJournalCommentsFromServerTriggerType {
-  (data: { workspaceId: number; journalEntryId: number }): AnyActionType;
+  (data: { workspaceId: number; journalEntryId: number }): AppThunkAction;
 }
 
 /**
@@ -579,7 +579,7 @@ export interface CreateEvaluationJournalCommentTriggerType {
     workspaceEntityId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -592,7 +592,7 @@ export interface UpdateEvaluationJournalCommentTriggerType {
     workspaceEntityId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -605,7 +605,7 @@ export interface DeleteEvaluationJournalCommentTriggerType {
     workspaceEntityId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 // Actions
 

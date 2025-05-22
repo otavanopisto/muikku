@@ -11,6 +11,7 @@ import { loadNotes } from "~/actions/main-function/guider";
 import { useTranslation } from "react-i18next";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { breakpoints } from "~/util/breakpoints";
+import { useAppDispatch } from "~/reducers/configureStore";
 
 /**
  * Note NavigationAside
@@ -19,7 +20,7 @@ const NoteNavigationAside = () => {
   // These are required to make the types work in the context
   const { view, filters, dispatch, setView } = React.useContext(GuiderContext);
   const { status } = useSelector((state: StateType) => state);
-  const actionDispatch = useDispatch();
+  const actionDispatch = useAppDispatch();
   const { t } = useTranslation(["flags"]);
   const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
   /**

@@ -356,6 +356,7 @@ import {
   HOPS_UPDATE_INITIALIZE_STATUS,
 } from "./main-function/hops/";
 import { RootState } from "~/reducers/configureStore";
+import { ThunkAction } from "redux-thunk";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD
@@ -634,6 +635,19 @@ export type ActionType =
   | REMOVE_NOTE
   | UPDATE_NOTE_RECIPIENT;
 
-export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;
+export type AnyActionType = ActionType | AppThunkAction;
 
 export type AnyActionTypeDispatch = (arg: AnyActionType) => any;
+
+export type AppThunkActionNonPromise<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  ActionType
+>;
+
+export type AppThunkActionPromise<ReturnType = void> = AppThunkActionNonPromise<
+  Promise<ReturnType>
+>;
+
+export type AppThunkAction = AppThunkActionNonPromise | AppThunkActionPromise;

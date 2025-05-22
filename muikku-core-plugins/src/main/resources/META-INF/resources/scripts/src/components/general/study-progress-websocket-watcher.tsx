@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useDispatch } from "react-redux";
+import { AnyActionTypeDispatch } from "~/actions";
 import {
   guiderStudyProgressSuggestedNextWebsocket,
   guiderStudyProgressWorkspaceSignupWebsocket,
@@ -67,6 +69,7 @@ const StudyProgressWebsocketWatcher = (
   props: StudyProgressWebsocketWatcherProps
 ) => {
   const dispatch = useAppDispatch();
+  const dispatch2 = useDispatch() as AnyActionTypeDispatch;
 
   const websocketState = useAppSelector((state: RootState) => state.websocket);
 
@@ -77,7 +80,9 @@ const StudyProgressWebsocketWatcher = (
     "hops:workspace-suggested",
     [
       (data) =>
-        dispatch(recordsSummarySuggestedNextWebsocket({ websocketData: data })),
+        dispatch2(
+          recordsSummarySuggestedNextWebsocket({ websocketData: data })
+        ),
       (data) =>
         dispatch(
           guiderStudyProgressSuggestedNextWebsocket({ websocketData: data })

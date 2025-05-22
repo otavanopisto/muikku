@@ -1,5 +1,5 @@
 import {
-  AnyActionType,
+  AppThunkAction,
   AnyActionTypeDispatch,
   SpecificActionType,
 } from "~/actions";
@@ -51,35 +51,35 @@ export type UPDATE_STATUS_WORKSPACE_ERROR = SpecificActionType<
  * LoadStatusType
  */
 export interface LoadStatusType {
-  (whoAmIReadyCb: () => void): AnyActionType;
+  (whoAmIReadyCb: () => void): AppThunkAction;
 }
 
 /**
  * LoadWorkspaceStatusInfoType
  */
 export interface LoadWorkspaceStatusInfoType {
-  (readyCb: () => void): AnyActionType;
+  (readyCb: () => void): AppThunkAction;
 }
 
 /**
  * LoadWorkspaceStatusInfoType
  */
 export interface LoadEnviromentalForumAreaPermissionsType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadChatSettingsType
  */
 export interface LoadStatusChatSettingsType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * UpdateStatusChatSettingsType
  */
 export interface UpdateStatusChatSettingsType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**

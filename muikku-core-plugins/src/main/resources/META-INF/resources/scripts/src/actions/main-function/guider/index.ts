@@ -1,5 +1,5 @@
 import {
-  AnyActionType,
+  AppThunkAction,
   AnyActionTypeDispatch,
   SpecificActionType,
 } from "~/actions";
@@ -211,32 +211,32 @@ export type DELETE_CONTACT_EVENT_COMMENT = SpecificActionType<
  * LoadStudentsTriggerType action creator type
  */
 export interface LoadStudentsTriggerType {
-  (filters: GuiderActiveFiltersType): AnyActionType;
+  (filters: GuiderActiveFiltersType): AppThunkAction;
 }
 /**
  * LoadMoreStudentsTriggerType action creator type
  */
 export interface LoadMoreStudentsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 /**
  * LoadStudentTriggerType action creator type
  */
 export interface LoadStudentTriggerType {
-  (id: string, forceLoad?: boolean): AnyActionType;
+  (id: string, forceLoad?: boolean): AppThunkAction;
 }
 
 /**
  * LoadStudentAccessTriggerType action creator type
  */
 export interface LoadStudentAccessTriggerType {
-  (id: number, forceLoad?: boolean): AnyActionType;
+  (id: number, forceLoad?: boolean): AppThunkAction;
 }
 /**
  * action creator type
  */
 export interface LoadStudentDataTriggerType {
-  (id: number, forceLoad?: boolean): AnyActionType;
+  (id: number, forceLoad?: boolean): AppThunkAction;
 }
 
 /**
@@ -248,7 +248,7 @@ export interface LoadContactLogsTriggerType {
     resultsPerPage: number,
     page: number,
     forceLoad?: boolean
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 /**
  * action creator type
@@ -263,7 +263,7 @@ export interface CreateContactLogEventTriggerType {
     },
     onSuccess?: () => void,
     onFail?: () => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
@@ -275,7 +275,7 @@ export interface DeleteContactLogEventTriggerType {
     contactLogEntryId: number,
     onSuccess?: () => void,
     onFail?: () => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 /**
  * EditContactLogEventTriggerType action creator type
@@ -292,7 +292,7 @@ export interface EditContactLogEventTriggerType {
     },
     onSuccess?: () => void,
     onFail?: () => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 /**
  * CreateContactLogEventCommentTriggerType action creator type
@@ -307,7 +307,7 @@ export interface CreateContactLogEventCommentTriggerType {
     },
     onSuccess?: () => void,
     onFail?: () => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 /**
  * DeleteContactLogEventCommentTriggerType action creator type
@@ -319,7 +319,7 @@ export interface DeleteContactLogEventCommentTriggerType {
     commentId: number,
     onSuccess?: () => void,
     onFail?: () => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 /**
  * EditContactLogEventCommentTriggerType action creator type
@@ -336,83 +336,83 @@ export interface EditContactLogEventCommentTriggerType {
     },
     onSuccess?: () => void,
     onFail?: () => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
  * AddToGuiderSelectedStudentsTriggerType action creator type
  */
 export interface AddToGuiderSelectedStudentsTriggerType {
-  (student: FlaggedStudent): AnyActionType;
+  (student: FlaggedStudent): AppThunkAction;
 }
 
 /**
  * RemoveFromGuiderSelectedStudentsTriggerType action creator type
  */
 export interface RemoveFromGuiderSelectedStudentsTriggerType {
-  (student: FlaggedStudent): AnyActionType;
+  (student: FlaggedStudent): AppThunkAction;
 }
 
 /**
  * AddGuiderLabelToCurrentUserTriggerType action creator type
  */
 export interface AddGuiderLabelToCurrentUserTriggerType {
-  (label: UserFlag): AnyActionType;
+  (label: UserFlag): AppThunkAction;
 }
 
 /**
  * RemoveGuiderLabelFromCurrentUserTriggerType action creator type
  */
 export interface RemoveGuiderLabelFromCurrentUserTriggerType {
-  (label: UserFlag): AnyActionType;
+  (label: UserFlag): AppThunkAction;
 }
 /**
  * AddGuiderLabelToSelectedUsersTriggerType action creator type
  */
 export interface AddGuiderLabelToSelectedUsersTriggerType {
-  (label: UserFlag): AnyActionType;
+  (label: UserFlag): AppThunkAction;
 }
 
 /**
  * RemoveGuiderLabelFromSelectedUsersTriggerType action creator type
  */
 export interface RemoveGuiderLabelFromSelectedUsersTriggerType {
-  (label: UserFlag): AnyActionType;
+  (label: UserFlag): AppThunkAction;
 }
 
 /**
  * AddFileToCurrentStudentTriggerType action creator type
  */
 export interface AddFileToCurrentStudentTriggerType {
-  (file: UserFileType): AnyActionType;
+  (file: UserFileType): AppThunkAction;
 }
 
 /**
  * RemoveFileFromCurrentStudentTriggerType action creator type
  */
 export interface RemoveFileFromCurrentStudentTriggerType {
-  (file: UserFileType): AnyActionType;
+  (file: UserFileType): AppThunkAction;
 }
 
 /**
  * UpdateLabelFiltersTriggerType action creator type
  */
 export interface UpdateLabelFiltersTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * UpdateWorkspaceFiltersTriggerType action creator type
  */
 export interface UpdateWorkspaceFiltersTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * CreateGuiderFilterLabelTriggerType action creator type
  */
 export interface CreateGuiderFilterLabelTriggerType {
-  (name: string): AnyActionType;
+  (name: string): AppThunkAction;
 }
 
 /**
@@ -426,7 +426,7 @@ export interface UpdateGuiderFilterLabelTriggerType {
     color: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -437,56 +437,56 @@ export interface RemoveGuiderFilterLabelTriggerType {
     label: UserFlag;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * UpdateAvailablePurchaseProductsTriggerType action creator type
  */
 export interface UpdateAvailablePurchaseProductsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * DoOrderForCurrentStudentTriggerType action creator type
  */
 export interface DoOrderForCurrentStudentTriggerType {
-  (order: CeeposPurchaseProduct): AnyActionType;
+  (order: CeeposPurchaseProduct): AppThunkAction;
 }
 
 /**
  * DeleteOrderFromCurrentStudentTriggerType action creator type
  */
 export interface DeleteOrderFromCurrentStudentTriggerType {
-  (order: CeeposOrder): AnyActionType;
+  (order: CeeposOrder): AppThunkAction;
 }
 
 /**
  * CompleteOrderFromCurrentStudentTriggerType action creator type
  */
 export interface CompleteOrderFromCurrentStudentTriggerType {
-  (order: CeeposOrder): AnyActionType;
+  (order: CeeposOrder): AppThunkAction;
 }
 
 /**
  * ToggleAllStudentsTriggerType
  */
 export interface ToggleAllStudentsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadNotesTriggerType
  */
 export interface LoadNotesTriggerType {
-  (userId: number, listArchived: boolean): AnyActionType;
+  (userId: number, listArchived: boolean): AppThunkAction;
 }
 
 /**
  * CreateNoteTriggerType
  */
 export interface CreateNoteTriggerType {
-  (request: CreateNoteRequest, success?: () => void): AnyActionType;
+  (request: CreateNoteRequest, success?: () => void): AppThunkAction;
 }
 
 /**
@@ -497,7 +497,7 @@ export interface UpdateNoteTriggerType {
     noteId: number,
     request: UpdateNoteRequest,
     success?: () => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
@@ -509,21 +509,21 @@ export interface UpdateNoteRecipientTriggerType {
     recipientId: number,
     request: UpdateNoteReceiverRequest,
     success?: () => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
  * CreateNoteTriggerType
  */
 export interface ArchiveNoteTriggerType {
-  (noteId: number, success?: () => void): AnyActionType;
+  (noteId: number, success?: () => void): AppThunkAction;
 }
 
 /**
  *  Interface for the suggested next websocket thunk action creator
  */
 export interface GuiderStudyProgressSuggestedNextWebsocketType {
-  (data: { websocketData: StudentStudyActivity }): AnyActionType;
+  (data: { websocketData: StudentStudyActivity }): AppThunkAction;
 }
 
 /**
@@ -532,14 +532,14 @@ export interface GuiderStudyProgressSuggestedNextWebsocketType {
 export interface GuiderStudyProgressWorkspaceSignupWebsocketType {
   (data: {
     websocketData: StudentStudyActivity | StudentStudyActivity[];
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * Interface for the alternative study options websocket thunk action creator
  */
 export interface GuiderStudyProgressAlternativeStudyOptionsWebsocketType {
-  (data: { websocketData: string[] }): AnyActionType;
+  (data: { websocketData: string[] }): AppThunkAction;
 }
 
 /**
@@ -548,9 +548,11 @@ export interface GuiderStudyProgressAlternativeStudyOptionsWebsocketType {
  */
 const toggleAllStudents: ToggleAllStudentsTriggerType =
   function toggleAllStudents() {
-    return {
-      type: "TOGGLE_ALL_STUDENTS",
-      payload: null,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "TOGGLE_ALL_STUDENTS",
+        payload: null,
+      });
     };
   };
 
@@ -561,9 +563,11 @@ const toggleAllStudents: ToggleAllStudentsTriggerType =
  */
 const addFileToCurrentStudent: AddFileToCurrentStudentTriggerType =
   function addFileToCurrentStudent(file) {
-    return {
-      type: "ADD_FILE_TO_CURRENT_STUDENT",
-      payload: file,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "ADD_FILE_TO_CURRENT_STUDENT",
+        payload: file,
+      });
     };
   };
 
@@ -894,9 +898,11 @@ const loadMoreStudents: LoadMoreStudentsTriggerType =
  */
 const addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
   function addToGuiderSelectedStudents(student) {
-    return {
-      type: "ADD_TO_GUIDER_SELECTED_STUDENTS",
-      payload: student,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "ADD_TO_GUIDER_SELECTED_STUDENTS",
+        payload: student,
+      });
     };
   };
 
@@ -907,9 +913,11 @@ const addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType =
  */
 const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType =
   function removeFromGuiderSelectedStudents(student) {
-    return {
-      type: "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
-      payload: student,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
+        payload: student,
+      });
     };
   };
 

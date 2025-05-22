@@ -1,5 +1,5 @@
 import actions from "../base/notifications";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import {
   CeeposStateStatusType,
   CeeposPayStatusCodeType,
@@ -12,7 +12,7 @@ import { CeeposOrder } from "~/generated/client";
  * LoadCeeposPurchaseTriggerType
  */
 export interface LoadCeeposPurchaseTriggerType {
-  (orderId: number): AnyActionType;
+  (orderId: number): AppThunkAction;
 }
 
 export type UPDATE_CEEPOS_PURCHASE = SpecificActionType<

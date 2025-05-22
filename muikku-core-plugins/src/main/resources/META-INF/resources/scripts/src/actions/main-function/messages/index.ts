@@ -1,4 +1,4 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import {
   MessagesStateType,
   MessagesStatePatch,
@@ -28,7 +28,7 @@ import {
  * UpdateMessageThreadsCountTriggerType
  */
 export interface UpdateMessageThreadsCountTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 export type TOGGLE_ALL_MESSAGE_ITEMS = SpecificActionType<
@@ -190,7 +190,7 @@ const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
  * LoadLastMessageThreadsFromSeverTriggerType
  */
 export interface LoadLastMessageThreadsFromSeverTriggerType {
-  (maxResults: number): AnyActionType;
+  (maxResults: number): AppThunkAction;
 }
 
 /**
@@ -238,70 +238,70 @@ export interface SendMessageTriggerType {
     text: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadMessageThreadsTriggerType
  */
 export interface LoadMessageThreadsTriggerType {
-  (location: string, query: string): AnyActionType;
+  (location: string, query: string): AppThunkAction;
 }
 
 /**
  * UpdateMessagesSelectedThreads
  */
 export interface UpdateMessagesSelectedThreads {
-  (threads: MessageThread[]): AnyActionType;
+  (threads: MessageThread[]): AppThunkAction;
 }
 
 /**
  * AddToMessagesSelectedThreadsTriggerType
  */
 export interface AddToMessagesSelectedThreadsTriggerType {
-  (thread: MessageThread): AnyActionType;
+  (thread: MessageThread): AppThunkAction;
 }
 
 /**
  * LoadMoreMessageThreadsTriggerType
  */
 export interface LoadMoreMessageThreadsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * RemoveFromMessagesSelectedThreadsTriggerType
  */
 export interface RemoveFromMessagesSelectedThreadsTriggerType {
-  (thread: MessageThread): AnyActionType;
+  (thread: MessageThread): AppThunkAction;
 }
 
 /**
  * AddLabelToSelectedMessageThreadsTriggerType
  */
 export interface AddLabelToSelectedMessageThreadsTriggerType {
-  (label: MessageThreadLabel): AnyActionType;
+  (label: MessageThreadLabel): AppThunkAction;
 }
 
 /**
  * RemoveLabelFromSelectedMessageThreadsTriggerType
  */
 export interface RemoveLabelFromSelectedMessageThreadsTriggerType {
-  (label: MessageThreadLabel): AnyActionType;
+  (label: MessageThreadLabel): AppThunkAction;
 }
 
 /**
  * AddLabelToCurrentMessageThreadTriggerType
  */
 export interface AddLabelToCurrentMessageThreadTriggerType {
-  (label: MessageThreadLabel): AnyActionType;
+  (label: MessageThreadLabel): AppThunkAction;
 }
 
 /**
  * RemoveLabelFromCurrentMessageThreadTriggerType
  */
 export interface RemoveLabelFromCurrentMessageThreadTriggerType {
-  (label: MessageThreadLabel): AnyActionType;
+  (label: MessageThreadLabel): AppThunkAction;
 }
 
 /**
@@ -313,77 +313,77 @@ export interface ToggleMessageThreadReadStatusTriggerType {
     markAsStatus?: boolean,
     dontLockToolbar?: boolean,
     callback?: () => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
  * ToggleMessageThreadsReadStatusTriggerType
  */
 export interface ToggleMessageThreadsReadStatusTriggerType {
-  (threads: MessageThread[]): AnyActionType;
+  (threads: MessageThread[]): AppThunkAction;
 }
 
 /**
  * DeleteSelectedMessageThreadsTriggerType
  */
 export interface DeleteSelectedMessageThreadsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * RestoreSelectedMessageThreadsTriggerType
  */
 export interface RestoreSelectedMessageThreadsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * DeleteCurrentMessageThreadTriggerType
  */
 export interface DeleteCurrentMessageThreadTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * RestoreCurrentMessageThreadTriggerType
  */
 export interface RestoreCurrentMessageThreadTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadMessageThreadTriggerType
  */
 export interface LoadMessageThreadTriggerType {
-  (location: string, messageId: number): AnyActionType;
+  (location: string, messageId: number): AppThunkAction;
 }
 
 /**
  * LoadNewlyReceivedMessageTriggerType
  */
 export interface LoadNewlyReceivedMessageTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadSignatureTriggerType
  */
 export interface LoadSignatureTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * UpdateSignatureTriggerType
  */
 export interface UpdateSignatureTriggerType {
-  (newSignature: string): AnyActionType;
+  (newSignature: string): AppThunkAction;
 }
 
 /**
  * ToggleSelectAllMessageThreadsTriggerType
  */
 export interface ToggleSelectAllMessageThreadsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /////////////////// ACTUAL DEFINITIONS
@@ -392,9 +392,11 @@ export interface ToggleSelectAllMessageThreadsTriggerType {
  */
 const toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType =
   function toggleAllMessageItems() {
-    return {
-      type: "TOGGLE_ALL_MESSAGE_ITEMS",
-      payload: null,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "TOGGLE_ALL_MESSAGE_ITEMS",
+        payload: null,
+      });
     };
   };
 
@@ -621,9 +623,11 @@ const loadMessageThreads: LoadMessageThreadsTriggerType =
  */
 const updateMessagesSelectedThreads: UpdateMessagesSelectedThreads =
   function updateMessagesSelectedThreads(threads) {
-    return {
-      type: "UPDATE_SELECTED_MESSAGE_THREADS",
-      payload: threads,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "UPDATE_SELECTED_MESSAGE_THREADS",
+        payload: threads,
+      });
     };
   };
 
@@ -633,9 +637,11 @@ const updateMessagesSelectedThreads: UpdateMessagesSelectedThreads =
  */
 const addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType =
   function addToMessagesSelectedThreads(thread) {
-    return {
-      type: "ADD_TO_MESSAGES_SELECTED_THREADS",
-      payload: thread,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "ADD_TO_MESSAGES_SELECTED_THREADS",
+        payload: thread,
+      });
     };
   };
 
@@ -645,9 +651,11 @@ const addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType =
  */
 const removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType =
   function removeFromMessagesSelectedThreads(thread) {
-    return {
-      type: "REMOVE_FROM_MESSAGES_SELECTED_THREADS",
-      payload: thread,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "REMOVE_FROM_MESSAGES_SELECTED_THREADS",
+        payload: thread,
+      });
     };
   };
 
@@ -1377,14 +1385,14 @@ const updateSignature: UpdateSignatureTriggerType = function updateSignature(
  * LoadMessagesNavigationLabelsTriggerType
  */
 export interface LoadMessagesNavigationLabelsTriggerType {
-  (callback: () => void): AnyActionType;
+  (callback: () => void): AppThunkAction;
 }
 
 /**
  * AddMessagesNavigationLabelTriggerType
  */
 export interface AddMessagesNavigationLabelTriggerType {
-  (name: string): AnyActionType;
+  (name: string): AppThunkAction;
 }
 
 /**
@@ -1397,7 +1405,7 @@ export interface UpdateMessagesNavigationLabelTriggerType {
     newColor: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1408,7 +1416,7 @@ export interface RemoveMessagesNavigationLabelTriggerType {
     label: MessagesNavigationItem;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1425,7 +1433,7 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
 
         dispatch({
           type: "UPDATE_MESSAGES_NAVIGATION_LABELS",
-          payload: labels.map((label) => ({
+          payload: labels.map<MessagesNavigationItem>((label) => ({
             location: "label-" + label.id,
             id: label.id,
             type: "label",

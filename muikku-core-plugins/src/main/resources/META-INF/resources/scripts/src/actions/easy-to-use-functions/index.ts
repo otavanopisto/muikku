@@ -1,4 +1,4 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import { EasyToUseToolType } from "~/reducers/easy-to-use-functions";
 
 export type SET_ACTIVE_EASY_TO_USE_TOOL = SpecificActionType<
@@ -10,14 +10,14 @@ export type SET_ACTIVE_EASY_TO_USE_TOOL = SpecificActionType<
  * OpenReadingRuler
  */
 export interface OpenReadingRuler {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * CloseReadingRuler
  */
 export interface CloseReadingRuler {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**

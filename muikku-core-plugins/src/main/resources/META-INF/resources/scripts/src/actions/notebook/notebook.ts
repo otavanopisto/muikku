@@ -1,4 +1,4 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import {
   NoteDefaultLocation,
   ReducerStateType,
@@ -79,14 +79,14 @@ export type NOTEBOOK_UPDATE_DEFAULT_POSITION = SpecificActionType<
  * LoadNotebookEntries
  */
 export interface LoadNotebookEntries {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * UpdateNotebookEntriesOrder
  */
 export interface UpdateNotebookEntriesOrder {
-  (dragIndex: number, hoverIndex: number, dropped: boolean): AnyActionType;
+  (dragIndex: number, hoverIndex: number, dropped: boolean): AppThunkAction;
 }
 
 /**
@@ -99,7 +99,7 @@ export interface SaveNewNotebookEntry {
     defaultPosition?: NoteDefaultLocation;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -110,7 +110,7 @@ export interface UpdateEditNotebookEntry {
     editedEntry: WorkspaceNote;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -121,7 +121,7 @@ export interface DeleteNotebookEntry {
     workspaceNoteId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -134,7 +134,7 @@ export interface ToggleNotebookEditor {
     cutContent?: string;
     notePosition?: number;
     noteEditorSelectPosition?: boolean;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -145,28 +145,28 @@ export interface CreateNewFromScratch {
     workspaceEntityId?: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * UpdateSelectedPosition
  */
 export interface UpdateSelectedNotePosition {
-  (data: number): AnyActionType;
+  (data: number): AppThunkAction;
 }
 
 /**
  * CreateNewFromCutContent
  */
 export interface CreateNewFromCutContent {
-  (data: { cutContent: string }): AnyActionType;
+  (data: { cutContent: string }): AppThunkAction;
 }
 
 /**
  * LoadNotebookDefaultPosition
  */
 export interface LoadNotebookDefaultPosition {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**

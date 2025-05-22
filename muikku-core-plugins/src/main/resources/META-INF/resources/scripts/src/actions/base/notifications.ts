@@ -1,4 +1,4 @@
-import { SpecificActionType, AnyActionType } from "~/actions";
+import { SpecificActionType, AppThunkAction } from "~/actions";
 import {
   NotificationSeverityType,
   NotificationType,
@@ -32,28 +32,28 @@ export interface DisplayNotificationTriggerType {
     severity: NotificationSeverityType,
     timeout?: number,
     customId?: string | number
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
  * HideNotificationTriggerType
  */
 export interface HideNotificationTriggerType {
-  (notification: NotificationType): HIDE_NOTIFICATION;
+  (notification: NotificationType): AppThunkAction;
 }
 
 /**
  * OpenNotificationDialogTrigger
  */
 export interface OpenNotificationDialogTrigger {
-  (message: string): OPEN_NOTIFICATION_DIALOG;
+  (message: string): AppThunkAction;
 }
 
 /**
  * CloseNotificationDialogTrigger
  */
 export interface CloseNotificationDialogTrigger {
-  (): CLOSE_NOTIFICATION_DIALOG;
+  (): AppThunkAction;
 }
 
 const DEFAULT_TIMEOUT = 5000;
@@ -108,9 +108,11 @@ const displayNotification: DisplayNotificationTriggerType =
  */
 const hideNotification: HideNotificationTriggerType =
   function hideNotificationType(notification) {
-    return {
-      type: "HIDE_NOTIFICATION",
-      payload: notification,
+    return (dispatch) => {
+      dispatch({
+        type: "HIDE_NOTIFICATION",
+        payload: notification,
+      });
     };
   };
 
@@ -120,9 +122,11 @@ const hideNotification: HideNotificationTriggerType =
  */
 const openNotificationDialog: OpenNotificationDialogTrigger =
   function openNotificationDialog(message) {
-    return {
-      type: "OPEN_NOTIFICATION_DIALOG",
-      payload: message,
+    return (dispatch) => {
+      dispatch({
+        type: "OPEN_NOTIFICATION_DIALOG",
+        payload: message,
+      });
     };
   };
 
@@ -131,9 +135,11 @@ const openNotificationDialog: OpenNotificationDialogTrigger =
  */
 const closeNotificationDialog: CloseNotificationDialogTrigger =
   function closeNotificationDialog() {
-    return {
-      type: "CLOSE_NOTIFICATION_DIALOG",
-      payload: null,
+    return (dispatch) => {
+      dispatch({
+        type: "CLOSE_NOTIFICATION_DIALOG",
+        payload: null,
+      });
     };
   };
 

@@ -9,7 +9,7 @@ import {
   WorkspaceDataType,
   MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
-import { AnyActionType, SpecificActionType } from "../index";
+import { AppThunkAction, SpecificActionType } from "../index";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
@@ -123,7 +123,7 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
       fail?: () => void;
     },
     apiPath: ApiPath
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
@@ -140,7 +140,7 @@ export interface CreateWorkspaceMaterialAttachmentTriggerType {
       fail?: () => void;
     },
     updateUploadingValues?: (updatedValues: UploadingValue[]) => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
@@ -150,7 +150,7 @@ export interface RequestWorkspaceMaterialContentNodeAttachmentsTriggerType {
   (
     workspace: WorkspaceDataType,
     material: MaterialContentNodeWithIdAndLogic
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
@@ -167,7 +167,7 @@ export interface UpdateWorkspaceMaterialContentNodeTriggerType {
     success?: () => any;
     fail?: () => any;
     dontTriggerReducerActions?: boolean;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -178,21 +178,21 @@ export interface LoadWholeWorkspaceMaterialsTriggerType {
     workspaceId: number,
     includeHidden: boolean,
     callback?: (nodes: Array<MaterialContentNodeWithIdAndLogic>) => any
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
  * LoadWorkspaceCompositeMaterialReplies
  */
 export interface LoadWorkspaceCompositeMaterialReplies {
-  (id: number): AnyActionType;
+  (id: number): AppThunkAction;
 }
 
 /**
  * SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType
  */
 export interface SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType {
-  (id: number): AnyActionType;
+  (id: number): AppThunkAction;
 }
 
 /**
@@ -202,7 +202,7 @@ export interface SetWorkspaceMaterialEditorStateTriggerType {
   (
     newState: WorkspaceMaterialEditorType,
     loadCurrentDraftNodeValue?: boolean
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
@@ -215,14 +215,14 @@ export interface DeleteWorkspaceMaterialContentNodeTriggerType {
     removeAnswers?: boolean;
     success?: () => any;
     fail?: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * SetWholeWorkspaceMaterialsTriggerType
  */
 export interface SetWholeWorkspaceMaterialsTriggerType {
-  (materials: MaterialContentNodeWithIdAndLogic[]): AnyActionType;
+  (materials: MaterialContentNodeWithIdAndLogic[]): AppThunkAction;
 }
 
 /**
@@ -233,14 +233,14 @@ export interface LoadWholeWorkspaceHelpTriggerType {
     workspaceId: number,
     includeHidden: boolean,
     callback?: (nodes: Array<MaterialContentNodeWithIdAndLogic>) => any
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
  * UpdateMaterialShowExtraToolsTriggerType
  */
 export interface MaterialShowOrHideExtraToolsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -250,7 +250,7 @@ export interface MaterialShowOrHideExtraToolsTriggerType {
  */
 const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTriggerType =
   function createWorkspaceMaterialContentNode(data, apiPath) {
-    return async (dispatch: (arg: AnyActionType) => any, getState) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
       const materialsApi = MApi.getMaterialsApi();
 
@@ -408,7 +408,7 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
     data,
     updateUploadingValues?: (updatedValues: UploadingValue[]) => void
   ) {
-    return async (dispatch: (arg: AnyActionType) => any, getState) => {
+    return async (dispatch, getState) => {
       const materialsApi = MApi.getMaterialsApi();
       const workspaceApi = MApi.getWorkspaceApi();
 
@@ -552,7 +552,7 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
  */
 const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
-    return async (dispatch: (arg: AnyActionType) => any) => {
+    return async (dispatch) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -596,7 +596,7 @@ const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialCo
  */
 const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType =
   function updateWorkspaceMaterialContentNode(data) {
-    return async (dispatch: (arg: AnyActionType) => any, getState) => {
+    return async (dispatch, getState) => {
       const materialsApi = MApi.getMaterialsApi();
       const workspaceApi = MApi.getWorkspaceApi();
 
@@ -972,7 +972,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
  */
 const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
   function loadWholeWorkspaceMaterials(workspaceId, includeHidden, callback) {
-    return async (dispatch: (arg: AnyActionType) => any, getState) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -1011,7 +1011,7 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
  */
 const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialReplies =
   function loadWorkspaceCompositeMaterialReplies(id) {
-    return async (dispatch: (arg: AnyActionType) => any, getState) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -1061,9 +1061,11 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
  */
 const setCurrentWorkspaceMaterialsActiveNodeId: SetCurrentWorkspaceMaterialsActiveNodeIdTriggerType =
   function setCurrentWorkspaceMaterialsActiveNodeId(id) {
-    return {
-      type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID",
-      payload: id,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS_ACTIVE_NODE_ID",
+        payload: id,
+      });
     };
   };
 
@@ -1075,7 +1077,7 @@ const setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerTyp
   function setWorkspaceMaterialEditorState(
     newState: WorkspaceMaterialEditorType
   ) {
-    return async (dispatch: (arg: AnyActionType) => any) => {
+    return async (dispatch, getState) => {
       const currentNodeValue = newState.currentNodeValue;
       // TODO do mApi stuff
       const currentDraftNodeValueByStorage = localStorage.getItem(
@@ -1106,7 +1108,7 @@ const setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerTyp
  */
 const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTriggerType =
   function deleteWorkspaceMaterialContentNode(data) {
-    return async (dispatch: (arg: AnyActionType) => any, getState) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -1197,7 +1199,7 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
  */
 const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
   function loadWholeWorkspaceMaterials(workspaceId, includeHidden, callback) {
-    return async (dispatch: (arg: AnyActionType) => any, getState) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -1235,9 +1237,11 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
  */
 const setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType =
   function setWholeWorkspaceMaterials(materials) {
-    return {
-      type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
-      payload: materials,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
+        payload: materials,
+      });
     };
   };
 
@@ -1247,9 +1251,11 @@ const setWholeWorkspaceMaterials: SetWholeWorkspaceMaterialsTriggerType =
  */
 const setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType =
   function setWholeWorkspaceHelp(materials) {
-    return {
-      type: "UPDATE_WORKSPACES_SET_CURRENT_HELP",
-      payload: materials,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "UPDATE_WORKSPACES_SET_CURRENT_HELP",
+        payload: materials,
+      });
     };
   };
 
@@ -1258,9 +1264,11 @@ const setWholeWorkspaceHelp: SetWholeWorkspaceMaterialsTriggerType =
  */
 const materialShowOrHideExtraTools: MaterialShowOrHideExtraToolsTriggerType =
   function updateMaterialShowExtraTool() {
-    return {
-      type: "MATERIAL_UPDATE_SHOW_EXTRA_TOOLS",
-      payload: undefined,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "MATERIAL_UPDATE_SHOW_EXTRA_TOOLS",
+        payload: undefined,
+      });
     };
   };
 

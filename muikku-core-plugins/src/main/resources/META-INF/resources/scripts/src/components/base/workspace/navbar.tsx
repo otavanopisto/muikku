@@ -20,7 +20,7 @@ import {
   updateWorkspaceEditModeState,
 } from "~/actions/workspaces";
 import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import i18n from "~/locales/i18n";
 import {
@@ -28,6 +28,7 @@ import {
   WorkspaceAssessmentStateType,
 } from "~/generated/client";
 import { Link as RouterLink } from "react-router-dom";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ItemDataElement
@@ -491,7 +492,7 @@ function mapStateToProps(state: StateType) {
  *
  * @param dispatch dispatch
  */
-const mapDispatchToProps = (dispatch: Dispatch<Action<AnyActionType>>) =>
+const mapDispatchToProps = (dispatch: AppDispatch) =>
   bindActionCreators({ updateWorkspaceEditModeState }, dispatch);
 
 export default withTranslation(["workspace", "users", "common"])(

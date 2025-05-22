@@ -7,7 +7,7 @@ import HoverButton from "~/components/general/hover-button";
 import Button from "~/components/general/button";
 import Toolbar from "./application/toolbar";
 import NewEditAnnouncement from "../dialogs/new-edit-announcement";
-import { AnyActionType } from "~/actions";
+import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
@@ -82,7 +82,7 @@ class AnnouncerApplication extends React.Component<
  * @param dispatch dispatch
  * @returns object
  */
-const mapDispatchToProps = (dispatch: Dispatch<Action<AnyActionType>>) => ({});
+const mapDispatchToProps = (dispatch: AnyActionTypeDispatch) => ({});
 
 export default withTranslation()(
   connect(null, mapDispatchToProps)(AnnouncerApplication)

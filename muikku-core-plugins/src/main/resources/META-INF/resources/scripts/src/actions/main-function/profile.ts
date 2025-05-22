@@ -1,6 +1,6 @@
 import { promisifyNewConstructor } from "~/util/promisify";
 import actions from "../base/notifications";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import { UserChatSettingsType } from "~/reducers/user-index";
 import { resize } from "~/util/modifiers";
 import {
@@ -30,7 +30,7 @@ import i18n, { localize } from "~/locales/i18n";
  * LoadProfilePropertiesSetTriggerType
  */
 export interface LoadProfilePropertiesSetTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -42,35 +42,35 @@ export interface SaveProfilePropertyTriggerType {
     value: string;
     success: () => any;
     fail: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadProfileUsernameTriggerType
  */
 export interface LoadProfileUsernameTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadProfileAddressTriggerType
  */
 export interface LoadProfileAddressTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadProfilePurchasesTriggerType
  */
 export interface LoadProfilePurchasesTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadProfileAuthorizationsTriggerType
  */
 export interface LoadProfileAuthorizationsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -82,14 +82,14 @@ export interface UpdateProfileAuthorizationsTriggerType {
     updated: Partial<ProfileAuthorizations>;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadProfileStudentCardInfoTriggerType
  */
 export interface LoadProfileStudentCardInfoTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -104,14 +104,14 @@ export interface UpdateProfileAddressTriggerType {
     municipality: string;
     success: () => any;
     fail: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadProfileChatSettingsTriggerType
  */
 export interface LoadProfileChatSettingsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -123,7 +123,7 @@ export interface UpdateProfileChatSettingsTriggerType {
     nick?: string;
     success: () => any;
     fail: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -136,14 +136,14 @@ export interface UploadProfileImageTriggerType {
     file?: File;
     success: () => any;
     fail: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * DeleteProfileImageTriggerType
  */
 export interface DeleteProfileImageTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 export type SET_PROFILE_USER_PROPERTY = SpecificActionType<
@@ -158,21 +158,21 @@ export type SET_PROFILE_USER_PROPERTY = SpecificActionType<
  * SetProfileLocationTriggerType
  */
 export interface SetProfileLocationTriggerType {
-  (location: string): AnyActionType;
+  (location: string): AppThunkAction;
 }
 
 /**
  * LoadProfileWorklistTemplatesTriggerType
  */
 export interface LoadProfileWorklistTemplatesTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadProfileWorklistSectionsTriggerType
  */
 export interface LoadProfileWorklistSectionsTriggerType {
-  (cb?: (d: Array<WorklistSection>) => void): AnyActionType;
+  (cb?: (d: Array<WorklistSection>) => void): AppThunkAction;
 }
 
 /**
@@ -188,7 +188,7 @@ export interface InsertProfileWorklistItemTriggerType {
     billingNumber: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -199,7 +199,7 @@ export interface DeleteProfileWorklistItemTriggerType {
     item: WorklistItem;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -215,7 +215,7 @@ export interface EditProfileWorklistItemTriggerType {
     billingNumber: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -228,14 +228,14 @@ export interface UpdateProfileWorklistItemsStateTriggerType {
     state: WorklistBillingStateType;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadProfileWorklistSectionTriggerType
  */
 export interface LoadProfileWorklistSectionTriggerType {
-  (index: number, refresh?: boolean): AnyActionType;
+  (index: number, refresh?: boolean): AppThunkAction;
 }
 
 export type SET_PROFILE_USERNAME = SpecificActionType<
@@ -641,9 +641,11 @@ const deleteProfileImage: DeleteProfileImageTriggerType =
  */
 const setProfileLocation: SetProfileLocationTriggerType =
   function setProfileLocation(location: string) {
-    return {
-      type: "SET_PROFILE_LOCATION",
-      payload: location,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "SET_PROFILE_LOCATION",
+        payload: location,
+      });
     };
   };
 

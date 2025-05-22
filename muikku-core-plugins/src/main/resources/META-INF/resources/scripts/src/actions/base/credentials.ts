@@ -1,4 +1,4 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import { CredentialsStateType } from "~/reducers/base/credentials";
 import notificationActions from "~/actions/base/notifications";
 import i18n from "~/locales/i18n";
@@ -18,14 +18,14 @@ export type CREDENTIALS_STATE = SpecificActionType<
  * UpdateCredentialsTriggerType
  */
 export interface UpdateCredentialsTriggerType {
-  (data: Credentials): AnyActionType;
+  (data: Credentials): AppThunkAction;
 }
 
 /**
  * LoadCrendentialsTriggerType
  */
 export interface LoadCrendentialsTriggerType {
-  (secret: string): AnyActionType;
+  (secret: string): AppThunkAction;
 }
 
 /**

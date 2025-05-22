@@ -1,4 +1,4 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import {
   UpdateUserGroupStateType,
   CurrentUserGroupType,
@@ -98,7 +98,7 @@ export interface CreateStudentTriggerType {
     student: CreateStudentRequest;
     success?: () => any;
     fail?: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -109,7 +109,7 @@ export interface CreateStaffmemberTriggerType {
     createRequest: CreateStaffMemberRequest;
     success?: () => any;
     fail?: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -120,7 +120,7 @@ export interface UpdateStudentTriggerType {
     updateRequest: UpdateStudentBasicInfoOperationRequest;
     success?: () => any;
     fail?: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -131,7 +131,7 @@ export interface UpdateStaffmemberTriggerType {
     updateRequest: UpdateStaffMemberRequest;
     success?: () => any;
     fail?: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -145,7 +145,7 @@ export interface UpdateUsergroupTriggerType {
     progress?: (state: UpdateUserGroupStateType) => any;
     success?: () => any;
     fail?: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -158,14 +158,14 @@ export interface CreateUsergroupTriggerType {
     progress?: (state: UpdateUserGroupStateType) => any;
     success?: () => any;
     fail?: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadStudyprogrammesTriggerType
  */
 export interface LoadStudyprogrammesTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -180,7 +180,7 @@ export interface LoadUsersTriggerType {
         | UserStaffSearchResultWithExtraProperties
     ) => any;
     fail?: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -195,21 +195,21 @@ export interface LoadUsergroupsTriggerType {
         | UserStaffSearchResultWithExtraProperties
     ) => any;
     fail?: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadMoreUserTriggerType
  */
 export interface LoadMoreUserTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * SetCurrentUserGroupTriggerType
  */
 export interface SetCurrentUserGroupTriggerType {
-  (id: number): AnyActionType;
+  (id: number): AppThunkAction;
 }
 
 /**

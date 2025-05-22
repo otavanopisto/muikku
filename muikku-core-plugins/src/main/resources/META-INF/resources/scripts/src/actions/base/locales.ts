@@ -1,4 +1,4 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import { LocaleType } from "~/reducers/base/locales";
 import notificationActions from "~/actions/base/notifications";
 import i18n, { localize } from "~/locales/i18n";
@@ -18,14 +18,14 @@ export interface SetLocaleTriggerType {
     locale: LocaleType;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadLocaleTriggerType
  */
 export interface LoadLocaleTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**

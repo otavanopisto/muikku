@@ -1,4 +1,4 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import { UserGroup, UserWhoAmI } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 
@@ -6,14 +6,14 @@ import MApi, { isMApiError } from "~/api/api";
  * LoadLoggedUserTriggerType
  */
 interface LoadLoggedUserTriggerType {
-  (callback?: (user: UserWhoAmI) => void): AnyActionType;
+  (callback?: (user: UserWhoAmI) => void): AppThunkAction;
 }
 
 /**
  * LoadUserGroupIndexTriggerType
  */
 interface LoadUserGroupIndexTriggerType {
-  (groupId: number): AnyActionType;
+  (groupId: number): AppThunkAction;
 }
 
 export type SET_USER_GROUP_INDEX = SpecificActionType<

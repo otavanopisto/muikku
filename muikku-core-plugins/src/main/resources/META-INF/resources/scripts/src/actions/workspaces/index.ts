@@ -12,7 +12,7 @@ import {
   WorkspaceEditModeStateType,
   WorkspaceStateFilterType,
 } from "~/reducers/workspaces";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import {
   loadWorkspacesHelper,
   reuseExistantValue,
@@ -172,7 +172,7 @@ export interface UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger {
     requestData: InterimEvaluationRequest;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -220,7 +220,7 @@ const updateCurrentWorkspaceInterimEvaluationRequests: UpdateCurrentWorkspaceInt
  * LoadTemplatesFromServerTriggerType
  */
 export interface LoadTemplatesFromServerTriggerType {
-  (query?: string): AnyActionType;
+  (query?: string): AppThunkAction;
 }
 
 /**
@@ -266,7 +266,7 @@ const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
  * LoadUserWorkspacesFromServerTriggerType
  */
 export interface LoadUserWorkspacesFromServerTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -309,7 +309,7 @@ const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
  * LoadLastWorkspacesFromServerTriggerType
  */
 export interface LoadLastWorkspacesFromServerTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -355,7 +355,7 @@ const loadLastWorkspacesFromServer: LoadLastWorkspacesFromServerTriggerType =
  * UpdateLastWorkspaceTriggerType
  */
 export interface UpdateLastWorkspaceTriggerType {
-  (newReference: WorkspaceMaterialReferenceType): AnyActionType;
+  (newReference: WorkspaceMaterialReferenceType): AppThunkAction;
 }
 
 /**
@@ -422,14 +422,14 @@ export interface SetCurrentWorkspaceTriggerType {
     success?: (workspace: WorkspaceDataType) => void;
     fail?: () => void;
     loadDetails?: boolean;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * SetAvailableCurriculumsTriggerType
  */
 export interface SetAvailableCurriculumsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -442,21 +442,21 @@ export interface UpdateCurrentWorkspaceImagesB64TriggerType {
     croppedB64?: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadCUrrentWorkspaceSignupMessageTriggerType
  */
 export interface LoadCurrentWorkspaceSignupMessageTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * LoadCurrentWorkspaceUserGroupPermissionsTriggerType
  */
 export interface LoadCurrentWorkspaceUserGroupPermissionsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -466,14 +466,14 @@ export interface UpdateWorkspaceEditModeStateTriggerType {
   (
     data: Partial<WorkspaceEditModeStateType>,
     recoverActiveFromLocalStorage?: boolean
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
  * LoadMoreWorkspacesFromServerTriggerType
  */
 export interface LoadMoreWorkspacesFromServerTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -482,7 +482,7 @@ export interface LoadMoreWorkspacesFromServerTriggerType {
  */
 const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
   function setCurrentWorkspace(data) {
-    return async (dispatch: (arg: AnyActionType) => any, getState) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const workspaceApi = MApi.getWorkspaceApi();
       const assessmentRequestApi = MApi.getAssessmentApi();
@@ -719,7 +719,7 @@ const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
  * UpdateCurrentWorkspaceActivityTriggerType
  */
 export interface UpdateCurrentWorkspaceActivityTriggerType {
-  (data: { success?: () => void; fail?: () => void }): AnyActionType;
+  (data: { success?: () => void; fail?: () => void }): AppThunkAction;
 }
 
 /**
@@ -784,7 +784,7 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
  * UpdateCurrentWorkspaceAssessmentRequestTriggerType
  */
 export interface UpdateCurrentWorkspaceAssessmentRequestTriggerType {
-  (data: { success?: () => void; fail?: () => void }): AnyActionType;
+  (data: { success?: () => void; fail?: () => void }): AppThunkAction;
 }
 
 /**
@@ -849,7 +849,7 @@ export interface RequestAssessmentAtWorkspaceTriggerType {
     text: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -866,7 +866,7 @@ export interface RequestAssessmentAtWorkspaceTriggerType {
     text: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 /**
  * requestAssessmentAtWorkspace
@@ -945,7 +945,7 @@ export interface CancelAssessmentAtWorkspaceTriggerType {
     workspace: WorkspaceDataType;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1039,7 +1039,7 @@ export interface LoadWorkspacesFromServerTriggerType {
     filters: WorkspacesActiveFiltersType,
     organizationWorkspaces: boolean,
     refresh: boolean
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
@@ -1052,7 +1052,7 @@ export interface SignupIntoWorkspaceTriggerType {
     workspace: WorkspaceSignUpDetails;
     message?: string;
     redirectOnSuccess?: boolean;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1067,14 +1067,14 @@ export interface UpdateAssignmentStateTriggerType {
     existantReplyId?: number,
     successMessage?: string,
     callback?: () => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
  * LoadUserWorkspaceEducationFiltersFromServerTriggerType
  */
 export interface LoadUserWorkspaceEducationFiltersFromServerTriggerType {
-  (loadOrganizationWorkspaces: boolean): AnyActionType;
+  (loadOrganizationWorkspaces: boolean): AppThunkAction;
 }
 
 /**
@@ -1084,7 +1084,7 @@ export interface setFiltersTriggerType {
   (
     loadOrganizationWorkspaceFilters: boolean,
     filters: WorkspaceStateFilterType[]
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
@@ -1094,7 +1094,7 @@ export interface LoadUserWorkspaceCurriculumFiltersFromServerTriggerType {
   (
     loadOrganizationWorkspaceFilters: boolean,
     callback?: (curriculums: Curriculum[]) => void
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
@@ -1113,7 +1113,7 @@ export interface UpdateWorkspaceTriggerType {
     progress?: (state?: UpdateWorkspaceStateType) => any;
     executeOnSuccess?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1129,14 +1129,14 @@ export interface UpdateWorkspaceSettingsTriggerType {
     };
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadWorkspaceSettingsTriggerType
  */
 export interface LoadWorkspaceSettingsTriggerType {
-  (id: number): AnyActionType;
+  (id: number): AppThunkAction;
 }
 
 /**
@@ -1155,7 +1155,7 @@ export interface LoadUsersOfWorkspaceTriggerType {
       users: WorkspaceStudentSearchResult | UserStaffSearchResult
     ) => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1167,7 +1167,7 @@ export interface ToggleActiveStateOfStudentOfWorkspaceTriggerType {
     student: WorkspaceStudent;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1825,7 +1825,7 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
  * LoadWorkspaceDetailsInCurrentWorkspaceTriggerType
  */
 export interface LoadWorkspaceDetailsInCurrentWorkspaceTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -1836,14 +1836,14 @@ export interface UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType {
     newDetails: WorkspaceDetails;
     success: () => void;
     fail: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadWorkspaceChatStatusTriggerType
  */
 export interface LoadWorkspaceChatStatusTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -1854,21 +1854,21 @@ export interface UpdateWorkspaceProducersForCurrentWorkspaceTriggerType {
     appliedProducers: Array<WorkspaceMaterialProducer>;
     success: () => void;
     fail: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadWorkspaceTypesTriggerType
  */
 export interface LoadWorkspaceTypesTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * DeleteCurrentWorkspaceImageTriggerType
  */
 export interface DeleteCurrentWorkspaceImageTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 export type CopyCurrentWorkspaceStepType =
@@ -1897,7 +1897,7 @@ export interface CopyCurrentWorkspaceTriggerType {
       workspace: WorkspaceDataType
     ) => void;
     fail: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 export type CreateWorkspaceStateType =
@@ -2311,22 +2311,24 @@ const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerTyp
  */
 const updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType =
   function updateWorkspaceEditModeState(data, restoreActiveFromLocalStorage) {
-    if (restoreActiveFromLocalStorage && typeof data.active !== "undefined") {
-      localStorage.setItem("__editmode__active", JSON.stringify(data.active));
-    } else if (restoreActiveFromLocalStorage) {
-      return {
+    return (dispatch, getState) => {
+      if (restoreActiveFromLocalStorage && typeof data.active !== "undefined") {
+        localStorage.setItem("__editmode__active", JSON.stringify(data.active));
+      } else if (restoreActiveFromLocalStorage) {
+        dispatch({
+          type: "UPDATE_WORKSPACES_EDIT_MODE_STATE",
+          payload: {
+            ...data,
+            active: JSON.parse(
+              localStorage.getItem("__editmode__active") || "false"
+            ),
+          },
+        });
+      }
+      dispatch({
         type: "UPDATE_WORKSPACES_EDIT_MODE_STATE",
-        payload: {
-          ...data,
-          active: JSON.parse(
-            localStorage.getItem("__editmode__active") || "false"
-          ),
-        },
-      };
-    }
-    return {
-      type: "UPDATE_WORKSPACES_EDIT_MODE_STATE",
-      payload: data,
+        payload: data,
+      });
     };
   };
 

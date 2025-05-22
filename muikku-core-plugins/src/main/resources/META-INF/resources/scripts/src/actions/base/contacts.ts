@@ -1,4 +1,4 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import { ContactGroup, ContactGroupNames } from "~/reducers/base/contacts";
 import { LoadingState } from "~/@types/shared";
 import notificationActions from "~/actions/base/notifications";
@@ -34,7 +34,7 @@ export interface LoadingStatePayload {
  * LoadContactGroupTriggerType
  */
 export interface LoadContactGroupTriggerType {
-  (groupName: ContactGroupNames, userIdentifier?: string): AnyActionType;
+  (groupName: ContactGroupNames, userIdentifier?: string): AppThunkAction;
 }
 
 /**

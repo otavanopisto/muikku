@@ -1,5 +1,5 @@
 import actions from "../../base/notifications";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import {
   SummaryDataType,
   SummaryStatusType,
@@ -33,21 +33,21 @@ export type UPDATE_STUDIES_SUMMARY_STATUS = SpecificActionType<
  * UpdateSummaryTriggerType
  */
 export interface UpdateSummaryTriggerType {
-  (studentIdentifier?: string): AnyActionType;
+  (studentIdentifier?: string): AppThunkAction;
 }
 
 /**
  * UpdateStudyProgressTriggerType
  */
 export interface UpdateStudyProgressTriggerType {
-  (data: { studyProgress: SummaryStudyProgress }): AnyActionType;
+  (data: { studyProgress: SummaryStudyProgress }): AppThunkAction;
 }
 
 /**
  * Interface for the suggested next websocket thunk action creator
  */
 export interface RecordsSummarySuggestedNextWebsocketType {
-  (data: { websocketData: StudentStudyActivity }): AnyActionType;
+  (data: { websocketData: StudentStudyActivity }): AppThunkAction;
 }
 
 /**
@@ -56,14 +56,14 @@ export interface RecordsSummarySuggestedNextWebsocketType {
 export interface RecordsSummaryWorkspaceSignupWebsocketType {
   (data: {
     websocketData: StudentStudyActivity | StudentStudyActivity[];
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * Interface for the alternative study options websocket thunk action creator
  */
 export interface RecordsSummaryAlternativeStudyOptionsWebsocketType {
-  (data: { websocketData: string[] }): AnyActionType;
+  (data: { websocketData: string[] }): AppThunkAction;
 }
 
 const hopsApi = MApi.getHopsApi();

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { loadCurrentWorkspaceJournalsHelper } from "./helpers";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import { displayNotification } from "../base/notifications";
 import {
   JournalsState,
@@ -89,14 +89,14 @@ export type JOURNALS_FEEDBACK_LOAD = SpecificActionType<
  * LoadCurrentWorkspaceJournalsFromServerTriggerType
  */
 export interface LoadCurrentWorkspaceJournalsFromServerTriggerType {
-  (userEntityId?: number): AnyActionType;
+  (userEntityId?: number): AppThunkAction;
 }
 
 /**
  * LoadMoreCurrentWorkspaceJournalsFromServerTriggerType
  */
 export interface LoadMoreCurrentWorkspaceJournalsFromServerTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -107,7 +107,7 @@ export interface LoadWorkspaceJournalCommentsFromServerTriggerType {
     workspaceId: number;
     journalEntryId: number;
     isCurrent: boolean;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 // Workspace journal trigger types
@@ -121,7 +121,7 @@ export interface CreateWorkspaceJournalForCurrentWorkspaceTriggerType {
     content: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -134,7 +134,7 @@ export interface UpdateWorkspaceJournalInCurrentWorkspaceTriggerType {
     content: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -145,7 +145,7 @@ export interface DeleteWorkspaceJournalInCurrentWorkspaceTriggerType {
     journal: WorkspaceJournalEntry;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -156,7 +156,7 @@ export interface ChangeWorkspaceJournalFiltersTriggerType {
     journalFilters: Partial<WorkspaceJournalFilters>;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -169,7 +169,7 @@ export interface CreateWorkspaceJournalCommentTriggerType {
     workspaceEntityId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -182,7 +182,7 @@ export interface UpdateWorkspaceJournalCommentTriggerType {
     workspaceEntityId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -195,14 +195,14 @@ export interface DeleteWorkspaceJournalCommentTriggerType {
     workspaceEntityId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * SetCurrentJournal
  */
 export interface SetCurrentJournalTriggerType {
-  (data: { currentJournal: WorkspaceJournalEntry }): AnyActionType;
+  (data: { currentJournal: WorkspaceJournalEntry }): AppThunkAction;
 }
 
 // Journal feedback trigger types
@@ -216,7 +216,7 @@ export interface LoadWorkspaceJournalFeedbackTriggerType {
     workspaceEntityId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**

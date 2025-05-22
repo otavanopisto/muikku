@@ -1,4 +1,4 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import notificationActions from "~/actions/base/notifications";
 import {
   DiscussionStatePatch,
@@ -101,7 +101,7 @@ export interface ShowOnlySubscribedThreads {
     value: boolean;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -113,7 +113,7 @@ export interface SubscribeDiscussionThread {
     threadId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -125,7 +125,7 @@ export interface UnsubscribeDiscustionThread {
     threadId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -136,7 +136,7 @@ export interface SubscribeDiscussionArea {
     areaId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -147,21 +147,21 @@ export interface UnsubscribeDiscustionArea {
     areaId: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * LoadSubscribedDiscussionThreadList
  */
 export interface LoadSubscribedDiscussionThreadList {
-  (data: { success?: () => void; fail?: () => void }): AnyActionType;
+  (data: { success?: () => void; fail?: () => void }): AppThunkAction;
 }
 
 /**
  * LoadSubscribedDiscussionThreadList
  */
 export interface LoadSubscribedDiscussionAreaList {
-  (data: { success?: () => void; fail?: () => void }): AnyActionType;
+  (data: { success?: () => void; fail?: () => void }): AppThunkAction;
 }
 
 /**
@@ -173,7 +173,7 @@ export interface loadDiscussionThreadsFromServerTriggerType {
     page: number;
     forceRefresh?: boolean;
     notRemoveCurrent?: boolean;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -189,7 +189,7 @@ export interface CreateDiscussionThreadTriggerType {
     subscribe: boolean;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -204,7 +204,7 @@ export interface ModifyDiscussionThreadTriggerType {
     title: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -219,7 +219,7 @@ export interface LoadDiscussionThreadFromServerTriggerType {
     forceRefresh?: boolean;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -231,14 +231,14 @@ export interface ReplyToCurrentDiscussionThreadTriggerType {
     parentId?: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * DeleteCurrentDiscussionThreadTriggerType
  */
 export interface DeleteCurrentDiscussionThreadTriggerType {
-  (data: { success?: () => void; fail?: () => void }): AnyActionType;
+  (data: { success?: () => void; fail?: () => void }): AppThunkAction;
 }
 
 /**
@@ -249,7 +249,7 @@ export interface DeleteDiscussionThreadReplyFromCurrentTriggerType {
     reply: DiscussionThreadReply;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -261,7 +261,7 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
     message: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1224,7 +1224,7 @@ const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
  * LoadDiscussionAreasFromServerTriggerType
  */
 export interface LoadDiscussionAreasFromServerTriggerType {
-  (callback?: () => void): AnyActionType;
+  (callback?: () => void): AppThunkAction;
 }
 
 /**
@@ -1277,7 +1277,7 @@ export interface CreateDiscussionAreaTriggerType {
     subscribe: boolean;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1358,7 +1358,7 @@ export interface UpdateDiscussionAreaTriggerType {
     description: string;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1432,7 +1432,7 @@ export interface DeleteDiscussionAreaTriggerType {
     id: number;
     success?: () => void;
     fail?: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -1481,7 +1481,7 @@ const deleteDiscussionArea: DeleteDiscussionAreaTriggerType =
  * SetDiscussionWorkspaceIdTriggerType
  */
 export interface SetDiscussionWorkspaceIdTriggerType {
-  (workspaceId: number): AnyActionType;
+  (workspaceId: number): AppThunkAction;
 }
 
 /**
@@ -1491,9 +1491,11 @@ export interface SetDiscussionWorkspaceIdTriggerType {
  */
 const setDiscussionWorkpaceId: SetDiscussionWorkspaceIdTriggerType =
   function setDiscussionWorkpaceId(workspaceId) {
-    return {
-      type: "SET_DISCUSSION_WORKSPACE_ID",
-      payload: workspaceId,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "SET_DISCUSSION_WORKSPACE_ID",
+        payload: workspaceId,
+      });
     };
   };
 

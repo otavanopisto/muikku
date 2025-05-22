@@ -1,6 +1,6 @@
 import notificationActions from "~/actions/base/notifications";
 import {
-  AnyActionType,
+  AppThunkAction,
   AnyActionTypeDispatch,
   SpecificActionType,
 } from "~/actions";
@@ -19,7 +19,8 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import moment from "moment";
-import { RootState } from "~/reducers/configureStore";
+import { AppDispatch, RootState } from "~/reducers/configureStore";
+
 export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_STATE",
   AnnouncementsStateType
@@ -68,7 +69,7 @@ export interface LoadAnnouncementsAsAClientTriggerType {
     fetchParams: GetAnnouncementsRequest,
     options?: any,
     callback?: (announcements: Announcement[]) => any
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 //TODO notOverrideCurrent should go once the missing data in the current announcement is fixed
@@ -81,7 +82,7 @@ export interface LoadAnnouncementsTriggerType {
     workspaceId?: number,
     notOverrideCurrent?: boolean,
     force?: boolean
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
@@ -92,21 +93,21 @@ export interface LoadAnnouncementTriggerType {
     location: string,
     announcementId: number,
     workspaceId?: number
-  ): AnyActionType;
+  ): AppThunkAction;
 }
 
 /**
  * AddToAnnouncementsSelectedTriggerType
  */
 export interface AddToAnnouncementsSelectedTriggerType {
-  (announcement: Announcement): AnyActionType;
+  (announcement: Announcement): AppThunkAction;
 }
 
 /**
  * RemoveFromAnnouncementsSelectedTriggerType
  */
 export interface RemoveFromAnnouncementsSelectedTriggerType {
-  (announcement: Announcement): AnyActionType;
+  (announcement: Announcement): AppThunkAction;
 }
 
 /**
@@ -119,7 +120,7 @@ export interface UpdateAnnouncementTriggerType {
     success?: () => any;
     fail?: () => any;
     cancelRedirect?: boolean;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -130,14 +131,14 @@ export interface DeleteAnnouncementTriggerType {
     announcement: Announcement;
     success: () => any;
     fail: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
  * DeleteSelectedAnnouncementsTriggerType
  */
 export interface DeleteSelectedAnnouncementsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -148,7 +149,7 @@ export interface CreateAnnouncementTriggerType {
     announcement: CreateAnnouncementRequest;
     success: () => any;
     fail: () => any;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**
@@ -158,7 +159,7 @@ export interface CreateAnnouncementTriggerType {
  * @param announcement announcement
  */
 function validateAnnouncement(
-  dispatch: AnyActionTypeDispatch,
+  dispatch: AppDispatch,
   getState: () => RootState,
   announcement: CreateAnnouncementRequest
 ) {

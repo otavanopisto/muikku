@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import thunk from "redux-thunk";
+import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
 import reducer from "~/reducers/main-function";
-import { configureStore } from "@reduxjs/toolkit";
+import { AnyAction, configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useStore } from "react-redux";
 import { useSelector } from "react-redux";
+import { ActionType, AnyActionType, AnyActionTypeDispatch } from "~/actions";
 /**
  * Creates a store base
  * @param store store
@@ -103,8 +104,9 @@ const configuredStore = () => {
 export type AppStore = ReturnType<typeof configuredStore>;
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<AppStore["getState"]>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = AppStore["dispatch"];
+
+// Little hack to make the dispatch type work
+export type AppDispatch = ThunkDispatch<RootState, unknown, ActionType>;
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();

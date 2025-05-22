@@ -10,7 +10,7 @@ import {
   WorkspaceStateFilterType,
 } from "../../reducers/workspaces/index";
 import { reuseExistantValue } from "./helpers";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import {
   WorkspaceUpdateType,
@@ -130,7 +130,7 @@ export type UPDATE_ORGANIZATION_SELECTED_WORKSPACE_STAFF_SELECT_STATE =
  * LoadUserWorkspaceOrganizationFiltersFromServerTriggerType
  */
 export interface LoadUserWorkspaceOrganizationFiltersFromServerTriggerType {
-  (callback?: (organizations: WorkspaceOrganization[]) => void): AnyActionType;
+  (callback?: (organizations: WorkspaceOrganization[]) => void): AppThunkAction;
 }
 
 /**
@@ -150,7 +150,7 @@ export interface CreateWorkspaceTriggerType {
     progress?: (state?: CreateWorkspaceStateType) => any;
     success: () => void;
     fail: () => void;
-  }): AnyActionType;
+  }): AppThunkAction;
 }
 
 /**

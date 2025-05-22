@@ -1,5 +1,5 @@
 import actions from "../../base/notifications";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import {
   StatisticsDataType,
   StatisticsStatusType,
@@ -19,7 +19,7 @@ export type UPDATE_STUDIES_STATISTICS_STATUS = SpecificActionType<
  * UpdateStatisticsTriggerType
  */
 export interface UpdateStatisticsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**

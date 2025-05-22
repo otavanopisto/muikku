@@ -1,5 +1,5 @@
 import actions from "../../base/notifications";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import {
   AllStudentUsersDataStatusType,
   TranscriptOfRecordLocationType,
@@ -45,41 +45,41 @@ export type UPDATE_RECORDS_SET_FILES = SpecificActionType<
  * SetLocationToStatisticsInTranscriptOfRecordsTriggerType
  */
 export interface SetLocationToStatisticsInTranscriptOfRecordsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 /**
  * SetLocationToSummaryInTranscriptOfRecordsTriggerType
  */
 export interface SetLocationToSummaryInTranscriptOfRecordsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * UpdateAllStudentUsersAndSetViewToRecordsTriggerType
  */
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
-  (userIdentifier?: string): AnyActionType;
+  (userIdentifier?: string): AppThunkAction;
 }
 
 /**
  * SetCurrentStudentUserViewAndWorkspaceTriggerType
  */
 export interface SetCurrentStudentUserViewAndWorkspaceTriggerType {
-  (userEntityId: number, userId: string, workspaceId: number): AnyActionType;
+  (userEntityId: number, userId: string, workspaceId: number): AppThunkAction;
 }
 
 /**
  * SetLocationToHopsInTranscriptOfRecordsTriggerType
  */
 export interface SetLocationToHopsInTranscriptOfRecordsTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
  * UpdateTranscriptOfRecordsFilesTriggerType
  */
 export interface UpdateTranscriptOfRecordsFilesTriggerType {
-  (): AnyActionType;
+  (): AppThunkAction;
 }
 
 /**
@@ -287,9 +287,11 @@ const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewT
  */
 const setLocationToStatisticsInTranscriptOfRecords: SetLocationToStatisticsInTranscriptOfRecordsTriggerType =
   function setLocationToStatisticsInTranscriptOfRecords() {
-    return {
-      type: "UPDATE_RECORDS_LOCATION",
-      payload: <TranscriptOfRecordLocationType>"statistics",
+    return (dispatch, getState) => {
+      dispatch({
+        type: "UPDATE_RECORDS_LOCATION",
+        payload: <TranscriptOfRecordLocationType>"statistics",
+      });
     };
   };
 
@@ -298,9 +300,11 @@ const setLocationToStatisticsInTranscriptOfRecords: SetLocationToStatisticsInTra
  */
 const setLocationToSummaryInTranscriptOfRecords: SetLocationToSummaryInTranscriptOfRecordsTriggerType =
   function setLocationToSummaryInTranscriptOfRecords() {
-    return {
-      type: "UPDATE_RECORDS_LOCATION",
-      payload: <TranscriptOfRecordLocationType>"summary",
+    return (dispatch, getState) => {
+      dispatch({
+        type: "UPDATE_RECORDS_LOCATION",
+        payload: <TranscriptOfRecordLocationType>"summary",
+      });
     };
   };
 
@@ -309,9 +313,11 @@ const setLocationToSummaryInTranscriptOfRecords: SetLocationToSummaryInTranscrip
  */
 const setLocationToPedagogyFormInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
   function setLocationToHopsInTranscriptOfRecords() {
-    return {
-      type: "UPDATE_RECORDS_LOCATION",
-      payload: <TranscriptOfRecordLocationType>"pedagogy-form",
+    return (dispatch, getState) => {
+      dispatch({
+        type: "UPDATE_RECORDS_LOCATION",
+        payload: <TranscriptOfRecordLocationType>"pedagogy-form",
+      });
     };
   };
 
@@ -320,9 +326,11 @@ const setLocationToPedagogyFormInTranscriptOfRecords: SetLocationToHopsInTranscr
  */
 const setLocationToInfoInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRecordsTriggerType =
   function setLocationToHopsInTranscriptOfRecords() {
-    return {
-      type: "UPDATE_RECORDS_LOCATION",
-      payload: <TranscriptOfRecordLocationType>"info",
+    return (dispatch, getState) => {
+      dispatch({
+        type: "UPDATE_RECORDS_LOCATION",
+        payload: <TranscriptOfRecordLocationType>"info",
+      });
     };
   };
 
