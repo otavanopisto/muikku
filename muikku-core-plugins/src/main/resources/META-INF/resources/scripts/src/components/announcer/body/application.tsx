@@ -7,12 +7,11 @@ import HoverButton from "~/components/general/hover-button";
 import Button from "~/components/general/button";
 import Toolbar from "./application/toolbar";
 import NewEditAnnouncement from "../dialogs/new-edit-announcement";
-import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
+import { AnyActionTypeDispatch } from "~/actions";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
 import "~/sass/elements/loaders.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Action, Dispatch } from "redux";
 
 /**
  * AnnouncerApplicationProps

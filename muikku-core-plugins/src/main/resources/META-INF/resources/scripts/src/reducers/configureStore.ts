@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
+import thunk, { ThunkDispatch } from "redux-thunk";
 import reducer from "~/reducers/main-function";
-import { AnyAction, configureStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useStore } from "react-redux";
 import { useSelector } from "react-redux";
-import { ActionType, AnyActionType, AnyActionTypeDispatch } from "~/actions";
+import { ActionType } from "~/actions";
 /**
  * Creates a store base
  * @param store store

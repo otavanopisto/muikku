@@ -1,9 +1,5 @@
 import notificationActions from "~/actions/base/notifications";
-import {
-  AppThunkAction,
-  AnyActionTypeDispatch,
-  SpecificActionType,
-} from "~/actions";
+import { AppThunkAction, SpecificActionType } from "~/actions";
 import {
   AnnouncementsStateType,
   AnnouncementsStatePatch,
