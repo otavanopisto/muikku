@@ -1,9 +1,7 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
 import * as queryString from "query-string";
 import "~/sass/elements/item-list.scss";
 import LabelUpdateDialog from "../../../dialogs/label-update";
-import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
   NavigationElement,
@@ -13,13 +11,14 @@ import { GuiderContext } from "../../../context";
 import { useTranslation } from "react-i18next";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { breakpoints } from "~/util/breakpoints";
+import { useAppSelector } from "~/reducers/configureStore";
 
 /**
  * NavigationAside
  */
 const StudentNavigationAside = () => {
   const { view, setView } = React.useContext(GuiderContext);
-  const { guider } = useSelector((state: StateType) => state);
+  const { guider } = useAppSelector((state) => state);
   const { t } = useTranslation(["flags"]);
   const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);
 

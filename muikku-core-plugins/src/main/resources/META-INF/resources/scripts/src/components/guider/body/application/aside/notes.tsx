@@ -1,7 +1,5 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
 import "~/sass/elements/item-list.scss";
-import { StateType } from "~/reducers";
 import Navigation, {
   NavigationTopic,
   NavigationElement,
@@ -11,7 +9,7 @@ import { loadNotes } from "~/actions/main-function/guider";
 import { useTranslation } from "react-i18next";
 import useIsAtBreakpoint from "~/hooks/useIsAtBreakpoint";
 import { breakpoints } from "~/util/breakpoints";
-import { useAppDispatch } from "~/reducers/configureStore";
+import { useAppDispatch, useAppSelector } from "~/reducers/configureStore";
 
 /**
  * Note NavigationAside
@@ -19,7 +17,7 @@ import { useAppDispatch } from "~/reducers/configureStore";
 const NoteNavigationAside = () => {
   // These are required to make the types work in the context
   const { view, filters, dispatch, setView } = React.useContext(GuiderContext);
-  const { status } = useSelector((state: StateType) => state);
+  const { status } = useAppSelector((state) => state);
   const actionDispatch = useAppDispatch();
   const { t } = useTranslation(["flags"]);
   const isMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);

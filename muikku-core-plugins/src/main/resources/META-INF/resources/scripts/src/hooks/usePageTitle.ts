@@ -2,10 +2,9 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { titleManager } from "../util/title-manager";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
-import { StateType } from "~/reducers";
 import { TFunction } from "i18next";
 import { WorkspaceDataType } from "~/reducers/workspaces";
+import { useAppSelector } from "~/reducers/configureStore";
 
 /**
  * Get localized route titles
@@ -99,8 +98,8 @@ export function usePageTitle() {
   });
 
   // Get workspace data from Redux store
-  const currentWorkspace = useSelector(
-    (state: StateType) => state.workspaces.currentWorkspace
+  const currentWorkspace = useAppSelector(
+    (state) => state.workspaces.currentWorkspace
   );
 
   /**

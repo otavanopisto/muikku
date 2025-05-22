@@ -2,8 +2,6 @@ import * as React from "react";
 import { Step1, Step2 } from "./steps";
 import Wizard, { WizardStep } from "~/components/general/wizard";
 import "~/sass/elements/wizard.scss";
-import { useSelector } from "react-redux";
-import { StateType } from "~/reducers";
 import { useTranslation } from "react-i18next";
 import {
   useWizardContext,
@@ -18,6 +16,7 @@ import { Stepper, StepperItem } from "~/components/general/wizard/stepper";
 import Button from "~/components/general/button";
 import { AnimatePresence } from "framer-motion";
 import AnimatedStep from "~/components/general/wizard/AnimateStep";
+import { useAppSelector } from "~/reducers/configureStore";
 
 /**
  * CopyWorkspaceWizardProps
@@ -32,8 +31,8 @@ interface CopyWorkspaceWizardProps {
  * @param props props
  */
 const CopyWorkspaceWizard: React.FC<CopyWorkspaceWizardProps> = (props) => {
-  const workspace = useSelector(
-    (state: StateType) => state.workspaces.currentWorkspace
+  const workspace = useAppSelector(
+    (state) => state.workspaces.currentWorkspace
   );
 
   const { state, updateState } = useCopyWorkspaceWizardState(workspace);

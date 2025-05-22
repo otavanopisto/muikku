@@ -1,9 +1,9 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
 import { copyCurrentWorkspace } from "~/actions/workspaces";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { CopyCurrentWorkspaceStepType } from "~/actions/workspaces";
 import moment from "moment";
+import { useAppDispatch } from "~/reducers/configureStore";
 
 /**
  * CopyWizardState
@@ -87,7 +87,7 @@ export const useCopyWorkspaceWizardLogic = (
   state: CopyWizardState,
   updateState: (update: Partial<CopyWizardState>) => void
 ) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   /**
    * Copy workspace

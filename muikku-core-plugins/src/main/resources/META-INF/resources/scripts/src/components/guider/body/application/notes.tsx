@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import {
   loadNotes,
@@ -7,7 +6,6 @@ import {
   updateRecipientNoteStatus,
   toggleNoteArchive,
 } from "~/actions/main-function/guider";
-import { StateType } from "~/reducers";
 import NotesItemList from "~/components/general/notes/notes-item-list";
 import {
   UpdateNoteRequest,
@@ -15,6 +13,8 @@ import {
 } from "~/generated/client";
 import { GuiderContext } from "../../context";
 import { useFilterNotes } from "~/components/guider/hooks/useFilterNotes";
+import { useAppDispatch, useAppSelector } from "~/reducers/configureStore";
+
 /**
  * GuiderStudentsProps
  */
@@ -26,8 +26,8 @@ interface GuiderNotesProps {}
  */
 const GuiderNotes = (props: GuiderNotesProps) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const { status, guider } = useSelector((state: StateType) => state);
+  const dispatch = useAppDispatch();
+  const { status, guider } = useAppSelector((state) => state);
   const loadingState = guider.notes.state;
   const { filters } = React.useContext(GuiderContext);
   const notes = useFilterNotes(guider.notes.list, filters);
