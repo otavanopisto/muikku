@@ -174,7 +174,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
    * Gets option for term by given term value
    *
    * @param termValue termValue AUTUMN2022 or SPRING2022 etc...
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const getOptionByValue = (termValue: string) => {
     const term = termValue.substring(0, 6) as MatriculationExamTerm;

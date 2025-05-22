@@ -224,7 +224,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (

@@ -27,7 +27,7 @@ interface MatriculationEnrollmentProps {
 /**
  * Enrollment element. Depending on the status of the exam, it will render different components.
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const MatriculationEnrollment = (props: MatriculationEnrollmentProps) => {
   switch (props.exam.studentStatus) {
@@ -51,7 +51,7 @@ interface MatriculationEnrollmentLinkProps {
 /**
  * MatriculationEnrollmentLink
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const MatriculationEnrollmentLink = (
   props: MatriculationEnrollmentLinkProps
@@ -100,7 +100,7 @@ interface MatriculationSubmittedEnrollmentProps {
 /**
  * MatriculationSubmittedEnrollment
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const MatriculationSubmittedEnrollment = (
   props: MatriculationSubmittedEnrollmentProps

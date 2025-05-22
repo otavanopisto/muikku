@@ -21,7 +21,7 @@ const defaultProps = {
 /**
  * Creater NotesItemPriorityChip component
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const NotesItemFilterChip: React.FC<NotesItemListFiltterChipProps> = (
   props

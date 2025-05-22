@@ -32,7 +32,7 @@ class AnnouncementsApplication extends React.Component<AnnouncementsApplicationP
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const title = this.props.i18n.t("labels.announcements", {

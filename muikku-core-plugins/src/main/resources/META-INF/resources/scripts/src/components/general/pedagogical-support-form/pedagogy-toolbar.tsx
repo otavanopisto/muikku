@@ -18,7 +18,7 @@ interface PedagogyToolbarProps {
  * Render wizard toolbar
  *
  * @param props PedagogyToolbarProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   const { showPDF, setShowPDF } = props;

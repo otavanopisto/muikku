@@ -51,7 +51,7 @@ class ApprovalDialog extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { formIsApproved, onApproveChange } = this.props;
@@ -59,7 +59,7 @@ class ApprovalDialog extends React.Component<
     /**
      * content
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const content = (closeDialog: () => void) => (
       <div

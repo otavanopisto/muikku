@@ -106,7 +106,7 @@ const readingRulerPresetDefault1: Partial<ReadingRulerPresetSettings> = {
 /**
  * Reading ruler component
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const ReadingRulerBase: React.FC<ReadingRulerProps> = (props) => {
   props = { ...defaultProps, ...props };

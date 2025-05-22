@@ -13,7 +13,7 @@ export interface GroupAvatarProps {
   size?: string;
   groupAvatar?: "usergroup" | "workspace";
   groupMembers?: AvatarGroupUser[];
-  groupMemberAction?: (userId: number) => JSX.Element;
+  groupMemberAction?: (userId: number) => React.JSX.Element;
   modifier?: string;
   showTooltip?: boolean;
 }
@@ -21,7 +21,7 @@ export interface GroupAvatarProps {
 /**
  * Avatar
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const GroupAvatar = (props: GroupAvatarProps) => {
   const {

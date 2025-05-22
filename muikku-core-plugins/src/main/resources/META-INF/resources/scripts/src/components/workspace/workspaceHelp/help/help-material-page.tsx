@@ -36,8 +36,8 @@ interface HelpMaterialProps extends WithTranslation {
   isViewRestricted: boolean;
   workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
-  anchorItem?: JSX.Element;
-  readspeakerComponent?: JSX.Element;
+  anchorItem?: React.JSX.Element;
+  readspeakerComponent?: React.JSX.Element;
 }
 
 /**

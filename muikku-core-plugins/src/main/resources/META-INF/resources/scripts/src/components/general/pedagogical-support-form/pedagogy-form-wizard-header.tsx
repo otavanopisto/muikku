@@ -10,7 +10,7 @@ interface StepWizardHeaderProps {}
 /**
  * StepWizardHeader
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const PedagogyFormWizardHeader = (props: StepWizardHeaderProps) => {
   const { goTo, currentStepIndex, steps } = useWizardContext();

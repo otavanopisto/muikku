@@ -15,7 +15,7 @@ interface ListContainerProps
 /**
  * ListContainer
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const ListContainer: React.FC<ListContainerProps> = (props) => {
   const { modifiers, children, className, ...rest } = props;
@@ -54,7 +54,7 @@ interface ListHeaderProps
 /**
  * ListHeader
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const ListHeader: React.FC<ListHeaderProps> = (props) => {
   const { modifiers, className, children, ...rest } = props;
@@ -93,7 +93,7 @@ interface ListItemProps
 /**
  * ListItem
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const ListItem: React.FC<ListItemProps> = (props) => {
   const { modifiers, className, children, ...rest } = props;
@@ -132,7 +132,7 @@ interface ListItemIndicator
 /**
  * ListItemIndicator
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const ListItemIndicator: React.FC<ListItemIndicator> = (props) => {
   const { modifiers, children, className, ...rest } = props;

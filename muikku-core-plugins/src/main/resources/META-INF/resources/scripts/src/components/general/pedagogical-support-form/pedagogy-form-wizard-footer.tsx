@@ -12,7 +12,7 @@ interface PedagogyFormWizardFooterProps {}
  * PedagogyFormWizardFooter
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const PedagogyFormWizardFooter = (props: PedagogyFormWizardFooterProps) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);

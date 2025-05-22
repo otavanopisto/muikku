@@ -112,7 +112,7 @@ class NavigationAside extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { t } = this.props;
@@ -138,7 +138,7 @@ class NavigationAside extends React.Component<
       journalsState.journals !== null &&
       journalsState.userEntityId === null;
 
-    const navigationElementList: JSX.Element[] = [];
+    const navigationElementList: React.JSX.Element[] = [];
 
     navigationElementList.push(
       <NavigationElement

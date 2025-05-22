@@ -21,7 +21,7 @@ interface NoteProps {
 /**
  * A simple note componet for panel use
  * @param props NoteProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const NoteComponent: React.FC<NoteProps> = (props) => {
   const { modifier, note, isCreator, onStatusUpdate, onUpdate } = props;

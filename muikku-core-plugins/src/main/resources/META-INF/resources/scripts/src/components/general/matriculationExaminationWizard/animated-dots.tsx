@@ -2,7 +2,7 @@ import * as React from "react";
 
 /**
  * AnimatedDots
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const AnimatedDots = () => (
   <>

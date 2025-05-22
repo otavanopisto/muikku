@@ -16,7 +16,7 @@ import "~/sass/elements/loaders.scss";
 interface ApplicationPanelProps {
   modifier?: string;
   title?: React.ReactElement<any> | string;
-  panelOptions?: JSX.Element;
+  panelOptions?: React.JSX.Element;
   icon?: React.ReactElement<any> | string;
   panelTabs?: Array<Tab>;
   onTabChange?: (id: string, hash?: string | Tab) => any;
@@ -50,7 +50,7 @@ export default class ApplicationPanel extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (
@@ -152,7 +152,7 @@ export class ApplicationPanelToolbar extends React.Component<
 > {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (
@@ -183,7 +183,7 @@ export class ApplicationPanelToolbarActionsMain extends React.Component<
 > {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (
@@ -221,7 +221,7 @@ export class ApplicationPanelToolbarActionsAside extends React.Component<
 > {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (
@@ -253,7 +253,7 @@ export class ApplicationPanelToolsContainer extends React.Component<
 > {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (

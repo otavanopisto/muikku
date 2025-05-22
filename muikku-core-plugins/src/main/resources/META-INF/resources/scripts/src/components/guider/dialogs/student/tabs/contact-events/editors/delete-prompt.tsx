@@ -30,7 +30,7 @@ interface ContactEventDeletePromptProps {
   deleteContactLogEvent: DeleteContactLogEventTriggerType;
   deleteContactLogEventComment: DeleteContactLogEventCommentTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
-  children: JSX.Element;
+  children: React.JSX.Element;
 }
 
 /**
@@ -100,7 +100,7 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
   /**
    * content element
    * @param closeDialog function to close the dialog
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const content = (closeDialog: () => void) => (
     <div>
@@ -113,7 +113,7 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
   /**
    * footer element
    * @param closeDialog function to close the dialog
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const footer = (closeDialog: () => void) => (
     <div className="dialog__button-set">
@@ -137,7 +137,7 @@ const ContactEventDeletePrompt: React.FC<ContactEventDeletePromptProps> = (
     /**
      * footer
      * @param closeDialog close dialog function
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
 
     <Dialog

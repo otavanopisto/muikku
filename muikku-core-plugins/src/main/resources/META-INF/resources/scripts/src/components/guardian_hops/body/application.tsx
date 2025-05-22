@@ -193,7 +193,7 @@ class GuardianHopsApplication extends React.Component<
 
   /**
    * Render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     // Filter dependants to only show upper secondary dependants

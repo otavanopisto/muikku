@@ -61,7 +61,7 @@ function useWebsocketEvent<T>(
  * - hops:workspace-signup
  * - hops:alternative-study-options
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const StudyProgressWebsocketWatcher = (
   props: StudyProgressWebsocketWatcherProps

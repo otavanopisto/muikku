@@ -18,7 +18,7 @@ interface ContentPanelProps extends WithTranslation {
   modifier: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   title?: React.ReactElement<any> | string;
-  readspeakerComponent?: JSX.Element;
+  readspeakerComponent?: React.JSX.Element;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -259,7 +259,7 @@ export default class ContentPanel extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (
@@ -365,7 +365,7 @@ export class ContentPanelItem extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (

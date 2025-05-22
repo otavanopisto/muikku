@@ -120,7 +120,7 @@ interface CopyWizardHeaderProps {
 /**
  * CopyWizardHeader
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const CopyWizardHeader = (props: CopyWizardHeaderProps) => {
   const { disabled = true } = props;
@@ -161,7 +161,7 @@ interface CopyWizardFooterProps {
  * CopyWizardFooter
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const CopyWizardFooter = (props: CopyWizardFooterProps) => {
   const { locked } = props;

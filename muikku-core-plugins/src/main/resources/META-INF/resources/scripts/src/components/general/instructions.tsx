@@ -12,7 +12,7 @@ interface InstructionsProps extends Omit<DropdownProps, "children"> {}
  * Uses dropdown component as base. So all styles are done to that component
  * unless otherwise agreed
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const Instructions = (props: InstructionsProps) => (
   <Dropdown {...props}>

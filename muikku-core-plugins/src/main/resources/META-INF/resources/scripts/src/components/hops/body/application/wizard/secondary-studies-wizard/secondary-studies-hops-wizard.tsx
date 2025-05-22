@@ -45,7 +45,7 @@ interface SecondaryStudiesHopsWizardProps {
  * SecondaryStudiesHopsWizard
  *
  * @param props - The props for the component
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const SecondaryStudiesHopsWizard: React.FC<SecondaryStudiesHopsWizardProps> = (
   props

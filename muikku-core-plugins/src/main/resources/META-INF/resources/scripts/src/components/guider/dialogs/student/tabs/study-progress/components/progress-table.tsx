@@ -35,7 +35,7 @@ interface ProgressTableProps
 /**
  * GuiderStateOfStudiesTable
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   const {
@@ -61,7 +61,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   /**
    * renderCourseCell
    * @param params params
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderCourseCell = (params: RenderItemParams) => {
     const { subject, course, tdModifiers } = params;
@@ -206,7 +206,7 @@ interface SuggestionListContentProps {
 /**
  * SuggestionListContent
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const SuggestionListContent = (props: SuggestionListContentProps) => {
   const { suggestion, suggestedCourses, suggestionContext, onSignUpBehalf } =

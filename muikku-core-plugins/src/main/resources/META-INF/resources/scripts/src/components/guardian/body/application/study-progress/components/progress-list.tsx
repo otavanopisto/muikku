@@ -49,7 +49,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
   /**
    * Render optional course item content
    * @param params params
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderCourseItem = (params: RenderItemParams) => {
     const { subject, course, listItemModifiers } = params;

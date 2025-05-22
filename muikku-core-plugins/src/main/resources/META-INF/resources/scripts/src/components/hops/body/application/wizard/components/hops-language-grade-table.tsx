@@ -23,7 +23,7 @@ interface HopsLanguageGradeTableProps {
 /**
  * LanguageGradeTable
  * @param props props
- * @returns JSX.Element. Language grade table component
+ * @returns React.JSX.Element. Language grade table component
  */
 export const HopsLanguageGradeTable: React.FC<HopsLanguageGradeTableProps> = (
   props
@@ -154,7 +154,7 @@ interface LanguageGradeRowProps {
  * @param param0.onDeleteRowClick onDeleteRowClick
  * @param param0.onLanguageRowChange onLanguageRowChange
  * @param param0.disabled disabled
- * @returns JSX.Element. Language grade table row
+ * @returns React.JSX.Element. Language grade table row
  */
 export const LanguageGradeRow: React.FC<LanguageGradeRowProps> = ({
   index,

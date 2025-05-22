@@ -40,7 +40,7 @@ class AnnouncerApplication extends React.Component<
   }
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const title = this.props.i18n.t("labels.announcer");

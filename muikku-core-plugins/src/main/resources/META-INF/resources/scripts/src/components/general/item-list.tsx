@@ -16,7 +16,7 @@ interface ItemListProps {
 const ItemList: React.FC<ItemListProps> & {
   Item?: <C extends React.ElementType>(
     props: RootElementProps<C>
-  ) => JSX.Element;
+  ) => React.JSX.Element;
   ItemFooter?: React.FC<FooterProps>;
 } = (props) => {
   const { children, modifier, header } = props;
@@ -57,7 +57,7 @@ type RootElementProps<C extends React.ElementType> = React.PropsWithChildren<
 /**
  * Strongly typed list item, you can use even React components in the "as" prop
  * @param props RootElementProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ListItem = <C extends React.ElementType = "div">(
   props: RootElementProps<C>
@@ -98,7 +98,7 @@ interface FooterProps {
 /**
  * ItemFooter component
  * @param props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ItemFooter: React.FC<FooterProps> = (props) => {
   const { modifier, children } = props;

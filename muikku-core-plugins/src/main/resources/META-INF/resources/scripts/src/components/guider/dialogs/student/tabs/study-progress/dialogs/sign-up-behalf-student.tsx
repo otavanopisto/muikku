@@ -41,7 +41,7 @@ const guiderApi = MApi.getGuiderApi();
 /**
  * SignUpBehalfOfStudentDialog
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const SignUpBehalfOfStudentDialog: React.FC<
   SignUpBehalfOfStudentDialogProps

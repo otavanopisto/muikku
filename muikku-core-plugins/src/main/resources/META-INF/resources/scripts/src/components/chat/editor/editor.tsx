@@ -208,7 +208,7 @@
 // /**
 //  * Render an element.
 //  * @param props props
-//  * @returns JSX.Element
+//  * @returns React.JSX.Element
 //  */
 // const renderElement = (props: RenderElementProps) => {
 //   switch (props.element.type) {
@@ -226,14 +226,14 @@
 // /**
 //  * renderLeaf
 //  * @param props props
-//  * @returns JSX.Element
+//  * @returns React.JSX.Element
 //  */
 // const renderLeaf = (props: RenderLeafProps) => <Leaf {...props} />;
 
 // /**
 //  * CodeElement
 //  * @param props props
-//  * @returns JSX.Element
+//  * @returns React.JSX.Element
 //  */
 // const CodeElement = (props: RenderElementProps) => (
 //   <pre {...props.attributes}>{props.children}</pre>
@@ -251,7 +251,7 @@
 // /**
 //  * DefaultElement
 //  * @param props props
-//  * @returns JSX.Element
+//  * @returns React.JSX.Element
 //  */
 // const DefaultElement = (props: RenderElementProps) => (
 //   <p {...props.attributes}>{props.children}</p>
@@ -260,7 +260,7 @@
 // /**
 //  * Leaf
 //  * @param props props
-//  * @returns JSX.Element
+//  * @returns React.JSX.Element
 //  */
 // const Leaf = (props: RenderLeafProps) => (
 //   <span
@@ -278,7 +278,7 @@
 // /**
 //  * MentionElement
 //  * @param props props
-//  * @returns JSX.Element
+//  * @returns React.JSX.Element
 //  */
 // const MentionElement = (props: RenderElementProps) => {
 //   // Have to cast to MentionElement because the type is not recognized

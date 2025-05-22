@@ -268,7 +268,7 @@ class ContactInformation extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   public render() {
     if (

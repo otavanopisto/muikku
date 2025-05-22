@@ -14,7 +14,7 @@ interface PermissionsAndApprovalProps {}
  * PermissionsAndApproval
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
   props

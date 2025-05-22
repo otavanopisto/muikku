@@ -535,7 +535,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
         </div>
       ) : null;
 
-    const results: JSX.Element[] = [];
+    const results: React.JSX.Element[] = [];
 
     this.props.materials.forEach((section, index) => {
       readSpeakerParameters.push(`sectionId${section.workspaceMaterialId}`);
@@ -598,7 +598,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
           (this.props.status.isStudent || !this.props.status.loggedIn));
 
       // "section pages"
-      const sectionSpecificContentData: JSX.Element[] = [];
+      const sectionSpecificContentData: React.JSX.Element[] = [];
 
       // If section is restricted we don't return anything
       !isSectionViewRestricted &&

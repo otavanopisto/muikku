@@ -14,7 +14,7 @@ interface HopsWizardFooterProps {
  * HopsWizardFooter
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const HopsWizardFooter = (props: HopsWizardFooterProps) => {
   const { externalContentRight } = props;

@@ -47,7 +47,7 @@ interface NotesProps {
  * Creater NotesItem center component
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const Notes: React.FC<NotesProps> = (props) => {
   const { showHistoryPanel, displayNotification, userId, studentId, usePlace } =
@@ -248,7 +248,7 @@ interface NotesContainerProps {}
 /**
  * Creater NotesItem content container component
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const NotesContainer: React.FC<NotesContainerProps> = (props) => {
   const { children } = props;

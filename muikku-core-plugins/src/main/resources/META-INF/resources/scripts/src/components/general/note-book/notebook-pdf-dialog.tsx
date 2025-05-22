@@ -23,7 +23,7 @@ interface NoteBookPDFDialogProps {
 /**
  * NoteBookPDFDialog
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const NoteBookPDFDialog = (props: NoteBookPDFDialogProps) => {
   const { children, notes, workspace, isOpen, onClose } = props;

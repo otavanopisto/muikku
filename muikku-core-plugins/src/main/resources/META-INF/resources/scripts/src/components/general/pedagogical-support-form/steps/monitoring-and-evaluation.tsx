@@ -17,7 +17,7 @@ interface MonitoringAndEvaluationProps {
 /**
  * MonitoringAndEvaluation
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
   props

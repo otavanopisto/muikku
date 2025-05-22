@@ -63,7 +63,7 @@ class ConfirmRemoveDialog extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { t } = this.props;
@@ -71,7 +71,7 @@ class ConfirmRemoveDialog extends React.Component<
     /**
      * content
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const content = (closeDialog: () => any) => (
       <div>
@@ -84,7 +84,7 @@ class ConfirmRemoveDialog extends React.Component<
     /**
      * footer
      * @param closeDialog closDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">

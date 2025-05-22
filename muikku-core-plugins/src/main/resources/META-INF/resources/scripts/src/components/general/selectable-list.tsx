@@ -239,7 +239,7 @@ export default class SelectableList extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const RootElement = this.props.as || "div";

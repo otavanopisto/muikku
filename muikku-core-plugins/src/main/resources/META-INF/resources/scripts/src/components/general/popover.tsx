@@ -132,7 +132,7 @@ interface PopoverProps extends PopoverOptions {
 /**
  * Popover component
  * @param props PopoverProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export function Popover(props: PopoverProps) {
   const { children, modal = false, ...restOptions } = props;

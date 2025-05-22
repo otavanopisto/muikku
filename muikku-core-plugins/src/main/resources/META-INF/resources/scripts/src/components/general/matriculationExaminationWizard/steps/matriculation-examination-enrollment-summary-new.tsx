@@ -27,7 +27,7 @@ interface MatriculationExaminationEnrollmentSummaryProps {}
 /**
  * MatriculationExaminationEnrollmentSummary
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
   MatriculationExaminationEnrollmentSummaryProps

@@ -69,7 +69,7 @@ class Message extends React.Component<MessageProps, MessageState> {
   getMessageSender(
     sender: CommunicatorUserBasicInfo,
     userId: number
-  ): JSX.Element {
+  ): React.JSX.Element {
     if (sender.archived === true) {
       return (
         <span key={sender.userEntityId} className="message__user-archived">
@@ -123,9 +123,12 @@ class Message extends React.Component<MessageProps, MessageState> {
    *
    * @param message MessageType
    * @param userId userId of current logged in user
-   * @returns JSX.Element[][]
+   * @returns React.JSX.Element[][]
    */
-  getMessageRecipients(message: IMessage, userId: number): JSX.Element[][] {
+  getMessageRecipients(
+    message: IMessage,
+    userId: number
+  ): React.JSX.Element[][] {
     const messageRecipientsList = message.recipients.map((recipient) => {
       // If recipient is me
       const recipientIsMe = recipient.userEntityId === userId;
@@ -236,7 +239,7 @@ class Message extends React.Component<MessageProps, MessageState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     /**

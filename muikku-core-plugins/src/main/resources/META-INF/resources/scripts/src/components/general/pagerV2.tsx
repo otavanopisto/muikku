@@ -34,9 +34,9 @@ const defaultPagerV2Props = {
  * PagerV2. It extends React Paginate components props, but without aria label builder
  * which is included already in PagerV2 by default
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
-const PagerV2: React.FC<PagerV2Props> = (props): JSX.Element => {
+const PagerV2: React.FC<PagerV2Props> = (props): React.JSX.Element => {
   props = { ...defaultPagerV2Props, ...props };
   const { t } = useTranslation("paging");
   /**

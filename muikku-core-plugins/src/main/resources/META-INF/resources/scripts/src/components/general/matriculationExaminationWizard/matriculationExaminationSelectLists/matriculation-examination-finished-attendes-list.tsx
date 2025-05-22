@@ -17,7 +17,7 @@ interface MatriculationExaminationFinishedAttendesListProps {
   readOnly?: boolean;
   enrolledAttendances?: MatriculationExamEnrolledSubject[];
   examinationFinishedList: MatriculationExamFinishedSubject[];
-  pastOptions: JSX.Element[];
+  pastOptions: React.JSX.Element[];
   useTermSelect?: boolean;
   useSubjectSelect?: boolean;
   useMandatorySelect?: boolean;
@@ -38,7 +38,7 @@ const defaultUseSelectProps = {
 /**
  * MatriculationExaminationCompletedSelectsList
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const MatriculationExaminationFinishedAttendesList: React.FC<
   MatriculationExaminationFinishedAttendesListProps

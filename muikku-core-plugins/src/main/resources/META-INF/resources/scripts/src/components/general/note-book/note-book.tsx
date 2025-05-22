@@ -416,7 +416,7 @@ interface AddHereProps {
 /**
  * AddHere
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const AddHere = (props: AddHereProps) => {
   const { isActive, onClick } = props;

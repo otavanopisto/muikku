@@ -933,7 +933,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
   /**
    * Renders validation warning box based on degree type
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderValidationWarningBoxByDegreeType = () => {
     switch (examinationInformation.degreeType) {
@@ -984,7 +984,7 @@ export const MatriculationExaminationEnrollmentInformationNew = () => {
 
   /**
    * Renders correct info box based on degree type
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderInfoBoxByDegreeType = () => {
     switch (examinationInformation.degreeType) {

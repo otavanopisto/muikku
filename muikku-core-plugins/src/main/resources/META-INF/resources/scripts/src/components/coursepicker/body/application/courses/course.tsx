@@ -219,7 +219,7 @@ class Course extends React.Component<CourseProps, CourseState> {
 
   /**
    * Render assessment states
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   renderAssessmentStates = () => {
     // If there are no assessment states, there is nothing to show
@@ -319,7 +319,7 @@ class Course extends React.Component<CourseProps, CourseState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const hasFees = this.props.status.hasFees;

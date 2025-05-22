@@ -512,7 +512,7 @@ class NewEditAnnouncement extends SessionStateComponent<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     let editorTitle: string;
@@ -533,7 +533,7 @@ class NewEditAnnouncement extends SessionStateComponent<
     /**
      * content
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const content = (closeDialog: () => any) => [
       // FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
@@ -629,7 +629,7 @@ class NewEditAnnouncement extends SessionStateComponent<
     /**
      * footer
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const footer = (closeDialog: () => any) => (
       <div className="env-dialog__actions">

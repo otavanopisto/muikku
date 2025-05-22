@@ -31,7 +31,7 @@ interface TableOfContentPDFDialogProps {
 /**
  * NoteBookPDFDialog
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const TableOfContentPDFDialog = (props: TableOfContentPDFDialogProps) => {
   const {

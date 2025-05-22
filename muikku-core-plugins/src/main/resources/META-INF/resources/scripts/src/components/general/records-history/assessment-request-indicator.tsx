@@ -14,7 +14,7 @@ interface AssessmentRequestIndicatorProps {
 /**
  * Creates assessment request indicator if assessmentState is following
  * @param props component props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const AssessmentRequestIndicator: React.FC<
   AssessmentRequestIndicatorProps

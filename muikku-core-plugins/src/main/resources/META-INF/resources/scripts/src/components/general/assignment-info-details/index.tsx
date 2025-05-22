@@ -22,7 +22,7 @@ interface AssignmentDetailsProps {
 /**
  * Assignment details component
  * @param props AssignmentDetailsProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
   const { assignmentInfoList } = props;

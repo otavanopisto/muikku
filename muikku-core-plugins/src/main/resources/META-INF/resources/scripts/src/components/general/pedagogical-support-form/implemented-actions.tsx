@@ -20,7 +20,7 @@ interface ImplementedActionsListProps {}
 /**
  * ImplementedActionsList
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const ImplementedActionsList: React.FC<ImplementedActionsListProps> = (
   props
@@ -44,7 +44,7 @@ interface ImplementedActionsListItemProps {
 /**
  * ImplementedActionsListItem
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const ImplementedActionsListItem: React.FC<
   ImplementedActionsListItemProps
@@ -188,7 +188,7 @@ interface AddNewActionsBoxProps {
 /**
  * AddNewActionsBox
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const AddNewActionsBox: React.FC<AddNewActionsBoxProps> = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);

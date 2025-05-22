@@ -488,7 +488,7 @@ class DiscussionSubscriptions extends React.Component<
    * Renders area item
    *
    * @param area area
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   renderAreaItem = (area: DiscussionSubscribedArea) => {
     const subscribedArea = area.area;
@@ -568,7 +568,7 @@ class DiscussionSubscriptions extends React.Component<
    * Renders thread item
    *
    * @param sThreads sThreads
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   renderThreadItem = (sThreads: DiscussionSubscribedThread) => {
     const subscribredThread = sThreads.thread;
@@ -699,7 +699,7 @@ class DiscussionSubscriptions extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { discussion } = this.props;

@@ -12,7 +12,7 @@ interface StepperProps {
 /**
  * Stepper
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const Stepper: React.FC<StepperProps> = (props) => {
   const { modifiers } = props;
@@ -44,7 +44,7 @@ interface StepperItemProps {
 /**
  * StepperItem
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const StepperItem = (props: StepperItemProps) => {
   const {

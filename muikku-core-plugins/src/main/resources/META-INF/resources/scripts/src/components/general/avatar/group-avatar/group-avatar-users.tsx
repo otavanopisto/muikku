@@ -9,13 +9,13 @@ import { useTranslation } from "react-i18next";
  */
 export interface GroupAvatarUsersProps {
   users: AvatarGroupUser[];
-  action?: (userId: number) => JSX.Element;
+  action?: (userId: number) => React.JSX.Element;
 }
 
 /**
  * Avatar
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const GroupAvatarUsers = (props: GroupAvatarUsersProps) => {
   const [filter, setFilter] = React.useState<string>("");

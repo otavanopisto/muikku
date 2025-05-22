@@ -19,7 +19,7 @@ interface UserProps {
 /**
  * User
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export default function User(props: UserProps) {
   return (

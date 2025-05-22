@@ -19,7 +19,7 @@ export interface RecorderControlsProps {
  * RecorderControls
  * Component that renders recording controls, start/save buttons etc
  * @param props component properties
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function RecorderControls(props: RecorderControlsProps) {
   const { t } = useTranslation("materials");

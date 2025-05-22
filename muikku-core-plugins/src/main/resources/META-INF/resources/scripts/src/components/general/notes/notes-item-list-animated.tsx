@@ -12,7 +12,7 @@ interface NotesItemListAnimatedProps {
 /**
  * Creater NotesItem list component
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const NotesItemListAnimated: React.FC<NotesItemListAnimatedProps> = (props) => {
   const { children, isLoadingList } = props;

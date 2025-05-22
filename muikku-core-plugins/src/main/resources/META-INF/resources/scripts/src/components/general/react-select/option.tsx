@@ -5,7 +5,7 @@ import { OptionWithExtraContent } from "./types";
 /**
  * OptionWithDescription
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const OptionWithDescription = <CustomValue,>(
   props: OptionProps<OptionWithExtraContent<CustomValue>>

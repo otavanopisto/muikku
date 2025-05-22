@@ -14,7 +14,7 @@ interface PrivateRoomListProps {
 /**
  * RoomsList
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function PrivateRoomList(props: PrivateRoomListProps) {
   const { onItemClick } = props;
@@ -75,7 +75,7 @@ interface PublicRoomsListProps {
 /**
  * PublicRoomsList
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function PublicRoomsList(props: PublicRoomsListProps) {
   const { onItemClick } = props;
@@ -139,7 +139,7 @@ interface ChatRoomProps {
 /**
  * ChatRoom
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatRoom(props: ChatRoomProps) {
   const { room, isActive, chatActivity, onItemClick } = props;

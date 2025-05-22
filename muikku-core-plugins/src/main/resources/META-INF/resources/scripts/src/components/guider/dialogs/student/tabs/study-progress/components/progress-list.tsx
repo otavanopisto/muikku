@@ -32,7 +32,7 @@ interface ProgressListProps
 /**
  * HopsPlanningList
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ProgressList: React.FC<ProgressListProps> = (props) => {
   const {
@@ -55,7 +55,7 @@ const ProgressList: React.FC<ProgressListProps> = (props) => {
   /**
    * Render optional course item content
    * @param params params
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderCourseItem = (params: RenderItemParams) => {
     const { subject, course, listItemModifiers } = params;
@@ -181,7 +181,7 @@ interface SuggestionListContentProps {
 /**
  * SuggestionListContent
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const SuggestionListContent = (props: SuggestionListContentProps) => {
   const { suggestion, suggestedCourses, suggestionContext, onSignUpBehalf } =

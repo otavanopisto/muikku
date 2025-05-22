@@ -15,7 +15,7 @@ interface NoteBookPFDProps {
 /**
  * NoteBookPDF
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const NoteBookPDF = (props: NoteBookPFDProps) => {
   const { notes } = props;
@@ -23,7 +23,7 @@ const NoteBookPDF = (props: NoteBookPFDProps) => {
   /**
    * renderNote
    * @param note note
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderNote = (note: WorkspaceNote) => (
     <View key={note.id} wrap={false} style={styles.noteContainer}>

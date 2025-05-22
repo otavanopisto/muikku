@@ -19,7 +19,7 @@ interface StudyProgressProps {
 /**
  * StudyProgress
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const StudyProgress: React.FC<StudyProgressProps> = (props) => {
   const {

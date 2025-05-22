@@ -39,7 +39,7 @@ interface StudyHistoryProps {
 /**
  *StudyHistory component
  * @param props StudyHistoryProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
   const isAtMobileWidth = useIsAtBreakpoint(breakpoints.breakpointPad);

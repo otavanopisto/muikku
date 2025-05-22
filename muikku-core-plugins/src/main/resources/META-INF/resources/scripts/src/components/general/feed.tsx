@@ -24,7 +24,7 @@ interface FeedState {}
 class Feed extends React.Component<FeedProps, FeedState> {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (

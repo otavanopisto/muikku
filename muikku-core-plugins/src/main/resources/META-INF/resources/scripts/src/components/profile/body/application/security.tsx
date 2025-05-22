@@ -181,7 +181,7 @@ class Security extends React.Component<SecurityProps, SecurityState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   public render() {
     if (this.props.profile.location !== "security") {

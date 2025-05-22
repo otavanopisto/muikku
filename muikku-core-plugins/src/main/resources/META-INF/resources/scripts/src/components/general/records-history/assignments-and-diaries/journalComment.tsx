@@ -22,7 +22,7 @@ interface JournalCommentProps extends WorkspaceJournalComment {
 /**
  * Creates journal comment component
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const JournalComment: React.FC<JournalCommentProps> = (props) => {
   const { comment, status, created, id, firstName, lastName, authorId } = props;

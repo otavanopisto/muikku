@@ -29,11 +29,11 @@ export interface OPSCourseTableProps extends StudentActivityByStatus {
   curriculumName: string;
   studyProgrammeName: string;
   studentOptions: string[];
-  renderCourseCell?: (params: RenderItemParams) => JSX.Element;
+  renderCourseCell?: (params: RenderItemParams) => React.JSX.Element;
   renderEmptyCell?: (params: {
     index: number;
     modifiers: string[];
-  }) => JSX.Element;
+  }) => React.JSX.Element;
 }
 
 /**

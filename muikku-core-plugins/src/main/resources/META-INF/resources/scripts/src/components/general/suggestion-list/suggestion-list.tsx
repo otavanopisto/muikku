@@ -49,7 +49,7 @@ const defaultSuggestionListProps = {
  * Suggestion list component
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const SuggestionList = (props: HopsSuggestionListProps) => {
   props = { ...defaultSuggestionListProps, ...props };

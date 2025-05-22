@@ -80,7 +80,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (

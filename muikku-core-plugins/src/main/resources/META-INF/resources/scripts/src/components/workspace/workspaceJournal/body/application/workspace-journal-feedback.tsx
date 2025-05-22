@@ -14,7 +14,7 @@ interface WorkspaceJournalFeedbackProps {
 /**
  * WorkspaceJournalFeedback
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const WorkspaceJournalFeedback: React.FC<WorkspaceJournalFeedbackProps> = (
   props

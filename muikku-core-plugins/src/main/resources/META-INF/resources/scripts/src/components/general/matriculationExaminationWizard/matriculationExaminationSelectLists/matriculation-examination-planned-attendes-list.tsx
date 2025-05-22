@@ -14,7 +14,7 @@ interface MatriculationExaminationPlannedAttendesListProps {
   useSubjectSelect?: boolean;
   useMandatorySelect?: boolean;
   examinationPlannedList: MatriculationExamPlannedSubject[];
-  nextOptions: JSX.Element[];
+  nextOptions: React.JSX.Element[];
   onDeleteRow?: (index: number) => (e: React.MouseEvent) => void;
 }
 
@@ -27,7 +27,7 @@ const defaultUseSelectProps = {
 /**
  * MatriculationExaminationFutureSelectsList
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const MatriculationExaminationPlannedAttendesList: React.FC<
   MatriculationExaminationPlannedAttendesListProps

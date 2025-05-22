@@ -52,7 +52,7 @@ interface CourseCarouselProps {
 /**
  * Carousel
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const CourseCarousel: React.FC<CourseCarouselProps> = (props) => {
   const { t } = useTranslation("courseCarousel");
@@ -117,7 +117,7 @@ interface CourseCarouselItemProps {
 /**
  * CourseCarouselItem
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const CourseCarouselItem: React.FC<CourseCarouselItemProps> = (props) => {
   const { t } = useTranslation("courseCarousel");

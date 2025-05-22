@@ -14,14 +14,14 @@ export interface AvatarEntity {
   showTooltip?: boolean;
   groupAvatar?: "usergroup" | "workspace";
   groupMembers?: AvatarGroupUser[];
-  groupMemberAction?: (userId: number) => JSX.Element;
+  groupMemberAction?: (userId: number) => React.JSX.Element;
 }
 
 /**
  * UserAvatarProps
  */
 export interface UserAvatarProps {
-  action?: (userId: number) => JSX.Element;
+  action?: (userId: number) => React.JSX.Element;
   hasImage: boolean;
   id: number | null;
   name: string;
@@ -36,7 +36,7 @@ export interface UserAvatarProps {
 /**
  * UserAvatar
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const UserAvatar = (props: UserAvatarProps) => {
   const {

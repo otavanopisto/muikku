@@ -138,7 +138,7 @@ export default class TagInput extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (
@@ -206,7 +206,7 @@ interface TagItemsState {}
 export class TagItems extends React.Component<TagItemsProps, TagItemsState> {
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (
@@ -272,7 +272,7 @@ export class TagItem extends React.Component<TagItemProps, TagItemState> {
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (

@@ -33,10 +33,10 @@ class NavigationAside extends React.Component<
 > {
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
-    const navigationElementList: JSX.Element[] =
+    const navigationElementList: React.JSX.Element[] =
       this.props.announcements.navigation.map(
         (navItem: AnnouncerNavigationItemType) => (
           <NavigationElement

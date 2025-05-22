@@ -22,7 +22,7 @@ interface EditorMentionsProps {
 /**
  * ChatEditorMentions
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function EditorMentions(props: EditorMentionsProps) {
   if (!props.target || props.mentions.length <= 0 || !props.selectedMention) {

@@ -25,7 +25,7 @@ interface PedagogyPDFProps {
  * Data is parsed from JSON to FormData and can be undefined, so data is rendered conditionally.
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const PedagogyPDF = (props: PedagogyPDFProps) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common", "users"]);

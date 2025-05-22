@@ -62,7 +62,7 @@ class SaveExtraDetailsDialog extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { changedFields, onExtraDetailsChange } = this.props;
@@ -70,7 +70,7 @@ class SaveExtraDetailsDialog extends React.Component<
     /**
      * content
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const content = (closeDialog: () => void) => (
       <div className="hops-container__row" style={{ flexDirection: "column" }}>

@@ -573,7 +573,7 @@ class WorkspaceMaterials extends React.Component<
       ) : null;
 
     // All material sections with pages and other possible elements
-    const results: JSX.Element[] = [];
+    const results: React.JSX.Element[] = [];
 
     this.props.materials.forEach((section, index) => {
       readSpeakerParameters.push(`sectionId${section.workspaceMaterialId}`);
@@ -636,7 +636,7 @@ class WorkspaceMaterials extends React.Component<
           (this.props.status.isStudent || !this.props.status.loggedIn));
 
       // "section pages"
-      const sectionSpecificContentData: JSX.Element[] = [];
+      const sectionSpecificContentData: React.JSX.Element[] = [];
 
       // If section is restricted we don't return anything
       !isSectionViewRestricted &&

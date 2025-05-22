@@ -394,7 +394,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    * @param element element
    * @param props props
    * @param key key
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   getObjectElement(
     element: HTMLElement,
@@ -570,7 +570,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const path =

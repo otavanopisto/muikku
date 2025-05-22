@@ -30,7 +30,7 @@ interface AnimatedViewProps {}
  * AnimatedStep
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const AnimatedView: React.FC<AnimatedViewProps> = React.memo(
   function AnimatedView(props) {

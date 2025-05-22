@@ -22,7 +22,7 @@ interface ImplementedSupportActionsProps {
  * ImplementedSupportActions
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
   props

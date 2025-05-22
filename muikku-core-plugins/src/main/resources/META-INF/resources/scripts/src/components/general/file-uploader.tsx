@@ -295,7 +295,7 @@ class FileUploader extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     // Download All is not rendered with material page's attachments list nor in Guider

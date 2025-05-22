@@ -17,7 +17,7 @@ interface DocumentInformationProps {}
  * DocumentInformation
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
   const { t } = useTranslation("pedagogySupportPlan");

@@ -274,8 +274,8 @@ export interface MaterialLoaderProps {
   invisible?: boolean;
   answersVisible?: boolean;
   isViewRestricted?: boolean;
-  readspeakerComponent?: JSX.Element;
-  anchorElement?: JSX.Element;
+  readspeakerComponent?: React.JSX.Element;
+  anchorElement?: React.JSX.Element;
 
   children?: (
     props: MaterialLoaderProps,

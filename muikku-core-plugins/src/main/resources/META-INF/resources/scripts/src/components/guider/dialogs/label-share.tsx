@@ -184,7 +184,7 @@ class GuiderLabelShareDialog extends React.Component<
 
   /**
    * Component Render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     /**

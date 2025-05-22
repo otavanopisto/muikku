@@ -39,7 +39,7 @@ interface ChatMessageProps {
 /**
  * ChatMessage
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ChatMessage = React.forwardRef<HTMLDivElement, ChatMessageProps>(
   function ChatMessage(props, ref) {
@@ -299,7 +299,7 @@ interface DesktopMessageActionsProps {
 /**
  * DesktopMessageActions
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function DesktopMessageActions(props: DesktopMessageActionsProps) {
   const { mainActions } = props;

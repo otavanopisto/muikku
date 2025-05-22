@@ -16,7 +16,7 @@ interface RecordsAssessmentIndicatorProps {
 /**
  * Creates component that shows assessment
  * @param props Component props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const RecordsAssessmentIndicator: React.FC<RecordsAssessmentIndicatorProps> = (
   props

@@ -45,7 +45,7 @@ interface UpperSecondaryPedagogicalSupportWizardFormmProps {
  * Creates a new UpperSecondaryPedagogicalSupportForm component.
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const UpperSecondaryPedagogicalSupportWizardForm: React.FC<
   UpperSecondaryPedagogicalSupportWizardFormmProps
@@ -221,7 +221,7 @@ interface OverlayComponentProsp {}
 /**
  * OverlayComponent
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const OverlayComponent: React.FC<OverlayComponentProsp> = (props) => (
   <div className="pedagogy-form__overlay">{props.children}</div>

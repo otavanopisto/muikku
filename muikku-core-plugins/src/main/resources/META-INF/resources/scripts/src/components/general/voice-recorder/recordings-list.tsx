@@ -21,7 +21,7 @@ const defaultRecordListProps = {
 /**
  * RecordingsList
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function RecordingsList(props: RecordingsListProps) {
   props = { ...defaultRecordListProps, ...props };

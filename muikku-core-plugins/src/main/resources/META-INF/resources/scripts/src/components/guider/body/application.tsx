@@ -14,7 +14,7 @@ import { GuiderContext, GuiderView } from "../context";
  * GuiderApplicationProps
  */
 interface GuiderApplicationProps extends WithTranslation<["common"]> {
-  aside: JSX.Element;
+  aside: React.JSX.Element;
 }
 
 /**
@@ -63,7 +63,7 @@ class GuiderApplication extends React.Component<
   /**
    * handleContent
    * @param content type of content
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   handleContent = (content: GuiderView) => {
     switch (content) {

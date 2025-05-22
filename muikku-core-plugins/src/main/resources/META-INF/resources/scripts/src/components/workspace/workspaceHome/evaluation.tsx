@@ -41,7 +41,7 @@ const getAssessmentVariables = (assessment: WorkspaceAssessmentState) => {
 /**
  * WorkspaceEvaluationPanel
  * @param props workspaceEvaluationPanelProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const WorkspaceEvaluationPanel = (props: workspaceEvaluationPanelProps) => {
   const { t } = useTranslation("workspace");

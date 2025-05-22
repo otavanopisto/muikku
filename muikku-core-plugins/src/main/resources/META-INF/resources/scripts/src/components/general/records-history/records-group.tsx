@@ -19,7 +19,7 @@ interface RecordsGroupProps {
 /**
  * RecordsListItem
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const RecordsGroup: React.FC<RecordsGroupProps> = (props) => {
   const { recordGroup } = props;

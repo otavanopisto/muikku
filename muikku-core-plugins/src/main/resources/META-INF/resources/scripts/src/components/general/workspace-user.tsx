@@ -28,7 +28,7 @@ interface workspaceUserProps {
 /**
  * WorkspaceUser
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export default function WorkspaceUser(props: workspaceUserProps) {
   const { t } = useTranslation(["common"]);

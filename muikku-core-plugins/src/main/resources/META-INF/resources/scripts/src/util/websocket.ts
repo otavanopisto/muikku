@@ -6,7 +6,6 @@
 
 import actions from "../actions/base/notifications";
 import $ from "~/lib/jquery";
-import { Action } from "redux";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import i18n from "~/locales/i18n";
 import { AppStore } from "~/reducers/configureStore";
@@ -477,9 +476,7 @@ export default class MuikkuWebsocket {
           // one minute has passed, let's give up
           this.discardCurrentWebSocket(true);
           this.store.dispatch(
-            actions.openNotificationDialog(
-              i18n.t("notifications.502")
-            ) as Action
+            actions.openNotificationDialog(i18n.t("notifications.502"))
           );
         } else {
           // Reconnect retry failed, retry after reconnectInterval

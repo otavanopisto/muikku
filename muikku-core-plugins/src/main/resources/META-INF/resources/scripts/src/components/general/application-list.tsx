@@ -31,7 +31,7 @@ export default class ApplicationList extends React.Component<
 > {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const modifiers =
@@ -103,7 +103,7 @@ export class ApplicationListItem extends React.Component<
 > {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const newProps: ApplicationListItemProps = Object.assign({}, this.props);
@@ -162,7 +162,7 @@ export class ApplicationListItemDate extends React.Component<
 > {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const modifiers =

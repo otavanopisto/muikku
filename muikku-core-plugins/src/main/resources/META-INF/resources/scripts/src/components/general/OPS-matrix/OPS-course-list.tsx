@@ -33,7 +33,7 @@ export interface OPSCourseListProps extends StudentActivityByStatus {
   curriculumName: string;
   studyProgrammeName: string;
   studentOptions: string[];
-  renderCourseItem?: (params: RenderItemParams) => JSX.Element;
+  renderCourseItem?: (params: RenderItemParams) => React.JSX.Element;
 }
 
 /**

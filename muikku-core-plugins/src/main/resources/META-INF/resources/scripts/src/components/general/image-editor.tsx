@@ -448,7 +448,7 @@ export default class ImageEditor extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const displayBoxStyle = Object.assign(

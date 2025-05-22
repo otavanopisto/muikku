@@ -26,7 +26,7 @@ interface NeedOfSupportInformationProps {}
  * NeedOfSupportInformation
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
   props

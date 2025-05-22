@@ -151,11 +151,11 @@ class WorkspaceHomeHeader extends React.Component<
     /**
      * length/s default to undefined if additionalInfo is not present
      */
-    let workspaceLengthOrLengths: undefined | JSX.Element;
+    let workspaceLengthOrLengths: undefined | React.JSX.Element;
     /**
      * name/s default to undefined if additionalInfo is not present
      */
-    let workspaceSubjectNameOrNames: undefined | JSX.Element;
+    let workspaceSubjectNameOrNames: undefined | React.JSX.Element;
 
     /**
      * First assessmenState for when it's not a a combinationWorkspace - makes the code cleaner

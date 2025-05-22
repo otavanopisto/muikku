@@ -11,7 +11,7 @@ interface MatriculationWizardHeaderProps {}
 /**
  * StepWizardHeader
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const MatriculationWizardHeader = (props: MatriculationWizardHeaderProps) => {
   const {

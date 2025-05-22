@@ -15,7 +15,7 @@ interface TransfereCreditIndicatorProps {
 /**
  * Creates indicator for transferecredit
  * @param props Component props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const TransferedCreditIndicator: React.FC<TransfereCreditIndicatorProps> = (
   props

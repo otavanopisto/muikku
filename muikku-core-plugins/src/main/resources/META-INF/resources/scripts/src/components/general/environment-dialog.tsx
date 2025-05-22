@@ -12,7 +12,7 @@ import { ReactReduxContext } from "react-redux";
 export default class EnvironmentDialog extends Dialog {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (

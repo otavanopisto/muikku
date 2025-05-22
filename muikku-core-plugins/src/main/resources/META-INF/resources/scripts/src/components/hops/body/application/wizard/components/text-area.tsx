@@ -15,7 +15,7 @@ interface TextareaProps
 /**
  * Textarea
  * @param props props
- * @returns JSX.Element. Textarea component
+ * @returns React.JSX.Element. Textarea component
  */
 export const Textarea: React.FC<TextareaProps> = (props) => {
   const { label, id, ...textareaProps } = props;

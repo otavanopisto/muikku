@@ -106,7 +106,7 @@ class Material extends React.Component<MaterialProps, MaterialState> {
 
   /**
    * Renders indicator
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   renderIndicator = () => {
     const { compositeReply, t } = this.props;

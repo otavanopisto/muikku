@@ -34,7 +34,7 @@ interface TableOfContentPFDProps {
 /**
  * TableOfContentPDF
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const TableOfContentPDF = (props: TableOfContentPFDProps) => {
   const {
@@ -47,7 +47,7 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
 
   /**
    * renderToc
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderToc = () => {
     const content: ContentType[] = [];
@@ -81,7 +81,7 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
    * renderContentElement
    * @param mSubNode mSubNode
    * @param index index
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderContentElement = (
     mSubNode: MaterialContentNodeWithIdAndLogic,
@@ -219,7 +219,7 @@ const TableOfContentPDF = (props: TableOfContentPFDProps) => {
    * renderContentTopic
    * @param mNode mNode
    * @param index index
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderContentTopic = (
     mNode: MaterialContentNodeWithIdAndLogic,
@@ -315,7 +315,7 @@ type Icon = "check" | "thumb-up" | "thumb-down" | "restriction";
  * renderIcon
  * @param icon icon
  * @param color color
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const renderIcon = (icon: Icon, color?: string) => {
   switch (icon) {
@@ -339,7 +339,7 @@ const renderIcon = (icon: Icon, color?: string) => {
 /**
  * iconCheck
  * @param color color
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const iconCheck = (color?: string) => (
   <Svg style={styles.tocElementIcon} viewBox="0 0 28 28">
@@ -354,7 +354,7 @@ const iconCheck = (color?: string) => (
 /**
  * iconRestriction
  * @param color color
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const iconRestriction = (color: string) => (
   <Svg style={styles.tocElementIcon} viewBox="0 0 28 28">
@@ -369,7 +369,7 @@ const iconRestriction = (color: string) => (
 /**
  * iconThumbUp
  * @param color color
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const iconThumbUp = (color: string) => (
   <Svg style={styles.tocElementIcon} viewBox="0 0 28 28">
@@ -384,7 +384,7 @@ const iconThumbUp = (color: string) => (
 /**
  * iconThumbDown
  * @param color color
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const iconThumbDown = (color: string) => (
   <Svg style={styles.tocElementIcon} viewBox="0 0 28 28">

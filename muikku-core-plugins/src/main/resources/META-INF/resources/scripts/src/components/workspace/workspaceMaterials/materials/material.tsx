@@ -45,8 +45,8 @@ interface WorkspaceMaterialProps extends WithTranslation {
   showEvenIfHidden: boolean;
   workspace: WorkspaceDataType;
   setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
-  anchorItem?: JSX.Element;
-  readspeakerComponent?: JSX.Element;
+  anchorItem?: React.JSX.Element;
+  readspeakerComponent?: React.JSX.Element;
 }
 
 /**

@@ -15,7 +15,7 @@ interface NewHopsEventDescriptionDialogProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: React.ReactElement<any>;
   isOpen: boolean;
-  content: JSX.Element;
+  content: React.JSX.Element;
   onSaveClick?: () => void;
   onCancelClick?: () => void;
 }
@@ -43,13 +43,13 @@ class NewHopsEventDescriptionDialog extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     /**
      * content
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const content = (closeDialog: () => void) => this.props.content;
 

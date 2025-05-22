@@ -249,7 +249,7 @@ class MultiSelectField extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { t } = this.props;

@@ -38,7 +38,7 @@ interface DiscussionThreadProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClick: (event: React.MouseEvent<HTMLDivElement>) => any;
   onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-  avatar: JSX.Element;
+  avatar: React.JSX.Element;
   children?: React.ReactNode;
 }
 

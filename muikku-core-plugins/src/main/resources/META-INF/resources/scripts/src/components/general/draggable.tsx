@@ -92,7 +92,7 @@ export class Droppable extends React.Component<DroppableProps, DroppableState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const Element: any = this.props.as || "div";
@@ -588,7 +588,7 @@ export default class Draggable extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     let RootElement: any = this.props.as || "div";

@@ -29,7 +29,7 @@ interface EasytoUseToolDrawerProps {
 /**
  * EasytoUseFunctionsSideBarList
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const EasytoUseToolDrawer: React.FC<EasytoUseToolDrawerProps> = (props) => {
   const [open, setOpen] = React.useState(false);
@@ -99,7 +99,7 @@ interface EasyToUseToolListProps {
 /**
  * EasyToUseToolList
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const EasyToUseToolList: React.FC<EasyToUseToolListProps> = (props) => (
   <div

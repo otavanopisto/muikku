@@ -32,7 +32,7 @@ interface EvaluationDiaryEventCommentProps {
  * Creates evaluation diary event component
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const EvaluationJournalEventComment: React.FC<
   EvaluationDiaryEventCommentProps

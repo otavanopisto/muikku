@@ -113,7 +113,7 @@ export default class UserPanel extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const results = this.props.users.results;

@@ -43,7 +43,7 @@ class Announcements extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const articleDate =
@@ -118,7 +118,7 @@ function mapStateToProps(state: StateType) {
 /**
  * mapDispatchToProps
  * @param dispatch dispatch
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function mapDispatchToProps(dispatch: AppDispatch) {
   return {};

@@ -15,7 +15,7 @@ interface TableProps
 /**
  * Table
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const Table: React.FC<TableProps> = (props) => {
   const { children, modifiers, className, ...rest } = props;
@@ -50,7 +50,7 @@ interface ScrollableTableWrapperProps {
 /**
  * ScrollableTableWrapper
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const ScrollableTableWrapper: React.FC<ScrollableTableWrapperProps> = (
   props
@@ -84,7 +84,7 @@ interface TableHeaderProps
 /**
  * TableHead
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const TableHead: React.FC<TableHeaderProps> = (props) => {
   const { children, modifiers, className, ...rest } = props;
@@ -122,7 +122,7 @@ interface TableBodyProps
 /**
  * Tbody
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const Tbody: React.FC<TableBodyProps> = (props) => {
   const { children, modifiers, className, ...rest } = props;
@@ -164,7 +164,7 @@ interface TableFooterProps
  * @param param0.children
  * @param param0.modifiers
  * @param param0.className
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const Tfooter: React.FC<TableFooterProps> = ({
   children,
@@ -209,7 +209,7 @@ export interface TableRowProps
  * @param param0.children
  * @param param0.modifiers
  * @param param0.className
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const Tr: React.FC<TableRowProps> = ({
   children,
@@ -254,7 +254,7 @@ interface TableHeadProps
  * @param param0.children
  * @param param0.modifiers
  * @param param0.className
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const Th: React.FC<TableHeadProps> = ({
   children,
@@ -299,7 +299,7 @@ interface TableDataProps
  * @param param0.children
  * @param param0.modifiers
  * @param param0.className
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const Td: React.FC<TableDataProps> = ({
   children,

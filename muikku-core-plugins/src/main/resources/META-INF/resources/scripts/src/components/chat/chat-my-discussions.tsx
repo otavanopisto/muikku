@@ -16,7 +16,7 @@ interface ChatMyCounselorsDiscussionsProps {
 /**
  * ChatMyCounselorsDiscussions
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatMyCounselorsDiscussions(props: ChatMyCounselorsDiscussionsProps) {
   const { onItemClick } = props;
@@ -70,7 +70,7 @@ interface ChatMyDiscussionsProps {
 /**
  * ChatMyActiveDiscussions
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatMyActiveDiscussions(props: ChatMyDiscussionsProps) {
   const { onItemClick } = props;
@@ -125,7 +125,7 @@ interface ChatMyDiscussionProps {
 /**
  * Active discussion item
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatMyActiveDiscussion(props: ChatMyDiscussionProps) {
   const {

@@ -325,7 +325,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     if (this.props.openByClickOn) {

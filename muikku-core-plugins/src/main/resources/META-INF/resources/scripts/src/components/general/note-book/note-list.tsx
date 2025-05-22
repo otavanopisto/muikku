@@ -66,7 +66,7 @@ interface NoteListItemProps {
  * Creates NoteListItem component
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const NoteListItem: React.FC<NoteListItemProps> = (props) => {
   const { open, onOpenClick, note } = props;

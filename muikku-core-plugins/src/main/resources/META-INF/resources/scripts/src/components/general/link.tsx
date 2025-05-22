@@ -212,7 +212,7 @@ export class Link extends React.Component<LinkProps, LinkState> {
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     if (this.state.redirect) {

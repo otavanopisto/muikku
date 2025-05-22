@@ -59,7 +59,7 @@ export class NavigationTopic extends React.Component<
 > {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const listClassNameModifier = this.props.classModifier
@@ -118,7 +118,7 @@ export class NavigationElement extends React.Component<
 > {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     let editableComponent = null;

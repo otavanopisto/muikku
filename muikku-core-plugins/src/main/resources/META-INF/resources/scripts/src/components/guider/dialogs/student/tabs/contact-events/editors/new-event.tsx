@@ -28,7 +28,7 @@ import { AppDispatch } from "~/reducers/configureStore";
  * NewContactEventProps
  */
 interface NewContactEventProps extends WithTranslation {
-  children?: JSX.Element;
+  children?: React.JSX.Element;
   createContactLogEvent: CreateContactLogEventTriggerType;
   loadStudentContactLogs: LoadContactLogsTriggerType;
   logsPerPage: number;
@@ -199,7 +199,7 @@ class NewContactEvent extends SessionStateComponent<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const editorTitle = this.props.i18n.t("labels.create", {

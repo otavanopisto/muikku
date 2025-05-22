@@ -461,7 +461,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { t } = this.props;

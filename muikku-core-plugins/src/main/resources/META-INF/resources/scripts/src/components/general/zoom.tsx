@@ -57,7 +57,7 @@ export default class Zoom extends React.Component<ZoomProps, ZoomState> {
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     let zoomComponent: React.ReactNode = null;

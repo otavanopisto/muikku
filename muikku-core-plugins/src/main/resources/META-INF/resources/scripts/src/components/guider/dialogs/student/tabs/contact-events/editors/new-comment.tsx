@@ -114,7 +114,7 @@ class NewContactLogEventComment extends SessionStateComponent<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const editorTitle = this.props.i18n.t("labels.comment", {

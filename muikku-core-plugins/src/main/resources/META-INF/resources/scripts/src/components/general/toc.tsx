@@ -23,7 +23,7 @@ interface TocProps {
 /**
  * Toc
  * @param props TocProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const Toc: React.FC<TocProps> = (props) => (
   <div className={`toc ${props.modifier ? "toc--" + props.modifier : ""}`}>

@@ -42,7 +42,7 @@ interface EvaluationDiaryEventListProps {
  * Creates evaluation diary event component
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const EvaluationJournalEventList: React.FC<EvaluationDiaryEventListProps> = (
   props

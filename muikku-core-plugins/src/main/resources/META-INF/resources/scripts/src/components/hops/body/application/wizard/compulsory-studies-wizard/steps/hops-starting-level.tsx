@@ -111,7 +111,7 @@ const HopsStartingLevel: React.FC<HopsStartingLevelProps> = (props) => {
   /**
    * Component render method
    *
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   return (
     <div className="hops-container">

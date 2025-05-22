@@ -18,7 +18,7 @@ interface NotesItemListFilttersProps {
 /**
  * Creater NotesItem list component
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const NotesItemListFilters: React.FC<NotesItemListFilttersProps> = (props) => {
   const { filters, onFilttersChange, usePlace } = props;

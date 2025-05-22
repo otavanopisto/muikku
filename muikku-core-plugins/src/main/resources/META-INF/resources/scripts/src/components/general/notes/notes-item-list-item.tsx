@@ -259,7 +259,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     /**
      * Renders dates. Date or date range string
      *
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const renderDates = () => {
       let dateOrDateRange = undefined;
@@ -302,7 +302,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
      * renderStatus
      */
     const renderStatus = () => {
-      const statuses: JSX.Element[] = [];
+      const statuses: React.JSX.Element[] = [];
       const { status } = currentRecipient;
       if (overdue && status !== "APPROVED") {
         statuses.push(
@@ -357,7 +357,7 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
     /**
      * avatarUpdateStatus
      * @param recipientId id of the recipient to be updated
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const avatarUpdateStatus = (recipientId: number) => {
       const status = recipients?.find(
@@ -536,8 +536,8 @@ const NotesListItem = React.forwardRef<HTMLDivElement, NotesListItemProps>(
         ) : (
           <div>{title}</div>
         )}
-        {/* 
-            We render notes body even if description is missing as we use the element to push other elements to the 
+        {/*
+            We render notes body even if description is missing as we use the element to push other elements to the
             bottom to help maintain consistent rendering within the notes element
         */}
         <div

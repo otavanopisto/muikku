@@ -42,7 +42,7 @@ interface NotesItemListContentProps {
 /**
  * Creater NotesItem content container component
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const NotesItemList: React.FC<NotesItemListContentProps> = (props) => {
   const {

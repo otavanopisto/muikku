@@ -141,7 +141,7 @@ class StudentWorkspace extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { workspace } = this.props;
@@ -164,7 +164,7 @@ class StudentWorkspace extends React.Component<
 
     /**
      * Renders combination subject assessesments
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const renderCombinationSubjectAssessments = () => (
       <ApplicationListItemContentContainer modifiers="combination-course">
@@ -207,7 +207,7 @@ class StudentWorkspace extends React.Component<
 
     /**
      * Render Course activity data like assessment date and text descriping its state
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const renderCourseActivity = () => (
       <div className="application-sub-panel__item application-sub-panel__item--course-activity">
@@ -461,7 +461,7 @@ interface CourseActivityRowProps<C> {
 /**
  * CourseActivityRow
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const CourseActivityRow = <C,>(props: CourseActivityRowProps<C>) => {
   const { mainAttribute, conditionalAttribute } = props;
@@ -539,7 +539,7 @@ interface GuiderAssessmentProps {
 /**
  * GuiderAssessment
  * @param props component prosp
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const GuiderAssessment: React.FC<GuiderAssessmentProps> = (props) => {
   const { assessment } = props;
@@ -607,7 +607,7 @@ interface GuiderWorkspacePercentsProps {
 /**
  * GuiderWorkspacePercents
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const GuiderWorkspacePercents: React.FC<GuiderWorkspacePercentsProps> = (
   props

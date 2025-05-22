@@ -824,14 +824,14 @@ class WorkspaceEditor extends SessionStateComponent<
    * Creates select options
    * @returns List of options
    */
-  renderSelectOptions = (): JSX.Element[] | undefined => {
+  renderSelectOptions = (): React.JSX.Element[] | undefined => {
     const parsedOptions = this.parsePriceOptions();
 
     if (parsedOptions === undefined) {
       return undefined;
     }
 
-    const options: JSX.Element[] = parsedOptions.map((item) => (
+    const options: React.JSX.Element[] = parsedOptions.map((item) => (
       <option key={item.value} value={item.value.toString()}>
         {item.name}
       </option>
@@ -842,7 +842,7 @@ class WorkspaceEditor extends SessionStateComponent<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { t, assignmentInfoArray } = this.props;

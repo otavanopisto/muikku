@@ -11,7 +11,7 @@ interface NotesItemListProps {
 /**
  * Creater NotesItem list component
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const NotesItemListWithoutAnimation: React.FC<NotesItemListProps> = (props) => {
   const { children, isLoadingList } = props;

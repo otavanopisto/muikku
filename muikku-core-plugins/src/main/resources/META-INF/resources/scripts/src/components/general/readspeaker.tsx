@@ -44,7 +44,7 @@ interface ReadSpeakerReaderProps {
  * Component is used where webReader is needed.
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ReadSpeakerReader = (props: ReadSpeakerReaderProps) => {
   const { readParameterType, editMode, entityId, status } = props;
@@ -138,7 +138,7 @@ interface ReadspeakerMessageProps {
  * ReadspeakerMessageProps
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const ReadspeakerMessage = (props: ReadspeakerMessageProps) => (
   <span

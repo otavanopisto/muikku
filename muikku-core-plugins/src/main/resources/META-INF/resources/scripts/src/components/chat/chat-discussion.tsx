@@ -11,7 +11,7 @@ interface ChatDiscussionProps {}
 /**
  * ChatDiscussion
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatDiscussion(props: ChatDiscussionProps) {
   const { activeDiscussion, discussionInstances } = useChatContext();

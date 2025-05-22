@@ -38,7 +38,7 @@ interface ProfileItemState {}
 class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     if (!this.props.status.loggedIn) {

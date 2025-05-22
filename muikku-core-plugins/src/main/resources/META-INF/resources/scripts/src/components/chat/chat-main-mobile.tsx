@@ -152,7 +152,7 @@ interface ChatSidePanelProps {
 /**
  * ChatSidePanel
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatSidePanel(props: ChatSidePanelProps) {
   const { open, onOpen, children, onClose, panelMaxWidth, panelPosition } =

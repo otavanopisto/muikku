@@ -51,7 +51,7 @@ interface BodyTitleProps {
 /**
  * Panel body title
  * @param props BodyTitleProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const PanelBodyTitle: React.FC<BodyTitleProps> = (props) => {
   const { children, modifier } = props;
@@ -76,7 +76,7 @@ interface BodyContentProps {
 /**
  * Panel body content
  * @param props BodyContentProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const PanelBodyContent: React.FC<BodyContentProps> = (props) => {
   const { modifier, children } = props;

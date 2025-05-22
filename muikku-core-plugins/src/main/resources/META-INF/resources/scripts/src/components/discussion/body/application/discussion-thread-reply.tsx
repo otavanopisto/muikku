@@ -29,7 +29,7 @@ interface DiscussionThreadReplyProps extends WithTranslation {
   discussionItem: DiscussionThreadReply;
   status: StatusType;
   user: DiscussionUser;
-  avatar?: JSX.Element;
+  avatar?: React.JSX.Element;
   isStudent: boolean;
   isHidden: boolean;
   canRemoveMessage: boolean;
@@ -89,7 +89,7 @@ class DiscussionThreadReplyComponent extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const {

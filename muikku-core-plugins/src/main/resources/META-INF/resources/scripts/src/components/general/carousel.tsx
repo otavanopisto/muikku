@@ -41,7 +41,7 @@
 
 //   /**
 //    * Component render method
-//    * @returns JSX.Element
+//    * @returns React.JSX.Element
 //    */
 //   render() {
 //     return (
@@ -70,7 +70,7 @@
 // > {
 //   /**
 //    * Component render method
-//    * @returns JSX.Element
+//    * @returns React.JSX.Element
 //    */
 //   render() {
 //     return (
@@ -90,7 +90,7 @@
 // > {
 //   /**
 //    * Component render method
-//    * @returns JSX.Element
+//    * @returns React.JSX.Element
 //    */
 //   render() {
 //     return (

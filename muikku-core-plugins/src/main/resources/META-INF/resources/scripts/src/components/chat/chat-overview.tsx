@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
 
 /**
  * ChatOverview
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatOverview() {
   const { roomFilters, updateRoomFilters, userFilters, updateUserFilters } =
@@ -147,7 +147,7 @@ interface ChatOverviewHeaderProps {
 /**
  * ChatOverviewHeader
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
   const { onTabChange, activeTab } = props;
@@ -256,7 +256,7 @@ function ChatOverviewHeader(props: ChatOverviewHeaderProps) {
 
 /**
  * ChatOverviewUsersList
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatOverviewUsersList() {
   const {
@@ -300,7 +300,7 @@ function ChatOverviewUsersList() {
 
   /**
    * Renders list of users or empty message
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderContent = () => {
     if (dashboardUsers.length === 0) {
@@ -364,7 +364,7 @@ function ChatOverviewUsersList() {
 
 /**
  * ChatOverviewBlockedList
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatOverviewBlockedList() {
   const {
@@ -406,7 +406,7 @@ function ChatOverviewBlockedList() {
 
   /**
    * renderContent
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderContent = () => {
     if (dashboardBlockedUsers.length === 0) {
@@ -461,7 +461,7 @@ function ChatOverviewBlockedList() {
 
 /**
  * ChatOverviewRoomsList
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatOverviewRoomsList() {
   const {
@@ -513,7 +513,7 @@ function ChatOverviewRoomsList() {
 
   /**
    * renderContent
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderContent = () => {
     if (filteredAndSortedRooms.length === 0) {
@@ -589,7 +589,7 @@ interface ToggleRoomNotificationsButtonProps {
 /**
  * ToggleRoomNotificationsButton
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ToggleRoomNotificationsButton(
   props: ToggleRoomNotificationsButtonProps
@@ -757,7 +757,7 @@ interface OverviewUserFiltersProps {
 /**
  * OverviewUserFilters
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export function OverviewUserFilters(props: OverviewUserFiltersProps) {
   const { currentFilters, onFiltersChange } = props;
@@ -868,7 +868,7 @@ interface OverviewRoomFiltersProps {
 /**
  * OverviewRoomFilters
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export function OverviewRoomFilters(props: OverviewRoomFiltersProps) {
   const { currentFilters, onFiltersChange } = props;

@@ -62,7 +62,7 @@ const ProgressTable: React.FC<ProgressTableProps> = (props) => {
   /**
    * renderCourseCell
    * @param params params
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderCourseCell = (params: RenderItemParams) => {
     const { subject, course, tdModifiers } = params;

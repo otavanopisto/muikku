@@ -17,7 +17,7 @@ interface TextareaProps
  * @param param0 param0
  * @param param0.label label
  * @param param0.id
- * @returns JSX.Element. Textarea component
+ * @returns React.JSX.Element. Textarea component
  */
 export const Textarea: React.FC<TextareaProps> = ({
   label,

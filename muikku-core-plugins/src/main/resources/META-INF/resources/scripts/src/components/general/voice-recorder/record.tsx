@@ -35,7 +35,7 @@ const defaultRecordtProps = {
  * Shows invidual records and their functions like download/delete buttons
  * and if uploading to tempfile servlet, the proggressbar and error if so
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function Record(props: RecordProps) {
   props = { ...defaultRecordtProps, ...props };

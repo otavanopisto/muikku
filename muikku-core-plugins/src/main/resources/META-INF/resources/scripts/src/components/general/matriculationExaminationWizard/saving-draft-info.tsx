@@ -11,7 +11,7 @@ interface SavingDraftIntoProps {
 /**
  * Shows saving draft info
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const SavingDraftInfo: React.FC<SavingDraftIntoProps> = (props) => {
   const { draftState } = props;

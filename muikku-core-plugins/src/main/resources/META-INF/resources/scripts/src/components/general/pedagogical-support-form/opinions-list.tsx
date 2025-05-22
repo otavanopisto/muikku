@@ -16,7 +16,7 @@ interface OpinionListProps {}
  * Creates opinion list
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const OpinionList: React.FC<OpinionListProps> = (props) => (
   <div>{props.children}</div>
@@ -43,7 +43,7 @@ interface OpinionItemProps {
  * Creates opinion item
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const OpinionItem: React.FC<OpinionItemProps> = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
@@ -143,7 +143,7 @@ interface AddNewActionsBoxProps {
 /**
  * AddNewActionsBox
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const AddNewOpinionBox: React.FC<AddNewActionsBoxProps> = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);

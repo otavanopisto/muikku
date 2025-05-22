@@ -52,7 +52,7 @@ export type AssignmentsTabType =
 /**
  * AssignmentsAndDiaries
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
   const { status, userIdentifier, credit, userEntityId, displayNotification } =
@@ -272,7 +272,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 
   /**
    * Renders materials
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderAssignmentMaterialsList = (
     <ApplicationList>
@@ -320,7 +320,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 
   /**
    * Renders materials
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderExerciseMaterialsList = (
     <ApplicationList>
@@ -368,7 +368,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 
   /**
    * Renders materials
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderInterminEvaluationMaterialsList = (
     <ApplicationList>
@@ -418,7 +418,7 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 
   /**
    * Renders jouranls
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderJournalsList = (
     <ApplicationSubPanel modifier="studies-journal-entries">

@@ -32,7 +32,7 @@ interface JournalProps {
 /**
  * Journal Component
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const Journal: React.FC<JournalProps> = (props) => {
   const { displayNotification, journal, onJournalOpen, open } = props;

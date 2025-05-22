@@ -193,7 +193,7 @@ interface MatriculationExaminationFinishedInputGroupProps {
   enrolledAttendances: MatriculationExamEnrolledSubject[];
   subject: MatriculationExamFinishedSubject;
   selectedSubjectList: string[];
-  pastTermOptions: JSX.Element[];
+  pastTermOptions: React.JSX.Element[];
   useTermSelect?: boolean;
   useSubjectSelect?: boolean;
   useMandatorySelect?: boolean;
@@ -353,7 +353,7 @@ interface MatriculationExaminationPlannedInputGroupProps {
   index: number;
   subject: MatriculationExamPlannedSubject;
   selectedSubjectList: string[];
-  nextOptions: JSX.Element[];
+  nextOptions: React.JSX.Element[];
   useTermSelect?: boolean;
   useSubjectSelect?: boolean;
   useMandatorySelect?: boolean;
@@ -471,7 +471,7 @@ interface SubjectSelectProps
 /**
  * SubjectSelect
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const SubjectSelect: React.FC<SubjectSelectProps> = (props) => {
   const { i, selectedValues, modifier, ...selectProps } = props;
@@ -519,14 +519,14 @@ const SubjectSelect: React.FC<SubjectSelectProps> = (props) => {
 interface TermSelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {
   i: number;
-  options: JSX.Element[];
+  options: React.JSX.Element[];
   modifier: string;
 }
 
 /**
  * TermSelect
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const TermSelect: React.FC<TermSelectProps> = (props) => {
   const { i, options, modifier, ...selectProps } = props;
@@ -609,7 +609,7 @@ interface RepeatSelectProps
 /**
  * RepeatSelect
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const RepeatSelect: React.FC<RepeatSelectProps> = (props) => {
   const { i, modifier, ...selectProps } = props;
@@ -656,7 +656,7 @@ interface GradeSelectProps
 /**
  * GradeSelect
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const GradeSelect: React.FC<GradeSelectProps> = (props) => {
   const { i, modifier, ...selectProps } = props;
@@ -708,7 +708,7 @@ interface FundingSelectProps
 /**
  * FundingSelect
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const FundingSelect: React.FC<FundingSelectProps> = (props) => {
   const { i, modifier, isFailedBefore, isSucceedBefore, ...selectProps } =
@@ -800,7 +800,7 @@ interface FailedReasonSelectProps
 /**
  * FailedReasonSelect
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const FailedReasonSelect: React.FC<FailedReasonSelectProps> = (
   props

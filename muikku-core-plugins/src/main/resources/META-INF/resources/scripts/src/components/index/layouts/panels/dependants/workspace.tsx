@@ -13,7 +13,7 @@ interface DependantWorkspaceProps {
 /**
  * DependantWorkspace component
  * @param props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const DependantWorkspace: React.FC<DependantWorkspaceProps> = (props) => {
   const { workspace } = props;

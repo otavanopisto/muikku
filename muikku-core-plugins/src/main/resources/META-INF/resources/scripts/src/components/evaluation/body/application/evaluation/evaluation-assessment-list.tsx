@@ -27,7 +27,7 @@ interface AssessmentListProps {
  * Creates evaluation diary event component
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const AssessmentList: React.FC<AssessmentListProps> = (props) => {
   const { evaluation, workspaces, selectedAssessment } = props;

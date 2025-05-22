@@ -22,7 +22,7 @@ interface EasyToUseFunctionsProps {
 /**
  * EasyToUseFunctions
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const EasyToUseFunctions: React.FC<EasyToUseFunctionsProps> = (props) => {
   if (props.easyToUse) {

@@ -106,7 +106,7 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
   /**
    * Component render method
    *
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { t } = this.props;
@@ -115,7 +115,7 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
      * content
      *
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const content = (closeDialog: () => void) => (
       <div>
@@ -131,7 +131,7 @@ class ConfirmPublishRemovePageWithLinkedAnswersDialog extends React.Component<
      * footer
      *
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const footer = (closeDialog: () => void) => (
       <div className="dialog__button-set">

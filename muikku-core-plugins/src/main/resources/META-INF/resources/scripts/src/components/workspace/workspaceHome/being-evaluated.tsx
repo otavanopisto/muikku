@@ -14,7 +14,7 @@ interface BeingEvaluatedPanelProps {
 /**
  * BeingEvaluatedPanel
  * @param props workspaceEvaluationPanelProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const BeingEvaluatedPanel = (props: BeingEvaluatedPanelProps) => {
   const { workspaceIsBeingEvaluated } = props;

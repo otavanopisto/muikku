@@ -229,7 +229,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { t } = this.props;

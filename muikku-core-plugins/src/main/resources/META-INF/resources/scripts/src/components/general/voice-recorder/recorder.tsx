@@ -34,7 +34,7 @@ const MAX_RECORDING_TIME_IN_SECONDS = 60 * 5;
 /**
  * Recorder
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function Recorder(props: RecorderProps) {
   const { onIsRecordingChange, onChange, values, t } = props;

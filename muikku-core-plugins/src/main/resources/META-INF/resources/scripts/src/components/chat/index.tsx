@@ -33,7 +33,7 @@ interface ChatProps {
 /**
  * Chat component. Renders or not depending on chat settings
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const Chat = (props: ChatProps) => {
   const { chatAvailable, displayNotification } = props;
@@ -56,7 +56,7 @@ const Chat = (props: ChatProps) => {
 
 /**
  * Actual chat content. Renders chat bubble and chat window
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ChatContent = () => {
   const {

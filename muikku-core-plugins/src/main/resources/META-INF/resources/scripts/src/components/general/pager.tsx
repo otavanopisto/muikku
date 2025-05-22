@@ -27,7 +27,7 @@ interface PagerState {}
 class Pager extends React.Component<PagerProps, PagerState> {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const left = Math.floor((PAGER_MAX_PAGES - 1) / 2);

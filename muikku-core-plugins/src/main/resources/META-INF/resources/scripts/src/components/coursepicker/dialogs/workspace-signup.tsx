@@ -97,7 +97,7 @@ class WorkspaceSignupDialog extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const workspaceSignUpDetails =
@@ -112,7 +112,7 @@ class WorkspaceSignupDialog extends React.Component<
     /**
      * content
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const content = (closeDialog: () => void) => (
       <div>

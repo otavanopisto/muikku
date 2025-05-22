@@ -28,7 +28,7 @@ interface ContactEventProps {
 /**
  * ContactEvent
  * @param props ContactEventProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ContactEvent: React.FC<ContactEventProps> = (props) => {
   const {

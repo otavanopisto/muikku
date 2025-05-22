@@ -63,7 +63,7 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const Element: any = this.props.buttonAs || Link;
@@ -120,7 +120,7 @@ export default class Button extends React.Component<ButtonProps, ButtonState> {
 export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const Element = this.props.buttonAs || Link;
@@ -165,7 +165,7 @@ interface ButtonPillProps extends ButtonProps {
 export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const Element = this.props.buttonAs || Link;
@@ -217,7 +217,7 @@ interface IconButtonProps extends ButtonProps {
 export class IconButton extends React.Component<IconButtonProps, ButtonState> {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const Element = this.props.buttonAs || Link;

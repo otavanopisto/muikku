@@ -33,7 +33,7 @@ interface AnimatedStepProps {
  * AnimatedStep
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const AnimatedStep: React.FC<AnimatedStepProps> = React.memo((props) => {
   const { children, previousStep: previousStepIndex } = props;

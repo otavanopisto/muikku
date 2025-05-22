@@ -19,7 +19,7 @@ const AnnouncementsBody = (props: AnnouncementsBodyProps) => {
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const aside = <Aside />;
   return (

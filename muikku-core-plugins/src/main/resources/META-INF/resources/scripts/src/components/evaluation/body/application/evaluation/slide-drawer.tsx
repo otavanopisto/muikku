@@ -26,7 +26,7 @@ const defaultProps = {
  * SlideDrawer
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const SlideDrawer = React.forwardRef<
   HTMLElement,

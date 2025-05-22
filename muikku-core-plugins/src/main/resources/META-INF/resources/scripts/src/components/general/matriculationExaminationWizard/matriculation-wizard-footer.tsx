@@ -9,14 +9,14 @@ import { useMatriculationContext } from "./context/matriculation-context";
  */
 interface MatriculationWizardFooterProps {
   secondLastButtonText?: string;
-  lastStepButton?: JSX.Element;
+  lastStepButton?: React.JSX.Element;
 }
 
 /**
  * PedagogyFormWizardFooter
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const MatriculationWizardFooter = (props: MatriculationWizardFooterProps) => {
   const { secondLastButtonText, lastStepButton } = props;

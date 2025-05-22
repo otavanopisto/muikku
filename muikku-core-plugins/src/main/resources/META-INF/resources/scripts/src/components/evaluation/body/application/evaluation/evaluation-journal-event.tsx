@@ -56,7 +56,7 @@ export type EvaluationJournalEventRef = {
  * Creates evaluation diary event component
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const EvaluationJournalEvent = React.forwardRef<
   EvaluationJournalEventRef,
@@ -271,7 +271,7 @@ const EvaluationJournalEvent = React.forwardRef<
 
   /**
    * Renders content depending whether entry is Journal assignment or not
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderDiaryContent = () => {
     // If material with workspaceMaterialId from entry is present, entry is Journal assignment

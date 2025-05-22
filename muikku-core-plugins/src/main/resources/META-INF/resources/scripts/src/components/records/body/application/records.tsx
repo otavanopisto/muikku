@@ -62,7 +62,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { t } = this.props;

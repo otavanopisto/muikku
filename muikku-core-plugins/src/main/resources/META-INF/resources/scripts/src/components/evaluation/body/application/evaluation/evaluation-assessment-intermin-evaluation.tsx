@@ -328,7 +328,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
   /**
    * renderAssignmentStatus
    * @param compositeReply compositeReply
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   renderAssignmentMeta = (compositeReply?: MaterialCompositeReply) => {
     const { t } = this.props;

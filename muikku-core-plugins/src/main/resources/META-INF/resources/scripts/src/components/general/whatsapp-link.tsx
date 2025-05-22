@@ -12,7 +12,7 @@ interface WhatsappLinkProps {
 /**
  * WhatsappLink
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const WhatsappLink: React.FC<WhatsappLinkProps> = (props) => {
   const { t } = useTranslation(["profile", "common"]);
@@ -53,7 +53,7 @@ export const WhatsappLink: React.FC<WhatsappLinkProps> = (props) => {
 /**
  * WhatsappLink
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const WhatsappButtonLink: React.FC<WhatsappLinkProps> = (props) => {
   const { t } = useTranslation(["profile", "common"]);

@@ -28,9 +28,9 @@ export interface DialogProps {
   executeContent?: React.ReactElement<any>;
   modifier: string | Array<string>;
   localElementId?: string;
-  content: (closePortal: () => void) => JSX.Element | JSX.Element[];
+  content: (closePortal: () => void) => React.JSX.Element | React.JSX.Element[];
   disableScroll?: boolean;
-  footer?: (closePortal: () => void) => JSX.Element;
+  footer?: (closePortal: () => void) => React.JSX.Element;
   onOpen?: (e?: HTMLElement) => any;
   executeOnOpen?: () => any;
   onClose?: () => any;
@@ -127,7 +127,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     let closeOnOverlayClick = true;
@@ -259,7 +259,7 @@ interface DialogColumnContainerProps {
 /**
  * DialogColumnContainer
  * @param props DialogColumnContainerProps
- * @returns  JSX.Element
+ * @returns  React.JSX.Element
  */
 export const DialogColumnContainer: React.FC<DialogColumnContainerProps> = (
   props
@@ -297,7 +297,7 @@ export class DialogColumn extends React.Component<
 > {
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const modifiers =
@@ -337,7 +337,7 @@ interface DialogRowState {}
 export class DialogRow extends React.Component<DialogRowProps, DialogRowState> {
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const modifiers =
@@ -369,7 +369,7 @@ interface DialogTitleContainerProps {
 /**
  * DialogTitleContainer
  * @param props DialogTitleContainerProps
- * @returns  JSX.Element
+ * @returns  React.JSX.Element
  */
 export const DialogTitleContainer: React.FC<DialogTitleContainerProps> = (
   props
@@ -394,7 +394,7 @@ interface DialogTitleProps {
 /**
  * DialogTitleItem
  * @param props DialogTitleProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const DialogTitleItem: React.FC<DialogTitleProps> = (props) => (
   <span
@@ -429,7 +429,7 @@ export class DialogRowHeader extends React.Component<
 > {
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const modifiers =
@@ -495,7 +495,7 @@ export class DialogRowContent extends React.Component<
 > {
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const modifiers =
@@ -720,7 +720,7 @@ export class DialogRemoveUsers extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const removePages = Math.ceil(

@@ -27,8 +27,8 @@ export interface Tab {
   /**
    * Tab spesific action or actions for the mobile UI
    */
-  mobileAction?: JSX.Element | JSX.Element[];
-  component: JSX.Element;
+  mobileAction?: React.JSX.Element | React.JSX.Element[];
+  component: React.JSX.Element;
 }
 
 /**
@@ -67,7 +67,7 @@ const defaultProps = {
 /**
  * Tabs
  * @param props Component props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const Tabs: React.FC<TabsProps> = (props) => {
   props = { ...defaultProps, ...props };

@@ -32,7 +32,7 @@ interface ChatUserInfoPopoverProps {
  * over the popover content
  *
  * @param props InfoPopoverProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatUserInfoPopover(props: ChatUserInfoPopoverProps) {
   const { userId, children } = props;

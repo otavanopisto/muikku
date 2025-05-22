@@ -37,7 +37,7 @@ interface ChatPrivatePanelProps extends ChatPanelProps {
 /**
  * Chat Private Panel
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatPrivatePanel(props: ChatPrivatePanelProps) {
   const { targetUser } = props;
@@ -297,7 +297,7 @@ interface ChatRoomPanelProps extends ChatPanelProps {
 /**
  * Chat Room Panel
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ChatRoomPanel(props: ChatRoomPanelProps) {
   const { targetRoom } = props;

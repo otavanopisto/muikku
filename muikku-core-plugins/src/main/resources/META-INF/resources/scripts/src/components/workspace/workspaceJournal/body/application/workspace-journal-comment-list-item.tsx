@@ -42,7 +42,7 @@ interface WorkspaceJournalCommentListItemProps {
  */
 export const WorkspaceJournalCommentListItem: React.FC<
   WorkspaceJournalCommentListItemProps
-> = (props): JSX.Element => {
+> = (props): React.JSX.Element => {
   const { t } = useTranslation(["journal", "common"]);
   const { journalComment, status } = props;
 

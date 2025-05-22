@@ -302,7 +302,7 @@ class VacationSettings extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   public render() {
     if (this.props.profile.location !== "vacation") {

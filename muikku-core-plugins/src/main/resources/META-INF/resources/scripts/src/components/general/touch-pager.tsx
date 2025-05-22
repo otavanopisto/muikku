@@ -134,7 +134,7 @@ export default class TouchPager extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     return (

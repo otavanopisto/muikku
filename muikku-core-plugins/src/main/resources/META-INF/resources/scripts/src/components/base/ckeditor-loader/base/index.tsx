@@ -131,7 +131,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const processingRules: HTMLToReactComponentRule[] = [

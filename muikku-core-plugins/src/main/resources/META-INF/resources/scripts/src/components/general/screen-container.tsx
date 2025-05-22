@@ -31,7 +31,7 @@ export default class ScreenContainer extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const modifiers: Array<string> =

@@ -11,7 +11,7 @@ interface SubPanelProps {
 /**
  * ApplicationSubPanel
  * @param props component props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  * Has child components:
  * ApplicationSubpanel.Header, ApplicationSubpanel.Body, ApplicationSubpanel.ViewHeader
  */
@@ -23,7 +23,7 @@ const ApplicationSubPanel: React.FC<SubPanelProps> & {
   const { modifier, children } = props;
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   return (
     <div
@@ -39,7 +39,7 @@ const ApplicationSubPanel: React.FC<SubPanelProps> & {
 /**
  * ApplicationSubPanelHeader
  * @param props component props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ApplicationSubPanelHeader: React.FC<{ modifier?: string }> = (props) => (
   <div
@@ -59,7 +59,7 @@ interface SubPanelViewHeaderProps {
   /**
    * Decoration that comes before the main header (could be an avatar, icon)
    */
-  decoration?: JSX.Element;
+  decoration?: React.JSX.Element;
   /**
    * Additional information for the  title
    */
@@ -70,7 +70,7 @@ interface SubPanelViewHeaderProps {
 /**
  * ApplicationSubPanelViewHeader
  * @param props SubPanelViewHeaderProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 
 /**
@@ -144,13 +144,13 @@ interface SubPanelItemDataProps {
  */
 interface SubPanelItemProps {
   modifier?: string;
-  title: string | JSX.Element;
+  title: string | React.JSX.Element;
 }
 
 /**
  * ApplicationSubPanelItem
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  *
  *
  * Has child components:
@@ -230,7 +230,7 @@ const ApplicationSubPanelItemData: React.FC<SubPanelItemDataProps> = (
 /**
  * ApplicationSubPanelSubItem
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ApplicationSubPanelSubItem: React.FC<{
   modifier?: string;

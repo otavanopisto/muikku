@@ -20,13 +20,13 @@ export interface AvatarGroupUser {
  * GroupAvatarUserProps
  */
 interface GroupAvatarUserProps extends AvatarGroupUser {
-  action?: (userId: number) => JSX.Element;
+  action?: (userId: number) => React.JSX.Element;
 }
 
 /**
  * GroupAvatarUser
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const GroupAvatarUser = (props: GroupAvatarUserProps) => {
   const {

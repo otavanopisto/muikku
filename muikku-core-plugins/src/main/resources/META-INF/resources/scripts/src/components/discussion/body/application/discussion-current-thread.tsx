@@ -221,7 +221,7 @@ class DiscussionCurrentThread extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element or null
+   * @returns React.JSX.Element or null
    */
   render() {
     if (!this.props.discussion.current) {

@@ -97,7 +97,7 @@ class AnnouncementsPanel extends React.Component<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const { announcements, currentPage, itemsPerPage } = this.state;

@@ -13,14 +13,14 @@ import { NoteReceiver } from "~/generated/client";
  */
 interface NoteInformationDialogProps extends NotesListItemProps {
   recipients?: NoteReceiver[];
-  groupMembersAction?: (id: number) => JSX.Element;
+  groupMembersAction?: (id: number) => React.JSX.Element;
   children?: React.ReactElement;
 }
 
 /**
  * NoteInformationDialog
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const NoteInformationDialog: React.FC<NoteInformationDialogProps> = (props) => {
   const { children, recipients, groupMembersAction, ...item } = props;
@@ -42,7 +42,7 @@ const NoteInformationDialog: React.FC<NoteInformationDialogProps> = (props) => {
   /**
    * content
    * @param closeDialog closeDialog
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const content = (closeDialog: () => never) => (
     <>

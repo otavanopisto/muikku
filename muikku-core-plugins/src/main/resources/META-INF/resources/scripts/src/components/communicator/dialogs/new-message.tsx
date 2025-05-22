@@ -301,7 +301,7 @@ class CommunicatorNewMessage extends SessionStateComponent<
 
   /**
    * render
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     const editorTitle =

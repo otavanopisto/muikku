@@ -12,7 +12,7 @@ interface GuiderStudentLinkProps {
 /**
  * GuiderStudentLink
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const GuiderStudentLink: React.FC<GuiderStudentLinkProps> = (props) => {
   const { schoolDataIdentifier } = props;

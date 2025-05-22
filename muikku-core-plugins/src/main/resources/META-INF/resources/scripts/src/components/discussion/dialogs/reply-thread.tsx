@@ -195,7 +195,7 @@ class ReplyThread extends SessionStateComponent<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     // TODO: use i18next
@@ -207,7 +207,7 @@ class ReplyThread extends SessionStateComponent<
     /**
      * content
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const content = (closeDialog: () => void) => [
       <div className="env-dialog__row env-dialog__row--ckeditor" key="1">
@@ -233,7 +233,7 @@ class ReplyThread extends SessionStateComponent<
     /**
      * footer
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const footer = (closeDialog: () => void) => (
       <div className="env-dialog__actions">

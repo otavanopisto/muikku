@@ -30,7 +30,7 @@ interface RecordsGroupItemProps {
 /**
  * RecordsGroupItem
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
   const { credit, isCombinationWorkspace } = props;
@@ -57,7 +57,7 @@ export const RecordsGroupItem: React.FC<RecordsGroupItemProps> = (props) => {
 
   /**
    * Renders assessment information block per subject
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderAssessmentsInformations = () => {
     const { credit } = props;

@@ -17,7 +17,7 @@ interface StaffComponentProps {
 /**
  * StaffComponent
  * @param props StaffComponentProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const StaffComponent: React.FC<StaffComponentProps> = (props) => {
   const { status } = props;

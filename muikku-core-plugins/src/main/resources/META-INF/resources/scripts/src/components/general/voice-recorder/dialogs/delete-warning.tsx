@@ -51,13 +51,13 @@ class DeleteDialog extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     /**
      * footer
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const footer = (closeDialog: () => any) => (
@@ -80,7 +80,7 @@ class DeleteDialog extends React.Component<
     /**
      * content
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const content = (closeDialog: () => any) => (

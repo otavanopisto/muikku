@@ -198,7 +198,7 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
 
   /**
    * Content
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const content = () => (
     <>

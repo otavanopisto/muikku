@@ -208,7 +208,7 @@ const EvaluationCard: React.FC<EvaluationCardProps> = (props) => {
 
   /**
    * renderArchiveOrDelete
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderArchiveOrDelete = () => {
     let buttonAriaLabel = t("actions.remove", {
@@ -358,7 +358,7 @@ interface EvaluationCardLabelProps {
 /**
  * EvaluationCardLabel
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const EvaluationCardLabel = (props: EvaluationCardLabelProps) => {
   const { t } = useTranslation(["common", "evaluation"]);
@@ -406,7 +406,7 @@ interface EvaluationCardHeaderProps {
 /**
  * EvaluationCardHeader
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const EvaluationCardHeader = (props: EvaluationCardHeaderProps) => {
   const { t } = useTranslation(["common"]);
@@ -491,14 +491,14 @@ const EvaluationCardHeader = (props: EvaluationCardHeaderProps) => {
  * EvaluationCardContentProps
  */
 interface EvaluationCardContentProps {
-  workspaceLink?: JSX.Element;
+  workspaceLink?: React.JSX.Element;
   evaluationAssessmentRequest: EvaluationAssessmentRequest;
 }
 
 /**
  * EvaluationCardContent
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const EvaluationCardContent = (props: EvaluationCardContentProps) => {
   const { workspaceLink, evaluationAssessmentRequest } = props;
@@ -614,7 +614,7 @@ interface EvaluationCardFooterProps {
 /**
  * EvaluationCardFooter
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const EvaluationCardFooter = (props: EvaluationCardFooterProps) => {
   const { children } = props;

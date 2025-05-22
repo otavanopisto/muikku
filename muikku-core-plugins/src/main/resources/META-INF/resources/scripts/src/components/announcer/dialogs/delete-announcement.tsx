@@ -89,13 +89,13 @@ class DeleteAnnouncementDialog extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     /**
      * content
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const content = (closeDialog: () => any) => (
       <div>
@@ -109,7 +109,7 @@ class DeleteAnnouncementDialog extends React.Component<
     /**
      * footer
      * @param closeDialog closeDialog
-     * @returns JSX.Element
+     * @returns React.JSX.Element
      */
     const footer = (closeDialog: () => any) => (
       <div className="dialog__button-set">

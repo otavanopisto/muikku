@@ -48,7 +48,7 @@ interface InfoPopoverProps {
  * over the popover content
  *
  * @param props InfoPopoverProps
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const InfoPopover = (props: InfoPopoverProps) => {
   const { userId, children } = props;
@@ -198,7 +198,7 @@ interface ContactInformationProps {
  *
  * @param props props
  * @param props.info info
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ContactInformation(props: ContactInformationProps) {
   const { info } = props;
@@ -234,7 +234,7 @@ interface ContactVacationProps {
  * @param props props
  * @param props.info info
  * @param props.i18n i18n
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ContactVacation(props: ContactVacationProps) {
   const { info } = props;
@@ -279,7 +279,7 @@ interface ContactExtraInfoProps {
  * @param props props
  * @param props.info info
  * @param props.i18n i18n
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ContactExtraInfo(props: ContactExtraInfoProps) {
   const { info } = props;
@@ -307,7 +307,7 @@ interface ContactActionsProps {
  * @param props props
  * @param props.info info
  * @param props.i18n i18n
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 function ContactActions(props: ContactActionsProps) {
   const { info } = props;

@@ -12,7 +12,7 @@ type MaterialLoaderAssesmentProps = MaterialLoaderProps;
 /**
  * MaterialLoaderAssesment
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export function MaterialLoaderAssesment(props: MaterialLoaderAssesmentProps) {
   const { t } = useTranslation(["materials", "evaluation", "common"]);

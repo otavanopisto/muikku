@@ -14,7 +14,7 @@ interface ActivityIndicatorProps {
  * Creates activity indicator component if
  * activity property exist and there are exercise
  * @param props component prosp
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const ActivityIndicator: React.FC<ActivityIndicatorProps> = (props) => {
   const { credit } = props;

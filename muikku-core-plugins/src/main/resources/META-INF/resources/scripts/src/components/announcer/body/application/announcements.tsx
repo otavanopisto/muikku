@@ -69,7 +69,7 @@ class Announcements extends React.Component<
 
   /**
    * Component render method
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   render() {
     if (this.props.announcements.state === "LOADING") {

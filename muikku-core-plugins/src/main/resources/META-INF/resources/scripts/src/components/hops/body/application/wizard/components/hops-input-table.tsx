@@ -47,7 +47,7 @@ interface HopsInputTableProps {
 /**
  * HopsInputTable
  * @param props props
- * @returns JSX.Element. Language grade table component
+ * @returns React.JSX.Element. Language grade table component
  */
 export const HopsInputTable: React.FC<HopsInputTableProps> = (props) => {
   const { children, usePlace } = props;
@@ -180,7 +180,7 @@ const defaultProps = {
 /**
  * InputRow
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const InputRow: React.FC<InputRowProps> = (props) => {
   props = { ...defaultProps, ...props };

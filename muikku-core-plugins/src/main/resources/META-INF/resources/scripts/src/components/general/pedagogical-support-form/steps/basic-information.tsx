@@ -26,7 +26,7 @@ const itemsPerPage = 5;
  * BasicInformation
  *
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 const BasicInformation: React.FC<BasicInformationProps> = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
@@ -68,7 +68,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
 
   /**
    * renderHistory
-   * @returns JSX.Element
+   * @returns React.JSX.Element
    */
   const renderHistory = () => {
     if (!data || data.history.length === 0) {

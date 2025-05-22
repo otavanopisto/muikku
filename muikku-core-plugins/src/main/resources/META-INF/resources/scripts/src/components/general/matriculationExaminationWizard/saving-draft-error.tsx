@@ -10,7 +10,7 @@ interface SavingDraftErrorProps {
 /**
  * Shows draft saving error
  * @param props props
- * @returns JSX.Element
+ * @returns React.JSX.Element
  */
 export const SavingDraftError: React.FC<SavingDraftErrorProps> = (props) => {
   const { draftSaveErrorMsg } = props;

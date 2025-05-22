@@ -12,7 +12,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 /**
  * TextField
  * @param props props
- * @returns JSX.Element. Textfield component
+ * @returns React.JSX.Element. Textfield component
  */
 export const TextField: React.FC<InputProps> = (props) => {
   const { label, id, labelAria, ...rest } = props;
