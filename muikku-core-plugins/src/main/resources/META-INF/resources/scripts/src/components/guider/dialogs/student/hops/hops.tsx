@@ -4,7 +4,6 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "~/components/general/application-panel/components/application-panel-body";
 import { Tab } from "~/components/general/tabs";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/assignment.scss";
@@ -14,7 +13,7 @@ import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { useTranslation } from "react-i18next";
 import Matriculation from "~/components/hops/body/application/matriculation/matriculation";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   LoadMatriculationDataTriggerType,
   loadMatriculationData,

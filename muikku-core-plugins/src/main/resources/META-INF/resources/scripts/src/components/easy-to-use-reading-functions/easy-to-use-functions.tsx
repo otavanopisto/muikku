@@ -1,8 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/easy-to-use-functions.scss";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { EasyToUseFunctionState } from "../../reducers/easy-to-use-functions/index";
 import {

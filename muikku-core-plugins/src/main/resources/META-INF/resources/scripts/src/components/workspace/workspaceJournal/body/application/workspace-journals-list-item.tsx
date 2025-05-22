@@ -16,12 +16,11 @@ import Avatar from "~/components/general/avatar";
 import { getName } from "~/util/modifiers";
 import DeleteJournal from "~/components/workspace/workspaceJournal/dialogs/delete-journal";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   SetCurrentJournalTriggerType,
   setCurrentJournal,
 } from "~/actions/workspaces/journals";
-import { AnyActionType } from "~/actions";
 import WorkspaceJournalCommentList from "./workspace-journal-comment-list";
 import WorkspaceJournalEditor from "./editors/workspace-journal-editor";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";

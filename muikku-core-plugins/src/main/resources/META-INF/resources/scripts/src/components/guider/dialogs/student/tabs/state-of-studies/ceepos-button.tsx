@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
@@ -16,7 +16,6 @@ import Dialog from "~/components/general/dialog";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import Button from "~/components/general/button";
-import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
 import { CeeposPurchaseProduct } from "~/generated/client";
 import { AppDispatch } from "~/reducers/configureStore";

@@ -18,6 +18,9 @@ interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
  */
 export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
   const { t } = useTranslation(["materials", "common"]);
+  /**
+   *
+   */
   const namespace = () => {
     const p = props.stateConfiguration["assignment-type"]
       ? props.stateConfiguration["assignment-type"]

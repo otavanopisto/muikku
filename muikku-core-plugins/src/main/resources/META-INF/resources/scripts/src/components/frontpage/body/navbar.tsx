@@ -3,8 +3,6 @@ import Link from "../../general/link";
 import LoginButton from "../../base/login-button";
 import ForgotPasswordDialog from "../../base/forgot-password-dialog";
 import * as React from "react";
-import { connect } from "react-redux";
-import { StateType } from "~/reducers";
 import { WithTranslation, withTranslation } from "react-i18next";
 
 /**

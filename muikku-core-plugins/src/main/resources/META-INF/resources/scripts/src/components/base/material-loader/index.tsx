@@ -11,7 +11,7 @@ import {
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   UpdateAssignmentStateTriggerType,
   updateAssignmentState,
@@ -32,7 +32,6 @@ import {
   requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces/material";
 import { MaterialCompositeReply } from "~/generated/client";
-import { AnyActionType } from "~/actions";
 import MApi from "~/api/api";
 import { connect } from "react-redux";
 import { isEqual } from "lodash";

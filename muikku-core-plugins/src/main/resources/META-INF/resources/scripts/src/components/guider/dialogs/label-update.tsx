@@ -1,10 +1,9 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 //Another weird typescript bug, won't import properly
 import { ChromePicker, ColorState } from "react-color";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/form.scss";
 import {
   UpdateGuiderFilterLabelTriggerType,

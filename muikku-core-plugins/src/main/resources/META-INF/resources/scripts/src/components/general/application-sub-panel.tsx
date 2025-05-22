@@ -73,6 +73,10 @@ interface SubPanelViewHeaderProps {
  * @returns JSX.Element
  */
 
+/**
+ *
+ * @param props
+ */
 export const ApplicationSubPanelViewHeader: React.FC<
   SubPanelViewHeaderProps
 > = (props) => (

@@ -9,7 +9,7 @@ import {
   ApplicationPanelToolbarActionsMain,
 } from "~/components/general/application-panel/application-panel";
 import { SearchFormElement } from "~/components/general/form-element";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
 import { EvaluationFilters } from "~/@types/evaluation";
 import {
@@ -20,7 +20,6 @@ import {
   UpdateEvaluationSearch,
   updateEvaluationSearch,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";
 

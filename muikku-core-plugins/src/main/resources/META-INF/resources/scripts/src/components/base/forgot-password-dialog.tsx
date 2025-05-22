@@ -5,13 +5,12 @@ import Button from "~/components/general/button";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions/index";
 import MApi, { isMApiError } from "~/api/api";
 import { AppDispatch } from "~/reducers/configureStore";
 

@@ -12,10 +12,9 @@ import { useMatriculation } from "./hooks/use-matriculation";
 import MatriculationWizardHeader from "./matriculation-wizard-header";
 import MatriculationWizardFooter from "./matriculation-wizard-footer";
 import { MatriculationFormType } from "~/@types/shared";
-import { AnyActionType } from "~/actions";
 import { HopsState } from "~/reducers/hops";
 import Button from "../button";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   DisplayNotificationTriggerType,
   displayNotification,

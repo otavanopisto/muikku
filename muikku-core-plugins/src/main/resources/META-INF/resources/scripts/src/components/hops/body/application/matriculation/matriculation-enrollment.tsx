@@ -1,8 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops/";

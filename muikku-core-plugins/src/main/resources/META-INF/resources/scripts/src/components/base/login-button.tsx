@@ -7,8 +7,6 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

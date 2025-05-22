@@ -12,9 +12,8 @@ import {
   SetEvaluationSelectedWorkspace,
   setSelectedWorkspaceId,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { WorkspaceDataType } from "../../../reducers/workspaces/index";
-import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";
 

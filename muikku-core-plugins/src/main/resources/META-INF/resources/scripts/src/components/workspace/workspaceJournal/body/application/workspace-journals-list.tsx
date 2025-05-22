@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/journal.scss";
@@ -12,7 +12,6 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { WorkspacesStateType, WorkspaceDataType } from "~/reducers/workspaces";
-import { AnyActionType } from "~/actions";
 import {
   LoadMoreCurrentWorkspaceJournalsFromServerTriggerType,
   loadMoreCurrentWorkspaceJournalsFromServer,

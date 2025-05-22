@@ -11,9 +11,7 @@ import Navigation, {
   NavigationTopic,
   NavigationElement,
 } from "~/components/general/navigation";
-import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

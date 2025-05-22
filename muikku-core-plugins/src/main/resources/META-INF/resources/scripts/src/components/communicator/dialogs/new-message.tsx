@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import InputContactsAutofill from "~/components/base/input-contacts-autofill";
 import EnvironmentDialog from "~/components/general/environment-dialog";
@@ -8,7 +8,6 @@ import {
   sendMessage,
   SendMessageTriggerType,
 } from "~/actions/main-function/messages";
-import { AnyActionType } from "~/actions";
 import { ContactRecipientType } from "~/reducers/user-index";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";

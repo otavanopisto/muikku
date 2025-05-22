@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { UseRecorder } from "../../../@types/recorder";
 import useRecorder from "./hooks/use-recorder";
 import RecorderControls from "./recorder-controls";
 import RecordingsList from "./recordings-list";
-import { AnyActionType } from "../../../actions/index";
 import { StateType } from "../../../reducers/index";
 import { connect } from "react-redux";
 import { StatusType } from "../../../reducers/base/status";

@@ -23,7 +23,7 @@ import {
   UpdateUsergroupTriggerType,
 } from "~/actions/main-function/users";
 import { StateType } from "~/reducers";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import AutofillSelector, {
   UiSelectItem,
 } from "~/components/base/input-select-autofill";
@@ -45,7 +45,6 @@ import {
   UserGroup,
 } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

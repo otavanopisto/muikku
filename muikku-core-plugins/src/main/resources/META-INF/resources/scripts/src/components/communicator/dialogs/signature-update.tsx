@@ -2,8 +2,7 @@ import * as React from "react";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import CKEditor from "~/components/general/ckeditor";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   updateSignature,
   UpdateSignatureTriggerType,

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { useEvaluatedAssignments } from "./hooks/useEvaluated";
 import { useJournals } from "./hooks/useJournals";
@@ -18,7 +17,7 @@ import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 import Link from "~/components/general/link";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/application-sub-panel.scss";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { useInterimEvaluationAssigments } from "./hooks/useInterimEvaluation";
 import { useTranslation } from "react-i18next";
 import { useRecordWorkspace } from "./hooks/useRecordWorkpace";

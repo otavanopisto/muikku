@@ -12,8 +12,7 @@ import ChatDeleteRoomDialog from "./dialogs/chat-room-delete-dialog";
 import ChatUnreadMsgCounter from "./chat-unread-msg-counter";
 import { ChatUserInfoProvider } from "./context/chat-user-info-context";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,

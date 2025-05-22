@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   DisplayNotificationTriggerType,
   displayNotification,
@@ -15,7 +15,6 @@ import {
   getErrorMessageTitle,
 } from "~/helper-functions/ceepos-error";
 import { getName } from "~/util/modifiers";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/card.scss";
 import "~/sass/elements/buttons.scss";
 import "~/sass/elements/glyph.scss";

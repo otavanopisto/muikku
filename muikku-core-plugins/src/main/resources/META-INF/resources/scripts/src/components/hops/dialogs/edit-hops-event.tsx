@@ -5,8 +5,7 @@ import "~/sass/elements/wizard.scss";
 import Button from "~/components/general/button";
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
 import { HopsHistoryEntry } from "~/generated/client";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import {

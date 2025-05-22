@@ -19,12 +19,11 @@ import {
   updateWorkspaceDetailsForCurrentWorkspace,
   UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType,
 } from "~/actions/workspaces";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { AnyActionType } from "~/actions/index";
 import {
   Language,
   WorkspaceAccess,

@@ -1,8 +1,7 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import ApplicationList, {
   ApplicationListItem,
   ApplicationListItemBody,

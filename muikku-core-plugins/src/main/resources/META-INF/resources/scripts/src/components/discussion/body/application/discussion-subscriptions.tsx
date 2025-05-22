@@ -23,9 +23,8 @@ import {
 import Dropdown from "~/components/general/dropdown";
 import { StatusType } from "~/reducers/base/status";
 import Avatar from "~/components/general/avatar";
-import { AnyActionType } from "~/actions/index";
 import { IconButton } from "~/components/general/button";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   subscribeDiscussionThread,
   unsubscribeDiscussionThread,

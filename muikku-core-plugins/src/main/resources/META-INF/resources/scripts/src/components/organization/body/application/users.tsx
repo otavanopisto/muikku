@@ -2,7 +2,7 @@ import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import UserPanel from "~/components/general/user-panel";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { UsersState } from "~/reducers/main-function/users";
 import {
   LoadUsersTriggerType,
@@ -10,7 +10,6 @@ import {
   loadStaff,
 } from "~/actions/main-function/users";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

@@ -11,13 +11,12 @@ import {
   updateProfileAddress,
   UpdateProfileAddressTriggerType,
 } from "~/actions/main-function/profile";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { SimpleActionExecutor } from "~/actions/executor";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";
 

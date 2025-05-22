@@ -11,9 +11,8 @@ import {
   MessagesNavigationItem,
 } from "~/reducers/main-function/messages";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { ChromePicker, ColorState } from "react-color";
-import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import Button from "~/components/general/button";

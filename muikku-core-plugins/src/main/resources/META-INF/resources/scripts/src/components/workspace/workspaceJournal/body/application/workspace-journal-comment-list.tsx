@@ -7,7 +7,6 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
 import AnimateHeight from "react-animate-height";
 import WorkspaceJournalCommentEditor from "./editors/workspace-journal-comment-editor";
 // eslint-disable-next-line camelcase
@@ -17,7 +16,7 @@ import {
   JournalsState,
   WorkspaceJournalWithComments,
 } from "~/reducers/workspaces/journals";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   createWorkspaceJournalComment,
   CreateWorkspaceJournalCommentTriggerType,

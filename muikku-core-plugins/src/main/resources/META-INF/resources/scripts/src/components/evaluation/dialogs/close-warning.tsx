@@ -1,9 +1,8 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/form.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";

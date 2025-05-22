@@ -8,7 +8,6 @@ import {
 import { StatusType } from "~/reducers/base/status";
 import {
   MaterialCompositeReply,
-  MaterialContentNode,
   MaterialViewRestriction,
 } from "~/generated/client";
 

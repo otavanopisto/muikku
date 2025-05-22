@@ -9,8 +9,7 @@ import "~/sass/elements/evaluation.scss";
 import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
 import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions/index";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
 import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
 import {

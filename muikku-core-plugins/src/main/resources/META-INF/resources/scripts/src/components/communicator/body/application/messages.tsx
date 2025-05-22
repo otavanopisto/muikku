@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { colorIntToHex, getName } from "~/util/modifiers";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
@@ -34,7 +34,6 @@ import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
 import { StatusType } from "~/reducers/base/status";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import InfoPopover from "~/components/general/info-popover";
 import Dropdown from "~/components/general/dropdown";

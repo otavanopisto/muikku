@@ -2,14 +2,13 @@ import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect } from "react-redux";
 import "~/sass/elements/buttons.scss";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import {
   UpdateProfileWorklistItemsStateTriggerType,
   updateProfileWorklistItemsState,
 } from "~/actions/main-function/profile";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 import { WorklistBillingStateType, WorklistSummary } from "~/generated/client";
 import { AppDispatch } from "~/reducers/configureStore";
 

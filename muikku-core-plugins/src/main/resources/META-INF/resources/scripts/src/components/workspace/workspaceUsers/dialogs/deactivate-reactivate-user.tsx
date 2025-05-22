@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/buttons.scss";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import {
   toggleActiveStateOfStudentOfWorkspace,
@@ -12,7 +12,6 @@ import {
 import { getName } from "~/util/modifiers";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";
 

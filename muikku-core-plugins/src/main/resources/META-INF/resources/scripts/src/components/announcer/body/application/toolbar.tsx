@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-panel.scss";
@@ -21,7 +21,6 @@ import {
   RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected,
 } from "~/actions/announcements";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
 import { AppDispatch } from "~/reducers/configureStore";

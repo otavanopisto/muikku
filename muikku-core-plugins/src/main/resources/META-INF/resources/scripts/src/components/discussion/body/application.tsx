@@ -10,10 +10,8 @@ import DiscussionThreads from "./application/discussion-threads";
 import DiscussionCurrentThread from "./application/discussion-current-thread";
 import Button from "~/components/general/button";
 import "~/sass/elements/link.scss";
-import { AnyActionType } from "../../../actions/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import DiscussionSubscriptions from "./application/discussion-subscriptions";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

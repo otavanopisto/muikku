@@ -5,7 +5,6 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
@@ -23,7 +22,6 @@ import "~/sass/elements/pedagogy.scss";
 import PedagogyToolbar from "./pedagogy-toolbar";
 import { UserRole } from "~/@types/pedagogy-form";
 import { useTranslation } from "react-i18next";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 // Visibility settings which study programmes have access to the form

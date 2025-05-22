@@ -8,7 +8,7 @@ import Link from "../link";
 import * as React from "react";
 import { logout, LogoutTriggerType } from "~/actions/base/status";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import $ from "~/lib/jquery";
 import { StatusType } from "~/reducers/base/status";
 import { StateType } from "~/reducers";
@@ -16,7 +16,6 @@ import "~/sass/elements/drawer.scss";
 import "~/sass/elements/menu.scss";
 import "~/sass/elements/link.scss";
 import { getUserImageUrl } from "~/util/modifiers";
-import { AnyActionType } from "~/actions";
 import {
   OpenReadingRuler,
   openReadingRuler,

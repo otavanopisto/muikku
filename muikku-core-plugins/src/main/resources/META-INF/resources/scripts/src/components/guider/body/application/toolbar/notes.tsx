@@ -10,8 +10,7 @@ import {
   createNote,
   CreateNoteTriggerType,
 } from "~/actions/main-function/guider";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import { withTranslation, WithTranslation } from "react-i18next";
 import NotesItemNew from "~/components/general/notes//notes-item-new";
 import { CreateNoteRequest } from "~/generated/client";

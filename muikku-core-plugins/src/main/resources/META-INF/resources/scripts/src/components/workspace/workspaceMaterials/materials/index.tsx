@@ -23,10 +23,9 @@ import WorkspaceMaterial from "./material";
 import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { Redirect } from "react-router-dom";
 import { StatusType } from "~/reducers/base/status";
-import { AnyActionType } from "~/actions";
 import {
   materialShowOrHideExtraTools,
   MaterialShowOrHideExtraToolsTriggerType,

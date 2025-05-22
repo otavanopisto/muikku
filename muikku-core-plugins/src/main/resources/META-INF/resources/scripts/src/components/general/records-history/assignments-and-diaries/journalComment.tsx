@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
 import {
   ApplicationListItem,
   ApplicationListItemBody,
@@ -11,7 +10,6 @@ import { StateType } from "~/reducers";
 import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

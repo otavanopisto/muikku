@@ -20,9 +20,8 @@ import {
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 
-import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

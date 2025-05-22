@@ -1,8 +1,7 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import ApplicationSubPanel, {
   ApplicationSubPanelViewHeader,
 } from "~/components/general/application-sub-panel";

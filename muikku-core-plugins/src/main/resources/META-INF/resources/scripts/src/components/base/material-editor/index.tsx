@@ -1,7 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/material-editor.scss";
 import "~/sass/elements/form.scss";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import Link from "~/components/general/link";
@@ -29,7 +29,6 @@ import AddProducer from "~/components/general/add-producer";
 import LicenseSelector from "~/components/general/license-selector";
 import FileUploader from "~/components/general/file-uploader";
 import { PageLocation, UploadingValue } from "~/@types/shared";
-import { AnyActionType } from "~/actions";
 import {
   setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode,

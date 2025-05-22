@@ -18,8 +18,7 @@ import {
   ApplicationPanelToolbarActionsMain,
 } from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
-import { AnyActionType } from "~/actions";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import Select from "react-select";
 import {
   SubscribeDiscussionArea,

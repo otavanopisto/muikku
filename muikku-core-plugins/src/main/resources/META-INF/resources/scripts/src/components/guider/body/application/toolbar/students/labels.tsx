@@ -25,11 +25,10 @@ import {
 } from "~/actions/main-function/guider";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import { GuiderState } from "~/reducers/main-function/guider";
 import { ButtonPill } from "~/components/general/button";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";
 

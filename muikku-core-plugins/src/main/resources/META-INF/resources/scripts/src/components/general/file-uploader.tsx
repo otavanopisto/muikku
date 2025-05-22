@@ -4,7 +4,7 @@ import "~/sass/elements/file-uploader.scss";
 import Link from "~/components/general/link";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -13,7 +13,6 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { UploadingValue } from "../../@types/shared";
 import ProgressBar from "@ramonak/react-progress-bar";
-import { AnyActionType } from "~/actions";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

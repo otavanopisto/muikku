@@ -6,9 +6,8 @@ import {
   deleteProfileImage,
   DeleteProfileImageTriggerType,
 } from "~/actions/main-function/profile";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";
 

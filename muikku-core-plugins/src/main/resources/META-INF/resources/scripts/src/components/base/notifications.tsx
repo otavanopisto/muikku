@@ -6,8 +6,7 @@ import {
 } from "~/actions/base/notifications";
 import * as React from "react";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   NotificationListType,
   NotificationType,

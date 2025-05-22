@@ -3,7 +3,6 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/form.scss";
@@ -12,7 +11,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { WorkspaceSuggestion } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { useTranslation } from "react-i18next";

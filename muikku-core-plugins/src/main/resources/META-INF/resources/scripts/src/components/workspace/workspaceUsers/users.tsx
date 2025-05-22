@@ -1,6 +1,6 @@
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import * as React from "react";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
@@ -32,7 +32,6 @@ import {
 } from "~/actions/workspaces";
 import { MobileOnlyTabs } from "~/components/general/tabs";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";
 

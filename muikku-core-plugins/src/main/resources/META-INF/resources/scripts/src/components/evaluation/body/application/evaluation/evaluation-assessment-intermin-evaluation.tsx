@@ -5,9 +5,8 @@ import {
   MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces/index";
 import "~/sass/elements/evaluation.scss";
-import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { ButtonPill } from "~/components/general/button";
 import AnimateHeight from "react-animate-height";
 import SlideDrawer from "./slide-drawer";

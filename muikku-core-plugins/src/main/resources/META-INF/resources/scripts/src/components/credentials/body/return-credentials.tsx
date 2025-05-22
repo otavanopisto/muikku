@@ -11,10 +11,9 @@ import {
   UpdateCredentialsTriggerType,
 } from "~/actions/base/credentials";
 import { CredentialsState } from "~/reducers/base/credentials";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import LoginButton from "../../base/login-button";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

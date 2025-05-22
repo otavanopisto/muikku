@@ -13,13 +13,12 @@ import { StateType } from "~/reducers";
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
-import { AnyActionType } from "~/actions";
 import { StatusType } from "~/reducers/base/status";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { withTranslation, WithTranslation } from "react-i18next";
 import RecordsGroup from "~/components/general/records-history/records-group";
 import { RecordsInfoProvider } from "~/components/general/records-history/context/records-info-context";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   DisplayNotificationTriggerType,
   displayNotification,

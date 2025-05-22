@@ -3,8 +3,7 @@ import "~/sass/elements/dependant.scss"; // Styles
 import { useTranslation } from "react-i18next"; // Translation
 import { localize } from "~/locales/i18n";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import {
   loadDependantWorkspaces,
   LoadDependantWorkspacesTriggerType,

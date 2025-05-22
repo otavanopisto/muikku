@@ -1,7 +1,7 @@
 import * as React from "react";
 import EvaluationCard from "./evaluation-card";
 import { EvaluationSort } from "~/@types/evaluation";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers/index";
 import { connect } from "react-redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation/index";
@@ -16,7 +16,6 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { UpdateImportanceObject } from "~/@types/evaluation";
 import "~/sass/elements/empty.scss";
-import { AnyActionType } from "~/actions";
 import {
   EvaluationAssessmentRequest,
   WorkspaceAssessmentStateType,

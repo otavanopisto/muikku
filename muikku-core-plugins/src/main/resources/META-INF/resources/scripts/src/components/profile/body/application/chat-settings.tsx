@@ -6,7 +6,6 @@ import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/application-sub-panel.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import Select, { ActionMeta } from "react-select";
 import {
@@ -14,7 +13,7 @@ import {
   selectOptions,
 } from "../../../chat/chat-helpers";
 import { ChatUser, ChatUserVisibilityEnum } from "~/generated/client";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,

@@ -1,6 +1,5 @@
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import { useTranslation } from "react-i18next";
 import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";

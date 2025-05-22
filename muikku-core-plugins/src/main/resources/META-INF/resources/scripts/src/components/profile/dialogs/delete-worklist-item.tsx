@@ -6,10 +6,9 @@ import {
   deleteProfileWorklistItem,
   DeleteProfileWorklistItemTriggerType,
 } from "~/actions/main-function/profile";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 import { WorklistItem } from "~/generated/client";
 import { AppDispatch } from "~/reducers/configureStore";
 

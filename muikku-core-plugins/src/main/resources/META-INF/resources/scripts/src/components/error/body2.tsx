@@ -7,8 +7,6 @@ import "~/sass/elements/panel.scss";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
 import { ErrorType } from "~/reducers/base/error";
-import { Action, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

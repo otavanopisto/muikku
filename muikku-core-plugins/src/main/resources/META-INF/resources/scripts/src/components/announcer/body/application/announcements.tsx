@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import NewEditAnnouncement from "../../dialogs/new-edit-announcement";
 import { localize } from "~/locales/i18n";

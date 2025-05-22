@@ -7,9 +7,8 @@ import "~/sass/elements/matriculation.scss";
 import { MatriculationProvider } from "./context/matriculation-context";
 import { useMatriculation } from "./hooks/use-matriculation";
 import { MatriculationFormType } from "~/@types/shared";
-import { AnyActionType } from "~/actions";
 import { HopsState } from "~/reducers/hops";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   DisplayNotificationTriggerType,
   displayNotification,

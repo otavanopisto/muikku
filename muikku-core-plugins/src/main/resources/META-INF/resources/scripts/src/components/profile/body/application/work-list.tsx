@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   InsertProfileWorklistItemTriggerType,
   insertProfileWorklistItem,
@@ -14,7 +14,6 @@ import moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { WorkListSection } from "./components/work-list-section";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 import { WorklistTemplate } from "~/generated/client";
 import { AppDispatch } from "~/reducers/configureStore";
 

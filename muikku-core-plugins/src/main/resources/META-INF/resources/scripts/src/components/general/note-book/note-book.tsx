@@ -3,8 +3,7 @@ import NoteEditor from "./note-editor";
 import { NoteBookState } from "~/reducers/notebook/notebook";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   LoadNotebookEntries,
   loadNotebookEntries,

@@ -16,14 +16,12 @@ import {
 import Button from "~/components/general/button";
 import WorkspaceSignupDialog from "../../../dialogs/workspace-signup";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { AnyActionType } from "~/actions";
 import { suitabilityMapHelper } from "~/@shared/suitability";
 import { Curriculum, WorkspaceAssessmentState } from "~/generated/client";
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 import AssessmentRequestIndicator from "~/components/general/records-history/assessment-request-indicator";
 import RecordsAssessmentIndicator from "~/components/general/records-history/records-assessment-indicator";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

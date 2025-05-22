@@ -1,13 +1,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import EnvironmentDialog from "~/components/general/environment-dialog";
 import {
   createContactLogEvent,
   CreateContactLogEventTriggerType,
 } from "~/actions/main-function/guider";
-import { AnyActionType } from "~/actions";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";

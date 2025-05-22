@@ -13,9 +13,8 @@ import { WorkspaceDataType } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
 import { getName } from "~/util/modifiers";
 import Button from "~/components/general/button";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import NewJournal from "~/components/workspace/workspaceJournal/dialogs/new-edit-journal";
-import { AnyActionType } from "~/actions";
 import {
   LoadCurrentWorkspaceJournalsFromServerTriggerType,
   loadCurrentWorkspaceJournalsFromServer,

@@ -12,7 +12,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import "~/sass/elements/rangeslider.scss";
@@ -20,7 +20,6 @@ import {
   uploadProfileImage,
   UploadProfileImageTriggerType,
 } from "~/actions/main-function/profile";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";
 

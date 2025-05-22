@@ -5,8 +5,7 @@ import Dialog, {
 } from "~/components/general/dialog";
 import Tabs from "~/components/general/tabs";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import { StatusType } from "~/reducers/base/status";

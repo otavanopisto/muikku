@@ -11,7 +11,6 @@ import {
 } from "../../../reducers/main-function/records/index";
 import { StatusType } from "../../../reducers/base/status";
 import { Tab } from "~/components/general/tabs";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/assignment.scss";
@@ -23,7 +22,6 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
 import MApi from "~/api/api";
 import { PedagogyFormState } from "~/generated/client";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

@@ -7,7 +7,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import { Action, Dispatch } from "redux";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
@@ -24,7 +23,6 @@ import TocTopic, {
 import Draggable, { Droppable } from "~/components/general/draggable";
 import { bindActionCreators } from "redux";
 import { repairContentNodes } from "~/util/modifiers";
-import { AnyActionType } from "~/actions";
 import { StatusType } from "~/reducers/base/status";
 import {
   SetWholeWorkspaceMaterialsTriggerType,

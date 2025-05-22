@@ -3,8 +3,7 @@ import { StatusType } from "~/reducers/base/status";
 
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import { Panel } from "~/components/general/panel";
 import { useOnGoingNotes } from "~/hooks/useNotes";
 import {

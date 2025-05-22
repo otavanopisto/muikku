@@ -21,8 +21,7 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { AnyActionType } from "~/actions";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { withTranslation, WithTranslation } from "react-i18next";
 import StudyProgress from "./study-progress";

@@ -12,9 +12,8 @@ import {
   LoadEvaluationAssessmentRequest,
   loadEvaluationAssessmentRequestsFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions/index";
 import { StateType } from "~/reducers/index";
 import { ButtonPill, IconButton } from "~/components/general/button";
 import "~/sass/elements/evaluation-card.scss";

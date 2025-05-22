@@ -12,8 +12,6 @@ import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 import { Announcement } from "~/generated/client";
-import { AnyActionType } from "~/actions";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

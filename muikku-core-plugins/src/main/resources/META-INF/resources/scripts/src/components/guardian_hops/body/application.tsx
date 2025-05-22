@@ -4,7 +4,6 @@ import ApplicationPanel from "~/components/general/application-panel/application
 import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
 import { Tab } from "~/components/general/tabs";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/assignment.scss";
@@ -24,7 +23,7 @@ import {
   resetHopsData,
   ResetHopsDataTriggerType,
 } from "~/actions/main-function/hops/";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
 import { AppDispatch } from "~/reducers/configureStore";

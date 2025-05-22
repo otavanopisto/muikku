@@ -10,9 +10,7 @@ import Navigation, {
   NavigationElement,
 } from "~/components/general/navigation";
 import { WorkspacesState } from "~/reducers/workspaces";
-import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

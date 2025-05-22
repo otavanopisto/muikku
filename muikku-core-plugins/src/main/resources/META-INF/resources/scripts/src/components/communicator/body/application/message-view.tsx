@@ -9,8 +9,6 @@ import "~/sass/elements/label.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/message.scss";
 import { MessageThreadLabel } from "~/generated/client";
-import { AnyActionType } from "~/actions";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

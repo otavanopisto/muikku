@@ -1,7 +1,6 @@
 import Dialog from "~/components/general/dialog";
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, Dispatch } from "redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/buttons.scss";
@@ -17,7 +16,6 @@ import {
   UpdateProfileAddressTriggerType,
 } from "~/actions/main-function/profile";
 import { WithTranslation, withTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

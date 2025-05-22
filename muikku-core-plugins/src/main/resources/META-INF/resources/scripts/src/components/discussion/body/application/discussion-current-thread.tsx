@@ -24,8 +24,7 @@ import ReplyThreadDrawer from "./reply-thread-drawer";
 import DiscussionThreadReply from "./discussion-thread-reply";
 import ModifyThreadDrawer from "./modify-thread-drawer";
 import PagerV2 from "~/components/general/pagerV2";
-import { AnyActionType } from "~/actions/index";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   SubscribeDiscussionThread,
   subscribeDiscussionThread,

@@ -3,7 +3,6 @@ import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
 import WorkspaceJournalCommentEditor from "./editors/workspace-journal-comment-editor";
 // eslint-disable-next-line camelcase
 import Avatar from "~/components/general/avatar";
@@ -15,7 +14,7 @@ import {
   ApplicationListItemBody,
   ApplicationListItemFooter,
 } from "~/components/general/application-list";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import {

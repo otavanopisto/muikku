@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import * as queryString from "query-string";
 import StudentDialog from "../../dialogs/student";
 import "~/sass/elements/empty.scss";
@@ -31,7 +31,6 @@ import {
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
-import { AnyActionType } from "~/actions";
 import { Student } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";

@@ -11,7 +11,7 @@ import {
   saveProfileProperty,
   SaveProfilePropertyTriggerType,
 } from "~/actions/main-function/profile";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
@@ -19,7 +19,6 @@ import {
 import Button from "~/components/general/button";
 import { SimpleActionExecutor } from "~/actions/executor";
 import moment from "moment";
-import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";

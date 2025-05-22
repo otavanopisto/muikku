@@ -1,5 +1,4 @@
 import * as React from "react";
-import { MaterialContentNode } from "~/generated/client";
 import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 /**

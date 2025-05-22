@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import Link from "~/components/general/link";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {

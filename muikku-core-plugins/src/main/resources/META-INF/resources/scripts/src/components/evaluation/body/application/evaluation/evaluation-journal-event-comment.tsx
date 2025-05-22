@@ -3,13 +3,11 @@ import "~/sass/elements/rich-text.scss";
 import CkeditorContentLoader from "../../../../base/ckeditor-loader/content";
 import { StateType } from "~/reducers";
 import Link from "~/components/general/link";
-import { AnyActionType } from "~/actions";
 import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
 import { connect } from "react-redux";
-import { Action, Dispatch } from "redux";
 import { StatusType } from "~/reducers/base/status";
 import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal-comment";
 import { WorkspaceJournalComment } from "~/generated/client";

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import ApplicationList, {
   ApplicationListItem,
 } from "~/components/general/application-list";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import Usergroup from "./usergroups/usergroup";
 import { WorkspacesStateType } from "~/reducers/workspaces";
 import {
@@ -13,7 +13,6 @@ import {
 } from "~/actions/main-function/users";
 import useInfinityScroll from "~/hooks/useInfinityScroll";
 import { UserGroup } from "~/generated/client";
-import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";
 

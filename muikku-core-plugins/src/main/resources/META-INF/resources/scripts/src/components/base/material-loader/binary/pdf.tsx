@@ -1,6 +1,5 @@
 import * as React from "react";
 import Link from "~/components/general/link";
-import { MaterialContentNode } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 

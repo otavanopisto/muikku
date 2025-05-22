@@ -1,9 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/rich-text.scss";
 import { StateType } from "~/reducers";
-import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
-import { Action, Dispatch } from "redux";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import Link from "~/components/general/link";
 import { WorkspaceDataType } from "~/reducers/workspaces";

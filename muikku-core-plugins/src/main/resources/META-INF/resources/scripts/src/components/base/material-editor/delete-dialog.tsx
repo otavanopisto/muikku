@@ -1,11 +1,10 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Dialog from "~/components/general/dialog";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/link.scss";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceMaterialEditorType,

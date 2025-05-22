@@ -1,11 +1,10 @@
 import * as React from "react";
 import { GuiderState } from "~/reducers/main-function/guider";
 import { StateType } from "~/reducers";
-import { AnyActionType } from "~/actions/index";
 import { connect } from "react-redux";
 import FileDeleteDialog from "../../../dialogs/file-delete";
 import FileUploader from "~/components/general/file-uploader";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { UserFileType } from "~/reducers/user-index";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";

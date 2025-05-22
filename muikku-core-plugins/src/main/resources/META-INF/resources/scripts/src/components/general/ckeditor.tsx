@@ -106,7 +106,7 @@ const extraConfig = (props: CKEditorProps) => ({
    * We allow style attribute for every element that can be pasted/added to the CKEditor.
    * There is no need to use allowContent: true setting as it will disable ACF alltogether.
    * Therefore we let ACF to work on it's default filtering settings which are based on the toolbar settings.
-   * */
+   */
   extraAllowedContent:
     "*{*}; *[data*]; audio source[*](*){*}; mark; details(*); summary(*);",
 

@@ -7,8 +7,7 @@ import {
 import Tabs, { Tab } from "~/components/general/tabs";
 import { useNotesItem } from "./hooks/useNotesItems";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import NotesItemList from "./notes-item-list";
 import { ButtonPill } from "~/components/general/button";
 import NotesItemNew from "./notes-item-new";

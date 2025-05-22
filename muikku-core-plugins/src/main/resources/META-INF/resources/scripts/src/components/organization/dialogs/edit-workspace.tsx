@@ -33,7 +33,7 @@ import {
 } from "~/actions/workspaces/organization";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import AutofillSelector, {
   UiSelectItem,
 } from "~/components/base/input-select-autofill";
@@ -46,7 +46,6 @@ import {
 } from "~/reducers/workspaces";
 import { TagItem } from "~/components/general/tag-input";
 import moment from "moment";
-import { AnyActionType } from "~/actions/index";
 import { outputCorrectDatePickerLocale } from "~/helper-functions/locale";
 import {
   StaffMember,

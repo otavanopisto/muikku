@@ -4,14 +4,12 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { AnyActionType } from "~/actions";
 import {
   UpdateSuggestionParams,
   useSuggestionList,
 } from "./hooks/useSuggestedList";
 import { WorkspaceSuggestion } from "~/generated/client";
 import { Course } from "~/@types/shared";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

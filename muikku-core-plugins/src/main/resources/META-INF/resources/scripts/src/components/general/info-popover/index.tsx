@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 import "~/sass/elements/popover.scss";

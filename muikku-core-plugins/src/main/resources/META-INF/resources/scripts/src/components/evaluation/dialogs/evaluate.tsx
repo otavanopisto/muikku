@@ -1,8 +1,7 @@
 import * as React from "react";
 import Dialog from "~/components/general/dialog";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import Evaluation from "../body/application/evaluation/evaluation";

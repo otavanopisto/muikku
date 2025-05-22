@@ -16,12 +16,10 @@ import {
 } from "./threads/threads";
 import ReplyThreadDrawer from "./reply-thread-drawer";
 import ModifyThreadReplyDrawer from "./modify-reply-thread-drawer";
-import { AnyActionType } from "~/actions";
 import { DiscussionThreadReply, DiscussionUser } from "~/generated/client";
 import moment from "moment";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

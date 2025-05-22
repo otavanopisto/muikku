@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Records from "./application/records";
 import Summary from "./application/summary";
@@ -37,7 +37,6 @@ import {
   loadStudentPedagogyFormAccess,
   LoadStudentAccessTriggerType,
 } from "~/actions/main-function/guider";
-import { AnyActionType } from "~/actions";
 import { AppDispatch } from "~/reducers/configureStore";
 /**
  * StudiesTab

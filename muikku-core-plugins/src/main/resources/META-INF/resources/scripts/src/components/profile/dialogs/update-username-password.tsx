@@ -9,14 +9,13 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { ProfileState } from "~/reducers/main-function/profile";
 import {
   loadProfileUsername,
   LoadProfileUsernameTriggerType,
 } from "~/actions/main-function/profile";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import { AppDispatch } from "~/reducers/configureStore";
 

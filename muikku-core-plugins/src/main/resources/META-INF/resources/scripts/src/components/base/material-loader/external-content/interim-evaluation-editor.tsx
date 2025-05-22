@@ -1,8 +1,7 @@
 import * as React from "react";
 import equals = require("deep-equal");
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Button from "~/components/general/button";
 import CKEditor from "~/components/general/ckeditor";

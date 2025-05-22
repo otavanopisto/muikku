@@ -1,6 +1,5 @@
 import * as React from "react";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
-import { MaterialContentNode } from "~/generated/client";
 import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 /**

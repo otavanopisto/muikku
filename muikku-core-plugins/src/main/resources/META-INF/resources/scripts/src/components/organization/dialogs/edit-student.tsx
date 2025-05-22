@@ -12,9 +12,8 @@ import {
 } from "~/actions/main-function/users";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { StudyprogrammeTypes } from "~/reducers/main-function/users";
-import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import {
   Student,

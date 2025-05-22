@@ -5,8 +5,6 @@ import { IconButton } from "~/components/general/button";
 import "~/sass/elements/hops.scss";
 import { HopsHistoryEntry } from "~/generated/client";
 import { connect } from "react-redux";
-import { Action, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { ReducerStateType } from "~/reducers/hops";
 import { localize } from "~/locales/i18n";

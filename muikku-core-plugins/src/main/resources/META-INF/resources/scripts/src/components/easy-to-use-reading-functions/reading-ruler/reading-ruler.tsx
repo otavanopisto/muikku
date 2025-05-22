@@ -1,8 +1,7 @@
 import * as React from "react";
 import Portal from "~/components/general/portal";
 import { ReadingRulerBase } from "./reading-ruler-base";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { bindActionCreators } from "redux";
 import { connect, Provider, ReactReduxContext } from "react-redux";
 import { AppDispatch } from "~/reducers/configureStore";
 

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StateType } from "reducers";
 import { connect } from "react-redux";
-import { Action, Dispatch } from "redux";
 import { StatusType } from "~/reducers/base/status";
 import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
@@ -13,7 +12,6 @@ import "~/sass/elements/buttons.scss";
 import { UserStudentAddress, UserWithSchoolData } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
-import { AnyActionType } from "~/actions";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

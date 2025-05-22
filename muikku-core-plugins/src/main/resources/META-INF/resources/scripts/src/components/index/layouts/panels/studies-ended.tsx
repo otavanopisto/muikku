@@ -1,6 +1,4 @@
 import * as React from "react";
-import { StateType } from "reducers";
-import { connect } from "react-redux";
 import { Panel } from "~/components/general/panel";
 import "~/sass/elements/rich-text.scss";
 import { withTranslation, WithTranslation } from "react-i18next";

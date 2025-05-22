@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import Select from "react-select";
-import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { OptionDefault } from "../react-select/types";
 import { useWorkspaces } from "./hooks/useWorkspaces";
@@ -11,7 +10,6 @@ import {
 } from "~/actions/base/notifications";
 import { useTranslation } from "react-i18next";
 import { PedagogyWorkspace } from "~/generated/client";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

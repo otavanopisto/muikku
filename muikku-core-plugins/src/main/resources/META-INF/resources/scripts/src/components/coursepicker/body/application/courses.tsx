@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/loaders.scss";
 import "~/sass/elements/message.scss";
@@ -15,7 +15,6 @@ import {
   LoadMoreWorkspacesFromServerTriggerType,
 } from "~/actions/workspaces";
 import { WorkspacesStateType, WorkspaceDataType } from "~/reducers/workspaces";
-import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { AppDispatch } from "~/reducers/configureStore";
 

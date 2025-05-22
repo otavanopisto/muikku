@@ -1,8 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { StateType } from "~/reducers";
-import { AnyActionType } from "~/actions/index";
 import {
   SendMessageTriggerType,
   sendMessage,

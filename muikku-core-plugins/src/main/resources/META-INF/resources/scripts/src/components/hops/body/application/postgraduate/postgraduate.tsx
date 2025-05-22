@@ -1,7 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
 import CompulsoryStudiesHopsWizard from "../wizard/compulsory-studies-wizard/compulsory-studies-hops-wizard";

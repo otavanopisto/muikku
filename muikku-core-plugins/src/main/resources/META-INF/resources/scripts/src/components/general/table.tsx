@@ -161,6 +161,9 @@ interface TableFooterProps
 /**
  * Tfooter
  * @param param0
+ * @param param0.children
+ * @param param0.modifiers
+ * @param param0.className
  * @returns JSX.Element
  */
 export const Tfooter: React.FC<TableFooterProps> = ({
@@ -203,6 +206,9 @@ export interface TableRowProps
 /**
  * Tr
  * @param param0
+ * @param param0.children
+ * @param param0.modifiers
+ * @param param0.className
  * @returns JSX.Element
  */
 export const Tr: React.FC<TableRowProps> = ({
@@ -245,6 +251,9 @@ interface TableHeadProps
 /**
  * Th
  * @param param0
+ * @param param0.children
+ * @param param0.modifiers
+ * @param param0.className
  * @returns JSX.Element
  */
 export const Th: React.FC<TableHeadProps> = ({
@@ -287,6 +296,9 @@ interface TableDataProps
 /**
  * Td
  * @param param0
+ * @param param0.children
+ * @param param0.modifiers
+ * @param param0.className
  * @returns JSX.Element
  */
 export const Td: React.FC<TableDataProps> = ({

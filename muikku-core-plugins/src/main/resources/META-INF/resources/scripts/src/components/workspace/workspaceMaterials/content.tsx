@@ -27,9 +27,8 @@ import TocTopic, {
   TocTopicRef,
 } from "~/components/general/toc";
 import Draggable, { Droppable } from "~/components/general/draggable";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { repairContentNodes } from "~/util/modifiers";
-import { AnyActionType } from "~/actions/index";
 import { StatusType } from "~/reducers/base/status";
 import {
   updateWorkspaceMaterialContentNode,

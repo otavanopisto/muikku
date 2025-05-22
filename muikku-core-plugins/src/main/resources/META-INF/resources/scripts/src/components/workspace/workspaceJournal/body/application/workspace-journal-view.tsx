@@ -5,12 +5,10 @@ import "~/sass/elements/link.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/message.scss";
-import { AnyActionType } from "~/actions";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import WorkspaceJournalsListItem from "./workspace-journals-list-item";
 import ApplicationList from "~/components/general/application-list";
 import { JournalsState } from "~/reducers/workspaces/journals";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

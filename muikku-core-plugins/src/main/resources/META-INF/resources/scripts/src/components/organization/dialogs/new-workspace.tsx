@@ -29,7 +29,7 @@ import {
   CreateWorkspaceTriggerType,
 } from "~/actions/workspaces/organization";
 import { StateType } from "~/reducers";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import ApplicationList, {
   ApplicationListItemContentWrapper,
   ApplicationListItem,
@@ -49,7 +49,6 @@ import "~/sass/elements/course.scss";
 import { TagItem } from "~/components/general/tag-input";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
-import { AnyActionType } from "~/actions";
 import { WorkspaceAccess } from "~/generated/client";
 import { AppDispatch } from "~/reducers/configureStore";
 

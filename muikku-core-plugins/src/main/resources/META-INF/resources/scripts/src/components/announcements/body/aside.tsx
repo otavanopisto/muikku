@@ -9,8 +9,6 @@ import "~/sass/elements/item-list.scss";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
-import { AnyActionType } from "~/actions";
-import { Action, Dispatch } from "redux";
 import { connect } from "react-redux";
 import { AppDispatch } from "~/reducers/configureStore";
 

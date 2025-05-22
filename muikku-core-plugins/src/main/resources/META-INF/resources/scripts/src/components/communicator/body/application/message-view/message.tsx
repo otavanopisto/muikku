@@ -11,7 +11,6 @@ import "~/sass/elements/label.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/link.scss";
 import AnswerMessageDrawer from "./message-editor/answer-message-drawer";
-import { AnyActionType } from "~/actions";
 import CkeditorLoaderContent from "../../../../base/ckeditor-loader/content";
 import { isStringHTML } from "~/helper-functions/shared";
 import { WithTranslation, withTranslation } from "react-i18next";
@@ -24,7 +23,6 @@ import {
   Message as IMessage,
   MessageThreadLabel,
 } from "~/generated/client";
-import { Action, Dispatch } from "redux";
 import { AppDispatch } from "~/reducers/configureStore";
 
 /**

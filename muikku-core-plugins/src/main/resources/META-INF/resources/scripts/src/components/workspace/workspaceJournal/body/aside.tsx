@@ -9,10 +9,9 @@ import Navigation, {
 } from "~/components/general/navigation";
 import { WorkspaceDataType } from "~/reducers/workspaces/index";
 import { StatusType } from "~/reducers/base/status";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { loadStudentsOfWorkspace } from "~/actions/workspaces";
 import { LoadUsersOfWorkspaceTriggerType } from "~/actions/workspaces/index";
-import { AnyActionType } from "~/actions";
 import {
   JournalsState,
   WorkspaceJournalFilters,

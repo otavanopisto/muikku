@@ -1,11 +1,10 @@
 import * as React from "react";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { GuiderState } from "~/reducers/main-function/guider";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import { StatusType } from "~/reducers/base/status";
-import { AnyActionType } from "~/actions";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/empty.scss";
 import "~/sass/elements/glyph.scss";

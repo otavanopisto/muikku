@@ -1,6 +1,5 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Action, Dispatch } from "redux";
 import ApplicationPanel from "~/components/general/application-panel/application-panel";
 import Toolbar from "./application/toolbar";
 import CoursepickerWorkspaces from "./application/courses";
@@ -15,7 +14,6 @@ import {
   WorkspacesState,
 } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
-import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { OptionDefault } from "~/components/general/react-select/types";
 import { AppDispatch } from "~/reducers/configureStore";

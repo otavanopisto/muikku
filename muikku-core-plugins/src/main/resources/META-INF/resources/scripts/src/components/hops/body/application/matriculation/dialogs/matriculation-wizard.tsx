@@ -4,9 +4,8 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/wizard.scss";
 import { MatriculationFormType } from "~/@types/shared";
 import MatriculationExaminationWizard from "~/components/general/matriculationExaminationWizard";
-import { Action, bindActionCreators, Dispatch } from "redux";
+import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { AnyActionType } from "~/actions";
 import {
   UpdateMatriculationExaminationTriggerType,
   updateMatriculationExamination,
