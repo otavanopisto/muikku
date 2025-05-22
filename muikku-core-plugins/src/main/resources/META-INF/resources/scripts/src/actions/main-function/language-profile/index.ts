@@ -182,12 +182,17 @@ const saveLanguageProfile: saveLanguageProfileTriggerType =
           type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
           payload: "IN_PROGRESS",
         });
+
+        const dataToBeSaved = { ...data };
+        // Remove the samples from the data to be saved
+        delete dataToBeSaved["samples"];
+        
         const LanguageProfileApi = MApi.getLanguageProfile();
         const newLanguageProfile =
           await LanguageProfileApi.createOrUpdateLanguageProfile({
             userEntityId,
             createOrUpdateLanguageProfileRequest: {
-              formData: JSON.stringify(data),
+              formData: JSON.stringify(dataToBeSaved),
             },
           });
         dispatch({
