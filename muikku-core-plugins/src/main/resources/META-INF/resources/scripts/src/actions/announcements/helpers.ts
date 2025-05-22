@@ -26,8 +26,8 @@ export async function loadAnnouncementsHelper(
   workspaceId: number,
   notOverrideCurrent: boolean,
   force: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-  getState: () => StateType
+  dispatch,
+  getState
 ) {
   if (!notOverrideCurrent) {
     //Remove the current announcement

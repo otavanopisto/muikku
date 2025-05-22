@@ -43,10 +43,7 @@ const fetchingStateUserBySchoolData: { [index: string]: boolean } = {};
 const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
   callback
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const state = getState();
 
     if (state.status.loggedIn) {
@@ -89,10 +86,7 @@ const loadLoggedUser: LoadLoggedUserTriggerType = function loadLoggedUser(
  */
 const loadUserGroupIndex: LoadUserGroupIndexTriggerType =
   function loadUserGroupIndex(groupId) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const usergroupApi = MApi.getUsergroupApi();
 
       const state = getState();

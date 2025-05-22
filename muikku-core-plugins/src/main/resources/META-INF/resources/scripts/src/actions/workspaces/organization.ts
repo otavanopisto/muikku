@@ -161,10 +161,7 @@ export interface CreateWorkspaceTriggerType {
  */
 const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
   function setCurrentOrganizationWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       const current = getState().organizationWorkspaces.currentWorkspace;
@@ -224,10 +221,7 @@ const setCurrentOrganizationWorkspace: SetCurrentWorkspaceTriggerType =
  */
 const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizationFiltersFromServerTriggerType =
   function loadAvailableOrganizationFiltersFromServer(callback) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const coursepickerApi = MApi.getCoursepickerApi();
 
       try {
@@ -263,10 +257,7 @@ const loadUserWorkspaceOrganizationFiltersFromServer: LoadUserWorkspaceOrganizat
  */
 const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
   function loadCurrentOrganizationWorkspaceStaff(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const userApi = MApi.getUserApi();
 
       try {
@@ -324,10 +315,7 @@ const loadCurrentOrganizationWorkspaceStaff: LoadUsersOfWorkspaceTriggerType =
  */
 const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType =
   function loadCurrentOrganizationWorkspaceStudents(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -386,10 +374,7 @@ const loadCurrentOrganizationWorkspaceStudents: LoadUsersOfWorkspaceTriggerType 
  */
 const updateOrganizationWorkspace: UpdateWorkspaceTriggerType =
   function updateOrganizationWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
       const organizationApi = MApi.getOrganizationApi();
 
@@ -510,10 +495,7 @@ const loadMoreOrganizationWorkspacesFromServer: LoadMoreWorkspacesFromServerTrig
 const createWorkspace: CreateWorkspaceTriggerType = function createWorkspace(
   data
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const workspaceApi = MApi.getWorkspaceApi();
     const organizationApi = MApi.getOrganizationApi();
 

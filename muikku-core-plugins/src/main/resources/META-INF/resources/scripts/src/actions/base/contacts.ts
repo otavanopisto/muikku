@@ -48,10 +48,7 @@ const loadContactGroup: LoadContactGroupTriggerType = function loadContactGroup(
   groupName,
   userIdentifier
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const userApi = MApi.getUserApi();
 
     const contactsLoaded = getState().contacts[groupName].state === "READY";

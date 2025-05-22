@@ -61,9 +61,7 @@ export interface LoadDependantWorkspacesTriggerType {
  */
 const clearDependantState: clearDependantTriggerType =
   function clearDependantState() {
-    return (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return (dispatch) => {
       dispatch({
         type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
         payload: <AllStudentUsersDataStatusType>"WAITING",
@@ -91,9 +89,7 @@ const clearDependantState: clearDependantTriggerType =
  * loadDependants thunk function
  */
 const loadDependants: LoadDependantsTriggerType = function loadDependants() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-  ) => {
+  return async (dispatch) => {
     const meApi = MApi.getMeApi();
 
     try {
@@ -147,10 +143,7 @@ const loadDependants: LoadDependantsTriggerType = function loadDependants() {
  */
 const loadDependantWorkspaces: LoadDependantWorkspacesTriggerType =
   function loadDependantWorkspaces(dependantIdentifier: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const dependant = getState().dependants.list.find(
         (dependant) => dependant.identifier === dependantIdentifier
       );

@@ -26,10 +26,7 @@ export interface CloseReadingRuler {
  * openReadingRuler
  */
 const openReadingRuler: OpenReadingRuler = function openReadingRuler() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: "SET_ACTIVE_EASY_TO_USE_TOOL",
       payload: "Reading-ruler",
@@ -41,10 +38,7 @@ const openReadingRuler: OpenReadingRuler = function openReadingRuler() {
  * closeReadingRuler
  */
 const closeReadingRuler: CloseReadingRuler = function closeReadingRuler() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: "SET_ACTIVE_EASY_TO_USE_TOOL",
       payload: undefined,

@@ -357,10 +357,7 @@ export interface InitializeHopsTriggerType {
  */
 const loadMatriculationData: LoadMatriculationDataTriggerType =
   function loadMatriculationData(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       // Student identifier is either user identifier from props or current student identifier or user school data identifier from current user
@@ -617,10 +614,7 @@ const loadMatriculationData: LoadMatriculationDataTriggerType =
  */
 const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
   function cancelMatriculationExam(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       // Student identifier is either current student identifier or user school data identifier from current user
@@ -671,10 +665,7 @@ const verifyMatriculationExam: VerifyMatriculationExamTriggerType =
  */
 const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
   function loadMatriculationExamHistoryTriggerType(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       // Student identifier is either current student identifier or user school data identifier from current user
@@ -743,10 +734,7 @@ const loadMatriculationExamHistory: LoadMatriculationExamHistoryTriggerType =
  */
 const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
   function saveMatriculationPlan(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       // Student identifier is either current student identifier or user school data identifier from current user
@@ -908,10 +896,7 @@ const saveMatriculationPlan: SaveMatriculationPlanTriggerType =
  */
 const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType =
   function updateMatriculationExamination(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const studentIdentifier =
         state.hopsNew.currentStudentIdentifier ||
@@ -982,9 +967,7 @@ const updateMatriculationExamination: UpdateMatriculationExaminationTriggerType 
  * resetHopsData
  */
 const resetHopsData: ResetHopsDataTriggerType = function resetHopsData() {
-  return (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-  ) => {
+  return (dispatch) => {
     dispatch({
       type: "HOPS_RESET_DATA",
       payload: undefined,
@@ -996,10 +979,7 @@ const resetHopsData: ResetHopsDataTriggerType = function resetHopsData() {
  * Start editing. Locks the HOPS for editing for other users.
  */
 const startEditing: StartEditingTriggerType = function startEditing() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const state = getState();
 
     const studentInfo = state.hopsNew.studentInfo;
@@ -1070,10 +1050,7 @@ const startEditing: StartEditingTriggerType = function startEditing() {
  * Cancel editing. Discards any changes and returns to read mode.
  */
 const cancelEditing: CancelEditingTriggerType = function cancelEditing() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const state = getState();
 
     try {
@@ -1125,7 +1102,7 @@ const cancelEditing: CancelEditingTriggerType = function cancelEditing() {
 const saveHops: SaveHopsTriggerType = function saveHops(data) {
   return async (
     dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-    getState: () => StateType
+    getState
   ) => {
     const state = getState();
 
@@ -1242,9 +1219,7 @@ const saveHops: SaveHopsTriggerType = function saveHops(data) {
  */
 const updateHopsEditing: UpdateHopsEditingTriggerType =
   function updateHopsEditing(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return async (dispatch) => {
       dispatch({
         type: "HOPS_UPDATE_EDITING",
         payload: data.updates,
@@ -1258,10 +1233,7 @@ const updateHopsEditing: UpdateHopsEditingTriggerType =
  */
 const updateMatriculationPlan: UpdateMatriculationPlanTriggerType =
   function updateMatriculationPlan(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const { plan, studentIdentifier } = data;
 
@@ -1401,10 +1373,7 @@ const updateMatriculationPlan: UpdateMatriculationPlanTriggerType =
 const updateHopsLocked: UpdateHopsLockedTriggerType = function updateHopsLocked(
   data
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const { locked } = data;
 
     const state = getState();
@@ -1453,10 +1422,7 @@ const updateHopsLocked: UpdateHopsLockedTriggerType = function updateHopsLocked(
 const updateHopsForm: UpdateHopsFormTriggerType = function updateHopsForm(
   data
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     dispatch({
       type: "HOPS_FORM_UPDATE",
       payload: { status: "READY", data: data.form },
@@ -1470,10 +1436,7 @@ const updateHopsForm: UpdateHopsFormTriggerType = function updateHopsForm(
  */
 const updateHopsHistory: UpdateHopsHistoryTriggerType =
   function updateHopsHistory(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       const updatedHistory = [...state.hopsNew.hopsFormHistory];
@@ -1512,10 +1475,7 @@ const updateHopsHistory: UpdateHopsHistoryTriggerType =
  */
 const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
   function updateHopsFormHistoryEntry(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       // Student identifier is either current student identifier or user school data identifier from current user
@@ -1580,10 +1540,7 @@ const updateHopsFormHistoryEntry: UpdateHopsFormHistoryEntryTriggerType =
  */
 const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
   function loadMoreHopsFormHistory(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       // Student identifier is either user identifier from props or current student identifier or user school data identifier from current user
@@ -1653,10 +1610,7 @@ const loadMoreHopsFormHistory: LoadMoreHopsFormHistoryTriggerType =
  * @param data data
  */
 const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const state = getState();
 
     // Student identifier is either current student identifier or user school data identifier from current user
@@ -1738,7 +1692,7 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
 ) {
   return async (
     dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-    getState: () => StateType
+    getState
   ) => {
     const state = getState();
 
@@ -1869,7 +1823,7 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
 const initializeStudentInfo = async (
   studentIdentifier: string,
   dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-  getState: () => StateType
+  getState
 ) => {
   const state = getState();
 
@@ -1901,7 +1855,7 @@ const initializeHopsForms = async (
   studentIdentifier: string,
   isSecondary: boolean,
   dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-  getState: () => StateType
+  getState
 ) => {
   const state = getState();
 
@@ -1930,7 +1884,7 @@ const initializeHopsForms = async (
 const initializeHopsFormHistory = async (
   studentIdentifier: string,
   dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-  getState: () => StateType
+  getState
 ) => {
   const state = getState();
 
@@ -1972,7 +1926,7 @@ const initializeHopsFormHistory = async (
 const initializeHopsLocked = async (
   studentIdentifier: string,
   dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-  getState: () => StateType
+  getState
 ) => {
   const state = getState();
 

@@ -185,10 +185,7 @@ export interface UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger {
  */
 const updateCurrentWorkspaceInterimEvaluationRequests: UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger =
   function loadUserWorkspacesFromServer(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const { requestData, success } = data || {};
       const { currentWorkspace } = getState().workspaces;
 
@@ -234,10 +231,7 @@ export interface LoadTemplatesFromServerTriggerType {
  */
 const loadTemplatesFromServer: LoadTemplatesFromServerTriggerType =
   function loadTemplatesFromServer(query?: string) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const organizationApi = MApi.getOrganizationApi();
 
       try {
@@ -282,10 +276,7 @@ export interface LoadUserWorkspacesFromServerTriggerType {
  */
 const loadUserWorkspacesFromServer: LoadUserWorkspacesFromServerTriggerType =
   function loadUserWorkspacesFromServer() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       const userId = getState().status.userId;
@@ -328,10 +319,7 @@ export interface LoadLastWorkspacesFromServerTriggerType {
  */
 const loadLastWorkspacesFromServer: LoadLastWorkspacesFromServerTriggerType =
   function loadLastWorkspacesFromServer() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const userApi = MApi.getUserApi();
 
       try {
@@ -378,10 +366,7 @@ export interface UpdateLastWorkspaceTriggerType {
  */
 const updateLastWorkspaces: UpdateLastWorkspaceTriggerType =
   function updateLastWorkspace(newReference) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const userApi = MApi.getUserApi();
 
       try {
@@ -499,10 +484,7 @@ export interface LoadMoreWorkspacesFromServerTriggerType {
  */
 const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
   function setCurrentWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => any,
-      getState: () => StateType
-    ) => {
+    return async (dispatch: (arg: AnyActionType) => any, getState) => {
       const state = getState();
       const workspaceApi = MApi.getWorkspaceApi();
       const assessmentRequestApi = MApi.getAssessmentApi();
@@ -707,10 +689,7 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
  */
 const setAvailableCurriculums: SetAvailableCurriculumsTriggerType =
   function setAvailableCurriculums() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const coursepickerApi = MApi.getCoursepickerApi();
 
       try {
@@ -753,10 +732,7 @@ export interface UpdateCurrentWorkspaceActivityTriggerType {
  */
 const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType =
   function updateCurrentWorkspaceActivity(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const evaluationApi = MApi.getEvaluationApi();
 
@@ -821,10 +797,7 @@ export interface UpdateCurrentWorkspaceAssessmentRequestTriggerType {
  */
 const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentRequestTriggerType =
   function updateCurrentWorkspaceAssessmentRequest(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const assessmentRequestApi = MApi.getAssessmentApi();
 
@@ -903,10 +876,7 @@ export interface RequestAssessmentAtWorkspaceTriggerType {
  */
 const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
   function requestAssessmentAtWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const assessmentRequestApi = MApi.getAssessmentApi();
 
       try {
@@ -986,10 +956,7 @@ export interface CancelAssessmentAtWorkspaceTriggerType {
  */
 const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
   function cancelAssessmentAtWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const assessmentRequestApi = MApi.getAssessmentApi();
 
       try {
@@ -1237,9 +1204,7 @@ const loadMoreWorkspacesFromServer: LoadMoreWorkspacesFromServerTriggerType =
  */
 const setWorkspaceStateFilters: setFiltersTriggerType =
   function setWorkspaceStateFilters(loadOrganizationWorkspaceFilters, filters) {
-    return (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return (dispatch) => {
       if (loadOrganizationWorkspaceFilters) {
         return dispatch({
           type: "UPDATE_ORGANIZATION_WORKSPACES_AVAILABLE_FILTERS_STATE_TYPES",
@@ -1262,10 +1227,7 @@ const loadUserWorkspaceEducationFiltersFromServer: LoadUserWorkspaceEducationFil
   function loadUserWorkspaceEducationFiltersFromServer(
     loadOrganizationWorkspaceFilters
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const coursepickerApi = MApi.getCoursepickerApi();
       const workspaceApi = MApi.getWorkspaceApi();
 
@@ -1314,10 +1276,7 @@ const loadUserWorkspaceCurriculumFiltersFromServer: LoadUserWorkspaceCurriculumF
     loadOrganizationWorkspaceFilters,
     callback
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const coursepickerApi = MApi.getCoursepickerApi();
 
       try {
@@ -1361,10 +1320,7 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
   function signupIntoWorkspace(data) {
     const { workspace, message, success, fail, redirectOnSuccess } = data;
 
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const coursepickerApi = MApi.getCoursepickerApi();
 
       try {
@@ -1407,10 +1363,7 @@ const signupIntoWorkspace: SignupIntoWorkspaceTriggerType =
  */
 const loadWorkspaceSettings: LoadWorkspaceSettingsTriggerType =
   function loadWorkspaceSettings(id) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -1451,10 +1404,7 @@ const loadWorkspaceSettings: LoadWorkspaceSettingsTriggerType =
  */
 const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
   function updateWorkspaceSettings(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
       const currentWorkspace = getState().workspaces.currentWorkspace;
       try {
@@ -1594,10 +1544,7 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
  */
 const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
   function loadStaffMembersOfWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const userApi = MApi.getUserApi();
 
       try {
@@ -1644,10 +1591,7 @@ const loadStaffMembersOfWorkspace: LoadUsersOfWorkspaceTriggerType =
  */
 const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
   function loadStudentsOfWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -1715,10 +1659,7 @@ const loadStudentsOfWorkspace: LoadUsersOfWorkspaceTriggerType =
  */
 const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspaceTriggerType =
   function toggleActiveStateOfStudentOfWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       const oldStudents = data.workspace.students;
@@ -1814,10 +1755,7 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
     successMessage,
     callback
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -1984,10 +1922,7 @@ export type UpdateWorkspaceStateType =
  */
 const loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorkspaceTriggerType =
   function loadWorkspaceDetailsInCurrentWorkspace() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -2030,10 +1965,7 @@ const loadWorkspaceDetailsInCurrentWorkspace: LoadWorkspaceDetailsInCurrentWorks
  */
 const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurrentWorkspaceTriggerType =
   function updateWorkspaceDetailsForCurrentWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -2082,10 +2014,7 @@ const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurren
  */
 const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCurrentWorkspaceTriggerType =
   function updateWorkspaceProducersForCurrentWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -2134,10 +2063,7 @@ const updateWorkspaceProducersForCurrentWorkspace: UpdateWorkspaceProducersForCu
  */
 const loadWorkspaceTypes: LoadWorkspaceTypesTriggerType =
   function loadWorkspaceTypes() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -2172,10 +2098,7 @@ const loadWorkspaceTypes: LoadWorkspaceTypesTriggerType =
  */
 const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
   function deleteCurrentWorkspaceImage() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -2227,10 +2150,7 @@ const deleteCurrentWorkspaceImage: DeleteCurrentWorkspaceImageTriggerType =
  */
 const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
   function copyCurrentWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
       const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
@@ -2322,10 +2242,7 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
  */
 const updateCurrentWorkspaceImagesB64: UpdateCurrentWorkspaceImagesB64TriggerType =
   function updateCurrentWorkspaceImagesB64(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {

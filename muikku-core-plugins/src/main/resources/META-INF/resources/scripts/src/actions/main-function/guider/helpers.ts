@@ -25,8 +25,8 @@ const MAX_LOADED_AT_ONCE = 25;
 export async function loadStudentsHelper(
   filters: GuiderActiveFiltersType | null,
   initial: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-  getState: () => StateType
+  dispatch,
+  getState
 ) {
   dispatch({
     type: "SET_CURRENT_GUIDER_STUDENT",

@@ -177,10 +177,7 @@ export interface LoadNotebookDefaultPosition {
  */
 const loadNotebookEntries: LoadNotebookEntries =
   function loadNotebookEntries() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceNotesApi = MApi.getWorkspaceNotesApi();
 
       const state = getState();
@@ -284,10 +281,7 @@ const loadNotebookEntries: LoadNotebookEntries =
  */
 const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
   function updateNotebookEntriesOrder(dragIndex, hoverIndex, dropped) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceNotesApi = MApi.getWorkspaceNotesApi();
 
       const { notes } = getState().notebook;
@@ -374,10 +368,7 @@ const updateNotebookEntriesOrder: UpdateNotebookEntriesOrder =
  */
 const saveNewNotebookEntry: SaveNewNotebookEntry =
   function saveNewNotebookEntry(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const userApi = MApi.getUserApi();
       const workspaceNotesApi = MApi.getWorkspaceNotesApi();
@@ -508,10 +499,7 @@ const saveNewNotebookEntry: SaveNewNotebookEntry =
  */
 const updateEditedNotebookEntry: UpdateEditNotebookEntry =
   function updateEditedNotebookEntry(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const workspaceNotesApi = MApi.getWorkspaceNotesApi();
 
@@ -566,10 +554,7 @@ const updateEditedNotebookEntry: UpdateEditNotebookEntry =
 const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
   data
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const state = getState();
     const workpsaceNotesApi = MApi.getWorkspaceNotesApi();
 
@@ -627,10 +612,7 @@ const deleteNotebookEntry: DeleteNotebookEntry = function deleteNotebookEntry(
  */
 const toggleNotebookEditor: ToggleNotebookEditor =
   function toggleNotebookEditor(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       dispatch({
         type: "NOTEBOOK_TOGGLE_EDITOR",
         payload: data,
@@ -645,10 +627,7 @@ const toggleNotebookEditor: ToggleNotebookEditor =
  */
 const updateSelectedNotePosition: UpdateSelectedNotePosition =
   function updateSelectedNotePosition(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       dispatch({
         type: "NOTEBOOK_UPDATE_SELECTED_POSITION",
         payload: data,
@@ -663,10 +642,7 @@ const updateSelectedNotePosition: UpdateSelectedNotePosition =
  */
 const createNewFromCutContent: CreateNewFromCutContent =
   function createNewFromCutContent(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       if (!state.workspaces.materialExtraTools.opened) {
@@ -684,10 +660,7 @@ const createNewFromCutContent: CreateNewFromCutContent =
  */
 const loadNotebookDefaultPosition: LoadNotebookDefaultPosition =
   function loadNotebookDefaultPosition() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const userApi = MApi.getUserApi();
 

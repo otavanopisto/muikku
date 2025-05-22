@@ -235,10 +235,7 @@ const loadCurrentWorkspaceJournalsFromServer: LoadCurrentWorkspaceJournalsFromSe
  */
 const loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJournalsFromServerTriggerType =
   function loadMoreCurrentWorkspaceJournalsFromServer() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const currentJournalsState = getState().journals;
 
       dispatch(
@@ -259,10 +256,7 @@ const loadMoreCurrentWorkspaceJournalsFromServer: LoadMoreCurrentWorkspaceJourna
  */
 const loadWorkspaceJournalCommentsFromServer: LoadWorkspaceJournalCommentsFromServerTriggerType =
   function loadWorkspaceJournalCommentsFromServer(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -322,10 +316,7 @@ const loadWorkspaceJournalCommentsFromServer: LoadWorkspaceJournalCommentsFromSe
  */
 const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurrentWorkspaceTriggerType =
   function createWorkspaceJournalForCurrentWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -380,10 +371,7 @@ const createWorkspaceJournalForCurrentWorkspace: CreateWorkspaceJournalForCurren
  */
 const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentWorkspaceTriggerType =
   function updateWorkspaceJournalInCurrentWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -446,10 +434,7 @@ const updateWorkspaceJournalInCurrentWorkspace: UpdateWorkspaceJournalInCurrentW
  */
 const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentWorkspaceTriggerType =
   function deleteWorkspaceJournalInCurrentWorkspace(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       try {
@@ -504,10 +489,7 @@ const deleteWorkspaceJournalInCurrentWorkspace: DeleteWorkspaceJournalInCurrentW
  */
 const setCurrentJournal: SetCurrentJournalTriggerType =
   function setCurrentJournal(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       const currentJournalsState = getState().journals;
@@ -602,10 +584,7 @@ const setCurrentJournal: SetCurrentJournalTriggerType =
  */
 const changeWorkspaceJournalFilters: ChangeWorkspaceJournalFiltersTriggerType =
   function changeWorkspaceJournalFilters(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const { journalFilters } = data;
 
       const currentJournalsState = getState().journals;
@@ -632,10 +611,7 @@ const changeWorkspaceJournalFilters: ChangeWorkspaceJournalFiltersTriggerType =
  */
 const createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType =
   function createWorkspaceJournalComment(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const {
         newCommentPayload,
         journalEntryId,
@@ -722,10 +698,7 @@ const createWorkspaceJournalComment: CreateWorkspaceJournalCommentTriggerType =
  */
 const updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType =
   function updatedWorkspaceJournalComment(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const {
         updatedCommentPayload,
         journalEntryId,
@@ -819,10 +792,7 @@ const updatedWorkspaceJournalComment: UpdateWorkspaceJournalCommentTriggerType =
  */
 const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
   function updatedWorkspaceJournalComment(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const { commentId, journalEntryId, workspaceEntityId, fail, success } =
         data;
 
@@ -906,10 +876,7 @@ const deleteWorkspaceJournalComment: DeleteWorkspaceJournalCommentTriggerType =
  */
 const loadWorkspaceJournalFeedback: LoadWorkspaceJournalFeedbackTriggerType =
   function loadWorkspaceJournalFeedback(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const { userEntityId, workspaceEntityId, fail, success } = data;
 
       const currentJournalsState = getState().journals;

@@ -32,8 +32,8 @@ export async function loadWorkspacesHelper(
   initial: boolean,
   refresh: boolean,
   loadOrganizationWorkspaces: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-  getState: () => StateType
+  dispatch,
+  getState
 ) {
   const state: StateType = getState();
 
@@ -256,8 +256,8 @@ export async function loadWorkspacesHelper(
 export async function loadCurrentWorkspaceJournalsHelper(
   userEntityId: number | null,
   initial: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-  getState: () => StateType
+  dispatch,
+  getState
 ) {
   const workspaceApi = MApi.getWorkspaceApi();
 

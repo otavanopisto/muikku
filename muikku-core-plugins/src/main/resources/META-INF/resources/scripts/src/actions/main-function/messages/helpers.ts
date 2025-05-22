@@ -65,8 +65,8 @@ export async function loadMessagesHelper(
   location: string | null,
   query: string | null,
   initial: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-  getState: () => StateType
+  dispatch,
+  getState
 ) {
   //Remove the current message
   dispatch({
@@ -278,8 +278,8 @@ export async function loadMessagesHelper(
 export async function setLabelStatusCurrentMessage(
   label: MessageThreadLabel,
   isToAddLabel: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-  getState: () => StateType
+  dispatch,
+  getState
 ) {
   const state = getState();
   const messageLabel = state.messages.currentThread.labels.find(
@@ -357,8 +357,8 @@ export async function setLabelStatusCurrentMessage(
 export function setLabelStatusSelectedMessages(
   label: MessageThreadLabel,
   isToAddLabel: boolean,
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-  getState: () => StateType
+  dispatch,
+  getState
 ) {
   const state = getState();
 

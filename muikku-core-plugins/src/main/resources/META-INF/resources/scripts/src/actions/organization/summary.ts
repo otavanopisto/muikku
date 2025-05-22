@@ -45,10 +45,7 @@ export type UPDATE_SUMMARY_STATUS = SpecificActionType<
  */
 const loadOrganizationSummary: LoadSummaryTriggerType =
   function loadOrganizationSummary() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const organizationtApi = MApi.getOrganizationApi();
 
       try {

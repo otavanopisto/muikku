@@ -283,10 +283,7 @@ export type SET_PROFILE_AUTHORIZATIONS = SpecificActionType<
  */
 const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
   function loadProfilePropertiesSet() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const userApi = MApi.getUserApi();
 
@@ -320,9 +317,7 @@ const loadProfilePropertiesSet: LoadProfilePropertiesSetTriggerType =
  */
 const saveProfileProperty: SaveProfilePropertyTriggerType =
   function saveProfileProperty(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return async (dispatch) => {
       const userApi = MApi.getUserApi();
 
       try {
@@ -356,9 +351,7 @@ const saveProfileProperty: SaveProfilePropertyTriggerType =
  */
 const loadProfileUsername: LoadProfileUsernameTriggerType =
   function loadProfileUsername() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return async (dispatch) => {
       const userpluginApi = MApi.getUserpluginApi();
 
       try {
@@ -383,10 +376,7 @@ const loadProfileUsername: LoadProfileUsernameTriggerType =
  */
 const loadProfileAddress: LoadProfileAddressTriggerType =
   function loadProfileAddress() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const userApi = MApi.getUserApi();
 
@@ -424,10 +414,7 @@ const loadProfileAddress: LoadProfileAddressTriggerType =
  */
 const updateProfileAddress: UpdateProfileAddressTriggerType =
   function updateProfileAddress(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const userApi = MApi.getUserApi();
 
@@ -507,9 +494,7 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
  */
 const updateProfileChatSettings: UpdateProfileChatSettingsTriggerType =
   function updateProfileChatSettings(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return async (dispatch) => {
       try {
         const request = await fetch("/rest/chat/settings", {
           method: "PUT",
@@ -556,10 +541,7 @@ const imageSizes = [96, 256];
  */
 const uploadProfileImage: UploadProfileImageTriggerType =
   function uploadProfileImage(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const userApi = MApi.getUserApi();
 
       try {
@@ -624,10 +606,7 @@ const uploadProfileImage: UploadProfileImageTriggerType =
  */
 const deleteProfileImage: DeleteProfileImageTriggerType =
   function deleteProfileImage() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const userApi = MApi.getUserApi();
 
       const state = getState();
@@ -676,10 +655,7 @@ const setProfileLocation: SetProfileLocationTriggerType =
  */
 const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
   function insertProfileWorklistItem(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const worklistApi = MApi.getWorklistApi();
 
       const state = getState();
@@ -793,10 +769,7 @@ const insertProfileWorklistItem: InsertProfileWorklistItemTriggerType =
  */
 const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
   function deleteProfileWorklistItem(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const worklistApi = MApi.getWorklistApi();
 
       const state = getState();
@@ -864,10 +837,7 @@ const deleteProfileWorklistItem: DeleteProfileWorklistItemTriggerType =
  */
 const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
   function deleteProfileWorklistItem(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       if (
         data.description === data.item.description &&
         data.entryDate === data.item.entryDate &&
@@ -963,10 +933,7 @@ const editProfileWorklistItem: EditProfileWorklistItemTriggerType =
  */
 const loadProfileWorklistTemplates: LoadProfileWorklistTemplatesTriggerType =
   function loadProfileWorklistTemplates() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const worklistApi = MApi.getWorklistApi();
 
       const state = getState();
@@ -1007,10 +974,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
   function loadProfileWorklistSections(
     cb?: (d: Array<WorklistSection>) => void
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const worklistApi = MApi.getWorklistApi();
 
       const state = getState();
@@ -1057,10 +1021,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
  */
 const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
   function loadProfileWorklistSection(index: number, refresh?: boolean) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const worklistApi = MApi.getWorklistApi();
 
       const state = getState();
@@ -1113,10 +1074,7 @@ const loadProfileWorklistSection: LoadProfileWorklistSectionTriggerType =
  */
 const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerType =
   function updateProfileWorklistItemsState(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const worklistApi = MApi.getWorklistApi();
 
       const state = getState();
@@ -1179,10 +1137,7 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
  */
 const loadProfilePurchases: LoadProfilePurchasesTriggerType =
   function loadProfilePurchases() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const ceeposApi = MApi.getCeeposApi();
 
@@ -1222,10 +1177,7 @@ const loadProfilePurchases: LoadProfilePurchasesTriggerType =
  */
 const loadProfileAuthorizations: LoadProfileAuthorizationsTriggerType =
   function loadProfileAuthorizations() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const studentCardApi = MApi.getStudentCardApi();
 
       const status = getState().status;
@@ -1287,10 +1239,7 @@ const loadProfileAuthorizations: LoadProfileAuthorizationsTriggerType =
  */
 const updateProfileAuthorizations: UpdateProfileAuthorizationsTriggerType =
   function updateProfileAuthorizationStudentCard(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const studentCardApi = MApi.getStudentCardApi();
 
       const currentAuthorizationData = data.current;

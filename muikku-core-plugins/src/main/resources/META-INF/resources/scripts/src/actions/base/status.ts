@@ -84,10 +84,7 @@ export interface UpdateStatusChatSettingsType {
  * @param dispatch dispatch
  * @param whoAmIReadyCb whoAmIReadyCb
  */
-async function loadWhoAMI(
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-  whoAmIReadyCb: () => void
-) {
+async function loadWhoAMI(dispatch, whoAmIReadyCb: () => void) {
   const userApi = MApi.getUserApi();
 
   const whoAmI = await userApi.getWhoAmI();
@@ -189,7 +186,7 @@ async function loadWhoAMI(
  */
 async function loadWorkspacePermissions(
   workspaceId: number,
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+  dispatch,
   readyCb: () => void
 ) {
   const workspaceApi = MApi.getWorkspaceApi();
@@ -276,10 +273,7 @@ async function loadWorkspacePermissions(
 const loadStatus: LoadStatusType = function loadStatus(
   whoAmIReadyCb: () => void
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     loadWhoAMI(dispatch, whoAmIReadyCb);
   };
 };
@@ -290,10 +284,7 @@ const loadStatus: LoadStatusType = function loadStatus(
  */
 const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
   function loadWorkspaceStatusInfo(readyCb: () => void) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const workspaceApi = MApi.getWorkspaceApi();
 
       const workspaceUrlName = window.location.pathname.split("/")[2];
@@ -352,10 +343,7 @@ const loadWorkspaceStatus: LoadWorkspaceStatusInfoType =
  */
 const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissionsType =
   function loadEnviromentalForumAreaPermissions() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       const discussionApi = MApi.getDiscussionApi();
@@ -381,10 +369,7 @@ const loadEnviromentalForumAreaPermissions: LoadEnviromentalForumAreaPermissions
  */
 const updateStatusChatSettings: LoadStatusChatSettingsType =
   function loadChatSettings() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const chatApi = MApi.getChatApi();
       const chatSettings = await chatApi.getChatSettings();
       dispatch({

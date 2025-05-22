@@ -155,8 +155,8 @@ export interface CreateAnnouncementTriggerType {
  * @param announcement announcement
  */
 function validateAnnouncement(
-  dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-  getState: () => StateType,
+  dispatch,
+  getState,
   announcement: CreateAnnouncementRequest
 ) {
   if (!announcement.caption) {
@@ -237,10 +237,7 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
   announcementId,
   workspaceId
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const state = getState();
 
     let announcement: Announcement = state.announcements.announcements.find(
@@ -335,10 +332,7 @@ const removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerTyp
  */
 const updateAnnouncement: UpdateAnnouncementTriggerType =
   function updateAnnouncement(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const announcements: AnnouncementsState = state.announcements;
 
@@ -415,10 +409,7 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
  */
 const deleteAnnouncement: DeleteAnnouncementTriggerType =
   function deleteAnnouncement(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       try {
         const announcerApi = MApi.getAnnouncerApi();
 
@@ -445,10 +436,7 @@ const deleteAnnouncement: DeleteAnnouncementTriggerType =
  */
 const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
   function deleteSelectedAnnouncements() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const announcements: AnnouncementsState = state.announcements;
       const announcerApi = MApi.getAnnouncerApi();
@@ -489,10 +477,7 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
  */
 const createAnnouncement: CreateAnnouncementTriggerType =
   function createAnnouncement(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const announcements: AnnouncementsState = state.announcements;
 
@@ -555,10 +540,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
     options = { loadUserGroups: true },
     callback
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       try {
         dispatch({
           type: "UPDATE_ANNOUNCEMENTS_STATE",

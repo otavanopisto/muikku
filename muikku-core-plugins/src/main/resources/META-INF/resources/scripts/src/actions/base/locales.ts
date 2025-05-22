@@ -35,9 +35,7 @@ export interface LoadLocaleTriggerType {
  * @param data locale
  */
 const setLocale: SetLocaleTriggerType = function setLocale(data) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-  ) => {
+  return async (dispatch) => {
     const meApi = MApi.getMeApi();
 
     try {
@@ -70,9 +68,7 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
  * loadLocale
  */
 const loadLocale: LoadLocaleTriggerType = function loadLocale() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-  ) => {
+  return async (dispatch) => {
     const meApi = MApi.getMeApi();
 
     try {

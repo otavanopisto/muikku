@@ -90,10 +90,7 @@ export interface UpdateTranscriptOfRecordsFilesTriggerType {
  */
 const updateAllStudentUsersAndSetViewToRecords: UpdateAllStudentUsersAndSetViewToRecordsTriggerType =
   function updateAllStudentUsersAndSetViewToRecords(userIdentifier) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const meApi = MApi.getMeApi();
       const recordsApi = MApi.getRecordsApi();
       const userDataStatus = getState().records.userDataStatus;
@@ -336,10 +333,7 @@ const setLocationToInfoInTranscriptOfRecords: SetLocationToHopsInTranscriptOfRec
  */
 const updateTranscriptOfRecordsFiles: UpdateTranscriptOfRecordsFilesTriggerType =
   function updateTranscriptOfRecordsFiles() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const guiderApi = MApi.getGuiderApi();
 
       const files = await guiderApi.getGuiderUserFiles({

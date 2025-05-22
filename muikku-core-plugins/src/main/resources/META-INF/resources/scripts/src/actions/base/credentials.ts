@@ -37,10 +37,7 @@ export interface LoadCrendentialsTriggerType {
 const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
   secret
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const credentialsApi = MApi.getCredentialsApi();
 
     try {
@@ -82,10 +79,7 @@ const loadCredentials: LoadCrendentialsTriggerType = function loadCredentials(
  */
 const updateCredentials: UpdateCredentialsTriggerType =
   function updateCredentials(credentials) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const credentialsApi = MApi.getCredentialsApi();
 
       try {

@@ -158,10 +158,7 @@ export type REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS = SpecificActionType<
  */
 const updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType =
   function updateUnreadMessageThreadsCount() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       if (!getState().status.loggedIn) {
         return;
       }
@@ -204,10 +201,7 @@ export interface LoadLastMessageThreadsFromSeverTriggerType {
  */
 const loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType =
   function loadLastMessageThreadsFromServer(maxResults) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const communicatorApi = MApi.getCommunicatorApi();
 
       try {
@@ -411,10 +405,7 @@ const toggleAllMessageItems: ToggleSelectAllMessageThreadsTriggerType =
  * @param message message
  */
 const sendMessage: SendMessageTriggerType = function sendMessage(message) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const recepientWorkspaces = message.to
       .filter((x) => x.type === "workspace")
       .map((x) => x.value.id);
@@ -720,10 +711,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
     dontLockToolbar = false,
     callback
   ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       if (!dontLockToolbar) {
         dispatch({
           type: "LOCK_TOOLBAR",
@@ -862,9 +850,7 @@ const toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType =
  */
 const toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType =
   function toggleMessageThreadsReadStatus(threads) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
+    return async (dispatch) => {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
@@ -900,10 +886,7 @@ const toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType 
  */
 const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
   function deleteSelectedMessageThreads() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
@@ -993,10 +976,7 @@ const deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType =
  */
 const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
   function deleteCurrentMessageThread() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
@@ -1099,10 +1079,7 @@ const deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType =
  */
 const loadMessageThread: LoadMessageThreadTriggerType =
   function loadMessageThread(location, messageId) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       const communicatorApi = MApi.getCommunicatorApi();
@@ -1204,10 +1181,7 @@ const loadMessageThread: LoadMessageThreadTriggerType =
  */
 const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
   function loadNewlyReceivedMessage() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const communicatorApi = MApi.getCommunicatorApi();
 
@@ -1306,10 +1280,7 @@ const loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType =
  * loadSignature
  */
 const loadSignature: LoadSignatureTriggerType = function loadSignature() {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const communicatorApi = MApi.getCommunicatorApi();
 
     try {
@@ -1345,10 +1316,7 @@ const loadSignature: LoadSignatureTriggerType = function loadSignature() {
 const updateSignature: UpdateSignatureTriggerType = function updateSignature(
   newSignature
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const state = getState();
 
     const communicatorApi = MApi.getCommunicatorApi();
@@ -1451,10 +1419,7 @@ export interface RemoveMessagesNavigationLabelTriggerType {
  */
 const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
   function loadMessagesNavigationLabels(callback) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const communicatorApi = MApi.getCommunicatorApi();
 
       try {
@@ -1495,10 +1460,7 @@ const loadMessagesNavigationLabels: LoadMessagesNavigationLabelsTriggerType =
  */
 const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
   function addMessagesNavigationLabel(name) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const communicatorApi = MApi.getCommunicatorApi();
 
       if (!name) {
@@ -1561,10 +1523,7 @@ const addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType =
  */
 const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
   function updateMessagesNavigationLabel(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       if (!data.newName) {
         data.fail && data.fail();
         return dispatch(
@@ -1641,10 +1600,7 @@ const updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType =
  */
 const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
   function removeMessagesNavigationLabel(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const communicatorApi = MApi.getCommunicatorApi();
 
       try {
@@ -1695,10 +1651,7 @@ const removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType =
  */
 const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
   function restoreSelectedMessageThreads() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,
@@ -1776,10 +1729,7 @@ const restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType =
  */
 const restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType =
   function restoreCurrentMessageThread() {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       dispatch({
         type: "LOCK_TOOLBAR",
         payload: null,

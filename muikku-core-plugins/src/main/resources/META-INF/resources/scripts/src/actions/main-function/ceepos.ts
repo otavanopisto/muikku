@@ -36,10 +36,7 @@ export type UPDATE_CEEPOS_PAY_STATUS = SpecificActionType<
  */
 const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
   function loadCeeposPurchase(orderId) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const ceeposApi = MApi.getCeeposApi();
 
       try {
@@ -93,10 +90,7 @@ const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
  */
 const loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType =
   function loadCeeposPurchase(orderId) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const ceeposApi = MApi.getCeeposApi();
 
       try {

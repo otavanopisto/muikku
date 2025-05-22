@@ -274,10 +274,7 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
  */
 const showOnlySubscribedThreads: ShowOnlySubscribedThreads =
   function showOnlySubscribedThreads(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       dispatch({
         type: "UPDATE_SHOW_ONLY_SUBSCRIBED_THREADS",
         payload: data.value,
@@ -292,10 +289,7 @@ const showOnlySubscribedThreads: ShowOnlySubscribedThreads =
  */
 const subscribeDiscussionThread: SubscribeDiscussionThread =
   function subscribeDiscussionThread(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       const discussionApi = MApi.getDiscussionApi();
@@ -336,10 +330,7 @@ const subscribeDiscussionThread: SubscribeDiscussionThread =
  */
 const unsubscribeDiscussionThread: UnsubscribeDiscustionThread =
   function unsubscribeDiscussionThread(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
 
       const discussionApi = MApi.getDiscussionApi();
@@ -383,10 +374,7 @@ const unsubscribeDiscussionThread: UnsubscribeDiscustionThread =
  */
 const subscribeDiscussionArea: SubscribeDiscussionArea =
   function subscribeDiscussionArea(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const discussionApi = MApi.getDiscussionApi();
 
@@ -425,10 +413,7 @@ const subscribeDiscussionArea: SubscribeDiscussionArea =
  */
 const unsubscribeDiscussionArea: UnsubscribeDiscustionArea =
   function unsubscribeDiscussionArea(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const discussionApi = MApi.getDiscussionApi();
 
@@ -470,10 +455,7 @@ const unsubscribeDiscussionArea: UnsubscribeDiscustionArea =
  */
 const loadSubscribedDiscussionAreaList: LoadSubscribedDiscussionAreaList =
   function loadSubscribedDiscussionThreadList(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const discussionApi = MApi.getDiscussionApi();
 
@@ -516,10 +498,7 @@ const loadSubscribedDiscussionAreaList: LoadSubscribedDiscussionAreaList =
  */
 const loadSubscribedDiscussionThreadList: LoadSubscribedDiscussionThreadList =
   function loadSubscribedDiscussionThreadList(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const discussionApi = MApi.getDiscussionApi();
 
@@ -562,10 +541,7 @@ const loadSubscribedDiscussionThreadList: LoadSubscribedDiscussionThreadList =
  */
 const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerType =
   function loadDiscussionThreadsFromServer(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const discussionApi = MApi.getDiscussionApi();
       const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
@@ -704,10 +680,7 @@ const loadDiscussionThreadsFromServer: loadDiscussionThreadsFromServerTriggerTyp
  */
 const createDiscussionThread: CreateDiscussionThreadTriggerType =
   function createDiscussionThread(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const discussionApi = MApi.getDiscussionApi();
       const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
@@ -812,10 +785,7 @@ const createDiscussionThread: CreateDiscussionThreadTriggerType =
  */
 const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
   function modifyDiscussionThread(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const discussionApi = MApi.getDiscussionApi();
       const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
@@ -902,10 +872,7 @@ const modifyDiscussionThread: ModifyDiscussionThreadTriggerType =
  */
 const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType =
   function loadDiscussionThreadFromServer(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const discussion = state.discussion;
 
@@ -1025,10 +992,7 @@ const loadDiscussionThreadFromServer: LoadDiscussionThreadFromServerTriggerType 
  */
 const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType =
   function replyToDiscussionThread(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const discussionApi = MApi.getDiscussionApi();
       const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
@@ -1089,10 +1053,7 @@ const replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType 
  */
 const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
   function deleteCurrentDiscussionThread(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const discussion = state.discussion;
 
@@ -1155,10 +1116,7 @@ const deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType =
  */
 const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType =
   function deleteDiscussionThreadReplyFromCurrent(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const discussion = state.discussion;
 
@@ -1215,10 +1173,7 @@ const deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCur
  */
 const modifyReplyFromCurrentThread: ModifyReplyFromCurrentThreadTriggerType =
   function modifyReplyFromCurrentThread(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const discussion = state.discussion;
 
@@ -1282,10 +1237,7 @@ export interface LoadDiscussionAreasFromServerTriggerType {
  */
 const loadDiscussionAreasFromServer: LoadDiscussionAreasFromServerTriggerType =
   function loadDiscussionAreasFromServer(callback) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const discussion = getState().discussion;
 
       const discussionApi = MApi.getDiscussionApi();
@@ -1338,10 +1290,7 @@ export interface CreateDiscussionAreaTriggerType {
  */
 const createDiscussionArea: CreateDiscussionAreaTriggerType =
   function createDiscussionArea(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const discussionApi = MApi.getDiscussionApi();
       const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
@@ -1422,10 +1371,7 @@ export interface UpdateDiscussionAreaTriggerType {
  */
 const updateDiscussionArea: UpdateDiscussionAreaTriggerType =
   function updateDiscussionArea(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const discussionApi = MApi.getDiscussionApi();
       const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
@@ -1499,10 +1445,7 @@ export interface DeleteDiscussionAreaTriggerType {
  */
 const deleteDiscussionArea: DeleteDiscussionAreaTriggerType =
   function deleteDiscussionArea(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const discussionApi = MApi.getDiscussionApi();
       const workspaceDiscussionApi = MApi.getWorkspaceDiscussionApi();
 
