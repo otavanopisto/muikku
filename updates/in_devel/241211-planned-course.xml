@@ -11,14 +11,39 @@
       mandatory bit not null,
       name varchar(255),
       startDate date,
-      studentIdentifier varchar(255) not null,
+      userEntityId bigint not null,
+      category varchar(255) not null,
       subjectCode varchar(255),
       workspaceEntityId bigint,
       primary key (id)
     );
   </sql>
-  <sql>create index IDXq5u4v18v3jl2ub6mg45rmagbl on HopsPlannedCourse (studentIdentifier);</sql>
+  <sql>create index IDXcqd6ibh9uqxhgnhieshyw055a on HopsPlannedCourse (userEntityId, category);</sql>
   
-  <sql>drop table HopsStudyHours;</sql>  
+  <sql>drop table HopsStudyHours;</sql>
+  
+  <sql>alter table Hops add column userEntityId bigint;</sql>
+  <sql>alter table Hops add column category varchar(255);</sql>
+  <sql>alter table Hops modify column studentIdentifier varchar(255);</sql>
+
+  <sql>alter table HopsGoals add column userEntityId bigint;</sql>
+  <sql>alter table HopsGoals add column category varchar(255);</sql>
+  <sql>alter table HopsGoals modify column studentIdentifier varchar(255);</sql>
+
+  <sql>alter table HopsHistory add column userEntityId bigint;</sql>
+  <sql>alter table HopsHistory add column category varchar(255);</sql>
+  <sql>alter table HopsHistory modify column studentIdentifier varchar(255);</sql>
+
+  <sql>alter table HopsOptionalSuggestion add column userEntityId bigint;</sql>
+  <sql>alter table HopsOptionalSuggestion add column category varchar(255);</sql>
+  <sql>alter table HopsOptionalSuggestion modify column studentIdentifier varchar(255);</sql>
+
+  <sql>alter table HopsStudentChoice add column userEntityId bigint;</sql>
+  <sql>alter table HopsStudentChoice add column category varchar(255);</sql>
+  <sql>alter table HopsStudentChoice modify column studentIdentifier varchar(255);</sql>
+
+  <sql>alter table HopsSuggestion add column userEntityId bigint;</sql>
+  <sql>alter table HopsSuggestion add column category varchar(255);</sql>
+  <sql>alter table HopsSuggestion modify column studentIdentifier varchar(255);</sql>
 
 </update> 

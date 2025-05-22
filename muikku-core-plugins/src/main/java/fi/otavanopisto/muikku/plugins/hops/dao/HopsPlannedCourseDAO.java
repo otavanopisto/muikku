@@ -16,10 +16,11 @@ public class HopsPlannedCourseDAO extends CorePluginsDAO<HopsPlannedCourse> {
 
   private static final long serialVersionUID = -7149518989897915263L;
   
-  public HopsPlannedCourse create(String studentIdentifier, String name, Integer courseNumber, Integer length, String lengthSymbol,
+  public HopsPlannedCourse create(Long userEntityId, String category, String name, Integer courseNumber, Integer length, String lengthSymbol,
       String subjectCode, Boolean mandatory, Date startDate, Long duration, Long workspaceEntityId) {
     HopsPlannedCourse hopsPlannedCourse = new HopsPlannedCourse();
-    hopsPlannedCourse.setStudentIdentifier(studentIdentifier);
+    hopsPlannedCourse.setUserEntityId(userEntityId);
+    hopsPlannedCourse.setCategory(category);
     hopsPlannedCourse.setName(name);
     hopsPlannedCourse.setCourseNumber(courseNumber);
     hopsPlannedCourse.setLength(length);
@@ -32,14 +33,17 @@ public class HopsPlannedCourseDAO extends CorePluginsDAO<HopsPlannedCourse> {
     return persist(hopsPlannedCourse);
   }
 
-  public List<HopsPlannedCourse> listByStudentIdentifier(String studentIdentifier) {
+  public List<HopsPlannedCourse> listByUserEntityIdAndCategory(Long userEntityId, String category) {
     EntityManager entityManager = getEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<HopsPlannedCourse> criteria = criteriaBuilder.createQuery(HopsPlannedCourse.class);
     Root<HopsPlannedCourse> root = criteria.from(HopsPlannedCourse.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(HopsPlannedCourse_.studentIdentifier), studentIdentifier)
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(HopsPlannedCourse_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(HopsPlannedCourse_.category), category)
+      )
     );
     return entityManager.createQuery(criteria).getResultList();
   }
