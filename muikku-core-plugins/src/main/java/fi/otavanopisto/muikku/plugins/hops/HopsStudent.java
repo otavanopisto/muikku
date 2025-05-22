@@ -24,6 +24,6 @@ public class HopsStudent {
   }
 
   private Long userEntityId;
-  private String category;
+  private String category; // studyProgramme.getCategory().getEducationType().getCode()
 
 }
