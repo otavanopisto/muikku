@@ -1,26 +1,20 @@
 import * as React from "react";
-import { connect } from "react-redux";
-import { Action, Dispatch } from "redux";
-import { bindActionCreators } from "redux";
-import { AnyActionType } from "~/actions";
 import {
-  GuiderStudyProgressSuggestedNextWebsocketType,
-  GuiderStudyProgressWorkspaceSignupWebsocketType,
   guiderStudyProgressSuggestedNextWebsocket,
   guiderStudyProgressWorkspaceSignupWebsocket,
-  GuiderStudyProgressAlternativeStudyOptionsWebsocketType,
   guiderStudyProgressAlternativeStudyOptionsWebsocket,
 } from "~/actions/main-function/guider";
 import {
-  RecordsSummarySuggestedNextWebsocketType,
   recordsSummarySuggestedNextWebsocket,
   recordsSummaryWorkspaceSignupWebsocket,
-  RecordsSummaryWorkspaceSignupWebsocketType,
   recordsSummaryAlternativeStudyOptionsWebsocket,
-  RecordsSummaryAlternativeStudyOptionsWebsocketType,
 } from "~/actions/main-function/records/summary";
 import { StudentStudyActivity } from "~/generated/client";
-import { StateType } from "~/reducers";
+import {
+  RootState,
+  useAppDispatch,
+  useAppSelector,
+} from "~/reducers/configureStore";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 
 /**
@@ -28,19 +22,6 @@ import { WebsocketStateType } from "~/reducers/util/websocket";
  */
 interface StudyProgressWebsocketWatcherProps {
   children: React.ReactNode;
-
-  // Websocket state is missing when using Muikku as unlogged user
-  websocketState: WebsocketStateType;
-
-  // Records related actions
-  recordsSummarySuggestedNextWebsocket: RecordsSummarySuggestedNextWebsocketType;
-  recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebsocketType;
-  recordsSummaryAlternativeStudyOptionsWebsocket: RecordsSummaryAlternativeStudyOptionsWebsocketType;
-
-  // Guider related actions
-  guiderStudyProgressSuggestedNextWebsocket: GuiderStudyProgressSuggestedNextWebsocketType;
-  guiderStudyProgressWorkspaceSignupWebsocket: GuiderStudyProgressWorkspaceSignupWebsocketType;
-  guiderStudyProgressAlternativeStudyOptionsWebsocket: GuiderStudyProgressAlternativeStudyOptionsWebsocketType;
 }
 
 /**
@@ -85,24 +66,22 @@ function useWebsocketEvent<T>(
 const StudyProgressWebsocketWatcher = (
   props: StudyProgressWebsocketWatcherProps
 ) => {
-  const {
-    children,
-    websocketState,
-    recordsSummarySuggestedNextWebsocket,
-    recordsSummaryWorkspaceSignupWebsocket,
-    recordsSummaryAlternativeStudyOptionsWebsocket,
-    guiderStudyProgressSuggestedNextWebsocket,
-    guiderStudyProgressWorkspaceSignupWebsocket,
-    guiderStudyProgressAlternativeStudyOptionsWebsocket,
-  } = props;
+  const dispatch = useAppDispatch();
+
+  const websocketState = useAppSelector((state: RootState) => state.websocket);
+
+  const { children } = props;
 
   // hops:workspace-suggested watcher
   useWebsocketEvent<StudentStudyActivity>(
     "hops:workspace-suggested",
     [
-      (data) => recordsSummarySuggestedNextWebsocket({ websocketData: data }),
       (data) =>
-        guiderStudyProgressSuggestedNextWebsocket({ websocketData: data }),
+        dispatch(recordsSummarySuggestedNextWebsocket({ websocketData: data })),
+      (data) =>
+        dispatch(
+          guiderStudyProgressSuggestedNextWebsocket({ websocketData: data })
+        ),
     ],
     websocketState.websocket
   );
@@ -111,9 +90,14 @@ const StudyProgressWebsocketWatcher = (
   useWebsocketEvent<StudentStudyActivity | StudentStudyActivity[]>(
     "hops:workspace-signup",
     [
-      (data) => recordsSummaryWorkspaceSignupWebsocket({ websocketData: data }),
       (data) =>
-        guiderStudyProgressWorkspaceSignupWebsocket({ websocketData: data }),
+        dispatch(
+          recordsSummaryWorkspaceSignupWebsocket({ websocketData: data })
+        ),
+      (data) =>
+        dispatch(
+          guiderStudyProgressWorkspaceSignupWebsocket({ websocketData: data })
+        ),
     ],
     websocketState.websocket
   );
@@ -123,13 +107,17 @@ const StudyProgressWebsocketWatcher = (
     "hops:alternative-study-options",
     [
       (data) =>
-        recordsSummaryAlternativeStudyOptionsWebsocket({
-          websocketData: data,
-        }),
+        dispatch(
+          recordsSummaryAlternativeStudyOptionsWebsocket({
+            websocketData: data,
+          })
+        ),
       (data) =>
-        guiderStudyProgressAlternativeStudyOptionsWebsocket({
-          websocketData: data,
-        }),
+        dispatch(
+          guiderStudyProgressAlternativeStudyOptionsWebsocket({
+            websocketData: data,
+          })
+        ),
     ],
     websocketState.websocket
   );
@@ -141,17 +129,17 @@ const StudyProgressWebsocketWatcher = (
  * mapStateToProps
  * @param state state
  */
-function mapStateToProps(state: StateType) {
+/* function mapStateToProps(state: StateType) {
   return {
     websocketState: state.websocket,
   };
-}
+} */
 
 /**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+/* function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
       recordsSummarySuggestedNextWebsocket,
@@ -163,9 +151,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
     },
     dispatch
   );
-}
+} */
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(StudyProgressWebsocketWatcher);
+export default StudyProgressWebsocketWatcher;

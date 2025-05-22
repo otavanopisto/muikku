@@ -2,7 +2,6 @@
 import * as React from "react";
 import "~/sass/util/base.scss";
 import { StateType } from "~/reducers";
-import { Action, Store } from "redux";
 import Websocket from "~/util/websocket";
 import WorkspaceHomeBody from "~/components/workspace/workspaceHome";
 import WorkspaceHelpBody from "~/components/workspace/workspaceHelp";
@@ -64,6 +63,7 @@ import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
 import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
+import { AppStore } from "~/reducers/configureStore";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -71,7 +71,7 @@ registerLocale("enGB", enGB);
  * WorkspaceProps
  */
 interface WorkspaceProps {
-  store: Store<StateType>;
+  store: AppStore;
   websocket: Websocket;
 }
 
@@ -280,7 +280,7 @@ export default class Workspace extends React.Component<
               workspaceName: workspaceName,
               materialName:
                 state.workspaces.currentMaterials[0].children[0].title,
-            }) as Action
+            })
           );
         }
       }
@@ -324,7 +324,7 @@ export default class Workspace extends React.Component<
               workspaceId: state.workspaces.currentWorkspace.id,
               workspaceName: workspaceName,
               materialName: materialChapter.children[indexFound].title,
-            }) as Action
+            })
           );
         }
       }
@@ -397,14 +397,14 @@ export default class Workspace extends React.Component<
           success: (workspace) => {
             if (!workspace.staffMembers && state.status.loggedIn) {
               this.props.store.dispatch(
-                loadStaffMembersOfWorkspace({ workspace }) as Action
+                loadStaffMembersOfWorkspace({ workspace })
               );
             }
           },
-        }) as Action
+        })
       );
 
-      this.props.store.dispatch(setAvailableCurriculums() as Action);
+      this.props.store.dispatch(setAvailableCurriculums());
 
       if (
         state.status.loggedIn &&
@@ -415,7 +415,7 @@ export default class Workspace extends React.Component<
           loadAnnouncementsAsAClient({
             hideEnvironmentAnnouncements: true,
             workspaceEntityId: state.status.currentWorkspaceId,
-          }) as Action
+          })
         );
       }
     }
@@ -450,7 +450,7 @@ export default class Workspace extends React.Component<
           workspaceId: state.status.currentWorkspaceId,
           loadDetails:
             state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS,
-        }) as Action
+        })
       );
       this.props.store.dispatch(
         loadWholeWorkspaceHelp(
@@ -467,7 +467,7 @@ export default class Workspace extends React.Component<
               );
             }
           }
-        ) as Action
+        )
       );
     }
 
@@ -503,10 +503,10 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
-        }) as Action
+        })
       );
       this.props.store.dispatch(
-        setDiscussionWorkpaceId(state.status.currentWorkspaceId) as Action
+        setDiscussionWorkpaceId(state.status.currentWorkspaceId)
       );
 
       this.props.store.dispatch(
@@ -515,7 +515,7 @@ export default class Workspace extends React.Component<
             .replace("#", "")
             .split("/");
           this.loadWorkspaceDiscussionData(currentLocation);
-        }) as Action
+        })
       );
     }
 
@@ -543,7 +543,7 @@ export default class Workspace extends React.Component<
         loadAnnouncementsAsAClient({
           hideEnvironmentAnnouncements: true,
           workspaceEntityId: state.status.currentWorkspaceId,
-        }) as Action
+        })
       );
 
       this.loadWorkspaceAnnouncementsData(
@@ -581,7 +581,7 @@ export default class Workspace extends React.Component<
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
-        }) as Action
+        })
       );
 
       if (!window.location.hash) {
@@ -615,8 +615,8 @@ export default class Workspace extends React.Component<
     const state = this.props.store.getState();
 
     // Load subscribed areas and threads every time
-    this.props.store.dispatch(loadSubscribedDiscussionAreaList({}) as Action);
-    this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
+    this.props.store.dispatch(loadSubscribedDiscussionAreaList({}));
+    this.props.store.dispatch(loadSubscribedDiscussionThreadList({}));
 
     if (location.includes("subs")) {
       if (location.length <= 2) {
@@ -630,23 +630,19 @@ export default class Workspace extends React.Component<
           payload,
         });
 
-        this.props.store.dispatch(
-          showOnlySubscribedThreads({ value: true }) as Action
-        );
+        this.props.store.dispatch(showOnlySubscribedThreads({ value: true }));
       } else {
         this.props.store.dispatch(
           loadDiscussionThreadFromServer({
             areaId: parseInt(location[1]),
             threadId: parseInt(location[2]),
             threadPage: parseInt(location[3]) || 1,
-          }) as Action
+          })
         );
       }
     } else {
       state.discussion.subscribedThreadOnly &&
-        this.props.store.dispatch(
-          showOnlySubscribedThreads({ value: false }) as Action
-        );
+        this.props.store.dispatch(showOnlySubscribedThreads({ value: false }));
 
       if (location.length <= 2) {
         const payload: DiscussionStatePatch = {
@@ -670,7 +666,7 @@ export default class Workspace extends React.Component<
             areaId: parseInt(location[0]) || null,
             page: parseInt(location[1]) || 1,
             forceRefresh: true,
-          }) as Action
+          })
         );
       } else {
         //There will always be an areaId and page designed #1/2/3 where then 3 is the threaid
@@ -680,7 +676,7 @@ export default class Workspace extends React.Component<
             areaId: parseInt(location[2]),
             threadId: parseInt(location[3]),
             threadPage: parseInt(location[4]) || 1,
-          }) as Action
+          })
         );
       }
     }
@@ -691,7 +687,7 @@ export default class Workspace extends React.Component<
    * @param announcementId announcementId
    */
   loadWorkspaceAnnouncementsData(announcementId: number) {
-    this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
+    this.props.store.dispatch(loadAnnouncement(null, announcementId));
   }
 
   /**
@@ -703,10 +699,7 @@ export default class Workspace extends React.Component<
     const state = this.props.store.getState();
     if (actualLocation.length === 1) {
       this.props.store.dispatch(
-        loadAnnouncements(
-          actualLocation[0],
-          state.status.currentWorkspaceId
-        ) as Action
+        loadAnnouncements(actualLocation[0], state.status.currentWorkspaceId)
       );
     } else {
       this.props.store.dispatch(
@@ -714,7 +707,7 @@ export default class Workspace extends React.Component<
           actualLocation[0],
           parseInt(actualLocation[1]),
           state.status.currentWorkspaceId
-        ) as Action
+        )
       );
     }
   }
@@ -725,9 +718,7 @@ export default class Workspace extends React.Component<
    */
   loadWorkspaceMaterialsData(id: number): void {
     if (id) {
-      this.props.store.dispatch(
-        setCurrentWorkspaceMaterialsActiveNodeId(id) as Action
-      );
+      this.props.store.dispatch(setCurrentWorkspaceMaterialsActiveNodeId(id));
     }
   }
 
@@ -737,9 +728,7 @@ export default class Workspace extends React.Component<
    */
   loadWorkspaceHelpData(id: number): void {
     if (id) {
-      this.props.store.dispatch(
-        setCurrentWorkspaceMaterialsActiveNodeId(id) as Action
-      );
+      this.props.store.dispatch(setCurrentWorkspaceMaterialsActiveNodeId(id));
     }
   }
 
@@ -759,7 +748,7 @@ export default class Workspace extends React.Component<
         success: (workspace) => {
           if (!workspace.staffMembers && state.status.loggedIn) {
             this.props.store.dispatch(
-              loadStaffMembersOfWorkspace({ workspace }) as Action
+              loadStaffMembersOfWorkspace({ workspace })
             );
           }
           if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
@@ -772,7 +761,7 @@ export default class Workspace extends React.Component<
                   maxResults: 10,
                   active: true,
                 },
-              }) as Action
+              })
             );
             this.props.store.dispatch(
               loadStudentsOfWorkspace({
@@ -783,11 +772,11 @@ export default class Workspace extends React.Component<
                   maxResults: 10,
                   active: false,
                 },
-              }) as Action
+              })
             );
           }
         },
-      }) as Action
+      })
     );
   }
 
@@ -825,16 +814,14 @@ export default class Workspace extends React.Component<
           workspaceId: state.status.currentWorkspaceId,
           loadDetails:
             state.status.permissions.WORKSPACE_VIEW_WORKSPACE_DETAILS,
-        }) as Action
+        })
       );
       this.props.store.dispatch(
-        loadWorkspaceCompositeMaterialReplies(
-          state.status.currentWorkspaceId
-        ) as Action
+        loadWorkspaceCompositeMaterialReplies(state.status.currentWorkspaceId)
       );
 
       state.status.loggedIn &&
-        this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
+        this.props.store.dispatch(loadLastWorkspacesFromServer());
       this.props.store.dispatch(
         loadWholeWorkspaceMaterials(
           state.status.currentWorkspaceId,
@@ -922,7 +909,7 @@ export default class Workspace extends React.Component<
               );
             }
           }
-        ) as Action
+        )
       );
 
       if (
@@ -935,7 +922,7 @@ export default class Workspace extends React.Component<
             displayNotification(
               i18n.t("content.cannotSignUpWarning", { ns: "workspace" }),
               "notice"
-            ) as Action
+            )
           );
         } else {
           this.props.store.dispatch(
@@ -945,7 +932,7 @@ export default class Workspace extends React.Component<
                   ns: "materials",
                 })}</a>`,
               "notice"
-            ) as Action
+            )
           );
         }
       }
@@ -1024,7 +1011,7 @@ export default class Workspace extends React.Component<
                 loadStudentsOfWorkspace({
                   workspace,
                   payload: { q: "", maxResults: 500 },
-                }) as Action
+                })
               );
             }
             if (
@@ -1034,18 +1021,16 @@ export default class Workspace extends React.Component<
               if (state.status.permissions.WORSKPACE_LIST_WORKSPACE_MEMBERS) {
                 // This happens if teacher/admin uses diary
                 this.props.store.dispatch(
-                  loadCurrentWorkspaceJournalsFromServer() as Action
+                  loadCurrentWorkspaceJournalsFromServer()
                 );
               } else {
                 this.props.store.dispatch(
-                  loadCurrentWorkspaceJournalsFromServer(
-                    state.status.userId
-                  ) as Action
+                  loadCurrentWorkspaceJournalsFromServer(state.status.userId)
                 );
               }
             }
           },
-        }) as Action
+        })
       );
     }
 
@@ -1075,14 +1060,14 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
 
-      this.props.store.dispatch(loadWorkspaceTypes() as Action);
+      this.props.store.dispatch(loadWorkspaceTypes());
       this.props.store.dispatch(
-        loadWorkspaceSettings(state.status.currentWorkspaceId) as Action
+        loadWorkspaceSettings(state.status.currentWorkspaceId)
       );
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
-        }) as Action
+        })
       );
     }
 
@@ -1121,31 +1106,25 @@ export default class Workspace extends React.Component<
            */
           success: (workspace) => {
             this.props.store.dispatch(
-              loadEvaluationAssessmentRequestsFromServer(true) as Action
+              loadEvaluationAssessmentRequestsFromServer(true)
+            );
+            this.props.store.dispatch(loadEvaluationWorkspacesFromServer());
+            this.props.store.dispatch(
+              loadListOfImportantAssessmentIdsFromServer()
             );
             this.props.store.dispatch(
-              loadEvaluationWorkspacesFromServer() as Action
+              loadListOfUnimportantAssessmentIdsFromServer()
             );
-            this.props.store.dispatch(
-              loadListOfImportantAssessmentIdsFromServer() as Action
-            );
-            this.props.store.dispatch(
-              loadListOfUnimportantAssessmentIdsFromServer() as Action
-            );
-            this.props.store.dispatch(
-              loadEvaluationGradingSystemFromServer() as Action
-            );
-            this.props.store.dispatch(
-              loadEvaluationSortFunctionFromServer() as Action
-            );
+            this.props.store.dispatch(loadEvaluationGradingSystemFromServer());
+            this.props.store.dispatch(loadEvaluationSortFunctionFromServer());
 
             this.props.store.dispatch(
               setSelectedWorkspaceId({
                 workspaceId: workspace.id,
-              }) as Action
+              })
             );
           },
-        }) as Action
+        })
       );
     }
 

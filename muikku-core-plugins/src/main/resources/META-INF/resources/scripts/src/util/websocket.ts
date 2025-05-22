@@ -6,9 +6,10 @@
 
 import actions from "../actions/base/notifications";
 import $ from "~/lib/jquery";
-import { Action, Store } from "redux";
+import { Action } from "redux";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import i18n from "~/locales/i18n";
+import { AppStore } from "~/reducers/configureStore";
 
 type ListenerType = {
   [name: string]: {
@@ -39,7 +40,7 @@ export default class MuikkuWebsocket {
   private discarded: boolean;
   private listeners: ListenerType;
   private baseListeners: ListenerType;
-  private store: Store<any>;
+  private store: AppStore;
   private reconnectHandler: NodeJS.Timer;
 
   /**
@@ -49,7 +50,7 @@ export default class MuikkuWebsocket {
    * @param options options
    */
   constructor(
-    store: Store<any>,
+    store: AppStore,
     listeners: ListenerType,
     options = {
       reconnectInterval: 10000,
@@ -288,18 +289,14 @@ export default class MuikkuWebsocket {
             // According to server, we are no longer logged in. Stop everything, user needs to login again
             this.discardCurrentWebSocket(true);
             this.store.dispatch(
-              actions.openNotificationDialog(
-                i18n.t("notifications.403")
-              ) as Action
+              actions.openNotificationDialog(i18n.t("notifications.403"))
             );
             callback();
           } else if (jqXHR.status == 502) {
             // Server is down. Stop everything, user needs to reload page
             this.discardCurrentWebSocket(true);
             this.store.dispatch(
-              actions.openNotificationDialog(
-                i18n.t("notifications.502")
-              ) as Action
+              actions.openNotificationDialog(i18n.t("notifications.502"))
             );
             callback();
           } else {

@@ -9,17 +9,14 @@ import DisconnectedWarningDialog from "~/components/base/disconnect-warning";
 import EasyToUseFunctions from "~/components/easy-to-use-reading-functions/easy-to-use-functions";
 import AppRoutes from "~/routes/app-routes";
 import { Provider } from "react-redux";
-import { StateType } from "~/reducers";
-import { Store } from "redux";
-import { HelmetProvider } from "react-helmet-async";
-import TitleProvider from "./titleProvider";
-
+//import TitleProvider from "./titleProvider";
+import { AppStore } from "~/reducers/configureStore";
 /**
  * AppProps
  */
 interface AppProps {
   websocket: Websocket;
-  store: Store<StateType>;
+  store: AppStore;
 }
 
 /**
@@ -31,25 +28,24 @@ function App(props: AppProps) {
   const { websocket, store } = props;
 
   return (
-    <HelmetProvider>
-      <Provider store={store}>
-        <div id="root">
-          <WindowContextProvider>
-            <ChatWebsocketContextProvider websocket={websocket}>
-              <Chat />
-            </ChatWebsocketContextProvider>
-            <Notifications />
-            <DisconnectedWarningDialog />
-            <EasyToUseFunctions />
-            <BrowserRouter>
-              <TitleProvider>
-                <AppRoutes store={store} websocket={websocket} />
-              </TitleProvider>
-            </BrowserRouter>
-          </WindowContextProvider>
-        </div>
-      </Provider>
-    </HelmetProvider>
+    <Provider store={store}>
+      <div id="root">
+        <WindowContextProvider>
+          <ChatWebsocketContextProvider websocket={websocket}>
+            <Chat />
+          </ChatWebsocketContextProvider>
+          <Notifications />
+          <DisconnectedWarningDialog />
+          <EasyToUseFunctions />
+          <BrowserRouter>
+            {/* <TitleProvider>
+              <AppRoutes store={store} websocket={websocket} />
+            </TitleProvider> */}
+            <AppRoutes store={store} websocket={websocket} />
+          </BrowserRouter>
+        </WindowContextProvider>
+      </div>
+    </Provider>
   );
 }
 

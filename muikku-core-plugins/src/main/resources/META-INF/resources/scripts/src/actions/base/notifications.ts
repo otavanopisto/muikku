@@ -79,7 +79,7 @@ const displayNotification: DisplayNotificationTriggerType =
     timeout?: number,
     customId?: string | number
   ) {
-    return async (dispatch: (arg: AnyActionType) => any) => {
+    return async (dispatch) => {
       const notification: NotificationType = {
         id: customId || new Date().getTime(),
         severity: severity,

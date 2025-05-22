@@ -1,11 +1,9 @@
 import * as React from "react";
 import "~/sass/util/base.scss";
 import { Route, Switch } from "react-router-dom";
-import { Store } from "redux";
-import { StateType } from "~/reducers";
 import Websocket from "~/util/websocket";
 import ErrorBody from "~/components/error/body";
-
+import { AppStore } from "~/reducers/configureStore";
 // Convert regular imports to lazy imports
 const MainFunction = React.lazy(() => import("~/containers/main-function"));
 const Workspace = React.lazy(() => import("~/containers/workspace"));
@@ -14,7 +12,7 @@ const Workspace = React.lazy(() => import("~/containers/workspace"));
  * AppRoutesProps
  */
 interface AppRoutesProps {
-  store: Store<StateType>;
+  store: AppStore;
   websocket?: Websocket | null;
 }
 

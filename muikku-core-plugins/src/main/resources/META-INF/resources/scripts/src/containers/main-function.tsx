@@ -2,7 +2,6 @@ import { Route, Switch } from "react-router-dom";
 import * as React from "react";
 import "~/sass/util/base.scss";
 import { StateType } from "~/reducers";
-import { Action, Store } from "redux";
 import Websocket from "~/util/websocket";
 import * as queryString from "query-string";
 import IndexBody from "../components/index/body";
@@ -120,13 +119,14 @@ import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
 import FrontpageBody from "~/components/frontpage/body";
 import UserCredentials from "~/containers/user-credentials";
+import { AppStore } from "~/reducers/configureStore";
 //import ErrorBody from "~/components/error/body";
 
 /**
  * MainFunctionProps
  */
 interface MainFunctionProps {
-  store: Store<StateType>;
+  store: AppStore;
   websocket: Websocket;
 }
 
@@ -278,7 +278,7 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadStudent(
           decodeURIComponent(window.location.hash.split("/")[1]).split('"')[0]
-        ) as Action
+        )
       );
 
       // Initialize Hops
@@ -287,7 +287,7 @@ export default class MainFunction extends React.Component<
           userIdentifier: decodeURIComponent(
             window.location.hash.split("/")[1]
           ).split('"')[0],
-        }) as Action
+        })
       );
       return;
     }
@@ -307,13 +307,13 @@ export default class MainFunction extends React.Component<
       ),
       query: originalData.q || "",
     };
-    this.props.store.dispatch(loadStudents(filters) as Action);
+    this.props.store.dispatch(loadStudents(filters));
     if (originalData.c) {
-      this.props.store.dispatch(loadStudent(originalData.c) as Action);
+      this.props.store.dispatch(loadStudent(originalData.c));
       this.props.store.dispatch(
         initializeHops({
           userIdentifier: originalData.c,
-        }) as Action
+        })
       );
     }
   }
@@ -327,32 +327,24 @@ export default class MainFunction extends React.Component<
     const givenLocation = tab;
 
     if (givenLocation === "summary" || !givenLocation) {
-      this.props.store.dispatch(
-        setLocationToSummaryInTranscriptOfRecords() as Action
-      );
+      this.props.store.dispatch(setLocationToSummaryInTranscriptOfRecords());
       // Summary needs counselors
-      this.props.store.dispatch(
-        loadContactGroup("counselors", userId) as Action
-      );
-      this.props.store.dispatch(updateSummary(userId) as Action);
+      this.props.store.dispatch(loadContactGroup("counselors", userId));
+      this.props.store.dispatch(updateSummary(userId));
     } else if (givenLocation === "records") {
       this.props.store.dispatch(
-        updateAllStudentUsersAndSetViewToRecords(userId) as Action
+        updateAllStudentUsersAndSetViewToRecords(userId)
       );
     } else if (givenLocation === "pedagogy-form") {
       this.props.store.dispatch(
-        setLocationToPedagogyFormInTranscriptOfRecords() as Action
+        setLocationToPedagogyFormInTranscriptOfRecords()
       );
     } else if (givenLocation === "statistics") {
-      this.props.store.dispatch(
-        setLocationToStatisticsInTranscriptOfRecords() as Action
-      );
-      this.props.store.dispatch(updateStatistics() as Action);
+      this.props.store.dispatch(setLocationToStatisticsInTranscriptOfRecords());
+      this.props.store.dispatch(updateStatistics());
     } else if (givenLocation === "info") {
-      this.props.store.dispatch(
-        setLocationToInfoInTranscriptOfRecords() as Action
-      );
-      this.props.store.dispatch(updateSummary(userId) as Action);
+      this.props.store.dispatch(setLocationToInfoInTranscriptOfRecords());
+      this.props.store.dispatch(updateSummary(userId));
     }
   }
 
@@ -366,13 +358,11 @@ export default class MainFunction extends React.Component<
     const givenLocation = tab;
 
     // Load HOPS locked status and HOPS form history always
-    this.props.store.dispatch(
-      initializeHops({ userIdentifier: userId }) as Action
-    );
+    this.props.store.dispatch(initializeHops({ userIdentifier: userId }));
 
     if (givenLocation === "matriculation" || (guardianHops && !givenLocation)) {
       this.props.store.dispatch(
-        loadMatriculationData({ userIdentifier: userId }) as Action
+        loadMatriculationData({ userIdentifier: userId })
       );
     }
   }
@@ -382,16 +372,16 @@ export default class MainFunction extends React.Component<
    * @param location location
    */
   loadProfileData(location: string) {
-    this.props.store.dispatch(setProfileLocation(location) as Action);
-    this.props.store.dispatch(loadProfileAuthorizations() as Action);
+    this.props.store.dispatch(setProfileLocation(location));
+    this.props.store.dispatch(loadProfileAuthorizations());
 
     if (location === "work") {
-      this.props.store.dispatch(loadProfileWorklistTemplates() as Action);
-      this.props.store.dispatch(loadProfileWorklistSections() as Action);
+      this.props.store.dispatch(loadProfileWorklistTemplates());
+      this.props.store.dispatch(loadProfileWorklistSections());
     }
 
     if (location === "purchases") {
-      this.props.store.dispatch(loadProfilePurchases() as Action);
+      this.props.store.dispatch(loadProfilePurchases());
     }
   }
 
@@ -402,13 +392,10 @@ export default class MainFunction extends React.Component<
   loadAnnouncerData(location: string[]) {
     const actualLocation = location.filter((l) => !!l);
     if (actualLocation.length === 1) {
-      this.props.store.dispatch(loadAnnouncements(actualLocation[0]) as Action);
+      this.props.store.dispatch(loadAnnouncements(actualLocation[0]));
     } else {
       this.props.store.dispatch(
-        loadAnnouncement(
-          actualLocation[0],
-          parseInt(actualLocation[1])
-        ) as Action
+        loadAnnouncement(actualLocation[0], parseInt(actualLocation[1]))
       );
     }
   }
@@ -418,7 +405,7 @@ export default class MainFunction extends React.Component<
    * @param announcementId announcementId
    */
   loadAnnouncementsData(announcementId: number) {
-    this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
+    this.props.store.dispatch(loadAnnouncement(null, announcementId));
   }
 
   /**
@@ -430,8 +417,8 @@ export default class MainFunction extends React.Component<
     const state = this.props.store.getState();
 
     // Load subscribed areas and threads every time
-    this.props.store.dispatch(loadSubscribedDiscussionAreaList({}) as Action);
-    this.props.store.dispatch(loadSubscribedDiscussionThreadList({}) as Action);
+    this.props.store.dispatch(loadSubscribedDiscussionAreaList({}));
+    this.props.store.dispatch(loadSubscribedDiscussionThreadList({}));
     if (location.includes("subs")) {
       if (location.length <= 2) {
         const payload: DiscussionStatePatch = {
@@ -444,23 +431,19 @@ export default class MainFunction extends React.Component<
           payload,
         });
 
-        this.props.store.dispatch(
-          showOnlySubscribedThreads({ value: true }) as Action
-        );
+        this.props.store.dispatch(showOnlySubscribedThreads({ value: true }));
       } else {
         this.props.store.dispatch(
           loadDiscussionThreadFromServer({
             areaId: parseInt(location[1]),
             threadId: parseInt(location[2]),
             threadPage: parseInt(location[3]) || 1,
-          }) as Action
+          })
         );
       }
     } else {
       state.discussion.subscribedThreadOnly &&
-        this.props.store.dispatch(
-          showOnlySubscribedThreads({ value: false }) as Action
-        );
+        this.props.store.dispatch(showOnlySubscribedThreads({ value: false }));
 
       if (location.length <= 2) {
         const payload: DiscussionStatePatch = {
@@ -484,7 +467,7 @@ export default class MainFunction extends React.Component<
             areaId: parseInt(location[0]) || null,
             page: parseInt(location[1]) || 1,
             forceRefresh: true,
-          }) as Action
+          })
         );
       } else {
         //There will always be an areaId and page designed #1/2/3 where then 3 is the threaid
@@ -495,7 +478,7 @@ export default class MainFunction extends React.Component<
             // page: parseInt(location[1]),
             threadId: parseInt(location[3]),
             threadPage: parseInt(location[4]) || 1,
-          }) as Action
+          })
         );
       }
     }
@@ -523,7 +506,7 @@ export default class MainFunction extends React.Component<
       baseFilter: originalData.b || "ALL_COURSES",
     };
     this.props.store.dispatch(
-      loadWorkspacesFromServer(filters, isOrganization, refresh) as Action
+      loadWorkspacesFromServer(filters, isOrganization, refresh)
     );
   }
 
@@ -533,12 +516,10 @@ export default class MainFunction extends React.Component<
    */
   loadCommunicatorData(location: string[]) {
     if (location.length === 1) {
-      this.props.store.dispatch(
-        loadMessageThreads(location[0], null) as Action
-      );
+      this.props.store.dispatch(loadMessageThreads(location[0], null));
     } else {
       this.props.store.dispatch(
-        loadMessageThread(location[0], parseInt(location[1])) as Action
+        loadMessageThread(location[0], parseInt(location[1]))
       );
     }
   }
@@ -552,13 +533,13 @@ export default class MainFunction extends React.Component<
     if (this.itsFirstTime) {
       this.props.websocket && this.props.websocket.restoreEventListeners();
       this.props.store.dispatch(
-        loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
+        loadUserWorkspaceCurriculumFiltersFromServer(false)
       );
       this.props.store.dispatch(
-        loadUserWorkspaceEducationFiltersFromServer(false) as Action
+        loadUserWorkspaceEducationFiltersFromServer(false)
       );
       this.props.store.dispatch(
-        loadUserWorkspaceOrganizationFiltersFromServer() as Action
+        loadUserWorkspaceOrganizationFiltersFromServer()
       );
 
       const currentLocationData = queryString.parse(
@@ -608,7 +589,7 @@ export default class MainFunction extends React.Component<
           this.props.store.dispatch(
             loadLoggedUser((whoAmICallbackValue) => {
               loadCoursepickerDataByUser(whoAmICallbackValue);
-            }) as Action
+            })
           );
         } else {
           const whoAmI =
@@ -660,17 +641,17 @@ export default class MainFunction extends React.Component<
             loadLastMessageThreadsFromServer.bind(null, 10)
           );
       if (state.status.roles.includes("STUDENT_PARENT")) {
-        this.props.store.dispatch(loadDependants() as Action);
+        this.props.store.dispatch(loadDependants());
       }
       this.props.store.dispatch(
-        loadAnnouncementsAsAClient({}, { loadUserGroups: false }) as Action
+        loadAnnouncementsAsAClient({}, { loadUserGroups: false })
       );
 
       this.props.store.getState().status.loggedIn &&
-        this.props.store.dispatch(loadLastWorkspacesFromServer() as Action);
+        this.props.store.dispatch(loadLastWorkspacesFromServer());
 
-      this.props.store.dispatch(loadUserWorkspacesFromServer() as Action);
-      this.props.store.dispatch(loadLastMessageThreadsFromServer(10) as Action);
+      this.props.store.dispatch(loadUserWorkspacesFromServer());
+      this.props.store.dispatch(loadLastMessageThreadsFromServer(10));
     }
     return <IndexBody />;
   }
@@ -700,16 +681,14 @@ export default class MainFunction extends React.Component<
       ];
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
+      this.props.store.dispatch(setWorkspaceStateFilters(true, stateFilters));
       this.props.store.dispatch(
-        setWorkspaceStateFilters(true, stateFilters) as Action
+        loadUserWorkspaceCurriculumFiltersFromServer(true)
       );
       this.props.store.dispatch(
-        loadUserWorkspaceCurriculumFiltersFromServer(true) as Action
+        loadUserWorkspaceEducationFiltersFromServer(true)
       );
-      this.props.store.dispatch(
-        loadUserWorkspaceEducationFiltersFromServer(true) as Action
-      );
-      this.props.store.dispatch(loadOrganizationSummary() as Action);
+      this.props.store.dispatch(loadOrganizationSummary());
       const currentLocationData = queryString.parse(
         window.location.hash.split("?")[1] || "",
         { arrayFormat: "bracket" }
@@ -755,7 +734,7 @@ export default class MainFunction extends React.Component<
           this.props.store.dispatch(
             loadLoggedUser((whoAmICallbackValue) => {
               loadWorkspacesByUser(whoAmICallbackValue);
-            }) as Action
+            })
           );
         } else {
           const whoAmI =
@@ -771,14 +750,14 @@ export default class MainFunction extends React.Component<
       this.props.store.dispatch(
         loadUsers({
           payload: { q: "", firstResult: 0, maxResults: 10 },
-        }) as Action
+        })
       );
       this.props.store.dispatch(
         loadUserGroups({
           payload: { q: "", firstResult: 0, maxResults: 25 },
-        }) as Action
+        })
       );
-      this.props.store.dispatch(loadStudyprogrammes() as Action);
+      this.props.store.dispatch(loadStudyprogrammes());
     }
     return <OrganizationAdministrationBody />;
   }
@@ -803,7 +782,7 @@ export default class MainFunction extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
-      this.props.store.dispatch(loadSignature() as Action);
+      this.props.store.dispatch(loadSignature());
 
       const currentLocation = window.location.hash.replace("#", "").split("/");
       this.props.store.dispatch(
@@ -811,7 +790,7 @@ export default class MainFunction extends React.Component<
           if (currentLocation[0].includes("label")) {
             this.loadCommunicatorData(currentLocation);
           }
-        }) as Action
+        })
       );
 
       if (!window.location.hash) {
@@ -841,7 +820,7 @@ export default class MainFunction extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
-      this.props.store.dispatch(setDiscussionWorkpaceId(null) as Action);
+      this.props.store.dispatch(setDiscussionWorkpaceId(null));
 
       this.props.store.dispatch(
         loadDiscussionAreasFromServer(() => {
@@ -850,7 +829,7 @@ export default class MainFunction extends React.Component<
             .replace("#", "")
             .split("/");
           this.loadDiscussionData(currentLocation);
-        }) as Action
+        })
       );
     }
     return <DiscussionBody />;
@@ -870,7 +849,7 @@ export default class MainFunction extends React.Component<
           (announcements: Announcement[]) => {
             announcements;
           }
-        ) as Action
+        )
       );
 
       const hashId = parseInt(window.location.hash.replace("#", ""));
@@ -926,9 +905,9 @@ export default class MainFunction extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(updateLabelFilters() as Action);
-      this.props.store.dispatch(updateWorkspaceFilters() as Action);
-      this.props.store.dispatch(updateUserGroupFilters() as Action);
+      this.props.store.dispatch(updateLabelFilters());
+      this.props.store.dispatch(updateWorkspaceFilters());
+      this.props.store.dispatch(updateUserGroupFilters());
       this.loadGuiderData();
     }
     return <GuiderBody />;
@@ -945,12 +924,12 @@ export default class MainFunction extends React.Component<
       );
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(loadProfileUsername() as Action);
+      this.props.store.dispatch(loadProfileUsername());
 
       if (!this.props.store.getState().status.isStudent) {
-        this.props.store.dispatch(loadProfilePropertiesSet() as Action);
+        this.props.store.dispatch(loadProfilePropertiesSet());
       } else {
-        this.props.store.dispatch(loadProfileAddress() as Action);
+        this.props.store.dispatch(loadProfileAddress());
       }
 
       if (!window.location.hash) {
@@ -1000,9 +979,9 @@ export default class MainFunction extends React.Component<
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
       this.props.store.dispatch(
-        loadUserWorkspaceCurriculumFiltersFromServer(false) as Action
+        loadUserWorkspaceCurriculumFiltersFromServer(false)
       );
-      this.props.store.dispatch(updateTranscriptOfRecordsFiles() as Action);
+      this.props.store.dispatch(updateTranscriptOfRecordsFiles());
 
       this.loadRecordsData(window.location.hash.replace("#", ""));
     }
@@ -1027,7 +1006,7 @@ export default class MainFunction extends React.Component<
       const state = this.props.store.getState();
 
       if (state.dependants.state === "WAIT") {
-        this.props.store.dispatch(loadDependants() as Action);
+        this.props.store.dispatch(loadDependants());
       }
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
@@ -1062,7 +1041,7 @@ export default class MainFunction extends React.Component<
       const state = this.props.store.getState();
 
       if (state.dependants.state === "WAIT") {
-        this.props.store.dispatch(loadDependants() as Action);
+        this.props.store.dispatch(loadDependants());
       }
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
@@ -1087,22 +1066,12 @@ export default class MainFunction extends React.Component<
 
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(
-        loadEvaluationAssessmentRequestsFromServer() as Action
-      );
-      this.props.store.dispatch(loadEvaluationWorkspacesFromServer() as Action);
-      this.props.store.dispatch(
-        loadListOfImportantAssessmentIdsFromServer() as Action
-      );
-      this.props.store.dispatch(
-        loadListOfUnimportantAssessmentIdsFromServer() as Action
-      );
-      this.props.store.dispatch(
-        loadEvaluationGradingSystemFromServer() as Action
-      );
-      this.props.store.dispatch(
-        loadEvaluationSortFunctionFromServer() as Action
-      );
+      this.props.store.dispatch(loadEvaluationAssessmentRequestsFromServer());
+      this.props.store.dispatch(loadEvaluationWorkspacesFromServer());
+      this.props.store.dispatch(loadListOfImportantAssessmentIdsFromServer());
+      this.props.store.dispatch(loadListOfUnimportantAssessmentIdsFromServer());
+      this.props.store.dispatch(loadEvaluationGradingSystemFromServer());
+      this.props.store.dispatch(loadEvaluationSortFunctionFromServer());
     }
 
     return <EvaluationBody />;
@@ -1129,7 +1098,7 @@ export default class MainFunction extends React.Component<
       );
       const id = parseInt(locationData.Id);
       if (id) {
-        this.props.store.dispatch(loadCeeposPurchase(id) as Action);
+        this.props.store.dispatch(loadCeeposPurchase(id));
       }
     }
 
@@ -1157,7 +1126,7 @@ export default class MainFunction extends React.Component<
       );
       if (locationData.order) {
         this.props.store.dispatch(
-          loadCeeposPurchaseAndPay(parseInt(locationData.order)) as Action
+          loadCeeposPurchaseAndPay(parseInt(locationData.order))
         );
       }
     }

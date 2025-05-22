@@ -8,7 +8,7 @@
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "ES2017",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,

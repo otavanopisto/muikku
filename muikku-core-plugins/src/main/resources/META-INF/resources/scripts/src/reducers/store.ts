@@ -1,7 +1,7 @@
-import configureStore from "~/reducers/configureStore";
+import configuredStore, { AppStore } from "~/reducers/configureStore";
 
 // Add a check to ensure store is only created once
-let storeHelper: ReturnType<typeof configureStore>;
+let storeHelper: AppStore;
 
 /**
  * getStore
@@ -9,7 +9,7 @@ let storeHelper: ReturnType<typeof configureStore>;
  */
 export const getStore = () => {
   if (!storeHelper) {
-    storeHelper = configureStore();
+    storeHelper = configuredStore();
   }
   return storeHelper;
 };

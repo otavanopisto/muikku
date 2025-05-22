@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import Websocket from "~/util/websocket";
-import { Action, Store } from "redux";
 import { updateUnreadMessageThreadsCount } from "~/actions/main-function/messages";
-import { StateType } from "~/reducers";
 import {
   loadEnviromentalForumAreaPermissions,
   loadStatus,
   loadWorkspaceStatus,
   updateStatusChatSettings,
 } from "~/actions/base/status";
-
+import { AppStore } from "~/reducers/configureStore";
 /**
  * getOptionValue
  * @param option option
@@ -31,7 +29,7 @@ function getOptionValue(option: boolean) {
  * @param options.setupChat setupChat
  */
 export default async function (
-  store: Store<StateType>,
+  store: AppStore,
   options: {
     setupMessages?: boolean;
     setupWorkspacePermissions?: boolean;
@@ -80,7 +78,7 @@ export default async function (
    */
   const updateUnreadThreadMessagesCount = () =>
     getOptionValue(options.setupMessages) &&
-    store.dispatch(<Action>updateUnreadMessageThreadsCount());
+    store.dispatch(updateUnreadMessageThreadsCount());
 
   /**
    * Loads chat settings after logging status has been resolved by loadStatus action.
@@ -88,14 +86,14 @@ export default async function (
   const loadChatSettings = () =>
     getOptionValue(options.setupChat) &&
     store.getState().status.loggedIn &&
-    store.dispatch(<Action>updateStatusChatSettings());
+    store.dispatch(updateStatusChatSettings());
 
   /**
    * Loads area permissions for environmental forum
    * after logging status has been resolved by loadStatus action.
    */
   const loadAreaPermissions = () =>
-    store.dispatch(<Action>loadEnviromentalForumAreaPermissions());
+    store.dispatch(loadEnviromentalForumAreaPermissions());
 
   const isWorkspace = window.location.pathname.includes("/workspace/");
   const workspaceUrl = window.location.pathname.split("/")[2];
@@ -113,7 +111,7 @@ export default async function (
         loadChatSettings();
         resolve(initializeWebsocket(actionsAndCallbacks));
       };
-      store.dispatch(<Action>loadStatus(resolveFn));
+      store.dispatch(loadStatus(resolveFn));
     });
   } else {
     return new Promise((resolve) => {
@@ -130,8 +128,8 @@ export default async function (
           resolve(initializeWebsocket(actionsAndCallbacks));
         }
       };
-      store.dispatch(<Action>loadStatus(resolveFn));
-      store.dispatch(<Action>loadWorkspaceStatus(resolveFn));
+      store.dispatch(loadStatus(resolveFn));
+      store.dispatch(loadWorkspaceStatus(resolveFn));
     });
   }
 }

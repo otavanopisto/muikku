@@ -6,9 +6,7 @@ import {
   SummaryStudyProgress,
 } from "~/reducers/main-function/records/summary";
 import { WorkspaceDataType } from "~/reducers/workspaces";
-import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 import {
   ActivityLogEntry,
@@ -77,10 +75,7 @@ const hopsApi = MApi.getHopsApi();
 const updateSummary: UpdateSummaryTriggerType = function updateSummary(
   studentIdentifier
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-    getState: () => StateType
-  ) => {
+  return async (dispatch, getState) => {
     const recordsApi = MApi.getRecordsApi();
     const evaluationApi = MApi.getEvaluationApi();
     const userApi = MApi.getUserApi();
@@ -278,10 +273,7 @@ const updateSummary: UpdateSummaryTriggerType = function updateSummary(
  */
 const recordsSummarySuggestedNextWebsocket: RecordsSummarySuggestedNextWebsocketType =
   function recordsSummarySuggestedNextWebsocket(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const summaryData = state.summary?.data;
 
@@ -333,10 +325,7 @@ const recordsSummarySuggestedNextWebsocket: RecordsSummarySuggestedNextWebsocket
  */
 const recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebsocketType =
   function recordsSummaryWorkspaceSignupWebsocket(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const summaryData = state.summary?.data;
 
@@ -391,10 +380,7 @@ const recordsSummaryWorkspaceSignupWebsocket: RecordsSummaryWorkspaceSignupWebso
  */
 const recordsSummaryAlternativeStudyOptionsWebsocket: RecordsSummaryAlternativeStudyOptionsWebsocketType =
   function recordsSummaryAlternativeStudyOptionsWebsocket(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
+    return async (dispatch, getState) => {
       const state = getState();
       const summaryData = state.summary?.data;
 

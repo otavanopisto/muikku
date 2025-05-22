@@ -355,6 +355,10 @@ import {
   HOPS_CANCEL_EDITING,
   HOPS_UPDATE_INITIALIZE_STATUS,
 } from "./main-function/hops/";
+import {
+  AppThunkAction,
+  AppThunkActionPromise,
+} from "~/reducers/configureStore";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD
@@ -633,4 +637,4 @@ export type ActionType =
   | REMOVE_NOTE
   | UPDATE_NOTE_RECIPIENT;
 
-export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;
+export type AnyActionType = AppThunkAction | AppThunkActionPromise;
