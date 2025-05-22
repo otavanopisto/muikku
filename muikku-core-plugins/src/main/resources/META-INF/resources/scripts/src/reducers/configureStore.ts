@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
+import thunk from "redux-thunk";
 import reducer from "~/reducers/main-function";
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useStore } from "react-redux";
 import { useSelector } from "react-redux";
-import { ActionType } from "~/actions";
 /**
  * Creates a store base
  * @param store store
@@ -111,18 +110,5 @@ export type AppDispatch = AppStore["dispatch"];
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();
 export const useAppStore = useStore.withTypes<AppStore>();
-
-// Thunk action
-export type AppThunkAction<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  ActionType
->;
-
-// Thunk action promise
-export type AppThunkActionPromise<ReturnType = void> = AppThunkAction<
-  Promise<ReturnType>
->;
 
 export default configuredStore;
