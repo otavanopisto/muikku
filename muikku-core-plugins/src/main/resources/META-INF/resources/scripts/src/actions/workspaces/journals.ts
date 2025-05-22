@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { loadCurrentWorkspaceJournalsHelper } from "./helpers";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { StateType } from "~/reducers";
 import { displayNotification } from "../base/notifications";
 import {
   JournalsState,
   WorkspaceJournalFilters,
 } from "~/reducers/workspaces/journals";
-import { Dispatch, Action } from "redux";
 import {
   CreateWorkspaceJournalCommentRequest,
   UpdateWorkspaceJournalCommentRequest,

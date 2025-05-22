@@ -355,11 +355,7 @@ import {
   HOPS_CANCEL_EDITING,
   HOPS_UPDATE_INITIALIZE_STATUS,
 } from "./main-function/hops/";
-import {
-  AppThunkAction,
-  AppThunkActionPromise,
-  RootState,
-} from "~/reducers/configureStore";
+import { RootState } from "~/reducers/configureStore";
 
 export type ActionType =
   | SET_CURRENT_MESSAGE_THREAD

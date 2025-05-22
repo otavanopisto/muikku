@@ -4,9 +4,7 @@ import {
   StatisticsDataType,
   StatisticsStatusType,
 } from "~/reducers/main-function/records/statistics";
-import { StateType } from "~/reducers";
 import i18n from "~/locales/i18n";
-import { Action, Dispatch } from "redux";
 
 export type UPDATE_STUDIES_STATISTICS = SpecificActionType<
   "UPDATE_STUDIES_STATISTICS",

@@ -10,7 +10,6 @@ import {
   MaterialContentNodeWithIdAndLogic,
 } from "~/reducers/workspaces";
 import { AnyActionType, SpecificActionType } from "../index";
-import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");

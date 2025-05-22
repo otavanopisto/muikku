@@ -1,4 +1,3 @@
-import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { LocaleType } from "~/reducers/base/locales";
 import notificationActions from "~/actions/base/notifications";

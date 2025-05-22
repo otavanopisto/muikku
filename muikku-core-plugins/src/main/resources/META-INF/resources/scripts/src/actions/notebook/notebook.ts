@@ -1,6 +1,4 @@
-import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { StateType } from "~/reducers";
 import {
   NoteDefaultLocation,
   ReducerStateType,

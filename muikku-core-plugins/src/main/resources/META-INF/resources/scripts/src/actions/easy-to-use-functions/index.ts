@@ -1,6 +1,4 @@
-import { Dispatch, Action } from "redux";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { StateType } from "~/reducers";
 import { EasyToUseToolType } from "~/reducers/easy-to-use-functions";
 
 export type SET_ACTIVE_EASY_TO_USE_TOOL = SpecificActionType<

@@ -4,8 +4,6 @@ import {
   DiscussionStatePatch,
   DiscussionStateType,
 } from "~/reducers/discussion";
-import { StateType } from "~/reducers";
-import { Dispatch, Action } from "redux";
 import MApi, { isMApiError } from "~/api/api";
 import {
   CreateDiscussionAreaRequest,
@@ -17,7 +15,6 @@ import {
   DiscussionThreadLock,
   DiscussionThreadReply,
   UpdateDiscussionAreaRequest,
-  UpdateDiscussionThreadReplyRequest,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 

@@ -1,11 +1,9 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { StateType } from "~/reducers";
 import { CredentialsStateType } from "~/reducers/base/credentials";
 import notificationActions from "~/actions/base/notifications";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError } from "~/api/api";
 import { Credentials } from "~/generated/client";
-import { Dispatch, Action } from "redux";
 
 export type LOAD_CREDENTIALS = SpecificActionType<
   "LOAD_CREDENTIALS",

@@ -2,7 +2,6 @@ import { promisifyNewConstructor } from "~/util/promisify";
 import actions from "../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
 import { UserChatSettingsType } from "~/reducers/user-index";
-import { StateType } from "~/reducers";
 import { resize } from "~/util/modifiers";
 import {
   updateStatusProfile,
@@ -15,7 +14,6 @@ import {
 } from "~/reducers/main-function/profile";
 import moment from "moment";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
-import { Dispatch, Action } from "redux";
 import {
   CeeposOrder,
   StudentCard,

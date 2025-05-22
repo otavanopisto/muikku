@@ -1,5 +1,5 @@
 import notificationActions from "~/actions/base/notifications";
-import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
+import { AnyActionTypeDispatch } from "~/actions";
 import { StateType } from "~/reducers";
 import {
   WorkspacesActiveFiltersType,
@@ -12,7 +12,6 @@ import { ReducerStateType } from "~/reducers/workspaces/journals";
 import i18n from "~/locales/i18n";
 import { loadWorkspaceJournalFeedback } from "./journals";
 import MApi, { isMApiError } from "~/api/api";
-import { Action, Dispatch } from "redux";
 import { RootState } from "~/reducers/configureStore";
 
 //HELPERS

@@ -5,14 +5,12 @@ import {
   SetCurrentWorkspaceTriggerType,
   UpdateWorkspaceTriggerType,
 } from "./index";
-import { Dispatch, Action } from "redux";
 import {
   WorkspaceDataType,
   WorkspaceStateFilterType,
 } from "../../reducers/workspaces/index";
 import { reuseExistantValue } from "./helpers";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { StateType } from "~/reducers";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import {
   WorkspaceUpdateType,

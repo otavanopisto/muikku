@@ -1,9 +1,7 @@
 import { SpecificActionType, AnyActionType } from "../../index";
-import { StateType } from "../../../reducers/index";
 import notificationActions, {
   displayNotification,
 } from "~/actions/base/notifications";
-import { Dispatch, Action } from "redux";
 import {
   UpdateImportanceObject,
   EvaluationAssigmentData,

@@ -1,17 +1,15 @@
-import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
+import { AnyActionTypeDispatch } from "~/actions";
 import {
   AnnouncementsStateType,
   AnnouncementsStatePatch,
   AnnouncerNavigationItemType,
 } from "~/reducers/announcements";
 import notificationActions from "~/actions/base/notifications";
-import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 import i18n from "~/locales/i18n";
 import { GetAnnouncementsRequest } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
-import { Action, Dispatch } from "redux";
-import { AppDispatch, RootState } from "~/reducers/configureStore";
+import { RootState } from "~/reducers/configureStore";
 
 /**
  * loadAnnouncementsHelper

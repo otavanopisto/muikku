@@ -1,6 +1,4 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { StateType } from "~/reducers";
-import { Dispatch, Action } from "redux";
 import {
   MessagesStateType,
   MessagesStatePatch,

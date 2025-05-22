@@ -1,15 +1,13 @@
 import notificationActions from "~/actions/base/notifications";
 import equals = require("deep-equal");
-import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
+import { AnyActionTypeDispatch } from "~/actions";
 import {
   GuiderState,
   GuiderActiveFiltersType,
   GuiderStudentsStateType,
   GuiderStatePatch,
 } from "~/reducers/main-function/guider";
-import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
 import { RootState } from "~/reducers/configureStore";
 

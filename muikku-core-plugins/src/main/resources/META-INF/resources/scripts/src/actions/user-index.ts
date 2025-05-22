@@ -1,8 +1,6 @@
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { StateType } from "~/reducers";
 import { UserGroup, UserWhoAmI } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch, Action } from "redux";
 
 /**
  * LoadLoggedUserTriggerType

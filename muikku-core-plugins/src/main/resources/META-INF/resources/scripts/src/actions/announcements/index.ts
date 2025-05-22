@@ -1,6 +1,5 @@
 import notificationActions from "~/actions/base/notifications";
 import {
-  ActionType,
   AnyActionType,
   AnyActionTypeDispatch,
   SpecificActionType,
@@ -11,7 +10,6 @@ import {
   AnnouncementsState,
 } from "~/reducers/announcements";
 import { loadAnnouncementsHelper } from "./helpers";
-import { StateType } from "~/reducers";
 import { loadUserGroupIndex } from "~/actions/user-index";
 import i18n from "~/locales/i18n";
 import {
@@ -21,8 +19,6 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import moment from "moment";
-import { Action, Dispatch } from "redux";
-import { AppDispatch } from "~/reducers/configureStore";
 import { RootState } from "~/reducers/configureStore";
 export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_STATE",

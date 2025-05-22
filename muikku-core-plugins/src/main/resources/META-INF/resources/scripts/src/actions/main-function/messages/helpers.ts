@@ -1,11 +1,10 @@
 import notificationActions from "~/actions/base/notifications";
-import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
+import { AnyActionTypeDispatch } from "~/actions";
 import {
   MessagesNavigationItem,
   MessagesStateType,
   MessagesStatePatch,
 } from "~/reducers/main-function/messages";
-import { StateType } from "~/reducers";
 import i18n from "~/locales/i18n";
 import {
   MessageSearchResult,
@@ -13,7 +12,6 @@ import {
   MessageThreadLabel,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
-import { Dispatch, Action } from "redux";
 import { RootState } from "~/reducers/configureStore";
 
 //HELPERS

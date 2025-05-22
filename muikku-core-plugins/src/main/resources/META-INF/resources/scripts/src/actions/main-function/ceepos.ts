@@ -1,12 +1,10 @@
 import actions from "../base/notifications";
 import { AnyActionType, SpecificActionType } from "~/actions";
-import { StateType } from "~/reducers";
 import {
   CeeposStateStatusType,
   CeeposPayStatusCodeType,
 } from "~/reducers/main-function/ceepos";
 import i18n from "~/locales/i18n";
-import { Dispatch, Action } from "redux";
 import MApi, { isMApiError } from "~/api/api";
 import { CeeposOrder } from "~/generated/client";
 

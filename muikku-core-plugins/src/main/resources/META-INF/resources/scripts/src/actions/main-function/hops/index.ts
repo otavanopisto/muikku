@@ -4,8 +4,6 @@ import {
   AnyActionTypeDispatch,
   SpecificActionType,
 } from "~/actions";
-import { StateType } from "~/reducers";
-import { Dispatch, Action } from "redux";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import {
   HopsHistoryEntry,
