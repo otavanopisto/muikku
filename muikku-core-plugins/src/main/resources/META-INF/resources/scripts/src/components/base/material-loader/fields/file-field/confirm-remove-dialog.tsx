@@ -7,6 +7,7 @@ import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ConfirmRemoveDialogProps
@@ -133,7 +134,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

@@ -13,6 +13,7 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions/index";
 import MApi, { isMApiError } from "~/api/api";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ForgotPasswordDialogProps
@@ -207,7 +208,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

@@ -22,6 +22,7 @@ import {
   loadEvaluationJournalFeedbackFromServer,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationAssessmentRequest } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EvaluateDialogProps
@@ -149,7 +150,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       setSelectedAssessmentAndLoadEvents,

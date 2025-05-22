@@ -11,6 +11,7 @@ import Button from "../button";
 import Dropdown from "~/components/general/dropdown";
 import { useTranslation } from "react-i18next";
 import { WorkspaceNote } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * NoteBookProps
@@ -44,7 +45,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

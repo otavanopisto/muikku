@@ -17,6 +17,7 @@ import {
 import "~/sass/elements/easy-to-use-functions.scss";
 import { IconButton } from "~/components/general/button";
 import Dropdown from "../general/dropdown";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EasyToUseFunctionsProps
@@ -172,7 +173,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       openReadingRuler,

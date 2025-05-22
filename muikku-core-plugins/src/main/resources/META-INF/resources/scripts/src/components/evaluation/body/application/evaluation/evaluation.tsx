@@ -34,6 +34,7 @@ import {
 } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { createAssignmentInfoArray } from "~/components/general/assignment-info-details/helper";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EvaluationDrawerProps
@@ -1019,7 +1020,7 @@ function mapStateToProps(state: StateType) {
  *
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       loadEvaluationAssessmentRequestsFromServer,

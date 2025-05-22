@@ -39,6 +39,7 @@ import {
   resetHopsData,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
+import { AppDispatch } from "~/reducers/configureStore";
 
 export type tabs =
   | "STUDIES"
@@ -275,7 +276,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - Redux dispatch function
  * @returns Object containing mapped dispatch actions
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       loadStudentHistory,

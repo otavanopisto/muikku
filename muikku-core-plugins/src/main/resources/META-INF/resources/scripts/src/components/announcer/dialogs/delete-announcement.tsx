@@ -14,6 +14,7 @@ import {
 } from "~/actions/announcements";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * DeleteAnnouncementDialogProps
@@ -150,7 +151,7 @@ class DeleteAnnouncementDialog extends React.Component<
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { deleteSelectedAnnouncements, deleteAnnouncement },
     dispatch

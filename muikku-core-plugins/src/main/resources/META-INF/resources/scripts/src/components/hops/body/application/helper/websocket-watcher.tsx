@@ -20,6 +20,7 @@ import {
   MatriculationPlan,
 } from "~/generated/client";
 import { StateType } from "~/reducers";
+import { AppDispatch } from "~/reducers/configureStore";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 
 /**
@@ -216,7 +217,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - The Redux dispatch function
  * @returns Mapped action creators
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       updateMatriculationPlan,

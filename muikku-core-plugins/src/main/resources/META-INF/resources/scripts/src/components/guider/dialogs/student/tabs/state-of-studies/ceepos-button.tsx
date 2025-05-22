@@ -19,6 +19,7 @@ import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
 import { CeeposPurchaseProduct } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * CeeposButtonProps
@@ -186,7 +187,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       doOrderForCurrentStudent,

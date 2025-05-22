@@ -16,6 +16,7 @@ import {
 import Dropdown from "~/components/general/dropdown";
 import { ButtonPill } from "~/components/general/button";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EvaluationSortersProps
@@ -254,7 +255,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ updateEvaluationSortFunctionToServer }, dispatch);
 }
 

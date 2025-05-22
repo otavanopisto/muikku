@@ -14,6 +14,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { RecordValue } from "~/@types/recorder";
 import ProgressBar from "@ramonak/react-progress-bar";
 import moment from "moment";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * RecorderProps
@@ -137,7 +138,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

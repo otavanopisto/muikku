@@ -14,6 +14,7 @@ import { ChangeLog } from "./components/enrollment-history/enrollment-change-log
 import MatriculationPastEnrollmentList from "./components/enrollment-history/enrollment-past-list";
 import MatriculationPastListItem from "./components/enrollment-history/enrollment-past-list-item";
 import MatriculationEnrollment from "./components/matriculation-enrollment";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MatriculationEnrollmentProps
@@ -128,7 +129,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       verifyMatriculationExam,

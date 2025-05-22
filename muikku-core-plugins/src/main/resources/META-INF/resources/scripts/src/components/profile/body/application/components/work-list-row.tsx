@@ -18,6 +18,7 @@ import moment from "moment";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { WorklistBillingStateType, WorklistItem } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 // get today date in order to be able to calculate the 10 days
 // and next month rule that allows for modification since
@@ -291,7 +292,7 @@ class WorkListRow extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { deleteProfileWorklistItem, editProfileWorklistItem },
     dispatch

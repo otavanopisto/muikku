@@ -16,6 +16,7 @@ import Avatar from "~/components/general/avatar"; // Avatar component
 import AnimateHeight from "react-animate-height"; // AnimateHeight
 import Button from "~/components/general/button"; // Button component
 import DependantWorkspace from "./workspace"; // DependantWorkspace component
+import { AppDispatch } from "~/reducers/configureStore";
 /**
  * DependantProps
  */
@@ -143,7 +144,7 @@ const DependantComponent: React.FC<DependantComponentProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ loadDependantWorkspaces }, dispatch);
 }
 

@@ -12,6 +12,7 @@ import { NavigationTopic } from "../../general/navigation";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Action, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * NavigationAsideProps
@@ -80,7 +81,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

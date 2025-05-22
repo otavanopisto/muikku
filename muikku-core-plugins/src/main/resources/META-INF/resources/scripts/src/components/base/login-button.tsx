@@ -9,6 +9,7 @@ import { StateType } from "~/reducers";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * LoginButtonProps
@@ -66,7 +67,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

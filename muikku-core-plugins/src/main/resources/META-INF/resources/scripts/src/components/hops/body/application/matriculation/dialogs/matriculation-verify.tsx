@@ -14,6 +14,7 @@ import {
 } from "~/actions/main-function/hops/";
 import Button from "~/components/general/button";
 import { MatriculationExam } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MatriculationVerifyDialogProps
@@ -113,7 +114,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ verifyMatriculationExam }, dispatch);
 }
 

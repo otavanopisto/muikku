@@ -25,6 +25,7 @@ import {
 import { WorkspaceJournalComment } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * WorkspaceJournalCommentListProps
@@ -171,7 +172,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       updatedWorkspaceJournalComment,

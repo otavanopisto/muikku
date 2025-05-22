@@ -30,6 +30,7 @@ import {
 } from "react-i18next";
 import Dropdown from "~/components/general/dropdown";
 import { localize } from "~/locales/i18n";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EvaluationCardProps
@@ -666,7 +667,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { loadEvaluationAssessmentRequestsFromServer },
     dispatch

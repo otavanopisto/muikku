@@ -13,6 +13,7 @@ import {
   CreateDiscussionAreaTriggerType,
 } from "~/actions/discussion";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * DiscussionNewAreaProps
@@ -243,7 +244,7 @@ class DiscussionNewArea extends SessionStateComponent<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ createDiscussionArea }, dispatch);
 }
 

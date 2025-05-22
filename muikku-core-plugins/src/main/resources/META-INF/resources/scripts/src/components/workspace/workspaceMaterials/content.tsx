@@ -46,6 +46,7 @@ import {
   MaterialCompositeReply,
   MaterialViewRestriction,
 } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * TocElementRef
@@ -1170,7 +1171,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { updateWorkspaceMaterialContentNode, setWholeWorkspaceMaterials },
     dispatch

@@ -29,6 +29,7 @@ import {
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement, Role } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * TargetItemsListType
@@ -704,7 +705,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { createAnnouncement, updateAnnouncement, displayNotification },
     dispatch

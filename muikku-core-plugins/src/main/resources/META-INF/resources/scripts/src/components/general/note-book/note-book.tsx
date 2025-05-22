@@ -38,6 +38,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { useTranslation } from "react-i18next";
 import NoteBookPDFDialog from "./notebook-pdf-dialog";
 import { WorkspaceNote } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 export const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -392,7 +393,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       loadNotebookEntries,

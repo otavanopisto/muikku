@@ -14,6 +14,7 @@ import { localize } from "~/locales/i18n";
 import { Announcement } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * AnnouncementProps
@@ -121,7 +122,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns JSX.Element
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

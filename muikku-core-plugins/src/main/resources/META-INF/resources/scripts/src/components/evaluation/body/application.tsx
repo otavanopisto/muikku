@@ -22,6 +22,7 @@ import {
 import Select from "react-select";
 import "~/sass/elements/react-select-override.scss";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EvaluationApplicationProps
@@ -251,7 +252,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
 }
 

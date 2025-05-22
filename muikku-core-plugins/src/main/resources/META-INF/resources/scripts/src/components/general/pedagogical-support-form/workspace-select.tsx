@@ -12,6 +12,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { PedagogyWorkspace } from "~/generated/client";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * WorkspaceSelectProps
@@ -108,7 +109,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     displayNotification,
   };

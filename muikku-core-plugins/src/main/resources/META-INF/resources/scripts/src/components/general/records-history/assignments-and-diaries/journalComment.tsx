@@ -12,6 +12,7 @@ import { localize } from "~/locales/i18n";
 import { StatusType } from "~/reducers/base/status";
 import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * JournalCommentProps
@@ -69,7 +70,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

@@ -17,6 +17,7 @@ import {
   UpdateProfileAuthorizationsTriggerType,
   updateProfileAuthorizations,
 } from "../../../../actions/main-function/profile";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * AuthorizationsProps
@@ -164,7 +165,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       updateProfileAuthorizations,

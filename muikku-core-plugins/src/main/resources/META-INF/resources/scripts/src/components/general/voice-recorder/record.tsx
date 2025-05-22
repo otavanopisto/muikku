@@ -9,6 +9,7 @@ import DeleteDialog from "./dialogs/delete-warning";
 import { AudioPoolComponent } from "../audio-pool-component";
 import { useTranslation } from "react-i18next";
 import ProgressBar from "@ramonak/react-progress-bar";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * RecordProps
@@ -113,7 +114,7 @@ function Record(props: RecordProps) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

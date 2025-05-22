@@ -18,6 +18,7 @@ import {
   LoadContactLogsTriggerType,
 } from "~/actions/main-function/guider";
 import { ContactLog } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ContactEventDeletePromptProps
@@ -171,7 +172,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns dispatch function
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       deleteContactLogEvent,

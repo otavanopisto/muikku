@@ -23,6 +23,7 @@ import Dialog from "~/components/general/dialog";
 import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { CeeposOrder, CeeposPurchaseProduct, Role } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * CeeposProps
@@ -422,7 +423,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       deleteOrderFromCurrentStudent,

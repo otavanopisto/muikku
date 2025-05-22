@@ -26,6 +26,7 @@ import { WorkspaceActivity } from "~/generated/client";
 import { StatusType } from "~/reducers/base/status";
 import Material from "./material";
 import Journal from "./journal";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * AssignmentsAndDiariesProps
@@ -669,7 +670,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

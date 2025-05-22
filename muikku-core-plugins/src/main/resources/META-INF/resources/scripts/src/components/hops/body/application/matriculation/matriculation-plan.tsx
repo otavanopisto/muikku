@@ -18,6 +18,7 @@ import {
   UpdateHopsEditingTriggerType,
   updateHopsEditing,
 } from "~/actions/main-function/hops/";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MatriculationPlanProps
@@ -231,7 +232,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ updateHopsEditing }, dispatch);
 }
 

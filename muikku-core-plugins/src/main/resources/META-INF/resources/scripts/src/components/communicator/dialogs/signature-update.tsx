@@ -13,6 +13,7 @@ import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { CommunicatorSignature } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 const KEYCODES = {
   ENTER: 13,
@@ -181,7 +182,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ updateSignature }, dispatch);
 }
 

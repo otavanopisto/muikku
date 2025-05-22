@@ -11,6 +11,7 @@ import WorkspaceJournalsListItem from "./workspace-journals-list-item";
 import ApplicationList from "~/components/general/application-list";
 import { JournalsState } from "~/reducers/workspaces/journals";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MessageViewProps
@@ -59,7 +60,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

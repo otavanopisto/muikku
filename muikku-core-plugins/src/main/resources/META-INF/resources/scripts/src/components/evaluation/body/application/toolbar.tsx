@@ -22,6 +22,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EvaluationToolbarProps
@@ -194,7 +195,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { updateEvaluationSearch, setEvaluationFilters },
     dispatch

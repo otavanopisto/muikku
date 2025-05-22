@@ -14,6 +14,7 @@ import {
   MaterialCompositeReply,
 } from "~/generated/client";
 import { useTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EvaluationEventContentCardProps
@@ -253,7 +254,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

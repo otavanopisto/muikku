@@ -11,6 +11,7 @@ import SessionStateComponent from "~/components/general/session-state-component"
 import Button from "~/components/general/button";
 import moment from "moment";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ReplyThreadDrawerProps
@@ -187,7 +188,7 @@ class NewContactLogEventComment extends SessionStateComponent<
  * @param dispatch dispatch
  * @returns dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ createContactLogEventComment }, dispatch);
 }
 

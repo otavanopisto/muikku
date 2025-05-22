@@ -7,6 +7,7 @@ import CredentialsHero from "./body/credentials-hero";
 import { StateType } from "~/reducers";
 import { Action, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * CredentialsBodyProps
@@ -56,7 +57,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

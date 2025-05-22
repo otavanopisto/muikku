@@ -16,6 +16,7 @@ import { StateType } from "~/reducers";
 import Portal from "~/components/general/portal";
 
 import "~/sass/elements/notification-queue.scss";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * NotificationsProps
@@ -91,7 +92,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { hideNotification, displayNotification },
     dispatch

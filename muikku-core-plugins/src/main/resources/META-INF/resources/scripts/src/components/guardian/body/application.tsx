@@ -38,6 +38,7 @@ import {
   LoadStudentAccessTriggerType,
 } from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
+import { AppDispatch } from "~/reducers/configureStore";
 /**
  * StudiesTab
  */
@@ -419,7 +420,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { clearDependantState, loadStudentPedagogyFormAccess },
     dispatch

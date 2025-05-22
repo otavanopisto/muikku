@@ -25,6 +25,7 @@ import { getName } from "~/util/modifiers";
 import { UserFlag, UserSharedFlag } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 const KEYCODES = {
   ENTER: 13,
@@ -680,7 +681,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { updateGuiderFilterLabel, removeGuiderFilterLabel, displayNotification },
     dispatch

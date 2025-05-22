@@ -139,7 +139,7 @@ const StudyProgressWebsocketWatcher = (
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-/* function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+/* function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       recordsSummarySuggestedNextWebsocket,

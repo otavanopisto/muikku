@@ -46,6 +46,7 @@ import { ManagementAdditionalInfoMemoized } from "./management-additional-info";
 import { ManagementVisibilityMemoized } from "./management-visibility";
 import { ManagementBasicInfoMemoized } from "./management-basic-info";
 import { ManagementImageMemoized } from "./management-image";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ManagementPanelProps
@@ -582,7 +583,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       updateWorkspaceSettings,

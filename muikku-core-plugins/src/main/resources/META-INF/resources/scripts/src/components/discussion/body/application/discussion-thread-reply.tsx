@@ -22,6 +22,7 @@ import moment from "moment";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * DiscussionThreadReplyProps
@@ -263,7 +264,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

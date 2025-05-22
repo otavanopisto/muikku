@@ -12,6 +12,7 @@ import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
 import { DiscussionThreadReply } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ModifyThreadReplyDrawerProps
@@ -226,7 +227,7 @@ class ModifyThreadReplyDrawer extends SessionStateComponent<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ modifyReplyFromCurrentThread }, dispatch);
 }
 

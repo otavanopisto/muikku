@@ -19,6 +19,7 @@ import {
 } from "~/actions/base/notifications";
 import "~/sass/elements/memofield.scss";
 import { isValidHTML } from "~/util/html";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MemoFieldProps
@@ -688,7 +689,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

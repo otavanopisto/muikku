@@ -6,6 +6,7 @@ import { AnyActionType } from "~/actions";
 import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { MatriculationExamGrade } from "~/generated/client";
 import { StateType } from "~/reducers";
+import { AppDispatch } from "~/reducers/configureStore";
 import { HopsState } from "~/reducers/hops";
 
 /**
@@ -212,7 +213,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

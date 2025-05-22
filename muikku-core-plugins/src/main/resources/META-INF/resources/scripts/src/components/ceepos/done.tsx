@@ -22,6 +22,7 @@ import "~/sass/elements/glyph.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import MApi, { isMApiError } from "~/api/api";
 import { CeeposReturnLink } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * CeeposDoneProps
@@ -290,7 +291,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

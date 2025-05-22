@@ -43,6 +43,7 @@ import {
 } from "./application/wizard/helpers";
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
 import { isCompulsoryStudiesHops } from "~/@types/hops";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * Represents the available tabs in the HOPS application.
@@ -445,7 +446,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - The Redux dispatch function
  * @returns The mapped action creators
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       startEditing,

@@ -14,6 +14,7 @@ import moment from "moment";
 import { StatusType } from "~/reducers/base/status";
 import { ContactLogEventComment, ContactType } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EditContactLogEventCommentStateProps
@@ -222,7 +223,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns dispatch function
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ editContactLogEventComment }, dispatch);
 }
 

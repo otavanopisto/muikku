@@ -23,6 +23,7 @@ import {
 } from "../popover";
 import "~/sass/elements/item-list.scss";
 import { UserInfo } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * InfoPopoverProps
@@ -370,7 +371,7 @@ function ContactActions(props: ContactActionsProps) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       displayNotification,

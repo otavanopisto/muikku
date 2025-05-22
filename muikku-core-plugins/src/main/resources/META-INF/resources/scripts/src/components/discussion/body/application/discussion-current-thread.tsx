@@ -35,6 +35,7 @@ import {
 import { DiscussionThread } from "~/generated/client";
 import moment from "moment";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * CurrentThreadProps
@@ -555,7 +556,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       subscribeDiscussionThread,

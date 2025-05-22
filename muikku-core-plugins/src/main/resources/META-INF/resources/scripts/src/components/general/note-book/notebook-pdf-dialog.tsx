@@ -8,6 +8,7 @@ import NoteBookPDF from "./notebook-pdf";
 import { PDFViewer } from "@react-pdf/renderer";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { WorkspaceNote } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * NoteBookPDFProps
@@ -66,7 +67,7 @@ const NoteBookPDFDialog = (props: NoteBookPDFDialogProps) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

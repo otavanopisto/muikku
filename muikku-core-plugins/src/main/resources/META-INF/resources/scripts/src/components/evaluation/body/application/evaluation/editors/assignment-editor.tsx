@@ -36,6 +36,7 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import { localize } from "~/locales/i18n";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * AssignmentEditorProps
@@ -787,7 +788,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       updateCurrentStudentCompositeRepliesData,

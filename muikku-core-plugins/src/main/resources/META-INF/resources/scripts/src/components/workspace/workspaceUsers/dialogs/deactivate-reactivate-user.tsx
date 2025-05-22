@@ -14,6 +14,7 @@ import { WorkspaceDataType } from "~/reducers/workspaces";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * DeactivateReactivateUserDialogProps
@@ -145,7 +146,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { toggleActiveStateOfStudentOfWorkspace },
     dispatch

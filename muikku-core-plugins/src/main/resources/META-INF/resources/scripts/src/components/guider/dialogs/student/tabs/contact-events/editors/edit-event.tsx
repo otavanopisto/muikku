@@ -18,6 +18,7 @@ import { StatusType } from "~/reducers/base/status";
 import { ContactLogEvent, ContactType } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * TODO: maybe make this more generic,
@@ -285,7 +286,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ editContactLogEvent }, dispatch);
 }
 

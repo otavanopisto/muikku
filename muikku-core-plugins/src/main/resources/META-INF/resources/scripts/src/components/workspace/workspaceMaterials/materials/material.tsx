@@ -30,6 +30,7 @@ import { MaterialLoaderExternalContent } from "~/components/base/material-loader
 import { MaterialCompositeReply } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MaterialLoaderPoints } from "~/components/base/material-loader/points";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * WorkspaceMaterialProps
@@ -230,7 +231,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ setCurrentWorkspace }, dispatch);
 }
 

@@ -24,6 +24,7 @@ import PedagogyToolbar from "./pedagogy-toolbar";
 import { UserRole } from "~/@types/pedagogy-form";
 import { useTranslation } from "react-i18next";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 // Visibility settings which study programmes have access to the form
 export const UPPERSECONDARY_PEDAGOGYFORM = [
@@ -203,7 +204,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {
     displayNotification,
   };

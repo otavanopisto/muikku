@@ -34,6 +34,7 @@ import {
 import { WithTranslation, withTranslation } from "react-i18next";
 import { OptionWithExtraContent } from "~/components/general/react-select/types";
 import { OptionWithDescription } from "~/components/general/react-select/option";
+import { AppDispatch } from "~/reducers/configureStore";
 
 type DiscussionAreaOptionWithExtraContent = OptionWithExtraContent<
   string | number
@@ -292,7 +293,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       showOnlySubscribedThreads,

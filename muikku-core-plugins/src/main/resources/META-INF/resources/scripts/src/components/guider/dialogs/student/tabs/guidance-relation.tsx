@@ -16,6 +16,7 @@ import {
   LoadContactLogsTriggerType,
 } from "~/actions/main-function/guider";
 import { useTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * GuidanceRelationProps
@@ -169,7 +170,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch action dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       loadStudentContactLogs,

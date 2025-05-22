@@ -18,6 +18,7 @@ import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { OptionDefault } from "~/components/general/react-select/types";
+import { AppDispatch } from "~/reducers/configureStore";
 
 type CoursepickerFilterOption = OptionDefault<WorkspaceBaseFilterType>;
 
@@ -168,7 +169,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

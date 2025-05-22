@@ -23,6 +23,7 @@ import {
 import { AnyActionType } from "~/actions";
 import { connect } from "react-redux";
 import { Action, bindActionCreators, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * NewContactEventProps
@@ -394,7 +395,7 @@ const NewContactEvent: React.FC<NewContactEventProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       displayNotification,

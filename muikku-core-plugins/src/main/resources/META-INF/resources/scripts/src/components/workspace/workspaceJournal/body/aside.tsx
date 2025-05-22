@@ -27,6 +27,7 @@ import {
 } from "~/actions/workspaces/journals";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { WorkspaceStudentSearchResult } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * NavigationAsideProps
@@ -216,7 +217,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       loadStudents: loadStudentsOfWorkspace,

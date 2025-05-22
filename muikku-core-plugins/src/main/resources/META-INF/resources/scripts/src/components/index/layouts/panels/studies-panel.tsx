@@ -18,6 +18,7 @@ import {
 import { useNextCourseSuggestions } from "~/hooks/useNextCourseSuggestions";
 import WorkspaceSignup from "~/components/coursepicker/dialogs/workspace-signup";
 import ItemList from "~/components/general/item-list";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * WorkspacesPanelProps
@@ -215,7 +216,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * returns dispatch calls
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 export default withTranslation(["frontPage", "workspace"])(

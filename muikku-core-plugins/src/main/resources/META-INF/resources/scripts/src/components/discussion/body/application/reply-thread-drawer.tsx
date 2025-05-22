@@ -13,6 +13,7 @@ import Button from "~/components/general/button";
 import "~/sass/elements/form.scss";
 import { DiscussionThreadReply } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * TODO: maybe make this more generic,
@@ -249,7 +250,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ replyToCurrentDiscussionThread }, dispatch);
 }
 

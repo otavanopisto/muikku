@@ -24,6 +24,7 @@ import {
 } from "../../../../../actions/workspaces/journals";
 import WorkspaceJournalCommentListItem from "./workspace-journal-comment-list-item";
 import { useTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * WorkspaceJournalCommentListProps
@@ -229,7 +230,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       displayNotification,

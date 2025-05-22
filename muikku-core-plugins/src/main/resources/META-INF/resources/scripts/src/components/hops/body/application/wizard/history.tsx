@@ -18,6 +18,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useHopsBasicInfo } from "~/context/hops-basic-info-context";
 import EditHopsEventDescriptionDialog from "~/components/hops/dialogs/edit-hops-event";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * HopsHistoryProps
@@ -85,7 +86,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - The Redux dispatch function
  * @returns An object with the mapped dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

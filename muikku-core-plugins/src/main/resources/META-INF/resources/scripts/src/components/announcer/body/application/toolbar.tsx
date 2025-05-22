@@ -24,6 +24,7 @@ import {
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * AnnouncerToolbarProps
@@ -265,7 +266,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { updateAnnouncement, removeFromAnnouncementsSelected },
     dispatch

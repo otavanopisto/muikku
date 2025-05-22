@@ -45,6 +45,7 @@ import { isCompulsoryStudiesHops } from "~/@types/hops";
 import { unstable_batchedUpdates } from "react-dom";
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
 import NewHopsEventDescriptionDialog from "~/components/hops/dialogs/new-hops-event-description-dialog";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * Represents the available tabs in the HOPS application
@@ -454,7 +455,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - The Redux dispatch function
  * @returns Mapped action creators
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       loadMatriculationData,

@@ -13,6 +13,7 @@ import {
   setCurrentJournal,
 } from "../../../../../actions/workspaces/journals";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * WorkspaceJournalsToolbarProps
@@ -89,7 +90,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ setCurrentJournal }, dispatch);
 }
 

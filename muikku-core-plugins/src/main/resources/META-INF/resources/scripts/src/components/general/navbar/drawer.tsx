@@ -22,6 +22,7 @@ import {
   openReadingRuler,
 } from "~/actions/easy-to-use-functions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * checkLinkClicked
@@ -388,7 +389,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ logout, openReadingRuler }, dispatch);
 }
 

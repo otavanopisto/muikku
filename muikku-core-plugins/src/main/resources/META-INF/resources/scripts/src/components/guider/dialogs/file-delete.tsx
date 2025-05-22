@@ -12,6 +12,7 @@ import { UserFileType } from "~/reducers/user-index";
 
 import "~/sass/elements/form.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * FileDeleteDialogProps
@@ -113,7 +114,7 @@ class FileDeleteDialog extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ removeFileFromCurrentStudent }, dispatch);
 }
 

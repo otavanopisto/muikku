@@ -13,6 +13,7 @@ import {
 } from "../../../../../../actions/main-function/hops/index";
 import { StateType } from "~/reducers";
 import { MatriculationExam } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MatriculationExaminationWizardDialogProps
@@ -88,7 +89,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ updateMatriculationExamination }, dispatch);
 }
 

@@ -14,6 +14,7 @@ import { ButtonPill } from "~/components/general/button";
 import NotesItemNew from "./notes-item-new";
 import NotesItemListFilters from "./notes-item-list-filters";
 import { useTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * NotesProps
@@ -215,7 +216,7 @@ const Notes: React.FC<NotesProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

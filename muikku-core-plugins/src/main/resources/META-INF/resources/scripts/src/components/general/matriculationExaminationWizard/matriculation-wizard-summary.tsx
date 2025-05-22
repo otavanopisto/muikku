@@ -15,6 +15,7 @@ import {
   displayNotification,
 } from "~/actions/base/notifications";
 import { MatriculationExam } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MatriculationExaminationWizardProps
@@ -71,7 +72,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

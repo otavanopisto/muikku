@@ -10,6 +10,7 @@ import {
 import "~/sass/elements/readspeaker.scss";
 import { useReadspeakerContext } from "../context/readspeaker-context";
 import { StatusType } from "~/reducers/base/status";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ReadSpeakerReaderProps
@@ -121,7 +122,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

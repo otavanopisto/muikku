@@ -11,6 +11,7 @@ import {
   useReadSpeakerReader,
 } from "~/hooks/useReadSpeakerReader";
 import { StateType } from "~/reducers";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ReadspeakerContextValue
@@ -69,7 +70,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       displayNotification,

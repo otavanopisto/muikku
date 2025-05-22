@@ -11,6 +11,7 @@ import "~/sass/elements/message.scss";
 import { MessageThreadLabel } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MessageViewProps
@@ -106,7 +107,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

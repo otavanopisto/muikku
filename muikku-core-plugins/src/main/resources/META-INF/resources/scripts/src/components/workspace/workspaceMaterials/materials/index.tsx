@@ -48,6 +48,7 @@ import {
   MaterialViewRestriction,
 } from "~/generated/client";
 import { BackToToc } from "~/components/general/toc";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * WorkspaceMaterialsProps
@@ -911,7 +912,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,

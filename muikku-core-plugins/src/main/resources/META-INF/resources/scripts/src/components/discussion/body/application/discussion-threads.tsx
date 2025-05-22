@@ -33,6 +33,7 @@ import {
 import { DiscussionThread } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * DiscussionThreadsProps
@@ -386,7 +387,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       subscribeDiscussionThread,

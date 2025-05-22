@@ -28,6 +28,7 @@ import {
 import MApi from "~/api/api";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EvaluationCardProps
@@ -658,7 +659,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ updateOpenedAssignmentEvaluation }, dispatch);
 }
 

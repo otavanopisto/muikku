@@ -13,6 +13,7 @@ import {
   deleteEvaluationJournalComment,
 } from "../../../actions/main-function/evaluation/evaluationActions";
 import { WorkspaceJournalComment } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * DeleteJournalProps
@@ -132,7 +133,7 @@ class DeleteJournalComment extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ deleteEvaluationJournalComment }, dispatch);
 }
 

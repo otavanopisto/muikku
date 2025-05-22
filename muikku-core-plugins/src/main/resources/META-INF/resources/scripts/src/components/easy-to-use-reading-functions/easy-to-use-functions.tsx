@@ -10,6 +10,7 @@ import {
   closeReadingRuler,
 } from "~/actions/easy-to-use-functions";
 import ReadingRuler from "./reading-ruler/reading-ruler";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EasyToUseFunctionsProps
@@ -52,7 +53,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       closeReadingRuler,

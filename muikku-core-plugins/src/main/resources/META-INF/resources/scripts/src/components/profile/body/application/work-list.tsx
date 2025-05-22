@@ -16,6 +16,7 @@ import { WorkListSection } from "./components/work-list-section";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { WorklistTemplate } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 // we use these
 const today = moment();
@@ -277,7 +278,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { insertProfileWorklistItem, loadProfileWorklistSection },
     dispatch

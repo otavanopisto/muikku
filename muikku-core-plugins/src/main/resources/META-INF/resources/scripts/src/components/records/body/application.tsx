@@ -24,6 +24,7 @@ import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/ped
 import MApi from "~/api/api";
 import { PedagogyFormState } from "~/generated/client";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * StudiesApplicationProps
@@ -254,7 +255,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

@@ -15,6 +15,7 @@ import useInfinityScroll from "~/hooks/useInfinityScroll";
 import { UserGroup } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * OrganizationUserGroupsProps
@@ -113,7 +114,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ loadMoreUserGroups }, dispatch);
 }
 

@@ -27,6 +27,7 @@ import { WhatsappButtonLink } from "~/components/general/whatsapp-link";
 import { withTranslation, WithTranslation } from "react-i18next";
 import StudyProgress from "./study-progress";
 import { Instructions } from "~/components/general/instructions";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * SummaryProps
@@ -359,7 +360,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

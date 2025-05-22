@@ -10,6 +10,7 @@ import {
   CreateNewFromCutContent,
   createNewFromCutContent,
 } from "../../../../actions/notebook/notebook";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * testProps
@@ -115,7 +116,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       createNewFromCutContent,

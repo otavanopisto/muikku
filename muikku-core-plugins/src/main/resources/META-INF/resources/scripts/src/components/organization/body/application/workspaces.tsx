@@ -13,6 +13,7 @@ import { loadMoreOrganizationWorkspacesFromServer } from "~/actions/workspaces/o
 import { WorkspacesStateType, WorkspaceDataType } from "~/reducers/workspaces";
 import { AnyActionType } from "~/actions";
 import { useTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * OrganizationWorkspacesProps
@@ -108,7 +109,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { loadMoreOrganizationWorkspacesFromServer },
     dispatch

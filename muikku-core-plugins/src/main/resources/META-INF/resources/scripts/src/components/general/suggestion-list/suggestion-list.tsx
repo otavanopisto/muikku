@@ -12,6 +12,7 @@ import {
 import { WorkspaceSuggestion } from "~/generated/client";
 import { Course } from "~/@types/shared";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * SuggestionItemContext
@@ -102,7 +103,7 @@ const SuggestionList = (props: HopsSuggestionListProps) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return { displayNotification };
 }
 

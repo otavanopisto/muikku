@@ -20,6 +20,7 @@ import {
   UpdateHopsEditingTriggerType,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
+import { AppDispatch } from "~/reducers/configureStore";
 
 type FormType = "BACKGROUND" | "POST_GRADUATE_PLAN";
 
@@ -207,7 +208,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - The Redux dispatch function
  * @returns An object with the mapped dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { updateHopsEditing, loadMoreHopsFormHistory },
     dispatch

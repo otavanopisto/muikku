@@ -15,6 +15,7 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import LoginButton from "../../base/login-button";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ReturnCredentialsProps
@@ -198,7 +199,7 @@ class ReturnCredentials extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { displayNotification, updateCredentials },
     dispatch

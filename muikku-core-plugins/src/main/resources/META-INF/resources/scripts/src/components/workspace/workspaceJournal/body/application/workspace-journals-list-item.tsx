@@ -27,6 +27,7 @@ import WorkspaceJournalEditor from "./editors/workspace-journal-editor";
 import { WorkspaceJournalWithComments } from "~/reducers/workspaces/journals";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * JournalProps
@@ -248,7 +249,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ setCurrentJournal }, dispatch);
 }
 

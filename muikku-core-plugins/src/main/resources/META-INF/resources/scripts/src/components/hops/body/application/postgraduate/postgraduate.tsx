@@ -6,6 +6,7 @@ import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
 import CompulsoryStudiesHopsWizard from "../wizard/compulsory-studies-wizard/compulsory-studies-hops-wizard";
 import SecondaryStudiesHopsWizard from "../wizard/secondary-studies-wizard/secondary-studies-hops-wizard";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * BackgroundProps
@@ -57,7 +58,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

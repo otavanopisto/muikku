@@ -6,6 +6,7 @@ import Button from "~/components/general/button";
 import { AnyActionType } from "~/actions";
 import "~/sass/elements/form.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * DeleteDialogProps
@@ -108,7 +109,7 @@ class WarningDialog extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

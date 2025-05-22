@@ -20,6 +20,7 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import { InterimEvaluationRequest } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /* eslint-disable camelcase */
 const ckEditorConfig = {
@@ -345,7 +346,7 @@ class InterimEvaluationEditor extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { updateCurrentWorkspaceInterimEvaluationRequests, displayNotification },
     dispatch

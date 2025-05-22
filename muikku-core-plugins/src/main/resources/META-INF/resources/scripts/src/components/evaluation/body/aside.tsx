@@ -16,6 +16,7 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import { WorkspaceDataType } from "../../../reducers/workspaces/index";
 import { AnyActionType } from "~/actions";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * NavigationAsideProps
@@ -144,7 +145,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ setSelectedWorkspaceId }, dispatch);
 }
 

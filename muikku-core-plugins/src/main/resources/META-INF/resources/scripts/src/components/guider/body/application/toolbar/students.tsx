@@ -32,6 +32,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { turnSelectedUsersToContacts } from "~/util/users";
 import { GuiderContext } from "../../../context";
 import { ContactRecipientType } from "~/reducers/user-index";
+import { AppDispatch } from "~/reducers/configureStore";
 /**
  * GuiderToolbarProps
  */
@@ -297,7 +298,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       removeFromGuiderSelectedStudents,

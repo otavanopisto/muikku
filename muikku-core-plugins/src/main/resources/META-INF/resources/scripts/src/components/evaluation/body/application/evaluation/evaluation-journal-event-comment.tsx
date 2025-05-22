@@ -15,6 +15,7 @@ import DeleteJournalComment from "~/components/evaluation/dialogs/delete-journal
 import { WorkspaceJournalComment } from "~/generated/client";
 import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EvaluationEventContentCardProps
@@ -142,7 +143,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return { displayNotification };
 }
 

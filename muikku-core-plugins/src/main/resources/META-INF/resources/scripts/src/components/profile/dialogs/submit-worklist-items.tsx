@@ -11,6 +11,7 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { WorklistBillingStateType, WorklistSummary } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * SubmitWorklistItemsDialogProps
@@ -110,7 +111,7 @@ class SubmitWorklistItemsDialog extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ updateProfileWorklistItemsState }, dispatch);
 }
 

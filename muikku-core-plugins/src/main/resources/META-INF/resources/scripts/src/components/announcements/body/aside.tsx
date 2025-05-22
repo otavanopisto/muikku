@@ -12,6 +12,7 @@ import { Announcement } from "~/generated/client";
 import { AnyActionType } from "~/actions";
 import { Action, Dispatch } from "redux";
 import { connect } from "react-redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * AnnouncementsAsideProps
@@ -118,7 +119,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

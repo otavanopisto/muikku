@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
 import { MatriculationExam } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MatriculationWizardSummaryDialogProps
@@ -77,7 +78,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

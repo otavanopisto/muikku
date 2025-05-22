@@ -11,6 +11,7 @@ import {
 } from "~/generated/client";
 import { getNextTermsOptionsByDate } from "~/helper-functions/matriculation-functions";
 import { StateType } from "~/reducers";
+import { AppDispatch } from "~/reducers/configureStore";
 
 const FINNISH_LANUGAGES = ["ÄI", "S2"];
 
@@ -379,7 +380,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

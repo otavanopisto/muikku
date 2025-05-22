@@ -11,6 +11,7 @@ import Button from "~/components/general/button";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { AnyActionType } from "~/actions";
 import { WorklistItem } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * DeleteWorklistItemDialogProps
@@ -107,7 +108,7 @@ class DeleteWorklistItemDialog extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ deleteProfileWorklistItem }, dispatch);
 }
 

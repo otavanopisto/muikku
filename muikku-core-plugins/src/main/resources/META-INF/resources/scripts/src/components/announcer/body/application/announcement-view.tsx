@@ -18,6 +18,7 @@ import { AnnouncementsState } from "~/reducers/announcements";
 import { UserIndexState } from "~/reducers/user-index";
 import { AnyActionType } from "~/actions/index";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MessageViewProps
@@ -133,7 +134,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

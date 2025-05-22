@@ -20,6 +20,7 @@ import {
   Student,
   UpdateStudentBasicInfoOperationRequest,
 } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * OrganizationUserProps
@@ -306,7 +307,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ updateStudent }, dispatch);
 }
 

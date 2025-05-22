@@ -13,6 +13,7 @@ import {
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationEvent } from "~/generated/client";
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * DeleteDialogProps
@@ -253,7 +254,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ removeWorkspaceEventFromServer }, dispatch);
 }
 

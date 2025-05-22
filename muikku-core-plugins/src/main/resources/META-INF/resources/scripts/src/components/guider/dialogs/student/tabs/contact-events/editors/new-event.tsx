@@ -23,6 +23,7 @@ import {
 } from "~/actions/main-function/guider";
 import { ContactType, Student } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * NewContactEventProps
@@ -337,7 +338,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { createContactLogEvent, loadStudentContactLogs },
     dispatch

@@ -27,6 +27,7 @@ import { OptionDefault } from "~/components/general/react-select/types";
 import Select from "react-select";
 import WorkspaceJournalFeedback from "./application/workspace-journal-feedback";
 import { WorkspaceStudent } from "~/generated/client/models/WorkspaceStudent";
+import { AppDispatch } from "~/reducers/configureStore";
 
 type JournalStudentFilterOption = OptionDefault<WorkspaceStudent | string>;
 
@@ -205,7 +206,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { loadCurrentWorkspaceJournalsFromServer },
     dispatch

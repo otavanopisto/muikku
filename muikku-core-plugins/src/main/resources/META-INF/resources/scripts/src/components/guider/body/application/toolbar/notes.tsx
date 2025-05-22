@@ -15,6 +15,7 @@ import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import NotesItemNew from "~/components/general/notes//notes-item-new";
 import { CreateNoteRequest } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * GuiderToolbarProps
@@ -77,7 +78,7 @@ class GuiderToolbar extends React.Component<
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       createNote,

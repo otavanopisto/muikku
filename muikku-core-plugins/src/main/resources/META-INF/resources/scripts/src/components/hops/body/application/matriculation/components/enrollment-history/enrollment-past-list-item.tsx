@@ -12,6 +12,7 @@ import {
 } from "../../../../../../../actions/main-function/hops/index";
 import { ChangeLog } from "./enrollment-change-log";
 import MatriculationEnrollment from "../matriculation-enrollment";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MatriculationPastEnrollmentProps
@@ -95,7 +96,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ loadMatriculationExamHistory }, dispatch);
 }
 

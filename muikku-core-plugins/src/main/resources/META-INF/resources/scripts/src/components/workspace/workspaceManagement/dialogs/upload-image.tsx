@@ -24,6 +24,7 @@ import "rc-slider/assets/index.css";
 import "~/sass/elements/rangeslider.scss";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * UploadImageDialogProps
@@ -234,7 +235,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { displayNotification, updateCurrentWorkspaceImagesB64 },
     dispatch

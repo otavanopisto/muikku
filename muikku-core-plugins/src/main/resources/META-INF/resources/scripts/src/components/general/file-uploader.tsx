@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 import { UploadingValue } from "../../@types/shared";
 import ProgressBar from "@ramonak/react-progress-bar";
 import { AnyActionType } from "~/actions";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * FileUploaderProps
@@ -578,7 +579,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  * @returns object
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

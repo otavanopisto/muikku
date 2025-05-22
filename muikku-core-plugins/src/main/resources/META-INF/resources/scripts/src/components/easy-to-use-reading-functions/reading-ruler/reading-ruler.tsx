@@ -4,6 +4,7 @@ import { ReadingRulerBase } from "./reading-ruler-base";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions";
 import { connect, Provider, ReactReduxContext } from "react-redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ReadingRulerPortalProps
@@ -34,7 +35,7 @@ export const ReadingRuler: React.FC<ReadingRulerPortalProps> = (props) => (
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

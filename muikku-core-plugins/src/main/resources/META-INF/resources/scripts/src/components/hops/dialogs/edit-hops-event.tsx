@@ -14,6 +14,7 @@ import {
   updateHopsFormHistoryEntry,
 } from "~/actions/main-function/hops/";
 import { useTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * Props for the EditHopsEventDescriptionDialog component
@@ -144,7 +145,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch - The Redux dispatch function
  * @returns An object with the mapped dispatch functions
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       updateHopsFormHistoryEntry,

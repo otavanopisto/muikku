@@ -7,6 +7,7 @@ import ApplicationSubPanel from "~/components/general/application-sub-panel";
 import { StateType } from "~/reducers";
 import { HopsState } from "~/reducers/hops";
 import MatriculationEligibilityRow from "./components/matriculation-eligibility-row";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MatriculationEligibilityProps
@@ -252,7 +253,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

@@ -16,6 +16,7 @@ import { Action, bindActionCreators, Dispatch } from "redux";
 import { WorkspaceSuggestion } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { useTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * SaveExtraDetailsDialogProps
@@ -189,7 +190,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

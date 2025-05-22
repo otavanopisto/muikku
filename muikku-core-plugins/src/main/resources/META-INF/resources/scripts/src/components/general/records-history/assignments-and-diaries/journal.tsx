@@ -18,6 +18,7 @@ import { WorkspaceJournalEntry } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import CkeditorContentLoader from "~/components/base/ckeditor-loader/content";
 import { useJournalComments } from "./hooks/useJournalComments";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * JournalProps
@@ -184,7 +185,7 @@ const Journal: React.FC<JournalProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 

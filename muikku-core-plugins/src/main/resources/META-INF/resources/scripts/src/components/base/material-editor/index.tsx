@@ -48,6 +48,7 @@ import {
   MaterialViewRestriction,
 } from "~/generated/client";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * MaterialEditorProps
@@ -1421,7 +1422,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,

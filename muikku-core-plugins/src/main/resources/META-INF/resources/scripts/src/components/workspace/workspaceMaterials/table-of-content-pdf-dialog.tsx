@@ -13,6 +13,7 @@ import {
 import TableOfContentPDF from "./table-of-content-pdf";
 import { StatusType } from "~/reducers/base/status";
 import { MaterialCompositeReply } from "~/generated/client";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * NoteBookPDFProps
@@ -100,7 +101,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators({}, dispatch);
 }
 

@@ -14,6 +14,7 @@ import {
   UpdateWorkspaceMaterialContentNodeTriggerType,
 } from "~/actions/workspaces/material";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * ConfirmPublishRemovePageWithLinkedAnswersDialogProps
@@ -185,7 +186,7 @@ function mapStateToProps(state: StateType) {
  *
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { setWorkspaceMaterialEditorState, updateWorkspaceMaterialContentNode },
     dispatch

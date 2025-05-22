@@ -21,6 +21,7 @@ import "~/sass/elements/glyph.scss";
 import "~/sass/elements/color-picker.scss";
 
 import { WithTranslation, withTranslation } from "react-i18next";
+import { AppDispatch } from "~/reducers/configureStore";
 
 const KEYCODES = {
   ENTER: 13,
@@ -346,7 +347,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { updateMessagesNavigationLabel, removeMessagesNavigationLabel },
     dispatch

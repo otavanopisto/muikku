@@ -24,6 +24,7 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
+import { AppDispatch } from "~/reducers/configureStore";
 
 type studyHistoryAside = "history" | "library";
 
@@ -247,7 +248,7 @@ const StudyHistory: React.FC<StudyHistoryProps> = (props) => {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { addFileToCurrentStudent, displayNotification },
     dispatch

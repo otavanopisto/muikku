@@ -36,6 +36,7 @@ import { AnyActionType } from "~/actions";
 import MApi from "~/api/api";
 import { connect } from "react-redux";
 import { isEqual } from "lodash";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /* i18n.t("", { ns: "materials" }); */
 
@@ -764,7 +765,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       updateAssignmentState,

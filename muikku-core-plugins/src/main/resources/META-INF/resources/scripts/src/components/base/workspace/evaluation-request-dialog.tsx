@@ -18,6 +18,7 @@ import {
 } from "~/actions/base/notifications";
 import { withTranslation, WithTranslation } from "react-i18next";
 import MApi, { isMApiError } from "~/api/api";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * EvaluationRequestDialogProps
@@ -312,7 +313,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     { requestAssessmentAtWorkspace, displayNotification },
     dispatch

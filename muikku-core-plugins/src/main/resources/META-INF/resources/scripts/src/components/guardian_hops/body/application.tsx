@@ -27,6 +27,7 @@ import {
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
+import { AppDispatch } from "~/reducers/configureStore";
 
 const UPPERSECONDARY_PROGRAMMES = [
   "Nettilukio",
@@ -282,7 +283,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       loadMatriculationData,

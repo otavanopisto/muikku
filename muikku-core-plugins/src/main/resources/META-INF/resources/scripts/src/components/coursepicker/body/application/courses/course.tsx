@@ -24,6 +24,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import AssessmentRequestIndicator from "~/components/general/records-history/assessment-request-indicator";
 import RecordsAssessmentIndicator from "~/components/general/records-history/records-assessment-indicator";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * CourseProps
@@ -447,7 +448,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return {};
 }
 

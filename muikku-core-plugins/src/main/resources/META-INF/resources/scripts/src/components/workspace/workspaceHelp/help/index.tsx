@@ -36,6 +36,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import { MaterialViewRestriction } from "~/generated/client";
 import ReadSpeakerReader from "~/components/general/readspeaker";
 import { BackToToc } from "~/components/general/toc";
+import { AppDispatch } from "~/reducers/configureStore";
 
 /**
  * HelpMaterialsProps
@@ -842,7 +843,7 @@ function mapStateToProps(state: StateType) {
  * mapDispatchToProps
  * @param dispatch dispatch
  */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+function mapDispatchToProps(dispatch: AppDispatch) {
   return bindActionCreators(
     {
       setWorkspaceMaterialEditorState,
