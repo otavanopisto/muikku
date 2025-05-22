@@ -1,5 +1,5 @@
 import notificationActions from "~/actions/base/notifications";
-import { AnyActionType } from "~/actions";
+import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
 import {
   MessagesNavigationItem,
   MessagesStateType,
@@ -14,6 +14,7 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch, Action } from "redux";
+import { RootState } from "~/reducers/configureStore";
 
 //HELPERS
 
@@ -65,8 +66,8 @@ export async function loadMessagesHelper(
   location: string | null,
   query: string | null,
   initial: boolean,
-  dispatch,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) {
   //Remove the current message
   dispatch({
@@ -278,8 +279,8 @@ export async function loadMessagesHelper(
 export async function setLabelStatusCurrentMessage(
   label: MessageThreadLabel,
   isToAddLabel: boolean,
-  dispatch,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) {
   const state = getState();
   const messageLabel = state.messages.currentThread.labels.find(
@@ -357,8 +358,8 @@ export async function setLabelStatusCurrentMessage(
 export function setLabelStatusSelectedMessages(
   label: MessageThreadLabel,
   isToAddLabel: boolean,
-  dispatch,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) {
   const state = getState();
 

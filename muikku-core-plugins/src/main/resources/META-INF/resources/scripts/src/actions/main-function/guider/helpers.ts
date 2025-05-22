@@ -1,6 +1,6 @@
 import notificationActions from "~/actions/base/notifications";
 import equals = require("deep-equal");
-import { AnyActionType } from "~/actions";
+import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
 import {
   GuiderState,
   GuiderActiveFiltersType,
@@ -11,6 +11,7 @@ import { StateType } from "~/reducers";
 import MApi, { isMApiError } from "~/api/api";
 import { Dispatch, Action } from "redux";
 import i18n from "~/locales/i18n";
+import { RootState } from "~/reducers/configureStore";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 25;
@@ -25,8 +26,8 @@ const MAX_LOADED_AT_ONCE = 25;
 export async function loadStudentsHelper(
   filters: GuiderActiveFiltersType | null,
   initial: boolean,
-  dispatch,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) {
   dispatch({
     type: "SET_CURRENT_GUIDER_STUDENT",

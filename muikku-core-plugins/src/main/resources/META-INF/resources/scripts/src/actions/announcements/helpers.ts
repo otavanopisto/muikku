@@ -1,4 +1,4 @@
-import { AnyActionType } from "~/actions";
+import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
 import {
   AnnouncementsStateType,
   AnnouncementsStatePatch,
@@ -11,6 +11,7 @@ import i18n from "~/locales/i18n";
 import { GetAnnouncementsRequest } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { Action, Dispatch } from "redux";
+import { AppDispatch, RootState } from "~/reducers/configureStore";
 
 /**
  * loadAnnouncementsHelper
@@ -26,8 +27,8 @@ export async function loadAnnouncementsHelper(
   workspaceId: number,
   notOverrideCurrent: boolean,
   force: boolean,
-  dispatch,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) {
   if (!notOverrideCurrent) {
     //Remove the current announcement

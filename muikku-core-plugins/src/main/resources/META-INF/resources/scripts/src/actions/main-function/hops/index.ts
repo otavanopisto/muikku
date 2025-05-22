@@ -1,5 +1,9 @@
 import actions, { hideNotification } from "../../base/notifications";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import {
+  AnyActionType,
+  AnyActionTypeDispatch,
+  SpecificActionType,
+} from "~/actions";
 import { StateType } from "~/reducers";
 import { Dispatch, Action } from "redux";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
@@ -37,6 +41,7 @@ import {
 } from "~/@types/hops";
 import _ from "lodash";
 import { getEditedHopsFields } from "~/components/hops/body/application/wizard/helpers";
+import { RootState } from "~/reducers/configureStore";
 
 // Api instances
 const hopsApi = MApi.getHopsApi();
@@ -1100,10 +1105,7 @@ const cancelEditing: CancelEditingTriggerType = function cancelEditing() {
  * @param data data
  */
 const saveHops: SaveHopsTriggerType = function saveHops(data) {
-  return async (
-    dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-    getState
-  ) => {
+  return async (dispatch, getState) => {
     const state = getState();
 
     const isUpperSecondary =
@@ -1690,10 +1692,7 @@ const saveHopsForm: SaveHopsFormTriggerType = function saveHopsForm(data) {
 const initializeHops: InitializeHopsTriggerType = function initializeHops(
   data
 ) {
-  return async (
-    dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-    getState
-  ) => {
+  return async (dispatch, getState) => {
     const state = getState();
 
     // Get student identifier
@@ -1822,8 +1821,8 @@ const initializeHops: InitializeHopsTriggerType = function initializeHops(
  */
 const initializeStudentInfo = async (
   studentIdentifier: string,
-  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) => {
   const state = getState();
 
@@ -1854,8 +1853,8 @@ const initializeStudentInfo = async (
 const initializeHopsForms = async (
   studentIdentifier: string,
   isSecondary: boolean,
-  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) => {
   const state = getState();
 
@@ -1883,8 +1882,8 @@ const initializeHopsForms = async (
  */
 const initializeHopsFormHistory = async (
   studentIdentifier: string,
-  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) => {
   const state = getState();
 
@@ -1925,8 +1924,8 @@ const initializeHopsFormHistory = async (
  */
 const initializeHopsLocked = async (
   studentIdentifier: string,
-  dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) => {
   const state = getState();
 

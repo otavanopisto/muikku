@@ -1,5 +1,5 @@
 import notificationActions from "~/actions/base/notifications";
-import { AnyActionType } from "~/actions";
+import { AnyActionType, AnyActionTypeDispatch } from "~/actions";
 import { StateType } from "~/reducers";
 import {
   WorkspacesActiveFiltersType,
@@ -13,6 +13,7 @@ import i18n from "~/locales/i18n";
 import { loadWorkspaceJournalFeedback } from "./journals";
 import MApi, { isMApiError } from "~/api/api";
 import { Action, Dispatch } from "redux";
+import { RootState } from "~/reducers/configureStore";
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 26;
@@ -32,8 +33,8 @@ export async function loadWorkspacesHelper(
   initial: boolean,
   refresh: boolean,
   loadOrganizationWorkspaces: boolean,
-  dispatch,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) {
   const state: StateType = getState();
 
@@ -256,8 +257,8 @@ export async function loadWorkspacesHelper(
 export async function loadCurrentWorkspaceJournalsHelper(
   userEntityId: number | null,
   initial: boolean,
-  dispatch,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) {
   const workspaceApi = MApi.getWorkspaceApi();
 

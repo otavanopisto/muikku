@@ -1,4 +1,4 @@
-import { SpecificActionType, AnyActionType } from "~/actions";
+import { SpecificActionType, AnyActionType, ActionType } from "~/actions";
 import {
   NotificationSeverityType,
   NotificationType,

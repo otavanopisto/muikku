@@ -1,5 +1,10 @@
 import notificationActions from "~/actions/base/notifications";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import {
+  ActionType,
+  AnyActionType,
+  AnyActionTypeDispatch,
+  SpecificActionType,
+} from "~/actions";
 import {
   AnnouncementsStateType,
   AnnouncementsStatePatch,
@@ -17,6 +22,8 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import moment from "moment";
 import { Action, Dispatch } from "redux";
+import { AppDispatch } from "~/reducers/configureStore";
+import { RootState } from "~/reducers/configureStore";
 export type UPDATE_ANNOUNCEMENTS_STATE = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS_STATE",
   AnnouncementsStateType
@@ -155,8 +162,8 @@ export interface CreateAnnouncementTriggerType {
  * @param announcement announcement
  */
 function validateAnnouncement(
-  dispatch,
-  getState,
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState,
   announcement: CreateAnnouncementRequest
 ) {
   if (!announcement.caption) {
@@ -169,6 +176,7 @@ function validateAnnouncement(
         "error"
       )
     );
+
     return false;
   } else if (!announcement.content) {
     dispatch(
@@ -308,9 +316,11 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
  */
 const addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType =
   function addToAnnouncementsSelected(announcement) {
-    return {
-      type: "ADD_TO_ANNOUNCEMENTS_SELECTED",
-      payload: announcement,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "ADD_TO_ANNOUNCEMENTS_SELECTED",
+        payload: announcement,
+      });
     };
   };
 
@@ -320,9 +330,11 @@ const addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType =
  */
 const removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType =
   function removeFromAnnouncementsSelected(announcement) {
-    return {
-      type: "REMOVE_FROM_ANNOUNCEMENTS_SELECTED",
-      payload: announcement,
+    return (dispatch, getState) => {
+      dispatch({
+        type: "REMOVE_FROM_ANNOUNCEMENTS_SELECTED",
+        payload: announcement,
+      });
     };
   };
 

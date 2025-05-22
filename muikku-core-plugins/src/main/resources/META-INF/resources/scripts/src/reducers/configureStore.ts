@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import thunk, { ThunkAction } from "redux-thunk";
+import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
 import reducer from "~/reducers/main-function";
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useStore } from "react-redux";

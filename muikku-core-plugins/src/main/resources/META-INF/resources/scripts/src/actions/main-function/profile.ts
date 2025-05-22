@@ -988,7 +988,7 @@ const loadProfileWorklistSections: LoadProfileWorklistSectionsTriggerType =
           owner: state.status.userSchoolDataIdentifier,
         });
 
-        const payload = summaries.map((s) => ({
+        const payload = summaries.map<WorklistSection>((s) => ({
           summary: s,
           items: null,
         }));
@@ -1101,9 +1101,12 @@ const updateProfileWorklistItemsState: UpdateProfileWorklistItemsStateTriggerTyp
               const foundInUpdate = updatedItems.find(
                 (updatedItem) => updatedItem.id === i.id
               );
-              // we merge the data in case, as there had been issues with incomplete data from
-              // the update that is partial
-              return { ...i, ...foundInUpdate } || i;
+
+              if (foundInUpdate) {
+                return { ...i, ...foundInUpdate };
+              }
+
+              return i;
             });
           }
           return newWorklistGroup;

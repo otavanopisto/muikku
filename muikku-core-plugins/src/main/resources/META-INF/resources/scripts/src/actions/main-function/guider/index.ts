@@ -1,4 +1,8 @@
-import { AnyActionType, SpecificActionType } from "~/actions";
+import {
+  AnyActionType,
+  AnyActionTypeDispatch,
+  SpecificActionType,
+} from "~/actions";
 import {
   GuiderActiveFiltersType,
   GuiderStatePatch,
@@ -45,6 +49,7 @@ import {
   OTHER_SUBJECT_OUTSIDE_HOPS_CS,
   SKILL_AND_ART_SUBJECTS_CS,
 } from "~/helper-functions/study-matrix";
+import { RootState } from "~/reducers/configureStore";
 
 export type UPDATE_NOTES_STATE = SpecificActionType<
   "UPDATE_NOTES_STATE",
@@ -2199,8 +2204,8 @@ async function removeLabelFromUserUtil(
   student: FlaggedStudent,
   flags: UserStudentFlag[],
   label: UserFlag,
-  dispatch,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) {
   const userApi = MApi.getUserApi();
 
@@ -2247,8 +2252,8 @@ async function addLabelToUserUtil(
   student: FlaggedStudent,
   flags: UserStudentFlag[],
   label: UserFlag,
-  dispatch,
-  getState
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) {
   const userApi = MApi.getUserApi();
 

@@ -74,9 +74,9 @@ const initialState: RecordsType = {
  * @param action action
  * @returns State of evaluation
  */
-export const records: Reducer<RecordsType> = (
+export const records: Reducer<RecordsType, ActionType> = (
   state = initialState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA":

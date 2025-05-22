@@ -77,9 +77,9 @@ const initialUserIndexState: UserIndexState = {
  * @param action action
  * @returns State of userIndex
  */
-export const userIndex: Reducer<UserIndexState> = (
+export const userIndex: Reducer<UserIndexState, ActionType> = (
   state = initialUserIndexState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "SET_USER_GROUP_INDEX": {

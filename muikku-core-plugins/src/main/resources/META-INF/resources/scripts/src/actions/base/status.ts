@@ -1,11 +1,19 @@
 import { Dispatch, Action } from "redux";
-import { AnyActionType, SpecificActionType } from "~/actions";
+import {
+  ActionType,
+  AnyActionType,
+  AnyActionTypeDispatch,
+  SpecificActionType,
+} from "~/actions";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
 import { StateType } from "~/reducers";
 import { ProfileStatusType, StatusType } from "~/reducers/base/status";
 import { ChatUser, WorkspaceBasicInfo } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { Role } from "~/generated/client";
+import { AppDispatch, RootState } from "~/reducers/configureStore";
+import notifications from "./notifications";
+import { ThunkDispatch } from "redux-thunk";
 
 export type LOGOUT = SpecificActionType<"LOGOUT", null>;
 export type UPDATE_STATUS_PROFILE = SpecificActionType<
@@ -84,10 +92,15 @@ export interface UpdateStatusChatSettingsType {
  * @param dispatch dispatch
  * @param whoAmIReadyCb whoAmIReadyCb
  */
-async function loadWhoAMI(dispatch, whoAmIReadyCb: () => void) {
+async function loadWhoAMI(
+  dispatch: AnyActionTypeDispatch,
+  whoAmIReadyCb: () => void
+) {
   const userApi = MApi.getUserApi();
 
   const whoAmI = await userApi.getWhoAmI();
+
+  dispatch(notifications.displayNotification("TEST", "error"));
 
   dispatch({
     type: "UPDATE_STATUS",
@@ -186,7 +199,7 @@ async function loadWhoAMI(dispatch, whoAmIReadyCb: () => void) {
  */
 async function loadWorkspacePermissions(
   workspaceId: number,
-  dispatch,
+  dispatch: AnyActionTypeDispatch,
   readyCb: () => void
 ) {
   const workspaceApi = MApi.getWorkspaceApi();

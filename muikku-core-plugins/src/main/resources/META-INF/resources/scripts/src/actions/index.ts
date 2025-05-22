@@ -8,13 +8,13 @@ export interface SpecificActionType<ActionType, PayloadType> {
   payload: PayloadType | null;
 }
 
-type AsyncDeferredAction = (
-  dispatch: (arg: AnyActionType) => any,
-  getState: () => any
+export type AsyncDeferredAction = (
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) => Promise<void>;
-type DeferredAction = (
-  dispatch: (arg: AnyActionType) => any,
-  getState: () => any
+export type DeferredAction = (
+  dispatch: AnyActionTypeDispatch,
+  getState: () => RootState
 ) => any;
 
 import { LOCALE_SET, LOCALE_UPDATE } from "./base/locales";
@@ -358,6 +358,7 @@ import {
 import {
   AppThunkAction,
   AppThunkActionPromise,
+  RootState,
 } from "~/reducers/configureStore";
 
 export type ActionType =
@@ -637,4 +638,6 @@ export type ActionType =
   | REMOVE_NOTE
   | UPDATE_NOTE_RECIPIENT;
 
-export type AnyActionType = AppThunkAction | AppThunkActionPromise;
+export type AnyActionType = ActionType | DeferredAction | AsyncDeferredAction;
+
+export type AnyActionTypeDispatch = (arg: AnyActionType) => any;

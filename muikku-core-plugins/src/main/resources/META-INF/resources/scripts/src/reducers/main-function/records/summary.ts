@@ -72,9 +72,9 @@ export const initialState: SummaryType = {
  * @param action action
  * @returns State of sumary
  */
-export const summary: Reducer<SummaryType> = (
+export const summary: Reducer<SummaryType, ActionType> = (
   state = initialState,
-  action: ActionType
+  action
 ) => {
   switch (action.type) {
     case "UPDATE_STUDIES_SUMMARY_STATUS":
