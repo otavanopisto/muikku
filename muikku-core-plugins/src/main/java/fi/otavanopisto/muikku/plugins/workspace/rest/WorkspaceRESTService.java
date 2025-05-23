@@ -75,12 +75,14 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.EducationTypeMapping;
 import fi.otavanopisto.muikku.model.workspace.Mandatority;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceSignupMessage;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
@@ -116,20 +118,21 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReplyLock;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFeeInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalCommentRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
-import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReplyRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSettingsRestModel;
@@ -152,6 +155,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceSignupMessageController;
 import fi.otavanopisto.muikku.schooldata.entity.EducationType;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceSubject;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
@@ -190,6 +194,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private UserIndexer userIndexer;
+
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
 
   @Inject
   private EvaluationController evaluationController;
@@ -803,10 +810,23 @@ public class WorkspaceRESTService extends PluginRESTService {
   @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceBasicInfo(@PathParam("URLNAME") String urlName) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
+    // TODO Make a generic status check method for all these access checks
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-
+    if (!workspaceEntity.getPublished() && !sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (!sessionController.isLoggedIn() && (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE)) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (workspaceEntity.getAccess() == WorkspaceAccess.MEMBERS_ONLY) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+      if (workspaceUserEntity == null && !sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_MEMBERS_ONLY_WORKSPACE, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
     WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(workspaceEntity.getId());
     if (workspaceBasicInfo == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -1004,6 +1024,19 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response
       .ok(createRestModel(workspaceController.listWorkspaceMaterialProducers(workspaceEntity).toArray(new WorkspaceMaterialProducer[0])))
       .build();
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/visit")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response visitWorkspace(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    if (sessionController.isLoggedIn() && sessionController.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity != null) {
+        workspaceVisitController.visit(workspaceEntity);
+      }
+    }
+    return Response.noContent().build();
   }
 
   @PUT
@@ -2180,10 +2213,35 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Material not found").build();
     }
 
-    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.
-        findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+    WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
     if (reply == null) {
       return Response.status(Status.NOT_FOUND).entity("Reply not found").build();
+    }
+
+    // #7352: Figure out scenarios in which the page is locked
+    
+    WorkspaceCompositeReplyLock lock = WorkspaceCompositeReplyLock.NONE;
+    if (userEntityController.isStudent(userEntity)) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
+      if (workspaceUserEntity != null) {
+        // Unavoidable Pyramus call
+        List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+        for (WorkspaceAssessmentState assessmentState : assessmentStates) {
+          // If workspace has been or is being assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
+          if (assessmentState.isAssessed() || assessmentState.isPending()) {
+            lock = WorkspaceCompositeReplyLock.SOFT;
+            break;
+          }
+        }
+      }
+    }
+    if (reply.getState() == WorkspaceMaterialReplyState.PASSED || reply.getState() == WorkspaceMaterialReplyState.FAILED) {
+      // Page is locked because it has been evaluated
+      lock = WorkspaceCompositeReplyLock.SOFT;
+    }
+    else if (lock == WorkspaceCompositeReplyLock.NONE && reply.getLocked()) {
+      // Page is locked simply because the teacher said so
+      lock = WorkspaceCompositeReplyLock.HARD;
     }
 
     List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
@@ -2196,7 +2254,13 @@ public class WorkspaceRESTService extends PluginRESTService {
         answers.add(answer);
       }
 
-      WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(reply.getWorkspaceMaterial().getId(), reply.getId(), reply.getState(), reply.getSubmitted(), answers);
+      WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(
+          reply.getWorkspaceMaterial().getId(),
+          reply.getId(),
+          reply.getState(),
+          reply.getSubmitted(),
+          answers,
+          lock); 
 
       // Evaluation info for evaluable materials
 
@@ -2219,7 +2283,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Workspace could not be found").build();
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
     }
 
     if (userEntityId == null) {
@@ -2230,16 +2294,47 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     if (userEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
+      return Response.status(Status.NOT_FOUND).entity("UserEntity not found").build();
+    }
+    
+    // #7352: Figure out scenarios in which all pages would be locked
+    
+    WorkspaceCompositeReplyLock workspaceLock = WorkspaceCompositeReplyLock.NONE;
+    if (userEntityController.isStudent(userEntity)) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userEntity.defaultSchoolDataIdentifier());
+      if (workspaceUserEntity != null) {
+        // Unavoidable Pyramus call
+        List<WorkspaceAssessmentState> assessmentStates = assessmentRequestController.getAllWorkspaceAssessmentStates(workspaceUserEntity);
+        for (WorkspaceAssessmentState assessmentState : assessmentStates) {
+          // If workspace has been or is being assessed, the page is locked (for multi-module courses, even one assessed module fulfills this requirement)
+          if (assessmentState.isAssessed() || assessmentState.isPending()) {
+            workspaceLock = WorkspaceCompositeReplyLock.SOFT;
+            break;
+          }
+        }
+      }
     }
 
     List<WorkspaceCompositeReply> result = new ArrayList<>();
-
     try {
-      List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies = workspaceMaterialReplyController.listWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, userEntity);
+      List<WorkspaceMaterialReply> replies = workspaceMaterialReplyController.listWorkspaceMaterialRepliesByWorkspaceEntity(
+          workspaceEntity,
+          userEntity);
 
-      for (fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply : replies) {
+      for (WorkspaceMaterialReply reply : replies) {
+        WorkspaceCompositeReplyLock pageLock = workspaceLock;
         List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
+
+        // #7352: Figure out scenarios in which a single page would be locked
+
+        if (reply.getState() == WorkspaceMaterialReplyState.PASSED || reply.getState() == WorkspaceMaterialReplyState.FAILED) {
+          // Page is locked because it has been evaluated
+          pageLock = WorkspaceCompositeReplyLock.SOFT;
+        }
+        else if (workspaceLock == WorkspaceCompositeReplyLock.NONE && reply.getLocked()) {
+          // Page is locked simply because the teacher said so
+          pageLock = WorkspaceCompositeReplyLock.HARD;
+        }
 
         List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
         for (WorkspaceMaterialField field : fields) {
@@ -2249,7 +2344,13 @@ public class WorkspaceRESTService extends PluginRESTService {
           answers.add(answer);
         }
 
-        WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(reply.getWorkspaceMaterial().getId(), reply.getId(), reply.getState(), reply.getSubmitted(), answers);
+        WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(
+            reply.getWorkspaceMaterial().getId(),
+            reply.getId(),
+            reply.getState(),
+            reply.getSubmitted(),
+            answers,
+            pageLock);
 
         // Evaluation info for evaluable materials
 
@@ -2282,65 +2383,6 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/compositeMaterialReplies")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
-
-    // Request validation
-
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
-      return Response.status(Status.NOT_FOUND).entity("Workspace material not found").build();
-    }
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build();
-    }
-    if (userEntityId == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing userEntityId").build();
-    }
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    if (userEntity == null) {
-      return Response.status(Status.NOT_FOUND).entity("User entity not found").build();
-    }
-
-    // Access check
-
-    if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
-        return Response.status(Status.FORBIDDEN).build();
-      }
-    }
-
-    List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
-    try {
-      fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-      if (reply != null) {
-        List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
-        for (WorkspaceMaterialField field : fields) {
-          String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
-          Material material = field.getQueryField().getMaterial();
-          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(workspaceMaterial.getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
-          answers.add(answer);
-        }
-      }
-
-      WorkspaceMaterialCompositeReply result = new WorkspaceMaterialCompositeReply(answers,
-        reply != null ? reply.getState() : null,
-        reply != null ? reply.getCreated() : null,
-        reply != null ? reply.getLastModified() : null,
-        reply != null ? reply.getSubmitted() : null,
-        reply != null ? reply.getWithdrawn() : null
-      );
-
-      return Response.ok(result).build();
-    }
-    catch (WorkspaceFieldIOException e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error occurred while retrieving field answers: " + e.getMessage()).build();
-    }
-  }
-
-  @GET
   @Path("/fileanswer/{FILEID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getFileAnswer(@PathParam("FILEID") String fileId) {
@@ -2349,7 +2391,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = answerFile.getFieldAnswer().getReply();
+    WorkspaceMaterialReply workspaceMaterialReply = answerFile.getFieldAnswer().getReply();
     if (workspaceMaterialReply == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR)
         .entity(String.format("Could not find reply from answer file %d", answerFile.getId()))
@@ -2437,7 +2479,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     // Access check
 
-    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = answerFile.getFieldAnswer().getReply();
+    WorkspaceMaterialReply workspaceMaterialReply = answerFile.getFieldAnswer().getReply();
     if (workspaceMaterialReply == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR)
         .entity(String.format("Could not find reply from answer file %d", answerFile.getId()))
@@ -2579,18 +2621,18 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build();
     }
 
-    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply materialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, loggedUser);
+    WorkspaceMaterialReply materialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, loggedUser);
     if (materialReply != null) {
-      return Response.ok(createRestModel(new fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply[] { materialReply })).build();
+      return Response.ok(createRestModel(new WorkspaceMaterialReply[] { materialReply })).build();
     } else {
-      return Response.ok(createRestModel(new fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply[] { })).build();
+      return Response.ok(createRestModel(new WorkspaceMaterialReply[] { })).build();
     }
   }
 
   @POST
   @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply payload) {
+  public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReplyRestModel payload) {
     if (payload == null) {
       return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build();
     }
@@ -2623,8 +2665,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build();
     }
 
-    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply =
-        workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser);
+    WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, payload.getState(), loggedUser, false);
 
     return Response.ok(createRestModel(workspaceMaterialReply)).build();
   }
@@ -2632,7 +2673,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @PUT
   @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies/{REPLYID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam ("REPLYID") Long workspaceMaterialReplyId, WorkspaceMaterialReply payload) {
+  public Response createWorkspaceMaterialReply(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam ("REPLYID") Long workspaceMaterialReplyId, WorkspaceMaterialReplyRestModel payload) {
     if (payload == null) {
       return Response.status(Status.BAD_REQUEST).entity("Payload is missing").build();
     }
@@ -2661,7 +2702,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace material id or workspace entity id").build();
     }
 
-    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(workspaceMaterialReplyId);
+    WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(workspaceMaterialReplyId);
     if (workspaceMaterialReply == null) {
       return Response.status(Status.NOT_FOUND).entity("Could not find workspace material reply").build();
     }
@@ -2715,18 +2756,18 @@ public class WorkspaceRESTService extends PluginRESTService {
     return result;
   }
 
-  private List<WorkspaceMaterialReply> createRestModel(fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply... entries) {
-    List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply> result = new ArrayList<>();
+  private List<WorkspaceMaterialReplyRestModel> createRestModel(WorkspaceMaterialReply... entries) {
+    List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialReplyRestModel> result = new ArrayList<>();
 
-    for (fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply entry : entries) {
+    for (WorkspaceMaterialReply entry : entries) {
       result.add(createRestModel(entry));
     }
 
     return result;
   }
 
-  private WorkspaceMaterialReply createRestModel(fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply entity) {
-    return new WorkspaceMaterialReply(entity.getId(), entity.getState());
+  private WorkspaceMaterialReplyRestModel createRestModel(WorkspaceMaterialReply entity) {
+    return new WorkspaceMaterialReplyRestModel(entity.getId(), entity.getState());
   }
 
   private List<fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial> createRestModel(WorkspaceMaterial... entries) {
@@ -3097,10 +3138,10 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     if (restWorkspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.JOURNAL && titleChanged) {
       List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
-      List<fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies =
+      List<WorkspaceMaterialReply> replies =
           workspaceMaterialReplyController.listWorkspaceMaterialRepliesByWorkspaceMaterial(workspaceMaterial);
       for (WorkspaceMaterialField field : fields) {
-        for (fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply : replies) {
+        for (WorkspaceMaterialReply reply : replies) {
           String identifier = String.format("%d-%d", field.getId(), reply.getId());
           WorkspaceJournalEntry journalEntry = workspaceJournalController.findJournalEntryByMaterialFieldReplyIdentifier(identifier);
           if (journalEntry != null) {
@@ -3994,7 +4035,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceJournalEntry.getMaterialFieldReplyIdentifier() != null) {
       String[] identifiers = workspaceJournalEntry.getMaterialFieldReplyIdentifier().split("-");
       Long replyId = Long.parseLong(identifiers[1]);
-      fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
+      WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyById(replyId);
       if (reply != null) {
         result.setWorkspaceMaterialId(reply.getWorkspaceMaterial().getId());
         result.setWorkspaceMaterialPath(reply.getWorkspaceMaterial().getPath());

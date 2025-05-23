@@ -91,6 +91,14 @@ public class WorkspaceMaterialReply  {
   public void setState(WorkspaceMaterialReplyState state) {
     this.state = state;
   }
+  
+  public void setLocked(boolean locked) {
+    this.locked = locked;
+  }
+  
+  public boolean getLocked() {
+    return locked;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -127,5 +135,9 @@ public class WorkspaceMaterialReply  {
   @Column (nullable = false)
   @Enumerated (EnumType.STRING)
   private WorkspaceMaterialReplyState state;
+
+  @NotNull
+  @Column(nullable = false)
+  private boolean locked;
   
 }

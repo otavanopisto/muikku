@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.rest.model;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -28,9 +29,9 @@ public class UserWhoAmIInfo extends UserBasicInfo {
               Set<EnvironmentRoleArchetype> roles,
               String locale,
               String displayName,
-              String emails,
-              String addresses,
-              String phoneNumbers,
+              List<String> emails,
+              List<String> addresses,
+              List<String> phoneNumbers,
               String studyTimeLeftStr,
               OffsetDateTime studyStartDate,
               OffsetDateTime studyEndDate,
@@ -148,27 +149,27 @@ public class UserWhoAmIInfo extends UserBasicInfo {
     this.studyTimeLeftStr = studyTimeLeftStr;
   }
 
-  public String getEmails() {
+  public List<String> getEmails() {
     return emails;
   }
 
-  public void setEmails(String emails) {
+  public void setEmails(List<String> emails) {
     this.emails = emails;
   }
 
-  public String getAddresses() {
+  public List<String> getAddresses() {
     return addresses;
   }
 
-  public void setAddresses(String addresses) {
+  public void setAddresses(List<String> addresses) {
     this.addresses = addresses;
   }
 
-  public String getPhoneNumbers() {
+  public List<String> getPhoneNumbers() {
     return phoneNumbers;
   }
 
-  public void setPhoneNumbers(String phoneNumbers) {
+  public void setPhoneNumbers(List<String> phoneNumbers) {
     this.phoneNumbers = phoneNumbers;
   }
 
@@ -230,9 +231,9 @@ public class UserWhoAmIInfo extends UserBasicInfo {
   private Set<String> permissions;
   private boolean isActive;
   private String displayName;
-  private String emails;
-  private String addresses;
-  private String phoneNumbers;
+  private List<String> emails;
+  private List<String> addresses;
+  private List<String> phoneNumbers;
   private String studyTimeLeftStr;
   private OffsetDateTime studyStartDate;
   private OffsetDateTime studyEndDate;

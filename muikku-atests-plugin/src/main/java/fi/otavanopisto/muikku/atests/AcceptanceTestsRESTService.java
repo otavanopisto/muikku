@@ -998,7 +998,34 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     return Response.noContent().build();
   }
-
+  
+  @DELETE
+  @Path("/workspaces/discussions/cleanup")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response cleanupWorkspaceDiscussions() {
+    List<WorkspaceEntity> workspaces = workspaceController.listWorkspaceEntities();
+    for(WorkspaceEntity workspaceEntity : workspaces) {
+      List<WorkspaceForumArea> forumAreas = forumController.listWorkspaceForumAreas(workspaceEntity);
+      List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
+      List<ForumThread> threads = new ArrayList<>();
+      for(WorkspaceForumArea forumArea : forumAreas) {
+        threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE, true); 
+        for (ForumThread thread : threads) {
+          List<ForumThreadSubscription> subs = forumThreadSubscriptionController.listByThread(thread);
+          for (ForumThreadSubscription sub : subs) {
+            forumThreadSubscriptionController.deleteSubscription(sub);
+          }       
+          forumController.deleteThread(thread);
+        }
+        forumController.deleteArea(forumArea);   
+      }
+      for (ForumAreaGroup group : groups) {
+        forumController.deleteAreaGroup(group);
+      }
+    }
+    return Response.noContent().build();
+  }
+  
   @POST
   @Path("/discussiongroups")
   @RESTPermit (handling = Handling.UNSECURED)

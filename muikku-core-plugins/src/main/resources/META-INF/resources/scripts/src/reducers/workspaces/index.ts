@@ -415,22 +415,16 @@ export const workspaces: Reducer<WorkspacesState> = (
     case "UPDATE_LAST_WORKSPACES":
       return { ...state, lastWorkspaces: action.payload };
 
-    case "UPDATE_MATERIALS_ARE_DISABLED":
-      return {
-        ...state,
-        materialsAreDisabled: action.payload,
-      };
-
-    case "UPDATE_WORKSPACE_IS_BEING_EVALUATED":
-      return {
-        ...state,
-        workspaceIsBeingEvaluated: action.payload,
-      };
-
     case "SET_CURRENT_WORKSPACE":
       return {
         ...state,
         currentWorkspace: action.payload,
+      };
+
+    case "UPDATE_MATERIALS_ARE_DISABLED":
+      return {
+        ...state,
+        materialsAreDisabled: action.payload,
       };
 
     case "UPDATE_CURRENT_WORKSPACE_ACTIVITY":
@@ -552,7 +546,7 @@ export const workspaces: Reducer<WorkspacesState> = (
       );
       if (!wasUpdated) {
         newCurrentMaterialsReplies = newCurrentMaterialsReplies.concat([
-          <MaterialCompositeReply>{ ...action.payload },
+          <MaterialCompositeReply>{ ...action.payload, lock: "NONE" },
         ]);
       }
       return { ...state, currentMaterialsReplies: newCurrentMaterialsReplies };

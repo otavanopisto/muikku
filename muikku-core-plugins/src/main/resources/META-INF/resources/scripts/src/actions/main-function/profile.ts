@@ -438,7 +438,7 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
 
           const updatedStudent = await userApi.updateStudent({
             studentId: student.id,
-            updateStudentRequest: student,
+            userWithSchoolData: student,
           });
 
           dispatch({
@@ -463,7 +463,7 @@ const updateProfileAddress: UpdateProfileAddressTriggerType =
         const nAddressAsSaidFromServer = await userApi.updateStudentAddress({
           studentId: state.status.userSchoolDataIdentifier,
           addressId: nAddress.identifier,
-          updateStudentAddressRequest: nAddress,
+          userStudentAddress: nAddress,
         });
 
         const newAddresses = state.profile.addresses.map((a) =>

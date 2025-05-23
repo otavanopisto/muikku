@@ -357,6 +357,18 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
+    case "EVALUATION_LOCKED_ASSIGNMENTS_UPDATE":
+      return {
+        ...state,
+        evaluationCurrentStudentAssigments: {
+          ...state.evaluationCurrentStudentAssigments,
+          data: {
+            ...state.evaluationCurrentStudentAssigments.data,
+            idListOfLockedAssigments: action.payload,
+          },
+        },
+      };
+
     case "EVALUATION_REQUESTS_LOAD":
       return {
         ...state,

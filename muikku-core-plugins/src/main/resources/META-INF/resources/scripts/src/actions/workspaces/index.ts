@@ -39,6 +39,7 @@ import {
   WorkspaceSettings,
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
+import { loadWorkspaceCompositeMaterialReplies } from "./material";
 
 export type UPDATE_AVAILABLE_CURRICULUMS = SpecificActionType<
   "UPDATE_AVAILABLE_CURRICULUMS",
@@ -144,11 +145,6 @@ export type UPDATE_CURRENT_COMPOSITE_REPLIES_UPDATE_OR_CREATE_COMPOSITE_REPLY_ST
 
 export type UPDATE_MATERIALS_ARE_DISABLED = SpecificActionType<
   "UPDATE_MATERIALS_ARE_DISABLED",
-  boolean
->;
-
-export type UPDATE_WORKSPACE_IS_BEING_EVALUATED = SpecificActionType<
-  "UPDATE_WORKSPACE_IS_BEING_EVALUATED",
   boolean
 >;
 
@@ -661,24 +657,14 @@ const setCurrentWorkspace: SetCurrentWorkspaceTriggerType =
           workspace.activity
         );
 
-        const isBeingEvaluatedValue = isBeingEvaluated(
-          workspace.activity,
-          workspace.assessmentRequests
-        );
-
-        dispatch({
-          type: "SET_CURRENT_WORKSPACE",
-          payload: workspace,
-        });
-
         dispatch({
           type: "UPDATE_MATERIALS_ARE_DISABLED",
           payload: isMaterialsDisabled,
         });
 
         dispatch({
-          type: "UPDATE_WORKSPACE_IS_BEING_EVALUATED",
-          payload: isBeingEvaluatedValue,
+          type: "SET_CURRENT_WORKSPACE",
+          payload: workspace,
         });
 
         data.success && data.success(workspace);
@@ -769,24 +755,14 @@ const updateCurrentWorkspaceActivity: UpdateCurrentWorkspaceActivityTriggerType 
 
           const isMaterialsDisabled = shouldMaterialsBeDisabled(activity);
 
-          const isBeingEvaluatedValue = isBeingEvaluated(
-            activity,
-            state.workspaces.currentWorkspace.assessmentRequests
-          );
-
-          dispatch({
-            type: "UPDATE_CURRENT_WORKSPACE_ACTIVITY",
-            payload: activity,
-          });
-
           dispatch({
             type: "UPDATE_MATERIALS_ARE_DISABLED",
             payload: isMaterialsDisabled,
           });
 
           dispatch({
-            type: "UPDATE_WORKSPACE_IS_BEING_EVALUATED",
-            payload: isBeingEvaluatedValue,
+            type: "UPDATE_CURRENT_WORKSPACE_ACTIVITY",
+            payload: activity,
           });
         } catch (err) {
           if (!isMApiError(err)) {
@@ -836,19 +812,9 @@ const updateCurrentWorkspaceAssessmentRequest: UpdateCurrentWorkspaceAssessmentR
               studentIdentifier: state.status.userSchoolDataIdentifier,
             });
 
-          const isBeingEvaluatedValue = isBeingEvaluated(
-            state.workspaces.currentWorkspace.activity,
-            assessmentRequests
-          );
-
           dispatch({
             type: "UPDATE_CURRENT_WORKSPACE_ASESSMENT_REQUESTS",
             payload: assessmentRequests,
-          });
-
-          dispatch({
-            type: "UPDATE_WORKSPACE_IS_BEING_EVALUATED",
-            payload: isBeingEvaluatedValue,
           });
         } catch (err) {
           if (!isMApiError(err)) {
@@ -931,6 +897,10 @@ const requestAssessmentAtWorkspace: RequestAssessmentAtWorkspaceTriggerType =
         } else {
           newAssessmentState = "pending";
         }
+
+        // Composite replies must be loaded after assessment request is created
+        // so material assigments locked state is updated
+        dispatch(loadWorkspaceCompositeMaterialReplies(data.workspace.id));
 
         // Must be done for now. To update activity when assessmentRequest is being made.
         // In future changing state locally is better options one combination workspace module specific
@@ -1028,6 +998,10 @@ const cancelAssessmentAtWorkspace: CancelAssessmentAtWorkspaceTriggerType =
         } else if (newAssessmentState == "pending_fail") {
           newAssessmentState = "fail";
         }
+
+        // Composite replies must be loaded after assessment request is deleted
+        // so material assigments locked state is updated
+        dispatch(loadWorkspaceCompositeMaterialReplies(data.workspace.id));
 
         // Must be done for now. To update activity when assessmentRequest is being made.
         // In future changing state locally is better options one combination workspace module specific
@@ -1483,7 +1457,7 @@ const updateWorkspaceSettings: UpdateWorkspaceSettingsTriggerType =
 
         // Update the settings on server
         await workspaceApi.updateWorkspaceSettings({
-          updateWorkspaceSettingsRequest: workspaceSettings,
+          workspaceSettings: workspaceSettings,
           workspaceId: data.workspace.id,
         });
 
@@ -1746,7 +1720,7 @@ const toggleActiveStateOfStudentOfWorkspace: ToggleActiveStateOfStudentOfWorkspa
         await workspaceApi.updateWorkspaceStudent({
           workspaceEntityId: data.workspace.id,
           studentId: newStudent.workspaceUserEntityId,
-          updateWorkspaceStudentRequest: newStudent,
+          workspaceStudent: newStudent,
         });
 
         if (newStudents) {
@@ -2041,7 +2015,7 @@ const updateWorkspaceDetailsForCurrentWorkspace: UpdateWorkspaceDetailsForCurren
 
         await workspaceApi.updateWorkspaceDetails({
           workspaceId: state.workspaces.currentWorkspace.id,
-          updateWorkspaceDetailsRequest: data.newDetails,
+          workspaceDetails: data.newDetails,
         });
 
         const currentWorkspace = getState().workspaces.currentWorkspace;
@@ -2277,7 +2251,7 @@ const copyCurrentWorkspace: CopyCurrentWorkspaceTriggerType =
         // Update the details to cloned workspace
         cloneWorkspace.details = await workspaceApi.updateWorkspaceDetails({
           workspaceId: cloneWorkspace.id,
-          updateWorkspaceDetailsRequest: {
+          workspaceDetails: {
             ...cloneWorkspace.details,
             beginDate: data.beginDate,
             endDate: data.endDate,
@@ -2414,51 +2388,6 @@ const updateWorkspaceEditModeState: UpdateWorkspaceEditModeStateTriggerType =
       payload: data,
     };
   };
-
-//HELPERS methods
-
-/**
- * Returns true if the workspace is being evaluated.
- * @param activity activity
- * @param assessmentRequests assessmentRequests
- */
-const isBeingEvaluated = (
-  activity?: WorkspaceActivity,
-  assessmentRequests?: AssessmentRequest[]
-) => {
-  if (!activity || !assessmentRequests || assessmentRequests.length === 0) {
-    return false;
-  }
-
-  let checkLockedValue = false;
-  const isCombinationWorkspace = activity.assessmentStates.length > 1;
-
-  // Values to indicate pending state
-  const pendingValues: WorkspaceAssessmentStateType[] = [
-    "pending",
-    "pending_fail",
-    "pending_pass",
-  ];
-
-  if (isCombinationWorkspace) {
-    const newestAssessmentState = activity.assessmentStates.reduce(
-      (prev, current) =>
-        new Date(prev.date) > new Date(current.date) ? prev : current
-    );
-
-    // Check if any of the modules are in pending state
-    checkLockedValue = pendingValues.includes(newestAssessmentState.state);
-  } // If workspace is not combination workspace, check the assessment state is pending
-  else if (pendingValues.includes(activity.assessmentStates[0].state)) {
-    checkLockedValue = true;
-  }
-
-  if (!checkLockedValue) {
-    return false;
-  }
-
-  return assessmentRequests[assessmentRequests.length - 1].locked;
-};
 
 /**
  * Returns true if the materials should be disabled.

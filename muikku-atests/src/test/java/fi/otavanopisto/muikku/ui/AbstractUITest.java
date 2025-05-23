@@ -1564,6 +1564,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
+  protected void cleanUpWorkspaceDiscussions() {
+    asAdmin()
+      .delete("/test/workspaces/discussions/cleanup")
+      .then()
+      .statusCode(204);
+  }
   protected DiscussionThread createDiscussionThread(Long groupId, Long discussionId, String title, String message, Boolean sticky, LockForumThread locked) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
