@@ -35,6 +35,7 @@ const SkillLevel = (props: SkillLevelProps) => {
   const [languageSkillLevels, setlanguageSkillLevels] =
     React.useState<CVLanguage>(initialLanguageSkillLevels);
   const [sampleUrl, setSampleUrl] = React.useState<string>("");
+  const [isValidUrl, setIsValidUrl] = React.useState<boolean>(true);
 
   // Create a ref to store the timeout ID
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -98,12 +99,36 @@ const SkillLevel = (props: SkillLevelProps) => {
     setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
+  const isValidURL = (url: string): boolean => {
+    if (!url || url.trim() === "") return false;
+
+    // Comprehensive URL validation regex
+    const urlPattern = new RegExp(
+      "^(https?:\\/\\/)?" + // protocol
+        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+        "(\\#[-a-z\\d_]*)?$", // fragment locator
+      "i" // case-insensitive
+    );
+
+    return urlPattern.test(url);
+  };
+
   const handleAddSampleLink = () => {
     const value = sampleUrl;
     const updatedLanguageSkillLevels = {
       ...languageSkillLevels,
       samples: [...languageSkillLevels.samples, value],
     };
+
+    if (!isValidURL(value)) {
+      setIsValidUrl(false);
+      return;
+    }
+
+    setIsValidUrl(true);
     dispatch({
       type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
@@ -136,7 +161,7 @@ const SkillLevel = (props: SkillLevelProps) => {
       <div>
         <div>
           <Stars
-            label="vuorovaikutus"
+            label="Vuorovaikutus"
             name="interaction"
             skillLevels={languageSkillLevels}
             onChange={handleRadioInputChange}
@@ -200,16 +225,30 @@ const SkillLevel = (props: SkillLevelProps) => {
           name="description"
           onChange={(e) => handleTextAreaChange(e)}
         />
-        {languageSkillLevels.samples.map((sample, index) => (
-          <div key={"sample-link" + index}>
-            <label>{sample}</label>
-          </div>
-        ))}
-        <input
-          type="text"
-          name="sampleUrl"
-          onChange={(e) => handleSampleURLFieldChange(e)}
-        />
+        <div>
+          {languageSkillLevels.samples.map((sample, index) => (
+            <div key={"sample-link" + index}>
+              <label>{sample}</label>
+            </div>
+          ))}
+        </div>
+        <div>
+          <input
+            type="url"
+            name="sampleUrl"
+            className={`form-element__input ${isValidUrl ? "" : "INVALID"}`}
+            onChange={(e) => handleSampleURLFieldChange(e)}
+          />
+          <Button
+            href={sampleUrl}
+            buttonModifiers="primary-function-content"
+            openInNewTab="_blank"
+            disabled={sampleUrl === ""}
+          >
+            {t("actions.test", { ns: "profile" })}
+          </Button>
+        </div>
+
         <Button buttonModifiers={["info"]} onClick={handleAddSampleLink}>
           Lisää linkki
         </Button>
