@@ -78,6 +78,16 @@ public class WorkspaceAssessmentState {
     return subject == null ? null : subject.getIdentifier();
   }
 
+  @JsonIgnore
+  public boolean isAssessed() {
+    return PASS.equals(state) || FAIL.equals(state) || TRANSFERRED.equals(state);
+  }
+
+  @JsonIgnore
+  public boolean isPending() {
+    return PENDING.equals(state) || PENDING_PASS.equals(state) || PENDING_FAIL.equals(state);
+  }
+
   public String getEvaluatorName() {
     return evaluatorName;
   }

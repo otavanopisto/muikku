@@ -1627,13 +1627,15 @@
   margin: 5px;
 }
 
-.button--evaluation-lock-request {
+.button--evaluation-lock-request,
+.button--evaluation-lock-assignments {
   background-color: $color-info;
   color: $color-default;
   margin: 5px;
 }
 
-.button--evaluation-unlock-request {
+.button--evaluation-unlock-request,
+.button--evaluation-unlock-assignments {
   background-color: $color-default-contrast;
   color: $color-default;
   margin: 5px;
@@ -1656,8 +1658,10 @@
 .button-pill--archive-student,
 .button-pill--evaluate,
 .button-icon--important,
-.button-icon--unimportant {
-  border-radius: 2px;
+.button-icon--unimportant,
+.button-pill--assignment-locked,
+.button-pill--assignment-unlocked {
+  border-radius: 3px;
   box-sizing: unset;
   cursor: pointer;
   display: inline-block;
@@ -1725,6 +1729,24 @@
   &:hover {
     background: $color-default-contrast;
     color: $color-default;
+  }
+}
+
+.button-pill--assignment-locked {
+  background: $color-fatal;
+  color: $color-default;
+
+  &:hover {
+    background: darken($color-fatal, 10%);
+  }
+}
+
+.button-pill--assignment-unlocked {
+  background: lighten($color-default-helper, 20%);
+  color: $color-default-contrast;
+
+  &:hover {
+    background: lighten($color-default-helper, 5%);
   }
 }
 
