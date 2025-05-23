@@ -9,6 +9,7 @@ import {
 import { languageLevelOptions } from "~/mock/mock-data";
 import { ActionType } from "~/actions";
 import Button from "~/components/general/button";
+import Stars from "./stars";
 
 interface SkillLevelProps {
   language: LanguageProfileLanguage;
@@ -16,7 +17,7 @@ interface SkillLevelProps {
 
 const SkillLevel = (props: SkillLevelProps) => {
   const { language } = props;
-  const initialLanguageSkillLevel: CVLanguage = {
+  const initialLanguageSkillLevels: CVLanguage = {
     code: language.code,
     description: "",
     interaction: "0",
@@ -31,8 +32,8 @@ const SkillLevel = (props: SkillLevelProps) => {
   const { t } = useTranslation("languageProfile");
   const dispatch = useDispatch();
   const { cv } = useSelector((state: StateType) => state.languageProfile.data);
-  const [languageSkillLevel, setlanguageSkillLevel] =
-    React.useState<CVLanguage>(initialLanguageSkillLevel);
+  const [languageSkillLevels, setlanguageSkillLevels] =
+    React.useState<CVLanguage>(initialLanguageSkillLevels);
   const [sampleUrl, setSampleUrl] = React.useState<string>("");
 
   // Create a ref to store the timeout ID
@@ -45,26 +46,26 @@ const SkillLevel = (props: SkillLevelProps) => {
         (l) => l.code === language.code
       );
       if (currentLanguageSkillLevel) {
-        setlanguageSkillLevel(currentLanguageSkillLevel);
+        setlanguageSkillLevels(currentLanguageSkillLevel);
       }
     }
-  }, [cv, language, languageSkillLevel]);
+  }, [cv, language, languageSkillLevels]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     const name = e.target.name;
 
-    const updatedLanguageSkillLevel = {
-      ...languageSkillLevel,
+    const updatedLanguageSkillLevels = {
+      ...languageSkillLevels,
       [name]: value,
     };
 
     dispatch({
       type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
-      payload: updatedLanguageSkillLevel,
+      payload: updatedLanguageSkillLevels,
     } as ActionType);
 
-    setlanguageSkillLevel(updatedLanguageSkillLevel);
+    setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
   const handleRadioInputChange = (
@@ -72,42 +73,42 @@ const SkillLevel = (props: SkillLevelProps) => {
     field: string
   ) => {
     const value = e.target.value;
-    const updatedLanguageSkillLevel = {
-      ...languageSkillLevel,
+    const updatedLanguageSkillLevels = {
+      ...languageSkillLevels,
       [field]: value,
     };
     dispatch({
       type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
-      payload: updatedLanguageSkillLevel,
+      payload: updatedLanguageSkillLevels,
     } as ActionType);
-    setlanguageSkillLevel(updatedLanguageSkillLevel);
+    setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     const name = e.target.name;
-    const updatedLanguageSkillLevel = {
-      ...languageSkillLevel,
+    const updatedLanguageSkillLevels = {
+      ...languageSkillLevels,
       [name]: value,
     };
     dispatch({
       type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
-      payload: updatedLanguageSkillLevel,
+      payload: updatedLanguageSkillLevels,
     } as ActionType);
-    setlanguageSkillLevel(updatedLanguageSkillLevel);
+    setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
   const handleAddSampleLink = () => {
     const value = sampleUrl;
-    const updatedLanguageSkillLevel = {
-      ...languageSkillLevel,
-      samples: [...languageSkillLevel.samples, value],
+    const updatedLanguageSkillLevels = {
+      ...languageSkillLevels,
+      samples: [...languageSkillLevels.samples, value],
     };
     dispatch({
       type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
-      payload: updatedLanguageSkillLevel,
+      payload: updatedLanguageSkillLevels,
     } as ActionType);
-    setlanguageSkillLevel(updatedLanguageSkillLevel);
+    setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
   // Debounced field change handler
@@ -134,75 +135,44 @@ const SkillLevel = (props: SkillLevelProps) => {
       <h3>Taitotaso</h3>
       <div>
         <div>
-          <label id="interaction">Vuorovaikutus</label>
-          {stars.map((star) => (
-            <input
-              type="radio"
-              aria-labelledby="interaction"
-              defaultValue={languageSkillLevel.interaction || ""}
-              checked={star.toString() === languageSkillLevel.interaction}
-              onChange={(e) => handleRadioInputChange(e, "interaction")}
-              name={"interaction" + languageSkillLevel.code}
-              key={"star-" + star}
-              value={star}
-            />
-          ))}
+          <Stars
+            label="vuorovaikutus"
+            name="interaction"
+            skillLevels={languageSkillLevels}
+            onChange={handleRadioInputChange}
+          />
         </div>
         <div>
-          <label id="vocal">Suullinen tuottaminen</label>
-          {stars.map((star) => (
-            <input
-              type="radio"
-              aria-labelledby="vocal"
-              name={"vocal" + languageSkillLevel.code}
-              checked={star.toString() === languageSkillLevel.vocal}
-              onChange={(e) => handleRadioInputChange(e, "vocal")}
-              key={"star-" + star}
-              value={star}
-            />
-          ))}
+          <Stars
+            label="Suullinen tuottaminen"
+            name="vocal"
+            skillLevels={languageSkillLevels}
+            onChange={handleRadioInputChange}
+          />
         </div>
         <div>
-          <label id="writing">Kirjallinen tuottaminen</label>
-          {stars.map((star) => (
-            <input
-              type="radio"
-              aria-labelledby="writing"
-              name={"writing" + languageSkillLevel.code}
-              checked={star.toString() === languageSkillLevel.writing}
-              onChange={(e) => handleRadioInputChange(e, "writing")}
-              key={"star-" + star}
-              value={star}
-            />
-          ))}
+          <Stars
+            label="Kirjallinen tuottaminen"
+            name="writing"
+            skillLevels={languageSkillLevels}
+            onChange={handleRadioInputChange}
+          />
         </div>
         <div>
-          <label id="reading">Luetun tulkitseminen</label>
-          {stars.map((star) => (
-            <input
-              type="radio"
-              aria-labelledby="reading"
-              name={"reading" + languageSkillLevel.code}
-              checked={star.toString() === languageSkillLevel.reading}
-              onChange={(e) => handleRadioInputChange(e, "reading")}
-              key={"star-" + star}
-              value={star}
-            />
-          ))}
+          <Stars
+            label="Luetun tulkitseminen"
+            name="reading"
+            skillLevels={languageSkillLevels}
+            onChange={handleRadioInputChange}
+          />
         </div>
         <div>
-          <label id="listening">Kuullun tulkitseminen</label>
-          {stars.map((star) => (
-            <input
-              type="radio"
-              aria-labelledby="listening"
-              name={"listening" + languageSkillLevel.code}
-              checked={star.toString() === languageSkillLevel.listening}
-              onChange={(e) => handleRadioInputChange(e, "listening")}
-              key={"star-" + star}
-              value={star}
-            />
-          ))}
+          <Stars
+            label="Kuullun tulkitseminen"
+            name="listening"
+            skillLevels={languageSkillLevels}
+            onChange={handleRadioInputChange}
+          />
         </div>
         <div>
           <label id="descriptionOfSkillLevel">Arvio kokonaistsosta</label>
@@ -216,7 +186,7 @@ const SkillLevel = (props: SkillLevelProps) => {
               <option
                 key={option.value}
                 value={option.value}
-                selected={option.value === languageSkillLevel.general}
+                selected={option.value === languageSkillLevels.general}
               >
                 {option.label}
               </option>
@@ -225,12 +195,12 @@ const SkillLevel = (props: SkillLevelProps) => {
         </div>
         <textarea
           aria-labelledby="descriptionOfSkillLevel"
-          defaultValue={languageSkillLevel.description || ""}
+          defaultValue={languageSkillLevels.description || ""}
           className="form-element__textarea"
           name="description"
           onChange={(e) => handleTextAreaChange(e)}
         />
-        {languageSkillLevel?.samples.map((sample, index) => (
+        {languageSkillLevels.samples.map((sample, index) => (
           <div key={"sample-link" + index}>
             <label>{sample}</label>
           </div>

@@ -105,3 +105,22 @@
   text-decoration: none;
   width: auto;
 }
+
+.language-profile__stars {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+}
+
+.language-profile__star {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  cursor: pointer;
+  height: auto;
+  margin: 0 0 0 10px;
+  padding: 5px;
+  text-decoration: none;
+  width: auto;
+}
