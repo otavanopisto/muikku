@@ -36,7 +36,7 @@ const Matriculation = (props: MatriculationProps) => {
       name: t("labels.matriculationPlan", { ns: "hops_new" }),
       type: "plan",
       component: (
-        <ApplicationPanelBody>
+        <ApplicationPanelBody modifier="tabs">
           <MatriculationPlan />
         </ApplicationPanelBody>
       ),
@@ -46,7 +46,7 @@ const Matriculation = (props: MatriculationProps) => {
       name: t("labels.matriculationParticipation", { ns: "hops_new" }),
       type: "eligibility",
       component: (
-        <ApplicationPanelBody>
+        <ApplicationPanelBody modifier="tabs">
           <MatriculationEligibility />
         </ApplicationPanelBody>
       ),
@@ -56,7 +56,7 @@ const Matriculation = (props: MatriculationProps) => {
       name: t("labels.matriculationEnrollment", { ns: "hops_new" }),
       type: "enrollment",
       component: (
-        <ApplicationPanelBody>
+        <ApplicationPanelBody modifier="tabs">
           <MatriculationEntrollment />
         </ApplicationPanelBody>
       ),
@@ -66,7 +66,7 @@ const Matriculation = (props: MatriculationProps) => {
       name: t("labels.matriculationHistory", { ns: "hops_new" }),
       type: "history",
       component: (
-        <ApplicationPanelBody>
+        <ApplicationPanelBody modifier="tabs">
           <MatriculationHistory />
         </ApplicationPanelBody>
       ),

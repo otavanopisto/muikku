@@ -29,9 +29,14 @@ const alias = {
   "~": SRC_DIR,
 };
 
+const fallback = {
+  "react/jsx-runtime": "react/jsx-runtime.js",
+  "react/jsx-dev-runtime": "react/jsx-dev-runtime.js",
+};
+
 // Defines the webpack configuration
 const config: Configuration = {
-  resolve: { extensions, alias },
+  resolve: { extensions, alias, fallback },
   mode: "development",
   target: "web",
   entry: [

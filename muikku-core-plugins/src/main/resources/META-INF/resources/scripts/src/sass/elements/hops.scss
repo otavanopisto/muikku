@@ -161,7 +161,7 @@
   display: block;
   font-size: 1.125rem;
   font-weight: 400;
-  margin: 0 5px 10px;
+  margin: 0 0 10px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
@@ -182,7 +182,7 @@
 }
 
 .hops-container__fieldset-description {
-  margin: 0 5px;
+  margin: 0;
 }
 
 .hops-container__list {
@@ -328,6 +328,7 @@
 .hops-container__row {
   display: flex;
   flex-flow: row wrap;
+  gap: 10px;
   margin: 10px 0;
   position: relative;
   width: 100%;
@@ -431,7 +432,6 @@
   flex-flow: column wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  margin: 5px;
   position: relative;
 }
 
@@ -458,6 +458,36 @@
     margin: 0 10px 0 0;
     padding: 0;
   }
+}
+
+.hops__form-element-field-title-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+}
+
+.hops__form-element-icon {
+  background-position: center;
+  background-repeat: no-repeat;  
+  background-size: 36px;
+  border-radius: 5px;
+  flex-basis: 42px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: 42px;
+  margin: 0 0 5px;
+  width: 42px;
+}
+
+.hops__form-element-icon--goal {
+  background-image: url("/gfx/icons/temp/goal.png");
+  border: 1px solid $color-study-plan-goal-color;
+}
+
+.hops__form-element-icon--estimated {
+  background-image: url("/gfx/icons/temp/estimated.png");
+  border: 1px solid $color-study-plan-estimated-color;
 }
 
 // HOPS form label
@@ -913,4 +943,45 @@
   gap: 10px;
   justify-content: flex-end;
   width: 100%;
+}
+
+// Study Planning Tool specific styles
+.hops-container__description {
+  margin: 0 0 20px;
+
+  p {
+    margin: 10px 0;
+  }
+}
+
+.hops-container__helper-text {
+  color: lighten($color-default-contrast, 30%);
+  padding: 0 0 5px;
+}
+
+.hops-container__progress-section {
+  margin-top: 2rem;
+}
+
+.hops-container__progress-bar-container {
+  margin-top: 1rem;
+}
+
+.hops-container__progress-dates {
+  display: flex;
+  font-size: 0.875rem;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.hops-container__progress-bar {
+  background-color: $color-default-lighter-generic-background;
+  border-radius: 0.25rem;
+}
+
+.hops-container__progress-bar-fill {
+  background-color: $color-success;
+  border-radius: 0.25rem;
+  height: 100%;
+  transition: width 0.3s ease;
 }

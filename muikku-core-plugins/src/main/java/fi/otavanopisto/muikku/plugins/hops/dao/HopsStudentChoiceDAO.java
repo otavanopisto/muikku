@@ -15,40 +15,26 @@ public class HopsStudentChoiceDAO extends CorePluginsDAO<HopsStudentChoice> {
 
   private static final long serialVersionUID = 5746392088055973392L;
   
-  public HopsStudentChoice create(String studentIdentifier, String subject, Integer courseNumber) {
+  public HopsStudentChoice create(Long userEntityId, String category, String subject, Integer courseNumber) {
     HopsStudentChoice hopsStudentChoice = new HopsStudentChoice();
 
+    hopsStudentChoice.setUserEntityId(userEntityId);
+    hopsStudentChoice.setCategory(category);
     hopsStudentChoice.setCourseNumber(courseNumber);
-    hopsStudentChoice.setStudentIdentifier(studentIdentifier);
     hopsStudentChoice.setSubject(subject);
     
     return persist(hopsStudentChoice);
   }
   
-  public HopsStudentChoice update(HopsStudentChoice hopsStudentChoice, String studentIdentifier, String subject, Integer courseNumber) {
+  public HopsStudentChoice update(HopsStudentChoice hopsStudentChoice, String subject, Integer courseNumber) {
     
     hopsStudentChoice.setCourseNumber(courseNumber);
-    hopsStudentChoice.setStudentIdentifier(studentIdentifier);
     hopsStudentChoice.setSubject(subject);
     
     return persist(hopsStudentChoice);
   }
   
-  public List<HopsStudentChoice> listByStudentIdentifier(String studentIdentifier) {
-    EntityManager entityManager = getEntityManager();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<HopsStudentChoice> criteria = criteriaBuilder.createQuery(HopsStudentChoice.class);
-    Root<HopsStudentChoice> root = criteria.from(HopsStudentChoice.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.equal(root.get(HopsStudentChoice_.studentIdentifier), studentIdentifier)
-    );
-
-    return entityManager.createQuery(criteria).getResultList();
-  }
-  
-  public HopsStudentChoice findByStudentIdentifierAndSubjectAndCourseNumber(String studentIdentifier, String subject, Integer courseNumber) {
+  public List<HopsStudentChoice> listByUserEntityIdAndCategory(Long userEntityId, String category) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -57,7 +43,25 @@ public class HopsStudentChoiceDAO extends CorePluginsDAO<HopsStudentChoice> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(HopsStudentChoice_.studentIdentifier), studentIdentifier),
+        criteriaBuilder.equal(root.get(HopsStudentChoice_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(HopsStudentChoice_.category), category)
+      )
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public HopsStudentChoice findByUserEntityIdAndCategoryAndSubjectAndCourseNumber(Long userEntityId, String category, String subject, Integer courseNumber) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<HopsStudentChoice> criteria = criteriaBuilder.createQuery(HopsStudentChoice.class);
+    Root<HopsStudentChoice> root = criteria.from(HopsStudentChoice.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(HopsStudentChoice_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(HopsStudentChoice_.category), category),
         criteriaBuilder.equal(root.get(HopsStudentChoice_.subject), subject),
         criteriaBuilder.equal(root.get(HopsStudentChoice_.courseNumber), courseNumber)
       )
@@ -69,6 +73,13 @@ public class HopsStudentChoiceDAO extends CorePluginsDAO<HopsStudentChoice> {
   @Override
   public void delete(HopsStudentChoice hopsSuggestion) {
     super.delete(hopsSuggestion);
+  }
+
+  // TODO Remove after conversion
+  public HopsStudentChoice updateOwner(HopsStudentChoice hopsStudentChoice, Long userEntityId, String category) {
+    hopsStudentChoice.setUserEntityId(userEntityId);
+    hopsStudentChoice.setCategory(category);
+    return persist(hopsStudentChoice);
   }
 
 }
