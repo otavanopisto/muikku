@@ -32,8 +32,8 @@ interface UseLongPressProps {
  */
 function useLongPress(props: UseLongPressProps) {
   const [longPressTriggered, setLongPressTriggered] = React.useState(false);
-  const timeout = React.useRef<NodeJS.Timeout>();
-  const target = React.useRef<any>();
+  const timeout = React.useRef<NodeJS.Timeout>(null);
+  const target = React.useRef<any>(null);
 
   React.useEffect(() => {
     if (props.disabled && timeout.current) {
@@ -46,7 +46,7 @@ function useLongPress(props: UseLongPressProps) {
    * @param event event
    */
   const start = React.useCallback(
-    (event) => {
+    (event: any) => {
       if (props.obj.shouldPreventDefault && event.target) {
         event.target.addEventListener("touchend", preventDefault, {
           passive: false,
@@ -67,7 +67,7 @@ function useLongPress(props: UseLongPressProps) {
    * @param shouldTriggerClick shouldTriggerClick
    */
   const clear = React.useCallback(
-    (event, shouldTriggerClick = true) => {
+    (event: any, shouldTriggerClick = true) => {
       timeout.current && clearTimeout(timeout.current);
       shouldTriggerClick &&
         !longPressTriggered &&

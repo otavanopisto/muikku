@@ -7,6 +7,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
  */
 interface CredentialsContainerProps extends WithTranslation {
   modifier?: string;
+  children: React.ReactNode;
 }
 
 /**

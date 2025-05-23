@@ -68,7 +68,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
   EvaluationAssessmentInterminEvaluationRequestProps,
   EvaluationAssessmentInterminEvaluationRequestState
 > {
-  private myRef: HTMLDivElement = undefined;
+  private myRef = React.createRef<HTMLDivElement>();
 
   /**
    * constructor
@@ -299,10 +299,10 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
     window.dispatchEvent(new Event("resize"));
     if (this.props.evaluations.openedAssignmentEvaluationId) {
       setTimeout(() => {
-        this.myRef.scrollIntoView({ behavior: "smooth" });
+        this.myRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 600);
     }
-    this.myRef.scrollIntoView({ behavior: "smooth" });
+    this.myRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   /**
@@ -435,7 +435,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           className={`evaluation-modal__item-header ${
             evaluatedFunctionClassMod ? evaluatedFunctionClassMod : ""
           }`}
-          ref={(ref) => (this.myRef = ref)}
+          ref={this.myRef}
         >
           <div
             onClick={this.handleOpenMaterialContent}

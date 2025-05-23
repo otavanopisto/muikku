@@ -64,7 +64,7 @@ class EvaluationAssessmentAssignment extends React.Component<
   EvaluationAssessmentAssignmentProps,
   EvaluationAssessmentAssignmentState
 > {
-  private myRef: HTMLDivElement = undefined;
+  private myRef = React.createRef<HTMLDivElement>();
 
   /**
    * constructor
@@ -277,10 +277,10 @@ class EvaluationAssessmentAssignment extends React.Component<
     window.dispatchEvent(new Event("resize"));
     if (this.props.evaluations.openedAssignmentEvaluationId) {
       setTimeout(() => {
-        this.myRef.scrollIntoView({ behavior: "smooth" });
+        this.myRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 600);
     }
-    this.myRef.scrollIntoView({ behavior: "smooth" });
+    this.myRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   /**
@@ -527,7 +527,7 @@ class EvaluationAssessmentAssignment extends React.Component<
       <div className={`evaluation-modal__item `}>
         <div
           className={`evaluation-modal__item-header ${evaluatedFunctionClassMod}`}
-          ref={(ref) => (this.myRef = ref)}
+          ref={this.myRef}
         >
           <div
             onClick={this.handleOpenMaterialContent}

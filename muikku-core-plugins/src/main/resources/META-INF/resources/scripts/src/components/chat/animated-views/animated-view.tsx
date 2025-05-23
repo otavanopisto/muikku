@@ -24,7 +24,9 @@ const variants: Variants = {
 /**
  * AnimatedStepProps
  */
-interface AnimatedViewProps {}
+interface AnimatedViewProps {
+  children: React.ReactNode;
+}
 
 /**
  * AnimatedStep

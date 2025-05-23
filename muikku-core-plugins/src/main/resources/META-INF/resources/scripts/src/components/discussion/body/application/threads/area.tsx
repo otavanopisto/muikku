@@ -9,6 +9,7 @@ import {
  */
 interface DiscussionAreaProps {
   onClick: (event: React.MouseEvent<HTMLDivElement>) => void;
+  children: React.ReactNode;
 }
 
 /**

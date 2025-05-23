@@ -94,6 +94,7 @@ const EasytoUseToolDrawer: React.FC<EasytoUseToolDrawerProps> = (props) => {
  */
 interface EasyToUseToolListProps {
   modifiers?: string[];
+  children: React.ReactNode;
 }
 
 /**

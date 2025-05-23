@@ -118,9 +118,7 @@ function ChatMain(props: ChatMainProps) {
           .map((m) => `chat__main-panel--${m}`)
           .join(" ")}`}
       >
-        <ChatViews
-          wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
-        />
+        <ChatViews wrapper={<AnimatePresence initial={false} mode="wait" />} />
       </div>
       <div
         className={`chat__users-panel ${(userPanelClassModifiers || [])

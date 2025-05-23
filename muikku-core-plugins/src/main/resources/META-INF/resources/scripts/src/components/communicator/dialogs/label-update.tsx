@@ -12,7 +12,7 @@ import {
 } from "~/reducers/main-function/messages";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { ChromePicker, ColorState } from "react-color";
+import { ChromePicker, ColorResult } from "react-color";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
 import Button from "~/components/general/button";
@@ -139,7 +139,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<
    * onColorChange
    * @param color color
    */
-  onColorChange(color: ColorState) {
+  onColorChange(color: ColorResult) {
     if (this.state.removed) {
       return;
     }

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
-import Carousel, { CarouselVideoItem } from "~/components/general/carousel";
+//import Carousel, { CarouselVideoItem } from "~/components/general/carousel";
 
 /**
  * FrontpageVideosProps
@@ -29,7 +29,7 @@ class FrontpageVideos extends React.Component<
         className="screen-container__section"
         aria-label={this.props.t("wcag.videos", { ns: "frontPage" })}
       >
-        <Carousel
+        {/* <Carousel
           naturalSlideHeight={720}
           naturalSlideWidth={1280}
           totalSlides={3}
@@ -64,7 +64,7 @@ class FrontpageVideos extends React.Component<
               title="Nettilukio: helppoa ja kätevää?"
             ></iframe>
           </CarouselVideoItem>
-        </Carousel>
+        </Carousel> */}
       </section>
     );
   }

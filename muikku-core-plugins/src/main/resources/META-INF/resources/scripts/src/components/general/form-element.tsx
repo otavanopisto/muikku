@@ -2,7 +2,7 @@ import * as React from "react";
 import Button from "~/components/general/button";
 import "~/sass/elements/dialog.scss";
 import "~/sass/elements/form.scss";
-import DatePicker, { ReactDatePickerProps } from "react-datepicker";
+import DatePicker, { DatePickerProps } from "react-datepicker";
 
 // Either label or placeholder is mandatory because of wcag
 
@@ -940,10 +940,14 @@ export class SSNFormElement extends React.Component<
 /**
  * DateFormElementProps
  */
-interface DateFormElementProps extends Omit<ReactDatePickerProps, "onChange"> {
+interface DateFormElementProps
+  extends Omit<
+    DatePickerProps,
+    "onChange" | "selectsMultiple" | "selectsRange"
+  > {
   labels: FormElementLabel | FormElementPlaceholder;
   id: string;
-  updateField: (value: Date) => void;
+  updateField: (value: Date | null) => void;
   mandatory?: boolean;
   valid?: number;
   modifiers?: string | Array<string>;
@@ -976,7 +980,7 @@ export class DateFormElement extends React.Component<
    * updateInputField
    * @param newDate newDate
    */
-  updateInputField(newDate: Date) {
+  updateInputField(newDate: Date | null) {
     this.props.updateField(newDate);
   }
 
@@ -1006,7 +1010,7 @@ export class DateFormElement extends React.Component<
             {labels.placeholder}
           </label>
         )}
-        <DatePicker
+        {/* <DatePicker
           className={`form-element__input ${
             modifiers
               ? parsedModifiers
@@ -1015,9 +1019,9 @@ export class DateFormElement extends React.Component<
               : ""
           }`}
           placeholderText={this.props.labels.placeholder}
-          onChange={this.updateInputField}
-          {...datePickerProps}
-        />
+          onChange={(date) => this.updateInputField(date)}
+          //{...datePickerProps}
+        /> */}
       </div>
     );
   }

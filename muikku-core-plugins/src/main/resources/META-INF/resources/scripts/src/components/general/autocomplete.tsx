@@ -37,6 +37,9 @@ export default class Autocomplete extends React.Component<
   AutocompleteProps,
   AutocompleteState
 > {
+  private autocompleteRef = React.createRef<HTMLDivElement>();
+  private inputRef = React.createRef<HTMLDivElement>();
+
   /**
    * constructor
    * @param props props
@@ -58,9 +61,7 @@ export default class Autocomplete extends React.Component<
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: AutocompleteProps) {
     if (nextProps.opened && !this.props.opened) {
-      const autocomplete: HTMLDivElement = this.refs[
-        "autocomplete"
-      ] as HTMLDivElement;
+      const autocomplete: HTMLDivElement = this.autocompleteRef.current;
       this.setState({
         maxHeight:
           window.innerHeight -
@@ -96,7 +97,7 @@ export default class Autocomplete extends React.Component<
     return (
       <div
         className={`autocomplete autocomplete--${this.props.modifier}`}
-        ref="autocomplete"
+        ref={this.autocompleteRef}
       >
         {this.props.items.length && this.props.opened ? (
           <div className="autocomplete__list" style={style}>
@@ -115,7 +116,7 @@ export default class Autocomplete extends React.Component<
             ))}
           </div>
         ) : null}
-        <div className="autocomplete__input" ref="input">
+        <div className="autocomplete__input" ref={this.inputRef}>
           {this.props.children}
         </div>
       </div>

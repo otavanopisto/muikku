@@ -167,13 +167,13 @@ export default class ContentPanel extends React.Component<
     const movement = this.touchMovementX;
 
     const menuHasSlidedEnoughForClosing = Math.abs(diff) >= width * 0.33;
-    const youJustClickedTheOverlay =
-      e.target === this.refs["menu-overlay"] && movement <= 5;
+    // const youJustClickedTheOverlay =
+    //   e.target === this.refs["menu-overlay"] && movement <= 5;
 
     this.setState({ dragging: false });
     setTimeout(() => {
       this.setState({ drag: null });
-      if (menuHasSlidedEnoughForClosing || youJustClickedTheOverlay) {
+      if (menuHasSlidedEnoughForClosing /* || youJustClickedTheOverlay */) {
         this.closeNavigation();
       }
     }, 10);
@@ -263,10 +263,7 @@ export default class ContentPanel extends React.Component<
    */
   render() {
     return (
-      <main
-        className={`content-panel content-panel--${this.props.modifier}`}
-        ref="panel"
-      >
+      <main className={`content-panel content-panel--${this.props.modifier}`}>
         <div className="content-panel__container">
           <div className="content-panel__header">
             <h1 className="content-panel__header-title">{this.props.title}</h1>
@@ -275,7 +272,7 @@ export default class ContentPanel extends React.Component<
             <div className="content-panel__aside">{this.props.aside}</div>
           ) : null}
 
-          <div className="content-panel__body" ref="body">
+          <div className="content-panel__body">
             <div className="content-panel__content">
               {/* Rendering the handle arrow for opening the ToC */}
               {this.props.navigation && (
@@ -355,6 +352,8 @@ export class ContentPanelItem extends React.Component<
   ContentPanelItemProps,
   Record<string, unknown>
 > {
+  private componentRef = React.createRef<HTMLDivElement>();
+
   /**
    * constructor
    * @param props props
@@ -371,7 +370,7 @@ export class ContentPanelItem extends React.Component<
     return (
       <div
         id={this.props.id}
-        ref="component"
+        ref={this.componentRef}
         className="content-panel__item"
         style={
           this.props.scrollMarginTopOffset && {
@@ -388,6 +387,6 @@ export class ContentPanelItem extends React.Component<
    * @returns HTMLElement
    */
   getComponent(): HTMLElement {
-    return this.refs["component"] as HTMLElement;
+    return this.componentRef.current as HTMLElement;
   }
 }

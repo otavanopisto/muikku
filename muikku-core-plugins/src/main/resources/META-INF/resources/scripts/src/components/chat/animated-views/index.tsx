@@ -43,9 +43,12 @@ function ChatViews(props: ChatViewsProps) {
   const enhancedActiveViewContent = React.useMemo(
     () =>
       props.wrapper
-        ? React.cloneElement(props.wrapper, {
-            children: clonedChildren,
-          })
+        ? React.cloneElement<React.HTMLAttributes<HTMLDivElement>>(
+            props.wrapper,
+            {
+              children: clonedChildren,
+            }
+          )
         : clonedChildren,
     [clonedChildren, props.wrapper]
   );

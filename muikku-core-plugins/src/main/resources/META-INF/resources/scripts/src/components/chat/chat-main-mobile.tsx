@@ -75,9 +75,7 @@ function ChatMainMobile(props: ChatMainMobileProps) {
       </ChatSidePanel>
 
       <div className="chat-mobile__main-container">
-        <ChatViews
-          wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
-        />
+        <ChatViews wrapper={<AnimatePresence initial={false} mode="wait" />} />
       </div>
 
       <ChatSidePanel
@@ -391,7 +389,7 @@ function ChatSidePanel(props: ChatSidePanelProps) {
     <>
       {constrainElement}
 
-      <AnimatePresence initial={false} exitBeforeEnter>
+      <AnimatePresence initial={false} mode="wait">
         {(open || isDragging || isAnimating) && (
           <motion.div
             className="chat-mobile__back-drop"

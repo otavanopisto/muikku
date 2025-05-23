@@ -58,7 +58,6 @@ export default class ApplicationPanel extends React.Component<
         className={`application-panel ${
           this.props.modifier ? "application-panel--" + this.props.modifier : ""
         }`}
-        ref="panel"
       >
         <div
           className={`application-panel__container ${

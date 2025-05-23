@@ -479,7 +479,7 @@ function MobileMessageActions(props: MobileMessageActionsProps) {
   const opacity = useTransform(y, inpurtRange, [1, 0]);
 
   return (
-    <AnimatePresence exitBeforeEnter>
+    <AnimatePresence mode="wait">
       {open && (
         <>
           <motion.div
