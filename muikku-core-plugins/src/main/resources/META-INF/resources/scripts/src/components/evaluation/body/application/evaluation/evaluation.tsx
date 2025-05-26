@@ -306,7 +306,7 @@ const Evaluation = (props: EvaluationDrawerProps) => {
       ></div>
 
       <section className="evaluation-modal__container">
-        <header>
+        <header className="evaluation-modal__header evaluation-modal__header--student">
           <div className="evaluation-modal__header-title">{`${selectedAssessment.lastName}, ${selectedAssessment.firstName} (${selectedAssessment.studyProgramme})`}</div>
         </header>
 
@@ -322,7 +322,7 @@ const Evaluation = (props: EvaluationDrawerProps) => {
         </div>
       </section>
       <section className="evaluation-modal__container">
-        <header>
+        <header className="evaluation-modal__header evaluation-modal__header--workspace">
           <div className="evaluation-modal__header-title evaluation-modal__header-title--workspace">
             {selectedAssessment.workspaceName}
           </div>
