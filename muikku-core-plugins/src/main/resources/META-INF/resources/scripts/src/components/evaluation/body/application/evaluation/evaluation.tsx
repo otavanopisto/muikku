@@ -306,13 +306,7 @@ const Evaluation = (props: EvaluationDrawerProps) => {
       ></div>
 
       <section className="evaluation-modal__container">
-        <header
-          className={`evaluation-modal__header evaluation-modal__header--student ${
-            selectedAssessment.locked
-              ? "evaluation-modal__header--eval-request-locked"
-              : ""
-          }`}
-        >
+        <header>
           <div className="evaluation-modal__header-title">{`${selectedAssessment.lastName}, ${selectedAssessment.firstName} (${selectedAssessment.studyProgramme})`}</div>
         </header>
 
@@ -328,13 +322,7 @@ const Evaluation = (props: EvaluationDrawerProps) => {
         </div>
       </section>
       <section className="evaluation-modal__container">
-        <header
-          className={`evaluation-modal__header evaluation-modal__header--workspace ${
-            selectedAssessment.locked
-              ? "evaluation-modal__header--eval-request-locked"
-              : ""
-          }`}
-        >
+        <header>
           <div className="evaluation-modal__header-title evaluation-modal__header-title--workspace">
             {selectedAssessment.workspaceName}
           </div>
