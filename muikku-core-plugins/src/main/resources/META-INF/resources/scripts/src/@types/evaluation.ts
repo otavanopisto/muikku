@@ -103,6 +103,7 @@ export type EvaluationStateType = "LOADING" | "READY" | "ERROR";
  */
 export interface EvaluationAssigmentData {
   assigments: WorkspaceMaterial[];
+  idListOfLockedAssigments: number[];
 }
 
 /**

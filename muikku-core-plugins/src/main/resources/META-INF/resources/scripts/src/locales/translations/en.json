@@ -1637,6 +1637,7 @@
       "add_producers": "Add a producer",
       "aiAllowed": "AI use allowed according to the assignment instructions",
       "aiDisallowed": "AI use not allowed in this assignment",
+      "assignmentLocked": "Teacher has locked your assignment for evaluation.",
       "confirm": "Publishing this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
       "confirm_pageRemoval": "Deleting this page will cause a loss of some assignment answers, are you absolutely sure you wish to continue?",
       "empty": "$t(common:content.empty)",
@@ -1919,7 +1920,6 @@
       "empty_instructions": "The course does not have instructions yet",
       "evaluationHasFee": "Evaluation of this course has a fee. If you have already paid, please disregard this notice.",
       "evaluationFee": "Evaluation fee for this course is {{price}} euros. When you have completed the payment, teacher will receive automatic notification of your evaluation request.",
-      "evaluationInProgress": "The course is under evaluation. You cannot complete assignments or withdraw the evaluation request during the evaluation.",
       "evaluationPaymentProcessor": "The payment will be made at the Mikkeli city online store. ",
       "logInGuidingInformation": "Would you like to sign up for this course? See your options to do so on Muikku's front page.",
       "mustBePublished": "Please note that the course must be published before it appears in the Coursepicker - regardless of the set start date. The dates are not mandatory.",
@@ -1988,7 +1988,6 @@
       "evaluated_withPassedGrade": "Evaluated with a passing grade",
       "evaluated_withNonPassingGrade": "Evaluated with a failing grade",
       "evaluationHasFee": "Evaluation has a fee",
-      "evaluationInProgress": "The course is under evaluation",
       "evaluationRequestMessage": "Additional message to the course teacher",
       "failed": "Failed",
       "goto": "Go to course",
@@ -2271,6 +2270,7 @@
       "grade_overall": "Grade overall",
       "grade_workspace": "Course grade",
       "improveGrade": "Improve grade",
+      "lockAssignments": "Lock assignments",
       "lockEvalRequest": "Lock evaluation request",
       "markNonImportant": "Mark as less important",
       "markImportant": "Mark as important",
@@ -2281,6 +2281,7 @@
       "remove_evaluationRequest": "Delete the evaluation request",
       "remove_interimEvaluationRequest": "Delete the interim evaluation request",
       "remove_supplementationRequest": "Delete the supplementation request",
+      "unlockAssignments": "Unlock assignments",
       "unlockEvalRequest": "Unlock evaluation request"
     },
     "content": {
@@ -2406,6 +2407,8 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_evaluation": "Updating the evaluation failed: {{error}}",
       "updateError_locking": "Locking the evaluation request failed: {{error}}",
+      "updateError_assignmentLocking": "Locking the assignment failed: {{error}}",
+      "updateError_assignmentAllLocking": "Locking all assignments failed: {{error}}",
       "updateError_pricing": "Updating the course pricing information failed: {{error}}",
       "updateError_sorting": "Updating the sorting information failed: {{error}}"
     },
@@ -2414,8 +2417,7 @@
       "evaluationAssessmentPassed": "Passed assessment",
       "evaluationAssessmentPoints": "Assessment with points",
       "evaluationAssessmentIncomplete": "Incomplete assessment",
-      "evaluationAssessmentUnassessed": "Unassessed assessment",
-      "evalRequestLockSwitch": "Evaluation request locking"
+      "evaluationAssessmentUnassessed": "Unassessed assessment"
     }
   },
   "calendar": {

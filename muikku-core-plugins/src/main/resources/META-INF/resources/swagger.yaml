@@ -3065,6 +3065,58 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/lock:
+    get:
+      operationId: getEvaluablePagesLocks
+      summary: Returns a list of workspace material ids that are locked
+      description: Returns a list of workspace material ids that are locked
+      tags:
+        - Evaluation
+      parameters:
+        - name: workspaceUserEntityId
+          in: path
+          description: Workspace user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: List of locked workspace material ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+
+    put:
+      operationId: updateEvaluablePageLocks
+      summary: Toggles the lock of all (or just one) evaluable pages in the workspace for the given user
+      description: Toggles the lock of all (or just one) evaluable pages in the workspace for the given user
+      tags:
+        - Evaluation
+      parameters:
+        - name: workspaceUserEntityId
+          in: path
+          description: Workspace user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/EvaluationUpdateEvaluablePageLockRequestBody"
+      responses:
+        "204":
+          description: Lock(s) toggled
+        "400":
+          description: Payload refers to a workspace material that is not an evaluable page
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Specified entity not found
+
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/assessment/{assessmentRequestIdentifier}/lock:
     put:
       operationId: lockWorkspaceUserEvaluationRequest
@@ -9828,45 +9880,6 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/compositeMaterialReplies:
-    get:
-      operationId: getWorkspaceCompositeMaterialReplies
-      summary: Returns one workspace composite material reply
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: workspaceMaterialId
-          in: path
-          description: Workspace material id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: userEntityId
-          in: query
-          description: User entity id
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Workspace composite material replies results object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MaterialCompositeReply"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/replies:
     get:
       operationId: getWorkspaceMaterialReplies
@@ -11274,6 +11287,14 @@ components:
                 type: string
               workspaceSubjectIdentifier:
                 type: string
+
+    EvaluationUpdateEvaluablePageLockRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/EvaluationPageLock"
 
     EvaluationUpdateLockAssessmentRequestBody:
       required: true
@@ -13581,6 +13602,18 @@ components:
         feedback:
           type: string
 
+    EvaluationPageLock:
+      type: object
+      description: Payload for locking one or more pages
+      required:
+        - locked
+      properties:
+        locked:
+          type: boolean
+        workspaceMaterialId:
+          type: integer
+          format: int64
+
     EvaluationAssessmentRequest:
       type: object
       description: EvaluationAssessmentRequest object
@@ -14756,6 +14789,14 @@ components:
         - FAILED
         - INCOMPLETE
 
+    MaterialCompositeReplyLockType:
+      description: Describes how the page this reply refers to is locked
+      type: string
+      enum:
+        - NONE
+        - SOFT
+        - HARD
+
     MaterialCompositeReply:
       type: object
       description: MaterialCompositeReply object
@@ -14767,6 +14808,7 @@ components:
         - submitted
         - workspaceMaterialId
         - workspaceMaterialReplyId
+        - lock
       properties:
         answers:
           description: Answers of the material assignment
@@ -14805,6 +14847,9 @@ components:
           description: The id of the workspace material reply
           type: integer
           format: int64
+        lock:
+          description: How the material is now locked for the user
+          $ref: "#/components/schemas/MaterialCompositeReplyLockType"
 
     MaterialAI:
       description: Is AI usage allowed

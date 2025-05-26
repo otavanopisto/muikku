@@ -1637,6 +1637,7 @@
       "add_producers": "Lisää tuottaja",
       "aiAllowed": "Tekoälyn käyttö sallittu tehtävän ohjeiden mukaisesti",
       "aiDisallowed": "Tekoälyn käyttö kielletty tässä tehtävässä",
+      "assignmentLocked": "Opettaja on lukinnut tehtävän arvioinnin ajaksi. Odota kunnes arviointi on valmis.",
       "confirm": "Julkaiseminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
       "confirm_pageRemoval": "Sivun poistaminen aiheuttaa joidenkin tehtävävastausten menettämisen. Oletko aivan varma, että haluat jatkaa?",
       "empty": "$t(common:content.empty)",
@@ -1919,7 +1920,6 @@
       "empty_instructions": "Kurssilla ei ole ohjeita",
       "evaluationHasFee": "Tämän kurssin arviointi on maksullinen. Jos olet jo maksanut, tämä ilmoitus on aiheeton.",
       "evaluationFee": "Tämän kurssin arviointi maksaa sinulle {{price}} euroa. Kun olet maksanut arvioinnin, opettaja saa automaattisesti tiedon arviointipyynnöstäsi.",
-      "evaluationInProgress": "Kurssi on arvioitavana. Et voi tehdä tehtäviä tai perua arviointipyyntöä arvioinnin aikana.",
       "evaluationPaymentProcessor": "Maksu suoritetaan Mikkelin kaupungin verkkokaupassa. ",
       "logInGuidingInformation": "Haluaisitko suorittaa tämän kurssin? Tutustu opiskeluvaihtoehtoihin Muikun etusivulla.",
       "mustBePublished": "Huomaa, että kurssi täytyy erikseen julkaista, ennen kuin se näkyy opiskelijoille kurssipoimurissa. Kurssin alkamispäivämäärä ei vaikuta kurssin näkymiseen. Päivämääriä ei ole pakko asettaa.",
@@ -1988,7 +1988,6 @@
       "evaluated_withPassedGrade": "Arvioitu läpäisevällä arvosanalla",
       "evaluated_withNonPassingGrade": "Arvioitu ei-läpäisevällä arvosanalla",
       "evaluationHasFee": "Maksullinen arviointi",
-      "evaluationInProgress": "Kurssi on arvioitavana",
       "evaluationRequestMessage": "Vapaaehtoinen viesti kurssin opettajalle",
       "failed": "Keskeytynyt",
       "goto": "Siirry kurssille",
@@ -2271,6 +2270,7 @@
       "grade_overall": "Anna kokonaispalaute",
       "grade_workspace": "Anna kurssiarvio",
       "improveGrade": "Anna korotus",
+      "lockAssignments": "Lukitse tehtävät",
       "lockEvalRequest": "Lukitse arviointipyyntö",
       "markNonImportant": "Merkitse vähemmän tärkeäksi",
       "markImportant": "Merkitse tärkeäksi",
@@ -2283,7 +2283,8 @@
       "remove_supplementationRequest": "Poista täydennyspyyntö",
       "journalMaterialShow": "Näytä tehtävänanto",
       "journalMaterialHide": "Piilota tehtävänanto",
-      "unlockEvalRequest": "Poista lukitus"
+      "unlockAssignments": "Avaa tehtävät",
+      "unlockEvalRequest": "Avaa arviointipyyntö"
     },
     "content": {
       "archive_student": "Haluatko arkistoida opiskelijan <b>{{studentName}}</b> kurssilta?",
@@ -2408,6 +2409,8 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_evaluation": "Virhe arvioinnin päivittämisessä: {{error}}",
       "updateError_locking": "Virhe arviointipyynnön lukitsemisessa: {{error}}",
+      "updateError_assignmentLocking": "Virhe tehtävän lukituksen päivittämisessä: {{error}}",
+      "updateError_assignmentAllLocking": "Virhe tehtävien lukituksen päivittämisessä: {{error}}",
       "updateError_pricing": "Virhe kurssin maksutietojen päivittämisessä: {{error}}",
       "updateError_sorting": "Virhe lajittelutietojen päivittämisessä: {{error}}"
     },
@@ -2416,8 +2419,7 @@
       "evaluationAssessmentPassed": "Hyväksytty arviointi",
       "evaluationAssessmentPoints": "Arviointi pisteillä",
       "evaluationAssessmentIncomplete": "Täydennettävä arviointi",
-      "evaluationAssessmentUnassessed": "Arvioimaton",
-      "evalRequestLockSwitch": "Arviointipyynnön lukitseminen"
+      "evaluationAssessmentUnassessed": "Arvioimaton"
     }
   },
   "calendar": {

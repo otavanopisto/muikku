@@ -18,7 +18,7 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
 	
   private static final long serialVersionUID = -4395949418454232657L;
 
-  public WorkspaceMaterialReply create(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, Long userEntityId, Long numberOfTries, Date created, Date lastModified, Date submitted, Date withdrawn) {
+  public WorkspaceMaterialReply create(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, Long userEntityId, Long numberOfTries, Date created, Date lastModified, Date submitted, Date withdrawn, boolean locked) {
     WorkspaceMaterialReply workspaceMaterialReply = new WorkspaceMaterialReply();
 
     workspaceMaterialReply.setWorkspaceMaterial(workspaceMaterial);
@@ -29,6 +29,7 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
     workspaceMaterialReply.setState(state);
     workspaceMaterialReply.setSubmitted(submitted);
     workspaceMaterialReply.setWithdrawn(withdrawn);
+    workspaceMaterialReply.setLocked(locked);
 
     return persist(workspaceMaterialReply);
   }
@@ -95,6 +96,11 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
     return workspaceMaterialReply;
   }
   
+  public WorkspaceMaterialReply updateLocked(WorkspaceMaterialReply workspaceMaterialReply, boolean locked) {
+    workspaceMaterialReply.setLocked(locked);
+    return persist(workspaceMaterialReply);
+  }
+
   public WorkspaceMaterialReply updateState(WorkspaceMaterialReply workspaceMaterialReply, WorkspaceMaterialReplyState state) {
     workspaceMaterialReply.setState(state);
     return persist(workspaceMaterialReply);
