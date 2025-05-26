@@ -60,11 +60,4 @@ public interface WorkspaceAssessmentRequest extends SchoolDataEntity {
    */
   public Boolean getHandled();
   
-  /**
-   * Returns assessment request locked flag
-   * 
-   * @return assessment request locked flag
-   */
-  public Boolean getLocked();
-
 }

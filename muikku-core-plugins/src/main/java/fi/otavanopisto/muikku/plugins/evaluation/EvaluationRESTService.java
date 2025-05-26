@@ -1584,48 +1584,6 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @PUT
-  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment/{ASSESSMENTREQUESTIDENTIFIER}/lock")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response toggleAssessmentRequestLock(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("ASSESSMENTREQUESTIDENTIFIER") String assessmentRequestId, RestAssessmentRequest payload) {
-    
-    // Access check
-    
-    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    if (StringUtils.isEmpty(payload.getIdentifier())) {
-      return Response.status(Status.BAD_REQUEST).entity("PUT without payload identifier").build();
-    }
-
-    // Entities and identifiers
-    
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
-    if (workspaceUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-    UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    if (workspaceEntity == null || userSchoolDataIdentifier == null || workspace == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestId);
-
-    WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier, workspaceEntity.schoolDataIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier());
-    
-    if (assessmentRequest == null) {
-      logger.warning(String.format("Workspace assessment request for workspaceUserEntityId %d not found", workspaceUserEntityId));
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    gradingController.updateWorkspaceAssessmentLock(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), workspaceUserEntity.getIdentifier(), payload.getLocked());
-
-    return Response.ok(payload).build();
-  }
-  
-  @PUT
   @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/evaluationrequestarchive")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response archiveWorkspaceAssessmentRequest(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
@@ -1666,8 +1624,7 @@ public class EvaluationRESTService extends PluginRESTService {
           request.getRequestText(),
           request.getDate(),
           Boolean.TRUE, // archived
-          request.getHandled(),
-          request.getLocked());
+          request.getHandled());
       }
       
       UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
