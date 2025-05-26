@@ -242,7 +242,7 @@ const SkillLevel = (props: SkillLevelProps) => {
         <div>
           {languageSkillLevels.samples.map((sample, index) => (
             <div key={"sample-link" + index}>
-              <span>{sample}</span>
+              <a href={sample} target="_blank">{sample}</a>
               <a
                 className="language-profile__remove-button icon-trash"
                 onClick={() => handleRemoveSampleLink(index)}
