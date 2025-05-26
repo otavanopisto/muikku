@@ -136,6 +136,20 @@ const SkillLevel = (props: SkillLevelProps) => {
     setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
+  const handleRemoveSampleLink = (index: number) => {
+    const updatedLanguageSkillLevels = {
+      ...languageSkillLevels,
+    };
+    updatedLanguageSkillLevels.samples.splice(index, 1);
+
+    setIsValidUrl(true);
+    dispatch({
+      type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
+      payload: updatedLanguageSkillLevels,
+    } as ActionType);
+    setlanguageSkillLevels(updatedLanguageSkillLevels);
+  };
+
   // Debounced field change handler
   const handleSampleURLFieldChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -228,7 +242,11 @@ const SkillLevel = (props: SkillLevelProps) => {
         <div>
           {languageSkillLevels.samples.map((sample, index) => (
             <div key={"sample-link" + index}>
-              <label>{sample}</label>
+              <span>{sample}</span>
+              <a
+                className="language-profile__remove-button icon-trash"
+                onClick={() => handleRemoveSampleLink(index)}
+              ></a>
             </div>
           ))}
         </div>
