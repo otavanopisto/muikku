@@ -52,6 +52,14 @@
   }
 }
 
+.language-profile__language {
+  cursor: pointer;
+  &.DISABLED {
+    color: $color-disabled;
+    cursor: not-allowed;
+  }
+}
+
 .language-profile__language-label {
   padding: 0.5rem;
   align-items: center;

@@ -3,24 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { LanguageProfileData } from "~/reducers/main-function/language-profile";
 import { ActionType } from "~/actions";
-import { LanguageData } from "~/@types/shared";
-import AddBase from "./components/language-profile-add-field";
+import { LanguageCode, LanguageData } from "~/@types/shared";
+import AddLanguage from "./components/language-profile-add-item";
 import LanguageProfileDataDisplayer from "./components/language-profile-data-displayer";
 import { availableLanguages } from "~/mock/mock-data";
 
-// Conponent that uses useReducer to handle internal state where you set the languages you can speak
-// and the languages you can understand the languages are in rows and you can add a new row
-// then there are the areas of skills, which you must describe in your own wors as a radio button field
-// the areas are, spelling, vocablary, grammar and variants
-// the radio button values are "native", "excellent", "good", "satisfactory", "beginner" - by the addde language
-
 const LanguageUsage = () => {
-  // const { t } = useTranslation("languageProfile");
-  // const context = React.useContext(InitializationContext);
-
   const dispatch = useDispatch();
-  const { languages, languageUsage, languageLearning, studyMotivation } =
-    useSelector((state: StateType) => state.languageProfile.data);
+  const {
+    languages,
+    languageUsage,
+    languageLearning,
+    studyMotivation,
+    samples,
+    cv,
+  } = useSelector((state: StateType) => state.languageProfile.data);
 
   // Create a ref to store the timeout ID
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -48,10 +45,35 @@ const LanguageUsage = () => {
   };
 
   /**
+   * getLockedLanguages
+   * Retrieves the languages that are locked and cannot be modified.
+   * If there are submitted samples or existing languages in the CV,
+   * the language removal is locked
+   */
+  const getLockedLanguages = () => {
+    const lockedLanguageCodes: LanguageCode[] = [];
+    if (samples.length > 0) {
+      samples.forEach((sample) =>
+        lockedLanguageCodes.push(sample.language as LanguageCode)
+      );
+    }
+
+    if (cv.languages) {
+      cv.languages.forEach((language) =>
+        lockedLanguageCodes.push(language.code as LanguageCode)
+      );
+    }
+    return lockedLanguageCodes;
+  };
+
+  /**
    * handleAddLanguage
    * @param language the language to add
    */
   const handleLanguage = (language: LanguageData) => {
+    if (getLockedLanguages().includes(language.code)) {
+      return;
+    }
     dispatch({
       type: "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
       payload: language,
@@ -88,9 +110,10 @@ const LanguageUsage = () => {
           <h2>Kielet</h2>
           <LanguageProfileDataDisplayer
             rows={languages}
+            disabledItems={getLockedLanguages()}
             onItemClick={handleLanguage}
           />
-          <AddBase
+          <AddLanguage
             action={handleLanguage}
             allItems={availableLanguages}
             selectedItems={languages}

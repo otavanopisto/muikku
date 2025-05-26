@@ -3,14 +3,24 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/language-profile.scss";
 import { filterMatch } from "~/util/modifiers";
 import { LanguageData } from "~/@types/shared";
+import { is } from "@amcharts/amcharts4/core";
+// import { useDispatch, useSelector } from "react-redux";
 
-interface AddBaseProps {
+/**
+ * AddItemProps
+ */
+interface AddItemProps {
   action: (item: LanguageData | string) => void;
   allItems: LanguageData[];
   selectedItems: LanguageData[];
 }
 
-const AddBase = (props: AddBaseProps) => {
+/**
+ * AddItem
+ * Component to add a new item to the list
+ * @param props the props of the component
+ */
+const AddItem = (props: AddItemProps) => {
   const { action, selectedItems, allItems } = props;
   const [filter, setFilter] = React.useState<string>("");
   const [active, setActive] = React.useState<boolean>(false);
@@ -34,6 +44,10 @@ const AddBase = (props: AddBaseProps) => {
     }, 400);
   };
 
+  /**
+   * toggleDropdown toggles the visibility of the dropdown
+   * @param visible whether the dropdown should be visible or not
+   */
   const toggleDropdown = (visible: boolean) => {
     setActive(visible);
   };
@@ -41,6 +55,7 @@ const AddBase = (props: AddBaseProps) => {
   /**
    * handleAdd
    * @param item the item to add
+   * @param isDisabled whether the item is disabled or not
    */
   const handleAdd = (item: LanguageData) => {
     action(item);
@@ -52,7 +67,7 @@ const AddBase = (props: AddBaseProps) => {
       <input
         className="language-profile__filter-input form-element__input form-element__input--search"
         type="text"
-        placeholder="TODO: Add a language"
+        placeholder="TODO: Add an item"
         onFocus={() => toggleDropdown(true)}
         onChange={(e) => handleFieldChange(e.target.value)}
       />
@@ -76,4 +91,4 @@ const AddBase = (props: AddBaseProps) => {
   );
 };
 
-export default AddBase;
+export default AddItem;

@@ -15,7 +15,9 @@ const Stars = (props: StarsProps) => {
   const id = name + "-" + skillLevels.code;
   return (
     <div className="language-profile__stars">
-      <label className="language-profile__stars-label" id={id}>{label}</label>
+      <label className="language-profile__stars-label" id={id}>
+        {label}
+      </label>
       {stars.map((star) => {
         const isFull =
           (typeof skillLevels[name] === "string" &&

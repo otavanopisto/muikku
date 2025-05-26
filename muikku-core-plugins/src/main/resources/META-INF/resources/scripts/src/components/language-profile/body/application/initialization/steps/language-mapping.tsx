@@ -21,18 +21,6 @@ const LanguageMapping = () => {
     (state: StateType) => state.languageProfile.data
   );
 
-  // export const languageLevelOptions: OptionDefault<LanguageLevels>[] = [
-  //   { label: "A1.1", value: "A11" },
-  //   { label: "A1.2", value: "A12" },
-  //   { label: "A1.3", value: "A13" },
-  //   { label: "A2.1", value: "A21" },
-  //   { label: "A2.2", value: "A22" },
-  //   { label: "B1.1", value: "B11" },
-  //   { label: "B1.2", value: "B12" },
-  //   { label: "B2.1", value: "B21" },
-  //   { label: "C1.1", value: "C11" },
-  // ];
-
   const skillsOptions: OptionDefault<SkillLevels>[] = [
     { label: "Natiivi", value: "N" },
     { label: "Erinomainen", value: "E" },
@@ -56,6 +44,12 @@ const LanguageMapping = () => {
     } as ActionType);
   };
 
+  /**
+   * Generates a select component for language levels.
+   * @param languageCode The code of the language.
+   * @param cellId The ID of the cell to update.
+   * @returns A Select component for choosing language levels.
+   */
   const languageLevelsSelect = (languageCode: LanguageCode, cellId: string) => {
     const language = data.languages.find((lang) => lang.code === languageCode);
     const level = language?.levels?.find((lvl) => lvl[cellId]);
@@ -76,6 +70,12 @@ const LanguageMapping = () => {
     );
   };
 
+  /**
+   * skillsSelect
+   * @param languageCode the code of the language
+   * @param cellId the ID of the cell to update
+   * @returns a JSX element representing a select input for skills
+   */
   const skillsSelect = (languageCode: LanguageCode, cellId: string) => {
     const language = data.languages.find((lang) => lang.code === languageCode);
     const skills = language?.skills?.find((skill) => skill[cellId]);
@@ -96,6 +96,12 @@ const LanguageMapping = () => {
     );
   };
 
+  /**
+   * handleSkillsSelectChange
+   * @param value the selected skill level
+   * @param cellId the ID of the cell to update
+   * @param code the code of the language
+   */
   const handleSkillsSelectChange = (
     value: SkillLevels,
     cellId: string,

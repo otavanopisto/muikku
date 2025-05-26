@@ -186,7 +186,7 @@ const saveLanguageProfile: saveLanguageProfileTriggerType =
         const dataToBeSaved = { ...data };
         // Remove the samples from the data to be saved
         delete dataToBeSaved["samples"];
-        
+
         const LanguageProfileApi = MApi.getLanguageProfile();
         const newLanguageProfile =
           await LanguageProfileApi.createOrUpdateLanguageProfile({

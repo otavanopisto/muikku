@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import DisplayLanguages from "./components/language-profile-data-displayer";
-import AddBase from "./components/language-profile-add-field";
+import AddBase from "./components/language-profile-add-item";
 import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 import { useDispatch, useSelector } from "react-redux";
