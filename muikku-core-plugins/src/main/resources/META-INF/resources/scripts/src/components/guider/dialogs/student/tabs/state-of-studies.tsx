@@ -189,7 +189,6 @@ class StateOfStudies extends React.Component<
               : "-"}
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
-
         <ApplicationSubPanelItem
           title={this.props.i18n.t("labels.school", { ns: "guider" })}
         >
@@ -405,6 +404,66 @@ class StateOfStudies extends React.Component<
                 </ApplicationSubPanel.Body>
               </ApplicationSubPanel>
             </ApplicationSubPanel>
+
+            {this.props.guider.currentStudent.contactInfos && (
+              <ApplicationSubPanel modifier="contact-infos">
+                <ApplicationSubPanel.Header>
+                  {this.props.i18n.t("labels.contactInfo", {
+                    ns: "users",
+                  })}
+                </ApplicationSubPanel.Header>
+                <ApplicationSubPanel.Body>
+                  <div className="item-list item-list--student-contact-info">
+                    {this.props.guider.currentStudent.contactInfos.map(
+                      (contactInfo) => (
+                        <div
+                          className="item-list__item item-list__item--student-contact-info"
+                          key={contactInfo.id}
+                        >
+                          <div className="item-list__text-body item-list__text-body--multiline">
+                            {contactInfo.name && (
+                              <div className="item-list__user-name">
+                                {contactInfo.name}
+                              </div>
+                            )}
+                            <div className="item-list__user-email">
+                              <div className="glyph icon-envelope"></div>
+                              {contactInfo.email}
+                            </div>
+
+                            {contactInfo.phoneNumber && (
+                              <div className="item-list__user-phone">
+                                <div className="glyph icon-phone"></div>
+                                {contactInfo.phoneNumber}
+                              </div>
+                            )}
+                            {contactInfo.streetAddress && (
+                              <div className="item-list__user-street-address">
+                                {contactInfo.streetAddress}
+                              </div>
+                            )}
+                            {contactInfo.postalCode ||
+                              (contactInfo.city && (
+                                <div className="item-list__user-postal-address">
+                                  {contactInfo.postalCode &&
+                                    contactInfo.postalCode}{" "}
+                                  {contactInfo.city && contactInfo.city}
+                                </div>
+                              ))}
+                            {contactInfo.country && (
+                              <div className="item-list__user-country">
+                                {contactInfo.country}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </ApplicationSubPanel.Body>
+              </ApplicationSubPanel>
+            )}
+
             <ApplicationSubPanel modifier="counselors">
               <ApplicationSubPanel.Header modifier="with-instructions">
                 {this.props.i18n.t("labels.counselors", {

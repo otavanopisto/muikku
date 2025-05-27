@@ -16,7 +16,8 @@
   padding: 5px 0 10px 15px;
 }
 
-.item-list--student-counselors {
+.item-list--student-counselors,
+.item-list--student-contact-info {
   align-items: flex-start;
   display: flex;
   flex-flow: row wrap;
@@ -226,18 +227,15 @@
 }
 
 .item-list__user-contact-info {
-  font-size: 0.8125rem;
   margin: 4px 0;
 }
 
 .item-list__user-extra-info {
-  font-size: 0.8125rem;
   margin: 4px 0;
 }
 
 .item-list__user-vacation-period {
   color: $color-fatal;
-  font-size: 0.8125rem;
   margin: 0 0 12px;
 }
 
@@ -262,7 +260,6 @@
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  opacity: 75%;
   padding: 2px 0;
 }
 
