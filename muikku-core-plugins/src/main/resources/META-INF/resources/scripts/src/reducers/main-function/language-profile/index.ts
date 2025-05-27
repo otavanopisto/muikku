@@ -61,6 +61,9 @@ export type LanguageProfileData = {
   languageUsage: string;
   studyMotivation: string;
   languageLearning: string;
+  learningFactors: string;
+  futureUsage: string;
+  skillGoals: string;
   languages: LanguageProfileLanguage[];
   samples: LanguageProfileSample[];
   cv: LanguageProfileCV;
@@ -84,6 +87,9 @@ const initializeLanguageProfileState: LanguageProfileState = {
     languageUsage: "",
     studyMotivation: "",
     languageLearning: "",
+    learningFactors: "",
+    futureUsage: "",
+    skillGoals: "",
     languages: [],
     samples: [],
     cv: {
