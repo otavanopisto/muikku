@@ -52,7 +52,7 @@ const LanguageUsage = () => {
    */
   const getLockedLanguages = () => {
     const lockedLanguageCodes: LanguageCode[] = [];
-    if (samples.length > 0) {
+    if (samples && samples.length > 0) {
       samples.forEach((sample) =>
         lockedLanguageCodes.push(sample.language as LanguageCode)
       );

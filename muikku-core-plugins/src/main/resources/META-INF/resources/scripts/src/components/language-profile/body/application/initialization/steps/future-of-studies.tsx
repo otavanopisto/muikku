@@ -1,13 +1,17 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ActionType } from "~/actions";
 import { LanguageProfileData } from "~/reducers/main-function/language-profile";
-import { LanguageCode } from "~/@types/shared";
+import { StateType } from "~/reducers";
 
 const FutureOfStudies = () => {
   const { t } = useTranslation("languageProfile");
   const dispatch = useDispatch();
+  const { learningFactors, futureUsage, skillGoals } = useSelector(
+    (state: StateType) => state.languageProfile.data
+  );
+
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   // Debounced field change handler
@@ -56,6 +60,7 @@ const FutureOfStudies = () => {
           <h2>Kieltenopiskeluun vaikuttavat asiat</h2>
           <textarea
             id="learningFactors"
+            defaultValue={learningFactors || ""}
             onChange={(e) => handleFieldChange(e, "learningFactors")}
             className="form-element__textarea"
           />
@@ -64,6 +69,7 @@ const FutureOfStudies = () => {
           <h2>Kielten tarve tulevaisuudessa</h2>
           <textarea
             id="futureUsage"
+            defaultValue={futureUsage || ""}
             onChange={(e) => handleFieldChange(e, "futureUsage")}
             className="form-element__textarea"
           />
@@ -72,6 +78,7 @@ const FutureOfStudies = () => {
           <h2>Kielitaidon tavoitteet</h2>
           <textarea
             id="skillGoals"
+            defaultValue={skillGoals || ""}
             onChange={(e) => handleFieldChange(e, "skillGoals")}
             className="form-element__textarea"
           />
