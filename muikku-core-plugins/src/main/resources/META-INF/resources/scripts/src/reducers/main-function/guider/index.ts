@@ -23,6 +23,7 @@ import {
   Note,
   StudentCourseChoice,
   OptionalCourseSuggestion,
+  UserContact,
 } from "~/generated/client";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
@@ -105,6 +106,7 @@ export interface GuiderStudentUserProfileType {
   pastWorkspacesState: LoadingState;
   activityLogState: LoadingState;
   pedagogyFormState: LoadingState;
+  contactInfos: UserContact[];
   basic: GuiderStudent;
   labels: UserStudentFlag[];
   files: UserFile[];
@@ -244,6 +246,7 @@ const initialGuiderState: GuiderState = {
     activityLogState: "LOADING",
     pedagogyFormState: "WAITING",
     basic: null,
+    contactInfos: [],
     labels: [],
     emails: [],
     phoneNumbers: [],

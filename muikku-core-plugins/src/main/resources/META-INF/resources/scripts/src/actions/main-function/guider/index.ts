@@ -1110,6 +1110,13 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
         studyProgressPromise(),
 
+        userApi.getUserContacts({ userIdentifier: id }).then((contactInfos) => {
+          dispatch({
+            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
+            payload: { property: "contactInfos", value: contactInfos },
+          });
+        }),
+
         usergroupApi
           .getUsergroups({ userIdentifier: id })
           .then((usergroups) => {
