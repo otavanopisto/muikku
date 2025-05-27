@@ -12,9 +12,6 @@ import {
   ContactType,
   UserFlag,
   UserGroup,
-  UserStudentAddress,
-  UserStudentEmail,
-  UserStudentPhoneNumber,
   CeeposOrder,
   CeeposPurchaseProduct,
   PedagogyFormAccess,
@@ -110,9 +107,6 @@ export interface GuiderStudentUserProfileType {
   basic: GuiderStudent;
   labels: UserStudentFlag[];
   files: UserFile[];
-  emails: UserStudentEmail[];
-  phoneNumbers: UserStudentPhoneNumber[];
-  addresses: UserStudentAddress[];
   usergroups: Array<UserGroup>;
   // Disabled until it really works
   //  vops: VOPSDataType,
@@ -248,9 +242,6 @@ const initialGuiderState: GuiderState = {
     basic: null,
     contactInfos: [],
     labels: [],
-    emails: [],
-    phoneNumbers: [],
-    addresses: [],
     files: [],
     usergroups: [],
     hops: null,

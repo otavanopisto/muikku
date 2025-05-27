@@ -86,8 +86,10 @@ class StateOfStudies extends React.Component<
     // eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
 
     const defaultEmailAddress =
-      this.props.guider.currentStudent.emails &&
-      this.props.guider.currentStudent.emails.find((e) => e.defaultAddress);
+      this.props.guider.currentStudent.contactInfos &&
+      this.props.guider.currentStudent.contactInfos.find(
+        (e) => e.defaultContact
+      ).email;
 
     const avatar = (
       <Avatar
@@ -111,7 +113,7 @@ class StateOfStudies extends React.Component<
         decoration={avatar}
         title={getName(this.props.guider.currentStudent.basic, true)}
         titleDetail={
-          (defaultEmailAddress && defaultEmailAddress.address) ||
+          (defaultEmailAddress && defaultEmailAddress) ||
           this.props.i18n.t("labels.noEmail", { ns: "guider" })
         }
       >
@@ -187,62 +189,7 @@ class StateOfStudies extends React.Component<
               : "-"}
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
-        {this.props.guider.currentStudent.emails && (
-          <ApplicationSubPanelItem
-            title={this.props.i18n.t("labels.email", { ns: "users" })}
-            modifier="currentstudent-emails-list"
-          >
-            {this.props.guider.currentStudent.emails.length ? (
-              this.props.guider.currentStudent.emails.map((email, index) => {
-                const emailString = `${email.defaultAddress ? "*" : ""}${
-                  email.address
-                } (${email.type})`;
 
-                return (
-                  <ApplicationSubPanelItem.Content
-                    key={`email-${index}-${email.studentIdentifier}`}
-                    modifier="currentstudent-email-item"
-                  >
-                    {emailString}
-                  </ApplicationSubPanelItem.Content>
-                );
-              })
-            ) : (
-              <ApplicationSubPanelItem.Content>
-                {this.props.i18n.t("labels.noEmail", { ns: "guider" })}
-              </ApplicationSubPanelItem.Content>
-            )}
-          </ApplicationSubPanelItem>
-        )}
-        {this.props.guider.currentStudent.phoneNumbers && (
-          <ApplicationSubPanelItem
-            title={this.props.i18n.t("labels.phone")}
-            modifier="currentstudent-phonenumbers-list"
-          >
-            {this.props.guider.currentStudent.phoneNumbers.length ? (
-              this.props.guider.currentStudent.phoneNumbers.map(
-                (phone, index) => {
-                  const phoneString = `${phone.defaultNumber ? "*" : ""}${
-                    phone.number
-                  } (${phone.type})`;
-
-                  return (
-                    <ApplicationSubPanelItem.Content
-                      key={`phone-${index}-${phone.studentIdentifier}`}
-                      modifier="currentstudent-phonenumber-item"
-                    >
-                      {phoneString}
-                    </ApplicationSubPanelItem.Content>
-                  );
-                }
-              )
-            ) : (
-              <ApplicationSubPanelItem.Content>
-                {this.props.i18n.t("labels.noPhone", { ns: "guider" })}
-              </ApplicationSubPanelItem.Content>
-            )}
-          </ApplicationSubPanelItem>
-        )}
         <ApplicationSubPanelItem
           title={this.props.i18n.t("labels.school", { ns: "guider" })}
         >

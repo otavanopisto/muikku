@@ -1138,29 +1138,6 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
             });
           }),
 
-        userApi
-          .getStudentPhoneNumbers({ studentId: id })
-          .then((phoneNumbers) => {
-            dispatch({
-              type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-              payload: { property: "phoneNumbers", value: phoneNumbers },
-            });
-          }),
-
-        userApi.getStudentEmails({ studentId: id }).then((emails) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "emails", value: emails },
-          });
-        }),
-
-        userApi.getStudentAddresses({ studentId: id }).then((addresses) => {
-          dispatch({
-            type: "SET_CURRENT_GUIDER_STUDENT_PROP",
-            payload: { property: "addresses", value: addresses },
-          });
-        }),
-
         guiderApi
           .getGuiderUserFiles({
             identifier: id,
