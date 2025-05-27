@@ -396,13 +396,15 @@ class MultiSelectField extends React.Component<
             // if we are told to mark correct answers
             const isChecked = this.state.values.includes(o.name);
             let itemStateAfterCheck = "";
-            if (this.props.displayCorrectAnswers) {
+
+            if (this.props.checkAnswers) {
               if ((o.correct && isChecked) || (!o.correct && !isChecked)) {
                 itemStateAfterCheck = "correct-answer";
               } else {
                 itemStateAfterCheck = "incorrect-answer";
               }
             }
+
             // lets generate unique id for labels and checkboxes
             const uniqueElementID = "cb-" + uuidv4();
             return (
