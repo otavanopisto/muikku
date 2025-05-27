@@ -3065,6 +3065,58 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/evaluation/workspaceuser/{workspaceUserEntityId}/lock:
+    get:
+      operationId: getEvaluablePagesLocks
+      summary: Returns a list of workspace material ids that are locked
+      description: Returns a list of workspace material ids that are locked
+      tags:
+        - Evaluation
+      parameters:
+        - name: workspaceUserEntityId
+          in: path
+          description: Workspace user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: List of locked workspace material ids
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+                  format: int64
+
+    put:
+      operationId: updateEvaluablePageLocks
+      summary: Toggles the lock of all (or just one) evaluable pages in the workspace for the given user
+      description: Toggles the lock of all (or just one) evaluable pages in the workspace for the given user
+      tags:
+        - Evaluation
+      parameters:
+        - name: workspaceUserEntityId
+          in: path
+          description: Workspace user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/EvaluationUpdateEvaluablePageLockRequestBody"
+      responses:
+        "204":
+          description: Lock(s) toggled
+        "400":
+          description: Payload refers to a workspace material that is not an evaluable page
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "404":
+          description: Specified entity not found
+
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/assessment/{assessmentRequestIdentifier}/lock:
     put:
       operationId: lockWorkspaceUserEvaluationRequest
@@ -9231,6 +9283,24 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/workspace/workspaces/{workspaceId}/visit:
+    get:
+      operationId: visitWorkspace
+      summary: Adds one to the number of workspace visits by the current user
+      tags:
+        - Workspace
+      parameters:
+        - name: workspaceId
+          in: path
+          description: Workspace id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: No content
+
   /rest/workspace/workspaces/{workspaceId}/details:
     get:
       operationId: getWorkspaceDetails
@@ -9341,6 +9411,12 @@ paths:
                 $ref: "#/components/schemas/WorkspaceBasicInfo"
         "400":
           description: Invalid request was sent to the server
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not found
         "500":
           description: Internal server error
 
@@ -9754,45 +9830,6 @@ paths:
                   reason:
                     type: string
                     description: Reason what caused conflict
-        "500":
-          description: Internal server error
-
-  /rest/workspace/workspaces/{workspaceEntityId}/materials/{workspaceMaterialId}/compositeMaterialReplies:
-    get:
-      operationId: getWorkspaceCompositeMaterialReplies
-      summary: Returns one workspace composite material reply
-      tags:
-        - Workspace
-      parameters:
-        - name: workspaceEntityId
-          in: path
-          description: Workspace id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: workspaceMaterialId
-          in: path
-          description: Workspace material id
-          required: true
-          schema:
-            type: integer
-            format: int64
-        - name: userEntityId
-          in: query
-          description: User entity id
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Workspace composite material replies results object
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/MaterialCompositeReply"
-        "400":
-          description: Invalid request was sent to the server
         "500":
           description: Internal server error
 
@@ -11203,6 +11240,14 @@ components:
                 type: string
               workspaceSubjectIdentifier:
                 type: string
+
+    EvaluationUpdateEvaluablePageLockRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/EvaluationPageLock"
 
     EvaluationUpdateLockAssessmentRequestBody:
       required: true
@@ -12714,31 +12759,6 @@ components:
         contentType:
           type: string
 
-    AssessmentState:
-      type: object
-      description: AssessmentState object
-      required:
-        - date
-        - state
-        - grade
-        - passingGrade
-        - text
-        - workspaceSubjectIdentifier
-      properties:
-        date:
-          type: string
-        state:
-          $ref: "#/components/schemas/WorkspaceAssessmentStateType"
-        grade:
-          type: string
-        passingGrade:
-          type: boolean
-        text:
-          type: string
-        workspaceSubjectIdentifier:
-          nullable: true
-          type: string
-
     Announcement:
       type: object
       description: Announcement object
@@ -12996,38 +13016,6 @@ components:
             - OFFLINE
             - DISABLED
 
-    ChatSettings:
-      type: object
-      required:
-        - enabled
-        - nick
-      properties:
-        enabled:
-          description: Whether the user has chat enabled.
-          type: boolean
-        nick:
-          description: Nickname of the user. Null if not set.
-          type: string
-          nullable: true
-
-    ChatBlock:
-      type: object
-      required:
-        - targetUserEntityId
-        - blockType
-      properties:
-        targetUserEntityId:
-          description: Target user
-          type: integer
-          format: int64
-        blockType:
-          description: Block type
-          type: string
-          enum:
-            - NONE
-            - SOFT
-            - HARD
-
     CeeposOrderStateType:
       type: string
       enum:
@@ -13252,18 +13240,6 @@ components:
         hasImage:
           type: boolean
 
-    ContactLogMultipleEvent:
-      type: object
-      description: GuiderContactLogMultipleEvent object
-      required:
-        - contactLogRecipientList
-        - contactLogEvent
-      properties:
-        contactLogRecipientList:
-          $ref: "#/components/schemas/ContactLogRecipientList"
-        contactLogEvent:
-          $ref: "#/components/schemas/ContactLogEvent"
-
     ContactLogRecipientList:
       type: object
       description: ContactLogRecipientList
@@ -13462,23 +13438,6 @@ components:
           description: Url name of the workspace
           type: string
 
-    DiscussionWorkspaceSubscribedThread:
-      allOf:
-        - $ref: "#/components/schemas/DiscussionSubscribedThread"
-        - type: object
-          required:
-            - workspaceId
-            - workspaceName
-            - workspaceUrlName
-          properties:
-            workspaceId:
-              type: integer
-              format: int64
-            workspaceName:
-              type: string
-            workspaceUrlName:
-              type: string
-
     DiscussionSubscribedArea:
       type: object
       description: DiscussionSubscribedArea object
@@ -13507,23 +13466,6 @@ components:
         workspaceUrlName:
           description: Url name of the workspace
           type: string
-
-    DiscussionWorkspaceSubscribedArea:
-      allOf:
-        - $ref: "#/components/schemas/DiscussionSubscribedArea"
-        - type: object
-          required:
-            - workspaceId
-            - workspaceName
-            - workspaceUrlName
-          properties:
-            workspaceId:
-              type: integer
-              format: int64
-            workspaceName:
-              type: string
-            workspaceUrlName:
-              type: string
 
     DiscussionUser:
       type: object
@@ -13611,6 +13553,18 @@ components:
           type: string
         feedback:
           type: string
+
+    EvaluationPageLock:
+      type: object
+      description: Payload for locking one or more pages
+      required:
+        - locked
+      properties:
+        locked:
+          type: boolean
+        workspaceMaterialId:
+          type: integer
+          format: int64
 
     EvaluationAssessmentRequest:
       type: object
@@ -14831,6 +14785,14 @@ components:
         - FAILED
         - INCOMPLETE
 
+    MaterialCompositeReplyLockType:
+      description: Describes how the page this reply refers to is locked
+      type: string
+      enum:
+        - NONE
+        - SOFT
+        - HARD
+
     MaterialCompositeReply:
       type: object
       description: MaterialCompositeReply object
@@ -14842,6 +14804,7 @@ components:
         - submitted
         - workspaceMaterialId
         - workspaceMaterialReplyId
+        - lock
       properties:
         answers:
           description: Answers of the material assignment
@@ -14880,6 +14843,9 @@ components:
           description: The id of the workspace material reply
           type: integer
           format: int64
+        lock:
+          description: How the material is now locked for the user
+          $ref: "#/components/schemas/MaterialCompositeReplyLockType"
 
     MaterialAI:
       description: Is AI usage allowed
@@ -15238,11 +15204,9 @@ components:
         - communicatorMessageId
         - caption
         - categoryName
-        - content
         - created
         - sender
         - tags
-        - unreadMessagesInThread
         - threadLatestMessageDate
         - messageCountInThread
         - labels
@@ -15259,8 +15223,6 @@ components:
         caption:
           type: string
         categoryName:
-          type: string
-        content:
           type: string
         created:
           type: string
@@ -15507,21 +15469,6 @@ components:
           type: string
           format: date-time
           nullable: true
-    NoteSortedList:
-      type: object
-      description: A NoteSortedList object where private notes and multi-user notes are organized into separate lists
-      required:
-        - privateNotes
-        - multiUserNotes
-      properties:
-        privateNotes:
-          type: array
-          items:
-            $ref: "#/components/schemas/Note"
-        multiUserNotes:
-          type: array
-          items:
-            $ref: "#/components/schemas/Note"
 
     NoteCreationReceiver:
       type: object
@@ -16420,42 +16367,6 @@ components:
         defaultNumber:
           type: boolean
 
-    UserStudent:
-      type: object
-      description: UserStudent object
-      required:
-        - workspaceUserEntityId
-        - userIdentifier
-        - userEntityId
-        - firstName
-        - lastName
-        - studyProgrammeName
-        - active
-        - hasImage
-      properties:
-        workspaceUserEntityId:
-          type: integer
-          format: int64
-        userIdentifier:
-          type: string
-        userEntityId:
-          type: integer
-          format: int64
-        firstName:
-          type: string
-        lastName:
-          type: string
-        nickName:
-          type: string
-        studyProgrammeName:
-          type: string
-        hasImage:
-          type: boolean
-        nickname:
-          type: string
-        active:
-          type: boolean
-
     UserGroup:
       type: object
       description: UserGroup object
@@ -16672,6 +16583,7 @@ components:
           nullable: true
         roles:
           type: array
+          uniqueItems: true
           items:
             $ref: "#/components/schemas/Role"
         hasImage:
@@ -16695,6 +16607,7 @@ components:
           type: string
         roles:
           type: array
+          uniqueItems: true
           items:
             $ref: "#/components/schemas/Role"
 
@@ -16886,24 +16799,32 @@ components:
           type: string
           nullable: true
         phoneNumbers:
-          type: string
+          type: array
           nullable: true
+          items:
+            type: string
         addresses:
-          type: string
+          type: array
           nullable: true
+          items:
+            type: string
         emails:
-          type: string
+          type: array
           nullable: true
+          items:
+            type: string
         hasImage:
           type: boolean
           nullable: true
         roles:
           type: array
+          uniqueItems: true
           items:
             $ref: "#/components/schemas/Role"
         permissions:
           type: array
           nullable: true
+          uniqueItems: true
           items:
             type: string
         curriculumName:
@@ -16914,15 +16835,18 @@ components:
           nullable: true
         studyTimeEnd:
           type: string
+          format: date-time
           nullable: true
         studyTimeLeftStr:
           type: string
           nullable: true
         studyStartDate:
           type: string
+          format: date-time
           nullable: true
         studyEndDate:
           type: string
+          format: date-time
           nullable: true
         studyProgrammeName:
           type: string
@@ -17153,123 +17077,6 @@ components:
         access:
           description: Access level of the workspace
           $ref: "#/components/schemas/WorkspaceAccess"
-
-    # NOTE: this is for WorkspaceCoursepicker. Currently its not used because frontend uses one for all Workspace model,
-    # but it should be used in the future. This model based on backend implementation
-    WorkspaceCoursepicker:
-      type: object
-      description: WorkspaceCoursepicker object
-      required:
-        - id
-        - name
-        - nameExtension
-        - description
-        - published
-        - archived
-        - hasCustomImage
-        - mandatority
-        - educationTypeName
-        - isCourseMember
-        - organization
-        - lastVisit
-        - numVisits
-        - urlName
-        - curriculumIdentifiers
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        nameExtension:
-          type: string
-          nullable: true
-        description:
-          type: string
-        published:
-          type: boolean
-        archived:
-          type: boolean
-        hasCustomImage:
-          type: boolean
-        mandatority:
-          $ref: "#/components/schemas/WorkspaceMandatority"
-        educationTypeName:
-          type: string
-        isCourseMember:
-          type: boolean
-        organization:
-          $ref: "#/components/schemas/Organization"
-        lastVisit:
-          type: string
-        numVisits:
-          type: integer
-        urlName:
-          type: string
-        curriculumIdentifiers:
-          type: array
-          items:
-            type: string
-
-    # NOTE: this is for Organization. Currently its not used because frontend uses one for all Workspace model,
-    # but it should be used in the future. This model based on backend implementation
-    WorkspaceOrganizationManager:
-      type: object
-      description: WorkspaceOrganizationManager object
-      required:
-        - id
-        - name
-        - nameExtension
-        - description
-        - published
-        - archived
-        - studentCount
-        - teachers
-        - educationTypeName
-        - hasCustomImage
-        - urlName
-        - organization
-      properties:
-        id:
-          type: integer
-          format: int64
-        name:
-          type: string
-        nameExtension:
-          type: string
-          nullable: true
-        description:
-          type: string
-        published:
-          type: boolean
-        archived:
-          type: boolean
-        studentCount:
-          type: integer
-        teachers:
-          type: array
-          items:
-            $ref: "#/components/schemas/WorkspaceOrganizationManagerTeacher"
-        educationTypeName:
-          type: string
-        hasCustomImage:
-          type: boolean
-        urlName:
-          type: string
-        organization:
-          $ref: "#/components/schemas/Organization"
-
-    WorkspaceOrganizationManagerTeacher:
-      type: object
-      description: WorkspaceOrganizationManagerTeacher object
-      required:
-        - firstName
-        - lastName
-      properties:
-        firstName:
-          type: string
-        lastName:
-          type: string
 
     WorkspaceOrganization:
       type: object
@@ -17743,27 +17550,6 @@ components:
           description: The name of the workspace type
           type: string
 
-    WorkspaceChatStatusType:
-      type: string
-      description: WorkspaceChatStatusType enum
-      enum:
-        - ENABLED
-        - DISABLED
-
-    WorkspaceEducationType:
-      type: object
-      description: WorkspaceEducationType object
-      required:
-        - identifier
-        - name
-      properties:
-        identifier:
-          description: The identifier of the education type
-          type: string
-        name:
-          description: The name of the education type
-          type: string
-
     WorkspaceDetails:
       type: object
       description: WorkspaceDetails object
@@ -17837,50 +17623,6 @@ components:
         userGroupName:
           description: The name of the user group
           type: string
-
-    WorkspaceUserEntity:
-      type: object
-      description: WorkspaceUserEntity object
-      required:
-        - userEntityId
-        - userIdentifier
-        - workspaceUserEntityId
-        - active
-        - firstName
-        - lastName
-        - nickname
-        - studyProgrammeName
-        - hasImage
-      properties:
-        userEntityId:
-          description: The id of the user entity
-          type: integer
-          format: int64
-        userIdentifier:
-          description: The identifier of the user
-          type: string
-        workspaceUserEntityId:
-          description: The id of the workspace user entity
-          type: integer
-          format: int64
-        active:
-          description: If the user is active
-          type: boolean
-        firstName:
-          description: The first name of the user
-          type: string
-        lastName:
-          description: The last name of the user
-          type: string
-        nickname:
-          description: The nickname of the user
-          type: string
-        studyProgrammeName:
-          description: The name of the study programme
-          type: string
-        hasImage:
-          description: If the user has an image
-          type: boolean
 
     WorkspaceStudentSearchResult:
       type: object

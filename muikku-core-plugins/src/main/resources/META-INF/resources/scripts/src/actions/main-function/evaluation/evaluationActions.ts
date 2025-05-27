@@ -161,6 +161,11 @@ export type EVALUATION_ASSESSMENT_ASSIGNMENTS_LOAD = SpecificActionType<
   EvaluationAssigmentData
 >;
 
+export type EVALUATION_LOCKED_ASSIGNMENTS_UPDATE = SpecificActionType<
+  "EVALUATION_LOCKED_ASSIGNMENTS_UPDATE",
+  number[]
+>;
+
 export type EVALUATION_OPENED_ASSIGNMENT_UPDATE = SpecificActionType<
   "EVALUATION_OPENED_ASSIGNMENT_UPDATE",
   number
@@ -290,7 +295,23 @@ export interface LoadEvaluationSortFunction {
  * LoadEvaluationCurrentStudentAssigments
  */
 export interface LoadEvaluationCurrentStudentAssigments {
-  (data: { workspaceId: number }): AnyActionType;
+  (data: { workspaceId: number; workspaceUserEntityId: number }): AnyActionType;
+}
+
+/**
+ * ToggleLockedAssigment
+ */
+export interface ToggleLockedAssigment {
+  (data: {
+    /**
+     * Action to perform
+     */
+    action: "lock" | "unlock";
+    /**
+     * Optional specific material ID to lock/unlock
+     */
+    workspaceMaterialId?: number;
+  }): AnyActionType;
 }
 
 /**
@@ -408,16 +429,6 @@ export interface RemoveWorkspaceEvent {
     eventType: EvaluationEventType;
     onSuccess?: () => void;
     onFail?: () => void;
-  }): AnyActionType;
-}
-
-/**
- * LockAssessmentRequest
- */
-export interface LockAssessmentRequest {
-  (data: {
-    assessment: EvaluationAssessmentRequest;
-    locked: boolean;
   }): AnyActionType;
 }
 
@@ -609,6 +620,7 @@ export interface DeleteEvaluationJournalCommentTriggerType {
     fail?: () => void;
   }): AnyActionType;
 }
+
 // Actions
 
 /**
@@ -1796,16 +1808,18 @@ const removeWorkspaceEventFromServer: RemoveWorkspaceEvent =
 /**
  * loadCurrentStudentAssigmentsData
  *
- * @param param0 param0
- * @param param0.workspaceId workspaceId
+ * @param data data
  */
 const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
-  function loadCurrentStudentAssigmentsData({ workspaceId }) {
+  function loadCurrentStudentAssigmentsData(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
+      const { workspaceId, workspaceUserEntityId } = data;
+
       const workspaceApi = MApi.getWorkspaceApi();
+      const evaluationApi = MApi.getEvaluationApi();
 
       dispatch({
         type: "EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE",
@@ -1813,7 +1827,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       });
 
       try {
-        const [assigments] = await Promise.all([
+        const [assigments, idListOfLockedAssigments] = await Promise.all([
           (async () => {
             const assignmentsInterim = await workspaceApi.getWorkspaceMaterials(
               {
@@ -1842,11 +1856,18 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
 
             return assignments;
           })(),
+          (async () => {
+            const idListOfLockedAssigments =
+              await evaluationApi.getEvaluablePagesLocks({
+                workspaceUserEntityId,
+              });
+            return idListOfLockedAssigments;
+          })(),
         ]);
 
         dispatch({
           type: "EVALUATION_ASSESSMENT_ASSIGNMENTS_LOAD",
-          payload: { assigments },
+          payload: { assigments, idListOfLockedAssigments },
         });
 
         dispatch({
@@ -1873,6 +1894,112 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
           type: "EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE",
           payload: <EvaluationStateType>"ERROR",
         });
+      }
+    };
+  };
+
+/**
+ * Toggles lock all or specific assignment
+ * @param data data
+ */
+const toggleLockedAssignment: ToggleLockedAssigment =
+  function toggleLockedAssignment(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+      const evaluationApi = MApi.getEvaluationApi();
+
+      // Get current list of locked assignments
+      const currentLockedAssignments =
+        state.evaluations.evaluationCurrentStudentAssigments.data
+          ?.idListOfLockedAssigments || [];
+
+      try {
+        // If workspaceMaterialId is provided, we're toggling a specific assignment
+        if (data.workspaceMaterialId) {
+          await evaluationApi.updateEvaluablePageLocks({
+            workspaceUserEntityId:
+              state.evaluations.evaluationSelectedAssessmentId
+                .workspaceUserEntityId,
+            evaluationPageLock: {
+              workspaceMaterialId: data.workspaceMaterialId,
+              locked: data.action === "lock",
+            },
+          });
+
+          // Update the list of locked assignments
+          let newLockedAssignments: number[];
+          if (data.action === "lock") {
+            // Add to locked list if not already there
+            newLockedAssignments = [
+              ...currentLockedAssignments,
+              data.workspaceMaterialId,
+            ];
+          } else {
+            // Remove from locked list
+            newLockedAssignments = currentLockedAssignments.filter(
+              (id) => id !== data.workspaceMaterialId
+            );
+          }
+
+          dispatch({
+            type: "EVALUATION_LOCKED_ASSIGNMENTS_UPDATE",
+            payload: newLockedAssignments,
+          });
+        } else {
+          // Toggle all assignments
+          await evaluationApi.updateEvaluablePageLocks({
+            workspaceUserEntityId:
+              state.evaluations.evaluationSelectedAssessmentId
+                .workspaceUserEntityId,
+            evaluationPageLock: {
+              locked: data.action === "lock",
+            },
+          });
+
+          // Get updated list of locked assignments
+          const updatedLockedAssignments =
+            await evaluationApi.getEvaluablePagesLocks({
+              workspaceUserEntityId:
+                state.evaluations.evaluationSelectedAssessmentId
+                  .workspaceUserEntityId,
+            });
+
+          dispatch({
+            type: "EVALUATION_LOCKED_ASSIGNMENTS_UPDATE",
+            payload: updatedLockedAssignments,
+          });
+        }
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        if (data.workspaceMaterialId) {
+          dispatch(
+            notificationActions.displayNotification(
+              i18n.t("notifications.updateError", {
+                ns: "evaluation",
+                context: "assignmentLocking",
+                error: err.message,
+              }),
+              "error"
+            )
+          );
+        } else {
+          dispatch(
+            notificationActions.displayNotification(
+              i18n.t("notifications.updateError", {
+                ns: "evaluation",
+                context: "assignmentAllLocking",
+                error: err.message,
+              }),
+              "error"
+            )
+          );
+        }
       }
     };
   };
@@ -2044,22 +2171,6 @@ const setSelectedAssessmentAndLoadEvents: UpdateEvaluationSelectedAssessment =
           assessment: data.assessment,
         })
       );
-    };
-  };
-
-/**
- * Updates selected assessment
- * @param data data
- */
-const updateSelectedAassessment: UpdateEvaluationSelectedAssessment =
-  function updateSelectedAssessment(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
-    ) => {
-      dispatch({
-        type: "EVALUATION_ASSESSMENT_UPDATE",
-        payload: data.assessment,
-      });
     };
   };
 
@@ -2335,7 +2446,7 @@ const archiveStudent: ArchiveStudent = function archiveStudent({
       await workspaceApi.updateWorkspaceStudent({
         workspaceEntityId: workspaceEntityId,
         studentId: workspaceUserEntityId,
-        updateWorkspaceStudentRequest: student,
+        workspaceStudent: student,
       });
 
       onSuccess && onSuccess();
@@ -2740,53 +2851,6 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
     };
   };
 
-/**
- * lockAssessmentRequest
- * @param data data
- */
-const lockAssessmentRequest: LockAssessmentRequest =
-  function lockAssessmentRequest(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const { assessment, locked } = data;
-
-      const evaluationApi = MApi.getEvaluationApi();
-
-      try {
-        const updatedAssessmentRequest =
-          await evaluationApi.lockWorkspaceUserEvaluationRequest({
-            workspaceUserEntityId: assessment.workspaceUserEntityId,
-            assessmentRequestIdentifier: assessment.identifier,
-            lockWorkspaceUserEvaluationRequestRequest: {
-              ...assessment,
-              locked,
-            },
-          });
-
-        dispatch(
-          updateSelectedAassessment({ assessment: updatedAssessmentRequest })
-        );
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-
-        dispatch(
-          notificationActions.displayNotification(
-            i18n.t("notifications.updateError", {
-              ns: "evaluation",
-              context: "locking",
-              error: err.message,
-            }),
-            "error"
-          )
-        );
-      }
-    };
-  };
-
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -2823,5 +2887,5 @@ export {
   createOrUpdateEvaluationJournalFeedback,
   deleteEvaluationJournalFeedback,
   deleteSupplementationRequest,
-  lockAssessmentRequest,
+  toggleLockedAssignment,
 };

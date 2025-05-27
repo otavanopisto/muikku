@@ -42,7 +42,7 @@ const setLocale: SetLocaleTriggerType = function setLocale(data) {
 
     try {
       await meApi.setLocale({
-        setLocaleRequest: {
+        localizationLocale: {
           lang: data.locale,
         },
       });

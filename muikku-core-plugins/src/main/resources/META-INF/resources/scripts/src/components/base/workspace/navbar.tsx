@@ -27,6 +27,7 @@ import {
   WorkspaceAssessmentState,
   WorkspaceAssessmentStateType,
 } from "~/generated/client";
+import { Link as RouterLink } from "react-router-dom";
 
 /**
  * ItemDataElement
@@ -195,7 +196,9 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/journal",
         icon: "book",
         to: true,
-        condition: this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE,
+        condition:
+          this.props.status.permissions.WORKSPACE_JOURNAL_VISIBLE &&
+          this.props.status.loggedIn,
       },
       {
         modifier: "announcer",
@@ -270,7 +273,6 @@ class WorkspaceNavbar extends React.Component<
                 modifier="assessment"
                 content={getTextForAssessmentState(
                   canCancelRequest,
-                  this.props.workspaceIsBeingEvaluated,
                   assessmentState.state
                 )}
               >
@@ -284,7 +286,6 @@ class WorkspaceNavbar extends React.Component<
                   )}
                   aria-label={getTextForAssessmentState(
                     canCancelRequest,
-                    this.props.workspaceIsBeingEvaluated,
                     assessmentState.state
                   )}
                   className={`link link--icon link--workspace-assessment link--workspace-assessment-${getClassNameForAssessmentState(
@@ -319,11 +320,7 @@ class WorkspaceNavbar extends React.Component<
           )}`}
         />
         <span className="link--menu-text">
-          {getTextForAssessmentState(
-            canCancelRequest,
-            this.props.workspaceIsBeingEvaluated,
-            assessmentState.state
-          )}
+          {getTextForAssessmentState(canCancelRequest, assessmentState.state)}
         </span>
       </Link>
     ) : null;
@@ -376,18 +373,9 @@ class WorkspaceNavbar extends React.Component<
                 modifier: item.modifier,
                 item: (
                   <Dropdown openByHover key={item.text} content={item.text}>
-                    <Link
+                    <RouterLink
                       tabIndex={this.props.activeTrail == item.trail ? 0 : null}
-                      as={this.props.activeTrail == item.trail ? "span" : null}
-                      openInNewTab={item.openInNewTab}
-                      href={
-                        this.props.activeTrail !== item.trail ? item.href : null
-                      }
-                      to={
-                        item.to && this.props.activeTrail !== item.trail
-                          ? item.href
-                          : null
-                      }
+                      to={item.href}
                       className={`link link--icon link--full link--workspace-navbar ${
                         this.props.activeTrail === item.trail ? "active" : ""
                       }`}
@@ -404,7 +392,7 @@ class WorkspaceNavbar extends React.Component<
                           {item.badge >= 100 ? "99+" : item.badge}
                         </span>
                       ) : null}
-                    </Link>
+                    </RouterLink>
                   </Dropdown>
                 ),
               };
@@ -508,20 +496,14 @@ export default withTranslation(["workspace", "users", "common"])(
  * Get text by assessment state
  *
  * @param canCancelRequest canCancelRequest
- * @param isBeingEvaluated isBeingEvaluated
  * @param state state
  * @returns localized text
  */
 function getTextForAssessmentState(
   canCancelRequest: boolean,
-  isBeingEvaluated: boolean,
   state: WorkspaceAssessmentStateType
 ) {
   let text;
-
-  if (isBeingEvaluated) {
-    return i18n.t("content.evaluationInProgress", { ns: "workspace" });
-  }
 
   switch (state) {
     case "interim_evaluation":

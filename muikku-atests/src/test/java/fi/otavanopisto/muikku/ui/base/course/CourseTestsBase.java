@@ -33,8 +33,18 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToAppear(".hero__workspace-title", 10, 1000);
@@ -52,8 +62,18 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToAppear(".hero__workspace-title", 10, 1000);
@@ -72,8 +92,18 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToAppear(".hero__workspace-title", 10, 1000);
@@ -92,8 +122,18 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToAppear(".hero__workspace-title", 10, 1000);
@@ -111,8 +151,18 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToAppear(".hero__workspace-title", 10, 1000);
@@ -130,8 +180,18 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToAppear(".hero__workspace-title", 10, 1000);
@@ -149,8 +209,18 @@ public class CourseTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    Course course1 = new CourseBuilder().name("Test").id((long) 1).description("test course for testing").buildCourse();
+    mockBuilder
+    .addStaffMember(admin)
+    .addCourse(course1)
+    .mockLogin(admin)
+    .build();
     login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    Workspace workspace = createWorkspace(course1, Boolean.TRUE);
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, course1.getId(), admin.getId(), CourseStaffMemberRoleEnum.COURSE_TEACHER);
+    mockBuilder
+      .addCourseStaffMember(course1.getId(), courseStaffMember)
+      .build();
     try{
       navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForElementToAppear(".hero__workspace-title", 10, 1000);
