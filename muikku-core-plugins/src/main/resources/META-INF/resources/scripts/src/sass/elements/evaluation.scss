@@ -67,10 +67,6 @@
   width: 100%;
   z-index: 60;
 
-  &.evaluation-modal__header--eval-request-locked {
-    background: $color-default-contrast;
-  }
-
   @include breakpoint($breakpoint-desktop) {
     width: 50%;
   }
