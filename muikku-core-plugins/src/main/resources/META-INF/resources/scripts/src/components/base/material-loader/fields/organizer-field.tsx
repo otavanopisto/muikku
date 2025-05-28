@@ -878,7 +878,7 @@ class OrganizerField extends React.Component<
 
     // if elements is disabled
     const elementDisabledStateClassName = this.props.readOnly
-      ? "organizerfield-disabled"
+      ? "organizerfield--disabled"
       : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
