@@ -442,14 +442,13 @@ class StateOfStudies extends React.Component<
                                 {contactInfo.streetAddress}
                               </div>
                             )}
-                            {contactInfo.postalCode ||
-                              (contactInfo.city && (
-                                <div className="item-list__user-postal-address">
-                                  {contactInfo.postalCode &&
-                                    contactInfo.postalCode}{" "}
-                                  {contactInfo.city && contactInfo.city}
-                                </div>
-                              ))}
+                            {(contactInfo.postalCode || contactInfo.city) && (
+                              <div className="item-list__user-postal-address">
+                                {contactInfo.postalCode &&
+                                  contactInfo.postalCode}{" "}
+                                {contactInfo.city && contactInfo.city}
+                              </div>
+                            )}
                             {contactInfo.country && (
                               <div className="item-list__user-country">
                                 {contactInfo.country}
