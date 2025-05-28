@@ -574,7 +574,6 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               // we set them up so that they show each if they are right or wrong
 
               const itemStateAfterCheck =
-                //this.props.displayCorrectAnswers &&
                 this.props.checkAnswers &&
                 !answerIsBeingCheckedAndItisCorrect &&
                 this.state.answerState &&
