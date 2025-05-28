@@ -3,6 +3,7 @@ import { Reducer } from "redux";
 import { LoadingState, SaveState } from "~/@types/shared";
 import { LanguageData } from "~/@types/shared";
 import { Language, LanguageProfileSample } from "~/generated/client";
+import { ALL_LANGUAGE_SUBJECTS } from "~/helper-functions/study-matrix";
 
 export type LanguageLevels =
   | "A11"
@@ -17,7 +18,7 @@ export type LanguageLevels =
 
 export type SkillLevels = "N" | "E" | "H" | "K" | "V";
 
-export type Subjects = "ÄI1" | "ÄI2" | "ÄI3";
+export type Subjects = (typeof ALL_LANGUAGE_SUBJECTS)[number];
 
 export type LanguageItem<T> = {
   [key: string]: T;
@@ -26,7 +27,7 @@ export type LanguageItem<T> = {
 export interface LanguageProfileLanguageData {
   levels: LanguageItem<LanguageLevels>[];
   skills: LanguageItem<SkillLevels>[];
-  subjects: LanguageItem<Subjects>[];
+  subjects: LanguageData[];
 }
 
 export interface LanguageProfileLanguage
@@ -235,7 +236,12 @@ export const languageProfile: Reducer<LanguageProfileState> = (
 
     case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SUBJECTS": {
       const { payload } = action;
-      const subjectPayload = { [payload.cellId]: payload.value };
+      const subjectPayload = {
+        code: payload.code,
+        identifier: payload.identifier,
+        name: payload.name,
+        value: payload.value,
+      };
       const languagesUpdate = [...state.data.languages];
       // find the language to update
       const languageIndex = languagesUpdate.findIndex(
@@ -248,8 +254,8 @@ export const languageProfile: Reducer<LanguageProfileState> = (
         ? currentLanguage.subjects
         : [];
 
-      const subjectIndex = subjectUpdate.findIndex((skill) =>
-        Object.keys(skill).includes(payload.cellId)
+      const subjectIndex = subjectUpdate.findIndex(
+        (subject) => subject.name === payload.name
       );
 
       if (subjectIndex !== -1) {

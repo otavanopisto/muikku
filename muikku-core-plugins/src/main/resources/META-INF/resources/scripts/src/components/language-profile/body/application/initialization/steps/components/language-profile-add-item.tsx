@@ -13,6 +13,7 @@ interface AddItemProps {
   action: (item: LanguageData | string) => void;
   allItems: LanguageData[];
   selectedItems: LanguageData[];
+  filterBy: "name" | "code";
 }
 
 /**
@@ -21,7 +22,7 @@ interface AddItemProps {
  * @param props the props of the component
  */
 const AddItem = (props: AddItemProps) => {
-  const { action, selectedItems, allItems } = props;
+  const { action, selectedItems, filterBy, allItems } = props;
   const [filter, setFilter] = React.useState<string>("");
   const [active, setActive] = React.useState<boolean>(false);
 
@@ -75,7 +76,10 @@ const AddItem = (props: AddItemProps) => {
         <div className="language-profile__language-dropdown">
           {allItems
             .filter((item) => filterMatch(item.name, filter))
-            .filter((item) => !selectedItems.some((i) => i.code === item.code))
+            .filter(
+              (item) =>
+                !selectedItems.some((i) => i[filterBy] === item[filterBy])
+            )
             .map((item) => (
               <div
                 key={item.code}

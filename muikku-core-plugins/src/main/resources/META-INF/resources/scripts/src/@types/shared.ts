@@ -287,6 +287,7 @@ export interface LanguageData {
   identifier: string;
   name: string;
   code?: LanguageCode;
+  value?: string;
 }
 
 /**

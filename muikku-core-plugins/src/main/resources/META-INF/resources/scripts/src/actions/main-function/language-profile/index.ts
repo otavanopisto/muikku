@@ -62,7 +62,7 @@ export type UPDATE_LANGUAGE_PROFILE_SKILL_LEVELS = SpecificActionType<
 
 export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SUBJECTS = SpecificActionType<
   "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SUBJECTS",
-  { code: string; cellId: string; value: Subjects }
+  { code: LanguageCode; identifier: string; value: string; name: Subjects }
 >;
 
 export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<

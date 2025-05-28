@@ -115,6 +115,7 @@ const LanguageUsage = () => {
           />
           <AddLanguage
             action={handleLanguage}
+            filterBy="code"
             allItems={availableLanguages}
             selectedItems={languages}
           />

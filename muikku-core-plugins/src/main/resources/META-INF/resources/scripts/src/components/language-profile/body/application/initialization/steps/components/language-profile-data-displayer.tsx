@@ -1,7 +1,5 @@
-import { is } from "@amcharts/amcharts4/core";
 import * as React from "react";
 import { LanguageData } from "~/@types/shared";
-import { LanguageCode } from "~/@types/shared";
 
 /**
  * LanguageProfileDataDisplayerProps
@@ -13,9 +11,10 @@ interface LanguageProfileDataDisplayerProps {
   disabledItems?: string[];
 
   cellAction?: (
-    languageCode: LanguageCode,
+    code: string,
     cellId: string,
-    index: number
+    rowId?: string,
+    index?: number
   ) => React.ReactNode;
   onItemClick?: (language: LanguageData) => void;
 }
@@ -47,6 +46,7 @@ const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
         <tbody>
           {rows.map((item) => {
             const isDisabled = props.disabledItems?.includes(item.code);
+            const rowId = item.code + item.name;
 
             return (
               <tr
@@ -68,7 +68,12 @@ const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
                       className="language-profile__language-data"
                     >
                       {cellAction &&
-                        cellAction(item.code, item.code + "-" + index, index)}
+                        cellAction(
+                          item.code,
+                          item.code + "-" + index,
+                          rowId,
+                          index
+                        )}
                     </td>
                   ))}
               </tr>
