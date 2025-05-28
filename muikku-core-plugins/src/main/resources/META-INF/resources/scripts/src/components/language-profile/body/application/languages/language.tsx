@@ -10,6 +10,9 @@ import Sample from "./sample";
 
 export type SampleTypes = "TEXT" | "FILE" | "AUDIO" | "";
 
+/**
+ * Props for the LanguageComponent.
+ */
 interface LanguageComponentProps {
   samples: LanguageProfileSample[];
   language: LanguageProfileLanguage;
@@ -19,6 +22,11 @@ interface LanguageComponentProps {
   setChanged: (samples: number[]) => void;
 }
 
+/**
+ * LanguageComponent
+ * @param props
+ * @returns
+ */
 const LanguageComponent = (props: LanguageComponentProps) => {
   const {
     samples,
@@ -33,9 +41,6 @@ const LanguageComponent = (props: LanguageComponentProps) => {
   const [sampleType, setSampleType] = React.useState<SampleTypes>("");
   const dispatch = useDispatch();
 
-  // const languageSamples =
-  //   samples && samples.filter((sample) => sample.language === language.code);
-
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
@@ -46,32 +51,44 @@ const LanguageComponent = (props: LanguageComponentProps) => {
     }
   }, [samples, language.code]);
 
-  const handleFieldChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>,
-    sample: LanguageProfileSample
-  ) => {
-    // Get the current value
-    const newSample = { ...sample };
-    newSample.value = e.target.value;
+  /**
+   * handleFieldChange
+   * Handles changes in the text area for text samples.
+   * Updates the sample state with the new value.
+   */
+  const handleFieldChange = React.useCallback(
+    (
+      e: React.ChangeEvent<HTMLTextAreaElement>,
+      sample: LanguageProfileSample
+    ) => {
+      // Get the current value
+      const newSample = { ...sample };
+      newSample.value = e.target.value;
 
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    // Set a new timeout
-    timeoutRef.current = setTimeout(() => {
-      if (sample.id && !changed.some((changed) => changed === sample.id)) {
-        setChanged([...changed, sample.id]);
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
 
-      dispatch({
-        type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
-        payload: newSample,
-      } as ActionType);
-    }, 300); // 300ms debounce time
-  };
+      // Set a new timeout
+      timeoutRef.current = setTimeout(() => {
+        if (sample.id && !changed.some((changed) => changed === sample.id)) {
+          setChanged([...changed, sample.id]);
+        }
 
+        dispatch({
+          type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+          payload: newSample,
+        } as ActionType);
+      }, 1000); // 1000ms debounce time
+    },
+    [dispatch, changed, setChanged]
+  );
+
+  /**
+   * handleToggleDelete
+   * @param id - The ID of the sample to toggle for deletion.
+   */
   const handleToggleDelete = (id: number) => {
     if (samplesToRemove.some((sample) => sample === id)) {
       setSamplesToRemove(samplesToRemove.filter((sample) => sample !== id));
@@ -79,6 +96,16 @@ const LanguageComponent = (props: LanguageComponentProps) => {
       setSamplesToRemove([...samplesToRemove, id]);
     }
   };
+
+  // Clean up the timeout when the component unmounts
+  React.useEffect(
+    () => () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    },
+    []
+  );
 
   return (
     <div

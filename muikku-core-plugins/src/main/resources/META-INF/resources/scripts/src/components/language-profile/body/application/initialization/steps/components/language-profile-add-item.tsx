@@ -63,6 +63,16 @@ const AddItem = (props: AddItemProps) => {
     setActive(false);
   };
 
+  // Clean up the timeout when the component unmounts
+  React.useEffect(
+    () => () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    },
+    []
+  );
+
   return (
     <div className="language-profile__add-language">
       <input

@@ -50,7 +50,8 @@ const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
 
             return (
               <tr
-                key={item.code}
+                data-testid={rowId}
+                key={rowId}
                 onClick={() => onItemClick?.(item)}
                 className={`language-profile__language ${isDisabled ? "DISABLED" : ""}`}
               >
@@ -61,21 +62,19 @@ const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
                   {item.name}
                 </td>
                 {labels &&
-                  labels.map((label, index) => (
-                    <td
-                      key={label}
-                      id={item.code + index}
-                      className="language-profile__language-data"
-                    >
-                      {cellAction &&
-                        cellAction(
-                          item.code,
-                          item.code + "-" + index,
-                          rowId,
-                          index
-                        )}
-                    </td>
-                  ))}
+                  labels.map((label, index) => {
+                    const cellId = item.code + "-" + index;
+                    return (
+                      <td
+                        data-testid={item.name + "-" + cellId}
+                        key={item.name + "-" + cellId}
+                        className="language-profile__language-data"
+                      >
+                        {cellAction &&
+                          cellAction(item.code, cellId, rowId, index)}
+                      </td>
+                    );
+                  })}
               </tr>
             );
           })}

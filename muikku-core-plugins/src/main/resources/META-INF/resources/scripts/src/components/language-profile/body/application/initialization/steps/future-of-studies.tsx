@@ -36,6 +36,16 @@ const FutureOfStudies = () => {
     }, 300); // 300ms debounce time
   };
 
+  // Clean up the timeout when the component unmounts
+  React.useEffect(
+    () => () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    },
+    []
+  );
+
   return (
     <div>
       <div>

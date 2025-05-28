@@ -8,6 +8,11 @@ import AddLanguage from "./components/language-profile-add-item";
 import LanguageProfileDataDisplayer from "./components/language-profile-data-displayer";
 import { availableLanguages } from "~/mock/mock-data";
 
+/**
+ * LanguageUsage
+ * This component allows users to manage their language usage, learning,
+ * and motivation for studying languages.
+ */
 const LanguageUsage = () => {
   const dispatch = useDispatch();
   const {
@@ -41,7 +46,7 @@ const LanguageUsage = () => {
         type: "UPDATE_LANGUAGE_PROFILE_VALUES",
         payload: { [field]: value },
       } as ActionType);
-    }, 300); // 300ms debounce time
+    }, 500); // 500ms debounce time
   };
 
   /**

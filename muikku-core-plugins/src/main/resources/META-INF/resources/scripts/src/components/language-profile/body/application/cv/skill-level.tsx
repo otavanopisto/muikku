@@ -168,6 +168,16 @@ const SkillLevel = (props: SkillLevelProps) => {
     }, 300); // 300ms debounce time
   };
 
+  // Clean up the timeout when the component unmounts
+  React.useEffect(
+    () => () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    },
+    []
+  );
+
   return (
     <div>
       <h2>{language.name}</h2>
@@ -242,7 +252,9 @@ const SkillLevel = (props: SkillLevelProps) => {
         <div>
           {languageSkillLevels.samples.map((sample, index) => (
             <div key={"sample-link" + index}>
-              <a href={sample} target="_blank">{sample}</a>
+              <a href={sample} target="_blank">
+                {sample}
+              </a>
               <a
                 className="language-profile__remove-button icon-trash"
                 onClick={() => handleRemoveSampleLink(index)}

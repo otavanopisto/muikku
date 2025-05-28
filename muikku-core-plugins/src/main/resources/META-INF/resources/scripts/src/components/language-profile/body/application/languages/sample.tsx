@@ -18,7 +18,7 @@ const Sample = (props: LanguageSampleProps) => {
   const { sample, taggedForRemoval, onChange, onDelete } = props;
   const { t } = useTranslation("languageProfile");
 
-  const DisplaySample = () => {
+  const MemoizedSample = React.useMemo(() => {
     switch (sample.type) {
       case "TEXT":
         return (
@@ -49,11 +49,11 @@ const Sample = (props: LanguageSampleProps) => {
       default:
         return null;
     }
-  };
+  }, [sample, taggedForRemoval, onChange]);
 
   return (
     <div>
-      <DisplaySample />
+      {MemoizedSample}
       <Button onClick={() => onDelete(sample.id)}>
         {taggedForRemoval
           ? t("actions.cancel", { ns: "common" })
@@ -63,4 +63,4 @@ const Sample = (props: LanguageSampleProps) => {
   );
 };
 
-export default Sample;
+export default React.memo(Sample);
