@@ -1516,7 +1516,7 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockUserContacts(MockStudent mockStudent) throws JsonProcessingException {
+      public Builder mockUserContact(MockStudent mockStudent) throws JsonProcessingException {
         List<fi.otavanopisto.pyramus.rest.model.UserContact> userContacts = new ArrayList<>();
         UserContact userContact = new UserContact(mockStudent.getId(), mockStudent.getFirstName() + " " + mockStudent.getLastName(), "0800123123", mockStudent.getEmail(), "test street", "0280128", "Testville", "Test city", "", true);
         userContacts.add(userContact);
