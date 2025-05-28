@@ -154,6 +154,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockStudentCourseStats(student.getId(), 25)
     .mockMatriculationEligibility(student.getId(), false)
     .mockIAmCounselor()
+    .mockUserContacts(student)
     .build();
     login();
     
@@ -233,6 +234,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .addCourseStudent(course1.getId(), courseStudent)
         .mockEmptyStudyActivity()
+        .mockUserContacts(student)
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -348,6 +350,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addCourse(course3)
       .mockEmptyStudyActivity()
       .mockIAmCounselor()
+      .mockUserContacts(student)
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -397,6 +400,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addStaffMember(admin)
       .mockLogin(admin)
       .addCourse(course1)
+      .mockUserContacts(student)
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -445,6 +449,7 @@ public class GuiderTestsBase extends AbstractUITest {
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
         .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .mockUserContacts(student)
         .build();
       try {
         selectFinnishLocale();
@@ -483,6 +488,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStudentGroups()
         .mockEmptyStudyActivity()
         .mockIAmCounselor()
+        .mockUserContacts(student)
         .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -583,6 +589,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .mockStudentGroups()
       .mockEmptyStudyActivity()
       .mockIAmCounselor()
+      .mockUserContacts(student)
       .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 12).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -642,6 +649,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStudentGroups()
         .mockEmptyStudyActivity()
         .mockIAmCounselor()
+        .mockUserContacts(student)
         .build();
       Course course1 = new CourseBuilder().name("Tests").id((long) 13).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -796,6 +804,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockMatriculationEligibility(student.getId(), false)
     .mockEmptyStudyActivity()
     .mockIAmCounselor()
+    .mockUserContacts(student)
     .build();
     login();
     
