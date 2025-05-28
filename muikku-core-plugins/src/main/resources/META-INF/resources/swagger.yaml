@@ -13862,12 +13862,7 @@ components:
       description: UserContact object
       required:
         - id
-        - name
         - email
-        - streetAddress
-        - postalCode
-        - city
-        - country
         - contactType
         - defaultContact
       properties:
@@ -18182,3 +18177,4 @@ components:
           format: int32
         message:
           type: string
+
