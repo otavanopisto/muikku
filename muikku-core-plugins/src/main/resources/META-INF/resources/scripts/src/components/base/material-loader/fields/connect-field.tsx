@@ -809,12 +809,11 @@ class ConnectField extends React.Component<
                   this.state.answerState &&
                   this.state.answerState[index];
                 // the item class name only necessary if it was a fail and we are checking for rightness
-                const itemStateAfterCheck =
-                  itemAnswer && this.props.displayCorrectAnswers
-                    ? itemAnswer === "FAIL"
-                      ? "incorrect-answer"
-                      : "correct-answer"
-                    : "";
+                const itemStateAfterCheck = itemAnswer
+                  ? itemAnswer === "FAIL"
+                    ? "incorrect-answer"
+                    : "correct-answer"
+                  : "";
 
                 const notSelectable =
                   this.state.selectedField &&
@@ -911,12 +910,11 @@ class ConnectField extends React.Component<
                   this.state.answerState[index];
 
                 // the classname state if necessary
-                const itemStateAfterCheck =
-                  itemAnswer && this.props.displayCorrectAnswers
-                    ? itemAnswer === "FAIL"
-                      ? "incorrect-answer"
-                      : "correct-answer"
-                    : "";
+                const itemStateAfterCheck = itemAnswer
+                  ? itemAnswer === "FAIL"
+                    ? "incorrect-answer"
+                    : "correct-answer"
+                  : "";
 
                 const notSelectable =
                   this.props.readOnly ||
@@ -956,20 +954,6 @@ class ConnectField extends React.Component<
                 // Add state after check to class
                 className += ` ${itemStateAfterCheck}`;
 
-                // if readonly we just add the classname in there
-                if (this.props.readOnly) {
-                  return (
-                    <li className={className} key={field.name}>
-                      <span className="connectfield__counterpart-data-container">
-                        <span className="connectfield__counterpart-icon icon-move"></span>
-                        <span className="connectfield__counterpart-label">
-                          <StrMathJAX>{field.text}</StrMathJAX>
-                        </span>
-                      </span>
-                    </li>
-                  );
-                }
-
                 // if we are asked for correct answers
                 let itemCorrectAnswerComponent = null;
                 // we need to do this
@@ -990,6 +974,21 @@ class ConnectField extends React.Component<
                           ).field
                       ) + 1}
                     </span>
+                  );
+                }
+
+                // if readonly we just add the classname in there
+                if (this.props.readOnly) {
+                  return (
+                    <li className={className} key={field.name}>
+                      <span className="connectfield__counterpart-data-container">
+                        <span className="connectfield__counterpart-icon icon-move"></span>
+                        <span className="connectfield__counterpart-label">
+                          <StrMathJAX>{field.text}</StrMathJAX>
+                        </span>
+                        {itemCorrectAnswerComponent}
+                      </span>
+                    </li>
                   );
                 }
 

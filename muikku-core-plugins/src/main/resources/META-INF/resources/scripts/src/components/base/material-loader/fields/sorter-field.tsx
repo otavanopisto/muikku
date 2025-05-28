@@ -506,9 +506,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
 
     // Lets get the class name to match the state of the entire field if necessary
     const fieldStateAfterCheck =
-      this.props.displayCorrectAnswers &&
-      this.props.checkAnswers &&
-      this.state.answerState
+      this.props.checkAnswers && this.state.answerState
         ? this.state.answerState.includes("FAIL")
           ? "incorrect-answer"
           : "correct-answer"
@@ -562,7 +560,7 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
           <ol
             tabIndex={0}
             onKeyDown={this.handleOrderedListKeyDown}
-            className={`sorterfield sorterfield--${elementClassName} ${fieldStateAfterCheck} ${elementDisabledStateClassName}`}
+            className={`sorterfield sorterfield--${elementClassName} ${elementDisabledStateClassName} ${fieldStateAfterCheck}`}
           >
             {this.state.items.map((item, index) => {
               // We get the text
@@ -576,7 +574,6 @@ class SorterField extends React.Component<SorterFieldProps, SorterFieldState> {
               // we set them up so that they show each if they are right or wrong
 
               const itemStateAfterCheck =
-                this.props.displayCorrectAnswers &&
                 this.props.checkAnswers &&
                 !answerIsBeingCheckedAndItisCorrect &&
                 this.state.answerState &&
