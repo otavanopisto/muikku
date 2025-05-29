@@ -4,6 +4,11 @@ import Button from "~/components/general/button";
 import { LanguageProfileSample } from "~/generated/client";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 
+/**
+ * LanguageSampleProps
+ * This interface defines the properties for the LanguageSample component.
+ * It includes the sample data, a flag for removal, and functions for handling changes and deletions.
+ */
 interface LanguageSampleProps {
   sample: LanguageProfileSample;
   taggedForRemoval: boolean;
@@ -14,11 +19,25 @@ interface LanguageSampleProps {
   onDelete: (id: number) => void;
 }
 
+/**
+ * Sample
+ * This component renders a language profile sample based on its type (TEXT, FILE, AUDIO).
+ * It provides functionality to edit the sample and delete it if necessary.
+ * @param props LanguageSampleProps
+ * @returns JSX.Element
+ */
 const Sample = (props: LanguageSampleProps) => {
   const { sample, taggedForRemoval, onChange, onDelete } = props;
   const { t } = useTranslation("languageProfile");
 
-  const MemoizedSample = React.useMemo(() => {
+  /**
+   * RenderMemoizedSample
+   * This function returns a memoized component based on the sample type.
+   * It uses React.useMemo to optimize rendering performance by avoiding unnecessary re-renders.
+   * @returns JSX.Element
+   * @param sample The language profile sample to render.
+   */
+  const RenderMemoizedSample = React.useMemo(() => {
     switch (sample.type) {
       case "TEXT":
         return (
@@ -53,7 +72,7 @@ const Sample = (props: LanguageSampleProps) => {
 
   return (
     <div>
-      {MemoizedSample}
+      {RenderMemoizedSample}
       <Button onClick={() => onDelete(sample.id)}>
         {taggedForRemoval
           ? t("actions.cancel", { ns: "common" })

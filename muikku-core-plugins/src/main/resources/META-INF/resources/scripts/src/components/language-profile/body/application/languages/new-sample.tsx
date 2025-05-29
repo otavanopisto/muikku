@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import Button from "~/components/general/button";
 import { useSelector, useDispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import {
@@ -10,8 +9,14 @@ import {
 } from "~/actions/main-function/language-profile";
 import { SampleTypes } from "./language";
 import { LanguageCode } from "~/@types/shared";
-import Recorder from "~/components/general/voice-recorder/recorder";
 import { RecordValue } from "~/@types/recorder";
+import TextSample from "./new-sample/text-sample";
+import FileSample from "./new-sample/file-sample";
+import AudioSample from "./new-sample/audio-sample";
+
+/**
+ * LanguageSampleProps
+ */
 interface LanguageSampleProps {
   visible: boolean;
   sampleType: SampleTypes;
@@ -19,11 +24,16 @@ interface LanguageSampleProps {
   onClose: () => void;
 }
 
+/**
+ * NewLanguageSample
+ * @param props component properties
+ * @returns JSX.Element
+ */
 const NewLanguageSample = (props: LanguageSampleProps) => {
   const { t } = useTranslation("languageProfile");
   const [sample, setSample] = React.useState("");
   const { visible, language, onClose, sampleType } = props;
-  const { status, languageProfile } = useSelector((state: StateType) => state);
+  const { status } = useSelector((state: StateType) => state);
   const [audioSamples, setAudioSamples] = React.useState<RecordValue[]>([]);
 
   const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
@@ -154,64 +164,41 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
    * SampleComponent renders the appropriate sample input form based on the sampleType.
    * It uses React.memo to optimize rendering.
    */
-  const SampleComponent = React.useMemo(() => {
-    if (sampleType === "TEXT") {
-      return (
-        <form className="language-profile__text-sample">
-          <textarea
-            id="newLanguageSample"
-            className="form-element__textarea"
+  const RenderSampleCreationComponent = React.useMemo(() => {
+    switch (sampleType) {
+      case "TEXT":
+        return (
+          <TextSample
             value={sample}
+            onSave={handleSave}
+            onCancel={handleCancel}
             onChange={handleFieldChange}
           />
-          <Button onClick={handleSave}>Tallenna</Button>
-          <Button onClick={handleCancel}>Peruuta</Button>
-        </form>
-      );
-    } else if (sampleType === "FILE") {
-      return (
-        <form className="language-profile__file-uploader">
-          <div className="language-profile__file-uploader-container">
-            <div>{t("content.add", { ns: "materials", context: "file" })}</div>
-            <input
-              type="file"
-              className="language-profile__file-uploader-field"
-              onChange={handleFileChange}
-            />
-          </div>
-          <div className="language-profile__file-uploader-files">
-            {selectedFiles.map((file, index) => (
-              <div
-                className="language-profile__sample-file"
-                key={"file" + index}
-              >
-                <span>{file.name}</span>
-                <a
-                  className="language-profile__remove-button icon-trash"
-                  onClick={() => removeFileFromQueue(index)}
-                ></a>
-              </div>
-            ))}
-          </div>
-          <Button onClick={handleFilesSave}>Tallenna</Button>
-          <Button onClick={handleCancel}>Peruuta</Button>
-        </form>
-      );
-    } else if (sampleType === "AUDIO") {
-      return (
-        <div>
-          <Recorder
-            saveTempfile={false}
-            values={audioSamples}
-            onDeleteAudio={handleDeleteAudio}
-            onChange={handleRecorderChange}
+        );
+      case "FILE":
+        return (
+          <FileSample
+            files={selectedFiles}
+            onFileChange={handleFileChange}
+            onRemoveFile={removeFileFromQueue}
+            onSave={handleFilesSave}
+            onCancel={handleCancel}
           />
-          <Button onClick={handleAudioSave}>Tallenna</Button>
-          <Button onClick={handleCancel}>Peruuta</Button>
-        </div>
-      );
+        );
+
+      case "AUDIO":
+        return (
+          <AudioSample
+            samples={audioSamples}
+            onChange={handleRecorderChange}
+            onDelete={handleDeleteAudio}
+            onSave={handleAudioSave}
+            onCancel={handleCancel}
+          />
+        );
+      default:
+        return null;
     }
-    return null;
   }, [
     sampleType,
     sample,
@@ -220,11 +207,10 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
     handleFieldChange,
     handleSave,
     handleCancel,
-    t,
     handleFileChange,
+    handleAudioSave,
     handleFilesSave,
     handleRecorderChange,
-    handleAudioSave,
     handleDeleteAudio,
   ]);
 
@@ -235,7 +221,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   return (
     <div className="language-profile__new-sample">
       <h2>Uusi näyte</h2>
-      <div>{SampleComponent}</div>
+      <div>{RenderSampleCreationComponent}</div>
     </div>
   );
 };
