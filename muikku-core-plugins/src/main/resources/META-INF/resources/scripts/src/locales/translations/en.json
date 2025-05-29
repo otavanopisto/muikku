@@ -2853,6 +2853,26 @@
       "initialization": "Initialization",
       "languages": "Languages",
       "cv": "Language-cv"
+    },
+    "notifications": {
+      "createError": "$t(common:notifications.createError)",
+      "createError_audioSample": "Audio sample creation failed:{{error}}",
+      "createError_fileSAmple": "File sample creation failed: {{error}}",
+      "createError_textSample": "Text sample creation failed: {{error}}",
+      "createSuccess": "$t(common:notifications.createSuccess)",
+      "createSuccess_audioSample": "Audio sample creation succeeded",
+      "createSuccess_fileSample": "File sample creation succeeded",
+      "createSuccess_textSample": "Text sample creation succeeded",
+      "loadError": "Language profile loading failed:  {{error}}",
+      "loadError_languageSamples": "Language sample loading failed: {{error}}",
+      "removeError": "$t(common:notifications.removeError)",
+      "removeError_languageSamples": "Language sample removal failed:  {{error}}",
+      "removeSuccess": "$t(common:notifications.removeSuccess)",
+      "removeSuccess_languageSamples": "Language sample removal succeeded",
+      "saveError": "Saving language profile failed: {{error}}",
+      "saveError_languageSamples": "Saving language samples failed:: {{error}}",
+      "saveSuccess": "Saving language profile succeeded",
+      "saveSuccess_languageSamples": "Saving language samples succeeded"
     }
   }
 }

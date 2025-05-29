@@ -2855,6 +2855,26 @@
       "initialization": "Alkukartoitus",
       "languages": "Kielet",
       "cv": "Kieli-cv"
+    },
+    "notifications": {
+      "createError": "Kieliprofiilin luonti epäonnistui:{{error}}",
+      "createError_audioSample": "Ääninäytteen luonti epäonnistui:{{error}}",
+      "createError_fileSAmple": "Tiedostonäytteen luonti epäonnistui: {{error}}",
+      "createError_textSample": "Textinäytteen luonti epäonnistui: {{error}}",
+      "createSuccess": "$t(common:notifications.createSuccess)",
+      "createSuccess_audioSample": "Ääninäyte luotu onnistuneesti:",
+      "createSuccess_fileSample": "Tiedostonäyte luotu onnistuneesti",
+      "createSuccess_textSample": "Tekstinäyte luotu onnistuneesti",
+      "loadError": "Kieliprofiilin lataaminen epäonnistui:  {{error}}",
+      "loadError_languageSamples": "Kielinäytteiden lataaminen epäonnistui: {{error}}",
+      "removeError": "$t(common:notifications.removeError)",
+      "removeError_languageSamples": "Kielinäytteiden poistaminen epäonnistui:  {{error}}",
+      "removeSuccess": "$t(common:notifications.removeSuccess)",
+      "removeSuccess_languageSamples": "Kielinäytteiden poistaminen onnistui",
+      "saveError": "Kieliprofiilin tallentaminen epäonnistui: {{error}}",
+      "saveError_languageSamples": "Kielinäytteiden tallentaminen epäonnistui: {{error}}",
+      "saveSuccess": "Kieliprofiili tallennettu onnistuneesti",
+      "saveSuccess_languageSamples": "Kielinäytteet tallennettu onnistuneesti"
     }
   }
 }

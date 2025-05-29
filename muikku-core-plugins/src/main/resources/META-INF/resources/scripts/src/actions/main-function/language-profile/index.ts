@@ -103,7 +103,7 @@ export interface loadLanguageProfileTriggerType {
 }
 
 /**
- * saveLanguageProfileData
+ * saveLanguageProfileTriggerType
  */
 export interface saveLanguageProfileTriggerType {
   (
@@ -114,6 +114,9 @@ export interface saveLanguageProfileTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * SaveLanguageProfileSamplesTriggerType
+ */
 export interface SaveLanguageProfileSamplesTriggerType {
   (
     userEntityId: number,
@@ -123,6 +126,9 @@ export interface SaveLanguageProfileSamplesTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * DeleteLanguageProfileSamplesTriggerType
+ */
 export interface DeleteLanguageProfileSamplesTriggerType {
   (
     userEntityId: number,
@@ -131,6 +137,10 @@ export interface DeleteLanguageProfileSamplesTriggerType {
     fail?: () => void
   ): AnyActionType;
 }
+
+/**
+ * CreateLanguageProfileSample
+ */
 export interface CreateLanguageProfileSampleTriggerType {
   (
     userEntityId: number,
@@ -139,6 +149,10 @@ export interface CreateLanguageProfileSampleTriggerType {
     fail?: () => void
   ): AnyActionType;
 }
+
+/**
+ * CreateLanguageProfileAudioSampleTriggerType
+ */
 export interface CreateLanguageProfileAudioSampleTriggerType {
   (
     userEntityId: number,
@@ -149,6 +163,9 @@ export interface CreateLanguageProfileAudioSampleTriggerType {
   ): AnyActionType;
 }
 
+/**
+ * CreateLanguageProfileFileSampleTriggerType
+ */
 export interface CreateLanguageProfileFileSampleTriggerType {
   (
     userEntityId: number,
@@ -205,6 +222,18 @@ const saveLanguageProfile: saveLanguageProfileTriggerType =
           type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
           payload: "SUCCESS",
         });
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          payload: "PENDING",
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.saveSuccess", {
+              ns: "languageProfile",
+            }),
+            "success"
+          )
+        );
         success && success();
       } catch (err) {
         if (!isMApiError(err)) {
@@ -216,7 +245,7 @@ const saveLanguageProfile: saveLanguageProfileTriggerType =
         });
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.loadError", {
+            i18n.t("notifications.saveError", {
               error: err,
               ns: "languageProfile",
             }),
@@ -318,16 +347,27 @@ const createLanguageSample: CreateLanguageProfileSampleTriggerType =
             value: sample.value,
           },
         });
-
         dispatch({
           type: "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
           payload: newSample,
         });
-
         dispatch({
           type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
           payload: "SUCCESS",
         });
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          payload: "PENDING",
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.createSuccess", {
+              ns: "languageProfile",
+              context: "textSample",
+            }),
+            "success"
+          )
+        );
         success && success();
       } catch (err) {
         if (!isMApiError(err)) {
@@ -339,9 +379,10 @@ const createLanguageSample: CreateLanguageProfileSampleTriggerType =
         });
         dispatch(
           notificationActions.displayNotification(
-            i18n.t("notifications.loadError", {
+            i18n.t("notifications.createError", {
               error: err,
               ns: "languageProfile",
+              context: "textSample",
             }),
             "error"
           )
@@ -354,7 +395,8 @@ const createLanguageSample: CreateLanguageProfileSampleTriggerType =
 /**
  * createLanguageAudioSample
  * @param userEntityId student id
- * @param sample request sample
+ * @param samples request sample
+ * @param language language code
  * @param success executed on success
  * @param fail executed on faoö
  */
@@ -395,7 +437,9 @@ const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
               // Set up the request
               xhr.open("POST", `/languageProfileSampleServlet`, true);
 
-              // Handle response
+              /**
+               * Handle response
+               */
               xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                   try {
@@ -409,7 +453,9 @@ const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
                 }
               };
 
-              // Handle error
+              /**
+               * Handle error
+               */
               xhr.onerror = () => {
                 reject(new Error("Network Error"));
               };
@@ -423,6 +469,24 @@ const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
             type: "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
             payload: response,
           });
+          dispatch({
+            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            payload: "SUCCESS",
+          });
+          dispatch({
+            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            payload: "PENDING",
+          });
+          dispatch(
+            notificationActions.displayNotification(
+              i18n.t("notifications.createSuccess", {
+                ns: "languageProfile",
+                context: "audioSample",
+              }),
+              "success"
+            )
+          );
+          success && success();
           // Add small delay between processing next file
           await new Promise((resolve) => setTimeout(resolve, 500));
         } catch (err) {
@@ -435,20 +499,16 @@ const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
           });
           dispatch(
             notificationActions.displayNotification(
-              i18n.t("notifications.loadError", {
+              i18n.t("notifications.createError", {
                 error: err,
                 ns: "languageProfile",
+                context: "audioSample",
               }),
               "error"
             )
           );
           fail && fail();
         }
-        dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
-          payload: "SUCCESS",
-        });
-        success && success();
       }
     };
   };
@@ -499,7 +559,9 @@ const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
               // Set up the request
               xhr.open("POST", `/languageProfileSampleServlet`, true);
 
-              // Handle response
+              /**
+               * Handle response
+               */
               xhr.onload = () => {
                 if (xhr.status >= 200 && xhr.status < 300) {
                   try {
@@ -513,7 +575,9 @@ const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
                 }
               };
 
-              // Handle error
+              /**
+               * Handle error
+               */
               xhr.onerror = () => {
                 reject(new Error("Network Error"));
               };
@@ -527,6 +591,25 @@ const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
             type: "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
             payload: response,
           });
+          dispatch({
+            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            payload: "SUCCESS",
+          });
+          dispatch({
+            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            payload: "PENDING",
+          });
+
+          dispatch(
+            notificationActions.displayNotification(
+              i18n.t("notifications.createSuccess", {
+                ns: "languageProfile",
+                context: "fileSample",
+              }),
+              "success"
+            )
+          );
+          success && success();
           // Add small delay between processing next file
           await new Promise((resolve) => setTimeout(resolve, 500));
         } catch (err) {
@@ -539,20 +622,16 @@ const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
           });
           dispatch(
             notificationActions.displayNotification(
-              i18n.t("notifications.loadError", {
+              i18n.t("notifications.createError", {
                 error: err,
                 ns: "languageProfile",
+                context: "fileSample",
               }),
               "error"
             )
           );
           fail && fail();
         }
-        dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
-          payload: "SUCCESS",
-        });
-        success && success();
       }
     };
   };
@@ -560,7 +639,7 @@ const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
 /**
  * saveLanguageProfileData
  * @param userEntityId student id
- * @param data formData
+ * @param samples formData
  * @param success executed on success
  * @param fail executed on faoö
  */
@@ -587,9 +666,6 @@ const saveLanguageSamples: SaveLanguageProfileSamplesTriggerType =
             });
 
             const LanguageProfileApi = MApi.getLanguageProfile();
-
-            // Check if the sample already exists
-
             await LanguageProfileApi.updateLanguageProfileSample({
               userEntityId,
               sampleId: sample.id,
@@ -597,6 +673,33 @@ const saveLanguageSamples: SaveLanguageProfileSamplesTriggerType =
                 value: sample.value,
               },
             });
+            dispatch(
+              notificationActions.displayNotification(
+                i18n.t("notifications.removeSuccess", {
+                  ns: "languageProfile",
+                  context: "languageSamples",
+                }),
+                "success"
+              )
+            );
+            dispatch({
+              type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+              payload: "SUCCESS",
+            });
+            dispatch({
+              type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+              payload: "PENDING",
+            });
+            dispatch(
+              notificationActions.displayNotification(
+                i18n.t("notifications.saveSuccess", {
+                  ns: "languageProfile",
+                  context: "languageSamples",
+                }),
+                "error"
+              )
+            );
+            success && success();
           } catch (err) {
             if (!isMApiError(err)) {
               throw err;
@@ -607,9 +710,10 @@ const saveLanguageSamples: SaveLanguageProfileSamplesTriggerType =
             });
             dispatch(
               notificationActions.displayNotification(
-                i18n.t("notifications.loadError", {
+                i18n.t("notifications.saveError", {
                   error: err,
                   ns: "languageProfile",
+                  context: "languageSamples",
                 }),
                 "error"
               )
@@ -624,7 +728,7 @@ const saveLanguageSamples: SaveLanguageProfileSamplesTriggerType =
 /**
  * removeLanguageSamples
  * @param userEntityId student id
- * @param data formData
+ * @param sampleIds formData
  * @param success executed on success
  * @param fail executed on faoö
  */
@@ -660,6 +764,16 @@ const deleteLanguageSamples: DeleteLanguageProfileSamplesTriggerType =
                 sampleId: id,
               },
             });
+            dispatch(
+              notificationActions.displayNotification(
+                i18n.t("notifications.removeSuccess", {
+                  ns: "languageProfile",
+                  context: "languageSamples",
+                }),
+                "success"
+              )
+            );
+            success && success();
           } catch (err) {
             if (!isMApiError(err)) {
               throw err;
@@ -670,9 +784,10 @@ const deleteLanguageSamples: DeleteLanguageProfileSamplesTriggerType =
             });
             dispatch(
               notificationActions.displayNotification(
-                i18n.t("notifications.loadError", {
+                i18n.t("notifications.removeError", {
                   error: err,
                   ns: "languageProfile",
+                  context: "languageSamples",
                 }),
                 "error"
               )
@@ -731,6 +846,7 @@ const loadLanguageSamples: loadLanguageProfileTriggerType =
             i18n.t("notifications.loadError", {
               error: err,
               ns: "languageProfile",
+              context: "languageSamples",
             }),
             "error"
           )
