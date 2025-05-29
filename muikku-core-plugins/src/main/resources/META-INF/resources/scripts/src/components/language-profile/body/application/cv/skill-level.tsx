@@ -11,10 +11,17 @@ import { ActionType } from "~/actions";
 import Button from "~/components/general/button";
 import Stars from "./stars";
 
+/**
+ * SkillLevelProps
+ */
 interface SkillLevelProps {
   language: LanguageProfileLanguage;
 }
-
+/**
+ * SkillLevel component
+ * @param props SkillLevelProps
+ * @returns JSX.Element
+ */
 const SkillLevel = (props: SkillLevelProps) => {
   const { language } = props;
   const initialLanguageSkillLevels: CVLanguage = {
@@ -39,7 +46,6 @@ const SkillLevel = (props: SkillLevelProps) => {
 
   // Create a ref to store the timeout ID
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-  const stars = [...Array(5).keys()];
 
   React.useEffect(() => {
     if (cv) {
@@ -52,6 +58,10 @@ const SkillLevel = (props: SkillLevelProps) => {
     }
   }, [cv, language, languageSkillLevels]);
 
+  /**
+   * handleSelectChange handles changes in the select input.
+   * @param e event
+   */
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -69,6 +79,11 @@ const SkillLevel = (props: SkillLevelProps) => {
     setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
+  /**
+   * handleRadioInputChange handles changes in the radio inputs.
+   * @param e event
+   * @param field field name
+   */
   const handleRadioInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: string
@@ -85,6 +100,10 @@ const SkillLevel = (props: SkillLevelProps) => {
     setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
+  /**
+   * handleTextAreaChange handles changes in the text area.
+   * @param e event
+   */
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     const name = e.target.name;
@@ -99,6 +118,11 @@ const SkillLevel = (props: SkillLevelProps) => {
     setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
+  /**
+   * isValidURL checks if the provided URL is valid.
+   * @param url string
+   * @returns boolean
+   */
   const isValidURL = (url: string): boolean => {
     if (!url || url.trim() === "") return false;
 
@@ -116,6 +140,9 @@ const SkillLevel = (props: SkillLevelProps) => {
     return urlPattern.test(url);
   };
 
+  /**
+   * handleAddSampleLink adds link to sample
+   */
   const handleAddSampleLink = () => {
     const value = sampleUrl;
     const updatedLanguageSkillLevels = {
@@ -136,6 +163,10 @@ const SkillLevel = (props: SkillLevelProps) => {
     setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
+  /**
+   * handleRemoveSampleLink
+   * @param index number
+   */
   const handleRemoveSampleLink = (index: number) => {
     const updatedLanguageSkillLevels = {
       ...languageSkillLevels,
@@ -150,7 +181,10 @@ const SkillLevel = (props: SkillLevelProps) => {
     setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
-  // Debounced field change handler
+  /**
+   * handleSampleURLFieldChange handles changes in the sample URL input field with debounce.
+   * @param e React.ChangeEvent<HTMLInputElement>
+   */
   const handleSampleURLFieldChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -252,7 +286,7 @@ const SkillLevel = (props: SkillLevelProps) => {
         <div>
           {languageSkillLevels.samples.map((sample, index) => (
             <div key={"sample-link" + index}>
-              <a href={sample} target="_blank">
+              <a href={sample} rel="noreferrer" target="_blank">
                 {sample}
               </a>
               <a

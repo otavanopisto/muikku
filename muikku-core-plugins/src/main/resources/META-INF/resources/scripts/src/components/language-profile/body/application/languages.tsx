@@ -14,6 +14,13 @@ import Language from "./languages/language";
  */
 interface LanguageSampleProps {}
 
+/**
+ * LanguageSample component
+ * This component displays language samples for the user's language profile.
+ * It allows users to add, edit, and delete language samples.
+ * @param props LanguageSampleProps
+ * @returns JSX.Element
+ */
 const LanguageSample = (props: LanguageSampleProps) => {
   const { t } = useTranslation("languageProfile");
   const { status, languageProfile } = useSelector((state: StateType) => state);
@@ -22,6 +29,9 @@ const LanguageSample = (props: LanguageSampleProps) => {
   const { languages, samples } = languageProfile.data;
   const dispatch = useDispatch();
 
+  /**
+   * Save handler
+   */
   const handleSave = () => {
     const samplesToSave = samples.filter((sample) =>
       changed.some((changed) => changed === sample.id)

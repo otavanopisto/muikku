@@ -16,6 +16,12 @@ import Footer from "./initialization/footer";
  */
 interface initializationProps {}
 
+/**
+ * Initialization component - contains the wizard for language profile initialization
+ * @param props props
+ * Initialization component
+ * @returns JSX.Element
+ */
 const Initialization = (props: initializationProps) => {
   /**
    * StepZilla steps
@@ -24,7 +30,10 @@ const Initialization = (props: initializationProps) => {
     [Step1, Step2, Step3, Step4],
     "languageProfile"
   );
-
+  /**
+   * handleStepChange
+   * @param step by step
+   */
   const handleStepChange = (step: WizardStep) => {};
   const { ...wizardValues } = useWizard({
     preventNextIfInvalid: true,

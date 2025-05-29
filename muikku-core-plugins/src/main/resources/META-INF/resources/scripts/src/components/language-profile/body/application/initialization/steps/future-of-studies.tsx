@@ -5,6 +5,10 @@ import { ActionType } from "~/actions";
 import { LanguageProfileData } from "~/reducers/main-function/language-profile";
 import { StateType } from "~/reducers";
 
+/**
+ * FutureOfStudies component
+ * @returns JSX element that displays the future of studies section
+ */
 const FutureOfStudies = () => {
   const { t } = useTranslation("languageProfile");
   const dispatch = useDispatch();

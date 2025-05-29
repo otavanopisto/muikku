@@ -13,6 +13,10 @@ import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 import { languageLevelOptions } from "~/mock/mock-data";
 
+/**
+ * LanguageMapping component
+ * @returns JSX element that displays language mapping options
+ */
 const LanguageMapping = () => {
   const { t } = useTranslation("languageProfile");
   const dispatch = useDispatch();

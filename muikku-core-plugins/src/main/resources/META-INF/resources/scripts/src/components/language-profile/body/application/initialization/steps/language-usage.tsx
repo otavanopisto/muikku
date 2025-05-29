@@ -27,7 +27,11 @@ const LanguageUsage = () => {
   // Create a ref to store the timeout ID
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  // Debounced field change handler
+  /**
+   * handleFieldChange
+   * @param e React.ChangeEvent<HTMLTextAreaElement>
+   * @param field  field of LanguageProfileData to update
+   */
   const handleFieldChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     field: keyof LanguageProfileData

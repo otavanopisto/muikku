@@ -1,14 +1,20 @@
-import { parse } from "path";
 import * as React from "react";
 import { CVLanguage } from "~/reducers/main-function/language-profile";
 
+/**
+ * StarsProps
+ */
 interface StarsProps {
   label: string;
   name: keyof CVLanguage;
   skillLevels: CVLanguage;
   onChange: (e: React.ChangeEvent<HTMLInputElement>, field: string) => void;
 }
-
+/**
+ * Stars component
+ * @param props props
+ * @returns JSX.Element
+ */
 const Stars = (props: StarsProps) => {
   const { label, skillLevels, name, onChange } = props;
   const stars = [...Array(5).keys()];

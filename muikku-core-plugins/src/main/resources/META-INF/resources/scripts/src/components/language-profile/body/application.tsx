@@ -12,6 +12,11 @@ import LanguageSample from "./application/languages";
  */
 interface LanguageProfileApplicationProps {}
 
+/**
+ * LanguageProfileApplication component
+ * @param props LanguageProfileApplicationProps
+ * @returns JSX.Element
+ */
 const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
   const { t } = useTranslation("languageProfile");
   const [activeTab, setActiveTab] = React.useState("INITIALIZE");

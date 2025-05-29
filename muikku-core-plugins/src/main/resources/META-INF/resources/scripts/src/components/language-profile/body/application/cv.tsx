@@ -1,12 +1,15 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
-import { LanguageProfileData } from "~/reducers/main-function/language-profile";
 import { ActionType } from "~/actions";
 import SkillLevel from "./cv/skill-level";
 import { saveLanguageProfile } from "~/actions/main-function/language-profile";
 import Button from "~/components/general/button";
 
+/**
+ * LanguageCv component
+ * @returns JSX.Element
+ */
 const LanguageCv = () => {
   const dispatch = useDispatch();
   const { languageProfile, status } = useSelector((state: StateType) => state);
@@ -15,7 +18,10 @@ const LanguageCv = () => {
   // Create a ref to store the timeout ID
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  // Debounced field change handler
+  /**
+   *
+   * @param e React.ChangeEvent<HTMLTextAreaElement>
+   */
   const handleFieldChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     // Get the current value
     const value = e.target.value;
@@ -44,6 +50,10 @@ const LanguageCv = () => {
     []
   );
 
+  /**
+   * handleSave
+   * Handles the save action for the language profile.
+   */
   const handleSave = () => {
     dispatch(saveLanguageProfile(status.userId, languageProfile.data));
   };

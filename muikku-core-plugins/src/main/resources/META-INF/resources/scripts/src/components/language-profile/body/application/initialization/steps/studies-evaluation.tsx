@@ -9,18 +9,17 @@ import { LanguageData } from "~/@types/shared";
 import { ALL_LANGUAGE_SUBJECTS } from "~/helper-functions/study-matrix";
 import { LanguageProfileLanguage } from "~/reducers/main-function/language-profile";
 
+/**
+ * AccomplishmentEvaluation component
+ * This component displays the accomplishment evaluation for each language
+ * @returns JSX element that displays the accomplishment evaluation section
+ */
 const AccomplishmentEvaluation = () => {
   const { t } = useTranslation("languageProfile");
   const dispatch = useDispatch();
   const { languages } = useSelector(
     (state: StateType) => state.languageProfile.data
   );
-
-  // const completedWorkspaces = [
-  //   { identifier: "ai1", name: "ÄI1" },
-  //   { identifier: "ai2", name: "ÄI2" },
-  //   { identifier: "ai3", name: "ÄI3" },
-  // ];
 
   const languageSubjects: LanguageData[] = ALL_LANGUAGE_SUBJECTS.map(
     (subject) => ({
@@ -29,6 +28,11 @@ const AccomplishmentEvaluation = () => {
     })
   );
 
+  /**
+   * createRows
+   * @param language the language profile language
+   * @returns an array of rows for the DisplayLanguages component
+   */
   const createRows = (language: LanguageProfileLanguage) => {
     const subjects = language.subjects || [];
     return subjects.map((subject, index) => ({
@@ -70,6 +74,12 @@ const AccomplishmentEvaluation = () => {
       />
     );
   };
+
+  /**
+   * handleAccomplishmentEvaluation
+   * @param e event
+   * @param code language code
+   */
   const handleAccomplishmentEvaluation = (
     e: React.ChangeEvent<HTMLInputElement>,
     code: string

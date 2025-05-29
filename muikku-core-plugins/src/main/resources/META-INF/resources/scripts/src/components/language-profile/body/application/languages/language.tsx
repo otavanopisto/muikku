@@ -24,8 +24,8 @@ interface LanguageComponentProps {
 
 /**
  * LanguageComponent
- * @param props
- * @returns
+ * @param props props
+ * @returns JSX.Element
  */
 const LanguageComponent = (props: LanguageComponentProps) => {
   const {
