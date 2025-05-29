@@ -37,7 +37,7 @@ const Sample = (props: LanguageSampleProps) => {
    * @returns JSX.Element
    * @param sample The language profile sample to render.
    */
-  const RenderMemoizedSample = React.useMemo(() => {
+  const renderMemoizedSample = React.useMemo(() => {
     switch (sample.type) {
       case "TEXT":
         return (
@@ -72,7 +72,7 @@ const Sample = (props: LanguageSampleProps) => {
 
   return (
     <div>
-      {RenderMemoizedSample}
+      {renderMemoizedSample}
       <Button onClick={() => onDelete(sample.id)}>
         {taggedForRemoval
           ? t("actions.cancel", { ns: "common" })

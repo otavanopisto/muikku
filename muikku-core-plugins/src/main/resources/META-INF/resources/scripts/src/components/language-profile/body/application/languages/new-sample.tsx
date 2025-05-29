@@ -164,7 +164,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
    * SampleComponent renders the appropriate sample input form based on the sampleType.
    * It uses React.memo to optimize rendering.
    */
-  const RenderSampleCreationComponent = React.useMemo(() => {
+  const renderSampleCreationComponent = React.useMemo(() => {
     switch (sampleType) {
       case "TEXT":
         return (
@@ -221,7 +221,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   return (
     <div className="language-profile__new-sample">
       <h2>Uusi näyte</h2>
-      <div>{RenderSampleCreationComponent}</div>
+      <div>{renderSampleCreationComponent}</div>
     </div>
   );
 };
