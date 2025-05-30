@@ -401,6 +401,12 @@ class MaterialLoader extends React.Component<
           state.answersVisible = true;
         }
       }
+      // Evaluation tool version because in the evaluation tool answers need to be visible and checked
+      // and information is passed in props
+      if (props.usedAs === "evaluationTool") {
+        state.answersVisible = props.answersVisible || false;
+        state.answersChecked = props.answersVisible || false;
+      }
     }
 
     //set the state
@@ -410,11 +416,6 @@ class MaterialLoader extends React.Component<
    * componentDidMount
    */
   componentDidMount() {
-    this.setState({
-      answersVisible: this.props.answersVisible && this.props.answersVisible,
-      answersChecked: this.props.answersVisible && this.props.answersVisible,
-    });
-
     //create the composite replies if using the boolean flag
     this.create();
   }
@@ -538,7 +539,7 @@ class MaterialLoader extends React.Component<
         ];
       if (!compositeRepliesInState) {
         compositeRepliesInState =
-          await workspaceApi.getWorkspaceCompositeMaterialReplies({
+          await workspaceApi.getWorkspaceUserCompositeReply({
             workspaceEntityId: this.props.workspace.id,
             workspaceMaterialId: this.props.material.assignment.id,
             userEntityId: userEntityIdToLoad,
@@ -694,7 +695,58 @@ class MaterialLoader extends React.Component<
   };
 
   /**
-   *
+   * isReadOnly
+   * @returns boolean
+   */
+  isReadOnly = () => {
+    // Parent props readOnly is true
+    if (this.props.readOnly) {
+      return true;
+    }
+
+    // If the material is locked, it is read only
+    if (this.props.compositeReplies) {
+      if (this.props.compositeReplies.lock !== "NONE") {
+        return true;
+      }
+    }
+
+    // If the material is answerable by parent props, and existing state configuration
+    // has fields-read-only set to true, it is read only
+    if (
+      this.props.answerable &&
+      this.state.stateConfiguration &&
+      this.state.stateConfiguration["fields-read-only"]
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  /**
+   * isAnswerable. Helper function to check if the material is answerable.
+   * Note that priority of conditions is different than isReadOnly.
+   * @returns boolean
+   */
+  isAnswerable = () => {
+    // If the material is locked, it is not answerable
+    if (this.props.compositeReplies) {
+      if (this.props.compositeReplies.lock !== "NONE") {
+        return false;
+      }
+    }
+
+    // If parent props answerable is true, it is answerable
+    if (this.props.answerable) {
+      return true;
+    }
+
+    // Defaults to false
+    return false;
+  };
+
+  /**
+   * render
    */
   render() {
     //The modifiers in use
@@ -730,6 +782,8 @@ class MaterialLoader extends React.Component<
       content = this.props.children(
         {
           ...this.props,
+          readOnly: this.isReadOnly(),
+          answerable: this.isAnswerable(),
           compositeReplies,
           onAnswerChange: this.onAnswerChange,
           onAnswerCheckableChange: this.onAnswerCheckableChange,

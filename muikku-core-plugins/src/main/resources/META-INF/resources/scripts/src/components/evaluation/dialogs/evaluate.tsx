@@ -80,6 +80,7 @@ class EvaluateDialog extends React.Component<
 
     this.props.loadCurrentStudentAssigmentsData({
       workspaceId: assessment.workspaceEntityId,
+      workspaceUserEntityId: assessment.workspaceUserEntityId,
     });
 
     this.props.loadEvaluationJournalFeedbackFromServer({

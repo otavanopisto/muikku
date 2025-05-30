@@ -332,6 +332,18 @@ class AssignmentEditor extends SessionStateComponent<
             },
           });
 
+      // If the evaluation type is supplementation request, we need to lock the page
+      if (dataToSave.evaluationType === "SUPPLEMENTATIONREQUEST") {
+        await evaluationApi.updateEvaluablePageLocks({
+          workspaceUserEntityId:
+            this.props.selectedAssessment.workspaceUserEntityId,
+          evaluationPageLock: {
+            locked: true,
+            workspaceMaterialId: workspaceMaterialId,
+          },
+        });
+      }
+
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,
         userEntityId: userEntityId,

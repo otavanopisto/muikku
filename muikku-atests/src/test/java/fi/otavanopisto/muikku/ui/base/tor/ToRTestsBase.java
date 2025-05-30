@@ -93,13 +93,13 @@ public class ToRTestsBase extends AbstractUITest {
       
       try {
         mockBuilder
-          .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, date)
+          .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, date)
           .mockCompositeGradingScales()
-          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, false, course1, student, date, true)
+          .addCompositeCourseAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, false, course1, student, date, true)
           .mockCompositeCourseAssessmentRequests()
-          .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, false, course1, student, admin.getId(), date, true)
+          .addStaffCompositeAssessmentRequest(student.getId(), course1.getId(), courseStudent.getId(), "Hello!", false, true, course1, student, admin.getId(), date, true)
           .mockStaffCompositeCourseAssessmentRequests()
-          .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, false, date)
+          .mockAssessmentRequests(student.getId(), course1.getId(), courseStudent.getId(), "Hello! I'd like to get assessment.", false, true, date)
           .mockCourseAssessments(course1, courseStudent, admin)
           .mockStudentCourseStats(student.getId(), 10).build();
         
@@ -177,11 +177,11 @@ public class ToRTestsBase extends AbstractUITest {
         waitForElementToBeClickable(".button--muikku-withdraw-assignment");
         
         mockBuilder
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, date)
+        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
         .mockCompositeGradingScales()
-        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, course1, student, date, false)
+        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, date, false)
         .mockCompositeCourseAssessmentRequests()
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), date, false)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, false)
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
@@ -203,7 +203,7 @@ public class ToRTestsBase extends AbstractUITest {
         waitForVisible(".evaluation-modal__item-header.state-EVALUATED");
         waitForVisible(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED");
         assertTextIgnoreCase(".evaluation-modal .evaluation-modal__item .evaluation-modal__item-meta .evaluation-modal__item-meta-item-data--grade.state-EVALUATED", "Excellent");
-        mockBuilder.addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, course1, student, admin.getId(), date, true);
+        mockBuilder.addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, course1, student, admin.getId(), date, true);
         logout();
         mockBuilder.mockLogin(student);
         login();

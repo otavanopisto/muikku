@@ -46,9 +46,11 @@ import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceJournalFeedback;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluablesLock;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEventType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestInterimEvaluationRequest;
@@ -609,6 +611,15 @@ public class EvaluationRESTService extends PluginRESTService {
         evaluationController.archiveInterimEvaluationRequest(request);
       }
     }
+    
+    // #7352: If a page is evaluated as supplementation requested, make sure it becomes unlocked
+    
+    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST) {
+      WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+      if (reply != null && reply.getLocked()) {
+        workspaceMaterialReplyController.updateWorkspaceMaterialReplyLocked(reply, false);
+      }
+    }
 
     // WorkspaceMaterialEvaluation to RestAssessment
     
@@ -736,6 +747,15 @@ public class EvaluationRESTService extends PluginRESTService {
           Boolean.FALSE);
       for (InterimEvaluationRequest request : requests) {
         evaluationController.archiveInterimEvaluationRequest(request);
+      }
+    }
+
+    // #7352: If a page is evaluated as supplementation requested, make sure it becomes unlocked
+    
+    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST) {
+      WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+      if (reply != null && reply.getLocked()) {
+        workspaceMaterialReplyController.updateWorkspaceMaterialReplyLocked(reply, false);
       }
     }
 
@@ -1471,46 +1491,96 @@ public class EvaluationRESTService extends PluginRESTService {
     return Response.ok(restAssessmentRequests).build();
   }
   
-  @PUT
-  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment/{ASSESSMENTREQUESTIDENTIFIER}/lock")
+  @GET
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/lock")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response toggleAssessmentRequestLock(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, @PathParam("ASSESSMENTREQUESTIDENTIFIER") String assessmentRequestId, RestAssessmentRequest payload) {
-    
+  public Response listLockedPages(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
+
     // Access check
     
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    if (StringUtils.isEmpty(payload.getIdentifier())) {
-      return Response.status(Status.BAD_REQUEST).entity("PUT without payload identifier").build();
-    }
-
-    // Entities and identifiers
+    
+    // Various required entities
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
     if (workspaceUserEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
     }
-    
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
-    UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier();
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    if (workspaceEntity == null || userSchoolDataIdentifier == null || workspace == null) {
-      return Response.status(Status.BAD_REQUEST).build();
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier());
+    
+    // List of locked page ids
+    
+    List<Long> workspaceMaterialIds = new ArrayList<>();
+    List<WorkspaceMaterialReply> workspaceMaterialReplies = workspaceMaterialReplyController.listWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, userEntity);
+    for (WorkspaceMaterialReply workspaceMaterialReply : workspaceMaterialReplies) {
+      if (workspaceMaterialReply.getLocked()) {
+        WorkspaceMaterialReplyState state = workspaceMaterialReply.getState();
+        // #7352: For pages that have already been evaluated or marked incomplete, their lock state is irrelevant 
+        if (state != WorkspaceMaterialReplyState.PASSED && state != WorkspaceMaterialReplyState.FAILED && state != WorkspaceMaterialReplyState.INCOMPLETE) {
+          workspaceMaterialIds.add(workspaceMaterialReply.getWorkspaceMaterial().getId());
+        }
+      }
     }
     
-    SchoolDataIdentifier assessmentRequestIdentifier = SchoolDataIdentifier.fromId(assessmentRequestId);
+    return Response.ok(workspaceMaterialIds).build();
+  }
+  
+  @PUT
+  @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/lock")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response toggleEvaluablesLock(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId, RestEvaluablesLock payload) {
 
-    WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.findWorkspaceAssessmentRequest(assessmentRequestIdentifier, workspaceEntity.schoolDataIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier());
+    // Access check
     
-    if (assessmentRequest == null) {
-      logger.warning(String.format("Workspace assessment request for workspaceUserEntityId %d not found", workspaceUserEntityId));
-      return Response.status(Status.NOT_FOUND).build();
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
-    gradingController.updateWorkspaceAssessmentLock(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), workspaceUserEntity.getIdentifier(), payload.getLocked());
+    // Various required entities
+    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityById(workspaceUserEntityId);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
+    }
+    WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().schoolDataIdentifier());
+    List<WorkspaceMaterial> workspaceMaterials = new ArrayList<>();
+    if (payload.getWorkspaceMaterialId() != null) {
+      // Toggle the lock of a single page
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(payload.getWorkspaceMaterialId());
+      if (workspaceMaterial == null) {
+        return Response.status(Status.NOT_FOUND).entity("WorkspaceMaterial not found").build();
+      }
+      if (workspaceMaterial.getAssignmentType() != WorkspaceMaterialAssignmentType.EVALUATED) {
+        return Response.status(Status.BAD_REQUEST).entity("WorkspaceMaterial is not an evaluable assignment").build();
+      }
+      workspaceMaterials.add(workspaceMaterial);
+    }
+    else {
+      // Toggle the lock of all evaluable pages
+      workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED, BooleanPredicate.IGNORE);
+    }
+    
+    // Create or update reply objects accordingly
+    
+    for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+      WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+      if (reply == null && payload.getLocked()) {
+        reply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.UNANSWERED, userEntity, true);
+      }
+      else if (reply != null && reply.getLocked() != payload.getLocked()) {
+       if (payload.getLocked() && reply.getState() == WorkspaceMaterialReplyState.INCOMPLETE) {
+         // Don't lock pages that have been marked incomplete
+         continue;
+       }
+       reply = workspaceMaterialReplyController.updateWorkspaceMaterialReplyLocked(reply, payload.getLocked());
+      }
+    }
 
-    return Response.ok(payload).build();
+    return Response.noContent().build();
   }
   
   @PUT
@@ -1554,8 +1624,7 @@ public class EvaluationRESTService extends PluginRESTService {
           request.getRequestText(),
           request.getDate(),
           Boolean.TRUE, // archived
-          request.getHandled(),
-          request.getLocked());
+          request.getHandled());
       }
       
       UserEntity studentEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());

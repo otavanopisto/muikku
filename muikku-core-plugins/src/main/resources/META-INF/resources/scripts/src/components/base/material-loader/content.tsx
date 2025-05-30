@@ -46,7 +46,8 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
       props.workspace.id,
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
-      props.stateConfiguration["success-text"]
+      props.stateConfiguration &&
+        props.stateConfiguration["success-text"] !== undefined
         ? i18n.t(props.stateConfiguration["success-text"], { ns: "materials" })
         : undefined
     );
@@ -74,7 +75,8 @@ function onModification(props: MaterialLoaderContentProps) {
       props.workspace.id,
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
-      props.stateConfiguration["success-text"]
+      props.stateConfiguration &&
+        props.stateConfiguration["success-text"] !== undefined
         ? i18n.t(props.stateConfiguration["success-text"], { ns: "materials" })
         : undefined,
       props.onAssignmentStateModified
@@ -118,18 +120,13 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
               props
             )}
             onModification={onModification.bind(this, props)}
-            readOnly={
-              props.readOnly ||
-              (props.answerable &&
-                props.stateConfiguration &&
-                props.stateConfiguration["fields-read-only"])
-            }
             compositeReplies={props.compositeReplies}
             displayCorrectAnswers={props.answersVisible}
             checkAnswers={props.answersChecked}
             onAnswerChange={props.onAnswerChange}
             onAnswerCheckableChange={props.onAnswerCheckableChange}
             invisible={props.invisible}
+            readOnly={props.readOnly}
             answerable={props.answerable}
             answerRegistry={props.answerRegistry}
           />

@@ -34,6 +34,16 @@
 
   .sorterfield__item {
     border-color: $color-disabled-taskfield-border;
+
+    // Correctanswer state for item when field is disabled
+    &.correct-answer {
+      border-color: $color-correct-answer;
+    }
+
+    // Incorrectanswer state for item when field is disabled
+    &.incorrect-answer {
+      border-color: $color-incorrect-answer;
+    }
   }
 
   .sorterfield__data-container {

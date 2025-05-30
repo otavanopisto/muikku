@@ -61,6 +61,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentCard;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContact;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
@@ -1861,4 +1862,39 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     return result;
   }
 
+  @Override
+  public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier) {
+
+    BridgeResponse<fi.otavanopisto.pyramus.rest.model.UserContact[]> userContacts = null;
+    Long userId = identifierMapper.getPyramusStudentId(userIdentifier.getIdentifier());
+    // If a user matching the student's ID is not found, an attempt will be made to
+    // get among the staff members
+    if (userId == null) {
+      userId = identifierMapper.getPyramusStaffId(userIdentifier.getIdentifier());
+    }
+    if (userId != null) {
+      userContacts = pyramusClient.responseGet(String.format("/contacts/users/%d/contacts", userId),
+          fi.otavanopisto.pyramus.rest.model.UserContact[].class);
+    }
+    else {
+      logger.severe(String.format("PyramusUserSchoolDataBridge.listUserContacts malformed user identifier %s\n%s",
+          userIdentifier, ExceptionUtils.getStackTrace(new Throwable())));
+    }
+
+    if (userContacts != null) {
+      List<UserContact> result = new ArrayList<>();
+
+      for (fi.otavanopisto.pyramus.rest.model.UserContact userContact : userContacts.getEntity()) {
+
+        UserContact contact = new UserContact(userContact.getId() ,userContact.getName(), userContact.getPhoneNumber(),
+            userContact.getEmail(), userContact.getStreetAddress(), userContact.getPostalCode(), userContact.getCity(), userContact.getCountry(), userContact.getContactType(), userContact.isDefaultContact());
+        
+        result.add(contact);
+      }
+
+      return result;
+    }
+
+    return Collections.emptyList();
+  }
 }

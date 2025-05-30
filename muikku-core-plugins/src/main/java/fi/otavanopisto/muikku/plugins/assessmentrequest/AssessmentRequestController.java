@@ -144,7 +144,7 @@ public class AssessmentRequestController {
     
     // Archive assessment request
     
-    return gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), studentEntity.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), true , assessmentRequest.getHandled(), assessmentRequest.getLocked());
+    return gradingController.updateWorkspaceAssessmentRequest(assessmentRequest.getSchoolDataSource(), assessmentRequest.getIdentifier(), assessmentRequest.getWorkspaceUserIdentifier(), assessmentRequest.getWorkspaceUserSchoolDataSource(), workspaceEntity.getIdentifier(), studentEntity.getDefaultIdentifier(), assessmentRequest.getRequestText(), assessmentRequest.getDate(), true , assessmentRequest.getHandled());
   }
 
   public CommunicatorMessageId findCommunicatorMessageId(WorkspaceUserEntity workspaceUserEntity) {
@@ -195,8 +195,7 @@ public class AssessmentRequestController {
           workspaceEntity.getId(), 
           userEntity.getId(), 
           workspaceAssessmentRequest.getRequestText(), 
-          workspaceAssessmentRequest.getDate(),
-          workspaceAssessmentRequest.getLocked());
+          workspaceAssessmentRequest.getDate());
   
       return restAssessmentRequest;
     }
