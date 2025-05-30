@@ -258,7 +258,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
           disabled={disabled}
         >
           <option disabled value="">
-            {t("labels.select", { ns: "hops" })}
+            {t("labels.select", { ns: "common" })}
           </option>
 
           {generalStudyOptions.length > 0 && (
@@ -321,7 +321,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
           disabled={disabled}
         >
           <option disabled value="">
-            {t("labels.select", { ns: "hops" })}
+            {t("labels.select", { ns: "common" })}
           </option>
 
           {!disabled ? termOptions : getOptionByValue(subject.term)}
@@ -358,7 +358,7 @@ const MatriculationSubjectsList = (props: MatriculationSubjectsListProps) => {
               onClick={handleMatriculationSubjectAdd}
               icon="plus"
             >
-              {t("actions.addSubject", { ns: "studies" })}
+              {t("actions.addSubject", { ns: "hops_new" })}
             </Button>
           </div>
         </div>

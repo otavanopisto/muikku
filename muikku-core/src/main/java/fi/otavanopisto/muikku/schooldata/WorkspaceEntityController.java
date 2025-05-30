@@ -292,6 +292,10 @@ public class WorkspaceEntityController {
   }
   
   public boolean canSignup(SchoolDataIdentifier userIdentifier, WorkspaceEntity workspaceEntity) {
+    // Check if user is already in course
+    if (workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, userIdentifier) != null) {
+      return false;
+    }
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findBySchoolDataIdentifier(userIdentifier);
     List<UserGroupUserEntity> userGroupUserEntities = userGroupUserEntityDAO.listByUserSchoolDataIdentifier(userSchoolDataIdentifier);
     return userGroupUserEntities.stream()

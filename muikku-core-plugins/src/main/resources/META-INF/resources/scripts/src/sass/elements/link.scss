@@ -4,7 +4,12 @@
 @import "../base/breakpoints";
 
 .link {
-  @include prefix(transition, moz ms webkit o, background-color 0.3s, color 0.3s);
+  @include prefix(
+    transition,
+    moz ms webkit o,
+    background-color 0.3s,
+    color 0.3s
+  );
 
   color: $color-link-default-text;
   cursor: pointer;
@@ -441,7 +446,10 @@
   }
 
   &.semi-selected {
-    background-color: lighten($color-main-function-label-link-selected-background, 20%);
+    background-color: lighten(
+      $color-main-function-label-link-selected-background,
+      20%
+    );
 
     .link__text {
       color: $color-text-link-selected;
@@ -563,4 +571,14 @@
 
 .link--to-student-guider {
   margin: 0 10px 0 0;
+}
+
+.link--study-planner-specify {
+  color: $color-info;
+  text-decoration: underline;
+}
+
+.link--study-planner-delete {
+  color: $color-fatal;
+  text-decoration: underline;
 }

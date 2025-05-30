@@ -76,7 +76,7 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
   return (
     <Select
       id={id}
-      className="react-select-override react-select-override--hops"
+      className="react-select-override react-select-override--pedagogy-form"
       classNamePrefix="react-select-override"
       isClearable
       placeholder={t("labels.search", {

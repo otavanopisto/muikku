@@ -142,7 +142,7 @@ const MatriculationPlan = (props: MatriculationPlanProps) => {
               </div>
             </div>
 
-            <div className=" application-sub-panel__notification-item">
+            <div className="application-sub-panel__notification-item">
               <div className="application-sub-panel__notification-body">
                 <div className="application-sub-panel__notification-title">
                   {t("content.matriculationPlanSubjectGoal", {

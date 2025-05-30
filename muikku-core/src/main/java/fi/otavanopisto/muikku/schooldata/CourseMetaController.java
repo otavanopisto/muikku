@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.schooldata;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,6 +56,33 @@ public class CourseMetaController {
     unknownCurriculums = new ConcurrentSkipListSet<>();
     unknownEducationTypes = new ConcurrentSkipListSet<>();
     unknownCourseLengthUnits = new ConcurrentSkipListSet<>();
+  }
+  
+  public List<SchoolDataIdentifier> educationTypeCodeToIdentifiers(String code) {
+    listEducationTypes(); // populate cache
+    List<SchoolDataIdentifier> identifiers = new ArrayList<>();
+    Enumeration<SchoolDataIdentifier> e = educationTypeCache.keys();
+    while (e.hasMoreElements()) {
+      SchoolDataIdentifier sdi = e.nextElement();
+      EducationType et = educationTypeCache.get(sdi);
+      if (StringUtils.equals(code, et.getCode())) {
+        identifiers.add(sdi);
+      }
+    }
+    return identifiers;
+  }
+
+  public SchoolDataIdentifier opsNameToIdentifier(String ops) {
+    listCurriculums(); // populate cache
+    Enumeration<SchoolDataIdentifier> e = curriculumCache.keys();
+    while (e.hasMoreElements()) {
+      SchoolDataIdentifier sdi = e.nextElement();
+      Curriculum c = curriculumCache.get(sdi);
+      if (StringUtils.equals(ops, c.getName())) {
+        return sdi;
+      }
+    }
+    return null;
   }
 
   /* Subjects */

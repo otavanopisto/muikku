@@ -184,7 +184,7 @@ const TocTopic = React.forwardRef<TocTopicRef, TocTopicProps>(
                 title={props.iconAfterTitle}
                 className={`toc__icon icon-${props.iconAfter}`}
                 style={{ color: props.iconAfterColor }}
-              ></span>
+              />
             ) : null}
           </a>
         ) : null}

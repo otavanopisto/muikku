@@ -165,7 +165,7 @@ export const useSupervisorOptionalSuggestions = (
      * there has happened some changes with that message
      */
     websocketState.websocket.addEventCallback(
-      "hops:optionalsuggestion-updated",
+      "hops:optional-suggestion-updated",
       onAnswerSavedAtServer
     );
 
@@ -174,7 +174,7 @@ export const useSupervisorOptionalSuggestions = (
        * Remove callback when unmounting
        */
       websocketState.websocket.removeEventCallback(
-        "hops:optionalsuggestion-updated",
+        "hops:optional-suggestion-updated",
         onAnswerSavedAtServer
       );
     };

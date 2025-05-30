@@ -52,6 +52,7 @@ export const DraggableElement: FC<DraggableElementProps> = ({
   }, [active]);
 
   const [{ opacity }, drag, preview] = useDrag({
+    type: ItemTypes.CARD,
     // eslint-disable-next-line jsdoc/require-jsdoc
     item: { type: ItemTypes.CARD, id, index },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, jsdoc/require-jsdoc
