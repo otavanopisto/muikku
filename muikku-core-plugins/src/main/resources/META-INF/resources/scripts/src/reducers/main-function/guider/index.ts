@@ -12,9 +12,6 @@ import {
   ContactType,
   UserFlag,
   UserGroup,
-  UserStudentAddress,
-  UserStudentEmail,
-  UserStudentPhoneNumber,
   CeeposOrder,
   CeeposPurchaseProduct,
   PedagogyFormAccess,
@@ -23,6 +20,7 @@ import {
   Note,
   StudentCourseChoice,
   OptionalCourseSuggestion,
+  UserContact,
 } from "~/generated/client";
 import { RecordWorkspaceActivitiesWithLineCategory } from "~/components/general/records-history/types";
 
@@ -105,12 +103,10 @@ export interface GuiderStudentUserProfileType {
   pastWorkspacesState: LoadingState;
   activityLogState: LoadingState;
   pedagogyFormState: LoadingState;
+  contactInfos: UserContact[];
   basic: GuiderStudent;
   labels: UserStudentFlag[];
   files: UserFile[];
-  emails: UserStudentEmail[];
-  phoneNumbers: UserStudentPhoneNumber[];
-  addresses: UserStudentAddress[];
   usergroups: Array<UserGroup>;
   // Disabled until it really works
   //  vops: VOPSDataType,
@@ -244,10 +240,8 @@ const initialGuiderState: GuiderState = {
     activityLogState: "LOADING",
     pedagogyFormState: "WAITING",
     basic: null,
+    contactInfos: [],
     labels: [],
-    emails: [],
-    phoneNumbers: [],
-    addresses: [],
     files: [],
     usergroups: [],
     hops: null,

@@ -77,6 +77,7 @@ import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.StudyProgrammeCategory;
 import fi.otavanopisto.pyramus.rest.model.Subject;
+import fi.otavanopisto.pyramus.rest.model.UserContact;
 import fi.otavanopisto.pyramus.rest.model.UserCredentials;
 import fi.otavanopisto.pyramus.rest.model.WhoAmI;
 import fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest;
@@ -1515,6 +1516,18 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder mockUserContact(MockStudent mockStudent) throws JsonProcessingException {
+        List<fi.otavanopisto.pyramus.rest.model.UserContact> userContacts = new ArrayList<>();
+        UserContact userContact = new UserContact(mockStudent.getId(), mockStudent.getFirstName() + " " + mockStudent.getLastName(), "0800123123", mockStudent.getEmail(), "test street", "0280128", "Testville", "Test city", "", true);
+        userContacts.add(userContact);
+        stubFor(get(urlEqualTo(String.format("/1/contacts/users/%d/contacts", mockStudent.getId())))
+            .willReturn(aResponse()
+              .withHeader("Content-type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(userContacts))
+              .withStatus(200))); 
+        return this;
+      }
+      
       public Builder build() throws Exception {
         mockDefaultOrganization();
         mockStudyProgrammes();
@@ -1536,7 +1549,6 @@ public class PyramusMock {
         mockStaffMembers();
         
         mockCourseActivities();
-        
         for (String payload : pmock.payloads) {
           TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         }
