@@ -401,6 +401,12 @@ class MaterialLoader extends React.Component<
           state.answersVisible = true;
         }
       }
+      // Evaluation tool version because in the evaluation tool answers need to be visible and checked
+      // and information is passed in props
+      if (props.usedAs === "evaluationTool") {
+        state.answersVisible = props.answersVisible || false;
+        state.answersChecked = props.answersVisible || false;
+      }
     }
 
     //set the state
@@ -410,11 +416,6 @@ class MaterialLoader extends React.Component<
    * componentDidMount
    */
   componentDidMount() {
-    this.setState({
-      answersVisible: this.props.answersVisible && this.props.answersVisible,
-      answersChecked: this.props.answersVisible && this.props.answersVisible,
-    });
-
     //create the composite replies if using the boolean flag
     this.create();
   }

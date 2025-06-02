@@ -5082,6 +5082,37 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+    
+  /rest/user/contacts/{userIdentifier}:
+    get:
+      operationId: getUserContacts
+      summary: Get user contacts
+      description: Get user contacts
+      tags:
+        - User
+      parameters:
+        - name: userIdentifier
+          in: path
+          description: User identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: UserContact
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserContact"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "500":
+          description: Internal server error
+
 
   /rest/guider/users/{userId}/contactLog:
     get:
@@ -13905,6 +13936,37 @@ components:
         userIdentifier:
           type: string
 
+    UserContact:
+      type: object
+      description: UserContact object
+      required:
+        - id
+        - email
+        - contactType
+        - defaultContact
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        phoneNumber:
+          type: string
+        email:
+          type: string
+        streetAddress:
+          type: string
+        postalCode:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        contactType:
+          type: string
+        defaultContact:
+          type: boolean
+
     GuidanceCounselorContact:
       type: object
       description: GuidanceCounselorContact object
@@ -18307,3 +18369,4 @@ components:
           format: int32
         message:
           type: string
+

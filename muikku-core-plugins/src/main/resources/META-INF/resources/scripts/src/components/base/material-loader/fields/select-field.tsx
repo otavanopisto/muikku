@@ -356,9 +356,7 @@ class SelectField extends React.Component<SelectFieldProps, SelectFieldState> {
 
     // The classname that represents the state of the whole field
     const fieldStateAfterCheck =
-      this.state.answerState !== "UNKNOWN" &&
-      this.props.displayCorrectAnswers &&
-      this.props.checkAnswers
+      this.state.answerState !== "UNKNOWN" && this.props.checkAnswers
         ? this.state.answerState === "FAIL"
           ? "incorrect-answer"
           : "correct-answer"

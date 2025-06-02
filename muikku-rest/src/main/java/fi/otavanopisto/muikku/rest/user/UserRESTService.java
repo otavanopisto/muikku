@@ -68,6 +68,7 @@ import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.rest.model.StudentAddress;
 import fi.otavanopisto.muikku.rest.model.StudentEmail;
 import fi.otavanopisto.muikku.rest.model.StudentPhoneNumber;
+import fi.otavanopisto.muikku.rest.model.UserContactRestModel;
 import fi.otavanopisto.muikku.schooldata.BridgeResponse;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -82,6 +83,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContact;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.schooldata.payload.StaffMemberPayload;
@@ -706,6 +708,31 @@ public class UserRESTService extends AbstractRESTService {
     return Response.ok(createRestModel(addresses.toArray(new UserAddress[0]))).build();
   }
 
+  @GET
+  @Path("/contacts/{ID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listUserContacts(@PathParam("ID") String id) {
+    
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(id);
+    if (userIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid userIdentifier %s", id)).build();
+    }
+    
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+    if (userEntity == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
+    }
+   
+    if (!userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.FIND_STUDENT)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    List<UserContact> userContacts = userController.listUserContacts(userIdentifier);
+    return Response.ok(createRestModel(userContacts.toArray(new UserContact[0]))).build();
+  }
+  
   @PUT
   @Path("/students/{ID}/addresses/{ADDRESSID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -1546,6 +1573,32 @@ public class UserRESTService extends AbstractRESTService {
         toId(transferCredit.getSchoolIdentifier()), 
         toId(transferCredit.getSubjectIdentifier()),
         toId(transferCredit.getCurriculumIdentifier()));
+  }
+  
+  private List<UserContactRestModel> createRestModel(UserContact[] userContacts) {
+    List<fi.otavanopisto.muikku.rest.model.UserContactRestModel> result = new ArrayList<>();
+    
+    if (userContacts != null) {
+      for (UserContact userContact : userContacts) {
+        result.add(createRestModel(userContact));
+      }
+    }
+    
+    return result;
+  }
+  
+  private UserContactRestModel createRestModel(UserContact userContact) {
+    return new fi.otavanopisto.muikku.rest.model.UserContactRestModel(
+        userContact.getId(),
+        userContact.getName(), 
+        userContact.getPhoneNumber(), 
+        userContact.getEmail(), 
+        userContact.getStreetAddress(),
+        userContact.getPostalCode(),
+        userContact.getCity(),
+        userContact.getCountry(),
+        userContact.getContactType(),
+        userContact.isDefaultContact());
   }
   
   private String toId(SchoolDataIdentifier identifier) {

@@ -19,6 +19,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContact;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
@@ -284,5 +285,8 @@ public interface UserSchoolDataBridge {
    * @return list of workspace information
    */
   public List<GuardiansDependentWorkspace> listGuardiansDependentsWorkspaces(SchoolDataIdentifier guardianUserIdentifier, SchoolDataIdentifier studentIdentifier);
+
+  
+  public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier);
 
 }
