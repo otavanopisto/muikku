@@ -1,5 +1,6 @@
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
+import { Link as RouterLink } from "react-router-dom";
 import * as React from "react";
 import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
@@ -122,22 +123,36 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
    * @returns React.ReactNode
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  renderProfileLink = (item: any, closeDropdown: () => any) => (
-    <Link
-      href={item.href}
-      to={item.to ? item.href : null}
-      className="link link--full link--profile-dropdown"
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onClick={(...args: any[]) => {
-        closeDropdown();
-        item.onClick && item.onClick(...args);
-      }}
-      openInNewTab={item.openInNewTab}
-    >
-      <span className={`link__icon icon-${item.icon}`}></span>
-      <span>{item.text}</span>
-    </Link>
-  );
+  renderProfileLink = (item: any, closeDropdown: () => any) =>
+    item.to ? (
+      <RouterLink
+        to={item.href}
+        className="link link--full link--profile-dropdown"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onClick={(...args: any[]) => {
+          closeDropdown();
+          item.onClick && item.onClick(...args);
+        }}
+      >
+        <span className={`link__icon icon-${item.icon}`}></span>
+        <span>{item.text}</span>
+      </RouterLink>
+    ) : (
+      <Link
+        href={item.href}
+        to={item.to ? item.href : null}
+        className="link link--full link--profile-dropdown"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onClick={(...args: any[]) => {
+          closeDropdown();
+          item.onClick && item.onClick(...args);
+        }}
+        openInNewTab={item.openInNewTab}
+      >
+        <span className={`link__icon icon-${item.icon}`}></span>
+        <span>{item.text}</span>
+      </Link>
+    );
 }
 
 /**

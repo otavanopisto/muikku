@@ -5,6 +5,7 @@
  */
 
 import Link from "../link";
+import { Link as RouterLink } from "react-router-dom";
 import * as React from "react";
 import { logout, LogoutTriggerType } from "~/actions/base/status";
 import { connect } from "react-redux";
@@ -291,9 +292,9 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                 ) : null}
                 {this.props.status.loggedIn ? (
                   <li className="menu__item menu__item--main">
-                    <Link
+                    <RouterLink
                       className="menu__item-link menu__item-link--profile"
-                      href="/profile"
+                      to="/profile"
                     >
                       {this.props.status.hasImage ? (
                         <img
@@ -310,7 +311,7 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                       <span className="menu__item-link-text">
                         {this.props.t("labels.personalInfo")}
                       </span>
-                    </Link>
+                    </RouterLink>
                   </li>
                 ) : null}
                 {this.props.status.loggedIn ? (
