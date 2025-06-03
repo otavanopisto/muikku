@@ -454,7 +454,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitAndClick(".navbar__item--settings a");
         waitForPresent("input#usergroup1");
         scrollIntoView("input#usergroup1");
-        waitAndClick("input#usergroup1");
         scrollIntoView(".button--primary-function-save");
         waitAndClick(".button--primary-function-save");
         waitForVisible(".notification-queue__items");
@@ -465,7 +464,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         login();
         navigate("/coursepicker", false);
         waitForVisible(".application-panel__actions-aside ");
-//        refresh();
         waitForVisible(".application-panel__content-main.loader-empty .application-list__item-header--course");
         waitAndClick(".application-panel__content-main.loader-empty .application-list__item-header--course");
         waitAndClick(".button--coursepicker-course-action:nth-of-type(2)");
@@ -473,10 +471,12 @@ public class CourseManagementTestsBase extends AbstractUITest {
         
         MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
         
+        waitAndClickAndConfirm(".button--standard-ok", ".button--standard-ok.disabled", 10, 300);
+
         mockBuilder
-          .addCourseStudent(course1.getId(), courseStudent)
-          .build();
-        waitAndClick(".button--standard-ok");
+        .addCourseStudent(course1.getId(), courseStudent)
+        .build();
+        
         waitForPresent(".hero__workspace-title");
         
         logout();

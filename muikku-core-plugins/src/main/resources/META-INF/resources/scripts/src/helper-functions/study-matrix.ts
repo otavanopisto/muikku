@@ -28,9 +28,9 @@ const RELIGION_SUBJECTS_CS = ["ue", "uo", "et"];
 const NATIVE_LANGUAGE_SUBJECTS_CS = ["äi", "s2"];
 
 const RELIGION_SUBJECTS_US = ["UE", "UO", "UI", "UK", "UJ", "UX", "ET"];
-const NATIVE_LANGUAGE_SUBJECTS_US = ["ÄI", "S2"];
+const NATIVE_LANGUAGE_SUBJECTS_US = ["ÄI", "ÄIM", "S2"];
 const MATHEMATIC_SUBJECTS_US = ["MAA", "MAB"];
-const LANGUAGE_SUBJECTS_A1_US = ["ENA", "RAA", "RUA", "SAA", "VEA"];
+const LANGUAGE_SUBJECTS_A1_US = ["ENA", "RAA", "RUA", "SAA", "VEA", "EAA"];
 const LANGUAGE_SUBJECTS_B1_US = ["RUB1"];
 const LANGUAGE_SUBJECTS_B2_US = ["EAB2", "IAB2", "RAB2", "SAB2", "VEB2"];
 const LANGUAGE_SUBJECTS_B3_US = [
@@ -46,6 +46,9 @@ const LANGUAGE_SUBJECTS_B3_US = [
   "JPB3",
   "KOB3",
   "KXB3",
+  "ENB3",
+  "KIB3",
+  "POB3",
 ];
 
 const SUBJECTS_NOT_INCLUDED = [
@@ -133,10 +136,12 @@ export const filterUpperSecondarySubjects = (
     indexOf !== -1 && subjectsToFilterOut.splice(indexOf, 1);
   });
 
-  // Return actual filtered table
-  return schoolCourseTable.filter(
+  const table = schoolCourseTable.filter(
     (subject) => !subjectsToFilterOut.includes(subject.subjectCode)
   );
+
+  // Return actual filtered table
+  return table;
 };
 
 /**

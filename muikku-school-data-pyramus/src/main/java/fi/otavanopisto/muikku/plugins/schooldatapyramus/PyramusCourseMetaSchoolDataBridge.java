@@ -99,7 +99,7 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
     Long educationTypeId = pyramusIdentifierMapper.getPyramusEducationTypeId(identifier);
     fi.otavanopisto.pyramus.rest.model.EducationType restEducationType = pyramusClient.get("/common/educationTypes/" + educationTypeId, fi.otavanopisto.pyramus.rest.model.EducationType.class);
     if (restEducationType != null) {
-      return new PyramusEducationType(new SchoolDataIdentifier(identifier, getSchoolDataSource()), restEducationType.getName());
+      return new PyramusEducationType(new SchoolDataIdentifier(identifier, getSchoolDataSource()), restEducationType.getName(), restEducationType.getCode());
     }
     
     return null;
@@ -113,7 +113,7 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
     if (types != null) {
       for (fi.otavanopisto.pyramus.rest.model.EducationType type : types) {
         SchoolDataIdentifier identifier = pyramusIdentifierMapper.getEducationTypeIdentifier(type.getId());
-        result.add(new PyramusEducationType(identifier, type.getName())); 
+        result.add(new PyramusEducationType(identifier, type.getName(), type.getCode())); 
       }
     }
     
