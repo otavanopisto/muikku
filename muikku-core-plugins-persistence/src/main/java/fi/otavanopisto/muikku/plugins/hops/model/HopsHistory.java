@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
+//TODO Add userEntityId + category index after conversion
 public class HopsHistory {
 
   public Long getId() {
@@ -61,13 +62,36 @@ public class HopsHistory {
     this.changes = changes;
   }
 
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  
+  @Column
+  // TODO Make non-nullable after conversion
+  private Long userEntityId;
+  
+  @Column
+  // TODO Make non-nullable after conversion
+  private String category;
 
-  @NotNull
-  @NotEmpty
-  @Column(nullable = false)
+  @Column
+  // TODO Remove after conversion
   private String studentIdentifier;
 
   @NotNull

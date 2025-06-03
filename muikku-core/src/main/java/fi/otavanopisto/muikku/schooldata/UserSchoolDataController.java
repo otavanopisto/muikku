@@ -31,6 +31,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContact;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
@@ -364,6 +365,14 @@ public class UserSchoolDataController {
       throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
     }
     return getUserBridge(schoolDataSource).listUserPhoneNumbers(userIdentifier);
+  }
+  
+  public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier){
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).listUserContacts(userIdentifier);
   }
 
   public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {

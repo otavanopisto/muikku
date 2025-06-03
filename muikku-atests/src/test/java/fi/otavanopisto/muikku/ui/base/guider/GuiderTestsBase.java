@@ -46,7 +46,6 @@ import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRoleEnum;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
-import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
 
 public class GuiderTestsBase extends AbstractUITest {
   
@@ -155,6 +154,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockStudentCourseStats(student.getId(), 25)
     .mockMatriculationEligibility(student.getId(), false)
     .mockIAmCounselor()
+    .mockUserContact(student)
     .build();
     login();
     
@@ -217,8 +217,6 @@ public class GuiderTestsBase extends AbstractUITest {
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).addCourse(course1).build();
       Long courseId = course1.getId();
-      Double price = 0d;
-      CourseAssessmentPrice courseBasePrice = new CourseAssessmentPrice(price);
       
       login();
       Workspace workspace = createWorkspace(course1, Boolean.TRUE);
@@ -236,6 +234,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .addCourseStaffMember(course1.getId(), courseStaffMember)
         .addCourseStudent(course1.getId(), courseStudent)
         .mockEmptyStudyActivity()
+        .mockUserContact(student)
         .build();
 
       WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
@@ -284,11 +283,11 @@ public class GuiderTestsBase extends AbstractUITest {
         .build();
         
         mockBuilder
-          .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, date)
+          .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
           .mockCompositeGradingScales()
-          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, false)
+          .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date, false)
           .mockCompositeCourseAssessmentRequests()
-          .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
+          .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, false)
           .mockStaffCompositeCourseAssessmentRequests()
           .mockIAmCounselor();
         
@@ -297,9 +296,9 @@ public class GuiderTestsBase extends AbstractUITest {
         login();
         
         mockBuilder
-        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, true)
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date, true)
         .mockStaffCompositeCourseAssessmentRequests()
-        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, false, date);
+        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, date);
       
         // First test the course listing in the "situation"-tab
         mockBuilder.mockCourseAssessments(course1, courseStudent, admin);          
@@ -351,6 +350,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addCourse(course3)
       .mockEmptyStudyActivity()
       .mockIAmCounselor()
+      .mockUserContact(student)
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -400,6 +400,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addStaffMember(admin)
       .mockLogin(admin)
       .addCourse(course1)
+      .mockUserContact(student)
       .build();
       login();
       Workspace workspace1 = createWorkspace(course1, Boolean.TRUE);
@@ -448,6 +449,7 @@ public class GuiderTestsBase extends AbstractUITest {
       mockBuilder
         .addCourseStudent(course1.getId(), mcs)
         .addCourseStaffMember(course1.getId(), courseStaffMember)
+        .mockUserContact(student)
         .build();
       try {
         selectFinnishLocale();
@@ -486,6 +488,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStudentGroups()
         .mockEmptyStudyActivity()
         .mockIAmCounselor()
+        .mockUserContact(student)
         .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 10).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -586,6 +589,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .mockStudentGroups()
       .mockEmptyStudyActivity()
       .mockIAmCounselor()
+      .mockUserContact(student)
       .build();
       Course course1 = new CourseBuilder().name("aasdgz").id((long) 12).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -645,6 +649,7 @@ public class GuiderTestsBase extends AbstractUITest {
         .mockStudentGroups()
         .mockEmptyStudyActivity()
         .mockIAmCounselor()
+        .mockUserContact(student)
         .build();
       Course course1 = new CourseBuilder().name("Tests").id((long) 13).description("test coursemus for testing").buildCourse();
       mockBuilder
@@ -799,6 +804,7 @@ public class GuiderTestsBase extends AbstractUITest {
     .mockMatriculationEligibility(student.getId(), false)
     .mockEmptyStudyActivity()
     .mockIAmCounselor()
+    .mockUserContact(student)
     .build();
     login();
     

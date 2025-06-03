@@ -77,6 +77,7 @@ import fi.otavanopisto.pyramus.rest.model.StudentMatriculationEligibilityOPS2021
 import fi.otavanopisto.pyramus.rest.model.StudyProgramme;
 import fi.otavanopisto.pyramus.rest.model.StudyProgrammeCategory;
 import fi.otavanopisto.pyramus.rest.model.Subject;
+import fi.otavanopisto.pyramus.rest.model.UserContact;
 import fi.otavanopisto.pyramus.rest.model.UserCredentials;
 import fi.otavanopisto.pyramus.rest.model.WhoAmI;
 import fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest;
@@ -887,11 +888,11 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, boolean locked, OffsetDateTime date) throws JsonProcessingException {
+      public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date) throws JsonProcessingException {
         List<CourseAssessmentRequest> assessmentRequests = new ArrayList<CourseAssessmentRequest>();
         
         if (courseStudentId != null && requestText != null) {
-          CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled, locked);
+          CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled);
           assessmentRequests.add(assessmentRequest);
           
           stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, assessmentRequest.getId())))
@@ -930,8 +931,8 @@ public class PyramusMock {
         return this;
       }
 
-      public Builder mockAssessmentRequestLocking(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, boolean locked, OffsetDateTime date) throws JsonProcessingException {
-        CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled, locked);
+      public Builder mockAssessmentRequestLocking(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date) throws JsonProcessingException {
+        CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled);
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d/courseStudents/%d/assessmentRequest/lock", courseId, courseStudentId)))
           .willReturn(aResponse()
             .withHeader("Content-Type", "application/json")
@@ -974,9 +975,9 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder addCompositeCourseAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, boolean locked, Course course, MockStudent courseStudent, OffsetDateTime date, boolean passing) {
+      public Builder addCompositeCourseAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, Course course, MockStudent courseStudent, OffsetDateTime date, boolean passing) {
         OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-        CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled, locked);
+        CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled);
 
         CompositeAssessmentRequest assessmentRequest = new CompositeAssessmentRequest();
         assessmentRequest.setId(Long.parseLong(courseId + "" + studentId));
@@ -995,7 +996,6 @@ public class PyramusMock {
         assessmentRequest.setLastName(courseStudent.getLastName());
         assessmentRequest.setStudyProgramme("Test Study Programme");
         assessmentRequest.setUserId(studentId);
-        assessmentRequest.setLocked(locked);
         assessmentRequest.setPassing(passing);
         
         List<CompositeAssessmentRequest> existingRequests = pmock.compositeCourseAssessmentRequests.get(courseId);
@@ -1034,10 +1034,10 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder addStaffCompositeAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, boolean locked,
+      public Builder addStaffCompositeAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled,
           Course course, MockStudent courseStudent, Long staffMemberId, OffsetDateTime date, boolean passing) {
         OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-        CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled, locked);
+        CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(Long.parseLong(courseId + "" + studentId), courseStudentId, date, requestText, archived, handled);
         CompositeAssessmentRequest assessmentRequest = new CompositeAssessmentRequest();
         assessmentRequest.setId(Long.parseLong(courseId + "" + studentId));
         assessmentRequest.setCourseStudentId(courseStudentId);
@@ -1056,7 +1056,6 @@ public class PyramusMock {
         assessmentRequest.setLastName(courseStudent.getLastName());
         assessmentRequest.setStudyProgramme("Test Study Programme");
         assessmentRequest.setUserId(studentId);
-        assessmentRequest.setLocked(locked);
         List<CompositeAssessmentRequest> existingRequests = pmock.compositeStaffAssessmentRequests.get(staffMemberId);
         List<CompositeAssessmentRequest> toRemove = new ArrayList<>();
         if(existingRequests != null) {
@@ -1517,6 +1516,18 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder mockUserContact(MockStudent mockStudent) throws JsonProcessingException {
+        List<fi.otavanopisto.pyramus.rest.model.UserContact> userContacts = new ArrayList<>();
+        UserContact userContact = new UserContact(mockStudent.getId(), mockStudent.getFirstName() + " " + mockStudent.getLastName(), "0800123123", mockStudent.getEmail(), "test street", "0280128", "Testville", "Test city", "", true);
+        userContacts.add(userContact);
+        stubFor(get(urlEqualTo(String.format("/1/contacts/users/%d/contacts", mockStudent.getId())))
+            .willReturn(aResponse()
+              .withHeader("Content-type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(userContacts))
+              .withStatus(200))); 
+        return this;
+      }
+      
       public Builder build() throws Exception {
         mockDefaultOrganization();
         mockStudyProgrammes();
@@ -1538,7 +1549,6 @@ public class PyramusMock {
         mockStaffMembers();
         
         mockCourseActivities();
-        
         for (String payload : pmock.payloads) {
           TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         }

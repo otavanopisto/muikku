@@ -19,6 +19,7 @@ import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.StudyProgramme;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserContact;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
@@ -112,6 +113,10 @@ public class UserController {
   
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserPhoneNumbers(userIdentifier);
+  }
+  
+  public List<UserContact> listUserContacts(SchoolDataIdentifier userIdentifier) {
+    return userSchoolDataController.listUserContacts(userIdentifier);
   }
   
   public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {

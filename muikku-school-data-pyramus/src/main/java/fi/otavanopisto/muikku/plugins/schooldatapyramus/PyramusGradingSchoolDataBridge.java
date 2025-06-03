@@ -353,7 +353,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null;
     }
     else {
-      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE, Boolean.FALSE, Boolean.FALSE);
+      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE, Boolean.FALSE);
       return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), courseAssessmentRequest));
     }
   }
@@ -583,7 +583,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier,
       String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
-      String requestText, Date date, Boolean archived, Boolean handled, Boolean locked) {
+      String requestText, Date date, Boolean archived, Boolean handled) {
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
@@ -609,7 +609,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, archived, handled, locked);
+    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, archived, handled);
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), courseAssessmentRequest));
   }
 
@@ -729,44 +729,6 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       dateParams.append("&").append("to=").append(toDate.toInstant().toString());
     
     return pyramusClient.get(String.format("/students/students/%d/courseAssessmentCount/?onlyPassingGrades=%s%s", studentId, onlyPassingGrades, dateParams.toString()), Long.class);
-  }
-
-  @Override
-  public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequestLock(String identifier,
-      String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier,
-      String studentIdentifier, boolean locked) {
-    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
-    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
-    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
-    Long id = NumberUtils.createLong(identifier);
-    
-    if (courseStudentId == null) {
-      logger.severe(String.format("Could not translate %s to Pyramus course student", workspaceUserIdentifier));
-      return null; 
-    }
-    
-    if (courseId == null) {
-      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
-      return null; 
-    }
-    
-    if (studentId == null) {
-      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
-      return null; 
-    }
-    
-    if (id == null) {
-      logger.severe(String.format("Could not translate %s to Pyramus assessment", identifier));
-      return null; 
-    }
-    
-    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest();
-    
-    courseAssessmentRequest.setId(id);
-    courseAssessmentRequest.setLocked(locked);
-    courseAssessmentRequest.setCourseStudentId(courseStudentId);
-    return entityFactory.createEntity(pyramusClient.put(String.format("/courses/courses/%d/courseStudents/%d/assessmentRequest/lock", courseId, courseStudentId), courseAssessmentRequest));
-  
   }
 
 }

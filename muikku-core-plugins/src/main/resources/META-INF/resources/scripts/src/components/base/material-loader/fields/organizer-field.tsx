@@ -878,7 +878,7 @@ class OrganizerField extends React.Component<
 
     // if elements is disabled
     const elementDisabledStateClassName = this.props.readOnly
-      ? "organizerfield-disabled"
+      ? "organizerfield--disabled"
       : "";
 
     const fieldSavedStateClass = createFieldSavedStateClass(
@@ -1111,7 +1111,6 @@ class OrganizerField extends React.Component<
                             // showhing whether terms are right or not is only worth it if whole answer if not right and the category itself is not right
                             // otherwise it's reduntant, if the whole thing is right or the category is right then every term is right too
                             const itemStateAfterCheck =
-                              this.props.displayCorrectAnswers &&
                               this.props.checkAnswers &&
                               !answerIsCheckedAndItisCorrect &&
                               this.state.answerState &&

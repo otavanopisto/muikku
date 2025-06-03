@@ -8,6 +8,7 @@ import {
   MatriculationExamFinishedSubject,
   MatriculationExamPlannedSubject,
   MatriculationExamEnrollment,
+  CourseStatus,
 } from "~/generated/client";
 
 /**
@@ -302,11 +303,30 @@ export interface SchoolSubject {
  * Course
  */
 export interface Course {
+  /**
+   * Identifier of the course, that can be added if frontend logic needs it
+   */
+  identifier?: string;
   name: string;
   courseNumber: number;
   length: number;
   mandatory: boolean;
 }
+
+export const courseFilter = [
+  "available",
+  "mandatory",
+  "optional",
+  "planned",
+  CourseStatus.Ongoing,
+  CourseStatus.Graded,
+  CourseStatus.Supplementationrequest,
+  CourseStatus.Transferred,
+  CourseStatus.SuggestedNext,
+  CourseStatus.SuggestedOptional,
+] as const;
+
+export type CourseFilter = (typeof courseFilter)[number];
 
 /**
  * UploadingValue
@@ -401,5 +421,5 @@ export type HopsWebsocketMessage =
   | "hops:workspace-suggested"
   | "hops:workspace-signup"
   | "hops:alternative-study-options"
-  | "hops:optionalsuggestion-updated"
+  | "hops:optional-suggestion-updated"
   | "hops:studentchoice-updated";
