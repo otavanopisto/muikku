@@ -1148,8 +1148,16 @@ paths:
                 type: string
         "400":
           description: Invalid request was sent to the server
+          content:
+            text/plain:
+              schema:
+                type: string
         "403":
           description: Attempted to make a call with unauthorized client
+          content:
+            text/plain:
+              schema:
+                type: string
         "500":
           description: Internal server error
 
@@ -5082,7 +5090,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-    
+
   /rest/user/contacts/{userIdentifier}:
     get:
       operationId: getUserContacts
@@ -5112,7 +5120,6 @@ paths:
           description: Attempted to make a call with unauthorized client
         "500":
           description: Internal server error
-
 
   /rest/guider/users/{userId}/contactLog:
     get:
@@ -18617,4 +18624,3 @@ components:
           format: int32
         message:
           type: string
-

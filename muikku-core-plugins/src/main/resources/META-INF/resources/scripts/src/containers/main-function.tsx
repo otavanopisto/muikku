@@ -1294,9 +1294,33 @@ export default class MainFunction extends React.Component<
             Can be removed after test are reworked */}
               <Route path="/discussion" render={this.renderDiscussionBody} />
 
-              <Route path="/ceepos/pay" render={this.renderCeeposPayBody} />
+              <Route
+                path="/ceepos/pay"
+                render={() => (
+                  <ProtectedRoute
+                    requireAuth
+                    hasPermission={true}
+                    isAuthenticated={isAuthenticated}
+                    loginPath={`/login?redirectUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`}
+                  >
+                    {this.renderCeeposPayBody()}
+                  </ProtectedRoute>
+                )}
+              />
 
-              <Route path="/ceepos/done" render={this.renderCeeposDoneBody} />
+              <Route
+                path="/ceepos/done"
+                render={() => (
+                  <ProtectedRoute
+                    requireAuth
+                    hasPermission={true}
+                    isAuthenticated={isAuthenticated}
+                    loginPath={`/login?redirectUrl=${window.location.href}`}
+                  >
+                    {this.renderCeeposDoneBody()}
+                  </ProtectedRoute>
+                )}
+              />
 
               <Route
                 path="/forgotpassword/reset"
