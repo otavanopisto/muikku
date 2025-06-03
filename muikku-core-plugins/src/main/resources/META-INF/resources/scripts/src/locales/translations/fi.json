@@ -2837,7 +2837,12 @@
     "labels": {
       "initialization": "Alkukartoitus",
       "languages": "Kielet",
-      "cv": "Kieli-cv"
+      "cv": "Kieli-cv",
+      "languageSkillBeginger": "Vasta-alkaja",
+      "languageSkillExcellence": "Erinomainen",
+      "languageSkillGood": "Hyvä",
+      "languageSkillMediocre": "Kohtalainen",
+      "languageSkillNative": "Natiivi"
     },
     "notifications": {
       "createError": "Kieliprofiilin luonti epäonnistui:{{error}}",

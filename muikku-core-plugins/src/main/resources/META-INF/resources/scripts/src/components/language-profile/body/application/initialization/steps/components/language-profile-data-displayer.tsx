@@ -41,7 +41,9 @@ const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
         {labels && (
           <TableHead modifiers={["sticky"]}>
             <Tr>
-              <Th modifiers={["centered"]}>{title ? title : "Kieli"}</Th>
+              <Th modifiers={["centered", "language-profile-first-cell"]}>
+                {title ? title : "Kieli"}
+              </Th>
               {labels.map((label) => (
                 <Th modifiers={["centered"]} key={label}>
                   {label}
@@ -62,7 +64,10 @@ const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
                 onClick={() => onItemClick?.(item)}
                 modifiers={[`${isDisabled ? "DISABLED" : ""}`]}
               >
-                <Td modifiers={["centered"]} key={item.code}>
+                <Td
+                  modifiers={["centered", "language-profile-first-cell"]}
+                  key={item.code}
+                >
                   {item.name}
                 </Td>
                 {labels &&

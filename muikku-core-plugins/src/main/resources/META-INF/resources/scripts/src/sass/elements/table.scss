@@ -140,6 +140,11 @@
   text-align: center;
 }
 
+.table__head--language-profile-first-cell,
+.table__data--language-profile-first-cell {
+  width: 200px;
+}
+
 .table__head--right,
 .table__data--right {
   text-align: right;

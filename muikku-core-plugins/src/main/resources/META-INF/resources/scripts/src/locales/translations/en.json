@@ -2835,7 +2835,12 @@
     "labels": {
       "initialization": "Initialization",
       "languages": "Languages",
-      "cv": "Language-cv"
+      "cv": "Language-cv",
+      "languageSkillBeginger": "Vasta-alkaja",
+      "languageSkillExcellence": "Erinomainen",
+      "languageSkillGood": "Hyvä",
+      "languageSkillMediocre": "Kohtalainen",
+      "languageSkillNative": "Natiivi"
     },
     "notifications": {
       "createError": "$t(common:notifications.createError)",

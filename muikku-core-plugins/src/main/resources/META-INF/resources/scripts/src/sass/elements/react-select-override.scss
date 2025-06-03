@@ -142,6 +142,18 @@
   }
 }
 
+.react-select-override--language-profile-form {
+  .react-select-override__control {
+    border-color: $color-language-profile-form-element-border;
+    height: auto;
+    max-width: unset;
+
+    &:hover {
+      border-color: $color-language-profile-form-element-border;
+    }
+  }
+}
+
 .react-select-override--chat {
   .react-select-override__control {
     border-color: $color-chat-primary;

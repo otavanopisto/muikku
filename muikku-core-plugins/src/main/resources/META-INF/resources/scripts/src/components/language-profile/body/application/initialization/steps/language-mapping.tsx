@@ -26,13 +26,43 @@ const LanguageMapping = () => {
   );
 
   const skillsOptions: OptionDefault<SkillLevels>[] = [
-    { label: "Natiivi", value: "N" },
-    { label: "Erinomainen", value: "E" },
-    { label: "Hyvä", value: "H" },
-    { label: "Kohtalainen", value: "K" },
-    { label: "Vasta-alkaja", value: "V" },
+    {
+      label: t("labels.languageSkillNative", {
+        ns: "languageProfile",
+      }),
+      value: "N",
+    },
+    {
+      label: t("labels.languageSkillExcellence", {
+        ns: "languageProfile",
+      }),
+      value: "E",
+    },
+    {
+      label: t("labels.languageSkillGood", {
+        ns: "languageProfile",
+      }),
+      value: "H",
+    },
+    {
+      label: t("labels.languageSkillMediocre", {
+        ns: "languageProfile",
+      }),
+      value: "K",
+    },
+    {
+      label: t("labels.languageSkillBeginger", {
+        ns: "languageProfile",
+      }),
+      value: "V",
+    },
   ];
 
+  /**
+   * @param value Language levels value
+   * @param cellId The ID of the cell
+   * @param code Language code
+   */
   const handleLanguageLevelsSelectChange = (
     value: LanguageLevels,
     cellId: string,
@@ -65,6 +95,8 @@ const LanguageMapping = () => {
 
     return (
       <Select
+        className="react-select-override react-select-override--language-profile-form"
+        classNamePrefix="react-select-override"
         value={selectedValue}
         onChange={(value) =>
           handleLanguageLevelsSelectChange(value.value, cellId, languageCode)
@@ -91,6 +123,8 @@ const LanguageMapping = () => {
 
     return (
       <Select
+        className="react-select-override react-select-override--language-profile-form"
+        classNamePrefix="react-select-override"
         value={selectedValue}
         onChange={(value) =>
           handleSkillsSelectChange(value.value, cellId, languageCode)
@@ -122,33 +156,45 @@ const LanguageMapping = () => {
   };
 
   return (
-    <div>
-      <h1>Kielitaidon tasot</h1>
-      <div>
-        Arvioi omaa kielitaitoasi alla olevan asteikon avulla. Pohdi
-        kielitaitoasi eri osaamisalueiden kannalta, ja merkitse taulukkoon se
-        taitotaso (esim. A2.1), jonka kuvaus vastaa mielestäsi parhaiten
-        tämänhetkistä tilannettasi kunkin kielen kohdalla.
-      </div>
-      <DisplayLanguages
-        rows={languages}
-        labels={[
-          "Taito toimia vuorovaikutuksessa",
-          "Taito tulkita tekstejä",
-          "Taito tuottaa tekstejä",
-        ]}
-        cellAction={languageLevelsSelect}
-      />
-      <h1>Taidot osa-alueittain</h1>
-      <div>
-        Kuinka kuvailisit taitojasi eri kielissä ääntämisen, kieliopin, sanaston
-        ja kielellisten varianttien suhteen?
-      </div>
-      <DisplayLanguages
-        rows={languages}
-        labels={["Ääntäminen", "Kielioppi", "Sanasto", "Variantit"]}
-        cellAction={skillsSelect}
-      />
+    <div className="language-profile-container">
+      <fieldset className="language-profile-container__fieldset">
+        <legend className="language-profile-container__subheader">
+          Kielten käyttäminen ja opiskeleminen
+        </legend>
+        <div className="language-profile-container__fieldset-description">
+          Arvioi omaa kielitaitoasi alla olevan asteikon avulla. Pohdi
+          kielitaitoasi eri osaamisalueiden kannalta, ja merkitse taulukkoon se
+          taitotaso (esim. A2.1), jonka kuvaus vastaa mielestäsi parhaiten
+          tämänhetkistä tilannettasi kunkin kielen kohdalla.
+        </div>
+        <div className="language-profile-container__row">
+          <DisplayLanguages
+            rows={languages}
+            labels={[
+              "Taito toimia vuorovaikutuksessa",
+              "Taito tulkita tekstejä",
+              "Taito tuottaa tekstejä",
+            ]}
+            cellAction={languageLevelsSelect}
+          />
+        </div>
+      </fieldset>
+      <fieldset className="language-profile-container__fieldset">
+        <legend className="language-profile-container__subheader">
+          Taidot osa-alueittain
+        </legend>
+        <div className="language-profile-container__fieldset-description">
+          Kuinka kuvailisit taitojasi eri kielissä ääntämisen, kieliopin,
+          sanaston ja kielellisten varianttien suhteen?
+        </div>
+        <div className="language-profile-container__row">
+          <DisplayLanguages
+            rows={languages}
+            labels={["Ääntäminen", "Kielioppi", "Sanasto", "Variantit"]}
+            cellAction={skillsSelect}
+          />
+        </div>
+      </fieldset>
     </div>
   );
 };
