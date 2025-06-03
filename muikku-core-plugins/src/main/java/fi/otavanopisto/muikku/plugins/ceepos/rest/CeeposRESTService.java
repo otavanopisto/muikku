@@ -472,13 +472,11 @@ public class CeeposRESTService {
     
     // Ensure order ownership
 
-    if (!sessionController.hasEnvironmentPermission(CeeposPermissions.PAY_ORDER)) {
-      SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(order.getUserIdentifier());
-      UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
-      if (userEntity == null || !userEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-        logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
-        return Response.status(Status.FORBIDDEN).build();
-      }
+    SchoolDataIdentifier sdi = SchoolDataIdentifier.fromId(order.getUserIdentifier());
+    UserEntity orderUserEntity = userEntityController.findUserEntityByUserIdentifier(sdi);
+    if (orderUserEntity == null || !orderUserEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      logger.severe(String.format("Ceepos order %d: User %s access revoked", order.getId(), sessionController.getLoggedUser().toId()));
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     // Ensure order hasn't been handled yet
