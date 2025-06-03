@@ -75,7 +75,7 @@ const AddItem = (props: AddItemProps) => {
   return (
     <div className="language-profile__add-language">
       <input
-        className="language-profile__filter-input form-element__input form-element__input--search"
+        className="language-profile__input"
         type="text"
         placeholder="TODO: Add an item"
         onFocus={() => toggleDropdown(true)}

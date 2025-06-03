@@ -1,5 +1,14 @@
 import * as React from "react";
 import { LanguageData } from "~/@types/shared";
+import {
+  Table,
+  TableHead,
+  Tbody,
+  Td,
+  Th,
+  Tr,
+} from "~/components/general/table";
+import "~/sass/elements/table.scss";
 
 /**
  * LanguageProfileDataDisplayerProps
@@ -28,58 +37,53 @@ const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
   const { labels, rows, title, cellAction, onItemClick } = props;
   return (
     <div className="language-profile__languages-wrapper">
-      <table className="language-profile__languages">
+      <Table modifiers={["language-profile__languages"]}>
         {labels && (
-          <thead>
-            <tr className="language-profile__languages-header">
-              <th className="language-profile__languages-label">
-                {title ? title : "Kieli"}
-              </th>
+          <TableHead modifiers={["sticky"]}>
+            <Tr>
+              <Th modifiers={["centered"]}>{title ? title : "Kieli"}</Th>
               {labels.map((label) => (
-                <th key={label} className="language-profile__languages-label">
+                <Th modifiers={["centered"]} key={label}>
                   {label}
-                </th>
+                </Th>
               ))}
-            </tr>
-          </thead>
+            </Tr>
+          </TableHead>
         )}
-        <tbody>
+        <Tbody>
           {rows.map((item) => {
             const isDisabled = props.disabledItems?.includes(item.code);
             const rowId = item.code + item.name;
 
             return (
-              <tr
+              <Tr
                 data-testid={rowId}
                 key={rowId}
                 onClick={() => onItemClick?.(item)}
-                className={`language-profile__language ${isDisabled ? "DISABLED" : ""}`}
+                modifiers={[`${isDisabled ? "DISABLED" : ""}`]}
               >
-                <td
-                  className="language-profile__language-label"
-                  key={item.code}
-                >
+                <Td modifiers={["centered"]} key={item.code}>
                   {item.name}
-                </td>
+                </Td>
                 {labels &&
                   labels.map((label, index) => {
                     const cellId = item.code + "-" + index;
                     return (
-                      <td
+                      <Td
+                        modifiers={["centered"]}
                         data-testid={item.name + "-" + cellId}
                         key={item.name + "-" + cellId}
-                        className="language-profile__language-data"
                       >
                         {cellAction &&
                           cellAction(item.code, cellId, rowId, index)}
-                      </td>
+                      </Td>
                     );
                   })}
-              </tr>
+              </Tr>
             );
           })}
-        </tbody>
-      </table>
+        </Tbody>
+      </Table>
     </div>
   );
 };

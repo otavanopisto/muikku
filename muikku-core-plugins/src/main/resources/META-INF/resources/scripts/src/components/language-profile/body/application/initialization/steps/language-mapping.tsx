@@ -125,18 +125,10 @@ const LanguageMapping = () => {
     <div>
       <h1>Kielitaidon tasot</h1>
       <div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
-        posuere ligula rutrum, egestas nunc non, bibendum dolor. Praesent
-        tristique quis purus eu fermentum. Vivamus et volutpat urna. Donec vel
-        purus eu neque pulvinar porttitor at ac nisi. Aenean aliquam auctor
-        arcu, ac tristique odio maximus at. Pellentesque habitant morbi
-        tristique senectus et netus et malesuada fames ac turpis egestas. Cras
-        ullamcorper lacinia metus nec molestie. Class aptent taciti sociosqu ad
-        litora torquent per conubia nostra, per inceptos himenaeos. Cras
-        scelerisque arcu vel consectetur sagittis. Integer et est a eros laoreet
-        pretium sed ac orci. Aliquam sagittis ex id velit tincidunt, at laoreet
-        odio placerat. Aenean dignissim tellus leo, a ultricies tortor euismod
-        consequa
+        Arvioi omaa kielitaitoasi alla olevan asteikon avulla. Pohdi
+        kielitaitoasi eri osaamisalueiden kannalta, ja merkitse taulukkoon se
+        taitotaso (esim. A2.1), jonka kuvaus vastaa mielestäsi parhaiten
+        tämänhetkistä tilannettasi kunkin kielen kohdalla.
       </div>
       <DisplayLanguages
         rows={languages}
@@ -147,20 +139,10 @@ const LanguageMapping = () => {
         ]}
         cellAction={languageLevelsSelect}
       />
-      <h1>Kielitaidon tasot</h1>
+      <h1>Taidot osa-alueittain</h1>
       <div>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
-        posuere ligula rutrum, egestas nunc non, bibendum dolor. Praesent
-        tristique quis purus eu fermentum. Vivamus et volutpat urna. Donec vel
-        purus eu neque pulvinar porttitor at ac nisi. Aenean aliquam auctor
-        arcu, ac tristique odio maximus at. Pellentesque habitant morbi
-        tristique senectus et netus et malesuada fames ac turpis egestas. Cras
-        ullamcorper lacinia metus nec molestie. Class aptent taciti sociosqu ad
-        litora torquent per conubia nostra, per inceptos himenaeos. Cras
-        scelerisque arcu vel consectetur sagittis. Integer et est a eros laoreet
-        pretium sed ac orci. Aliquam sagittis ex id velit tincidunt, at laoreet
-        odio placerat. Aenean dignissim tellus leo, a ultricies tortor euismod
-        consequa
+        Kuinka kuvailisit taitojasi eri kielissä ääntämisen, kieliopin, sanaston
+        ja kielellisten varianttien suhteen?
       </div>
       <DisplayLanguages
         rows={languages}

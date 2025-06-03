@@ -44,12 +44,16 @@ const Initialization = (props: initializationProps) => {
 
   return (
     <WizardProvider value={wizardValues}>
-      <Wizard
-        modifiers={["language-profile"]}
-        header={<Header />}
-        footer={<Footer />}
-        wrapper={<div>wrapper</div>}
-      />
+      <div className="hops-form">
+        <div className="hops-form__container">
+          <Wizard
+            modifiers={["language-profile"]}
+            header={<Header />}
+            footer={<Footer />}
+            wrapper={<div>wrapper</div>}
+          />
+        </div>
+      </div>
     </WizardProvider>
   );
 };

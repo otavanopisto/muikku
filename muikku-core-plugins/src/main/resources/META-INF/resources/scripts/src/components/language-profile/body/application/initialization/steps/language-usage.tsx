@@ -100,63 +100,83 @@ const LanguageUsage = () => {
   );
 
   return (
-    <div>
-      <h1>Kielten käyttäminen ja opiskeleminen</h1>
-      <p>
-        Etiam quis nulla venenatis, pellentesque augue a, sodales urna. Fusce
-        velit risus, pretium a consequat ut, interdum in orci. Nam at odio sed
-        ante auctor condimentum. Nunc consectetur arcu ac dui porttitor pretium.
-        Nullam libero felis, suscipit ac erat vitae, imperdiet interdum dui. In
-        tincidunt et quam eu ultricies. Vivamus condimentum eget magna vel
-        vulputate. Duis luctus eros at felis tincidunt lobortis. Pellentesque
-        posuere enim eu mauris faucibus, nec pretium tortor tincidunt. Nullam
-        sed egestas nibh, quis ultricies lorem. Sed non sodales justo. Praesent
-        interdum, neque vitae luctus ultricies, massa nibh congue est, quis
-        accumsan velit odio sed elit.
-      </p>
-      <form>
-        <div>
-          <h2>Kielet</h2>
-          <LanguageProfileDataDisplayer
-            rows={languages}
-            disabledItems={getLockedLanguages()}
-            onItemClick={handleLanguage}
-          />
-          <AddLanguage
-            action={handleLanguage}
-            filterBy="code"
-            allItems={availableLanguages}
-            selectedItems={languages}
-          />
+    <div className="language-profile-container">
+      <fieldset className="language-profile-container__fieldset">
+        <legend className="language-profile-container__subheader">
+          Kielten käyttäminen ja opiskeleminen
+        </legend>
+        <div className="language-profile-container__fieldset-description">
+          Etiam quis nulla venenatis, pellentesque augue a, sodales urna. Fusce
+          velit risus, pretium a consequat ut, interdum in orci. Nam at odio sed
+          ante auctor condimentum. Nunc consectetur arcu ac dui porttitor
+          pretium. Nullam libero felis, suscipit ac erat vitae, imperdiet
+          interdum dui. In tincidunt et quam eu ultricies. Vivamus condimentum
+          eget magna vel vulputate. Duis luctus eros at felis tincidunt
+          lobortis. Pellentesque posuere enim eu mauris faucibus, nec pretium
+          tortor tincidunt. Nullam sed egestas nibh, quis ultricies lorem. Sed
+          non sodales justo. Praesent interdum, neque vitae luctus ultricies,
+          massa nibh congue est, quis accumsan velit odio sed elit.
         </div>
-        <div>
-          <h2>Kielten käyttäminen</h2>
-          <textarea
-            id="languageUsage"
-            defaultValue={languageUsage || ""}
-            className="form-element__textarea"
-            onChange={(e) => handleFieldChange(e, "languageUsage")}
-          />
+        <div className="language-profile-container__row">
+          <div className="language-profile__form-element-container">
+            <label className="language-profile__label">Kielet</label>
+            <LanguageProfileDataDisplayer
+              rows={languages}
+              disabledItems={getLockedLanguages()}
+              onItemClick={handleLanguage}
+            />
+            <AddLanguage
+              action={handleLanguage}
+              filterBy="code"
+              allItems={availableLanguages}
+              selectedItems={languages}
+            />
+          </div>
         </div>
-        <div>
-          <h2>Motivaatio opiskelussa</h2>
-          <textarea
-            id="studyMotivation"
-            defaultValue={studyMotivation || ""}
-            className="form-element__textarea"
-            onChange={(e) => handleFieldChange(e, "studyMotivation")}
-          />
+        <div className="language-profile-container__row">
+          <div className="language-profile__form-element-container">
+            <label className="language-profile__label">
+              Kielten käyttäminen
+            </label>
+            <div className="form-element__textarea-container">
+              <textarea
+                id="languageUsage"
+                defaultValue={languageUsage || ""}
+                className="language-profile__textarea"
+                onChange={(e) => handleFieldChange(e, "languageUsage")}
+              />
+            </div>
+          </div>
         </div>
-        <div>
-          <h2>Kielten oppimien</h2>
-          <textarea
-            id="messageForTeacher"
-            defaultValue={languageLearning || ""}
-            className="form-element__textarea"
-            onChange={(e) => handleFieldChange(e, "languageLearning")}
-          />
+        <div className="language-profile-container__row">
+          <div className="language-profile__form-element-container">
+            <label className="language-profile__label">
+              Motivaatio opiskelussa
+            </label>
+            <div className="form-element__textarea-container">
+              <textarea
+                id="studyMotivation"
+                defaultValue={studyMotivation || ""}
+                className="language-profile__textarea"
+                onChange={(e) => handleFieldChange(e, "studyMotivation")}
+              />
+            </div>
+          </div>
         </div>
-      </form>
+        <div className="language-profile-container__row">
+          <div className="language-profile__form-element-container">
+            <label className="language-profile__label">Kielten oppimien</label>
+            <div className="form-element__textarea-container">
+              <textarea
+                id="messageForTeacher"
+                defaultValue={languageLearning || ""}
+                className="language-profile__textarea"
+                onChange={(e) => handleFieldChange(e, "languageLearning")}
+              />
+            </div>
+          </div>
+        </div>
+      </fieldset>
     </div>
   );
 };
