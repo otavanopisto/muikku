@@ -77,15 +77,6 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
       if (!isMApiError(e)) {
         throw e;
       }
-
-      this.props.displayNotification(
-        this.props.t("notifications.loadError", {
-          context: "link",
-          ns: "orders",
-          error: e,
-        }),
-        "error"
-      );
     }
   }
 
@@ -94,6 +85,28 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
    * @returns JSX component
    */
   render() {
+    if (this.props.ceepos.state === "LOADING") {
+      return (
+        <div className="card-wrapper">
+          <div className="card card--ceepos">
+            <header className="card__hero card__hero--ceepos">
+              <img
+                className="card__hero-image card__hero-image--ceepos"
+                src="/gfx/oo-branded-site-logo.png"
+                role="presentation"
+              />
+              <span className="card__hero-text card__hero-text--ceepos">
+                Muikku
+              </span>
+            </header>
+            <div className="card__content card__content--ceepos">
+              <div className="loader-empty" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="card-wrapper">
         <div className="card card--ceepos">
