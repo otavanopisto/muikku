@@ -69,6 +69,13 @@ const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
           throw err;
         }
 
+        if (isResponseError(err)) {
+          if (err.response.status === 403) {
+            window.location.href = "/error/403";
+            return;
+          }
+        }
+
         dispatch(
           actions.displayNotification(
             i18n.t("notifications.loadError", {
