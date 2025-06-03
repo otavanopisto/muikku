@@ -132,12 +132,12 @@
 
 .react-select-override--pedagogy-form {
   .react-select-override__control {
-    border-color: $color-hops-dialog-form-element-border;
+    border-color: $color-hops-form-element-border;
     height: auto;
     max-width: unset;
 
     &:hover {
-      border-color: $color-hops-dialog-form-element-border;
+      border-color: $color-hops-form-element-border;
     }
   }
 }

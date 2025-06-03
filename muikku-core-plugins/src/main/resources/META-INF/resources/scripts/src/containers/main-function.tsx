@@ -392,17 +392,16 @@ export default class MainFunction extends React.Component<
   /**
    * loadRecordsData
    * @param tab records tab
-   * @param userId userId
    */
   loadLanguageProfileData(tab: string) {
     const givenLocation = tab;
 
     if (givenLocation === "initalize" || !givenLocation) {
-      console.log("load survey");
+      // Not empty
     } else if (givenLocation === "languages") {
-      console.log("load languages");
+      // Not empty
     } else if (givenLocation === "language-cv") {
-      console.log("load language-cv");
+      // Not empty
     }
   }
 
@@ -1382,7 +1381,7 @@ export default class MainFunction extends React.Component<
                   </ProtectedRoute>
                 )}
               />
-              
+
               <Route
                 path="/guardian"
                 render={() => (
