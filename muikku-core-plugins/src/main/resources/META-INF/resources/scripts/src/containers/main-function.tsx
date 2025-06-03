@@ -1255,7 +1255,7 @@ export default class MainFunction extends React.Component<
                     requireAuth
                     hasPermission={true}
                     isAuthenticated={isAuthenticated}
-                    loginPath={`/login?redirectUrl=${window.location.pathname}${window.location.search}`}
+                    loginPath={`/login?redirectUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`}
                   >
                     {this.renderCeeposPayBody()}
                   </ProtectedRoute>
@@ -1269,7 +1269,7 @@ export default class MainFunction extends React.Component<
                     requireAuth
                     hasPermission={true}
                     isAuthenticated={isAuthenticated}
-                    loginPath={`/login?redirectUrl=${window.location.pathname}${window.location.search}`}
+                    loginPath={`/login?redirectUrl=${window.location.href}`}
                   >
                     {this.renderCeeposDoneBody()}
                   </ProtectedRoute>

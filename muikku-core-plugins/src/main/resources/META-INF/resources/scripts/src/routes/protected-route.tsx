@@ -57,6 +57,9 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = (props) => {
     children,
   } = props;
 
+  console.log("window.location.href", { ...window.location });
+  console.log("loginPath", loginPath);
+
   // If the route requires authentication and the user is not authenticated, redirect to the login path
   if (requireAuth && !isAuthenticated) {
     window.location.href = loginPath;
