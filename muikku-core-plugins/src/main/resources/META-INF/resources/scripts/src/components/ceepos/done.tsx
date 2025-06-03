@@ -84,15 +84,6 @@ class CeeposDone extends React.Component<CeeposDoneProps, CeeposDoneState> {
       if (!isMApiError(e)) {
         throw e;
       }
-
-      this.props.displayNotification(
-        this.props.t("notifications.loadError", {
-          context: "link",
-          ns: "orders",
-          error: e,
-        }),
-        "error"
-      );
     }
   }
 
