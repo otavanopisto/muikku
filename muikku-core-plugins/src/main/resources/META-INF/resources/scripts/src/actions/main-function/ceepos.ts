@@ -134,16 +134,16 @@ const loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType =
             window.location.href = "/error/403";
             return;
           }
+
+          dispatch({
+            type: "UPDATE_CEEPOS_PAY_STATUS",
+            payload: await err.response.text(),
+          });
         }
 
         dispatch({
           type: "UPDATE_CEEPOS_STATE",
           payload: <CeeposStateStatusType>"ERROR",
-        });
-
-        dispatch({
-          type: "UPDATE_CEEPOS_PAY_STATUS",
-          payload: err.message,
         });
       }
     };
