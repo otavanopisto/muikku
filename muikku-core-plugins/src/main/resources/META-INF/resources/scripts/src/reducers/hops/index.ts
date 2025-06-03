@@ -1,6 +1,8 @@
 import { Reducer } from "redux";
 import { HopsForm } from "~/@types/hops";
+import { Course } from "~/@types/shared";
 import { ActionType } from "~/actions";
+import { CurriculumConfig } from "~/util/curriculum-config";
 import {
   HopsLocked,
   MatriculationEligibilityStatus,
@@ -10,8 +12,12 @@ import {
   MatriculationResults,
   MatriculationSubject,
   MatriculationSubjectEligibilityOPS2021,
+  PlannedCourse,
   StudentInfo,
   HopsHistoryEntry,
+  StudentStudyActivity,
+  HopsOpsCourse,
+  HopsGoals,
 } from "~/generated/client";
 import { MatriculationAbistatus } from "~/helper-functions/abistatus";
 
@@ -38,7 +44,53 @@ export type ReducerInitializeStatusType =
 /**
  * HopsStudyPlanState
  */
-interface HopsStudyPlanState {}
+interface HopsStudyPlanState {
+  plannedCourses: PlannedCourseWithIdentifier[];
+  availableOPSCourses: HopsOpsCourse[];
+  studyActivity: StudentStudyActivity[];
+  studyOptions: string[];
+  goals: HopsGoals;
+}
+
+/**
+ * StudentDateInfo
+ */
+export interface StudentDateInfo {
+  /**
+   * Start date of the study
+   */
+  studyStartDate: Date;
+  /**
+   * End date when student study time expires
+   */
+  studyTimeEnd?: Date | null;
+}
+
+/**
+ * PlannedCourseWithIdentifier
+ */
+export interface PlannedCourseWithIdentifier extends PlannedCourse {
+  /**
+   * Identifier of the planned course. Specifically used within frontend
+   * to identify the exiting and newly added planned course in the planner with drag and drop.
+   */
+  identifier: string;
+}
+
+/**
+ * CourseChangeAction
+ */
+export type CourseChangeAction = "add" | "update" | "delete";
+
+/**
+ * Period
+ */
+export interface PlannedPeriod {
+  year: number;
+  type: "AUTUMN" | "SPRING";
+  plannedCourses: PlannedCourseWithIdentifier[];
+  isPastPeriod: boolean;
+}
 
 /**
  * MatriculationExamWithHistory
@@ -82,6 +134,31 @@ interface hopsMatriculation {
  */
 export type HopsMode = "READ" | "EDIT";
 
+export type TimeContextSelection =
+  | { type: "period-month"; year: number; monthIndex: number }
+  | { type: null };
+
+export type SelectedCourse =
+  | PlannedCourseWithIdentifier
+  | (Course & { subjectCode: string });
+
+/**
+ * Type guard for planned course with identifier
+ * @param course Course
+ */
+export const isPlannedCourseWithIdentifier = (
+  course: SelectedCourse
+): course is PlannedCourseWithIdentifier =>
+  "identifier" in course && course.identifier.startsWith("planned-");
+
+/**
+ * Type guard for no selection
+ * @param selection Selection
+ */
+export const isNoTimeContextSelection = (
+  selection: TimeContextSelection
+): selection is { type: null } => selection.type === null;
+
 /**
  * HopsEditingState
  */
@@ -89,6 +166,11 @@ export interface HopsEditingState {
   readyToEdit: boolean;
   hopsForm: HopsForm | null;
   matriculationPlan: MatriculationPlan | null;
+  plannedCourses: PlannedCourseWithIdentifier[];
+  goals: HopsGoals;
+  selectedCoursesIds: string[];
+  timeContextSelection: TimeContextSelection;
+  waitingToBeAllocatedCourses: (Course & { subjectCode: string })[] | null;
 }
 
 /**
@@ -104,6 +186,10 @@ export interface HopsState {
   // HOPS STUDY PLAN
   hopsStudyPlanStatus: ReducerStateType;
   hopsStudyPlanState: HopsStudyPlanState;
+
+  // HOPS CURRICULUM CONFIG
+  hopsCurriculumConfigStatus: ReducerStateType;
+  hopsCurriculumConfig: CurriculumConfig | null;
 
   // HOPS EXAMINATION
   hopsMatriculationStatus: ReducerStateType;
@@ -134,8 +220,19 @@ export interface HopsState {
 
 const initialHopsState: HopsState = {
   initialized: "IDLE",
-  hopsStudyPlanStatus: "READY",
-  hopsStudyPlanState: {},
+  hopsStudyPlanStatus: "IDLE",
+  hopsStudyPlanState: {
+    plannedCourses: [],
+    studyActivity: [],
+    availableOPSCourses: [],
+    studyOptions: [],
+    goals: {
+      graduationGoal: null,
+      studyHours: 0,
+    },
+  },
+  hopsCurriculumConfigStatus: "IDLE",
+  hopsCurriculumConfig: null,
   hopsMatriculationStatus: "IDLE",
   hopsMatriculation: {
     exams: [],
@@ -163,6 +260,14 @@ const initialHopsState: HopsState = {
       plannedSubjects: [],
       goalMatriculationExam: false,
     },
+    plannedCourses: [],
+    goals: {
+      graduationGoal: null,
+      studyHours: 0,
+    },
+    selectedCoursesIds: [],
+    timeContextSelection: null,
+    waitingToBeAllocatedCourses: null,
   },
 };
 
@@ -374,6 +479,20 @@ export const hopsNew: Reducer<HopsState> = (
         hopsFormCanLoadMoreHistory: true,
         studentInfo: null,
         studentInfoStatus: "IDLE",
+        hopsCurriculumConfigStatus: "IDLE",
+        hopsCurriculumConfig: null,
+        hopsStudyPlanStatus: "IDLE",
+        hopsStudyPlanState: {
+          plannedCourses: [],
+          studyActivity: [],
+          availableOPSCourses: [],
+          studyOptions: [],
+          studyMatrix: null,
+          goals: {
+            graduationGoal: null,
+            studyHours: 0,
+          },
+        },
         hopsMatriculation: {
           exams: [],
           pastExams: [],
@@ -394,6 +513,12 @@ export const hopsNew: Reducer<HopsState> = (
             plannedSubjects: [],
             goalMatriculationExam: false,
           },
+          goals: {
+            graduationGoal: null,
+            studyHours: 0,
+          },
+          plannedCourses: [],
+          selectedCourse: null,
         },
       };
     }
@@ -472,6 +597,19 @@ export const hopsNew: Reducer<HopsState> = (
           ...state.hopsEditing,
           hopsForm: state.hopsForm,
           matriculationPlan: state.hopsMatriculation.plan,
+          plannedCourses: state.hopsStudyPlanState.plannedCourses,
+          goals: state.hopsStudyPlanState.goals,
+          selectedCoursesIds: [],
+          timeContextSelection: null,
+        },
+      };
+
+    case "HOPS_UPDATE_EDITING_STUDYPLAN":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          plannedCourses: action.payload,
         },
       };
 
@@ -480,6 +618,126 @@ export const hopsNew: Reducer<HopsState> = (
         ...state,
         hopsLocked: action.payload.data || state.hopsLocked,
         hopsLockedStatus: action.payload.status,
+      };
+
+    case "HOPS_STUDYPLAN_UPDATE_STATUS":
+      return {
+        ...state,
+        hopsStudyPlanStatus: action.payload,
+      };
+
+    case "HOPS_STUDYPLAN_UPDATE_PLANNED_COURSES":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          plannedCourses: action.payload,
+        },
+        hopsEditing: {
+          ...state.hopsEditing,
+          plannedCourses: action.payload,
+        },
+      };
+
+    case "HOPS_STUDYPLAN_UPDATE_GOALS":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          goals: action.payload,
+        },
+        hopsEditing: {
+          ...state.hopsEditing,
+          goals: action.payload,
+        },
+      };
+
+    case "HOPS_SET_TIME_CONTEXT_SELECTION":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          timeContextSelection: action.payload,
+        },
+      };
+
+    case "HOPS_CLEAR_TIME_CONTEXT_SELECTION":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          timeContextSelection: null,
+        },
+      };
+
+    case "HOPS_UPDATE_SELECTED_COURSES":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          selectedCoursesIds: action.payload,
+        },
+      };
+
+    case "HOPS_CLEAR_SELECTED_COURSES":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          selectedCoursesIds: [],
+        },
+      };
+
+    case "HOPS_UPDATE_EDITING_STUDYPLAN_BATCH":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          plannedCourses: action.payload.plannedCourses,
+        },
+      };
+
+    case "HOPS_UPDATE_EDITING_GOALS":
+      return {
+        ...state,
+        hopsEditing: {
+          ...state.hopsEditing,
+          goals: action.payload,
+        },
+      };
+
+    case "HOPS_UPDATE_CURRICULUM_CONFIG":
+      return {
+        ...state,
+        hopsCurriculumConfigStatus: action.payload.status,
+        hopsCurriculumConfig: action.payload.data || state.hopsCurriculumConfig,
+      };
+
+    case "HOPS_UPDATE_STUDY_ACTIVITY":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          studyActivity: action.payload,
+        },
+      };
+
+    case "HOPS_UPDATE_AVAILABLE_OPS_COURSES":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          availableOPSCourses: action.payload,
+        },
+      };
+
+    case "HOPS_STUDYPLAN_UPDATE_STUDY_OPTIONS":
+      return {
+        ...state,
+        hopsStudyPlanState: {
+          ...state.hopsStudyPlanState,
+          studyOptions: action.payload,
+        },
       };
 
     default:

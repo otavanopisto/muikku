@@ -288,12 +288,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-workspace-signup-readmore-button-background, 10%);
+    background-color: darken(
+      $color-workspace-signup-readmore-button-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-workspace-signup-readmore-button-background, 20%);
+    background-color: darken(
+      $color-workspace-signup-readmore-button-background,
+      20%
+    );
   }
 }
 
@@ -361,12 +367,18 @@
 
     &:hover,
     &.hover {
-      background-color: darken($color-main-function-button-login-background, 10%);
+      background-color: darken(
+        $color-main-function-button-login-background,
+        10%
+      );
     }
 
     &:active,
     &.active {
-      background-color: darken($color-main-function-button-login-background, 20%);
+      background-color: darken(
+        $color-main-function-button-login-background,
+        20%
+      );
     }
   }
 }
@@ -393,12 +405,18 @@
 
     &:hover,
     &.hover {
-      background-color: darken($color-main-function-button-login-background, 10%);
+      background-color: darken(
+        $color-main-function-button-login-background,
+        10%
+      );
     }
 
     &:active,
     &.active {
-      background-color: darken($color-main-function-button-login-background, 20%);
+      background-color: darken(
+        $color-main-function-button-login-background,
+        20%
+      );
     }
   }
 }
@@ -410,12 +428,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-frontpage-button-upper-secondary-school-readmore-background, 10%);
+    background-color: darken(
+      $color-frontpage-button-upper-secondary-school-readmore-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-frontpage-button-upper-secondary-school-readmore-background, 20%);
+    background-color: darken(
+      $color-frontpage-button-upper-secondary-school-readmore-background,
+      20%
+    );
   }
 }
 
@@ -426,12 +450,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-frontpage-button-secondary-school-readmore-background, 10%);
+    background-color: darken(
+      $color-frontpage-button-secondary-school-readmore-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-frontpage-button-secondary-school-readmore-background, 20%);
+    background-color: darken(
+      $color-frontpage-button-secondary-school-readmore-background,
+      20%
+    );
   }
 }
 
@@ -444,12 +474,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-frontpage-button-open-materials-readmore-background, 10%);
+    background-color: darken(
+      $color-frontpage-button-open-materials-readmore-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-frontpage-button-open-materials-readmore-background, 20%);
+    background-color: darken(
+      $color-frontpage-button-open-materials-readmore-background,
+      20%
+    );
   }
 }
 
@@ -482,16 +518,18 @@
 
   &:hover,
   &.hover {
-    background-color:
-      darken(
-        $color-frontpage-button-newsletter-background,
-        10%
-      );
+    background-color: darken(
+      $color-frontpage-button-newsletter-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-frontpage-button-newsletter-background, 20%);
+    background-color: darken(
+      $color-frontpage-button-newsletter-background,
+      20%
+    );
   }
 
   @include breakpoint($breakpoint-desktop) {
@@ -1019,12 +1057,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-environment-button-pill-language-background, 5%);
+    background-color: darken(
+      $color-environment-button-pill-language-background,
+      5%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-environment-button-pill-language-background, 10%);
+    background-color: darken(
+      $color-environment-button-pill-language-background,
+      10%
+    );
   }
 }
 
@@ -1113,12 +1157,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-delete-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-delete-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1150,12 +1200,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-delete-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-delete-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-delete-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1176,12 +1232,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-edit-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-edit-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-edit-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-edit-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1202,12 +1264,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-label-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-label-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1232,12 +1300,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-label-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-label-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-label-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1262,12 +1336,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-toggle-read-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-toggle-read-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-toggle-read-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-toggle-read-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1293,12 +1373,18 @@
 
   &:hover,
   &.hover {
-    background-color: darken($color-main-function-button-pill-go-back-background, 10%);
+    background-color: darken(
+      $color-main-function-button-pill-go-back-background,
+      10%
+    );
   }
 
   &:active,
   &.active {
-    background-color: darken($color-main-function-button-pill-go-back-background, 20%);
+    background-color: darken(
+      $color-main-function-button-pill-go-back-background,
+      20%
+    );
   }
 
   &.disabled,
@@ -1325,12 +1411,18 @@
 
     &:hover,
     &.hover {
-      background-color: darken($color-main-function-button-pill-prev-page-background, 10%);
+      background-color: darken(
+        $color-main-function-button-pill-prev-page-background,
+        10%
+      );
     }
 
     &:active,
     &.active {
-      background-color: darken($color-main-function-button-pill-prev-page-background, 20%);
+      background-color: darken(
+        $color-main-function-button-pill-prev-page-background,
+        20%
+      );
     }
 
     &.disabled,
@@ -1354,12 +1446,18 @@
 
     &:hover,
     &.hover {
-      background-color: darken($color-main-function-button-pill-next-page-background, 10%);
+      background-color: darken(
+        $color-main-function-button-pill-next-page-background,
+        10%
+      );
     }
 
     &:active,
     &.active {
-      background-color: darken($color-main-function-button-pill-next-page-background, 20%);
+      background-color: darken(
+        $color-main-function-button-pill-next-page-background,
+        20%
+      );
     }
 
     &.disabled,
@@ -2543,4 +2641,43 @@
 .button--journal-filter-active {
   background-color: $color-list-selected-background;
   color: $color-default;
+}
+
+.button--planner-course-group-toggle,
+.button--study-planner-month-toggle {
+  align-items: center;
+  background: transparent;
+  color: $color-study-plan-tool-accent;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: $text-mobile-font-size;
+  font-weight: 600;
+  gap: 5px;
+  justify-content: flex-start;
+  padding: 0;
+  text-decoration: none;
+  text-transform: none;
+  transition: color 0.1s ease-in-out;
+  white-space: wrap;
+  width: 100%;
+
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+
+  .button__icon {
+    font-size: 0.75rem;
+    margin: 0 3px;
+  }
+}
+
+.button--study-planner-extra-info-toggle {
+  font-size: 0.75rem;
+  padding-left: 0;
+}
+
+.button-icon--study-planner-month-selection {
+  background: transparent;
+  color: $color-study-plan-tool-accent;
+  font-size: 1rem;
 }

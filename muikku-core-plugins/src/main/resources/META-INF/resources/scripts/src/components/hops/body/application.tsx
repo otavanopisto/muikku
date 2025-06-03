@@ -5,6 +5,7 @@ import { StateType } from "~/reducers";
 import ApplicationPanelBody from "../../general/application-panel/components/application-panel-body";
 import { Tab } from "~/components/general/tabs";
 import { AnyActionType } from "~/actions";
+import "~/sass/elements/hops.scss";
 import "~/sass/elements/link.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/assignment.scss";
@@ -31,6 +32,7 @@ import Button from "~/components/general/button";
 import WebsocketWatcher from "./application/helper/websocket-watcher";
 import _ from "lodash";
 import PendingChangesWarningDialog from "../dialogs/pending-changes-warning";
+import StudyPlan from "./application/study-planing/study-plan";
 import Background from "./application/background/background";
 import Postgraduate from "./application/postgraduate/postgraduate";
 // eslint-disable-next-line camelcase
@@ -43,12 +45,13 @@ import {
 } from "./application/wizard/helpers";
 import { Textarea } from "~/components/hops/body/application/wizard/components/text-area";
 import { isCompulsoryStudiesHops } from "~/@types/hops";
+import "~/sass/elements/react-datepicker-override.scss";
 
 /**
  * Represents the available tabs in the HOPS application.
  * Currently only supports matriculation.
  */
-type HopsTab = "MATRICULATION" | "BACKGROUND" | "POSTGRADUATE";
+type HopsTab = "MATRICULATION" | "BACKGROUND" | "POSTGRADUATE" | "STUDYPLAN";
 
 /**
  * Props for the HopsApplication component.
@@ -88,7 +91,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     isPendingChangesWarningDialogOpen,
     setIsPendingChangesWarningDialogOpen,
   ] = React.useState(false);
-  const { t } = useTranslation(["studies", "common", "hops_new"]);
+  const { t } = useTranslation(["common", "hops_new"]);
   const [
     isPendingChangesDetailsDialogOpen,
     setIsPendingChangesDetailsDialogOpen,
@@ -130,10 +133,26 @@ const HopsApplication = (props: HopsApplicationProps) => {
     hops.studentInfo,
   ]);
 
+  // Check if the study plan has changes
+  const studyPlanHasChanges = React.useMemo(
+    () =>
+      !_.isEqual(
+        hops.hopsEditing.plannedCourses,
+        hops.hopsStudyPlanState.plannedCourses
+      ) || !_.isEqual(hops.hopsEditing.goals, hops.hopsStudyPlanState.goals),
+    [
+      hops.hopsEditing.goals,
+      hops.hopsEditing.plannedCourses,
+      hops.hopsStudyPlanState.goals,
+      hops.hopsStudyPlanState.plannedCourses,
+    ]
+  );
+
   // Check if any of the HOPS data has changes
   const hopsHasChanges = React.useMemo(
-    () => hopsMatriculationHasChanges || hopsFormHasChanges,
-    [hopsFormHasChanges, hopsMatriculationHasChanges]
+    () =>
+      hopsMatriculationHasChanges || hopsFormHasChanges || studyPlanHasChanges,
+    [hopsFormHasChanges, hopsMatriculationHasChanges, studyPlanHasChanges]
   );
 
   // Add new useEffect for handling initial URL hash
@@ -170,6 +189,16 @@ const HopsApplication = (props: HopsApplicationProps) => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [hops.hopsMode, hopsHasChanges]);
+
+  // Add new useEffect for handling initial URL hash
+  React.useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash === "matriculation") {
+      setActiveTab("MATRICULATION");
+    } else if (hash === "studyplan") {
+      setActiveTab("STUDYPLAN");
+    }
+  }, []); // Run only on mount
 
   /**
    * Handles tab changes in the application panel.
@@ -268,6 +297,7 @@ const HopsApplication = (props: HopsApplicationProps) => {
     switch (tab) {
       case "BACKGROUND":
       case "POSTGRADUATE":
+      case "STUDYPLAN":
         return true;
       case "MATRICULATION":
         return [
@@ -294,6 +324,17 @@ const HopsApplication = (props: HopsApplicationProps) => {
       component: (
         <ApplicationPanelBody modifier="tabs">
           <Background />
+        </ApplicationPanelBody>
+      ),
+    },
+    {
+      id: "STUDYPLAN",
+      name: t("labels.hopsStudyPlanning", { ns: "hops_new" }),
+      hash: "studyplan",
+      type: "studyplan",
+      component: (
+        <ApplicationPanelBody modifier="tabs">
+          <StudyPlan />
         </ApplicationPanelBody>
       ),
     },

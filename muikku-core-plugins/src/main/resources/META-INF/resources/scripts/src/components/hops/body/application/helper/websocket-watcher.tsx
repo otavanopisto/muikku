@@ -1,26 +1,23 @@
 import React, { ReactNode, useEffect } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
-import { Action } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HopsForm } from "~/@types/hops";
-import { AnyActionType } from "~/actions";
 import {
-  UpdateMatriculationPlanTriggerType,
   updateMatriculationPlan,
-  UpdateHopsLockedTriggerType,
   updateHopsLocked,
-  UpdateHopsFormTriggerType,
   updateHopsForm,
-  UpdateHopsHistoryTriggerType,
   updateHopsHistory,
+  updateHopsStudyPlanGoals,
+  updateHopsStudyPlanPlannedCourses,
 } from "~/actions/main-function/hops/";
 import {
+  HopsGoals,
   HopsHistoryEntry,
   HopsLocked,
   MatriculationPlan,
+  PlannedCourse,
 } from "~/generated/client";
 import { StateType } from "~/reducers";
-import { WebsocketStateType } from "~/reducers/util/websocket";
+import { PlannedCourseWithIdentifier } from "~/reducers/hops";
 
 /**
  * Props for the HopsWebsocketWatcher component
@@ -29,11 +26,6 @@ interface HopsWebsocketWatcherProps {
   /** Student identifier */
   studentIdentifier: string;
   children: ReactNode;
-  websocketState: WebsocketStateType;
-  updateHopsLocked: UpdateHopsLockedTriggerType;
-  updateHopsForm: UpdateHopsFormTriggerType;
-  updateHopsHistory: UpdateHopsHistoryTriggerType;
-  updateMatriculationPlan: UpdateMatriculationPlanTriggerType;
 }
 
 /**
@@ -48,14 +40,10 @@ interface HopsWebsocketWatcherProps {
  * ```
  */
 export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
-  const {
-    children,
-    websocketState,
-    updateMatriculationPlan,
-    updateHopsLocked,
-    updateHopsForm,
-    updateHopsHistory,
-  } = props;
+  const { children } = props;
+
+  const dispatch = useDispatch();
+  const websocketState = useSelector((state: StateType) => state.websocket);
 
   // Matriculation plan watcher
   useEffect(() => {
@@ -73,10 +61,12 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
         return;
       }
 
-      updateMatriculationPlan({
-        plan,
-        studentIdentifier,
-      });
+      dispatch(
+        updateMatriculationPlan({
+          plan,
+          studentIdentifier,
+        })
+      );
     };
 
     websocketState.websocket.addEventCallback(
@@ -90,11 +80,7 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
         onMatriculationPlanUpdated
       );
     };
-  }, [
-    props.studentIdentifier,
-    updateMatriculationPlan,
-    websocketState.websocket,
-  ]);
+  }, [dispatch, props.studentIdentifier, websocketState.websocket]);
 
   // Hops locked watcher
   useEffect(() => {
@@ -111,9 +97,7 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
         return;
       }
 
-      updateHopsLocked({
-        locked,
-      });
+      dispatch(updateHopsLocked({ locked }));
     };
 
     websocketState.websocket.addEventCallback(
@@ -127,7 +111,7 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
         onHopsLockedUpdated
       );
     };
-  }, [props.studentIdentifier, updateHopsLocked, websocketState.websocket]);
+  }, [dispatch, props.studentIdentifier, websocketState.websocket]);
 
   // Hops form watcher
   useEffect(() => {
@@ -150,25 +134,31 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
         return;
       }
 
-      updateHopsForm({
-        form: JSON.parse(data.formData) as HopsForm,
-      });
+      dispatch(
+        updateHopsForm({
+          form: JSON.parse(data.formData) as HopsForm,
+        })
+      );
 
-      updateHopsHistory({
-        history: data.latestChange,
-      });
+      dispatch(
+        updateHopsHistory({
+          history: data.latestChange,
+        })
+      );
     };
 
     websocketState.websocket.addEventCallback(
-      "hops:hops-updated",
+      "hops:updated",
       onHopsFormUpdated
     );
-  }, [
-    props.studentIdentifier,
-    updateHopsForm,
-    updateHopsHistory,
-    websocketState.websocket,
-  ]);
+
+    return () => {
+      websocketState.websocket.removeEventCallback(
+        "hops:updated",
+        onHopsFormUpdated
+      );
+    };
+  }, [dispatch, props.studentIdentifier, websocketState.websocket]);
 
   // Hops history watcher
   useEffect(() => {
@@ -186,49 +176,106 @@ export function HopsWebsocketWatcher(props: HopsWebsocketWatcherProps) {
         return;
       }
 
-      updateHopsHistory({
-        history,
-      });
+      dispatch(updateHopsHistory({ history }));
     };
 
     websocketState.websocket.addEventCallback(
       "hops:history-item-updated",
       onHopsHistoryUpdated
     );
-  }, [props.studentIdentifier, updateHopsHistory, websocketState.websocket]);
+
+    return () => {
+      websocketState.websocket.removeEventCallback(
+        "hops:history-item-updated",
+        onHopsHistoryUpdated
+      );
+    };
+  }, [dispatch, props.studentIdentifier, websocketState.websocket]);
+
+  // Hops study plan watcher
+  useEffect(() => {
+    /**
+     * Callback function to handle Hops study plan updates
+     * @param data - HopsStudyPlan
+     */
+    const onHopsStudyPlanUpdated = (
+      data: {
+        plannedCourses: PlannedCourse[];
+      } & { studentIdentifier: string }
+    ) => {
+      const { studentIdentifier, plannedCourses } = data;
+
+      if (studentIdentifier !== props.studentIdentifier) {
+        return;
+      }
+
+      const plannedCoursesWithIdentifiers =
+        plannedCourses.map<PlannedCourseWithIdentifier>((course) => ({
+          ...course,
+          identifier: course.id.toString(),
+        }));
+
+      dispatch(
+        updateHopsStudyPlanPlannedCourses({
+          plannedCourses: plannedCoursesWithIdentifiers,
+        })
+      );
+    };
+
+    websocketState.websocket.addEventCallback(
+      "hops:planned-courses-updated",
+      onHopsStudyPlanUpdated
+    );
+
+    return () => {
+      websocketState.websocket.removeEventCallback(
+        "hops:planned-courses-updated",
+        onHopsStudyPlanUpdated
+      );
+    };
+  }, [dispatch, props.studentIdentifier, websocketState.websocket]);
+
+  // Hops goals watcher
+  useEffect(() => {
+    /**
+     * Callback function to handle Hops goals updates
+     * @param data - HopsGoals
+     */
+    const onHopsGoalsUpdated = (
+      data: HopsGoals & { studentIdentifier: string }
+    ) => {
+      const { studentIdentifier, ...goals } = data;
+
+      if (studentIdentifier !== props.studentIdentifier) {
+        return;
+      }
+
+      // Convert graduationGoal to Date object
+      // as websocket sends it as string
+      const updatedGoals = {
+        ...goals,
+        graduationGoal: goals.graduationGoal
+          ? new Date(goals.graduationGoal)
+          : null,
+      };
+
+      dispatch(updateHopsStudyPlanGoals({ goals: updatedGoals }));
+    };
+
+    websocketState.websocket.addEventCallback(
+      "hops:goals-updated",
+      onHopsGoalsUpdated
+    );
+
+    return () => {
+      websocketState.websocket.removeEventCallback(
+        "hops:goals-updated",
+        onHopsGoalsUpdated
+      );
+    };
+  }, [dispatch, props.studentIdentifier, websocketState.websocket]);
 
   return <>{children}</>;
 }
 
-/**
- * Maps Redux state to component props
- * @param state - The current Redux state
- * @returns Mapped props
- */
-function mapStateToProps(state: StateType) {
-  return {
-    websocketState: state.websocket,
-  };
-}
-
-/**
- * Maps Redux dispatch actions to component props
- * @param dispatch - The Redux dispatch function
- * @returns Mapped action creators
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators(
-    {
-      updateMatriculationPlan,
-      updateHopsLocked,
-      updateHopsForm,
-      updateHopsHistory,
-    },
-    dispatch
-  );
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HopsWebsocketWatcher);
+export default HopsWebsocketWatcher;
