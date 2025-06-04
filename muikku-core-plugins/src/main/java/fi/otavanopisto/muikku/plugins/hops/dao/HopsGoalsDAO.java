@@ -43,11 +43,4 @@ public class HopsGoalsDAO extends CorePluginsDAO<HopsGoals> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
-  // TODO Remove after conversion
-  public HopsGoals updateOwner(HopsGoals hopsGoals, Long userEntityId, String category) {
-    hopsGoals.setUserEntityId(userEntityId);
-    hopsGoals.setCategory(category);
-    return persist(hopsGoals);
-  }
-
 }

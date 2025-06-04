@@ -64,11 +64,4 @@ public class HopsHistoryDAO extends CorePluginsDAO<HopsHistory> {
     return query.getResultList();
   }
 
-  // TODO Remove after conversion
-  public HopsHistory updateOwner(HopsHistory hopsHistory, Long userEntityId, String category) {
-    hopsHistory.setUserEntityId(userEntityId);
-    hopsHistory.setCategory(category);
-    return persist(hopsHistory);
-  }
-
 }
