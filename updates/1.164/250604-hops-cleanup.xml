@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>alter table Hops drop column studentIdentifier;</sql>
+  <sql>alter table HopsGoals drop column studentIdentifier;</sql>
+  <sql>alter table HopsHistory drop column studentIdentifier;</sql>
+  <sql>alter table HopsOptionalSuggestion drop column studentIdentifier;</sql>
+  <sql>alter table HopsStudentChoice drop column studentIdentifier;</sql>
+  <sql>alter table HopsSuggestion drop column studentIdentifier;</sql>
+  
+  <sql>alter table Hops modify column userEntityId bigint not null;</sql>
+  <sql>alter table Hops modify column category varchar(255) not null;</sql>
+  <sql>alter table HopsGoals modify column userEntityId bigint not null;</sql>
+  <sql>alter table HopsGoals modify column category varchar(255) not null;</sql>
+  <sql>alter table HopsHistory modify column userEntityId bigint not null;</sql>
+  <sql>alter table HopsHistory modify column category varchar(255) not null;</sql>
+  <sql>alter table HopsOptionalSuggestion modify column userEntityId bigint not null;</sql>
+  <sql>alter table HopsOptionalSuggestion modify column category varchar(255) not null;</sql>
+  <sql>alter table HopsStudentChoice modify column userEntityId bigint not null;</sql>
+  <sql>alter table HopsStudentChoice modify column category varchar(255) not null;</sql>
+  <sql>alter table HopsSuggestion modify column userEntityId bigint not null;</sql>
+  <sql>alter table HopsSuggestion modify column category varchar(255) not null;</sql>
+  
+  <sql>alter table Hops add constraint UK82elic21i2drh5j4q1b25nv0a unique (userEntityId, category);</sql>
+  <sql>alter table HopsGoals add constraint UK81ddn0tc2qtl5wnno8cg6ynav unique (userEntityId, category);</sql>
+  <sql>create index IDXc1vegy8l3xg05knihox4fr0wt on HopsHistory (userEntityId, category);</sql>
+  <sql>create index IDX1euf56hakauaj2j7pngih4ah0 on HopsOptionalSuggestion (userEntityId, category);</sql>
+  <sql>create index IDX2euj2u5vj073yryffqnbx2f5y on HopsStudentChoice (userEntityId, category);</sql>
+  <sql>create index IDX9wr54adq713sa8c8slht4ma48 on HopsSuggestion (userEntityId, category);</sql>
+
+</update> 
