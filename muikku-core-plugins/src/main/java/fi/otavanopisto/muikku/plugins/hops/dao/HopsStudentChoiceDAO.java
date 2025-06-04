@@ -75,11 +75,4 @@ public class HopsStudentChoiceDAO extends CorePluginsDAO<HopsStudentChoice> {
     super.delete(hopsSuggestion);
   }
 
-  // TODO Remove after conversion
-  public HopsStudentChoice updateOwner(HopsStudentChoice hopsStudentChoice, Long userEntityId, String category) {
-    hopsStudentChoice.setUserEntityId(userEntityId);
-    hopsStudentChoice.setCategory(category);
-    return persist(hopsStudentChoice);
-  }
-
 }

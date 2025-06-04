@@ -42,12 +42,5 @@ public class HopsDAO extends CorePluginsDAO<Hops> {
 
     return getSingleResult(entityManager.createQuery(criteria));
   }
-  
-  // TODO Remove after conversion
-  public Hops updateOwner(Hops hops, Long userEntityId, String category) {
-    hops.setUserEntityId(userEntityId);
-    hops.setCategory(category);
-    return persist(hops);
-  }
 
 }
