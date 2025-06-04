@@ -773,6 +773,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(clickSelector))).click();
       sleep(interval);
       elements = findElements(elementToAppear);
+      sleep(500);
     }
     if(elements.isEmpty())
       throw new TimeoutException("Element to appear failed to appear in a given timeout period.");
