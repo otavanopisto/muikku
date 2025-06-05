@@ -121,6 +121,11 @@ const LanguageUsage = () => {
                 ns: "languageProfile",
               })}
             </label>
+            <div className="language-profile__field-description">
+              {t("labels.addNewLanguagesDescription", {
+                ns: "languageProfile",
+              })}
+            </div>
             <LanguageProfileDataDisplayer
               rows={languages}
               singleColumn={true}

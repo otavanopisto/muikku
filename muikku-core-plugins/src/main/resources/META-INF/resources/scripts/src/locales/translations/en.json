@@ -2836,6 +2836,7 @@
       "addLanguageFieldLabel": "Add language",
       "addSubjectFieldLabel": "Add course",
       "addNewLanguagesTitle": "Languages",
+      "addNewLanguagesDescription": "Add languages you know or are studying. You can add multiple languages.",
       "initialization": "Initialization",
       "languages": "Languages",
       "cv": "Language-cv",

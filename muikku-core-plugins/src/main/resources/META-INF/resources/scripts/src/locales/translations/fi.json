@@ -2838,6 +2838,7 @@
       "addLanguageFieldLabel": "Lisää kieli",
       "addSubjectFieldLabel": "Lisää opintojakso",
       "addNewLanguagesTitle": "Kielet",
+      "addNewLanguagesDescription": "Lisää kieliä, joita osaat tai joita haluat opiskella.",
       "initialization": "Alkukartoitus",
       "languages": "Kielet",
       "cv": "Kieli-cv",
