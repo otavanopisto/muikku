@@ -127,10 +127,10 @@
   appearance: none;
   border: solid 2px $color-language-profile-form-element-border;
   border-radius: 3px;
-  display: flex;
+  display: inline-flex;
   height: 1.5rem;
   justify-content: center;
-  margin: 0 10px 0 0;
+  margin: 0 5px;
   padding: 4px 10px;
   width: 1.5rem;
 
@@ -164,6 +164,10 @@
   &[disabled]:checked::after {
     color: $color-default;
   }
+}
+
+.language-profile__input[type="radio"] {
+  border-radius: 100%;
 }
 
 .language-profile__label {
@@ -220,7 +224,7 @@
 .language-profile__languages-wrapper {
   border: 1px solid $color-default-separator-border;
   border-radius: 3px;
-  margin: 10px 0;  
+  margin: 20px 0;  
 }
 
 .language-profile__languages {

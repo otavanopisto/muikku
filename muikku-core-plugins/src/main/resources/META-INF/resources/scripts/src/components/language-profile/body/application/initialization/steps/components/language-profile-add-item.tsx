@@ -15,6 +15,7 @@ interface AddItemProps {
   allItems: LanguageData[];
   selectedItems: LanguageData[];
   filterBy: "name" | "code";
+  placeHolder?: string;
 }
 
 /**
@@ -24,7 +25,7 @@ interface AddItemProps {
  */
 const AddItem = (props: AddItemProps) => {
   const { t } = useTranslation("languageProfile");
-  const { action, selectedItems, filterBy, allItems } = props;
+  const { action, selectedItems, filterBy, allItems, placeHolder } = props;
   const [filter, setFilter] = React.useState<string>("");
   const [active, setActive] = React.useState<boolean>(false);
 
@@ -79,9 +80,7 @@ const AddItem = (props: AddItemProps) => {
       <input
         className="language-profile__input"
         type="text"
-        placeholder={t("labels.addLanguageFieldLabel", {
-          ns: "languageProfile",
-        })}
+        placeholder={placeHolder ? placeHolder : null}
         onFocus={() => toggleDropdown(true)}
         onChange={(e) => handleFieldChange(e.target.value)}
       />

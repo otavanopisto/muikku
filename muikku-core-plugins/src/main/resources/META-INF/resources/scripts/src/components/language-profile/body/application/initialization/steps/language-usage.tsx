@@ -132,6 +132,9 @@ const LanguageUsage = () => {
               filterBy="code"
               allItems={availableLanguages}
               selectedItems={languages}
+              placeHolder={t("labels.addLanguageFieldLabel", {
+                ns: "languageProfile",
+              })}
             />
           </div>
         </div>

@@ -2836,6 +2836,7 @@
   "languageProfile": {
     "labels": {
       "addLanguageFieldLabel": "Lisää kieli",
+      "addSubjectFieldLabel": "Lisää opintojakso",
       "addNewLanguagesTitle": "Kielet",
       "initialization": "Alkukartoitus",
       "languages": "Kielet",
@@ -2849,6 +2850,10 @@
       "initializationStep2Title1": "Kielitaidon tasot",
       "initializationStep2Title2": "Taidot osa-alueittain",
       "initializationStep3Title": "Oppiminen suoritetuilla opintojaksoilla",
+      "initializationStep4Title": "Kielten opiskelu ja tulevaisuus",
+      "futureOfStudiesAffectingFactorsLabel": "Kielten opiskeluusi vaikuttavat asiat",
+      "futureOfStudiesNecessityOfLanguagesLabel": "Kielten tarve tulevaisuudessa",
+      "futureOfStudiesLanguageSkillGoalsLabel": "Kielitaidon tavoitteet",
       "languageUsageUseOfLanguagesLabel": "Kielten käyttäminen",
       "languageUsageUseOfLanguagesDescription": "Missä käytät eri kieliä ja kuinka usein? Käytätkö sekä suullista että kirjallista kieltä?",
       "languageUsageMotivationInStudyingLabel": "Motivaatio opiskelussa",
@@ -2860,7 +2865,11 @@
       "initializationStep1Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "initializationStep2Description1": "Arvioi omaa kielitaitoasi alla olevan asteikon avulla. Pohdi kielitaitoasi eri osaamisalueiden kannalta, ja merkitse taulukkoon se taitotaso (esim. A2.1), jonka kuvaus vastaa mielestäsi parhaiten tämänhetkistä tilannettasi kunkin kielen kohdalla. ",
       "initializationStep2Description2": "Kuinka kuvailisit taitojasi eri kielissä ääntämisen, kieliopin, sanaston ja kielellisten varianttien suhteen?",
-      "initializationStep3Description": "Jos olet jo suorittanut Nettilukiossa joitain kielten opintojaksoja, miten hyvin onnistuit mielestäsi oppimaan opintojaksojen kuvauksissa mainitut asiat? Täydennä suorittamasi opintojakson/opintojaksojen tunnus/tunnukset taulukkoon (esim, ENA9, RUB18) alla olevaa asteikkoa käyttäen."
+      "initializationStep3Description": "Jos olet jo suorittanut Nettilukiossa joitain kielten opintojaksoja, miten hyvin onnistuit mielestäsi oppimaan opintojaksojen kuvauksissa mainitut asiat? Täydennä suorittamasi opintojakson/opintojaksojen tunnus/tunnukset taulukkoon (esim, ENA9, RUB18) alla olevaa asteikkoa käyttäen.",
+      "initializationStep4Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "futureOfStudiesAffectingFactorsDescription": "Onko olemassa sellaisia kieltenopiskeluusi vaikuttavia asioita, jotka valitsemiesi kielten opintojaksojen opettajiesi olisi syytä tietää? Voit kertoa niistä tässä.",
+      "futureOfStudiesNecessityOfLanguagesDescription": "Missä tulet tarvitsemaan eri kieliä tulevaisuudessa? Huomioi tässä esimerkiksi jatko-opinnot, työt ja muut suunnitelmat.",
+      "futureOfStudiesLanguageSkillGoalsDescription": "Millaisia tavoitteita sinulla on kielitaidollesi eri kielissä?"
     },
     "notifications": {
       "createError": "Kieliprofiilin luonti epäonnistui:{{error}}",

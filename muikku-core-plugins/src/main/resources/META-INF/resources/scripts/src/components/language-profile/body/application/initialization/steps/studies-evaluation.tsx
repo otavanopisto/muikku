@@ -67,6 +67,7 @@ const AccomplishmentEvaluation = () => {
     return (
       <input
         type="radio"
+        className="language-profile__input"
         checked={isChecked}
         onChange={(e) => handleAccomplishmentEvaluation(e, code)}
         name={rowId}
@@ -152,6 +153,9 @@ const AccomplishmentEvaluation = () => {
                 selectedItems={language.subjects || []}
                 filterBy="name"
                 action={handleAddLanguageSubject}
+                placeHolder={t("labels.addSubjectFieldLabel", {
+                  ns: "languageProfile",
+                })}
               />
             </div>
           );

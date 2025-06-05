@@ -18,7 +18,11 @@ const FutureOfStudies = () => {
 
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  // Debounced field change handler
+  /**
+   * Debounced field change handler
+   *  @param e React.ChangeEvent<HTMLTextAreaElement>
+   *  @param field  field of LanguageProfileData to update
+   */
   const handleFieldChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     field: keyof LanguageProfileData
@@ -51,53 +55,79 @@ const FutureOfStudies = () => {
   );
 
   return (
-    <div>
-      <div>
-        <h1>Kielitaidon tasot</h1>
-        <div>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque
-          posuere ligula rutrum, egestas nunc non, bibendum dolor. Praesent
-          tristique quis purus eu fermentum. Vivamus et volutpat urna. Donec vel
-          purus eu neque pulvinar porttitor at ac nisi. Aenean aliquam auctor
-          arcu, ac tristique odio maximus at. Pellentesque habitant morbi
-          tristique senectus et netus et malesuada fames ac turpis egestas. Cras
-          ullamcorper lacinia metus nec molestie. Class aptent taciti sociosqu
-          ad litora torquent per conubia nostra, per inceptos himenaeos. Cras
-          scelerisque arcu vel consectetur sagittis. Integer et est a eros
-          laoreet pretium sed ac orci. Aliquam sagittis ex id velit tincidunt,
-          at laoreet odio placerat. Aenean dignissim tellus leo, a ultricies
-          tortor euismod consequa
+    <div className="language-profile-container">
+      <fieldset className="language-profile-container__fieldset">
+        <legend className="language-profile-container__subheader">
+          {t("labels.initializationStep4Title", {
+            ns: "languageProfile",
+          })}
+        </legend>
+        <div className="language-profile-container__fieldset-description">
+          {t("content.initializationStep4Description", {
+            ns: "languageProfile",
+          })}
         </div>
-      </div>
-      <form>
-        <div>
-          <h2>Kieltenopiskeluun vaikuttavat asiat</h2>
-          <textarea
-            id="learningFactors"
-            defaultValue={learningFactors || ""}
-            onChange={(e) => handleFieldChange(e, "learningFactors")}
-            className="form-element__textarea"
-          />
+        <div className="language-profile-container__row">
+          <div className="language-profile__form-element-container">
+            <label className="language-profile__label">
+              {t("labels.futureOfStudiesAffectingFactorsLabel", {
+                ns: "languageProfile",
+              })}
+            </label>
+            <div className="language-profile__field-description">
+              {t("content.futureOfStudiesAffectingFactorsDescription", {
+                ns: "languageProfile",
+              })}
+            </div>
+            <textarea
+              id="learningFactors"
+              defaultValue={learningFactors || ""}
+              onChange={(e) => handleFieldChange(e, "learningFactors")}
+              className="language-profile__textarea"
+            />
+          </div>
         </div>
-        <div>
-          <h2>Kielten tarve tulevaisuudessa</h2>
-          <textarea
-            id="futureUsage"
-            defaultValue={futureUsage || ""}
-            onChange={(e) => handleFieldChange(e, "futureUsage")}
-            className="form-element__textarea"
-          />
+        <div className="language-profile-container__row">
+          <div className="language-profile__form-element-container">
+            <label className="language-profile__label">
+              {t("labels.futureOfStudiesNecessityOfLanguagesLabel", {
+                ns: "languageProfile",
+              })}
+            </label>
+            <div className="language-profile__field-description">
+              {t("content.futureOfStudiesNecessityOfLanguagesDescription", {
+                ns: "languageProfile",
+              })}
+            </div>
+            <textarea
+              id="futureUsage"
+              defaultValue={futureUsage || ""}
+              onChange={(e) => handleFieldChange(e, "futureUsage")}
+              className="language-profile__textarea"
+            />
+          </div>
         </div>
-        <div>
-          <h2>Kielitaidon tavoitteet</h2>
-          <textarea
-            id="skillGoals"
-            defaultValue={skillGoals || ""}
-            onChange={(e) => handleFieldChange(e, "skillGoals")}
-            className="form-element__textarea"
-          />
+        <div className="language-profile-container__row">
+          <div className="language-profile__form-element-container">
+            <label className="language-profile__label">
+              {t("labels.futureOfStudiesLanguageSkillGoalsLabel", {
+                ns: "languageProfile",
+              })}
+            </label>
+            <div className="language-profile__field-description">
+              {t("content.futureOfStudiesLanguageSkillGoalsDescription", {
+                ns: "languageProfile",
+              })}
+            </div>
+            <textarea
+              id="skillGoals"
+              defaultValue={skillGoals || ""}
+              onChange={(e) => handleFieldChange(e, "skillGoals")}
+              className="language-profile__textarea"
+            />
+          </div>
         </div>
-      </form>
+      </fieldset>
     </div>
   );
 };
