@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -15,19 +17,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
-//TODO Add userEntityId + category index after conversion
+@Table(indexes = @Index(columnList = "userEntityId, category"))
 public class HopsHistory {
 
   public Long getId() {
     return id;
-  }
-
-  public String getStudentIdentifier() {
-    return studentIdentifier;
-  }
-
-  public void setStudentIdentifier(String studentIdentifier) {
-    this.studentIdentifier = studentIdentifier;
   }
 
   public Date getDate() {
@@ -82,17 +76,14 @@ public class HopsHistory {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   
-  @Column
-  // TODO Make non-nullable after conversion
+  @NotNull
+  @Column (nullable = false)
   private Long userEntityId;
   
-  @Column
-  // TODO Make non-nullable after conversion
+  @NotNull
+  @NotEmpty
+  @Column (nullable = false)
   private String category;
-
-  @Column
-  // TODO Remove after conversion
-  private String studentIdentifier;
 
   @NotNull
   @Column(nullable = false)

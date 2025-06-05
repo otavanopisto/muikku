@@ -52,12 +52,6 @@ import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.hops.HopsController;
 import fi.otavanopisto.muikku.plugins.hops.HopsStudent;
 import fi.otavanopisto.muikku.plugins.hops.HopsWebsocketMessenger;
-import fi.otavanopisto.muikku.plugins.hops.dao.HopsDAO;
-import fi.otavanopisto.muikku.plugins.hops.dao.HopsGoalsDAO;
-import fi.otavanopisto.muikku.plugins.hops.dao.HopsHistoryDAO;
-import fi.otavanopisto.muikku.plugins.hops.dao.HopsOptionalSuggestionDAO;
-import fi.otavanopisto.muikku.plugins.hops.dao.HopsStudentChoiceDAO;
-import fi.otavanopisto.muikku.plugins.hops.dao.HopsSuggestionDAO;
 import fi.otavanopisto.muikku.plugins.hops.model.Hops;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsGoals;
 import fi.otavanopisto.muikku.plugins.hops.model.HopsHistory;
@@ -121,21 +115,6 @@ public class HopsRestService {
 
   @Inject
   private SessionController sessionController;
-  
-  // TODO Remove DAO injects after conversion
-  
-  @Inject
-  private HopsDAO hopsDAO;
-  @Inject
-  private HopsGoalsDAO hopsGoalsDAO;
-  @Inject
-  private HopsHistoryDAO hopsHistoryDAO;
-  @Inject
-  private HopsOptionalSuggestionDAO hopsOptionalSuggestionDAO;
-  @Inject
-  private HopsStudentChoiceDAO hopsStudentChoiceDAO;
-  @Inject
-  private HopsSuggestionDAO hopsSuggestionDAO;
 
   @Inject
   private HopsController hopsController;
@@ -1716,111 +1695,6 @@ public class HopsRestService {
       }
     }
     return historyItem;
-  }
-  
-  @GET
-  @Path("/hopsConversion")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response convertHops() {
-    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    Map<String, HopsStudent> hopsStudentCache = new HashMap<>();
-    HopsStudent hopsStudent;
-    String identifier;
-    
-    List<Hops> hopses = hopsDAO.listAll();
-    for (Hops hops : hopses) {
-      identifier = hops.getStudentIdentifier();
-      if (!hopsStudentCache.containsKey(identifier)) {
-        hopsStudent = getHopsStudent(SchoolDataIdentifier.fromId(identifier));
-        if (hopsStudent != null) {
-          hopsStudentCache.put(identifier, hopsStudent);
-        }
-      }
-      hopsStudent = hopsStudentCache.get(identifier);
-      if (hopsStudent != null) {
-        hopsDAO.updateOwner(hops, hopsStudent.getUserEntityId(), hopsStudent.getCategory());
-      }
-    }
-    
-    List<HopsGoals> goals = hopsGoalsDAO.listAll();
-    for (HopsGoals goal : goals) {
-      identifier = goal.getStudentIdentifier();
-      if (!hopsStudentCache.containsKey(identifier)) {
-        hopsStudent = getHopsStudent(SchoolDataIdentifier.fromId(identifier));
-        if (hopsStudent != null) {
-          hopsStudentCache.put(identifier, hopsStudent);
-        }
-      }
-      hopsStudent = hopsStudentCache.get(identifier);
-      if (hopsStudent != null) {
-        hopsGoalsDAO.updateOwner(goal, hopsStudent.getUserEntityId(), hopsStudent.getCategory());
-      }
-    }
-
-    List<HopsHistory> histories = hopsHistoryDAO.listAll();
-    for (HopsHistory history : histories) {
-      identifier = history.getStudentIdentifier();
-      if (!hopsStudentCache.containsKey(identifier)) {
-        hopsStudent = getHopsStudent(SchoolDataIdentifier.fromId(identifier));
-        if (hopsStudent != null) {
-          hopsStudentCache.put(identifier, hopsStudent);
-        }
-      }
-      hopsStudent = hopsStudentCache.get(identifier);
-      if (hopsStudent != null) {
-        hopsHistoryDAO.updateOwner(history, hopsStudent.getUserEntityId(), hopsStudent.getCategory());
-      }
-    }
-
-    List<HopsOptionalSuggestion> optSugs = hopsOptionalSuggestionDAO.listAll();
-    for (HopsOptionalSuggestion sug : optSugs) {
-      identifier = sug.getStudentIdentifier();
-      if (!hopsStudentCache.containsKey(identifier)) {
-        hopsStudent = getHopsStudent(SchoolDataIdentifier.fromId(identifier));
-        if (hopsStudent != null) {
-          hopsStudentCache.put(identifier, hopsStudent);
-        }
-      }
-      hopsStudent = hopsStudentCache.get(identifier);
-      if (hopsStudent != null) {
-        hopsOptionalSuggestionDAO.updateOwner(sug, hopsStudent.getUserEntityId(), hopsStudent.getCategory());
-      }
-    }
-
-    List<HopsStudentChoice> choices = hopsStudentChoiceDAO.listAll();
-    for (HopsStudentChoice choice : choices) {
-      identifier = choice.getStudentIdentifier();
-      if (!hopsStudentCache.containsKey(identifier)) {
-        hopsStudent = getHopsStudent(SchoolDataIdentifier.fromId(identifier));
-        if (hopsStudent != null) {
-          hopsStudentCache.put(identifier, hopsStudent);
-        }
-      }
-      hopsStudent = hopsStudentCache.get(identifier);
-      if (hopsStudent != null) {
-        hopsStudentChoiceDAO.updateOwner(choice, hopsStudent.getUserEntityId(), hopsStudent.getCategory());
-      }
-    }
-    
-    List<HopsSuggestion> sugs = hopsSuggestionDAO.listAll();
-    for (HopsSuggestion sug : sugs) {
-      identifier = sug.getStudentIdentifier();
-      if (!hopsStudentCache.containsKey(identifier)) {
-        hopsStudent = getHopsStudent(SchoolDataIdentifier.fromId(identifier));
-        if (hopsStudent != null) {
-          hopsStudentCache.put(identifier, hopsStudent);
-        }
-      }
-      hopsStudent = hopsStudentCache.get(identifier);
-      if (hopsStudent != null) {
-        hopsSuggestionDAO.updateOwner(sug, hopsStudent.getUserEntityId(), hopsStudent.getCategory());
-      }
-    }
-    
-    return Response.noContent().build();
   }
   
   private HopsStudent getHopsStudent(SchoolDataIdentifier identifier) {

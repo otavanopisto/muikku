@@ -6,26 +6,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
-// TODO Add userEntityId + category unique index after conversion
+@Table (uniqueConstraints = {@UniqueConstraint( columnNames = {"userEntityId", "category"})})
 public class HopsGoals {
 
   public Long getId() {
     return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getStudentIdentifier() {
-    return studentIdentifier;
-  }
-
-  public void setStudentIdentifier(String studentIdentifier) {
-    this.studentIdentifier = studentIdentifier;
   }
 
   public String getGoals() {
@@ -56,17 +47,14 @@ public class HopsGoals {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column
-  // TODO Make non-nullable after conversion
+  @NotNull
+  @Column (nullable = false)
   private Long userEntityId;
   
-  @Column
-  // TODO Make non-nullable after conversion
+  @NotNull
+  @NotEmpty
+  @Column (nullable = false)
   private String category;
-
-  @Column
-  // TODO Remove after conversion
-  private String studentIdentifier;
 
   @Lob
   @NotNull

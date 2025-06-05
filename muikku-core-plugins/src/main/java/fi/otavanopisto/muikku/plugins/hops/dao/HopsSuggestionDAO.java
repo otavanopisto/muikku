@@ -82,12 +82,5 @@ public class HopsSuggestionDAO extends CorePluginsDAO<HopsSuggestion> {
   public void delete(HopsSuggestion hopsSuggestion) {
     super.delete(hopsSuggestion);
   }
-  
-  // TODO Remove after conversion
-  public HopsSuggestion updateOwner(HopsSuggestion hopsSuggestion, Long userEntityId, String category) {
-    hopsSuggestion.setUserEntityId(userEntityId);
-    hopsSuggestion.setCategory(category);
-    return persist(hopsSuggestion);
-  }
 
 }
