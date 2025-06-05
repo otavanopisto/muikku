@@ -161,7 +161,7 @@
   display: block;
   font-size: 1.125rem;
   font-weight: 400;
-  margin: 0 0 10px;
+  margin: 0 5px 10px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
@@ -182,7 +182,9 @@
 }
 
 .hops-container__fieldset-description {
-  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  margin: 10px 5px;
 }
 
 .hops-container__list {
@@ -432,6 +434,7 @@
   flex-flow: column wrap;
   flex-grow: 1;
   flex-shrink: 1;
+  margin: 5px;
   position: relative;
 }
 

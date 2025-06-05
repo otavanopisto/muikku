@@ -87,6 +87,16 @@
   background-color: $color-default;
 }
 
+.table__row--clickable {
+  cursor: pointer;
+}
+
+.table__row--disabled {
+  color: $color-disabled;
+  cursor: not-allowed;
+  font-style: italic;
+}
+
 .table__row--empty {
   background: transparent;
 
@@ -140,8 +150,7 @@
   text-align: center;
 }
 
-.table__head--language-profile-first-cell,
-.table__data--language-profile-first-cell {
+.table__head--language-profile-first-cell {
   width: 200px;
 }
 
@@ -155,6 +164,11 @@
   position: relative;
   width: auto;
 }
+
+.table__data--language-profile-first-cell {
+  width: 200px;
+}
+
 
 .table__data--subtitle {
   font-size: 1rem;

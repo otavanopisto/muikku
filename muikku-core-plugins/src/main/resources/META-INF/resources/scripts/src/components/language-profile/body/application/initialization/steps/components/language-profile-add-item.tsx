@@ -3,6 +3,7 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/language-profile.scss";
 import { filterMatch } from "~/util/modifiers";
 import { LanguageData } from "~/@types/shared";
+import { useTranslation } from "react-i18next";
 
 // import { useDispatch, useSelector } from "react-redux";
 
@@ -22,6 +23,7 @@ interface AddItemProps {
  * @param props the props of the component
  */
 const AddItem = (props: AddItemProps) => {
+  const { t } = useTranslation("languageProfile");
   const { action, selectedItems, filterBy, allItems } = props;
   const [filter, setFilter] = React.useState<string>("");
   const [active, setActive] = React.useState<boolean>(false);
@@ -77,7 +79,9 @@ const AddItem = (props: AddItemProps) => {
       <input
         className="language-profile__input"
         type="text"
-        placeholder="TODO: Add an item"
+        placeholder={t("labels.addLanguageFieldLabel", {
+          ns: "languageProfile",
+        })}
         onFocus={() => toggleDropdown(true)}
         onChange={(e) => handleFieldChange(e.target.value)}
       />

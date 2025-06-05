@@ -7,6 +7,7 @@ import { LanguageCode, LanguageData } from "~/@types/shared";
 import AddLanguage from "./components/language-profile-add-item";
 import LanguageProfileDataDisplayer from "./components/language-profile-data-displayer";
 import { availableLanguages } from "~/mock/mock-data";
+import { useTranslation } from "react-i18next";
 
 /**
  * LanguageUsage
@@ -14,6 +15,7 @@ import { availableLanguages } from "~/mock/mock-data";
  * and motivation for studying languages.
  */
 const LanguageUsage = () => {
+  const { t } = useTranslation("languageProfile");
   const dispatch = useDispatch();
   const {
     languages,
@@ -103,25 +105,25 @@ const LanguageUsage = () => {
     <div className="language-profile-container">
       <fieldset className="language-profile-container__fieldset">
         <legend className="language-profile-container__subheader">
-          Kielten käyttäminen ja opiskeleminen
+          {t("labels.initializationStep1Title", {
+            ns: "languageProfile",
+          })}
         </legend>
         <div className="language-profile-container__fieldset-description">
-          Etiam quis nulla venenatis, pellentesque augue a, sodales urna. Fusce
-          velit risus, pretium a consequat ut, interdum in orci. Nam at odio sed
-          ante auctor condimentum. Nunc consectetur arcu ac dui porttitor
-          pretium. Nullam libero felis, suscipit ac erat vitae, imperdiet
-          interdum dui. In tincidunt et quam eu ultricies. Vivamus condimentum
-          eget magna vel vulputate. Duis luctus eros at felis tincidunt
-          lobortis. Pellentesque posuere enim eu mauris faucibus, nec pretium
-          tortor tincidunt. Nullam sed egestas nibh, quis ultricies lorem. Sed
-          non sodales justo. Praesent interdum, neque vitae luctus ultricies,
-          massa nibh congue est, quis accumsan velit odio sed elit.
+          {t("content.initializationStep1Description", {
+            ns: "languageProfile",
+          })}
         </div>
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
-            <label className="language-profile__label">Kielet</label>
+            <label className="language-profile__label">
+              {t("labels.addNewLanguagesTitle", {
+                ns: "languageProfile",
+              })}
+            </label>
             <LanguageProfileDataDisplayer
               rows={languages}
+              singleColumn={true}
               disabledItems={getLockedLanguages()}
               onItemClick={handleLanguage}
             />
@@ -136,8 +138,15 @@ const LanguageUsage = () => {
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
             <label className="language-profile__label">
-              Kielten käyttäminen
+              {t("labels.languageUsageUseOfLanguagesLabel", {
+                ns: "languageProfile",
+              })}
             </label>
+            <div className="language-profile__field-description">
+              {t("labels.languageUsageUseOfLanguagesLabel", {
+                ns: "languageProfile",
+              })}
+            </div>
             <div className="form-element__textarea-container">
               <textarea
                 id="languageUsage"
@@ -151,8 +160,15 @@ const LanguageUsage = () => {
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
             <label className="language-profile__label">
-              Motivaatio opiskelussa
+              {t("labels.languageUsageMotivationInStudyingLabel", {
+                ns: "languageProfile",
+              })}
             </label>
+            <div className="language-profile__field-description">
+              {t("labels.languageUsageMotivationInStudyingDescription", {
+                ns: "languageProfile",
+              })}
+            </div>
             <div className="form-element__textarea-container">
               <textarea
                 id="studyMotivation"
@@ -165,7 +181,16 @@ const LanguageUsage = () => {
         </div>
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
-            <label className="language-profile__label">Kielten oppimien</label>
+            <label className="language-profile__label">
+              {t("labels.languageUsageLearningLanguagesLabel", {
+                ns: "languageProfile",
+              })}
+            </label>
+            <div className="language-profile__field-description">
+              {t("labels.languageUsageLearningLanguagesDescription", {
+                ns: "languageProfile",
+              })}
+            </div>
             <div className="form-element__textarea-container">
               <textarea
                 id="messageForTeacher"

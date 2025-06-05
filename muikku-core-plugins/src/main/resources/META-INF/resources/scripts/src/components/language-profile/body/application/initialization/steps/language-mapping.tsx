@@ -159,13 +159,14 @@ const LanguageMapping = () => {
     <div className="language-profile-container">
       <fieldset className="language-profile-container__fieldset">
         <legend className="language-profile-container__subheader">
-          Kielten käyttäminen ja opiskeleminen
+          {t("labels.initializationStep2Title1", {
+            ns: "languageProfile",
+          })}
         </legend>
         <div className="language-profile-container__fieldset-description">
-          Arvioi omaa kielitaitoasi alla olevan asteikon avulla. Pohdi
-          kielitaitoasi eri osaamisalueiden kannalta, ja merkitse taulukkoon se
-          taitotaso (esim. A2.1), jonka kuvaus vastaa mielestäsi parhaiten
-          tämänhetkistä tilannettasi kunkin kielen kohdalla.
+          {t("content.initializationStep2Description1", {
+            ns: "languageProfile",
+          })}
         </div>
         <div className="language-profile-container__row">
           <DisplayLanguages
@@ -181,11 +182,14 @@ const LanguageMapping = () => {
       </fieldset>
       <fieldset className="language-profile-container__fieldset">
         <legend className="language-profile-container__subheader">
-          Taidot osa-alueittain
+          {t("labels.initializationStep2Title2", {
+            ns: "languageProfile",
+          })}
         </legend>
         <div className="language-profile-container__fieldset-description">
-          Kuinka kuvailisit taitojasi eri kielissä ääntämisen, kieliopin,
-          sanaston ja kielellisten varianttien suhteen?
+          {t("content.initializationStep2Description2", {
+            ns: "languageProfile",
+          })}
         </div>
         <div className="language-profile-container__row">
           <DisplayLanguages

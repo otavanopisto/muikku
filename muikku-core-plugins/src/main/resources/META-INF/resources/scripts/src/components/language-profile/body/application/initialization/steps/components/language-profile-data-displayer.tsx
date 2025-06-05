@@ -18,6 +18,7 @@ interface LanguageProfileDataDisplayerProps {
   title?: string;
   rows: LanguageData[];
   disabledItems?: string[];
+  singleColumn?: boolean;
 
   cellAction?: (
     code: string,
@@ -34,7 +35,7 @@ interface LanguageProfileDataDisplayerProps {
  * @returns JSX element that displays the languages in a table format
  */
 const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
-  const { labels, rows, title, cellAction, onItemClick } = props;
+  const { labels, rows, title, singleColumn, cellAction, onItemClick } = props;
   return (
     <div className="language-profile__languages-wrapper">
       <Table modifiers={["language-profile__languages"]}>
@@ -57,19 +58,42 @@ const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
             const isDisabled = props.disabledItems?.includes(item.code);
             const rowId = item.code + item.name;
 
+            const tableRowModifiers = [];
+
+            if (isDisabled) {
+              tableRowModifiers.push("disabled");
+            } else if (onItemClick) {
+              tableRowModifiers.push("clickable");
+            }
+
             return (
               <Tr
                 data-testid={rowId}
                 key={rowId}
                 onClick={() => onItemClick?.(item)}
-                modifiers={[`${isDisabled ? "DISABLED" : ""}`]}
+                modifiers={tableRowModifiers}
               >
-                <Td
-                  modifiers={["centered", "language-profile-first-cell"]}
-                  key={item.code}
-                >
-                  {item.name}
-                </Td>
+                {singleColumn ? (
+                  <Td
+                    modifiers={["language-profile-first-cell"]}
+                    key={item.code}
+                  >
+                    {item.name}
+                  </Td>
+                ) : (
+                  <Td
+                    modifiers={["centered", "language-profile-first-cell"]}
+                    key={item.code + "-name"}
+                  >
+                    {isDisabled ? (
+                      <span className="language-profile__disabled-language">
+                        {item.name}
+                      </span>
+                    ) : (
+                      item.name
+                    )}
+                  </Td>
+                )}
                 {labels &&
                   labels.map((label, index) => {
                     const cellId = item.code + "-" + index;

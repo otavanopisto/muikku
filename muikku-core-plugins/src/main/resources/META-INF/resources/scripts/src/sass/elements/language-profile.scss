@@ -29,7 +29,9 @@
 }
 
 .language-profile-container__fieldset-description {
-  margin: 0 5px;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  margin: 10px 5px;
 }
 
 .language-profile-container__row {
@@ -90,7 +92,7 @@
   border: 2px solid $color-language-profile-form-element-border;
   border-radius: 3px;
   display: inline-block;
-  height: 5rem;
+  height: 7rem;
   padding: 4px 8px;
   resize: vertical;
   width: 100%;
@@ -169,6 +171,14 @@
   font-weight: 600;
   overflow: hidden;
   padding: 0 0 5px;
+  text-overflow: ellipsis;
+}
+
+.language-profile__field-description {
+  color: lighten($color-default-contrast, 30%);
+  display: block;
+  overflow: hidden;
+  margin: 0 0 10px;
   text-overflow: ellipsis;
 }
 

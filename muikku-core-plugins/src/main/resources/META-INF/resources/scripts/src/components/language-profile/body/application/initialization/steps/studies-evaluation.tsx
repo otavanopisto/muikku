@@ -117,35 +117,46 @@ const AccomplishmentEvaluation = () => {
   };
 
   return (
-    <div>
-      Oppiminen suoritetuilla opintojaksoilla
-      {languages.map((language) => {
-        const languageSubjectsWithLanguageCode = languageSubjects.map(
-          (workspace) => ({
-            ...workspace,
-            code: language.code,
-          })
-        );
-        return (
-          <div key={language.code}>
-            <DisplayLanguages
-              key={language.code}
-              rows={createRows(language)}
-              cellAction={accomplishmentEvaluationSelect}
-              labels={Array.from(Array(5).keys()).map((i) =>
-                (i + 1).toString()
-              )}
-              title={language.name}
-            />
-            <AddSubject
-              allItems={languageSubjectsWithLanguageCode}
-              selectedItems={language.subjects || []}
-              filterBy="name"
-              action={handleAddLanguageSubject}
-            />
-          </div>
-        );
-      })}
+    <div className="language-profile-container">
+      <fieldset className="language-profile-container__fieldset">
+        <legend className="language-profile-container__subheader">
+          {t("labels.initializationStep3Title", {
+            ns: "languageProfile",
+          })}
+        </legend>
+        <div className="language-profile-container__fieldset-description">
+          {t("content.initializationStep3Description", {
+            ns: "languageProfile",
+          })}
+        </div>
+        {languages.map((language) => {
+          const languageSubjectsWithLanguageCode = languageSubjects.map(
+            (workspace) => ({
+              ...workspace,
+              code: language.code,
+            })
+          );
+          return (
+            <div key={language.code}>
+              <DisplayLanguages
+                key={language.code}
+                rows={createRows(language)}
+                cellAction={accomplishmentEvaluationSelect}
+                labels={Array.from(Array(5).keys()).map((i) =>
+                  (i + 1).toString()
+                )}
+                title={language.name}
+              />
+              <AddSubject
+                allItems={languageSubjectsWithLanguageCode}
+                selectedItems={language.subjects || []}
+                filterBy="name"
+                action={handleAddLanguageSubject}
+              />
+            </div>
+          );
+        })}
+      </fieldset>
     </div>
   );
 };
