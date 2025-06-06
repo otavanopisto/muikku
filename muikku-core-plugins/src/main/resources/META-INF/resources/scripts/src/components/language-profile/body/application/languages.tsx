@@ -47,29 +47,34 @@ const LanguageSample = (props: LanguageSampleProps) => {
   };
 
   return (
-    <div className="language-profile__language-sample">
-      <h1>Kielinäytteet</h1>
-      <div>
-        Phasellus pretium elit nec elit dictum tincidunt. Vestibulum hendrerit
-        nec urna id sollicitudin. Vestibulum viverra leo ut orci consectetur
-        aliquam. Cras cursus risus mauris, et aliquet massa efficitur eu. Nunc
-        non tempor neque, nec pulvinar purus. Sed lacinia purus porta, vulputate
-        massa quis, accumsan ante. Ut sagittis odio id nisl sagittis, eget
-        mollis diam placerat. Phasellus mollis neque et felis tempor imperdiet.
+    <div className="language-profile-container">
+      <fieldset className="language-profile-container__fieldset">
+        <legend className="language-profile-container__subheader">
+          {t("labels.languageSamplesStepTitle", {
+            ns: "languageProfile",
+          })}
+        </legend>
+        <div className="language-profile-container__fieldset-description">
+          {t("content.languageSamplesStepDescription", {
+            ns: "languageProfile",
+          })}
+        </div>
+      </fieldset>
+      <div className="language-profile-container__row">
+        <div className="language-profile__form-element-container">
+          {languages.map((language) => (
+            <Language
+              key={language.code}
+              samples={samples}
+              language={language}
+              samplesToRemove={samplesToRemove}
+              setSamplesToRemove={setSamplesToRemove}
+              changed={changed}
+              setChanged={setChanged}
+            />
+          ))}
+        </div>
       </div>
-      <form>
-        {languages.map((language) => (
-          <Language
-            key={language.code}
-            samples={samples}
-            language={language}
-            samplesToRemove={samplesToRemove}
-            setSamplesToRemove={setSamplesToRemove}
-            changed={changed}
-            setChanged={setChanged}
-          />
-        ))}
-      </form>
       <footer className="language-profile__footer">
         <Button onClick={() => handleSave()}>
           {t("actions.save", { ns: "common" })}

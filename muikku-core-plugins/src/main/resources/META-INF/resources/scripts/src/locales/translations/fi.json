@@ -2855,6 +2855,7 @@
       "futureOfStudiesAffectingFactorsLabel": "Kielten opiskeluusi vaikuttavat asiat",
       "futureOfStudiesNecessityOfLanguagesLabel": "Kielten tarve tulevaisuudessa",
       "futureOfStudiesLanguageSkillGoalsLabel": "Kielitaidon tavoitteet",
+      "languageSamplesStepTitle": "Kielinäytteet",
       "languageUsageUseOfLanguagesLabel": "Kielten käyttäminen",
       "languageUsageUseOfLanguagesDescription": "Missä käytät eri kieliä ja kuinka usein? Käytätkö sekä suullista että kirjallista kieltä?",
       "languageUsageMotivationInStudyingLabel": "Motivaatio opiskelussa",
@@ -2870,7 +2871,8 @@
       "initializationStep4Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "futureOfStudiesAffectingFactorsDescription": "Onko olemassa sellaisia kieltenopiskeluusi vaikuttavia asioita, jotka valitsemiesi kielten opintojaksojen opettajiesi olisi syytä tietää? Voit kertoa niistä tässä.",
       "futureOfStudiesNecessityOfLanguagesDescription": "Missä tulet tarvitsemaan eri kieliä tulevaisuudessa? Huomioi tässä esimerkiksi jatko-opinnot, työt ja muut suunnitelmat.",
-      "futureOfStudiesLanguageSkillGoalsDescription": "Millaisia tavoitteita sinulla on kielitaidollesi eri kielissä?"
+      "futureOfStudiesLanguageSkillGoalsDescription": "Millaisia tavoitteita sinulla on kielitaidollesi eri kielissä?",
+      "languageSamplesStepDescription": "Phasellus pretium elit nec elit dictum tincidunt. Vestibulum hendrerit nec urna id sollicitudin. Vestibulum viverra leo ut orci consectetur aliquam. Cras cursus risus mauris, et aliquet massa efficitur eu. Nunc non tempor neque, nec pulvinar purus. Sed lacinia purus porta, vulputate massa quis, accumsan ante. Ut sagittis odio id nisl sagittis, eget     mollis diam placerat. Phasellus mollis neque et felis tempor imperdiet."
     },
     "notifications": {
       "createError": "Kieliprofiilin luonti epäonnistui:{{error}}",
