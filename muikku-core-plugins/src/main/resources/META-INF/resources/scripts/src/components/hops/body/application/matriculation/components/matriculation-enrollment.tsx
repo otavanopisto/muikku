@@ -249,15 +249,29 @@ const MatriculationSubmittedEnrollment = (
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
 
-        <ApplicationSubPanelItem
-          title={t("labels.matriculationEnrollmentCloses", {
-            ns: "hops_new",
-          })}
-        >
-          <ApplicationSubPanelItem.Content>
-            {localize.date(new Date(exam.ends))}
-          </ApplicationSubPanelItem.Content>
-        </ApplicationSubPanelItem>
+        {/* If matriculation exam has confirmDate we show only that and not
+        enrollment ends date */}
+        {exam.confirmDate && exam.confirmDate > exam.ends ? (
+          <ApplicationSubPanelItem
+            title={t("labels.matriculationEnrollmentDeadline", {
+              ns: "hops_new",
+            })}
+          >
+            <ApplicationSubPanelItem.Content>
+              {localize.date(new Date(exam.confirmDate))}
+            </ApplicationSubPanelItem.Content>
+          </ApplicationSubPanelItem>
+        ) : (
+          <ApplicationSubPanelItem
+            title={t("labels.matriculationEnrollmentCloses", {
+              ns: "hops_new",
+            })}
+          >
+            <ApplicationSubPanelItem.Content>
+              {localize.date(new Date(exam.ends))}
+            </ApplicationSubPanelItem.Content>
+          </ApplicationSubPanelItem>
+        )}
         <ApplicationSubPanelItem
           title={t("labels.matriculationEnrollmentStatus", {
             ns: "hops_new",
@@ -267,7 +281,6 @@ const MatriculationSubmittedEnrollment = (
             {getLocaleByExamStatus(exam.studentStatus, t)}
           </ApplicationSubPanelItem.Content>
         </ApplicationSubPanelItem>
-
         {exam.changeLogs[0] && exam.changeLogs[0].message !== null && (
           <ApplicationSubPanelItem
             title={t("labels.matriculationEnrollmentMessage", {
@@ -279,7 +292,6 @@ const MatriculationSubmittedEnrollment = (
             </ApplicationSubPanelItem.Content>
           </ApplicationSubPanelItem>
         )}
-
         {functionByStatus && (
           <ApplicationSubPanelItem
             title={t("labels.matriculationEnrollmentInfo", {
