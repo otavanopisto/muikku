@@ -5,12 +5,14 @@ import { ActionType } from "~/actions";
 import SkillLevel from "./cv/skill-level";
 import { saveLanguageProfile } from "~/actions/main-function/language-profile";
 import Button from "~/components/general/button";
+import { useTranslation } from "react-i18next";
 
 /**
  * LanguageCv component
  * @returns JSX.Element
  */
 const LanguageCv = () => {
+  const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const { languageProfile, status } = useSelector((state: StateType) => state);
   const { languages, cv } = languageProfile.data;

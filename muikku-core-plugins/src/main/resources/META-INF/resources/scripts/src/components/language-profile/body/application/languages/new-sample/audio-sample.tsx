@@ -20,7 +20,7 @@ interface FileSampleProps {
  * @returns JSX.Element
  */
 const TextSample = (props: FileSampleProps) => {
-  const { t } = useTranslation("languageProfile");
+  const { t } = useTranslation(["languageProfile", "common"]);
   const { samples, onChange, onDelete, onSave, onCancel } = props;
   return (
     <div className="language-profile__audio-sample">
@@ -31,8 +31,16 @@ const TextSample = (props: FileSampleProps) => {
         onChange={onChange}
       />
       <div className="form-actions">
-        <Button onClick={onSave}>Tallenna</Button>
-        <Button onClick={onCancel}>Peruuta</Button>
+        <Button onClick={onSave}>
+          {t("actions.save", {
+            ns: "common",
+          })}
+        </Button>
+        <Button onClick={onCancel}>
+          {t("actions.cancel", {
+            ns: "common",
+          })}
+        </Button>
       </div>
     </div>
   );

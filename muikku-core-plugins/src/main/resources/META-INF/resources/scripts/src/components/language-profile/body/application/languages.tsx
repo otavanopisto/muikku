@@ -22,7 +22,7 @@ interface LanguageSampleProps {}
  * @returns JSX.Element
  */
 const LanguageSample = (props: LanguageSampleProps) => {
-  const { t } = useTranslation("languageProfile");
+  const { t } = useTranslation(["languageProfile", "common"]);
   const { status, languageProfile } = useSelector((state: StateType) => state);
   const [changed, setChanged] = React.useState<number[]>([]);
   const [samplesToRemove, setSamplesToRemove] = React.useState<number[]>([]);
@@ -47,21 +47,21 @@ const LanguageSample = (props: LanguageSampleProps) => {
   };
 
   return (
-    <div className="language-profile-container">
-      <fieldset className="language-profile-container__fieldset">
-        <legend className="language-profile-container__subheader">
-          {t("labels.languageSamplesStepTitle", {
-            ns: "languageProfile",
-          })}
-        </legend>
-        <div className="language-profile-container__fieldset-description">
-          {t("content.languageSamplesStepDescription", {
-            ns: "languageProfile",
-          })}
-        </div>
-      </fieldset>
-      <div className="language-profile-container__row">
-        <div className="language-profile__form-element-container">
+    <div className="hops-form">
+      <div className="hops-form__container">
+        <div className="language-profile-container">
+          <fieldset className="language-profile-container__fieldset">
+            <legend className="language-profile-container__subheader">
+              {t("labels.languageSamplesStepTitle", {
+                ns: "languageProfile",
+              })}
+            </legend>
+            <div className="language-profile-container__fieldset-description">
+              {t("content.languageSamplesStepDescription", {
+                ns: "languageProfile",
+              })}
+            </div>
+          </fieldset>
           {languages.map((language) => (
             <Language
               key={language.code}
@@ -73,13 +73,13 @@ const LanguageSample = (props: LanguageSampleProps) => {
               setChanged={setChanged}
             />
           ))}
+          <footer className="language-profile__footer">
+            <Button onClick={() => handleSave()}>
+              {t("actions.save", { ns: "common" })}
+            </Button>
+          </footer>
         </div>
       </div>
-      <footer className="language-profile__footer">
-        <Button onClick={() => handleSave()}>
-          {t("actions.save", { ns: "common" })}
-        </Button>
-      </footer>
     </div>
   );
 };

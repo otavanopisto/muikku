@@ -18,7 +18,7 @@ import { languageLevelOptions } from "~/mock/mock-data";
  * @returns JSX element that displays language mapping options
  */
 const LanguageMapping = () => {
-  const { t } = useTranslation("languageProfile");
+  const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const { data } = useSelector((state: StateType) => state.languageProfile);
   const { languages } = useSelector(

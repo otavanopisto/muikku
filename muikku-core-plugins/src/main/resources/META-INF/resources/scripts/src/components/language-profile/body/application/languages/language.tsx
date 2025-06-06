@@ -7,6 +7,7 @@ import { LanguageCode } from "~/@types/shared";
 import { LanguageProfileLanguage } from "~/reducers/main-function/language-profile";
 import { LanguageProfileSample } from "~/generated/client";
 import Sample from "./sample";
+import fileField from "~/components/base/material-loader/fields/file-field";
 
 export type SampleTypes = "TEXT" | "FILE" | "AUDIO" | "";
 
@@ -108,21 +109,21 @@ const LanguageComponent = (props: LanguageComponentProps) => {
   );
 
   return (
-    <div
+    <fieldset
+      className="language-profile-container__fieldset"
       key={language.code + "-" + "sample"}
-      className="language-profile__language-sample-item"
     >
+      <legend className="language-profile-container__subheader">
+        {language.name}
+      </legend>
       <div>
-        <h2>{language.name}</h2>
-        <div>
-          <Button onClick={() => setSampleType("TEXT")}>
-            Tekstimuotoinen näyte
-          </Button>
-          <Button onClick={() => setSampleType("FILE")}>
-            Tiedostomuotoinen näyte
-          </Button>
-          <Button onClick={() => setSampleType("AUDIO")}>Ääninäyte</Button>
-        </div>
+        <Button onClick={() => setSampleType("TEXT")}>
+          Tekstimuotoinen näyte
+        </Button>
+        <Button onClick={() => setSampleType("FILE")}>
+          Tiedostomuotoinen näyte
+        </Button>
+        <Button onClick={() => setSampleType("AUDIO")}>Ääninäyte</Button>
       </div>
 
       <NewLanguageSample
@@ -143,7 +144,7 @@ const LanguageComponent = (props: LanguageComponentProps) => {
             onDelete={handleToggleDelete}
           />
         ))}
-    </div>
+    </fieldset>
   );
 };
 

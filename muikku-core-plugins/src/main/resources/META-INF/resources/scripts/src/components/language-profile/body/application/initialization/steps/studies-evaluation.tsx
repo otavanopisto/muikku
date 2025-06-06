@@ -15,7 +15,7 @@ import { LanguageProfileLanguage } from "~/reducers/main-function/language-profi
  * @returns JSX element that displays the accomplishment evaluation section
  */
 const AccomplishmentEvaluation = () => {
-  const { t } = useTranslation("languageProfile");
+  const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const { languages } = useSelector(
     (state: StateType) => state.languageProfile.data

@@ -30,7 +30,7 @@ interface LanguageSampleProps {
  * @returns JSX.Element
  */
 const NewLanguageSample = (props: LanguageSampleProps) => {
-  const { t } = useTranslation("languageProfile");
+  const { t } = useTranslation(["languageProfile", "common"]);
   const [sample, setSample] = React.useState("");
   const { visible, language, onClose, sampleType } = props;
   const { status } = useSelector((state: StateType) => state);

@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
  * and motivation for studying languages.
  */
 const LanguageUsage = () => {
-  const { t } = useTranslation("languageProfile");
+  const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const {
     languages,

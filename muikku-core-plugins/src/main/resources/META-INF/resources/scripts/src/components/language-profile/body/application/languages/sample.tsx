@@ -28,7 +28,7 @@ interface LanguageSampleProps {
  */
 const Sample = (props: LanguageSampleProps) => {
   const { sample, taggedForRemoval, onChange, onDelete } = props;
-  const { t } = useTranslation("languageProfile");
+  const { t } = useTranslation(["languageProfile", "common"]);
 
   /**
    * RenderMemoizedSample

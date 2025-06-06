@@ -10,7 +10,7 @@ import { StateType } from "~/reducers";
  * @returns JSX element that displays the future of studies section
  */
 const FutureOfStudies = () => {
-  const { t } = useTranslation("languageProfile");
+  const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const { learningFactors, futureUsage, skillGoals } = useSelector(
     (state: StateType) => state.languageProfile.data

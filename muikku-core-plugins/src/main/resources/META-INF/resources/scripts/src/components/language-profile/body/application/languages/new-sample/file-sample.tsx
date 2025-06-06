@@ -19,7 +19,7 @@ interface FileSampleProps {
  * @returns JSX.Element
  */
 const FileSample = (props: FileSampleProps) => {
-  const { t } = useTranslation("languageProfile");
+  const { t } = useTranslation(["languageProfile", "common"]);
   const { files, onFileChange, onRemoveFile, onSave, onCancel } = props;
   return (
     <form className="language-profile__file-uploader">
@@ -43,8 +43,16 @@ const FileSample = (props: FileSampleProps) => {
         ))}
       </div>
       <div className="language-profile__buttons">
-        <Button onClick={onSave}>Tallenna</Button>
-        <Button onClick={onCancel}>Peruuta</Button>
+        <Button onClick={onSave}>
+          {t("actions.save", {
+            ns: "common",
+          })}
+        </Button>
+        <Button onClick={onCancel}>
+          {t("actions.cancel", {
+            ns: "common",
+          })}
+        </Button>
       </div>
     </form>
   );
