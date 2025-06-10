@@ -9,7 +9,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.258</version>
+    <version>1.1.259-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -157,13 +157,13 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>muikku-school-data-pyramus</artifactId>
-          <version>1.1.258</version>
+          <version>1.1.259-SNAPSHOT</version>
         </dependency>
 
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>pyramus-oauth-plugin</artifactId>
-          <version>1.1.258</version>
+          <version>1.1.259-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -174,7 +174,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>elastic-search-plugin</artifactId>
-          <version>1.1.258</version>
+          <version>1.1.259-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -185,7 +185,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>dummy-mail-bridge-plugin</artifactId>
-          <version>1.1.258</version>
+          <version>1.1.259-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -196,7 +196,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>jndi-mail-bridge-plugin</artifactId>
-          <version>1.1.258</version>
+          <version>1.1.259-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -207,7 +207,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>atests-plugin</artifactId>
-          <version>1.1.258</version>
+          <version>1.1.259-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -229,7 +229,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>google-oauth-plugin</artifactId>
-          <version>1.1.258</version>
+          <version>1.1.259-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -240,7 +240,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>timed-notifications-plugin</artifactId>
-          <version>1.1.258</version>
+          <version>1.1.259-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
@@ -251,7 +251,7 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>developer-tools</artifactId>
-          <version>1.1.258</version>
+          <version>1.1.259-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
