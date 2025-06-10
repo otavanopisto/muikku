@@ -2849,7 +2849,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceFolder.getTitle(),
         workspaceFolder.getPath(),
         workspaceFolder.getViewRestrict(),
-        workspaceFolder.getLanguage());
+        workspaceFolder.getLanguage(),
+        workspaceFolder.getExam());
   }
 
   @DELETE
@@ -3036,7 +3037,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         nextSibling,
         restFolder.getHidden(),
         restFolder.getViewRestrict(),
-        restFolder.getTitleLanguage());
+        restFolder.getTitleLanguage(),
+        restFolder.getExam());
    
     return Response.ok(createRestModel(workspaceFolder)).build();
   }

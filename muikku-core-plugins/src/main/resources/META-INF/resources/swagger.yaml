@@ -15094,6 +15094,7 @@ components:
         - contentHiddenForUser
         - assignmentType
         - ai
+        - exam
       properties:
         title:
           description: The title of the material
@@ -15170,6 +15171,9 @@ components:
           description: Is usage of AI allowed
           $ref: "#/components/schemas/MaterialAI"
           nullable: true
+        exam:
+          description: Is this node part of an exam
+          type: boolean
 
     Message:
       type: object
@@ -18022,6 +18026,8 @@ components:
           type: string
         path:
           type: string
+        exam:
+          type: boolean
 
     WorkspaceCansignup:
       type: object
