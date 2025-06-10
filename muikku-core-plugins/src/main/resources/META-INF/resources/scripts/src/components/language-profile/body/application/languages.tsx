@@ -74,7 +74,10 @@ const LanguageSample = (props: LanguageSampleProps) => {
             />
           ))}
           <footer className="language-profile__footer">
-            <Button onClick={() => handleSave()}>
+            <Button
+              buttonModifiers={["execute", "standard-ok"]}
+              onClick={() => handleSave()}
+            >
               {t("actions.save", { ns: "common" })}
             </Button>
           </footer>

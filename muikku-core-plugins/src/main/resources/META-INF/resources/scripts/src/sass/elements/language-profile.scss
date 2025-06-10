@@ -58,6 +58,11 @@
   }
 }
 
+.language-profile-container__row--buttons-row {
+  justify-content: center;
+  gap: 10px;
+}
+
 .language-profile__form-element-container {
   display: flex;
   flex-basis: auto;
@@ -68,9 +73,18 @@
   position: relative;
 }
 
+.language-profile__sample-buttons {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
 .language-profile__select {
   background: $color-default;
-  border: 2px solid $color-hops-form-element-border;
+  border: 2px solid $color-language-profile-form-element-border;
   border-radius: 3px;
   display: inline-block;
   height: $select-height-mobile;
@@ -92,14 +106,14 @@
   border: 2px solid $color-language-profile-form-element-border;
   border-radius: 3px;
   display: inline-block;
-  height: 7rem;
+  height: 6rem;
   padding: 4px 8px;
   resize: vertical;
   width: 100%;
 
   &[disabled] {
     background-color: lighten($color-disabled, 25%);
-    border: 0;
+    border: 2px solid lighten($color-disabled, 25%);
   }
 }
 
@@ -136,8 +150,8 @@
 
   // Checked element
   &:checked {
-    background-color: $color-application-dialog-border-color;
-    border: solid 2px $color-application-dialog-border-color;
+    background-color: darken($color-language-profile-form-element-border, 30%);
+    border: solid 2px darken($color-language-profile-form-element-border, 30%);
   }
 
   // Checked element's checkmark
@@ -263,11 +277,16 @@
 }
 
 .language-profile__sample-file {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  background: $color-default-lighter-generic-background;
+  border-radius: 5px;
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: 600;
   height: 30px;
-  flex-basis: 50%;
+  justify-content: space-between;
+  margin: 5px 0;
+  padding: 5px 5px 5px 10px;
 }
 
 .language-profile__file-uploader-field {
@@ -282,13 +301,17 @@
 }
 
 .language-profile__file-uploader-container {
+  align-items: center;
   background: $color-default;
-  border: 2px solid $taskfield-border-color;
+  border: 2px solid $color-language-profile-form-element-border;
   border-radius: 2px;
-  display: block;
-  margin: 4px 0 0;
-  padding: 40px;
+  display: flex;
+  height: 6rem;
+  justify-content: center;
+  margin: 0;
+  padding: 20px;
   position: relative;
+  text-align: center;
   width: 100%;
 }
 

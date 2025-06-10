@@ -28,13 +28,16 @@ const TextSample = (props: TextSampleProps) => {
         value={value}
         onChange={onChange}
       />
-      <div className="form-actions">
-        <Button onClick={onSave}>
+      <div className="language-profile__sample-buttons">
+        <Button buttonModifiers={["execute", "standard-ok"]} onClick={onSave}>
           {t("actions.save", {
             ns: "common",
           })}
         </Button>
-        <Button onClick={onCancel}>
+        <Button
+          buttonModifiers={["cancel", "standard-cancel"]}
+          onClick={onCancel}
+        >
           {t("actions.cancel", {
             ns: "common",
           })}

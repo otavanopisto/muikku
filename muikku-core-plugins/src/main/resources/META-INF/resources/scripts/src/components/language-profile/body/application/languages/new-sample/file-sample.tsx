@@ -22,39 +22,47 @@ const FileSample = (props: FileSampleProps) => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const { files, onFileChange, onRemoveFile, onSave, onCancel } = props;
   return (
-    <form className="language-profile__file-uploader">
-      <div className="language-profile__file-uploader-container">
-        <div>{t("content.add", { ns: "materials", context: "file" })}</div>
-        <input
-          type="file"
-          className="language-profile__file-uploader-field"
-          onChange={onFileChange}
-        />
-      </div>
-      <div className="language-profile__file-uploader-files">
-        {files.map((file, index) => (
-          <div className="language-profile__sample-file" key={`file-${index}`}>
-            <span>{file.name}</span>
-            <a
-              className="language-profile__remove-button icon-trash"
-              onClick={() => onRemoveFile(index)}
-            ></a>
-          </div>
-        ))}
-      </div>
-      <div className="language-profile__buttons">
-        <Button onClick={onSave}>
-          {t("actions.save", {
-            ns: "common",
-          })}
-        </Button>
-        <Button onClick={onCancel}>
-          {t("actions.cancel", {
-            ns: "common",
-          })}
-        </Button>
-      </div>
-    </form>
+    <div className="language-profile__file-sample">
+      <form className="language-profile__file-uploader">
+        <div className="language-profile__file-uploader-container">
+          <div>{t("content.add", { ns: "materials", context: "file" })}</div>
+          <input
+            type="file"
+            className="language-profile__file-uploader-field"
+            onChange={onFileChange}
+          />
+        </div>
+        <div className="language-profile__file-uploader-files">
+          {files.map((file, index) => (
+            <div
+              className="language-profile__sample-file"
+              key={`file-${index}`}
+            >
+              <span>{file.name}</span>
+              <a
+                className="language-profile__remove-button icon-trash"
+                onClick={() => onRemoveFile(index)}
+              ></a>
+            </div>
+          ))}
+        </div>
+        <div className="language-profile__sample-buttons">
+          <Button buttonModifiers={["execute", "standard-ok"]} onClick={onSave}>
+            {t("actions.save", {
+              ns: "common",
+            })}
+          </Button>
+          <Button
+            buttonModifiers={["cancel", "standard-cancel"]}
+            onClick={onCancel}
+          >
+            {t("actions.cancel", {
+              ns: "common",
+            })}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 export default FileSample;

@@ -623,7 +623,7 @@
 
   &[disabled] {
     background-color: lighten($color-disabled, 25%);
-    border: 0;
+    border: 2px solid lighten($color-disabled, 25%);
   }
 }
 

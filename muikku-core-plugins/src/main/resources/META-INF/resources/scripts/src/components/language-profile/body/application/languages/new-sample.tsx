@@ -161,6 +161,32 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   );
 
   /**
+   * sampleTitle returns the title for the sample input form based on the sampleType.
+   * @returns string - The title for the sample input form.
+   */
+  const sampleTitle = () => {
+    switch (sampleType) {
+      case "TEXT":
+        return t("labels.addNewSampleTitle", {
+          ns: "languageProfile",
+          context: "text",
+        });
+      case "FILE":
+        return t("labels.addNewSampleTitle", {
+          ns: "languageProfile",
+          context: "file",
+        });
+      case "AUDIO":
+        return t("labels.addNewSampleTitle", {
+          ns: "languageProfile",
+          context: "audio",
+        });
+      default:
+        return t("labels.addNewSampleTitle", { ns: "languageProfile" });
+    }
+  };
+
+  /**
    * SampleComponent renders the appropriate sample input form based on the sampleType.
    * It uses React.memo to optimize rendering.
    */
@@ -219,9 +245,13 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   }
 
   return (
-    <div className="language-profile__new-sample">
-      <h2>Uusi näyte</h2>
-      <div>{renderSampleCreationComponent}</div>
+    <div className="language-profile-container__row">
+      <div className="language-profile__form-element-container">
+        <label className="language-profile__label">{sampleTitle()}</label>
+        <div className="form-element__textarea-container">
+          {renderSampleCreationComponent}
+        </div>
+      </div>
     </div>
   );
 };

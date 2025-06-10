@@ -116,14 +116,28 @@ const LanguageComponent = (props: LanguageComponentProps) => {
       <legend className="language-profile-container__subheader">
         {language.name}
       </legend>
-      <div>
-        <Button onClick={() => setSampleType("TEXT")}>
-          Tekstimuotoinen näyte
+      <div className="language-profile-container__row language-profile-container__row--buttons-row">
+        <Button
+          buttonModifiers={["button-has-icon", "add-extra-row"]}
+          onClick={() => setSampleType("TEXT")}
+          icon="plus"
+        >
+          Tekstinäyte
         </Button>
-        <Button onClick={() => setSampleType("FILE")}>
-          Tiedostomuotoinen näyte
+        <Button
+          buttonModifiers={["button-has-icon", "add-extra-row"]}
+          onClick={() => setSampleType("FILE")}
+          icon="plus"
+        >
+          Tiedostonäyte
         </Button>
-        <Button onClick={() => setSampleType("AUDIO")}>Ääninäyte</Button>
+        <Button
+          buttonModifiers={["button-has-icon", "add-extra-row"]}
+          onClick={() => setSampleType("AUDIO")}
+          icon="plus"
+        >
+          Ääninäyte
+        </Button>
       </div>
 
       <NewLanguageSample

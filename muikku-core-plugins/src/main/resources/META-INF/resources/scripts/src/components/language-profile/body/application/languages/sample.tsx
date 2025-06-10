@@ -44,7 +44,7 @@ const Sample = (props: LanguageSampleProps) => {
           <textarea
             id={"sample-" + sample.id}
             disabled={taggedForRemoval}
-            className={`form-element__textarea ${taggedForRemoval ? "form-element__textarea--disabled" : ""}`}
+            className="language-profile__textarea"
             defaultValue={sample.value || ""}
             onChange={(e) => onChange(e, sample)}
           />
@@ -71,13 +71,18 @@ const Sample = (props: LanguageSampleProps) => {
   }, [sample, taggedForRemoval, onChange]);
 
   return (
-    <div>
+    <div className="language-profile__sample-container">
       {renderMemoizedSample}
-      <Button onClick={() => onDelete(sample.id)}>
-        {taggedForRemoval
-          ? t("actions.cancel", { ns: "common" })
-          : t("actions.remove", { ns: "common" })}
-      </Button>
+      <div className="language-profile__sample-buttons">
+        <Button
+          buttonModifiers={taggedForRemoval ? "cancel" : "fatal"}
+          onClick={() => onDelete(sample.id)}
+        >
+          {taggedForRemoval
+            ? t("actions.cancel", { ns: "common" })
+            : t("actions.remove", { ns: "common" })}
+        </Button>
+      </div>
     </div>
   );
 };
