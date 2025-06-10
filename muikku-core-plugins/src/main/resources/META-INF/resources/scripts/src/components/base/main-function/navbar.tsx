@@ -268,6 +268,9 @@ class MainFunctionNavbar extends React.Component<
               }`}
               aria-label={item.text}
               role="menuitem"
+              onTouchEnd={(e) => {
+                e.stopPropagation();
+              }}
             >
               <span className={`menu__item-link-icon icon-${item.icon}`} />
               {item.badge ? (
