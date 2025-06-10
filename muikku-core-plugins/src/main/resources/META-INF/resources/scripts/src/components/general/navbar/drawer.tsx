@@ -295,6 +295,9 @@ class Drawer extends React.Component<DrawerProps, DrawerState> {
                     <RouterLink
                       className="menu__item-link menu__item-link--profile"
                       to="/profile"
+                      onTouchEnd={(e) => {
+                        e.stopPropagation();
+                      }}
                     >
                       {this.props.status.hasImage ? (
                         <img

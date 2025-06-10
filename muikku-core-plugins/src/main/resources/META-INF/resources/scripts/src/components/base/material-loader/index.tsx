@@ -396,10 +396,10 @@ class MaterialLoader extends React.Component<
 
       //If checks answers, make it with answersChecked and answersVisible starting as true
       if (stateConfiguration && stateConfiguration["checks-answers"]) {
-        state.answersChecked = true;
-        if ((props.material.correctAnswers || "ALWAYS") === "ALWAYS") {
-          state.answersVisible = true;
-        }
+        state.answersChecked =
+          (props.material.correctAnswers || "NEVER") !== "NEVER";
+        state.answersVisible =
+          (props.material.correctAnswers || "ALWAYS") === "ALWAYS";
       }
       // Evaluation tool version because in the evaluation tool answers need to be visible and checked
       // and information is passed in props
