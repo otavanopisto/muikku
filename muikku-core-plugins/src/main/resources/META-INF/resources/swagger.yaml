@@ -14435,8 +14435,13 @@ components:
           $ref: "#/components/schemas/MatriculationExamTerm"
         starts:
           type: string
+          format: date
         ends:
           type: string
+          format: date
+        confirmDate:
+          type: string
+          format: date
         compulsoryEducationEligible:
           type: boolean
         studentStatus:
