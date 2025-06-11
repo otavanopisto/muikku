@@ -2,5 +2,26 @@
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
   <sql>alter table WorkspaceFolder add column exam bit(1) not null;</sql>
+  <sql>
+    create table ExamAttendance (
+      id bigint not null auto_increment,
+      began datetime not null,
+      ended datetime not null,
+      userEntityId bigint not null,
+      workspaceFolderId bigint not null,
+      workspaceMaterialIds mediumtext,
+      primary key (id)
+    );
+  </sql>
+  <sql>
+    create table ExamSettings (
+      id bigint not null auto_increment,
+      settings mediumtext not null,
+      workspaceFolderId bigint not null,
+      primary key (id)
+    );
+  </sql>
+  <sql>alter table ExamAttendance add constraint UK3hgnf4dyvv91xapriimcw023j unique (workspaceFolderId, userEntityId);</sql>
+  <sql>alter table ExamSettings add constraint UKfguje00k4okjd89vkspoin2th unique (workspaceFolderId);</sql>
 
 </update>
