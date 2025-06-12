@@ -73,13 +73,11 @@ public class ExamAttendance {
   @Column(nullable = false)
   private Long userEntityId;
 
-  @NotNull
-  @Column(nullable = false)
+  @Column
   @Temporal(value = TemporalType.TIMESTAMP)
   private Date began;
 
-  @NotNull
-  @Column(nullable = false)
+  @Column
   @Temporal(value = TemporalType.TIMESTAMP)
   private Date ended;
   

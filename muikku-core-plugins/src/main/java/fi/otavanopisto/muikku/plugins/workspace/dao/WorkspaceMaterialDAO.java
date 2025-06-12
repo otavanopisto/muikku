@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.workspace.dao;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -152,6 +153,24 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public List<WorkspaceMaterial> listByParentAndAssignmentTypesAndHidden(WorkspaceNode parent, Set<WorkspaceMaterialAssignmentType> assignmentTypes, BooleanPredicate hidden) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterial> criteria = criteriaBuilder.createQuery(WorkspaceMaterial.class);
+    Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.in(WorkspaceMaterial_.assignmentType), assignmentTypes), 
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.parent), parent),
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.hidden), hidden)
+      )
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public WorkspaceMaterial updateMaterialId(WorkspaceMaterial workspaceMaterial, long materialId) {
     workspaceMaterial.setMaterialId(materialId);
     return persist(workspaceMaterial);

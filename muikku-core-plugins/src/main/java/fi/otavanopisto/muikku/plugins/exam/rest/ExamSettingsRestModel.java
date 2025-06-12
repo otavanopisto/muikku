@@ -36,6 +36,22 @@ public class ExamSettingsRestModel {
     this.allowMultipleAttempts = allowMultipleAttempts;
   }
 
+  public int getMinutes() {
+    return minutes;
+  }
+
+  public void setMinutes(int minutes) {
+    this.minutes = minutes;
+  }
+
+  public boolean isOpenForAll() {
+    return openForAll;
+  }
+
+  public void setOpenForAll(boolean openForAll) {
+    this.openForAll = openForAll;
+  }
+
   // How assignments are randomized, if at all
   private ExamSettingsRandom random;
   
@@ -47,5 +63,11 @@ public class ExamSettingsRestModel {
   
   // Can the user do this exam multiple times
   private boolean allowMultipleAttempts;
+  
+  // Is the exam for all course students or only the chosen ones (oooh!)
+  private boolean openForAll;
+  
+  // Number of minutes the exam is available once started; 0 if no time limit
+  private int minutes;
 
 }
