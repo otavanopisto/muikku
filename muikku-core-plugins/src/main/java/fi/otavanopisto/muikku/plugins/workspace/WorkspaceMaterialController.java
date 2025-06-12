@@ -822,9 +822,9 @@ public class WorkspaceMaterialController {
     return listWorkspaceMaterialsByAssignmentType(workspaceEntity, assignmentType, BooleanPredicate.FALSE);
   }
 
-  public List<WorkspaceMaterial> listVisibleWorkspaceAssignments(WorkspaceFolder workspaceFolder) {
+  public List<Long> listVisibleWorkspaceAssignmentIds(WorkspaceFolder workspaceFolder) {
     Set<WorkspaceMaterialAssignmentType> types = Set.of(WorkspaceMaterialAssignmentType.EVALUATED, WorkspaceMaterialAssignmentType.EXERCISE); 
-    return workspaceMaterialDAO.listByParentAndAssignmentTypesAndHidden(workspaceFolder, types, BooleanPredicate.FALSE);
+    return workspaceMaterialDAO.listIdsByParentAndAssignmentTypesAndHidden(workspaceFolder, types, BooleanPredicate.FALSE);
   }
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity,

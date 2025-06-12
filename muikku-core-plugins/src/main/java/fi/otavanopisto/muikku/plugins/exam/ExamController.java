@@ -19,7 +19,7 @@ public class ExamController {
   }
   
   private List<Long> randomizeAssignments(WorkspaceFolder folder) {
-    List <WorkspaceMaterial> assignments = workspaceMaterialController.listVisibleWorkspaceAssignments(folder);
+    List <Long> assignments = workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder);
     return Collections.emptyList();
   }
 
