@@ -1487,6 +1487,7 @@
       "email": "Sähköposti",
       "firstName": "Etunimi",
       "groupCounselor": "Ryhmänohjaaja",
+      "groupCounselors": "Ryhmänohjaajat",
       "guidanceGroup": "Ohjausryhmä",
       "lastName": "Sukunimi",
       "manager": "Manageri",

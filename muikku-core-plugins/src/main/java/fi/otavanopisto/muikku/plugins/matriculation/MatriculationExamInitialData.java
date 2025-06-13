@@ -52,12 +52,12 @@ public class MatriculationExamInitialData {
     this.locality = locality;
   }
 
-  public String getGuidanceCounselor() {
-    return guidanceCounselor;
+  public List<String> getGuidanceCounselors() {
+    return guidanceCounselors;
   }
 
-  public void setGuidanceCounselor(String guidanceCounselor) {
-    this.guidanceCounselor = guidanceCounselor;
+  public void setGuidanceCounselors(List<String> guidanceCounselors) {
+    this.guidanceCounselors = guidanceCounselors;
   }
 
   public String getStudentIdentifier() {
@@ -90,7 +90,7 @@ public class MatriculationExamInitialData {
   private String address;
   private String postalCode;
   private String locality;
-  private String guidanceCounselor;
+  private List<String> guidanceCounselors;
   private List<String> studyAdvisors;
   private String studentIdentifier;
   private Double completedCreditPointsCount;

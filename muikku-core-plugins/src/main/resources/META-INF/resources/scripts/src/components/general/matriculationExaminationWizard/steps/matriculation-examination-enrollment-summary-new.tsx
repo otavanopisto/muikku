@@ -205,10 +205,14 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
             <TextField
-              label={t("labels.counselors", { ns: "users" })}
+              label={t("labels.groupCounselors", { ns: "users" })}
               readOnly
               type="text"
-              value={studentInformation.guidanceCounselor}
+              value={
+                studentInformation.guidanceCounselors.length > 0
+                  ? studentInformation.guidanceCounselors.join(", ")
+                  : "—"
+              }
               className="matriculation__input"
             />
           </div>
