@@ -622,6 +622,7 @@ export default class Dropdown extends React.Component<
         ref: this.activatorRef,
         // eslint-disable-next-line jsdoc/require-jsdoc
         onClick: (e: React.MouseEvent) => {
+          this.handleActivatorClick(e);
           // Preserve the original onClick handler from the child
           if (children.props.onClick) {
             children.props.onClick(e);
