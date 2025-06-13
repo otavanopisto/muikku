@@ -19,14 +19,15 @@ import Select from "react-select";
 import { getName } from "~/util/modifiers";
 import { OptionDefault } from "~/components/general/react-select/types";
 import {
-  loadMatriculationData,
-  LoadMatriculationDataTriggerType,
+  initializeHops,
+  InitializeHopsTriggerType,
   resetHopsData,
   ResetHopsDataTriggerType,
 } from "~/actions/main-function/hops/";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { HopsBasicInfoProvider } from "~/context/hops-basic-info-context";
 import WebsocketWatcher from "~/components/hops/body/application/helper/websocket-watcher";
+import StudyPlan from "~/components/hops/body/application/study-planing/study-plan";
 
 const UPPERSECONDARY_PROGRAMMES = [
   "Nettilukio",
@@ -42,14 +43,14 @@ const UPPERSECONDARY_PROGRAMMES = [
 /**
  * GuardianHopsTab. Restricted to only MATRICULATION tab and upcoming STUDYPLAN tab.
  */
-type GuardianHopsTab = "MATRICULATION";
+type GuardianHopsTab = "MATRICULATION" | "STUDYPLAN";
 
 /**
  * GuardianHopsApplicationProps
  */
 interface GuardianHopsApplicationProps extends WithTranslation {
   dependants: DependantsState;
-  loadMatriculationData: LoadMatriculationDataTriggerType;
+  initializeHops: InitializeHopsTriggerType;
   resetHopsData: ResetHopsDataTriggerType;
 }
 
@@ -77,7 +78,7 @@ class GuardianHopsApplication extends React.Component<
     super(props);
 
     this.state = {
-      activeTab: "MATRICULATION",
+      activeTab: "STUDYPLAN",
       selectedDependantIdentifier: this.getCurrentDependantIdentifier(),
     };
   }
@@ -119,10 +120,17 @@ class GuardianHopsApplication extends React.Component<
         });
         break;
 
+      case "studyplan":
+        this.setState({
+          activeTab: "STUDYPLAN",
+        });
+        break;
+
       default:
         this.setState({
-          activeTab: "MATRICULATION",
+          activeTab: "STUDYPLAN",
         });
+
         break;
     }
   }
@@ -149,6 +157,9 @@ class GuardianHopsApplication extends React.Component<
     switch (tab.id) {
       case "MATRICULATION":
         return UPPERSECONDARY_PROGRAMMES.includes(selectUserStudyProgramme);
+
+      case "STUDYPLAN":
+        return true;
 
       default:
         return false;
@@ -182,11 +193,12 @@ class GuardianHopsApplication extends React.Component<
   handleDependantSelectChange = async (option: OptionDefault<string>) => {
     window.location.hash = option.value;
 
+    // Resetting data and initializing HOPS with new user identifier
     this.props.resetHopsData();
-    this.props.loadMatriculationData({ userIdentifier: option.value });
+    this.props.initializeHops({ userIdentifier: option.value });
 
     this.setState({
-      activeTab: "MATRICULATION",
+      activeTab: "STUDYPLAN",
       selectedDependantIdentifier: option.value,
     });
   };
@@ -196,17 +208,12 @@ class GuardianHopsApplication extends React.Component<
    * @returns JSX.Element
    */
   render() {
-    // Filter dependants to only show upper secondary dependants
     const dependants = this.props.dependants
-      ? this.props.dependants.list
-          .filter((d) =>
-            UPPERSECONDARY_PROGRAMMES.includes(d.studyProgrammeName)
-          )
-          .map((d) => ({
-            label: getName(d, true),
-            value: d.identifier,
-            ...d,
-          }))
+      ? this.props.dependants.list.map((d) => ({
+          label: getName(d, true),
+          value: d.identifier,
+          ...d,
+        }))
       : [];
 
     const selectedDependant = dependants.find(
@@ -231,6 +238,17 @@ class GuardianHopsApplication extends React.Component<
       );
 
     let panelTabs: Tab[] = [
+      {
+        id: "STUDYPLAN",
+        name: this.props.t("labels.hopsStudyPlanning", { ns: "hops_new" }),
+        hash: "studyplan",
+        type: "studyplan",
+        component: (
+          <ApplicationPanelBody modifier="tabs">
+            <StudyPlan />
+          </ApplicationPanelBody>
+        ),
+      },
       {
         id: "MATRICULATION",
         name: this.props.t("labels.hopsMatriculation", { ns: "hops_new" }),
@@ -285,7 +303,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
-      loadMatriculationData,
+      initializeHops,
       resetHopsData,
     },
     dispatch

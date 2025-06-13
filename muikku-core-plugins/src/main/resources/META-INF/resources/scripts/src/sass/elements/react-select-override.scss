@@ -48,7 +48,7 @@
     @include breakpoint($breakpoint-pad) {
       font-size: $text-desktop-font-size;
       height: $select-height-desktop;
-      max-width: 300px;
+      max-width: 320px;
     }
   }
 
@@ -122,6 +122,7 @@
   .react-select-override__control {
     border-color: $color-hops-dialog-form-element-border;
     height: auto;
+    max-width: unset;
 
     &:hover {
       border-color: $color-hops-dialog-form-element-border;
@@ -131,7 +132,13 @@
 
 .react-select-override--pedagogy-form {
   .react-select-override__control {
+    border-color: $color-hops-dialog-form-element-border;
+    height: auto;
     max-width: unset;
+
+    &:hover {
+      border-color: $color-hops-dialog-form-element-border;
+    }
   }
 }
 

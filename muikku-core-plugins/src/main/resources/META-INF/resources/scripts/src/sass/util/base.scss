@@ -13,7 +13,7 @@
 }
 
 // If lang is ru we change the font globally so certain characters render properly
-*:lang("ru") {
+*:lang(ru) {
   font-family: "Noto Sans", sans-serif;
 }
 
@@ -27,13 +27,13 @@ body {
   overflow-y: auto;
 
   // Custom focus borders for every interactive element when using keyboard
-  :focus-visible {
-    outline: $color-outline solid 2px;
+  *:focus-visible {
+    outline: 2px solid $color-outline;
     outline-offset: -2px;
   }
 
   // Removing focus borders from every interactive element which does not have focus defined when using mouse
-  &.using-mouse :focus-visible:not(:focus) {
+  &.using-mouse *:focus-visible:not(:focus) {
     outline: none;
   }
 
@@ -71,7 +71,7 @@ dd {
 
 // Standard
 ::placeholder {
-  font-style: italic;
+  font-style: normal;
 }
 
 details {

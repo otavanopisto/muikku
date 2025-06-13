@@ -9,8 +9,8 @@ public class PyramusEducationType extends AbstractEducationType {
   public PyramusEducationType() {
   }
   
-  public PyramusEducationType(SchoolDataIdentifier identifier, String name) {
-    super(identifier, name);
+  public PyramusEducationType(SchoolDataIdentifier identifier, String name, String code) {
+    super(identifier, name, code);
   }
 
   @Override

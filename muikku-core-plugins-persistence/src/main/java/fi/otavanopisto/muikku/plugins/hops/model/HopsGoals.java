@@ -6,27 +6,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotEmpty;
-
 @Entity
+@Table (uniqueConstraints = {@UniqueConstraint( columnNames = {"userEntityId", "category"})})
 public class HopsGoals {
 
   public Long getId() {
     return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getStudentIdentifier() {
-    return studentIdentifier;
-  }
-
-  public void setStudentIdentifier(String studentIdentifier) {
-    this.studentIdentifier = studentIdentifier;
   }
 
   public String getGoals() {
@@ -37,14 +27,34 @@ public class HopsGoals {
     this.goals = goals;
   }
 
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotNull
+  @Column (nullable = false)
+  private Long userEntityId;
+  
+  @NotNull
   @NotEmpty
-  @Column(nullable = false)
-  private String studentIdentifier;
+  @Column (nullable = false)
+  private String category;
 
   @Lob
   @NotNull

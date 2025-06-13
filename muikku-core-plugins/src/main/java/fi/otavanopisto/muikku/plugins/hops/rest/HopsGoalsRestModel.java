@@ -12,60 +12,15 @@ public class HopsGoalsRestModel {
     this.graduationGoal = graduationGoal;
   }
 
-  public String getFollowUpGoal() {
-    return followUpGoal;
+  public Integer getStudyHours() {
+    return studyHours;
   }
 
-  public void setFollowUpGoal(String followUpGoal) {
-    this.followUpGoal = followUpGoal;
-  }
-
-  public String getFollowUpStudies() {
-    return followUpStudies;
-  }
-
-  public void setFollowUpStudies(String followUpStudies) {
-    this.followUpStudies = followUpStudies;
-  }
-
-  public String getFollowUpStudiesElse() {
-    return followUpStudiesElse;
-  }
-
-  public void setFollowUpStudiesElse(String followUpStudiesElse) {
-    this.followUpStudiesElse = followUpStudiesElse;
-  }
-
-  public String getStudySector() {
-    return studySector;
-  }
-
-  public void setStudySector(String studySector) {
-    this.studySector = studySector;
-  }
-
-  public String getStudySectorElse() {
-    return studySectorElse;
-  }
-
-  public void setStudySectorElse(String studySectorElse) {
-    this.studySectorElse = studySectorElse;
-  }
-
-  public String getFollowUpPlanExtraInfo() {
-    return followUpPlanExtraInfo;
-  }
-
-  public void setFollowUpPlanExtraInfo(String followUpPlanExtraInfo) {
-    this.followUpPlanExtraInfo = followUpPlanExtraInfo;
+  public void setStudyHours(Integer studyHours) {
+    this.studyHours = studyHours;
   }
 
   private Date graduationGoal;
-  private String followUpGoal;
-  private String followUpStudies;
-  private String followUpStudiesElse;
-  private String studySector;
-  private String studySectorElse;
-  private String followUpPlanExtraInfo;
+  private Integer studyHours;
 
 }

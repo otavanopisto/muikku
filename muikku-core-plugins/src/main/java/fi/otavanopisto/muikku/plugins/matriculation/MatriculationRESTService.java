@@ -566,7 +566,7 @@ public class MatriculationRESTService {
   private MatriculationCurrentExam restModel(MatriculationExam exam) {
     MatriculationExamEnrollment enrollment = restModel(exam.getEnrollment());
     return new MatriculationCurrentExam(exam.getId(), exam.getYear(), exam.getTerm(), exam.getStarts(), exam.getEnds(), 
-        exam.isCompulsoryEducationEligible(), exam.getStudentStatus(), enrollment);
+        exam.getConfirmDate(), exam.isCompulsoryEducationEligible(), exam.getStudentStatus(), enrollment);
   }
   
   private MatriculationExamEnrollment restModel(

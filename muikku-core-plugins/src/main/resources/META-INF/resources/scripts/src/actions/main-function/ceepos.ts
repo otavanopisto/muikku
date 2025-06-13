@@ -7,7 +7,7 @@ import {
 } from "~/reducers/main-function/ceepos";
 import i18n from "~/locales/i18n";
 import { Dispatch, Action } from "redux";
-import MApi, { isMApiError } from "~/api/api";
+import MApi, { isMApiError, isResponseError } from "~/api/api";
 import { CeeposOrder } from "~/generated/client";
 
 /**
@@ -69,6 +69,13 @@ const loadCeeposPurchase: LoadCeeposPurchaseTriggerType =
           throw err;
         }
 
+        if (isResponseError(err)) {
+          if (err.response.status === 403) {
+            window.location.href = "/error/403";
+            return;
+          }
+        }
+
         dispatch(
           actions.displayNotification(
             i18n.t("notifications.loadError", {
@@ -118,14 +125,25 @@ const loadCeeposPurchaseAndPay: LoadCeeposPurchaseTriggerType =
           payload: <CeeposStateStatusType>"READY",
         });
       } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        if (isResponseError(err)) {
+          if (err.response.status === 403) {
+            window.location.href = "/error/403";
+            return;
+          }
+
+          dispatch({
+            type: "UPDATE_CEEPOS_PAY_STATUS",
+            payload: await err.response.text(),
+          });
+        }
+
         dispatch({
           type: "UPDATE_CEEPOS_STATE",
           payload: <CeeposStateStatusType>"ERROR",
-        });
-
-        dispatch({
-          type: "UPDATE_CEEPOS_PAY_STATUS",
-          payload: err.message,
         });
       }
     };

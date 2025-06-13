@@ -157,7 +157,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             </label>
             <Select
               id="suggestedSupportActions"
-              className="react-select-override react-select-override--hops react-select-override--pedagogy-form"
+              className="react-select-override react-select-override--pedagogy-form"
               classNamePrefix="react-select-override"
               closeMenuOnSelect={false}
               isMulti
@@ -222,7 +222,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             </label>
             <Select
               id="prePlansForMatriculationExam"
-              className="react-select-override react-select-override--hops react-select-override--pedagogy-form"
+              className="react-select-override react-select-override--pedagogy-form"
               classNamePrefix="react-select-override"
               closeMenuOnSelect={false}
               isMulti

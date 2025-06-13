@@ -17,11 +17,12 @@ public class HopsHistoryDAO extends CorePluginsDAO<HopsHistory> {
 
   private static final long serialVersionUID = 684462720482086730L;
 
-  public HopsHistory create(String studentIdentifier, Date date, String lastModifier, String details, String changes) {
+  public HopsHistory create(Long userEntityId, String category, Date date, String lastModifier, String details, String changes) {
     EntityManager entityManager = getEntityManager();
     
     HopsHistory hopsHistory = new HopsHistory();
-    hopsHistory.setStudentIdentifier(studentIdentifier);
+    hopsHistory.setUserEntityId(userEntityId);
+    hopsHistory.setCategory(category);
     hopsHistory.setDate(date);
     hopsHistory.setModifier(lastModifier);
     hopsHistory.setDetails(details);
@@ -38,7 +39,7 @@ public class HopsHistoryDAO extends CorePluginsDAO<HopsHistory> {
     return persist(history);
   }
 
-  public List<HopsHistory> listByStudentIdentifier(String studentIdentifier, int firstResult, int maxResults) {
+  public List<HopsHistory> listByUserEntityIdAndCategory(Long userEntityId, String category, int firstResult, int maxResults) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -46,7 +47,10 @@ public class HopsHistoryDAO extends CorePluginsDAO<HopsHistory> {
     Root<HopsHistory> root = criteria.from(HopsHistory.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(HopsHistory_.studentIdentifier), studentIdentifier)
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(HopsHistory_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(HopsHistory_.category), category)
+      )
     );
 
     // Sort latest to oldest

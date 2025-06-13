@@ -15,40 +15,26 @@ public class HopsOptionalSuggestionDAO extends CorePluginsDAO<HopsOptionalSugges
 
   private static final long serialVersionUID = -4000187140602068775L;
 
-  public HopsOptionalSuggestion create(String studentIdentifier, String subject, Integer courseNumber) {
+  public HopsOptionalSuggestion create(Long userEntityId, String category, String subject, Integer courseNumber) {
     HopsOptionalSuggestion hopsOptionalSuggestion = new HopsOptionalSuggestion();
 
+    hopsOptionalSuggestion.setUserEntityId(userEntityId);
+    hopsOptionalSuggestion.setCategory(category);
     hopsOptionalSuggestion.setCourseNumber(courseNumber);
-    hopsOptionalSuggestion.setStudentIdentifier(studentIdentifier);
     hopsOptionalSuggestion.setSubject(subject);
     
     return persist(hopsOptionalSuggestion);
   }
   
-  public HopsOptionalSuggestion update(HopsOptionalSuggestion hopsOptionalSuggestion, String studentIdentifier, String subject, Integer courseNumber) {
+  public HopsOptionalSuggestion update(HopsOptionalSuggestion hopsOptionalSuggestion, String subject, Integer courseNumber) {
     
     hopsOptionalSuggestion.setCourseNumber(courseNumber);
-    hopsOptionalSuggestion.setStudentIdentifier(studentIdentifier);
     hopsOptionalSuggestion.setSubject(subject);
     
     return persist(hopsOptionalSuggestion);
   }
   
-  public List<HopsOptionalSuggestion> listByStudentIdentifier(String studentIdentifier) {
-    EntityManager entityManager = getEntityManager();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<HopsOptionalSuggestion> criteria = criteriaBuilder.createQuery(HopsOptionalSuggestion.class);
-    Root<HopsOptionalSuggestion> root = criteria.from(HopsOptionalSuggestion.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.equal(root.get(HopsOptionalSuggestion_.studentIdentifier), studentIdentifier)
-    );
-
-    return entityManager.createQuery(criteria).getResultList();
-  }
-  
-  public HopsOptionalSuggestion findByStudentIdentifierAndSubjectAndCourseNumber(String studentIdentifier, String subject, Integer courseNumber) {
+  public List<HopsOptionalSuggestion> listByUserEntityIdAndCategory(Long userEntityId, String category) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -57,7 +43,25 @@ public class HopsOptionalSuggestionDAO extends CorePluginsDAO<HopsOptionalSugges
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(HopsOptionalSuggestion_.studentIdentifier), studentIdentifier),
+        criteriaBuilder.equal(root.get(HopsOptionalSuggestion_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(HopsOptionalSuggestion_.category), category)
+      )
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public HopsOptionalSuggestion findByUserEntityIdAndCategoryAndSubjectAndCourseNumber(Long userEntityId, String category, String subject, Integer courseNumber) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<HopsOptionalSuggestion> criteria = criteriaBuilder.createQuery(HopsOptionalSuggestion.class);
+    Root<HopsOptionalSuggestion> root = criteria.from(HopsOptionalSuggestion.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(HopsOptionalSuggestion_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(HopsOptionalSuggestion_.category), category),
         criteriaBuilder.equal(root.get(HopsOptionalSuggestion_.subject), subject),
         criteriaBuilder.equal(root.get(HopsOptionalSuggestion_.courseNumber), courseNumber)
       )
