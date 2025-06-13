@@ -208,7 +208,11 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
               label={t("labels.counselors", { ns: "users" })}
               readOnly
               type="text"
-              value={studentInformation.guidanceCounselor}
+              value={
+                studentInformation.guidanceCounselors.length > 0
+                  ? studentInformation.guidanceCounselors.join(", ")
+                  : "—"
+              }
               className="matriculation__input"
             />
           </div>
