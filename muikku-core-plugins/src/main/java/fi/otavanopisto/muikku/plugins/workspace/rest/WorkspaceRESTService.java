@@ -102,7 +102,6 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialException;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
@@ -762,12 +761,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
     	return Response.status(Status.NOT_FOUND).build();
     }
-    try {
-      WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
-      return Response.ok(workspaceMaterialController.createContentNode(frontPage, null)).build();
-    } catch (WorkspaceMaterialException e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
+    WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
+    return Response.ok(workspaceMaterialController.createContentNode(frontPage, null)).build();
   }
 
   @GET
@@ -778,13 +773,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
     	return Response.status(Status.NOT_FOUND).build();
     }
-    try {
-      List<ContentNode> helpPages = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
-      return Response.ok(helpPages).build();
-    }
-    catch (WorkspaceMaterialException e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
+    List<ContentNode> helpPages = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
+    return Response.ok(helpPages).build();
   }
 
   @GET
@@ -796,13 +786,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null || node == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    try {
-      WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(node);
-      return Response.ok(workspaceMaterialController.createContentNode(node, nextSibling)).build();
-    }
-    catch (WorkspaceMaterialException e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
+    WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(node);
+    return Response.ok(workspaceMaterialController.createContentNode(node, nextSibling)).build();
   }
 
   @GET
@@ -2149,12 +2134,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     List<ContentNode> workspaceMaterials;
-    try {
-      workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, includeHidden);
-    } catch (WorkspaceMaterialException e) {
-      return Response.noContent().build();
-    }
-
+    workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, includeHidden);
     if (workspaceMaterials.isEmpty()) {
     	return Response.ok(Collections.emptyList()).build();
     }

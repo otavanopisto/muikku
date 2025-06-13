@@ -1,24 +1,28 @@
 package fi.otavanopisto.muikku.plugins.exam.rest;
 
 import java.time.OffsetDateTime;
+import java.util.List;
+
+import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 
 public class ExamAttendanceRestModel {
   
   public ExamAttendanceRestModel() {
   }
 
-  public ExamAttendanceRestModel(OffsetDateTime began, OffsetDateTime ended, boolean allowRestart) {
-    this.began = began;
+  public ExamAttendanceRestModel(OffsetDateTime started, OffsetDateTime ended, boolean allowRestart, List<ContentNode> contents) {
+    this.started = started;
     this.ended = ended;
     this.allowRestart = allowRestart;
+    this.contents = contents;
   }
 
-  public OffsetDateTime getBegan() {
-    return began;
+  public OffsetDateTime getStarted() {
+    return started;
   }
 
-  public void setBegan(OffsetDateTime began) {
-    this.began = began;
+  public void setStarted(OffsetDateTime started) {
+    this.started = started;
   }
 
   public OffsetDateTime getEnded() {
@@ -37,8 +41,17 @@ public class ExamAttendanceRestModel {
     this.allowRestart = allowRestart;
   }
 
-  private OffsetDateTime began;
+  public List<ContentNode> getContents() {
+    return contents;
+  }
+
+  public void setContents(List<ContentNode> contents) {
+    this.contents = contents;
+  }
+
+  private OffsetDateTime started;
   private OffsetDateTime ended;
   private boolean allowRestart;
+  private List<ContentNode> contents;
 
 }

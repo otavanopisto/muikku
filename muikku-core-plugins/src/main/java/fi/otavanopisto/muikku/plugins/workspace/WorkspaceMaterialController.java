@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -19,13 +20,17 @@ import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
+import fi.otavanopisto.muikku.plugins.exam.ExamController;
+import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
+import fi.otavanopisto.muikku.plugins.exam.model.ExamSettings;
+import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.BinaryMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
@@ -116,6 +121,9 @@ public class WorkspaceMaterialController {
 
   @Inject
   private MaterialController materialController;
+  
+  @Inject
+  private ExamController examController;
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
@@ -912,8 +920,7 @@ public class WorkspaceMaterialController {
     return result;
   }
 
-  public List<ContentNode> listWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean includeHidden)
-      throws WorkspaceMaterialException {
+  public List<ContentNode> listWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean includeHidden) {
     List<ContentNode> contentNodes = new ArrayList<>();
     WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
     List<WorkspaceNode> rootMaterialNodes = includeHidden
@@ -925,9 +932,51 @@ public class WorkspaceMaterialController {
       
       // Exam functionality
       
-      if (((WorkspaceFolder) currentNode).getExam() && userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
-        // TODO Determine whether the student should see the exam folder and if so, what pages under it 
-        continue;
+      if (((WorkspaceFolder) currentNode).getExam()) {
+        // Users not logged in may never see exams
+        if (!sessionController.isLoggedIn()) {
+          continue;
+        }
+        if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+          boolean showExamFolder = false;
+          // Student might be able to see exam folder (although its contents are fetched separately via ExamRESTService)
+          ExamSettings examSettings = examController.findExamSettings(currentNode.getId());
+          if (examSettings != null) {
+            ExamSettingsRestModel settingsJson = examController.getSettingsJson(examSettings);
+            if (!settingsJson.getOpenForAll()) {
+              // Exam users are limited; current user needs to be an attendee
+              showExamFolder = examController.findAttendance(currentNode.getId(), sessionController.getLoggedUserEntity().getId()) != null;
+            }
+            else {
+              // Exam is open for all (currently active course students)
+              showExamFolder = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(
+                  workspaceEntity,
+                  sessionController.getLoggedUser()) != null;
+            }
+            // This is as good a place as any to determine if an attendee has gone over the exam time limit.
+            // Front-end should enforce this as well but if the student, for example, leaves during the exam,
+            // this ensures that the next load will have marked an overdue exam as ended
+            if (showExamFolder && settingsJson.getMinutes() > 0) {
+              ExamAttendance attendance = examController.findAttendance(currentNode.getId(), sessionController.getLoggedUserEntity().getId());
+              if (attendance != null && attendance.getStarted() != null && attendance.getEnded() == null) {
+                // User is an attendee who has started the exam but not yet finished it
+                Calendar c = Calendar.getInstance();
+                c.setTime(attendance.getStarted());
+                c.add(Calendar.MINUTE, settingsJson.getMinutes());
+                if (System.currentTimeMillis() > c.getTimeInMillis()) {
+                  examController.endExam(currentNode.getId(), sessionController.getLoggedUserEntity().getId(), c.getTime());
+                }
+              }
+            }
+          }
+          if (showExamFolder) {
+            contentNodes.add(createContentNode(currentNode, 0, includeHidden, nextSibling));
+          }
+          else {
+            continue;
+          }
+        }
+        // For staff members, always show exam folder and its contents as usual
       }
       
       ContentNode node = createContentNode(currentNode, 1, includeHidden, nextSibling);
@@ -936,8 +985,7 @@ public class WorkspaceMaterialController {
     return contentNodes;
   }
 
-  public List<ContentNode> listWorkspaceFrontPagesAsContentNodes(WorkspaceEntity workspaceEntity)
-      throws WorkspaceMaterialException {
+  public List<ContentNode> listWorkspaceFrontPagesAsContentNodes(WorkspaceEntity workspaceEntity) {
     List<ContentNode> contentNodes = new ArrayList<>();
     List<WorkspaceMaterial> frontPages = listFrontPages(workspaceEntity);
     for (WorkspaceNode frontPage : frontPages) {
@@ -947,8 +995,7 @@ public class WorkspaceMaterialController {
     return contentNodes;
   }
 
-  public List<ContentNode> listWorkspaceHelpPagesAsContentNodes(WorkspaceEntity workspaceEntity)
-      throws WorkspaceMaterialException {
+  public List<ContentNode> listWorkspaceHelpPagesAsContentNodes(WorkspaceEntity workspaceEntity) {
     List<ContentNode> contentNodes = new ArrayList<>();
     List<WorkspaceNode> helpPages = listHelpPages(workspaceEntity);
     for (int i = 0; i < helpPages.size(); i++) {
@@ -960,8 +1007,7 @@ public class WorkspaceMaterialController {
     return contentNodes;
   }
 
-  public ContentNode createContentNode(WorkspaceNode rootMaterialNode, WorkspaceNode nextSibling)
-      throws WorkspaceMaterialException {
+  public ContentNode createContentNode(WorkspaceNode rootMaterialNode, WorkspaceNode nextSibling) {
     return createContentNode(rootMaterialNode, 1, true, nextSibling);
   }
 

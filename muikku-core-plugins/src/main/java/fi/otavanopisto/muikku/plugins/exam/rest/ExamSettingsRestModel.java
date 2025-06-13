@@ -28,7 +28,7 @@ public class ExamSettingsRestModel {
     this.random = random;
   }
 
-  public boolean isAllowMultipleAttempts() {
+  public boolean getAllowMultipleAttempts() {
     return allowMultipleAttempts;
   }
 
@@ -44,7 +44,7 @@ public class ExamSettingsRestModel {
     this.minutes = minutes;
   }
 
-  public boolean isOpenForAll() {
+  public boolean getOpenForAll() {
     return openForAll;
   }
 

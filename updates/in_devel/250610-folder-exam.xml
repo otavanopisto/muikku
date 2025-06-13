@@ -5,7 +5,7 @@
   <sql>
     create table ExamAttendance (
       id bigint not null auto_increment,
-      began datetime,
+      started datetime,
       ended datetime,
       userEntityId bigint not null,
       workspaceFolderId bigint not null,

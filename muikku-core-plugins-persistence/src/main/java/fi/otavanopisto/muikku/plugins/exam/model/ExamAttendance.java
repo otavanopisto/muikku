@@ -37,12 +37,12 @@ public class ExamAttendance {
     this.userEntityId = userEntityId;
   }
 
-  public Date getBegan() {
-    return began;
+  public Date getStarted() {
+    return started;
   }
 
-  public void setBegan(Date began) {
-    this.began = began;
+  public void setStarted(Date started) {
+    this.started = started;
   }
 
   public Date getEnded() {
@@ -75,7 +75,7 @@ public class ExamAttendance {
 
   @Column
   @Temporal(value = TemporalType.TIMESTAMP)
-  private Date began;
+  private Date started;
 
   @Column
   @Temporal(value = TemporalType.TIMESTAMP)
