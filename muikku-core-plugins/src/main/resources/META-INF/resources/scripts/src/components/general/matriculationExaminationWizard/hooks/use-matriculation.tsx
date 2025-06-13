@@ -67,7 +67,7 @@ export const useMatriculation = (
       examId: exam.id,
       state: "ELIGIBLE",
       contactInfoChange: "",
-      guider: "",
+      guider: [],
       enrollAs: "UPPERSECONDARY",
       degreeType: "MATRICULATIONEXAMINATION",
       numMandatoryCourses: 0,

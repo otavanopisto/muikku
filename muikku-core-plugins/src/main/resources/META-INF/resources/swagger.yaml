@@ -14275,7 +14275,9 @@ components:
         studentIdentifier:
           type: string
         guider:
-          type: string
+          type: array
+          items:
+            type: string
         enrollAs:
           $ref: "#/components/schemas/MatriculationExamSchoolType"
         degreeType:
@@ -14395,7 +14397,7 @@ components:
       required:
         - address
         - email
-        - guidanceCounselor
+        - guidanceCounselors
         - studyAdvisors
         - locality
         - name
