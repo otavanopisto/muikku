@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.exam.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -42,6 +43,18 @@ public class ExamAttendanceDAO extends CorePluginsDAO<ExamAttendance> {
     return persist(attendance);
   }
   
+  public List<ExamAttendance> listByWorkspaceFolderId(Long workspaceFolderId) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<ExamAttendance> criteria = criteriaBuilder.createQuery(ExamAttendance.class);
+    Root<ExamAttendance> root = criteria.from(ExamAttendance.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(ExamAttendance_.workspaceFolderId), workspaceFolderId)
+    );
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   public ExamAttendance findByWorkspaceFolderIdAndUserEntityId(Long workspaceFolderId, Long userEntityId) {
     EntityManager entityManager = getEntityManager();
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -54,7 +67,11 @@ public class ExamAttendanceDAO extends CorePluginsDAO<ExamAttendance> {
           criteriaBuilder.equal(root.get(ExamAttendance_.userEntityId), userEntityId)
         )
     );
-    return getSingleResult( entityManager.createQuery(criteria) );
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public void delete(ExamAttendance attendance) {
+    super.delete(attendance);
   }
 
 }

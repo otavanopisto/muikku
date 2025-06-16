@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.stream.Stream;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,6 +27,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
@@ -35,6 +38,9 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -47,6 +53,12 @@ public class ExamRESTService {
   
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private UserEntityController userEntityController;
+  
+  @Inject
+  private UserEntityFileController userEntityFileController;
   
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -79,7 +91,7 @@ public class ExamRESTService {
     
     // Return attendance info with exam contents and everything
     
-    return Response.ok().entity(getAttendance(workspaceFolderId)).build();
+    return Response.ok().entity(toRestModel(workspaceFolderId)).build();
   }
 
   @Path("/end/{WORKSPACEFOLDERID}")
@@ -102,25 +114,61 @@ public class ExamRESTService {
 
     // Return attendance info with exam contents and everything
     
-    return Response.ok().entity(getAttendance(workspaceFolderId)).build();
+    return Response.ok().entity(toRestModel(workspaceFolderId)).build();
   }
 
   @Path("/attendance/{WORKSPACEFOLDERID}")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listContents(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
-    return Response.ok().entity(getAttendance(workspaceFolderId)).build();
+    return Response.ok().entity(toRestModel(workspaceFolderId)).build();
   }
 
   @Path("/attendees/{WORKSPACEFOLDERID}")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listAttendees(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
-    // TODO Staff endpoint for listing attendees of a limited exam
+    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    List<ExamAttendee> attendees = new ArrayList<>();
+    List<ExamAttendance> attendances = examController.listAttendees(workspaceFolderId);
+    for (ExamAttendance attendance : attendances) {
+      attendees.add(toRestModel(attendance));
+    }
+    attendees.sort(Comparator.comparing(ExamAttendee::getName));
+    return Response.ok().entity(attendees).build();
+  }
+
+  @Path("/attendee/{WORKSPACEFOLDERID}/user/{USERENTITYID}")
+  @POST
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response addAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId) {
+    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    ExamAttendance attendance = examController.findAttendance(workspaceFolderId, userEntityId);
+    if (attendance != null) {
+      attendance = examController.createAttendance(workspaceFolderId, userEntityId, true);
+    }
+    return Response.ok().entity(toRestModel(attendance)).build();
+  }
+
+  @Path("/attendee/{WORKSPACEFOLDERID}/user/{USERENTITYID}")
+  @DELETE
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response removeAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId) {
+    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    ExamAttendance attendance = examController.findAttendance(workspaceFolderId, userEntityId);
+    if (attendance != null) {
+      examController.removeAttendance(attendance);
+    }
     return Response.noContent().build();
   }
   
-  private ExamAttendanceRestModel getAttendance(Long workspaceFolderId) {
+  private ExamAttendanceRestModel toRestModel(Long workspaceFolderId) {
     ExamSettingsRestModel settingsJson = examController.getSettingsJson(workspaceFolderId);
     ExamAttendanceRestModel attendance = new ExamAttendanceRestModel();
     attendance.setContents(Collections.emptyList());
@@ -159,6 +207,17 @@ public class ExamRESTService {
       }
     }
     return attendance;
+  }
+  
+  private ExamAttendee toRestModel(ExamAttendance attendance) {
+    UserEntity userEntity = userEntityController.findUserEntityById(attendance.getUserEntityId());
+    ExamAttendee attendee = new ExamAttendee();
+    attendee.setStarted(toOffsetDateTime(attendance.getStarted()));
+    attendee.setEnded(toOffsetDateTime(attendance.getEnded()));
+    attendee.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
+    UserEntityName name = userEntityController.getName(userEntity, true);
+    attendee.setName(name.getDisplayNameWithLine());
+    return attendee;
   }
   
   private OffsetDateTime toOffsetDateTime(Date date) {

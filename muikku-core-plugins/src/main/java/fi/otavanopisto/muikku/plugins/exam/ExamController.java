@@ -60,6 +60,10 @@ public class ExamController {
     }
   }
   
+  public void removeAttendance(ExamAttendance attendance) {
+    examAttendanceDAO.delete(attendance);
+  }
+  
   /**
    * Starts an exam for the user, giving them a random set of assignments if exam supports randomization.
    * If this is not the first time the user has started this exam, possible earlier end time is nulled. 
@@ -97,6 +101,7 @@ public class ExamController {
     ExamAttendance attendance = findAttendance(workspaceFolderId, userEntityId);
     if (attendance != null) {
       examAttendanceDAO.updateEnded(attendance, ended);
+      // TODO Mark all assignments as returned?
     }
     return attendance;
   }
@@ -111,6 +116,17 @@ public class ExamController {
    */
   public ExamAttendance findAttendance(Long workspaceFolderId, Long userEntityId) {
     return examAttendanceDAO.findByWorkspaceFolderIdAndUserEntityId(workspaceFolderId, userEntityId);
+  }
+  
+  /**
+   * Returns attendees to the given exam.
+   * 
+   * @param workspaceFolderId Exam folder id
+   * 
+   * @return List of attendees to the given exam
+   */
+  public List<ExamAttendance> listAttendees(Long workspaceFolderId) {
+    return examAttendanceDAO.listByWorkspaceFolderId(workspaceFolderId);
   }
   
   /**
