@@ -127,8 +127,8 @@ public class ExamController {
       if (userEntity != null && folder != null) {
         List<Long> assignmentIds = workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder);
         for (Long assignmentId : assignmentIds) {
-          // Don't touch assignments that haven't been randomized for the user
-          if (assignmentIds != null && !chosenAssignmentIds.contains(assignmentId)) {
+          // Skip assignments that aren't part of the user's exam
+          if (chosenAssignmentIds != null && !chosenAssignmentIds.contains(assignmentId)) {
             continue;
           }
           WorkspaceMaterial material = workspaceMaterialController.findWorkspaceMaterialById(assignmentId);
