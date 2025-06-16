@@ -21,29 +21,31 @@ const Stars = (props: StarsProps) => {
   const id = name + "-" + skillLevels.code;
   return (
     <div className="language-profile__stars">
-      <label className="language-profile__stars-label" id={id}>
+      <label className="language-profile__label" id={id}>
         {label}
       </label>
-      {stars.map((star) => {
-        const isFull =
-          (typeof skillLevels[name] === "string" &&
-            star <= parseInt(skillLevels[name])) ||
-          false;
+      <div className="language-profile__stars-container">
+        {stars.map((star) => {
+          const isFull =
+            (typeof skillLevels[name] === "string" &&
+              star <= parseInt(skillLevels[name])) ||
+            false;
 
-        return (
-          <input
-            type="radio"
-            className={`language-profile__star icon-star-${isFull ? "full" : "empty"}`}
-            aria-labelledby={id}
-            defaultValue={skillLevels.interaction || ""}
-            checked={star.toString() === skillLevels[name]}
-            onChange={(e) => onChange(e, name)}
-            name={id}
-            key={"star-" + id + "-" + star}
-            value={star}
-          />
-        );
-      })}
+          return (
+            <input
+              type="radio"
+              className={`language-profile__star icon-star-${isFull ? "full" : "empty"}`}
+              aria-labelledby={id}
+              defaultValue={skillLevels.interaction || ""}
+              checked={star.toString() === skillLevels[name]}
+              onChange={(e) => onChange(e, name)}
+              name={id}
+              key={"star-" + id + "-" + star}
+              value={star}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };

@@ -63,7 +63,7 @@ const InitializationFooter = (props: PedagogyFormWizardFooterProps) => {
         </Button>
       )}
       {isLastStep && (
-        <Button onClick={handleSave} buttonModifiers={["info"]}>
+        <Button onClick={handleSave} buttonModifiers={["execute"]}>
           {t("actions.save", { ns: "common" })}
         </Button>
       )}

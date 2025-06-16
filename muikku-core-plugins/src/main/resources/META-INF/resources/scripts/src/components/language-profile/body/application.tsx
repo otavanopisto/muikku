@@ -29,7 +29,7 @@ const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
   const panelTabs: Tab[] = [
     {
       id: "INITIALIZE",
-      name: t("labels.initialization"),
+      name: t("labels.initializationTabTitle"),
       hash: "initialize",
       type: "initialize",
       /**
@@ -44,7 +44,7 @@ const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
     },
     {
       id: "LANGUAGES",
-      name: t("labels.languages"),
+      name: t("labels.languagesTabTitle"),
       hash: "languages",
       type: "languages",
       component: (
@@ -55,7 +55,7 @@ const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
     },
     {
       id: "CV",
-      name: t("labels.cv"),
+      name: t("labels.cvTabTitle"),
       hash: "cv",
       type: "cv",
       component: (

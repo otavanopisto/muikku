@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
 import { LanguageProfileSample } from "~/generated/client";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * LanguageSampleProps
@@ -52,7 +53,10 @@ const Sample = (props: LanguageSampleProps) => {
       case "FILE":
         return (
           <div>
-            <a href={`/languageProfileSampleServlet?sampleId=${sample.id}`}>
+            <a
+              className="language-profile__sample-link"
+              href={`/languageProfileSampleServlet?sampleId=${sample.id}`}
+            >
               {sample.fileName}
             </a>
           </div>
@@ -71,17 +75,27 @@ const Sample = (props: LanguageSampleProps) => {
   }, [sample, taggedForRemoval, onChange]);
 
   return (
-    <div className="language-profile__sample-container">
+    <div
+      className={`language-profile-container__row language-profile-container__row--sample ${taggedForRemoval ? "language-profile-container__row--sample-tagged-for-removal" : ""}`}
+    >
       {renderMemoizedSample}
       <div className="language-profile__sample-buttons">
-        <Button
-          buttonModifiers={taggedForRemoval ? "cancel" : "fatal"}
-          onClick={() => onDelete(sample.id)}
+        <Dropdown
+          openByHover={true}
+          content={
+            taggedForRemoval
+              ? t("actions.cancelRemove", { ns: "languageProfile" })
+              : t("actions.removeSample", { ns: "languageProfile" })
+          }
         >
-          {taggedForRemoval
-            ? t("actions.cancel", { ns: "common" })
-            : t("actions.remove", { ns: "common" })}
-        </Button>
+          <Button
+            buttonModifiers={
+              taggedForRemoval ? "cancel-sample-removal" : "remove-sample"
+            }
+            icon={taggedForRemoval ? "undo" : "trash"}
+            onClick={() => onDelete(sample.id)}
+          />
+        </Dropdown>
       </div>
     </div>
   );

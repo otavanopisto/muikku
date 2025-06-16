@@ -21,29 +21,38 @@ const TextSample = (props: TextSampleProps) => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const { value, onChange, onSave, onCancel } = props;
   return (
-    <form className="language-profile__text-sample">
+    <>
+      <label className="language-profile__label">
+        {t("labels.addNewSampleTitle", {
+          ns: "languageProfile",
+          context: "text",
+        })}
+      </label>
+      <div className="language-profile__field-description">
+        {t("content.addNewSampleDescription", {
+          ns: "languageProfile",
+          context: "text",
+        })}
+      </div>
       <textarea
         id="newLanguageSample"
         className="language-profile__textarea"
         value={value}
         onChange={onChange}
       />
-      <div className="language-profile__sample-buttons">
-        <Button buttonModifiers={["execute", "standard-ok"]} onClick={onSave}>
+      <div className="language-profile__sample-buttons language-profile__sample-buttons--add-sample">
+        <Button buttonModifiers={["execute"]} onClick={onSave}>
           {t("actions.save", {
             ns: "common",
           })}
         </Button>
-        <Button
-          buttonModifiers={["cancel", "standard-cancel"]}
-          onClick={onCancel}
-        >
+        <Button buttonModifiers={["cancel"]} onClick={onCancel}>
           {t("actions.cancel", {
             ns: "common",
           })}
         </Button>
       </div>
-    </form>
+    </>
   );
 };
 export default TextSample;

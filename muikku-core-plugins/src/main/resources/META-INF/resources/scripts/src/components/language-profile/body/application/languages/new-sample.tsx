@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { StateType } from "~/reducers";
 import {
@@ -30,7 +29,6 @@ interface LanguageSampleProps {
  * @returns JSX.Element
  */
 const NewLanguageSample = (props: LanguageSampleProps) => {
-  const { t } = useTranslation(["languageProfile", "common"]);
   const [sample, setSample] = React.useState("");
   const { visible, language, onClose, sampleType } = props;
   const { status } = useSelector((state: StateType) => state);
@@ -161,32 +159,6 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   );
 
   /**
-   * sampleTitle returns the title for the sample input form based on the sampleType.
-   * @returns string - The title for the sample input form.
-   */
-  const sampleTitle = () => {
-    switch (sampleType) {
-      case "TEXT":
-        return t("labels.addNewSampleTitle", {
-          ns: "languageProfile",
-          context: "text",
-        });
-      case "FILE":
-        return t("labels.addNewSampleTitle", {
-          ns: "languageProfile",
-          context: "file",
-        });
-      case "AUDIO":
-        return t("labels.addNewSampleTitle", {
-          ns: "languageProfile",
-          context: "audio",
-        });
-      default:
-        return t("labels.addNewSampleTitle", { ns: "languageProfile" });
-    }
-  };
-
-  /**
    * SampleComponent renders the appropriate sample input form based on the sampleType.
    * It uses React.memo to optimize rendering.
    */
@@ -245,12 +217,9 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   }
 
   return (
-    <div className="language-profile-container__row">
+    <div className="language-profile-container__row language-profile-container__row--new-sample">
       <div className="language-profile__form-element-container">
-        <label className="language-profile__label">{sampleTitle()}</label>
-        <div className="form-element__textarea-container">
-          {renderSampleCreationComponent}
-        </div>
+        {renderSampleCreationComponent}
       </div>
     </div>
   );

@@ -47,8 +47,8 @@ const LanguageSample = (props: LanguageSampleProps) => {
   };
 
   return (
-    <div className="hops-form">
-      <div className="hops-form__container">
+    <div className="panguage-profile-form">
+      <div className="panguage-profile-form__container">
         <div className="language-profile-container">
           <fieldset className="language-profile-container__fieldset">
             <legend className="language-profile-container__subheader">
@@ -74,10 +74,7 @@ const LanguageSample = (props: LanguageSampleProps) => {
             />
           ))}
           <footer className="language-profile__footer">
-            <Button
-              buttonModifiers={["execute", "standard-ok"]}
-              onClick={() => handleSave()}
-            >
+            <Button buttonModifiers={["execute"]} onClick={() => handleSave()}>
               {t("actions.save", { ns: "common" })}
             </Button>
           </footer>

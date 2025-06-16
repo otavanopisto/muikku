@@ -151,18 +151,16 @@ const LanguageUsage = () => {
               })}
             </label>
             <div className="language-profile__field-description">
-              {t("labels.languageUsageUseOfLanguagesLabel", {
+              {t("labels.languageUsageUseOfLanguagesDescription", {
                 ns: "languageProfile",
               })}
             </div>
-            <div className="form-element__textarea-container">
-              <textarea
-                id="languageUsage"
-                defaultValue={languageUsage || ""}
-                className="language-profile__textarea"
-                onChange={(e) => handleFieldChange(e, "languageUsage")}
-              />
-            </div>
+            <textarea
+              id="languageUsage"
+              defaultValue={languageUsage || ""}
+              className="language-profile__textarea"
+              onChange={(e) => handleFieldChange(e, "languageUsage")}
+            />
           </div>
         </div>
         <div className="language-profile-container__row">
@@ -177,14 +175,12 @@ const LanguageUsage = () => {
                 ns: "languageProfile",
               })}
             </div>
-            <div className="form-element__textarea-container">
-              <textarea
-                id="studyMotivation"
-                defaultValue={studyMotivation || ""}
-                className="language-profile__textarea"
-                onChange={(e) => handleFieldChange(e, "studyMotivation")}
-              />
-            </div>
+            <textarea
+              id="studyMotivation"
+              defaultValue={studyMotivation || ""}
+              className="language-profile__textarea"
+              onChange={(e) => handleFieldChange(e, "studyMotivation")}
+            />
           </div>
         </div>
         <div className="language-profile-container__row">
@@ -199,14 +195,12 @@ const LanguageUsage = () => {
                 ns: "languageProfile",
               })}
             </div>
-            <div className="form-element__textarea-container">
-              <textarea
-                id="messageForTeacher"
-                defaultValue={languageLearning || ""}
-                className="language-profile__textarea"
-                onChange={(e) => handleFieldChange(e, "languageLearning")}
-              />
-            </div>
+            <textarea
+              id="messageForTeacher"
+              defaultValue={languageLearning || ""}
+              className="language-profile__textarea"
+              onChange={(e) => handleFieldChange(e, "languageLearning")}
+            />
           </div>
         </div>
       </fieldset>

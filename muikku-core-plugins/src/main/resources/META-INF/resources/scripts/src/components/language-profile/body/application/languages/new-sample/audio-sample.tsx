@@ -23,7 +23,19 @@ const TextSample = (props: FileSampleProps) => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const { samples, onChange, onDelete, onSave, onCancel } = props;
   return (
-    <div className="language-profile__audio-sample">
+    <>
+      <label className="language-profile__label">
+        {t("labels.addNewSampleTitle", {
+          ns: "languageProfile",
+          context: "audio",
+        })}
+      </label>
+      <div className="language-profile__field-description">
+        {t("content.addNewSampleDescription", {
+          ns: "languageProfile",
+          context: "audio",
+        })}
+      </div>
       <Recorder
         modifier="language-profile"
         saveTempfile={false}
@@ -31,22 +43,19 @@ const TextSample = (props: FileSampleProps) => {
         onDeleteAudio={onDelete}
         onChange={onChange}
       />
-      <div className="language-profile__sample-buttons">
-        <Button buttonModifiers={["execute", "standard-ok"]} onClick={onSave}>
+      <div className="language-profile__sample-buttons language-profile__sample-buttons--add-sample">
+        <Button buttonModifiers={["execute"]} onClick={onSave}>
           {t("actions.save", {
             ns: "common",
           })}
         </Button>
-        <Button
-          buttonModifiers={["cancel", "standard-cancel"]}
-          onClick={onCancel}
-        >
+        <Button buttonModifiers={["cancel"]} onClick={onCancel}>
           {t("actions.cancel", {
             ns: "common",
           })}
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 export default TextSample;

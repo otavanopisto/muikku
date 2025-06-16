@@ -7,7 +7,6 @@ import { LanguageCode } from "~/@types/shared";
 import { LanguageProfileLanguage } from "~/reducers/main-function/language-profile";
 import { LanguageProfileSample } from "~/generated/client";
 import Sample from "./sample";
-import fileField from "~/components/base/material-loader/fields/file-field";
 
 export type SampleTypes = "TEXT" | "FILE" | "AUDIO" | "";
 
@@ -116,7 +115,7 @@ const LanguageComponent = (props: LanguageComponentProps) => {
       <legend className="language-profile-container__subheader">
         {language.name}
       </legend>
-      <div className="language-profile-container__row language-profile-container__row--buttons-row">
+      <div className="language-profile-container__row language-profile-container__row--buttons">
         <Button
           buttonModifiers={["button-has-icon", "add-extra-row"]}
           onClick={() => setSampleType("TEXT")}

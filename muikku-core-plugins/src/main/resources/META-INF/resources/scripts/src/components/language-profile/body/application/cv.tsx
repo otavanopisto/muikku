@@ -61,27 +61,55 @@ const LanguageCv = () => {
   };
 
   return (
-    <div>
-      <h1>Kieli cv</h1>
-      <form>
-        <div>
-          <h2>Yleistä</h2>
-          <textarea
-            id="cv"
-            defaultValue={cv.general || ""}
-            className="form-element__textarea"
-            onChange={(e) => handleFieldChange(e)}
-          />
+    <div className="language-profile-form">
+      <div className="language-profile-form__container">
+        <div className="language-profile-container">
+          <fieldset className="language-profile-container__fieldset">
+            <legend className="language-profile-container__subheader">
+              {t("labels.languageCVStepTitle", {
+                ns: "languageProfile",
+              })}
+            </legend>
+            <div className="language-profile-container__fieldset-description">
+              {t("content.languageCVStepDescription", {
+                ns: "languageProfile",
+              })}
+            </div>
+            <div className="language-profile-container__row">
+              <div className="language-profile__form-element-container">
+                <label className="language-profile__label">
+                  {t("labels.languageCVGeneralLabel", {
+                    ns: "languageProfile",
+                  })}
+                </label>
+                <div className="language-profile__field-description">
+                  {t("labels.languageCVGeneralDescription", {
+                    ns: "languageProfile",
+                  })}
+                </div>
+                <textarea
+                  id="cv"
+                  defaultValue={cv.general || ""}
+                  className="language-profile__textarea"
+                  onChange={(e) => handleFieldChange(e)}
+                />
+              </div>
+            </div>
+          </fieldset>
+
           {languages.map((language) => (
             <SkillLevel key={language.code} language={language} />
           ))}
+
+          <div className="language-profile__footer">
+            <Button onClick={handleSave} buttonModifiers={["execute"]}>
+              {t("actions.save", {
+                ns: "common",
+              })}
+            </Button>
+          </div>
         </div>
-        <div>
-          <Button onClick={handleSave} buttonModifiers={["info"]}>
-            Tallenna
-          </Button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };

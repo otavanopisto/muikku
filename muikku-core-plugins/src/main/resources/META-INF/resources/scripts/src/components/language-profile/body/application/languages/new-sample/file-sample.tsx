@@ -22,8 +22,20 @@ const FileSample = (props: FileSampleProps) => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const { files, onFileChange, onRemoveFile, onSave, onCancel } = props;
   return (
-    <div className="language-profile__file-sample">
-      <form className="language-profile__file-uploader">
+    <>
+      <label className="language-profile__label">
+        {t("labels.addNewSampleTitle", {
+          ns: "languageProfile",
+          context: "file",
+        })}
+      </label>
+      <div className="language-profile__field-description">
+        {t("content.addNewSampleDescription", {
+          ns: "languageProfile",
+          context: "file",
+        })}
+      </div>
+      <div className="language-profile__file-uploader">
         <div className="language-profile__file-uploader-container">
           <div>{t("content.add", { ns: "materials", context: "file" })}</div>
           <input
@@ -46,23 +58,20 @@ const FileSample = (props: FileSampleProps) => {
             </div>
           ))}
         </div>
-        <div className="language-profile__sample-buttons">
-          <Button buttonModifiers={["execute", "standard-ok"]} onClick={onSave}>
-            {t("actions.save", {
-              ns: "common",
-            })}
-          </Button>
-          <Button
-            buttonModifiers={["cancel", "standard-cancel"]}
-            onClick={onCancel}
-          >
-            {t("actions.cancel", {
-              ns: "common",
-            })}
-          </Button>
-        </div>
-      </form>
-    </div>
+      </div>
+      <div className="language-profile__sample-buttons language-profile__sample-buttons--add-sample">
+        <Button buttonModifiers={["execute"]} onClick={onSave}>
+          {t("actions.save", {
+            ns: "common",
+          })}
+        </Button>
+        <Button buttonModifiers={["cancel"]} onClick={onCancel}>
+          {t("actions.cancel", {
+            ns: "common",
+          })}
+        </Button>
+      </div>
+    </>
   );
 };
 export default FileSample;

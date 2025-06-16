@@ -10,6 +10,7 @@ import { languageLevelOptions } from "~/mock/mock-data";
 import { ActionType } from "~/actions";
 import Button from "~/components/general/button";
 import Stars from "./stars";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * SkillLevelProps
@@ -36,7 +37,7 @@ const SkillLevel = (props: SkillLevelProps) => {
     samples: [],
   };
 
-  const { t } = useTranslation("languageProfile");
+  const { t } = useTranslation(["languageProfile", "profile", "common"]);
   const dispatch = useDispatch();
   const { cv } = useSelector((state: StateType) => state.languageProfile.data);
   const [languageSkillLevels, setlanguageSkillLevels] =
@@ -213,56 +214,65 @@ const SkillLevel = (props: SkillLevelProps) => {
   );
 
   return (
-    <div>
-      <h2>{language.name}</h2>
-      <h3>Taitotaso</h3>
-      <div>
-        <div>
-          <Stars
-            label="Vuorovaikutus"
-            name="interaction"
-            skillLevels={languageSkillLevels}
-            onChange={handleRadioInputChange}
-          />
+    <fieldset className="language-profile-container__fieldset">
+      <legend className="language-profile-container__subheader">
+        {language.name}
+      </legend>
+      <div className="language-profile-container__secondary-header">
+        {t("labels.languageCVSkillLevelTitle", {
+          ns: "languageProfile",
+        })}
+      </div>
+      <div className="language-profile-container__row">
+        <div className="language-profile__form-element-container">
+          <div className="language-profile__input-group-container">
+            <Stars
+              label="Vuorovaikutus"
+              name="interaction"
+              skillLevels={languageSkillLevels}
+              onChange={handleRadioInputChange}
+            />
+            <Stars
+              label="Suullinen tuottaminen"
+              name="vocal"
+              skillLevels={languageSkillLevels}
+              onChange={handleRadioInputChange}
+            />
+            <Stars
+              label="Kirjallinen tuottaminen"
+              name="writing"
+              skillLevels={languageSkillLevels}
+              onChange={handleRadioInputChange}
+            />
+            <Stars
+              label="Luetun tulkitseminen"
+              name="reading"
+              skillLevels={languageSkillLevels}
+              onChange={handleRadioInputChange}
+            />
+            <Stars
+              label="Kuullun tulkitseminen"
+              name="listening"
+              skillLevels={languageSkillLevels}
+              onChange={handleRadioInputChange}
+            />
+          </div>
         </div>
-        <div>
-          <Stars
-            label="Suullinen tuottaminen"
-            name="vocal"
-            skillLevels={languageSkillLevels}
-            onChange={handleRadioInputChange}
-          />
-        </div>
-        <div>
-          <Stars
-            label="Kirjallinen tuottaminen"
-            name="writing"
-            skillLevels={languageSkillLevels}
-            onChange={handleRadioInputChange}
-          />
-        </div>
-        <div>
-          <Stars
-            label="Luetun tulkitseminen"
-            name="reading"
-            skillLevels={languageSkillLevels}
-            onChange={handleRadioInputChange}
-          />
-        </div>
-        <div>
-          <Stars
-            label="Kuullun tulkitseminen"
-            name="listening"
-            skillLevels={languageSkillLevels}
-            onChange={handleRadioInputChange}
-          />
-        </div>
-        <div>
-          <label id="descriptionOfSkillLevel">Arvio kokonaistsosta</label>
+      </div>
+      <div className="language-profile-container__row">
+        <div className="language-profile__form-element-container">
+          <label
+            htmlFor="estimateOfSkillLevel"
+            className="language-profile__label"
+          >
+            {t("labels.languageCVSkillLevelEstimateLabel", {
+              ns: "languageProfile",
+            })}
+          </label>
           <select
-            aria-labelledby="descriptionOfSkillLevel"
+            id="estimateOfSkillLevel"
             name="general"
-            className="form-element__select"
+            className="language-profile__select"
             onChange={(e) => handleSelectChange(e)}
           >
             {languageLevelOptions.map((option) => (
@@ -276,48 +286,100 @@ const SkillLevel = (props: SkillLevelProps) => {
             ))}
           </select>
         </div>
-        <textarea
-          aria-labelledby="descriptionOfSkillLevel"
-          defaultValue={languageSkillLevels.description || ""}
-          className="form-element__textarea"
-          name="description"
-          onChange={(e) => handleTextAreaChange(e)}
-        />
-        <div>
-          {languageSkillLevels.samples.map((sample, index) => (
-            <div key={"sample-link" + index}>
-              <a href={sample} rel="noreferrer" target="_blank">
-                {sample}
-              </a>
-              <a
-                className="language-profile__remove-button icon-trash"
-                onClick={() => handleRemoveSampleLink(index)}
-              ></a>
-            </div>
-          ))}
+      </div>
+      <div className="language-profile-container__row">
+        <div className="language-profile__form-element-container">
+          <label
+            htmlFor="descriptionOfSkillLevel"
+            className="language-profile__label"
+          >
+            {t("labels.languageCVDescriptionOfSkillLabel", {
+              ns: "languageProfile",
+            })}
+          </label>
+          <div className="language-profile__field-description">
+            {t("labels.languageCVDescriptionOfSkillDescription", {
+              ns: "languageProfile",
+            })}
+          </div>
+          <textarea
+            id="descriptionOfSkillLevel"
+            defaultValue={languageSkillLevels.description || ""}
+            className="language-profile__textarea"
+            name="description"
+            onChange={(e) => handleTextAreaChange(e)}
+          />
         </div>
-        <div>
+      </div>
+      <div className="language-profile-container__secondary-header">
+        {t("labels.languageCVLinkSamplesTitle", {
+          ns: "languageProfile",
+        })}
+      </div>
+      {languageSkillLevels.samples.map((sample, index) => (
+        <div
+          key={"sample-link" + index}
+          className="language-profile-container__row language-profile-container__row--sample "
+        >
+          <div>
+            <a
+              href={sample}
+              rel="noreferrer"
+              target="_blank"
+              className="language-profile__sample-link"
+            >
+              {sample}
+            </a>
+          </div>
+          <div className="language-profile__sample-buttons">
+            <Dropdown
+              openByHover={true}
+              content={t("actions.removeSample", { ns: "languageProfile" })}
+            >
+              <Button
+                buttonModifiers={["remove-sample"]}
+                icon="trash"
+                onClick={() => handleRemoveSampleLink(index)}
+              />
+            </Dropdown>
+          </div>
+        </div>
+      ))}
+      <div className="language-profile-container__row language-profile-container__row--new-sample">
+        <div className="language-profile__form-element-container">
+          <label htmlFor="sampleUrl" className="language-profile__label">
+            {t("labels.languageCVLinkSampleFieldLabel", {
+              ns: "languageProfile",
+            })}
+          </label>
+          <div className="language-profile__field-description">
+            {t("labels.languageCVLinkSampleFieldDescription", {
+              ns: "languageProfile",
+            })}
+          </div>
           <input
             type="url"
             name="sampleUrl"
-            className={`form-element__input ${isValidUrl ? "" : "INVALID"}`}
+            id="sampleUrl"
+            className={`language-profile__input ${isValidUrl ? "" : "INVALID"}`}
             onChange={(e) => handleSampleURLFieldChange(e)}
           />
-          <Button
-            href={sampleUrl}
-            buttonModifiers="primary-function-content"
-            openInNewTab="_blank"
-            disabled={sampleUrl === ""}
-          >
-            {t("actions.test", { ns: "profile" })}
-          </Button>
+          <div className="language-profile__sample-buttons language-profile__sample-buttons--add-sample">
+            <Button
+              href={sampleUrl}
+              buttonModifiers={["info"]}
+              openInNewTab="_blank"
+              disabled={sampleUrl === ""}
+            >
+              {t("actions.test", { ns: "profile" })}
+            </Button>
+            <Button buttonModifiers={["info"]} onClick={handleAddSampleLink}>
+              {t("actions.addLink", { ns: "languageProfile" })}
+            </Button>
+          </div>
         </div>
-
-        <Button buttonModifiers={["info"]} onClick={handleAddSampleLink}>
-          Lisää linkki
-        </Button>
       </div>
-    </div>
+    </fieldset>
   );
 };
 

@@ -44,8 +44,8 @@ const Initialization = (props: initializationProps) => {
 
   return (
     <WizardProvider value={wizardValues}>
-      <div className="hops-form">
-        <div className="hops-form__container">
+      <div className="panguage-profile-form">
+        <div className="panguage-profile-form__container">
           <Wizard
             modifiers={["language-profile"]}
             header={<Header />}

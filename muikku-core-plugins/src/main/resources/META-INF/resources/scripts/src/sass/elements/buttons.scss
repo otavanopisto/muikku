@@ -2473,7 +2473,9 @@
 
 .button--remove-extra-row,
 .button--remove-hops-row,
-.button--remove-pedagogy-row {
+.button--remove-pedagogy-row,
+.button--remove-sample,
+.button--cancel-sample-removal {
   background: transparent;
   height: 2.25rem;
   padding: 5px;
@@ -2502,6 +2504,12 @@
       background: transparent;
       color: $color-disabled;
     }
+  }
+}
+
+.button--cancel-sample-removal {
+  .icon-trash {
+    color: $color-default-contrast;
   }
 }
 
