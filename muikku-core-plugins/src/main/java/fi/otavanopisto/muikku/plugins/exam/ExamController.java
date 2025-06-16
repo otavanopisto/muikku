@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -14,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamAttendanceDAO;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamSettingsDAO;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
@@ -22,9 +25,13 @@ import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsCategory;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRandom;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class ExamController {
   
@@ -32,7 +39,13 @@ public class ExamController {
   private Logger logger;
   
   @Inject
+  private UserEntityController userEntityController;
+  
+  @Inject
   private WorkspaceMaterialController workspaceMaterialController;
+  
+  @Inject
+  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
   
   @Inject
   private WorkspaceFolderDAO workspaceFolderDAO;
@@ -101,7 +114,35 @@ public class ExamController {
     ExamAttendance attendance = findAttendance(workspaceFolderId, userEntityId);
     if (attendance != null) {
       examAttendanceDAO.updateEnded(attendance, ended);
-      // TODO Mark all assignments as returned?
+      
+      // Submit all exam assignments that aren't answered at all or are being answered
+      
+      Set<Long> chosenAssignmentIds = null;
+      String assignmentIdStr = attendance.getWorkspaceMaterialIds();
+      if (!StringUtils.isEmpty(assignmentIdStr)) {
+        chosenAssignmentIds = Stream.of(assignmentIdStr.split(",")).map(Long::parseLong).collect(Collectors.toSet());
+      }
+      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+      WorkspaceFolder folder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
+      if (userEntity != null && folder != null) {
+        List<Long> assignmentIds = workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder);
+        for (Long assignmentId : assignmentIds) {
+          // Don't touch assignments that haven't been randomized for the user
+          if (assignmentIds != null && !chosenAssignmentIds.contains(assignmentId)) {
+            continue;
+          }
+          WorkspaceMaterial material = workspaceMaterialController.findWorkspaceMaterialById(assignmentId);
+          if (material != null) {
+            WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(material, userEntity);
+            if (reply == null) {
+              workspaceMaterialReplyController.createWorkspaceMaterialReply(material, WorkspaceMaterialReplyState.SUBMITTED, userEntity, false);
+            }
+            else if (reply.getState() == WorkspaceMaterialReplyState.UNANSWERED || reply.getState() == WorkspaceMaterialReplyState.ANSWERED) {
+              workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.SUBMITTED);
+            }
+          }
+        }
+      }
     }
     return attendance;
   }

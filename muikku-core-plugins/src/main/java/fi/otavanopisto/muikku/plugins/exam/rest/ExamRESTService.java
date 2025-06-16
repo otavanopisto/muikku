@@ -136,7 +136,7 @@ public class ExamRESTService {
     for (ExamAttendance attendance : attendances) {
       attendees.add(toRestModel(attendance));
     }
-    attendees.sort(Comparator.comparing(ExamAttendee::getName));
+    attendees.sort(Comparator.comparing(ExamAttendee::getLastName).thenComparing(ExamAttendee::getFirstName));
     return Response.ok().entity(attendees).build();
   }
 
@@ -216,7 +216,9 @@ public class ExamRESTService {
     attendee.setEnded(toOffsetDateTime(attendance.getEnded()));
     attendee.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
     UserEntityName name = userEntityController.getName(userEntity, true);
-    attendee.setName(name.getDisplayNameWithLine());
+    attendee.setFirstName(name.getFirstName());
+    attendee.setLastName(name.getLastName());
+    attendee.setLine(name.getStudyProgrammeName());
     return attendee;
   }
   

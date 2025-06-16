@@ -4,14 +4,6 @@ import java.time.OffsetDateTime;
 
 public class ExamAttendee {
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public boolean isHasImage() {
     return hasImage;
   }
@@ -36,7 +28,33 @@ public class ExamAttendee {
     this.ended = ended;
   }
 
-  private String name;
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public String getLine() {
+    return line;
+  }
+
+  public void setLine(String line) {
+    this.line = line;
+  }
+
+  private String firstName;
+  private String lastName;
+  private String line;
   private boolean hasImage;
   private OffsetDateTime started;
   private OffsetDateTime ended;
