@@ -3,7 +3,6 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/language-profile.scss";
 import { filterMatch } from "~/util/modifiers";
 import { LanguageData } from "~/@types/shared";
-import { useTranslation } from "react-i18next";
 
 // import { useDispatch, useSelector } from "react-redux";
 
@@ -24,7 +23,6 @@ interface AddItemProps {
  * @param props the props of the component
  */
 const AddItem = (props: AddItemProps) => {
-  const { t } = useTranslation("languageProfile");
   const { action, selectedItems, filterBy, allItems, placeHolder } = props;
   const [filter, setFilter] = React.useState<string>("");
   const [active, setActive] = React.useState<boolean>(false);
@@ -77,32 +75,34 @@ const AddItem = (props: AddItemProps) => {
 
   return (
     <div className="language-profile__add-language">
-      <input
-        className="language-profile__input"
-        type="text"
-        placeholder={placeHolder ? placeHolder : null}
-        onFocus={() => toggleDropdown(true)}
-        onChange={(e) => handleFieldChange(e.target.value)}
-      />
-      {active && filter && (
-        <div className="language-profile__language-dropdown">
-          {allItems
-            .filter((item) => filterMatch(item.name, filter))
-            .filter(
-              (item) =>
-                !selectedItems.some((i) => i[filterBy] === item[filterBy])
-            )
-            .map((item) => (
-              <div
-                key={item.code}
-                className="language-profile__dropdown-item"
-                onClick={() => handleAdd(item)}
-              >
-                {item.name}
-              </div>
-            ))}
-        </div>
-      )}
+      <div className="language-profile__textfield-container">
+        <input
+          className="language-profile__input"
+          type="text"
+          placeholder={placeHolder ? placeHolder : null}
+          onFocus={() => toggleDropdown(true)}
+          onChange={(e) => handleFieldChange(e.target.value)}
+        />
+        {active && filter && (
+          <div className="language-profile__language-dropdown">
+            {allItems
+              .filter((item) => filterMatch(item.name, filter))
+              .filter(
+                (item) =>
+                  !selectedItems.some((i) => i[filterBy] === item[filterBy])
+              )
+              .map((item) => (
+                <div
+                  key={item.code}
+                  className="language-profile__dropdown-item"
+                  onClick={() => handleAdd(item)}
+                >
+                  {item.name}
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

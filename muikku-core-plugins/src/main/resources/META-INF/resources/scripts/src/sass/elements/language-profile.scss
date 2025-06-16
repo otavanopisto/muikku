@@ -173,6 +173,18 @@
   width: 100%;
 }
 
+.language-profile__textfield-container {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  gap: 10px;
+  justify-content: space-between;
+
+   @include breakpoint($breakpoint-pad) {
+    flex-wrap: nowrap;
+  }
+}
+
 .language-profile__textarea {
   background: $color-default;
   border: 2px solid $color-language-profile-form-element-border;
@@ -193,9 +205,11 @@
   background: $color-default;
   border: 2px solid $color-language-profile-form-element-border;
   border-radius: 3px;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
   height: $select-height-mobile;
   padding: 4px 8px;
-  width: 100%;
 
   &[disabled] {
     background-color: lighten($color-disabled, 25%);

@@ -357,14 +357,14 @@ const SkillLevel = (props: SkillLevelProps) => {
               ns: "languageProfile",
             })}
           </div>
-          <input
-            type="url"
-            name="sampleUrl"
-            id="sampleUrl"
-            className={`language-profile__input ${isValidUrl ? "" : "INVALID"}`}
-            onChange={(e) => handleSampleURLFieldChange(e)}
-          />
-          <div className="language-profile__sample-buttons language-profile__sample-buttons--add-sample">
+          <div className="language-profile__textfield-container">
+            <input
+              type="url"
+              name="sampleUrl"
+              id="sampleUrl"
+              className={`language-profile__input ${isValidUrl ? "" : "INVALID"}`}
+              onChange={(e) => handleSampleURLFieldChange(e)}
+            />
             <Button
               href={sampleUrl}
               buttonModifiers={["info"]}
@@ -373,7 +373,13 @@ const SkillLevel = (props: SkillLevelProps) => {
             >
               {t("actions.test", { ns: "profile" })}
             </Button>
-            <Button buttonModifiers={["info"]} onClick={handleAddSampleLink}>
+          </div>
+          <div className="language-profile__sample-buttons language-profile__sample-buttons--add-sample">
+            <Button
+              buttonModifiers={["button-has-icon", "add-extra-row"]}
+              onClick={handleAddSampleLink}
+              icon="plus"
+            >
               {t("actions.addLink", { ns: "languageProfile" })}
             </Button>
           </div>

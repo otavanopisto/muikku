@@ -2836,7 +2836,7 @@
   },
   "languageProfile": {
     "actions": {
-      "addLink": "Add link",
+      "addLink": "Link",
       "cancelRemove": "Peruuta näytteen poisto",
       "removeSample": "Merkitse näyte poistettavaksi"
     },
