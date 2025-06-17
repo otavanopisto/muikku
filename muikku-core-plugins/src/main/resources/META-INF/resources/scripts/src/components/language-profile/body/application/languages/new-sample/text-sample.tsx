@@ -22,7 +22,10 @@ const TextSample = (props: TextSampleProps) => {
   const { value, onChange, onSave, onCancel } = props;
   return (
     <>
-      <label className="language-profile__label">
+      <label
+        htmlFor="newLanguageTextSample"
+        className="language-profile__label"
+      >
         {t("labels.addNewSampleTitle", {
           ns: "languageProfile",
           context: "text",
@@ -35,7 +38,7 @@ const TextSample = (props: TextSampleProps) => {
         })}
       </div>
       <textarea
-        id="newLanguageSample"
+        id="newLanguageTextSample"
         className="language-profile__textarea"
         value={value}
         onChange={onChange}

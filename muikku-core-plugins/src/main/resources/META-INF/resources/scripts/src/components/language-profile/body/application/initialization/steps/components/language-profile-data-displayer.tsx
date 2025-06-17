@@ -8,6 +8,7 @@ import {
   Th,
   Tr,
 } from "~/components/general/table";
+import { useTranslation } from "react-i18next";
 import "~/sass/elements/table.scss";
 
 /**
@@ -35,6 +36,7 @@ interface LanguageProfileDataDisplayerProps {
  * @returns JSX element that displays the languages in a table format
  */
 const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
+  const { t } = useTranslation(["languageProfile", "common"]);
   const { labels, rows, title, singleColumn, cellAction, onItemClick } = props;
   return (
     <div className="language-profile__languages-wrapper">
@@ -43,7 +45,11 @@ const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
           <TableHead modifiers={["sticky"]}>
             <Tr>
               <Th modifiers={["centered", "language-profile-first-cell"]}>
-                {title ? title : "Kieli"}
+                {title
+                  ? title
+                  : t("labels.language", {
+                      ns: "common",
+                    })}
               </Th>
               {labels.map((label) => (
                 <Th modifiers={["centered"]} key={label}>

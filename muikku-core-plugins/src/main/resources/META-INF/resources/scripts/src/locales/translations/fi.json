@@ -2836,7 +2836,11 @@
   },
   "languageProfile": {
     "actions": {
-      "addLink": "Linkki",
+      "addLink": "Lisää linkki",
+      "addSample": "Näyte",
+      "addSample_audio": "Ääninäyte",
+      "addSample_file": "Tiedostonäyte",
+      "addSample_text": "Tekstinäyte",
       "cancelRemove": "Peruuta näytteen poisto",
       "removeSample": "Merkitse näyte poistettavaksi"
     },
@@ -2876,12 +2880,24 @@
       "languageCVDescriptionOfSkillLabel": "Kuvaus osaamisesta",
       "languageCVDescriptionOfSkillDescription": "Kerro käytännön osaamisestasi omin sanoin.",
       "languageSamplesStepTitle": "Kielinäytteet",
+      "languageSkillLevelInteractionLabel": "Taito toimia vuorovaikutuksessa",
+      "languageSkillLevelinterpretationLabel": "Taito tulkita tekstejä",
+      "languageSkillLevelProduceLabel": "Taito tuottaa tekstejä",
+      "languageSkillByCategoryPronunciationLabel": "Ääntäminen",
+      "languageSkillByCategoryGrammarLabel": "Kielioppi",
+      "languageSkillByCategoryVocabularyLabel": "Sanasto",
+      "languageSkillByCategoryLanguageVariantsLabel": "Kielelliset variantit",
       "languageUsageUseOfLanguagesLabel": "Kielten käyttäminen",
       "languageUsageUseOfLanguagesDescription": "Missä käytät eri kieliä ja kuinka usein? Käytätkö sekä suullista että kirjallista kieltä?",
       "languageUsageMotivationInStudyingLabel": "Motivaatio opiskelussa",
       "languageUsageMotivationInStudyingDescription": "Kuinka motivoitunut olet eri kielten opiskeluun? Onko sinulla positiivisia tai negatiivisia asenteita eri kieliin?",
       "languageUsageLearningLanguagesLabel": "Kielten oppiminen",
-      "languageUsageLearningLanguagesDescription": "Miten opit ja opettelet kieliä? Mitkä opiskelumetodit sopivat sinulle, mitkä eivät? Kuinka harjoittelet?"
+      "languageUsageLearningLanguagesDescription": "Miten opit ja opettelet kieliä? Mitkä opiskelumetodit sopivat sinulle, mitkä eivät? Kuinka harjoittelet?",
+      "skillLevelInteractionStarLabel": "Vuorovaikutus",
+      "skillLevelVocalStarLabel": "Suullinen tuottaminen",
+      "skillLevelWritingStarLabel": "Kirjallinen tuottaminen",
+      "skillLevelReadingStarLabel": "Luetun tulkitseminen",
+      "skillLevelListeningStarLabel": "Kuullun tulkitseminen"
     },
     "content": {
       "addNewSampleDescription": "Lisää uusi näyte alla olevaan kenttään",

@@ -172,9 +172,15 @@ const LanguageMapping = () => {
           <DisplayLanguages
             rows={languages}
             labels={[
-              "Taito toimia vuorovaikutuksessa",
-              "Taito tulkita tekstejä",
-              "Taito tuottaa tekstejä",
+              t("labels.languageSkillLevelInteractionLabel", {
+                ns: "languageProfile",
+              }),
+              t("labels.languageSkillLevelinterpretationLabel", {
+                ns: "languageProfile",
+              }),
+              t("labels.languageSkillLevelProduceLabel", {
+                ns: "languageProfile",
+              }),
             ]}
             cellAction={languageLevelsSelect}
           />
@@ -194,7 +200,20 @@ const LanguageMapping = () => {
         <div className="language-profile-container__row">
           <DisplayLanguages
             rows={languages}
-            labels={["Ääntäminen", "Kielioppi", "Sanasto", "Variantit"]}
+            labels={[
+              t("labels.languageSkillByCategoryPronunciationLabel", {
+                ns: "languageProfile",
+              }),
+              t("labels.languageSkillByCategoryGrammarLabel", {
+                ns: "languageProfile",
+              }),
+              t("labels.languageSkillByCategoryVocabularyLabel", {
+                ns: "languageProfile",
+              }),
+              t("labels.languageSkillByCategoryLanguageVariantsLabel", {
+                ns: "languageProfile",
+              }),
+            ]}
             cellAction={skillsSelect}
           />
         </div>

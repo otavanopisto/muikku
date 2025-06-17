@@ -145,7 +145,7 @@ const LanguageUsage = () => {
         </div>
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
-            <label className="language-profile__label">
+            <label htmlFor="languageUsage" className="language-profile__label">
               {t("labels.languageUsageUseOfLanguagesLabel", {
                 ns: "languageProfile",
               })}
@@ -165,7 +165,10 @@ const LanguageUsage = () => {
         </div>
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
-            <label className="language-profile__label">
+            <label
+              htmlFor="studyMotivation"
+              className="language-profile__label"
+            >
               {t("labels.languageUsageMotivationInStudyingLabel", {
                 ns: "languageProfile",
               })}
@@ -185,7 +188,10 @@ const LanguageUsage = () => {
         </div>
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
-            <label className="language-profile__label">
+            <label
+              htmlFor="messageForTeacher"
+              className="language-profile__label"
+            >
               {t("labels.languageUsageLearningLanguagesLabel", {
                 ns: "languageProfile",
               })}

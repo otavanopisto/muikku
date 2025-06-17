@@ -69,7 +69,10 @@ const FutureOfStudies = () => {
         </div>
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
-            <label className="language-profile__label">
+            <label
+              htmlFor="learningFactors"
+              className="language-profile__label"
+            >
               {t("labels.futureOfStudiesAffectingFactorsLabel", {
                 ns: "languageProfile",
               })}
@@ -89,7 +92,7 @@ const FutureOfStudies = () => {
         </div>
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
-            <label className="language-profile__label">
+            <label htmlFor="futureUsage" className="language-profile__label">
               {t("labels.futureOfStudiesNecessityOfLanguagesLabel", {
                 ns: "languageProfile",
               })}
@@ -109,7 +112,7 @@ const FutureOfStudies = () => {
         </div>
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
-            <label className="language-profile__label">
+            <label htmlFor="skillGoals" className="language-profile__label">
               {t("labels.futureOfStudiesLanguageSkillGoalsLabel", {
                 ns: "languageProfile",
               })}

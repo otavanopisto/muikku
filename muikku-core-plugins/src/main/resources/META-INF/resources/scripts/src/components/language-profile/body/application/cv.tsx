@@ -77,7 +77,7 @@ const LanguageCv = () => {
             </div>
             <div className="language-profile-container__row">
               <div className="language-profile__form-element-container">
-                <label className="language-profile__label">
+                <label htmlFor="cv" className="language-profile__label">
                   {t("labels.languageCVGeneralLabel", {
                     ns: "languageProfile",
                   })}

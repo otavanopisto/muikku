@@ -33,7 +33,7 @@
   display: block;
   font-size: 1.0625rem;
   font-weight: 400;
-  margin: 0 5px 5px;
+  margin: 10px 5px 5px;
   width: 100%;
 
   @include breakpoint($breakpoint-pad) {
@@ -93,6 +93,13 @@
   &:hover {
     background: $color-default-generic-background;
   }
+
+  audio {
+    border-radius: 25px;
+    box-shadow: none;
+    height: 2rem;
+    width: 100%;
+  }
 }
 
 .language-profile-container__row--sample-tagged-for-removal {
@@ -140,7 +147,7 @@
   margin: 0;
 }
 
-.language-profile__sample-buttons--add-sample{
+.language-profile__sample-buttons--add-sample {
   margin: 10px 0 0;
 }
 

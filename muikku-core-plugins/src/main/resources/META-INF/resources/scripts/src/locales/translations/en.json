@@ -2836,9 +2836,13 @@
   },
   "languageProfile": {
     "actions": {
-      "addLink": "Link",
-      "cancelRemove": "Peruuta näytteen poisto",
-      "removeSample": "Merkitse näyte poistettavaksi"
+      "addLink": "Add link",
+      "addSample": "Sample",
+      "addSample_audio": "Audio sample",
+      "addSample_file": "File sample",
+      "addSample_text": "Text sample",
+      "cancelRemove": "Cancel removal",
+      "removeSample": "Set sample to be removed"
     },
     "labels": {
       "addLanguageFieldLabel": "Add language",
@@ -2876,12 +2880,24 @@
       "languageCVDescriptionOfSkillLabel": "Kuvaus osaamisesta",
       "languageCVDescriptionOfSkillDescription": "Kerro käytännön osaamisestasi omin sanoin.",
       "languageSamplesStepTitle": "Kielinäytteet",
+      "languageSkillLevelInteractionLabel": "Taito toimia vuorovaikutuksessa",
+      "languageSkillLevelinterpretationLabel": "Taito tulkita tekstejä",
+      "languageSkillLevelProduceLabel": "Taito tuottaa tekstejä",
+      "languageSkillByCategoryPronunciationLabel": "Pronunciation",
+      "languageSkillByCategoryGrammarLabel": "Grammar",
+      "languageSkillByCategoryVocabularyLabel": "Vocabulary",
+      "languageSkillByCategoryLanguageVariantsLabel": "Language variants",
       "languageUsageUseOfLanguagesLabel": "Kielten käyttäminen",
       "languageUsageUseOfLanguagesDescription": "Missä käytät eri kieliä ja kuinka usein? Käytätkö sekä suullista että kirjallista kieltä?",
       "languageUsageMotivationInStudyingLabel": "Motivaatio opiskelussa",
       "languageUsageMotivationInStudyingDescription": "Kuinka motivoitunut olet eri kielten opiskeluun? Onko sinulla positiivisia tai negatiivisia asenteita eri kieliin?",
       "languageUsageLearningLanguagesLabel": "Kielten oppiminen",
-      "languageUsageLearningLanguagesDescription": "Miten opit ja opettelet kieliä? Mitkä opiskelumetodit sopivat sinulle, mitkä eivät? Kuinka harjoittelet?"
+      "languageUsageLearningLanguagesDescription": "Miten opit ja opettelet kieliä? Mitkä opiskelumetodit sopivat sinulle, mitkä eivät? Kuinka harjoittelet?",
+      "skillLevelInteractionStarLabel": "Vuorovaikutus",
+      "skillLevelVocalStarLabel": "Suullinen tuottaminen",
+      "skillLevelWritingStarLabel": "Kirjallinen tuottaminen",
+      "skillLevelReadingStarLabel": "Luetun tulkitseminen",
+      "skillLevelListeningStarLabel": "Kuullun tulkitseminen"
     },
     "content": {
       "addNewSampleDescription": "Lisää uusi näyte alla olevaan kenttään",

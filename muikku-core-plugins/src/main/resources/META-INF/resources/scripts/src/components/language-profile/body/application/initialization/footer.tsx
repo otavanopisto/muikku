@@ -18,7 +18,7 @@ interface PedagogyFormWizardFooterProps {}
  * @returns JSX.Element
  */
 const InitializationFooter = (props: PedagogyFormWizardFooterProps) => {
-  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
+  const { t } = useTranslation(["common"]);
   const { previous, next, isFirstStep, isLastStep } = useWizardContext();
   const dispatch = useDispatch();
   const { languageProfile, status } = useSelector((state: StateType) => state);

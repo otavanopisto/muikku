@@ -7,6 +7,7 @@ import { LanguageCode } from "~/@types/shared";
 import { LanguageProfileLanguage } from "~/reducers/main-function/language-profile";
 import { LanguageProfileSample } from "~/generated/client";
 import Sample from "./sample";
+import { useTranslation } from "react-i18next";
 
 export type SampleTypes = "TEXT" | "FILE" | "AUDIO" | "";
 
@@ -28,6 +29,7 @@ interface LanguageComponentProps {
  * @returns JSX.Element
  */
 const LanguageComponent = (props: LanguageComponentProps) => {
+  const { t } = useTranslation(["languageProfile"]);
   const {
     samples,
     language,
@@ -121,21 +123,30 @@ const LanguageComponent = (props: LanguageComponentProps) => {
           onClick={() => setSampleType("TEXT")}
           icon="plus"
         >
-          Tekstinäyte
+          {t("actions.addSample", {
+            ns: "languageProfile",
+            context: "text",
+          })}
         </Button>
         <Button
           buttonModifiers={["button-has-icon", "add-extra-row"]}
           onClick={() => setSampleType("FILE")}
           icon="plus"
         >
-          Tiedostonäyte
+          {t("actions.addSample", {
+            ns: "languageProfile",
+            context: "file",
+          })}
         </Button>
         <Button
           buttonModifiers={["button-has-icon", "add-extra-row"]}
           onClick={() => setSampleType("AUDIO")}
           icon="plus"
         >
-          Ääninäyte
+          {t("actions.addSample", {
+            ns: "languageProfile",
+            context: "audio",
+          })}
         </Button>
       </div>
 

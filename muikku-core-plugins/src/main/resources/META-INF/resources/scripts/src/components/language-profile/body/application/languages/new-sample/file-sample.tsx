@@ -23,7 +23,10 @@ const FileSample = (props: FileSampleProps) => {
   const { files, onFileChange, onRemoveFile, onSave, onCancel } = props;
   return (
     <>
-      <label className="language-profile__label">
+      <label
+        htmlFor="newLanguageFileSample"
+        className="language-profile__label"
+      >
         {t("labels.addNewSampleTitle", {
           ns: "languageProfile",
           context: "file",
@@ -39,6 +42,7 @@ const FileSample = (props: FileSampleProps) => {
         <div className="language-profile__file-uploader-container">
           <div>{t("content.add", { ns: "materials", context: "file" })}</div>
           <input
+            id="newLanguageFileSample"
             type="file"
             className="language-profile__file-uploader-field"
             onChange={onFileChange}

@@ -37,7 +37,7 @@ const SkillLevel = (props: SkillLevelProps) => {
     samples: [],
   };
 
-  const { t } = useTranslation(["languageProfile", "profile", "common"]);
+  const { t } = useTranslation(["languageProfile", "profile"]);
   const dispatch = useDispatch();
   const { cv } = useSelector((state: StateType) => state.languageProfile.data);
   const [languageSkillLevels, setlanguageSkillLevels] =
@@ -227,31 +227,41 @@ const SkillLevel = (props: SkillLevelProps) => {
         <div className="language-profile__form-element-container">
           <div className="language-profile__input-group-container">
             <Stars
-              label="Vuorovaikutus"
+              label={t("labels.skillLevelInteractionStarLabel", {
+                ns: "languageProfile",
+              })}
               name="interaction"
               skillLevels={languageSkillLevels}
               onChange={handleRadioInputChange}
             />
             <Stars
-              label="Suullinen tuottaminen"
+              label={t("labels.skillLevelVocalStarLabel", {
+                ns: "languageProfile",
+              })}
               name="vocal"
               skillLevels={languageSkillLevels}
               onChange={handleRadioInputChange}
             />
             <Stars
-              label="Kirjallinen tuottaminen"
+              label={t("labels.skillLevelWritingStarLabel", {
+                ns: "languageProfile",
+              })}
               name="writing"
               skillLevels={languageSkillLevels}
               onChange={handleRadioInputChange}
             />
             <Stars
-              label="Luetun tulkitseminen"
+              label={t("labels.skillLevelReadingStarLabel", {
+                ns: "languageProfile",
+              })}
               name="reading"
               skillLevels={languageSkillLevels}
               onChange={handleRadioInputChange}
             />
             <Stars
-              label="Kuullun tulkitseminen"
+              label={t("labels.skillLevelListeningStarLabel", {
+                ns: "languageProfile",
+              })}
               name="listening"
               skillLevels={languageSkillLevels}
               onChange={handleRadioInputChange}
@@ -357,14 +367,14 @@ const SkillLevel = (props: SkillLevelProps) => {
               ns: "languageProfile",
             })}
           </div>
-          <div className="language-profile__textfield-container">
-            <input
-              type="url"
-              name="sampleUrl"
-              id="sampleUrl"
-              className={`language-profile__input ${isValidUrl ? "" : "INVALID"}`}
-              onChange={(e) => handleSampleURLFieldChange(e)}
-            />
+          <input
+            type="url"
+            name="sampleUrl"
+            id="sampleUrl"
+            className={`language-profile__input ${isValidUrl ? "" : "INVALID"}`}
+            onChange={(e) => handleSampleURLFieldChange(e)}
+          />
+          <div className="language-profile__sample-buttons language-profile__sample-buttons--add-sample">
             <Button
               href={sampleUrl}
               buttonModifiers={["info"]}
@@ -373,10 +383,8 @@ const SkillLevel = (props: SkillLevelProps) => {
             >
               {t("actions.test", { ns: "profile" })}
             </Button>
-          </div>
-          <div className="language-profile__sample-buttons language-profile__sample-buttons--add-sample">
             <Button
-              buttonModifiers={["button-has-icon", "add-extra-row"]}
+              buttonModifiers={["execute"]}
               onClick={handleAddSampleLink}
               icon="plus"
             >
