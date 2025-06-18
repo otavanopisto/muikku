@@ -9713,6 +9713,12 @@ paths:
           description: Include hidden
           schema:
             $ref: "#/components/schemas/MaterialAssigmentType"
+        - name: userEntityId
+          in: query
+          description: User entity id
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: Workspace materials results object

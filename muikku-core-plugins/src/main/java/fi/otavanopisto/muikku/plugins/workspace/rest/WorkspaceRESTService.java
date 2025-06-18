@@ -26,6 +26,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -86,6 +87,8 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestControl
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.exam.ExamController;
+import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
 import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
@@ -202,6 +205,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private ExamController examController;
   
   @Inject
   private HtmlMaterialController htmlMaterialController;
@@ -2064,7 +2070,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/")
   @RESTPermitUnimplemented
-  public Response listWorkspaceMaterials(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("parentId") Long parentId, @QueryParam ("assignmentType") String assignmentType) {
+  public Response listWorkspaceMaterials(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("parentId") Long parentId, @QueryParam("assignmentType") String assignmentType, @QueryParam("userEntityId") Long userEntityId) {
     // TODO: SecuritY???
 
     if (parentId == null && assignmentType == null) {
@@ -2107,12 +2113,30 @@ public class WorkspaceRESTService extends PluginRESTService {
       } else {
         workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParent(parent);
       }
-    } else {
+    }
+    else {
       workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(workspaceEntity, workspaceAssignmentType, BooleanPredicate.IGNORE);
     }
 
     if (workspaceMaterials.isEmpty()) {
       return Response.ok(Collections.emptyList()).build();
+    }
+    
+    // Exam functionality: Don't list assignments that are part of an exam but not part of the user's exam
+    
+    if (userEntityId != null && (workspaceAssignmentType == WorkspaceMaterialAssignmentType.EXERCISE || workspaceAssignmentType == WorkspaceMaterialAssignmentType.EVALUATED)) {
+      for (int i = workspaceMaterials.size() - 1; i >= 0; i--) {
+        WorkspaceFolder folder = (WorkspaceFolder) workspaceMaterials.get(i).getParent();
+        if (folder != null && folder.getExam()) {
+          ExamAttendance attendance = examController.findAttendance(folder.getId(), userEntityId);
+          if (attendance != null && !StringUtils.isEmpty(attendance.getWorkspaceMaterialIds())) {
+            Set<Long> chosenAssignmentIds = Stream.of(attendance.getWorkspaceMaterialIds().split(",")).map(Long::parseLong).collect(Collectors.toSet());
+            if (!chosenAssignmentIds.contains(workspaceMaterials.get(i).getId())) {
+              workspaceMaterials.remove(i);
+            }
+          }
+        }
+      }
     }
 
     return Response.ok(createRestModel(workspaceMaterials.toArray(new WorkspaceMaterial[0]))).build();
