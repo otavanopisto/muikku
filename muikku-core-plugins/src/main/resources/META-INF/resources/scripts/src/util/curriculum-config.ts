@@ -858,7 +858,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    * @returns hours
    */
   convertToHours(courses: number): number {
-    return courses * 38; // Example: 38 hours per course
+    return courses * 28; // Example: 28 hours per course
   }
 
   /**
