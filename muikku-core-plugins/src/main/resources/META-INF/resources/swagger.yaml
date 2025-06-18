@@ -14353,9 +14353,7 @@ components:
         studentIdentifier:
           type: string
         guider:
-          type: array
-          items:
-            type: string
+          type: string
         enrollAs:
           $ref: "#/components/schemas/MatriculationExamSchoolType"
         degreeType:
@@ -18385,3 +18383,4 @@ components:
           format: int32
         message:
           type: string
+

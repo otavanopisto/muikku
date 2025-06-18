@@ -219,6 +219,21 @@ export const MatriculationExaminationEnrollmentSummaryNew: React.FC<
         </div>
         <div className="matriculation-container__row">
           <div className="matriculation__form-element-container">
+            <TextField
+              label={t("labels.studyAdvisors", { ns: "users" })}
+              readOnly
+              type="text"
+              value={
+                studentInformation.studyAdvisors.length > 0
+                  ? studentInformation.studyAdvisors.join(", ")
+                  : "—"
+              }
+              className="matriculation__input"
+            />
+          </div>
+        </div>
+        <div className="matriculation-container__row">
+          <div className="matriculation__form-element-container">
             <Textarea
               label={t("labels.matriculationFormFieldChangedContactInfo", {
                 ns: "hops_new",

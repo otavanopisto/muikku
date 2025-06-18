@@ -67,7 +67,7 @@ export const useMatriculation = (
       examId: exam.id,
       state: "ELIGIBLE",
       contactInfoChange: "",
-      guider: [],
+      guider: "",
       enrollAs: "UPPERSECONDARY",
       degreeType: "MATRICULATIONEXAMINATION",
       numMandatoryCourses: 0,
@@ -323,7 +323,7 @@ export const useMatriculation = (
 
     const matriculationForm: MatriculationExamEnrollment = {
       ...matriculation.examinationInformation,
-      guider: guidanceCounselors,
+      guider: guidanceCounselors.join(", "),
       state: "PENDING",
       studentIdentifier,
       numMandatoryCourses:
