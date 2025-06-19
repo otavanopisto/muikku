@@ -207,6 +207,7 @@ public class ExamController {
    * @return Exam settings as JSON object
    */
   public ExamSettingsRestModel getSettingsJson(ExamSettings settingsEntity) {
+    ExamSettingsRestModel settings = null;
     if (settingsEntity != null && !StringUtils.isEmpty(settingsEntity.getSettings())) {
       try {
         ObjectMapper mapper = new ObjectMapper();
@@ -216,7 +217,11 @@ public class ExamController {
         logger.severe(String.format("Malformatted exam settings: %s", e.getMessage()));
       }
     }
-    return new ExamSettingsRestModel();
+    else {
+      settings = new ExamSettingsRestModel();
+      settings.setCategories(Collections.emptyList());
+    }
+    return settings;
   }
 
   /**

@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
+import fi.otavanopisto.muikku.plugins.exam.model.ExamSettings;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -67,6 +68,17 @@ public class ExamRESTService {
   private ExamController examController;
   
   @Path("/settings/{WORKSPACEFOLDERID}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getSettings(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
+    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    ExamSettings settingsEntity = examController.findExamSettings(workspaceFolderId);
+    return Response.ok().entity(examController.getSettingsJson(settingsEntity)).build();
+  }
+
+  @Path("/settings/{WORKSPACEFOLDERID}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateSettings(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, ExamSettingsRestModel settings) {
@@ -76,7 +88,6 @@ public class ExamRESTService {
     examController.createOrUpdateSettings(workspaceFolderId, settings);
     return Response.ok().entity(settings).build();
   }
-  
   
   @Path("/start/{WORKSPACEFOLDERID}")
   @POST
