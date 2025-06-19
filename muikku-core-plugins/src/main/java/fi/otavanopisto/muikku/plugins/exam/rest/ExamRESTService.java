@@ -66,6 +66,18 @@ public class ExamRESTService {
   @Inject
   private ExamController examController;
   
+  @Path("/settings/{WORKSPACEFOLDERID}")
+  @POST
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createOrUpdateSettings(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, ExamSettingsRestModel settings) {
+    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    examController.createOrUpdateSettings(workspaceFolderId, settings);
+    return Response.ok().entity(settings).build();
+  }
+  
+  
   @Path("/start/{WORKSPACEFOLDERID}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)

@@ -13,6 +13,18 @@ public class ExamSettingsDAO extends CorePluginsDAO<ExamSettings> {
 
   private static final long serialVersionUID = -8807476686994502077L;
   
+  public ExamSettings create(Long workspaceFolderId, String settingsJson) {
+    ExamSettings settings = new ExamSettings();
+    settings.setWorkspaceFolderId(workspaceFolderId);
+    settings.setSettings(settingsJson);
+    return persist(settings);
+  }
+  
+  public ExamSettings update(ExamSettings settings, String settingsJson) {
+    settings.setSettings(settingsJson);
+    return persist(settings);
+  }
+  
   public ExamSettings findByWorkspaceFolderId(Long workspaceFolderId) {
     EntityManager entityManager = getEntityManager();
     

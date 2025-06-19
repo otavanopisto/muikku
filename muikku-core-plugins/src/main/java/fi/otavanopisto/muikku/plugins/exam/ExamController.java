@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -62,6 +63,23 @@ public class ExamController {
   
   public ExamSettings findExamSettings(Long workspaceFolderId) {
     return examSettingsDAO.findByWorkspaceFolderId(workspaceFolderId);
+  }
+  
+  public ExamSettings createOrUpdateSettings(Long workspaceFolderId, ExamSettingsRestModel settings) {
+    ExamSettings settingsEntity = examSettingsDAO.findByWorkspaceFolderId(workspaceFolderId);
+    try {
+      String json = new ObjectMapper().writeValueAsString(settings);
+      if (settingsEntity == null) {
+        settingsEntity = examSettingsDAO.create(workspaceFolderId, json);
+      }
+      else {
+        settingsEntity = examSettingsDAO.update(settingsEntity, json);
+      }
+    }
+    catch (JsonProcessingException e) {
+      logger.warning(String.format("Malformatted settings: %s", e.getMessage()));
+    }
+    return settingsEntity;
   }
   
   public ExamAttendance createAttendance(Long workspaceFolderId, Long userEntityId, boolean randomizeAssignments) {
