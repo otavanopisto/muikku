@@ -1488,6 +1488,7 @@
       "email": "Email",
       "firstName": "First name",
       "groupCounselor": "Group advisor",
+      "groupCounselors": "Group advisors",
       "guidanceGroup": "Guidance group",
       "lastName": "Lastname",
       "manager": "Manager",
