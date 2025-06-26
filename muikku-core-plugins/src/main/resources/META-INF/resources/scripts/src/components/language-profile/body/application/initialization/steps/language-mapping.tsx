@@ -168,6 +168,24 @@ const LanguageMapping = () => {
             ns: "languageProfile",
           })}
         </div>
+        <div className="language-profile-container__fieldset-description">
+          <a
+            href="https://www.oph.fi/fi/koulutus-ja-tutkinnot/kehittyvan-kielitaidon-tasojen-kuvausasteikko"
+            target="_blank"
+            rel="noreferrer"
+            className="link"
+          >
+            {t("content.initializationStep2Link1", {
+              ns: "languageProfile",
+            })}
+            <span className="visually-hidden">
+              {t("wcag.externalLink", {
+                ns: "common",
+              })}
+            </span>
+            <span className="external-link-indicator icon-external-link"></span>
+          </a>
+        </div>
         <div className="language-profile-container__row">
           <DisplayLanguages
             rows={languages}
@@ -197,26 +215,156 @@ const LanguageMapping = () => {
             ns: "languageProfile",
           })}
         </div>
-        <div className="language-profile-container__row">
-          <DisplayLanguages
-            rows={languages}
-            labels={[
-              t("labels.languageSkillByCategoryPronunciationLabel", {
+
+        <div className="language-profile-container__fieldset-description">
+          <details className="details details--language-profile">
+            <summary className="details__summary">
+              {t("labels.languageSkillByCategoryPronunciationLabel", {
                 ns: "languageProfile",
-              }),
-              t("labels.languageSkillByCategoryGrammarLabel", {
+              })}
+            </summary>
+            <div className="details__content">
+              <p>
+                <b>N = Natiivitasoa</b> – kieli on äidinkieleni tai minua ei
+                juuri erota syntyperäisestä kielenpuhujasta.
+              </p>
+              <p>
+                <b>E = Erinomainen</b> – hallitsen kielen äänteet ja sanojen
+                painotukset erittäin hyvin, ja osaan soveltaa osaamistani myös
+                sanoihin, jotka kuulen ensimmäistä kertaa.
+              </p>
+              <p>
+                <b>H = Hyvä</b> – tunnen perusasiat, mutta minun täytyy
+                tarkistaa usein sanojen ääntäminen jostakin.
+              </p>
+              <p>
+                <b>K = Kohtalainen</b> – en ole äänteineni ja painotuksineni
+                täysin hakoteillä, ja tiedän, kuinka tavallisimmat sanat
+                äännetään.
+              </p>
+              <p>
+                <b>V = Vasta-alkaja</b>
+              </p>
+            </div>
+          </details>
+
+          <details className="details details--language-profile">
+            <summary className="details__summary">
+              {t("labels.languageSkillByCategoryGrammarLabel", {
                 ns: "languageProfile",
-              }),
-              t("labels.languageSkillByCategoryVocabularyLabel", {
+              })}
+            </summary>
+            <div className="details__content">
+              <p>
+                <b>N = Natiivitasoa</b> – kieli on äidinkieleni tai minua ei
+                juuri erota syntyperäisestä kielenpuhujasta.
+              </p>
+              <p>
+                <b>E = Erinomainen</b> – hallitsen kielen äänteet ja sanojen
+                painotukset erittäin hyvin, ja osaan soveltaa osaamistani myös
+                sanoihin, jotka kuulen ensimmäistä kertaa.
+              </p>
+              <p>
+                <b>H = Hyvä</b> – tunnen perusasiat, mutta minun täytyy
+                tarkistaa usein sanojen ääntäminen jostakin.
+              </p>
+              <p>
+                <b>K = Kohtalainen</b> – en ole äänteineni ja painotuksineni
+                täysin hakoteillä, ja tiedän, kuinka tavallisimmat sanat
+                äännetään.
+              </p>
+              <p>
+                <b>V = Vasta-alkaja</b>
+              </p>
+            </div>
+          </details>
+
+          <details className="details details--language-profile">
+            <summary className="details__summary">
+              {t("labels.languageSkillByCategoryVocabularyLabel", {
                 ns: "languageProfile",
-              }),
-              t("labels.languageSkillByCategoryLanguageVariantsLabel", {
+              })}
+            </summary>
+            <div className="details__content">
+              <p>
+                <b>N = Natiivitasoa</b> – kieli on äidinkieleni tai minua ei
+                juuri erota syntyperäisestä kielenpuhujasta.
+              </p>
+              <p>
+                <b>E = Erinomainen</b> – hallitsen kielen äänteet ja sanojen
+                painotukset erittäin hyvin, ja osaan soveltaa osaamistani myös
+                sanoihin, jotka kuulen ensimmäistä kertaa.
+              </p>
+              <p>
+                <b>H = Hyvä</b> – tunnen perusasiat, mutta minun täytyy
+                tarkistaa usein sanojen ääntäminen jostakin.
+              </p>
+              <p>
+                <b>K = Kohtalainen</b> – en ole äänteineni ja painotuksineni
+                täysin hakoteillä, ja tiedän, kuinka tavallisimmat sanat
+                äännetään.
+              </p>
+              <p>
+                <b>V = Vasta-alkaja</b>
+              </p>
+            </div>
+          </details>
+
+          <details className="details details--language-profile">
+            <summary className="details__summary">
+              {t("labels.languageSkillByCategoryLanguageVariantsLabel", {
                 ns: "languageProfile",
-              }),
-            ]}
-            cellAction={skillsSelect}
-          />
+              })}
+            </summary>
+            <div className="details__content">
+              <p>
+                <b>N = Natiivitasoa</b> – kieli on äidinkieleni tai minua ei
+                juuri erota syntyperäisestä kielenpuhujasta.
+              </p>
+              <p>
+                <b>E = Erinomainen</b> – hallitsen kielen äänteet ja sanojen
+                painotukset erittäin hyvin, ja osaan soveltaa osaamistani myös
+                sanoihin, jotka kuulen ensimmäistä kertaa.
+              </p>
+              <p>
+                <b>H = Hyvä</b> – tunnen perusasiat, mutta minun täytyy
+                tarkistaa usein sanojen ääntäminen jostakin.
+              </p>
+              <p>
+                <b>K = Kohtalainen</b> – en ole äänteineni ja painotuksineni
+                täysin hakoteillä, ja tiedän, kuinka tavallisimmat sanat
+                äännetään.
+              </p>
+              <p>
+                <b>V = Vasta-alkaja</b>
+              </p>
+            </div>
+          </details>
         </div>
+
+        <div className="language-profile-container__fieldset-description language-profile-container__fieldset-description--table-legend">
+          {t("content.initializationStep3Description2", {
+            ns: "languageProfile",
+          })}
+        </div>
+        <DisplayLanguages
+          rows={languages}
+          labels={[
+            t("labels.languageSkillByCategoryPronunciationLabel", {
+              ns: "languageProfile",
+            }),
+            t("labels.languageSkillByCategoryGrammarLabel", {
+              ns: "languageProfile",
+            }),
+            t("labels.languageSkillByCategoryVocabularyLabel", {
+              ns: "languageProfile",
+            }),
+            t("labels.languageSkillByCategoryLanguageVariantsLabel", {
+              ns: "languageProfile",
+            }),
+          ]}
+          cellAction={skillsSelect}
+        />
       </fieldset>
     </div>
   );
