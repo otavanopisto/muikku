@@ -14352,8 +14352,6 @@ components:
           format: int64
         studentIdentifier:
           type: string
-        guider:
-          type: string
         enrollAs:
           $ref: "#/components/schemas/MatriculationExamSchoolType"
         degreeType:
@@ -14394,7 +14392,7 @@ components:
         - APPROVED
         - REJECTED
         - CONFIRMED
-		- FILLED_ON_BEHALF
+        - FILLED_ON_BEHALF
 
     MatriculationExamTerm:
       description: Matriculation exam term, either autumn or spring
