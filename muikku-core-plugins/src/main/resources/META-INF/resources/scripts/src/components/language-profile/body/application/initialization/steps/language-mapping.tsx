@@ -224,27 +224,47 @@ const LanguageMapping = () => {
               })}
             </summary>
             <div className="details__content">
-              <p>
-                <b>N = Natiivitasoa</b> – kieli on äidinkieleni tai minua ei
-                juuri erota syntyperäisestä kielenpuhujasta.
-              </p>
-              <p>
-                <b>E = Erinomainen</b> – hallitsen kielen äänteet ja sanojen
-                painotukset erittäin hyvin, ja osaan soveltaa osaamistani myös
-                sanoihin, jotka kuulen ensimmäistä kertaa.
-              </p>
-              <p>
-                <b>H = Hyvä</b> – tunnen perusasiat, mutta minun täytyy
-                tarkistaa usein sanojen ääntäminen jostakin.
-              </p>
-              <p>
-                <b>K = Kohtalainen</b> – en ole äänteineni ja painotuksineni
-                täysin hakoteillä, ja tiedän, kuinka tavallisimmat sanat
-                äännetään.
-              </p>
-              <p>
-                <b>V = Vasta-alkaja</b>
-              </p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryNative",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryExcellence",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryGood",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryMediocre",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryBeginger",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
             </div>
           </details>
 
@@ -255,27 +275,47 @@ const LanguageMapping = () => {
               })}
             </summary>
             <div className="details__content">
-              <p>
-                <b>N = Natiivitasoa</b> – kieli on äidinkieleni tai minua ei
-                juuri erota syntyperäisestä kielenpuhujasta.
-              </p>
-              <p>
-                <b>E = Erinomainen</b> – hallitsen kielen äänteet ja sanojen
-                painotukset erittäin hyvin, ja osaan soveltaa osaamistani myös
-                sanoihin, jotka kuulen ensimmäistä kertaa.
-              </p>
-              <p>
-                <b>H = Hyvä</b> – tunnen perusasiat, mutta minun täytyy
-                tarkistaa usein sanojen ääntäminen jostakin.
-              </p>
-              <p>
-                <b>K = Kohtalainen</b> – en ole äänteineni ja painotuksineni
-                täysin hakoteillä, ja tiedän, kuinka tavallisimmat sanat
-                äännetään.
-              </p>
-              <p>
-                <b>V = Vasta-alkaja</b>
-              </p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryNative",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryExcellence",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryGood",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryMediocre",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryBeginger",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
             </div>
           </details>
 
@@ -286,27 +326,47 @@ const LanguageMapping = () => {
               })}
             </summary>
             <div className="details__content">
-              <p>
-                <b>N = Natiivitasoa</b> – kieli on äidinkieleni tai minua ei
-                juuri erota syntyperäisestä kielenpuhujasta.
-              </p>
-              <p>
-                <b>E = Erinomainen</b> – hallitsen kielen äänteet ja sanojen
-                painotukset erittäin hyvin, ja osaan soveltaa osaamistani myös
-                sanoihin, jotka kuulen ensimmäistä kertaa.
-              </p>
-              <p>
-                <b>H = Hyvä</b> – tunnen perusasiat, mutta minun täytyy
-                tarkistaa usein sanojen ääntäminen jostakin.
-              </p>
-              <p>
-                <b>K = Kohtalainen</b> – en ole äänteineni ja painotuksineni
-                täysin hakoteillä, ja tiedän, kuinka tavallisimmat sanat
-                äännetään.
-              </p>
-              <p>
-                <b>V = Vasta-alkaja</b>
-              </p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryNative",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryExcellence",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryGood",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryMediocre",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryBeginger",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
             </div>
           </details>
 
@@ -317,33 +377,53 @@ const LanguageMapping = () => {
               })}
             </summary>
             <div className="details__content">
-              <p>
-                <b>N = Natiivitasoa</b> – kieli on äidinkieleni tai minua ei
-                juuri erota syntyperäisestä kielenpuhujasta.
-              </p>
-              <p>
-                <b>E = Erinomainen</b> – hallitsen kielen äänteet ja sanojen
-                painotukset erittäin hyvin, ja osaan soveltaa osaamistani myös
-                sanoihin, jotka kuulen ensimmäistä kertaa.
-              </p>
-              <p>
-                <b>H = Hyvä</b> – tunnen perusasiat, mutta minun täytyy
-                tarkistaa usein sanojen ääntäminen jostakin.
-              </p>
-              <p>
-                <b>K = Kohtalainen</b> – en ole äänteineni ja painotuksineni
-                täysin hakoteillä, ja tiedän, kuinka tavallisimmat sanat
-                äännetään.
-              </p>
-              <p>
-                <b>V = Vasta-alkaja</b>
-              </p>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryNative",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryExcellence",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryGood",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryMediocre",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: t(
+                    "content.initializationLanguageSkillByCategoryBeginger",
+                    { ns: "languageProfile" }
+                  ),
+                }}
+              />
             </div>
           </details>
         </div>
 
         <div className="language-profile-container__fieldset-description language-profile-container__fieldset-description--table-legend">
-          {t("content.initializationStep3Description2", {
+          {t("content.initializationStep2Description3", {
             ns: "languageProfile",
           })}
         </div>
