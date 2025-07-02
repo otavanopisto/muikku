@@ -7339,6 +7339,147 @@ paths:
         "500":
           description: Internal server error
 
+
+  #PEDAGOGYIMPLEMENTEDACTIONS
+  /rest/pedagogy/form/implementedActions/{userEntityId}:
+    get:
+      operationId: getPedagogyFormImplementedActions
+      summary: Get pedagogy form implemented actions
+      description: Get pedagogy form implemented actions
+      tags:
+        - Pedagogy
+      parameters:
+        - name: userEntityId
+          in: path
+          description: Student user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Pedagogy form implemented actions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedagogyFormImplementedActions"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    post:
+      operationId: createPedagogyFormImplementedActions
+      summary: Create pedagogy implemented actions form
+      description: Create pedagogy form implemented actions
+      tags:
+        - Pedagogy
+      parameters:
+        - name: userEntityId
+          in: path
+          description: Student user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/PedagogyFormImplementedActionsRequestBody"
+      responses:
+        "200":
+          description: Pedagogy form implemented actions created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedagogyFormImplementedActions"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/pedagogy/form/implementedActions/{userEntityId}/formData:
+    put:
+      operationId: updatePedagogyFormDataImplementedActions
+      summary: Update pedagogy form data implemented actions
+      description: Update pedagogy form data implemented actions
+      tags:
+        - Pedagogy
+      parameters:
+        - name: userEntityId
+          in: path
+          description: Student user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/PedagogyFormDataImplementedActionsRequestBody"
+      responses:
+        "200":
+          description: Pedagogy form implemented actions data updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedagogyFormImplementedActions"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+  
+  /rest/pedagogy/form/implementedActions/{userEntityId}/state:
+    get:
+      operationId: getPedagogyFormImplementedActionsState
+      summary: Get pedagogy form implemented actions state
+      description: Get pedagogy form implemented actions state
+      tags:
+        - Pedagogy
+      parameters:
+        - name: userEntityId
+          in: path
+          description: Student user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Pedagogy form state implemented actions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedagogyFormState"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    put:
+      operationId: updatePedagogyFormImplementedActionsState
+      summary: Update pedagogy form implemented actions state
+      description: Update pedagogy form implemented actions state
+      tags:
+        - Pedagogy
+      parameters:
+        - name: userEntityId
+          in: path
+          description: Student user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/PedagogyFormImplementedActionsStateUpdateRequestBody"
+      responses:
+        "200":
+          description: Pedagogy form implemented actions state updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedagogyFormImplementedActions"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   #HOPSUPPERSECONDARY
   /rest/records/hops:
     get:
@@ -11946,6 +12087,33 @@ components:
             properties:
               state:
                 $ref: "#/components/schemas/PedagogyFormState"
+      
+    PedagogyFormImplementedActionsRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: PedagogyFormImplementedActionsRequestBody object
+            required:
+              - formData
+            properties:
+              formData:
+                type: string
+      
+    PedagogyFormImplementedActionsStateUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: PedagogyFormImplementedActionsStateUpdateRequestBody object
+            required:
+              - state
+            properties:
+              state:
+                $ref: "#/components/schemas/PedagogyFormState"
+    
 
     HopsUppersecondaryUpdateRequestBody:
       required: true
@@ -15994,6 +16162,53 @@ components:
           type: string
           format: date-time
           nullable: true
+    
+    PedagogyFormImplementedActions:
+      type: object
+      description: PedagogyFormImplementedActions object
+      required:
+        - userEntityId
+        - ownerId
+        - ownerInfo
+        - id
+        - state
+        - studentInfo
+        - visibility
+        - formData
+      properties:
+        userEntityId:
+          description: The id of the student
+          type: integer
+          format: int64
+        ownerId:
+          description: Id of the user who created the document
+          type: integer
+          format: int64
+          nullable: true
+        ownerInfo:
+          description: Info of the user who created the document
+          allOf:
+            - $ref: "#/components/schemas/PedagogyUserInfo"
+          nullable: true
+        id:
+          description: The id of the form
+          type: integer
+          format: int64
+          nullable: true
+        state:
+          description: State of the form
+          example: "PENDING | APPROVED | NOT_SENT | INACTIVE"
+          allOf:
+            - $ref: "#/components/schemas/PedagogyFormState"
+        studentInfo:
+          description: Student information. Data is automatically filled in from the student's profile and can not be changed in the form
+          allOf:
+            - $ref: "#/components/schemas/PedagogyUserInfo"
+        formData:
+          description: The data of the form
+          example: "JSON object"
+          nullable: true
+          type: string
 
     PedagogyWorkspace:
       type: object
