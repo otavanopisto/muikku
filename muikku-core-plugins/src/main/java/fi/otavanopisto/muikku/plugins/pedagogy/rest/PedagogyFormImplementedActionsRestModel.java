@@ -30,28 +30,12 @@ public class PedagogyFormImplementedActionsRestModel {
     this.id = id;
   }
 
-  public Long getOwnerId() {
-    return ownerId;
-  }
-
-  public void setOwnerId(Long ownerId) {
-    this.ownerId = ownerId;
-  }
-
   public Map<String, String> getStudentInfo() {
     return studentInfo;
   }
 
   public void setStudentInfo(Map<String, String> studentInfo) {
     this.studentInfo = studentInfo;
-  }
-
-  public Map<String, String> getOwnerInfo() {
-    return ownerInfo;
-  }
-
-  public void setOwnerInfo(Map<String, String> ownerInfo) {
-    this.ownerInfo = ownerInfo;
   }
 
   public Long getUserEntityId() {
@@ -65,8 +49,6 @@ public class PedagogyFormImplementedActionsRestModel {
   private Long id;
   private Long userEntityId;
   private Map<String, String> studentInfo;
-  private Long ownerId;
-  private Map<String, String> ownerInfo;
   private String formData;
   private PedagogyFormState state;
 
