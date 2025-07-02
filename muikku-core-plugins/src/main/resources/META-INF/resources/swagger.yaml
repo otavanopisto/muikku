@@ -7412,7 +7412,7 @@ paths:
             type: integer
             format: int64
       requestBody:
-        $ref: "#/components/requestBodies/PedagogyFormDataImplementedActionsRequestBody"
+        $ref: "#/components/requestBodies/PedagogyFormImplementedActionsRequestBody"
       responses:
         "200":
           description: Pedagogy form implemented actions data updated successfully
