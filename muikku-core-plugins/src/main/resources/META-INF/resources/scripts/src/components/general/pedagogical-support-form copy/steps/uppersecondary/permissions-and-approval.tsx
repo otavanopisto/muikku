@@ -1,7 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { usePedagogyContext } from "../context/pedagogy-context";
+import { usePedagogyContext } from "../../context/pedagogy-context";
 import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
 
@@ -20,8 +20,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
   props
 ) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
-  const { formIsApproved, data, userRole, sendToStudent, editIsActive } =
-    usePedagogyContext();
+  const { data, userRole, sendToStudent, editIsActive } = usePedagogyContext();
 
   return (
     <section className="hops-container">
@@ -67,7 +66,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
         </fieldset>
       ) : null}
 
-      <fieldset className="hops-container__fieldset">
+      {/* <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
           {t("labels.approving", {
             ns: "pedagogySupportPlan",
@@ -93,7 +92,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
             </label>
           </div>
         </div>
-      </fieldset>
+      </fieldset> */}
     </section>
   );
 };

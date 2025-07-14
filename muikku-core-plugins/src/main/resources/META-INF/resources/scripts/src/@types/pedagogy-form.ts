@@ -1,6 +1,6 @@
 import { PedagogyWorkspace } from "~/generated/client";
 
-export type FormType = "compulsory" | "upperSecondary";
+export type PedagogyFormType = "compulsory" | "upperSecondary";
 
 // used for frontend logic
 const useRoles = [
@@ -174,7 +174,7 @@ export interface CompulsoryFormData {
   /**
    * Form type
    */
-  formType: FormType;
+  formType: PedagogyFormType;
   /**
    * Teacher or teachers responsible for the document
    */
@@ -224,7 +224,7 @@ export interface UpperSecondaryFormData {
   /**
    * Form type
    */
-  formType: FormType;
+  formType: PedagogyFormType;
   /**
    * Teacher or teachers responsible for the document
    */
@@ -271,3 +271,21 @@ export interface UpperSecondaryFormData {
  * Union type for all form data
  */
 export type PedagogyFormData = UpperSecondaryFormData | CompulsoryFormData;
+
+/**
+ * Checks if the form is a CompulsoryFormData
+ * @param form PedagogyFormData
+ * @returns boolean
+ */
+export const isCompulsoryForm = (
+  form: PedagogyFormData
+): form is CompulsoryFormData => form.formType === "compulsory";
+
+/**
+ * Checks if the form is a UpperSecondaryFormData
+ * @param form PedagogyFormData
+ * @returns boolean
+ */
+export const isUpperSecondaryForm = (
+  form: PedagogyFormData
+): form is UpperSecondaryFormData => form.formType === "upperSecondary";

@@ -2,7 +2,7 @@ import * as React from "react";
 import Tabs, { Tab } from "~/components/general/tabs";
 import { UserRole } from "~/@types/pedagogy-form";
 import { StatusType } from "~/reducers/base/status";
-import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
+import PedagogicalSupportForm from "~/components/general/pedagogical-support-form copy";
 
 /**
  * LearningSupportProps
@@ -21,7 +21,7 @@ interface LearningSupportProps {
  * @param props props
  * @returns JSX.Element
  */
-const LearningSupport: React.FC<LearningSupportProps> = (props) => {
+const LearningSupport = (props: LearningSupportProps) => {
   const [activeTab, setActiveTab] = React.useState<string>("PEDAGOGY_FORM");
 
   /**
@@ -48,9 +48,10 @@ const LearningSupport: React.FC<LearningSupportProps> = (props) => {
       name: "Pedagogisen tuen lomake",
       type: "learning-support",
       component: (
-        <UpperSecondaryPedagogicalSupportWizardForm
+        <PedagogicalSupportForm
           userRole={props.userRole}
           studentUserEntityId={props.studentUserEntityId}
+          isSecondary={true}
         />
       ),
     },

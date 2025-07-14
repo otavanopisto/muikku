@@ -1,10 +1,18 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { FormData, Opinion, OpinionType } from "~/@types/pedagogy-form";
-import { AddNewOpinionBox, OpinionItem, OpinionList } from "../opinions-list";
+import {
+  Opinion,
+  OpinionType,
+  UpperSecondaryFormData,
+} from "~/@types/pedagogy-form";
+import {
+  AddNewOpinionBox,
+  OpinionItem,
+  OpinionList,
+} from "../../opinions-list";
 import { StatusType } from "~/reducers/base/status";
-import { usePedagogyContext } from "../context/pedagogy-context";
+import { usePedagogyContext } from "../../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -32,7 +40,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
    * @param type type
    */
   const handleAddNewOpinion = (type: OpinionType) => () => {
-    const updatedFormData: FormData = {
+    const updatedFormData: UpperSecondaryFormData = {
       ...formData,
     };
 
@@ -59,7 +67,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     value: Opinion[T],
     type: OpinionType
   ) => {
-    const updatedFormData: FormData = { ...formData };
+    const updatedFormData: UpperSecondaryFormData = { ...formData };
 
     updatedFormData[type][index] = {
       ...updatedFormData[type][index],
@@ -75,7 +83,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
    * @param type type
    */
   const handleDeleteOpinion = (index: number, type: OpinionType) => {
-    const updatedFormData: FormData = { ...formData };
+    const updatedFormData: UpperSecondaryFormData = { ...formData };
     updatedFormData[type].splice(index, 1);
 
     setFormDataAndUpdateChangedFields(updatedFormData);

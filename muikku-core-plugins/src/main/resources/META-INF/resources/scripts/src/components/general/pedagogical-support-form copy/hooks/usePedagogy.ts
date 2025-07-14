@@ -1,14 +1,20 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import { DisplayNotificationTriggerType } from "~/actions/base/notifications";
+import { displayNotification } from "~/actions/base/notifications";
 import {
+  CompulsoryFormData,
   FormData,
-  Opinion,
-  SupportActionImplementation,
+  isCompulsoryForm,
+  isUpperSecondaryForm,
+  PedagogyFormData,
+  UpperSecondaryFormData,
 } from "~/@types/pedagogy-form";
 import { PedagogyForm, PedagogyFormState } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
+import _ from "lodash";
+import { initializePedagogyFormData } from "../helpers";
+import { useDispatch } from "react-redux";
 
 export type UsePedagogyType = ReturnType<typeof usePedagogy>;
 
@@ -17,18 +23,18 @@ const pedagogyApi = MApi.getPedagogyApi();
 /**
  * usePedagogy
  * @param studentUserEntityId studentUserEntityId
- * @param displayNotification displayNotification
+ * @param isSecondary isSecondary
  */
 export const usePedagogy = (
   studentUserEntityId: number,
-  displayNotification: DisplayNotificationTriggerType
+  isSecondary: boolean
 ) => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
   const [data, setData] = React.useState<PedagogyForm | undefined>(undefined);
-  const [formData, setFormData] = React.useState<FormData | undefined>(
+  const [formData, setFormData] = React.useState<PedagogyFormData | undefined>(
     undefined
   );
-  const [formIsApproved, setFormIsApproved] = React.useState(false);
   const [changedFields, setChangedFields] = React.useState<string[]>([]);
   const [extraDetails, setExtraDetails] = React.useState<string>("");
   const [editIsActive, setEditIsActive] = React.useState(false);
@@ -54,11 +60,9 @@ export const usePedagogy = (
               ...pedagogyData,
             });
 
-            setFormData({
-              ...defaultFormData,
-              ...(JSON.parse(pedagogyData.formData) as FormData),
-            });
-            setFormIsApproved(pedagogyData.state === "APPROVED");
+            setFormData(
+              initializePedagogyFormData(pedagogyData.formData, false)
+            );
             setLoading(false);
           });
         }
@@ -69,13 +73,13 @@ export const usePedagogy = (
           }
 
           setLoading(false);
-          displayNotification(err.message, "error");
+          dispatch(displayNotification(err.message, "error"));
         }
       }
     };
 
     loadData();
-  }, [displayNotification, studentUserEntityId]);
+  }, [dispatch, studentUserEntityId]);
 
   /**
    * resetData
@@ -84,10 +88,7 @@ export const usePedagogy = (
     unstable_batchedUpdates(() => {
       setEditIsActive(false);
       setChangedFields([]);
-      setFormData({
-        ...defaultFormData,
-        ...(JSON.parse(data.formData) as FormData),
-      });
+      setFormData(initializePedagogyFormData(data.formData, false));
     });
   };
 
@@ -95,52 +96,13 @@ export const usePedagogy = (
    * setUpdatedFormData
    * @param updatedFormData updatedFormData
    */
-  const setFormDataAndUpdateChangedFields = (updatedFormData: FormData) => {
-    // Get old values from data
-    const oldDataForm = {
-      ...defaultFormData,
-      ...(JSON.parse(data.formData) as FormData),
-    };
-
-    // Compare to old values and if value is different or is previosly undefined,
-    // add it to changedValuesComparedToPrevious
-    const changedValuesComparedToPrevious = Object.keys(updatedFormData).filter(
-      (key: keyof FormData) => {
-        if (typeof updatedFormData[key] !== "object") {
-          return updatedFormData[key] !== oldDataForm[key];
-        }
-      }
+  const setFormDataAndUpdateChangedFields = (
+    updatedFormData: PedagogyFormData
+  ) => {
+    const changedValuesComparedToPrevious = getEditedFields(
+      formData,
+      updatedFormData
     );
-
-    // Check if supportActionsImplemented has changed
-    // by length or in the object values
-    const somethingHasChangedInAction =
-      !arraysAreSame<SupportActionImplementation>(
-        updatedFormData.supportActionsImplemented,
-        oldDataForm.supportActionsImplemented
-      );
-
-    const studentOpinionHasChanged = !arraysAreSame<Opinion>(
-      updatedFormData.studentOpinionOfSupport,
-      oldDataForm.studentOpinionOfSupport
-    );
-
-    const schoolOpinionHasChanged = !arraysAreSame<Opinion>(
-      updatedFormData.schoolOpinionOfSupport,
-      oldDataForm.schoolOpinionOfSupport
-    );
-
-    if (somethingHasChangedInAction) {
-      changedValuesComparedToPrevious.push("supportActionsImplemented");
-    }
-
-    if (studentOpinionHasChanged) {
-      changedValuesComparedToPrevious.push("studentOpinionOfSupport");
-    }
-
-    if (schoolOpinionHasChanged) {
-      changedValuesComparedToPrevious.push("schoolOpinionOfSupport");
-    }
 
     unstable_batchedUpdates(() => {
       setChangedFields(changedValuesComparedToPrevious);
@@ -166,15 +128,12 @@ export const usePedagogy = (
 
       unstable_batchedUpdates(() => {
         setData(pedagogyData);
-        setFormData({
-          ...defaultFormData,
-          ...(JSON.parse(pedagogyData.formData) as FormData),
-        });
+        setFormData(initializePedagogyFormData(pedagogyData.formData, false));
         setLoading(false);
       });
     } catch (err) {
       setLoading(false);
-      displayNotification(err.message, "error");
+      dispatch(displayNotification(err.message, "error"));
     }
   };
 
@@ -193,7 +152,7 @@ export const usePedagogy = (
       });
     } catch (err) {
       setLoading(false);
-      displayNotification(err.message, "error");
+      dispatch(displayNotification(err.message, "error"));
     }
   };
 
@@ -211,16 +170,15 @@ export const usePedagogy = (
 
       unstable_batchedUpdates(() => {
         setData(updatedData);
-        setFormData({
-          ...defaultFormData,
-          ...(JSON.parse(updatedData.formData) as FormData),
-        });
-        setFormIsApproved(true);
+        setFormData((previousData) => ({
+          ...previousData,
+          ...JSON.parse(updatedData.formData),
+        }));
         setLoading(false);
       });
     } catch (err) {
       setLoading(false);
-      displayNotification(err.message, "error");
+      dispatch(displayNotification(err.message, "error"));
     }
   };
 
@@ -238,18 +196,17 @@ export const usePedagogy = (
       unstable_batchedUpdates(() => {
         setEditIsActive(false);
         setData(updatedData);
-        setFormData({
-          ...defaultFormData,
-          ...(JSON.parse(updatedData.formData) as FormData),
-        });
+        setFormData((previousData) => ({
+          ...previousData,
+          ...JSON.parse(updatedData.formData),
+        }));
         setChangedFields([]);
         setExtraDetails("");
-        setFormIsApproved(updatedData.state === "APPROVED");
         setLoading(false);
       });
     } catch (err) {
       setLoading(false);
-      displayNotification(err.message, "error");
+      dispatch(displayNotification(err.message, "error"));
     }
   };
 
@@ -280,10 +237,7 @@ export const usePedagogy = (
             const oldOpinion = oldData.studentOpinionOfSupport[index];
 
             if (oldOpinion) {
-              const opinionHasChanged = !objectsAreSame<Opinion>(
-                opinion,
-                oldOpinion
-              );
+              const opinionHasChanged = !_.isEqual(opinion, oldOpinion);
 
               if (opinionHasChanged) {
                 return {
@@ -301,10 +255,7 @@ export const usePedagogy = (
             const oldOpinion = oldData.schoolOpinionOfSupport[index];
 
             if (oldOpinion) {
-              const opinionHasChanged = !objectsAreSame<Opinion>(
-                opinion,
-                oldOpinion
-              );
+              const opinionHasChanged = !_.isEqual(opinion, oldOpinion);
 
               if (opinionHasChanged) {
                 return {
@@ -346,7 +297,6 @@ export const usePedagogy = (
     loading,
     data,
     formData,
-    formIsApproved,
     changedFields,
     editIsActive,
     resetData,
@@ -356,50 +306,77 @@ export const usePedagogy = (
     updateFormData,
     studentUserEntityId,
     setFormDataAndUpdateChangedFields,
-    setFormIsApproved,
     setExtraDetails,
     setEditIsActive,
   };
 };
 
-const defaultFormData: FormData = {
-  supportActions: [],
-  matriculationExaminationSupport: [],
-  supportActionsImplemented: [],
-  studentOpinionOfSupport: [],
-  schoolOpinionOfSupport: [],
-};
-
 /**
- * arraysAreSame
- * @param x x
- * @param y y
- * @returns boolean if arrays are same
+ * Get the edited fields
+ * @param oldData old data
+ * @param newData new data
+ * @returns string[]
  */
-function arraysAreSame<T>(x: T[], y: T[]) {
-  if (x.length !== y.length) {
-    return false;
-  }
+const getEditedFields = (
+  oldData: PedagogyFormData,
+  newData: PedagogyFormData
+) => {
+  let changedValuesComparedToPrevious: string[] = [];
 
-  if (x.some((o, i) => !objectsAreSame<T>(o, y[i]))) {
-    return false;
-  }
+  // Check if the form type has changed
+  if (isCompulsoryForm(oldData) && isCompulsoryForm(newData)) {
+    changedValuesComparedToPrevious = Object.keys(newData).filter(
+      (key: keyof CompulsoryFormData) => {
+        if (typeof oldData[key] !== "object") {
+          return oldData[key] !== newData[key];
+        }
+      }
+    );
 
-  return true;
-}
+    const hasStudentOpinionChanged = !_.isEqual(
+      newData.studentOpinionOfSupport,
+      oldData.studentOpinionOfSupport
+    );
 
-/**
- * objectsAreSame
- * @param x x
- * @param y y
- * @returns boolean if objects are same
- */
-function objectsAreSame<O>(x: O, y: O) {
-  for (const propertyName in x) {
-    if (x[propertyName] !== y[propertyName]) {
-      return false;
+    if (hasStudentOpinionChanged) {
+      changedValuesComparedToPrevious.push("studentOpinionOfSupport");
+    }
+
+    const hasSchoolOpinionChanged = !_.isEqual(
+      newData.schoolOpinionOfSupport,
+      oldData.schoolOpinionOfSupport
+    );
+
+    if (hasSchoolOpinionChanged) {
+      changedValuesComparedToPrevious.push("schoolOpinionOfSupport");
+    }
+  } else if (isUpperSecondaryForm(oldData) && isUpperSecondaryForm(newData)) {
+    changedValuesComparedToPrevious = Object.keys(newData).filter(
+      (key: keyof UpperSecondaryFormData) => {
+        if (typeof oldData[key] !== "object") {
+          return oldData[key] !== newData[key];
+        }
+      }
+    );
+
+    const hasStudentOpinionChanged = !_.isEqual(
+      newData.studentOpinionOfSupport,
+      oldData.studentOpinionOfSupport
+    );
+
+    if (hasStudentOpinionChanged) {
+      changedValuesComparedToPrevious.push("studentOpinionOfSupport");
+    }
+
+    const hasSchoolOpinionChanged = !_.isEqual(
+      newData.schoolOpinionOfSupport,
+      oldData.schoolOpinionOfSupport
+    );
+
+    if (hasSchoolOpinionChanged) {
+      changedValuesComparedToPrevious.push("schoolOpinionOfSupport");
     }
   }
 
-  return true;
-}
+  return changedValuesComparedToPrevious;
+};

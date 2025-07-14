@@ -1,11 +1,11 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { TextField } from "../components/textfield";
-import { Textarea } from "../components/textarea";
+import { TextField } from "../../components/textfield";
+import { Textarea } from "../../components/textarea";
 import DatePicker from "react-datepicker";
-import { FormData } from "~/@types/pedagogy-form";
-import { usePedagogyContext } from "../context/pedagogy-context";
+import { UpperSecondaryFormData } from "~/@types/pedagogy-form";
+import { usePedagogyContext } from "../../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -35,11 +35,11 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
    * @param key key
    * @param value value
    */
-  const handleTextAreaChange = <T extends keyof FormData>(
+  const handleTextAreaChange = <T extends keyof UpperSecondaryFormData>(
     key: T,
-    value: FormData[T]
+    value: UpperSecondaryFormData[T]
   ) => {
-    const updatedFormData: FormData = { ...formData };
+    const updatedFormData: UpperSecondaryFormData = { ...formData };
 
     updatedFormData[key] = value;
 

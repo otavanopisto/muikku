@@ -1,20 +1,20 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { Textarea } from "../components/textarea";
+import { Textarea } from "../../components/textarea";
 import Select, { ActionMeta } from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import AnimateHeight from "react-animate-height";
 import {
-  FormData,
   SupportAction,
   SupportActionMatriculationExamination,
+  UpperSecondaryFormData,
 } from "~/@types/pedagogy-form";
 import {
   matriculationSupportActionsOptions,
   supportActionsOptions,
-} from "../helpers";
-import { usePedagogyContext } from "../context/pedagogy-context";
+} from "../../helpers";
+import { usePedagogyContext } from "../../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -41,11 +41,11 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
    * @param key key
    * @param value value
    */
-  const handleTextAreaChange = <T extends keyof FormData>(
+  const handleTextAreaChange = <T extends keyof UpperSecondaryFormData>(
     key: T,
-    value: FormData[T]
+    value: UpperSecondaryFormData[T]
   ) => {
-    const updatedFormData: FormData = { ...formData };
+    const updatedFormData: UpperSecondaryFormData = { ...formData };
 
     updatedFormData[key] = value;
 
@@ -62,7 +62,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     options: readonly OptionDefault<SupportAction>[],
     actionMeta: ActionMeta<OptionDefault<SupportAction>>
   ) => {
-    const updatedFormData: FormData = {
+    const updatedFormData: UpperSecondaryFormData = {
       ...formData,
     };
 
@@ -85,7 +85,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     options: readonly OptionDefault<SupportActionMatriculationExamination>[],
     actionMeta: ActionMeta<OptionDefault<SupportActionMatriculationExamination>>
   ) => {
-    const updatedFormData: FormData = {
+    const updatedFormData: UpperSecondaryFormData = {
       ...formData,
     };
 

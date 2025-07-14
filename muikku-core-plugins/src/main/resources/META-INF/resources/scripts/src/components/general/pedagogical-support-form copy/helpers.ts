@@ -1,5 +1,6 @@
 import {
   CompulsoryFormData,
+  PedagogyFormData,
   SupportAction,
   SupportActionMatriculationExamination,
   SupportReason,
@@ -263,6 +264,40 @@ export function migrateUpperSecondaryData(
     studentOpinionOfSupport: oldData.studentOpinionOfSupport || [],
     schoolOpinionOfSupport: oldData.schoolOpinionOfSupport || [],
     // Note: supportActionsImplemented is excluded as requested
+  };
+}
+
+/**
+ * Initializes the pedagogy form data
+ * @param existingData existing data
+ * @param isSecondary is secondary
+ * @returns initialized data
+ */
+export function initializePedagogyFormData(
+  existingData: PedagogyFormData | string,
+  isSecondary: boolean
+): PedagogyFormData {
+  const baseForm = isSecondary
+    ? { ...initializeUpperSecondaryFormData() }
+    : { ...initializeCompulsoryFormData() };
+
+  // If there is no existing data or it is empty string, return base initial form
+  if (!existingData || existingData === "") return baseForm;
+
+  const existingDataForm = existingData as PedagogyFormData;
+
+  // If there is existing data, but it is old upper secondary form, return initialized upper secondary form
+  // that is initialized from old data
+  if (isSecondary && needsMigration(existingDataForm)) {
+    return {
+      ...baseForm,
+      ...migrateUpperSecondaryData(existingDataForm),
+    };
+  }
+
+  return {
+    ...baseForm,
+    ...existingDataForm,
   };
 }
 
