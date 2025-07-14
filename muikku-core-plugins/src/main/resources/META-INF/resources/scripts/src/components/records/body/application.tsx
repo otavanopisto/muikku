@@ -20,10 +20,10 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
-import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
 import MApi from "~/api/api";
 import { PedagogyFormState } from "~/generated/client";
 import { Action, Dispatch } from "redux";
+import LearningSupport from "./application/learning-support";
 
 /**
  * StudiesApplicationProps
@@ -211,9 +211,10 @@ class StudiesApplication extends React.Component<
         type: "pedagogy-form",
         component: (
           <ApplicationPanelBody modifier="tabs">
-            <UpperSecondaryPedagogicalSupportWizardForm
+            <LearningSupport
               userRole="STUDENT"
               studentUserEntityId={this.props.status.userId}
+              status={this.props.status}
             />
           </ApplicationPanelBody>
         ),
