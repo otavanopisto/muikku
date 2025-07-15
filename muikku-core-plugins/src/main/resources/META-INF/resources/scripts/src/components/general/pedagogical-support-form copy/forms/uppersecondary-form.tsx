@@ -97,7 +97,7 @@ const UpperSecondaryPedagogicalSupportWizardForm = (
     },
     {
       index: 4,
-      name: t("labels.step6", { ns: "pedagogySupportPlan" }),
+      name: "Näkyvyys",
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step6 />
@@ -105,11 +105,6 @@ const UpperSecondaryPedagogicalSupportWizardForm = (
       ),
     },
   ];
-
-  // Remove last step if use case is student
-  if (props.userRole === "STUDENT") {
-    listOfStepObjects.pop();
-  }
 
   const { ...useWizardValues } = useWizard({
     preventNextIfInvalid: true,

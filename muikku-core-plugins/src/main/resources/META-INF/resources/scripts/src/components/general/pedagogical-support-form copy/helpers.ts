@@ -139,6 +139,10 @@ export const supportActionsOptions: OptionDefault<SupportAction>[] = [
     }),
   },
   {
+    value: "linguisticAssistance",
+    label: "Kielellinen tuki",
+  },
+  {
     value: "other",
     label: i18n.t("labels.other", {
       ns: "pedagogySupportPlan",
@@ -190,6 +194,22 @@ export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatr
       label: i18n.t("labels.limitedAudioMaterial", {
         ns: "pedagogySupportPlan",
       }),
+    },
+    {
+      value: "fontSizeIncrease",
+      label: "Oikeus suurentaa kirjasinkokoa",
+    },
+    {
+      value: "largerDisplay",
+      label: "Oikeus käyttää suurempaa näyttöä",
+    },
+    {
+      value: "adjustableWorkstation",
+      label: "Säädettävä työskentelyasento",
+    },
+    {
+      value: "visionImpairedExamArrangement",
+      label: "Näkövammaisen koejärjestelyt",
     },
     {
       value: "other",
@@ -274,7 +294,7 @@ export function migrateUpperSecondaryData(
  * @returns initialized data
  */
 export function initializePedagogyFormData(
-  existingData: PedagogyFormData | string,
+  existingData: string,
   isSecondary: boolean
 ): PedagogyFormData {
   const baseForm = isSecondary
@@ -284,7 +304,7 @@ export function initializePedagogyFormData(
   // If there is no existing data or it is empty string, return base initial form
   if (!existingData || existingData === "") return baseForm;
 
-  const existingDataForm = existingData as PedagogyFormData;
+  const existingDataForm = JSON.parse(existingData) as PedagogyFormData;
 
   // If there is existing data, but it is old upper secondary form, return initialized upper secondary form
   // that is initialized from old data
@@ -332,8 +352,6 @@ export function initializeCompulsoryFormData(): CompulsoryFormData {
     studentStrengths: "",
     needOfSupport: "",
     supportActions: [],
-    matriculationExaminationSupport: [],
-    matriculationExaminationSupportOther: "",
     studentOpinionOfSupport: [],
     schoolOpinionOfSupport: [],
   };

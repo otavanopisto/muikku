@@ -1,5 +1,5 @@
 import * as React from "react";
-import ApprovalDialog from "./dialogs/approval";
+// import ApprovalDialog from "./dialogs/approval";
 import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
 import WarningDialog from "./dialogs/warning";
 import Button from "../button";
@@ -29,14 +29,12 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   const {
     data,
     loading,
-    formIsApproved,
     changedFields,
     editIsActive,
     resetData,
-    setFormIsApproved,
     setExtraDetails,
     setEditIsActive,
-    approveForm,
+    // approveForm,
     updateFormData,
     userRole,
     activateForm,
@@ -63,10 +61,10 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
    *
    * @param e e
    */
-  const handleApproveValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /* const handleApproveValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.checked;
     setFormIsApproved(value);
-  };
+  }; */
 
   /**
    * Handle extra details change
@@ -176,7 +174,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         return null;
     }
   }
-  if (userRole === "STUDENT") {
+  /* if (userRole === "STUDENT") {
     switch (data.state) {
       case "PENDING":
         return (
@@ -199,7 +197,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
       default:
         return null;
     }
-  }
+  } */
 
   return null;
 };

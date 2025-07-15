@@ -138,6 +138,10 @@ export const supportActionsOptions: OptionDefault<SupportAction>[] = [
     }),
   },
   {
+    value: "linguisticAssistance",
+    label: "Kielellinen tuki",
+  },
+  {
     value: "other",
     label: i18n.t("labels.other", {
       ns: "pedagogySupportPlan",
@@ -189,6 +193,22 @@ export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatr
       label: i18n.t("labels.limitedAudioMaterial", {
         ns: "pedagogySupportPlan",
       }),
+    },
+    {
+      value: "fontSizeIncrease",
+      label: "Oikeus suurentaa kirjasinkokoa",
+    },
+    {
+      value: "largerDisplay",
+      label: "Oikeus käyttää suurempaa näyttöä",
+    },
+    {
+      value: "adjustableWorkstation",
+      label: "Säädettävä työskentelyasento",
+    },
+    {
+      value: "visionImpairedExamArrangement",
+      label: "Näkövammaisen koejärjestelyt",
     },
     {
       value: "other",
@@ -297,8 +317,6 @@ export function initializeCompulsoryFormData(): CompulsoryFormData {
     studentStrengths: "",
     needOfSupport: "",
     supportActions: [],
-    matriculationExaminationSupport: [],
-    matriculationExaminationSupportOther: "",
     studentOpinionOfSupport: [],
     schoolOpinionOfSupport: [],
   };

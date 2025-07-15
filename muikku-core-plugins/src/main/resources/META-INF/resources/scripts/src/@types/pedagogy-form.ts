@@ -29,6 +29,7 @@ const supportActions = [
   "extraTime",
   "scheduledStudies",
   "routedStudies",
+  "linguisticAssistance",
   "other",
 ] as const;
 
@@ -41,6 +42,10 @@ const matriculationExaminationSupport = [
   "assistant",
   "assistedPrintAndScan",
   "limitedAudioMaterial",
+  "fontSizeIncrease",
+  "largerDisplay",
+  "adjustableWorkstation",
+  "visionImpairedExamArrangement",
   "other",
 ] as const;
 
@@ -199,14 +204,6 @@ export interface CompulsoryFormData {
    * Some other support actions
    */
   supportActionOther?: string;
-  /**
-   * Support plan for the matriculation examination
-   */
-  matriculationExaminationSupport: SupportActionMatriculationExamination[];
-  /**
-   * Some other support plan for the matriculation examination
-   */
-  matriculationExaminationSupportOther?: string;
   /**
    * The student's opinion of the support
    */

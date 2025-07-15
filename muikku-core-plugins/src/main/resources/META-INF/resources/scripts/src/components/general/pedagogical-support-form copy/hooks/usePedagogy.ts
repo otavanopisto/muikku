@@ -10,7 +10,7 @@ import {
   PedagogyFormData,
   UpperSecondaryFormData,
 } from "~/@types/pedagogy-form";
-import { PedagogyForm, PedagogyFormState } from "~/generated/client";
+import { PedagogyForm } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import _ from "lodash";
 import { initializePedagogyFormData } from "../helpers";
@@ -61,7 +61,7 @@ export const usePedagogy = (
             });
 
             setFormData(
-              initializePedagogyFormData(pedagogyData.formData, false)
+              initializePedagogyFormData(pedagogyData.formData, isSecondary)
             );
             setLoading(false);
           });
@@ -79,7 +79,7 @@ export const usePedagogy = (
     };
 
     loadData();
-  }, [dispatch, studentUserEntityId]);
+  }, [dispatch, isSecondary, studentUserEntityId]);
 
   /**
    * resetData
@@ -88,7 +88,7 @@ export const usePedagogy = (
     unstable_batchedUpdates(() => {
       setEditIsActive(false);
       setChangedFields([]);
-      setFormData(initializePedagogyFormData(data.formData, false));
+      setFormData(initializePedagogyFormData(data.formData, isSecondary));
     });
   };
 
@@ -128,7 +128,9 @@ export const usePedagogy = (
 
       unstable_batchedUpdates(() => {
         setData(pedagogyData);
-        setFormData(initializePedagogyFormData(pedagogyData.formData, false));
+        setFormData(
+          initializePedagogyFormData(pedagogyData.formData, isSecondary)
+        );
         setLoading(false);
       });
     } catch (err) {
@@ -140,7 +142,7 @@ export const usePedagogy = (
   /**
    * sendToStudent
    */
-  const sendToStudent = async () => {
+  /* const sendToStudent = async () => {
     setLoading(true);
     try {
       const updatedData = await updateStateToServer("PENDING");
@@ -154,12 +156,12 @@ export const usePedagogy = (
       setLoading(false);
       dispatch(displayNotification(err.message, "error"));
     }
-  };
+  }; */
 
   /**
    * approveForm
    */
-  const approveForm = async () => {
+  /* const approveForm = async () => {
     setLoading(true);
     try {
       let updatedData = {
@@ -180,7 +182,7 @@ export const usePedagogy = (
       setLoading(false);
       dispatch(displayNotification(err.message, "error"));
     }
-  };
+  }; */
 
   /**
    * updateFormData
@@ -285,13 +287,13 @@ export const usePedagogy = (
    * updateStateToServer
    * @param state state
    */
-  const updateStateToServer = async (state: PedagogyFormState) =>
+  /* const updateStateToServer = async (state: PedagogyFormState) =>
     await pedagogyApi.updatePedagogyFormState({
       userEntityId: studentUserEntityId,
       updatePedagogyFormStateRequest: {
         state,
       },
-    });
+    }); */
 
   return {
     loading,
@@ -301,8 +303,8 @@ export const usePedagogy = (
     editIsActive,
     resetData,
     activateForm,
-    sendToStudent,
-    approveForm,
+    // sendToStudent,
+    // approveForm,
     updateFormData,
     studentUserEntityId,
     setFormDataAndUpdateChangedFields,

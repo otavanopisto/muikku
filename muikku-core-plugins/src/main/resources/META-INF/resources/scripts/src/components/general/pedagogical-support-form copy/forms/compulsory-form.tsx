@@ -1,6 +1,6 @@
 import * as React from "react";
 import { usePedagogy } from "../hooks/usePedagogy";
-import { Step1, Step2, Step3, Step5, Step6 } from "../steps/uppersecondary";
+import { Step1, Step2, Step3, Step5, Step6 } from "../steps/compulsory";
 import { PDFViewer } from "@react-pdf/renderer";
 import AnimatedStep from "~/components/general/wizard/AnimateStep";
 import Wizard, { WizardStep } from "~/components/general/wizard";
@@ -96,7 +96,7 @@ const CompulsoryPedagogicalSupportWizardForm = (
     },
     {
       index: 4,
-      name: t("labels.step6", { ns: "pedagogySupportPlan" }),
+      name: "Näkyvyys",
       component: (
         <AnimatedStep previousStep={previousStep}>
           <Step6 />
@@ -104,11 +104,6 @@ const CompulsoryPedagogicalSupportWizardForm = (
       ),
     },
   ];
-
-  // Remove last step if use case is student
-  if (props.userRole === "STUDENT") {
-    listOfStepObjects.pop();
-  }
 
   const { ...useWizardValues } = useWizard({
     preventNextIfInvalid: true,

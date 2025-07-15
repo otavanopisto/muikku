@@ -1,4 +1,10 @@
 import * as React from "react";
+import {
+  CompulsoryFormData,
+  isCompulsoryForm,
+  isUpperSecondaryForm,
+  UpperSecondaryFormData,
+} from "~/@types/pedagogy-form";
 import { UsePedagogyType } from "../hooks/usePedagogy";
 
 /**
@@ -11,6 +17,10 @@ interface PedagogyContextValue extends UsePedagogyType {
     | "GUIDANCE_COUNSELOR"
     | "STUDENT_PARENT"
     | "SPECIAL_ED_TEACHER";
+  isUpperSecondary: boolean;
+  isCompulsory: boolean;
+  getUpperSecondaryData: () => UpperSecondaryFormData | null;
+  getCompulsoryStudiesData: () => CompulsoryFormData | null;
 }
 
 /**
@@ -18,7 +28,13 @@ interface PedagogyContextValue extends UsePedagogyType {
  */
 interface PedagogyProviderProps {
   children: React.ReactNode;
-  value: PedagogyContextValue;
+  value: Omit<
+    PedagogyContextValue,
+    | "getUpperSecondaryData"
+    | "getCompulsoryStudiesData"
+    | "isUpperSecondary"
+    | "isCompulsory"
+  >;
 }
 
 export const PedagogyContext = React.createContext<
@@ -33,8 +49,28 @@ export const PedagogyContext = React.createContext<
 function PedagogyProvider(props: PedagogyProviderProps) {
   const { children, value } = props;
 
+  const enhancedValue = {
+    ...value,
+    isUpperSecondary: value.formData.formType === "upperSecondary",
+    isCompulsory: value.formData.formType === "compulsory",
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    getUpperSecondaryData: () => {
+      if (value.formData && isUpperSecondaryForm(value.formData)) {
+        return value.formData;
+      }
+      return null;
+    },
+    // eslint-disable-next-line jsdoc/require-jsdoc
+    getCompulsoryStudiesData: () => {
+      if (value.formData && isCompulsoryForm(value.formData)) {
+        return value.formData;
+      }
+      return null;
+    },
+  };
+
   return (
-    <PedagogyContext.Provider value={value}>
+    <PedagogyContext.Provider value={enhancedValue}>
       {children}
     </PedagogyContext.Provider>
   );
