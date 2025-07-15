@@ -7,17 +7,13 @@ import { usePedagogyContext } from "../context/pedagogy-context";
 export const useUpperSecondaryForm = () => {
   const context = usePedagogyContext();
 
-  if (!context.isUpperSecondary) {
+  if (context.contextType !== "upperSecondary") {
     throw new Error(
       "useUpperSecondaryForm can only be used with upper secondary forms"
     );
   }
 
   const formData = context.getUpperSecondaryData();
-
-  if (!formData) {
-    throw new Error("Upper secondary form data is not available");
-  }
 
   return {
     ...context,

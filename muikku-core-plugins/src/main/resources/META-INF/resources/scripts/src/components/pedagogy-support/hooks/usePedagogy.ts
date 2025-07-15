@@ -23,11 +23,11 @@ const pedagogyApi = MApi.getPedagogyApi();
 /**
  * usePedagogy
  * @param studentUserEntityId studentUserEntityId
- * @param isSecondary isSecondary
+ * @param isUppersecondary isUppersecondary
  */
 export const usePedagogy = (
   studentUserEntityId: number,
-  isSecondary: boolean
+  isUppersecondary: boolean
 ) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
@@ -61,7 +61,10 @@ export const usePedagogy = (
             });
 
             setFormData(
-              initializePedagogyFormData(pedagogyData.formData, isSecondary)
+              initializePedagogyFormData(
+                pedagogyData.formData,
+                isUppersecondary
+              )
             );
             setLoading(false);
           });
@@ -79,7 +82,7 @@ export const usePedagogy = (
     };
 
     loadData();
-  }, [dispatch, isSecondary, studentUserEntityId]);
+  }, [dispatch, isUppersecondary, studentUserEntityId]);
 
   /**
    * resetData
@@ -88,7 +91,7 @@ export const usePedagogy = (
     unstable_batchedUpdates(() => {
       setEditIsActive(false);
       setChangedFields([]);
-      setFormData(initializePedagogyFormData(data.formData, isSecondary));
+      setFormData(initializePedagogyFormData(data.formData, isUppersecondary));
     });
   };
 
@@ -129,7 +132,7 @@ export const usePedagogy = (
       unstable_batchedUpdates(() => {
         setData(pedagogyData);
         setFormData(
-          initializePedagogyFormData(pedagogyData.formData, isSecondary)
+          initializePedagogyFormData(pedagogyData.formData, isUppersecondary)
         );
         setLoading(false);
       });

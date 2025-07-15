@@ -17,8 +17,7 @@ interface PedagogyContextValue extends UsePedagogyType {
     | "GUIDANCE_COUNSELOR"
     | "STUDENT_PARENT"
     | "SPECIAL_ED_TEACHER";
-  isUpperSecondary: boolean;
-  isCompulsory: boolean;
+  contextType: "upperSecondary" | "compulsory";
   getUpperSecondaryData: () => UpperSecondaryFormData | null;
   getCompulsoryStudiesData: () => CompulsoryFormData | null;
 }
@@ -30,10 +29,7 @@ interface PedagogyProviderProps {
   children: React.ReactNode;
   value: Omit<
     PedagogyContextValue,
-    | "getUpperSecondaryData"
-    | "getCompulsoryStudiesData"
-    | "isUpperSecondary"
-    | "isCompulsory"
+    "getUpperSecondaryData" | "getCompulsoryStudiesData"
   >;
 }
 
@@ -51,8 +47,6 @@ function PedagogyProvider(props: PedagogyProviderProps) {
 
   const enhancedValue = {
     ...value,
-    isUpperSecondary: value.formData.formType === "upperSecondary",
-    isCompulsory: value.formData.formType === "compulsory",
     // eslint-disable-next-line jsdoc/require-jsdoc
     getUpperSecondaryData: () => {
       if (value.formData && isUpperSecondaryForm(value.formData)) {

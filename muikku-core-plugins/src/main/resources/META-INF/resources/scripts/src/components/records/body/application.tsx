@@ -23,7 +23,7 @@ import { withTranslation, WithTranslation } from "react-i18next";
 import MApi from "~/api/api";
 import { PedagogyFormState } from "~/generated/client";
 import { Action, Dispatch } from "redux";
-import LearningSupport from "./application/learning-support";
+import PedagogySupport from "~/components/pedagogy-support";
 
 /**
  * StudiesApplicationProps
@@ -211,11 +211,7 @@ class StudiesApplication extends React.Component<
         type: "pedagogy-form",
         component: (
           <ApplicationPanelBody modifier="tabs">
-            <LearningSupport
-              userRole="STUDENT"
-              studentUserEntityId={this.props.status.userId}
-              status={this.props.status}
-            />
+            <PedagogySupport userRole="STUDENT" />
           </ApplicationPanelBody>
         ),
       },

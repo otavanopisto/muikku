@@ -7,17 +7,11 @@ import { usePedagogyContext } from "../context/pedagogy-context";
 export const useCompulsoryForm = () => {
   const context = usePedagogyContext();
 
-  if (!context.isCompulsory) {
+  if (context.contextType !== "compulsory") {
     throw new Error("useCompulsoryForm can only be used with compulsory forms");
   }
 
   const formData = context.getCompulsoryStudiesData();
-
-  if (!formData) {
-    throw new Error(
-      "Compulsory pedagogical support form data is not available"
-    );
-  }
 
   return {
     ...context,

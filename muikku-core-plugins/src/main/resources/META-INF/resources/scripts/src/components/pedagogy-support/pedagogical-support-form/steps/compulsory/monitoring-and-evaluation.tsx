@@ -10,7 +10,7 @@ import {
   AddNewOpinionBox,
   OpinionItem,
   OpinionList,
-} from "../../opinions-list";
+} from "../../components/opinions-list";
 import { StatusType } from "~/reducers/base/status";
 import { useTranslation } from "react-i18next";
 import { useUpperSecondaryForm } from "../../hooks/useUppersecondaryForm";

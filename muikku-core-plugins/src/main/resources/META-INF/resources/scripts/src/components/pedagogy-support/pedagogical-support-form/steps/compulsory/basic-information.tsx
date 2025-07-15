@@ -3,7 +3,7 @@ import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import { TextField } from "../../components/textfield";
 import moment from "moment";
-import { History, HistoryEntryItem } from "../../history";
+import { History, HistoryEntryItem } from "../../components/history";
 import { StatusType } from "~/reducers/base/status";
 import PagerV2 from "../../../pagerV2";
 import { buildAddress } from "../../helpers";

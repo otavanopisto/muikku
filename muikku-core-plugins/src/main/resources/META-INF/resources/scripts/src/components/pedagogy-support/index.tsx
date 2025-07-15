@@ -1,28 +1,38 @@
 import * as React from "react";
 import Tabs, { Tab } from "~/components/general/tabs";
 import { UserRole } from "~/@types/pedagogy-form";
-import { StatusType } from "~/reducers/base/status";
-import PedagogicalSupportForm from "~/components/general/pedagogical-support-form copy";
+import PedagogicalSupportForm from "./pedagogical-support-form";
+import { PedagogyProvider } from "~/components/general/pedagogical-support/context/pedagogy-context";
+import { usePedagogy } from "~/components/general/pedagogical-support/hooks/usePedagogy";
+import { StateType } from "~/reducers";
+import { useSelector } from "react-redux";
+import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/general/pedagogical-support-form copy/helpers";
 
 /**
  * LearningSupportProps
  */
 interface LearningSupportProps {
   userRole: UserRole;
-  studentUserEntityId: number;
-  status: StatusType;
 }
 
 /**
- * LearningSupport
+ * PedagogySupport
  *
  * Component that provides tabs for navigation between Pedagogy Support Form and Implemented Actions
  *
  * @param props props
  * @returns JSX.Element
  */
-const LearningSupport = (props: LearningSupportProps) => {
+const PedagogySupport = (props: LearningSupportProps) => {
+  const status = useSelector((state: StateType) => state.status);
+
+  // Check if user is uppersecondary student
+  const isUppersecondary = UPPERSECONDARY_PEDAGOGYFORM.includes(
+    status.profile.studyProgrammeName
+  );
+
   const [activeTab, setActiveTab] = React.useState<string>("PEDAGOGY_FORM");
+  const usePedagogyValues = usePedagogy(status.userId, isUppersecondary);
 
   /**
    * Handles tab change
@@ -50,23 +60,29 @@ const LearningSupport = (props: LearningSupportProps) => {
       component: (
         <PedagogicalSupportForm
           userRole={props.userRole}
-          studentUserEntityId={props.studentUserEntityId}
-          isSecondary={true}
+          studentUserEntityId={status.userId}
+          isUppersecondary={isUppersecondary}
         />
       ),
     },
   ];
 
   return (
-    <div className="learning-support">
+    <PedagogyProvider
+      value={{
+        userRole: props.userRole,
+        contextType: isUppersecondary ? "upperSecondary" : "compulsory",
+        ...usePedagogyValues,
+      }}
+    >
       <Tabs
-        modifier="learning-support"
+        modifier="pedagogy-support"
         tabs={learningSupportTabs}
         onTabChange={handleTabChange}
         activeTab={activeTab}
       />
-    </div>
+    </PedagogyProvider>
   );
 };
 
-export default LearningSupport;
+export default PedagogySupport;

@@ -3,7 +3,7 @@ import Avatar from "~/components/general/avatar";
 import { PedagogyHistoryEntry } from "~/generated/client";
 import { StatusType } from "~/reducers/base/status";
 import "~/sass/elements/hops.scss";
-import { formFieldsWithTranslation } from "./helpers";
+import { formFieldsWithTranslation } from "../helpers";
 import { useTranslation } from "react-i18next";
 import { localize } from "~/locales/i18n";
 

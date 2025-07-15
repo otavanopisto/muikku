@@ -1,15 +1,8 @@
 import * as React from "react";
 import "~/sass/elements/pedagogy.scss";
 import { UserRole } from "~/@types/pedagogy-form";
-import UpperSecondaryPedagogicalSupportWizardForm from "./forms/uppersecondary-form";
-import CompulsoryPedagogicalSupportWizardForm from "./forms/compulsory-form";
-
-// Visibility settings which study programmes have access to the form
-export const UPPERSECONDARY_PEDAGOGYFORM = [
-  "Nettilukio",
-  "Aikuislukio",
-  "Nettilukio/yksityisopiskelu (aineopintoina)",
-];
+import UpperSecondaryPedagogicalSupportWizardForm from "./uppersecondary-form";
+import CompulsoryPedagogicalSupportWizardForm from "./compulsory-form";
 
 /**
  * The props for the UpperSecondaryPedagogicalSupportForm component.
@@ -17,7 +10,7 @@ export const UPPERSECONDARY_PEDAGOGYFORM = [
 interface PedagogicalSupportFormProps {
   userRole: UserRole;
   studentUserEntityId: number;
-  isSecondary: boolean;
+  isUppersecondary: boolean;
 }
 
 /**
@@ -27,7 +20,7 @@ interface PedagogicalSupportFormProps {
  * @returns JSX.Element
  */
 const PedagogicalSupportForm = (props: PedagogicalSupportFormProps) => {
-  if (props.isSecondary) {
+  if (props.isUppersecondary) {
     return <UpperSecondaryPedagogicalSupportWizardForm {...props} />;
   }
 

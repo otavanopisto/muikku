@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Opinion, OpinionType } from "~/@types/pedagogy-form";
-import { TextField } from "./components/textfield";
-import CKEditor from "../ckeditor";
-import Button from "../button";
-import CkeditorLoaderContent from "../../base/ckeditor-loader/content";
+import { TextField } from "./textfield";
+import CKEditor from "../../ckeditor";
+import Button from "../../button";
+import CkeditorLoaderContent from "../../../base/ckeditor-loader/content";
 import moment from "moment";
 import { useTranslation } from "react-i18next";
 

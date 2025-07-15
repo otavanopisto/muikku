@@ -10,6 +10,13 @@ import { PedagogyUserInfo } from "~/generated/client";
 import { OptionDefault } from "../react-select/types";
 import i18n from "~/locales/i18n";
 
+// Visibility settings which study programmes have access to the form
+export const UPPERSECONDARY_PEDAGOGYFORM = [
+  "Nettilukio",
+  "Aikuislukio",
+  "Nettilukio/yksityisopiskelu (aineopintoina)",
+];
+
 /**
  * Is used to give correct translation for the list of edited fields
  */
@@ -290,14 +297,14 @@ export function migrateUpperSecondaryData(
 /**
  * Initializes the pedagogy form data
  * @param existingData existing data
- * @param isSecondary is secondary
+ * @param isUppersecondary is uppersecondary
  * @returns initialized data
  */
 export function initializePedagogyFormData(
   existingData: string,
-  isSecondary: boolean
+  isUppersecondary: boolean
 ): PedagogyFormData {
-  const baseForm = isSecondary
+  const baseForm = isUppersecondary
     ? { ...initializeUpperSecondaryFormData() }
     : { ...initializeCompulsoryFormData() };
 
@@ -308,7 +315,7 @@ export function initializePedagogyFormData(
 
   // If there is existing data, but it is old upper secondary form, return initialized upper secondary form
   // that is initialized from old data
-  if (isSecondary && needsMigration(existingDataForm)) {
+  if (isUppersecondary && needsMigration(existingDataForm)) {
     return {
       ...baseForm,
       ...migrateUpperSecondaryData(existingDataForm),

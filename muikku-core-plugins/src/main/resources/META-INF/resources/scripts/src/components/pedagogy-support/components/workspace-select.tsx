@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import Select from "react-select";
 import { AnyActionType } from "~/actions";
 import { StateType } from "~/reducers";
-import { OptionDefault } from "../react-select/types";
-import { useWorkspaces } from "./hooks/useWorkspaces";
+import { OptionDefault } from "../../react-select/types";
+import { useWorkspaces } from "../hooks/useWorkspaces";
 import {
   displayNotification,
   DisplayNotificationTriggerType,

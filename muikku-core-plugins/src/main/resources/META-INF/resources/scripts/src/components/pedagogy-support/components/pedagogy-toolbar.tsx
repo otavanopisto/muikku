@@ -1,9 +1,9 @@
 import * as React from "react";
 // import ApprovalDialog from "./dialogs/approval";
-import SaveWithExtraDetailsDialog from "./dialogs/save-with-extra-details";
-import WarningDialog from "./dialogs/warning";
-import Button from "../button";
-import { usePedagogyContext } from "./context/pedagogy-context";
+import SaveWithExtraDetailsDialog from "../dialogs/save-with-extra-details";
+import WarningDialog from "../dialogs/warning";
+import Button from "../../button";
+import { usePedagogyContext } from "../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
 
 /**

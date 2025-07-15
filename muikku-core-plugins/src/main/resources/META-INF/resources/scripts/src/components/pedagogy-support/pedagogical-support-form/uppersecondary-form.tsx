@@ -1,6 +1,5 @@
 import * as React from "react";
-import { usePedagogy } from "../hooks/usePedagogy";
-import { Step1, Step2, Step3, Step5, Step6 } from "../steps/uppersecondary";
+import { Step1, Step2, Step3, Step5, Step6 } from "./steps/uppersecondary";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { PDFViewer } from "@react-pdf/renderer";
@@ -12,18 +11,11 @@ import { WizardProvider } from "~/components/general/wizard/context/wizard-conte
 import "~/sass/elements/pedagogy.scss";
 import { UserRole } from "~/@types/pedagogy-form";
 import { useTranslation } from "react-i18next";
-import { PedagogyProvider } from "../context/pedagogy-context";
-import PedagogyToolbar from "../pedagogy-toolbar";
+import PedagogyToolbar from "../components/pedagogy-toolbar";
 import PedagogyPDF from "../pedagogy-PDF";
-import PedagogyFormWizardHeader from "../pedagogy-form-wizard-header";
-import PedagogyFormWizardFooter from "../pedagogy-form-wizard-footer";
-
-// Visibility settings which study programmes have access to the form
-export const UPPERSECONDARY_PEDAGOGYFORM = [
-  "Nettilukio",
-  "Aikuislukio",
-  "Nettilukio/yksityisopiskelu (aineopintoina)",
-];
+import PedagogyFormWizardHeader from "../components/pedagogy-form-wizard-header";
+import PedagogyFormWizardFooter from "../components/pedagogy-form-wizard-footer";
+import { useUpperSecondaryForm } from "../hooks/useUppersecondaryForm";
 
 /**
  * The props for the UpperSecondaryPedagogicalSupportForm component.
@@ -31,7 +23,6 @@ export const UPPERSECONDARY_PEDAGOGYFORM = [
 interface UpperSecondaryPedagogicalSupportWizardFormmProps {
   userRole: UserRole;
   studentUserEntityId: number;
-  isSecondary: boolean;
 }
 
 /**
@@ -46,11 +37,8 @@ const UpperSecondaryPedagogicalSupportWizardForm = (
   const status = useSelector((state: StateType) => state.status);
 
   const { t } = useTranslation(["pedagogySupportPlan"]);
-  const usePedagogyValues = usePedagogy(
-    props.studentUserEntityId,
-    props.isSecondary
-  );
-  const { loading, data } = usePedagogyValues;
+
+  const { loading, data } = useUpperSecondaryForm();
   const [showPDF, setShowPDF] = React.useState(false);
 
   const previousStep = React.useRef<number>(0);
@@ -112,60 +100,53 @@ const UpperSecondaryPedagogicalSupportWizardForm = (
   });
 
   return (
-    <PedagogyProvider
-      value={{
-        userRole: props.userRole,
-        ...usePedagogyValues,
-      }}
-    >
-      <WizardProvider value={useWizardValues}>
-        <div className="pedagogy-form">
-          {loading ? (
+    <WizardProvider value={useWizardValues}>
+      <div className="pedagogy-form">
+        {loading ? (
+          <OverlayComponent>
+            <div className="pedagogy-form__overlay-content">
+              <div className="loader-empty" />
+            </div>
+          </OverlayComponent>
+        ) : null}
+
+        <PedagogyToolbar showPDF={showPDF} setShowPDF={setShowPDF} />
+
+        <div className="pedagogy-form__container">
+          {data && data.state === "INACTIVE" ? (
             <OverlayComponent>
               <div className="pedagogy-form__overlay-content">
-                <div className="loader-empty" />
+                {props.userRole === "STUDENT" ? (
+                  <p>
+                    {t("content.notActivated", {
+                      ns: "pedagogySupportPlan",
+                      context: props.userRole.toLowerCase(),
+                    })}
+                  </p>
+                ) : (
+                  <p>
+                    {t("content.notActivated", { ns: "pedagogySupportPlan" })}
+                  </p>
+                )}
               </div>
             </OverlayComponent>
           ) : null}
 
-          <PedagogyToolbar showPDF={showPDF} setShowPDF={setShowPDF} />
-
-          <div className="pedagogy-form__container">
-            {data && data.state === "INACTIVE" ? (
-              <OverlayComponent>
-                <div className="pedagogy-form__overlay-content">
-                  {props.userRole === "STUDENT" ? (
-                    <p>
-                      {t("content.notActivated", {
-                        ns: "pedagogySupportPlan",
-                        context: props.userRole.toLowerCase(),
-                      })}
-                    </p>
-                  ) : (
-                    <p>
-                      {t("content.notActivated", { ns: "pedagogySupportPlan" })}
-                    </p>
-                  )}
-                </div>
-              </OverlayComponent>
-            ) : null}
-
-            {showPDF ? (
-              <PDFViewer className="pedagogy-form__pdf">
-                <PedagogyPDF data={data} />
-              </PDFViewer>
-            ) : (
-              <Wizard
-                modifiers={["pedagogy-form"]}
-                header={<PedagogyFormWizardHeader />}
-                footer={<PedagogyFormWizardFooter />}
-                wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
-              />
-            )}
-          </div>
+          {showPDF ? (
+            <PDFViewer className="pedagogy-form__pdf">
+              <PedagogyPDF data={data} />
+            </PDFViewer>
+          ) : (
+            <Wizard
+              modifiers={["pedagogy-form"]}
+              header={<PedagogyFormWizardHeader />}
+              footer={<PedagogyFormWizardFooter />}
+              wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
+            />
+          )}
         </div>
-      </WizardProvider>
-    </PedagogyProvider>
+      </div>
+    </WizardProvider>
   );
 };
 

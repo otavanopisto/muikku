@@ -2,14 +2,14 @@ import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
-import { Textarea } from "./components/textarea";
-import Button from "../button";
+import { Textarea } from "./textarea";
+import Button from "../../button";
 import Select from "react-select";
 import WorkspaceSelect from "./workspace-select";
 import { SupportActionImplementation } from "~/@types/pedagogy-form";
-import { supportActionsOptions } from "./helpers";
-import { TextField } from "./components/textfield";
-import { usePedagogyContext } from "./context/pedagogy-context";
+import { supportActionsOptions } from "../helpers";
+import { TextField } from "./textfield";
+import { usePedagogyContext } from "../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
 
 /**
