@@ -1,8 +1,8 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { usePedagogyContext } from "../../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
+import { useCompulsoryForm } from "~/components/pedagogy-support/hooks/useCompulsoryForm";
 
 /**
  * PermissionsAndApprovalProps
@@ -19,12 +19,12 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
   props
 ) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
-  const { data, userRole, /* sendToStudent, */ editIsActive } =
-    usePedagogyContext();
+  const { pedagogyForm, userRole, /* sendToStudent, */ editIsActive } =
+    useCompulsoryForm();
 
   return (
     <section className="hops-container">
-      {data.state === "ACTIVE" && userRole === "SPECIAL_ED_TEACHER" ? (
+      {pedagogyForm?.state === "ACTIVE" && userRole === "SPECIAL_ED_TEACHER" ? (
         <fieldset className="hops-container__fieldset">
           <legend className="hops-container__subheader">
             {t("labels.sendForApproval", {

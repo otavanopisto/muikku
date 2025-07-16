@@ -1,17 +1,20 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { TextField } from "../../components/textfield";
+import { TextField } from "~/components/pedagogy-support/components/textfield";
 import moment from "moment";
-import { History, HistoryEntryItem } from "../../components/history";
+import {
+  History,
+  HistoryEntryItem,
+} from "~/components/pedagogy-support/components/history";
 import { StatusType } from "~/reducers/base/status";
-import PagerV2 from "../../../pagerV2";
-import { buildAddress } from "../../helpers";
+import { buildAddress } from "~/components/pedagogy-support/helpers";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import { PedagogyHistoryEntryType } from "~/generated/client";
 import { useTranslation } from "react-i18next";
-import { useUpperSecondaryForm } from "../../hooks/useUppersecondaryForm";
+import { useUpperSecondaryForm } from "~/components/pedagogy-support/hooks/useUppersecondaryForm";
+import PagerV2 from "~/components/general/pagerV2";
 
 /**
  * BasicInformationProps
@@ -31,7 +34,7 @@ const itemsPerPage = 5;
 const BasicInformation: React.FC<BasicInformationProps> = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
   const { status } = props;
-  const { data } = useUpperSecondaryForm();
+  const { pedagogyForm } = useUpperSecondaryForm();
   const [currentPage, setCurrentPage] = React.useState<number>(0);
   const [historyFilters, setHistoryFilters] = React.useState<
     PedagogyHistoryEntryType[]
@@ -71,7 +74,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
    * @returns JSX.Element
    */
   const renderHistory = () => {
-    if (!data || data.history.length === 0) {
+    if (!pedagogyForm || pedagogyForm.history.length === 0) {
       return (
         <p>
           {t("content.empty", { ns: "pedagogySupportPlan", context: "events" })}
@@ -83,8 +86,10 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
 
     // If no filters are selected, show all history entries
     const filteredHistory = historyFilters.length
-      ? data.history.filter((item) => historyFilters.includes(item.type))
-      : data.history;
+      ? pedagogyForm.history.filter((item) =>
+          historyFilters.includes(item.type)
+        )
+      : pedagogyForm.history;
 
     const currentHistory = filteredHistory.slice(offset, offset + itemsPerPage);
 
@@ -146,8 +151,8 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               label={t("labels.name", { ns: "common" })}
               type="text"
               value={
-                data
-                  ? `${data.studentInfo.firstName} ${data.studentInfo.lastName}`
+                pedagogyForm
+                  ? `${pedagogyForm.studentInfo.firstName} ${pedagogyForm.studentInfo.lastName}`
                   : ""
               }
               disabled
@@ -163,8 +168,10 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               label={t("labels.dateOfBirth", { ns: "common" })}
               type="text"
               value={
-                (data?.studentInfo?.dateOfBirth &&
-                  moment(data?.studentInfo.dateOfBirth).format("DD.MM.YYYY")) ||
+                (pedagogyForm?.studentInfo?.dateOfBirth &&
+                  moment(pedagogyForm?.studentInfo.dateOfBirth).format(
+                    "DD.MM.YYYY"
+                  )) ||
                 "-"
               }
               disabled
@@ -178,7 +185,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               id="phoneNumber"
               label={t("labels.phone", { ns: "common" })}
               type="text"
-              value={data?.studentInfo?.phoneNumber || "-"}
+              value={pedagogyForm?.studentInfo?.phoneNumber || "-"}
               disabled
               className="hops__input"
             />
@@ -190,7 +197,7 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               id="email"
               label={t("labels.email", { ns: "common" })}
               type="text"
-              value={data?.studentInfo?.email || "-"}
+              value={pedagogyForm?.studentInfo?.email || "-"}
               disabled
               className="hops__input"
             />
@@ -202,7 +209,9 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
               id="address"
               label={t("labels.address", { ns: "common" })}
               type="text"
-              value={data ? `${buildAddress(data.studentInfo)}` : "-"}
+              value={
+                pedagogyForm ? `${buildAddress(pedagogyForm.studentInfo)}` : "-"
+              }
               disabled
               className="hops__input"
             />

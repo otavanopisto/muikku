@@ -10,10 +10,10 @@ import {
   AddNewOpinionBox,
   OpinionItem,
   OpinionList,
-} from "../../components/opinions-list";
+} from "~/components/pedagogy-support/components/opinions-list";
 import { StatusType } from "~/reducers/base/status";
 import { useTranslation } from "react-i18next";
-import { useUpperSecondaryForm } from "../../hooks/useUppersecondaryForm";
+import { useUpperSecondaryForm } from "~/components/pedagogy-support/hooks/useUppersecondaryForm";
 
 /**
  * MonitoringAndEvaluationProps

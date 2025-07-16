@@ -1,7 +1,7 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { Textarea } from "../../components/textarea";
+import { Textarea } from "~/components/pedagogy-support/components/textarea";
 import Select, { ActionMeta } from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import AnimateHeight from "react-animate-height";
@@ -13,9 +13,9 @@ import {
 import {
   matriculationSupportActionsOptions,
   supportActionsOptions,
-} from "../../helpers";
+} from "~/components/pedagogy-support/helpers";
 import { useTranslation } from "react-i18next";
-import { useUpperSecondaryForm } from "../../hooks/useUppersecondaryForm";
+import { useUpperSecondaryForm } from "~/components/pedagogy-support/hooks/useUppersecondaryForm";
 
 /**
  * NeedOfSupportInformationProps

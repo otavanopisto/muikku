@@ -3,7 +3,7 @@ import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import DatePicker from "react-datepicker";
 import { Textarea } from "./textarea";
-import Button from "../../button";
+import Button from "~/components/general/button";
 import Select from "react-select";
 import WorkspaceSelect from "./workspace-select";
 import { SupportActionImplementation } from "~/@types/pedagogy-form";

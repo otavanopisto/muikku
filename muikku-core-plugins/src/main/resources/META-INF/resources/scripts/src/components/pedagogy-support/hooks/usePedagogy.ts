@@ -8,9 +8,13 @@ import {
   isCompulsoryForm,
   isUpperSecondaryForm,
   PedagogyFormData,
+  SupportActionImplementation,
   UpperSecondaryFormData,
 } from "~/@types/pedagogy-form";
-import { PedagogyForm } from "~/generated/client";
+import {
+  PedagogyForm,
+  PedagogyFormImplementedActions,
+} from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import _ from "lodash";
 import { initializePedagogyFormData } from "../helpers";
@@ -31,7 +35,11 @@ export const usePedagogy = (
 ) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
-  const [data, setData] = React.useState<PedagogyForm | undefined>(undefined);
+  const [pedagogyFormImplementedActions, setPedagogyFormImplementedActions] =
+    React.useState<PedagogyFormImplementedActions | undefined>(undefined);
+  const [pedagogyForm, setPedagogyForm] = React.useState<
+    PedagogyForm | undefined
+  >(undefined);
   const [formData, setFormData] = React.useState<PedagogyFormData | undefined>(
     undefined
   );
@@ -44,9 +52,23 @@ export const usePedagogy = (
   // set loading to true after 5 seconds
   React.useEffect(() => {
     /**
-     * loadWorkspaces
+     * loadPedagogyFormImplementedActions
      */
-    const loadData = async () => {
+    const loadPedagogyFormImplementedActions = async () => {
+      const pedagogyFormImplementedActions =
+        await pedagogyApi.getPedagogyFormImplementedActions({
+          userEntityId: studentUserEntityId,
+        });
+
+      if (componentMounted.current) {
+        setPedagogyFormImplementedActions(pedagogyFormImplementedActions);
+      }
+    };
+
+    /**
+     * loadPedagogyFormData
+     */
+    const loadPedagogyFormData = async () => {
       setLoading(true);
 
       try {
@@ -56,7 +78,7 @@ export const usePedagogy = (
 
         if (componentMounted.current) {
           unstable_batchedUpdates(() => {
-            setData({
+            setPedagogyForm({
               ...pedagogyData,
             });
 
@@ -81,7 +103,7 @@ export const usePedagogy = (
       }
     };
 
-    loadData();
+    loadPedagogyFormData();
   }, [dispatch, isUppersecondary, studentUserEntityId]);
 
   /**
@@ -91,7 +113,9 @@ export const usePedagogy = (
     unstable_batchedUpdates(() => {
       setEditIsActive(false);
       setChangedFields([]);
-      setFormData(initializePedagogyFormData(data.formData, isUppersecondary));
+      setFormData(
+        initializePedagogyFormData(pedagogyForm.formData, isUppersecondary)
+      );
     });
   };
 
@@ -130,7 +154,7 @@ export const usePedagogy = (
       });
 
       unstable_batchedUpdates(() => {
-        setData(pedagogyData);
+        setPedagogyForm(pedagogyData);
         setFormData(
           initializePedagogyFormData(pedagogyData.formData, isUppersecondary)
         );
@@ -151,7 +175,7 @@ export const usePedagogy = (
       const updatedData = await updateStateToServer("PENDING");
 
       unstable_batchedUpdates(() => {
-        setData(updatedData);
+        setPedagogyForm(updatedData);
         setLoading(false);
         setEditIsActive(false);
       });
@@ -168,13 +192,13 @@ export const usePedagogy = (
     setLoading(true);
     try {
       let updatedData = {
-        ...data,
+        ...pedagogyForm,
       };
 
       updatedData = await updateStateToServer("APPROVED");
 
       unstable_batchedUpdates(() => {
-        setData(updatedData);
+        setPedagogyForm(updatedData);
         setFormData((previousData) => ({
           ...previousData,
           ...JSON.parse(updatedData.formData),
@@ -200,7 +224,7 @@ export const usePedagogy = (
 
       unstable_batchedUpdates(() => {
         setEditIsActive(false);
-        setData(updatedData);
+        setPedagogyForm(updatedData);
         setFormData((previousData) => ({
           ...previousData,
           ...JSON.parse(updatedData.formData),
@@ -229,7 +253,7 @@ export const usePedagogy = (
     };
 
     const oldData = {
-      ...JSON.parse(data.formData),
+      ...JSON.parse(pedagogyForm.formData),
     } as FormData;
 
     // If there is no oldData to compare to,
@@ -300,7 +324,7 @@ export const usePedagogy = (
 
   return {
     loading,
-    data,
+    pedagogyForm,
     formData,
     changedFields,
     editIsActive,
@@ -318,8 +342,8 @@ export const usePedagogy = (
 
 /**
  * Get the edited fields
- * @param oldData old data
- * @param newData new data
+ * @param oldData old pedagogyForm
+ * @param newData new pedagogyForm
  * @returns string[]
  */
 const getEditedFields = (

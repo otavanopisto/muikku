@@ -7,7 +7,7 @@ import {
   UpperSecondaryFormData,
 } from "~/@types/pedagogy-form";
 import { PedagogyUserInfo } from "~/generated/client";
-import { OptionDefault } from "../react-select/types";
+import { OptionDefault } from "~/components/general/react-select/types";
 import i18n from "~/locales/i18n";
 
 // Visibility settings which study programmes have access to the form

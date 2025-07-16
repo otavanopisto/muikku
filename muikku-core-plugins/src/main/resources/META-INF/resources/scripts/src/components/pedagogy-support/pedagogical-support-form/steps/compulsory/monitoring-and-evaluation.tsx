@@ -2,18 +2,18 @@ import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import {
+  CompulsoryFormData,
   Opinion,
   OpinionType,
-  UpperSecondaryFormData,
 } from "~/@types/pedagogy-form";
 import {
   AddNewOpinionBox,
   OpinionItem,
   OpinionList,
-} from "../../components/opinions-list";
+} from "~/components/pedagogy-support/components/opinions-list";
 import { StatusType } from "~/reducers/base/status";
 import { useTranslation } from "react-i18next";
-import { useUpperSecondaryForm } from "../../hooks/useUppersecondaryForm";
+import { useCompulsoryForm } from "~/components/pedagogy-support/hooks/useCompulsoryForm";
 
 /**
  * MonitoringAndEvaluationProps
@@ -37,14 +37,14 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     editIsActive,
     formData,
     setFormDataAndUpdateChangedFields,
-  } = useUpperSecondaryForm();
+  } = useCompulsoryForm();
 
   /**
    * Handles support reason select change
    * @param type type
    */
   const handleAddNewOpinion = (type: OpinionType) => () => {
-    const updatedFormData: UpperSecondaryFormData = {
+    const updatedFormData: CompulsoryFormData = {
       ...formData,
     };
 
@@ -71,7 +71,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     value: Opinion[T],
     type: OpinionType
   ) => {
-    const updatedFormData: UpperSecondaryFormData = { ...formData };
+    const updatedFormData: CompulsoryFormData = { ...formData };
 
     updatedFormData[type][index] = {
       ...updatedFormData[type][index],
@@ -87,7 +87,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
    * @param type type
    */
   const handleDeleteOpinion = (index: number, type: OpinionType) => {
-    const updatedFormData: UpperSecondaryFormData = { ...formData };
+    const updatedFormData: CompulsoryFormData = { ...formData };
     updatedFormData[type].splice(index, 1);
 
     setFormDataAndUpdateChangedFields(updatedFormData);

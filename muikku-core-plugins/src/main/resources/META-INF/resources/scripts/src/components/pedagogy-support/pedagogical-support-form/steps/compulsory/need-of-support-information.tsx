@@ -1,21 +1,14 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { Textarea } from "../../components/textarea";
+import { Textarea } from "~/components/pedagogy-support/components/textarea";
 import Select, { ActionMeta } from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import AnimateHeight from "react-animate-height";
-import {
-  SupportAction,
-  SupportActionMatriculationExamination,
-  UpperSecondaryFormData,
-} from "~/@types/pedagogy-form";
-import {
-  matriculationSupportActionsOptions,
-  supportActionsOptions,
-} from "../../helpers";
+import { CompulsoryFormData, SupportAction } from "~/@types/pedagogy-form";
+import { supportActionsOptions } from "~/components/pedagogy-support/helpers";
 import { useTranslation } from "react-i18next";
-import { useUpperSecondaryForm } from "../../hooks/useUppersecondaryForm";
+import { useCompulsoryForm } from "~/components/pedagogy-support/hooks/useCompulsoryForm";
 
 /**
  * NeedOfSupportInformationProps
@@ -37,7 +30,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     editIsActive,
     formData,
     setFormDataAndUpdateChangedFields,
-  } = useUpperSecondaryForm();
+  } = useCompulsoryForm();
 
   /**
    * Handles different text area changes based on key
@@ -45,9 +38,9 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
    * @param key key
    * @param value value
    */
-  const handleTextAreaChange = <T extends keyof UpperSecondaryFormData>(
+  const handleTextAreaChange = <T extends keyof CompulsoryFormData>(
     key: T,
-    value: UpperSecondaryFormData[T]
+    value: CompulsoryFormData[T]
   ) => {
     const updatedFormData = { ...formData };
 
@@ -72,29 +65,6 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
     if (!updatedFormData.supportActions.includes("other")) {
       updatedFormData.supportActionOther = undefined;
-    }
-
-    setFormDataAndUpdateChangedFields(updatedFormData);
-  };
-
-  /**
-   * Handles matriculation support action select change
-   *
-   * @param options options
-   * @param actionMeta actionMeta
-   */
-  const handleMatriculationSupportActionChange = (
-    options: readonly OptionDefault<SupportActionMatriculationExamination>[],
-    actionMeta: ActionMeta<OptionDefault<SupportActionMatriculationExamination>>
-  ) => {
-    const updatedFormData = { ...formData };
-
-    updatedFormData.matriculationExaminationSupport = options.map(
-      (option) => option.value
-    );
-
-    if (!updatedFormData.matriculationExaminationSupport.includes("other")) {
-      updatedFormData.matriculationExaminationSupportOther = undefined;
     }
 
     setFormDataAndUpdateChangedFields(updatedFormData);
@@ -204,80 +174,6 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   handleTextAreaChange("supportActionOther", e.target.value)
                 }
                 value={formData?.supportActionOther || ""}
-                disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
-              />
-            </div>
-          </div>
-        </AnimateHeight>
-
-        <div className="hops-container__row">
-          <div className="hops__form-element-container">
-            <label
-              htmlFor="prePlansForMatriculationExam"
-              className="hops__label"
-            >
-              {t("labels.matriculationPrePlan", {
-                ns: "pedagogySupportPlan",
-              })}
-            </label>
-            <Select
-              id="prePlansForMatriculationExam"
-              className="react-select-override react-select-override--pedagogy-form"
-              classNamePrefix="react-select-override"
-              closeMenuOnSelect={false}
-              isMulti
-              menuPortalTarget={document.body}
-              menuPosition={"fixed"}
-              // eslint-disable-next-line jsdoc/require-jsdoc
-              styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-              value={
-                (formData &&
-                  matriculationSupportActionsOptions.filter((option) =>
-                    formData?.matriculationExaminationSupport.includes(
-                      option.value
-                    )
-                  )) ||
-                undefined
-              }
-              placeholder={t("labels.select", {
-                ns: "common",
-              })}
-              noOptionsMessage={() =>
-                t("content.empty", {
-                  ns: "pedagogySupportPlan",
-                  context: "options",
-                })
-              }
-              options={matriculationSupportActionsOptions}
-              onChange={handleMatriculationSupportActionChange}
-              isSearchable={false}
-              isDisabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
-            />
-          </div>
-        </div>
-        <AnimateHeight
-          height={
-            formData?.matriculationExaminationSupport.includes("other")
-              ? "auto"
-              : 0
-          }
-        >
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <Textarea
-                id="matriculationSupportOther"
-                label={t("labels.other", {
-                  ns: "pedagogySupportPlan",
-                  context: "action",
-                })}
-                className="hops__textarea"
-                onChange={(e) =>
-                  handleTextAreaChange(
-                    "matriculationExaminationSupportOther",
-                    e.target.value
-                  )
-                }
-                value={formData?.matriculationExaminationSupportOther || ""}
                 disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
               />
             </div>

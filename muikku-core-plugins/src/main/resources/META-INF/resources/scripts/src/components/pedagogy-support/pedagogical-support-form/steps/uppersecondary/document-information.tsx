@@ -1,12 +1,12 @@
 import * as React from "react";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
-import { TextField } from "../../components/textfield";
-import { Textarea } from "../../components/textarea";
+import { TextField } from "~/components/pedagogy-support/components/textfield";
+import { Textarea } from "~/components/pedagogy-support/components/textarea";
 import DatePicker from "react-datepicker";
 import { UpperSecondaryFormData } from "~/@types/pedagogy-form";
 import { useTranslation } from "react-i18next";
-import { useUpperSecondaryForm } from "../../hooks/useUppersecondaryForm";
+import { useUpperSecondaryForm } from "~/components/pedagogy-support/hooks/useUppersecondaryForm";
 
 /**
  * DocumentInformationProps
@@ -25,7 +25,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
     userRole,
     editIsActive,
     formData,
-    data,
+    pedagogyForm,
     setFormDataAndUpdateChangedFields,
   } = useUpperSecondaryForm();
 
@@ -46,9 +46,11 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
     setFormDataAndUpdateChangedFields(updatedFormData);
   };
 
-  const ownerNameWithPhone = data
-    ? `${data?.ownerInfo.firstName} ${data?.ownerInfo.lastName}` +
-      (data?.ownerInfo.phoneNumber ? ` (${data?.ownerInfo.phoneNumber})` : "")
+  const ownerNameWithPhone = pedagogyForm
+    ? `${pedagogyForm?.ownerInfo.firstName} ${pedagogyForm?.ownerInfo.lastName}` +
+      (pedagogyForm?.ownerInfo.phoneNumber
+        ? ` (${pedagogyForm?.ownerInfo.phoneNumber})`
+        : "")
     : "-";
 
   return (
@@ -68,7 +70,8 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
               dateFormat="dd.MM.yyyy"
               onChange={undefined}
               selected={
-                (data?.created && new Date(data?.created)) || new Date()
+                (pedagogyForm?.created && new Date(pedagogyForm?.created)) ||
+                new Date()
               }
               className="hops__input"
               disabled
