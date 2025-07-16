@@ -1,6 +1,6 @@
 import * as React from "react";
-import Button from "../../button";
-import { useWizardContext } from "../../wizard/context/wizard-context";
+import Button from "~/components/general/button";
+import { useWizardContext } from "~/components/general/wizard/context/wizard-context";
 import { useTranslation } from "react-i18next";
 
 /**

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { useWizardContext } from "../../wizard/context/wizard-context";
-import { Stepper, StepperItem } from "../../wizard/stepper";
+import { useWizardContext } from "~/components/general/wizard/context/wizard-context";
+import { Stepper, StepperItem } from "~/components/general/wizard/stepper";
 
 /**
  * StepWizardHeaderProps

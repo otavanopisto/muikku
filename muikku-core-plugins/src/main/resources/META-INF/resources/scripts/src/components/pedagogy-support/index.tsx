@@ -2,11 +2,11 @@ import * as React from "react";
 import Tabs, { Tab } from "~/components/general/tabs";
 import { UserRole } from "~/@types/pedagogy-form";
 import PedagogicalSupportForm from "./pedagogical-support-form";
-import { PedagogyProvider } from "~/components/general/pedagogical-support/context/pedagogy-context";
-import { usePedagogy } from "~/components/general/pedagogical-support/hooks/usePedagogy";
+import { PedagogyProvider } from "~/components/pedagogy-support/context/pedagogy-context";
+import { usePedagogy } from "~/components/pedagogy-support/hooks/usePedagogy";
 import { StateType } from "~/reducers";
 import { useSelector } from "react-redux";
-import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/general/pedagogical-support-form copy/helpers";
+import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/pedagogy-support/helpers";
 
 /**
  * LearningSupportProps

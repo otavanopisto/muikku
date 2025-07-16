@@ -37,7 +37,7 @@ const CompulsoryPedagogicalSupportWizardForm = (
   const { t } = useTranslation(["pedagogySupportPlan"]);
   const status = useSelector((state: StateType) => state.status);
 
-  const { loading, data } = useCompulsoryForm();
+  const { loading, pedagogyForm } = useCompulsoryForm();
   const [showPDF, setShowPDF] = React.useState(false);
 
   const previousStep = React.useRef<number>(0);
@@ -112,7 +112,7 @@ const CompulsoryPedagogicalSupportWizardForm = (
         <PedagogyToolbar showPDF={showPDF} setShowPDF={setShowPDF} />
 
         <div className="pedagogy-form__container">
-          {data && data.state === "INACTIVE" ? (
+          {pedagogyForm && pedagogyForm.state === "INACTIVE" ? (
             <OverlayComponent>
               <div className="pedagogy-form__overlay-content">
                 {props.userRole === "STUDENT" ? (
@@ -133,7 +133,7 @@ const CompulsoryPedagogicalSupportWizardForm = (
 
           {showPDF ? (
             <PDFViewer className="pedagogy-form__pdf">
-              <PedagogyPDF data={data} />
+              <PedagogyPDF data={pedagogyForm} />
             </PDFViewer>
           ) : (
             <Wizard

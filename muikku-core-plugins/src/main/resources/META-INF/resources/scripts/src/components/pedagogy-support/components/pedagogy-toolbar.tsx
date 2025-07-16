@@ -2,9 +2,9 @@ import * as React from "react";
 // import ApprovalDialog from "./dialogs/approval";
 import SaveWithExtraDetailsDialog from "../dialogs/save-with-extra-details";
 import WarningDialog from "../dialogs/warning";
-import Button from "../../button";
 import { usePedagogyContext } from "../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
+import Button from "~/components/general/button";
 
 /**
  * PedagogyToolbarProps
@@ -27,7 +27,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   const usePedagogyValues = usePedagogyContext();
 
   const {
-    data,
+    pedagogyForm,
     loading,
     changedFields,
     editIsActive,
@@ -40,7 +40,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     activateForm,
   } = usePedagogyValues;
 
-  if (!data) {
+  if (!pedagogyForm) {
     return null;
   }
 
@@ -86,7 +86,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   const handleCancelSaveWithExtraDetailsClick = () => setExtraDetails("");
 
   if (userRole !== "STUDENT" && userRole !== "STUDENT_PARENT") {
-    switch (data.state) {
+    switch (pedagogyForm.state) {
       case "INACTIVE":
         return userRole === "SPECIAL_ED_TEACHER" ? (
           <div className="pedagogy-form__toolbar">
