@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Document, Page, Text, Image, View } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  Image,
+  View,
+  PDFViewer,
+} from "@react-pdf/renderer";
 import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import moment from "moment";
@@ -183,146 +190,147 @@ const PedagogyPDFCompulsory = (props: PedagogyPDFCompulsoryProps) => {
   }`;
 
   return (
-    <Document>
-      {
-        // Basic info page
-      }
-      <Page style={styles.body} size="A4">
-        {pageHeader}
-        <Text style={styles.pageTitle}>
-          {t("labels.basicInfo", {
-            ns: "pedagogySupportPlan",
-            context: "document",
-          })}
-        </Text>
+    <PDFViewer className="pedagogy-form__pdf">
+      <Document>
+        {
+          // Basic info page
+        }
+        <Page style={styles.body} size="A4">
+          {pageHeader}
+          <Text style={styles.pageTitle}>
+            {t("labels.basicInfo", {
+              ns: "pedagogySupportPlan",
+              context: "document",
+            })}
+          </Text>
 
-        <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>
-            {t("labels.student", { ns: "users", count: 1 })}
-          </Text>
-          <Text style={styles.infoFieldValue}>{studentName}</Text>
-          <Text style={styles.infoFieldValue}>{studentPhone}</Text>
-          <Text style={styles.infoFieldValue}>{studentEmail}</Text>
-          <Text style={styles.infoFieldValue}>{studentAddress}</Text>
-          <Text style={styles.infoFieldValue}>{studentZipCodeAndCity}</Text>
-        </View>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.student", { ns: "users", count: 1 })}
+            </Text>
+            <Text style={styles.infoFieldValue}>{studentName}</Text>
+            <Text style={styles.infoFieldValue}>{studentPhone}</Text>
+            <Text style={styles.infoFieldValue}>{studentEmail}</Text>
+            <Text style={styles.infoFieldValue}>{studentAddress}</Text>
+            <Text style={styles.infoFieldValue}>{studentZipCodeAndCity}</Text>
+          </View>
 
-        <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>
-            {t("labels.authorOfDocument", { ns: "pedagogySupportPlan" })}
-          </Text>
-          <Text style={styles.infoFieldValue}>
-            {documentCreator},{" "}
-            {t("labels.specialEducationTeacher", { ns: "users", count: 1 })}
-          </Text>
-          <Text style={styles.infoFieldValue}>{ownerInfo.phoneNumber}</Text>
-          <Text style={styles.infoFieldValue}>{ownerInfo.email}</Text>
-        </View>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.authorOfDocument", { ns: "pedagogySupportPlan" })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {documentCreator},{" "}
+              {t("labels.specialEducationTeacher", { ns: "users", count: 1 })}
+            </Text>
+            <Text style={styles.infoFieldValue}>{ownerInfo.phoneNumber}</Text>
+            <Text style={styles.infoFieldValue}>{ownerInfo.email}</Text>
+          </View>
 
-        <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>
-            {t("labels.documentCreatedDate", { ns: "pedagogySupportPlan" })}
-          </Text>
-          <Text style={styles.infoFieldValue}>
-            {moment(created).format("DD.MM.YYYY")}
-          </Text>
-        </View>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.documentCreatedDate", { ns: "pedagogySupportPlan" })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {moment(created).format("DD.MM.YYYY")}
+            </Text>
+          </View>
 
-        <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>
-            {t("labels.documentParticipants", { ns: "pedagogySupportPlan" })}
-          </Text>
-          <Text style={styles.infoFieldValue}>
-            {formData?.documentParticipants || "-"}
-          </Text>
-        </View>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.documentParticipants", { ns: "pedagogySupportPlan" })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {formData?.documentParticipants || "-"}
+            </Text>
+          </View>
 
-        <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>
-            {t("labels.cooperativePartners", { ns: "pedagogySupportPlan" })}
-          </Text>
-          <Text style={styles.infoFieldValue}>
-            {formData?.cooperativePartners || "-"}
-          </Text>
-        </View>
-      </Page>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.cooperativePartners", { ns: "pedagogySupportPlan" })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {formData?.cooperativePartners || "-"}
+            </Text>
+          </View>
+        </Page>
 
-      {
-        // Reason, actions etc page
-      }
-      <Page style={styles.body} size="A4">
-        {pageHeader}
-        <Text style={styles.pageTitle}>
-          {t("labels.basisForSupport", { ns: "pedagogySupportPlan" })}
-        </Text>
-        <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>
-            {t("labels.studentStrengths", { ns: "pedagogySupportPlan" })}
+        {
+          // Reason, actions etc page
+        }
+        <Page style={styles.body} size="A4">
+          {pageHeader}
+          <Text style={styles.pageTitle}>
+            {t("labels.basisForSupport", { ns: "pedagogySupportPlan" })}
           </Text>
-          <Text style={styles.infoFieldValue}>
-            {formData?.studentStrengths || "-"}
-          </Text>
-        </View>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.studentStrengths", { ns: "pedagogySupportPlan" })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {formData?.studentStrengths || "-"}
+            </Text>
+          </View>
 
-        <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>
-            {t("labels.needForSupport", { ns: "pedagogySupportPlan" })}
-          </Text>
-          <Text style={styles.infoFieldValue}>
-            {formData?.needOfSupport || "-"}
-          </Text>
-        </View>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.needForSupport", { ns: "pedagogySupportPlan" })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {formData?.needOfSupport || "-"}
+            </Text>
+          </View>
 
-        <Text style={styles.pageTitle}>
-          {t("labels.plan", {
-            ns: "pedagogySupportPlan",
-          })}
-        </Text>
-        <View style={styles.infoFieldContainer}>
-          <Text style={styles.infoFieldLabel}>
-            {t("labels.plannedActions", {
+          <Text style={styles.pageTitle}>
+            {t("labels.plan", {
               ns: "pedagogySupportPlan",
             })}
           </Text>
-          {formData?.supportActions?.length > 0 ? (
-            <>
-              {formData?.supportActions?.map((value, i) => (
-                <Text key={i} style={styles.infoFieldValue}>
-                  - {supportActionTranslationByValue[value]}
-                </Text>
-              )) || <Text style={styles.infoFieldValue}>-</Text>}
-            </>
-          ) : (
-            <Text style={styles.infoFieldValue}>-</Text>
-          )}
-        </View>
-
-        {formData?.supportActions?.includes("other") ? (
           <View style={styles.infoFieldContainer}>
             <Text style={styles.infoFieldLabel}>
-              {t("labels.actionElse", {
+              {t("labels.plannedActions", {
                 ns: "pedagogySupportPlan",
               })}
             </Text>
-            <Text style={styles.infoFieldValue}>
-              {formData?.supportActionOther || "-"}
-            </Text>
+            {formData?.supportActions?.length > 0 ? (
+              <>
+                {formData?.supportActions?.map((value, i) => (
+                  <Text key={i} style={styles.infoFieldValue}>
+                    - {supportActionTranslationByValue[value]}
+                  </Text>
+                )) || <Text style={styles.infoFieldValue}>-</Text>}
+              </>
+            ) : (
+              <Text style={styles.infoFieldValue}>-</Text>
+            )}
           </View>
-        ) : null}
-      </Page>
 
-      {
-        // Implemented support actions page
-      }
-      <Page style={styles.body} size="A4">
-        {pageHeader}
-        <Text style={styles.pageTitle}>
-          {" "}
-          {t("labels.implementedActions", {
-            ns: "pedagogySupportPlan",
-          })}
-        </Text>
-        {/* {(formData?.supportActionsImplemented &&
+          {formData?.supportActions?.includes("other") ? (
+            <View style={styles.infoFieldContainer}>
+              <Text style={styles.infoFieldLabel}>
+                {t("labels.actionElse", {
+                  ns: "pedagogySupportPlan",
+                })}
+              </Text>
+              <Text style={styles.infoFieldValue}>
+                {formData?.supportActionOther || "-"}
+              </Text>
+            </View>
+          ) : null}
+        </Page>
+
+        {
+          // Implemented support actions page
+        }
+        <Page style={styles.body} size="A4">
+          {pageHeader}
+          <Text style={styles.pageTitle}>
+            {" "}
+            {t("labels.implementedActions", {
+              ns: "pedagogySupportPlan",
+            })}
+          </Text>
+          {/* {(formData?.supportActionsImplemented &&
           formData?.supportActionsImplemented.length > 0 &&
           formData?.supportActionsImplemented.map((iAction, i) => (
             <View key={i} style={styles.implementedActionContainer}>
@@ -377,39 +385,40 @@ const PedagogyPDFCompulsory = (props: PedagogyPDFCompulsoryProps) => {
             </Text>
           </View>
         )} */}
-      </Page>
+        </Page>
 
-      {
-        // Student opinion of support page
-      }
-      <Page style={styles.body} size="A4">
-        {pageHeader}
-        <Text style={styles.pageTitle}>
-          {t("labels.opinionOfSupport", {
-            ns: "pedagogySupportPlan",
-            context: "student",
-          })}
-        </Text>
+        {
+          // Student opinion of support page
+        }
+        <Page style={styles.body} size="A4">
+          {pageHeader}
+          <Text style={styles.pageTitle}>
+            {t("labels.opinionOfSupport", {
+              ns: "pedagogySupportPlan",
+              context: "student",
+            })}
+          </Text>
 
-        {studentOpinion}
-        {/* {pageFooter} */}
-      </Page>
+          {studentOpinion}
+          {/* {pageFooter} */}
+        </Page>
 
-      {
-        // School opinion of support page
-      }
-      <Page style={styles.body} size="A4">
-        {pageHeader}
-        <Text style={styles.pageTitle}>
-          {t("labels.opinionOfSupport", {
-            ns: "pedagogySupportPlan",
-            context: "school",
-          })}
-        </Text>
+        {
+          // School opinion of support page
+        }
+        <Page style={styles.body} size="A4">
+          {pageHeader}
+          <Text style={styles.pageTitle}>
+            {t("labels.opinionOfSupport", {
+              ns: "pedagogySupportPlan",
+              context: "school",
+            })}
+          </Text>
 
-        {schoolOpinion}
-      </Page>
-    </Document>
+          {schoolOpinion}
+        </Page>
+      </Document>
+    </PDFViewer>
   );
 };
 

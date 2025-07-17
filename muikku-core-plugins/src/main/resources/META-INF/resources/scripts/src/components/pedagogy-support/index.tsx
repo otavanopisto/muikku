@@ -9,7 +9,6 @@ import {
   COMPULSORY_PEDAGOGYFORM,
 } from "~/components/pedagogy-support/helpers";
 import PedagogyToolbar from "./components/pedagogy-toolbar";
-import { PDFViewer } from "@react-pdf/renderer";
 import PedagogyPDFUpperSecondary from "./pedagogy-PDF-uppersecondary";
 import PedagogyPDFCompulsory from "./pedagogy-PDF-compulsory";
 
@@ -79,7 +78,7 @@ const PedagogySupport = (props: LearningSupportProps) => {
   // Only add pedagogy form tab if:
   // 1. Study programme is eligible for pedagogy form
   // 2. Pedagogy form is created
-  if (isEligibleForPedagogyForm && usePedagogyValues.pedagogyForm.created) {
+  if (isEligibleForPedagogyForm && usePedagogyValues?.pedagogyForm?.created) {
     pedagogySupportTabs.push({
       id: "PEDAGOGY_FORM",
       name: "Pedagogisen tuen lomake",
@@ -100,7 +99,7 @@ const PedagogySupport = (props: LearningSupportProps) => {
   // 3. Show PDF is toggled on
   const showPdf =
     isEligibleForPedagogyForm &&
-    usePedagogyValues.pedagogyForm.created &&
+    usePedagogyValues?.pedagogyForm?.created &&
     showPDF;
 
   return (
@@ -114,13 +113,11 @@ const PedagogySupport = (props: LearningSupportProps) => {
       <PedagogyToolbar showPDF={showPDF} setShowPDF={setShowPDF} />
 
       {showPdf ? (
-        <PDFViewer className="pedagogy-form__pdf">
-          {isUppersecondary ? (
-            <PedagogyPDFUpperSecondary />
-          ) : (
-            <PedagogyPDFCompulsory />
-          )}
-        </PDFViewer>
+        isUppersecondary ? (
+          <PedagogyPDFUpperSecondary />
+        ) : (
+          <PedagogyPDFCompulsory />
+        )
       ) : (
         <Tabs
           modifier="pedagogy-support"
