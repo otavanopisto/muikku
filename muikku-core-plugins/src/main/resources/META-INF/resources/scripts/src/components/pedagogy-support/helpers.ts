@@ -17,6 +17,12 @@ export const UPPERSECONDARY_PEDAGOGYFORM = [
   "Nettilukio/yksityisopiskelu (aineopintoina)",
 ];
 
+export const COMPULSORY_PEDAGOGYFORM = [
+  "Nettiperuskoulu",
+  "Nettiperuskoulu/yksityisopiskelu",
+  "Aikuisten perusopetuksen päättövaihe",
+];
+
 /**
  * Is used to give correct translation for the list of edited fields
  */

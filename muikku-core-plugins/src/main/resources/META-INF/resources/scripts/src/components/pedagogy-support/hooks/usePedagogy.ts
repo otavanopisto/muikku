@@ -8,7 +8,6 @@ import {
   isCompulsoryForm,
   isUpperSecondaryForm,
   PedagogyFormData,
-  SupportActionImplementation,
   UpperSecondaryFormData,
 } from "~/@types/pedagogy-form";
 import {
@@ -35,6 +34,7 @@ export const usePedagogy = (
 ) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [pedagogyFormImplementedActions, setPedagogyFormImplementedActions] =
     React.useState<PedagogyFormImplementedActions | undefined>(undefined);
   const [pedagogyForm, setPedagogyForm] = React.useState<
@@ -104,6 +104,7 @@ export const usePedagogy = (
     };
 
     loadPedagogyFormData();
+    loadPedagogyFormImplementedActions();
   }, [dispatch, isUppersecondary, studentUserEntityId]);
 
   /**

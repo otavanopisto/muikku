@@ -85,6 +85,12 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
    */
   const handleCancelSaveWithExtraDetailsClick = () => setExtraDetails("");
 
+  // Can show PDF if:
+  // 1. User role is SPECIAL_ED_TEACHER
+  // 2. Pedagogy form is created
+  const canTogglePDF =
+    userRole === "SPECIAL_ED_TEACHER" && pedagogyForm.created;
+
   if (userRole !== "STUDENT" && userRole !== "STUDENT_PARENT") {
     switch (pedagogyForm.state) {
       case "INACTIVE":
@@ -154,7 +160,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
               )}
             </div>
 
-            {userRole === "SPECIAL_ED_TEACHER" ? (
+            {canTogglePDF ? (
               <div className="pedagogy-form__toolbar-secondary">
                 <Button
                   buttonModifiers={["info"]}
@@ -174,30 +180,6 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         return null;
     }
   }
-  /* if (userRole === "STUDENT") {
-    switch (data.state) {
-      case "PENDING":
-        return (
-          <div className="pedagogy-form__toolbar">
-            <ApprovalDialog
-              formIsApproved={formIsApproved}
-              saveButtonDisabled={!formIsApproved}
-              onSaveClick={approveForm}
-              onApproveChange={handleApproveValueChange}
-            >
-              <Button buttonModifiers={["info"]}>
-                {t("actions.approve", {
-                  ns: "pedagogySupportPlan",
-                })}
-              </Button>
-            </ApprovalDialog>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  } */
 
   return null;
 };

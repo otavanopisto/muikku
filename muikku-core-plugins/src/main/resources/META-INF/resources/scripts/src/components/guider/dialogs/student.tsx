@@ -27,9 +27,6 @@ import {
 import { getName } from "~/util/modifiers";
 import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
-import UpperSecondaryPedagogicalSupportWizardForm, {
-  UPPERSECONDARY_PEDAGOGYFORM,
-} from "~/components/general/pedagogical-support-form";
 import { PedagogyFormAccess } from "~/generated/client";
 import HopsApplication from "./student/hops/hops";
 // eslint-disable-next-line camelcase
@@ -39,6 +36,8 @@ import {
   resetHopsData,
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
+import PedagogySupport from "~/components/pedagogy-support";
+import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/pedagogy-support/helpers";
 
 export type tabs =
   | "STUDIES"
@@ -183,14 +182,15 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
   ) {
     tabs.splice(1, 0, {
       id: "PEDAGOGICAL_SUPPORT",
-      name: t("labels.title", { ns: "pedagogySupportPlan" }),
+      name: "Oppimisen tuki",
       type: "guider-student",
       component: (
-        <UpperSecondaryPedagogicalSupportWizardForm
+        <PedagogySupport
           userRole={userRoleForForm(
             guider.currentStudent.pedagogyFormAvailable
           )}
           studentUserEntityId={guider.currentStudent.basic.userEntityId}
+          studyProgrammeName={guider.currentStudent.basic.studyProgrammeName}
         />
       ),
     });

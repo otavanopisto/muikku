@@ -4,15 +4,22 @@ import { UserRole } from "~/@types/pedagogy-form";
 import PedagogicalSupportForm from "./pedagogical-support-form";
 import { PedagogyProvider } from "~/components/pedagogy-support/context/pedagogy-context";
 import { usePedagogy } from "~/components/pedagogy-support/hooks/usePedagogy";
-import { StateType } from "~/reducers";
-import { useSelector } from "react-redux";
-import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/pedagogy-support/helpers";
+import {
+  UPPERSECONDARY_PEDAGOGYFORM,
+  COMPULSORY_PEDAGOGYFORM,
+} from "~/components/pedagogy-support/helpers";
+import PedagogyToolbar from "./components/pedagogy-toolbar";
+import { PDFViewer } from "@react-pdf/renderer";
+import PedagogyPDFUpperSecondary from "./pedagogy-PDF-uppersecondary";
+import PedagogyPDFCompulsory from "./pedagogy-PDF-compulsory";
 
 /**
  * LearningSupportProps
  */
 interface LearningSupportProps {
   userRole: UserRole;
+  studentUserEntityId: number;
+  studyProgrammeName: string;
 }
 
 /**
@@ -24,15 +31,29 @@ interface LearningSupportProps {
  * @returns JSX.Element
  */
 const PedagogySupport = (props: LearningSupportProps) => {
-  const status = useSelector((state: StateType) => state.status);
-
-  // Check if user is uppersecondary student
-  const isUppersecondary = UPPERSECONDARY_PEDAGOGYFORM.includes(
-    status.profile.studyProgrammeName
+  // Check if user's study programme is eligible for pedagogy form
+  const isEligibleForUpperSecondary = UPPERSECONDARY_PEDAGOGYFORM.includes(
+    props.studyProgrammeName
+  );
+  const isEligibleForCompulsory = COMPULSORY_PEDAGOGYFORM.includes(
+    props.studyProgrammeName
   );
 
-  const [activeTab, setActiveTab] = React.useState<string>("PEDAGOGY_FORM");
-  const usePedagogyValues = usePedagogy(status.userId, isUppersecondary);
+  // Merged condition for pedagogy form eligibility
+  const isEligibleForPedagogyForm =
+    isEligibleForUpperSecondary || isEligibleForCompulsory;
+
+  // Determine if user is upper secondary student based on eligibility
+  const isUppersecondary = isEligibleForUpperSecondary;
+
+  const [activeTab, setActiveTab] = React.useState<string>(
+    "IMPLEMENTED_ACTIONS"
+  );
+  const [showPDF, setShowPDF] = React.useState(false);
+  const usePedagogyValues = usePedagogy(
+    props.studentUserEntityId,
+    isUppersecondary
+  );
 
   /**
    * Handles tab change
@@ -42,30 +63,45 @@ const PedagogySupport = (props: LearningSupportProps) => {
     setActiveTab(id);
   };
 
-  const learningSupportTabs: Tab[] = [
+  const pedagogySupportTabs: Tab[] = [
     {
       id: "IMPLEMENTED_ACTIONS",
       name: "Toteutetut tukitoimet",
-      type: "learning-support",
+      type: "pedagogy-support",
       component: (
         <>
           <h1>Toteutetut tukitoimet</h1>
         </>
       ),
     },
-    {
+  ];
+
+  // Only add pedagogy form tab if:
+  // 1. Study programme is eligible for pedagogy form
+  // 2. Pedagogy form is created
+  if (isEligibleForPedagogyForm && usePedagogyValues.pedagogyForm.created) {
+    pedagogySupportTabs.push({
       id: "PEDAGOGY_FORM",
       name: "Pedagogisen tuen lomake",
-      type: "learning-support",
+      type: "pedagogy-support",
       component: (
         <PedagogicalSupportForm
           userRole={props.userRole}
-          studentUserEntityId={status.userId}
+          studentUserEntityId={props.studentUserEntityId}
           isUppersecondary={isUppersecondary}
         />
       ),
-    },
-  ];
+    });
+  }
+
+  // Show PDF if:
+  // 1. Study programme is eligible for pedagogy form
+  // 2. Pedagogy form is created
+  // 3. Show PDF is toggled on
+  const showPdf =
+    isEligibleForPedagogyForm &&
+    usePedagogyValues.pedagogyForm.created &&
+    showPDF;
 
   return (
     <PedagogyProvider
@@ -75,12 +111,24 @@ const PedagogySupport = (props: LearningSupportProps) => {
         ...usePedagogyValues,
       }}
     >
-      <Tabs
-        modifier="pedagogy-support"
-        tabs={learningSupportTabs}
-        onTabChange={handleTabChange}
-        activeTab={activeTab}
-      />
+      <PedagogyToolbar showPDF={showPDF} setShowPDF={setShowPDF} />
+
+      {showPdf ? (
+        <PDFViewer className="pedagogy-form__pdf">
+          {isUppersecondary ? (
+            <PedagogyPDFUpperSecondary />
+          ) : (
+            <PedagogyPDFCompulsory />
+          )}
+        </PDFViewer>
+      ) : (
+        <Tabs
+          modifier="pedagogy-support"
+          tabs={pedagogySupportTabs}
+          onTabChange={handleTabChange}
+          activeTab={activeTab}
+        />
+      )}
     </PedagogyProvider>
   );
 };

@@ -211,7 +211,11 @@ class StudiesApplication extends React.Component<
         type: "pedagogy-form",
         component: (
           <ApplicationPanelBody modifier="tabs">
-            <PedagogySupport userRole="STUDENT" />
+            <PedagogySupport
+              userRole="STUDENT"
+              studentUserEntityId={this.props.status.userId}
+              studyProgrammeName={this.props.status.profile.studyProgrammeName}
+            />
           </ApplicationPanelBody>
         ),
       },

@@ -2,7 +2,6 @@ import * as React from "react";
 import { Step1, Step2, Step3, Step5, Step6 } from "./steps/uppersecondary";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
-import { PDFViewer } from "@react-pdf/renderer";
 import AnimatedStep from "~/components/general/wizard/AnimateStep";
 import Wizard, { WizardStep } from "~/components/general/wizard";
 import { useWizard } from "~/components/general/wizard/hooks/useWizard";
@@ -11,8 +10,6 @@ import { WizardProvider } from "~/components/general/wizard/context/wizard-conte
 import "~/sass/elements/pedagogy.scss";
 import { UserRole } from "~/@types/pedagogy-form";
 import { useTranslation } from "react-i18next";
-import PedagogyToolbar from "../components/pedagogy-toolbar";
-import PedagogyPDF from "../pedagogy-PDF";
 import PedagogyFormWizardHeader from "../components/pedagogy-form-wizard-header";
 import PedagogyFormWizardFooter from "../components/pedagogy-form-wizard-footer";
 import { useUpperSecondaryForm } from "../hooks/useUppersecondaryForm";
@@ -39,7 +36,6 @@ const UpperSecondaryPedagogicalSupportWizardForm = (
   const { t } = useTranslation(["pedagogySupportPlan"]);
 
   const { loading, pedagogyForm } = useUpperSecondaryForm();
-  const [showPDF, setShowPDF] = React.useState(false);
 
   const previousStep = React.useRef<number>(0);
 
@@ -110,8 +106,6 @@ const UpperSecondaryPedagogicalSupportWizardForm = (
           </OverlayComponent>
         ) : null}
 
-        <PedagogyToolbar showPDF={showPDF} setShowPDF={setShowPDF} />
-
         <div className="pedagogy-form__container">
           {pedagogyForm && pedagogyForm.state === "INACTIVE" ? (
             <OverlayComponent>
@@ -132,18 +126,12 @@ const UpperSecondaryPedagogicalSupportWizardForm = (
             </OverlayComponent>
           ) : null}
 
-          {showPDF ? (
-            <PDFViewer className="pedagogy-form__pdf">
-              <PedagogyPDF data={pedagogyForm} />
-            </PDFViewer>
-          ) : (
-            <Wizard
-              modifiers={["pedagogy-form"]}
-              header={<PedagogyFormWizardHeader />}
-              footer={<PedagogyFormWizardFooter />}
-              wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
-            />
-          )}
+          <Wizard
+            modifiers={["pedagogy-form"]}
+            header={<PedagogyFormWizardHeader />}
+            footer={<PedagogyFormWizardFooter />}
+            wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
+          />
         </div>
       </div>
     </WizardProvider>
