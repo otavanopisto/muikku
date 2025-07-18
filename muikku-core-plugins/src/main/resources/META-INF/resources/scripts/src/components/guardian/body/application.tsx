@@ -376,7 +376,13 @@ class DependantApplication extends React.Component<
         type: "pedagogy-form",
         component: (
           <ApplicationPanelBody modifier="tabs">
-            <PedagogySupport userRole="STUDENT_PARENT" />
+            <PedagogySupport
+              userRole="STUDENT_PARENT"
+              studentUserEntityId={selectedDependantUserEntityId}
+              studyProgrammeName={this.getDependantStudyProgramme(
+                selectedDependantIdentifier
+              )}
+            />
           </ApplicationPanelBody>
         ),
       },
