@@ -37,7 +37,6 @@ import {
 } from "~/actions/main-function/hops/";
 import { HopsState } from "~/reducers/hops";
 import PedagogySupport from "~/components/pedagogy-support";
-import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/pedagogy-support/helpers";
 
 export type tabs =
   | "STUDIES"
@@ -174,9 +173,6 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
   if (
     guider.currentStudent &&
     guider.currentStudent.basic &&
-    UPPERSECONDARY_PEDAGOGYFORM.includes(
-      guider.currentStudent.basic.studyProgrammeName
-    ) &&
     guider.currentStudent.pedagogyFormAvailable &&
     guider.currentStudent.pedagogyFormAvailable.accessible
   ) {

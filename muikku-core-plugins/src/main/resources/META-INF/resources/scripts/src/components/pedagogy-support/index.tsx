@@ -11,11 +11,12 @@ import {
 import PedagogyToolbar from "./components/pedagogy-toolbar";
 import PedagogyPDFUpperSecondary from "./pedagogy-PDF-uppersecondary";
 import PedagogyPDFCompulsory from "./pedagogy-PDF-compulsory";
+import ImplementedSupportActions from "./implemented-support-form";
 
 /**
  * LearningSupportProps
  */
-interface LearningSupportProps {
+interface PedagogySupportProps {
   userRole: UserRole;
   studentUserEntityId: number;
   studyProgrammeName: string;
@@ -29,7 +30,7 @@ interface LearningSupportProps {
  * @param props props
  * @returns JSX.Element
  */
-const PedagogySupport = (props: LearningSupportProps) => {
+const PedagogySupport = (props: PedagogySupportProps) => {
   // Check if user's study programme is eligible for pedagogy form
   const isEligibleForUpperSecondary = UPPERSECONDARY_PEDAGOGYFORM.includes(
     props.studyProgrammeName
@@ -67,11 +68,7 @@ const PedagogySupport = (props: LearningSupportProps) => {
       id: "IMPLEMENTED_ACTIONS",
       name: "Toteutetut tukitoimet",
       type: "pedagogy-support",
-      component: (
-        <>
-          <h1>Toteutetut tukitoimet</h1>
-        </>
-      ),
+      component: <ImplementedSupportActions />,
     },
   ];
 
@@ -102,6 +99,40 @@ const PedagogySupport = (props: LearningSupportProps) => {
     usePedagogyValues?.pedagogyForm?.created &&
     showPDF;
 
+  /**
+   * Content
+   * @returns JSX.Element
+   */
+  const pedagogySupportContent = () => {
+    // Check if pedagogy form is included in tabs
+    const pedagogyFormExists =
+      pedagogySupportTabs.find((tab) => tab.id === "PEDAGOGY_FORM") !==
+      undefined;
+
+    // If pedagogy form exists, show PDF or tabs
+    if (pedagogyFormExists) {
+      if (showPdf) {
+        if (isUppersecondary) {
+          return <PedagogyPDFUpperSecondary />;
+        }
+
+        return <PedagogyPDFCompulsory />;
+      }
+
+      return (
+        <Tabs
+          modifier="pedagogy-support"
+          tabs={pedagogySupportTabs}
+          onTabChange={handleTabChange}
+          activeTab={activeTab}
+        />
+      );
+    }
+
+    // If pedagogy form does not exist, show implemented support actions
+    return <ImplementedSupportActions />;
+  };
+
   return (
     <PedagogyProvider
       value={{
@@ -112,20 +143,7 @@ const PedagogySupport = (props: LearningSupportProps) => {
     >
       <PedagogyToolbar showPDF={showPDF} setShowPDF={setShowPDF} />
 
-      {showPdf ? (
-        isUppersecondary ? (
-          <PedagogyPDFUpperSecondary />
-        ) : (
-          <PedagogyPDFCompulsory />
-        )
-      ) : (
-        <Tabs
-          modifier="pedagogy-support"
-          tabs={pedagogySupportTabs}
-          onTabChange={handleTabChange}
-          activeTab={activeTab}
-        />
-      )}
+      {pedagogySupportContent()}
     </PedagogyProvider>
   );
 };

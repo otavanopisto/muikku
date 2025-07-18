@@ -18,9 +18,7 @@ import { useTranslation } from "react-i18next";
 /**
  * ImplementedSupportActionsProps
  */
-interface ImplementedSupportActionsProps {
-  status: StatusType;
-}
+interface ImplementedSupportActionsProps {}
 
 /**
  * ImplementedSupportActions
@@ -32,11 +30,8 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
   props
 ) => {
   const { t } = useTranslation("pedagogySupportPlan");
-  const { status } = props;
   const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
   const { userRole, editIsActive } = usePedagogyContext();
-
-  return <></>;
 
   // /**
   //  * Handles support reason select change
@@ -113,25 +108,25 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
   //   </div>
   // );
 
-  // return (
-  //   <section className="hops-container">
-  //     <fieldset className="hops-container__fieldset">
-  //       <legend className="hops-container__subheader">
-  //         {t("labels.implementedActions", { ns: "pedagogySupportPlan" })}
-  //       </legend>
+  return (
+    <section className="hops-container">
+      <fieldset className="hops-container__fieldset">
+        <legend className="hops-container__subheader">
+          {t("labels.implementedActions", { ns: "pedagogySupportPlan" })}
+        </legend>
 
-  //       <ImplementedActionsList>
-  //         {implementedActions}
-  //         {userRole !== "STUDENT" && userRole !== "STUDENT_PARENT" && (
-  //           <AddNewActionsBox
-  //             onClick={handleAddNewSupportAction}
-  //             disabled={!editIsActive}
-  //           />
-  //         )}
-  //       </ImplementedActionsList>
-  //     </fieldset>
-  //   </section>
-  // );
+        {/* <ImplementedActionsList>
+          {implementedActions}
+          {userRole !== "STUDENT" && userRole !== "STUDENT_PARENT" && (
+            <AddNewActionsBox
+              onClick={handleAddNewSupportAction}
+              disabled={!editIsActive}
+            />
+          )}
+        </ImplementedActionsList> */}
+      </fieldset>
+    </section>
+  );
 };
 
 export default ImplementedSupportActions;
