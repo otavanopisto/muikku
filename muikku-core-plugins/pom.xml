@@ -302,6 +302,49 @@
           </dependency>
         </dependencies>
       </plugin>
+    
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+        <version>6.6.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/META-INF/resources/swagger.yaml</inputSpec>
+              <!-- Generate for Java/resteasy -->
+              <generatorName>java</generatorName>
+              <library>resteasy</library>
+              
+              <!-- Package and name suffix for the generated model files -->
+              <modelPackage>fi.otavanopisto.muikku.rest.model</modelPackage>
+              <modelNameSuffix>RestModel</modelNameSuffix>
+              
+              <!-- Generate only models, disable everything else -->
+              <generateApis>false</generateApis>
+              <generateModels>true</generateModels>
+              <generateModelDocumentation>false</generateModelDocumentation>
+              <generateModelTests>false</generateModelTests>
+              <generateSupportingFiles>false</generateSupportingFiles>
+
+              <modelsToGenerate>UserWhoAmI,UserWhoAmIServices,UserWhoAmIServices_chat,LocaleType,Role</modelsToGenerate>
+              
+              <configOptions>
+                <!-- Use root: target/generated-sources/openapi -->
+                <sourceFolder>.</sourceFolder>
+
+                <!-- Date library to use -->
+                <dateLibrary>java11</dateLibrary>
+
+                <!-- Disable openapis own classes -->
+                <openApiNullable>false</openApiNullable>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
         <groupId>com.github.eirslett</groupId>
