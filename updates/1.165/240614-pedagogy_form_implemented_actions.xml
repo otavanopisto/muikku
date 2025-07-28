@@ -9,4 +9,7 @@
       primary key (id)
     );
   </sql>
+  <sql>
+    alter table PedagogyForm drop column state;
+  </sql>
 </update> 

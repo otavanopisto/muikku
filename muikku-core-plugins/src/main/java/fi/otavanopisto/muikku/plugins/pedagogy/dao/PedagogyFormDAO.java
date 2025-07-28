@@ -7,28 +7,21 @@ import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm_;
 
 public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
 
   private static final long serialVersionUID = -27331130177561637L;
   
-  public PedagogyForm create(Long userEntityId, String formData, PedagogyFormState state, String visibility) {
+  public PedagogyForm create(Long userEntityId, String formData, String visibility) {
     PedagogyForm form = new PedagogyForm();
     form.setFormData(formData);
-    form.setState(state);
     form.setUserEntityId(userEntityId);
     return persist(form);
   }
   
   public PedagogyForm updateFormData(PedagogyForm form, String formData) {
     form.setFormData(formData);
-    return persist(form);
-  }
-  
-  public PedagogyForm updateState(PedagogyForm form, PedagogyFormState state) {
-    form.setState(state);
     return persist(form);
   }
   

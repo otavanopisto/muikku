@@ -2,8 +2,6 @@ package fi.otavanopisto.muikku.plugins.pedagogy.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,14 +29,6 @@ public class PedagogyForm {
   public void setFormData(String formData) {
     this.formData = formData;
   }
-
-  public PedagogyFormState getState() {
-    return state;
-  }
-
-  public void setState(PedagogyFormState state) {
-    this.state = state;
-  }
   
   public Long getUserEntityId() {
     return userEntityId;
@@ -60,10 +50,5 @@ public class PedagogyForm {
   @NotNull
   @Column(nullable = false)
   private String formData;
-  
-  @NotNull
-  @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  private PedagogyFormState state;
 
 }

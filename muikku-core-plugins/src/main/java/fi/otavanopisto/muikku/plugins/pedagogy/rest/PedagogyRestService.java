@@ -38,7 +38,6 @@ import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormImplementedActions;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
@@ -192,67 +191,6 @@ public class PedagogyRestService {
     // Form data update
     
     form = pedagogyController.updateFormData(form, payload.getFormData(), payload.getFields(), payload.getDetails(), sessionController.getLoggedUserEntity().getId());
-    
-    return Response.ok(toRestModel(form)).build();
-  }
-  
-  /**
-   * mApi().pedagogy.form.state.read(123);
-   */
-  @Path("/form/{USERENTITYID}/state")
-  @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getFormState(@PathParam("USERENTITYID") Long userEntityId) {
-
-    // Access check
-    
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ);
-    if (!access.isAccessible()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntityId);
-    return Response.ok(form == null ? PedagogyFormState.INACTIVE : form.getState()).build();
-  }
-
-  /**
-   * mApi().pedagogy.form.state.update(123, {state: String});
-   */
-  @Path("/form/{USERENTITYID}/state")
-  @PUT
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateState(@PathParam("USERENTITYID") Long userEntityId, PedagogyFormStatePayload payload) {
-    
-    // Payload validation
-    
-    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntityId);
-    if (form == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntityId)).build();
-    }
-    
-    // Access check
-    
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.WRITE);
-    if (!access.isAccessible()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    // Valid change; only supports ACTIVE -> PENDING by staff and PENDING -> APPROVED by form student
-    
-    boolean validChange = false;
-    if (payload.getState() == PedagogyFormState.PENDING) {
-      validChange = form.getState() == PedagogyFormState.ACTIVE; 
-    }
-    else if (payload.getState() == PedagogyFormState.APPROVED) {
-      validChange = form.getState() == PedagogyFormState.PENDING && sessionController.getLoggedUserEntity().getId().equals(form.getUserEntityId()); 
-    }
-    if (!validChange) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid state change").build();
-    }
-    
-    // State update
-    
-    form = pedagogyController.updateState(form, payload.getState(), sessionController.getLoggedUserEntity().getId());
     
     return Response.ok(toRestModel(form)).build();
   }
@@ -460,7 +398,6 @@ public class PedagogyRestService {
     if (form != null) {
       model.setFormData(form.getFormData());
       model.setId(form.getId());
-      model.setState(form.getState());
 
 
       // Form history
@@ -500,7 +437,6 @@ public class PedagogyRestService {
       model.setHistory(historyModelList);
     }
     else {
-      model.setState(PedagogyFormState.INACTIVE);
       model.setHistory(Collections.emptyList());
     }
     
@@ -587,11 +523,11 @@ public class PedagogyRestService {
       }
       
       // Form is always accessible to admins and special education teachers but also to other related staff,
-      // if the form exists and form state is approved by student
+      // if the form exists
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
       accessible = isAdmin || specEdTeacher || (studentParent && accessType == PedagogyFormAccessType.READ);
-      if (!accessible && form != null && form.getState() == PedagogyFormState.APPROVED) {
+      if (!accessible && form != null) {
         accessible = relation.isGuidanceCounselor() || courseTeacher;
       }
     }
