@@ -7237,62 +7237,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-
-  /rest/pedagogy/form/{userEntityId}/state:
-    get:
-      operationId: getPedagogyFormState
-      summary: Get pedagogy form state
-      description: Get pedagogy form state
-      tags:
-        - Pedagogy
-      parameters:
-        - name: userEntityId
-          in: path
-          description: Student user entity id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Pedagogy form state
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PedagogyFormState"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
-    put:
-      operationId: updatePedagogyFormState
-      summary: Update pedagogy form state
-      description: Update pedagogy form state
-      tags:
-        - Pedagogy
-      parameters:
-        - name: userEntityId
-          in: path
-          description: Student user entity id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/PedagogyFormStateUpdateRequestBody"
-      responses:
-        "200":
-          description: Pedagogy form state updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PedagogyForm"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
+  
   /rest/pedagogy/form/{userEntityId}/workspaces:
     get:
       operationId: getPedagogyFormWorkspaces
@@ -12019,19 +11964,6 @@ components:
               details:
                 nullable: true
                 type: string
-
-    PedagogyFormStateUpdateRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            description: PedagogyFormStateUpdateRequestBody object
-            required:
-              - state
-            properties:
-              state:
-                $ref: "#/components/schemas/PedagogyFormState"
       
     PedagogyFormImplementedActionsRequestBody:
       required: true
@@ -15939,14 +15871,6 @@ components:
         studentParent:
           type: boolean
 
-    PedagogyFormState:
-      type: string
-      enum:
-        - PENDING
-        - APPROVED
-        - ACTIVE
-        - INACTIVE
-
     PedagogyHistoryEntryType:
       type: string
       enum:
@@ -16043,7 +15967,6 @@ components:
         - ownerId
         - ownerInfo
         - id
-        - state
         - studentInfo
         - history
         - visibility
@@ -16069,11 +15992,6 @@ components:
           type: integer
           format: int64
           nullable: true
-        state:
-          description: State of the form
-          example: "PENDING | APPROVED | NOT_SENT | INACTIVE"
-          allOf:
-            - $ref: "#/components/schemas/PedagogyFormState"
         studentInfo:
           description: Student information. Data is automatically filled in from the student's profile and can not be changed in the form
           allOf:
