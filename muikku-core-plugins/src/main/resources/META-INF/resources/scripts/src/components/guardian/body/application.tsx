@@ -19,9 +19,8 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
-import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/general/pedagogical-support-form";
+import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/pedagogy-support/helpers";
 import { withTranslation, WithTranslation } from "react-i18next";
-import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
 import MApi from "~/api/api";
 import { PedagogyFormState } from "~/generated/client";
 import { getName } from "~/util/modifiers";
@@ -38,6 +37,7 @@ import {
   LoadStudentAccessTriggerType,
 } from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
+import PedagogySupport from "~/components/pedagogy-support";
 /**
  * StudiesTab
  */
@@ -376,9 +376,12 @@ class DependantApplication extends React.Component<
         type: "pedagogy-form",
         component: (
           <ApplicationPanelBody modifier="tabs">
-            <UpperSecondaryPedagogicalSupportWizardForm
+            <PedagogySupport
               userRole="STUDENT_PARENT"
               studentUserEntityId={selectedDependantUserEntityId}
+              studyProgrammeName={this.getDependantStudyProgramme(
+                selectedDependantIdentifier
+              )}
             />
           </ApplicationPanelBody>
         ),

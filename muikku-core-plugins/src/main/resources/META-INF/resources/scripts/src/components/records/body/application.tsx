@@ -20,10 +20,10 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
-import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
 import MApi from "~/api/api";
 import { PedagogyFormState } from "~/generated/client";
 import { Action, Dispatch } from "redux";
+import PedagogySupport from "~/components/pedagogy-support";
 
 /**
  * StudiesApplicationProps
@@ -206,14 +206,15 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "PEDAGOGY_FORM",
-        name: t("labels.title", { ns: "pedagogySupportPlan" }),
+        name: "Oppimisen tuki",
         hash: "pedagogy-form",
         type: "pedagogy-form",
         component: (
           <ApplicationPanelBody modifier="tabs">
-            <UpperSecondaryPedagogicalSupportWizardForm
+            <PedagogySupport
               userRole="STUDENT"
               studentUserEntityId={this.props.status.userId}
+              studyProgrammeName={this.props.status.profile.studyProgrammeName}
             />
           </ApplicationPanelBody>
         ),

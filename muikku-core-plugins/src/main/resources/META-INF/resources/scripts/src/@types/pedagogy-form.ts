@@ -1,5 +1,7 @@
 import { PedagogyWorkspace } from "~/generated/client";
 
+export type PedagogyFormType = "compulsory" | "upperSecondary";
+
 // used for frontend logic
 const useRoles = [
   "STUDENT",
@@ -27,6 +29,7 @@ const supportActions = [
   "extraTime",
   "scheduledStudies",
   "routedStudies",
+  "linguisticAssistance",
   "other",
 ] as const;
 
@@ -39,6 +42,10 @@ const matriculationExaminationSupport = [
   "assistant",
   "assistedPrintAndScan",
   "limitedAudioMaterial",
+  "fontSizeIncrease",
+  "largerDisplay",
+  "adjustableWorkstation",
+  "visionImpairedExamArrangement",
   "other",
 ] as const;
 
@@ -144,6 +151,10 @@ export interface FormData {
    */
   supportActionOther?: string;
   /**
+   * Support actions that have been implemented
+   */
+  supportActionsImplemented: SupportActionImplementation[];
+  /**
    * Support plan for the matriculation examination
    */
   matriculationExaminationSupport: SupportActionMatriculationExamination[];
@@ -151,10 +162,6 @@ export interface FormData {
    * Some other support plan for the matriculation examination
    */
   matriculationExaminationSupportOther?: string;
-  /**
-   * Support actions that have been implemented
-   */
-  supportActionsImplemented: SupportActionImplementation[];
   /**
    * The student's opinion of the support
    */
@@ -164,3 +171,118 @@ export interface FormData {
    */
   schoolOpinionOfSupport?: Opinion[];
 }
+
+/**
+ * FormData JSON object with type definitions
+ */
+export interface CompulsoryFormData {
+  /**
+   * Form type
+   */
+  formType: PedagogyFormType;
+  /**
+   * Teacher or teachers responsible for the document
+   */
+  documentParticipants?: string;
+  /**
+   * Other participants in the document
+   */
+  cooperativePartners?: string;
+  /**
+   * The description of the student's strengths
+   */
+  studentStrengths?: string;
+  /**
+   * The description of the student's challenges
+   */
+  needOfSupport?: string;
+  /**
+   * Actions to support the student
+   */
+  supportActions: SupportAction[];
+  /**
+   * Some other support actions
+   */
+  supportActionOther?: string;
+  /**
+   * The student's opinion of the support
+   */
+  studentOpinionOfSupport?: Opinion[];
+  /**
+   * School's opinion of the support
+   */
+  schoolOpinionOfSupport?: Opinion[];
+}
+
+/**
+ * FormData JSON object with type definitions
+ */
+export interface UpperSecondaryFormData {
+  /**
+   * Form type
+   */
+  formType: PedagogyFormType;
+  /**
+   * Teacher or teachers responsible for the document
+   */
+  documentParticipants?: string;
+  /**
+   * Other participants in the document
+   */
+  cooperativePartners?: string;
+  /**
+   * The description of the student's strengths
+   */
+  studentStrengths?: string;
+  /**
+   * The description of the student's challenges
+   */
+  needOfSupport?: string;
+  /**
+   * Actions to support the student
+   */
+  supportActions: SupportAction[];
+  /**
+   * Some other support actions
+   */
+  supportActionOther?: string;
+  /**
+   * Support plan for the matriculation examination
+   */
+  matriculationExaminationSupport: SupportActionMatriculationExamination[];
+  /**
+   * Some other support plan for the matriculation examination
+   */
+  matriculationExaminationSupportOther?: string;
+  /**
+   * The student's opinion of the support
+   */
+  studentOpinionOfSupport?: Opinion[];
+  /**
+   * School's opinion of the support
+   */
+  schoolOpinionOfSupport?: Opinion[];
+}
+
+/**
+ * Union type for all form data
+ */
+export type PedagogyFormData = UpperSecondaryFormData | CompulsoryFormData;
+
+/**
+ * Checks if the form is a CompulsoryFormData
+ * @param form PedagogyFormData
+ * @returns boolean
+ */
+export const isCompulsoryForm = (
+  form: PedagogyFormData
+): form is CompulsoryFormData => form.formType === "compulsory";
+
+/**
+ * Checks if the form is a UpperSecondaryFormData
+ * @param form PedagogyFormData
+ * @returns boolean
+ */
+export const isUpperSecondaryForm = (
+  form: PedagogyFormData
+): form is UpperSecondaryFormData => form.formType === "upperSecondary";

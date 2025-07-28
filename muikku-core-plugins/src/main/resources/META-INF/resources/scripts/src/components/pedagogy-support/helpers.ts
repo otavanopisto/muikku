@@ -1,13 +1,27 @@
 import {
   CompulsoryFormData,
+  PedagogyFormData,
   SupportAction,
   SupportActionMatriculationExamination,
   SupportReason,
   UpperSecondaryFormData,
 } from "~/@types/pedagogy-form";
 import { PedagogyUserInfo } from "~/generated/client";
-import { OptionDefault } from "../react-select/types";
+import { OptionDefault } from "~/components/general/react-select/types";
 import i18n from "~/locales/i18n";
+
+// Visibility settings which study programmes have access to the form
+export const UPPERSECONDARY_PEDAGOGYFORM = [
+  "Nettilukio",
+  "Aikuislukio",
+  "Nettilukio/yksityisopiskelu (aineopintoina)",
+];
+
+export const COMPULSORY_PEDAGOGYFORM = [
+  "Nettiperuskoulu",
+  "Nettiperuskoulu/yksityisopiskelu",
+  "Aikuisten perusopetuksen päättövaihe",
+];
 
 /**
  * Is used to give correct translation for the list of edited fields
@@ -283,6 +297,40 @@ export function migrateUpperSecondaryData(
     studentOpinionOfSupport: oldData.studentOpinionOfSupport || [],
     schoolOpinionOfSupport: oldData.schoolOpinionOfSupport || [],
     // Note: supportActionsImplemented is excluded as requested
+  };
+}
+
+/**
+ * Initializes the pedagogy form data
+ * @param existingData existing data
+ * @param isUppersecondary is uppersecondary
+ * @returns initialized data
+ */
+export function initializePedagogyFormData(
+  existingData: string,
+  isUppersecondary: boolean
+): PedagogyFormData {
+  const baseForm = isUppersecondary
+    ? { ...initializeUpperSecondaryFormData() }
+    : { ...initializeCompulsoryFormData() };
+
+  // If there is no existing data or it is empty string, return base initial form
+  if (!existingData || existingData === "") return baseForm;
+
+  const existingDataForm = JSON.parse(existingData) as PedagogyFormData;
+
+  // If there is existing data, but it is old upper secondary form, return initialized upper secondary form
+  // that is initialized from old data
+  if (isUppersecondary && needsMigration(existingDataForm)) {
+    return {
+      ...baseForm,
+      ...migrateUpperSecondaryData(existingDataForm),
+    };
+  }
+
+  return {
+    ...baseForm,
+    ...existingDataForm,
   };
 }
 
