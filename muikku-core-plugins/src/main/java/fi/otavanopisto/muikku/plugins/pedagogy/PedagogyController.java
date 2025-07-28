@@ -83,15 +83,9 @@ public class PedagogyController {
   
   public PedagogyFormImplementedActions createFormForImplementedActions(Long userEntityId, String formData) {
 
-    // Default values for a new form
-
-    PedagogyFormState state = PedagogyFormState.ACTIVE;
-    //Long creator = sessionController.getLoggedUserEntity().getId();
-    String visibility = null;
-
     // Create form and a history entry about that having happened (doubles as the creator and creation date of the form)
 
-    PedagogyFormImplementedActions form = pedagogyFormImplementedActionsDAO.create(userEntityId, formData, state, visibility);
+    PedagogyFormImplementedActions form = pedagogyFormImplementedActionsDAO.create(userEntityId, formData);
 
     return form;
   }
@@ -109,83 +103,6 @@ public class PedagogyController {
     return pedagogyFormImplementedActionsDAO.findByUserEntityId(userEntityId);
   }
   
-  public PedagogyFormImplementedActions updateImplementedActionsState(PedagogyFormImplementedActions form, PedagogyFormState state) {
-
-    // State update
-
-    form = pedagogyFormImplementedActionsDAO.updateState(form, state);
-
-//    // Notification about student accepting the form
-//
-//    if (state == PedagogyFormState.APPROVED) {
-//      UserEntityName userEntityName = userEntityController.getName(sessionController.getLoggedUser(), true);
-//
-//
-//      List<SpecEdTeacher> specEdTeachers = userSchoolDataController.listStudentSpecEdTeachers(sessionController.getLoggedUser(), true, true);
-//      if (!specEdTeachers.isEmpty()) {
-//
-//        StringBuffer url = new StringBuffer();
-//        url.append(httpRequest.getScheme());
-//        url.append("://");
-//        url.append(httpRequest.getServerName());
-//        url.append("/guider#?c=");
-//        url.append(sessionController.getLoggedUser().toId());
-//
-//        String subject = localeController.getText(
-//            sessionController.getLocale(),
-//            "plugin.pedagogy.approval.subject",
-//            new String[] {userEntityName.getDisplayNameWithLine()});
-//
-//        String content = localeController.getText(
-//            sessionController.getLocale(),
-//            "plugin.pedagogy.approval.content",
-//            new String[] {userEntityName.getDisplayNameWithLine(), url.toString()});
-//
-//        for (SpecEdTeacher specEdTeacher : specEdTeachers) {
-//          String email = userEmailEntityController.getUserDefaultEmailAddress(specEdTeacher.getIdentifier(), false);
-//          mailer.sendMail(MailType.HTML,
-//              Arrays.asList(email),
-//              subject,
-//              content);
-//        }}
-//      }
-//    // Notification about pending form
-//
-//    else if (state == PedagogyFormState.PENDING) {
-//      UserEntityName staffName = userEntityController.getName(sessionController.getLoggedUser(), true);
-//      String staffMail = userEmailEntityController.getUserDefaultEmailAddress(sessionController.getLoggedUser(), false);
-//      UserEntity studentEntity = userEntityController.findUserEntityById(form.getUserEntityId());
-//      UserEntityName studentName = userEntityController.getName(studentEntity, true);
-//      String studentMail = userEmailEntityController.getUserDefaultEmailAddress(studentEntity, false);
-//
-//      StringBuffer url = new StringBuffer();
-//      url.append(httpRequest.getScheme());
-//      url.append("://");
-//      url.append(httpRequest.getServerName());
-//      url.append("/records#pedagogy-form");
-//
-//      String subject = localeController.getText(
-//          sessionController.getLocale(),
-//          "plugin.pedagogy.pending.subject",
-//          new String[] {});
-//
-//      String content = localeController.getText(
-//          sessionController.getLocale(),
-//          "plugin.pedagogy.pending.content",
-//          new String[] {studentName.getDisplayNameWithLine(), staffName.getDisplayName(), url.toString(), staffMail});
-//
-//      mailer.sendMail(MailType.HTML,
-//          Arrays.asList(studentMail),
-//          subject,
-//          content);
-//
-//    }
-
-    return form;
-  }
-
-    
-
   public PedagogyForm updateFormData(PedagogyForm form, String formData, List<String> modifiedFields, String details, Long modifierId) {
 
     // Form data update

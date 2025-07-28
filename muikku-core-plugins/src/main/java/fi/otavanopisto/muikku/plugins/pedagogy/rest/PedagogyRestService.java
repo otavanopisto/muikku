@@ -339,67 +339,6 @@ public class PedagogyRestService {
     return Response.ok(toRestModel(form, userEntityId)).build();
   }
   
-  /**
-   * mApi().pedagogy.form.implementedActions.state.read(123);
-   */
-  @Path("/form/implementedActions/{USERENTITYID}/state")
-  @GET
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getFormImplementedActionsState(@PathParam("USERENTITYID") Long userEntityId) {
-
-    // Access check
-    
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ);
-    if (!access.isAccessible()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntityId);
-    return Response.ok(form == null ? PedagogyFormState.INACTIVE : form.getState()).build();
-  }
-
-  /**
-   * mApi().pedagogy.form.implementedActions.state.update(123, {state: String});
-   */
-  @Path("/form/implementedActions/{USERENTITYID}/state")
-  @PUT
-  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateImplementedActionsState(@PathParam("USERENTITYID") Long userEntityId, PedagogyFormStatePayload payload) {
-    
-    // Payload validation
-    
-    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntityId);
-    if (form == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntityId)).build();
-    }
-    
-    // Access check
-    
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.WRITE);
-    if (!access.isAccessible()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-
-    // Valid change; only supports ACTIVE -> PENDING by staff and PENDING -> APPROVED by form student
-    
-    boolean validChange = false;
-    if (payload.getState() == PedagogyFormState.PENDING) {
-      validChange = form.getState() == PedagogyFormState.ACTIVE; 
-    }
-    else if (payload.getState() == PedagogyFormState.APPROVED) {
-      validChange = form.getState() == PedagogyFormState.PENDING && sessionController.getLoggedUserEntity().getId().equals(form.getUserEntityId()); 
-    }
-    if (!validChange) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid state change").build();
-    }
-    
-    // State update
-    
-    form = pedagogyController.updateImplementedActionsState(form, payload.getState());
-    
-    return Response.ok(toRestModel(form, userEntityId)).build();
-  }
-  
   @Path("/form/{USERENTITYID}/workspaces")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -572,26 +511,11 @@ public class PedagogyRestService {
   private PedagogyFormImplementedActionsRestModel toRestModel(PedagogyFormImplementedActions form, Long userEntityId) {
     PedagogyFormImplementedActionsRestModel model = new PedagogyFormImplementedActionsRestModel();
     
-    // Owner and student contact info
-    
-    UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
-    SchoolDataIdentifier identifier = studentEntity.defaultSchoolDataIdentifier();
-    UserContactInfo contactInfo = userController.getStudentContactInfo(identifier.getDataSource(), identifier.getIdentifier());
-    model.setStudentInfo(toMap(contactInfo));
-
-    
     model.setUserEntityId(userEntityId);
-    
-    // Normal fields
     
     if (form != null) {
       model.setFormData(form.getFormData());
       model.setId(form.getId());
-      model.setState(form.getState());
-
-    }
-    else {
-      model.setState(PedagogyFormState.INACTIVE);
     }
     
     return model;
