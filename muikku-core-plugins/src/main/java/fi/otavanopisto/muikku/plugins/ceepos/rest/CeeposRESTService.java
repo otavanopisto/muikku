@@ -10,10 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,7 +69,6 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchProvider;
-import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -1265,36 +1262,7 @@ public class CeeposRESTService {
     restOrder.setProduct(restProduct);
     restOrder.setState(order.getState());
     restOrder.setStudentIdentifier(order.getUserIdentifier());
-    UserEntity userEntity = userEntityController.findUserEntityById(order.getCreatorId());
-    restOrder.setCreator(toRestModel(userEntity.defaultSchoolDataIdentifier()));
     return restOrder;
-  }
-  
-  private CeeposOrderCreatorRestModel toRestModel(SchoolDataIdentifier identifier) {
-    SearchProvider elasticSearchProvider = getProvider("elastic-search");
-    SearchResult result = elasticSearchProvider.findUser(identifier, true);
-    if (result.getResults() == null || result.getResults().isEmpty()) {
-      return null;
-    }
-    Map<String, Object> userInfo = result.getResults().get(0);
-    CeeposOrderCreatorRestModel creator = new CeeposOrderCreatorRestModel();
-    creator.setEmail((String) userInfo.get("email"));
-    creator.setFirstName((String) userInfo.get("firstName"));
-    creator.setLastName((String) userInfo.get("lastName"));
-    creator.setId(identifier.toId());
-    creator.setUserEntityId(Long.valueOf(userInfo.get("userEntityId").toString()));
-    return creator;
-  }
-
-  private SearchProvider getProvider(String name) {
-    Iterator<SearchProvider> i = searchProviders.iterator();
-    while (i.hasNext()) {
-      SearchProvider provider = i.next();
-      if (name.equals(provider.getName())) {
-        return provider;
-      }
-    }
-    return null;
   }
 
 }
