@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
+import java.time.LocalDate;
+
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExam;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamEnrollment;
 import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamStudentStatus;
@@ -8,20 +10,20 @@ import fi.otavanopisto.muikku.schooldata.entity.MatriculationExamTerm;
 public class PyramusMatriculationExam implements MatriculationExam {
 
   @Override
-  public long getStarts() {
+  public LocalDate getStarts() {
     return startTime;
   }
   
-  public void setStarts(long startTime) {
+  public void setStarts(LocalDate startTime) {
     this.startTime = startTime;
   }
 
   @Override
-  public long getEnds() {
+  public LocalDate getEnds() {
     return endTime;
   }
   
-  public void setEnds(long endTime) {
+  public void setEnds(LocalDate endTime) {
     this.endTime = endTime;
   }
   
@@ -78,11 +80,20 @@ public class PyramusMatriculationExam implements MatriculationExam {
     this.enrollment = enrollment;
   }
 
+  public LocalDate getConfirmDate() {
+    return confirmDate;
+  }
+
+  public void setConfirmDate(LocalDate confirmDate) {
+    this.confirmDate = confirmDate;
+  }
+
   private long id;
   private Integer year;
   private MatriculationExamTerm term;
-  private long startTime;
-  private long endTime;
+  private LocalDate startTime;
+  private LocalDate endTime;
+  private LocalDate confirmDate;
   private boolean compulsoryEducationEligible;
   private MatriculationExamStudentStatus studentStatus;
   private PyramusMatriculationExamEnrollment enrollment;

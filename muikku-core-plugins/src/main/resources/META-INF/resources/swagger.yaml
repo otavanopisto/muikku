@@ -14441,8 +14441,13 @@ components:
           $ref: "#/components/schemas/MatriculationExamTerm"
         starts:
           type: string
+          format: date
         ends:
           type: string
+          format: date
+        confirmDate:
+          type: string
+          format: date
         compulsoryEducationEligible:
           type: boolean
         studentStatus:
@@ -14479,7 +14484,7 @@ components:
       required:
         - address
         - email
-        - guidanceCounselor
+        - guidanceCounselors
         - studyAdvisors
         - locality
         - name
@@ -14491,9 +14496,11 @@ components:
           type: string
         email:
           type: string
-        guidanceCounselor:
-          description: Name of the student's guidance counselor
-          type: string
+        guidanceCounselors:
+          description: List of Student's Guidance Counselors
+          type: array
+          items:
+            type: string
         studyAdvisors:
           description: List of Student's Study Advisors
           type: array
@@ -18388,3 +18395,4 @@ components:
           format: int32
         message:
           type: string
+
