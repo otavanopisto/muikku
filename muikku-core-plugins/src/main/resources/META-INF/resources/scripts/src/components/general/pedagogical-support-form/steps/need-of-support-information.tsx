@@ -32,7 +32,8 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
   props
 ) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
-  const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
+  const { formData, setPedagogyFormDataAndUpdateChangedFields } =
+    usePedagogyContext();
   const { userRole, editIsActive } = usePedagogyContext();
 
   /**
@@ -49,7 +50,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
     updatedFormData[key] = value;
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -72,7 +73,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.supportActionOther = undefined;
     }
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -97,7 +98,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.matriculationExaminationSupportOther = undefined;
     }
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   return (

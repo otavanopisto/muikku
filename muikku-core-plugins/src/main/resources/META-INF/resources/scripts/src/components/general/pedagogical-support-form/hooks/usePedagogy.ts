@@ -95,7 +95,9 @@ export const usePedagogy = (
    * setUpdatedFormData
    * @param updatedFormData updatedFormData
    */
-  const setFormDataAndUpdateChangedFields = (updatedFormData: FormData) => {
+  const setPedagogyFormDataAndUpdateChangedFields = (
+    updatedFormData: FormData
+  ) => {
     // Get old values from data
     const oldDataForm = {
       ...defaultFormData,
@@ -355,7 +357,7 @@ export const usePedagogy = (
     approveForm,
     updateFormData,
     studentUserEntityId,
-    setFormDataAndUpdateChangedFields,
+    setPedagogyFormDataAndUpdateChangedFields,
     setFormIsApproved,
     setExtraDetails,
     setEditIsActive,

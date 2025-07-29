@@ -29,7 +29,7 @@
 // ) => {
 //   const { t } = useTranslation("pedagogySupportPlan");
 //   const { status } = props;
-//   const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
+//   const { formData, setPedagogyFormDataAndUpdateChangedFields } = usePedagogyContext();
 //   const { userRole, editIsActive } = usePedagogyContext();
 
 //   /**
@@ -47,7 +47,7 @@
 //       date: new Date(),
 //     });
 
-//     setFormDataAndUpdateChangedFields(updatedFormData);
+//     setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
 //   };
 
 //   /**
@@ -59,7 +59,7 @@
 //     const updatedFormData: FormData = { ...formData };
 //     updatedFormData.supportActionsImplemented.splice(index, 1);
 
-//     setFormDataAndUpdateChangedFields(updatedFormData);
+//     setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
 //   };
 
 //   /**
@@ -83,7 +83,7 @@
 //       [key]: value,
 //     };
 
-//     setFormDataAndUpdateChangedFields(updatedFormData);
+//     setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
 //   };
 
 //   const implementedActions = (formData?.supportActionsImplemented &&

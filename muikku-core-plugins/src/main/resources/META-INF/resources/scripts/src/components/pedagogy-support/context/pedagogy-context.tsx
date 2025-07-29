@@ -49,15 +49,18 @@ function PedagogyProvider(props: PedagogyProviderProps) {
     ...value,
     // eslint-disable-next-line jsdoc/require-jsdoc
     getUpperSecondaryData: () => {
-      if (value.formData && isUpperSecondaryForm(value.formData)) {
-        return value.formData;
+      if (
+        value.pedagogyFormData &&
+        isUpperSecondaryForm(value.pedagogyFormData)
+      ) {
+        return value.pedagogyFormData;
       }
       return null;
     },
     // eslint-disable-next-line jsdoc/require-jsdoc
     getCompulsoryStudiesData: () => {
-      if (value.formData && isCompulsoryForm(value.formData)) {
-        return value.formData;
+      if (value.pedagogyFormData && isCompulsoryForm(value.pedagogyFormData)) {
+        return value.pedagogyFormData;
       }
       return null;
     },

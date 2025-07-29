@@ -6,14 +6,11 @@ import {
   ImplementedActionsList,
   ImplementedActionsListItem,
 } from "../components/implemented-actions";
-import {
-  FormData,
-  SupportActionImplementation,
-  UpperSecondaryFormData,
-} from "~/@types/pedagogy-form";
-import { StatusType } from "~/reducers/base/status";
 import { usePedagogyContext } from "../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { StateType } from "~/reducers";
+import { PedagogySupportActionImplemented } from "~/@types/pedagogy-form";
 
 /**
  * ImplementedSupportActionsProps
@@ -30,83 +27,77 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
   props
 ) => {
   const { t } = useTranslation("pedagogySupportPlan");
-  const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
-  const { userRole, editIsActive } = usePedagogyContext();
+  const status = useSelector((state: StateType) => state.status);
+  const {
+    implemetedSupportActionsFormData,
+    setImplemetedSupportActionsFormData,
+    editIsActive,
+  } = usePedagogyContext();
 
-  // /**
-  //  * Handles support reason select change
-  //  */
-  // const handleAddNewSupportAction = () => {
-  //   const updatedFormData: UpperSecondaryFormData = {
-  //     ...formData,
-  //   };
+  /**
+   * Handles adding new support action
+   */
+  const handleAddNewSupportAction = () => {
+    setImplemetedSupportActionsFormData((prev) => [
+      ...prev,
+      {
+        creatorIdentifier: status.userSchoolDataIdentifier,
+        creatorName: status.profile.displayName,
+        action: "remedialInstruction",
+        date: new Date(),
+      },
+    ]);
+  };
 
-  //   updatedFormData.supportActionsImplemented.push({
-  //     creatorIdentifier: status.userSchoolDataIdentifier,
-  //     creatorName: status.profile.displayName,
-  //     action: "remedialInstruction",
-  //     date: new Date(),
-  //   });
+  /**
+   * Handles removing a support action
+   * @param index index of the action to remove
+   */
+  const handleRemoveSupportAction = (index: number) => {
+    setImplemetedSupportActionsFormData((prev) =>
+      prev.filter((_, i) => i !== index)
+    );
+  };
 
-  //   setFormDataAndUpdateChangedFields(updatedFormData);
-  // };
+  /**
+   * Handles changing a support action
+   * @param index index of the action to change
+   * @param key key of the action to change
+   * @param value value of the action to change
+   */
+  const handleSupportActionChange = <
+    T extends keyof PedagogySupportActionImplemented,
+  >(
+    index: number,
+    key: T,
+    value: PedagogySupportActionImplemented[T]
+  ) => {
+    setImplemetedSupportActionsFormData((prev) =>
+      prev.map((a, i) => (i === index ? { ...a, [key]: value } : a))
+    );
+  };
 
-  // /**
-  //  * Handles support reason select change
-  //  *
-  //  * @param index index
-  //  */
-  // const handleDeleteSupportAction = (index: number) => {
-  //   const updatedFormData: FormData = { ...formData };
-  //   updatedFormData.supportActionsImplemented.splice(index, 1);
-
-  //   setFormDataAndUpdateChangedFields(updatedFormData);
-  // };
-
-  // /**
-  //  * Handles support reason select change
-  //  *
-  //  * @param index index
-  //  * @param key key
-  //  * @param value value
-  //  */
-  // const handleSupportActionChange = <
-  //   T extends keyof SupportActionImplementation,
-  // >(
-  //   index: number,
-  //   key: T,
-  //   value: SupportActionImplementation[T]
-  // ) => {
-  //   const updatedFormData: FormData = { ...formData };
-
-  //   updatedFormData.supportActionsImplemented[index] = {
-  //     ...updatedFormData.supportActionsImplemented[index],
-  //     [key]: value,
-  //   };
-
-  //   setFormDataAndUpdateChangedFields(updatedFormData);
-  // };
-
-  // const implementedActions = (formData?.supportActionsImplemented &&
-  //   formData?.supportActionsImplemented.length > 0 &&
-  //   formData?.supportActionsImplemented.map((iAction, index) => (
-  //     <ImplementedActionsListItem
-  //       implemenetedSupportAction={iAction}
-  //       key={index}
-  //       index={index}
-  //       ownerOfEntry={
-  //         status.userSchoolDataIdentifier === iAction.creatorIdentifier
-  //       }
-  //       onDeleteActionClick={handleDeleteSupportAction}
-  //       onActionChange={handleSupportActionChange}
-  //     />
-  //   ))) || (
-  //   <div className="empty">
-  //     <span>
-  //       {t("content.empty", { ns: "pedagogySupportPlan", context: "actions" })}
-  //     </span>
-  //   </div>
-  // );
+  // Implemented actions content
+  const implementedActionsContent = (implemetedSupportActionsFormData &&
+    implemetedSupportActionsFormData.length > 0 &&
+    implemetedSupportActionsFormData.map((iAction, index) => (
+      <ImplementedActionsListItem
+        implemenetedSupportAction={iAction}
+        key={index}
+        index={index}
+        ownerOfEntry={
+          iAction.creatorIdentifier === status.userSchoolDataIdentifier
+        }
+        onDeleteActionClick={handleRemoveSupportAction}
+        onActionChange={handleSupportActionChange}
+      />
+    ))) || (
+    <div className="empty">
+      <span>
+        {t("content.empty", { ns: "pedagogySupportPlan", context: "actions" })}
+      </span>
+    </div>
+  );
 
   return (
     <section className="hops-container">
@@ -115,15 +106,15 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
           {t("labels.implementedActions", { ns: "pedagogySupportPlan" })}
         </legend>
 
-        {/* <ImplementedActionsList>
-          {implementedActions}
-          {userRole !== "STUDENT" && userRole !== "STUDENT_PARENT" && (
+        <ImplementedActionsList>
+          {implementedActionsContent}
+          {editIsActive && (
             <AddNewActionsBox
               onClick={handleAddNewSupportAction}
               disabled={!editIsActive}
             />
           )}
-        </ImplementedActionsList> */}
+        </ImplementedActionsList>
       </fieldset>
     </section>
   );

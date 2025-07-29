@@ -36,7 +36,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     userRole,
     editIsActive,
     formData,
-    setFormDataAndUpdateChangedFields,
+    setPedagogyFormDataAndUpdateChangedFields,
   } = useUpperSecondaryForm();
 
   /**
@@ -53,7 +53,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
     updatedFormData[key] = value;
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -74,7 +74,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.supportActionOther = undefined;
     }
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -97,7 +97,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.matriculationExaminationSupportOther = undefined;
     }
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   return (

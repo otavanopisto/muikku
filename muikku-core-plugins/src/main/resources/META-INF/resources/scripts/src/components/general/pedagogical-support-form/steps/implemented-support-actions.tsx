@@ -29,7 +29,8 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
 ) => {
   const { t } = useTranslation("pedagogySupportPlan");
   const { status } = props;
-  const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
+  const { formData, setPedagogyFormDataAndUpdateChangedFields } =
+    usePedagogyContext();
   const { userRole, editIsActive } = usePedagogyContext();
 
   /**
@@ -47,7 +48,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
       date: new Date(),
     });
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -59,7 +60,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
     const updatedFormData: FormData = { ...formData };
     updatedFormData.supportActionsImplemented.splice(index, 1);
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -83,7 +84,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
       [key]: value,
     };
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   const implementedActions = (formData?.supportActionsImplemented &&

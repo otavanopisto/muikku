@@ -26,7 +26,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
     editIsActive,
     formData,
     pedagogyForm,
-    setFormDataAndUpdateChangedFields,
+    setPedagogyFormDataAndUpdateChangedFields,
   } = useUpperSecondaryForm();
 
   /**
@@ -43,7 +43,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
 
     updatedFormData[key] = value;
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   const ownerNameWithPhone = pedagogyForm

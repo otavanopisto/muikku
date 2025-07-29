@@ -24,7 +24,8 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
 ) => {
   const { t } = useTranslation("pedagogySupportPlan");
   const { status } = props;
-  const { formData, setFormDataAndUpdateChangedFields } = usePedagogyContext();
+  const { formData, setPedagogyFormDataAndUpdateChangedFields } =
+    usePedagogyContext();
   const { userRole, editIsActive } = usePedagogyContext();
 
   /**
@@ -42,7 +43,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       creationDate: new Date(),
     });
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -66,7 +67,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       [key]: value,
     };
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -78,7 +79,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     const updatedFormData: FormData = { ...formData };
     updatedFormData[type].splice(index, 1);
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   const studentOpinionEntries = (formData?.studentOpinionOfSupport &&

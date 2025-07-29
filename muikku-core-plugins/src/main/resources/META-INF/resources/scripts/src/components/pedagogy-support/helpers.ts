@@ -1,6 +1,7 @@
 import {
   CompulsoryFormData,
   PedagogyFormData,
+  PedagogySupportActionImplemented,
   SupportAction,
   SupportActionMatriculationExamination,
   SupportReason,
@@ -368,4 +369,21 @@ export function initializeCompulsoryFormData(): CompulsoryFormData {
     studentOpinionOfSupport: [],
     schoolOpinionOfSupport: [],
   };
+}
+
+/**
+ * Initializes the implemented support actions form data
+ * @param existingData existing data
+ * @returns initialized data
+ */
+export function initializeImplemetedSupportActionsFormData(
+  existingData: string
+): PedagogySupportActionImplemented[] {
+  if (!existingData || existingData === "") return [];
+
+  const existingDataForm = JSON.parse(
+    existingData
+  ) as PedagogySupportActionImplemented[];
+
+  return existingDataForm;
 }

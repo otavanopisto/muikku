@@ -16,6 +16,6 @@ export const useCompulsoryForm = () => {
   return {
     ...context,
     formData,
-    setFormData: context.setFormDataAndUpdateChangedFields,
+    setFormData: context.setPedagogyFormDataAndUpdateChangedFields,
   };
 };

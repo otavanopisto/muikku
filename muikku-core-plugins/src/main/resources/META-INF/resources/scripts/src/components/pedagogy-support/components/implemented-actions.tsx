@@ -6,7 +6,7 @@ import { Textarea } from "./textarea";
 import Button from "~/components/general/button";
 import Select from "react-select";
 import WorkspaceSelect from "./workspace-select";
-import { SupportActionImplementation } from "~/@types/pedagogy-form";
+import { PedagogySupportActionImplemented } from "~/@types/pedagogy-form";
 import { supportActionsOptions } from "../helpers";
 import { TextField } from "./textfield";
 import { usePedagogyContext } from "../context/pedagogy-context";
@@ -32,12 +32,12 @@ export const ImplementedActionsList: React.FC<ImplementedActionsListProps> = (
 interface ImplementedActionsListItemProps {
   index: number;
   ownerOfEntry: boolean;
-  implemenetedSupportAction: SupportActionImplementation;
+  implemenetedSupportAction: PedagogySupportActionImplemented;
   onDeleteActionClick?: (index: number) => void;
-  onActionChange?: <T extends keyof SupportActionImplementation>(
+  onActionChange?: <T extends keyof PedagogySupportActionImplemented>(
     index: number,
     key: T,
-    value: SupportActionImplementation[T]
+    value: PedagogySupportActionImplemented[T]
   ) => void;
 }
 

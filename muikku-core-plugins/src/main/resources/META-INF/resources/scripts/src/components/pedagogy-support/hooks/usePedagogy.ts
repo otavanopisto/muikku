@@ -8,6 +8,7 @@ import {
   isCompulsoryForm,
   isUpperSecondaryForm,
   PedagogyFormData,
+  PedagogySupportActionImplemented,
   UpperSecondaryFormData,
 } from "~/@types/pedagogy-form";
 import {
@@ -16,7 +17,10 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import _ from "lodash";
-import { initializePedagogyFormData } from "../helpers";
+import {
+  initializePedagogyFormData,
+  initializeImplemetedSupportActionsFormData,
+} from "../helpers";
 import { useDispatch } from "react-redux";
 
 export type UsePedagogyType = ReturnType<typeof usePedagogy>;
@@ -34,22 +38,58 @@ export const usePedagogy = (
 ) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [pedagogyFormImplementedActions, setPedagogyFormImplementedActions] =
-    React.useState<PedagogyFormImplementedActions | undefined>(undefined);
+
+  // Implemented support actions related state
+  const [pedagogySupportActions, setPedagogySupportActions] = React.useState<
+    PedagogyFormImplementedActions | undefined
+  >(undefined);
+  const [
+    implemetedSupportActionsFormData,
+    setImplemetedSupportActionsFormData,
+  ] = React.useState<PedagogySupportActionImplemented[]>([]);
+
+  // Pedagogy form related state
   const [pedagogyForm, setPedagogyForm] = React.useState<
     PedagogyForm | undefined
   >(undefined);
-  const [formData, setFormData] = React.useState<PedagogyFormData | undefined>(
-    undefined
-  );
+  const [pedagogyFormData, setPedagogyFormData] = React.useState<
+    PedagogyFormData | undefined
+  >(undefined);
   const [changedFields, setChangedFields] = React.useState<string[]>([]);
-  const [extraDetails, setExtraDetails] = React.useState<string>("");
+  const [pedagogyFormExtraDetails, setPedagogyFormExtraDetails] =
+    React.useState<string>("");
   const [editIsActive, setEditIsActive] = React.useState(false);
 
   const componentMounted = React.useRef(true);
 
-  // set loading to true after 5 seconds
+  // Check if the form exists
+  const pedagogyFormExists = React.useMemo(
+    () => pedagogyForm?.created !== null || false,
+    [pedagogyForm]
+  );
+
+  // Check if the implemented support actions form data exists
+  const implementedSupportActionsFormDataExists = React.useMemo(
+    () =>
+      (pedagogySupportActions?.formData !== null &&
+        pedagogySupportActions?.formData !== undefined &&
+        pedagogySupportActions?.formData !== "") ||
+      false,
+    [pedagogySupportActions]
+  );
+
+  // Check if the implemented support actions have changed
+  const implementedActionsHaveChanged = React.useMemo(
+    () =>
+      !_.isEqual(
+        initializeImplemetedSupportActionsFormData(
+          pedagogySupportActions?.formData
+        ),
+        implemetedSupportActionsFormData
+      ),
+    [implemetedSupportActionsFormData, pedagogySupportActions]
+  );
+
   React.useEffect(() => {
     /**
      * loadPedagogyFormImplementedActions
@@ -61,7 +101,12 @@ export const usePedagogy = (
         });
 
       if (componentMounted.current) {
-        setPedagogyFormImplementedActions(pedagogyFormImplementedActions);
+        setPedagogySupportActions(pedagogyFormImplementedActions);
+        setImplemetedSupportActionsFormData(
+          initializeImplemetedSupportActionsFormData(
+            pedagogyFormImplementedActions.formData
+          )
+        );
       }
     };
 
@@ -82,7 +127,7 @@ export const usePedagogy = (
               ...pedagogyData,
             });
 
-            setFormData(
+            setPedagogyFormData(
               initializePedagogyFormData(
                 pedagogyData.formData,
                 isUppersecondary
@@ -108,14 +153,25 @@ export const usePedagogy = (
   }, [dispatch, isUppersecondary, studentUserEntityId]);
 
   /**
-   * resetData
+   * resetPedagogyData
    */
-  const resetData = () => {
+  const resetPedagogyData = () => {
     unstable_batchedUpdates(() => {
       setEditIsActive(false);
-      setChangedFields([]);
-      setFormData(
-        initializePedagogyFormData(pedagogyForm.formData, isUppersecondary)
+
+      // If the form exists, reset the form data
+      if (pedagogyFormExists) {
+        setChangedFields([]);
+        setPedagogyFormData(
+          initializePedagogyFormData(pedagogyForm.formData, isUppersecondary)
+        );
+      }
+
+      // Implemented support actions are present by default always so we reset them
+      setImplemetedSupportActionsFormData(
+        initializeImplemetedSupportActionsFormData(
+          pedagogySupportActions.formData
+        )
       );
     });
   };
@@ -124,17 +180,17 @@ export const usePedagogy = (
    * setUpdatedFormData
    * @param updatedFormData updatedFormData
    */
-  const setFormDataAndUpdateChangedFields = (
+  const setPedagogyFormDataAndUpdateChangedFields = (
     updatedFormData: PedagogyFormData
   ) => {
     const changedValuesComparedToPrevious = getEditedFields(
-      formData,
+      pedagogyFormData,
       updatedFormData
     );
 
     unstable_batchedUpdates(() => {
       setChangedFields(changedValuesComparedToPrevious);
-      setFormData((previousData) => ({
+      setPedagogyFormData((previousData) => ({
         ...previousData,
         ...updatedFormData,
       }));
@@ -142,9 +198,9 @@ export const usePedagogy = (
   };
 
   /**
-   * activateForm
+   * activatePedagogyForm
    */
-  const activateForm = async () => {
+  const activatePedagogyForm = async () => {
     setLoading(true);
     try {
       const pedagogyData = await pedagogyApi.createPedagogyForm({
@@ -156,82 +212,9 @@ export const usePedagogy = (
 
       unstable_batchedUpdates(() => {
         setPedagogyForm(pedagogyData);
-        setFormData(
+        setPedagogyFormData(
           initializePedagogyFormData(pedagogyData.formData, isUppersecondary)
         );
-        setLoading(false);
-      });
-    } catch (err) {
-      setLoading(false);
-      dispatch(displayNotification(err.message, "error"));
-    }
-  };
-
-  /**
-   * sendToStudent
-   */
-  /* const sendToStudent = async () => {
-    setLoading(true);
-    try {
-      const updatedData = await updateStateToServer("PENDING");
-
-      unstable_batchedUpdates(() => {
-        setPedagogyForm(updatedData);
-        setLoading(false);
-        setEditIsActive(false);
-      });
-    } catch (err) {
-      setLoading(false);
-      dispatch(displayNotification(err.message, "error"));
-    }
-  }; */
-
-  /**
-   * approveForm
-   */
-  /* const approveForm = async () => {
-    setLoading(true);
-    try {
-      let updatedData = {
-        ...pedagogyForm,
-      };
-
-      updatedData = await updateStateToServer("APPROVED");
-
-      unstable_batchedUpdates(() => {
-        setPedagogyForm(updatedData);
-        setFormData((previousData) => ({
-          ...previousData,
-          ...JSON.parse(updatedData.formData),
-        }));
-        setLoading(false);
-      });
-    } catch (err) {
-      setLoading(false);
-      dispatch(displayNotification(err.message, "error"));
-    }
-  }; */
-
-  /**
-   * updateFormData
-   */
-  const updateFormData = async () => {
-    setLoading(true);
-    try {
-      const updatedData = await updateFormDataToServer(
-        changedFields.length > 0 ? changedFields : null,
-        extraDetails !== "" ? extraDetails : null
-      );
-
-      unstable_batchedUpdates(() => {
-        setEditIsActive(false);
-        setPedagogyForm(updatedData);
-        setFormData((previousData) => ({
-          ...previousData,
-          ...JSON.parse(updatedData.formData),
-        }));
-        setChangedFields([]);
-        setExtraDetails("");
         setLoading(false);
       });
     } catch (err) {
@@ -245,12 +228,12 @@ export const usePedagogy = (
    * @param fields fields
    * @param details details
    */
-  const updateFormDataToServer = async (
+  const updatePedagogyFormDataToServer = async (
     fields?: string[],
     details?: string
   ) => {
     let dataToUpdate = {
-      ...formData,
+      ...pedagogyFormData,
     };
 
     const oldData = {
@@ -312,31 +295,102 @@ export const usePedagogy = (
   };
 
   /**
-   * updateStateToServer
-   * @param state state
+   * updateImplementedActionsToServer
    */
-  /* const updateStateToServer = async (state: PedagogyFormState) =>
-    await pedagogyApi.updatePedagogyFormState({
+  const updateImplementedActionsToServer = async () => {
+    // If the implemented support actions form data does not exist initially, create it
+    if (!implementedSupportActionsFormDataExists) {
+      return await pedagogyApi.createPedagogyFormImplementedActions({
+        userEntityId: studentUserEntityId,
+        createPedagogyFormImplementedActionsRequest: {
+          formData: JSON.stringify(implemetedSupportActionsFormData),
+        },
+      });
+    }
+
+    // If the implemented support actions form data exists, update it
+    return await pedagogyApi.updatePedagogyFormDataImplementedActions({
       userEntityId: studentUserEntityId,
-      updatePedagogyFormStateRequest: {
-        state,
+      updatePedagogyFormDataImplementedActionsRequest: {
+        formData: JSON.stringify(implemetedSupportActionsFormData),
       },
-    }); */
+    });
+  };
+
+  /**
+   * saveAllData - Unified save function that handles both scenarios
+   */
+  const saveAllData = async () => {
+    setLoading(true);
+    try {
+      // Always save implemented actions if they have changed
+      if (implementedActionsHaveChanged) {
+        const updatedImplementedActions =
+          await updateImplementedActionsToServer();
+
+        unstable_batchedUpdates(() => {
+          setPedagogySupportActions(updatedImplementedActions);
+          setImplemetedSupportActionsFormData(
+            initializeImplemetedSupportActionsFormData(
+              updatedImplementedActions.formData
+            )
+          );
+        });
+      }
+
+      // Save pedagogy form data if it exists and has changes
+      if (pedagogyFormExists && changedFields.length > 0) {
+        const updatedPedagogyFormData = await updatePedagogyFormDataToServer(
+          changedFields,
+          pedagogyFormExtraDetails
+        );
+
+        unstable_batchedUpdates(() => {
+          setPedagogyForm(updatedPedagogyFormData);
+          setPedagogyFormData(
+            initializePedagogyFormData(
+              updatedPedagogyFormData.formData,
+              isUppersecondary
+            )
+          );
+        });
+      }
+
+      // Update local state
+      unstable_batchedUpdates(() => {
+        setEditIsActive(false);
+        setChangedFields([]);
+        setPedagogyFormExtraDetails("");
+        setLoading(false);
+      });
+    } catch (err) {
+      setLoading(false);
+      dispatch(displayNotification(err.message, "error"));
+    }
+  };
 
   return {
+    // Shared state
     loading,
-    pedagogyForm,
-    formData,
-    changedFields,
     editIsActive,
-    resetData,
-    activateForm,
-    // sendToStudent,
-    // approveForm,
-    updateFormData,
     studentUserEntityId,
-    setFormDataAndUpdateChangedFields,
-    setExtraDetails,
+    resetPedagogyData,
+    saveAllData,
+
+    // Implemented support actions related state
+    pedagogySupportActions,
+    implemetedSupportActionsFormData,
+    setImplemetedSupportActionsFormData,
+    implementedActionsHaveChanged,
+
+    // Pedagogy form related state
+    pedagogyFormExists,
+    pedagogyForm,
+    pedagogyFormData,
+    changedFields,
+    activatePedagogyForm,
+    setPedagogyFormDataAndUpdateChangedFields,
+    setPedagogyFormExtraDetails,
     setEditIsActive,
   };
 };
