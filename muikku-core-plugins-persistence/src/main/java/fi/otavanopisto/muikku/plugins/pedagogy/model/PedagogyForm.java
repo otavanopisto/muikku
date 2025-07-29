@@ -1,14 +1,16 @@
 package fi.otavanopisto.muikku.plugins.pedagogy.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
@@ -31,14 +33,6 @@ public class PedagogyForm {
   public void setFormData(String formData) {
     this.formData = formData;
   }
-
-  public PedagogyFormState getState() {
-    return state;
-  }
-
-  public void setState(PedagogyFormState state) {
-    this.state = state;
-  }
   
   public Long getUserEntityId() {
     return userEntityId;
@@ -46,6 +40,22 @@ public class PedagogyForm {
 
   public void setUserEntityId(Long userEntityId) {
     this.userEntityId = userEntityId;
+  }
+
+  public boolean isPublished() {
+    return published;
+  }
+
+  public void setPublished(boolean published) {
+    this.published = published;
+  }
+
+  public Date getPublishDate() {
+    return publishDate;
+  }
+
+  public void setPublishDate(Date publishDate) {
+    this.publishDate = publishDate;
   }
 
   @Id
@@ -63,7 +73,9 @@ public class PedagogyForm {
   
   @NotNull
   @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  private PedagogyFormState state;
+  private boolean published;
+  
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date publishDate;
 
 }

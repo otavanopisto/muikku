@@ -7238,37 +7238,11 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{userEntityId}/state:
-    get:
-      operationId: getPedagogyFormState
-      summary: Get pedagogy form state
-      description: Get pedagogy form state
-      tags:
-        - Pedagogy
-      parameters:
-        - name: userEntityId
-          in: path
-          description: Student user entity id
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Pedagogy form state
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PedagogyFormState"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
+  /rest/pedagogy/form/{userEntityId}/publish:
     put:
-      operationId: updatePedagogyFormState
-      summary: Update pedagogy form state
-      description: Update pedagogy form state
+      operationId: togglePublished
+      summary: Toggle published state
+      description: Toggle published state
       tags:
         - Pedagogy
       parameters:
@@ -7280,10 +7254,10 @@ paths:
             type: integer
             format: int64
       requestBody:
-        $ref: "#/components/requestBodies/PedagogyFormStateUpdateRequestBody"
+        $ref: "#/components/requestBodies/PedagogyFormDataUpdateDetailsRequestBody"
       responses:
         "200":
-          description: Pedagogy form state updated successfully
+          description: Pedagogy form field published updated successfully
           content:
             application/json:
               schema:
@@ -12019,20 +11993,27 @@ components:
                 nullable: true
                 type: string
 
-    PedagogyFormStateUpdateRequestBody:
+    PedagogyFormDataUpdateDetailsRequestBody:
       required: true
       content:
         application/json:
           schema:
             type: object
-            description: PedagogyFormStateUpdateRequestBody object
+            description: PedagogyFormDataUpdateRequestBody object
             required:
-              - state
+              - fields
+              - details
             properties:
-              state:
-                $ref: "#/components/schemas/PedagogyFormState"
+              fields:
+                nullable: true
+                type: array
+                items:
+                  type: string
+              details:
+                nullable: true
+                type: string
 
-    PedagogyFormImplementedActionsCreateRequestBody:
+    PedagogyFormImplementedActionsRequestBody:
       required: true
       content:
         application/json:
@@ -15951,14 +15932,6 @@ components:
         studentParent:
           type: boolean
 
-    PedagogyFormState:
-      type: string
-      enum:
-        - PENDING
-        - APPROVED
-        - ACTIVE
-        - INACTIVE
-
     PedagogyHistoryEntryType:
       type: string
       enum:
@@ -16055,12 +16028,13 @@ components:
         - ownerId
         - ownerInfo
         - id
-        - state
         - studentInfo
         - history
         - visibility
         - formData
         - created
+        - published
+        - publishDate
       properties:
         userEntityId:
           description: The id of the student
@@ -16081,11 +16055,6 @@ components:
           type: integer
           format: int64
           nullable: true
-        state:
-          description: State of the form
-          example: "PENDING | APPROVED | NOT_SENT | INACTIVE"
-          allOf:
-            - $ref: "#/components/schemas/PedagogyFormState"
         studentInfo:
           description: Student information. Data is automatically filled in from the student's profile and can not be changed in the form
           allOf:
@@ -16102,6 +16071,14 @@ components:
           type: string
         created:
           description: The date when the form was created
+          type: string
+          format: date-time
+          nullable: true
+        published:
+          description: Boolean indicating whether the form is published
+          type: boolean
+        publishDate:
+          description: The date when the form was published
           type: string
           format: date-time
           nullable: true
