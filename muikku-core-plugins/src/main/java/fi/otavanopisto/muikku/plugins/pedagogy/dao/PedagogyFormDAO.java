@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.pedagogy.dao;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -25,6 +27,12 @@ public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
     return persist(form);
   }
   
+  public PedagogyForm updatePublished(PedagogyForm form, boolean published, Date publishDate) {
+    form.setPublished(published);
+    form.setPublishDate(publishDate);
+    return persist(form);
+  }
+  
   public PedagogyForm findByUserEntityId(Long userEntityId) {
     EntityManager entityManager = getEntityManager();
     
@@ -35,6 +43,23 @@ public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(PedagogyForm_.userEntityId), userEntityId)
+      )
+    );
+
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public PedagogyForm findByUserEntityIdAndPublished(Long userEntityId) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<PedagogyForm> criteria = criteriaBuilder.createQuery(PedagogyForm.class);
+    Root<PedagogyForm> root = criteria.from(PedagogyForm.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(PedagogyForm_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(PedagogyForm_.published), Boolean.TRUE)
       )
     );
 

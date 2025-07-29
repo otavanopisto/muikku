@@ -7238,6 +7238,35 @@ paths:
         "500":
           description: Internal server error
   
+  /rest/pedagogy/form/{userEntityId}/publish:
+    put:
+      operationId: togglePublished
+      summary: Toggle published state
+      description: Toggle published state
+      tags:
+        - Pedagogy
+      parameters:
+        - name: userEntityId
+          in: path
+          description: Student user entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/PedagogyFormDataUpdateDetailsRequestBody"
+      responses:
+        "200":
+          description: Pedagogy form field published updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedagogyForm"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/pedagogy/form/{userEntityId}/workspaces:
     get:
       operationId: getPedagogyFormWorkspaces
@@ -11964,6 +11993,26 @@ components:
               details:
                 nullable: true
                 type: string
+    
+    PedagogyFormDataUpdateDetailsRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: PedagogyFormDataUpdateRequestBody object
+            required:
+              - fields
+              - details
+            properties:
+              fields:
+                nullable: true
+                type: array
+                items:
+                  type: string
+              details:
+                nullable: true
+                type: string
       
     PedagogyFormImplementedActionsRequestBody:
       required: true
@@ -15972,6 +16021,8 @@ components:
         - visibility
         - formData
         - created
+        - published
+        - publishDate
       properties:
         userEntityId:
           description: The id of the student
@@ -16008,6 +16059,14 @@ components:
           type: string
         created:
           description: The date when the form was created
+          type: string
+          format: date-time
+          nullable: true
+        published:
+          description: Boolean indicating whether the form is published
+          type: boolean
+        publishDate:
+          description: The date when the form was published
           type: string
           format: date-time
           nullable: true

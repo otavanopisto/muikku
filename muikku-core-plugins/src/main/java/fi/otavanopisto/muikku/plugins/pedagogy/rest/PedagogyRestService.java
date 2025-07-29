@@ -195,6 +195,34 @@ public class PedagogyRestService {
     return Response.ok(toRestModel(form)).build();
   }
   
+  @Path("/form/{USERENTITYID}/publish")
+  @PUT
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response togglePublished(@PathParam("USERENTITYID") Long userEntityId, PedagogyFormUpdatePayload payload) {
+    
+    // Payload validation
+    
+    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntityId);
+    if (form == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntityId)).build();
+    }
+
+    // Access check
+    
+    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE);
+    if (!access.isAccessible()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Form data update
+    
+    boolean published = pedagogyController.isPublished(userEntityId);
+    
+    form = pedagogyController.updatePublished(form, !published, payload.getFields(), payload.getDetails(), sessionController.getLoggedUserEntity().getId());
+    
+    return Response.ok(toRestModel(form)).build();
+  }
+  
   /**
    * mApi().pedagogy.form.implementedActions.create(123, {formData: String});
    */
@@ -398,6 +426,8 @@ public class PedagogyRestService {
     if (form != null) {
       model.setFormData(form.getFormData());
       model.setId(form.getId());
+      model.setPublished(form.isPublished());
+      model.setPublishDate(form.getPublishDate());
 
 
       // Form history

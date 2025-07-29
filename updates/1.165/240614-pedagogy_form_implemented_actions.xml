@@ -12,4 +12,10 @@
   <sql>
     alter table PedagogyForm drop column state;
   </sql>
+  <sql>
+    alter table PedagogyForm add column published bit(1) not null;
+  </sql>
+  <sql>
+    alter table PedagogyForm add column publishDate datetime;
+  </sql>
 </update> 

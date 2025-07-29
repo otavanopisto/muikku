@@ -86,9 +86,28 @@ public class PedagogyController {
 
     return form;
   }
+  
+  public PedagogyForm updatePublished(PedagogyForm form, boolean published, List<String> modifiedFields, String details, Long modifierId) {
 
+    // Form data update
+
+    pedagogyFormDAO.updatePublished(form, published, new Date());
+
+    // History entry about modify
+
+    String fieldStr = modifiedFields == null || modifiedFields.isEmpty() ? null
+        : String.join(",", modifiedFields.stream().map(Object::toString).collect(Collectors.toList()));
+    pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Suunnitelman näkyvyyttä muokattiin" : details, modifierId, fieldStr, PedagogyFormHistoryType.EDIT);
+
+    return form;
+  }
+  
   public PedagogyForm findFormByUserEntityId(Long userEntityId) {
     return pedagogyFormDAO.findByUserEntityId(userEntityId);
+  }
+
+  public PedagogyForm findFormByUserEntityIdAndPublished(Long userEntityId) {
+    return pedagogyFormDAO.findByUserEntityIdAndPublished(userEntityId);
   }
 
   public void createViewHistory(PedagogyForm form, Long modifierId) {
@@ -120,4 +139,7 @@ public class PedagogyController {
     return findFormByUserEntityId(userEntityId) != null;
   }
 
+  public boolean isPublished(Long userEntityId) {
+    return findFormByUserEntityIdAndPublished(userEntityId) != null;
+  }
 }
