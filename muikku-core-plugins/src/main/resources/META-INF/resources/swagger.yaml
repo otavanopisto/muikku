@@ -12013,7 +12013,7 @@ components:
                 nullable: true
                 type: string
 
-    PedagogyFormImplementedActionsRequestBody:
+    PedagogyFormImplementedActionsCreateRequestBody:
       required: true
       content:
         application/json:
