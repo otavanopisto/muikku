@@ -369,6 +369,33 @@ export const usePedagogy = (
     }
   };
 
+  /**
+   * togglePublishPedagogyForm
+   */
+  const togglePublishPedagogyForm = async () => {
+    try {
+      const updatedPedagogyFormData = await pedagogyApi.togglePublished({
+        userEntityId: studentUserEntityId,
+      });
+
+      unstable_batchedUpdates(() => {
+        setPedagogyForm(updatedPedagogyFormData);
+        setPedagogyFormData(
+          initializePedagogyFormData(
+            updatedPedagogyFormData.formData,
+            isUppersecondary
+          )
+        );
+      });
+    } catch (err) {
+      if (!isMApiError(err)) {
+        throw err;
+      }
+
+      dispatch(displayNotification(err.message, "error"));
+    }
+  };
+
   return {
     // Shared state
     loading,
@@ -392,6 +419,7 @@ export const usePedagogy = (
     setPedagogyFormDataAndUpdateChangedFields,
     setPedagogyFormExtraDetails,
     setEditIsActive,
+    togglePublishPedagogyForm,
   };
 };
 

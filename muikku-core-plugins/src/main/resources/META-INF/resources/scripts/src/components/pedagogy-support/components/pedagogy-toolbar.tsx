@@ -155,9 +155,11 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
       ) : null}
 
       {toolbarLogic.canActivateForm && (
-        <Button buttonModifiers={["success"]} onClick={activatePedagogyForm}>
-          {t("actions.activate", { ns: "common" })}
-        </Button>
+        <div className="pedagogy-form__toolbar-secondary">
+          <Button buttonModifiers={["success"]} onClick={activatePedagogyForm}>
+            {t("actions.activate", { ns: "common" })}
+          </Button>
+        </div>
       )}
     </div>
   );

@@ -57,7 +57,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          {t("labels.document", { ns: "pedagogySupportPlan" })}
+          Pedagogisen tuen suunnitelma
         </legend>
 
         <div className="hops-container__row">
