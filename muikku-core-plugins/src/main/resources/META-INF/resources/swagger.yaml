@@ -4624,6 +4624,195 @@ paths:
         "500":
           description: Internal server error
 
+  #WORKSPACE EXAMS
+  /rest/workspace/exam/settings/{workspaceFolderId}:
+    get:
+      operationId: getExamSettings
+      summary: Returns the settings of an exam
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer 
+      responses:
+        "200":
+          description: Exam settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamSettings"
+    post:
+      operationId: createOrUpdateExamSettings
+      summary: Creates or updates the settings of an exam
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer 
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceExamSettingsUpdateBody"
+      responses:
+        "200":
+          description: Exam settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamSettings"
+  
+  /rest/workspace/exam/start/{workspaceFolderId}:
+    post:
+      operationId: startExam
+      summary: Starts an exam
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer 
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttendance"
+        "400":
+          description: Student has already started the exam or completed it once (when no restarts are allowed)
+        "403":
+          description: Student is not among students allowed to take the exam
+
+  /rest/workspace/exam/end/{workspaceFolderId}:
+    post:
+      operationId: endExam
+      summary: Ends an exam
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer 
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttendance"
+        "400":
+          description: Attendance not found, i.e. exam never started
+  
+  /rest/workspace/exam/attendance/{workspaceFolderId}:
+    get:
+      operationId: getExamAttendance
+      summary: Returns the exam attendance of a student
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer 
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttendance"
+  
+  /rest/workspace/exam/attendees/{workspaceFolderId}:
+    get:
+      operationId: getExamAttendees
+      summary: Returns a list of exam attendees
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer 
+      responses:
+        "200":
+          description: Exam attendees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExamAttendee"
+        "403":
+          description: If called as student
+
+  /rest/attendee/{workspaceFolderId}/user/{userEntityId}:
+    post:
+      operationId: addExamAttendee
+      summary: Adds an exam attendee
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+        - name: userEntityId
+          in: path
+          description: Id of the user to be added as exam attendee
+          required: true
+          schema:
+            type: integer 
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttendance"
+        "403":
+          description: If called as student
+    delete:
+      operationId: removeExamAttendee
+      summary: Removes an exam attendee
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+        - name: userEntityId
+          in: path
+          description: Id of the user to be removed as exam attendee
+          required: true
+          schema:
+            type: integer 
+      responses:
+        "204":
+          description: Attendee removed
+        "403":
+          description: If called as student
+
   #GUIDER
   /rest/guider/student/{studentId}/workspace/{workspaceId}/signup:
     post:
@@ -11961,6 +12150,14 @@ components:
             allOf:
               - $ref: "#/components/schemas/HopsUppersecondary"
 
+    WorkspaceExamSettingsUpdateBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ExamSettings"
+    
     SignupStudentToWorkspaceRequestBody:
       required: true
       content:
@@ -13559,7 +13756,112 @@ components:
         latestMessage:
           type: string
           nullable: true
+          
+    #WORKSPACE EXAMS
+    
+    ExamSettingsRandom:
+      type: string
+      enum:
+        - NONE
+        - GLOBAL
+        - CATEGORY
 
+    ExamSettingsCategory:
+      type: object
+      description: Exam cateogry
+      required:
+        - name
+      properties:
+        name:
+          description: Category name 
+          type: string
+        workspaceMaterialIds:
+          description: List of workspace material ids belonging to this category
+          type: array
+          items:
+            type: integer
+            format: int64
+        randomCount:
+          description: Number of assignments to randomly select from this category when exam random is CATEGORY
+          type: integer
+
+    ExamSettings:
+      type: object
+      description: Exam settings
+      required:
+        - random
+        - allowMultipleAttempts
+        - openForAll
+      properties:
+        random:
+          description: Are exam assignments randomized and if so, globally or per category
+          $ref: "#/components/schemas/ExamSettingsRandom"
+        randomCount:
+          description: Number of assignments to randomly select when random is GLOBAL
+          type: integer
+        categories:
+          description: Exam categories
+          type: array
+          items:
+            $ref: "#/components/schemas/ExamSettingsCategory"
+        allowMultipleAttempts:
+          description: Is the student allowed to take this exam multiple times
+          type: boolean
+        openForAll:
+          description: Is the exam available for all workspace students or only the selected few
+          type: boolean
+        minutes:
+          description: Number of minutes to complete the exam (0 if unlimited)
+          type: integer
+
+    ExamAttendance:
+      type: object
+      description: Student's attendance to an exam
+      properties:
+        started:
+          description: When the exam was started (OffSetDateTime format)
+          type: string
+        ended:
+          description: When the exam was ended (OffSetDateTime format)
+          type: string
+        allowRestart:
+          description: Is the student allowed to restart a once completed exam
+          type: boolean
+        contents:
+          description: Exam contents for the student
+          type: array
+          items:
+            $ref: "#/components/schemas/MaterialContentNode"
+    
+    ExamAttendee:
+      type: object
+      description: Exam attendee
+      properties:
+        id:
+          description: Attendee userEntityId
+          type: integer
+          format: int64
+        firstName:
+          description: Attendee first name
+          type: string
+        lastName:
+          description: Attendee last name
+          type: string
+        line:
+          description: Attendee line
+          type: string
+        hasImage:
+          description: Attendee has profile image
+          type: boolean
+        started:
+          description: When the exam was started (OffSetDateTime format)
+          type: string
+        ended:
+          description: When the exam was ended (OffSetDateTime format)
+          type: string
+    
+    #COMMON
+    
     EducationType:
       type: object
       description: EducationType object

@@ -43,6 +43,6 @@ public class ExamSettings {
 
   @NotNull
   @Column(columnDefinition = "mediumtext", nullable = false)
-  private String settings;
+  private String settings; // serialized ExamSettingsRestModel
 
 }

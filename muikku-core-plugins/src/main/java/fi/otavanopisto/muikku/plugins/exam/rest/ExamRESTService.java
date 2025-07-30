@@ -235,6 +235,7 @@ public class ExamRESTService {
   private ExamAttendee toRestModel(ExamAttendance attendance) {
     UserEntity userEntity = userEntityController.findUserEntityById(attendance.getUserEntityId());
     ExamAttendee attendee = new ExamAttendee();
+    attendee.setId(attendance.getUserEntityId());
     attendee.setStarted(toOffsetDateTime(attendance.getStarted()));
     attendee.setEnded(toOffsetDateTime(attendance.getEnded()));
     attendee.setHasImage(userEntityFileController.hasProfilePicture(userEntity));

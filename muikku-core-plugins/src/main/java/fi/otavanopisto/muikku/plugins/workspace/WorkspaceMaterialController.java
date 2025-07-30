@@ -976,8 +976,9 @@ public class WorkspaceMaterialController {
             continue;
           }
         }
-        // For staff members, always show exam folder and its contents as usual
       }
+
+      // For staff members, always show exam folder and its contents as usual
       
       ContentNode node = createContentNode(currentNode, 1, includeHidden, nextSibling);
       contentNodes.add(node);

@@ -52,6 +52,15 @@ public class ExamAttendee {
     this.line = line;
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  private Long id;
   private String firstName;
   private String lastName;
   private String line;
