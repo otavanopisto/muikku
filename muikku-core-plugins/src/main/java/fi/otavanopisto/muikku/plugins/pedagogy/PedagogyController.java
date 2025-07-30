@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.pedagogy;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -87,17 +88,21 @@ public class PedagogyController {
     return form;
   }
   
-  public PedagogyForm updatePublished(PedagogyForm form, boolean published, List<String> modifiedFields, String details, Long modifierId) {
+  public PedagogyForm updatePublished(PedagogyForm form, boolean published, Long modifierId) {
 
     // Form data update
-
-    pedagogyFormDAO.updatePublished(form, published, new Date());
+    Date date = new Date();
+    pedagogyFormDAO.updatePublished(form, published, date);
 
     // History entry about modify
-
-    String fieldStr = modifiedFields == null || modifiedFields.isEmpty() ? null
-        : String.join(",", modifiedFields.stream().map(Object::toString).collect(Collectors.toList()));
-    pedagogyFormHistoryDAO.create(form, StringUtils.isEmpty(details) ? "Suunnitelman näkyvyyttä muokattiin" : details, modifierId, fieldStr, PedagogyFormHistoryType.EDIT);
+    String details;
+    SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+    if (published == Boolean.TRUE) {
+      details = "Asiakirja julkaistu " + df.format(date); 
+    } else {
+      details = "Asiakirja asetettu ei-julkaistu-tilaan " + df.format(date);
+    }
+    pedagogyFormHistoryDAO.create(form, details, modifierId, null, PedagogyFormHistoryType.EDIT);
 
     return form;
   }

@@ -198,7 +198,7 @@ public class PedagogyRestService {
   @Path("/form/{USERENTITYID}/publish")
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response togglePublished(@PathParam("USERENTITYID") Long userEntityId, PedagogyFormUpdatePayload payload) {
+  public Response togglePublished(@PathParam("USERENTITYID") Long userEntityId) {
     
     // Payload validation
     
@@ -218,7 +218,7 @@ public class PedagogyRestService {
     
     boolean published = pedagogyController.isPublished(userEntityId);
     
-    form = pedagogyController.updatePublished(form, !published, payload.getFields(), payload.getDetails(), sessionController.getLoggedUserEntity().getId());
+    form = pedagogyController.updatePublished(form, !published, sessionController.getLoggedUserEntity().getId());
     
     return Response.ok(toRestModel(form)).build();
   }
