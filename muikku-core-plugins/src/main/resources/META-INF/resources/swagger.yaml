@@ -7253,8 +7253,6 @@ paths:
           schema:
             type: integer
             format: int64
-      requestBody:
-        $ref: "#/components/requestBodies/PedagogyFormDataUpdateDetailsRequestBody"
       responses:
         "200":
           description: Pedagogy form field published updated successfully
@@ -11985,26 +11983,6 @@ components:
             properties:
               formData:
                 type: string
-              fields:
-                nullable: true
-                type: array
-                items:
-                  type: string
-              details:
-                nullable: true
-                type: string
-    
-    PedagogyFormDataUpdateDetailsRequestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            description: PedagogyFormDataUpdateRequestBody object
-            required:
-              - fields
-              - details
-            properties:
               fields:
                 nullable: true
                 type: array
