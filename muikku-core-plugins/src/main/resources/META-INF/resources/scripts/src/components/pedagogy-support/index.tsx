@@ -20,6 +20,13 @@ interface PedagogySupportProps {
   userRole: UserRole;
   studentUserEntityId: number;
   studyProgrammeName: string;
+  /**
+   * Optional access information that affects the visibility of the pedagogy form tab
+   * for specific user roles (e.g. COURSE_TEACHER, GUIDANCE_COUNSELOR).
+   *
+   * @default false
+   */
+  isFormAccessible?: boolean;
 }
 
 /**
@@ -31,6 +38,8 @@ interface PedagogySupportProps {
  * @returns JSX.Element
  */
 const PedagogySupport = (props: PedagogySupportProps) => {
+  const { isFormAccessible = false } = props;
+
   // Check if user's study programme is eligible for pedagogy form
   const isEligibleForUpperSecondary = UPPERSECONDARY_PEDAGOGYFORM.includes(
     props.studyProgrammeName
@@ -56,6 +65,48 @@ const PedagogySupport = (props: PedagogySupportProps) => {
   );
 
   /**
+   * Returns whether the pedagogy form tab should be shown based on the user role and the access to the form.
+   *
+   * @returns boolean
+   */
+  const shouldShowPedagogyFormTab = () => {
+    // Base conditions
+    if (
+      !isEligibleForPedagogyForm ||
+      !usePedagogyValues?.pedagogyForm?.created
+    ) {
+      return false;
+    }
+
+    const { userRole } = props;
+    const { pedagogyForm } = usePedagogyValues;
+    const isPublished = pedagogyForm?.published;
+
+    // Role-based visibility rules
+    switch (userRole) {
+      case "SPECIAL_ED_TEACHER":
+        // Special ed teachers can always see the form tab
+        return true;
+
+      case "COURSE_TEACHER":
+      case "GUIDANCE_COUNSELOR":
+        // Teachers and counselors can see the form tab only when published
+        return isPublished && isFormAccessible;
+
+      case "STUDENT":
+        // Students can see the form tab only when published
+        return isPublished;
+
+      case "STUDENT_PARENT":
+        // Parents can see the form tab only when published
+        return isPublished;
+
+      default:
+        return false;
+    }
+  };
+
+  /**
    * Handles tab change
    * @param id tab id
    */
@@ -75,7 +126,7 @@ const PedagogySupport = (props: PedagogySupportProps) => {
   // Only add pedagogy form tab if:
   // 1. Study programme is eligible for pedagogy form
   // 2. Pedagogy form is created
-  if (isEligibleForPedagogyForm && usePedagogyValues?.pedagogyForm?.created) {
+  if (shouldShowPedagogyFormTab()) {
     pedagogySupportTabs.push({
       id: "PEDAGOGY_FORM",
       name: "Pedagogisen tuen lomake",

@@ -227,7 +227,7 @@ export interface LoadStudentTriggerType {
  * LoadStudentAccessTriggerType action creator type
  */
 export interface LoadStudentAccessTriggerType {
-  (id: number, forceLoad?: boolean): AnyActionType;
+  (id: number, forceLoad?: boolean, onSuccess?: () => void): AnyActionType;
 }
 /**
  * action creator type
@@ -932,10 +932,11 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
  * loadStudentPedagogyFormAccess thunk action creator
  * @param userEntityId student muikku id
  * @param forceLoad should the load be forced
+ * @param onSuccess callback function to be called when the load is successful
  * @returns a thunk functions to load student pedagogy form access
  */
 const loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType =
-  function loadStudentPedagogyFormAccess(userEntityId, forceLoad) {
+  function loadStudentPedagogyFormAccess(userEntityId, forceLoad, onSuccess) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
@@ -977,6 +978,7 @@ const loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType =
                 value: <LoadingState>"READY",
               },
             });
+            onSuccess && onSuccess();
           });
       } catch (err) {
         if (!isMApiError(err)) {
