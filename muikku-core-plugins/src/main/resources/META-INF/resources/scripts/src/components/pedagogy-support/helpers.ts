@@ -121,7 +121,52 @@ export const supportReasonsOptions: OptionDefault<SupportReason>[] = [
   },
 ];
 
-export const supportActionsOptions: OptionDefault<SupportAction>[] = [
+export const supportActionsOptionsUppersecondary: OptionDefault<SupportAction>[] =
+  [
+    {
+      value: "remedialInstruction",
+      label: i18n.t("labels.remedialInstruction", {
+        ns: "pedagogySupportPlan",
+      }),
+    },
+    {
+      value: "specialEducation",
+      label: i18n.t("labels.specialEducation", {
+        ns: "pedagogySupportPlan",
+      }),
+    },
+    {
+      value: "extraTime",
+      label: i18n.t("labels.extraTime", {
+        ns: "pedagogySupportPlan",
+      }),
+    },
+    {
+      value: "scheduledStudies",
+      label: i18n.t("labels.scheduledStudies", {
+        ns: "pedagogySupportPlan",
+      }),
+    },
+    {
+      value: "routedStudies",
+      label: i18n.t("labels.routedStudies", {
+        ns: "pedagogySupportPlan",
+      }),
+    },
+    {
+      value: "linguisticAssistance",
+      label: "Kielellinen tuki",
+    },
+    {
+      value: "other",
+      label: i18n.t("labels.other", {
+        ns: "pedagogySupportPlan",
+        context: "action",
+      }),
+    },
+  ];
+
+export const supportActionsOptionsCompulsory: OptionDefault<SupportAction>[] = [
   {
     value: "remedialInstruction",
     label: i18n.t("labels.remedialInstruction", {
@@ -135,26 +180,28 @@ export const supportActionsOptions: OptionDefault<SupportAction>[] = [
     }),
   },
   {
-    value: "extraTime",
-    label: i18n.t("labels.extraTime", {
-      ns: "pedagogySupportPlan",
-    }),
-  },
-  {
-    value: "scheduledStudies",
-    label: i18n.t("labels.scheduledStudies", {
-      ns: "pedagogySupportPlan",
-    }),
-  },
-  {
     value: "routedStudies",
     label: i18n.t("labels.routedStudies", {
       ns: "pedagogySupportPlan",
     }),
   },
   {
-    value: "linguisticAssistance",
-    label: "Kielellinen tuki",
+    value: "customisedRoutedStudies",
+    label: i18n.t("labels.customisedRoutedStudies", {
+      ns: "pedagogySupportPlan",
+    }),
+  },
+  {
+    value: "feedbackAndAssessment",
+    label: i18n.t("labels.feedbackAndAssessment", {
+      ns: "pedagogySupportPlan",
+    }),
+  },
+  {
+    value: "exemptionByPrincipal",
+    label: i18n.t("labels.exemptionByPrincipal", {
+      ns: "pedagogySupportPlan",
+    }),
   },
   {
     value: "other",
@@ -211,19 +258,27 @@ export const matriculationSupportActionsOptions: OptionDefault<SupportActionMatr
     },
     {
       value: "fontSizeIncrease",
-      label: "Oikeus suurentaa kirjasinkokoa",
+      label: i18n.t("labels.fontSizeIncrease", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "largerDisplay",
-      label: "Oikeus käyttää suurempaa näyttöä",
+      label: i18n.t("labels.largerDisplay", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "adjustableWorkstation",
-      label: "Säädettävä työskentelyasento",
+      label: i18n.t("labels.adjustableWorkstation", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "visionImpairedExamArrangement",
-      label: "Näkövammaisen koejärjestelyt",
+      label: i18n.t("labels.visionImpairedExamArrangement", {
+        ns: "pedagogySupportPlan",
+      }),
     },
     {
       value: "other",

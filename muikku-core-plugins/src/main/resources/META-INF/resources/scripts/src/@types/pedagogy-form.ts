@@ -30,6 +30,9 @@ const supportActions = [
   "scheduledStudies",
   "routedStudies",
   "linguisticAssistance",
+  "customisedRoutedStudies",
+  "feedbackAndAssessment",
+  "exemptionByPrincipal",
   "other",
 ] as const;
 

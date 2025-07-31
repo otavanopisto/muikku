@@ -401,6 +401,7 @@ export const usePedagogy = (
     loading,
     editIsActive,
     studentUserEntityId,
+    isUppersecondary,
     resetPedagogyData,
     saveAllData,
 

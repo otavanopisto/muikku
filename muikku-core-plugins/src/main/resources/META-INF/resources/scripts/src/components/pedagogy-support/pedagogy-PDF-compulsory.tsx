@@ -11,7 +11,7 @@ import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import moment from "moment";
 import Html from "react-pdf-html";
-import { supportActionsOptions } from "./helpers";
+import { supportActionsOptionsCompulsory } from "./helpers";
 import { styles, htmlStyles } from "./pedagogy-PDF-styles";
 import { useTranslation } from "react-i18next";
 import { Opinion } from "~/@types/pedagogy-form";
@@ -37,13 +37,14 @@ const PedagogyPDFCompulsory = (props: PedagogyPDFCompulsoryProps) => {
     compulsoryForm;
   const { studentInfo, ownerInfo, created } = pedagogyForm;
 
-  const supportActionTranslationByValue = supportActionsOptions.reduce(
-    (acc: { [key: string]: string }, option) => {
-      acc[option.value] = option.label;
-      return acc;
-    },
-    {}
-  );
+  const supportActionTranslationByValue =
+    supportActionsOptionsCompulsory.reduce(
+      (acc: { [key: string]: string }, option) => {
+        acc[option.value] = option.label;
+        return acc;
+      },
+      {}
+    );
 
   const studentOpinion = (formData?.studentOpinionOfSupport &&
     formData?.studentOpinionOfSupport.length > 0 &&

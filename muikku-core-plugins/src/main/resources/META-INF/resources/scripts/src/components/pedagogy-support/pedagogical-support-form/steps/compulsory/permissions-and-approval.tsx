@@ -31,22 +31,47 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
           <div className="hops-container__state state-INFO">
             <div className="hops-container__state-icon icon-notification"></div>
             <div className="hops-container__state-text">
-              {/* {t("content.planSendInformation", {
-                ns: "pedagogySupportPlan",
-              })} */}
-
               <p>
-                Julkaistu pedagogisen tuen suunnitelma näkyy seuraaville
-                henkilöille:
+                {t("content.publishedTo", {
+                  ns: "pedagogySupportPlan",
+                })}
               </p>
               <ul>
-                <li>sinulle itsellesi</li>
-                <li>mahdollisille huoltajillesi</li>
-                <li>erityisopettajalle</li>
-                <li>rehtorille</li>
-                <li>ryhmänohjaajalle</li>
-                <li>opinto-ohjaajalle</li>
-                <li>opettajille, joiden opintojaksolla opiskelet juuri nyt.</li>
+                <li>
+                  {t("content.publishedToYourself", {
+                    ns: "pedagogySupportPlan",
+                  })}
+                </li>
+                <li>
+                  {t("content.publishedToGuardians", {
+                    ns: "pedagogySupportPlan",
+                  })}
+                </li>
+                <li>
+                  {t("content.publishedToSpecialEdTeacher", {
+                    ns: "pedagogySupportPlan",
+                  })}
+                </li>
+                <li>
+                  {t("content.publishedToPrincipal", {
+                    ns: "pedagogySupportPlan",
+                  })}
+                </li>
+                <li>
+                  {t("content.publishedToGroupSupervisor", {
+                    ns: "pedagogySupportPlan",
+                  })}
+                </li>
+                <li>
+                  {t("content.publishedToStudyCounselor", {
+                    ns: "pedagogySupportPlan",
+                  })}
+                </li>
+                <li>
+                  {t("content.publishedToCurrentTeachers", {
+                    ns: "pedagogySupportPlan",
+                  })}
+                </li>
               </ul>
             </div>
           </div>

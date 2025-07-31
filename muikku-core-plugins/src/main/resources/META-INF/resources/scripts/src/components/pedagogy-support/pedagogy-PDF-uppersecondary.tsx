@@ -13,7 +13,7 @@ import moment from "moment";
 import Html from "react-pdf-html";
 import {
   matriculationSupportActionsOptions,
-  supportActionsOptions,
+  supportActionsOptionsUppersecondary,
 } from "./helpers";
 import { styles, htmlStyles } from "./pedagogy-PDF-styles";
 import { useTranslation } from "react-i18next";
@@ -41,13 +41,14 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
     upperSecondaryForm;
   const { studentInfo, ownerInfo, created } = pedagogyForm;
 
-  const supportActionTranslationByValue = supportActionsOptions.reduce(
-    (acc: { [key: string]: string }, option) => {
-      acc[option.value] = option.label;
-      return acc;
-    },
-    {}
-  );
+  const supportActionTranslationByValue =
+    supportActionsOptionsUppersecondary.reduce(
+      (acc: { [key: string]: string }, option) => {
+        acc[option.value] = option.label;
+        return acc;
+      },
+      {}
+    );
 
   const matriculationActionTranslationByValue =
     matriculationSupportActionsOptions.reduce(
