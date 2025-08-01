@@ -100,7 +100,7 @@ public class PedagogyRestService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getAccesss(@PathParam("USERENTITYID") Long userEntityId) {
-    return Response.ok(getAccess(userEntityId, true, PedagogyFormAccessType.READ)).build();
+    return Response.ok(getAccess(userEntityId, true, PedagogyFormAccessType.READ, true)).build();
   }
   
   /**
@@ -123,7 +123,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE);
+    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -143,7 +143,7 @@ public class PedagogyRestService {
     
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ);
+    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -183,7 +183,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE);
+    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -209,7 +209,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE);
+    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -243,7 +243,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE);
+    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -263,7 +263,7 @@ public class PedagogyRestService {
     
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ);
+    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -294,7 +294,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE);
+    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -315,7 +315,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ);
+    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -509,7 +509,7 @@ public class PedagogyRestService {
     WRITE
   }
   
-  private PedagogyFormAccessRestModel getAccess(Long userEntityId, boolean allowStudent, PedagogyFormAccessType accessType) {
+  private PedagogyFormAccessRestModel getAccess(Long userEntityId, boolean allowStudent, PedagogyFormAccessType accessType, boolean requirePublished) {
 
     // Master access flag and various roles
     
@@ -553,12 +553,12 @@ public class PedagogyRestService {
       }
       
       // Form is always accessible to admins and special education teachers but also to other related staff,
-      // if the form is published
+      // if the form is not null (and some situations published)
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
       accessible = isAdmin || specEdTeacher || (studentParent && accessType == PedagogyFormAccessType.READ);
       if (!accessible && form != null) {
-        if (form.isPublished() == true) {
+        if (form.isPublished() || !requirePublished) {
           accessible = relation.isGuidanceCounselor() || courseTeacher;
         }
       }
