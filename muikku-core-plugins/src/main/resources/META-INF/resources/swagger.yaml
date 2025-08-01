@@ -7237,7 +7237,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-  
+
   /rest/pedagogy/form/{userEntityId}/publish:
     put:
       operationId: togglePublished
@@ -7311,7 +7311,6 @@ paths:
         "500":
           description: Internal server error
 
-
   #PEDAGOGYIMPLEMENTEDACTIONS
   /rest/pedagogy/form/implementedActions/{userEntityId}:
     get:
@@ -7355,7 +7354,7 @@ paths:
             type: integer
             format: int64
       requestBody:
-        $ref: "#/components/requestBodies/PedagogyFormImplementedActionsRequestBody"
+        $ref: "#/components/requestBodies/PedagogyFormImplementedActionsCreateRequestBody"
       responses:
         "200":
           description: Pedagogy form implemented actions created successfully
@@ -7384,7 +7383,7 @@ paths:
             type: integer
             format: int64
       requestBody:
-        $ref: "#/components/requestBodies/PedagogyFormImplementedActionsRequestBody"
+        $ref: "#/components/requestBodies/PedagogyFormImplementedActionsUpdateRequestBody"
       responses:
         "200":
           description: Pedagogy form implemented actions data updated successfully
@@ -11991,20 +11990,33 @@ components:
               details:
                 nullable: true
                 type: string
-      
-    PedagogyFormImplementedActionsRequestBody:
+
+    PedagogyFormImplementedActionsCreateRequestBody:
       required: true
       content:
         application/json:
           schema:
             type: object
-            description: PedagogyFormImplementedActionsRequestBody object
+            description: PedagogyFormImplementedActionsCreateRequestBody object
             required:
               - formData
             properties:
               formData:
                 type: string
-    
+
+    PedagogyFormImplementedActionsUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: PedagogyFormImplementedActionsUpdateRequestBody object
+            required:
+              - formData
+            properties:
+              formData:
+                type: string
+
     HopsUppersecondaryUpdateRequestBody:
       required: true
       content:
@@ -16048,7 +16060,7 @@ components:
           type: string
           format: date-time
           nullable: true
-    
+
     PedagogyFormImplementedActions:
       type: object
       description: PedagogyFormImplementedActions object
@@ -18460,4 +18472,3 @@ components:
           format: int32
         message:
           type: string
-

@@ -30,6 +30,9 @@ const supportActions = [
   "scheduledStudies",
   "routedStudies",
   "linguisticAssistance",
+  "customisedRoutedStudies",
+  "feedbackAndAssessment",
+  "exemptionByPrincipal",
   "other",
 ] as const;
 
@@ -68,7 +71,7 @@ export type OpinionType = "studentOpinionOfSupport" | "schoolOpinionOfSupport";
  * Part of JSON
  * Support actions that have been implemented
  */
-export interface SupportActionImplementation {
+export interface PedagogySupportActionImplemented {
   /**
    * Name of the user who created the mark
    */
@@ -153,7 +156,7 @@ export interface FormData {
   /**
    * Support actions that have been implemented
    */
-  supportActionsImplemented: SupportActionImplementation[];
+  supportActionsImplemented: PedagogySupportActionImplemented[];
   /**
    * Support plan for the matriculation examination
    */

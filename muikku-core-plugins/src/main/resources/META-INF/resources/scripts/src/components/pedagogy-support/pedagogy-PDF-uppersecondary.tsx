@@ -13,7 +13,7 @@ import moment from "moment";
 import Html from "react-pdf-html";
 import {
   matriculationSupportActionsOptions,
-  supportActionsOptions,
+  supportActionsOptionsUppersecondary,
 } from "./helpers";
 import { styles, htmlStyles } from "./pedagogy-PDF-styles";
 import { useTranslation } from "react-i18next";
@@ -37,16 +37,18 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
 
   const upperSecondaryForm = useUpperSecondaryForm();
 
-  const { formData, pedagogyForm } = upperSecondaryForm;
+  const { formData, pedagogyForm, implemetedSupportActionsFormData } =
+    upperSecondaryForm;
   const { studentInfo, ownerInfo, created } = pedagogyForm;
 
-  const supportActionTranslationByValue = supportActionsOptions.reduce(
-    (acc: { [key: string]: string }, option) => {
-      acc[option.value] = option.label;
-      return acc;
-    },
-    {}
-  );
+  const supportActionTranslationByValue =
+    supportActionsOptionsUppersecondary.reduce(
+      (acc: { [key: string]: string }, option) => {
+        acc[option.value] = option.label;
+        return acc;
+      },
+      {}
+    );
 
   const matriculationActionTranslationByValue =
     matriculationSupportActionsOptions.reduce(
@@ -370,61 +372,60 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
               ns: "pedagogySupportPlan",
             })}
           </Text>
-          {/* {(formData?.supportActionsImplemented &&
-          formData?.supportActionsImplemented.length > 0 &&
-          formData?.supportActionsImplemented.map((iAction, i) => (
-            <View key={i} style={styles.implementedActionContainer}>
-              <View style={styles.implementationInfo} wrap={false}>
-                <View style={styles.infoFieldContainerSameRow}>
-                  <Text style={styles.infoFieldLabelSameRow}>
-                    {" "}
-                    {t("labels.supportAction", {
-                      ns: "pedagogySupportPlan",
-                    })}
-                  </Text>
-                  <Text style={styles.infoFieldValueSameRow}>
-                    {supportActionTranslationByValue[iAction.action]},{" "}
-                    {moment(iAction.date).format("DD.MM.YYYY")}
-                  </Text>
-                </View>
-
-                {iAction?.course?.name ? (
+          {(implemetedSupportActionsFormData.length > 0 &&
+            implemetedSupportActionsFormData.map((iAction, i) => (
+              <View key={i} style={styles.implementedActionContainer}>
+                <View style={styles.implementationInfo} wrap={false}>
                   <View style={styles.infoFieldContainerSameRow}>
                     <Text style={styles.infoFieldLabelSameRow}>
-                      {t("labels.course", {
-                        ns: "common",
-                      })}
-                    </Text>
-                    <Text style={styles.infoFieldValueSameRow}>
-                      {iAction?.course?.name}
-                    </Text>
-                  </View>
-                ) : null}
-
-                {iAction?.extraInfoDetails ? (
-                  <View style={styles.infoFieldContainerSameRow}>
-                    <Text style={styles.infoFieldLabelSameRow}>
-                      {t("labels.additionalInfo", {
+                      {" "}
+                      {t("labels.supportAction", {
                         ns: "pedagogySupportPlan",
                       })}
                     </Text>
                     <Text style={styles.infoFieldValueSameRow}>
-                      {iAction?.extraInfoDetails}
+                      {supportActionTranslationByValue[iAction.action]},{" "}
+                      {moment(iAction.date).format("DD.MM.YYYY")}
                     </Text>
                   </View>
-                ) : null}
+
+                  {iAction?.course?.name ? (
+                    <View style={styles.infoFieldContainerSameRow}>
+                      <Text style={styles.infoFieldLabelSameRow}>
+                        {t("labels.course", {
+                          ns: "common",
+                        })}
+                      </Text>
+                      <Text style={styles.infoFieldValueSameRow}>
+                        {iAction?.course?.name}
+                      </Text>
+                    </View>
+                  ) : null}
+
+                  {iAction?.extraInfoDetails ? (
+                    <View style={styles.infoFieldContainerSameRow}>
+                      <Text style={styles.infoFieldLabelSameRow}>
+                        {t("labels.additionalInfo", {
+                          ns: "pedagogySupportPlan",
+                        })}
+                      </Text>
+                      <Text style={styles.infoFieldValueSameRow}>
+                        {iAction?.extraInfoDetails}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
               </View>
+            ))) || (
+            <View>
+              <Text style={styles.empty}>
+                {t("content.empty", {
+                  ns: "pedagogySupportPlan",
+                  context: "actions",
+                })}
+              </Text>
             </View>
-          ))) || (
-          <View>
-            <Text style={styles.empty}>
-              {t("content.empty", {
-                ns: "pedagogySupportPlan",
-                context: "actions",
-              })}
-            </Text>
-          </View>
-        )} */}
+          )}
         </Page>
 
         {

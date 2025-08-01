@@ -18,6 +18,6 @@ export const useUpperSecondaryForm = () => {
   return {
     ...context,
     formData,
-    setFormData: context.setFormDataAndUpdateChangedFields,
+    setFormData: context.setPedagogyFormDataAndUpdateChangedFields,
   };
 };

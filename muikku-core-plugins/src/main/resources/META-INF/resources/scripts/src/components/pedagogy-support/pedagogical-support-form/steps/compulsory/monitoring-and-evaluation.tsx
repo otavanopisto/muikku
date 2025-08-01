@@ -36,7 +36,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     userRole,
     editIsActive,
     formData,
-    setFormDataAndUpdateChangedFields,
+    setPedagogyFormDataAndUpdateChangedFields,
   } = useCompulsoryForm();
 
   /**
@@ -54,7 +54,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       creationDate: new Date(),
     });
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -78,7 +78,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       [key]: value,
     };
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -90,7 +90,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     const updatedFormData: CompulsoryFormData = { ...formData };
     updatedFormData[type].splice(index, 1);
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   const studentOpinionEntries = (formData?.studentOpinionOfSupport &&

@@ -6,8 +6,11 @@ import { Textarea } from "./textarea";
 import Button from "~/components/general/button";
 import Select from "react-select";
 import WorkspaceSelect from "./workspace-select";
-import { SupportActionImplementation } from "~/@types/pedagogy-form";
-import { supportActionsOptions } from "../helpers";
+import { PedagogySupportActionImplemented } from "~/@types/pedagogy-form";
+import {
+  supportActionsOptionsCompulsory,
+  supportActionsOptionsUppersecondary,
+} from "../helpers";
 import { TextField } from "./textfield";
 import { usePedagogyContext } from "../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
@@ -32,12 +35,12 @@ export const ImplementedActionsList: React.FC<ImplementedActionsListProps> = (
 interface ImplementedActionsListItemProps {
   index: number;
   ownerOfEntry: boolean;
-  implemenetedSupportAction: SupportActionImplementation;
+  implemenetedSupportAction: PedagogySupportActionImplemented;
   onDeleteActionClick?: (index: number) => void;
-  onActionChange?: <T extends keyof SupportActionImplementation>(
+  onActionChange?: <T extends keyof PedagogySupportActionImplemented>(
     index: number,
     key: T,
-    value: SupportActionImplementation[T]
+    value: PedagogySupportActionImplemented[T]
   ) => void;
 }
 
@@ -50,7 +53,8 @@ export const ImplementedActionsListItem: React.FC<
   ImplementedActionsListItemProps
 > = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
-  const { userRole, editIsActive, studentUserEntityId } = usePedagogyContext();
+  const { userRole, editIsActive, studentUserEntityId, isUppersecondary } =
+    usePedagogyContext();
 
   const {
     index,
@@ -62,6 +66,14 @@ export const ImplementedActionsListItem: React.FC<
 
   const disabledFields =
     userRole === "STUDENT" || !editIsActive || !ownerOfEntry;
+
+  // Support actions based on form type
+  const supportActionsOptions = isUppersecondary
+    ? [...supportActionsOptionsUppersecondary]
+    : [...supportActionsOptionsCompulsory];
+
+  // Pop the last element from the array, as it is the "other" option which is not used here
+  supportActionsOptions.pop();
 
   return (
     <div className="hops-container__section">

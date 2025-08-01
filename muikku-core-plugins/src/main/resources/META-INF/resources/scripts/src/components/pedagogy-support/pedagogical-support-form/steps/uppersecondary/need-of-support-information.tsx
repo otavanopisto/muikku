@@ -12,7 +12,7 @@ import {
 } from "~/@types/pedagogy-form";
 import {
   matriculationSupportActionsOptions,
-  supportActionsOptions,
+  supportActionsOptionsUppersecondary,
 } from "~/components/pedagogy-support/helpers";
 import { useTranslation } from "react-i18next";
 import { useUpperSecondaryForm } from "~/components/pedagogy-support/hooks/useUppersecondaryForm";
@@ -36,7 +36,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     userRole,
     editIsActive,
     formData,
-    setFormDataAndUpdateChangedFields,
+    setPedagogyFormDataAndUpdateChangedFields,
   } = useUpperSecondaryForm();
 
   /**
@@ -53,7 +53,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
     updatedFormData[key] = value;
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -74,7 +74,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.supportActionOther = undefined;
     }
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -97,7 +97,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.matriculationExaminationSupportOther = undefined;
     }
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   return (
@@ -167,7 +167,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
-                  supportActionsOptions.filter((option) =>
+                  supportActionsOptionsUppersecondary.filter((option) =>
                     formData?.supportActions.includes(option.value)
                   )) ||
                 undefined
@@ -181,7 +181,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   context: "options",
                 })
               }
-              options={supportActionsOptions}
+              options={supportActionsOptionsUppersecondary}
               onChange={handleSupportActionChange}
               isSearchable={false}
               isDisabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}

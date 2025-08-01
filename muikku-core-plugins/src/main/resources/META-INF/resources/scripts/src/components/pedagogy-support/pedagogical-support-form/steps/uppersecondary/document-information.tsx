@@ -26,7 +26,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
     editIsActive,
     formData,
     pedagogyForm,
-    setFormDataAndUpdateChangedFields,
+    setPedagogyFormDataAndUpdateChangedFields,
   } = useUpperSecondaryForm();
 
   /**
@@ -43,7 +43,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
 
     updatedFormData[key] = value;
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   const ownerNameWithPhone = pedagogyForm
@@ -57,7 +57,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
-          {t("labels.document", { ns: "pedagogySupportPlan" })}
+          {t("labels.title", { ns: "pedagogySupportPlan" })}
         </legend>
 
         <div className="hops-container__row">

@@ -6,7 +6,7 @@ import Select, { ActionMeta } from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import AnimateHeight from "react-animate-height";
 import { CompulsoryFormData, SupportAction } from "~/@types/pedagogy-form";
-import { supportActionsOptions } from "~/components/pedagogy-support/helpers";
+import { supportActionsOptionsCompulsory } from "~/components/pedagogy-support/helpers";
 import { useTranslation } from "react-i18next";
 import { useCompulsoryForm } from "~/components/pedagogy-support/hooks/useCompulsoryForm";
 
@@ -29,7 +29,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     userRole,
     editIsActive,
     formData,
-    setFormDataAndUpdateChangedFields,
+    setPedagogyFormDataAndUpdateChangedFields,
   } = useCompulsoryForm();
 
   /**
@@ -46,7 +46,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
     updatedFormData[key] = value;
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -67,7 +67,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.supportActionOther = undefined;
     }
 
-    setFormDataAndUpdateChangedFields(updatedFormData);
+    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   return (
@@ -137,7 +137,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
               value={
                 (formData &&
-                  supportActionsOptions.filter((option) =>
+                  supportActionsOptionsCompulsory.filter((option) =>
                     formData?.supportActions.includes(option.value)
                   )) ||
                 undefined
@@ -151,7 +151,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                   context: "options",
                 })
               }
-              options={supportActionsOptions}
+              options={supportActionsOptionsCompulsory}
               onChange={handleSupportActionChange}
               isSearchable={false}
               isDisabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}

@@ -173,8 +173,7 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
   if (
     guider.currentStudent &&
     guider.currentStudent.basic &&
-    guider.currentStudent.pedagogyFormAvailable &&
-    guider.currentStudent.pedagogyFormAvailable.accessible
+    guider.currentStudent.pedagogyFormAvailable
   ) {
     tabs.splice(1, 0, {
       id: "PEDAGOGICAL_SUPPORT",
@@ -185,6 +184,9 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
           userRole={userRoleForForm(
             guider.currentStudent.pedagogyFormAvailable
           )}
+          isFormAccessible={
+            guider.currentStudent.pedagogyFormAvailable.accessible
+          }
           studentUserEntityId={guider.currentStudent.basic.userEntityId}
           studyProgrammeName={guider.currentStudent.basic.studyProgrammeName}
         />
