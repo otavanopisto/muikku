@@ -61,7 +61,8 @@ const PedagogySupport = (props: PedagogySupportProps) => {
   const [showPDF, setShowPDF] = React.useState(false);
   const usePedagogyValues = usePedagogy(
     props.studentUserEntityId,
-    isUppersecondary
+    isUppersecondary,
+    isFormAccessible
   );
 
   /**

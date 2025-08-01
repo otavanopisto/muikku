@@ -1,399 +1,62 @@
 import * as React from "react";
-// eslint-disable-next-line camelcase
-import { unstable_batchedUpdates } from "react-dom";
-import { displayNotification } from "~/actions/base/notifications";
-import {
-  CompulsoryFormData,
-  FormData,
-  isCompulsoryForm,
-  isUpperSecondaryForm,
-  PedagogyFormData,
-  PedagogySupportActionImplemented,
-  UpperSecondaryFormData,
-} from "~/@types/pedagogy-form";
-import {
-  PedagogyForm,
-  PedagogyFormImplementedActions,
-} from "~/generated/client";
-import MApi, { isMApiError } from "~/api/api";
-import _ from "lodash";
-import {
-  initializePedagogyFormData,
-  initializeImplemetedSupportActionsFormData,
-} from "../helpers";
-import { useDispatch } from "react-redux";
+import { useImplementedActions } from "./useImplementedActions";
+import { usePedagogyForm } from "./usePedagogyForm";
 
 export type UsePedagogyType = ReturnType<typeof usePedagogy>;
 
-const pedagogyApi = MApi.getPedagogyApi();
-
 /**
- * usePedagogy
+ * usePedagogy. Combined hook for pedagogy form and implemented actions
  * @param studentUserEntityId studentUserEntityId
  * @param isUppersecondary isUppersecondary
+ * @param shouldLoadForm whether to attempt loading the form (based on permissions)
  */
 export const usePedagogy = (
   studentUserEntityId: number,
-  isUppersecondary: boolean
+  isUppersecondary: boolean,
+  shouldLoadForm: boolean = true
 ) => {
-  const dispatch = useDispatch();
-  const [loading, setLoading] = React.useState(true);
-
-  // Implemented support actions related state
-  const [pedagogySupportActions, setPedagogySupportActions] = React.useState<
-    PedagogyFormImplementedActions | undefined
-  >(undefined);
-  const [
-    implemetedSupportActionsFormData,
-    setImplemetedSupportActionsFormData,
-  ] = React.useState<PedagogySupportActionImplemented[]>([]);
-
-  // Pedagogy form related state
-  const [pedagogyForm, setPedagogyForm] = React.useState<
-    PedagogyForm | undefined
-  >(undefined);
-  const [pedagogyFormData, setPedagogyFormData] = React.useState<
-    PedagogyFormData | undefined
-  >(undefined);
-  const [changedFields, setChangedFields] = React.useState<string[]>([]);
-  const [pedagogyFormExtraDetails, setPedagogyFormExtraDetails] =
-    React.useState<string>("");
   const [editIsActive, setEditIsActive] = React.useState(false);
 
-  const componentMounted = React.useRef(true);
-
-  // Check if the form exists
-  const pedagogyFormExists = React.useMemo(
-    () => pedagogyForm?.created !== null || false,
-    [pedagogyForm]
+  const pedagogyForm = usePedagogyForm(
+    studentUserEntityId,
+    isUppersecondary,
+    shouldLoadForm
   );
+  const implementedActions = useImplementedActions(studentUserEntityId);
 
-  // Check if the implemented support actions form data exists
-  const implementedSupportActionsFormDataExists = React.useMemo(
-    () =>
-      (pedagogySupportActions?.formData !== null &&
-        pedagogySupportActions?.formData !== undefined &&
-        pedagogySupportActions?.formData !== "") ||
-      false,
-    [pedagogySupportActions]
+  // Combined loading state
+  const loading = React.useMemo(
+    () => pedagogyForm.loading || implementedActions.loading,
+    [pedagogyForm.loading, implementedActions.loading]
   );
-
-  // Check if the implemented support actions have changed
-  const implementedActionsHaveChanged = React.useMemo(
-    () =>
-      !_.isEqual(
-        initializeImplemetedSupportActionsFormData(
-          pedagogySupportActions?.formData
-        ),
-        implemetedSupportActionsFormData
-      ),
-    [implemetedSupportActionsFormData, pedagogySupportActions]
-  );
-
-  React.useEffect(() => {
-    /**
-     * loadPedagogyFormImplementedActions
-     */
-    const loadPedagogyFormImplementedActions = async () => {
-      const pedagogyFormImplementedActions =
-        await pedagogyApi.getPedagogyFormImplementedActions({
-          userEntityId: studentUserEntityId,
-        });
-
-      if (componentMounted.current) {
-        setPedagogySupportActions(pedagogyFormImplementedActions);
-        setImplemetedSupportActionsFormData(
-          initializeImplemetedSupportActionsFormData(
-            pedagogyFormImplementedActions.formData
-          )
-        );
-      }
-    };
-
-    /**
-     * loadPedagogyFormData
-     */
-    const loadPedagogyFormData = async () => {
-      setLoading(true);
-
-      try {
-        const pedagogyData = await pedagogyApi.getPedagogyForm({
-          userEntityId: studentUserEntityId,
-        });
-
-        if (componentMounted.current) {
-          unstable_batchedUpdates(() => {
-            setPedagogyForm({
-              ...pedagogyData,
-            });
-
-            setPedagogyFormData(
-              initializePedagogyFormData(
-                pedagogyData.formData,
-                isUppersecondary
-              )
-            );
-            setLoading(false);
-          });
-        }
-      } catch (err) {
-        if (componentMounted.current) {
-          if (!isMApiError(err)) {
-            throw err;
-          }
-
-          setLoading(false);
-          dispatch(displayNotification(err.message, "error"));
-        }
-      }
-    };
-
-    loadPedagogyFormData();
-    loadPedagogyFormImplementedActions();
-  }, [dispatch, isUppersecondary, studentUserEntityId]);
 
   /**
-   * resetPedagogyData
+   * resetPedagogyData - Unified reset function
    */
   const resetPedagogyData = () => {
-    unstable_batchedUpdates(() => {
-      setEditIsActive(false);
-
-      // If the form exists, reset the form data
-      if (pedagogyFormExists) {
-        setChangedFields([]);
-        setPedagogyFormData(
-          initializePedagogyFormData(pedagogyForm.formData, isUppersecondary)
-        );
-      }
-
-      // Implemented support actions are present by default always so we reset them
-      setImplemetedSupportActionsFormData(
-        initializeImplemetedSupportActionsFormData(
-          pedagogySupportActions.formData
-        )
-      );
-    });
-  };
-
-  /**
-   * setUpdatedFormData
-   * @param updatedFormData updatedFormData
-   */
-  const setPedagogyFormDataAndUpdateChangedFields = (
-    updatedFormData: PedagogyFormData
-  ) => {
-    const changedValuesComparedToPrevious = getEditedFields(
-      pedagogyFormData,
-      updatedFormData
-    );
-
-    unstable_batchedUpdates(() => {
-      setChangedFields(changedValuesComparedToPrevious);
-      setPedagogyFormData((previousData) => ({
-        ...previousData,
-        ...updatedFormData,
-      }));
-    });
-  };
-
-  /**
-   * activatePedagogyForm
-   */
-  const activatePedagogyForm = async () => {
-    setLoading(true);
-    try {
-      const pedagogyData = await pedagogyApi.createPedagogyForm({
-        userEntityId: studentUserEntityId,
-        createPedagogyFormRequest: {
-          formData: "{}",
-        },
-      });
-
-      unstable_batchedUpdates(() => {
-        setPedagogyForm(pedagogyData);
-        setPedagogyFormData(
-          initializePedagogyFormData(pedagogyData.formData, isUppersecondary)
-        );
-        setLoading(false);
-      });
-    } catch (err) {
-      setLoading(false);
-      dispatch(displayNotification(err.message, "error"));
-    }
-  };
-
-  /**
-   * updateFormDataToServer
-   * @param fields fields
-   * @param details details
-   */
-  const updatePedagogyFormDataToServer = async (
-    fields?: string[],
-    details?: string
-  ) => {
-    let dataToUpdate = {
-      ...pedagogyFormData,
-    };
-
-    const oldData = {
-      ...JSON.parse(pedagogyForm.formData),
-    } as FormData;
-
-    // If there is no oldData to compare to,
-    // there is no need to check if something has changed
-    if (Object.keys(oldData).length > 0) {
-      dataToUpdate = {
-        ...dataToUpdate,
-        studentOpinionOfSupport: dataToUpdate.studentOpinionOfSupport.map(
-          (opinion, index) => {
-            const oldOpinion = oldData.studentOpinionOfSupport[index];
-
-            if (oldOpinion) {
-              const opinionHasChanged = !_.isEqual(opinion, oldOpinion);
-
-              if (opinionHasChanged) {
-                return {
-                  ...opinion,
-                  updatedDate: new Date(),
-                };
-              }
-            }
-
-            return opinion;
-          }
-        ),
-        schoolOpinionOfSupport: dataToUpdate.schoolOpinionOfSupport.map(
-          (opinion, index) => {
-            const oldOpinion = oldData.schoolOpinionOfSupport[index];
-
-            if (oldOpinion) {
-              const opinionHasChanged = !_.isEqual(opinion, oldOpinion);
-
-              if (opinionHasChanged) {
-                return {
-                  ...opinion,
-                  updatedDate: new Date(),
-                };
-              }
-            }
-
-            return opinion;
-          }
-        ),
-      };
-    }
-
-    return await pedagogyApi.updatePedagogyFormData({
-      userEntityId: studentUserEntityId,
-      updatePedagogyFormDataRequest: {
-        formData: JSON.stringify(dataToUpdate),
-        fields: fields || null,
-        details: details || null,
-      },
-    });
-  };
-
-  /**
-   * updateImplementedActionsToServer
-   */
-  const updateImplementedActionsToServer = async () => {
-    // If the implemented support actions form data does not exist initially, create it
-    if (!implementedSupportActionsFormDataExists) {
-      return await pedagogyApi.createPedagogyFormImplementedActions({
-        userEntityId: studentUserEntityId,
-        createPedagogyFormImplementedActionsRequest: {
-          formData: JSON.stringify(implemetedSupportActionsFormData),
-        },
-      });
-    }
-
-    // If the implemented support actions form data exists, update it
-    return await pedagogyApi.updatePedagogyFormDataImplementedActions({
-      userEntityId: studentUserEntityId,
-      updatePedagogyFormDataImplementedActionsRequest: {
-        formData: JSON.stringify(implemetedSupportActionsFormData),
-      },
-    });
+    pedagogyForm.resetPedagogyFormData();
+    implementedActions.resetImplementedActionsData();
+    setEditIsActive(false);
   };
 
   /**
    * saveAllData - Unified save function that handles both scenarios
    */
   const saveAllData = async () => {
-    setLoading(true);
-    try {
-      // Always save implemented actions if they have changed
-      if (implementedActionsHaveChanged) {
-        const updatedImplementedActions =
-          await updateImplementedActionsToServer();
-
-        unstable_batchedUpdates(() => {
-          setPedagogySupportActions(updatedImplementedActions);
-          setImplemetedSupportActionsFormData(
-            initializeImplemetedSupportActionsFormData(
-              updatedImplementedActions.formData
-            )
-          );
-        });
-      }
-
-      // Save pedagogy form data if it exists and has changes
-      if (pedagogyFormExists && changedFields.length > 0) {
-        const updatedPedagogyFormData = await updatePedagogyFormDataToServer(
-          changedFields,
-          pedagogyFormExtraDetails
-        );
-
-        unstable_batchedUpdates(() => {
-          setPedagogyForm(updatedPedagogyFormData);
-          setPedagogyFormData(
-            initializePedagogyFormData(
-              updatedPedagogyFormData.formData,
-              isUppersecondary
-            )
-          );
-        });
-      }
-
-      // Update local state
-      unstable_batchedUpdates(() => {
-        setEditIsActive(false);
-        setChangedFields([]);
-        setPedagogyFormExtraDetails("");
-        setLoading(false);
-      });
-    } catch (err) {
-      setLoading(false);
-      dispatch(displayNotification(err.message, "error"));
+    // Save implemented actions if they have changed
+    if (implementedActions.implementedActionsHaveChanged) {
+      await implementedActions.saveImplementedActions();
     }
-  };
 
-  /**
-   * togglePublishPedagogyForm
-   */
-  const togglePublishPedagogyForm = async () => {
-    try {
-      const updatedPedagogyFormData = await pedagogyApi.togglePublished({
-        userEntityId: studentUserEntityId,
-      });
-
-      unstable_batchedUpdates(() => {
-        setPedagogyForm(updatedPedagogyFormData);
-        setPedagogyFormData(
-          initializePedagogyFormData(
-            updatedPedagogyFormData.formData,
-            isUppersecondary
-          )
-        );
-      });
-    } catch (err) {
-      if (!isMApiError(err)) {
-        throw err;
-      }
-
-      dispatch(displayNotification(err.message, "error"));
+    // Save pedagogy form data if it exists and has changes
+    if (
+      pedagogyForm.pedagogyFormExists &&
+      pedagogyForm.changedFields.length > 0
+    ) {
+      await pedagogyForm.savePedagogyFormData();
     }
+
+    setEditIsActive(false);
   };
 
   return {
@@ -404,92 +67,26 @@ export const usePedagogy = (
     isUppersecondary,
     resetPedagogyData,
     saveAllData,
+    setEditIsActive,
 
     // Implemented support actions related state
-    pedagogySupportActions,
-    implemetedSupportActionsFormData,
-    setImplemetedSupportActionsFormData,
-    implementedActionsHaveChanged,
+    pedagogySupportActions: implementedActions.pedagogySupportActions,
+    implemetedSupportActionsFormData:
+      implementedActions.implemetedSupportActionsFormData,
+    setImplemetedSupportActionsFormData:
+      implementedActions.setImplemetedSupportActionsFormData,
+    implementedActionsHaveChanged:
+      implementedActions.implementedActionsHaveChanged,
 
     // Pedagogy form related state
-    pedagogyFormExists,
-    pedagogyForm,
-    pedagogyFormData,
-    changedFields,
-    activatePedagogyForm,
-    setPedagogyFormDataAndUpdateChangedFields,
-    setPedagogyFormExtraDetails,
-    setEditIsActive,
-    togglePublishPedagogyForm,
+    pedagogyFormExists: pedagogyForm.pedagogyFormExists,
+    pedagogyForm: pedagogyForm.pedagogyForm,
+    pedagogyFormData: pedagogyForm.pedagogyFormData,
+    changedFields: pedagogyForm.changedFields,
+    activatePedagogyForm: pedagogyForm.activatePedagogyForm,
+    setPedagogyFormDataAndUpdateChangedFields:
+      pedagogyForm.setPedagogyFormDataAndUpdateChangedFields,
+    setPedagogyFormExtraDetails: pedagogyForm.setPedagogyFormExtraDetails,
+    togglePublishPedagogyForm: pedagogyForm.togglePublishPedagogyForm,
   };
-};
-
-/**
- * Get the edited fields
- * @param oldData old pedagogyForm
- * @param newData new pedagogyForm
- * @returns string[]
- */
-const getEditedFields = (
-  oldData: PedagogyFormData,
-  newData: PedagogyFormData
-) => {
-  let changedValuesComparedToPrevious: string[] = [];
-
-  // Check if the form type has changed
-  if (isCompulsoryForm(oldData) && isCompulsoryForm(newData)) {
-    changedValuesComparedToPrevious = Object.keys(newData).filter(
-      (key: keyof CompulsoryFormData) => {
-        if (typeof oldData[key] !== "object") {
-          return oldData[key] !== newData[key];
-        }
-      }
-    );
-
-    const hasStudentOpinionChanged = !_.isEqual(
-      newData.studentOpinionOfSupport,
-      oldData.studentOpinionOfSupport
-    );
-
-    if (hasStudentOpinionChanged) {
-      changedValuesComparedToPrevious.push("studentOpinionOfSupport");
-    }
-
-    const hasSchoolOpinionChanged = !_.isEqual(
-      newData.schoolOpinionOfSupport,
-      oldData.schoolOpinionOfSupport
-    );
-
-    if (hasSchoolOpinionChanged) {
-      changedValuesComparedToPrevious.push("schoolOpinionOfSupport");
-    }
-  } else if (isUpperSecondaryForm(oldData) && isUpperSecondaryForm(newData)) {
-    changedValuesComparedToPrevious = Object.keys(newData).filter(
-      (key: keyof UpperSecondaryFormData) => {
-        if (typeof oldData[key] !== "object") {
-          return oldData[key] !== newData[key];
-        }
-      }
-    );
-
-    const hasStudentOpinionChanged = !_.isEqual(
-      newData.studentOpinionOfSupport,
-      oldData.studentOpinionOfSupport
-    );
-
-    if (hasStudentOpinionChanged) {
-      changedValuesComparedToPrevious.push("studentOpinionOfSupport");
-    }
-
-    const hasSchoolOpinionChanged = !_.isEqual(
-      newData.schoolOpinionOfSupport,
-      oldData.schoolOpinionOfSupport
-    );
-
-    if (hasSchoolOpinionChanged) {
-      changedValuesComparedToPrevious.push("schoolOpinionOfSupport");
-    }
-  }
-
-  return changedValuesComparedToPrevious;
 };
