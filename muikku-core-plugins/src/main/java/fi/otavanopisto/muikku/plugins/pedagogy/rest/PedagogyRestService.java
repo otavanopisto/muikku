@@ -553,12 +553,14 @@ public class PedagogyRestService {
       }
       
       // Form is always accessible to admins and special education teachers but also to other related staff,
-      // if the form exists
+      // if the form is published
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
       accessible = isAdmin || specEdTeacher || (studentParent && accessType == PedagogyFormAccessType.READ);
       if (!accessible && form != null) {
-        accessible = relation.isGuidanceCounselor() || courseTeacher;
+        if (form.isPublished() == true) {
+          accessible = relation.isGuidanceCounselor() || courseTeacher;
+        }
       }
     }
     return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher, studentParent);
