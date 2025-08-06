@@ -147,6 +147,14 @@ const BasePlannerPeriodCourse = React.forwardRef<
               ns: "common",
             }),
           };
+
+        case "SUGGESTED_NEXT":
+          return {
+            state: "suggested-next",
+            label: t("labels.suggestedNext", {
+              ns: "common",
+            }),
+          };
         default:
           return { state: null, label: null };
       }

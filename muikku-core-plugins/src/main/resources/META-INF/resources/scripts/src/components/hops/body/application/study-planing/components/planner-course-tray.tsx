@@ -191,6 +191,12 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
       }),
       value: "ONGOING",
     },
+    {
+      label: t("labels.suggestedNext", {
+        ns: "common",
+      }),
+      value: "SUGGESTED_NEXT",
+    },
   ];
 
   return (
@@ -366,6 +372,14 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
               ns: "common",
             }),
           };
+
+        case "SUGGESTED_NEXT":
+          return {
+            state: "suggested-next",
+            label: t("labels.suggestedNext", {
+              ns: "common",
+            }),
+          };
         default:
           return { state: null, label: null };
       }
@@ -397,7 +411,9 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         isDragging: monitor.isDragging(),
       }),
       // eslint-disable-next-line jsdoc/require-jsdoc
-      canDrag: !disabled && !studyActivity,
+      canDrag:
+        !disabled &&
+        (!studyActivity || studyActivity.status === "SUGGESTED_NEXT"),
     }),
     [disabled, studyActivity]
   );
@@ -408,7 +424,10 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
    * Handles course select
    */
   const handleSelectCourse = () => {
-    if (disabled || studyActivity) {
+    if (
+      disabled ||
+      (studyActivity && studyActivity.status !== "SUGGESTED_NEXT")
+    ) {
       return;
     }
 

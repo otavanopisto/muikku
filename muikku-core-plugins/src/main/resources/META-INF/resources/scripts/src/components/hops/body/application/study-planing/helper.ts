@@ -268,7 +268,9 @@ const filterSubjectsAndCourses = (
             (selectedFilters.includes("SUPPLEMENTATIONREQUEST") &&
               course.state === "SUPPLEMENTATIONREQUEST") ||
             (selectedFilters.includes("TRANSFERRED") &&
-              course.state === "TRANSFERRED")
+              course.state === "TRANSFERRED") ||
+            (selectedFilters.includes("SUGGESTED_NEXT") &&
+              course.state === "SUGGESTED_NEXT")
         );
 
       // Apply search term

@@ -66,7 +66,11 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
             className="study-planner__planned-list-item"
           >
             <PlannerPeriodCourseCard
-              disabled={disabled || courseActivity !== undefined}
+              disabled={
+                disabled ||
+                courseActivity !== undefined ||
+                courseActivity?.status !== "SUGGESTED_NEXT"
+              }
               course={course}
               selected={isSelected}
               hasChanges={hasChanges}
