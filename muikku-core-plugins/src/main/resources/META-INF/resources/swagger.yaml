@@ -13113,7 +13113,7 @@ components:
         - state
         - studentEmail
         - studentIdentifier
-        - creator
+        - userEntityId
       properties:
         id:
           type: integer
@@ -13133,6 +13133,9 @@ components:
           type: string
         studentIdentifier:
           type: string
+        userEntityId:
+          type: integer
+          format: int64
 
     CommunicatorSignature:
       type: object

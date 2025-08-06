@@ -1262,6 +1262,7 @@ public class CeeposRESTService {
     restOrder.setProduct(restProduct);
     restOrder.setState(order.getState());
     restOrder.setStudentIdentifier(order.getUserIdentifier());
+    restOrder.setUserEntityId(order.getCreatorId());
     return restOrder;
   }
 

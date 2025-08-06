@@ -54,11 +54,20 @@ public class CeeposOrderRestModel {
     this.paid = paid;
   }
 
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
   private Long id;
   private String studentIdentifier;
   private CeeposProductRestModel product;
   private CeeposOrderState state;
   private OffsetDateTime paid;
   private OffsetDateTime created;
+  private Long userEntityId;
 
 }
