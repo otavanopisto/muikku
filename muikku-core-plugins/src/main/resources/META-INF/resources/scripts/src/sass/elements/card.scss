@@ -191,20 +191,20 @@
 }
 
 .card__error-guidance {
-  margin-top: 1rem;
-  padding: 1rem;
   background: $color-panel-background-color;
-  border: 1px solid $color-panel-border-color;
   border-radius: 4px;
+  border: 1px solid $color-panel-border-color;
+  margin-top: 1rem;
+  max-width: 400px;
+  padding: 1rem;
   text-align: center;
   width: 100%;
-  max-width: 400px;
 }
 
 .card__error-guidance-text {
-  margin: 0 0 0.5rem 0;
   font-size: 0.9rem;
   line-height: 1.4;
+  margin: 0 0 0.5rem 0;
 }
 
 .card__title--frontpage-upper-secondary-school {
