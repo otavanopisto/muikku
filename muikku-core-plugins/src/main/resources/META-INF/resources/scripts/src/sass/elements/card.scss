@@ -190,6 +190,23 @@
   }
 }
 
+.card__error-guidance {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: $color-panel-background-color;
+  border: 1px solid $color-panel-border-color;
+  border-radius: 4px;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.card__error-guidance-text {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 .card__title--frontpage-upper-secondary-school {
   color: $color-frontpage-card-upper-secondary-school-title;
 }
