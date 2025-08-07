@@ -3,7 +3,6 @@ import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import { useTranslation } from "react-i18next";
 import { useCompulsoryForm } from "~/components/pedagogy-support/hooks/useCompulsoryForm";
-import Button from "~/components/general/button";
 
 /**
  * PermissionsAndApprovalProps
@@ -20,13 +19,24 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
   props
 ) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
-  const { pedagogyForm, userRole, togglePublishPedagogyForm, editIsActive } =
-    useCompulsoryForm();
+  const { editIsActive, pedagogyForm } = useCompulsoryForm();
 
   return (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">Näkyvyys</legend>
+        {pedagogyForm.published && (
+          <div className="hops-container__state state-INFO">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
+              {t("content.publishedDateInfo", {
+                ns: "pedagogySupportPlan",
+                date: "1.1.2021",
+              })}
+            </div>
+          </div>
+        )}
+
         <div className="hops-container__info">
           <div className="hops-container__state state-INFO">
             <div className="hops-container__state-icon icon-notification"></div>
@@ -83,18 +93,6 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
                   ns: "pedagogySupportPlan",
                 })}
               </div>
-            </div>
-          )}
-
-          {userRole === "SPECIAL_ED_TEACHER" && (
-            <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
-              <Button
-                buttonModifiers={["execute"]}
-                disabled={editIsActive}
-                onClick={togglePublishPedagogyForm}
-              >
-                {pedagogyForm?.published ? "Peru julkaisu" : "Julkaise"}
-              </Button>
             </div>
           )}
         </div>

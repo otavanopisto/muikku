@@ -1,5 +1,5 @@
 import * as React from "react";
-import Tabs, { Tab } from "~/components/general/tabs";
+import { SimpleTabs, Tab } from "~/components/general/tabs";
 import { UserRole } from "~/@types/pedagogy-form";
 import PedagogicalSupportForm from "./pedagogical-support-form";
 import { PedagogyProvider } from "~/components/pedagogy-support/context/pedagogy-context";
@@ -172,7 +172,7 @@ const PedagogySupport = (props: PedagogySupportProps) => {
       }
 
       return (
-        <Tabs
+        <SimpleTabs
           modifier="pedagogy-support"
           tabs={pedagogySupportTabs}
           onTabChange={handleTabChange}

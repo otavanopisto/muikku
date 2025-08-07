@@ -2550,7 +2550,9 @@
       "add": "$t(common:actions.add)",
       "add_row": "Lisää rivi",
       "approve": "Hyväksy suunnitelma",
-      "confirmCancel": "Olen varma, peruuta muutokset"
+      "confirmCancel": "Olen varma, peruuta muutokset",
+      "publish": "Publish",
+      "unpublish": "Unpublish"
     },
     "content": {
       "approving": "Olen lukenut suunnitelman ja hyväksyn sen sisällön.",
@@ -2578,6 +2580,7 @@
       "publishedToGroupSupervisor": "to the group supervisor",
       "publishedToStudyCounselor": "to the study counselor",
       "publishedToCurrentTeachers": "to teachers whose course you are currently studying.",
+      "publishedDateInfo": "Pedagogical support plan has been published on {{date}}",
       "unsavedWarning": "Sinulla on tallentamattomia muutoksia. Haluatko varmasti peruuttaa muokkauksen?"
     },
     "labels": {

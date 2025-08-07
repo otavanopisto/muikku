@@ -36,6 +36,8 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     userRole,
     activatePedagogyForm,
     toolbarLogic,
+    pedagogyForm,
+    togglePublishPedagogyForm,
   } = usePedagogyToolbarLogic();
 
   /**
@@ -161,10 +163,24 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
           </Button>
         </div>
       )}
+
+      {toolbarLogic.canTogglePublishForm && pedagogyForm && (
+        <Button
+          buttonModifiers={["execute"]}
+          disabled={editIsActive}
+          onClick={togglePublishPedagogyForm}
+        >
+          {pedagogyForm.published
+            ? t("actions.unpublish", {
+                ns: "pedagogySupportPlan",
+              })
+            : t("actions.publish", {
+                ns: "pedagogySupportPlan",
+              })}
+        </Button>
+      )}
     </div>
   );
-
-  return null;
 };
 
 /**
@@ -198,6 +214,9 @@ export const usePedagogyToolbarLogic = () => {
         !editIsActive,
       // If form doesn't exist and user role is SPECIAL_ED_TEACHER, show activate button
       canActivateForm: !pedagogyFormExists && userRole === "SPECIAL_ED_TEACHER",
+      // If form exists and user role is SPECIAL_ED_TEACHER, show toggle publish button
+      canTogglePublishForm:
+        pedagogyFormExists && userRole === "SPECIAL_ED_TEACHER",
       hasMainFormChanges,
       hasAnyChanges: hasMainFormChanges || implementedActionsHaveChanged,
       shouldShowSaveWithExtraDetails: pedagogyFormExists && hasMainFormChanges,
