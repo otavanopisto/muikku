@@ -281,7 +281,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                       disabled={disabled}
                       course={course}
                       subjectCode={subject.subjectCode}
-                      isPlannedCourse={course.state === "PLANNED"}
+                      isPlannedCourse={course.planned}
                       selected={selected}
                       studyActivity={course.studyActivity}
                       curriculumConfig={curriculumConfig}
@@ -385,15 +385,6 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
       }
     }
 
-    if (isPlannedCourse) {
-      return {
-        state: "planned",
-        label: t("labels.planned", {
-          ns: "common",
-        }),
-      };
-    }
-
     return { state: null, label: null };
   };
 
@@ -468,6 +459,14 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
                     ns: "common",
                   })}
             </PlannerCardLabel>
+
+            {isPlannedCourse && (
+              <PlannerCardLabel modifiers={["course-state", "planned"]}>
+                {t("labels.planned", {
+                  ns: "common",
+                })}
+              </PlannerCardLabel>
+            )}
 
             {courseState.state && (
               <PlannerCardLabel modifiers={["course-state", courseState.state]}>

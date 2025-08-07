@@ -66,10 +66,11 @@ const PlannerPlannedList = (props: PlannerPlannedListProps) => {
             className="study-planner__planned-list-item"
           >
             <PlannerPeriodCourseCard
+              key={course.identifier}
               disabled={
                 disabled ||
-                courseActivity !== undefined ||
-                courseActivity?.status !== "SUGGESTED_NEXT"
+                (courseActivity !== undefined &&
+                  courseActivity.status !== "SUGGESTED_NEXT")
               }
               course={course}
               selected={isSelected}

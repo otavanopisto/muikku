@@ -170,7 +170,8 @@ const createAndAllocateCoursesToPeriods = (
  * Filtered course
  */
 interface FilteredCourse extends Course {
-  state?: CourseStatus | "PLANNED";
+  state?: CourseStatus;
+  planned: boolean;
   studyActivity?: StudentStudyActivity;
 }
 
@@ -209,11 +210,7 @@ const filterSubjectsAndCourses = (
             pc.subjectCode === subject.subjectCode
         );
 
-        let state: CourseStatus | "PLANNED" = undefined;
-
-        if (plannedCourse) {
-          state = "PLANNED";
-        }
+        let state: CourseStatus = undefined;
 
         if (studyActivity) {
           state = studyActivity.status;
@@ -223,6 +220,7 @@ const filterSubjectsAndCourses = (
           ...course,
           studyActivity,
           state,
+          planned: !!plannedCourse,
         };
       });
 
@@ -260,8 +258,7 @@ const filterSubjectsAndCourses = (
         filteredCoursesWithStudyActivity.filter(
           (course) =>
             course.state === undefined ||
-            (selectedFilters.includes("planned") &&
-              course.state === "PLANNED") ||
+            (selectedFilters.includes("planned") && course.planned) ||
             (selectedFilters.includes("GRADED") && course.state === "GRADED") ||
             (selectedFilters.includes("ONGOING") &&
               course.state === "ONGOING") ||

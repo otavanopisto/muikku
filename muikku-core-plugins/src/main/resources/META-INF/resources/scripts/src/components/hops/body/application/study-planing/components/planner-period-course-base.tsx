@@ -148,13 +148,6 @@ const BasePlannerPeriodCourse = React.forwardRef<
             }),
           };
 
-        case "SUGGESTED_NEXT":
-          return {
-            state: "suggested-next",
-            label: t("labels.suggestedNext", {
-              ns: "common",
-            }),
-          };
         default:
           return { state: null, label: null };
       }
@@ -385,28 +378,29 @@ const BasePlannerPeriodCourse = React.forwardRef<
         {renderWorkspaceInstanceNotAvailable()}
       </PlannerCardContent>
 
-      {!disabled && !studyActivity && (
-        <PlannerCardActions>
-          <Link
-            onClick={handleSpecifyOpen}
-            disabled={specifyIsOpen || deleteWarningIsOpen}
-            className="link link--study-planner-specify"
-          >
-            {t("actions.specify", {
-              ns: "common",
-            })}
-          </Link>
-          <Link
-            onClick={handleDeleteOpen}
-            disabled={specifyIsOpen || deleteWarningIsOpen}
-            className="link link--study-planner-delete"
-          >
-            {t("actions.remove", {
-              ns: "common",
-            })}
-          </Link>
-        </PlannerCardActions>
-      )}
+      {!disabled &&
+        (!studyActivity || studyActivity.status === "SUGGESTED_NEXT") && (
+          <PlannerCardActions>
+            <Link
+              onClick={handleSpecifyOpen}
+              disabled={specifyIsOpen || deleteWarningIsOpen}
+              className="link link--study-planner-specify"
+            >
+              {t("actions.specify", {
+                ns: "common",
+              })}
+            </Link>
+            <Link
+              onClick={handleDeleteOpen}
+              disabled={specifyIsOpen || deleteWarningIsOpen}
+              className="link link--study-planner-delete"
+            >
+              {t("actions.remove", {
+                ns: "common",
+              })}
+            </Link>
+          </PlannerCardActions>
+        )}
     </PlannerCard>
   );
 });
