@@ -287,7 +287,7 @@
 }
 
 .language-profile__language-dropdown {
-  background-color: #fff;
+  background-color: $color-default;
   border: 1px solid $color-language-profile-accent-color;
   box-shadow: 0 10px 20px $color-dropdown-default-shadow;
   left: 0;
@@ -321,13 +321,13 @@
 
   thead {
     th {
-      border-bottom: 1px solid #ec00f0;
+      border-bottom: 1px solid $color-outline;
       padding: 5px;
     }
   }
 
   tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: $color-default-generic-background;
   }
 }
 
