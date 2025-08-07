@@ -4,15 +4,15 @@ import { useTranslation } from "react-i18next";
 import Application from "./body/application";
 
 /**
- * GuiderBodyProps
+ * LanguageProfileBodyProps
  */
-interface GuiderBodyProps {}
+interface LanguageProfileBodyProps {}
 
 /**
- * GuiderBody
+ * LanguageProfileBody
  * @param props props
  */
-const LanguageProfileBody = (props: GuiderBodyProps) => {
+const LanguageProfileBody = (props: LanguageProfileBodyProps) => {
   const { t } = useTranslation("common");
   return (
     <div>

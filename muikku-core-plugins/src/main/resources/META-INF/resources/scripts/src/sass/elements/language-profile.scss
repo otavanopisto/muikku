@@ -111,8 +111,8 @@
 }
 
 .language-profile-container__row--buttons {
-  justify-content: center;
   gap: 10px;
+  justify-content: center;
 }
 
 .language-profile__form-element-container {
@@ -128,8 +128,8 @@
 .language-profile__sample {
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
   gap: 10px;
+  justify-content: center;
 }
 
 .language-profile__sample-buttons {
@@ -286,16 +286,16 @@
 .language-profile__field-description {
   color: lighten($color-default-contrast, 30%);
   display: block;
-  overflow: hidden;
   margin: 0 0 10px;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .language-profile__filter-input {
-  width: 100%;
-  padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  padding: 0.5rem;
+  width: 100%;
 }
 
 .language-profile__add-language {
@@ -306,12 +306,12 @@
   background-color: #fff;
   border: 1px solid $color-language-profile-accent-color;
   box-shadow: 0 10px 20px $color-dropdown-default-shadow;
-  max-height: 200px;
   left: 0;
+  max-height: 200px;
   overflow-y: scroll;
   position: absolute;
-  transition: all 0.2s ease-in-out;
   top: auto;
+  transition: all 0.2s ease-in-out;
   width: 100%;
   z-index: 5;
 }
@@ -324,6 +324,7 @@
     background: lighten($color-language-profile-accent-color, 50%)
   }
 }
+
 .language-profile__languages-wrapper {
   border: 1px solid $color-default-separator-border;
   border-radius: 3px;
@@ -333,10 +334,11 @@
 .language-profile__languages {
   border-collapse: collapse;
   width: 100%;
+
   thead {
     th {
-      padding: 5px;
       border-bottom: 1px solid #ec00f0;
+      padding: 5px;
     }
   }
 
@@ -347,6 +349,7 @@
 
 .language-profile__language {
   cursor: pointer;
+
   &.DISABLED {
     color: $color-disabled;
     cursor: not-allowed;
@@ -354,15 +357,15 @@
 }
 
 .language-profile__language-label {
-  padding: 0.5rem;
   align-items: center;
+  padding: 0.5rem;
 }
 
 .language-profile__footer {
-  display: flex;
-  justify-content: center;
   align-items: center;
+  display: flex;
   height: 40px;
+  justify-content: center;
 }
 
 .language-profile__sample-file {
@@ -432,7 +435,6 @@
 }
 
 .language-profile__star {
-  -webkit-appearance: none;
   appearance: none;
   background-color: $color-default;
   color: $color-language-profile-accent-color;
