@@ -105,11 +105,6 @@
   }
 }
 
-.language-profile-container__row--link {
-  flex-flow: column nowrap;
-  gap: 10px;
-}
-
 .language-profile-container__row--buttons {
   gap: 10px;
   justify-content: center;
@@ -274,13 +269,9 @@
 .language-profile__label {
   display: block;
   font-weight: 600;
-  overflow: hidden;
   margin: 0 0 5px;
+  overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.language-profile__label--sublabel {
-  font-weight: 400;
 }
 
 .language-profile__field-description {
@@ -289,13 +280,6 @@
   margin: 0 0 10px;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.language-profile__filter-input {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.5rem;
-  width: 100%;
 }
 
 .language-profile__add-language {
@@ -354,11 +338,6 @@
     color: $color-disabled;
     cursor: not-allowed;
   }
-}
-
-.language-profile__language-label {
-  align-items: center;
-  padding: 0.5rem;
 }
 
 .language-profile__footer {
