@@ -1,6 +1,4 @@
 import * as React from "react";
-// import { useTranslation } from "react-i18next";
-// import AnimatedStep from "~/components/general/wizard/AnimateStep";
 import Wizard, {
   WizardStep,
   createWizardSteps,
@@ -10,6 +8,7 @@ import { WizardProvider } from "~/components/general/wizard/context/wizard-conte
 import { Step1, Step2, Step3, Step4 } from "./initialization/index";
 import Header from "./initialization/header";
 import Footer from "./initialization/footer";
+import AnimatedStep from "~/components/general/wizard/AnimateStep";
 
 /**
  * initializationProps
@@ -23,22 +22,29 @@ interface initializationProps {}
  * @returns JSX.Element
  */
 const Initialization = (props: initializationProps) => {
+  const previousStep = React.useRef<number>(0);
+
+  const stepComponents = [Step1, Step2, Step3, Step4].map(
+    (Step, index) =>
+      // Wrap each step in AnimatedStep to enable animations
+      // it's done with a named function to preserve the display name
+      function WrappedStep() {
+        return (
+          <AnimatedStep previousStep={previousStep} key={index}>
+            <Step />
+          </AnimatedStep>
+        );
+      }
+  );
+
   /**
    * StepZilla steps
    */
-  const steps = createWizardSteps(
-    [Step1, Step2, Step3, Step4],
-    "languageProfile"
-  );
-  /**
-   * handleStepChange
-   * @param step by step
-   */
-  const handleStepChange = (step: WizardStep) => {};
+  const steps = createWizardSteps(stepComponents, "languageProfile");
+
   const { ...wizardValues } = useWizard({
     preventNextIfInvalid: true,
     steps: steps,
-    onStepChange: handleStepChange,
     preventStepperNavigation: true,
   });
 

@@ -37,6 +37,11 @@ const InitializationFooter = (props: PedagogyFormWizardFooterProps) => {
     previous();
   };
 
+  /**
+   * handleSave
+   * Saves the language profile data to the store.
+   * Dispatches the saveLanguageProfile action with userId and languageProfile data.
+   */
   const handleSave = () => {
     dispatch(saveLanguageProfile(status.userId, languageProfile.data));
   };
