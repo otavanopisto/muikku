@@ -17,6 +17,8 @@ public enum MatriculationExamStudentStatus {
   // Enrollment has been rejected (implies the form was also submitted before)
   REJECTED,
   // Confirmed by student
-  CONFIRMED
+  CONFIRMED,
+  // Form is filled on behalf of the student by their guidance counselor
+  FILLED_ON_BEHALF;
 
 }

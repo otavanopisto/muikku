@@ -33,16 +33,6 @@ public class PyramusMatriculationExamEnrollment
   }
 
   @Override
-  public String getGuider() {
-    return guider;
-  }
-
-  @Override
-  public void setGuider(String guider) {
-    this.guider = guider;
-  }
-
-  @Override
   public String getEnrollAs() {
     return enrollAs;
   }
@@ -185,7 +175,6 @@ public class PyramusMatriculationExamEnrollment
   public Long id;
   public Long examId;
   public String nationalStudentNumber;
-  public String guider;
   public String enrollAs;
   public String degreeType;
   public boolean restartExam;
