@@ -971,7 +971,8 @@
       "supplemented": "Supplemented",
       "Approved": "Approved",
       "confirmed": "Confirmed",
-      "supplementationRequest": "Needs supplementation"
+      "supplementationRequest": "Needs supplementation",
+      "filledOnBehalf": "Filled on behalf of the student"
     },
     "matriculationGrades": {
       "I": "improbatur (rejected)",

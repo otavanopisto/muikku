@@ -971,7 +971,8 @@
       "supplemented": "Täydennetty",
       "Approved": "Hyväksytty",
       "confirmed": "Vahvistettu",
-      "supplementationRequest": "Täydennettävä"
+      "supplementationRequest": "Täydennettävä",
+      "filledOnBehalf": "Täytetty opiskelijan puolesta"
     },
     "matriculationGrades": {
       "I": "improbatur eli hylätty",
