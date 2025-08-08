@@ -330,7 +330,7 @@ class Ceepos extends React.Component<CeeposProps, CeeposState> {
                       <span className="application-list__header-primary-actions">
                         {/* We show "Delete" button only if logged in user has REMOVE_ORDER permission or logged in user's userEntityId is the same as purchase creator userId */}
                         {this.props.status.permissions.REMOVE_ORDER ||
-                        p.creator.userEntityId === this.props.status.userId ? (
+                        p.userEntityId === this.props.status.userId ? (
                           <Button
                             onClick={this.beginOrderDeleteProcess.bind(this, p)}
                             disabled={IsOrderDeletionDisabled(p.state)}

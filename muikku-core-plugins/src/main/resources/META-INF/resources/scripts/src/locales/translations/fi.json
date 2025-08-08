@@ -971,7 +971,8 @@
       "supplemented": "Täydennetty",
       "Approved": "Hyväksytty",
       "confirmed": "Vahvistettu",
-      "supplementationRequest": "Täydennettävä"
+      "supplementationRequest": "Täydennettävä",
+      "filledOnBehalf": "Täytetty opiskelijan puolesta"
     },
     "matriculationGrades": {
       "I": "improbatur eli hylätty",
@@ -2448,6 +2449,7 @@
       "empty_orders": "Sinulla ei ole tilauksia",
       "empty_active": "Sinulla ei ole avoimia tilauksia",
       "empty_history": "Tilaushistoriasi on tyhjä",
+      "errorGuidance": "Virhe tilauksen maksamisessa. Olethan yhteydessä helpdeskiin (helpdesk@muikkuverkko.fi).",
       "finishingOrder": "Oletko varma, että haluat viimeistellä opiskelijan tilauksen?",
       "nonActiveUser": " Näyttää siltä että sinun opintosi ovat päättyneet ja näin ollen tilauksesi opinto-oikeutesi jatkamiseksi on keskeytetty.",
       "noProducts": "Ei ostettavia tuotteita",

@@ -13275,29 +13275,6 @@ components:
         - PAID
         - COMPLETE
 
-    CeeposPurchaseCreator:
-      type: object
-      description: CeeposPurchaseCreator object
-      required:
-        - id
-        - userEntityId
-        - firstName
-        - lastName
-        - email
-      properties:
-        id:
-          type: integer
-          format: int64
-        userEntityId:
-          type: integer
-          format: int64
-        firstName:
-          type: string
-        lastName:
-          type: string
-        email:
-          type: string
-
     CeeposReturnLink:
       type: object
       description: CeeposReturnLink object
@@ -13339,7 +13316,7 @@ components:
         - state
         - studentEmail
         - studentIdentifier
-        - creator
+        - userEntityId
       properties:
         id:
           type: integer
@@ -13359,8 +13336,9 @@ components:
           type: string
         studentIdentifier:
           type: string
-        creator:
-          $ref: "#/components/schemas/CeeposPurchaseCreator"
+        userEntityId:
+          type: integer
+          format: int64
 
     CommunicatorSignature:
       type: object
@@ -14660,8 +14638,6 @@ components:
           format: int64
         studentIdentifier:
           type: string
-        guider:
-          type: string
         enrollAs:
           $ref: "#/components/schemas/MatriculationExamSchoolType"
         degreeType:
@@ -14702,6 +14678,7 @@ components:
         - APPROVED
         - REJECTED
         - CONFIRMED
+        - FILLED_ON_BEHALF
 
     MatriculationExamTerm:
       description: Matriculation exam term, either autumn or spring
