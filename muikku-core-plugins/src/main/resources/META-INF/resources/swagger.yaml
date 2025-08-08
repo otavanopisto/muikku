@@ -7237,6 +7237,59 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+  
+  /rest/pedagogy/form/student/{studentIdentifier}/lock:
+    get:
+      operationId: getStudentPedagogyFormLock
+      summary: Get student pedagogy form locked status information
+      description: Get student pedagogy form locked status with information about who locked it
+      tags:
+        - Pedagogy
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Pedagogy form lock with information about who locked it
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedagogyFormLocked"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+    put:
+      operationId: updateStudentPedagogyFormLock
+      summary: Update student pedagogy form lock
+      description: Update student pedagogy form lock
+      tags:
+        - Pedagogy
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      requestBody:
+        $ref: "#/components/requestBodies/PedagogyFormUpdateLockRequestBody"
+      responses:
+        "200":
+          description: Student pedagogy form locked successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PedagogyFormLocked"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
 
   /rest/pedagogy/form/{userEntityId}/publish:
     put:
@@ -12016,6 +12069,19 @@ components:
             properties:
               formData:
                 type: string
+    
+    PedagogyFormUpdateLockRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: PedagogyFormLockRequestBody object
+            required:
+              - locked
+            properties:
+              locked:
+                type: boolean
 
     HopsUppersecondaryUpdateRequestBody:
       required: true
@@ -15909,6 +15975,22 @@ components:
           type: boolean
         studentParent:
           type: boolean
+    
+    PedagogyFormLocked:
+      type: object
+      description: Gives information about whether the pedagogy form is locked and who locked it.
+      required:
+        - locked
+        - userEntityId
+        - userName
+      properties:
+        locked:
+          type: boolean
+        userEntityId:
+          type: integer
+          format: int64
+        userName:
+          type: string
 
     PedagogyHistoryEntryType:
       type: string

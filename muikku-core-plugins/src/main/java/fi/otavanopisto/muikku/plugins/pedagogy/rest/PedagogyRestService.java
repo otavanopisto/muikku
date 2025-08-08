@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
@@ -29,12 +31,17 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
+import fi.otavanopisto.muikku.model.users.UserIdentifierProperty;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
+import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyFormLockWSMessage;
+import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyFormWebsocketMessenger;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormImplementedActions;
@@ -66,6 +73,9 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class PedagogyRestService {
   
   @Inject
+  private Logger logger;
+  
+  @Inject
   private SessionController sessionController;
 
   @Inject
@@ -92,6 +102,9 @@ public class PedagogyRestService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+  
+  @Inject
+  private PedagogyFormWebsocketMessenger pedagogyFormWebSocketMessenger;
   
   /**
    * mApi().pedagogy.form.access.read(123);
@@ -159,6 +172,10 @@ public class PedagogyRestService {
       // PedagogyFormHistory creation
       pedagogyController.createViewHistory(form, sessionController.getLoggedUserEntity().getId());
       
+      // User registration for websocket
+      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+      pedagogyFormWebSocketMessenger.registerUser(userEntity.defaultSchoolDataIdentifier().toId(), sessionController.getLoggedUserEntity().getId());
+
       return Response.ok(toRestModel(form)).build();
     }
   }
@@ -192,7 +209,13 @@ public class PedagogyRestService {
     
     form = pedagogyController.updateFormData(form, payload.getFormData(), payload.getFields(), payload.getDetails(), sessionController.getLoggedUserEntity().getId());
     
-    return Response.ok(toRestModel(form)).build();
+    // Websocket
+    
+    PedagogyFormRestModel restModel = toRestModel(form);
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    pedagogyFormWebSocketMessenger.sendMessage(userEntity.defaultSchoolDataIdentifier().toId(), "pedagogy:pedagogy-form-updated", restModel);
+
+    return Response.ok(restModel).build();
   }
   
   @Path("/form/{USERENTITYID}/publish")
@@ -267,7 +290,11 @@ public class PedagogyRestService {
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
+
+    // User registration for websocket
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    pedagogyFormWebSocketMessenger.registerUser(userEntity.defaultSchoolDataIdentifier().toId(), sessionController.getLoggedUserEntity().getId());
+
     PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntityId);
     
     return Response.ok(toRestModel(form, userEntityId)).build();
@@ -302,7 +329,12 @@ public class PedagogyRestService {
     // Form data update
     form = pedagogyController.updateFormDataImplementedActions(form, payload.getFormData());
 
-    return Response.ok(toRestModel(form, userEntityId)).build();
+    PedagogyFormImplementedActionsRestModel restModel = toRestModel(form, userEntityId);
+    // Websocket
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    pedagogyFormWebSocketMessenger.sendMessage(userEntity.defaultSchoolDataIdentifier().toId(), "pedagogy:implemented-support-actions-updated", restModel);
+
+    return Response.ok(restModel).build();
   }
   
   @Path("/form/{USERENTITYID}/workspaces")
@@ -384,6 +416,85 @@ public class PedagogyRestService {
       }
     }
     return Response.ok(pedagogyWorkspaces).build();
+  }
+  
+  @GET
+  @Path("/form/student/{USERENTITYID}/lock")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getPedagogyFormLock(@PathParam("USERENTITID") Long userEntityId) {
+
+    // Access check
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    SchoolDataIdentifier studentIdentifier = userEntity.defaultSchoolDataIdentifier();
+    
+    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ, false);
+    if (!access.isAccessible()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // Return value
+
+    PedagogyFormLockRestModel pedagogyFormLock = null;
+    UserIdentifierProperty pedagogyProperty = userEntityController.getUserIdentifierPropertyByKey(studentIdentifier.getIdentifier(), "pedagogyFormLock");
+    if (pedagogyProperty != null && !StringUtils.isBlank(pedagogyProperty.getValue())) {
+      try {
+        pedagogyFormLock = new ObjectMapper().readValue(pedagogyProperty.getValue(), PedagogyFormLockRestModel.class);
+      }
+      catch (Exception e) {
+        logger.log(Level.SEVERE, "Error deserializing pedagogy form lock", e);
+      }
+    }
+
+    if (pedagogyFormLock == null) {
+      pedagogyFormLock = new PedagogyFormLockRestModel();
+    }
+
+    return Response.ok(pedagogyFormLock).build();
+  }
+  
+  @PUT
+  @Path("/form/student/{STUDENTIDENTIFIER}/lock")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updatePedagogyFormLock(@PathParam("STUDENTIDENTIFIER") String studentIdentifierStr, PedagogyFormLockRestModel payload) {
+
+    // Access check
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierStr);
+
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.WRITE, false);
+    if (!access.isAccessible()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // Create/update
+
+    if (payload.isLocked()) {
+      payload.setUserEntityId(sessionController.getLoggedUserEntity().getId());
+      payload.setUserName(userEntityController.getName(sessionController.getLoggedUserEntity(), true).getDisplayNameWithLine());
+      try {
+        userEntityController.setUserIdentifierProperty(studentIdentifier.getIdentifier(), "pedagogyFormLock",  new ObjectMapper().writeValueAsString(payload));
+      }
+      catch (Exception e) {
+        logger.log(Level.SEVERE, "Error serializing pedagogy form lock", e);
+      }
+    }
+    else {
+      payload.setUserEntityId(null);
+      payload.setUserName(null);
+      userEntityController.setUserIdentifierProperty(studentIdentifier.getIdentifier(), "pedagogyFormLock", null);
+    }
+
+    PedagogyFormLockWSMessage msg = new PedagogyFormLockWSMessage();
+    msg.setLocked(payload.isLocked());
+    msg.setUserEntityId(payload.getUserEntityId());
+    msg.setUserName(payload.getUserName());
+    msg.setStudentIdentifier(studentIdentifier.toId());
+    pedagogyFormWebSocketMessenger.sendMessage(studentIdentifier.toId(), "pedagogy:lock-updated", msg);
+    return Response.ok(payload).build();
   }
   
   private PedagogyFormRestModel toRestModel(PedagogyForm form) {
