@@ -376,7 +376,7 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         case "SUGGESTED_NEXT":
           return {
             state: "suggested-next",
-            label: t("labels.suggestedNext", {
+            label: t("labels.suggested", {
               ns: "common",
             }),
           };
