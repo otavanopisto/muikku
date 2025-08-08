@@ -47,8 +47,8 @@ const LanguageSample = (props: LanguageSampleProps) => {
   };
 
   return (
-    <div className="panguage-profile-form">
-      <div className="panguage-profile-form__container">
+    <div className="language-profile-form">
+      <div className="language-profile-form__container">
         <div className="language-profile-container">
           <fieldset className="language-profile-container__fieldset">
             <legend className="language-profile-container__subheader">
