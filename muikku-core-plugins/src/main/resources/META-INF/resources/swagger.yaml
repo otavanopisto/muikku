@@ -4761,7 +4761,7 @@ paths:
         "403":
           description: If called as student
 
-  /rest/attendee/{workspaceFolderId}/user/{userEntityId}:
+  /rest/workspace/exam/attendees/{workspaceFolderId}/user/{userEntityId}:
     post:
       operationId: addExamAttendee
       summary: Adds an exam attendee

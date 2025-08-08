@@ -163,7 +163,7 @@ public class ExamRESTService {
     return Response.ok().entity(attendees).build();
   }
 
-  @Path("/attendee/{WORKSPACEFOLDERID}/user/{USERENTITYID}")
+  @Path("/attendees/{WORKSPACEFOLDERID}/user/{USERENTITYID}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response addAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId) {
@@ -177,7 +177,7 @@ public class ExamRESTService {
     return Response.ok().entity(toRestModel(attendance)).build();
   }
 
-  @Path("/attendee/{WORKSPACEFOLDERID}/user/{USERENTITYID}")
+  @Path("/attendees/{WORKSPACEFOLDERID}/user/{USERENTITYID}")
   @DELETE
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response removeAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId) {
