@@ -109,39 +109,51 @@ public class PedagogyRestService {
   /**
    * mApi().pedagogy.form.access.read(123);
    */
-  @Path("/form/{USERENTITYID}/access")
+  @Path("/form/{STUDENTIDENTIFIER}/access")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getAccesss(@PathParam("USERENTITYID") Long userEntityId) {
-    return Response.ok(getAccess(userEntityId, true, PedagogyFormAccessType.READ, true)).build();
+  public Response getAccesss(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+    UserEntity userEntity = toUserEntity(studentIdentifier);
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Student %d not found", studentIdentifier)).build();
+    }
+    
+    return Response.ok(getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, true)).build();
   }
   
   /**
    * mApi().pedagogy.form.create(123, {formData: String});
    */
-  @Path("/form/{USERENTITYID}")
+  @Path("/form/{STUDENTIDENTIFIER}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createForm(@PathParam("USERENTITYID") Long userEntityId, PedagogyFormCreatePayload payload) {
+  public Response createForm(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, PedagogyFormCreatePayload payload) {
     
+    UserEntity userEntity = toUserEntity(studentIdentifier);
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Student %d not found", studentIdentifier)).build();
+    }
     // Payload validation
     
     if (StringUtils.isEmpty(payload.getFormData())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing form data").build();
     }
-    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntityId);
+    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntity.getId());
     if (form != null) {
       return Response.status(Status.BAD_REQUEST).entity("Form already exists").build();
     }
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), false, PedagogyFormAccessType.WRITE, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    form = pedagogyController.createForm(userEntityId, payload.getFormData());
+    form = pedagogyController.createForm(userEntity.getId(), payload.getFormData());
     
     return Response.ok(toRestModel(form)).build();
   }
@@ -149,23 +161,28 @@ public class PedagogyRestService {
   /**
    * mApi().pedagogy.form.read(123);
    */
-  @Path("/form/{USERENTITYID}")
+  @Path("/form/{STUDENTIDENTIFIER}")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getForm(@PathParam("USERENTITYID") Long userEntityId) {
+  public Response getForm(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
     
+    UserEntity userEntity = toUserEntity(studentIdentifier);
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Student %d not found", studentIdentifier)).build();
+    }
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntityId);
+    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntity.getId());
     
     // UI wants a skeleton return object for the student even if they don't yet have a form at all...
     if (form == null) {
-      return Response.ok(toRestModel(form, userEntityId)).build();
+      return Response.ok(toRestModel(form, userEntity.getId())).build();
     }
     else {
 
@@ -173,7 +190,6 @@ public class PedagogyRestService {
       pedagogyController.createViewHistory(form, sessionController.getLoggedUserEntity().getId());
       
       // User registration for websocket
-      UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
       pedagogyFormWebSocketMessenger.registerUser(userEntity.defaultSchoolDataIdentifier().toId(), sessionController.getLoggedUserEntity().getId());
 
       return Response.ok(toRestModel(form)).build();
@@ -183,16 +199,22 @@ public class PedagogyRestService {
   /**
    * mApi().pedagogy.form.formData.update(123, {formData: String, fields: [String], details: String});
    */
-  @Path("/form/{USERENTITYID}/formData")
+  @Path("/form/{STUDENTIDENTIFIER}/formData")
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateFormData(@PathParam("USERENTITYID") Long userEntityId, PedagogyFormUpdatePayload payload) {
+  public Response updateFormData(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, PedagogyFormUpdatePayload payload) {
+    
+    UserEntity userEntity = toUserEntity(studentIdentifier);
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Student %d not found", studentIdentifier)).build();
+    }
     
     // Payload validation
     
-    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntityId);
+    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntity.getId());
     if (form == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntityId)).build();
+      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntity.getId())).build();
     }
     if (StringUtils.isEmpty(payload.getFormData())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing form data").build();
@@ -200,7 +222,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), false, PedagogyFormAccessType.WRITE, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -212,34 +234,39 @@ public class PedagogyRestService {
     // Websocket
     
     PedagogyFormRestModel restModel = toRestModel(form);
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     pedagogyFormWebSocketMessenger.sendMessage(userEntity.defaultSchoolDataIdentifier().toId(), "pedagogy:pedagogy-form-updated", restModel);
 
     return Response.ok(restModel).build();
   }
   
-  @Path("/form/{USERENTITYID}/publish")
+  @Path("/form/{STUDENTIDENTIFIER}/publish")
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response togglePublished(@PathParam("USERENTITYID") Long userEntityId) {
+  public Response togglePublished(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
+    
+UserEntity userEntity = toUserEntity(studentIdentifier);
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Student %d not found", studentIdentifier)).build();
+    }
     
     // Payload validation
     
-    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntityId);
+    PedagogyForm form = pedagogyController.findFormByUserEntityId(userEntity.getId());
     if (form == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntityId)).build();
+      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntity.getId())).build();
     }
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), false, PedagogyFormAccessType.WRITE, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
     // Form data update
     
-    boolean published = pedagogyController.isPublished(userEntityId);
+    boolean published = pedagogyController.isPublished(userEntity.getId());
     
     form = pedagogyController.updatePublished(form, !published, sessionController.getLoggedUserEntity().getId());
     
@@ -249,71 +276,86 @@ public class PedagogyRestService {
   /**
    * mApi().pedagogy.form.implementedActions.create(123, {formData: String});
    */
-  @Path("/form/implementedActions/{USERENTITYID}")
+  @Path("/form/implementedActions/{STUDENTIDENTIFIER}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createFormForImplementedActions(@PathParam("USERENTITYID") Long userEntityId, PedagogyFormImplementedActionsCreatePayload payload) {
+  public Response createFormForImplementedActions(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, PedagogyFormImplementedActionsCreatePayload payload) {
     
+    UserEntity userEntity = toUserEntity(studentIdentifier);
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Student %d not found", studentIdentifier)).build();
+    }
     // Payload validation
     
     if (StringUtils.isEmpty(payload.getFormData())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing form data").build();
     }
-    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntityId);
+    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntity.getId());
     if (form != null) {
       return Response.status(Status.BAD_REQUEST).entity("Form already exists").build();
     }
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), false, PedagogyFormAccessType.WRITE, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    form = pedagogyController.createFormForImplementedActions(userEntityId, payload.getFormData());
+    form = pedagogyController.createFormForImplementedActions(userEntity.getId(), payload.getFormData());
     
-    return Response.ok(toRestModel(form, userEntityId)).build();
+    return Response.ok(toRestModel(form, userEntity.getId())).build();
   }
   
   /**
    * mApi().pedagogy.form.implementedActions.read(123);
    */
-  @Path("/form/implementedActions/{USERENTITYID}")
+  @Path("/form/implementedActions/{STUDENTIDENTIFIER}")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getFormImplementedActions(@PathParam("USERENTITYID") Long userEntityId) {
+  public Response getFormImplementedActions(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
     
+    UserEntity userEntity = toUserEntity(studentIdentifier);
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Student %d not found", studentIdentifier)).build();
+    }
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
     // User registration for websocket
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     pedagogyFormWebSocketMessenger.registerUser(userEntity.defaultSchoolDataIdentifier().toId(), sessionController.getLoggedUserEntity().getId());
 
-    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntityId);
+    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntity.getId());
     
-    return Response.ok(toRestModel(form, userEntityId)).build();
+    return Response.ok(toRestModel(form, userEntity.getId())).build();
     
   }
   
   /**
    * mApi().pedagogy.form.implementedActions.formData.update(123, {formData: String, fields: [String], details: String});
    */
-  @Path("/form/implementedActions/{USERENTITYID}/formData")
+  @Path("/form/implementedActions/{STUDENTIDENTIFIER}/formData")
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateFormDataImplementedActions(@PathParam("USERENTITYID") Long userEntityId, PedagogyFormImplementedActionsCreatePayload payload) {
+  public Response updateFormDataImplementedActions(@PathParam("STUDENTIDENTIFIER") String studentIdentifier, PedagogyFormImplementedActionsCreatePayload payload) {
+    
+    UserEntity userEntity = toUserEntity(studentIdentifier);
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Student %d not found", studentIdentifier)).build();
+    }
     
     // Payload validation
     
-    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntityId);
+    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntity.getId());
     if (form == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntityId)).build();
+      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntity.getId())).build();
     }
     if (StringUtils.isEmpty(payload.getFormData())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing form data").build();
@@ -321,7 +363,7 @@ public class PedagogyRestService {
 
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, false, PedagogyFormAccessType.WRITE, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), false, PedagogyFormAccessType.WRITE, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -329,25 +371,30 @@ public class PedagogyRestService {
     // Form data update
     form = pedagogyController.updateFormDataImplementedActions(form, payload.getFormData());
 
-    PedagogyFormImplementedActionsRestModel restModel = toRestModel(form, userEntityId);
+    PedagogyFormImplementedActionsRestModel restModel = toRestModel(form, userEntity.getId());
     // Websocket
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     pedagogyFormWebSocketMessenger.sendMessage(userEntity.defaultSchoolDataIdentifier().toId(), "pedagogy:implemented-support-actions-updated", restModel);
 
     return Response.ok(restModel).build();
   }
   
-  @Path("/form/{USERENTITYID}/workspaces")
+  @Path("/form/{STUDENTIDENTIFIER}/workspaces")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listWorkspaces(@PathParam("USERENTITYID") Long userEntityId,
+  public Response listWorkspaces(@PathParam("STUDENTIDENTIFIER") String studentIdentifier,
       @QueryParam("q") String searchString,
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue ("50") Integer maxResults) {
 
+    UserEntity userEntity = toUserEntity(studentIdentifier);
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Student %d not found", studentIdentifier)).build();
+    }
+    
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -365,7 +412,6 @@ public class PedagogyRestService {
     
     // List of student's current and past workspaces
     
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     SchoolDataIdentifier sdi = userEntity.defaultSchoolDataIdentifier();
     List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifierIncludeArchived(sdi);
     if (workspaceEntities.isEmpty()) {
@@ -419,15 +465,19 @@ public class PedagogyRestService {
   }
   
   @GET
-  @Path("/form/student/{USERENTITYID}/lock")
+  @Path("/form/student/{STUDENTIDENTIFIER}/lock")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getPedagogyFormLock(@PathParam("USERENTITID") Long userEntityId) {
+  public Response getPedagogyFormLock(@PathParam("STUDENTIDENTIFIER") String studentIdentifier) {
 
-    // Access check
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
-    SchoolDataIdentifier studentIdentifier = userEntity.defaultSchoolDataIdentifier();
+    UserEntity userEntity = toUserEntity(studentIdentifier);
     
-    PedagogyFormAccessRestModel access = getAccess(userEntityId, true, PedagogyFormAccessType.READ, false);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity(String.format("Student %d not found", studentIdentifier)).build();
+    }
+    // Access check
+    SchoolDataIdentifier schoolDataIdentifier = userEntity.defaultSchoolDataIdentifier();
+    
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, false);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -435,7 +485,7 @@ public class PedagogyRestService {
     // Return value
 
     PedagogyFormLockRestModel pedagogyFormLock = null;
-    UserIdentifierProperty pedagogyProperty = userEntityController.getUserIdentifierPropertyByKey(studentIdentifier.getIdentifier(), "pedagogyFormLock");
+    UserIdentifierProperty pedagogyProperty = userEntityController.getUserIdentifierPropertyByKey(schoolDataIdentifier.getIdentifier(), "pedagogyFormLock");
     if (pedagogyProperty != null && !StringUtils.isBlank(pedagogyProperty.getValue())) {
       try {
         pedagogyFormLock = new ObjectMapper().readValue(pedagogyProperty.getValue(), PedagogyFormLockRestModel.class);
@@ -684,5 +734,16 @@ public class PedagogyRestService {
     List<PedagogyFormHistory> historyList = pedagogyController.listHistory(form);
     return historyList.isEmpty() ? null : historyList.get(historyList.size() - 1).getCreator();
   }
+  
+  private UserEntity toUserEntity(String studentIdentifier) {
+    if (studentIdentifier == null) {
+      return null;
+    }
+    
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(studentIdentifier);
 
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
+    
+    return userEntity;
+  }
 }
