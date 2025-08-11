@@ -57,18 +57,27 @@ const LanguageUsage = () => {
 
   /**
    * getLockedLanguages
-   * Retrieves the languages that are locked and cannot be modified.
-   * If there are submitted samples or existing languages in the CV,
-   * the language removal is locked
+   * Retrieves the languages that have data and cannot be removed.
    */
   const getLockedLanguages = () => {
     const lockedLanguageCodes: LanguageCode[] = [];
+    languages.forEach((language) => {
+      // If the language has skills, subjects, or levels, it is locked
+      if (
+        (language.skills && language.skills.length > 0) ||
+        (language.subjects && language.subjects.length > 0) ||
+        (language.levels && language.levels.length > 0)
+      ) {
+        lockedLanguageCodes.push(language.code as LanguageCode);
+      }
+    });
+    // If there are samples language is locked
     if (samples && samples.length > 0) {
       samples.forEach((sample) =>
         lockedLanguageCodes.push(sample.language as LanguageCode)
       );
     }
-
+    // If there is CV data, language is locked
     if (cv.languages) {
       cv.languages.forEach((language) =>
         lockedLanguageCodes.push(language.code as LanguageCode)
