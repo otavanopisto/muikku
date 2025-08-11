@@ -197,9 +197,13 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
     <div className="study-planner__course-tray">
       <div className="study-planner__course-tray-header">
         <h3 className="study-planner__course-tray-title">
-          {t("labels.studyPlannerToolTrayTitle", {
-            ns: "hops_new",
-          })}
+          {curriculumConfig.type === "compulsory"
+            ? t("labels.studyPlannerToolTrayTitle_compulsory", {
+                ns: "hops_new",
+              })
+            : t("labels.studyPlannerToolTrayTitle_uppersecondary", {
+                ns: "hops_new",
+              })}
         </h3>
         <div className="study-planner__course-tray-filters">
           <Dropdown

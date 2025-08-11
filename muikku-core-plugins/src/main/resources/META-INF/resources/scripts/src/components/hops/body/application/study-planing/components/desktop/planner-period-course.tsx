@@ -129,18 +129,35 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
           <div className="study-planner__extra-section-content">
             <div className="study-planner__extra-section-group">
               <label className="study-planner__extra-section-group-label">
-                {t("labels.studyPlannerSpecifySelectCourseInstanceLabel", {
-                  ns: "hops_new",
-                })}
+                {curriculumConfig.type === "compulsory"
+                  ? t(
+                      "labels.studyPlannerSpecifySelectCourseInstanceLabel_compulsory",
+                      {
+                        ns: "hops_new",
+                      }
+                    )
+                  : t(
+                      "labels.studyPlannerSpecifySelectCourseInstanceLabel_uppersecondary",
+                      {
+                        ns: "hops_new",
+                      }
+                    )}
               </label>
 
               <span className="study-planner__extra-section-group-label-info">
-                {t(
-                  "labels.studyPlannerSpecifySelectCourseInstanceDescription",
-                  {
-                    ns: "hops_new",
-                  }
-                )}
+                {curriculumConfig.type === "compulsory"
+                  ? t(
+                      "labels.studyPlannerSpecifySelectCourseInstanceDescription_compulsory",
+                      {
+                        ns: "hops_new",
+                      }
+                    )
+                  : t(
+                      "labels.studyPlannerSpecifySelectCourseInstanceDescription_uppersecondary",
+                      {
+                        ns: "hops_new",
+                      }
+                    )}
               </span>
               <WorkspaceSelect
                 selectedWorkspaceInstanceId={
@@ -163,6 +180,7 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                 id="study-planner-specify-course"
                 subjectCode={course.subjectCode}
                 courseNumber={course.courseNumber}
+                curriculumType={curriculumConfig.type}
                 ops={
                   curriculumConfig.strategy.getCurriculumMatrix().curriculumName
                 }
@@ -176,9 +194,19 @@ const DesktopPlannerPeriodCourse: React.FC<DesktopPlannerPeriodCourseProps> = (
                 })}
               </label>
               <span className="study-planner__extra-section-group-label-info">
-                {t("labels.studyPlannerSpecifySelectDateDescription", {
-                  ns: "hops_new",
-                })}
+                {curriculumConfig.type === "compulsory"
+                  ? t(
+                      "labels.studyPlannerSpecifySelectDateDescription_compulsory",
+                      {
+                        ns: "hops_new",
+                      }
+                    )
+                  : t(
+                      "labels.studyPlannerSpecifySelectDateDescription_uppersecondary",
+                      {
+                        ns: "hops_new",
+                      }
+                    )}
               </span>
               <div className="study-planner__extra-section-date-inputs">
                 <DatePicker
