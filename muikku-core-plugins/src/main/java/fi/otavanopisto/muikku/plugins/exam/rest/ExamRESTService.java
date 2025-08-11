@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -143,7 +144,29 @@ public class ExamRESTService {
   @Path("/attendance/{WORKSPACEFOLDERID}")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listContents(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
+  public Response getAttendance(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
+    
+    // This is as good a place as any to determine if an attendee has gone over the exam time limit.
+    // Front-end should enforce this as well but if the student, for example, leaves during the exam,
+    // this ensures that an overdue exam is marked as ended
+
+    ExamSettings examSettings = examController.findExamSettings(workspaceFolderId);
+    if (examSettings != null) {
+      ExamSettingsRestModel settingsJson = examController.getSettingsJson(examSettings);
+      if (settingsJson.getMinutes() > 0) {
+        ExamAttendance attendance = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
+        if (attendance != null && attendance.getStarted() != null && attendance.getEnded() == null) {
+          // User is an attendee who has started the exam but not yet finished it
+          Calendar c = Calendar.getInstance();
+          c.setTime(attendance.getStarted());
+          c.add(Calendar.MINUTE, settingsJson.getMinutes());
+          if (System.currentTimeMillis() > c.getTimeInMillis()) {
+            examController.endExam(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), c.getTime());
+          }
+        }
+      }
+    }
+    
     return Response.ok().entity(toRestModel(workspaceFolderId)).build();
   }
 
