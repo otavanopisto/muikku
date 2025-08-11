@@ -7127,7 +7127,7 @@ paths:
           description: Internal server error
 
   #PEDAGOGY
-  /rest/pedagogy/form/{userEntityId}:
+  /rest/pedagogy/form/{studentIdentifier}:
     get:
       operationId: getPedagogyForm
       summary: Get pedagogy form
@@ -7135,13 +7135,12 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: userEntityId
+        - name: studentIdentifier
           in: path
-          description: Student user entity id
+          description: Student school data identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         "200":
           description: Pedagogy form
@@ -7161,13 +7160,12 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: userEntityId
+        - name: studentIdentifier
           in: path
-          description: Student user entity id
+          description: Student school data identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       requestBody:
         $ref: "#/components/requestBodies/PedagogyFormCreateRequestBody"
       responses:
@@ -7182,7 +7180,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{userEntityId}/access:
+  /rest/pedagogy/form/{studentIdentifier}/access:
     get:
       operationId: getPedagogyFormAccess
       summary: Get pedagogy form access
@@ -7190,13 +7188,12 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: userEntityId
+        - name: studentIdentifier
           in: path
-          description: Student user entity id
+          description: Student school data identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         "200":
           description: Pedagogy form access
@@ -7209,7 +7206,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{userEntityId}/formData:
+  /rest/pedagogy/form/{studentIdentifier}/formData:
     put:
       operationId: updatePedagogyFormData
       summary: Update pedagogy form data
@@ -7217,13 +7214,12 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: userEntityId
+        - name: studentIdentifier
           in: path
-          description: Student user entity id
+          description: Student school data identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       requestBody:
         $ref: "#/components/requestBodies/PedagogyFormDataUpdateRequestBody"
       responses:
@@ -7291,7 +7287,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{userEntityId}/publish:
+  /rest/pedagogy/form/{studentIdentifier}/publish:
     put:
       operationId: togglePublished
       summary: Toggle published state
@@ -7299,13 +7295,12 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: userEntityId
+        - name: studentIdentifier
           in: path
-          description: Student user entity id
+          description: Student school data identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         "200":
           description: Pedagogy form field published updated successfully
@@ -7365,7 +7360,7 @@ paths:
           description: Internal server error
 
   #PEDAGOGYIMPLEMENTEDACTIONS
-  /rest/pedagogy/form/implementedActions/{userEntityId}:
+  /rest/pedagogy/form/implementedActions/{studentIdentifier}:
     get:
       operationId: getPedagogyFormImplementedActions
       summary: Get pedagogy form implemented actions
@@ -7373,13 +7368,12 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: userEntityId
+        - name: studentIdentifier
           in: path
-          description: Student user entity id
+          description: Student school data identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         "200":
           description: Pedagogy form implemented actions
@@ -7399,13 +7393,12 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: userEntityId
+        - name: studentIdentifier
           in: path
-          description: Student user entity id
+          description: Student school data identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       requestBody:
         $ref: "#/components/requestBodies/PedagogyFormImplementedActionsCreateRequestBody"
       responses:
@@ -7420,7 +7413,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/implementedActions/{userEntityId}/formData:
+  /rest/pedagogy/form/implementedActions/{studentIdentifier}/formData:
     put:
       operationId: updatePedagogyFormDataImplementedActions
       summary: Update pedagogy form data implemented actions
@@ -7428,13 +7421,12 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: userEntityId
+        - name: studentIdentifier
           in: path
-          description: Student user entity id
+          description: Student school data identifier
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       requestBody:
         $ref: "#/components/requestBodies/PedagogyFormImplementedActionsUpdateRequestBody"
       responses:
