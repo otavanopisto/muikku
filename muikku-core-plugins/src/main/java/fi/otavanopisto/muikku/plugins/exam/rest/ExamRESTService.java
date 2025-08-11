@@ -204,6 +204,7 @@ public class ExamRESTService {
         attendance.setEnded(toOffsetDateTime(attendanceEntity.getEnded()));
         attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
       }
+      attendance.setMinutes(settingsJson.getMinutes());
       // Exam is either ongoing or has been done, so list its contents
       if (attendance.getStarted() != null || attendance.getEnded() != null) {
         WorkspaceFolder folder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);

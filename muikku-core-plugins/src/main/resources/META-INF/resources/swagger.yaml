@@ -13805,6 +13805,9 @@ components:
         allowRestart:
           description: Is the student allowed to restart a once completed exam
           type: boolean
+        minutes:
+          description: Number of minutes to complete the exam (0 if unlimited)
+          type: integer
         contents:
           description: Exam contents for the student
           type: array

@@ -49,9 +49,18 @@ public class ExamAttendanceRestModel {
     this.contents = contents;
   }
 
+  public int getMinutes() {
+    return minutes;
+  }
+
+  public void setMinutes(int minutes) {
+    this.minutes = minutes;
+  }
+
   private OffsetDateTime started;
   private OffsetDateTime ended;
   private boolean allowRestart;
+  private int minutes;
   private List<ContentNode> contents;
 
 }
