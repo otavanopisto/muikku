@@ -150,14 +150,14 @@ class DependantApplication extends React.Component<
     window.location.hash = option.value;
     this.props.clearDependantState();
 
-    const dependantUserEntityId = this.props.dependants.list.find(
+    const dependantIdentifier = this.props.dependants.list.find(
       (dependant) => dependant.identifier === option.value
-    )?.userEntityId;
+    )?.identifier;
 
-    if (dependantUserEntityId) {
+    if (dependantIdentifier) {
       // After clearing the state,
       // we reset everything for the newly selected user
-      this.props.loadStudentPedagogyFormAccess(dependantUserEntityId, true);
+      this.props.loadStudentPedagogyFormAccess(dependantIdentifier, true);
     }
 
     this.setState({
@@ -181,7 +181,7 @@ class DependantApplication extends React.Component<
         });
 
         this.props.loadStudentPedagogyFormAccess(
-          dependantUserEntityId,
+          currentDependantIdentifier,
           undefined,
           () => {
             this.setState({
@@ -205,12 +205,8 @@ class DependantApplication extends React.Component<
       // will be done in the componendDidUpdate state
       const currentDependantIdentifier = this.getCurrentDependantIdentifier();
 
-      const dependantUserEntityId = this.getDependantUserEntityId(
-        currentDependantIdentifier
-      );
-
-      if (dependantUserEntityId) {
-        this.props.loadStudentPedagogyFormAccess(dependantUserEntityId);
+      if (currentDependantIdentifier) {
+        this.props.loadStudentPedagogyFormAccess(currentDependantIdentifier);
       }
     } else {
       const firstDependant = this.props.dependants.list[0];
@@ -261,9 +257,6 @@ class DependantApplication extends React.Component<
       count: this.props.dependants ? this.props.dependants.list.length : 0,
     });
     const selectedDependantIdentifier = this.getCurrentDependantIdentifier();
-    const selectedDependantUserEntityId = this.getDependantUserEntityId(
-      selectedDependantIdentifier
-    );
 
     const dependants = this.props.dependants
       ? this.props.dependants.list.map((student) => ({
@@ -325,7 +318,7 @@ class DependantApplication extends React.Component<
           <ApplicationPanelBody modifier="tabs">
             <PedagogySupport
               userRole="STUDENT_PARENT"
-              studentUserEntityId={selectedDependantUserEntityId}
+              studentIdentifier={selectedDependantIdentifier}
               studyProgrammeName={this.getDependantStudyProgramme(
                 selectedDependantIdentifier
               )}

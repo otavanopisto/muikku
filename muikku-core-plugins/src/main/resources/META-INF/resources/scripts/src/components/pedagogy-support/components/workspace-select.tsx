@@ -32,7 +32,7 @@ interface WorkspaceSelectProps {
   /**
    * Student identifier
    */
-  userEntityId: number;
+  studentIdentifier: string;
   id: string;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -49,10 +49,10 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
     onChange,
     disabled,
     displayNotification,
-    userEntityId,
+    studentIdentifier,
   } = props;
   const { workspaces, loadingWorkspaces, handleTextInput } = useWorkspaces(
-    userEntityId,
+    studentIdentifier,
     displayNotification
   );
 

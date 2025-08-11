@@ -36,7 +36,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     userRole,
     editIsActive,
     formData,
-    setPedagogyFormDataAndUpdateChangedFields,
+    updatePedagogyFormDataAndUpdateChangedFields,
   } = useUpperSecondaryForm();
 
   /**
@@ -54,7 +54,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       creationDate: new Date(),
     });
 
-    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
+    updatePedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -78,7 +78,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       [key]: value,
     };
 
-    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
+    updatePedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -90,7 +90,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
     const updatedFormData: UpperSecondaryFormData = { ...formData };
     updatedFormData[type].splice(index, 1);
 
-    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
+    updatePedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   const studentOpinionEntries = (formData?.studentOpinionOfSupport &&

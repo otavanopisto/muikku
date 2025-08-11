@@ -29,9 +29,9 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     loading,
     changedFields,
     editIsActive,
-    setEditIsActive,
+    toggleEditIsActive,
     resetPedagogyData,
-    setPedagogyFormExtraDetails,
+    updatePedagogyFormExtraDetails,
     saveAllData,
     userRole,
     activatePedagogyForm,
@@ -50,7 +50,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   /**
    * Handle edit click. Toggles editIsActive state.
    */
-  const handleEditClick = () => setEditIsActive(!editIsActive);
+  const handleEditClick = () => toggleEditIsActive(!editIsActive);
 
   /**
    * Handle extra details change
@@ -59,7 +59,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
    */
   const handleExtraDetailsChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => setPedagogyFormExtraDetails(e.target.value);
+  ) => updatePedagogyFormExtraDetails(e.target.value);
 
   /**
    * Handle save with extra details click. Updates all data to server.
@@ -70,7 +70,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
    * Handle cancel save with extra details click. Resets extra details.
    */
   const handleCancelSaveWithExtraDetailsClick = () =>
-    setPedagogyFormExtraDetails("");
+    updatePedagogyFormExtraDetails("");
 
   // If user role is STUDENT or STUDENT_PARENT, don't show the toolbar
   if (userRole === "STUDENT" || userRole === "STUDENT_PARENT") {

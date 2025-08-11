@@ -227,7 +227,11 @@ export interface LoadStudentTriggerType {
  * LoadStudentAccessTriggerType action creator type
  */
 export interface LoadStudentAccessTriggerType {
-  (id: number, forceLoad?: boolean, onSuccess?: () => void): AnyActionType;
+  (
+    identifier: string,
+    forceLoad?: boolean,
+    onSuccess?: () => void
+  ): AnyActionType;
 }
 /**
  * action creator type
@@ -930,13 +934,17 @@ const removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerT
 
 /**
  * loadStudentPedagogyFormAccess thunk action creator
- * @param userEntityId student muikku id
+ * @param studentIdentifier student identifier
  * @param forceLoad should the load be forced
  * @param onSuccess callback function to be called when the load is successful
  * @returns a thunk functions to load student pedagogy form access
  */
 const loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType =
-  function loadStudentPedagogyFormAccess(userEntityId, forceLoad, onSuccess) {
+  function loadStudentPedagogyFormAccess(
+    studentIdentifier,
+    forceLoad,
+    onSuccess
+  ) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
@@ -961,7 +969,7 @@ const loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType =
       try {
         pedagogyApi
           .getPedagogyFormAccess({
-            userEntityId,
+            studentIdentifier,
           })
           .then((pedagogyFormAvaibility) => {
             dispatch({
@@ -1097,7 +1105,7 @@ const loadStudent: LoadStudentTriggerType = function loadStudent(id) {
 
             pedagogyApi
               .getPedagogyFormAccess({
-                userEntityId: student.userEntityId,
+                studentIdentifier: student.id,
               })
               .then((pedagogyFormAvaibility) => {
                 dispatch({

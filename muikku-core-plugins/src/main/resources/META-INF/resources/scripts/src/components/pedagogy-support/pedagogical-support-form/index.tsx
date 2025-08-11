@@ -1,6 +1,5 @@
 import * as React from "react";
 import "~/sass/elements/pedagogy.scss";
-import { UserRole } from "~/@types/pedagogy-form";
 import UpperSecondaryPedagogicalSupportWizardForm from "./uppersecondary-form";
 import CompulsoryPedagogicalSupportWizardForm from "./compulsory-form";
 
@@ -8,8 +7,6 @@ import CompulsoryPedagogicalSupportWizardForm from "./compulsory-form";
  * The props for the UpperSecondaryPedagogicalSupportForm component.
  */
 interface PedagogicalSupportFormProps {
-  userRole: UserRole;
-  studentUserEntityId: number;
   isUppersecondary: boolean;
 }
 
