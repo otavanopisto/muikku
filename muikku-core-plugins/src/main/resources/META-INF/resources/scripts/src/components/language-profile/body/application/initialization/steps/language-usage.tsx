@@ -8,6 +8,7 @@ import AddLanguage from "./components/language-profile-add-item";
 import LanguageProfileDataDisplayer from "./components/language-profile-data-displayer";
 import { availableLanguages } from "~/mock/mock-data";
 import { useTranslation } from "react-i18next";
+import Button from "~/components/general/button";
 
 /**
  * LanguageUsage
@@ -110,6 +111,18 @@ const LanguageUsage = () => {
     []
   );
 
+  /**
+   * removeLanguage
+   * @param language the language to remove
+   */
+  const removeLanguage = (language: LanguageData) => (
+    <Button
+      buttonModifiers={["remove-language"]}
+      icon="trash"
+      onClick={() => handleLanguage(language)}
+    />
+  );
+
   return (
     <div className="language-profile-container">
       <fieldset className="language-profile-container__fieldset">
@@ -139,7 +152,7 @@ const LanguageUsage = () => {
               rows={languages}
               singleColumn={true}
               disabledItems={getLockedLanguages()}
-              onItemClick={handleLanguage}
+              columnAction={removeLanguage}
             />
             <AddLanguage
               action={handleLanguage}

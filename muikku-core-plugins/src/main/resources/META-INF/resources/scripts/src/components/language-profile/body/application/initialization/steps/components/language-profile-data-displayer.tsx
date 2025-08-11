@@ -12,9 +12,9 @@ import { useTranslation } from "react-i18next";
 import "~/sass/elements/table.scss";
 
 /**
- * LanguageProfileDataDisplayerProps
+ * DisplayLanguagesProps
  */
-interface LanguageProfileDataDisplayerProps {
+interface DisplayLanguagesProps {
   labels?: string[];
   title?: string;
   rows: LanguageData[];
@@ -27,6 +27,7 @@ interface LanguageProfileDataDisplayerProps {
     rowId?: string,
     index?: number
   ) => React.ReactNode;
+  columnAction?: (language: LanguageData) => React.ReactNode;
   onItemClick?: (language: LanguageData) => void;
 }
 
@@ -35,9 +36,20 @@ interface LanguageProfileDataDisplayerProps {
  * @param props props the props of the component
  * @returns JSX element that displays the languages in a table format
  */
-const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
+const DisplayLanguages = (props: DisplayLanguagesProps) => {
   const { t } = useTranslation(["languageProfile", "common"]);
-  const { labels, rows, title, singleColumn, cellAction, onItemClick } = props;
+  const {
+    labels,
+    rows,
+    title,
+    singleColumn,
+    cellAction,
+    columnAction,
+    onItemClick,
+  } = props;
+  const firstCellModifiers = !singleColumn
+    ? ["centered", "language-profile-first-cell"]
+    : ["language-profile-single-column"];
   return (
     <div className="language-profile__languages-wrapper">
       <Table modifiers={["language-profile__languages"]}>
@@ -79,27 +91,13 @@ const DisplayLanguages = (props: LanguageProfileDataDisplayerProps) => {
                 onClick={() => onItemClick?.(item)}
                 modifiers={tableRowModifiers}
               >
-                {singleColumn ? (
-                  <Td
-                    modifiers={["language-profile-first-cell"]}
-                    key={item.code}
-                  >
-                    {item.name}
-                  </Td>
-                ) : (
-                  <Td
-                    modifiers={["centered", "language-profile-first-cell"]}
-                    key={item.code + "-name"}
-                  >
-                    {isDisabled ? (
-                      <span className="language-profile__disabled-language">
-                        {item.name}
-                      </span>
-                    ) : (
-                      item.name
-                    )}
-                  </Td>
-                )}
+                <Td modifiers={firstCellModifiers} key={item.code + "-name"}>
+                  <span>{item.name}</span>
+                  {singleColumn && columnAction && !isDisabled && (
+                    <span>{columnAction(item)}</span>
+                  )}
+                </Td>
+
                 {labels &&
                   labels.map((label, index) => {
                     const cellId = item.code + "-" + index;
