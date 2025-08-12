@@ -1,12 +1,7 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import Button from "~/components/general/button";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
-import {
-  saveLanguageSamples,
-  deleteLanguageSamples,
-} from "~/actions/main-function/language-profile";
 import Language from "./languages/language";
 
 /**
@@ -23,28 +18,10 @@ interface LanguageSampleProps {}
  */
 const LanguageSample = (props: LanguageSampleProps) => {
   const { t } = useTranslation(["languageProfile", "common"]);
-  const { status, languageProfile } = useSelector((state: StateType) => state);
+  const { languageProfile } = useSelector((state: StateType) => state);
   const [changed, setChanged] = React.useState<number[]>([]);
   const [samplesToRemove, setSamplesToRemove] = React.useState<number[]>([]);
   const { languages, samples } = languageProfile.data;
-  const dispatch = useDispatch();
-
-  /**
-   * Save handler
-   */
-  const handleSave = () => {
-    const samplesToSave = samples.filter((sample) =>
-      changed.some((changed) => changed === sample.id)
-    );
-    if (samplesToSave.length > 0) {
-      dispatch(saveLanguageSamples(status.userId, samplesToSave));
-    }
-    if (samplesToRemove.length > 0) {
-      dispatch(deleteLanguageSamples(status.userId, samplesToRemove));
-    }
-    setSamplesToRemove([]);
-    setChanged([]);
-  };
 
   return (
     <div className="language-profile-form">
@@ -73,11 +50,6 @@ const LanguageSample = (props: LanguageSampleProps) => {
               setChanged={setChanged}
             />
           ))}
-          <footer className="language-profile__footer">
-            <Button buttonModifiers={["execute"]} onClick={() => handleSave()}>
-              {t("actions.save", { ns: "common" })}
-            </Button>
-          </footer>
         </div>
       </div>
     </div>

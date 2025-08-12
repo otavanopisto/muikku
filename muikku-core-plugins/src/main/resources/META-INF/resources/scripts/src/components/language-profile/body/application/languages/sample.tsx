@@ -3,8 +3,10 @@ import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
 import { LanguageProfileSample } from "~/generated/client";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
-import Dropdown from "~/components/general/dropdown";
-
+import PromptDialog from "~/components/general/prompt-dialog";
+import { deleteLanguageSample } from "~/actions/main-function/language-profile";
+import { useSelector, useDispatch } from "react-redux";
+import { StateType } from "~/reducers";
 /**
  * LanguageSampleProps
  * This interface defines the properties for the LanguageSample component.
@@ -17,7 +19,6 @@ interface LanguageSampleProps {
     e: React.ChangeEvent<HTMLTextAreaElement>,
     sample: LanguageProfileSample
   ) => void;
-  onDelete: (id: number) => void;
 }
 
 /**
@@ -28,9 +29,10 @@ interface LanguageSampleProps {
  * @returns JSX.Element
  */
 const Sample = (props: LanguageSampleProps) => {
-  const { sample, taggedForRemoval, onChange, onDelete } = props;
+  const { sample, taggedForRemoval, onChange } = props;
   const { t } = useTranslation(["languageProfile", "common"]);
-
+  const dispatch = useDispatch();
+  const { status } = useSelector((state: StateType) => state);
   /**
    * RenderMemoizedSample
    * This function returns a memoized component based on the sample type.
@@ -74,28 +76,32 @@ const Sample = (props: LanguageSampleProps) => {
     }
   }, [sample, taggedForRemoval, onChange]);
 
+  /**
+   * Handle deletion of a language profile sample.
+   * @param id the id of the sample to delete
+   */
+  const handleDelete = (id: number) => {
+    dispatch(deleteLanguageSample(status.userId, id));
+  };
+
   return (
     <div
       className={`language-profile-container__row language-profile-container__row--sample ${taggedForRemoval ? "language-profile-container__row--sample-tagged-for-removal" : ""}`}
     >
       {renderMemoizedSample}
       <div className="language-profile__sample-buttons">
-        <Dropdown
-          openByHover={true}
-          content={
-            taggedForRemoval
-              ? t("actions.cancelRemove", { ns: "languageProfile" })
-              : t("actions.removeSample", { ns: "languageProfile" })
-          }
+        <PromptDialog
+          title={t("labels.remove", { context: "sample" })}
+          content={t("content.removing", { context: "sample" })}
+          onExecute={() => handleDelete(sample.id)}
         >
           <Button
             buttonModifiers={
               taggedForRemoval ? "cancel-sample-removal" : "remove-sample"
             }
             icon={taggedForRemoval ? "undo" : "trash"}
-            onClick={() => onDelete(sample.id)}
           />
-        </Dropdown>
+        </PromptDialog>
       </div>
     </div>
   );

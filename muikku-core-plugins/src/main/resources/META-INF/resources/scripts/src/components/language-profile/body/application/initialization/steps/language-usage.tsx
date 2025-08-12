@@ -9,7 +9,7 @@ import LanguageProfileDataDisplayer from "./components/language-profile-data-dis
 import { availableLanguages } from "~/mock/mock-data";
 import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
-import DeleteLanguageDialog from "./components/language-profile-remove-dialog";
+import DeleteLanguageDialog from "./components/language-remove-dialog";
 /**
  * LanguageUsage
  * This component allows users to manage their language usage, learning,

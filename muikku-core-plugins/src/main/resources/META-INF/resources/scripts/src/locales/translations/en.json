@@ -2896,6 +2896,7 @@
       "languageUsageLearningLanguagesDescription": "Miten opit ja opettelet kieliä? Mitkä opiskelumetodit sopivat sinulle, mitkä eivät? Kuinka harjoittelet?",
       "remove": "$t(common:label.remove)",
       "remove_language": "Remove language: {{language}}",
+      "remove_sample": "Remove sample: {{sample}}",
       "skillLevelInteractionStarLabel": "Vuorovaikutustaidot",
       "skillLevelVocalStarLabel": "Suullinen tuottaminen",
       "skillLevelWritingStarLabel": "Kirjallinen tuottaminen",
