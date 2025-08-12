@@ -293,9 +293,19 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
           <div className="study-planner__plan-statistics">
             <div className="study-planner__plan-statistic-item">
               <h4 className="study-planner__plan-statistic-item-title">
-                {t("labels.studyPlannerStatisticMandatoryCompleted", {
-                  ns: "hops_new",
-                })}
+                {curriculumConfig.type === "compulsory"
+                  ? t(
+                      "labels.studyPlannerStatisticMandatoryCompleted_compulsory",
+                      {
+                        ns: "hops_new",
+                      }
+                    )
+                  : t(
+                      "labels.studyPlannerStatisticMandatoryCompleted_uppersecondary",
+                      {
+                        ns: "hops_new",
+                      }
+                    )}
               </h4>
               <div className="study-planner__plan-statistic-item-bar-container">
                 <ProgressBar
@@ -313,9 +323,19 @@ const StudyPlanTool = (props: StudyPlanToolProps) => {
             </div>
             <div className="study-planner__plan-statistic-item">
               <h4 className="study-planner__plan-statistic-item-title">
-                {t("labels.studyPlannerStatisticOptionalCompleted", {
-                  ns: "hops_new",
-                })}
+                {curriculumConfig.type === "compulsory"
+                  ? t(
+                      "labels.studyPlannerStatisticOptionalCompleted_compulsory",
+                      {
+                        ns: "hops_new",
+                      }
+                    )
+                  : t(
+                      "labels.studyPlannerStatisticOptionalCompleted_uppersecondary",
+                      {
+                        ns: "hops_new",
+                      }
+                    )}
               </h4>
               <div className="study-planner__plan-statistic-item-bar-container">
                 <ProgressBar

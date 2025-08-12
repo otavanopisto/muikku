@@ -264,35 +264,23 @@ public class MatriculationRESTService {
 
     // Group and Study Advisors
 
-    String guidanceCounselorName = null;
     List<String> studyAdvisors = new ArrayList<>();
     
     List<GroupStaffMember> guidanceCounselors = userGroupGuidanceController.getGuidanceCounselors(studentIdentifier);
     
-    // The first Group Advisor with MessageReceiver is designated as Group Advisor here
-    GroupStaffMember primaryGroupAdvisor = guidanceCounselors.stream()
-      .filter(GroupStaffMember::isGroupAdvisor)
-      .filter(GroupStaffMember::isMessageReceiver)
-      .findFirst()
-      .orElse(null);
-    
-    if (primaryGroupAdvisor != null) {
-      UserEntity guidanceCounselorUserEntity = userEntityController.findUserEntityByUserIdentifier(primaryGroupAdvisor.userSchoolDataIdentifier());
-      UserEntityName guidanceCounselorUserEntityName = userEntityController.getName(guidanceCounselorUserEntity, false);
-      guidanceCounselorName = guidanceCounselorUserEntityName != null ? guidanceCounselorUserEntityName.getDisplayName() : null;
-      guidanceCounselors.remove(primaryGroupAdvisor);
-    }
+    List<String> guidanceCounselorList = new ArrayList<>();
 
-    // Rest of the guidance counselors
+    // Guidance counselors
     for (GroupStaffMember guidanceCounselor : guidanceCounselors) {
-      // Fallback for if there was no messageReceiver GroupAdvisor; however we only take the first GroupAdvisor ever
-      if (guidanceCounselor.isGroupAdvisor() && guidanceCounselorName == null) {
+      if (guidanceCounselor.isGroupAdvisor()) {
         UserEntity guidanceCounselorUserEntity = userEntityController.findUserEntityByUserIdentifier(guidanceCounselor.userSchoolDataIdentifier());
         UserEntityName guidanceCounselorUserEntityName = userEntityController.getName(guidanceCounselorUserEntity, false);
-        guidanceCounselorName = guidanceCounselorUserEntityName != null ? guidanceCounselorUserEntityName.getDisplayName() : null;
-        continue;
+
+        if (guidanceCounselorUserEntityName != null) {
+          guidanceCounselorList.add(guidanceCounselorUserEntityName.getDisplayName());
+        }
       }
-      
+      // Study advisors
       if (guidanceCounselor.isStudyAdvisor()) {
         UserEntity guidanceCounselorUserEntity = userEntityController.findUserEntityByUserIdentifier(guidanceCounselor.userSchoolDataIdentifier());
         UserEntityName guidanceCounselorUserEntityName = userEntityController.getName(guidanceCounselorUserEntity, false);
@@ -333,7 +321,7 @@ public class MatriculationRESTService {
     result.setAddress(address);
     result.setPostalCode(postalCode);
     result.setLocality(locality);
-    result.setGuidanceCounselor(guidanceCounselorName);
+    result.setGuidanceCounselors(guidanceCounselorList);
     result.setStudyAdvisors(studyAdvisors);
     result.setStudentIdentifier(studentIdentifier.toId());
     result.setCompletedCreditPointsCount(studentCourseStats != null ? studentCourseStats.getSumMandatoryCompletedCreditPoints() : null);
@@ -401,7 +389,6 @@ public class MatriculationRESTService {
     schoolDataEntity.setId(enrollment.getId());
     schoolDataEntity.setExamId(enrollment.getExamId());
     schoolDataEntity.setNationalStudentNumber(enrollment.getNationalStudentNumber());
-    schoolDataEntity.setGuider(enrollment.getGuider());
     schoolDataEntity.setEnrollAs(enrollment.getEnrollAs());
     schoolDataEntity.setDegreeType(enrollment.getDegreeType());
     schoolDataEntity.setRestartExam(enrollment.isRestartExam());
@@ -605,7 +592,6 @@ public class MatriculationRESTService {
     restModel.setEnrollAs(enrollment.getEnrollAs());
     restModel.setEnrollmentDate(enrollment.getEnrollmentDate());
     restModel.setExamId(enrollment.getExamId());
-    restModel.setGuider(enrollment.getGuider());
     restModel.setLocation(enrollment.getLocation());
     restModel.setContactInfoChange(enrollment.getContactInfoChange());
     restModel.setMessage(enrollment.getMessage());

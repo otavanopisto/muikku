@@ -13,14 +13,6 @@ public class MatriculationExamEnrollment {
     this.nationalStudentNumber = nationalStudentNumber;
   }
 
-  public String getGuider() {
-    return guider;
-  }
-
-  public void setGuider(String guider) {
-    this.guider = guider;
-  }
-
   public String getEnrollAs() {
     return enrollAs;
   }
@@ -144,7 +136,6 @@ public class MatriculationExamEnrollment {
   private Long id;
   private Long examId;
   private String nationalStudentNumber;
-  private String guider;
   private String enrollAs;
   private String degreeType;
   private int numMandatoryCourses;

@@ -297,10 +297,10 @@ class UppersecondaryCurriculum implements CurriculumStrategy {
         courses.length === 1
           ? t("labels.credit", {
               ns: "common",
-            })
+            }).toLowerCase()
           : t("labels.credits", {
               ns: "common",
-            })
+            }).toLowerCase()
       }`,
       numericValue: credits,
       unit: "credits",
@@ -679,10 +679,10 @@ class CompulsoryCurriculum implements CurriculumStrategy {
         courses.length === 1
           ? t("labels.course", {
               ns: "common",
-            })
+            }).toLowerCase()
           : t("labels.courses", {
               ns: "common",
-            })
+            }).toLowerCase()
       }`,
       numericValue: courses.length,
       unit: "courses",
@@ -858,7 +858,7 @@ class CompulsoryCurriculum implements CurriculumStrategy {
    * @returns hours
    */
   convertToHours(courses: number): number {
-    return courses * 38; // Example: 38 hours per course
+    return courses * 28; // Example: 28 hours per course
   }
 
   /**

@@ -58,7 +58,7 @@ export const useMatriculation = (
       address: "",
       postalCode: "",
       studentIdentifier: "",
-      guidanceCounselor: "",
+      guidanceCounselors: [],
       studyAdvisors: [],
       locality: "",
       completedCreditPointsCount: 0,
@@ -67,7 +67,6 @@ export const useMatriculation = (
       examId: exam.id,
       state: "ELIGIBLE",
       contactInfoChange: "",
-      guider: "",
       enrollAs: "UPPERSECONDARY",
       degreeType: "MATRICULATIONEXAMINATION",
       numMandatoryCourses: 0,
@@ -276,8 +275,7 @@ export const useMatriculation = (
     const { enrolledAttendances, finishedAttendances, plannedAttendances } =
       matriculation.examinationInformation;
 
-    const { guidanceCounselor, studentIdentifier } =
-      matriculation.studentInformation;
+    const { studentIdentifier } = matriculation.studentInformation;
 
     /**
      * Parsed list of enrolled Attendances
@@ -323,7 +321,6 @@ export const useMatriculation = (
 
     const matriculationForm: MatriculationExamEnrollment = {
       ...matriculation.examinationInformation,
-      guider: guidanceCounselor,
       state: "PENDING",
       studentIdentifier,
       numMandatoryCourses:
