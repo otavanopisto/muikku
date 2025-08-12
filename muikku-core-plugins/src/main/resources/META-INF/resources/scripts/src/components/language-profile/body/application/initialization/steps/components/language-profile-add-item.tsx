@@ -3,6 +3,7 @@ import "~/sass/elements/form.scss";
 import "~/sass/elements/language-profile.scss";
 import { filterMatch } from "~/util/modifiers";
 import { LanguageData } from "~/@types/shared";
+import { useTranslation } from "react-i18next";
 
 // import { useDispatch, useSelector } from "react-redux";
 
@@ -26,24 +27,13 @@ const AddItem = (props: AddItemProps) => {
   const { action, selectedItems, filterBy, allItems, placeHolder } = props;
   const [filter, setFilter] = React.useState<string>("");
   const [active, setActive] = React.useState<boolean>(false);
-
-  // Create a ref to store the timeout ID
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
+  const { t } = useTranslation(["languageProfile", "common"]);
   /**
    * filterLanguages
    * @param value the value to filter the languages
    */
   const handleFieldChange = (value: string) => {
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    // Set a new timeout
-    timeoutRef.current = setTimeout(() => {
-      setFilter(value);
-    }, 400);
+    setFilter(value);
   };
 
   /**
@@ -61,37 +51,35 @@ const AddItem = (props: AddItemProps) => {
   const handleAdd = (item: LanguageData) => {
     action(item);
     setActive(false);
+    setFilter("");
   };
 
-  // Clean up the timeout when the component unmounts
-  React.useEffect(
-    () => () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    },
-    []
+  const filteredItems = allItems.filter(
+    (item) =>
+      filterMatch(item.name, filter) &&
+      !selectedItems.some((i) => i[filterBy] === item[filterBy])
   );
-
   return (
     <div className="language-profile__add-language">
       <div className="language-profile__textfield-container">
         <input
           className="language-profile__input"
           type="text"
-          placeholder={placeHolder ? placeHolder : null}
+          placeholder={placeHolder ? placeHolder : undefined}
           onFocus={() => toggleDropdown(true)}
           onChange={(e) => handleFieldChange(e.target.value)}
+          value={filter}
         />
         {active && filter && (
           <div className="language-profile__language-dropdown">
-            {allItems
-              .filter((item) => filterMatch(item.name, filter))
-              .filter(
-                (item) =>
-                  !selectedItems.some((i) => i[filterBy] === item[filterBy])
-              )
-              .map((item) => (
+            {filteredItems.length === 0 ? (
+              <div className="language-profile__dropdown-item">
+                {t("content.empty", {
+                  context: "languages",
+                })}
+              </div>
+            ) : (
+              filteredItems.map((item) => (
                 <div
                   key={item.code}
                   className="language-profile__dropdown-item"
@@ -99,7 +87,8 @@ const AddItem = (props: AddItemProps) => {
                 >
                   {item.name}
                 </div>
-              ))}
+              ))
+            )}
           </div>
         )}
       </div>

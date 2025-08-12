@@ -2854,9 +2854,10 @@
       "addNewSampleTitle_text": "Lisää uusi tekstinäyte",
       "addNewSampleTitle_audio": "Lisää uusi ääninäyte",
       "addNewSampleTitle_file": "Lisää uusi tiedostonäyte",
+      "cvTabTitle": "Kieli-CV",
+
       "initializationTabTitle": "Alkukartoitus",
       "languagesTabTitle": "Kielet",
-      "cvTabTitle": "Kieli-CV",
       "languageSkillBeginger": "Vasta-alkaja",
       "languageSkillExcellence": "Erinomainen",
       "languageSkillGood": "Hyvä",
@@ -2894,6 +2895,8 @@
       "languageUsageMotivationInStudyingDescription": "Kuinka motivoitunut olet eri kielten opiskeluun? Onko sinulla positiivisia tai negatiivisia asenteita eri kieliin?",
       "languageUsageLearningLanguagesLabel": "Kielten oppiminen",
       "languageUsageLearningLanguagesDescription": "Miten opit ja opettelet kieliä? Mitkä opiskelumetodit sopivat sinulle, mitkä eivät? Kuinka harjoittelet?",
+      "remove": "$t(common:label.remove)",
+      "remove_language": "Poista kieli: {{language}}",
       "skillLevelInteractionStarLabel": "Vuorovaikutustaidot",
       "skillLevelVocalStarLabel": "Suullinen tuottaminen",
       "skillLevelWritingStarLabel": "Kirjallinen tuottaminen",
@@ -2905,6 +2908,8 @@
       "addNewSampleDescription_text": "Liitä tähän kirjoittamasi teksti.",
       "addNewSampleDescription_audio": "Nauhoita ääninäytteesi alla olevan nauhurin avulla.",
       "addNewSampleDescription_file": "Lataa koneellesi tallennettu ääninäytteesi alla olevaan kenttään.",
+      "empty": "$t(common:content.empty)",
+      "empty_languages": "Ei hakua vastaavia kieliä",
       "initializationStep1Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "initializationStep2Description1": "Arvioi omaa kielitaitoasi alla olevan asteikon avulla. Pohdi kielitaitoasi eri osaamisalueiden kannalta, ja merkitse taulukkoon se taitotaso (esim. A2.1), jonka kuvaus vastaa mielestäsi parhaiten tämänhetkistä tilannettasi kunkin kielen kohdalla. ",
       "initializationStep2Description2": "Kuinka kuvailisit taitojasi eri kielissä ääntämisen, kieliopin, sanaston ja kielellisten varianttien suhteen?",
@@ -2922,7 +2927,9 @@
       "futureOfStudiesNecessityOfLanguagesDescription": "Missä tulet tarvitsemaan eri kieliä tulevaisuudessa? Huomioi tässä esimerkiksi jatko-opinnot, työt ja muut suunnitelmat.",
       "futureOfStudiesLanguageSkillGoalsDescription": "Millaisia tavoitteita sinulla on kielitaidollesi eri kielissä?",
       "languageCVStepDescription": "Phasellus pretium elit nec elit dictum tincidunt. Vestibulum hendrerit nec urna id sollicitudin. Vestibulum viverra leo ut orci consectetur aliquam. Cras cursus risus mauris, et aliquet massa efficitur eu. Nunc non tempor neque, nec pulvinar purus. Sed lacinia purus porta, vulputate massa quis, accumsan ante. Ut sagittis odio id nisl sagittis, eget     mollis diam placerat. Phasellus mollis neque et felis tempor imperdiet.",
-      "languageSamplesStepDescription": "Phasellus pretium elit nec elit dictum tincidunt. Vestibulum hendrerit nec urna id sollicitudin. Vestibulum viverra leo ut orci consectetur aliquam. Cras cursus risus mauris, et aliquet massa efficitur eu. Nunc non tempor neque, nec pulvinar purus. Sed lacinia purus porta, vulputate massa quis, accumsan ante. Ut sagittis odio id nisl sagittis, eget     mollis diam placerat. Phasellus mollis neque et felis tempor imperdiet."
+      "languageSamplesStepDescription": "Phasellus pretium elit nec elit dictum tincidunt. Vestibulum hendrerit nec urna id sollicitudin. Vestibulum viverra leo ut orci consectetur aliquam. Cras cursus risus mauris, et aliquet massa efficitur eu. Nunc non tempor neque, nec pulvinar purus. Sed lacinia purus porta, vulputate massa quis, accumsan ante. Ut sagittis odio id nisl sagittis, eget     mollis diam placerat. Phasellus mollis neque et felis tempor imperdiet.",
+      "removing": "$t(common:content.removing)",
+      "removing_language": "Oletko varma, että haluat poistaa kielen?"
     },
     "notifications": {
       "createError": "Kieliprofiilin luonti epäonnistui:{{error}}",

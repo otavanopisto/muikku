@@ -27,7 +27,7 @@ interface DisplayLanguagesProps {
     rowId?: string,
     index?: number
   ) => React.ReactNode;
-  columnAction?: (language: LanguageData) => React.ReactNode;
+  columnAction?: (language: LanguageData) => JSX.Element;
   onItemClick?: (language: LanguageData) => void;
 }
 

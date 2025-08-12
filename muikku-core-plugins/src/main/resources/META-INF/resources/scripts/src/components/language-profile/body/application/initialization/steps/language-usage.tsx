@@ -9,7 +9,7 @@ import LanguageProfileDataDisplayer from "./components/language-profile-data-dis
 import { availableLanguages } from "~/mock/mock-data";
 import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
-
+import DeleteLanguageDialog from "./components/language-profile-remove-dialog";
 /**
  * LanguageUsage
  * This component allows users to manage their language usage, learning,
@@ -116,11 +116,9 @@ const LanguageUsage = () => {
    * @param language the language to remove
    */
   const removeLanguage = (language: LanguageData) => (
-    <Button
-      buttonModifiers={["remove-language"]}
-      icon="trash"
-      onClick={() => handleLanguage(language)}
-    />
+    <DeleteLanguageDialog language={language}>
+      <Button buttonModifiers={["remove-language"]} icon="trash" />
+    </DeleteLanguageDialog>
   );
 
   return (
