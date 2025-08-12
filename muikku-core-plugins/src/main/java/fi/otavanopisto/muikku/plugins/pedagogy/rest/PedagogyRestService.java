@@ -231,11 +231,13 @@ public class PedagogyRestService {
     
     form = pedagogyController.updateFormData(form, payload.getFormData(), payload.getFields(), payload.getDetails(), sessionController.getLoggedUserEntity().getId());
     
-    // Websocket
-    
     PedagogyFormRestModel restModel = toRestModel(form);
-    pedagogyFormWebSocketMessenger.sendMessage(userEntity.defaultSchoolDataIdentifier().toId(), "pedagogy:pedagogy-form-updated", restModel);
-
+    
+    // Websocket only if published
+    
+    if (form.isPublished()) {
+      pedagogyFormWebSocketMessenger.sendMessage(userEntity.defaultSchoolDataIdentifier().toId(), "pedagogy:pedagogy-form-updated", restModel);
+    }
     return Response.ok(restModel).build();
   }
   
