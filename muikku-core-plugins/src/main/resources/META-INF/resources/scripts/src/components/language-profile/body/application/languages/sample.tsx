@@ -91,8 +91,12 @@ const Sample = (props: LanguageSampleProps) => {
       {renderMemoizedSample}
       <div className="language-profile__sample-buttons">
         <PromptDialog
-          title={t("labels.remove", { context: "sample" })}
-          content={t("content.removing", { context: "sample" })}
+          title={t("labels.remove", {
+            context: sample.type.toLowerCase(),
+          })}
+          content={t("content.removing", {
+            context: sample.type.toLowerCase(),
+          })}
           onExecute={() => handleDelete(sample.id)}
         >
           <Button

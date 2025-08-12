@@ -2896,7 +2896,9 @@
       "languageUsageLearningLanguagesDescription": "Miten opit ja opettelet kieliä? Mitkä opiskelumetodit sopivat sinulle, mitkä eivät? Kuinka harjoittelet?",
       "remove": "$t(common:label.remove)",
       "remove_language": "Poista kieli: {{language}}",
-      "remove_sample": "Poista näyte: {{sample}}",
+      "remove_file": "Poista tiedostonäyte",
+      "remove_audio": "Poista audionäyte",
+      "remove_text": "Poista tekstinäyte",
       "skillLevelInteractionStarLabel": "Vuorovaikutustaidot",
       "skillLevelVocalStarLabel": "Suullinen tuottaminen",
       "skillLevelWritingStarLabel": "Kirjallinen tuottaminen",
@@ -2929,8 +2931,10 @@
       "languageCVStepDescription": "Phasellus pretium elit nec elit dictum tincidunt. Vestibulum hendrerit nec urna id sollicitudin. Vestibulum viverra leo ut orci consectetur aliquam. Cras cursus risus mauris, et aliquet massa efficitur eu. Nunc non tempor neque, nec pulvinar purus. Sed lacinia purus porta, vulputate massa quis, accumsan ante. Ut sagittis odio id nisl sagittis, eget     mollis diam placerat. Phasellus mollis neque et felis tempor imperdiet.",
       "languageSamplesStepDescription": "Phasellus pretium elit nec elit dictum tincidunt. Vestibulum hendrerit nec urna id sollicitudin. Vestibulum viverra leo ut orci consectetur aliquam. Cras cursus risus mauris, et aliquet massa efficitur eu. Nunc non tempor neque, nec pulvinar purus. Sed lacinia purus porta, vulputate massa quis, accumsan ante. Ut sagittis odio id nisl sagittis, eget     mollis diam placerat. Phasellus mollis neque et felis tempor imperdiet.",
       "removing": "$t(common:content.removing)",
+      "removing_audio": "Oletko varma, että haluat poistaa ääninäytteen?",
+      "removing_file": "Oletko varma, että haluat poistaa näytteen?",
       "removing_language": "Oletko varma, että haluat poistaa kielen?",
-      "removing_sample": "Oletko varma, että haluat poistaa näytteen?"
+      "removing_text": "Oletko varma, että haluat poistaa tekstinäytteen?"
     },
     "notifications": {
       "createError": "Kieliprofiilin luonti epäonnistui:{{error}}",

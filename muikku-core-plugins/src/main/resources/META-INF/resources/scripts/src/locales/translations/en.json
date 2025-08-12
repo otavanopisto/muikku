@@ -2896,7 +2896,9 @@
       "languageUsageLearningLanguagesDescription": "Miten opit ja opettelet kieliä? Mitkä opiskelumetodit sopivat sinulle, mitkä eivät? Kuinka harjoittelet?",
       "remove": "$t(common:label.remove)",
       "remove_language": "Remove language: {{language}}",
-      "remove_sample": "Remove sample: {{sample}}",
+      "remove_file": "Remove file sample",
+      "remove_audio": "Remove audio sample",
+      "remove_text": "Remove text sample",
       "skillLevelInteractionStarLabel": "Vuorovaikutustaidot",
       "skillLevelVocalStarLabel": "Suullinen tuottaminen",
       "skillLevelWritingStarLabel": "Kirjallinen tuottaminen",
@@ -2929,7 +2931,10 @@
       "languageCVStepDescription": "Phasellus pretium elit nec elit dictum tincidunt. Vestibulum hendrerit nec urna id sollicitudin. Vestibulum viverra leo ut orci consectetur aliquam. Cras cursus risus mauris, et aliquet massa efficitur eu. Nunc non tempor neque, nec pulvinar purus. Sed lacinia purus porta, vulputate massa quis, accumsan ante. Ut sagittis odio id nisl sagittis, eget     mollis diam placerat. Phasellus mollis neque et felis tempor imperdiet.",
       "languageSamplesStepDescription": "Phasellus pretium elit nec elit dictum tincidunt. Vestibulum hendrerit nec urna id sollicitudin. Vestibulum viverra leo ut orci consectetur aliquam. Cras cursus risus mauris, et aliquet massa efficitur eu. Nunc non tempor neque, nec pulvinar purus. Sed lacinia purus porta, vulputate massa quis, accumsan ante. Ut sagittis odio id nisl sagittis, eget     mollis diam placerat. Phasellus mollis neque et felis tempor imperdiet.",
       "removing": "$t(common:content.removing)",
-      "removing_language": "Are you sure, you want to remove this language?"
+      "removing_audio": "Are you sure you want to remove the audio sample?",
+      "removing_file": "Are you sure you want to remove the file sample?",
+      "removing_language": "Are you sure, you want to remove this language?",
+      "removing_text": "Are you sure you want to remove the text sample?"
     },
     "notifications": {
       "createError": "$t(common:notifications.createError)",
