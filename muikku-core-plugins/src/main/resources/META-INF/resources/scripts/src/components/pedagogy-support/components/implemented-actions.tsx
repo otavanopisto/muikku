@@ -72,9 +72,6 @@ export const ImplementedActionsListItem: React.FC<
     ? [...supportActionsOptionsUppersecondary]
     : [...supportActionsOptionsCompulsory];
 
-  // Pop the last element from the array, as it is the "other" option which is not used here
-  supportActionsOptions.pop();
-
   return (
     <div className="hops-container__section">
       <div className="hops-container__row">

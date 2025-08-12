@@ -157,7 +157,7 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
   ) {
     tabs.splice(1, 0, {
       id: "PEDAGOGICAL_SUPPORT",
-      name: "Oppimisen tuki",
+      name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
       type: "guider-student",
       component: (
         <PedagogySupport
@@ -231,21 +231,6 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
     />
   );
 };
-
-/**
- * Maps Redux state to component props
- *
- * @param state - Application state
- * @returns Object containing mapped state properties
- */
-/* function mapStateToProps(state: StateType) {
-  return {
-    status: state.status,
-    currentStudentStatus: state.guider.currentStudentState,
-    guider: state.guider,
-    hops: state.hopsNew,
-  };
-} */
 
 /**
  * Returns the appropriate user role for the pedagogical support form

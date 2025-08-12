@@ -29,8 +29,8 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     loading,
     changedFields,
     editIsActive,
+    editingDisabled,
     toggleEditIsActive,
-    resetPedagogyData,
     updatePedagogyFormExtraDetails,
     saveAllData,
     userRole,
@@ -85,7 +85,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
           <>
             {toolbarLogic.hasAnyChanges ? (
               <WarningDialog
-                onApproveClick={resetPedagogyData}
+                onApproveClick={handleEditClick}
                 title={t("labels.unsavedWarning", {
                   ns: "pedagogySupportPlan",
                 })}
@@ -136,6 +136,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
           <Button
             buttonModifiers={["fatal", "standard-ok"]}
             onClick={handleEditClick}
+            disabled={editingDisabled}
           >
             {t("actions.edit", { ns: "common" })}
           </Button>
@@ -197,6 +198,7 @@ export const usePedagogyToolbarLogic = () => {
     userRole,
     implementedActionsHaveChanged,
     pedagogyFormExists,
+    editingDisabled,
   } = usePedagogyValues;
 
   const toolbarLogic = useMemo(() => {
@@ -220,6 +222,7 @@ export const usePedagogyToolbarLogic = () => {
       hasMainFormChanges,
       hasAnyChanges: hasMainFormChanges || implementedActionsHaveChanged,
       shouldShowSaveWithExtraDetails: pedagogyFormExists && hasMainFormChanges,
+      editingDisabled,
     };
   }, [
     userRole,
@@ -227,6 +230,7 @@ export const usePedagogyToolbarLogic = () => {
     editIsActive,
     changedFields.length,
     implementedActionsHaveChanged,
+    editingDisabled,
   ]);
 
   return {

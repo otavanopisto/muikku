@@ -311,7 +311,7 @@ class DependantApplication extends React.Component<
       },
       {
         id: "PEDAGOGY_FORM",
-        name: "Pedagogisen tuen suunnitelma",
+        name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
         hash: "pedagogy-form",
         type: "pedagogy-form",
         component: (

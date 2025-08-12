@@ -165,6 +165,28 @@ export interface ResetPedagogySupportTriggerType {
 }
 
 /**
+ * ActivatePedagogySupportTriggerType
+ */
+export interface ActivatePedagogySupportTriggerType {
+  (data: {
+    isUppersecondary: boolean;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * TogglePublishPedagogySupportTriggerType
+ */
+export interface TogglePublishPedagogySupportFormTriggerType {
+  (data: {
+    isUppersecondary: boolean;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+/**
  * LoadPedagogySupportFormTriggerType
  */
 export interface LoadPedagogySupportFormTriggerType {
@@ -212,7 +234,7 @@ export interface SavePedagogySupportFormTriggerType {
 /**
  * SavePedagogySupportImplActionsTriggerType
  */
-export interface SavePedagogySupportImplActionsTriggerType {
+export interface SavePedagogySupportImplementedActionsTriggerType {
   (): AnyActionType;
 }
 
@@ -231,7 +253,8 @@ export interface CancelEditingPedagogySupportTriggerType {
 }
 
 /**
- * InitializePedagogySupportTriggerType
+ * Initializing pedagogy support thunk. Combines loading implemented actions and
+ * pedagogy form and initializes pedagogy locked status.
  *
  * @param data data
  * @returns AnyActionType
@@ -260,14 +283,6 @@ const initializePedagogySupport: InitializePedagogySupportTriggerType =
       // If not IDLE we know that it is already initialized, or being initialized
       // Just call onSuccess and end method.
       if (state.pedagogySupport.initialized !== "IDLE") {
-        // const currentUserIsEditing =
-        //   state.pedagogySupport.pedagogyLocked &&
-        //   state.status.userId ===
-        //     state.pedagogySupport.pedagogyLocked.userEntityId;
-
-        // const isUppersecondary =
-        //   state.hopsNew.studentInfo.studyProgrammeEducationType === "lukio";
-
         data.onSuccess && data.onSuccess();
 
         return;
@@ -335,8 +350,6 @@ const initializePedagogySupport: InitializePedagogySupportTriggerType =
         const currentUserIsEditing =
           pedagogyLocked && state.status.userId === pedagogyLocked.userEntityId;
 
-        console.log("currentUserIsEditing", currentUserIsEditing);
-
         // Change mode to EDIT if current user is editing
         if (currentUserIsEditing) {
           dispatch({
@@ -353,12 +366,15 @@ const initializePedagogySupport: InitializePedagogySupportTriggerType =
         data.onSuccess && data.onSuccess();
       } catch (err) {
         if (!isMApiError(err)) throw err;
+
+        dispatch(displayNotification(err.message, "error"));
       }
     };
   };
 
 /**
- * LoadPedagogySupportFormTriggerType
+ * Load pedagogy form thunk. Loads pedagogy form and initializes pedagogy form
+ * data.
  *
  * @param data data
  * @returns AnyActionType
@@ -373,6 +389,7 @@ const loadPedagogySupportForm: LoadPedagogySupportFormTriggerType =
     ) => {
       const state = getState();
 
+      // If already ready, just cancel by returning
       if (state.pedagogySupport.pedagogyFormStatus === "READY") {
         return;
       }
@@ -408,12 +425,15 @@ const loadPedagogySupportForm: LoadPedagogySupportFormTriggerType =
         data.onSuccess && data.onSuccess();
       } catch (err) {
         if (!isMApiError(err)) throw err;
+
+        dispatch(displayNotification(err.message, "error"));
       }
     };
   };
 
 /**
- * LoadPedagogySupportImplActionsTriggerType
+ * Load pedagogy implemented actions thunk. Loads pedagogy implemented actions
+ * and initializes pedagogy implemented actions data.
  *
  * @param data data
  * @returns AnyActionType
@@ -428,6 +448,7 @@ const loadPedagogySupportImplActions: LoadPedagogySupportImplActionsTriggerType 
     ) => {
       const state = getState();
 
+      // If already ready, just cancel by returning
       if (state.pedagogySupport.implementedActionsStatus === "READY") {
         return;
       }
@@ -463,12 +484,14 @@ const loadPedagogySupportImplActions: LoadPedagogySupportImplActionsTriggerType 
         data.onSuccess && data.onSuccess();
       } catch (err) {
         if (!isMApiError(err)) throw err;
+        dispatch(displayNotification(err.message, "error"));
       }
     };
   };
 
 /**
- * StartEditingPedagogySupportTriggerType
+ * Handles starting editing pedagogy support. Loads pedagogy form and
+ * implemented actions if needed and locks pedagogy form.
  *
  * @returns AnyActionType
  */
@@ -484,6 +507,7 @@ const startEditingPedagogySupport: StartEditingPedagogySupportTriggerType =
 
       const promises = [];
 
+      // Check if any needed data is not ready or loading, if not load it
       if (state.pedagogySupport.pedagogyFormStatus === "IDLE") {
         promises.push(
           dispatch(
@@ -530,7 +554,7 @@ const startEditingPedagogySupport: StartEditingPedagogySupportTriggerType =
             "Editing mode enabled",
             "persistent-info",
             undefined,
-            "hops-editing-mode-notification"
+            "pedagogy-editing-mode-notification"
           )
         );
       } catch (err) {
@@ -538,13 +562,14 @@ const startEditingPedagogySupport: StartEditingPedagogySupportTriggerType =
           throw err;
         }
 
-        dispatch(displayNotification("Failed to start editing", "error"));
+        dispatch(displayNotification(err.message, "error"));
       }
     };
   };
 
 /**
- * CancelEditingPedagogySupportTriggerType
+ * Handles canceling editing pedagogy support by resetting the pedagogy form
+ * and implemented actions to previous state. Unlocks pedagogy form.
  *
  * @returns AnyActionType
  */
@@ -590,13 +615,14 @@ const cancelEditingPedagogySupport: CancelEditingPedagogySupportTriggerType =
           throw err;
         }
 
-        dispatch(displayNotification("Failed to cancel editing", "error"));
+        dispatch(displayNotification(err.message, "error"));
       }
     };
   };
 
 /**
- * SavePedagogySupportTriggerType
+ * Handles saving pedagogy support by saving the pedagogy form and implemented
+ * actions. Unlocks pedagogy form. Invidual saves are done if needed.
  *
  * @param data data
  */
@@ -611,13 +637,13 @@ const savePedagogySupport: SavePedagogySupportTriggerType =
       const state = getState();
 
       const pedagogyFormHasChanges = !_.isEqual(
-        state.pedagogySupport.pedagogyForm,
+        state.pedagogySupport.pedagogyFormData,
         state.pedagogySupport.pedagogyEditing.pedagogyFormData
       );
 
       const implementedActionsHaveChanges = !_.isEqual(
-        state.pedagogySupport.implementedActions,
-        state.pedagogySupport.implementedActionsFormData
+        state.pedagogySupport.implementedActionsFormData,
+        state.pedagogySupport.pedagogyEditing.implementedActions
       );
 
       const allPromises = [];
@@ -639,7 +665,7 @@ const savePedagogySupport: SavePedagogySupportTriggerType =
       }
 
       if (implementedActionsHaveChanges) {
-        allPromises.push(dispatch(savePedagogySupportImplActions()));
+        allPromises.push(dispatch(savePedagogySupportImplementedActions()));
       }
 
       try {
@@ -656,14 +682,32 @@ const savePedagogySupport: SavePedagogySupportTriggerType =
           type: "PEDAGOGY_SUPPORT_UPDATE_LOCKED",
           payload: pedagogyLocked,
         });
+
+        dispatch({
+          type: "PEDAGOGY_SUPPORT_CHANGE_MODE",
+          payload: "READ",
+        });
+
+        // Find and hide the editing mode notification if it exists
+        const pedagogyNotification =
+          getState().notifications.notifications.find(
+            (notification) =>
+              notification.id === "pedagogy-editing-mode-notification"
+          );
+
+        if (pedagogyNotification) {
+          dispatch(hideNotification(pedagogyNotification));
+        }
       } catch (err) {
         if (!isMApiError(err)) throw err;
+
+        dispatch(displayNotification(err.message, "error"));
       }
     };
   };
 
 /**
- * SavePedagogySupportFormTriggerType
+ * Save pedagogy form thunk
  *
  * @param data data
  */
@@ -717,6 +761,8 @@ const savePedagogySupportForm: SavePedagogySupportFormTriggerType =
         data.onSuccess && data.onSuccess();
       } catch (err) {
         if (!isMApiError(err)) throw err;
+
+        dispatch(displayNotification(err.message, "error"));
       }
 
       dispatch({
@@ -727,10 +773,10 @@ const savePedagogySupportForm: SavePedagogySupportFormTriggerType =
   };
 
 /**
- * SavePedagogySupportImplActionsTriggerType
+ * Save pedagogy implemented actions thunk
  */
-const savePedagogySupportImplActions: SavePedagogySupportImplActionsTriggerType =
-  function savePedagogySupportImplActions() {
+const savePedagogySupportImplementedActions: SavePedagogySupportImplementedActionsTriggerType =
+  function savePedagogySupportImplementedActions() {
     return async (
       dispatch: (
         arg: AnyActionType
@@ -760,7 +806,7 @@ const savePedagogySupportImplActions: SavePedagogySupportImplActionsTriggerType 
             studentIdentifier,
             updatePedagogyFormDataImplementedActionsRequest: {
               formData: JSON.stringify(
-                state.pedagogySupport.implementedActionsFormData
+                state.pedagogySupport.pedagogyEditing.implementedActions
               ),
             },
           });
@@ -778,6 +824,8 @@ const savePedagogySupportImplActions: SavePedagogySupportImplActionsTriggerType 
         });
       } catch (err) {
         if (!isMApiError(err)) throw err;
+
+        dispatch(displayNotification(err.message, "error"));
       }
 
       dispatch({
@@ -788,7 +836,8 @@ const savePedagogySupportImplActions: SavePedagogySupportImplActionsTriggerType 
   };
 
 /**
- * ResetPedagogySupportTriggerType
+ * Reset pedagogy support thunk. Resets the pedagogy form and implemented actions
+ * to initial state.
  *
  * @returns AnyActionType
  */
@@ -801,6 +850,110 @@ const resetPedagogySupport: ResetPedagogySupportTriggerType =
         type: "PEDAGOGY_SUPPORT_RESET_DATA",
         payload: undefined,
       });
+    };
+  };
+
+/**
+ * Activate pedagogy support thunk. Creates a new pedagogy form for the student
+ * that previously did not have one.
+ *
+ * @param data data
+ */
+const activatePedagogySupport: ActivatePedagogySupportTriggerType =
+  function activatePedagogySupport(data) {
+    return async (
+      dispatch: (
+        arg: AnyActionType
+      ) => Promise<Dispatch<Action<AnyActionType>>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      const studentIdentifier =
+        state.pedagogySupport.currentStudentIdentifier ||
+        state.status.userSchoolDataIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
+
+      try {
+        const pedagogyData = await pedagogyApi.createPedagogyForm({
+          studentIdentifier,
+          createPedagogyFormRequest: {
+            formData: "{}",
+          },
+        });
+
+        dispatch({
+          type: "PEDAGOGY_SUPPORT_FORM_UPDATE_DATA",
+          payload: pedagogyData,
+        });
+
+        dispatch({
+          type: "PEDAGOGY_SUPPORT_FORM_UPDATE_FORM_DATA",
+          payload: initializePedagogyFormData(
+            pedagogyData.formData,
+            data.isUppersecondary
+          ),
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(displayNotification(err.message, "error"));
+      }
+    };
+  };
+
+/**
+ * Toggle publish pedagogy support form thunk. Toggles the publish status of the
+ * pedagogy form. Only SPECIAL_TEACHERS can toggle the publish status.
+ *
+ * @param data data
+ */
+const togglePublishPedagogySupportForm: TogglePublishPedagogySupportFormTriggerType =
+  function togglePublishPedagogySupportForm(data) {
+    return async (
+      dispatch: (
+        arg: AnyActionType
+      ) => Promise<Dispatch<Action<AnyActionType>>>,
+      getState: () => StateType
+    ) => {
+      const state = getState();
+
+      // Student identifier is either current student identifier
+      const studentIdentifier = state.pedagogySupport.currentStudentIdentifier;
+
+      // Only PYRAMUS students are supported
+      if (!studentIdentifier.startsWith("PYRAMUS-STUDENT-")) {
+        throw new Error("Invalid student identifier");
+      }
+
+      try {
+        const updatedPedagogyFormData = await pedagogyApi.togglePublished({
+          studentIdentifier,
+        });
+
+        dispatch({
+          type: "PEDAGOGY_SUPPORT_FORM_UPDATE_DATA",
+          payload: updatedPedagogyFormData,
+        });
+
+        dispatch({
+          type: "PEDAGOGY_SUPPORT_FORM_UPDATE_FORM_DATA",
+          payload: initializePedagogyFormData(
+            updatedPedagogyFormData.formData,
+            data.isUppersecondary
+          ),
+        });
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch(displayNotification(err.message, "error"));
+      }
     };
   };
 
@@ -820,8 +973,6 @@ const initializePedagogyLocked = async (
 ) => {
   const state = getState();
 
-  console.log("Initialize Pedagogy Locked");
-
   if (state.pedagogySupport.pedagogyLockedStatus !== "IDLE") {
     return;
   }
@@ -830,6 +981,7 @@ const initializePedagogyLocked = async (
     type: "PEDAGOGY_SUPPORT_UPDATE_LOCKED_STATUS",
     payload: "LOADING",
   });
+
   const pedagogyLocked = await pedagogyApi.getStudentPedagogyFormLock({
     studentIdentifier,
   });
@@ -855,4 +1007,6 @@ export {
   loadPedagogySupportImplActions,
   resetPedagogySupport,
   savePedagogySupport,
+  activatePedagogySupport,
+  togglePublishPedagogySupportForm,
 };

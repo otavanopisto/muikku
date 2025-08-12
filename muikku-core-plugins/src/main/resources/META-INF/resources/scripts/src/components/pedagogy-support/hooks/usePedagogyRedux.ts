@@ -1,27 +1,26 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { displayNotification } from "~/actions/base/notifications";
 import {
   PedagogyFormData,
   PedagogySupportActionImplemented,
 } from "~/@types/pedagogy-form";
-import MApi, { isMApiError } from "~/api/api";
 import _ from "lodash";
-import {
-  initializePedagogyFormData,
-  initializeImplemetedSupportActionsFormData,
-  getEditedFields,
-} from "../helpers";
+import { getEditedFields } from "../helpers";
 import {
   initializePedagogySupport,
   startEditingPedagogySupport,
   cancelEditingPedagogySupport,
   resetPedagogySupport,
   savePedagogySupport,
+  activatePedagogySupport,
+  togglePublishPedagogySupportForm,
 } from "~/actions/main-function/pedagogy-support";
 import { StateType } from "~/reducers";
-
-const pedagogyApi = MApi.getPedagogyApi();
+import {
+  PedagogyForm,
+  PedagogyFormImplementedActions,
+  PedagogyFormLocked,
+} from "~/generated/client";
 
 export type UsePedagogyReduxType = ReturnType<typeof usePedagogyRedux>;
 
@@ -38,20 +37,31 @@ export const usePedagogyRedux = (
 ) => {
   const dispatch = useDispatch();
 
+  const websocket = useSelector(
+    (state: StateType) => state.websocket.websocket
+  );
+
   // Select state from Redux
   const {
-    //initialized,
-    //currentStudentIdentifier,
+    // General state
+    pedagogyLocked,
+
+    // Pedagogy form state
     pedagogyFormStatus,
     pedagogyForm,
     pedagogyFormData,
-    //pedagogyFormExtraDetails,
+
+    // Implemented actions state
     implementedActionsStatus,
     implementedActions,
     implementedActionsFormData,
+
+    // Editing state
     pedagogyMode,
     pedagogyEditing,
   } = useSelector((state: StateType) => state.pedagogySupport);
+
+  const { userId } = useSelector((state: StateType) => state.status);
 
   // Computed values
   const loading = React.useMemo(
@@ -61,26 +71,41 @@ export const usePedagogyRedux = (
     [pedagogyFormStatus, implementedActionsStatus]
   );
 
+  // Check if pedagogy form exists
   const pedagogyFormExists = React.useMemo(
     () => pedagogyForm?.created !== null || false,
     [pedagogyForm]
   );
 
+  // Check if pedagogy form has changes
+  const pedagogyFormHasChanges = React.useMemo(
+    () => !_.isEqual(pedagogyFormData, pedagogyEditing.pedagogyFormData),
+    [pedagogyFormData, pedagogyEditing.pedagogyFormData]
+  );
+
+  // Check if implemented actions have changed
   const implementedActionsHaveChanged = React.useMemo(
     () =>
       !_.isEqual(
-        initializeImplemetedSupportActionsFormData(
-          implementedActions?.formData
-        ),
-        implementedActionsFormData
+        implementedActionsFormData,
+        pedagogyEditing.implementedActions
       ),
-    [implementedActionsFormData, implementedActions]
+    [implementedActionsFormData, pedagogyEditing.implementedActions]
   );
 
+  // Check if edit is active
   const editIsActive = React.useMemo(
     () => pedagogyMode === "EDIT",
     [pedagogyMode]
   );
+
+  // Check if editing is disabled
+  const editingDisabled = React.useMemo(() => {
+    if (pedagogyLocked?.userEntityId !== userId && pedagogyLocked?.locked) {
+      return true;
+    }
+    return false;
+  }, [pedagogyLocked, userId]);
 
   // Initialize pedagogy support
   React.useEffect(() => {
@@ -93,9 +118,119 @@ export const usePedagogyRedux = (
     );
   }, [dispatch, shouldLoadForm, studentIdentifier, isUppersecondary]);
 
+  // Add useEffect to handle beforeunload event
+  React.useEffect(() => {
+    /**
+     * Handles the beforeunload event to prevent the user from leaving the page
+     * with unsaved changes.
+     *
+     * @param e - The beforeunload event
+     * @returns - Returns an empty string to allow the user to leave the page
+     */
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (
+        implementedActionsHaveChanged ||
+        pedagogyFormHasChanges ||
+        editIsActive
+      ) {
+        e.preventDefault();
+        e.returnValue = ""; // For Chrome
+        return ""; // For other browsers
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [editIsActive, implementedActionsHaveChanged, pedagogyFormHasChanges]);
+
+  // Websocket event handling
+  React.useEffect(() => {
+    /**
+     * Handle pedagogy support form updated
+     * @param data data
+     */
+    const handlePedagogySupportFormUpdated = (data: unknown) => {
+      const pedagogyData = data as PedagogyForm;
+
+      dispatch({
+        type: "PEDAGOGY_SUPPORT_FORM_UPDATE_DATA",
+        payload: pedagogyData,
+      });
+
+      dispatch({
+        type: "PEDAGOGY_SUPPORT_FORM_UPDATE_FORM_DATA",
+        payload: JSON.parse(pedagogyData.formData) as PedagogyFormData,
+      });
+    };
+
+    /**
+     * Handle pedagogy support implemented actions updated
+     * @param data data
+     */
+    const handlePedagogytImplementedActionsUpdated = (data: unknown) => {
+      const implementedActionsData = data as PedagogyFormImplementedActions;
+
+      dispatch({
+        type: "PEDAGOGY_SUPPORT_IMPLEMENTED_ACTIONS_UPDATE_DATA",
+        payload: implementedActionsData,
+      });
+
+      dispatch({
+        type: "PEDAGOGY_SUPPORT_IMPLEMENTED_ACTIONS_UPDATE_FORM_DATA",
+        payload: JSON.parse(
+          implementedActionsData.formData
+        ) as PedagogySupportActionImplemented[],
+      });
+    };
+
+    /**
+     * Handle pedagogy locked updated
+     * @param data data
+     */
+    const handlePedagogyLockedUpdated = (data: unknown) => {
+      const pedagogyLockedData = data as PedagogyFormLocked;
+
+      dispatch({
+        type: "PEDAGOGY_SUPPORT_UPDATE_LOCKED",
+        payload: pedagogyLockedData,
+      });
+    };
+
+    // Add event callbacks
+    websocket.addEventCallback(
+      "pedagogy:pedagogy-form-updated",
+      handlePedagogySupportFormUpdated
+    );
+    websocket.addEventCallback(
+      "pedagogy:implemented-support-actions-updated",
+      handlePedagogytImplementedActionsUpdated
+    );
+    websocket.addEventCallback(
+      "pedagogy:lock-updated",
+      handlePedagogyLockedUpdated
+    );
+
+    // Clean up event callbacks
+    return () => {
+      websocket.removeEventCallback(
+        "pedagogy:pedagogy-form-updated",
+        handlePedagogySupportFormUpdated
+      );
+      websocket.removeEventCallback(
+        "pedagogy:implemented-support-actions-updated",
+        handlePedagogytImplementedActionsUpdated
+      );
+      websocket.removeEventCallback(
+        "pedagogy:lock-updated",
+        handlePedagogyLockedUpdated
+      );
+    };
+  }, [dispatch, websocket]);
+
   /**
-   * setEditIsActive
-   * Set the edit is active state
+   * Toggle edit is active
    * @param isActive isActive
    */
   const toggleEditIsActive = React.useCallback(
@@ -110,7 +245,6 @@ export const usePedagogyRedux = (
   );
 
   /**
-   * resetPedagogyData
    * Reset the pedagogy data
    */
   const resetPedagogyData = React.useCallback(() => {
@@ -118,8 +252,7 @@ export const usePedagogyRedux = (
   }, [dispatch]);
 
   /**
-   * updatePedagogyFormDataAndUpdateChangedFields
-   * Set the pedagogy form data and update the changed fields
+   * Update the pedagogy form data and update the changed fields
    */
   const updatePedagogyFormDataAndUpdateChangedFields = React.useCallback(
     (updatedFormData: PedagogyFormData) => {
@@ -141,8 +274,7 @@ export const usePedagogyRedux = (
   );
 
   /**
-   * updatePedagogyFormExtraDetails
-   * Set the pedagogy form extra details
+   * Update the pedagogy form extra details
    */
   const updatePedagogyFormExtraDetails = React.useCallback(
     (details: string) => {
@@ -157,8 +289,7 @@ export const usePedagogyRedux = (
   );
 
   /**
-   * handleImplemetedSupportActionsFormDataChange
-   * Set the implemented support actions form data
+   * Update the implemented support actions form data
    */
   const updateImplemetedSupportActionsFormData = React.useCallback(
     (formData: PedagogySupportActionImplemented[]) => {
@@ -173,70 +304,29 @@ export const usePedagogyRedux = (
   );
 
   /**
-   * activatePedagogyForm
    * Activate the pedagogy form
    */
   const activatePedagogyForm = React.useCallback(async () => {
-    try {
-      const pedagogyData = await pedagogyApi.createPedagogyForm({
-        studentIdentifier,
-        createPedagogyFormRequest: {
-          formData: "{}",
-        },
-      });
-
-      dispatch({
-        type: "PEDAGOGY_SUPPORT_FORM_UPDATE_DATA",
-        payload: pedagogyData,
-      });
-
-      dispatch({
-        type: "PEDAGOGY_SUPPORT_FORM_UPDATE_FORM_DATA",
-        payload: initializePedagogyFormData(
-          pedagogyData.formData,
-          isUppersecondary
-        ),
-      });
-    } catch (err) {
-      if (!isMApiError(err)) {
-        throw err;
-      }
-      dispatch(displayNotification(err.message, "error"));
-    }
-  }, [dispatch, studentIdentifier, isUppersecondary]);
+    dispatch(
+      activatePedagogySupport({
+        isUppersecondary,
+      })
+    );
+  }, [dispatch, isUppersecondary]);
 
   /**
-   * togglePublishPedagogyForm
    * Toggle the publish status of the pedagogy form
    */
   const togglePublishPedagogyForm = React.useCallback(async () => {
-    try {
-      const updatedPedagogyFormData = await pedagogyApi.togglePublished({
-        studentIdentifier,
-      });
-
-      dispatch({
-        type: "PEDAGOGY_SUPPORT_FORM_UPDATE_DATA",
-        payload: updatedPedagogyFormData,
-      });
-
-      dispatch({
-        type: "PEDAGOGY_SUPPORT_FORM_UPDATE_FORM_DATA",
-        payload: initializePedagogyFormData(
-          updatedPedagogyFormData.formData,
-          isUppersecondary
-        ),
-      });
-    } catch (err) {
-      if (!isMApiError(err)) {
-        throw err;
-      }
-      dispatch(displayNotification(err.message, "error"));
-    }
-  }, [dispatch, studentIdentifier, isUppersecondary]);
+    dispatch(
+      togglePublishPedagogySupportForm({
+        isUppersecondary,
+      })
+    );
+  }, [dispatch, isUppersecondary]);
 
   /**
-   * saveAllData
+   * Save all data
    */
   const saveAllData = React.useCallback(async () => {
     dispatch(
@@ -244,8 +334,7 @@ export const usePedagogyRedux = (
         details: pedagogyEditing.pedagogyFormExtraDetails,
       })
     );
-    toggleEditIsActive(false);
-  }, [dispatch, pedagogyEditing.pedagogyFormExtraDetails, toggleEditIsActive]);
+  }, [dispatch, pedagogyEditing.pedagogyFormExtraDetails]);
 
   return {
     // Shared state
@@ -253,6 +342,7 @@ export const usePedagogyRedux = (
     editIsActive,
     studentIdentifier,
     isUppersecondary,
+    editingDisabled,
     resetPedagogyData,
     saveAllData,
     toggleEditIsActive,
@@ -260,8 +350,8 @@ export const usePedagogyRedux = (
     // Implemented support actions related state
     pedagogySupportActions: implementedActions,
     implemetedSupportActionsFormData: pedagogyEditing.implementedActions,
-    updateImplemetedSupportActionsFormData,
     implementedActionsHaveChanged,
+    updateImplemetedSupportActionsFormData,
 
     // Pedagogy form related state
     pedagogyFormExists,

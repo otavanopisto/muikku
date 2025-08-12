@@ -166,7 +166,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "PEDAGOGY_FORM",
-        name: "Oppimisen tuki",
+        name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
         hash: "pedagogy-form",
         type: "pedagogy-form",
         component: (
