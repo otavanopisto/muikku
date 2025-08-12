@@ -4,6 +4,7 @@ import "~/sass/elements/language-profile.scss";
 import { filterMatch } from "~/util/modifiers";
 import { LanguageData } from "~/@types/shared";
 import { useTranslation } from "react-i18next";
+import c from "~/components/base/input-contacts-autofill";
 
 // import { useDispatch, useSelector } from "react-redux";
 
@@ -54,6 +55,14 @@ const AddItem = (props: AddItemProps) => {
     setFilter("");
   };
 
+  /**
+   * clearComponent
+   */
+  const clearComponent = () => {
+    setActive(false);
+    setFilter("");
+  };
+
   const filteredItems = allItems.filter(
     (item) =>
       filterMatch(item.name, filter) &&
@@ -73,7 +82,10 @@ const AddItem = (props: AddItemProps) => {
         {active && filter && (
           <div className="language-profile__language-dropdown">
             {filteredItems.length === 0 ? (
-              <div className="language-profile__dropdown-item">
+              <div
+                onClick={clearComponent}
+                className="language-profile__dropdown-item"
+              >
                 {t("content.empty", {
                   context: "languages",
                 })}
