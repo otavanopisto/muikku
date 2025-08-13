@@ -14,12 +14,15 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
-import fi.otavanopisto.muikku.plugins.exam.ExamController;
+import fi.otavanopisto.muikku.plugins.exam.dao.ExamAttendanceDAO;
+import fi.otavanopisto.muikku.plugins.exam.dao.ExamSettingsDAO;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamSettings;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
@@ -92,6 +95,12 @@ public class WorkspaceMaterialController {
 
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
+  
+  @Inject
+  private ExamSettingsDAO examSettingsDAO;
+
+  @Inject
+  private ExamAttendanceDAO examAttendanceDAO;
 
   @Inject
   private Event<WorkspaceRootFolderCreateEvent> workspaceRootFolderCreateEvent;
@@ -119,9 +128,6 @@ public class WorkspaceMaterialController {
 
   @Inject
   private MaterialController materialController;
-  
-  @Inject
-  private ExamController examController;
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
@@ -938,12 +944,21 @@ public class WorkspaceMaterialController {
         if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
           boolean showExamFolder = false;
           // Student might be able to see exam folder (although its contents are fetched separately via ExamRESTService)
-          ExamSettings examSettings = examController.findExamSettings(currentNode.getId());
+          ExamSettings examSettings = examSettingsDAO.findById(currentNode.getId());
           if (examSettings != null) {
-            ExamSettingsRestModel settingsJson = examController.getSettingsJson(examSettings);
-            if (!settingsJson.getOpenForAll()) {
+            ExamSettingsRestModel settingsJson = null;
+            if (examSettings != null && !StringUtils.isEmpty(examSettings.getSettings())) {
+              try {
+                ObjectMapper mapper = new ObjectMapper();
+                settingsJson = mapper.readValue(examSettings.getSettings(), ExamSettingsRestModel.class);
+              }
+              catch (Exception e) {
+                logger.severe(String.format("Malformatted exam settings: %s", e.getMessage()));
+              }
+            }
+            if (settingsJson != null && !settingsJson.getOpenForAll()) {
               // Exam users are limited; current user needs to be an attendee
-              showExamFolder = examController.findAttendance(currentNode.getId(), sessionController.getLoggedUserEntity().getId()) != null;
+              showExamFolder = examAttendanceDAO.findByWorkspaceFolderIdAndUserEntityId(currentNode.getId(), sessionController.getLoggedUserEntity().getId()) != null;
             }
             else {
               // Exam is open for all (currently active course students)
