@@ -143,8 +143,8 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
         )}
       </div>
 
-      {toolbarLogic.canTogglePDF ? (
-        <div className="pedagogy-form__toolbar-secondary">
+      <div className="pedagogy-form__toolbar-secondary">
+        {toolbarLogic.canTogglePDF ? (
           <Button
             buttonModifiers={["info"]}
             disabled={loading}
@@ -154,32 +154,30 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
               ? t("actions.closePDF", { ns: "common" })
               : t("actions.openPDF", { ns: "common" })}
           </Button>
-        </div>
-      ) : null}
+        ) : null}
 
-      {toolbarLogic.canActivateForm && (
-        <div className="pedagogy-form__toolbar-secondary">
+        {toolbarLogic.canActivateForm && (
           <Button buttonModifiers={["success"]} onClick={activatePedagogyForm}>
             {t("actions.activate", { ns: "common" })}
           </Button>
-        </div>
-      )}
+        )}
 
-      {toolbarLogic.canTogglePublishForm && pedagogyForm && (
-        <Button
-          buttonModifiers={["execute"]}
-          disabled={editIsActive}
-          onClick={togglePublishPedagogyForm}
-        >
-          {pedagogyForm.published
-            ? t("actions.unpublish", {
-                ns: "pedagogySupportPlan",
-              })
-            : t("actions.publish", {
-                ns: "pedagogySupportPlan",
-              })}
-        </Button>
-      )}
+        {toolbarLogic.canTogglePublishForm && pedagogyForm && (
+          <Button
+            buttonModifiers={["execute"]}
+            disabled={editIsActive}
+            onClick={togglePublishPedagogyForm}
+          >
+            {pedagogyForm.published
+              ? t("actions.unpublish", {
+                  ns: "pedagogySupportPlan",
+                })
+              : t("actions.publish", {
+                  ns: "pedagogySupportPlan",
+                })}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
