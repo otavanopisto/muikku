@@ -66,7 +66,7 @@ const LanguageUsage = () => {
       // If the language has skills, subjects, or levels, it is locked
       if (
         (language.skills && language.skills.length > 0) ||
-        (language.subjects && language.subjects.length > 0) ||
+        (language.workspaces && language.workspaces.length > 0) ||
         (language.levels && language.levels.length > 0)
       ) {
         lockedLanguageCodes.push(language.code as LanguageCode);

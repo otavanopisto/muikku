@@ -24,16 +24,25 @@ export type LanguageItem<T> = {
   [key: string]: T;
 };
 
+/**
+ * LanguageProfileLanguageData
+ */
 export interface LanguageProfileLanguageData {
   levels: LanguageItem<LanguageLevels>[];
   skills: LanguageItem<SkillLevels>[];
-  subjects: LanguageData[];
+  workspaces: LanguageData[];
 }
 
+/**
+ * LanguageProfileLanguage
+ */
 export interface LanguageProfileLanguage
   extends LanguageProfileLanguageData,
     LanguageData {}
 
+/**
+ * Experience
+ */
 export interface Experience {
   interaction: number;
   vocal: number;
@@ -42,6 +51,10 @@ export interface Experience {
   listening: number;
   general: LanguageLevels;
 }
+
+/**
+ * CVLanguage
+ */
 export interface CVLanguage {
   code: string;
   description: string;
@@ -53,6 +66,10 @@ export interface CVLanguage {
   general: LanguageLevels;
   samples: string[];
 }
+
+/**
+ * LanguageProfileCV
+ */
 export interface LanguageProfileCV {
   general: string;
   languages: CVLanguage[];
@@ -234,9 +251,9 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
-    case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SUBJECTS": {
+    case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACES": {
       const { payload } = action;
-      const subjectPayload = {
+      const workspacesPayload = {
         code: payload.code,
         identifier: payload.identifier,
         name: payload.name,
@@ -249,28 +266,65 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       );
       const currentLanguage = languagesUpdate[languageIndex];
 
-      // Check if there are skills
-      const subjectUpdate = currentLanguage.subjects
-        ? currentLanguage.subjects
+      // Check if there are
+      const workspacesUpdate = currentLanguage.workspaces
+        ? currentLanguage.workspaces
         : [];
 
-      const subjectIndex = subjectUpdate.findIndex(
-        (subject) => subject.name === payload.name
+      const workspaceIndex = workspacesUpdate.findIndex(
+        (workspace) => workspace.identifier === payload.identifier
       );
 
-      if (subjectIndex !== -1) {
-        // If it exists, replace the existing skill
-        subjectUpdate.splice(subjectIndex, 1, subjectPayload);
+      if (workspaceIndex !== -1) {
+        // If it exists, replace the existing
+        workspacesUpdate.splice(workspaceIndex, 1, workspacesPayload);
       } else {
-        subjectUpdate.push(subjectPayload);
+        workspacesUpdate.push(workspacesPayload);
       }
 
       const updatedSubjects = {
         ...currentLanguage,
-        subjects: subjectUpdate,
+        workspaces: workspacesUpdate,
       };
 
       languagesUpdate[languageIndex] = updatedSubjects;
+
+      return {
+        ...state,
+        data: { ...state.data, languages: languagesUpdate },
+      };
+    }
+
+    case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE_VALUE": {
+      const { payload } = action;
+
+      const languagesUpdate = [...state.data.languages];
+      // find the language to update
+      const languageIndex = languagesUpdate.findIndex(
+        (language) => language.code === payload.code
+      );
+      const currentLanguage = languagesUpdate[languageIndex];
+
+      // Check if there are
+      const workspaceUpdate = currentLanguage.workspaces
+        ? currentLanguage.workspaces
+        : [];
+
+      const workspaceIndex = workspaceUpdate.findIndex(
+        (workspace) => workspace.identifier === payload.identifier
+      );
+
+      workspaceUpdate[workspaceIndex] = {
+        ...workspaceUpdate[workspaceIndex],
+        value: payload.value,
+      };
+
+      const updatedWorkspaces = {
+        ...currentLanguage,
+        workspaces: workspaceUpdate,
+      };
+
+      languagesUpdate[languageIndex] = updatedWorkspaces;
 
       return {
         ...state,

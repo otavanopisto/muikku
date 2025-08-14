@@ -25,7 +25,8 @@ interface DisplayLanguagesProps {
     code: string,
     cellId: string,
     rowId?: string,
-    index?: number
+    index?: number,
+    identifier?: string
   ) => React.ReactNode;
   columnAction?: (language: LanguageData) => JSX.Element;
   onItemClick?: (language: LanguageData) => void;
@@ -74,7 +75,7 @@ const DisplayLanguages = (props: DisplayLanguagesProps) => {
         <Tbody>
           {rows.map((item) => {
             const isDisabled = props.disabledItems?.includes(item.code);
-            const rowId = item.code + item.name;
+            const rowId = item.code + item.identifier;
 
             const tableRowModifiers = [];
 
@@ -108,7 +109,13 @@ const DisplayLanguages = (props: DisplayLanguagesProps) => {
                         key={item.name + "-" + cellId}
                       >
                         {cellAction &&
-                          cellAction(item.code, cellId, rowId, index)}
+                          cellAction(
+                            item.code,
+                            cellId,
+                            rowId,
+                            index,
+                            item.identifier
+                          )}
                       </Td>
                     );
                   })}

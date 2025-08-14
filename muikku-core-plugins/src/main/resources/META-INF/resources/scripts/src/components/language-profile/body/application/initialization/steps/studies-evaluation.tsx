@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { LanguageData } from "~/@types/shared";
 import { ALL_LANGUAGE_SUBJECTS } from "~/helper-functions/study-matrix";
 import { LanguageProfileLanguage } from "~/reducers/main-function/language-profile";
-
+import MApi, { isMApiError } from "~/api/api";
+import { useEffect } from "react";
 /**
  * AccomplishmentEvaluation component
  * This component displays the accomplishment evaluation for each language
@@ -17,16 +18,41 @@ import { LanguageProfileLanguage } from "~/reducers/main-function/language-profi
 const AccomplishmentEvaluation = () => {
   const { t } = useTranslation(["languageProfile"]);
   const dispatch = useDispatch();
-  const { languages } = useSelector(
-    (state: StateType) => state.languageProfile.data
-  );
+  const { languageProfile, status } = useSelector((state: StateType) => state);
+  const [passedWorkspaces, setPassedWorkspaces] = React.useState<
+    LanguageData[]
+  >([]);
+  const languages = languageProfile.data.languages;
 
-  const languageSubjects: LanguageData[] = ALL_LANGUAGE_SUBJECTS.map(
-    (subject) => ({
-      identifier: subject.toLowerCase(),
-      name: subject,
-    })
-  );
+  const recordsApi = MApi.getRecordsApi();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const workspaceActivity = await recordsApi.getWorkspaceActivity({
+          identifier: status.userSchoolDataIdentifier,
+          includeTransferCredits: "true",
+          includeAssignmentStatistics: "true",
+        });
+
+        const workspaceData = workspaceActivity.activities
+          .filter((a) => a.assessmentStates.some((state) => state.passingGrade))
+          .map((workspace) => ({
+            identifier: workspace.identifier,
+            name: workspace.name,
+          }));
+
+        setPassedWorkspaces(workspaceData);
+      } catch (error) {
+        if (isMApiError(error)) {
+          // Handle MApiError
+        } else {
+          // Handle other errors
+        }
+      }
+    };
+    fetchData();
+  });
 
   /**
    * createRows
@@ -34,10 +60,10 @@ const AccomplishmentEvaluation = () => {
    * @returns an array of rows for the DisplayLanguages component
    */
   const createRows = (language: LanguageProfileLanguage) => {
-    const subjects = language.subjects || [];
-    return subjects.map((subject, index) => ({
-      identifier: language.code + index,
-      name: subject.name,
+    const workspaces = language.workspaces || [];
+    return workspaces.map((workspace) => ({
+      identifier: workspace.identifier,
+      name: workspace.name,
       code: language.code,
     }));
   };
@@ -48,21 +74,23 @@ const AccomplishmentEvaluation = () => {
    * @param cellId the cell ID for the radio input
    * @param rowId the row ID for the radio input
    * @param index the index of the evaluation option
+   * @param identifier the row ID for the radio input
    * @returns a radio input for selecting an accomplishment evaluation
    */
   const accomplishmentEvaluationSelect = (
     code: string,
     cellId: string,
     rowId: string,
-    index: number
+    index: number,
+    identifier: string
   ) => {
     const isChecked = languages.some(
       (language) =>
         language.code === code &&
-        language.subjects?.some(
-          (subject) =>
-            subject.name === rowId.substring(code.length) &&
-            subject.value === (index + 1).toString()
+        language.workspaces?.some(
+          (workspace) =>
+            workspace.identifier === identifier &&
+            workspace.value === (index + 1).toString()
         )
     );
     return (
@@ -70,7 +98,7 @@ const AccomplishmentEvaluation = () => {
         type="radio"
         className="language-profile__input"
         checked={isChecked}
-        onChange={(e) => handleAccomplishmentEvaluation(e, code)}
+        onChange={(e) => handleAccomplishmentEvaluation(e, code, identifier)}
         name={rowId}
         value={(index + 1).toString()}
       />
@@ -81,22 +109,18 @@ const AccomplishmentEvaluation = () => {
    * handleAccomplishmentEvaluation
    * @param e event
    * @param code language code
+   * @param identifier the row ID for the radio input
    */
   const handleAccomplishmentEvaluation = (
     e: React.ChangeEvent<HTMLInputElement>,
-    code: string
+    code: string,
+    identifier: string
   ) => {
-    // Extract subject name by removing language code from the beginning
-    // Assuming rowId (e.target.name) is formatted as "codeSubjectName"
-    // For example: "enreading" or "fi-writing"
-    const subjectName = e.target.name.substring(code.length);
-
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SUBJECTS",
+      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE_VALUE",
       payload: {
-        code: code,
-        identifier: code + subjectName,
-        name: subjectName,
+        code,
+        identifier,
         value: e.target.value,
       },
     } as ActionType);
@@ -106,13 +130,13 @@ const AccomplishmentEvaluation = () => {
    * handleAddLanguage
    * @param subject the language to add
    */
-  const handleAddLanguageSubject = (subject: LanguageData) => {
+  const handleAddLanguageSubject = (workspace: LanguageData) => {
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SUBJECTS",
+      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACES",
       payload: {
-        code: subject.code,
-        identifier: subject.code + subject.name,
-        name: subject.name,
+        code: workspace.code,
+        identifier: workspace.identifier,
+        name: workspace.name,
         value: "",
       },
     } as ActionType);
@@ -137,7 +161,7 @@ const AccomplishmentEvaluation = () => {
           })}
         </div>
         {languages.map((language) => {
-          const languageSubjectsWithLanguageCode = languageSubjects.map(
+          const languageWorkspacesWithLanguageCode = passedWorkspaces.map(
             (workspace) => ({
               ...workspace,
               code: language.code,
@@ -155,8 +179,8 @@ const AccomplishmentEvaluation = () => {
                 title={language.name}
               />
               <AddSubject
-                allItems={languageSubjectsWithLanguageCode}
-                selectedItems={language.subjects || []}
+                allItems={languageWorkspacesWithLanguageCode}
+                selectedItems={language.workspaces || []}
                 filterBy="name"
                 action={handleAddLanguageSubject}
                 placeHolder={t("labels.addSubjectFieldLabel", {

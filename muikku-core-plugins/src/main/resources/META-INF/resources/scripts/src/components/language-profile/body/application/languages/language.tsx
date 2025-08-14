@@ -87,18 +87,6 @@ const LanguageComponent = (props: LanguageComponentProps) => {
     [dispatch, changed, setChanged]
   );
 
-  /**
-   * handleToggleDelete
-   * @param id - The ID of the sample to toggle for deletion.
-   */
-  const handleToggleDelete = (id: number) => {
-    if (samplesToRemove.some((sample) => sample === id)) {
-      setSamplesToRemove(samplesToRemove.filter((sample) => sample !== id));
-    } else {
-      setSamplesToRemove([...samplesToRemove, id]);
-    }
-  };
-
   // Clean up the timeout when the component unmounts
   React.useEffect(
     () => () => {
@@ -165,7 +153,6 @@ const LanguageComponent = (props: LanguageComponentProps) => {
               (sampleId) => sampleId === sample.id
             )}
             onChange={handleFieldChange}
-            onDelete={handleToggleDelete}
           />
         ))}
     </fieldset>
