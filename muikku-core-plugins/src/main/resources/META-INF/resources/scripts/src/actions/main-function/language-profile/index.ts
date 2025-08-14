@@ -60,8 +60,8 @@ export type UPDATE_LANGUAGE_PROFILE_SKILL_LEVELS = SpecificActionType<
   { code: string; cellId: string; value: SkillLevels }
 >;
 
-export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACES = SpecificActionType<
-  "UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACES",
+export type ADD_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE = SpecificActionType<
+  "ADD_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE",
   { code: LanguageCode; identifier: string; value: string; name: string }
 >;
 

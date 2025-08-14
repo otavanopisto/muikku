@@ -142,7 +142,7 @@ const AccomplishmentEvaluation = () => {
     );
 
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACES",
+      type: "ADD_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE",
       payload: {
         code: code,
         identifier: value,
