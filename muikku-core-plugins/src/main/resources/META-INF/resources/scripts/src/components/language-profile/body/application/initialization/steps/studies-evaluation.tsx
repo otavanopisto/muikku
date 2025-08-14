@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import DisplayLanguages from "./components/language-profile-data-displayer";
-import AddSubject from "./components/language-profile-add-item";
 import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,10 +25,13 @@ const AccomplishmentEvaluation = () => {
     LanguageData[]
   >([]);
   const languages = languageProfile.data.languages;
-
   const recordsApi = MApi.getRecordsApi();
 
   useEffect(() => {
+    /**
+     * fetchData
+     * Fetches the passed workspaces from the API and sets them in the state
+     */
     const fetchData = async () => {
       try {
         const workspaceActivity = await recordsApi.getWorkspaceActivity({
@@ -134,7 +136,7 @@ const AccomplishmentEvaluation = () => {
    * @param value the value of the new language to add
    * @param code the language code
    */
-  const handleAddLanguageSubject = (value: string, code: string) => {
+  const handleAddLanguageWorkspace = (value: string, code: string) => {
     const workspace = passedWorkspaces.find(
       (workspace) => workspace.identifier === value
     );
@@ -186,10 +188,14 @@ const AccomplishmentEvaluation = () => {
               title={language.name}
             />
             <Select
+              isDisabled={passedWorkspaces.length === 0}
+              placeholder={t("labels.addPassedWorkspace", {
+                ns: "languageProfile",
+              })}
               className="react-select-override react-select-override--language-profile-form"
               classNamePrefix="react-select-override"
-              onChange={(value) =>
-                handleAddLanguageSubject(value.value, language.code)
+              onChange={(option) =>
+                handleAddLanguageWorkspace(option.value, language.code)
               }
               options={workspaceOptions}
             />
