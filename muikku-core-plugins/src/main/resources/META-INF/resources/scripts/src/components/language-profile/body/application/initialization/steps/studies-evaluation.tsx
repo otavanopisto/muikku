@@ -10,6 +10,9 @@ import { ALL_LANGUAGE_SUBJECTS } from "~/helper-functions/study-matrix";
 import { LanguageProfileLanguage } from "~/reducers/main-function/language-profile";
 import MApi, { isMApiError } from "~/api/api";
 import { useEffect } from "react";
+import Select from "react-select";
+import { OptionDefault } from "~/components/general/react-select/types";
+
 /**
  * AccomplishmentEvaluation component
  * This component displays the accomplishment evaluation for each language
@@ -128,20 +131,31 @@ const AccomplishmentEvaluation = () => {
 
   /**
    * handleAddLanguage
-   * @param subject the language to add
+   * @param value the value of the new language to add
+   * @param code the language code
    */
-  const handleAddLanguageSubject = (workspace: LanguageData) => {
+  const handleAddLanguageSubject = (value: string, code: string) => {
+    const workspace = passedWorkspaces.find(
+      (workspace) => workspace.identifier === value
+    );
+
     dispatch({
       type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACES",
       payload: {
-        code: workspace.code,
-        identifier: workspace.identifier,
+        code: code,
+        identifier: value,
         name: workspace.name,
         value: "",
       },
     } as ActionType);
   };
 
+  const workspaceOptions: OptionDefault<string>[] = passedWorkspaces.map(
+    (workspace) => ({
+      value: workspace.identifier,
+      label: workspace.name,
+    })
+  );
   return (
     <div className="language-profile-container">
       <fieldset className="language-profile-container__fieldset">
@@ -160,36 +174,27 @@ const AccomplishmentEvaluation = () => {
             ns: "languageProfile",
           })}
         </div>
-        {languages.map((language) => {
-          const languageWorkspacesWithLanguageCode = passedWorkspaces.map(
-            (workspace) => ({
-              ...workspace,
-              code: language.code,
-            })
-          );
-          return (
-            <div key={language.code}>
-              <DisplayLanguages
-                key={language.code}
-                rows={createRows(language)}
-                cellAction={accomplishmentEvaluationSelect}
-                labels={Array.from(Array(5).keys()).map((i) =>
-                  (i + 1).toString()
-                )}
-                title={language.name}
-              />
-              <AddSubject
-                allItems={languageWorkspacesWithLanguageCode}
-                selectedItems={language.workspaces || []}
-                filterBy="name"
-                action={handleAddLanguageSubject}
-                placeHolder={t("labels.addSubjectFieldLabel", {
-                  ns: "languageProfile",
-                })}
-              />
-            </div>
-          );
-        })}
+        {languages.map((language) => (
+          <div key={language.code}>
+            <DisplayLanguages
+              key={language.code}
+              rows={createRows(language)}
+              cellAction={accomplishmentEvaluationSelect}
+              labels={Array.from(Array(5).keys()).map((i) =>
+                (i + 1).toString()
+              )}
+              title={language.name}
+            />
+            <Select
+              className="react-select-override react-select-override--language-profile-form"
+              classNamePrefix="react-select-override"
+              onChange={(value) =>
+                handleAddLanguageSubject(value.value, language.code)
+              }
+              options={workspaceOptions}
+            />
+          </div>
+        ))}
       </fieldset>
     </div>
   );
