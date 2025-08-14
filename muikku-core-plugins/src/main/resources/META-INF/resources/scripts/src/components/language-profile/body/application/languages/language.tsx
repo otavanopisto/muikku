@@ -17,8 +17,6 @@ export type SampleTypes = "TEXT" | "FILE" | "AUDIO" | "";
 interface LanguageComponentProps {
   samples: LanguageProfileSample[];
   language: LanguageProfileLanguage;
-  samplesToRemove: number[];
-  setSamplesToRemove: (samples: number[]) => void;
   changed: number[];
   setChanged: (samples: number[]) => void;
 }
@@ -30,14 +28,7 @@ interface LanguageComponentProps {
  */
 const LanguageComponent = (props: LanguageComponentProps) => {
   const { t } = useTranslation(["languageProfile"]);
-  const {
-    samples,
-    language,
-    samplesToRemove,
-    setSamplesToRemove,
-    changed,
-    setChanged,
-  } = props;
+  const { samples, language, changed, setChanged } = props;
   const [filteredSamples, setFilteredSamples] =
     React.useState<LanguageProfileSample[]>(samples);
   const [sampleType, setSampleType] = React.useState<SampleTypes>("");

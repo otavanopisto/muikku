@@ -25,7 +25,7 @@ const AccomplishmentEvaluation = () => {
     LanguageData[]
   >([]);
   const languages = languageProfile.data.languages;
-  const recordsApi = MApi.getRecordsApi();
+  const recordsApi = React.useMemo(() => MApi.getRecordsApi(), []);
 
   useEffect(() => {
     /**
@@ -57,7 +57,7 @@ const AccomplishmentEvaluation = () => {
       }
     };
     fetchData();
-  });
+  }, [recordsApi, status.userSchoolDataIdentifier]);
 
   /**
    * createRows
