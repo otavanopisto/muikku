@@ -1197,7 +1197,7 @@ export const EditorButtonSet = (props: EditorButtonSetProps) => {
     dispatch(
       updateWorkspaceMaterialContentNode({
         workspace: editorState.currentNodeWorkspace,
-        material: editorState.currentDraftNodeValue,
+        material: editorState.currentNodeValue,
         update: editorState.currentDraftNodeValue,
       })
     );
