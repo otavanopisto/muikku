@@ -260,8 +260,8 @@ public class ExamRESTService {
     UserEntity userEntity = userEntityController.findUserEntityById(attendance.getUserEntityId());
     ExamAttendee attendee = new ExamAttendee();
     attendee.setId(attendance.getUserEntityId());
-    attendee.setStarted(toOffsetDateTime(attendance.getStarted()));
-    attendee.setEnded(toOffsetDateTime(attendance.getEnded()));
+    attendee.setStarted(attendance.getStarted() == null ? null : toOffsetDateTime(attendance.getStarted()));
+    attendee.setEnded(attendance.getEnded() == null ? null : toOffsetDateTime(attendance.getEnded()));
     attendee.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
     UserEntityName name = userEntityController.getName(userEntity, true);
     attendee.setFirstName(name.getFirstName());
