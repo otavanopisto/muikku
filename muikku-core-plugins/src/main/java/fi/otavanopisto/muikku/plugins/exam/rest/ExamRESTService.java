@@ -194,7 +194,7 @@ public class ExamRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, userEntityId);
-    if (attendance != null) {
+    if (attendance == null) {
       attendance = examController.createAttendance(workspaceFolderId, userEntityId, true);
     }
     return Response.ok().entity(toRestModel(attendance)).build();
