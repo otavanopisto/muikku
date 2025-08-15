@@ -16085,7 +16085,6 @@ components:
         - formData
         - created
         - published
-        - publishDate
       properties:
         userEntityId:
           description: The id of the student
@@ -16126,9 +16125,6 @@ components:
           format: date-time
           nullable: true
         published:
-          description: Boolean indicating whether the form is published
-          type: boolean
-        publishDate:
           description: The date when the form was published
           type: string
           format: date-time
