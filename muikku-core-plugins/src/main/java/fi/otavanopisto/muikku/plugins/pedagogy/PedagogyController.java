@@ -84,18 +84,14 @@ public class PedagogyController {
 
     // Create form and a history entry about that having happened (doubles as the creator and creation date of the form)
 
-    PedagogyFormImplementedActions form = pedagogyFormImplementedActionsDAO.create(userEntityId, formData);
-
-    return form;
+    return pedagogyFormImplementedActionsDAO.create(userEntityId, formData);
   }
   
   public PedagogyFormImplementedActions updateFormDataImplementedActions(PedagogyFormImplementedActions form, String formData) {
 
     // Form data update
 
-    pedagogyFormImplementedActionsDAO.updateFormData(form, formData);
-
-    return form;
+    return pedagogyFormImplementedActionsDAO.updateFormData(form, formData);
   }
   
   public PedagogyFormImplementedActions findFormImplementedActionsByUserEntityId(Long userEntityId) {
@@ -117,15 +113,22 @@ public class PedagogyController {
     return form;
   }
   
-  public PedagogyForm updatePublished(PedagogyForm form, boolean published, Long modifierId) {
+  public PedagogyForm updatePublished(PedagogyForm form, Long modifierId) {
 
     // Student
     
     UserEntity studentEntity = userEntityController.findUserEntityById(form.getUserEntityId());
+
+    // PublishDate determines whether the form is published. If PublishDate has already been set previously, we need to change it to null so that the form can be set as unpublished.
+    boolean published = form.getPublished() != null;
+    Date date = null;
     
+    if (published == false) {
+      date = new Date();
+    }
+
     // Form data update
-    Date date = new Date();
-    pedagogyFormDAO.updatePublished(form, published, date);
+    pedagogyFormDAO.updatePublished(form, date);
 
     String details;
     SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
@@ -223,10 +226,6 @@ public class PedagogyController {
     List<PedagogyFormHistory> history = pedagogyFormHistoryDAO.listByForm(form);
     history.sort(Comparator.comparing(PedagogyFormHistory::getCreated).reversed());
     return history;
-  }
-  
-  public boolean hasPedagogyForm(Long userEntityId) {
-    return findFormByUserEntityIdAndPublished(userEntityId) != null;
   }
 
   public boolean isPublished(Long userEntityId) {

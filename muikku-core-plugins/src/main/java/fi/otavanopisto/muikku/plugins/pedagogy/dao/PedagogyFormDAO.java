@@ -27,9 +27,8 @@ public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
     return persist(form);
   }
   
-  public PedagogyForm updatePublished(PedagogyForm form, boolean published, Date publishDate) {
+  public PedagogyForm updatePublished(PedagogyForm form, Date published) {
     form.setPublished(published);
-    form.setPublishDate(publishDate);
     return persist(form);
   }
   
@@ -59,7 +58,7 @@ public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(PedagogyForm_.userEntityId), userEntityId),
-        criteriaBuilder.equal(root.get(PedagogyForm_.published), Boolean.TRUE)
+        criteriaBuilder.isNotNull(root.get(PedagogyForm_.published))
       )
     );
 

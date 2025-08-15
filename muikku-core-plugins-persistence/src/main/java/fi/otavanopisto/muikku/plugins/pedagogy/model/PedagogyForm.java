@@ -42,20 +42,12 @@ public class PedagogyForm {
     this.userEntityId = userEntityId;
   }
 
-  public boolean isPublished() {
+  public Date getPublished() {
     return published;
   }
 
-  public void setPublished(boolean published) {
+  public void setPublished(Date published) {
     this.published = published;
-  }
-
-  public Date getPublishDate() {
-    return publishDate;
-  }
-
-  public void setPublishDate(Date publishDate) {
-    this.publishDate = publishDate;
   }
 
   @Id
@@ -71,11 +63,7 @@ public class PedagogyForm {
   @Column(nullable = false)
   private String formData;
   
-  @NotNull
-  @Column(nullable = false)
-  private boolean published;
-  
   @Temporal (value=TemporalType.TIMESTAMP)
-  private Date publishDate;
+  private Date published;
 
 }

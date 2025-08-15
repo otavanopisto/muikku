@@ -70,19 +70,12 @@ public class PedagogyFormRestModel {
     this.userEntityId = userEntityId;
   }
 
-  public Date getPublishDate() {
-    return publishDate;
-  }
 
-  public void setPublishDate(Date publishDate) {
-    this.publishDate = publishDate;
-  }
-
-  public boolean isPublished() {
+  public Date getPublished() {
     return published;
   }
 
-  public void setPublished(boolean published) {
+  public void setPublished(Date published) {
     this.published = published;
   }
 
@@ -94,7 +87,6 @@ public class PedagogyFormRestModel {
   private Map<String, String> ownerInfo;
   private String formData;
   private List<PedagogyFormHistoryRestModel> history;
-  private Date publishDate;
-  private boolean published;
+  private Date published;
 
 }

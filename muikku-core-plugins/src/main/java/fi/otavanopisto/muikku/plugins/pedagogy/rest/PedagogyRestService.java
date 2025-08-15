@@ -190,7 +190,7 @@ public class PedagogyRestService {
       pedagogyController.createViewHistory(form, sessionController.getLoggedUserEntity().getId());
       
       // User registration for websocket
-      pedagogyFormWebSocketMessenger.registerUser(userEntity.defaultSchoolDataIdentifier().toId(), sessionController.getLoggedUserEntity().getId());
+      pedagogyFormWebSocketMessenger.registerUser(studentIdentifier, sessionController.getLoggedUserEntity().getId());
 
       return Response.ok(toRestModel(form)).build();
     }
@@ -235,7 +235,7 @@ public class PedagogyRestService {
     
     // Websocket only if published
     
-    if (form.isPublished()) {
+    if (form.getPublished() != null) {
       pedagogyFormWebSocketMessenger.sendMessage(userEntity.defaultSchoolDataIdentifier().toId(), "pedagogy:pedagogy-form-updated", restModel);
     }
     return Response.ok(restModel).build();
@@ -268,9 +268,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     
     // Form data update
     
-    boolean published = pedagogyController.isPublished(userEntity.getId());
-    
-    form = pedagogyController.updatePublished(form, !published, sessionController.getLoggedUserEntity().getId());
+    form = pedagogyController.updatePublished(form, sessionController.getLoggedUserEntity().getId());
     
     return Response.ok(toRestModel(form)).build();
   }
@@ -329,12 +327,15 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
+    
+    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntity.getId());
 
+    if (form == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Form not found for student %d", studentIdentifier)).build();
+    }
     // User registration for websocket
     pedagogyFormWebSocketMessenger.registerUser(userEntity.defaultSchoolDataIdentifier().toId(), sessionController.getLoggedUserEntity().getId());
 
-    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntity.getId());
-    
     return Response.ok(toRestModel(form, userEntity.getId())).build();
     
   }
@@ -355,12 +356,14 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     
     // Payload validation
     
-    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntity.getId());
-    if (form == null) {
-      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntity.getId())).build();
-    }
     if (StringUtils.isEmpty(payload.getFormData())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing form data").build();
+    }
+    
+    PedagogyFormImplementedActions form = pedagogyController.findFormImplementedActionsByUserEntityId(userEntity.getId());
+    
+    if (form == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("Form for student %d not found", userEntity.getId())).build();
     }
 
     // Access check
@@ -589,9 +592,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     if (form != null) {
       model.setFormData(form.getFormData());
       model.setId(form.getId());
-      model.setPublished(form.isPublished());
-      model.setPublishDate(form.getPublishDate());
-
+      model.setPublished(form.getPublished());
 
       // Form history
 
@@ -715,15 +716,16 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
         }
       }
       
-      // Form is always accessible to admins and special education teachers but also to other related staff,
-      // if the form is not null (and some situations published)
-      
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
-      accessible = isAdmin || specEdTeacher || (studentParent && accessType == PedagogyFormAccessType.READ);
-      if (!accessible && form != null) {
-        if (form.isPublished() || !requirePublished) {
-          accessible = relation.isGuidanceCounselor() || courseTeacher;
-        }
+
+      // Admins and spec ed teachers always have access...
+
+      accessible = isAdmin || specEdTeacher;
+      if (!accessible && form != null && form.getPublished() != null) {
+
+        // ...guidance counselors, course teachers, and guardians can only access published form
+
+        accessible = relation.isGuidanceCounselor() || courseTeacher || (studentParent && accessType == PedagogyFormAccessType.READ);
       }
     }
     return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher, studentParent);

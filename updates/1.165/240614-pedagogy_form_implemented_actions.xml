@@ -6,16 +6,20 @@
       id bigint not null auto_increment,
       formData longtext not null,
       userEntityId bigint not null,
+      published datetime,
       primary key (id)
     );
   </sql>
   <sql>
+    alter table PedagogyFormImplementedActions 
+       add constraint UK40k4bt8ahyy068v4groanpixw unique (userEntityId);
+  </sql>
+  <sql>
+    update PedagogyForm p set published(select max(created) from PedagogyFormHistory 
+    where form_id=p.id and type='EDIT') 
+    where state='ACTIVE' or state='PENDING' or state='APPROVED';
+  </sql>
+  <sql>
     alter table PedagogyForm drop column state;
-  </sql>
-  <sql>
-    alter table PedagogyForm add column published bit(1) not null;
-  </sql>
-  <sql>
-    alter table PedagogyForm add column publishDate datetime;
   </sql>
 </update> 
