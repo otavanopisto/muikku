@@ -20,7 +20,6 @@ const LanguageSample = (props: LanguageSampleProps) => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const { languageProfile } = useSelector((state: StateType) => state);
   const [changed, setChanged] = React.useState<number[]>([]);
-  const [samplesToRemove, setSamplesToRemove] = React.useState<number[]>([]);
   const { languages, samples } = languageProfile.data;
 
   return (
@@ -44,8 +43,6 @@ const LanguageSample = (props: LanguageSampleProps) => {
               key={language.code}
               samples={samples}
               language={language}
-              samplesToRemove={samplesToRemove}
-              setSamplesToRemove={setSamplesToRemove}
               changed={changed}
               setChanged={setChanged}
             />

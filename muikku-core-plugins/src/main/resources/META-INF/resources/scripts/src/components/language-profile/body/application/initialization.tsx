@@ -1,8 +1,5 @@
 import * as React from "react";
-import Wizard, {
-  WizardStep,
-  createWizardSteps,
-} from "~/components/general/wizard";
+import Wizard, { createWizardSteps } from "~/components/general/wizard";
 import { useWizard } from "~/components/general/wizard/hooks/useWizard";
 import { WizardProvider } from "~/components/general/wizard/context/wizard-context";
 import { Step1, Step2, Step3, Step4 } from "./initialization/index";

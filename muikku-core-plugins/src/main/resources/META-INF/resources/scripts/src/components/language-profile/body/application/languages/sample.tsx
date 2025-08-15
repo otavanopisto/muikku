@@ -14,7 +14,6 @@ import { StateType } from "~/reducers";
  */
 interface LanguageSampleProps {
   sample: LanguageProfileSample;
-  taggedForRemoval: boolean;
   onChange: (
     e: React.ChangeEvent<HTMLTextAreaElement>,
     sample: LanguageProfileSample
@@ -29,10 +28,11 @@ interface LanguageSampleProps {
  * @returns JSX.Element
  */
 const Sample = (props: LanguageSampleProps) => {
-  const { sample, taggedForRemoval, onChange } = props;
+  const { sample, onChange } = props;
   const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const { status } = useSelector((state: StateType) => state);
+
   /**
    * RenderMemoizedSample
    * This function returns a memoized component based on the sample type.
@@ -46,7 +46,6 @@ const Sample = (props: LanguageSampleProps) => {
         return (
           <textarea
             id={"sample-" + sample.id}
-            disabled={taggedForRemoval}
             className="language-profile__textarea"
             defaultValue={sample.value || ""}
             onChange={(e) => onChange(e, sample)}
@@ -74,7 +73,7 @@ const Sample = (props: LanguageSampleProps) => {
       default:
         return null;
     }
-  }, [sample, taggedForRemoval, onChange]);
+  }, [sample, onChange]);
 
   /**
    * Handle deletion of a language profile sample.
@@ -85,9 +84,7 @@ const Sample = (props: LanguageSampleProps) => {
   };
 
   return (
-    <div
-      className={`language-profile-container__row language-profile-container__row--sample ${taggedForRemoval ? "language-profile-container__row--sample-tagged-for-removal" : ""}`}
-    >
+    <div className="language-profile-container__row language-profile-container__row--sample">
       {renderMemoizedSample}
       <div className="language-profile__sample-buttons">
         <PromptDialog
@@ -99,12 +96,7 @@ const Sample = (props: LanguageSampleProps) => {
           })}
           onExecute={() => handleDelete(sample.id)}
         >
-          <Button
-            buttonModifiers={
-              taggedForRemoval ? "cancel-sample-removal" : "remove-sample"
-            }
-            icon={taggedForRemoval ? "undo" : "trash"}
-          />
+          <Button icon="trash" />
         </PromptDialog>
       </div>
     </div>

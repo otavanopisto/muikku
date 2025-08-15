@@ -140,9 +140,6 @@ const LanguageComponent = (props: LanguageComponentProps) => {
           <Sample
             key={sample.id}
             sample={sample}
-            taggedForRemoval={samplesToRemove.some(
-              (sampleId) => sampleId === sample.id
-            )}
             onChange={handleFieldChange}
           />
         ))}
