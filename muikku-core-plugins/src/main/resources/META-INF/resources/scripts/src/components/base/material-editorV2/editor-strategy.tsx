@@ -57,26 +57,6 @@ export interface EditorStrategy {
     permissions: EditorPermissions,
     locationPage?: PageLocation
   ): EditorTab[];
-
-  /**
-   * Get editable fields for the editor
-   * @returns Editable fields for the editor
-   */
-  getEditableFields(): string[];
-
-  /**
-   * Get state management for the editor
-   * @returns State management for the editor
-   */
-  getStateManagement(): "redux" | "local" | "hybrid";
-
-  /**
-   * Render content tab for the editor
-   * @param data - Data for the editor
-   * @param onUpdate - Function to update the editor
-   * @returns Content tab for the editor
-   */
-  renderContentTab(data: any, onUpdate: any): React.ReactNode;
 }
 
 /**
@@ -88,9 +68,6 @@ export abstract class BaseEditorStrategy implements EditorStrategy {
     permissions: EditorPermissions,
     locationPage?: PageLocation
   ): EditorTab[];
-  abstract getEditableFields(): string[];
-  abstract getStateManagement(): "redux" | "local" | "hybrid";
-  abstract renderContentTab(data: any, onUpdate: any): React.ReactNode;
 
   /**
    * Check if a tab should be visible based on permissions and state
@@ -198,33 +175,6 @@ export class SectionEditorStrategy extends BaseEditorStrategy {
 
     return tabs;
   }
-
-  /**
-   * Get editable fields for the section editor
-   * @returns Editable fields for the section editor
-   */
-  getEditableFields(): string[] {
-    return ["title", "titleLanguage", "exam"];
-  }
-
-  /**
-   * Get state management for the section editor
-   * @returns State management for the section editor
-   */
-  getStateManagement(): "redux" | "local" | "hybrid" {
-    return "hybrid"; // Uses both Redux and local state
-  }
-
-  /**
-   * Render content tab for the section editor
-   * @param data - Data for the editor
-   * @param onUpdate - Function to update the editor
-   * @returns Content tab for the section editor
-   */
-  renderContentTab(data: any, onUpdate: any): React.ReactNode {
-    // Will be implemented in next step
-    return null;
-  }
 }
 
 /**
@@ -321,33 +271,6 @@ export class MaterialPageEditorStrategy extends BaseEditorStrategy {
     }
 
     return tabs;
-  }
-
-  /**
-   * Get editable fields for the material page editor
-   * @returns Editable fields for the material page editor
-   */
-  getEditableFields(): string[] {
-    return ["title", "html", "assignmentType", "maxPoints", "ai"];
-  }
-
-  /**
-   * Get state management for the material page editor
-   * @returns State management for the material page editor
-   */
-  getStateManagement(): "redux" | "local" | "hybrid" {
-    return "redux"; // Uses only Redux
-  }
-
-  /**
-   * Render content tab for the material page editor
-   * @param data - Data for the editor
-   * @param onUpdate - Function to update the editor
-   * @returns Content tab for the material page editor
-   */
-  renderContentTab(data: any, onUpdate: any): React.ReactNode {
-    // Will be implemented in next step
-    return null;
   }
 }
 
