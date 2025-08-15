@@ -944,7 +944,7 @@ public class WorkspaceMaterialController {
         if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
           boolean showExamFolder = false;
           // Student might be able to see exam folder (although its contents are fetched separately via ExamRESTService)
-          ExamSettings examSettings = examSettingsDAO.findById(currentNode.getId());
+          ExamSettings examSettings = examSettingsDAO.findByWorkspaceFolderId(currentNode.getId());
           if (examSettings != null) {
             ExamSettingsRestModel settingsJson = null;
             if (examSettings != null && !StringUtils.isEmpty(examSettings.getSettings())) {
@@ -969,6 +969,7 @@ public class WorkspaceMaterialController {
           }
           if (showExamFolder) {
             contentNodes.add(createContentNode(currentNode, 0, includeHidden, nextSibling));
+            continue;
           }
           else {
             continue;
@@ -1009,6 +1010,7 @@ public class WorkspaceMaterialController {
   }
 
   private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean includeHidden, WorkspaceNode nextSibling) {
+    // TODO Get rid of flattenWorkspaceNodes method and replace level with a simple boolean of node and its children or just the node itself X(
     switch (rootMaterialNode.getType()) {
     case FOLDER:
       WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
@@ -1018,7 +1020,7 @@ public class WorkspaceMaterialController {
           nextSibling == null ? null : nextSibling.getId(), rootMaterialNode.getHidden(), null,
           workspaceFolder.getPath(), null, Collections.emptyList(), folderViewRestrict, 
           false, workspaceFolder.getLanguage(), null, null, workspaceFolder.getExam());
-      List<WorkspaceNode> children = includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
+      List<WorkspaceNode> children = level == 0 ? Collections.emptyList() : includeHidden ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
           : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
       List<FlattenedWorkspaceNode> flattenedChildren;
       if (level >= FLATTENING_LEVEL) {
