@@ -57,6 +57,10 @@
   }
 }
 
+.tabs__tab-labels--pedagogy-support {
+  display: flex;
+}
+
 .tabs__tab-labels--chat {
   border-bottom: none;
 }
@@ -219,7 +223,8 @@
   }
 }
 
-.tabs__tab-data--guider-student {
+.tabs__tab-data--guider-student,
+.tabs__tab-data--pedagogy-support {
   padding: 10px;
 }
 

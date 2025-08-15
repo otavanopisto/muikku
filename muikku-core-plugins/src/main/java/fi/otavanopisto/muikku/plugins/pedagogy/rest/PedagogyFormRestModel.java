@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
-
 public class PedagogyFormRestModel {
 
   public Date getCreated() {
@@ -22,14 +20,6 @@ public class PedagogyFormRestModel {
 
   public void setFormData(String formData) {
     this.formData = formData;
-  }
-
-  public PedagogyFormState getState() {
-    return state;
-  }
-
-  public void setState(PedagogyFormState state) {
-    this.state = state;
   }
 
   public List<PedagogyFormHistoryRestModel> getHistory() {
@@ -80,6 +70,15 @@ public class PedagogyFormRestModel {
     this.userEntityId = userEntityId;
   }
 
+
+  public Date getPublished() {
+    return published;
+  }
+
+  public void setPublished(Date published) {
+    this.published = published;
+  }
+
   private Long id;
   private Long userEntityId;
   private Map<String, String> studentInfo;
@@ -87,7 +86,7 @@ public class PedagogyFormRestModel {
   private Long ownerId;
   private Map<String, String> ownerInfo;
   private String formData;
-  private PedagogyFormState state;
   private List<PedagogyFormHistoryRestModel> history;
+  private Date published;
 
 }

@@ -65,6 +65,122 @@ const defaultProps = {
 };
 
 /**
+ * SimpleTabs is a simple tabs component that is used to display tabs in a simple way without Swiper.
+ *
+ * @param props Component props
+ * @returns JSX.Element
+ */
+export const SimpleTabs: React.FC<TabsProps> = (props) => {
+  props = { ...defaultProps, ...props };
+
+  const {
+    modifier,
+    renderAllComponents,
+    activeTab,
+    onTabChange,
+    tabs,
+    children,
+  } = props;
+
+  // Get ref callback, to get the ref of the tab buttons for keyboard navigation by index
+  const getRef = useGetRef<HTMLButtonElement>();
+  // Focus index for keyboard navigation
+  const focusRefIndex = React.useRef<number>(0);
+
+  /**
+   * Handles tab click
+   * @param tab tab
+   */
+  const handleTabClick =
+    (tab: Tab) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      onTabChange(tab.id, tab.hash);
+    };
+
+  /**
+   * Handles key down
+   * @param e e
+   */
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault();
+    }
+
+    // Set the previous focused tab to -1
+    getRef(focusRefIndex.current)?.current.setAttribute("tabindex", "-1");
+
+    if (e.key === "ArrowRight") {
+      focusRefIndex.current++;
+
+      // Jump to the first tab if the last tab is focused and the right arrow key is pressed
+      if (focusRefIndex.current >= tabs.length) {
+        focusRefIndex.current = 0;
+      }
+    } else if (e.key === "ArrowLeft") {
+      focusRefIndex.current--;
+
+      // Jump to the last tab if the first tab is focused and the left arrow key is pressed
+      if (focusRefIndex.current < 0) {
+        focusRefIndex.current = tabs.length - 1;
+      }
+    }
+    // Set the new tab to be focusable and focus it
+    getRef(focusRefIndex.current)?.current.setAttribute("tabindex", "0");
+    getRef(focusRefIndex.current)?.current.focus();
+  };
+
+  return (
+    <div className="tabs__tab-data-container swiper-no-swiping">
+      <div
+        role="tablist"
+        className={`tabs__tab-labels ${
+          modifier ? "tabs__tab-labels--" + modifier : ""
+        }`}
+      >
+        {tabs.map((tab, i) => (
+          <button
+            key={tab.id}
+            ref={getRef(i)}
+            id={"tabControl-" + tab.id}
+            aria-controls={"tabPanel-" + tab.id}
+            role="tab"
+            aria-selected={tab.id === activeTab}
+            onClick={handleTabClick(tab)}
+            onKeyDown={handleKeyDown}
+            tabIndex={tab.id === activeTab ? 0 : -1}
+            className={`tabs__tab ${
+              modifier ? "tabs__tab--" + modifier : ""
+            } ${tab.type ? "tabs__tab--" + tab.type : ""} ${
+              tab.id === activeTab ? "active" : ""
+            }`}
+          >
+            {tab.name}
+          </button>
+        ))}
+        {children}
+      </div>
+      <div className="tabs__tab-data-container">
+        {tabs
+          .filter((t) => renderAllComponents || t.id === activeTab)
+          .map((t) => (
+            <div
+              key={t.id}
+              role="tabpanel"
+              id={"tabPanel-" + t.id}
+              aria-labelledby={"tabControl-" + t.id}
+              className={`tabs__tab-data ${
+                t.type ? "tabs__tab-data--" + t.type : ""
+              }  ${t.id === activeTab ? "active" : ""}`}
+            >
+              {t.component}
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+};
+
+/**
  * Tabs
  * @param props Component props
  * @returns JSX.Element
