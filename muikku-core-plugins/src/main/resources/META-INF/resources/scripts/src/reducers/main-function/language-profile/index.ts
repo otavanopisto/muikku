@@ -2,7 +2,7 @@ import { ActionType } from "~/actions";
 import { Reducer } from "redux";
 import { LoadingState, SaveState } from "~/@types/shared";
 import { LanguageData } from "~/@types/shared";
-import { Language, LanguageProfileSample } from "~/generated/client";
+import { LanguageProfileSample } from "~/generated/client";
 import { ALL_LANGUAGE_SUBJECTS } from "~/helper-functions/study-matrix";
 
 export type LanguageLevels =

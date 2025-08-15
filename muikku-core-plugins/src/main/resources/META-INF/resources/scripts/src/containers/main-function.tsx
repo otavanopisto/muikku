@@ -1398,7 +1398,7 @@ export default class MainFunction extends React.Component<
                 render={() => (
                   <ProtectedRoute
                     requireAuth
-                    hasPermission={isActiveUser}
+                    hasPermission={permissions.LANGUAGE_PROFILE_VIEW}
                     isAuthenticated={isAuthenticated}
                   >
                     {this.renderLanguageProfileBody}
