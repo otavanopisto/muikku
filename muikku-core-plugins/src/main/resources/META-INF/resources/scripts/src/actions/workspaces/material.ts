@@ -694,6 +694,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               "titleLanguage",
               "path",
               "viewRestrict",
+              "exam",
             ];
           }
 
@@ -717,7 +718,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               const updatedFolder = await workspaceApi.updateWorkspaceFolder({
                 workspaceId: data.workspace.id,
                 workspaceFolderId: data.material.workspaceMaterialId,
-                body: result,
+                workspaceFolder: result,
               });
 
               newPath = updatedFolder.path;

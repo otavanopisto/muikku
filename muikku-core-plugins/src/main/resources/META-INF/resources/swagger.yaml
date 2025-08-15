@@ -4637,7 +4637,7 @@ paths:
           description: Id of the workspace folder acting as an exam
           required: true
           schema:
-            type: integer 
+            type: integer
       responses:
         "200":
           description: Exam settings
@@ -4656,7 +4656,7 @@ paths:
           description: Id of the workspace folder acting as an exam
           required: true
           schema:
-            type: integer 
+            type: integer
       requestBody:
         $ref: "#/components/requestBodies/WorkspaceExamSettingsUpdateBody"
       responses:
@@ -4666,7 +4666,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ExamSettings"
-  
+
   /rest/workspace/exam/start/{workspaceFolderId}:
     post:
       operationId: startExam
@@ -4679,7 +4679,7 @@ paths:
           description: Id of the workspace folder acting as an exam
           required: true
           schema:
-            type: integer 
+            type: integer
       responses:
         "200":
           description: Exam attendance
@@ -4704,7 +4704,7 @@ paths:
           description: Id of the workspace folder acting as an exam
           required: true
           schema:
-            type: integer 
+            type: integer
       responses:
         "200":
           description: Exam attendance
@@ -4714,7 +4714,7 @@ paths:
                 $ref: "#/components/schemas/ExamAttendance"
         "400":
           description: Attendance not found, i.e. exam never started
-  
+
   /rest/workspace/exam/attendance/{workspaceFolderId}:
     get:
       operationId: getExamAttendance
@@ -4727,7 +4727,7 @@ paths:
           description: Id of the workspace folder acting as an exam
           required: true
           schema:
-            type: integer 
+            type: integer
       responses:
         "200":
           description: Exam attendance
@@ -4735,7 +4735,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ExamAttendance"
-  
+
   /rest/workspace/exam/attendees/{workspaceFolderId}:
     get:
       operationId: getExamAttendees
@@ -4748,7 +4748,7 @@ paths:
           description: Id of the workspace folder acting as an exam
           required: true
           schema:
-            type: integer 
+            type: integer
       responses:
         "200":
           description: Exam attendees
@@ -4779,7 +4779,7 @@ paths:
           description: Id of the user to be added as exam attendee
           required: true
           schema:
-            type: integer 
+            type: integer
       responses:
         "200":
           description: Exam attendance
@@ -4806,7 +4806,7 @@ paths:
           description: Id of the user to be removed as exam attendee
           required: true
           schema:
-            type: integer 
+            type: integer
       responses:
         "204":
           description: Attendee removed
@@ -12157,7 +12157,7 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/ExamSettings"
-    
+
     SignupStudentToWorkspaceRequestBody:
       required: true
       content:
@@ -12604,7 +12604,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/AnyValue"
+            $ref: "#/components/schemas/WorkspaceFolder"
 
     WorkspaceFolderCreateRequestBody:
       required: true
@@ -13734,9 +13734,9 @@ components:
         latestMessage:
           type: string
           nullable: true
-          
+
     #WORKSPACE EXAMS
-    
+
     ExamSettingsRandom:
       type: string
       enum:
@@ -13751,7 +13751,7 @@ components:
         - name
       properties:
         name:
-          description: Category name 
+          description: Category name
           type: string
         workspaceMaterialIds:
           description: List of workspace material ids belonging to this category
@@ -13813,7 +13813,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MaterialContentNode"
-    
+
     ExamAttendee:
       type: object
       description: Exam attendee
@@ -13840,9 +13840,9 @@ components:
         ended:
           description: When the exam was ended (OffSetDateTime format)
           type: string
-    
+
     #COMMON
-    
+
     EducationType:
       type: object
       description: EducationType object
@@ -18311,14 +18311,20 @@ components:
         id:
           type: integer
           format: int64
+        parentId:
+          type: integer
+          format: int64
+        nextSiblingId:
+          type: integer
+          format: int64
         hidden:
           type: boolean
-        orderNumber:
-          type: integer
+        viewRestrict:
+          $ref: "#/components/schemas/MaterialViewRestriction"
         title:
           type: string
-        urlName:
-          type: string
+        titleLanguage:
+          $ref: "#/components/schemas/Language"
         path:
           type: string
         exam:
@@ -18677,4 +18683,3 @@ components:
           format: int32
         message:
           type: string
-

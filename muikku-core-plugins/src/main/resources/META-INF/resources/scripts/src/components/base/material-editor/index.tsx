@@ -331,6 +331,7 @@ class MaterialEditor extends React.Component<
     this.onFilesUpload = this.onFilesUpload.bind(this);
     this.updateHeight = this.updateHeight.bind(this);
     this.refreshAttachments = this.refreshAttachments.bind(this);
+    this.updateExam = this.updateExam.bind(this);
 
     this.state = {
       uploadingValues: [],
@@ -486,6 +487,21 @@ class MaterialEditor extends React.Component<
           e.currentTarget.value !== ""
             ? (e.currentTarget.value as Language)
             : null,
+      },
+      isDraft: true,
+    });
+  }
+
+  /**
+   * updateExam
+   * @param e e
+   */
+  updateExam(e: React.ChangeEvent<HTMLSelectElement>) {
+    this.props.updateWorkspaceMaterialContentNode({
+      workspace: this.props.editorState.currentNodeWorkspace,
+      material: this.props.editorState.currentDraftNodeValue,
+      update: {
+        exam: e.currentTarget.value === "YES",
       },
       isDraft: true,
     });
@@ -899,6 +915,7 @@ class MaterialEditor extends React.Component<
       "titleLanguage",
       "maxPoints",
       "ai",
+      "exam",
     ];
 
     let canPublish = false;
@@ -928,6 +945,7 @@ class MaterialEditor extends React.Component<
       this.props.editorState.currentDraftNodeValue.hidden ||
       (this.props.editorState.parentNodeValue &&
         this.props.editorState.parentNodeValue.hidden);
+
     const hideShowButtonModifiers = [
       "material-editor-show-hide-page",
       "material-editor",
@@ -1157,6 +1175,31 @@ class MaterialEditor extends React.Component<
                             })}
                           </option>
                         ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {this.props.editorState.section && (
+              <div className="material-editor__sub-section">
+                <h3 className="material-editor__sub-title">Koeosio</h3>
+
+                <div className="material-editor__select-locale-container">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <select
+                        className="form-element__select form-element__select--material-editor"
+                        onChange={this.updateExam}
+                        value={
+                          this.props.editorState.currentDraftNodeValue.exam
+                            ? "YES"
+                            : "NO"
+                        }
+                      >
+                        <option value="YES">Kyllä</option>
+                        <option value="NO">Ei</option>
                       </select>
                     </div>
                   </div>

@@ -28,6 +28,8 @@ import {
   WorkspaceSettings,
   StaffMember,
   MaterialAI,
+  ExamSettings,
+  ExamAttendee,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -232,6 +234,10 @@ export interface WorkspaceMaterialEditorType {
   currentNodeValue?: MaterialContentNodeWithIdAndLogic;
   currentDraftNodeValue?: MaterialContentNodeWithIdAndLogic;
   parentNodeValue?: MaterialContentNodeWithIdAndLogic;
+  currentNodeExamSettings?: ExamSettings;
+  currentNodeExamSettingsDraft?: ExamSettings;
+  currentNodeExamAttendees?: ExamAttendee[];
+  currentNodeExamAttendeesDraft?: ExamAttendee[];
   section: boolean;
   opened: boolean;
   canDelete: boolean;
@@ -365,6 +371,10 @@ const initialWorkspacesState: WorkspacesState = {
     currentNodeValue: null,
     currentDraftNodeValue: null,
     parentNodeValue: null,
+    currentNodeExamSettings: null,
+    currentNodeExamSettingsDraft: null,
+    currentNodeExamAttendees: null,
+    currentNodeExamAttendeesDraft: null,
     section: false,
     opened: false,
     canDelete: true,
