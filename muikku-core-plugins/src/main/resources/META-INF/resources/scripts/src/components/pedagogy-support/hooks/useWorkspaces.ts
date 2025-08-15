@@ -9,11 +9,11 @@ const pedagogyApi = MApi.getPedagogyApi();
 
 /**
  * useWorkspaces
- * @param userEntityId userEntityId
+ * @param studentIdentifier studentIdentifier
  * @param displayNotification displayNotification
  */
 export const useWorkspaces = (
-  userEntityId: number,
+  studentIdentifier: string,
   displayNotification: DisplayNotificationTriggerType
 ) => {
   const [textInput, setTextInput] = React.useState<string>("");
@@ -32,7 +32,7 @@ export const useWorkspaces = (
 
       try {
         const workspaces = (await pedagogyApi.getPedagogyFormWorkspaces({
-          userEntityId: userEntityId,
+          studentIdentifier,
           q: textInput,
           maxResults: 20,
         })) as PedagogyWorkspace[];
@@ -51,7 +51,7 @@ export const useWorkspaces = (
     };
 
     loadWorkspaces();
-  }, [textInput, displayNotification, userEntityId]);
+  }, [textInput, displayNotification, studentIdentifier]);
 
   /**
    * handleTextInput

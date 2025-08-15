@@ -6,7 +6,6 @@ import { useWizard } from "~/components/general/wizard/hooks/useWizard";
 import { AnimatePresence } from "framer-motion";
 import { WizardProvider } from "~/components/general/wizard/context/wizard-context";
 import "~/sass/elements/pedagogy.scss";
-import { UserRole } from "~/@types/pedagogy-form";
 import { useTranslation } from "react-i18next";
 import PedagogyFormWizardHeader from "../components/pedagogy-form-wizard-header";
 import PedagogyFormWizardFooter from "../components/pedagogy-form-wizard-footer";
@@ -17,10 +16,7 @@ import { useCompulsoryForm } from "../hooks/useCompulsoryForm";
 /**
  * The props for the UpperSecondaryPedagogicalSupportForm component.
  */
-interface CompulsoryPedagogicalSupportWizardFormmProps {
-  userRole: UserRole;
-  studentUserEntityId: number;
-}
+interface CompulsoryPedagogicalSupportWizardFormmProps {}
 
 /**
  * Creates a new UpperSecondaryPedagogicalSupportForm component.
@@ -34,7 +30,7 @@ const CompulsoryPedagogicalSupportWizardForm = (
   const { t } = useTranslation(["pedagogySupportPlan"]);
   const status = useSelector((state: StateType) => state.status);
 
-  const { loading, pedagogyForm } = useCompulsoryForm();
+  const { loading } = useCompulsoryForm();
 
   const previousStep = React.useRef<number>(0);
 
@@ -106,7 +102,7 @@ const CompulsoryPedagogicalSupportWizardForm = (
         ) : null}
 
         <div className="pedagogy-form__container">
-          {pedagogyForm && pedagogyForm.state === "INACTIVE" ? (
+          {/* {pedagogyForm && pedagogyForm.state === "INACTIVE" ? (
             <OverlayComponent>
               <div className="pedagogy-form__overlay-content">
                 {props.userRole === "STUDENT" ? (
@@ -123,7 +119,7 @@ const CompulsoryPedagogicalSupportWizardForm = (
                 )}
               </div>
             </OverlayComponent>
-          ) : null}
+          ) : null} */}
 
           <Wizard
             modifiers={["pedagogy-form"]}

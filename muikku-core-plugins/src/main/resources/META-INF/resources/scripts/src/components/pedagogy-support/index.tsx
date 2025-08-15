@@ -3,7 +3,7 @@ import { SimpleTabs, Tab } from "~/components/general/tabs";
 import { UserRole } from "~/@types/pedagogy-form";
 import PedagogicalSupportForm from "./pedagogical-support-form";
 import { PedagogyProvider } from "~/components/pedagogy-support/context/pedagogy-context";
-import { usePedagogy } from "~/components/pedagogy-support/hooks/usePedagogy";
+//import { usePedagogy } from "~/components/pedagogy-support/hooks/usePedagogy";
 import {
   UPPERSECONDARY_PEDAGOGYFORM,
   COMPULSORY_PEDAGOGYFORM,
@@ -12,13 +12,14 @@ import PedagogyToolbar from "./components/pedagogy-toolbar";
 import PedagogyPDFUpperSecondary from "./pedagogy-PDF-uppersecondary";
 import PedagogyPDFCompulsory from "./pedagogy-PDF-compulsory";
 import ImplementedSupportActions from "./implemented-support-form";
+import { usePedagogyRedux } from "./hooks/usePedagogyRedux";
 
 /**
  * LearningSupportProps
  */
 interface PedagogySupportProps {
   userRole: UserRole;
-  studentUserEntityId: number;
+  studentIdentifier: string;
   studyProgrammeName: string;
   /**
    * Optional access information that affects the visibility of the pedagogy form tab
@@ -38,7 +39,7 @@ interface PedagogySupportProps {
  * @returns JSX.Element
  */
 const PedagogySupport = (props: PedagogySupportProps) => {
-  const { isFormAccessible = false } = props;
+  const { isFormAccessible = false, studentIdentifier } = props;
 
   // Check if user's study programme is eligible for pedagogy form
   const isEligibleForUpperSecondary = UPPERSECONDARY_PEDAGOGYFORM.includes(
@@ -59,8 +60,8 @@ const PedagogySupport = (props: PedagogySupportProps) => {
     "IMPLEMENTED_ACTIONS"
   );
   const [showPDF, setShowPDF] = React.useState(false);
-  const usePedagogyValues = usePedagogy(
-    props.studentUserEntityId,
+  const usePedagogyValues = usePedagogyRedux(
+    studentIdentifier,
     isUppersecondary,
     isFormAccessible
   );
@@ -132,13 +133,7 @@ const PedagogySupport = (props: PedagogySupportProps) => {
       id: "PEDAGOGY_FORM",
       name: "Pedagogisen tuen lomake",
       type: "pedagogy-support",
-      component: (
-        <PedagogicalSupportForm
-          userRole={props.userRole}
-          studentUserEntityId={props.studentUserEntityId}
-          isUppersecondary={isUppersecondary}
-        />
-      ),
+      component: <PedagogicalSupportForm isUppersecondary={isUppersecondary} />,
     });
   }
 

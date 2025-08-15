@@ -166,7 +166,7 @@ class StudiesApplication extends React.Component<
       },
       {
         id: "PEDAGOGY_FORM",
-        name: "Oppimisen tuki",
+        name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
         hash: "pedagogy-form",
         type: "pedagogy-form",
         component: (
@@ -174,7 +174,7 @@ class StudiesApplication extends React.Component<
             <PedagogySupport
               userRole="STUDENT"
               isFormAccessible={true}
-              studentUserEntityId={this.props.status.userId}
+              studentIdentifier={this.props.status.userSchoolDataIdentifier}
               studyProgrammeName={this.props.status.profile.studyProgrammeName}
             />
           </ApplicationPanelBody>

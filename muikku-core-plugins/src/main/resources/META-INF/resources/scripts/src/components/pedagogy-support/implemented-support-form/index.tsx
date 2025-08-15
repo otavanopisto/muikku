@@ -30,7 +30,7 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
   const status = useSelector((state: StateType) => state.status);
   const {
     implemetedSupportActionsFormData,
-    setImplemetedSupportActionsFormData,
+    updateImplemetedSupportActionsFormData,
     editIsActive,
   } = usePedagogyContext();
 
@@ -38,8 +38,8 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
    * Handles adding new support action
    */
   const handleAddNewSupportAction = () => {
-    setImplemetedSupportActionsFormData((prev) => [
-      ...prev,
+    updateImplemetedSupportActionsFormData([
+      ...implemetedSupportActionsFormData,
       {
         creatorIdentifier: status.userSchoolDataIdentifier,
         creatorName: status.profile.displayName,
@@ -54,8 +54,8 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
    * @param index index of the action to remove
    */
   const handleRemoveSupportAction = (index: number) => {
-    setImplemetedSupportActionsFormData((prev) =>
-      prev.filter((_, i) => i !== index)
+    updateImplemetedSupportActionsFormData(
+      implemetedSupportActionsFormData.filter((_, i) => i !== index)
     );
   };
 
@@ -72,8 +72,10 @@ const ImplementedSupportActions: React.FC<ImplementedSupportActionsProps> = (
     key: T,
     value: PedagogySupportActionImplemented[T]
   ) => {
-    setImplemetedSupportActionsFormData((prev) =>
-      prev.map((a, i) => (i === index ? { ...a, [key]: value } : a))
+    updateImplemetedSupportActionsFormData(
+      implemetedSupportActionsFormData.map((a, i) =>
+        i === index ? { ...a, [key]: value } : a
+      )
     );
   };
 

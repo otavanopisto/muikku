@@ -29,7 +29,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     userRole,
     editIsActive,
     formData,
-    setPedagogyFormDataAndUpdateChangedFields,
+    updatePedagogyFormDataAndUpdateChangedFields,
   } = useCompulsoryForm();
 
   /**
@@ -46,7 +46,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
     updatedFormData[key] = value;
 
-    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
+    updatePedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   /**
@@ -67,7 +67,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
       updatedFormData.supportActionOther = undefined;
     }
 
-    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
+    updatePedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   return (

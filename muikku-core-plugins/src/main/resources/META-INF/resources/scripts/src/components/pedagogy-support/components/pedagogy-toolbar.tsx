@@ -29,9 +29,9 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
     loading,
     changedFields,
     editIsActive,
-    setEditIsActive,
-    resetPedagogyData,
-    setPedagogyFormExtraDetails,
+    editingDisabled,
+    toggleEditIsActive,
+    updatePedagogyFormExtraDetails,
     saveAllData,
     userRole,
     activatePedagogyForm,
@@ -50,7 +50,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
   /**
    * Handle edit click. Toggles editIsActive state.
    */
-  const handleEditClick = () => setEditIsActive(!editIsActive);
+  const handleEditClick = () => toggleEditIsActive(!editIsActive);
 
   /**
    * Handle extra details change
@@ -59,7 +59,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
    */
   const handleExtraDetailsChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => setPedagogyFormExtraDetails(e.target.value);
+  ) => updatePedagogyFormExtraDetails(e.target.value);
 
   /**
    * Handle save with extra details click. Updates all data to server.
@@ -70,7 +70,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
    * Handle cancel save with extra details click. Resets extra details.
    */
   const handleCancelSaveWithExtraDetailsClick = () =>
-    setPedagogyFormExtraDetails("");
+    updatePedagogyFormExtraDetails("");
 
   // If user role is STUDENT or STUDENT_PARENT, don't show the toolbar
   if (userRole === "STUDENT" || userRole === "STUDENT_PARENT") {
@@ -85,7 +85,7 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
           <>
             {toolbarLogic.hasAnyChanges ? (
               <WarningDialog
-                onApproveClick={resetPedagogyData}
+                onApproveClick={handleEditClick}
                 title={t("labels.unsavedWarning", {
                   ns: "pedagogySupportPlan",
                 })}
@@ -136,14 +136,15 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
           <Button
             buttonModifiers={["fatal", "standard-ok"]}
             onClick={handleEditClick}
+            disabled={editingDisabled}
           >
             {t("actions.edit", { ns: "common" })}
           </Button>
         )}
       </div>
 
-      {toolbarLogic.canTogglePDF ? (
-        <div className="pedagogy-form__toolbar-secondary">
+      <div className="pedagogy-form__toolbar-secondary">
+        {toolbarLogic.canTogglePDF ? (
           <Button
             buttonModifiers={["info"]}
             disabled={loading}
@@ -153,32 +154,30 @@ const PedagogyToolbar = (props: PedagogyToolbarProps) => {
               ? t("actions.closePDF", { ns: "common" })
               : t("actions.openPDF", { ns: "common" })}
           </Button>
-        </div>
-      ) : null}
+        ) : null}
 
-      {toolbarLogic.canActivateForm && (
-        <div className="pedagogy-form__toolbar-secondary">
+        {toolbarLogic.canActivateForm && (
           <Button buttonModifiers={["success"]} onClick={activatePedagogyForm}>
             {t("actions.activate", { ns: "common" })}
           </Button>
-        </div>
-      )}
+        )}
 
-      {toolbarLogic.canTogglePublishForm && pedagogyForm && (
-        <Button
-          buttonModifiers={["execute"]}
-          disabled={editIsActive}
-          onClick={togglePublishPedagogyForm}
-        >
-          {pedagogyForm.published
-            ? t("actions.unpublish", {
-                ns: "pedagogySupportPlan",
-              })
-            : t("actions.publish", {
-                ns: "pedagogySupportPlan",
-              })}
-        </Button>
-      )}
+        {toolbarLogic.canTogglePublishForm && pedagogyForm && (
+          <Button
+            buttonModifiers={["execute"]}
+            disabled={editIsActive}
+            onClick={togglePublishPedagogyForm}
+          >
+            {pedagogyForm.published
+              ? t("actions.unpublish", {
+                  ns: "pedagogySupportPlan",
+                })
+              : t("actions.publish", {
+                  ns: "pedagogySupportPlan",
+                })}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
@@ -197,6 +196,7 @@ export const usePedagogyToolbarLogic = () => {
     userRole,
     implementedActionsHaveChanged,
     pedagogyFormExists,
+    editingDisabled,
   } = usePedagogyValues;
 
   const toolbarLogic = useMemo(() => {
@@ -220,6 +220,7 @@ export const usePedagogyToolbarLogic = () => {
       hasMainFormChanges,
       hasAnyChanges: hasMainFormChanges || implementedActionsHaveChanged,
       shouldShowSaveWithExtraDetails: pedagogyFormExists && hasMainFormChanges,
+      editingDisabled,
     };
   }, [
     userRole,
@@ -227,6 +228,7 @@ export const usePedagogyToolbarLogic = () => {
     editIsActive,
     changedFields.length,
     implementedActionsHaveChanged,
+    editingDisabled,
   ]);
 
   return {

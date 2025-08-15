@@ -1,5 +1,7 @@
 import {
   CompulsoryFormData,
+  isCompulsoryForm,
+  isUpperSecondaryForm,
   PedagogyFormData,
   PedagogySupportActionImplemented,
   SupportAction,
@@ -10,6 +12,7 @@ import {
 import { PedagogyUserInfo } from "~/generated/client";
 import { OptionDefault } from "~/components/general/react-select/types";
 import i18n from "~/locales/i18n";
+import _ from "lodash";
 
 // Visibility settings which study programmes have access to the form
 export const UPPERSECONDARY_PEDAGOGYFORM = [
@@ -442,3 +445,73 @@ export function initializeImplemetedSupportActionsFormData(
 
   return existingDataForm;
 }
+
+/**
+ * Get the edited fields
+ * @param oldData old pedagogyForm
+ * @param newData new pedagogyForm
+ * @returns string[]
+ */
+export const getEditedFields = (
+  oldData: PedagogyFormData,
+  newData: PedagogyFormData
+) => {
+  let changedValuesComparedToPrevious: string[] = [];
+
+  // Check if the form type has changed
+  if (isCompulsoryForm(oldData) && isCompulsoryForm(newData)) {
+    changedValuesComparedToPrevious = Object.keys(newData).filter(
+      (key: keyof CompulsoryFormData) => {
+        if (typeof oldData[key] !== "object") {
+          return oldData[key] !== newData[key];
+        }
+      }
+    );
+
+    const hasStudentOpinionChanged = !_.isEqual(
+      newData.studentOpinionOfSupport,
+      oldData.studentOpinionOfSupport
+    );
+
+    if (hasStudentOpinionChanged) {
+      changedValuesComparedToPrevious.push("studentOpinionOfSupport");
+    }
+
+    const hasSchoolOpinionChanged = !_.isEqual(
+      newData.schoolOpinionOfSupport,
+      oldData.schoolOpinionOfSupport
+    );
+
+    if (hasSchoolOpinionChanged) {
+      changedValuesComparedToPrevious.push("schoolOpinionOfSupport");
+    }
+  } else if (isUpperSecondaryForm(oldData) && isUpperSecondaryForm(newData)) {
+    changedValuesComparedToPrevious = Object.keys(newData).filter(
+      (key: keyof UpperSecondaryFormData) => {
+        if (typeof oldData[key] !== "object") {
+          return oldData[key] !== newData[key];
+        }
+      }
+    );
+
+    const hasStudentOpinionChanged = !_.isEqual(
+      newData.studentOpinionOfSupport,
+      oldData.studentOpinionOfSupport
+    );
+
+    if (hasStudentOpinionChanged) {
+      changedValuesComparedToPrevious.push("studentOpinionOfSupport");
+    }
+
+    const hasSchoolOpinionChanged = !_.isEqual(
+      newData.schoolOpinionOfSupport,
+      oldData.schoolOpinionOfSupport
+    );
+
+    if (hasSchoolOpinionChanged) {
+      changedValuesComparedToPrevious.push("schoolOpinionOfSupport");
+    }
+  }
+
+  return changedValuesComparedToPrevious;
+};

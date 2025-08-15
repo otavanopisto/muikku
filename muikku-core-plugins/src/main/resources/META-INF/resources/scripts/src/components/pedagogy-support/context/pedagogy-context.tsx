@@ -5,12 +5,12 @@ import {
   isUpperSecondaryForm,
   UpperSecondaryFormData,
 } from "~/@types/pedagogy-form";
-import { UsePedagogyType } from "../hooks/usePedagogy";
+import { UsePedagogyReduxType } from "../hooks/usePedagogyRedux";
 
 /**
  * PedagogyContextValue
  */
-interface PedagogyContextValue extends UsePedagogyType {
+interface PedagogyContextValue extends UsePedagogyReduxType {
   userRole?:
     | "STUDENT"
     | "COURSE_TEACHER"

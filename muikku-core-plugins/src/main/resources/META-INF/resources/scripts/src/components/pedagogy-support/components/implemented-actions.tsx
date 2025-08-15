@@ -53,7 +53,7 @@ export const ImplementedActionsListItem: React.FC<
   ImplementedActionsListItemProps
 > = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
-  const { userRole, editIsActive, studentUserEntityId, isUppersecondary } =
+  const { userRole, editIsActive, studentIdentifier, isUppersecondary } =
     usePedagogyContext();
 
   const {
@@ -71,9 +71,6 @@ export const ImplementedActionsListItem: React.FC<
   const supportActionsOptions = isUppersecondary
     ? [...supportActionsOptionsUppersecondary]
     : [...supportActionsOptionsCompulsory];
-
-  // Pop the last element from the array, as it is the "other" option which is not used here
-  supportActionsOptions.pop();
 
   return (
     <div className="hops-container__section">
@@ -134,7 +131,7 @@ export const ImplementedActionsListItem: React.FC<
           </label>
           <WorkspaceSelect
             id="implemenetedSupportActionCourse"
-            userEntityId={studentUserEntityId}
+            studentIdentifier={studentIdentifier}
             onChange={(option) => {
               onActionChange(index, "course", option?.value || undefined);
             }}

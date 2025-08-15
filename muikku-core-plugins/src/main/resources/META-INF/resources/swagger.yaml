@@ -7233,7 +7233,7 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
-  
+
   /rest/pedagogy/form/student/{studentIdentifier}/lock:
     get:
       operationId: getStudentPedagogyFormLock
@@ -7313,7 +7313,7 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/pedagogy/form/{userEntityId}/workspaces:
+  /rest/pedagogy/form/{studentIdentifier}/workspaces:
     get:
       operationId: getPedagogyFormWorkspaces
       summary: Get list of student workspaces
@@ -7321,13 +7321,12 @@ paths:
       tags:
         - Pedagogy
       parameters:
-        - name: userEntityId
+        - name: studentIdentifier
           in: path
           description: Student user entity id
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
         - name: q
           in: query
           description: query string
@@ -12061,7 +12060,7 @@ components:
             properties:
               formData:
                 type: string
-    
+
     PedagogyFormUpdateLockRequestBody:
       required: true
       content:
@@ -15967,7 +15966,7 @@ components:
           type: boolean
         studentParent:
           type: boolean
-    
+
     PedagogyFormLocked:
       type: object
       description: Gives information about whether the pedagogy form is locked and who locked it.

@@ -26,7 +26,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
     editIsActive,
     formData,
     pedagogyForm,
-    setPedagogyFormDataAndUpdateChangedFields,
+    updatePedagogyFormDataAndUpdateChangedFields,
   } = useCompulsoryForm();
 
   /**
@@ -43,7 +43,7 @@ const DocumentInformation: React.FC<DocumentInformationProps> = (props) => {
 
     updatedFormData[key] = value;
 
-    setPedagogyFormDataAndUpdateChangedFields(updatedFormData);
+    updatePedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
   const ownerNameWithPhone = pedagogyForm
