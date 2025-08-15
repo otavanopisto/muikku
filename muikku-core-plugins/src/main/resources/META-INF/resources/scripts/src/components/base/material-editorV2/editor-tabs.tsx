@@ -44,6 +44,7 @@ import { ExamSettingsRandom } from "~/generated/client";
 import _ from "lodash";
 import Select from "react-select";
 import useExamAttendees from "./hooks/useExamAttendees";
+import { ExamCategories } from "./exam-categories";
 
 /**
  * Editor tab props
@@ -483,12 +484,11 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
       </div>
 
       <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">Kokeen ajastus</h3>
+        <h3 className="material-editor__sub-title">Kesto (minuutteina):</h3>
 
         <div className="material-editor__select-locale-container">
           <div className="form__row">
             <div className="form-element">
-              <label htmlFor="duration">Kesto (minuutteina):</label>
               <NumericFormat
                 id="duration"
                 className="form-element__input form-element__input--material-editor"
@@ -506,15 +506,10 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
       </div>
 
       <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">Kokeen käyttöoikeudet</h3>
-
+        <h3 className="material-editor__sub-title">Salli useat yritykset</h3>
         <div className="material-editor__select-locale-container">
           <div className="form__row">
             <div className="form-element">
-              <label htmlFor="allowMultipleAttempts">
-                Salli useita yrityksiä
-              </label>
-
               <select
                 className="form-element__select form-element__select--material-editor"
                 disabled={loading}
@@ -533,6 +528,46 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
               </select>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="material-editor__sub-section">
+        <h3 className="material-editor__sub-title">Avoin kaikille</h3>
+        <div className="material-editor__select-locale-container">
+          <div className="form__row">
+            <div className="form-element">
+              <select
+                className="form-element__select form-element__select--material-editor"
+                disabled={loading}
+                value={
+                  updatedExamSettings?.allowMultipleAttempts ? "YES" : "NO"
+                }
+                onChange={(e) =>
+                  handleExamSettingsChange(
+                    "openForAll",
+                    e.target.value === "YES"
+                  )
+                }
+              >
+                <option value="YES">Kyllä</option>
+                <option value="NO">Ei</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="material-editor__sub-section">
+        <h3 className="material-editor__sub-title">Kokeen kategoriat</h3>
+
+        <div className="material-editor__select-locale-container">
+          <ExamCategories
+            categories={updatedExamSettings?.categories || []}
+            onUpdate={(categories) =>
+              handleExamSettingsChange("categories", categories)
+            }
+            disabled={loading}
+          />
         </div>
       </div>
     </div>
