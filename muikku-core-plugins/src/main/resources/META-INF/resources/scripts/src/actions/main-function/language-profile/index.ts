@@ -288,9 +288,12 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
         const data = await LanguageProfileApi.getLanguageProfile({
           userEntityId,
         });
+
+        const languageProfileData = data && JSON.parse(data.formData);
+
         dispatch({
           type: "UPDATE_LANGUAGE_PROFILE_VALUES",
-          payload: JSON.parse(data.formData) as LanguageProfileData,
+          payload: languageProfileData as LanguageProfileData,
         });
         dispatch({
           type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
