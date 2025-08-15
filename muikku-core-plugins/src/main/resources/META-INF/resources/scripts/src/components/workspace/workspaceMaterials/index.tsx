@@ -1,7 +1,6 @@
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import Materials from "./materials";
-//import MaterialEditor from "~/components/base/material-editor";
 import SignupDialog from "~/components/coursepicker/dialogs/workspace-signup";
 import TableOfContentsComponent from "./content";
 import EnrollmentDialog from "../enrollment-dialog";
@@ -161,7 +160,6 @@ class WorkspaceMaterialsBody extends SessionStateComponent<
           isOpen={this.props.signupDialogOpen}
           onClose={this.props.onCloseSignupDialog}
         />
-        {/* <MaterialEditor locationPage="Materials" /> */}
         <MaterialEditorV2 />
         <Materials
           navigation={navigationComponent}

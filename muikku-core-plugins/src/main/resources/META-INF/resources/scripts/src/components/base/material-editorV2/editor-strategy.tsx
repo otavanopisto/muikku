@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
+import { PageLocation } from "~/@types/shared";
 import {
   AttachmentsTab,
   ExamAttendeesTab,
@@ -51,7 +52,11 @@ export interface EditorStrategy {
    * @param permissions - Permissions for the editor
    * @returns Tabs for the editor
    */
-  getTabs(examEnabled: boolean, permissions: EditorPermissions): EditorTab[];
+  getTabs(
+    examEnabled: boolean,
+    permissions: EditorPermissions,
+    locationPage?: PageLocation
+  ): EditorTab[];
 
   /**
    * Get editable fields for the editor
@@ -80,7 +85,8 @@ export interface EditorStrategy {
 export abstract class BaseEditorStrategy implements EditorStrategy {
   abstract getTabs(
     examEnabled: boolean,
-    permissions: EditorPermissions
+    permissions: EditorPermissions,
+    locationPage?: PageLocation
   ): EditorTab[];
   abstract getEditableFields(): string[];
   abstract getStateManagement(): "redux" | "local" | "hybrid";
@@ -256,9 +262,14 @@ export class MaterialPageEditorStrategy extends BaseEditorStrategy {
    * Get tabs for the material page editor
    * @param examEnabled - Whether exam is enabled
    * @param permissions - Permissions for the editor
+   * @param locationPage - Location page
    * @returns Tabs for the material page editor
    */
-  getTabs(examEnabled: boolean, permissions: EditorPermissions): EditorTab[] {
+  getTabs(
+    examEnabled: boolean,
+    permissions: EditorPermissions,
+    locationPage?: PageLocation
+  ): EditorTab[] {
     const tabs: EditorTab[] = [
       {
         id: "content",
@@ -268,6 +279,7 @@ export class MaterialPageEditorStrategy extends BaseEditorStrategy {
           <MaterialContentTab
             editorPermissions={permissions}
             examEnabled={examEnabled}
+            locationPage={locationPage}
           />
         ),
         stateManagement: "redux",

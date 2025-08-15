@@ -14,11 +14,14 @@ import ConfirmPublishPageWithLinkedMaterialDialog from "../material-editor/confi
 import ConfirmRemovePageWithAnswersDialog from "../material-editor/confirm-remove-page-with-answers-dialog";
 import ConfirmPublishRemovePageWithLinkedAnswersDialog from "../material-editor/confirm-remove-page-with-linked-answers-dialog";
 import { getEditorStrategy } from "./editor-strategy";
+import { PageLocation } from "~/@types/shared";
 
 /**
  * Props for the new material editor
  */
-interface MaterialEditorV2Props {}
+interface MaterialEditorV2Props {
+  locationPage?: PageLocation;
+}
 
 /**
  * New Material Editor V2 component
@@ -48,21 +51,25 @@ export const MaterialEditorV2: React.FC<MaterialEditorV2Props> = (props) => {
   );
 
   // Get tabs from strategy
-  const editorTabs = strategy.getTabs(examEnabled, {
-    canSetLicense: editorState.canSetLicense,
-    canSetProducers: editorState.canSetProducers,
-    canAddAttachments: editorState.canAddAttachments,
-    canDelete: editorState.canDelete,
-    canRevert: editorState.canRevert,
-    canPublish: editorState.canPublish,
-    canChangeExerciseType: editorState.canChangeExerciseType,
-    canChangePageType: editorState.canChangePageType,
-    canCopy: editorState.canCopy,
-    canRestrictView: editorState.canRestrictView,
-    canEditContent: editorState.canEditContent,
-    canSetTitle: editorState.canSetTitle,
-    canHide: editorState.canHide,
-  });
+  const editorTabs = strategy.getTabs(
+    examEnabled,
+    {
+      canSetLicense: editorState.canSetLicense,
+      canSetProducers: editorState.canSetProducers,
+      canAddAttachments: editorState.canAddAttachments,
+      canDelete: editorState.canDelete,
+      canRevert: editorState.canRevert,
+      canPublish: editorState.canPublish,
+      canChangeExerciseType: editorState.canChangeExerciseType,
+      canChangePageType: editorState.canChangePageType,
+      canCopy: editorState.canCopy,
+      canRestrictView: editorState.canRestrictView,
+      canEditContent: editorState.canEditContent,
+      canSetTitle: editorState.canSetTitle,
+      canHide: editorState.canHide,
+    },
+    props.locationPage
+  );
 
   /**
    * Handle tab change

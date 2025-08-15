@@ -37,7 +37,7 @@ import {
   setWorkspaceMaterialEditorState,
   updateWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
-import { UploadingValue } from "~/@types/shared";
+import { PageLocation, UploadingValue } from "~/@types/shared";
 import ConfirmRemoveAttachment from "../material-editor/confirm-remove-attachment";
 import useExamSettings from "./hooks/useExamSettings";
 import { ExamSettingsRandom } from "~/generated/client";
@@ -56,10 +56,7 @@ interface EditorTabProps {
 /**
  * Section content tab props
  */
-interface SectionContentTabProps extends EditorTabProps {
-  data?: any;
-  onUpdate?: any;
-}
+interface SectionContentTabProps extends EditorTabProps {}
 
 /**
  * Simple content tab component for sections
@@ -206,8 +203,7 @@ export const SectionContentTab = (props: SectionContentTabProps) => {
  * Material content tab props
  */
 interface MaterialContentTabProps extends EditorTabProps {
-  data?: any;
-  onUpdate?: any;
+  locationPage?: PageLocation;
 }
 
 /**
@@ -217,6 +213,8 @@ interface MaterialContentTabProps extends EditorTabProps {
  */
 export const MaterialContentTab = (props: MaterialContentTabProps) => {
   const [height, setHeight] = React.useState(0);
+
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
 
@@ -251,6 +249,28 @@ export const MaterialContentTab = (props: MaterialContentTabProps) => {
         workspace: editorState.currentNodeWorkspace,
         material: editorState.currentDraftNodeValue,
         update: { title: e.target.value },
+        isDraft: true,
+      })
+    );
+  };
+
+  /**
+   * Handles title language change
+   * @param e e
+   */
+  const handleTitleLanguageChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    dispatch(
+      updateWorkspaceMaterialContentNode({
+        workspace: editorState.currentNodeWorkspace,
+        material: editorState.currentDraftNodeValue,
+        update: {
+          titleLanguage:
+            e.currentTarget.value !== ""
+              ? (e.currentTarget.value as Language)
+              : null,
+        },
         isDraft: true,
       })
     );
@@ -310,6 +330,37 @@ export const MaterialContentTab = (props: MaterialContentTabProps) => {
         </div>
       )}
 
+      {props?.locationPage === "Home" && (
+        <div className="material-editor__sub-section">
+          <h3 className="material-editor__sub-title">{t("labels.language")}</h3>
+          <div className="material-editor__select-locale-container">
+            <div className="form__row">
+              <div className="form-element">
+                <select
+                  className="form-element__select form-element__select--material-editor"
+                  onChange={handleTitleLanguageChange}
+                  value={editorState.currentDraftNodeValue.titleLanguage || ""}
+                >
+                  <option value="">
+                    {t("labels.inherited", {
+                      ns: "workspace",
+                    })}
+                  </option>
+                  {languageOptions.map((language: string) => (
+                    <option key={language} value={language}>
+                      {t("labels.language", {
+                        context: language,
+                        ns: "workspace",
+                      })}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div
         id="materialEditorContainer"
         className="material-editor__editor-container"
@@ -336,10 +387,7 @@ export const MaterialContentTab = (props: MaterialContentTabProps) => {
 /**
  * Exam settings tab props
  */
-interface ExamSettingsTabProps extends EditorTabProps {
-  data?: any;
-  onUpdate?: any;
-}
+interface ExamSettingsTabProps extends EditorTabProps {}
 
 /**
  * Simple exam settings tab component
@@ -494,10 +542,7 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
 /**
  * Exam attendees tab props
  */
-interface ExamAttendeesTabProps extends EditorTabProps {
-  data?: any;
-  onUpdate?: any;
-}
+interface ExamAttendeesTabProps extends EditorTabProps {}
 
 /**
  * Simple exam attendees tab component
@@ -601,10 +646,7 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
 /**
  * Metadata tab props
  */
-interface MetadataTabProps extends EditorTabProps {
-  data?: any;
-  onUpdate?: any;
-}
+interface MetadataTabProps extends EditorTabProps {}
 
 /**
  * Simple metadata tab component for materials
@@ -880,10 +922,7 @@ export const MetadataTab = (props: MetadataTabProps) => {
 /**
  * Attachments tab props
  */
-interface AttachmentsTabProps extends EditorTabProps {
-  data?: any;
-  onUpdate?: any;
-}
+interface AttachmentsTabProps extends EditorTabProps {}
 
 /**
  * Simple attachments tab component for materials

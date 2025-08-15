@@ -1,7 +1,6 @@
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import * as React from "react";
 import Help from "./help";
-import MaterialEditor from "~/components/base/material-editor";
 import TableOfContentsComponent from "./content";
 import { useTranslation } from "react-i18next";
 import { MaterialEditorV2 } from "~/components/base/material-editorV2";
@@ -29,7 +28,6 @@ const WorkspaceHelpBody = (props: WorkspaceHelpBodyProps) => {
         activeTrail="help"
         workspaceUrl={props.workspaceUrl}
       />
-      <MaterialEditor locationPage="Help" />
       <MaterialEditorV2 />
       <Help
         navigation={navigationComponent}
