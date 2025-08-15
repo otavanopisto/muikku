@@ -5952,7 +5952,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LanguageProfile"
-        "404":
+        "204":
           description: If user doesn't have a language profile
     post:
       operationId: createOrUpdateLanguageProfile

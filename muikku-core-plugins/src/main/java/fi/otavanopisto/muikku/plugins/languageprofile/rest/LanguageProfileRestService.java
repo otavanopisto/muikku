@@ -46,7 +46,7 @@ public class LanguageProfileRestService {
 
     LanguageProfile languageProfile = languageProfileController.findByUserEntityId(userEntityId);
     if (languageProfile == null) {
-      return Response.status(Status.NOT_FOUND).build();
+      return Response.noContent().build();
     }
     return Response.ok(toRestModel(languageProfile)).build();
   }
