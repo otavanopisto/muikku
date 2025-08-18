@@ -70,11 +70,10 @@ public class PedagogyController {
     // Default values for a new form
 
     Long creator = sessionController.getLoggedUserEntity().getId();
-    String visibility = null;
 
     // Create form and a history entry about that having happened (doubles as the creator and creation date of the form)
 
-    PedagogyForm form = pedagogyFormDAO.create(userEntityId, formData, visibility);
+    PedagogyForm form = pedagogyFormDAO.create(userEntityId, formData);
     pedagogyFormHistoryDAO.create(form, "Asiakirja luotiin", creator, PedagogyFormHistoryType.EDIT);
 
     return form;

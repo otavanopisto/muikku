@@ -15,7 +15,7 @@ public class PedagogyFormDAO extends CorePluginsDAO<PedagogyForm> {
 
   private static final long serialVersionUID = -27331130177561637L;
   
-  public PedagogyForm create(Long userEntityId, String formData, String visibility) {
+  public PedagogyForm create(Long userEntityId, String formData) {
     PedagogyForm form = new PedagogyForm();
     form.setFormData(formData);
     form.setUserEntityId(userEntityId);
