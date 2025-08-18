@@ -4728,6 +4728,7 @@ paths:
           required: true
           schema:
             type: integer
+            format: int64
       responses:
         "200":
           description: Exam attendance
@@ -4735,6 +4736,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ExamAttendance"
+
+  /rest/workspace/exam/attendances/{workspaceEntityId}:
+    get:
+      operationId: getExamAttendances
+      summary: Returns all exam attendances of a workspace that the user can participate in
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Id of the workspace entity
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExamAttendance"
 
   /rest/workspace/exam/attendees/{workspaceFolderId}:
     get:
@@ -13796,6 +13821,10 @@ components:
       type: object
       description: Student's attendance to an exam
       properties:
+        folderId:
+          description: Exam folder id
+          type: integer
+          format: int64
         started:
           description: When the exam was started (OffSetDateTime format)
           type: string

@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.exam;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -28,10 +29,13 @@ import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolderType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 public class ExamController {
@@ -47,6 +51,9 @@ public class ExamController {
   
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  
+  @Inject
+  private WorkspaceRootFolderDAO workspaceRootFolderDAO;
   
   @Inject
   private WorkspaceFolderDAO workspaceFolderDAO;
@@ -175,6 +182,27 @@ public class ExamController {
    */
   public ExamAttendance findAttendance(Long workspaceFolderId, Long userEntityId) {
     return examAttendanceDAO.findByWorkspaceFolderIdAndUserEntityId(workspaceFolderId, userEntityId);
+  }
+  
+  /**
+   * Returns a list of all exam folder ids in a workspace that the given user is part of.
+   * 
+   * @param workspaceEntityId Workspace entity id
+   * @param userEntityId User id
+   * 
+   * @return Exam folder ids the user is part of
+   */
+  public List<Long> listExamIds(Long workspaceEntityId, Long userEntityId) {
+    List<Long> ids = new ArrayList<>();
+    WorkspaceRootFolder rootFolder = workspaceRootFolderDAO.findByWorkspaceEntityId(workspaceEntityId);
+    List<WorkspaceFolder> exams = workspaceFolderDAO.listByParentAndFolderTypeAndExam(rootFolder, WorkspaceFolderType.DEFAULT, true);
+    for (WorkspaceFolder exam : exams) {
+      // Exam has to be open for all or the user must have an attendance entity
+      if (getSettingsJson(exam.getId()).getOpenForAll() ? true : findAttendance(exam.getId(), userEntityId) != null) {
+        ids.add(exam.getId());
+      }
+    }
+    return ids;
   }
   
   /**

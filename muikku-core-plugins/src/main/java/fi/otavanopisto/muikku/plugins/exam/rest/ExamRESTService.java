@@ -170,6 +170,18 @@ public class ExamRESTService {
     return Response.ok().entity(toRestModel(workspaceFolderId)).build();
   }
 
+  @Path("/attendances/{WORKSPACEENTITYID}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getAttendances(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    List<ExamAttendanceRestModel> attendances = new ArrayList<>();
+    List<Long> examIds = examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId());
+    for (Long examId : examIds) {
+      attendances.add(toRestModel(examId));
+    }
+    return Response.ok().entity(attendances).build();
+  }
+
   @Path("/attendees/{WORKSPACEFOLDERID}")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -217,7 +229,10 @@ public class ExamRESTService {
   private ExamAttendanceRestModel toRestModel(Long workspaceFolderId) {
     ExamSettingsRestModel settingsJson = examController.getSettingsJson(workspaceFolderId);
     ExamAttendanceRestModel attendance = new ExamAttendanceRestModel();
+    attendance.setFolderId(workspaceFolderId);
     attendance.setContents(Collections.emptyList());
+    attendance.setMinutes(settingsJson.getMinutes());
+    attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
     ExamAttendance attendanceEntity = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
     if (attendanceEntity != null) {
       if (attendanceEntity.getStarted() != null) {
@@ -225,9 +240,7 @@ public class ExamRESTService {
       }
       if (attendanceEntity.getEnded() != null) {
         attendance.setEnded(toOffsetDateTime(attendanceEntity.getEnded()));
-        attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
       }
-      attendance.setMinutes(settingsJson.getMinutes());
       // Exam is either ongoing or has been done, so list its contents
       if (attendance.getStarted() != null || attendance.getEnded() != null) {
         WorkspaceFolder folder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
