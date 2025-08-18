@@ -82,6 +82,13 @@ const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
     setActiveTab(id);
   };
 
+  React.useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash) {
+      setActiveTab(hash.toUpperCase() as LanguageProfileTab);
+    }
+  }, []);
+
   return (
     <ApplicationPanel
       title="Language Profile"

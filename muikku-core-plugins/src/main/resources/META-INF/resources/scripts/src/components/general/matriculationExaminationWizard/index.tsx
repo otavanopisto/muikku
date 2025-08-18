@@ -193,7 +193,7 @@ function mapStateToProps(state: StateType) {
 /**
  * mapDispatchToProps
  * @param dispatch dispatch
- * @returns objectmatriculation-container__fieldset
+ * @returns object
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ displayNotification }, dispatch);
