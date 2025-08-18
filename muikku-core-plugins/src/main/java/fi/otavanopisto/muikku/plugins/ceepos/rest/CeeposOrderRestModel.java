@@ -54,12 +54,12 @@ public class CeeposOrderRestModel {
     this.paid = paid;
   }
 
-  public CeeposOrderCreatorRestModel getCreator() {
-    return creator;
+  public Long getUserEntityId() {
+    return userEntityId;
   }
 
-  public void setCreator(CeeposOrderCreatorRestModel creator) {
-    this.creator = creator;
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
   }
 
   private Long id;
@@ -68,6 +68,6 @@ public class CeeposOrderRestModel {
   private CeeposOrderState state;
   private OffsetDateTime paid;
   private OffsetDateTime created;
-  private CeeposOrderCreatorRestModel creator;
+  private Long userEntityId;
 
 }

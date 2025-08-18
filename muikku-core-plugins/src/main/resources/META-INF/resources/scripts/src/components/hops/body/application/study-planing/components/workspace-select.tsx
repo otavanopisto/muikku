@@ -38,6 +38,10 @@ interface WorkspaceSelectProps {
    */
   courseNumber: number;
   /**
+   * Curriculum type
+   */
+  curriculumType: "uppersecondary" | "compulsory";
+  /**
    * OPS. E.g "OPS 2021"
    */
   ops?: string;
@@ -63,6 +67,7 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
     subjectCode,
     courseNumber,
     ops,
+    curriculumType,
   } = props;
   const { availableCourses, loadingAvailableCourses } = useAvailableWorkspaces({
     parameters: {
@@ -112,13 +117,18 @@ const WorkspaceSelect: React.FC<WorkspaceSelectProps> = (props) => {
       isClearable
       placeholder={t("labels.search", {
         ns: "hops_new",
-        context: "course",
+        context: curriculumType,
       })}
       options={options}
       value={selectedValue}
       onChange={handleSelectChange}
       noOptionsMessage={() =>
-        t("content.empty", { ns: "common", context: "courses" })
+        curriculumType === "compulsory"
+          ? t("content.empty", { ns: "common", context: "coursesCompulsory" })
+          : t("content.empty", {
+              ns: "common",
+              context: "coursesUppersecondary",
+            })
       }
       isLoading={loadingAvailableCourses}
       isDisabled={disabled}
