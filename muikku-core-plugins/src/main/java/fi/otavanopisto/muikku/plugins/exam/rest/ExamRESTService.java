@@ -227,9 +227,11 @@ public class ExamRESTService {
   }
   
   private ExamAttendanceRestModel toRestModel(Long workspaceFolderId) {
+    WorkspaceFolder folder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
     ExamSettingsRestModel settingsJson = examController.getSettingsJson(workspaceFolderId);
     ExamAttendanceRestModel attendance = new ExamAttendanceRestModel();
     attendance.setFolderId(workspaceFolderId);
+    attendance.setName(folder.getTitle());
     attendance.setContents(Collections.emptyList());
     attendance.setMinutes(settingsJson.getMinutes());
     attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
@@ -243,7 +245,6 @@ public class ExamRESTService {
       }
       // Exam is either ongoing or has been done, so list its contents
       if (attendance.getStarted() != null || attendance.getEnded() != null) {
-        WorkspaceFolder folder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
         List<WorkspaceNode> nodes = workspaceMaterialController.listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(folder, WorkspaceFolderType.DEFAULT);
         List<ContentNode> contentNodes = new ArrayList<>();
         // See if assignment randomization is used

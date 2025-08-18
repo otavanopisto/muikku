@@ -13825,6 +13825,9 @@ components:
           description: Exam folder id
           type: integer
           format: int64
+        name:
+          description: The name of the exam, i.e. folder title
+          type: string
         started:
           description: When the exam was started (OffSetDateTime format)
           type: string
