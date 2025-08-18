@@ -767,11 +767,6 @@ legend {
   @include form-focus;
 }
 
-.form-element__textarea--disabled {
-  background-color: #a4a4a4;
-  border: 2px solid #363636;
-}
-
 .form-element__dropdown-selection-container {
   padding: 3px 0;
 }

@@ -114,7 +114,6 @@ const LanguageUsage = () => {
   /**
    * handleRemoveLanguage
    * @param language the language to remove
-   * @param closeDialog the function to close the dialog
    */
   const handleRemoveLanguage = (language: LanguageData) => {
     dispatch({

@@ -5,7 +5,6 @@ import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { LanguageData } from "~/@types/shared";
-import { ALL_LANGUAGE_SUBJECTS } from "~/helper-functions/study-matrix";
 import { LanguageProfileLanguage } from "~/reducers/main-function/language-profile";
 import MApi, { isMApiError } from "~/api/api";
 import { useEffect } from "react";
