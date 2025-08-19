@@ -19,11 +19,20 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.languageprofile.LanguageProfileController;
 import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfile;
 import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSample;
 import fi.otavanopisto.muikku.plugins.languageprofile.model.LanguageProfileSampleType;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -35,6 +44,21 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class LanguageProfileRestService {
   
   @Inject
+  private SessionController sessionController;
+
+  @Inject
+  private UserEntityController userEntityController;
+
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
   private LanguageProfileController languageProfileController;
 
   @GET
@@ -42,8 +66,14 @@ public class LanguageProfileRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response getLanguageProfile(@PathParam("USERENTITYID") Long userEntityId) {
     
-    // TODO Permissions
+    // Access checK; read for owner + interested parties
 
+    if (!hasAccess(userEntityId)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Actual functionality
+    
     LanguageProfile languageProfile = languageProfileController.findByUserEntityId(userEntityId);
     if (languageProfile == null) {
       return Response.noContent().build();
@@ -56,8 +86,16 @@ public class LanguageProfileRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateLanguageProfile(@PathParam("USERENTITYID") Long userEntityId, LanguageProfileRestModel payload) {
     
-    // TODO Permissions
-
+    // Access check; write for owner only
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
+    if (!identifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Actual functionality
+    
     LanguageProfile languageProfile = languageProfileController.findByUserEntityId(userEntityId);
     if (languageProfile == null) {
       languageProfile = languageProfileController.create(userEntityId, payload.getFormData());
@@ -73,7 +111,13 @@ public class LanguageProfileRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response listSamples(@PathParam("USERENTITYID") Long userEntityId, @QueryParam("language") String language) {
     
-    // TODO Permissions
+    // Access checK; read for owner + interested parties
+    
+    if (!hasAccess(userEntityId)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Actual functionality
     
     List<LanguageProfileSampleRestModel> restSamples = new ArrayList<>();
     LanguageProfile languageProfile = languageProfileController.findByUserEntityId(userEntityId);
@@ -93,7 +137,15 @@ public class LanguageProfileRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response createTextSample(@PathParam("USERENTITYID") Long userEntityId, LanguageProfileSampleRestModel payload) {
     
-    // TODO Permissions
+    // Access check; write for owner only
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
+    if (!identifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Actual functionality
     
     LanguageProfile profile = languageProfileController.findByUserEntityId(userEntityId);
     if (profile == null) {
@@ -114,7 +166,15 @@ public class LanguageProfileRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateTextSample(@PathParam("USERENTITYID") Long userEntityId, @PathParam("SAMPLEID") Long sampleId, LanguageProfileSampleRestModel payload) {
     
-    // TODO Permissions
+    // Access check; write for owner only
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
+    if (!identifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Actual functionality
     
     LanguageProfile profile = languageProfileController.findByUserEntityId(userEntityId);
     if (profile == null) {
@@ -139,7 +199,15 @@ public class LanguageProfileRestService {
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteSample(@PathParam("USERENTITYID") Long userEntityId, @PathParam("SAMPLEID") Long sampleId) {
     
-    // TODO Permissions
+    // Access check; delete for owner only
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
+    if (!identifier.equals(sessionController.getLoggedUser())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Actual functionality
     
     LanguageProfile profile = languageProfileController.findByUserEntityId(userEntityId);
     if (profile == null) {
@@ -172,6 +240,39 @@ public class LanguageProfileRestService {
     model.setType(languageProfileSample.getType());
     model.setValue(languageProfileSample.getValue());
     return model;
+  }
+  
+  private boolean hasAccess(Long userEntityId) {
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
+
+    // Owner has access
+    
+    if (identifier.equals(sessionController.getLoggedUser())) {
+      return true;
+    }
+    
+    // Admins, maangers, and study programme leaders have access
+    
+    if (sessionController.hasAnyRole(EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER)) {
+      return true;
+    }
+    
+    // Guidance counselors have access
+    
+    if (userSchoolDataController.amICounselor(identifier)) {
+      return true;
+    }
+    
+    // Teachers have access if student is in their workspaces
+    
+    if (sessionController.hasRole(EnvironmentRoleArchetype.TEACHER)) {
+      UserSchoolDataIdentifier studentUserSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(identifier);
+      if (studentUserSchoolDataIdentifier != null && studentUserSchoolDataIdentifier.hasRole(EnvironmentRoleArchetype.STUDENT)) {
+        return workspaceUserEntityController.haveSharedWorkspaces(sessionController.getLoggedUserEntity(), studentUserSchoolDataIdentifier.getUserEntity());
+      }
+    }
+    return false;
   }
 
   protected class Range {
