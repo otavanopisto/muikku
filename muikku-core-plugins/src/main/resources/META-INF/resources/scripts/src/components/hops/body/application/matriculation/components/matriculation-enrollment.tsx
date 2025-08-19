@@ -356,6 +356,12 @@ const getLocaleByExamStatus = (
         ns: "hops_new",
       }
     ),
+    [MatriculationExamStudentStatus.FilledOnBehalf]: t(
+      "matriculationEnrollmentStatuses.filledOnBehalf",
+      {
+        ns: "hops_new",
+      }
+    ),
   };
 
   return statusMap[examStatus];

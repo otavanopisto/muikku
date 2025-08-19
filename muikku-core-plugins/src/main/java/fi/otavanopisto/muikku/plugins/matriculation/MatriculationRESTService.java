@@ -389,7 +389,6 @@ public class MatriculationRESTService {
     schoolDataEntity.setId(enrollment.getId());
     schoolDataEntity.setExamId(enrollment.getExamId());
     schoolDataEntity.setNationalStudentNumber(enrollment.getNationalStudentNumber());
-    schoolDataEntity.setGuider(enrollment.getGuider());
     schoolDataEntity.setEnrollAs(enrollment.getEnrollAs());
     schoolDataEntity.setDegreeType(enrollment.getDegreeType());
     schoolDataEntity.setRestartExam(enrollment.isRestartExam());
@@ -593,7 +592,6 @@ public class MatriculationRESTService {
     restModel.setEnrollAs(enrollment.getEnrollAs());
     restModel.setEnrollmentDate(enrollment.getEnrollmentDate());
     restModel.setExamId(enrollment.getExamId());
-    restModel.setGuider(enrollment.getGuider());
     restModel.setLocation(enrollment.getLocation());
     restModel.setContactInfoChange(enrollment.getContactInfoChange());
     restModel.setMessage(enrollment.getMessage());
