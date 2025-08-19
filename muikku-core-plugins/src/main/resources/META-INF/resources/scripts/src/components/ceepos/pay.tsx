@@ -5,15 +5,8 @@ import {
   DisplayNotificationTriggerType,
   displayNotification,
 } from "~/actions/base/notifications";
-
 import { StateType } from "~/reducers";
 import { CeeposState } from "~/reducers/main-function/ceepos";
-import {
-  getErrorMessageContent,
-  getErrorMessageTitle,
-} from "~/helper-functions/ceepos-error";
-import { getName } from "~/util/modifiers";
-import CommunicatorNewMessage from "~/components/communicator/dialogs/new-message";
 import Button from "~/components/general/button";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions/index";
@@ -132,44 +125,21 @@ class CeeposPay extends React.Component<CeeposPayProps, CeeposPayState> {
               </div>
               {this.props.ceepos.state === "ERROR" ? (
                 <div className="card__footer card__footer--ceepos">
-                  <Button
-                    icon="forward"
-                    buttonModifiers={["back-to-muikku", "info"]}
-                    href={this.state.returnLink.path}
-                  >
-                    {this.state.returnLink.text}
-                  </Button>
-                  {this.props.ceepos.purchase ? (
-                    <CommunicatorNewMessage
-                      extraNamespace="ceepos-error"
-                      initialSelectedItems={[
-                        {
-                          type: "staff",
-                          value: {
-                            id: this.props.ceepos.purchase.creator.userEntityId,
-                            name: getName(
-                              this.props.ceepos.purchase.creator,
-                              true
-                            ),
-                          },
-                        },
-                      ]}
-                      initialSubject={getErrorMessageTitle(
-                        this.props.ceepos.purchase
-                      )}
-                      initialMessage={getErrorMessageContent(
-                        this.props.ceepos.purchase,
-                        this.props.ceepos.payStatusMessage
-                      )}
+                  <div className="card__error-guidance">
+                    <p className="card__error-guidance-text">
+                      {this.props.i18n.t("content.errorGuidance", {
+                        ns: "orders",
+                      })}
+                    </p>
+
+                    <Button
+                      icon="forward"
+                      buttonModifiers={["back-to-muikku", "info"]}
+                      href={this.state.returnLink.path}
                     >
-                      <Button
-                        icon="envelope"
-                        buttonModifiers={["send-message", "info"]}
-                      >
-                        {this.props.i18n.t("actions.reportError")}
-                      </Button>
-                    </CommunicatorNewMessage>
-                  ) : null}
+                      {this.state.returnLink.text}
+                    </Button>
+                  </div>
                 </div>
               ) : null}
             </div>

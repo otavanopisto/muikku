@@ -191,15 +191,25 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
       }),
       value: "ONGOING",
     },
+    {
+      label: t("labels.suggestedNext", {
+        ns: "common",
+      }),
+      value: "SUGGESTED_NEXT",
+    },
   ];
 
   return (
     <div className="study-planner__course-tray">
       <div className="study-planner__course-tray-header">
         <h3 className="study-planner__course-tray-title">
-          {t("labels.studyPlannerToolTrayTitle", {
-            ns: "hops_new",
-          })}
+          {curriculumConfig.type === "compulsory"
+            ? t("labels.studyPlannerToolTrayTitle_compulsory", {
+                ns: "hops_new",
+              })
+            : t("labels.studyPlannerToolTrayTitle_uppersecondary", {
+                ns: "hops_new",
+              })}
         </h3>
         <div className="study-planner__course-tray-filters">
           <Dropdown
@@ -275,7 +285,7 @@ const PlannerCourseTray: React.FC<PlannerCourseTrayProps> = (props) => {
                       disabled={disabled}
                       course={course}
                       subjectCode={subject.subjectCode}
-                      isPlannedCourse={course.state === "PLANNED"}
+                      isPlannedCourse={course.planned}
                       selected={selected}
                       studyActivity={course.studyActivity}
                       curriculumConfig={curriculumConfig}
@@ -366,18 +376,17 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
               ns: "common",
             }),
           };
+
+        case "SUGGESTED_NEXT":
+          return {
+            state: "suggested-next",
+            label: t("labels.suggested", {
+              ns: "common",
+            }),
+          };
         default:
           return { state: null, label: null };
       }
-    }
-
-    if (isPlannedCourse) {
-      return {
-        state: "planned",
-        label: t("labels.planned", {
-          ns: "common",
-        }),
-      };
     }
 
     return { state: null, label: null };
@@ -397,7 +406,9 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
         isDragging: monitor.isDragging(),
       }),
       // eslint-disable-next-line jsdoc/require-jsdoc
-      canDrag: !disabled && !studyActivity,
+      canDrag:
+        !disabled &&
+        (!studyActivity || studyActivity.status === "SUGGESTED_NEXT"),
     }),
     [disabled, studyActivity]
   );
@@ -408,7 +419,10 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
    * Handles course select
    */
   const handleSelectCourse = () => {
-    if (disabled || studyActivity) {
+    if (
+      disabled ||
+      (studyActivity && studyActivity.status !== "SUGGESTED_NEXT")
+    ) {
       return;
     }
 
@@ -449,6 +463,14 @@ const PlannerCourseTrayItem: React.FC<PlannerCourseTrayItemProps> = (props) => {
                     ns: "common",
                   })}
             </PlannerCardLabel>
+
+            {isPlannedCourse && (
+              <PlannerCardLabel modifiers={["course-state", "planned"]}>
+                {t("labels.planned", {
+                  ns: "common",
+                })}
+              </PlannerCardLabel>
+            )}
 
             {courseState.state && (
               <PlannerCardLabel modifiers={["course-state", courseState.state]}>
