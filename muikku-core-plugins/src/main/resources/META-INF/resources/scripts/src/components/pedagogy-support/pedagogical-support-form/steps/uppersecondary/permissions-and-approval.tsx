@@ -3,6 +3,7 @@ import "~/sass/elements/hops.scss";
 import "~/sass/elements/form.scss";
 import { useTranslation } from "react-i18next";
 import { useUpperSecondaryForm } from "~/components/pedagogy-support/hooks/useUppersecondaryForm";
+import { localize } from "~/locales/i18n";
 
 /**
  * PermissionsAndApprovalProps
@@ -32,7 +33,7 @@ const PermissionsAndApproval: React.FC<PermissionsAndApprovalProps> = (
               <div className="hops-container__state-text">
                 {t("content.publishedDateInfo", {
                   ns: "pedagogySupportPlan",
-                  date: "1.1.2021",
+                  date: localize.date(pedagogyForm.published, "l"),
                 })}
               </div>
             </div>
