@@ -127,12 +127,12 @@ public class PedagogyController {
     }
 
     // Form data update
-    pedagogyFormDAO.updatePublished(form, date);
+    form = pedagogyFormDAO.updatePublished(form, date);
 
     String details;
     SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
     
-    if (published == Boolean.TRUE) {
+    if (form.getPublished() != null) {
       details = "Asiakirja julkaistu " + df.format(date);
 
       // Notification to counselors about published form
@@ -185,7 +185,7 @@ public class PedagogyController {
       
     }
     else {
-      details = "Asiakirja asetettu ei-julkaistu-tilaan " + df.format(date);
+      details = "Asiakirja asetettu ei-julkaistu-tilaan " + df.format(new Date());
     }
     
     // History entry about modify
