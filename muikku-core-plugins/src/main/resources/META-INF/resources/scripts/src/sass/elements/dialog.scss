@@ -201,6 +201,7 @@
   }
 }
 
+.dialog__window--exam,
 .dialog__window--wizard,
 .dialog__window--studies {
   bottom: 0;
@@ -395,12 +396,14 @@
   }
 }
 
+.dialog__header--exam,
 .dialog__header--wizard,
 .dialog__header--course-description {
   background: $color-default;
   color: $color-default-contrast;
 }
 
+.dialog__header--exam,
 .dialog__header--wizard {
   @include breakpoint($breakpoint-pad) {
     background-color: $color-dialog-wizard-desktop-background;

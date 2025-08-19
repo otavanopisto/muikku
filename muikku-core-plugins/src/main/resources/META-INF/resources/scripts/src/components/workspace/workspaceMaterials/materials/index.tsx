@@ -88,7 +88,8 @@ class WorkspaceMaterials extends React.Component<
   WorkspaceMaterialsState
 > {
   private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
-  private contentPanelRef = React.createRef<ContentPanel>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private contentPanelRef = React.createRef<any>();
 
   /**
    * constructor
@@ -529,6 +530,48 @@ class WorkspaceMaterials extends React.Component<
     );
 
   /**
+   * renderExamSection
+   * @param section section
+   * @returns Exam section
+   */
+  renderExamSection = (section: MaterialContentNodeWithIdAndLogic) => (
+    <section
+      key={"section-" + section.workspaceMaterialId}
+      className="content-panel__chapter"
+      id={`s-${section.workspaceMaterialId}`}
+      style={{
+        scrollMarginTop: this.state.defaultOffset + "px",
+      }}
+    >
+      {/*TOP OF THE CHAPTER*/}
+      <h2
+        className={`content-panel__chapter-title ${
+          section.hidden ? "state-HIDDEN" : ""
+        }`}
+      >
+        <div
+          className="content-panel__chapter-title-text"
+          lang={section.titleLanguage || this.props.workspace.language}
+        >
+          {section.title}
+          <BackToToc
+            tocElementId={
+              this.props.status.loggedIn
+                ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                : `tocTopic-${section.workspaceMaterialId}`
+            }
+            openToc={
+              this.contentPanelRef.current &&
+              this.contentPanelRef.current.openNavigation
+            }
+          />
+        </div>
+      </h2>
+      <div>Tämä on koe</div>
+    </section>
+  );
+
+  /**
    * render
    */
   render() {
@@ -624,6 +667,12 @@ class WorkspaceMaterials extends React.Component<
           </Dropdown>
         </div>
       ) : null;
+
+      // If section is an exam section and user is a student, show the exam section
+      if (section.exam && this.props.status.isStudent) {
+        results.push(this.renderExamSection(section));
+        return;
+      }
 
       // section is restricted in following cases:
       // section is restricted for logged in users and users is not logged in...
