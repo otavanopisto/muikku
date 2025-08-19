@@ -6,13 +6,15 @@
       id bigint not null auto_increment,
       formData longtext not null,
       userEntityId bigint not null,
-      published datetime,
       primary key (id)
     );
   </sql>
   <sql>
     alter table PedagogyFormImplementedActions 
        add constraint UK40k4bt8ahyy068v4groanpixw unique (userEntityId);
+  </sql>
+  <sql>
+    alter table PedagogyForm add column published datetime;
   </sql>
   <sql>
     update PedagogyForm p set published(select max(created) from PedagogyFormHistory 
