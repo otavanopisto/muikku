@@ -72,8 +72,6 @@ public class LanguageProfileSampleServlet extends HttpServlet {
       sendResponse(resp, "Must be logged in", HttpServletResponse.SC_FORBIDDEN);
       return;
     }
-
-    // TODO Permissions
     
     // Upload folder validation
     
@@ -108,6 +106,10 @@ public class LanguageProfileSampleServlet extends HttpServlet {
     }
     if (userEntityId == null) {
       sendResponse(resp, "Missing userEntityId", HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
+    if (!userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
+      sendResponse(resp, "User entity mismatch", HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
     LanguageProfile profile = languageProfileController.findByUserEntityId(userEntityId);
