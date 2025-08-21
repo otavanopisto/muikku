@@ -17,7 +17,7 @@
     alter table PedagogyForm add column published datetime;
   </sql>
   <sql>
-    update PedagogyForm p set published(select max(created) from PedagogyFormHistory 
+    update PedagogyForm p set published=(select max(created) from PedagogyFormHistory 
     where form_id=p.id and type='EDIT') 
     where state='ACTIVE' or state='PENDING' or state='APPROVED';
   </sql>

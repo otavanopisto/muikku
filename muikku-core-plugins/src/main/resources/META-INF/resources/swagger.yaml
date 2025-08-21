@@ -7385,38 +7385,11 @@ paths:
         "500":
           description: Internal server error
 
-    post:
-      operationId: createPedagogyFormImplementedActions
-      summary: Create pedagogy implemented actions form
-      description: Create pedagogy form implemented actions
-      tags:
-        - Pedagogy
-      parameters:
-        - name: studentIdentifier
-          in: path
-          description: Student school data identifier
-          required: true
-          schema:
-            type: string
-      requestBody:
-        $ref: "#/components/requestBodies/PedagogyFormImplementedActionsCreateRequestBody"
-      responses:
-        "200":
-          description: Pedagogy form implemented actions created successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PedagogyFormImplementedActions"
-        "400":
-          description: Invalid request was sent to the server
-        "500":
-          description: Internal server error
-
   /rest/pedagogy/form/implementedActions/{studentIdentifier}/formData:
-    put:
+    post:
       operationId: updatePedagogyFormDataImplementedActions
-      summary: Update pedagogy form data implemented actions
-      description: Update pedagogy form data implemented actions
+      summary: Update or create pedagogy form data implemented actions
+      description: Update or create pedagogy form data implemented actions
       tags:
         - Pedagogy
       parameters:
