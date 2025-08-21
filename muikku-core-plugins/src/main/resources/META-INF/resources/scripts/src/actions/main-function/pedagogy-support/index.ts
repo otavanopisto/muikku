@@ -25,6 +25,7 @@ import {
 import _ from "lodash";
 import {
   getEditedFields,
+  initializeImplemetedSupportActionsFormData,
   initializePedagogyFormData,
 } from "~/components/pedagogy-support/helpers";
 
@@ -442,9 +443,9 @@ const loadPedagogySupportImplActions: LoadPedagogySupportImplActionsTriggerType 
 
         dispatch({
           type: "PEDAGOGY_SUPPORT_IMPLEMENTED_ACTIONS_UPDATE_FORM_DATA",
-          payload: JSON.parse(
-            implementedActions.formData
-          ) as PedagogySupportActionImplemented[],
+          payload: initializeImplemetedSupportActionsFormData(
+            implementedActions?.formData
+          ),
         });
 
         dispatch({

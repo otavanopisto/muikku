@@ -39,15 +39,18 @@ interface PedagogySupportProps {
  * @returns JSX.Element
  */
 const PedagogySupport = (props: PedagogySupportProps) => {
-  const { isFormAccessible = false, studentIdentifier } = props;
+  const {
+    isFormAccessible = false,
+    studentIdentifier,
+    studyProgrammeName,
+  } = props;
 
   // Check if user's study programme is eligible for pedagogy form
   const isEligibleForUpperSecondary = UPPERSECONDARY_PEDAGOGYFORM.includes(
     props.studyProgrammeName
   );
-  const isEligibleForCompulsory = COMPULSORY_PEDAGOGYFORM.includes(
-    props.studyProgrammeName
-  );
+  const isEligibleForCompulsory =
+    COMPULSORY_PEDAGOGYFORM.includes(studyProgrammeName);
 
   // Merged condition for pedagogy form eligibility
   const isEligibleForPedagogyForm =
@@ -62,6 +65,7 @@ const PedagogySupport = (props: PedagogySupportProps) => {
   const [showPDF, setShowPDF] = React.useState(false);
   const usePedagogyValues = usePedagogyRedux(
     studentIdentifier,
+    studyProgrammeName,
     isUppersecondary,
     isFormAccessible
   );

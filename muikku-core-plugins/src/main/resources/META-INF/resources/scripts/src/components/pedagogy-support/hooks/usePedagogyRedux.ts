@@ -27,11 +27,13 @@ export type UsePedagogyReduxType = ReturnType<typeof usePedagogyRedux>;
 /**
  * usePedagogyRedux. Combined hook for pedagogy form and implemented actions using Redux
  * @param studentIdentifier studentIdentifier
+ * @param studyProgrammeName studyProgrammeName
  * @param isUppersecondary isUppersecondary
  * @param shouldLoadForm whether to attempt loading the form (based on permissions)
  */
 export const usePedagogyRedux = (
   studentIdentifier: string,
+  studyProgrammeName: string,
   isUppersecondary: boolean,
   shouldLoadForm: boolean = true
 ) => {
@@ -341,6 +343,7 @@ export const usePedagogyRedux = (
     loading,
     editIsActive,
     studentIdentifier,
+    studyProgrammeName,
     isUppersecondary,
     editingDisabled,
     resetPedagogyData,

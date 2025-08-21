@@ -1,11 +1,14 @@
 import * as React from "react";
-// import ApprovalDialog from "./dialogs/approval";
 import SaveWithExtraDetailsDialog from "../dialogs/save-with-extra-details";
 import WarningDialog from "../dialogs/warning";
 import { usePedagogyContext } from "../context/pedagogy-context";
 import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
 import { useMemo } from "react";
+import {
+  COMPULSORY_PEDAGOGYFORM,
+  UPPERSECONDARY_PEDAGOGYFORM,
+} from "../helpers";
 
 /**
  * PedagogyToolbarProps
@@ -197,6 +200,7 @@ export const usePedagogyToolbarLogic = () => {
     implementedActionsHaveChanged,
     pedagogyFormExists,
     editingDisabled,
+    studyProgrammeName,
   } = usePedagogyValues;
 
   const toolbarLogic = useMemo(() => {
@@ -213,7 +217,12 @@ export const usePedagogyToolbarLogic = () => {
         pedagogyFormExists &&
         !editIsActive,
       // If form doesn't exist and user role is SPECIAL_ED_TEACHER, show activate button
-      canActivateForm: !pedagogyFormExists && userRole === "SPECIAL_ED_TEACHER",
+      canActivateForm:
+        !pedagogyFormExists &&
+        userRole === "SPECIAL_ED_TEACHER" &&
+        [...UPPERSECONDARY_PEDAGOGYFORM, ...COMPULSORY_PEDAGOGYFORM].includes(
+          studyProgrammeName
+        ),
       // If form exists and user role is SPECIAL_ED_TEACHER, show toggle publish button
       canTogglePublishForm:
         pedagogyFormExists && userRole === "SPECIAL_ED_TEACHER",
@@ -223,10 +232,11 @@ export const usePedagogyToolbarLogic = () => {
       editingDisabled,
     };
   }, [
+    changedFields.length,
     userRole,
     pedagogyFormExists,
     editIsActive,
-    changedFields.length,
+    studyProgrammeName,
     implementedActionsHaveChanged,
     editingDisabled,
   ]);
