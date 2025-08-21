@@ -94,34 +94,15 @@ const UpperSecondaryPedagogicalSupportWizardForm = (
   return (
     <WizardProvider value={useWizardValues}>
       <div className="pedagogy-form">
-        {loading ? (
+        {loading && (
           <OverlayComponent>
             <div className="pedagogy-form__overlay-content">
               <div className="loader-empty" />
             </div>
           </OverlayComponent>
-        ) : null}
+        )}
 
         <div className="pedagogy-form__container">
-          {/* {pedagogyForm && pedagogyForm.state === "INACTIVE" ? (
-            <OverlayComponent>
-              <div className="pedagogy-form__overlay-content">
-                {props.userRole === "STUDENT" ? (
-                  <p>
-                    {t("content.notActivated", {
-                      ns: "pedagogySupportPlan",
-                      context: props.userRole.toLowerCase(),
-                    })}
-                  </p>
-                ) : (
-                  <p>
-                    {t("content.notActivated", { ns: "pedagogySupportPlan" })}
-                  </p>
-                )}
-              </div>
-            </OverlayComponent>
-          ) : null} */}
-
           <Wizard
             modifiers={["pedagogy-form"]}
             header={<PedagogyFormWizardHeader />}
