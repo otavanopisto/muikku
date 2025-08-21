@@ -39,6 +39,7 @@ const getRouteTitles = (t: TFunction, workspace: WorkspaceDataType | null) => {
     "/coursepicker": `${t("coursepicker", { ns: "pageTitles" })} | ${appName}`,
     "/discussions": `${t("discussions", { ns: "pageTitles" })} | ${appName}`,
     "/evaluation": `${t("evaluation", { ns: "pageTitles" })} | ${appName}`,
+    "/language-profile": `${t("languageProfile", { ns: "pageTitles" })} | ${appName}`,
     "/guider": `${t("guider", { ns: "pageTitles" })} | ${appName}`,
     "/hops": `${t("hops", { ns: "pageTitles" })} | ${appName}`,
     "/organization": `${t("organization", { ns: "pageTitles" })} | ${appName}`,

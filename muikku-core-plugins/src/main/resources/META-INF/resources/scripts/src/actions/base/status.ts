@@ -135,6 +135,7 @@ async function loadWhoAMI(
         TRANSCRIPT_OF_RECORDS_VIEW: whoAmI.permissions.has(
           "TRANSCRIPT_OF_RECORDS_VIEW"
         ),
+        LANGUAGE_PROFILE_VIEW: whoAmI.permissions.has("LANGUAGE_PROFILE_VIEW"),
         LIST_USER_ORDERS: whoAmI.permissions.has("LIST_USER_ORDERS"),
         FIND_ORDER: whoAmI.permissions.has("FIND_ORDER"),
         REMOVE_ORDER: whoAmI.permissions.has("REMOVE_ORDER"),

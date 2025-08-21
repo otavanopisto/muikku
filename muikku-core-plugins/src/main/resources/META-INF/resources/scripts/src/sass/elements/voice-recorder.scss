@@ -19,6 +19,15 @@
   }
 }
 
+.voice-recorder--language-profile {
+  align-items: center;
+  border: 2px solid $color-language-profile-form-element-border;
+  display: flex;
+  height: 6rem;
+  justify-content: center;
+  margin: 0;
+}
+
 .voice-container {
   @include text;
 

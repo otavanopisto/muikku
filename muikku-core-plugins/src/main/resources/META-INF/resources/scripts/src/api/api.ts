@@ -35,6 +35,7 @@ import {
   ResponseContext,
   ActivitylogsApi,
   StudentCardsApi,
+  LanguageProfileApi,
 } from "../generated/client";
 
 /**
@@ -106,6 +107,15 @@ const configuration = new Configuration({
  * Utility class for loading api with predefined configuration
  */
 export default class MApi {
+  /**
+   * Gets initialized discussions API
+   *
+   * @returns initialized workspaces API
+   */
+  public static getLanguageProfile() {
+    return new LanguageProfileApi(configuration);
+  }
+  /**
   /**
    * Gets initialized discussions API
    *

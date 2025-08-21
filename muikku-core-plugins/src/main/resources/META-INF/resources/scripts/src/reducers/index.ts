@@ -28,6 +28,7 @@ import { ContactsState } from "./base/contacts";
 import { NoteBookState } from "./notebook/notebook";
 import { DependantsState } from "./main-function/dependants";
 import { HopsState } from "./hops";
+import { LanguageProfileState } from "./main-function/language-profile";
 
 /**
  * StateType
@@ -62,4 +63,5 @@ export interface StateType {
   journals?: JournalsState;
   notebook?: NoteBookState;
   hopsNew?: HopsState;
+  languageProfile?: LanguageProfileState;
 }

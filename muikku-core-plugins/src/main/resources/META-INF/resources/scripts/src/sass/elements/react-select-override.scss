@@ -120,24 +120,36 @@
 // Used for HOPS and PEDAGOGY FORM
 .react-select-override--hops {
   .react-select-override__control {
-    border-color: $color-hops-dialog-form-element-border;
+    border-color: $color-hops-form-element-border;
     height: auto;
     max-width: unset;
 
     &:hover {
-      border-color: $color-hops-dialog-form-element-border;
+      border-color: $color-hops-form-element-border;
     }
   }
 }
 
 .react-select-override--pedagogy-form {
   .react-select-override__control {
-    border-color: $color-hops-dialog-form-element-border;
+    border-color: $color-hops-form-element-border;
     height: auto;
     max-width: unset;
 
     &:hover {
-      border-color: $color-hops-dialog-form-element-border;
+      border-color: $color-hops-form-element-border;
+    }
+  }
+}
+
+.react-select-override--language-profile-form {
+  .react-select-override__control {
+    border-color: $color-language-profile-form-element-border;
+    height: auto;
+    max-width: unset;
+
+    &:hover {
+      border-color: $color-language-profile-form-element-border;
     }
   }
 }

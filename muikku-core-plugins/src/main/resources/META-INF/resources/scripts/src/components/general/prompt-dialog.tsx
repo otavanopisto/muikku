@@ -2,6 +2,7 @@ import * as React from "react";
 import Button from "~/components/general/button";
 import Dialog from "~/components/general/dialog";
 import "~/sass/elements/buttons.scss";
+import { useTranslation } from "react-i18next";
 
 /**
  * A simple prompt dialog wrapper
@@ -25,7 +26,7 @@ interface PromptDialogProps {
   title: string;
   content: string;
   onExecute: () => void;
-  buttonLocales: PromptDialogButtons;
+  buttonLocales?: PromptDialogButtons;
 }
 
 /**
@@ -36,6 +37,8 @@ const PromptDialog: React.FC<PromptDialogProps> = (props) => {
   const [locked, setLocked] = React.useState(false);
   const { modifier, children, title, content, onExecute, buttonLocales } =
     props;
+  const { t } = useTranslation();
+
   /**
    * handleOnExecute handler for execute funtction
    * @param closeDialog closeDialog
@@ -63,13 +66,13 @@ const PromptDialog: React.FC<PromptDialogProps> = (props) => {
         onClick={() => handleOnExecute(closeDialog)}
         disabled={locked}
       >
-        {buttonLocales.execute}
+        {buttonLocales ? buttonLocales.execute : t("actions.remove")}
       </Button>
       <Button
         buttonModifiers={["cancel", "standard-cancel"]}
         onClick={closeDialog}
       >
-        {buttonLocales.cancel}
+        {buttonLocales ? buttonLocales.cancel : t("actions.cancel")}
       </Button>
     </div>
   );
