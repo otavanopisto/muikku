@@ -1,130 +1,112 @@
+/* eslint-disable jsdoc/require-jsdoc */
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { connect } from "react-redux";
-import MaterialLoader from "~/components/base/material-loader";
+import { useSelector } from "react-redux";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
 } from "~/reducers/workspaces";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
-import { MaterialLoaderContent } from "~/components/base/material-loader/content";
-import { MaterialLoaderButtons } from "~/components/base/material-loader/buttons";
+import { MaterialLoaderTitle } from "~/components/base/material-loaderV2/components/title";
+import { MaterialLoaderContent } from "~/components/base/material-loaderV2/components/content";
+import { MaterialLoaderButtons } from "~/components/base/material-loaderV2/components/buttons";
 import LazyLoader from "~/components/general/lazy-loader";
-import { StatusType } from "~/reducers/base/status";
-import { AnyActionType } from "~/actions";
-import { withTranslation, WithTranslation } from "react-i18next";
+import MaterialLoaderV2 from "~/components/base/material-loaderV2";
+import { STATE_CONFIGS } from "~/components/base/material-loaderV2/state/StateConfig";
+import { createMaterialsProvider } from "~/components/base/material-loaderV2/providers/MaterialsProvider";
+import { useFieldManager } from "~/components/base/material-loaderV2/fields/FieldManager";
+import { useStateManager } from "~/components/base/material-loaderV2/state/StateManager";
 
 /**
  * WorkspaceMaterialProps
  */
-interface ExamMaterialProps extends WithTranslation {
-  status: StatusType;
+interface ExamMaterialProps {
   materialContentNode: MaterialContentNodeWithIdAndLogic;
+  folder: MaterialContentNodeWithIdAndLogic;
   workspace: WorkspaceDataType;
   anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
 }
 
 /**
- * WorkspaceMaterialState
- */
-interface ExamMaterialState {}
-
-/**
  * WorkspaceMaterial
+ * @param props props
  */
-class ExamMaterial extends React.Component<
-  ExamMaterialProps,
-  ExamMaterialState
-> {
-  /**
-   * constructor
-   * @param props props
-   */
-  constructor(props: ExamMaterialProps) {
-    super(props);
-  }
+const ExamMaterial = (props: ExamMaterialProps) => {
+  const { materialContentNode, folder, workspace } = props;
 
-  /**
-   * render
-   */
-  render() {
-    const isBinary = this.props.materialContentNode.type === "binary";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const status = useSelector((state: StateType) => state.status);
 
-    return (
-      <LazyLoader
-        useChildrenAsLazy={true}
-        className="material-lazy-loader-container"
-      >
-        {(loaded: boolean) => (
-          <MaterialLoader
-            canPublish
-            canRevert
-            canCopy={!isBinary}
-            canHide
-            canDelete
-            canRestrictView
-            canChangePageType={!isBinary}
-            canChangeExerciseType={!isBinary}
-            canSetLicense={!isBinary}
-            canSetProducers={!isBinary}
-            canAddAttachments={!isBinary}
-            canEditContent={!isBinary}
-            editable={false}
-            material={this.props.materialContentNode}
-            workspace={this.props.workspace}
-            answerable={this.props.status.loggedIn}
-            readOnly={!this.props.status.loggedIn}
-            invisible={!loaded}
-            isViewRestricted={false}
-            readspeakerComponent={this.props.readspeakerComponent}
-            anchorElement={this.props.anchorItem}
-            loadCompositeReplies
-          >
-            {(props, state, stateConfiguration) => (
-              <div>
-                <MaterialLoaderTitle {...props} {...state} />
-                <MaterialLoaderContent
-                  {...props}
-                  {...state}
-                  stateConfiguration={stateConfiguration}
-                />
+  const dataProvider = createMaterialsProvider({
+    folder: {
+      ...folder,
+      contentVersion: "ckeditor4",
+    },
+    material: {
+      ...materialContentNode,
+      contentVersion: "ckeditor4",
+      assignment: materialContentNode.assignment,
+      evaluation: materialContentNode.evaluation,
+    },
+    workspace: {
+      id: workspace.id,
+      urlName: workspace.urlName,
+      language: workspace.language,
+    },
+    context: {
+      tool: "exams",
+    },
+    currentState: "INCOMPLETE",
+    assignmentType: materialContentNode.assignmentType,
+    canEdit: false,
+    canSubmit: false,
+    canViewAnswers: false,
+    fields: [],
+    answers: [],
+    onFieldChange: () => {},
+    onSubmit: () => Promise.resolve(),
+    onModify: () => Promise.resolve(),
+  });
 
-                <div className="material-page__de-floater"></div>
+  const fieldManager = useFieldManager(dataProvider, () => {});
+  const stateManager = useStateManager(dataProvider, STATE_CONFIGS);
 
-                <MaterialLoaderButtons
-                  {...props}
-                  {...state}
-                  stateConfiguration={stateConfiguration}
-                />
-              </div>
-            )}
-          </MaterialLoader>
-        )}
-      </LazyLoader>
-    );
-  }
-}
+  return (
+    <LazyLoader
+      useChildrenAsLazy={true}
+      className="material-lazy-loader-container"
+    >
+      {(loaded: boolean) => (
+        <MaterialLoaderV2
+          dataProvider={dataProvider}
+          stateConfigs={STATE_CONFIGS}
+          websocket={null}
+          invisible={!loaded}
+        >
+          {(props, state, stateConfiguration) => (
+            <div>
+              <MaterialLoaderTitle {...props} {...state} />
+              <MaterialLoaderContent
+                {...props}
+                {...state}
+                fieldManager={fieldManager}
+                stateManager={stateManager}
+                dataProvider={dataProvider}
+              />
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    status: state.status,
-  };
-}
+              <div className="material-page__de-floater"></div>
 
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({}, dispatch);
-}
+              <MaterialLoaderButtons
+                {...props}
+                {...state}
+                stateConfiguration={stateConfiguration}
+              />
+            </div>
+          )}
+        </MaterialLoaderV2>
+      )}
+    </LazyLoader>
+  );
+};
 
-export default withTranslation(["common"])(
-  connect(mapStateToProps, mapDispatchToProps)(ExamMaterial)
-);
+export default ExamMaterial;
