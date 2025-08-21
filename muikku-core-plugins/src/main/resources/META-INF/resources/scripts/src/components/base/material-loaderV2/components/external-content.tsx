@@ -5,12 +5,7 @@ import { RenderProps, RenderState } from "../types";
 /**
  * MaterialLoaderExternalContentProps
  */
-interface MaterialLoaderExternalContentProps extends RenderProps, RenderState {
-  answersChecked: boolean;
-  answersVisible: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  stateConfiguration: any;
-}
+interface MaterialLoaderExternalContentProps extends RenderProps, RenderState {}
 
 /**
  * Component is used for special cases where the material is not used most

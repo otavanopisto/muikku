@@ -1,24 +1,29 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+//import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { RenderProps, RenderState } from "../types";
 
-type MaterialLoaderGradeProps = MaterialLoaderProps;
+/**
+ * MaterialLoaderGradeProps
+ */
+interface MaterialLoaderGradeProps extends RenderProps, RenderState {}
 
 /**
  * MaterialLoaderGrade
  * @param props props
  */
 export function MaterialLoaderGrade(props: MaterialLoaderGradeProps) {
+  const { material, compositeReply } = props;
+
   const { t } = useTranslation(["materials", "workspace", "common"]);
 
   const grade =
-    (props.material.evaluation && props.material.evaluation.grade) ||
-    (props.compositeReplies &&
-      props.compositeReplies.evaluationInfo &&
-      props.compositeReplies.evaluationInfo.grade);
+    (material.evaluation && material.evaluation.grade) ||
+    (compositeReply &&
+      compositeReply.evaluationInfo &&
+      compositeReply.evaluationInfo.grade);
 
-  const isIncomplete =
-    props.compositeReplies && props.compositeReplies.state === "INCOMPLETE";
+  const isIncomplete = compositeReply && compositeReply.state === "INCOMPLETE";
 
   if (isIncomplete) {
     return (

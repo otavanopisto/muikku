@@ -7,24 +7,21 @@ import Synchronizer from "./base/synchronizer";
 import TextareaAutosize from "react-textarea-autosize";
 import { connect } from "react-redux";
 import { StrMathJAX } from "../static/strmathjax";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "~/components/base/material-loader/base";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { AnyActionType } from "~/actions/index";
-import {
-  displayNotification,
-  DisplayNotificationTriggerType,
-} from "~/actions/base/notifications";
+import { displayNotification } from "~/actions/base/notifications";
 import "~/sass/elements/memofield.scss";
 import { isValidHTML } from "~/util/html";
+import { CommonFieldProps } from "../../types";
 
 /**
  * MemoFieldProps
  */
-interface MemoFieldProps extends WithTranslation {
-  type: string;
+interface MemoFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     example: string;
     columns: string;
@@ -34,20 +31,6 @@ interface MemoFieldProps extends WithTranslation {
     maxChars: string;
     maxWords: string;
   };
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => any;
-  displayNotification: DisplayNotificationTriggerType;
-  invisible?: boolean;
 }
 
 /**
@@ -269,13 +252,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
       content = words.slice(0, maxWordLimit).join(" ");
       localeContext = "words";
     }
-    this.props.displayNotification(
-      this.props.t("notifications.contentLimitReached", {
-        ns: "materials",
-        context: localeContext,
-      }),
-      "info"
-    );
+    // this.props.displayNotification(
+    //   this.props.t("notifications.contentLimitReached", {
+    //     ns: "materials",
+    //     context: localeContext,
+    //   }),
+    //   "info"
+    // );
     return content;
   }
 
@@ -337,13 +320,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           // Limit is exceeded, we set the locale context for notification
           const localeContext = exceedsCharacterLimit ? "characters" : "words";
 
-          this.props.displayNotification(
-            this.props.t("notifications.contentLimitReached", {
-              ns: "materials",
-              context: localeContext,
-            }),
-            "info"
-          );
+          // this.props.displayNotification(
+          //   this.props.t("notifications.contentLimitReached", {
+          //     ns: "materials",
+          //     context: localeContext,
+          //   }),
+          //   "info"
+          // );
           newValue = this.state.value;
         }
       }
@@ -407,13 +390,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
             instance.getSelection().selectRanges([range]);
           },
         });
-        this.props.displayNotification(
-          this.props.t("notifications.pastedContentLimitReached", {
-            ns: "materials",
-            context: localeContext,
-          }),
-          "info"
-        );
+        // this.props.displayNotification(
+        //   this.props.t("notifications.pastedContentLimitReached", {
+        //     ns: "materials",
+        //     context: localeContext,
+        //   }),
+        //   "info"
+        // );
       } else {
         // If the user has exceeded the limit and is not pasting, we need to revert the changes
 
@@ -438,13 +421,13 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
               instance.getSelection().selectRanges([range]);
             },
           });
-          this.props.displayNotification(
-            this.props.t("notifications.contentLimitReached", {
-              ns: "materials",
-              context: localeContext,
-            }),
-            "info"
-          );
+          // this.props.displayNotification(
+          //   this.props.t("notifications.contentLimitReached", {
+          //     ns: "materials",
+          //     context: localeContext,
+          //   }),
+          //   "info"
+          // );
         }
       }
       return;
@@ -548,7 +531,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
         ? Number(this.props.content.rows)
         : 3;
 
-    if (this.props.usedAs === "default") {
+    if (this.props.context.tool === "materials") {
       // if readonly
       if (this.props.readOnly) {
         // depending to whether rich edit or not we make it be with the value as inner html or just raw text
@@ -598,7 +581,7 @@ class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
           </CKEditor>
         );
       }
-    } else if (this.props.usedAs === "evaluationTool") {
+    } else if (this.props.context.tool === "evaluation") {
       // if readonly.
       if (this.props.readOnly) {
         // here we make it be a simple textarea or a rich text editor, also we need to escape html to prevent possible script injections

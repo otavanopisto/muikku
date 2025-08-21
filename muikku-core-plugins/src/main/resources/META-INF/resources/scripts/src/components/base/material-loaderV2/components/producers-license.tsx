@@ -1,9 +1,14 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Link from "~/components/general/link";
+import { RenderProps, RenderState } from "../types";
 
-type MaterialLoaderProducersLicenseProps = MaterialLoaderProps;
+/**
+ * MaterialLoaderProducersLicenseProps
+ */
+interface MaterialLoaderProducersLicenseProps
+  extends RenderProps,
+    RenderState {}
 
 /**
  * MaterialLoaderProducersLicense
@@ -12,32 +17,31 @@ type MaterialLoaderProducersLicenseProps = MaterialLoaderProps;
 export function MaterialLoaderProducersLicense(
   props: MaterialLoaderProducersLicenseProps
 ) {
+  const { material } = props;
+
   const { t } = useTranslation(["materials", "common"]);
 
   if (
-    !(
-      (props.material.producers && props.material.producers.length) ||
-      props.material.license
-    )
+    !((material.producers && material.producers.length) || material.license)
   ) {
     return null;
   }
 
-  const license = props.material.license;
-  const hasLink = props.material.license
-    ? props.material.license.indexOf("http://") === 0 ||
-      props.material.license.indexOf("https://") === 0
+  const license = material.license;
+  const hasLink = material.license
+    ? material.license.indexOf("http://") === 0 ||
+      material.license.indexOf("https://") === 0
     : false;
 
   return (
     <div className="material-page__metadata-container rs_skip">
-      {props.material.producers && props.material.producers.length ? (
+      {material.producers && material.producers.length ? (
         <div className="material-page__producers">
           <div className="material-page__producers-label">
             {t("labels.producers", { ns: "materials" })}:
           </div>
           <div className="material-page__producers-item">
-            {props.material.producers.map((p) => p.name).join(", ")}
+            {material.producers.map((p) => p.name).join(", ")}
           </div>
         </div>
       ) : null}

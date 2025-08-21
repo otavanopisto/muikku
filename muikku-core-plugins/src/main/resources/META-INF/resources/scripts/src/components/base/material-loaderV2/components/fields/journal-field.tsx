@@ -4,35 +4,21 @@ import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "~/components/base/material-loader/base";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 import "~/sass/elements/journalfield.scss";
+import { CommonFieldProps } from "../../types";
 
 /**
  * JournalProps
  */
-interface JournalFieldProps extends WithTranslation {
-  type: string;
+interface JournalFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     name: string;
   };
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => any;
-
-  invisible?: boolean;
 }
 
 /**
@@ -236,7 +222,7 @@ class JournalField extends React.Component<
     // now we need the field
     let field;
 
-    if (this.props.usedAs === "default") {
+    if (this.props.context.tool === "materials") {
       // if readonly
       if (this.props.readOnly) {
         field = (
@@ -281,7 +267,7 @@ class JournalField extends React.Component<
           </>
         );
       }
-    } else if (this.props.usedAs === "evaluationTool") {
+    } else if (this.props.context.tool === "evaluation") {
       // if readonly.
       if (this.props.readOnly) {
         // here we make it be a simple textarea or a rich text editor, also we need to escape html to prevent possible script injections

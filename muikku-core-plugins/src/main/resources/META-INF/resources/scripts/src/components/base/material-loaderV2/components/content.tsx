@@ -1,16 +1,12 @@
 import * as React from "react";
 import BinaryMaterialLoader from "~/components/base/material-loaderV2/components/binary";
 import { ContentRenderer } from "../content/ContentRenderer";
-import { FieldManager } from "../fields/FieldManager";
-import { StateManager } from "../state/StateManager";
 import { DataProvider, RenderProps, RenderState } from "../types";
 
 /**
  * MaterialLoaderContentProps
  */
 interface MaterialLoaderContentProps extends RenderProps, RenderState {
-  fieldManager: FieldManager;
-  stateManager: StateManager;
   dataProvider: DataProvider;
 }
 

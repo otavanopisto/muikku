@@ -4,11 +4,12 @@ import Dropdown from "~/components/general/dropdown";
 import { ButtonPill } from "~/components/general/button";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { RenderProps, RenderState } from "../types";
 
 /**
  * EditorButtonSetProps
  */
-interface EditorButtonSetProps extends MaterialLoaderProps {
+interface EditorButtonSetProps extends RenderProps, RenderState {
   invisible?: boolean;
 }
 
@@ -16,7 +17,7 @@ interface EditorButtonSetProps extends MaterialLoaderProps {
  * toggleVisiblePageStatus
  * @param props props
  */
-function toggleVisiblePageStatus(props: EditorButtonSetProps) {
+/* function toggleVisiblePageStatus(props: EditorButtonSetProps) {
   props.updateWorkspaceMaterialContentNode({
     workspace: props.workspace,
     material: props.material,
@@ -27,13 +28,13 @@ function toggleVisiblePageStatus(props: EditorButtonSetProps) {
     isDraft: false,
     updateLinked: true,
   });
-}
+} */
 
 /**
  * startupEditor
  * @param props props
  */
-function startupEditor(props: EditorButtonSetProps) {
+/* function startupEditor(props: EditorButtonSetProps) {
   if (
     typeof props.canAddAttachments === "undefined" ||
     props.canAddAttachments
@@ -97,13 +98,13 @@ function startupEditor(props: EditorButtonSetProps) {
     },
     true
   );
-}
+} */
 
 /**
  * copyPage
  * @param props props
  */
-function copyPage(props: EditorButtonSetProps) {
+/* function copyPage(props: EditorButtonSetProps) {
   localStorage.setItem(
     "workspace-material-copied-id",
     props.material.workspaceMaterialId.toString(10)
@@ -117,22 +118,26 @@ function copyPage(props: EditorButtonSetProps) {
     }),
     "success"
   );
-}
+} */
 
 /**
  * MaterialLoaderEditorButtonSet
  * @param props props
  */
 export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
+  const { startEditor, editorPermissions } = props;
+
   const { t } = useTranslation(["materials", "common"]);
 
-  if (!props.editable) {
+  if (!editorPermissions.editable) {
     return null;
   }
 
-  const viewForAdminPanel = props.isInFrontPage
+  /* const viewForAdminPanel = props.isInFrontPage
     ? "workspace-description"
-    : "workspace-materials";
+    : "workspace-materials"; */
+
+  const viewForAdminPanel = "workspace-materials";
 
   if (props.invisible) {
     return (
@@ -154,10 +159,10 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
         <ButtonPill
           buttonModifiers="material-management-page"
           icon="pencil"
-          onClick={startupEditor.bind(this, props)}
+          onClick={startEditor}
         />
       </Dropdown>
-      {props.canCopy ? (
+      {/* {props.canCopy ? (
         <Dropdown
           openByHover
           modifier="material-management-tooltip"
@@ -166,11 +171,11 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
           <ButtonPill
             buttonModifiers="material-management-page"
             icon="copy"
-            onClick={copyPage.bind(this, props)}
+            //onClick={copyPage.bind(this, props)}
           />
         </Dropdown>
-      ) : null}
-      {props.canHide && (!props.folder || !props.folder.hidden) ? (
+      ) : null} */}
+      {/* {props.canHide && (!props.folder || !props.folder.hidden) ? (
         <Dropdown
           openByHover
           modifier="material-management-tooltip"
@@ -183,10 +188,10 @@ export function MaterialLoaderEditorButtonSet(props: EditorButtonSetProps) {
           <ButtonPill
             buttonModifiers="material-management-page"
             icon="eye"
-            onClick={toggleVisiblePageStatus.bind(this, props)}
+            //onClick={toggleVisiblePageStatus.bind(this, props)}
           />
         </Dropdown>
-      ) : null}
+      ) : null} */}
     </div>
   );
 }

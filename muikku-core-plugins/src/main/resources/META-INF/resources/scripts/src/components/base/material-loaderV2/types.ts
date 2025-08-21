@@ -9,6 +9,8 @@ import {
   WorkspaceActivity,
   WorkspaceMaterial,
 } from "~/generated/client";
+import { FieldManager } from "./fields/FieldManager";
+import { StateManager } from "./state/StateManager";
 
 // Content version support for CKEditor 4 → Tiptap migration
 export type ContentVersion = "ckeditor4" | "tiptap";
@@ -39,9 +41,42 @@ export interface StateConfig {
 }
 
 /**
+ * Material context interface
+ */
+export interface MaterialContext {
+  readonly contextPath: string;
+  readonly tool: ContextTool;
+}
+
+/**
+ * Editor permissions interface
+ */
+export interface EditorPermissions {
+  readonly editable?: boolean;
+  readonly canPublish?: boolean;
+  readonly canRevert?: boolean;
+  readonly canCopy?: boolean;
+  readonly canHide?: boolean;
+  readonly canDelete?: boolean;
+  readonly canRestrictView?: boolean;
+  readonly canChangePageType?: boolean;
+  readonly canChangeExerciseType?: boolean;
+  readonly canSetLicense?: boolean;
+  readonly canSetProducers?: boolean;
+  readonly canAddAttachments?: boolean;
+  readonly canEditContent?: boolean;
+  readonly canSetTitle?: boolean;
+  readonly disablePlugins?: boolean;
+}
+
+/**
  * Data provider interface (abstracts data source)
  */
 export interface DataProvider {
+  // User data
+  readonly userId: number;
+
+  // Folder data
   readonly folder: {
     readonly contentVersion: ContentVersion;
   } & MaterialContentNode;
@@ -63,13 +98,17 @@ export interface DataProvider {
   };
 
   // Context tool
-  readonly context: {
-    readonly tool: ContextTool;
-  };
+  readonly context: MaterialContext;
+
+  // Editor permissions
+  readonly editorPermissions: EditorPermissions;
+
+  // Composite reply
+  readonly compositeReply?: MaterialCompositeReply;
 
   // Current state
-  readonly currentState: MaterialCompositeReplyStateType;
-  readonly assignmentType: MaterialAssigmentType;
+  readonly currentState?: MaterialCompositeReplyStateType;
+  readonly assignmentType?: MaterialAssigmentType;
 
   // User permissions
   readonly canEdit: boolean;
@@ -81,9 +120,9 @@ export interface DataProvider {
   readonly answers: AnswerData[];
 
   // Context-specific methods
-  readonly getInterimEvaluationRequest?: () =>
-    | InterimEvaluationRequest
-    | undefined;
+  getInterimEvaluationRequest?: () => InterimEvaluationRequest | undefined;
+
+  startEditor?: () => void;
 
   // Actions
   onFieldChange: (fieldName: string, value: any) => void;
@@ -157,10 +196,12 @@ export interface MaterialLoaderV2Props {
  * Props passed to render function
  */
 export interface RenderProps {
+  readonly userId: DataProvider["userId"];
   readonly folder: DataProvider["folder"];
   readonly material: DataProvider["material"];
   readonly workspace: DataProvider["workspace"];
   readonly context: DataProvider["context"];
+  readonly editorPermissions: DataProvider["editorPermissions"];
   readonly currentState: MaterialCompositeReplyStateType;
   readonly assignmentType: MaterialAssigmentType;
   readonly canEdit: boolean;
@@ -170,7 +211,10 @@ export interface RenderProps {
   readonly answers: AnswerData[];
   readonly invisible?: boolean;
   readonly readOnly?: boolean;
+  readonly stateManager: StateManager;
+  readonly fieldManager: FieldManager;
   readonly getInterimEvaluationRequest?: () => InterimEvaluationRequest;
+  readonly startEditor?: () => void;
   readonly onFieldChange: (fieldName: string, value: any) => void;
   readonly onSubmit: () => Promise<void>;
   readonly onModify: () => Promise<void>;
@@ -225,3 +269,24 @@ export type StaticDataset =
   | LinkDataset
   | ImageDataset
   | IframeDataset;
+
+/**
+ * Common field props interface
+ */
+export interface CommonFieldProps {
+  readonly userId: number;
+  readonly key?: number;
+  readonly type: string;
+  readonly context: MaterialContext;
+  readonly readOnly?: boolean;
+  readonly initialValue?: string;
+  readonly onChange?: (
+    context: React.Component<any, any>,
+    name: string,
+    newValue: any
+  ) => any;
+  readonly invisible?: boolean;
+  readonly displayCorrectAnswers?: boolean;
+  readonly checkAnswers?: boolean;
+  readonly onAnswerChange?: (name: string, value: boolean) => any;
+}

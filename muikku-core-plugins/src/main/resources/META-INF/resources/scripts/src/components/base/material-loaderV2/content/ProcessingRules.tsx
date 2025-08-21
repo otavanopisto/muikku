@@ -5,6 +5,7 @@ import * as React from "react";
 import { HTMLToReactComponentRule } from "~/util/modifiers";
 import { FieldManager } from "../fields/FieldManager";
 import {
+  CommonFieldProps,
   DataProvider,
   IframeDataset,
   ImageDataset,
@@ -148,7 +149,13 @@ export function createProcessingRules(
         tagName === "object" && FIELD_COMPONENTS[element.getAttribute("type")],
 
       processingFunction: (tag, props, children, element) =>
-        createFieldElement(element, fieldManager, stateManager, props.key),
+        createFieldElement(
+          element,
+          fieldManager,
+          stateManager,
+          dataProvider,
+          props.key
+        ),
     },
 
     // Rule for iframes
@@ -313,6 +320,7 @@ export function createProcessingRules(
  * @param element HTML element
  * @param fieldManager field manager
  * @param stateManager state manager
+ * @param dataProvider data provider
  * @param key React key
  * @returns React element
  */
@@ -320,11 +328,13 @@ function createFieldElement(
   element: HTMLElement,
   fieldManager: FieldManager,
   stateManager: StateManager,
+  dataProvider: DataProvider,
   key?: number
 ): React.ReactElement {
   const fieldType = element.getAttribute("type");
   const FieldComponent = FIELD_COMPONENTS[fieldType];
 
+  // If the field component is not found, return an invalid element
   if (!FieldComponent) {
     return (
       <span key={key}>
@@ -334,22 +344,94 @@ function createFieldElement(
   }
 
   // Extract parameters from param elements
+  const parameters: { [key: string]: any } = extractFieldParameters(element);
+
+  const fieldName = parameters.content?.name;
+
+  if (!fieldName) {
+    return <span key={key}>Missing field name</span>;
+  }
+
+  // Create common field props we want to pass to all fields
+  const commonProps = createCommonFieldProps(
+    fieldType,
+    fieldName,
+    fieldManager,
+    stateManager,
+    dataProvider,
+    key
+  );
+
+  // Merge common props with field-specific parameters
+  const fieldProps = {
+    ...commonProps,
+    ...parameters,
+  };
+
+  return <FieldComponent {...fieldProps} />;
+}
+
+/**
+ * Create common field props
+ * @param type field type
+ * @param fieldName field name
+ * @param fieldManager field manager
+ * @param stateManager state manager
+ * @param dataProvider data provider
+ * @param key key
+ * @returns common field props
+ */
+function createCommonFieldProps(
+  type: string,
+  fieldName: string,
+  fieldManager: FieldManager,
+  stateManager: StateManager,
+  dataProvider: DataProvider,
+  key?: number
+): CommonFieldProps {
+  return {
+    key,
+    type,
+    userId: dataProvider.userId,
+    invisible: false, // This should come from props
+    readOnly: !stateManager.canEdit(),
+    context: dataProvider.context,
+    onChange: (value: any) => {
+      fieldManager.handleFieldChange(fieldName, value);
+    },
+    initialValue: fieldManager.getFieldValue(fieldName),
+    // validationState: fieldManager.getFieldValidationState(fieldName),
+    // hasError: fieldManager.hasFieldError(fieldName),
+    // errorMessage: fieldManager.getFieldError(fieldName),
+  };
+}
+
+/**
+ * Extract field parameters
+ * @param element element
+ * @returns field parameters
+ */
+function extractFieldParameters(element: HTMLElement): { [key: string]: any } {
   const parameters: { [key: string]: any } = {};
+
   element.querySelectorAll("param").forEach((node) => {
-    parameters[node.getAttribute("name")] = node.getAttribute("value");
+    const name = node.getAttribute("name");
+    const value = node.getAttribute("value");
+    if (name) {
+      parameters[name] = value;
+    }
   });
 
   // Parse JSON content if present
-  if (parameters["type"] === "application/json") {
+  if (parameters["type"] === "application/json" && parameters["content"]) {
     try {
-      parameters["content"] =
-        parameters["content"] && JSON.parse(parameters["content"]);
+      parameters["content"] = JSON.parse(parameters["content"]);
     } catch (e) {
       // Ignore parsing errors
     }
   }
 
-  // Set default parameters
+  // Set defaults
   if (!parameters["type"]) {
     parameters["type"] = "application/json";
   }
@@ -357,30 +439,7 @@ function createFieldElement(
     parameters["content"] = null;
   }
 
-  // Add field manager callbacks
-  parameters["onChange"] = (value: any) => {
-    const fieldName = parameters.content?.name;
-    if (fieldName) {
-      fieldManager.handleFieldChange(fieldName, value);
-    }
-  };
-
-  // Add field state
-  const fieldName = parameters.content?.name;
-  if (fieldName) {
-    parameters["initialValue"] = fieldManager.getFieldValue(fieldName);
-    parameters["validationState"] =
-      fieldManager.getFieldValidationState(fieldName);
-    parameters["hasError"] = fieldManager.hasFieldError(fieldName);
-    parameters["errorMessage"] = fieldManager.getFieldError(fieldName);
-  }
-
-  // Add other required props
-  parameters["key"] = key;
-  parameters["invisible"] = false; // This should come from props
-  parameters["readOnly"] = !stateManager.canEdit(); // This should come from state manager
-
-  return <FieldComponent {...parameters} />;
+  return parameters;
 }
 
 /**

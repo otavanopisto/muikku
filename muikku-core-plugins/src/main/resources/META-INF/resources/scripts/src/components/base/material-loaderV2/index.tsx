@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsdoc/require-jsdoc */
 import * as React from "react";
 import { MaterialLoaderV2Props, RenderProps, RenderState } from "./types";
 import { useStateManager } from "./state/StateManager";
 import { useFieldManager } from "./fields/FieldManager";
 import { useSyncManager } from "./sync/SyncManager";
+import { MaterialAssigmentType } from "~/generated/client";
 
 /**
  * Main MaterialLoaderV2 component
@@ -45,11 +47,13 @@ export const MaterialLoaderV2: React.FC<MaterialLoaderV2Props> = (props) => {
   // Build render props for children
   const renderProps: RenderProps = React.useMemo(
     () => ({
+      userId: dataProvider.userId,
       folder: dataProvider.folder,
       material: dataProvider.material,
       workspace: dataProvider.workspace,
       currentState: dataProvider.currentState,
       assignmentType: dataProvider.assignmentType,
+      editorPermissions: dataProvider.editorPermissions,
       context: dataProvider.context,
       readOnly: stateManager.isReadOnly(),
       canEdit: stateManager.canEdit(),
@@ -57,8 +61,10 @@ export const MaterialLoaderV2: React.FC<MaterialLoaderV2Props> = (props) => {
       canViewAnswers: stateManager.shouldShowAnswers(),
       fields: fieldManager.getFields(),
       answers: dataProvider.answers,
+      stateManager,
+      fieldManager,
       getInterimEvaluationRequest: dataProvider.getInterimEvaluationRequest,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      startEditor: dataProvider.startEditor,
       onFieldChange: (fieldName: string, value: any) => {
         fieldManager.handleFieldChange(fieldName, value);
         syncManager.queueFieldSync(fieldName, value);
@@ -77,22 +83,24 @@ export const MaterialLoaderV2: React.FC<MaterialLoaderV2Props> = (props) => {
   const renderState: RenderState = React.useMemo(
     () => ({
       elements: [], // This will be populated by ContentRenderer
-      compositeReplies: undefined, // This should come from dataProvider if needed
+      compositeReply: dataProvider.compositeReply, // This should come from dataProvider if needed
       stateConfiguration: currentStateConfig,
     }),
-    [currentStateConfig]
+    [currentStateConfig, dataProvider.compositeReply]
   );
 
   // Build CSS classes
   const className = React.useMemo(() => {
     const baseClass = "material-page";
-    const materialPageType = stateManager.getAssignmentType().toLowerCase();
+    const materialPageType = returnMaterialPageType(
+      stateManager.getAssignmentType()
+    );
     const modifierClasses = Array.isArray(modifiers)
       ? modifiers.map((mod) => `material-page--${mod}`)
       : [`material-page--${modifiers}`];
 
     const stateClass = currentStateConfig
-      ? `material-page--${currentStateConfig.assignmentType.toLowerCase()}`
+      ? `material-page--${dataProvider.compositeReply?.state}`
       : "";
 
     const hiddenClass = stateManager.isHidden() ? "state-HIDDEN" : "";
@@ -106,7 +114,12 @@ export const MaterialLoaderV2: React.FC<MaterialLoaderV2Props> = (props) => {
     ]
       .filter(Boolean)
       .join(" ");
-  }, [modifiers, stateManager, currentStateConfig]);
+  }, [
+    stateManager,
+    modifiers,
+    currentStateConfig,
+    dataProvider.compositeReply?.state,
+  ]);
 
   // Cleanup on unmount
   React.useEffect(
@@ -121,6 +134,30 @@ export const MaterialLoaderV2: React.FC<MaterialLoaderV2Props> = (props) => {
       {children(renderProps, renderState, currentStateConfig!)}
     </article>
   );
+};
+
+/**
+ * returnMaterialPageType
+ * @param assignmentType assignment type
+ * @returns material page type
+ */
+const returnMaterialPageType = (assignmentType: MaterialAssigmentType) => {
+  switch (assignmentType) {
+    case "EXERCISE":
+      return "exercise";
+
+    case "EVALUATED":
+      return "assignment";
+
+    case "JOURNAL":
+      return "journal";
+
+    case "INTERIM_EVALUATION":
+      return "interim-evaluation";
+
+    default:
+      return "theory";
+  }
 };
 
 /**

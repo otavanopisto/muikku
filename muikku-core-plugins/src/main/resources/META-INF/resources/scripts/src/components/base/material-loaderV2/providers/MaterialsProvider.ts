@@ -13,6 +13,13 @@ export class MaterialsProvider implements DataProvider {
   constructor(private materialsData: DataProvider) {}
 
   /**
+   * Get user id
+   */
+  get userId() {
+    return this.materialsData.userId;
+  }
+
+  /**
    * Get folder data
    */
   get folder() {
@@ -87,6 +94,34 @@ export class MaterialsProvider implements DataProvider {
    */
   get context() {
     return this.materialsData.context;
+  }
+
+  /**
+   * Get editor permissions
+   */
+  get editorPermissions() {
+    return this.materialsData.editorPermissions;
+  }
+
+  /**
+   * Get composite reply
+   */
+  get compositeReply() {
+    return this.materialsData.compositeReply;
+  }
+
+  /**
+   * Get start editor
+   */
+  get startEditor() {
+    return this.materialsData.startEditor;
+  }
+
+  /**
+   * Get get interim evaluation request
+   */
+  get getInterimEvaluationRequest() {
+    return this.materialsData.getInterimEvaluationRequest;
   }
 
   /**

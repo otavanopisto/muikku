@@ -1,14 +1,14 @@
 import * as React from "react";
-import { StatusType } from "~/reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import FileUploader from "~/components/general/file-uploader";
 import Synchronizer from "../base/synchronizer";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "~/components/base/material-loader/base";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import "~/sass/elements/filefield.scss";
+import { MaterialContext } from "../../../types";
 
 /**
  * FileFieldProps
@@ -18,8 +18,7 @@ interface FileFieldProps extends WithTranslation {
   content: {
     name: string;
   };
-  status: StatusType;
-  usedAs: UsedAs;
+  context: MaterialContext;
   readOnly?: boolean;
   initialValue?: string;
   onChange?: (
@@ -226,7 +225,7 @@ class FileField extends React.Component<FileFieldProps, FileFieldState> {
                 this.props.readOnly ? t("content.empty", { ns: "files" }) : null
               }
               readOnly={this.props.readOnly}
-              url={this.props.status.contextPath + "/tempFileUploadServlet"}
+              url={this.props.context.contextPath + "/tempFileUploadServlet"}
               displayNotificationOnError
               formDataGenerator={formDataGenerator}
               onFileSuccess={(file: File, data: any) => {

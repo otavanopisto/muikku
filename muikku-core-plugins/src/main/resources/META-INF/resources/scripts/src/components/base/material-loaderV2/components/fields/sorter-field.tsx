@@ -4,12 +4,13 @@ import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/strmathjax";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "~/components/base/material-loader/base";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 import "~/sass/elements/sorterfield.scss";
+import { CommonFieldProps } from "../../types";
 /**
  * SorterFieldItemType
  */
@@ -21,29 +22,13 @@ interface SorterFieldItemType {
 /**
  * SorterFieldProps
  */
-interface SorterFieldProps extends WithTranslation {
-  type: string;
+interface SorterFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     name: string;
     orientation: "vertical" | "horizontal";
     capitalize: boolean;
     items: Array<SorterFieldItemType>;
   };
-
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => any;
-
-  invisible?: boolean;
 }
 
 /**

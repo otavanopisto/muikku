@@ -1,11 +1,12 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { MaterialLoaderProps } from "~/components/base/material-loader";
+//import { MaterialLoaderProps } from "~/components/base/material-loader";
+import { RenderProps, RenderState } from "../types";
 
 /**
  * MaterialLoaderTitleProps
  */
-interface MaterialLoaderAIProps extends MaterialLoaderProps {}
+interface MaterialLoaderAIProps extends RenderProps, RenderState {}
 
 /* function stopPropagation(e: React.MouseEvent<HTMLDivElement>) {
   e.stopPropagation();
@@ -18,9 +19,9 @@ interface MaterialLoaderAIProps extends MaterialLoaderProps {}
 export function MaterialLoaderAI(props: MaterialLoaderAIProps) {
   const { t } = useTranslation(["materials"]);
 
-  if (props.isInFrontPage) {
+  /* if (props.isInFrontPage) {
     return null;
-  }
+  } */
 
   return (
     <>

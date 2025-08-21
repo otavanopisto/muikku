@@ -10,6 +10,7 @@ import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import "~/sass/elements/connectfield.scss";
 import { createFieldSavedStateClass } from "~/components/base/material-loader/base";
+import { CommonFieldProps } from "../../types";
 
 /**
  * FieldType
@@ -22,8 +23,7 @@ interface FieldType {
 /**
  * ConnectFieldProps
  */
-interface ConnectFieldProps extends WithTranslation {
-  type: string;
+interface ConnectFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     name: string;
     fields: FieldType[];
@@ -33,20 +33,6 @@ interface ConnectFieldProps extends WithTranslation {
       counterpart: string;
     }[];
   };
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => any;
-
-  invisible?: boolean;
 }
 
 /**
