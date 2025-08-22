@@ -47,7 +47,6 @@ import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormImplementedActions;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -106,9 +105,6 @@ public class PedagogyRestService {
   
   @Inject
   private PedagogyFormWebsocketMessenger pedagogyFormWebSocketMessenger;
-  
-  @Inject
-  private UserSchoolDataController userSchoolDataController;
   
   /**
    * mApi().pedagogy.form.access.read(123);
@@ -651,7 +647,6 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     boolean guidanceCounselor = false;
     boolean courseTeacher = false;
     boolean studentParent = false;
-    boolean counselor = false;
     boolean manager = false;
     
     // Students can always access their own form
@@ -691,7 +686,6 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
       
       if (implementedActions) {
         manager = sessionController.hasRole(EnvironmentRoleArchetype.MANAGER);
-        counselor = userSchoolDataController.amICounselor(identifier);
       }
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
@@ -699,12 +693,12 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
       // Admins and spec ed teachers always have access...
 
       accessible = isAdmin || specEdTeacher;
-      if (!accessible && (form != null && form.getPublished() != null || implementedActions)) {
+      if (!accessible && ((form != null && form.getPublished() != null) || implementedActions)) {
 
         // ...guidance counselors, course teachers, and guardians can only access published form
         // implemented actions  are available to everyone who has access to the student’s guider view. The guardian is granted read-only access
 
-        accessible = relation.isGuidanceCounselor() || courseTeacher || counselor || manager || (studentParent && accessType == PedagogyFormAccessType.READ);
+        accessible = (relation != null && relation.isGuidanceCounselor()) || courseTeacher || manager || (studentParent && accessType == PedagogyFormAccessType.READ);
       }
     }
     return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher, studentParent);
