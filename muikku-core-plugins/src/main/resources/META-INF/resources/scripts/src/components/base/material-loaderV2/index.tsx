@@ -1,11 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable jsdoc/require-jsdoc */
 import * as React from "react";
-import { MaterialLoaderV2Props, RenderProps, RenderState } from "./types";
-import { useStateManager } from "./state/StateManager";
-import { useFieldManager } from "./fields/FieldManager";
-import { useSyncManager } from "./sync/SyncManager";
+import { DataProvider, RenderProps, RenderState, StateConfig } from "./types";
+import { useStateManager } from "./hooks/useStateManager";
+import { useFieldManager } from "./hooks/useFieldManager";
+import { useSyncManager } from "./hooks/useSyncManager";
+import { useUIManager } from "./hooks/useUIManager";
 import { MaterialAssigmentType } from "~/generated/client";
+
+/**
+ * Material loader props interface
+ */
+export interface MaterialLoaderV2Props {
+  readonly invisible?: boolean;
+  readonly dataProvider: DataProvider;
+  readonly stateConfigs: StateConfig[];
+  readonly children: (
+    props: RenderProps,
+    state: RenderState,
+    config: StateConfig
+  ) => React.ReactElement;
+  readonly modifiers?: string | string[];
+  readonly id?: string;
+  readonly websocket: any;
+  readonly readOnly?: boolean;
+}
 
 /**
  * Main MaterialLoaderV2 component
@@ -13,128 +32,124 @@ import { MaterialAssigmentType } from "~/generated/client";
  * @param props props
  * @returns MaterialLoaderV2 component
  */
-export const MaterialLoaderV2: React.FC<MaterialLoaderV2Props> = (props) => {
-  const {
-    dataProvider,
-    stateConfigs,
-    children,
-    modifiers = [],
-    id,
-    websocket,
-    readOnly = false,
-  } = props;
+export const MaterialLoaderV2: React.FC<MaterialLoaderV2Props> = React.memo(
+  (props) => {
+    const {
+      dataProvider,
+      children,
+      modifiers = [],
+      id,
+      websocket,
+      readOnly = false,
+    } = props;
 
-  // Initialize managers
-  const stateManager = useStateManager(dataProvider, stateConfigs, readOnly);
-  const fieldManager = useFieldManager(dataProvider, (fieldName, value) => {
-    // Handle field changes
-    dataProvider.onFieldChange(fieldName, value);
-  });
-
-  const syncManager = useSyncManager(
-    dataProvider,
-    websocket,
-    (fieldName) => fieldManager.markFieldSynced(fieldName),
-    (fieldName, error) => fieldManager.markFieldError(fieldName, error)
-  );
-
-  // Get current state configuration
-  const currentStateConfig = React.useMemo(
-    () => stateManager.getCurrentConfig(),
-    [stateManager]
-  );
-
-  // Build render props for children
-  const renderProps: RenderProps = React.useMemo(
-    () => ({
-      userId: dataProvider.userId,
-      folder: dataProvider.folder,
-      material: dataProvider.material,
-      workspace: dataProvider.workspace,
-      currentState: dataProvider.currentState,
-      assignmentType: dataProvider.assignmentType,
-      editorPermissions: dataProvider.editorPermissions,
-      context: dataProvider.context,
-      readOnly: stateManager.isReadOnly(),
-      canEdit: stateManager.canEdit(),
-      canSubmit: stateManager.canSubmit(),
-      canViewAnswers: stateManager.shouldShowAnswers(),
-      fields: fieldManager.getFields(),
-      answers: dataProvider.answers,
-      stateManager,
-      fieldManager,
-      getInterimEvaluationRequest: dataProvider.getInterimEvaluationRequest,
-      startEditor: dataProvider.startEditor,
-      onFieldChange: (fieldName: string, value: any) => {
-        fieldManager.handleFieldChange(fieldName, value);
-        syncManager.queueFieldSync(fieldName, value);
-      },
-      onSubmit: async () => {
-        await dataProvider.onSubmit();
-      },
-      onModify: async () => {
-        await dataProvider.onModify();
-      },
-    }),
-    [dataProvider, stateManager, fieldManager, syncManager]
-  );
-
-  // Build render state for children
-  const renderState: RenderState = React.useMemo(
-    () => ({
-      elements: [], // This will be populated by ContentRenderer
-      compositeReply: dataProvider.compositeReply, // This should come from dataProvider if needed
-      stateConfiguration: currentStateConfig,
-    }),
-    [currentStateConfig, dataProvider.compositeReply]
-  );
-
-  // Build CSS classes
-  const className = React.useMemo(() => {
-    const baseClass = "material-page";
-    const materialPageType = returnMaterialPageType(
-      stateManager.getAssignmentType()
+    // Initialize managers
+    const uiManager = useUIManager(dataProvider);
+    const stateManager = useStateManager(dataProvider, readOnly);
+    const fieldManager = useFieldManager(
+      dataProvider,
+      dataProvider.onFieldChange
     );
-    const modifierClasses = Array.isArray(modifiers)
-      ? modifiers.map((mod) => `material-page--${mod}`)
-      : [`material-page--${modifiers}`];
 
-    const stateClass = currentStateConfig
-      ? `material-page--${dataProvider.compositeReply?.state}`
-      : "";
+    const syncManager = useSyncManager(
+      dataProvider,
+      websocket,
+      fieldManager.markFieldSynced,
+      fieldManager.markFieldError
+    );
 
-    const hiddenClass = stateManager.isHidden() ? "state-HIDDEN" : "";
+    // Get current state configuration
+    const currentStateConfig = React.useMemo(
+      () => stateManager.currentConfig,
+      [stateManager]
+    );
 
-    return [
-      baseClass,
-      `material-page--${materialPageType}`,
-      ...modifierClasses,
-      stateClass,
-      hiddenClass,
-    ]
-      .filter(Boolean)
-      .join(" ");
-  }, [
-    stateManager,
-    modifiers,
-    currentStateConfig,
-    dataProvider.compositeReply?.state,
-  ]);
+    // Build render props for children
+    const renderProps: RenderProps = React.useMemo(
+      () => ({
+        userId: dataProvider.userId,
+        folder: dataProvider.folder,
+        material: dataProvider.material,
+        workspace: dataProvider.workspace,
+        currentState: dataProvider.currentState,
+        assignmentType: dataProvider.assignmentType,
+        editorPermissions: dataProvider.editorPermissions,
+        context: dataProvider.context,
+        answers: dataProvider.answers,
+        uiManager: uiManager,
+        stateManager: stateManager,
+        fieldManager: fieldManager,
+        getInterimEvaluationRequest: dataProvider.getInterimEvaluationRequest,
+        startEditor: dataProvider.startEditor,
+        // onFieldChange: (fieldName: string, value: any) => {
+        //   fieldManager.handleFieldChange(fieldName, value);
+        //   syncManager.queueFieldSync(fieldName, value);
+        // },
+      }),
+      [dataProvider, stateManager, fieldManager, uiManager]
+    );
 
-  // Cleanup on unmount
-  React.useEffect(
-    () => () => {
-      syncManager.destroy();
-    },
-    [syncManager]
-  );
+    // Build render state for children
+    const renderState: RenderState = React.useMemo(
+      () => ({
+        elements: [], // This will be populated by ContentRenderer
+        compositeReply: dataProvider.compositeReply, // This should come from dataProvider if needed
+        stateConfiguration: currentStateConfig,
+      }),
+      [currentStateConfig, dataProvider.compositeReply]
+    );
 
-  return (
-    <article className={className} id={id}>
-      {children(renderProps, renderState, currentStateConfig!)}
-    </article>
-  );
-};
+    // Build CSS classes
+    const className = React.useMemo(() => {
+      const baseClass = "material-page";
+      const materialPageType = returnMaterialPageType(
+        stateManager.assignmentType
+      );
+      const modifierClasses = Array.isArray(modifiers)
+        ? modifiers.map((mod) => `material-page--${mod}`)
+        : [`material-page--${modifiers}`];
+
+      const stateClass = currentStateConfig
+        ? `material-page--${dataProvider.compositeReply?.state}`
+        : "";
+
+      const hiddenClass = stateManager.isHidden ? "state-HIDDEN" : "";
+
+      return [
+        baseClass,
+        `material-page--${materialPageType}`,
+        ...modifierClasses,
+        stateClass,
+        hiddenClass,
+      ]
+        .filter(Boolean)
+        .join(" ");
+    }, [
+      stateManager,
+      modifiers,
+      currentStateConfig,
+      dataProvider.compositeReply?.state,
+    ]);
+
+    // Cleanup on unmount
+    React.useEffect(
+      () => () => {
+        console.log("MaterialLoaderV2 unmount");
+        syncManager.clearPendingChanges();
+      },
+      [syncManager]
+    );
+
+    return (
+      <article className={className} id={id}>
+        {children(renderProps, renderState, currentStateConfig!)}
+      </article>
+    );
+  },
+  (prevProps, nextProps) => prevProps.dataProvider === nextProps.dataProvider
+);
+
+MaterialLoaderV2.displayName = "MaterialLoaderV2";
 
 /**
  * returnMaterialPageType

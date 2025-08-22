@@ -69,6 +69,8 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
 
   const materialPageType = returnMaterialPageType();
 
+  console.log("MaterialLoaderTitle render", props.material.title);
+
   return (
     <>
       <h2

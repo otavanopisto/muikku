@@ -2,9 +2,7 @@
 import * as React from "react";
 import $ from "~/lib/jquery";
 import { HTMLtoReactComponent } from "~/util/modifiers";
-import { FieldManager } from "../fields/FieldManager";
-import { StateManager } from "../state/StateManager";
-import { DataProvider } from "../types";
+import { DataProvider, FieldManagerValues, StateManagerValues } from "../types";
 import { createProcessingRules } from "./ProcessingRules";
 
 /**
@@ -12,8 +10,8 @@ import { createProcessingRules } from "./ProcessingRules";
  * Replaces the content rendering logic from the current Base component
  */
 interface ContentRendererProps {
-  fieldManager: FieldManager;
-  stateManager: StateManager;
+  fieldManager: FieldManagerValues;
+  stateManager: StateManagerValues;
   dataProvider: DataProvider;
   invisible: boolean;
 }

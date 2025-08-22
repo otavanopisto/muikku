@@ -3,17 +3,17 @@
 import * as React from "react";
 
 import { HTMLToReactComponentRule } from "~/util/modifiers";
-import { FieldManager } from "../fields/FieldManager";
 import {
   CommonFieldProps,
   DataProvider,
+  FieldManagerValues,
   IframeDataset,
   ImageDataset,
   LinkDataset,
+  StateManagerValues,
   StaticDataset,
   WordDefinitionDataset,
 } from "../types";
-import { StateManager } from "../state/StateManager";
 
 // Import existing field components (we'll keep using these)
 import TextField from "~/components/base/material-loaderV2/components/fields/text-field";
@@ -62,8 +62,8 @@ const FIELD_COMPONENTS: { [key: string]: any } = {
  * @returns array of processing rules
  */
 export function createProcessingRules(
-  fieldManager: FieldManager,
-  stateManager: StateManager, // Add StateManager parameter
+  fieldManager: FieldManagerValues,
+  stateManager: StateManagerValues, // Add StateManager parameter
   dataProvider: DataProvider,
   path: string,
   invisible: boolean
@@ -78,14 +78,12 @@ export function createProcessingRules(
 
       preprocessReactProperties: (tag, props, children, element) => {
         // Use StateManager instead of FieldManager
-        if (stateManager.shouldCheckAnswers()) {
-          const correctAnswers = fieldManager
-            .getFields()
-            .filter(
-              (field) =>
-                fieldManager.getFieldValidationState(field.name) === "valid"
-            ).length;
-          const totalAnswers = fieldManager.getFields().length;
+        if (stateManager.shouldCheckAnswers) {
+          const correctAnswers = fieldManager.fields.filter(
+            (field) =>
+              fieldManager.getFieldValidationState(field.name) === "valid"
+          ).length;
+          const totalAnswers = fieldManager.fields.length;
 
           if (correctAnswers !== totalAnswers) {
             props["data-show"] = "true";
@@ -106,14 +104,12 @@ export function createProcessingRules(
         element.getAttribute("data-name") === "excercises-correct-style-box",
 
       preprocessReactProperties: (tag, props, children, element) => {
-        if (stateManager.shouldCheckAnswers()) {
-          const correctAnswers = fieldManager
-            .getFields()
-            .filter(
-              (field) =>
-                fieldManager.getFieldValidationState(field.name) === "valid"
-            ).length;
-          const totalAnswers = fieldManager.getFields().length;
+        if (stateManager.shouldCheckAnswers) {
+          const correctAnswers = fieldManager.fields.filter(
+            (field) =>
+              fieldManager.getFieldValidationState(field.name) === "valid"
+          ).length;
+          const totalAnswers = fieldManager.fields.length;
 
           if (correctAnswers === totalAnswers) {
             props["data-show"] = "true";
@@ -132,10 +128,7 @@ export function createProcessingRules(
         tagName === "div" && element.getAttribute("data-show") !== null,
 
       preprocessReactProperties: (tag, props, children, element) => {
-        if (
-          stateManager.shouldCheckAnswers() &&
-          stateManager.shouldShowAnswers()
-        ) {
+        if (stateManager.shouldCheckAnswers && stateManager.shouldShowAnswers) {
           props["data-show"] = "true";
         } else {
           props["data-show"] = "false";
@@ -326,8 +319,8 @@ export function createProcessingRules(
  */
 function createFieldElement(
   element: HTMLElement,
-  fieldManager: FieldManager,
-  stateManager: StateManager,
+  fieldManager: FieldManagerValues,
+  stateManager: StateManagerValues,
   dataProvider: DataProvider,
   key?: number
 ): React.ReactElement {
@@ -384,8 +377,8 @@ function createFieldElement(
 function createCommonFieldProps(
   type: string,
   fieldName: string,
-  fieldManager: FieldManager,
-  stateManager: StateManager,
+  fieldManager: FieldManagerValues,
+  stateManager: StateManagerValues,
   dataProvider: DataProvider,
   key?: number
 ): CommonFieldProps {
@@ -394,7 +387,7 @@ function createCommonFieldProps(
     type,
     userId: dataProvider.userId,
     invisible: false, // This should come from props
-    readOnly: !stateManager.canEdit(),
+    readOnly: !stateManager.canEdit,
     context: dataProvider.context,
     onChange: (value: any) => {
       fieldManager.handleFieldChange(fieldName, value);

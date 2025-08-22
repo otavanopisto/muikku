@@ -101,14 +101,12 @@ export function MaterialLoaderContent(props: MaterialLoaderContentProps) {
           props.workspace.language
         }
       >
-        {!props.compositeReply ? null : (
-          <ContentRenderer
-            fieldManager={props.fieldManager}
-            stateManager={props.stateManager}
-            dataProvider={props.dataProvider}
-            invisible={props.invisible}
-          />
-        )}
+        <ContentRenderer
+          fieldManager={props.fieldManager}
+          stateManager={props.stateManager}
+          dataProvider={props.dataProvider}
+          invisible={props.invisible}
+        />
       </div>
 
       {props.material.type === "binary" ? (

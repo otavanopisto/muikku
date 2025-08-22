@@ -54,7 +54,7 @@ interface WorkspaceMaterialProps {
  * WorkspaceMaterial
  * @param props props
  */
-const WorkspaceMaterial = (props: WorkspaceMaterialProps) => {
+const WorkspaceMaterial = React.memo((props: WorkspaceMaterialProps) => {
   const {
     materialContentNode,
     compositeReplies,
@@ -133,148 +133,172 @@ const WorkspaceMaterial = (props: WorkspaceMaterialProps) => {
     }
   }
 
-  const editorPermissions: EditorPermissions = {
-    editable: workspaceEditMode.active,
-    canPublish: true,
-    canRevert: true,
-    canCopy: !isBinary,
-    canHide: true,
-    canDelete: true,
-    canRestrictView: true,
-    canChangePageType: !isBinary,
-    canChangeExerciseType: !isBinary,
-    canSetLicense: !isBinary,
-    canSetProducers: !isBinary,
-    canAddAttachments: !isBinary,
-    canEditContent: !isBinary,
-  };
+  const editorPermissions: EditorPermissions = React.useMemo(
+    () => ({
+      editable: workspaceEditMode.active,
+      canPublish: true,
+      canRevert: true,
+      canCopy: !isBinary,
+      canHide: true,
+      canDelete: true,
+      canRestrictView: true,
+      canChangePageType: !isBinary,
+      canChangeExerciseType: !isBinary,
+      canSetLicense: !isBinary,
+      canSetProducers: !isBinary,
+      canAddAttachments: !isBinary,
+      canEditContent: !isBinary,
+    }),
+    [workspaceEditMode.active, isBinary]
+  );
 
-  const dataProvider = createMaterialsProvider({
-    userId: status.userId,
-    folder: {
-      ...folder,
-      contentVersion: "ckeditor4",
-    },
-    material: {
-      ...materialContentNode,
-      contentVersion: "ckeditor4",
-      assignment: materialContentNode.assignment,
-      evaluation: materialContentNode.evaluation,
-    },
-    workspace: {
-      id: workspace.id,
-      urlName: workspace.urlName,
-      language: workspace.language,
-    },
-    context: {
-      tool: "materials",
-      contextPath: status.contextPath,
-    },
-    currentState: compositeReplies?.state,
-    assignmentType: materialContentNode.assignmentType,
-    canEdit: false,
-    canSubmit: false,
-    canViewAnswers: false,
-    editorPermissions,
-    fields: [],
-    answers: [],
-    compositeReply: compositeReplies,
-    getInterimEvaluationRequest: () =>
-      props.workspace.interimEvaluationRequests &&
-      props.workspace.interimEvaluationRequests.find(
-        (request) =>
-          request.workspaceMaterialId ===
-          materialContentNode.workspaceMaterialId
-      ),
+  const dataProvider = React.useMemo(
+    () =>
+      createMaterialsProvider({
+        userId: status.userId,
+        folder: {
+          ...folder,
+          contentVersion: "ckeditor4",
+        },
+        material: {
+          ...materialContentNode,
+          contentVersion: "ckeditor4",
+          assignment: materialContentNode.assignment,
+          evaluation: materialContentNode.evaluation,
+        },
+        workspace: {
+          id: workspace.id,
+          urlName: workspace.urlName,
+          language: workspace.language,
+        },
+        context: {
+          tool: "materials",
+          contextPath: status.contextPath,
+        },
+        currentState: compositeReplies?.state,
+        assignmentType: materialContentNode.assignmentType,
+        canEdit: false,
+        canSubmit: false,
+        canViewAnswers: false,
+        editorPermissions,
+        fields: [],
+        answers: [],
+        compositeReply: compositeReplies,
+        getInterimEvaluationRequest: () =>
+          props.workspace.interimEvaluationRequests &&
+          props.workspace.interimEvaluationRequests.find(
+            (request) =>
+              request.workspaceMaterialId ===
+              materialContentNode.workspaceMaterialId
+          ),
 
-    startEditor: () => {
-      if (
-        typeof editorPermissions.canAddAttachments === "undefined" ||
-        editorPermissions.canAddAttachments
-      ) {
-        dispatch(
-          requestWorkspaceMaterialContentNodeAttachments(
-            workspace,
-            materialContentNode
-          )
-        );
-      }
+        startEditor: () => {
+          if (
+            typeof editorPermissions.canAddAttachments === "undefined" ||
+            editorPermissions.canAddAttachments
+          ) {
+            dispatch(
+              requestWorkspaceMaterialContentNodeAttachments(
+                workspace,
+                materialContentNode
+              )
+            );
+          }
 
-      dispatch(
-        setWorkspaceMaterialEditorState(
-          {
-            currentNodeWorkspace: props.workspace,
-            currentNodeValue: materialContentNode,
-            parentNodeValue: props.folder,
-            section: false,
-            opened: true,
-            canDelete:
-              typeof editorPermissions.canDelete === "undefined"
-                ? false
-                : editorPermissions.canDelete,
-            canHide:
-              typeof editorPermissions.canHide === "undefined"
-                ? false
-                : editorPermissions.canHide,
-            disablePlugins: !!editorPermissions.disablePlugins,
-            canPublish:
-              typeof editorPermissions.canPublish === "undefined"
-                ? false
-                : editorPermissions.canPublish,
-            canRevert:
-              typeof editorPermissions.canRevert === "undefined"
-                ? false
-                : editorPermissions.canRevert,
-            canRestrictView:
-              typeof editorPermissions.canRestrictView === "undefined"
-                ? false
-                : editorPermissions.canRestrictView,
-            canCopy:
-              typeof editorPermissions.canCopy === "undefined"
-                ? false
-                : editorPermissions.canCopy,
-            canChangePageType:
-              typeof editorPermissions.canChangePageType === "undefined"
-                ? false
-                : editorPermissions.canChangePageType,
-            canChangeExerciseType:
-              typeof editorPermissions.canChangeExerciseType === "undefined"
-                ? false
-                : editorPermissions.canChangeExerciseType,
-            canSetLicense:
-              typeof editorPermissions.canSetLicense === "undefined"
-                ? false
-                : editorPermissions.canSetLicense,
-            canSetProducers:
-              typeof editorPermissions.canSetProducers === "undefined"
-                ? false
-                : editorPermissions.canSetProducers,
-            canAddAttachments:
-              typeof editorPermissions.canAddAttachments === "undefined"
-                ? false
-                : editorPermissions.canAddAttachments,
-            canEditContent:
-              typeof editorPermissions.canEditContent === "undefined"
-                ? true
-                : editorPermissions.canEditContent,
-            canSetTitle:
-              typeof editorPermissions.canSetTitle === "undefined"
-                ? true
-                : editorPermissions.canSetTitle,
-            showRemoveAnswersDialogForPublish: false,
-            showRemoveAnswersDialogForDelete: false,
-            showUpdateLinkedMaterialsDialogForPublish: false,
-            showRemoveLinkedAnswersDialogForPublish: false,
-            showUpdateLinkedMaterialsDialogForPublishCount: 0,
-          },
-          true
-        )
-      );
-    },
-    onFieldChange: () => {},
-    onSubmit: () => Promise.resolve(),
-    onModify: () => Promise.resolve(),
-  });
+          dispatch(
+            setWorkspaceMaterialEditorState(
+              {
+                currentNodeWorkspace: props.workspace,
+                currentNodeValue: materialContentNode,
+                parentNodeValue: props.folder,
+                section: false,
+                opened: true,
+                canDelete:
+                  typeof editorPermissions.canDelete === "undefined"
+                    ? false
+                    : editorPermissions.canDelete,
+                canHide:
+                  typeof editorPermissions.canHide === "undefined"
+                    ? false
+                    : editorPermissions.canHide,
+                disablePlugins: !!editorPermissions.disablePlugins,
+                canPublish:
+                  typeof editorPermissions.canPublish === "undefined"
+                    ? false
+                    : editorPermissions.canPublish,
+                canRevert:
+                  typeof editorPermissions.canRevert === "undefined"
+                    ? false
+                    : editorPermissions.canRevert,
+                canRestrictView:
+                  typeof editorPermissions.canRestrictView === "undefined"
+                    ? false
+                    : editorPermissions.canRestrictView,
+                canCopy:
+                  typeof editorPermissions.canCopy === "undefined"
+                    ? false
+                    : editorPermissions.canCopy,
+                canChangePageType:
+                  typeof editorPermissions.canChangePageType === "undefined"
+                    ? false
+                    : editorPermissions.canChangePageType,
+                canChangeExerciseType:
+                  typeof editorPermissions.canChangeExerciseType === "undefined"
+                    ? false
+                    : editorPermissions.canChangeExerciseType,
+                canSetLicense:
+                  typeof editorPermissions.canSetLicense === "undefined"
+                    ? false
+                    : editorPermissions.canSetLicense,
+                canSetProducers:
+                  typeof editorPermissions.canSetProducers === "undefined"
+                    ? false
+                    : editorPermissions.canSetProducers,
+                canAddAttachments:
+                  typeof editorPermissions.canAddAttachments === "undefined"
+                    ? false
+                    : editorPermissions.canAddAttachments,
+                canEditContent:
+                  typeof editorPermissions.canEditContent === "undefined"
+                    ? true
+                    : editorPermissions.canEditContent,
+                canSetTitle:
+                  typeof editorPermissions.canSetTitle === "undefined"
+                    ? true
+                    : editorPermissions.canSetTitle,
+                showRemoveAnswersDialogForPublish: false,
+                showRemoveAnswersDialogForDelete: false,
+                showUpdateLinkedMaterialsDialogForPublish: false,
+                showRemoveLinkedAnswersDialogForPublish: false,
+                showUpdateLinkedMaterialsDialogForPublishCount: 0,
+              },
+              true
+            )
+          );
+        },
+        onToggleAnswersVisible: () => {
+          // eslint-disable-next-line no-console
+          console.log("onToggleAnswersVisible from parent");
+        },
+        onFieldChange: () => {},
+        onSubmit: () => Promise.resolve(),
+        onModify: () => Promise.resolve(),
+      }),
+    [
+      status.userId,
+      status.contextPath,
+      folder,
+      materialContentNode,
+      workspace,
+      compositeReplies,
+      editorPermissions,
+      props.workspace,
+      props.folder,
+      dispatch,
+    ]
+  );
+
+  console.log("WorkspaceMaterial render");
 
   return (
     <LazyLoader
@@ -337,6 +361,8 @@ const WorkspaceMaterial = (props: WorkspaceMaterialProps) => {
       )}
     </LazyLoader>
   );
-};
+});
+
+WorkspaceMaterial.displayName = "WorkspaceMaterial";
 
 export default WorkspaceMaterial;

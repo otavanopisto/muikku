@@ -28,7 +28,8 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
     }
   };
 
-  const noAnswerOrStateConfig = !props.canSubmit || !props.stateConfiguration;
+  const noAnswerOrStateConfig =
+    !props.stateManager.canSubmit || !props.stateConfiguration;
   if (noAnswerOrStateConfig || props.assignmentType === "INTERIM_EVALUATION") {
     return null;
   }
@@ -40,6 +41,13 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
       </div>
     );
   } */
+
+  /**
+   * Toggles answers visible or not
+   */
+  const toggleAnswersVisible = () => {
+    props.uiManager.toggleAnswersVisible();
+  };
 
   return (
     <div className="material-page__buttonset rs_skip_always">
@@ -58,12 +66,11 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
       props.material.correctAnswers === "ON_REQUEST" ? (
         <Button
           buttonModifiers="muikku-show-correct-answers-button"
-          //onClick={props.onToggleAnswersVisible}
+          onClick={toggleAnswersVisible}
         >
-          asd
-          {/* {props.answersVisible
+          {props.uiManager.answersVisible
             ? t("actions.hide", { ns: "materials" })
-            : t("actions.show", { ns: "materials" })} */}
+            : t("actions.show", { ns: "materials" })}
         </Button>
       ) : null}
     </div>

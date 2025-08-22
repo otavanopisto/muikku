@@ -9,8 +9,9 @@ import {
   WorkspaceActivity,
   WorkspaceMaterial,
 } from "~/generated/client";
-import { FieldManager } from "./fields/FieldManager";
-import { StateManager } from "./state/StateManager";
+import { useFieldManager } from "./hooks/useFieldManager";
+import { useUIManager } from "./hooks/useUIManager";
+import { useStateManager } from "./hooks/useStateManager";
 
 // Content version support for CKEditor 4 → Tiptap migration
 export type ContentVersion = "ckeditor4" | "tiptap";
@@ -122,7 +123,10 @@ export interface DataProvider {
   // Context-specific methods
   getInterimEvaluationRequest?: () => InterimEvaluationRequest | undefined;
 
+  // Editor specific methods
   startEditor?: () => void;
+
+  onToggleAnswersVisible?: () => void;
 
   // Actions
   onFieldChange: (fieldName: string, value: any) => void;
@@ -174,23 +178,9 @@ export interface SyncMessage {
 
 export type ContextTool = "evaluation" | "materials" | "exams";
 
-/**
- * Material loader props interface
- */
-export interface MaterialLoaderV2Props {
-  readonly invisible?: boolean;
-  readonly dataProvider: DataProvider;
-  readonly stateConfigs: StateConfig[];
-  readonly children: (
-    props: RenderProps,
-    state: RenderState,
-    config: StateConfig
-  ) => React.ReactElement;
-  readonly modifiers?: string | string[];
-  readonly id?: string;
-  readonly websocket: any;
-  readonly readOnly?: boolean;
-}
+export type UIManagerValues = ReturnType<typeof useUIManager>;
+export type StateManagerValues = ReturnType<typeof useStateManager>;
+export type FieldManagerValues = ReturnType<typeof useFieldManager>;
 
 /**
  * Props passed to render function
@@ -204,20 +194,16 @@ export interface RenderProps {
   readonly editorPermissions: DataProvider["editorPermissions"];
   readonly currentState: MaterialCompositeReplyStateType;
   readonly assignmentType: MaterialAssigmentType;
-  readonly canEdit: boolean;
-  readonly canSubmit: boolean;
-  readonly canViewAnswers: boolean;
-  readonly fields: FieldData[];
   readonly answers: AnswerData[];
   readonly invisible?: boolean;
-  readonly readOnly?: boolean;
-  readonly stateManager: StateManager;
-  readonly fieldManager: FieldManager;
+  readonly stateManager: StateManagerValues;
+  readonly fieldManager: FieldManagerValues;
+  readonly uiManager: UIManagerValues;
   readonly getInterimEvaluationRequest?: () => InterimEvaluationRequest;
   readonly startEditor?: () => void;
-  readonly onFieldChange: (fieldName: string, value: any) => void;
-  readonly onSubmit: () => Promise<void>;
-  readonly onModify: () => Promise<void>;
+  readonly onFieldChange?: (fieldName: string, value: any) => void;
+  readonly onSubmit?: () => Promise<void>;
+  readonly onModify?: () => Promise<void>;
 }
 
 /**

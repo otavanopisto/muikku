@@ -13,8 +13,6 @@ import LazyLoader from "~/components/general/lazy-loader";
 import MaterialLoaderV2 from "~/components/base/material-loaderV2";
 import { STATE_CONFIGS } from "~/components/base/material-loaderV2/state/StateConfig";
 import { createMaterialsProvider } from "~/components/base/material-loaderV2/providers/MaterialsProvider";
-import { useFieldManager } from "~/components/base/material-loaderV2/fields/FieldManager";
-import { useStateManager } from "~/components/base/material-loaderV2/state/StateManager";
 
 /**
  * WorkspaceMaterialProps
@@ -53,8 +51,27 @@ const ExamMaterial = (props: ExamMaterialProps) => {
       urlName: workspace.urlName,
       language: workspace.language,
     },
+    userId: status.userId,
     context: {
       tool: "exams",
+      contextPath: "",
+    },
+    editorPermissions: {
+      editable: false,
+      canPublish: false,
+      canRevert: false,
+      canCopy: false,
+      canHide: false,
+      canDelete: false,
+      canRestrictView: false,
+      canChangePageType: false,
+      canChangeExerciseType: false,
+      canSetLicense: false,
+      canSetProducers: false,
+      canAddAttachments: false,
+      canEditContent: false,
+      canSetTitle: false,
+      disablePlugins: false,
     },
     currentState: "INCOMPLETE",
     assignmentType: materialContentNode.assignmentType,
@@ -67,9 +84,6 @@ const ExamMaterial = (props: ExamMaterialProps) => {
     onSubmit: () => Promise.resolve(),
     onModify: () => Promise.resolve(),
   });
-
-  const fieldManager = useFieldManager(dataProvider, () => {});
-  const stateManager = useStateManager(dataProvider, STATE_CONFIGS);
 
   return (
     <LazyLoader
@@ -89,8 +103,6 @@ const ExamMaterial = (props: ExamMaterialProps) => {
               <MaterialLoaderContent
                 {...props}
                 {...state}
-                fieldManager={fieldManager}
-                stateManager={stateManager}
                 dataProvider={dataProvider}
               />
 
