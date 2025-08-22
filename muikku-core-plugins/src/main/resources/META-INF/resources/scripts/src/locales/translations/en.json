@@ -2673,7 +2673,9 @@
       "unsavedWarning": "Tallemattomia muutoksia",
       "visionImpairedExamArrangement": "Exam arrangements for visually impaired"
     },
-    "notifications": {}
+    "notifications": {
+      "editingModePersistentInfo": "You are now in edit mode. Others cannot edit at the same time as you. When you finish editing, save your changes by clicking the <b>Save</b> button. If you don’t save, the information will be lost."
+    }
   },
   "studyMatrix": {
     "actions": {

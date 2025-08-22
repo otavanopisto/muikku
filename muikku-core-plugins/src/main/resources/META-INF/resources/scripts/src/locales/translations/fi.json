@@ -2676,7 +2676,9 @@
       "unsavedWarning": "Tallemattomia muutoksia",
       "visionImpairedExamArrangement": "Näkövammaisen koejärjestelyt"
     },
-    "notifications": {}
+    "notifications": {
+      "editingModePersistentInfo": "Olet nyt muokkaustilassa. Muut eivät voi muokata samaan aikaan kanssasi. Muista tallentaa muutokset klikkaamalla <b>Tallenna</b> -painiketta. Jos et tallenna, tiedot katoavat."
+    }
   },
   "studyMatrix": {
     "actions": {
