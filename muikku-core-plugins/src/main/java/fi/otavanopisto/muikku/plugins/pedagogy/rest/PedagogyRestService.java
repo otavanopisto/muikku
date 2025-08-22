@@ -124,7 +124,7 @@ public class PedagogyRestService {
       return Response.status(Status.BAD_REQUEST).entity(String.format("Student %s not found", studentIdentifier)).build();
     }
     
-    return Response.ok(getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, true)).build();
+    return Response.ok(getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, false)).build();
   }
   
   /**
@@ -292,7 +292,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     }
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, true);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -331,7 +331,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     
     // Access check
     
-    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), false, PedagogyFormAccessType.WRITE, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), false, PedagogyFormAccessType.WRITE, true);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -451,7 +451,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     // Access check
     SchoolDataIdentifier schoolDataIdentifier = userEntity.defaultSchoolDataIdentifier();
     
-    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.READ, true);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -489,7 +489,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     if (userEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.WRITE, false);
+    PedagogyFormAccessRestModel access = getAccess(userEntity.getId(), true, PedagogyFormAccessType.WRITE, true);
     if (!access.isAccessible()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -642,7 +642,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     WRITE
   }
   
-  private PedagogyFormAccessRestModel getAccess(Long userEntityId, boolean allowStudent, PedagogyFormAccessType accessType, boolean requirePublished) {
+  private PedagogyFormAccessRestModel getAccess(Long userEntityId, boolean allowStudent, PedagogyFormAccessType accessType, boolean implementedActions) {
 
     // Master access flag and various roles
     
@@ -652,6 +652,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     boolean courseTeacher = false;
     boolean studentParent = false;
     boolean counselor = false;
+    boolean manager = false;
     
     // Students can always access their own form
     
@@ -686,23 +687,27 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
         }
       }
       
-      // Counselor
-
-      counselor = userSchoolDataController.amICounselor(identifier);
+      // Counselor & manager
+      
+      if (implementedActions) {
+        manager = sessionController.hasRole(EnvironmentRoleArchetype.MANAGER);
+        counselor = userSchoolDataController.amICounselor(identifier);
+      }
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
 
       // Admins and spec ed teachers always have access...
 
       accessible = isAdmin || specEdTeacher;
-      if (!accessible && form != null && form.getPublished() != null) {
+      if (!accessible && (form != null && form.getPublished() != null || implementedActions)) {
 
         // ...guidance counselors, course teachers, and guardians can only access published form
+        // implemented actions  are available to everyone who has access to the student’s guider view. The guardian is granted read-only access
 
-        accessible = relation.isGuidanceCounselor() || courseTeacher || counselor || (studentParent && accessType == PedagogyFormAccessType.READ);
+        accessible = relation.isGuidanceCounselor() || courseTeacher || counselor || manager || (studentParent && accessType == PedagogyFormAccessType.READ);
       }
     }
-    return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher, studentParent, counselor);
+    return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher, studentParent);
   }
   
   private Long getFormCreator(PedagogyForm form) {
