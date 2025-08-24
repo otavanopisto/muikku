@@ -16958,6 +16958,7 @@ components:
             $ref: "#/components/schemas/Role"
         permissions:
           type: array
+          uniqueItems: true
           nullable: true
           uniqueItems: true
           items:
