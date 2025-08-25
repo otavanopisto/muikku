@@ -234,6 +234,18 @@ export interface UpperSecondaryFormData {
    */
   cooperativePartners?: string;
   /**
+   * Decision to support the student
+   */
+  decisionToSpecialEducation: boolean;
+  /**
+   * The maker of the decision to support the student
+   */
+  decisionToSpecialEducationMaker?: string;
+  /**
+   * Date of the decision to support the student
+   */
+  decisionToSpecialEducationDate?: Date;
+  /**
    * The description of the student's strengths
    */
   studentStrengths?: string;

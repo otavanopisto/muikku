@@ -276,6 +276,50 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
         <Page style={styles.body} size="A4">
           {pageHeader}
           <Text style={styles.pageTitle}>
+            {t("labels.decisionToSpecialEducation", {
+              ns: "pedagogySupportPlan",
+            })}
+          </Text>
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.decisionToSpecialEducationLaw", {
+                ns: "pedagogySupportPlan",
+              })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {formData?.decisionToSpecialEducation
+                ? t("labels.yes", { ns: "common" })
+                : t("labels.no", { ns: "common" })}
+            </Text>
+          </View>
+
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.decisionToSpecialEducationMaker", {
+                ns: "pedagogySupportPlan",
+              })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {formData?.decisionToSpecialEducationMaker || "-"}
+            </Text>
+          </View>
+
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.date", {
+                ns: "common",
+              })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {formData?.decisionToSpecialEducationDate
+                ? moment(formData?.decisionToSpecialEducationDate).format(
+                    "DD.MM.YYYY"
+                  )
+                : "-"}
+            </Text>
+          </View>
+
+          <Text style={styles.pageTitle}>
             {t("labels.basisForSupport", { ns: "pedagogySupportPlan" })}
           </Text>
           <View style={styles.infoFieldContainer}>

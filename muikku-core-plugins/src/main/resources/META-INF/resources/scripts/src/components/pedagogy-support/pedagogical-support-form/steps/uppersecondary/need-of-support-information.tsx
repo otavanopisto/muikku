@@ -16,6 +16,8 @@ import {
 } from "~/components/pedagogy-support/helpers";
 import { useTranslation } from "react-i18next";
 import { useUpperSecondaryForm } from "~/components/pedagogy-support/hooks/useUppersecondaryForm";
+import DatePicker from "react-datepicker";
+import { TextField } from "~/components/pedagogy-support/components/textfield";
 
 /**
  * NeedOfSupportInformationProps
@@ -40,12 +42,12 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
   } = useUpperSecondaryForm();
 
   /**
-   * Handles different text area changes based on key
+   * Handles different field changes based on key
    *
    * @param key key
    * @param value value
    */
-  const handleTextAreaChange = <T extends keyof UpperSecondaryFormData>(
+  const handleFieldChange = <T extends keyof UpperSecondaryFormData>(
     key: T,
     value: UpperSecondaryFormData[T]
   ) => {
@@ -104,6 +106,75 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     <section className="hops-container">
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
+          {t("labels.decisionToSpecialEducation", {
+            ns: "pedagogySupportPlan",
+          })}
+        </legend>
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <label htmlFor="decisionToSpecialEducation" className="hops__label">
+              {t("labels.decisionToSpecialEducationLaw", {
+                ns: "pedagogySupportPlan",
+              })}
+            </label>
+            <input
+              type="checkbox"
+              id="decisionToSpecialEducation"
+              className="hops__input"
+              checked={formData?.decisionToSpecialEducation || false}
+              onChange={(e) =>
+                handleFieldChange(
+                  "decisionToSpecialEducation",
+                  e.target.checked
+                )
+              }
+              disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
+            />
+          </div>
+        </div>
+
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <TextField
+              id="decisionToSpecialEducationMaker"
+              label={t("labels.decisionToSpecialEducationMaker", {
+                ns: "pedagogySupportPlan",
+              })}
+              value={formData?.decisionToSpecialEducationMaker || ""}
+              onChange={(e) =>
+                handleFieldChange(
+                  "decisionToSpecialEducationMaker",
+                  e.target.value
+                )
+              }
+              disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
+            />
+          </div>
+        </div>
+
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <label htmlFor="decisionToSpecialEducation" className="hops__label">
+              {t("labels.date", {
+                ns: "common",
+              })}
+            </label>
+            <DatePicker
+              id="decisionToSpecialEducationDate"
+              className="hops__input"
+              dateFormat="dd.MM.yyyy"
+              selected={formData?.decisionToSpecialEducationDate}
+              onChange={(date) =>
+                handleFieldChange("decisionToSpecialEducationDate", date)
+              }
+              disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
+            />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset className="hops-container__fieldset">
+        <legend className="hops-container__subheader">
           {t("labels.studentStrengths", {
             ns: "pedagogySupportPlan",
             context: "basisForSupport",
@@ -117,7 +188,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               label="Opiskelijan vahvuudet"
               className="hops__textarea"
               onChange={(e) =>
-                handleTextAreaChange("studentStrengths", e.target.value)
+                handleFieldChange("studentStrengths", e.target.value)
               }
               value={formData?.studentStrengths || ""}
               disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
@@ -132,7 +203,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               label={t("labels.needForSupport", { ns: "pedagogySupportPlan" })}
               className="hops__textarea"
               onChange={(e) =>
-                handleTextAreaChange("needOfSupport", e.target.value)
+                handleFieldChange("needOfSupport", e.target.value)
               }
               value={formData?.needOfSupport || ""}
               disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
@@ -201,7 +272,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                 })}
                 className="hops__textarea"
                 onChange={(e) =>
-                  handleTextAreaChange("supportActionOther", e.target.value)
+                  handleFieldChange("supportActionOther", e.target.value)
                 }
                 value={formData?.supportActionOther || ""}
                 disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
@@ -272,7 +343,7 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
                 })}
                 className="hops__textarea"
                 onChange={(e) =>
-                  handleTextAreaChange(
+                  handleFieldChange(
                     "matriculationExaminationSupportOther",
                     e.target.value
                   )
