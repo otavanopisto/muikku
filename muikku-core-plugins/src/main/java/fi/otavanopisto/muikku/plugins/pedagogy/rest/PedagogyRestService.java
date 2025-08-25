@@ -550,7 +550,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
         // New implemented actions form only if it does not already exist
         PedagogyFormImplementedActions implementedActionsForm = pedagogyController.findFormImplementedActionsByUserEntityId(form.getUserEntityId());
         
-        if (implementedActionsForm == null) {
+        if (implementedActionsForm == null && implementedActions != null) {
           PedagogyFormImplementedActions newForm = pedagogyController.createFormForImplementedActions(form.getUserEntityId(), implementedActions.toString());
           if (newForm != null) {
             returnData.add("Implemented actions form created for student " + form.getUserEntityId());
