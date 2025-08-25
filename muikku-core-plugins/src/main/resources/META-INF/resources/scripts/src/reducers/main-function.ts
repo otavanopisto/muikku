@@ -29,6 +29,7 @@ import { hopsNew } from "./hops/index";
 import { notebook } from "./notebook/notebook";
 import { journals } from "./workspaces/journals";
 import { credentials } from "./base/credentials";
+import { pedagogySupport } from "./pedagogy-support";
 
 export default combineReducers({
   announcements,
@@ -59,4 +60,5 @@ export default combineReducers({
   notebook,
   journals,
   credentials,
+  pedagogySupport,
 });
