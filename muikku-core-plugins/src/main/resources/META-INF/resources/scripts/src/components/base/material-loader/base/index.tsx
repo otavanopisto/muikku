@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import TextField from "../fields/text-field";
 import SelectField from "../fields/select-field";
 import MultiSelectField from "../fields/multiselect-field";
@@ -28,9 +29,16 @@ import MathJAX from "~/components/base/material-loader/static/mathjax";
 import { UsedAs, FieldStateStatus } from "~/@types/shared";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import { MaterialCompositeReply } from "~/generated/client";
+import {
+  CommonFieldProps,
+  IframeDataset,
+  ImageDataset,
+  LinkDataset,
+  WordDefinitionDataset,
+} from "../types";
 
 //These are all our supported objects as for now
-const objects: { [key: string]: any } = {
+const fieldComponents: { [key: string]: any } = {
   "application/vnd.muikku.field.text": TextField,
   "application/vnd.muikku.field.select": SelectField,
   "application/vnd.muikku.field.multiselect": MultiSelectField,
@@ -315,7 +323,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       .addBack("object")
       .each((index: number, element: HTMLElement) => {
         // We get the object element as in, the react component that it will be replaced with
-        const rElement: React.ReactElement<any> = this.getObjectElement(
+        const rElement: React.ReactElement<any> = this.createFieldElement(
           element,
           props
         );
@@ -396,16 +404,17 @@ export default class Base extends React.Component<BaseProps, BaseState> {
    * @param key key
    * @returns JSX.Element
    */
-  getObjectElement(
+  createFieldElement(
     element: HTMLElement,
     props: BaseProps = this.props,
     key?: number
   ) {
+    const fieldType = element.getAttribute("type");
     // So we check from our objects we have on top, to see what class we are getting
-    const ActualElement = objects[element.getAttribute("type")];
+    const FieldComponent = fieldComponents[fieldType];
 
     // This is here in case we get some brand new stuff, it should never come here
-    if (!ActualElement) {
+    if (!FieldComponent) {
       return (
         <span>
           Invalid Element {element.getAttribute("type")} {element.innerHTML}
@@ -413,72 +422,19 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       );
     }
 
-    // So now we get the parameters of that thing, due to all the updates we gotta unify here
-    // eslint-disable-next-line prefer-const
-    let parameters: { [key: string]: any } = {};
-    // basically we need to get all the params
-    element.querySelectorAll("param").forEach((node) => {
-      // and add the value to a list of parameters
-      parameters[node.getAttribute("name")] = node.getAttribute("value");
-    });
+    // Extract common props
+    const commonProps = extractCommonFieldProps(element, props, key);
 
-    // if the type of json
-    if (parameters["type"] === "application/json") {
-      try {
-        // Then we try to parse the content if there's a content, hmmm
-        // some fields come differently but hey this works out
-        parameters["content"] =
-          parameters["content"] && JSON.parse(parameters["content"]);
-        // eslint-disable-next-line no-empty
-      } catch (e) {}
-    }
+    // Extract field-specific initial value
+    const initialValue = extractFieldInitialValue(
+      commonProps.content,
+      props.compositeReplies
+    );
 
-    if (!parameters["type"]) {
-      parameters["type"] = "application/json";
-    }
-
-    if (!parameters["content"]) {
-      parameters["content"] = null;
-    }
-
-    // we add our default parameters form redux
-    parameters["status"] = props.status;
-    parameters["readOnly"] = props.readOnly;
-
-    /**
-     * Passing used as default value a.k.a "materials or evaluation tool"
-     */
-    parameters["usedAs"] = props.usedAs;
-
-    // We set the value if we have one in composite replies
-    parameters["initialValue"] = null;
-    if (props.compositeReplies && props.compositeReplies.answers) {
-      parameters["initialValue"] = props.compositeReplies.answers.find(
-        (answer) =>
-          answer.fieldName === (parameters.content && parameters.content.name)
-      );
-    }
-
-    // And sometimes the value comes weird in a .value field so we pick that one if its there
-    if (
-      parameters["initialValue"] &&
-      typeof parameters["initialValue"].value !== "undefined"
-    ) {
-      parameters["initialValue"] = parameters["initialValue"].value;
-    }
-
-    // We add the onChange function that will make us try to sync with the server
-    parameters["onChange"] = this.onValueChange.bind(this);
-
-    parameters["displayCorrectAnswers"] = props.displayCorrectAnswers;
-    parameters["checkAnswers"] = props.checkAnswers;
-    parameters["onAnswerChange"] = props.onAnswerChange;
-
-    parameters["invisible"] = props.invisible;
-    parameters["userId"] = props.status.userId;
+    commonProps.initialValue = initialValue;
 
     // and we return that thing
-    return <ActualElement {...parameters} key={key} />;
+    return <FieldComponent {...commonProps} key={key} />;
   }
 
   /**
@@ -697,7 +653,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns boolean
          */
         shouldProcessHTMLElement: (tagname, element) =>
-          tagname === "object" && objects[element.getAttribute("type")],
+          tagname === "object" && fieldComponents[element.getAttribute("type")],
 
         /**
          * processingFunction
@@ -708,7 +664,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) =>
-          this.getObjectElement(element, this.props, props.key),
+          this.createFieldElement(element, this.props, props.key),
       },
       {
         /**
@@ -728,7 +684,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => {
-          const dataset = extractDataSet(element);
+          const dataset = extractDataSet<IframeDataset>(element);
           return (
             <IFrame
               key={props.key}
@@ -759,7 +715,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => {
-          const dataset = extractDataSet(element);
+          const dataset = extractDataSet<WordDefinitionDataset>(element);
           return (
             <WordDefinition
               key={props.key}
@@ -792,7 +748,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => {
-          const dataset = extractDataSet(element);
+          const dataset = extractDataSet<ImageDataset>(element);
           return (
             <Image
               key={props.key}
@@ -824,6 +780,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => (
+          // eslint-disable-next-line react/no-children-prop
           <MathJAX key={props.key} invisible={invisible} children={children} />
         ),
       },
@@ -848,7 +805,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => {
-          const dataset = extractDataSet(element);
+          const dataset = extractDataSet<LinkDataset>(element);
           return (
             <Link
               key={props.key}
@@ -880,6 +837,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
             key={props.key}
             element={element}
             props={props}
+            // eslint-disable-next-line react/no-children-prop
             children={children}
           />
         ),
@@ -931,7 +889,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @param element element
          */
         preprocessReactProperties: (tag, props, children, element) => {
-          const dataset = extractDataSet(element);
+          const dataset = extractDataSet<any>(element);
           const src = dataset.original || "";
           const isAbsolute =
             src.indexOf("/") == 0 ||
@@ -960,4 +918,87 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       </div>
     );
   }
+}
+
+/**
+ * Extract common props that are the same for all field components
+ * @param element HTML element containing field data
+ * @param props Base props from MaterialLoader
+ * @param key React key
+ * @returns Object with common props for field components
+ */
+export function extractCommonFieldProps(
+  element: HTMLElement,
+  props: BaseProps,
+  key?: number
+) {
+  // Extract parameters from <param> elements
+  const parameters: { [key: string]: any } = {};
+
+  element.querySelectorAll("param").forEach((node) => {
+    parameters[node.getAttribute("name")] = node.getAttribute("value");
+  });
+
+  // Handle JSON content parsing
+  if (parameters["type"] === "application/json") {
+    try {
+      parameters["content"] =
+        parameters["content"] && JSON.parse(parameters["content"]);
+    } catch (e) {
+      // Keep original content if parsing fails
+    }
+  }
+
+  // Set defaults
+  if (!parameters["type"]) {
+    parameters["type"] = "application/json";
+  }
+  if (!parameters["content"]) {
+    parameters["content"] = null;
+  }
+
+  // Add common props from MaterialLoader
+  const commonProps: CommonFieldProps = {
+    // Field parameters
+    type: parameters["type"],
+    content: parameters["content"],
+
+    // MaterialLoader props
+    status: props.status,
+    readOnly: props.readOnly,
+    usedAs: props.usedAs,
+    displayCorrectAnswers: props.displayCorrectAnswers,
+    checkAnswers: props.checkAnswers,
+    onAnswerChange: props.onAnswerChange,
+    invisible: props.invisible,
+    userId: props.status.userId,
+
+    // React key
+    key: key,
+  };
+
+  return commonProps;
+}
+
+/**
+ * Extract field-specific initial value from composite replies
+ * @param content Field content object
+ * @param compositeReplies Composite replies from props
+ * @returns Initial value for the field
+ */
+export function extractFieldInitialValue(content: any, compositeReplies: any) {
+  if (!compositeReplies?.answers || !content?.name) {
+    return null;
+  }
+
+  const answer = compositeReplies.answers.find(
+    (answer: any) => answer.fieldName === content.name
+  );
+
+  if (!answer) {
+    return null;
+  }
+
+  // Handle .value field if it exists
+  return typeof answer.value !== "undefined" ? answer.value : answer;
 }

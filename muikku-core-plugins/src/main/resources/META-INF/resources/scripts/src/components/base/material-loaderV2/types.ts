@@ -16,6 +16,16 @@ import { useStateManager } from "./hooks/useStateManager";
 // Content version support for CKEditor 4 → Tiptap migration
 export type ContentVersion = "ckeditor4" | "tiptap";
 
+export type UpdateAssignmentStateTriggerType = (
+  successState: MaterialCompositeReplyStateType,
+  avoidServerCall: boolean,
+  workspaceId: number,
+  workspaceMaterialId: number,
+  existantReplyId?: number,
+  successMessage?: string,
+  callback?: () => void
+) => void;
+
 /**
  * State configuration interface (cleaned up from current STATES array)
  */

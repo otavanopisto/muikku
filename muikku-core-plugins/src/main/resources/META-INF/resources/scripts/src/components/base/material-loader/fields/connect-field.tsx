@@ -4,12 +4,13 @@ import Draggable from "~/components/general/draggable";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/strmathjax";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import "~/sass/elements/connectfield.scss";
+import { CommonFieldProps } from "../types";
 
 /**
  * FieldType
@@ -22,8 +23,7 @@ interface FieldType {
 /**
  * ConnectFieldProps
  */
-interface ConnectFieldProps extends WithTranslation {
-  type: string;
+interface ConnectFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     name: string;
     fields: FieldType[];
@@ -33,20 +33,6 @@ interface ConnectFieldProps extends WithTranslation {
       counterpart: string;
     }[];
   };
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => any;
-
-  invisible?: boolean;
 }
 
 /**
@@ -220,6 +206,7 @@ class ConnectField extends React.Component<
     }
 
     // so we create the new value
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newValue: any = {};
     // get the fields and create the object
     this.state.fields.forEach((field, index) => {

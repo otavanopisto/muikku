@@ -19,7 +19,7 @@ import ContentPanel, {
 } from "~/components/general/content-panel";
 import ProgressData from "../../progressData";
 
-import WorkspaceMaterial from "./material";
+import WorkspaceMaterial from "./materialsOld";
 import { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
@@ -484,6 +484,7 @@ class WorkspaceMaterials extends React.Component<
    * @param closeDropdown Function to close the dropdown
    * @returns Rendered dropdown item
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderDropdownItem = (item: any, closeDropdown: () => void) => {
     if (item.file) {
       return (
@@ -523,6 +524,7 @@ class WorkspaceMaterials extends React.Component<
    * @param items Array of dropdown items
    * @returns Array of rendered dropdown items
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderDropdownItems = (items: any[]) =>
     items.map(
       (item) => (closeDropdown: () => void) =>

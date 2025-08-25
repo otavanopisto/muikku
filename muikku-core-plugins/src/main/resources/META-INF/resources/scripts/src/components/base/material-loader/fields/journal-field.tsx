@@ -4,35 +4,21 @@ import { MATHJAXSRC } from "~/lib/mathjax";
 import $ from "~/lib/jquery";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 import "~/sass/elements/journalfield.scss";
+import { CommonFieldProps } from "../types";
 
 /**
  * JournalProps
  */
-interface JournalFieldProps extends WithTranslation {
-  type: string;
+interface JournalFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     name: string;
   };
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => any;
-
-  invisible?: boolean;
 }
 
 /**
