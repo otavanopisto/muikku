@@ -126,7 +126,7 @@ export interface Opinion {
 }
 
 /**
- * FormData JSON object with type definitions
+ * FormData JSON object with type definitions (deprecated)
  */
 export interface FormData {
   /**
@@ -176,7 +176,7 @@ export interface FormData {
 }
 
 /**
- * FormData JSON object with type definitions
+ * CompulsoryFormData JSON object with type definitions
  */
 export interface CompulsoryFormData {
   /**
@@ -218,7 +218,7 @@ export interface CompulsoryFormData {
 }
 
 /**
- * FormData JSON object with type definitions
+ * UpperSecondaryFormData JSON object with type definitions
  */
 export interface UpperSecondaryFormData {
   /**
