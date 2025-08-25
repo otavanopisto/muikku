@@ -201,6 +201,10 @@ public class PedagogyController {
   public PedagogyForm findFormByUserEntityIdAndPublished(Long userEntityId) {
     return pedagogyFormDAO.findByUserEntityIdAndPublished(userEntityId);
   }
+  
+  public List<PedagogyForm> listAll() {
+    return pedagogyFormDAO.listAll();
+  }
 
   public void createViewHistory(PedagogyForm form, Long modifierId) {
     List<PedagogyFormHistory> historyList = pedagogyFormHistoryDAO.listByFormAndCreatorAndType(form, modifierId, PedagogyFormHistoryType.VIEW);
