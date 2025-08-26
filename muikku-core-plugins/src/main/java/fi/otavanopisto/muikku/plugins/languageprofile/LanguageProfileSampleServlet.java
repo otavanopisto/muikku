@@ -72,8 +72,6 @@ public class LanguageProfileSampleServlet extends HttpServlet {
       sendResponse(resp, "Must be logged in", HttpServletResponse.SC_FORBIDDEN);
       return;
     }
-
-    // TODO Permissions
     
     // Upload folder validation
     
@@ -108,6 +106,10 @@ public class LanguageProfileSampleServlet extends HttpServlet {
     }
     if (userEntityId == null) {
       sendResponse(resp, "Missing userEntityId", HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
+    if (!languageProfileController.hasAccess(userEntityId, true)) {
+      sendResponse(resp, "User entity mismatch", HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
     LanguageProfile profile = languageProfileController.findByUserEntityId(userEntityId);
@@ -258,15 +260,16 @@ public class LanguageProfileSampleServlet extends HttpServlet {
       response.sendError(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
-    
-    // TODO Permissions
+    Long sampleId = Long.valueOf(request.getParameter("sampleId"));
+    if (!languageProfileController.hasSampleAccess(sampleId, false)) {
+      response.sendError(HttpServletResponse.SC_FORBIDDEN);
+    }
 
     String basePath = systemSettingsController.getSetting("languageProfile.uploadBasePath");
     if (StringUtils.isEmpty(basePath)) {
       sendResponse(response, "languageProfile.uploadBasePath not defined", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
-    Long sampleId = Long.valueOf(request.getParameter("sampleId"));
     LanguageProfileSample sample = languageProfileController.findSampleById(sampleId);
     if (sample == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
