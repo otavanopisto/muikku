@@ -21,6 +21,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { StateType } from "~/reducers";
 import { useEvaluationState } from "~/components/evaluation/hooks/evaluation";
 import { useEvaluationLogic } from "~/components/evaluation/hooks/evaluation";
+import UserLanguageProfile from "~/components/general/user-language-profile";
 
 /**
  * CKEditorConfig
@@ -319,6 +320,14 @@ const Evaluation = (props: EvaluationDrawerProps) => {
             workspaces={workspaces}
             selectedAssessment={selectedAssessment}
           />
+          <div className="evaluation-modal__content">
+            <div className="evaluation-modal__content-title">
+              Kieliprohviili
+            </div>
+            <div className="evaluation-modal__item">
+              <UserLanguageProfile userId={selectedAssessment.userEntityId} />
+            </div>
+          </div>
         </div>
       </section>
       <section className="evaluation-modal__container">

@@ -13,6 +13,19 @@ import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 import { languageLevelOptions } from "~/mock/mock-data";
 
+export const levelMap: Record<number, string> = {
+  0: "interaction",
+  1: "interpretation",
+  2: "production",
+};
+
+export const skillMap: Record<number, string> = {
+  0: "pronounciation",
+  1: "grammar",
+  2: "vocabulary",
+  3: "variants",
+};
+
 /**
  * LanguageMapping component
  * @returns JSX element that displays language mapping options
@@ -27,31 +40,31 @@ const LanguageMapping = () => {
 
   const skillsOptions: OptionDefault<SkillLevels>[] = [
     {
-      label: t("labels.languageSkillNative", {
+      label: t("skills.n", {
         ns: "languageProfile",
       }),
       value: "N",
     },
     {
-      label: t("labels.languageSkillExcellence", {
+      label: t("skills.e", {
         ns: "languageProfile",
       }),
       value: "E",
     },
     {
-      label: t("labels.languageSkillGood", {
+      label: t("skills.h", {
         ns: "languageProfile",
       }),
       value: "H",
     },
     {
-      label: t("labels.languageSkillMediocre", {
+      label: t("skills.k", {
         ns: "languageProfile",
       }),
       value: "K",
     },
     {
-      label: t("labels.languageSkillBeginger", {
+      label: t("skills.v", {
         ns: "languageProfile",
       }),
       value: "V",
@@ -126,8 +139,8 @@ const LanguageMapping = () => {
         className="react-select-override react-select-override--language-profile-form"
         classNamePrefix="react-select-override"
         value={selectedValue}
-        onChange={(value) =>
-          handleSkillsSelectChange(value.value, cellId, languageCode)
+        onChange={(option) =>
+          handleSkillsSelectChange(option.value, cellId, languageCode)
         }
         options={skillsOptions}
       />
@@ -189,15 +202,19 @@ const LanguageMapping = () => {
         <div className="language-profile-container__row">
           <DisplayLanguages
             rows={languages}
+            // Could be created with a for loop
             labels={[
-              t("labels.languageSkillLevelInteractionLabel", {
+              t("labels.languageSkillLevel", {
                 ns: "languageProfile",
+                context: levelMap[0],
               }),
-              t("labels.languageSkillLevelinterpretationLabel", {
+              t("labels.languageSkillLevel", {
                 ns: "languageProfile",
+                context: levelMap[1],
               }),
-              t("labels.languageSkillLevelProduceLabel", {
+              t("labels.languageSkillLevel", {
                 ns: "languageProfile",
+                context: levelMap[2],
               }),
             ]}
             cellAction={languageLevelsSelect}
@@ -430,17 +447,21 @@ const LanguageMapping = () => {
         <DisplayLanguages
           rows={languages}
           labels={[
-            t("labels.languageSkillByCategoryPronunciationLabel", {
+            t("labels.skill", {
               ns: "languageProfile",
+              context: skillMap[0],
             }),
-            t("labels.languageSkillByCategoryGrammarLabel", {
+            t("labels.skill", {
               ns: "languageProfile",
+              context: skillMap[1],
             }),
-            t("labels.languageSkillByCategoryVocabularyLabel", {
+            t("labels.skill", {
               ns: "languageProfile",
+              context: skillMap[2],
             }),
-            t("labels.languageSkillByCategoryLanguageVariantsLabel", {
+            t("labels.skill", {
               ns: "languageProfile",
+              context: skillMap[3],
             }),
           ]}
           cellAction={skillsSelect}
