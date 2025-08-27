@@ -16035,6 +16035,9 @@ components:
         - formData
         - created
         - published
+        - counselors
+        - studyAdvisors
+        - groupAdvisors
       properties:
         userEntityId:
           description: The id of the student
@@ -16079,6 +16082,21 @@ components:
           type: string
           format: date-time
           nullable: true
+        counselors:
+          description: List of counselors
+          type: array
+          items:
+            type: string
+        studyAdvisors:
+          description: List of study advisors
+          type: array
+          items:
+            type: string
+        groupAdvisors:
+          description: List of group advisors
+          type: array
+          items:
+            type: string
 
     PedagogyFormImplementedActions:
       type: object

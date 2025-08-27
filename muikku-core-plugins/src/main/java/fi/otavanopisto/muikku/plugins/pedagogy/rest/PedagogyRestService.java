@@ -50,7 +50,10 @@ import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormImplementedActions;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -108,6 +111,9 @@ public class PedagogyRestService {
   
   @Inject
   private PedagogyFormWebsocketMessenger pedagogyFormWebSocketMessenger;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
   
   /**
    * mApi().pedagogy.form.access.read(123);
@@ -644,6 +650,33 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
       model.setHistory(Collections.emptyList());
     }
     
+    // Study guiders & counselors
+    List<String> counselorNames = new ArrayList<>();
+    List<String> studyAdvisors = new ArrayList<>();
+    List<String> groupAdvisors = new ArrayList<>();
+    
+    
+    // Counselors & guiders
+    List<GroupStaffMember> studentGuidanceCounselors = userSchoolDataController.listStudentGuidanceCounselors(identifier, false);
+    
+    for (GroupStaffMember counselor : studentGuidanceCounselors) {
+      User user = userController.findUserByIdentifier(counselor.userSchoolDataIdentifier());
+      
+      counselorNames.add(user.getDisplayName());
+      
+      if (counselor.isGroupAdvisor()) {
+        groupAdvisors.add(user.getDisplayName());
+      }
+      
+      if (counselor.isStudyAdvisor()) {
+        studyAdvisors.add(user.getDisplayName());
+      }
+    }
+    
+    model.setCounselors(counselorNames);
+    model.setGroupAdvisors(groupAdvisors);
+    model.setStudyAdvisors(studyAdvisors);
+    
     return model;
   }
   
@@ -717,7 +750,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
         courseTeacher = relation.isCourseTeacher();
         studentParent = relation.isStudentParent();
         
-        // If only the courseTeacher is true, check if the student is active in some of the teacher's courses
+        // If only the courseTeacher is true, check if the student is active in some of the teacher's courses        
         if (courseTeacher && !guidanceCounselor && !specEdTeacher && !studentParent) {
 
           Set<Long> teacherWorkspaceIds = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(sessionController.getLoggedUserEntity()).stream().map(WorkspaceEntity::getId).collect(Collectors.toSet());
@@ -728,11 +761,16 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
         }
       }
       
+      PedagogyFormAccessType courseTeacherAccessType = PedagogyFormAccessType.READ;
+
       // Counselor & manager
       
       if (implementedActions) {
         manager = sessionController.hasRole(EnvironmentRoleArchetype.MANAGER);
         studyProgrammeLeader = sessionController.hasRole(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
+        
+        // Teachers can only edit implemented actions, otherwise, read-only access
+        courseTeacherAccessType = PedagogyFormAccessType.WRITE;
       }
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
@@ -744,8 +782,8 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
 
         // ...guidance counselors, course teachers, and guardians can only access published form
         // implemented actions  are available to everyone who has access to the student’s guider view. The guardian is granted read-only access
-
-        accessible = (relation != null && relation.isGuidanceCounselor()) || courseTeacher || manager || studyProgrammeLeader || (studentParent && accessType == PedagogyFormAccessType.READ);
+        
+        accessible = (relation != null && relation.isGuidanceCounselor()) || (courseTeacher && accessType == courseTeacherAccessType) || manager || studyProgrammeLeader || (studentParent && accessType == PedagogyFormAccessType.READ);
       }
     }
     return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher, studentParent);

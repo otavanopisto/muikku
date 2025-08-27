@@ -79,6 +79,30 @@ public class PedagogyFormRestModel {
     this.published = published;
   }
 
+  public List<String> getStudyAdvisors() {
+    return studyAdvisors;
+  }
+
+  public void setStudyAdvisors(List<String> studyAdvisors) {
+    this.studyAdvisors = studyAdvisors;
+  }
+
+  public List<String> getCounselors() {
+    return counselors;
+  }
+
+  public void setCounselors(List<String> counselors) {
+    this.counselors = counselors;
+  }
+
+  public List<String> getGroupAdvisors() {
+    return groupAdvisors;
+  }
+
+  public void setGroupAdvisors(List<String> groupAdvisors) {
+    this.groupAdvisors = groupAdvisors;
+  }
+
   private Long id;
   private Long userEntityId;
   private Map<String, String> studentInfo;
@@ -88,5 +112,8 @@ public class PedagogyFormRestModel {
   private String formData;
   private List<PedagogyFormHistoryRestModel> history;
   private Date published;
+  private List<String> studyAdvisors;
+  private List<String> groupAdvisors;
+  private List<String> counselors;
 
 }
