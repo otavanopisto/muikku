@@ -22,6 +22,11 @@ interface UserLanguageProfileProps {
   userId: number;
 }
 
+/**
+ * UserLanguageProfileProps
+ * @param props props
+ * @returns JSX.Element
+ */
 const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
   const { userId } = props;
   const {
