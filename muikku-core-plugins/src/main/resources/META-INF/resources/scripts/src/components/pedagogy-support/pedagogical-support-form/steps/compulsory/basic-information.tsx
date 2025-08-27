@@ -217,6 +217,23 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
             />
           </div>
         </div>
+
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <TextField
+              id="counselor"
+              label={t("labels.counselors", { ns: "users" })}
+              type="text"
+              value={
+                pedagogyForm?.counselors
+                  ? `${pedagogyForm.counselors.join(", ")}`
+                  : "-"
+              }
+              disabled
+              className="hops__input"
+            />
+          </div>
+        </div>
       </fieldset>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">

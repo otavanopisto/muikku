@@ -217,6 +217,40 @@ const BasicInformation: React.FC<BasicInformationProps> = (props) => {
             />
           </div>
         </div>
+
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <TextField
+              id="groupAdvisors"
+              label={t("labels.groupCounselors", { ns: "users" })}
+              type="text"
+              value={
+                pedagogyForm?.groupAdvisors
+                  ? `${pedagogyForm.groupAdvisors.join(", ")}`
+                  : "-"
+              }
+              disabled
+              className="hops__input"
+            />
+          </div>
+        </div>
+
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <TextField
+              id="studyAdvisors"
+              label={t("labels.studyAdvisors", { ns: "users" })}
+              type="text"
+              value={
+                pedagogyForm?.studyAdvisors
+                  ? `${pedagogyForm.studyAdvisors.join(", ")}`
+                  : "-"
+              }
+              disabled
+              className="hops__input"
+            />
+          </div>
+        </div>
       </fieldset>
       <fieldset className="hops-container__fieldset">
         <legend className="hops-container__subheader">
