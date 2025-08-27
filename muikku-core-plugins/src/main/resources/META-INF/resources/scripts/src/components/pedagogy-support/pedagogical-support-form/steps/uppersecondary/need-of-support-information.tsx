@@ -162,7 +162,11 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               id="decisionToSpecialEducationDate"
               className="hops__input"
               dateFormat="dd.MM.yyyy"
-              selected={formData?.decisionToSpecialEducationDate}
+              selected={
+                formData?.decisionToSpecialEducationDate
+                  ? new Date(formData?.decisionToSpecialEducationDate)
+                  : undefined
+              }
               onChange={(date) =>
                 handleFieldChange("decisionToSpecialEducationDate", date)
               }
