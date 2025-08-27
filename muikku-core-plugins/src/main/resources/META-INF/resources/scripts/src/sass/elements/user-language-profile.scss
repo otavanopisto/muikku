@@ -73,15 +73,15 @@
   margin: 8px 0;
   padding: 0 10px;
 
-  h5 { 
+  > h5 { 
     font-size: 0.875rem;
   }
 
-  p, span {
+  > p, > span {
     font-size: 0.875rem;
   }
 
-  span:last-child {
+  > span:last-child {
     margin-left: 5px;
   }
 }

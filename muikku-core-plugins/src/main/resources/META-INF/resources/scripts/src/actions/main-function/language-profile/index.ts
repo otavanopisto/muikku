@@ -12,6 +12,7 @@ import {
   Subjects,
   LanguageLevels,
   CVLanguage,
+  initializeLanguageProfileState,
 } from "~/reducers/main-function/language-profile";
 import { LoadingState, SaveState, LanguageCode } from "~/@types/shared";
 import {
@@ -102,10 +103,29 @@ export type UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE = SpecificActionType<
 >;
 
 /**
- * loadLanguageProfileData
+ * loadLanguageProfileDataTriggerType
  */
 export interface loadLanguageProfileTriggerType {
-  (id: number, success?: () => void, fail?: () => void): AnyActionType;
+  (
+    id: number,
+    clearCurrent?: boolean,
+    success?: () => void,
+    fail?: () => void
+  ): AnyActionType;
+}
+
+/**
+ * clearLanguageProfileDataTriggerType
+ */
+export interface clearLanguageProfileDataTriggerType {
+  (success?: () => void, fail?: () => void): AnyActionType;
+}
+
+/**
+ * clearLanguageProfileSamplesTriggerType
+ */
+export interface clearLanguageProfileSamplesTriggerType {
+  (success?: () => void, fail?: () => void): AnyActionType;
 }
 
 /**
@@ -272,6 +292,7 @@ const saveLanguageProfile: SaveLanguageProfileTriggerType =
 const loadLanguageProfile: loadLanguageProfileTriggerType =
   function loadLanguageProfile(
     userEntityId: number,
+    clearCurrent?: boolean,
     success?: () => void,
     fail?: () => void
   ) {
@@ -284,6 +305,12 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
           type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
           payload: "LOADING",
         });
+        if (clearCurrent) {
+          dispatch({
+            type: "SET_LANGUAGE_PROFILE",
+            payload: initializeLanguageProfileState.data,
+          });
+        }
         const LanguageProfileApi = MApi.getLanguageProfile();
         const data = await LanguageProfileApi.getLanguageProfile({
           userEntityId,
@@ -294,6 +321,73 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
         dispatch({
           type: "UPDATE_LANGUAGE_PROFILE_VALUES",
           payload: languageProfileData as LanguageProfileData,
+        });
+
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          payload: "READY",
+        });
+        success && success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          payload: "ERROR",
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.loadError", {
+              error: err,
+              ns: "languageProfile",
+            }),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+/**
+ * loadLanguageProfileSamples
+ * @param userEntityId userEntityId
+ * @param success success
+ * @param fail fail
+ */
+const loadLanguageSamples: loadLanguageProfileTriggerType =
+  function loadLanguageProfile(
+    userEntityId: number,
+    clearCurrent?: boolean,
+    success?: () => void,
+    fail?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          payload: "LOADING",
+        });
+        if (clearCurrent) {
+          dispatch({
+            type: "UPDATE_LANGUAGE_PROFILE_VALUES",
+            payload: {},
+          });
+        }
+
+        const LanguageProfileApi = MApi.getLanguageProfile();
+
+        const data = await LanguageProfileApi.getLanguageProfileSamples({
+          userEntityId,
+        });
+
+        dispatch({
+          type: "UPDATE_LANGUAGE_PROFILE_VALUES",
+          payload: { samples: data },
         });
         dispatch({
           type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
@@ -313,6 +407,7 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
             i18n.t("notifications.loadError", {
               error: err,
               ns: "languageProfile",
+              context: "languageSamples",
             }),
             "error"
           )
@@ -804,68 +899,11 @@ const deleteLanguageSample: DeleteLanguageProfileSampleTriggerType =
     };
   };
 
-/**
- * loadLanguageProfileData
- * @param userEntityId userEntityId
- * @param success success
- * @param fail fail
- */
-const loadLanguageSamples: loadLanguageProfileTriggerType =
-  function loadLanguageProfile(
-    userEntityId: number,
-    success?: () => void,
-    fail?: () => void
-  ) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      try {
-        dispatch({
-          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
-          payload: "LOADING",
-        });
-        const LanguageProfileApi = MApi.getLanguageProfile();
-        const data = await LanguageProfileApi.getLanguageProfileSamples({
-          userEntityId,
-        });
-        dispatch({
-          type: "UPDATE_LANGUAGE_PROFILE_VALUES",
-          payload: { samples: data },
-        });
-        dispatch({
-          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
-          payload: "READY",
-        });
-        success && success();
-      } catch (err) {
-        if (!isMApiError(err)) {
-          throw err;
-        }
-        dispatch({
-          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
-          payload: "ERROR",
-        });
-        dispatch(
-          notificationActions.displayNotification(
-            i18n.t("notifications.loadError", {
-              error: err,
-              ns: "languageProfile",
-              context: "languageSamples",
-            }),
-            "error"
-          )
-        );
-        fail && fail();
-      }
-    };
-  };
-
 export {
   loadLanguageProfile,
+  loadLanguageSamples,
   saveLanguageProfile,
   saveLanguageSamples,
-  loadLanguageSamples,
   deleteLanguageSample,
   createLanguageSample,
   createLanguageAudioSamples,

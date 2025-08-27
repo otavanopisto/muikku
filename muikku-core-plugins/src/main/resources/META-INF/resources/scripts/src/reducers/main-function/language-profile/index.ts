@@ -100,7 +100,7 @@ export interface LanguageProfileState {
 /**
  * initialUserGroupsState
  */
-const initializeLanguageProfileState: LanguageProfileState = {
+export const initializeLanguageProfileState: LanguageProfileState = {
   data: {
     languageUsage: "",
     studyMotivation: "",

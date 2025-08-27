@@ -2930,7 +2930,7 @@
       "addNewSampleDescription_text": "Liitä tähän kirjoittamasi teksti.",
       "addNewSampleDescription_audio": "Nauhoita ääninäytteesi alla olevan nauhurin avulla.",
       "addNewSampleDescription_file": "Lataa koneellesi tallennettu ääninäytteesi alla olevaan kenttään.",
-      "empty": "$t(common:content.empty)",
+      "empty": "Kieliprofiilia ei ole vielä aloitettu",
       "empty_languages": "Ei hakua vastaavia kieliä",
       "initializationStep1Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "initializationStep2Description1": "Arvioi omaa kielitaitoasi alla olevan asteikon avulla. Pohdi kielitaitoasi eri osaamisalueiden kannalta, ja merkitse taulukkoon se taitotaso (esim. A2.1), jonka kuvaus vastaa mielestäsi parhaiten tämänhetkistä tilannettasi kunkin kielen kohdalla. ",
