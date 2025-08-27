@@ -12,6 +12,7 @@ import ContentPanel, {
   ContentPanelItem,
 } from "~/components/general/content-panel";
 import TocTopic, { Toc, TocElement } from "~/components/general/toc";
+import { MaterialContentNode } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { useActiveMaterial } from "../../hooks/useActiveMaterial";
 import ExamMaterial from "./material";
@@ -169,19 +170,139 @@ const ExamInstanceTableOfContents = (
 ) => {
   const { examId } = props;
 
+  const { t } = useTranslation();
+
+  const status = useSelector((state: StateType) => state.status);
+
   const currentExam = useSelector(
     (state: StateType) => state.exams.currentExam
   );
 
+  const examsCompositeReplies = useSelector(
+    (state: StateType) => state.exams.examsCompositeReplies
+  );
+
+  /**
+   * getTopicElementAttributes
+   * @param content content
+   * @returns topic element attributes
+   */
+  const getTopicElementAttributes = (content: MaterialContentNode) => {
+    let icon: string | null = null;
+    let iconTitle: string | null = null;
+    let className: string | null = null;
+    let ariaLabel: string | null = null;
+
+    const compositeReply = examsCompositeReplies.find(
+      (reply) => reply.workspaceMaterialId === content.workspaceMaterialId
+    );
+
+    if (!compositeReply) {
+      return {
+        icon,
+        iconTitle,
+        className,
+        ariaLabel,
+      };
+    }
+
+    switch (compositeReply.state) {
+      case "ANSWERED":
+        icon = "check";
+        className = "toc__item--answered";
+        iconTitle = t("labels.assignment", {
+          context: "done",
+          ns: "materials",
+        });
+        ariaLabel = t("wcag.tocPageMaterialStatus", {
+          context: "done",
+          ns: "materials",
+        });
+        break;
+      case "SUBMITTED":
+        icon = "check";
+        className = "toc__item--submitted";
+        iconTitle = t("labels.assignment", {
+          context: "returned",
+          ns: "materials",
+        });
+        ariaLabel = t("wcag.tocPageMaterialStatus", {
+          context: "submitted",
+          ns: "materials",
+        });
+        break;
+      case "WITHDRAWN":
+        icon = "check";
+        className = "toc__item--withdrawn";
+        iconTitle = t("labels.assignment", {
+          context: "cancelled",
+          ns: "materials",
+        });
+        ariaLabel = t("wcag.tocPageMaterialStatus", {
+          context: "withdrawn",
+          ns: "materials",
+        });
+        break;
+      case "INCOMPLETE":
+        icon = "check";
+        className = "toc__item--incomplete";
+        iconTitle = t("labels.evaluated", {
+          context: "incomplete",
+          ns: "materials",
+        });
+        ariaLabel = t("wcag.tocPageMaterialStatus", {
+          context: "incomplete",
+          ns: "materials",
+        });
+        break;
+      case "FAILED":
+        icon = "thumb-down";
+        className = "toc__item--failed";
+        iconTitle = t("labels.evaluated", {
+          context: "failed",
+          ns: "materials",
+        });
+        iconTitle = "Tittel";
+        ariaLabel = t("wcag.tocPageMaterialStatus", {
+          context: "failed",
+          ns: "materials",
+        });
+        break;
+      case "PASSED":
+        icon = "thumb-up";
+        className = "toc__item--passed";
+        iconTitle = t("labels.evaluated", {
+          context: "passed",
+          ns: "materials",
+        });
+        ariaLabel = t("wcag.tocPageMaterialStatus", {
+          context: "passed",
+          ns: "materials",
+        });
+        break;
+      case "UNANSWERED":
+      default:
+        break;
+    }
+
+    return {
+      icon,
+      iconTitle,
+      className,
+      ariaLabel,
+    };
+  };
+
   //const { activeMaterialId } = useActiveMaterial(currentExam?.contents || []);
 
   return (
-    <Toc modifier="workspace-materials">
+    <Toc modifier="workspace-materials" tocHeaderTitle="Sisällysluettelo">
       <TocTopic
         isActive={true}
         isHidden={false}
-        key={`p-${currentExam.folderId}`}
-        topicId={`p-${currentExam.folderId}`}
+        key={`tocTopic-${currentExam.folderId}`}
+        // Used to track local storage value for each user and exam topic
+        topicId={`tocTopic-${currentExam.folderId}_${status.userId}`}
         name="Tehtävät"
       >
         {currentExam.contents.map((content) => {
@@ -194,14 +315,20 @@ const ExamInstanceTableOfContents = (
               ? "exercise"
               : null;
 
+          const { icon, iconTitle, className, ariaLabel } =
+            getTopicElementAttributes(content);
+
           return (
             <TocElement
-              key={`p-${content.workspaceMaterialId}`}
-              id={`p-${content.workspaceMaterialId}`}
+              key={`tocElement-${content.workspaceMaterialId}`}
+              id={`tocElement-${content.workspaceMaterialId}`}
+              className={className}
               modifier={modifier}
               isActive={false}
               isHidden={false}
-              iconAfter={null}
+              iconAfter={icon}
+              iconAfterTitle={iconTitle}
+              aria-label={ariaLabel}
             >
               {content.title}
             </TocElement>
