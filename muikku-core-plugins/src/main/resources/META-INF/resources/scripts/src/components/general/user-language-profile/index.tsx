@@ -6,11 +6,7 @@ import {
   loadLanguageSamples,
 } from "~/actions/main-function/language-profile";
 import { useTranslation } from "react-i18next";
-import {
-  LanguageProfileData,
-  LanguageItem,
-  LanguageLevels,
-} from "~/reducers/main-function/language-profile";
+import { LanguageProfileData } from "~/reducers/main-function/language-profile";
 import {
   levelMap,
   skillMap,
@@ -19,6 +15,9 @@ import StarDisplayer from "./stars";
 import "~/sass/elements/user-language-profile.scss";
 import Drawer from "./drawer";
 
+/**
+ * UserLanguageProfileProps
+ */
 interface UserLanguageProfileProps {
   userId: number;
 }
@@ -62,7 +61,11 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
         </div>
       ) : (
         <>
-          <Drawer title="Yleiset tiedot">
+          <Drawer
+            title={t("labels.initializationStep1Title", {
+              ns: "languageProfile",
+            })}
+          >
             {languageUsage && (
               <div className="user-language-profile-container__row">
                 <label
@@ -132,6 +135,12 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
                 />
               </div>
             )}
+          </Drawer>
+          <Drawer
+            title={t("labels.initializationStep4Title", {
+              ns: "languageProfile",
+            })}
+          >
             {learningFactors && (
               <div className="user-language-profile-container__row">
                 <label
