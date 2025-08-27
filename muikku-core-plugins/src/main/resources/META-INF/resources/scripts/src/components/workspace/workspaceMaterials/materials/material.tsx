@@ -298,8 +298,6 @@ const WorkspaceMaterial = React.memo((props: WorkspaceMaterialProps) => {
     ]
   );
 
-  console.log("WorkspaceMaterial render");
-
   return (
     <LazyLoader
       useChildrenAsLazy={true}

@@ -1,25 +1,25 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
 } from "~/reducers/workspaces";
-import { MaterialLoaderTitle } from "~/components/base/material-loaderV2/components/title";
-import { MaterialLoaderContent } from "~/components/base/material-loaderV2/components/content";
-import { MaterialLoaderButtons } from "~/components/base/material-loaderV2/components/buttons";
 import LazyLoader from "~/components/general/lazy-loader";
-import MaterialLoaderV2 from "~/components/base/material-loaderV2";
-import { STATE_CONFIGS } from "~/components/base/material-loaderV2/state/StateConfig";
-import { createMaterialsProvider } from "~/components/base/material-loaderV2/providers/MaterialsProvider";
+import MaterialLoader from "~/components/base/material-loader";
+import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
+import { MaterialLoaderContent } from "~/components/base/material-loader/content";
+import { MaterialLoaderButtons } from "~/components/base/material-loader/buttons";
+import { MaterialCompositeReply } from "~/generated/client";
+import { updateAssignmentState } from "~/actions/workspaces/exams";
 
 /**
  * WorkspaceMaterialProps
  */
 interface ExamMaterialProps {
   materialContentNode: MaterialContentNodeWithIdAndLogic;
-  folder: MaterialContentNodeWithIdAndLogic;
+  compositeReply?: MaterialCompositeReply;
   workspace: WorkspaceDataType;
   anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
@@ -30,60 +30,14 @@ interface ExamMaterialProps {
  * @param props props
  */
 const ExamMaterial = (props: ExamMaterialProps) => {
-  const { materialContentNode, folder, workspace } = props;
+  const { materialContentNode, workspace, compositeReply } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const status = useSelector((state: StateType) => state.status);
 
-  const dataProvider = createMaterialsProvider({
-    folder: {
-      ...folder,
-      contentVersion: "ckeditor4",
-    },
-    material: {
-      ...materialContentNode,
-      contentVersion: "ckeditor4",
-      assignment: materialContentNode.assignment,
-      evaluation: materialContentNode.evaluation,
-    },
-    workspace: {
-      id: workspace.id,
-      urlName: workspace.urlName,
-      language: workspace.language,
-    },
-    userId: status.userId,
-    context: {
-      tool: "exams",
-      contextPath: "",
-    },
-    editorPermissions: {
-      editable: false,
-      canPublish: false,
-      canRevert: false,
-      canCopy: false,
-      canHide: false,
-      canDelete: false,
-      canRestrictView: false,
-      canChangePageType: false,
-      canChangeExerciseType: false,
-      canSetLicense: false,
-      canSetProducers: false,
-      canAddAttachments: false,
-      canEditContent: false,
-      canSetTitle: false,
-      disablePlugins: false,
-    },
-    currentState: "INCOMPLETE",
-    assignmentType: materialContentNode.assignmentType,
-    canEdit: false,
-    canSubmit: false,
-    canViewAnswers: false,
-    fields: [],
-    answers: [],
-    onFieldChange: () => {},
-    onSubmit: () => Promise.resolve(),
-    onModify: () => Promise.resolve(),
-  });
+  const websocket = useSelector((state: StateType) => state.websocket);
+
+  const dispatch = useDispatch();
 
   return (
     <LazyLoader
@@ -91,11 +45,28 @@ const ExamMaterial = (props: ExamMaterialProps) => {
       className="material-lazy-loader-container"
     >
       {(loaded: boolean) => (
-        <MaterialLoaderV2
-          dataProvider={dataProvider}
-          stateConfigs={STATE_CONFIGS}
-          websocket={null}
+        <MaterialLoader
+          material={materialContentNode}
+          workspace={workspace}
+          status={status}
+          websocket={websocket}
           invisible={!loaded}
+          compositeReplies={compositeReply}
+          answerable={true}
+          readOnly={false}
+          onUpdateAssignmentState={(...args) => {
+            dispatch(
+              updateAssignmentState({
+                successState: args[0],
+                avoidServerCall: args[1],
+                workspaceId: args[2],
+                workspaceMaterialId: args[3],
+                existantReplyId: args[4],
+                successMessage: args[5],
+                callback: args[6],
+              })
+            );
+          }}
         >
           {(props, state, stateConfiguration) => (
             <div>
@@ -103,7 +74,7 @@ const ExamMaterial = (props: ExamMaterialProps) => {
               <MaterialLoaderContent
                 {...props}
                 {...state}
-                dataProvider={dataProvider}
+                stateConfiguration={stateConfiguration}
               />
 
               <div className="material-page__de-floater"></div>
@@ -115,7 +86,7 @@ const ExamMaterial = (props: ExamMaterialProps) => {
               />
             </div>
           )}
-        </MaterialLoaderV2>
+        </MaterialLoader>
       )}
     </LazyLoader>
   );

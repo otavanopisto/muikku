@@ -343,6 +343,7 @@ export default class ContentPanel extends React.Component<
  */
 interface ContentPanelItemProps {
   id?: string;
+  dataMaterialId?: number;
   scrollMarginTopOffset?: number;
 }
 
@@ -376,6 +377,7 @@ export class ContentPanelItem extends React.Component<
             scrollMarginTop: `${this.props.scrollMarginTopOffset}px`,
           }
         }
+        data-material-id={this.props.dataMaterialId}
       >
         {this.props.children}
       </div>

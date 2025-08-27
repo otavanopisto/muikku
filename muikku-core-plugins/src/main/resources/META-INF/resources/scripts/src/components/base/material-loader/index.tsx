@@ -15,7 +15,10 @@ import { WebsocketStateType } from "~/reducers/util/websocket";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/material-page.scss";
 import { UsedAs } from "~/@types/shared";
-import { MaterialCompositeReply } from "~/generated/client";
+import {
+  MaterialCompositeReply,
+  MaterialCompositeReplyStateType,
+} from "~/generated/client";
 import MApi from "~/api/api";
 import { isEqual } from "lodash";
 import { NotificationSeverityType } from "~/reducers/base/notifications";
@@ -186,7 +189,7 @@ import { StateConfig } from "./types";
  */
 export interface AssignmentStateChangeCallback {
   (
-    newState: string,
+    newState: MaterialCompositeReplyStateType,
     shouldUpdateServer: boolean,
     workspaceId: number,
     workspaceMaterialId: number,
@@ -302,7 +305,7 @@ export interface MaterialLoaderProps {
 
   /**
    * A boolean to load the composite replies if they haven't been given
-   * Shouldn't use if answerable as the updateAssignmentState function is
+   * Shouldn't use if answerable as the onUpdateAssignmentState function is
    * used
    */
   loadCompositeReplies?: boolean;

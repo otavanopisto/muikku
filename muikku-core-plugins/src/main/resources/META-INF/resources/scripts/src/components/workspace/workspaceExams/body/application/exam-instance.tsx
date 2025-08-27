@@ -11,7 +11,9 @@ import { startExam } from "~/actions/workspaces/exams";
 import ContentPanel, {
   ContentPanelItem,
 } from "~/components/general/content-panel";
+import TocTopic, { Toc, TocElement } from "~/components/general/toc";
 import { StateType } from "~/reducers";
+import { useActiveMaterial } from "../../hooks/useActiveMaterial";
 import ExamMaterial from "./material";
 
 /**
@@ -33,7 +35,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
 
   const dispatch = useDispatch();
 
-  const { currentExamStatus, exams, examsStatus } = useSelector(
+  const { currentExamStatus, exams, examsStatus, currentExam } = useSelector(
     (state: StateType) => state.exams
   );
 
@@ -80,13 +82,14 @@ const ExamInstanceContent = withTranslation("workspace")((
     (state: StateType) => state.exams.currentExam
   );
 
-  const { currentExamStatus } = useSelector((state: StateType) => state.exams);
+  const { initializeStatus, currentExamStatus, examsCompositeReplies } =
+    useSelector((state: StateType) => state.exams);
 
   const workspace = useSelector(
     (state: StateType) => state.workspaces.currentWorkspace
   );
 
-  if (currentExamStatus === "LOADING") {
+  if (initializeStatus === "LOADING") {
     return <div>Ladataan kokeen sisältöä...</div>;
   }
 
@@ -95,14 +98,25 @@ const ExamInstanceContent = withTranslation("workspace")((
   }
 
   const sectionSpecificContentData: JSX.Element[] = currentExam.contents.map(
-    (content) => (
-      <ContentPanelItem
-        id={`p-${content.workspaceMaterialId}`}
-        key={content.workspaceMaterialId}
-      >
-        <ExamMaterial materialContentNode={content} workspace={workspace} />
-      </ContentPanelItem>
-    )
+    (content) => {
+      const compositeReply = examsCompositeReplies.find(
+        (reply) => reply.workspaceMaterialId === content.workspaceMaterialId
+      );
+
+      return (
+        <ContentPanelItem
+          id={`p-${content.workspaceMaterialId}`}
+          key={content.workspaceMaterialId}
+          dataMaterialId={content.workspaceMaterialId}
+        >
+          <ExamMaterial
+            materialContentNode={content}
+            workspace={workspace}
+            compositeReply={compositeReply}
+          />
+        </ContentPanelItem>
+      );
+    }
   );
 
   const createSectionElement = (
@@ -154,7 +168,48 @@ const ExamInstanceTableOfContents = (
   props: ExamInstanceTableOfContentsProps
 ) => {
   const { examId } = props;
-  return <div>examId: {examId}</div>;
+
+  const currentExam = useSelector(
+    (state: StateType) => state.exams.currentExam
+  );
+
+  //const { activeMaterialId } = useActiveMaterial(currentExam?.contents || []);
+
+  return (
+    <Toc modifier="workspace-materials">
+      <TocTopic
+        isActive={true}
+        isHidden={false}
+        key={`p-${currentExam.folderId}`}
+        topicId={`p-${currentExam.folderId}`}
+        name="Tehtävät"
+      >
+        {currentExam.contents.map((content) => {
+          const isAssignment = content.assignmentType === "EVALUATED";
+          const isExercise = content.assignmentType === "EXERCISE";
+
+          const modifier = isAssignment
+            ? "assignment"
+            : isExercise
+              ? "exercise"
+              : null;
+
+          return (
+            <TocElement
+              key={`p-${content.workspaceMaterialId}`}
+              id={`p-${content.workspaceMaterialId}`}
+              modifier={modifier}
+              isActive={false}
+              isHidden={false}
+              iconAfter={null}
+            >
+              {content.title}
+            </TocElement>
+          );
+        })}
+      </TocTopic>
+    </Toc>
+  );
 };
 
 export default ExamInstance;

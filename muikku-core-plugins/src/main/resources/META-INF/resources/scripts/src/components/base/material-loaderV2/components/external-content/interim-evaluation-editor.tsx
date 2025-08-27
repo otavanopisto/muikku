@@ -113,7 +113,7 @@ class InterimEvaluationEditor extends React.Component<
    * @param nextState nextState
    * @returns boolean true if should update
    */
-  shouldComponentUpdate(
+  /* shouldComponentUpdate(
     nextProps: InterimEvaluationEditorProps,
     nextState: InterimEvaluationEditorState
   ) {
@@ -126,7 +126,7 @@ class InterimEvaluationEditor extends React.Component<
         !equals(nextProps.stateConfiguration, this.props.stateConfiguration))
     );
   }
-
+ */
   /**
    * onCKEditorChange - this one is for a ckeditor change
    * @param value value
@@ -265,7 +265,7 @@ class InterimEvaluationEditor extends React.Component<
     if (
       isSubmitted ||
       isEvaluated ||
-      this.props.readOnly ||
+      //this.props.readOnly ||
       creatingInterimEvaluationRequestBlocked
     ) {
       field = (
@@ -322,7 +322,8 @@ class InterimEvaluationEditor extends React.Component<
             {t("content.interimEvaluationDisclaimer", { ns: "materials" })}
           </div>
         ) : (
-          !this.props.readOnly && buttons
+          //!this.props.readOnly &&
+          buttons
         )}
       </>
     );

@@ -432,6 +432,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     );
 
     commonProps.initialValue = initialValue;
+    commonProps.onChange = this.onValueChange.bind(this);
 
     // and we return that thing
     return <FieldComponent {...commonProps} key={key} />;

@@ -1,6 +1,6 @@
 import { Reducer } from "redux";
 import { ActionType } from "~/actions";
-import { ExamAttendance } from "~/generated/client";
+import { ExamAttendance, MaterialCompositeReply } from "~/generated/client";
 
 export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
 
@@ -8,20 +8,26 @@ export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
  * WorkspaceExamsState
  */
 export interface ExamsState {
+  initializeStatus: ReducerStateType;
   examsStatus: ReducerStateType;
   exams: ExamAttendance[];
   currentExam: ExamAttendance | null;
   currentExamStatus: ReducerStateType;
+  examsCompositeReplies: MaterialCompositeReply[];
+  examsCompositeRepliesStatus: ReducerStateType;
 }
 
 /**
  * initialWorkspaceExamsState
  */
 const initialWorkspaceExamsState: ExamsState = {
+  initializeStatus: "IDLE",
   examsStatus: "IDLE",
   exams: [],
   currentExam: null,
   currentExamStatus: "IDLE",
+  examsCompositeReplies: [],
+  examsCompositeRepliesStatus: "IDLE",
 };
 
 /**
@@ -38,7 +44,7 @@ export const exams: Reducer<ExamsState> = (
     case "EXAMS_INITIALIZE_STATUS":
       return {
         ...state,
-        examsStatus: action.payload,
+        initializeStatus: action.payload,
       };
 
     case "EXAMS_UPDATE_EXAMS":
@@ -52,6 +58,40 @@ export const exams: Reducer<ExamsState> = (
         ...state,
         examsStatus: action.payload,
       };
+
+    case "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES":
+      return {
+        ...state,
+        examsCompositeReplies: action.payload,
+      };
+
+    case "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES_STATUS":
+      return {
+        ...state,
+        examsCompositeRepliesStatus: action.payload,
+      };
+
+    case "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER": {
+      let wasUpdated = false;
+      let newExamsCompositeReplies = state.examsCompositeReplies.map(
+        (compositeReplies) => {
+          if (
+            compositeReplies.workspaceMaterialId ===
+            action.payload.workspaceMaterialId
+          ) {
+            wasUpdated = true;
+            return { ...compositeReplies, state: action.payload.state };
+          }
+          return compositeReplies;
+        }
+      );
+      if (!wasUpdated) {
+        newExamsCompositeReplies = newExamsCompositeReplies.concat([
+          <MaterialCompositeReply>{ ...action.payload, lock: "NONE" },
+        ]);
+      }
+      return { ...state, examsCompositeReplies: newExamsCompositeReplies };
+    }
 
     case "EXAMS_UPDATE_CURRENT_EXAM":
       return {

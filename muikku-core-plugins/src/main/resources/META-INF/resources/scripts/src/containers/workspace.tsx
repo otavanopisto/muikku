@@ -65,7 +65,7 @@ import ReadspeakerProvider from "~/components/context/readspeaker-context";
 import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
 import WorkspaceExamsBody from "~/components/workspace/workspaceExams";
-import { loadExams } from "~/actions/workspaces/exams";
+import { initializeExams } from "~/actions/workspaces/exams";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -1181,7 +1181,7 @@ export default class Workspace extends React.Component<
           // eslint-disable-next-line jsdoc/require-jsdoc
           success: (workspace) => {
             this.props.store.dispatch(
-              loadExams({
+              initializeExams({
                 workspaceEntityId: workspace.id,
               }) as Action
             );
