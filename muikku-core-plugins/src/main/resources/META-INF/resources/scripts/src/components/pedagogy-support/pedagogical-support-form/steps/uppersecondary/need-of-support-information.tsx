@@ -4,7 +4,6 @@ import "~/sass/elements/form.scss";
 import { Textarea } from "~/components/pedagogy-support/components/textarea";
 import Select, { ActionMeta } from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
-import AnimateHeight from "react-animate-height";
 import {
   SupportAction,
   SupportActionMatriculationExamination,
@@ -163,7 +162,11 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
               id="decisionToSpecialEducationDate"
               className="hops__input"
               dateFormat="dd.MM.yyyy"
-              selected={formData?.decisionToSpecialEducationDate}
+              selected={
+                formData?.decisionToSpecialEducationDate
+                  ? new Date(formData?.decisionToSpecialEducationDate)
+                  : undefined
+              }
               onChange={(date) =>
                 handleFieldChange("decisionToSpecialEducationDate", date)
               }
@@ -259,27 +262,23 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             />
           </div>
         </div>
-        <AnimateHeight
-          height={formData?.supportActions.includes("other") ? "auto" : 0}
-        >
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <Textarea
-                id="otherSupportMeasures"
-                label={t("labels.other", {
-                  ns: "pedagogySupportPlan",
-                  context: "action",
-                })}
-                className="hops__textarea"
-                onChange={(e) =>
-                  handleFieldChange("supportActionOther", e.target.value)
-                }
-                value={formData?.supportActionOther || ""}
-                disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
-              />
-            </div>
+
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <Textarea
+              id="otherSupportMeasures"
+              label={t("labels.additionalInfo", {
+                ns: "pedagogySupportPlan",
+              })}
+              className="hops__textarea"
+              onChange={(e) =>
+                handleFieldChange("supportActionOther", e.target.value)
+              }
+              value={formData?.supportActionOther || ""}
+              disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
+            />
           </div>
-        </AnimateHeight>
+        </div>
 
         <div className="hops-container__row">
           <div className="hops__form-element-container">
@@ -326,34 +325,26 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             />
           </div>
         </div>
-        <AnimateHeight
-          height={
-            formData?.matriculationExaminationSupport.includes("other")
-              ? "auto"
-              : 0
-          }
-        >
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <Textarea
-                id="matriculationSupportOther"
-                label={t("labels.other", {
-                  ns: "pedagogySupportPlan",
-                  context: "action",
-                })}
-                className="hops__textarea"
-                onChange={(e) =>
-                  handleFieldChange(
-                    "matriculationExaminationSupportOther",
-                    e.target.value
-                  )
-                }
-                value={formData?.matriculationExaminationSupportOther || ""}
-                disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
-              />
-            </div>
+
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <Textarea
+              id="matriculationSupportOther"
+              label={t("labels.additionalInfo", {
+                ns: "pedagogySupportPlan",
+              })}
+              className="hops__textarea"
+              onChange={(e) =>
+                handleFieldChange(
+                  "matriculationExaminationSupportOther",
+                  e.target.value
+                )
+              }
+              value={formData?.matriculationExaminationSupportOther || ""}
+              disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
+            />
           </div>
-        </AnimateHeight>
+        </div>
       </fieldset>
     </section>
   );

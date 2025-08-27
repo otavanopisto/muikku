@@ -150,7 +150,7 @@ export interface FormData {
    */
   supportActions: SupportAction[];
   /**
-   * Some other support actions
+   * Some other support actions. Works as Extra info
    */
   supportActionOther?: string;
   /**
@@ -162,7 +162,7 @@ export interface FormData {
    */
   matriculationExaminationSupport: SupportActionMatriculationExamination[];
   /**
-   * Some other support plan for the matriculation examination
+   * Some other support plan for the matriculation examination. Works as Extra info
    */
   matriculationExaminationSupportOther?: string;
   /**
@@ -204,7 +204,7 @@ export interface CompulsoryFormData {
    */
   supportActions: SupportAction[];
   /**
-   * Some other support actions
+   * Some other support actions. Works as Extra info
    */
   supportActionOther?: string;
   /**

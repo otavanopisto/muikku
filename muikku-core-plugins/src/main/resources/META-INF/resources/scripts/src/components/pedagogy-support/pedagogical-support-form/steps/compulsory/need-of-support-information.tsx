@@ -4,7 +4,6 @@ import "~/sass/elements/form.scss";
 import { Textarea } from "~/components/pedagogy-support/components/textarea";
 import Select, { ActionMeta } from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
-import AnimateHeight from "react-animate-height";
 import { CompulsoryFormData, SupportAction } from "~/@types/pedagogy-form";
 import { supportActionsOptionsCompulsory } from "~/components/pedagogy-support/helpers";
 import { useTranslation } from "react-i18next";
@@ -158,27 +157,23 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
             />
           </div>
         </div>
-        <AnimateHeight
-          height={formData?.supportActions.includes("other") ? "auto" : 0}
-        >
-          <div className="hops-container__row">
-            <div className="hops__form-element-container">
-              <Textarea
-                id="otherSupportMeasures"
-                label={t("labels.other", {
-                  ns: "pedagogySupportPlan",
-                  context: "action",
-                })}
-                className="hops__textarea"
-                onChange={(e) =>
-                  handleTextAreaChange("supportActionOther", e.target.value)
-                }
-                value={formData?.supportActionOther || ""}
-                disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
-              />
-            </div>
+
+        <div className="hops-container__row">
+          <div className="hops__form-element-container">
+            <Textarea
+              id="otherSupportMeasures"
+              label={t("labels.additionalInfo", {
+                ns: "pedagogySupportPlan",
+              })}
+              className="hops__textarea"
+              onChange={(e) =>
+                handleTextAreaChange("supportActionOther", e.target.value)
+              }
+              value={formData?.supportActionOther || ""}
+              disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
+            />
           </div>
-        </AnimateHeight>
+        </div>
       </fieldset>
     </section>
   );
