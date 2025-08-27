@@ -15,7 +15,7 @@
 	<description>Muikku Elasic Search plugin</description>
 
 	<properties>
-      <elasticsearch.version>7.17.6</elasticsearch.version>
+      <elasticsearch.version>7.17.5</elasticsearch.version>
       
       <!-- 
         Lucene version that the above version of elasticsearch is using. Used to override (fix) 
