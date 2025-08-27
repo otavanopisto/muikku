@@ -118,27 +118,17 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
 
   const schoolOpinionEntries = (formData?.schoolOpinionOfSupport &&
     formData?.schoolOpinionOfSupport.length > 0 &&
-    formData?.schoolOpinionOfSupport.map((iOpinion, index) => {
-      const ownerOfEntry =
-        status.userSchoolDataIdentifier === iOpinion.creatorIdentifier;
-
-      return (
-        <OpinionItem
-          key={index}
-          index={index}
-          type="schoolOpinionOfSupport"
-          opinion={iOpinion}
-          disabled={
-            userRole === "STUDENT" ||
-            !editIsActive ||
-            !ownerOfEntry ||
-            !editIsActive
-          }
-          onOpinionChange={handleOpinionChange}
-          onDeleteEntryClick={handleDeleteOpinion}
-        />
-      );
-    })) || (
+    formData?.schoolOpinionOfSupport.map((iOpinion, index) => (
+      <OpinionItem
+        key={index}
+        index={index}
+        type="schoolOpinionOfSupport"
+        opinion={iOpinion}
+        disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
+        onOpinionChange={handleOpinionChange}
+        onDeleteEntryClick={handleDeleteOpinion}
+      />
+    ))) || (
     <div className="empty">
       <span>
         {t("content.empty", {
@@ -177,7 +167,7 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
         </legend>
         <OpinionList>
           {schoolOpinionEntries}
-          {userRole !== "STUDENT" && userRole !== "STUDENT_PARENT" && (
+          {userRole === "SPECIAL_ED_TEACHER" && (
             <AddNewOpinionBox
               onClick={handleAddNewOpinion("schoolOpinionOfSupport")}
               disabled={!editIsActive}
