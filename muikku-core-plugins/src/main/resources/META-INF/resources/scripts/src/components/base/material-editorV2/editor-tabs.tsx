@@ -12,12 +12,18 @@ import Link from "~/components/general/link";
 import {
   Language,
   MaterialAI,
+  MaterialAnswersType,
   MaterialAssigmentType,
   MaterialViewRestriction,
 } from "~/generated/client";
 import { StateType } from "~/reducers";
 import { languageOptions } from "~/reducers/workspaces";
-import { CKEditorConfig } from "./helpers";
+import {
+  answersType,
+  CKEditorConfig,
+  MaterialAnswersTypeConfig,
+  MATERIAL_ANSWERS_TYPE_CONFIGS,
+} from "./helpers";
 import DeleteWorkspaceMaterialDialog from "../material-editor/delete-dialog";
 import { EditorPermissions } from "./editor-strategy";
 import {
@@ -1121,28 +1127,10 @@ export const EditorButtonSet = (props: EditorButtonSetProps) => {
 
   const restrictTypeClassName = "material-editor-" + restrictTypeValue;
 
-  // Exercise reveal type
-  const exerciseRevealType =
-    !editorState.currentDraftNodeValue?.correctAnswers ||
-    editorState.currentDraftNodeValue?.correctAnswers === "ALWAYS"
-      ? "always-show"
-      : editorState.currentDraftNodeValue?.correctAnswers === "ON_REQUEST"
-        ? "on-request"
-        : "never-show";
-
-  const correctAnswersModifiers = [
-    "material-editor-change-answer-reveal-type",
-    "material-editor",
-    "material-editor-" + exerciseRevealType,
-  ];
-
-  const correctAnswersTooltips =
-    !editorState.currentDraftNodeValue?.correctAnswers ||
-    editorState.currentDraftNodeValue?.correctAnswers === "ALWAYS"
-      ? t("labels.showAnswersAlways", { ns: "materials" })
-      : editorState.currentDraftNodeValue?.correctAnswers === "ON_REQUEST"
-        ? t("labels.showAnswersOnRequest", { ns: "materials" })
-        : t("labels.showAnswersNever", { ns: "materials" });
+  // Answers type
+  const answersTypeValue = answersType(
+    editorState.currentDraftNodeValue?.correctAnswers
+  );
 
   const publishModifiers = ["material-editor-publish-page", "material-editor"];
   const revertModifiers = ["material-editor-revert-page", "material-editor"];
@@ -1267,6 +1255,22 @@ export const EditorButtonSet = (props: EditorButtonSetProps) => {
     />
   );
 
+  /**
+   * createMaterialAnswersTypeComponent
+   * @param config config
+   * @param onClose onClose
+   * @returns createMaterialAnswersTypeComponent
+   */
+  const createMaterialAnswersTypeComponent = (
+    config: MaterialAnswersTypeConfig,
+    onClose: () => void
+  ) => (
+    <MaterialAnswersTypeButton
+      materialAnswersTypeConfig={config}
+      onClose={onClose}
+    />
+  );
+
   return (
     <div className="material-editor__buttonset">
       <div className="material-editor__buttonset-primary">
@@ -1333,12 +1337,19 @@ export const EditorButtonSet = (props: EditorButtonSetProps) => {
         {editorState.canChangeExerciseType &&
         editorState.currentDraftNodeValue?.assignmentType === "EXERCISE" ? (
           <Dropdown
-            openByHover
-            modifier="material-management-tooltip"
-            content={correctAnswersTooltips}
+            modifier="material-editor-answers-type"
+            openByHover={false}
+            items={MATERIAL_ANSWERS_TYPE_CONFIGS.map(
+              (config) => (closeDropdown: () => void) =>
+                createMaterialAnswersTypeComponent(config, closeDropdown)
+            )}
           >
             <ButtonPill
-              buttonModifiers={correctAnswersModifiers}
+              buttonModifiers={[
+                "material-editor-change-answer-reveal-type",
+                "material-editor",
+                "material-editor-" + answersTypeValue,
+              ]}
               icon="lightbulb"
               onClick={handleCycleCorrectAnswers}
             />
@@ -1513,11 +1524,14 @@ export const AssignmentPageButton = (props: AssignmentPageButtonProps) => {
   const handleChangeAssignmentType =
     (type: MaterialAssigmentType, onClose: () => void) =>
     (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      // If the new assignment type is exercise, set the correct answers to always by default
+      const correctAnswers = type === "EXERCISE" ? "ALWAYS" : null;
+
       dispatch(
         updateWorkspaceMaterialContentNode({
           workspace: editorState.currentNodeWorkspace,
           material: editorState.currentDraftNodeValue,
-          update: { assignmentType: type },
+          update: { assignmentType: type, correctAnswers },
           isDraft: true,
         })
       );
@@ -1531,6 +1545,79 @@ export const AssignmentPageButton = (props: AssignmentPageButtonProps) => {
     >
       <span className="link__icon icon-puzzle"></span>
       <span>{t(materialPageConfig.text, { ns: "materials" })}</span>
+    </Link>
+  );
+};
+
+/**
+ * Material answers type button props
+ */
+interface MaterialAnswersTypeButtonProps {
+  materialAnswersTypeConfig: MaterialAnswersTypeConfig;
+  onClose: () => void;
+}
+
+/**
+ * Material answers type button
+ * @param props props
+ * @returns Material answers type button
+ */
+export const MaterialAnswersTypeButton = (
+  props: MaterialAnswersTypeButtonProps
+) => {
+  const { materialAnswersTypeConfig, onClose } = props;
+
+  const { t } = useTranslation();
+
+  const dispatch = useDispatch();
+
+  const editorState = useSelector(
+    (state: StateType) => state.workspaces.materialEditor
+  );
+
+  const { correctAnswers } = editorState.currentDraftNodeValue;
+
+  const currentAnswersType = correctAnswers || null;
+
+  const isActive = currentAnswersType === materialAnswersTypeConfig.type;
+
+  const activeAnswersTypeClassName = isActive
+    ? "link--material-editor-dropdown-active"
+    : "";
+
+  const pageTypeClassName = materialAnswersTypeConfig.classNameMod
+    ? "link--" + materialAnswersTypeConfig.classNameMod
+    : "";
+
+  /**
+   * Handles change assignment type
+   * @param type type
+   * @param onClose onClose
+   */
+  const handleChangeAssignmentType =
+    (type: MaterialAnswersType, onClose: () => void) =>
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      dispatch(
+        updateWorkspaceMaterialContentNode({
+          workspace: editorState.currentNodeWorkspace,
+          material: editorState.currentDraftNodeValue,
+          update: { correctAnswers: type },
+          isDraft: true,
+        })
+      );
+      onClose();
+    };
+
+  return (
+    <Link
+      className={`link link--full link--material-editor-dropdown ${pageTypeClassName} ${activeAnswersTypeClassName}`}
+      onClick={handleChangeAssignmentType(
+        materialAnswersTypeConfig.type,
+        onClose
+      )}
+    >
+      <span className="link__icon icon-lightbulb"></span>
+      <span>{t(materialAnswersTypeConfig.text, { ns: "materials" })}</span>
     </Link>
   );
 };

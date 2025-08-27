@@ -1,5 +1,6 @@
 import _ from "lodash";
 import {
+  MaterialAnswersType,
   MaterialAssigmentType,
   MaterialViewRestriction,
 } from "~/generated/client";
@@ -21,6 +22,11 @@ type RestrictTypeLocales =
   | "labels.visibleRestrictionLoggedIn"
   | "labels.visibleRestrictionMembers";
 
+type AnswersTypeLocales =
+  | "labels.showAnswersAlways"
+  | "labels.showAnswersOnRequest"
+  | "labels.showAnswersNever";
+
 /**
  * MaterialPageTypeConfig
  */
@@ -37,6 +43,15 @@ export interface MaterialRestrictTypeConfig {
   type: MaterialViewRestriction | null;
   classNameMod: string;
   text: RestrictTypeLocales;
+}
+
+/**
+ * MaterialAnswersTypeConfig
+ */
+export interface MaterialAnswersTypeConfig {
+  type: MaterialAnswersType;
+  classNameMod: string;
+  text: AnswersTypeLocales;
 }
 
 export const MATERIAL_RESTRICT_TYPE_CONFIGS: MaterialRestrictTypeConfig[] = [
@@ -82,6 +97,24 @@ export const MATERIAL_PAGE_TYPE_CONFIGS: MaterialPageTypeConfig[] = [
     type: null,
     classNameMod: "material-editor-dropdown-theory",
     text: "labels.theoryPage",
+  },
+];
+
+export const MATERIAL_ANSWERS_TYPE_CONFIGS: MaterialAnswersTypeConfig[] = [
+  {
+    type: "ALWAYS",
+    classNameMod: "material-editor-dropdown-always",
+    text: "labels.showAnswersAlways",
+  },
+  {
+    type: "ON_REQUEST",
+    classNameMod: "material-editor-dropdown-on-request",
+    text: "labels.showAnswersOnRequest",
+  },
+  {
+    type: "NEVER",
+    classNameMod: "material-editor-dropdown-never",
+    text: "labels.showAnswersNever",
   },
 ];
 
@@ -136,6 +169,27 @@ export const assignmentPageType = (
     }
   }
   return "theory";
+};
+
+/**
+ * answersType
+ * @param correctAnswers correctAnswers
+ * @returns answers type
+ */
+export const answersType = (correctAnswers: MaterialAnswersType | null) => {
+  if (correctAnswers) {
+    switch (correctAnswers) {
+      case "ALWAYS":
+        return "always-show";
+
+      case "ON_REQUEST":
+        return "on-request";
+
+      case "NEVER":
+        return "never-show";
+    }
+  }
+  return "never-show";
 };
 
 /**
