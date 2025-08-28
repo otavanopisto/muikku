@@ -322,12 +322,8 @@ class DependantApplication extends React.Component<
               studyProgrammeName={this.getDependantStudyProgramme(
                 selectedDependantIdentifier
               )}
-              isFormAccessible={
-                this.props.guider.currentStudent.pedagogyFormAvailable &&
+              pedagogyFormAccess={
                 this.props.guider.currentStudent.pedagogyFormAvailable
-                  .accessible &&
-                this.props.guider.currentStudent.pedagogyFormAvailable
-                  .studentParent
               }
             />
           </ApplicationPanelBody>

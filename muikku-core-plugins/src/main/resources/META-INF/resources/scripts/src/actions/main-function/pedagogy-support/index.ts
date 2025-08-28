@@ -5,6 +5,7 @@ import {
 import { AnyActionType, SpecificActionType } from "~/actions";
 import {
   PedagogyForm,
+  PedagogyFormAccess,
   PedagogyFormImplementedActions,
   PedagogyFormLocked,
 } from "~/generated/client";
@@ -91,6 +92,11 @@ export type PEDAGOGY_SUPPORT_FORM_UPDATE_FORM_DATA = SpecificActionType<
   PedagogyFormData | null
 >;
 
+export type PEDAGOGY_SUPPORT_FORM_UPDATE_ACCESS = SpecificActionType<
+  "PEDAGOGY_SUPPORT_FORM_UPDATE_ACCESS",
+  Partial<PedagogyFormAccess>
+>;
+
 // IMPLEMENTED ACTIONS RELATED ACTIONS
 export type PEDAGOGY_SUPPORT_IMPLEMENTED_ACTIONS_UPDATE_STATUS =
   SpecificActionType<
@@ -122,7 +128,7 @@ export type PEDAGOGY_SUPPORT_UPDATE_EDITING = SpecificActionType<
 export interface InitializePedagogySupportTriggerType {
   (data: {
     studentIdentifier: string;
-    shouldLoadForm: boolean;
+    pedagogyFormAccess: Partial<PedagogyFormAccess>;
     isUppersecondary: boolean;
     onSuccess?: () => void;
     onFail?: () => void;
@@ -288,6 +294,12 @@ const initializePedagogySupport: InitializePedagogySupportTriggerType =
         payload: "READ",
       });
 
+      // Update access if passed
+      dispatch({
+        type: "PEDAGOGY_SUPPORT_FORM_UPDATE_ACCESS",
+        payload: data.pedagogyFormAccess,
+      });
+
       try {
         // Lets make list of all promises that we need to resolve
         const promises = [
@@ -298,7 +310,10 @@ const initializePedagogySupport: InitializePedagogySupportTriggerType =
           ),
         ];
 
-        if (data.shouldLoadForm) {
+        // Two cases:
+        // 1. No access passed, load form. This happens for students
+        // 2. Access passed and form is accessible, load form. This happens for teachers, parents, counselors etc...
+        if (data.pedagogyFormAccess?.accessible ?? false) {
           promises.push(
             dispatch(
               loadPedagogySupportForm({
@@ -479,21 +494,28 @@ const startEditingPedagogySupport: StartEditingPedagogySupportTriggerType =
 
       const promises = [];
 
-      // Check if any needed data is not ready or loading, if not load it
-      if (state.pedagogySupport.pedagogyFormStatus === "IDLE") {
+      // Check if user has access to form, default to false
+      const hasAccessToForm =
+        state.pedagogySupport.pedagogyFormAccess?.accessible ?? false;
+
+      if (state.pedagogySupport.implementedActionsStatus === "IDLE") {
         promises.push(
           dispatch(
-            loadPedagogySupportForm({
+            loadPedagogySupportImplActions({
               studentIdentifier: state.pedagogySupport.currentStudentIdentifier,
             })
           )
         );
       }
 
-      if (state.pedagogySupport.implementedActionsStatus === "IDLE") {
+      // Check if user has access to form and any needed data is not ready or loading, if not load it
+      if (
+        hasAccessToForm &&
+        state.pedagogySupport.pedagogyFormStatus === "IDLE"
+      ) {
         promises.push(
           dispatch(
-            loadPedagogySupportImplActions({
+            loadPedagogySupportForm({
               studentIdentifier: state.pedagogySupport.currentStudentIdentifier,
             })
           )

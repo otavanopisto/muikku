@@ -164,9 +164,7 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
           userRole={userRoleForForm(
             guider.currentStudent.pedagogyFormAvailable
           )}
-          isFormAccessible={
-            guider.currentStudent.pedagogyFormAvailable.accessible
-          }
+          pedagogyFormAccess={guider.currentStudent.pedagogyFormAvailable}
           studentIdentifier={guider.currentStudent.basic.id}
           studyProgrammeName={guider.currentStudent.basic.studyProgrammeName}
         />

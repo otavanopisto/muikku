@@ -13,6 +13,7 @@ import PedagogyPDFUpperSecondary from "./pedagogy-PDF-uppersecondary";
 import PedagogyPDFCompulsory from "./pedagogy-PDF-compulsory";
 import ImplementedSupportActions from "./implemented-support-form";
 import { usePedagogyRedux } from "./hooks/usePedagogyRedux";
+import { PedagogyFormAccess } from "~/generated/client";
 
 /**
  * LearningSupportProps
@@ -24,10 +25,8 @@ interface PedagogySupportProps {
   /**
    * Optional access information that affects the visibility of the pedagogy form tab
    * for specific user roles (e.g. COURSE_TEACHER, GUIDANCE_COUNSELOR).
-   *
-   * @default false
    */
-  isFormAccessible?: boolean;
+  pedagogyFormAccess: Partial<PedagogyFormAccess>;
 }
 
 /**
@@ -39,11 +38,7 @@ interface PedagogySupportProps {
  * @returns JSX.Element
  */
 const PedagogySupport = (props: PedagogySupportProps) => {
-  const {
-    isFormAccessible = false,
-    studentIdentifier,
-    studyProgrammeName,
-  } = props;
+  const { pedagogyFormAccess, studentIdentifier, studyProgrammeName } = props;
 
   // Check if user's study programme is eligible for pedagogy form
   const isEligibleForUpperSecondary = UPPERSECONDARY_PEDAGOGYFORM.includes(
@@ -67,7 +62,7 @@ const PedagogySupport = (props: PedagogySupportProps) => {
     studentIdentifier,
     studyProgrammeName,
     isUppersecondary,
-    isFormAccessible
+    pedagogyFormAccess
   );
 
   /**
@@ -97,7 +92,8 @@ const PedagogySupport = (props: PedagogySupportProps) => {
       case "COURSE_TEACHER":
       case "GUIDANCE_COUNSELOR":
         // Teachers and counselors can see the form tab only when published
-        return isPublished && isFormAccessible;
+        // and accessible
+        return isPublished && (pedagogyFormAccess?.accessible ?? false);
 
       case "STUDENT":
         // Students can see the form tab only when published
