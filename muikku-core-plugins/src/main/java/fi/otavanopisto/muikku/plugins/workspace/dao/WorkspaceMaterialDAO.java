@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -154,22 +153,17 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<Long> listIdsByParentAndAssignmentTypesAndHidden(WorkspaceNode parent, Set<WorkspaceMaterialAssignmentType> assignmentTypes, BooleanPredicate hidden) {
+  public List<Long> listIdsByParentAndAssignmentTypesAndHidden(WorkspaceNode parent, Set<WorkspaceMaterialAssignmentType> assignmentTypes) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
     Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
-    In<WorkspaceMaterialAssignmentType> inClause = criteriaBuilder.in(root.get(WorkspaceMaterial_.assignmentType));
-    for (WorkspaceMaterialAssignmentType type : assignmentTypes) {
-      inClause.value(type);
-    }
     criteria.select(root.get(WorkspaceMaterial_.id));
     criteria.where(
       criteriaBuilder.and(
-        inClause,
-        criteriaBuilder.equal(root.get(WorkspaceMaterial_.parent), parent),
-        criteriaBuilder.equal(root.get(WorkspaceMaterial_.hidden), hidden)
+        root.get(WorkspaceMaterial_.assignmentType).in(assignmentTypes),
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.parent), parent)
       )
     );
    
