@@ -97,21 +97,27 @@ public class ExamRESTService {
     ExamSettingsRestModel settingsJson = examController.getSettingsJson(workspaceFolderId);
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
     
-    // Various access checks
+    // Let's assume this endpoint will actually do what it is told
     
+    boolean actuallyStartTheExam = true;
     if (!settingsJson.getOpenForAll() && attendance == null) {
-      return Response.status(Status.FORBIDDEN).build();
+      // You're trying to start an exam you're not part of
+      actuallyStartTheExam = false;
     }
-    if (attendance != null && attendance.getEnded() != null && !settingsJson.getAllowMultipleAttempts()) {
-      return Response.status(Status.BAD_REQUEST).entity("Exam already done").build();
+    else if (attendance != null && attendance.getEnded() != null && !settingsJson.getAllowMultipleAttempts()) {
+      // You're trying to start an exam that has already ended and no restarts are allowed
+      actuallyStartTheExam = false;
     }
     if (attendance != null && attendance.getStarted() != null && attendance.getEnded() == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Exam already started").build();
+      // You're trying to start an exam that has already been started
+      actuallyStartTheExam = false;
     }
     
-    // Let's go! Godspeed!
+    // Potentially let's go! Godspeed!
     
-    examController.startExam(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
+    if (actuallyStartTheExam) {
+      examController.startExam(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
+    }
     
     // Return attendance info with exam contents and everything
     

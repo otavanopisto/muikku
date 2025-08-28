@@ -4687,10 +4687,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ExamAttendance"
-        "400":
-          description: Student has already started the exam or completed it once (when no restarts are allowed)
-        "403":
-          description: Student is not among students allowed to take the exam
 
   /rest/workspace/exam/end/{workspaceFolderId}:
     post:
