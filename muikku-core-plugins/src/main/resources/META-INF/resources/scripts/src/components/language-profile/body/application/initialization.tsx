@@ -45,6 +45,10 @@ const Initialization = (props: initializationProps) => {
     preventStepperNavigation: true,
   });
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [wizardValues.currentStepIndex]);
+
   return (
     <WizardProvider value={wizardValues}>
       <div className="panguage-profile-form">

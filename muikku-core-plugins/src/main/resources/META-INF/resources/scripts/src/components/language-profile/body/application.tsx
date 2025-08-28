@@ -91,7 +91,7 @@ const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
 
   return (
     <ApplicationPanel
-      title="Language Profile"
+      title={t("labels.languageProfile", { ns: "common" })}
       onTabChange={onTabChange}
       activeTab={activeTab}
       panelTabs={panelTabs}

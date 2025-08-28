@@ -438,12 +438,6 @@ const LanguageMapping = () => {
             </div>
           </details>
         </div>
-
-        <div className="language-profile-container__fieldset-description language-profile-container__fieldset-description--table-legend">
-          {t("content.initializationStep2Description3", {
-            ns: "languageProfile",
-          })}
-        </div>
         <DisplayLanguages
           rows={languages}
           labels={[
