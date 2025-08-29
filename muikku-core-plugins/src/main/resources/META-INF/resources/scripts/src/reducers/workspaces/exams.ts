@@ -5,6 +5,15 @@ import { ExamAttendance, MaterialCompositeReply } from "~/generated/client";
 export type ReducerStateType = "LOADING" | "ERROR" | "READY" | "IDLE";
 
 /**
+ * ReducerStateTypeWithMessage
+ */
+export interface ReducerStateInfo {
+  status: ReducerStateType;
+  statusCode?: number;
+  message?: string;
+}
+
+/**
  * WorkspaceExamsState
  */
 export interface ExamsState {
@@ -12,7 +21,7 @@ export interface ExamsState {
   examsStatus: ReducerStateType;
   exams: ExamAttendance[];
   currentExam: ExamAttendance | null;
-  currentExamStatus: ReducerStateType;
+  currentExamStatusInfo: ReducerStateInfo;
   examsCompositeReplies: MaterialCompositeReply[];
   examsCompositeRepliesStatus: ReducerStateType;
 }
@@ -25,7 +34,9 @@ const initialWorkspaceExamsState: ExamsState = {
   examsStatus: "IDLE",
   exams: [],
   currentExam: null,
-  currentExamStatus: "IDLE",
+  currentExamStatusInfo: {
+    status: "IDLE",
+  },
   examsCompositeReplies: [],
   examsCompositeRepliesStatus: "IDLE",
 };
@@ -109,7 +120,7 @@ export const exams: Reducer<ExamsState> = (
     case "EXAMS_UPDATE_CURRENT_EXAM_STATUS":
       return {
         ...state,
-        currentExamStatus: action.payload,
+        currentExamStatusInfo: action.payload,
       };
 
     case "EXAMS_UPDATE_CURRENT_EXAMS_END_EXAM":
@@ -125,7 +136,11 @@ export const exams: Reducer<ExamsState> = (
       return {
         ...state,
         currentExam: null,
-        currentExamStatus: "IDLE",
+        currentExamStatusInfo: {
+          status: "IDLE",
+          statusCode: undefined,
+          message: undefined,
+        },
       };
 
     default:

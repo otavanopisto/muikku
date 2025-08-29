@@ -9,7 +9,10 @@ import {
 } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import { StateType } from "~/reducers";
-import { ReducerStateType } from "~/reducers/workspaces/exams";
+import {
+  ReducerStateInfo,
+  ReducerStateType,
+} from "~/reducers/workspaces/exams";
 import { displayNotification } from "../base/notifications";
 import _ from "lodash";
 import { ExamTimerRegistry } from "~/util/exam-timer";
@@ -62,7 +65,7 @@ export type EXAMS_UPDATE_CURRENT_EXAM = SpecificActionType<
 
 export type EXAMS_UPDATE_CURRENT_EXAM_STATUS = SpecificActionType<
   "EXAMS_UPDATE_CURRENT_EXAM_STATUS",
-  ReducerStateType
+  ReducerStateInfo
 >;
 
 export type EXAMS_UPDATE_CURRENT_EXAMS_END_EXAM = SpecificActionType<
@@ -293,14 +296,16 @@ const startExam: StartExamTriggerType = function startExam(data) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const state = getState();
 
-    if (state.exams.currentExamStatus === "LOADING") {
+    if (state.exams.currentExamStatusInfo.status === "LOADING") {
       return;
     }
 
     try {
       dispatch({
         type: "EXAMS_UPDATE_CURRENT_EXAM_STATUS",
-        payload: "LOADING",
+        payload: {
+          status: "LOADING",
+        },
       });
 
       const updatedExam = await examsApi.startExam({
@@ -326,7 +331,12 @@ const startExam: StartExamTriggerType = function startExam(data) {
           updateExamToList,
         },
       });
-      dispatch({ type: "EXAMS_UPDATE_CURRENT_EXAM_STATUS", payload: "READY" });
+      dispatch({
+        type: "EXAMS_UPDATE_CURRENT_EXAM_STATUS",
+        payload: {
+          status: "READY",
+        },
+      });
     } catch (error) {
       if (!isMApiError(error)) {
         throw error;
@@ -334,8 +344,13 @@ const startExam: StartExamTriggerType = function startExam(data) {
 
       //If trying to start an exam that user has not access
       if (isResponseError(error) && error.response.status === 403) {
-        // eslint-disable-next-line no-console
-        console.log("User has not access to the exam");
+        dispatch({
+          type: "EXAMS_UPDATE_CURRENT_EXAM_STATUS",
+          payload: {
+            status: "ERROR",
+            statusCode: error.response.status,
+          },
+        });
       }
     }
   };
@@ -362,7 +377,9 @@ const endExam: EndExamTriggerType = function endExam(data) {
     try {
       dispatch({
         type: "EXAMS_UPDATE_CURRENT_EXAM_STATUS",
-        payload: "LOADING",
+        payload: {
+          status: "LOADING",
+        },
       });
 
       const exam = await examsApi.endExam({
@@ -380,7 +397,9 @@ const endExam: EndExamTriggerType = function endExam(data) {
 
       dispatch({
         type: "EXAMS_UPDATE_CURRENT_EXAM_STATUS",
-        payload: "READY",
+        payload: {
+          status: "READY",
+        },
       });
 
       data.onSuccess && data.onSuccess();

@@ -46,7 +46,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
 
   const dispatch = useDispatch();
 
-  const { initializeStatus, currentExamStatus, currentExam, examsStatus } =
+  const { initializeStatus, currentExamStatusInfo, currentExam, examsStatus } =
     useSelector((state: StateType) => state.exams);
 
   // Start the exam
@@ -57,10 +57,10 @@ const ExamInstance = (props: ExamInstanceProps) => {
     }
 
     // Start the exam if it is not already started when the component is mounted
-    if (examId && currentExamStatus === "IDLE") {
+    if (examId && currentExamStatusInfo.status === "IDLE") {
       dispatch(startExam({ workspaceFolderId: examId }));
     }
-  }, [dispatch, examId, currentExamStatus, examsStatus]);
+  }, [dispatch, examId, currentExamStatusInfo, examsStatus]);
 
   // Handle timer expiration for active exam
   React.useEffect(() => {
@@ -135,9 +135,28 @@ const ExamInstance = (props: ExamInstanceProps) => {
     [dispatch, examId]
   );
 
+  /**
+   * renderErrorByStatusCode
+   * @param statusCode statusCode
+   * @returns JSX.Element
+   */
+  const getErrorMsgByStatusCode = (statusCode?: number) => {
+    if (!statusCode) {
+      return "Tapahtui virhe kokeen alustamisessa. Sulje koeikkuna ja yritä uudelleen.";
+    }
+
+    switch (statusCode) {
+      case 403:
+        return "Sinulla ei ole oikeuksia kokeeseen";
+      default:
+        return "Tapahtui virhe kokeen alustamisessa. Sulje koeikkuna ja yritä uudelleen.";
+    }
+  };
+
   return (
     <AnimatePresence>
-      {initializeStatus === "LOADING" || currentExamStatus === "LOADING" ? (
+      {initializeStatus === "LOADING" ||
+      currentExamStatusInfo.status === "LOADING" ? (
         <motion.div
           key="loading"
           initial={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -149,6 +168,31 @@ const ExamInstance = (props: ExamInstanceProps) => {
           }}
         >
           Ladataan kokeen sisältöä...
+        </motion.div>
+      ) : currentExamStatusInfo.status === "ERROR" ? (
+        <motion.div
+          key="error"
+          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+          transition={{
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1],
+          }}
+          className="hops-container__info"
+        >
+          <div className="hops-container__state state-FAILED">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
+              {getErrorMsgByStatusCode(currentExamStatusInfo.statusCode)}
+            </div>
+          </div>
+
+          <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
+            <Button buttonModifiers={["execute"]} onClick={props.onCloseExam}>
+              Sulje koeikkuna
+            </Button>
+          </div>
         </motion.div>
       ) : isExpired ? (
         <motion.div
