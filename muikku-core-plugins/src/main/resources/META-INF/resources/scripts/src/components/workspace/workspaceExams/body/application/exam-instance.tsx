@@ -6,16 +6,23 @@ import {
   withTranslation,
   WithTranslation,
 } from "react-i18next";
+import "~/sass/elements/hops.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { startExam } from "~/actions/workspaces/exams";
+import { endExam, startExam } from "~/actions/workspaces/exams";
+import Button from "~/components/general/button";
 import ContentPanel, {
   ContentPanelItem,
 } from "~/components/general/content-panel";
 import TocTopic, { Toc, TocElement } from "~/components/general/toc";
 import { MaterialContentNode } from "~/generated/client";
+import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
-import { useActiveMaterial } from "../../hooks/useActiveMaterial";
+//import { useActiveMaterial } from "../../hooks/useActiveMaterial";
 import ExamMaterial from "./material";
+import ExamTimer from "./exam-timer";
+import { displayNotification } from "~/actions/base/notifications";
+import { ExamTimerRegistry } from "~/util/exam-timer";
+import { AnimatePresence, motion } from "framer-motion";
 
 /**
  * ExamInstanceProps
@@ -24,6 +31,7 @@ import ExamMaterial from "./material";
  */
 interface ExamInstanceProps {
   examId: number;
+  onCloseExam: () => void;
 }
 
 /**
@@ -34,11 +42,12 @@ interface ExamInstanceProps {
 const ExamInstance = (props: ExamInstanceProps) => {
   const { examId } = props;
 
+  const [isExpired, setIsExpired] = React.useState(false);
+
   const dispatch = useDispatch();
 
-  const { currentExamStatus, exams, examsStatus, currentExam } = useSelector(
-    (state: StateType) => state.exams
-  );
+  const { initializeStatus, currentExamStatus, currentExam, examsStatus } =
+    useSelector((state: StateType) => state.exams);
 
   // Start the exam
   React.useEffect(() => {
@@ -53,9 +62,166 @@ const ExamInstance = (props: ExamInstanceProps) => {
     }
   }, [dispatch, examId, currentExamStatus, examsStatus]);
 
-  const navigation = <ExamInstanceTableOfContents examId={examId} />;
+  // Handle timer expiration for active exam
+  React.useEffect(() => {
+    if (
+      !currentExam ||
+      !currentExam.minutes ||
+      !currentExam.started ||
+      currentExam.ended
+    ) {
+      return;
+    }
 
-  return <ExamInstanceContent examId={examId} navigation={navigation} />;
+    /**
+     * Handles expired callback. Shows notification and sets isExpired to true.
+     */
+    const handleExpiredCallback = () => {
+      dispatch(
+        endExam({
+          // eslint-disable-next-line jsdoc/require-jsdoc
+          onSuccess: () => {
+            dispatch(
+              displayNotification(
+                "Koe on päättynyt. Vastauksesi on tallennettu automaattisesti",
+                "info"
+              )
+            );
+            setIsExpired(true);
+          },
+        })
+      );
+    };
+
+    /**
+     * Handles warning callback. Shows notification.
+     * @param remainingMinutes remainingMinutes
+     */
+    const handleWarningCallback = (remainingMinutes: number) => {
+      dispatch(
+        displayNotification(
+          `Varoitus: Sinulla on alle ${remainingMinutes} minuuttia aikaa jäljellä!`,
+          "fatal"
+        )
+      );
+    };
+
+    const timerRegistry = ExamTimerRegistry.getInstance();
+
+    // Update callbacks for this specific exam instance
+    timerRegistry.updateTimerCallbacks(examId, {
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      onExpire: handleExpiredCallback,
+      // eslint-disable-next-line jsdoc/require-jsdoc
+      onWarning: handleWarningCallback,
+    });
+  }, [currentExam, examId, dispatch]);
+
+  // Reset the current exam when the component is unmounted
+  React.useEffect(
+    () => () => {
+      // Reset the current exam
+      dispatch({
+        type: "EXAMS_RESET_CURRENT_EXAM",
+      });
+
+      const timerRegistry = ExamTimerRegistry.getInstance();
+      //Remove callbacks related to this exam instance on unmount
+      timerRegistry.updateTimerCallbacks(examId, {
+        onExpire: undefined,
+        onWarning: undefined,
+      });
+    },
+    [dispatch, examId]
+  );
+
+  return (
+    <AnimatePresence>
+      {initializeStatus === "LOADING" || currentExamStatus === "LOADING" ? (
+        <motion.div
+          key="loading"
+          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+          transition={{
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1],
+          }}
+        >
+          Ladataan kokeen sisältöä...
+        </motion.div>
+      ) : isExpired ? (
+        <motion.div
+          key="expired"
+          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+          transition={{
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1],
+          }}
+          className="hops-container__info"
+        >
+          <div className="hops-container__state state-INFO">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
+              Kokeen aika on umpeutunut ja koe on päättynyt. Palauttamattomat
+              tehtävät on merkitty automaattisesti palautetuiksi. Voit sulkea
+              koeikkunan.
+            </div>
+          </div>
+
+          <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
+            <Button buttonModifiers={["execute"]} onClick={props.onCloseExam}>
+              Sulje koeikkuna
+            </Button>
+          </div>
+        </motion.div>
+      ) : currentExam && currentExam.ended ? (
+        <motion.div
+          key="ended"
+          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+          transition={{
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1],
+          }}
+          className="hops-container__info"
+        >
+          <div className="hops-container__state state-INFO">
+            <div className="hops-container__state-icon icon-notification"></div>
+            <div className="hops-container__state-text">
+              Koe on päättynyt {localize.date(currentExam.ended)}. Voit sulkea
+              koe ikkunan
+            </div>
+          </div>
+
+          <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
+            <Button buttonModifiers={["execute"]} onClick={props.onCloseExam}>
+              Sulje koeikkuna
+            </Button>
+          </div>
+        </motion.div>
+      ) : (
+        <motion.div
+          key="active"
+          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+          transition={{
+            duration: 0.4,
+            ease: [0.4, 0, 0.2, 1],
+          }}
+        >
+          <ExamInstanceContent
+            examId={examId}
+            navigation={<ExamInstanceTableOfContents examId={examId} />}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 };
 
 /**
@@ -77,22 +243,28 @@ interface ExamInstanceContentProps extends WithTranslation {
 const ExamInstanceContent = withTranslation("workspace")((
   props: ExamInstanceContentProps
 ) => {
-  const { examId, navigation, i18n, tReady, t: tProp } = props;
+  const { navigation, i18n, tReady, t: tProp } = props;
+
+  const dispatch = useDispatch();
 
   const currentExam = useSelector(
     (state: StateType) => state.exams.currentExam
   );
 
-  const { initializeStatus, currentExamStatus, examsCompositeReplies } =
-    useSelector((state: StateType) => state.exams);
+  const { examsCompositeReplies } = useSelector(
+    (state: StateType) => state.exams
+  );
 
   const workspace = useSelector(
     (state: StateType) => state.workspaces.currentWorkspace
   );
 
-  if (initializeStatus === "LOADING") {
-    return <div>Ladataan kokeen sisältöä...</div>;
-  }
+  /**
+   * Handles end exam
+   */
+  const handleEndExam = () => {
+    dispatch(endExam({}));
+  };
 
   if (!currentExam || !workspace) {
     return null;
@@ -137,14 +309,24 @@ const ExamInstanceContent = withTranslation("workspace")((
     </section>
   );
 
+  const aside = (
+    <div className="exam-aside">
+      <ExamTimer exam={currentExam} />
+    </div>
+  );
+
+  const footerActions = <Button onClick={handleEndExam}>Lopeta koe</Button>;
+
   return (
     <ContentPanel
-      modifier="workspace-materials"
+      modifier="workspace-exam"
       navigation={navigation}
+      aside={aside}
       title={"Kokeen tiedot"}
       t={tProp}
       i18n={i18n}
       tReady={tReady}
+      footer={footerActions}
     >
       {createSectionElement}
     </ContentPanel>

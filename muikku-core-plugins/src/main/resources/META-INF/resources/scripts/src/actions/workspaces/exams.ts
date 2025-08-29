@@ -11,6 +11,8 @@ import i18n from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import { ReducerStateType } from "~/reducers/workspaces/exams";
 import { displayNotification } from "../base/notifications";
+import _ from "lodash";
+import { ExamTimerRegistry } from "~/util/exam-timer";
 
 const examsApi = MApi.getExamApi();
 const workspaceApi = MApi.getWorkspaceApi();
@@ -55,12 +57,22 @@ export type EXAMS_UPDATE_EXAMS_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER =
 // EXAMS_CURRENT_EXAM
 export type EXAMS_UPDATE_CURRENT_EXAM = SpecificActionType<
   "EXAMS_UPDATE_CURRENT_EXAM",
-  ExamAttendance
+  { exam: ExamAttendance; updateExamToList: boolean }
 >;
 
 export type EXAMS_UPDATE_CURRENT_EXAM_STATUS = SpecificActionType<
   "EXAMS_UPDATE_CURRENT_EXAM_STATUS",
   ReducerStateType
+>;
+
+export type EXAMS_UPDATE_CURRENT_EXAMS_END_EXAM = SpecificActionType<
+  "EXAMS_UPDATE_CURRENT_EXAMS_END_EXAM",
+  ExamAttendance
+>;
+
+export type EXAMS_RESET_CURRENT_EXAM = SpecificActionType<
+  "EXAMS_RESET_CURRENT_EXAM",
+  void
 >;
 
 /**
@@ -116,6 +128,13 @@ interface CancelExamTriggerType {
 }
 
 /**
+ * EndExamTriggerType
+ */
+interface EndExamTriggerType {
+  (data: { onSuccess?: () => void; onFail?: () => void }): AnyActionType;
+}
+
+/**
  * UpdateAssignmentStateTriggerType
  */
 interface UpdateAssignmentStateTriggerType {
@@ -143,6 +162,15 @@ const initializeExams: InitializeExamsTriggerType = function initializeExams(
     dispatch: (arg: AnyActionType) => Promise<Dispatch<Action<AnyActionType>>>,
     getState: () => StateType
   ) => {
+    const state = getState();
+
+    if (
+      state.exams.initializeStatus === "LOADING" ||
+      state.exams.initializeStatus === "READY"
+    ) {
+      return;
+    }
+
     dispatch({ type: "EXAMS_INITIALIZE_STATUS", payload: "LOADING" });
 
     const promises = [
@@ -180,6 +208,15 @@ const loadExams: LoadExamsTriggerType = function loadExams(data) {
       const exams = await examsApi.getExamAttendances({
         workspaceEntityId: data.workspaceEntityId,
       });
+
+      // Start timers for exams that meet our conditions
+      const timerRegistry = ExamTimerRegistry.getInstance();
+      for (const exam of exams) {
+        // Start timer if exam has started, not marked as ended and has duration
+        if (!exam.ended && exam.started && exam.minutes > 0) {
+          timerRegistry.startTimer(exam.folderId, exam.started, exam.minutes);
+        }
+      }
 
       dispatch({ type: "EXAMS_UPDATE_EXAMS", payload: exams });
       dispatch({ type: "EXAMS_UPDATE_EXAMS_STATUS", payload: "READY" });
@@ -266,32 +303,93 @@ const startExam: StartExamTriggerType = function startExam(data) {
         payload: "LOADING",
       });
 
-      const exam = await examsApi.startExam({
+      const updatedExam = await examsApi.startExam({
         workspaceFolderId: data.workspaceFolderId,
       });
-      dispatch({ type: "EXAMS_UPDATE_CURRENT_EXAM", payload: exam });
+
+      // Variable whether to update the exams list also
+      let updateExamToList = false;
+
+      // Check if the exam data has changed
+      for (const exam of state.exams.exams) {
+        if (exam.folderId === updatedExam.folderId) {
+          if (!_.isEqual(exam, updatedExam)) {
+            updateExamToList = true;
+          }
+        }
+      }
+
+      dispatch({
+        type: "EXAMS_UPDATE_CURRENT_EXAM",
+        payload: {
+          exam: updatedExam,
+          updateExamToList,
+        },
+      });
       dispatch({ type: "EXAMS_UPDATE_CURRENT_EXAM_STATUS", payload: "READY" });
     } catch (error) {
       if (!isMApiError(error)) {
         throw error;
       }
 
-      // If the exam is already started, redirect to the exam instance
-      if (isResponseError(error) && error.response.status === 400) {
-        // Find the started exam from the exams list
-        const startedExam = state.exams.exams.find(
-          (exam) => exam.folderId === data.workspaceFolderId
-        );
-
-        // If the exam is found, update that as current exam to state
-        if (startedExam) {
-          dispatch({ type: "EXAMS_UPDATE_CURRENT_EXAM", payload: startedExam });
-          dispatch({
-            type: "EXAMS_UPDATE_CURRENT_EXAM_STATUS",
-            payload: "READY",
-          });
-        }
+      //If trying to start an exam that user has not access
+      if (isResponseError(error) && error.response.status === 403) {
+        // eslint-disable-next-line no-console
+        console.log("User has not access to the exam");
       }
+    }
+  };
+};
+
+/**
+ * EndExamTriggerType
+ * @param data data
+ * @returns AnyActionType
+ */
+const endExam: EndExamTriggerType = function endExam(data) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    const state = getState();
+
+    const currentExam = state.exams.currentExam;
+
+    if (!currentExam) {
+      return;
+    }
+
+    try {
+      dispatch({
+        type: "EXAMS_UPDATE_CURRENT_EXAM_STATUS",
+        payload: "LOADING",
+      });
+
+      const exam = await examsApi.endExam({
+        workspaceFolderId: currentExam.folderId,
+      });
+
+      // Stop timer for the exam
+      const timerRegistry = ExamTimerRegistry.getInstance();
+      timerRegistry.stopTimer(currentExam.folderId);
+
+      dispatch({
+        type: "EXAMS_UPDATE_CURRENT_EXAMS_END_EXAM",
+        payload: exam,
+      });
+
+      dispatch({
+        type: "EXAMS_UPDATE_CURRENT_EXAM_STATUS",
+        payload: "READY",
+      });
+
+      data.onSuccess && data.onSuccess();
+    } catch (error) {
+      if (!isMApiError(error)) {
+        throw error;
+      }
+
+      data.onFail && data.onFail();
     }
   };
 };
@@ -381,4 +479,10 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
     };
   };
 
-export { initializeExams, loadExams, startExam, updateAssignmentState };
+export {
+  initializeExams,
+  loadExams,
+  startExam,
+  endExam,
+  updateAssignmentState,
+};

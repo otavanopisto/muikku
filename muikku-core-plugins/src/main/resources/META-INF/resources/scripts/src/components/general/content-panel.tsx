@@ -24,6 +24,8 @@ interface ContentPanelProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   aside?: React.ReactElement<any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  footer?: React.ReactElement<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpenNavigation?: () => any;
 }
 
@@ -332,6 +334,10 @@ export default class ContentPanel extends React.Component<
               </div>
             </div>
           </div>
+
+          {this.props.footer ? (
+            <div className="content-panel__footer">{this.props.footer}</div>
+          ) : null}
         </div>
       </main>
     );

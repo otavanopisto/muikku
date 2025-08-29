@@ -28,7 +28,10 @@ const WorkspaceExamsApplication = (props: WorkspaceExamsApplicationProps) => {
         <Route
           path="/workspace/:workspaceUrl/exams/:examId"
           render={(nextedRouteProps) => (
-            <ExamDialog examId={Number(nextedRouteProps.match.params.examId)} />
+            <ExamDialog
+              examId={Number(nextedRouteProps.match.params.examId)}
+              workspaceUrl={nextedRouteProps.match.params.workspaceUrl}
+            />
           )}
         />
       </Switch>

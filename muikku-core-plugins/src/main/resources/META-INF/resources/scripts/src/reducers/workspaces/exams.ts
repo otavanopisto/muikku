@@ -96,13 +96,36 @@ export const exams: Reducer<ExamsState> = (
     case "EXAMS_UPDATE_CURRENT_EXAM":
       return {
         ...state,
-        currentExam: action.payload,
+        currentExam: action.payload.exam,
+        exams: action.payload.updateExamToList
+          ? state.exams.map((exam) =>
+              exam.folderId === action.payload.exam.folderId
+                ? action.payload.exam
+                : exam
+            )
+          : state.exams,
       };
 
     case "EXAMS_UPDATE_CURRENT_EXAM_STATUS":
       return {
         ...state,
         currentExamStatus: action.payload,
+      };
+
+    case "EXAMS_UPDATE_CURRENT_EXAMS_END_EXAM":
+      return {
+        ...state,
+        exams: state.exams.map((exam) =>
+          exam.folderId === action.payload.folderId ? action.payload : exam
+        ),
+        currentExam: action.payload,
+      };
+
+    case "EXAMS_RESET_CURRENT_EXAM":
+      return {
+        ...state,
+        currentExam: null,
+        currentExamStatus: "IDLE",
       };
 
     default:

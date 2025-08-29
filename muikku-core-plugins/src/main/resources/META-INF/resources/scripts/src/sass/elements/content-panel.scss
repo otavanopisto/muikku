@@ -17,6 +17,10 @@
   }
 }
 
+.content-panel--workspace-exam {
+  padding: 0;
+}
+
 .content-panel__container {
   @include text;
 
@@ -87,6 +91,11 @@
   @include breakpoint($breakpoint-desktop) {
     box-shadow: none;
   }
+}
+
+.content-panel__footer {
+  display: flex;
+  flex-direction: column;
 }
 
 .content-panel__content {
