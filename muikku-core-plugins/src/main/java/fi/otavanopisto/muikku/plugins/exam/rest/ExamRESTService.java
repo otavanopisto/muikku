@@ -151,28 +151,10 @@ public class ExamRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getAttendance(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
-    
     // This is as good a place as any to determine if an attendee has gone over the exam time limit.
     // Front-end should enforce this as well but if the student, for example, leaves during the exam,
     // this ensures that an overdue exam is marked as ended
-
-    ExamSettings examSettings = examController.findExamSettings(workspaceFolderId);
-    if (examSettings != null) {
-      ExamSettingsRestModel settingsJson = examController.getSettingsJson(examSettings);
-      if (settingsJson.getMinutes() > 0) {
-        ExamAttendance attendance = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
-        if (attendance != null && attendance.getStarted() != null && attendance.getEnded() == null) {
-          // User is an attendee who has started the exam but not yet finished it
-          Calendar c = Calendar.getInstance();
-          c.setTime(attendance.getStarted());
-          c.add(Calendar.MINUTE, settingsJson.getMinutes());
-          if (System.currentTimeMillis() > c.getTimeInMillis()) {
-            examController.endExam(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), c.getTime());
-          }
-        }
-      }
-    }
-    
+    endOverdueExam(workspaceFolderId);
     return Response.ok().entity(toRestModel(workspaceFolderId)).build();
   }
 
@@ -183,6 +165,7 @@ public class ExamRESTService {
     List<ExamAttendanceRestModel> attendances = new ArrayList<>();
     List<Long> examIds = examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId());
     for (Long examId : examIds) {
+      endOverdueExam(examId);
       attendances.add(toRestModel(examId));
     }
     return Response.ok().entity(attendances).build();
@@ -230,6 +213,25 @@ public class ExamRESTService {
       examController.removeAttendance(attendance);
     }
     return Response.noContent().build();
+  }
+  
+  private void endOverdueExam(Long workspaceFolderId) {
+    ExamSettings examSettings = examController.findExamSettings(workspaceFolderId);
+    if (examSettings != null) {
+      ExamSettingsRestModel settingsJson = examController.getSettingsJson(examSettings);
+      if (settingsJson.getMinutes() > 0) {
+        ExamAttendance attendance = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
+        if (attendance != null && attendance.getStarted() != null && attendance.getEnded() == null) {
+          // User is an attendee who has started the exam but not yet finished it
+          Calendar c = Calendar.getInstance();
+          c.setTime(attendance.getStarted());
+          c.add(Calendar.MINUTE, settingsJson.getMinutes());
+          if (System.currentTimeMillis() > c.getTimeInMillis()) {
+            examController.endExam(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), c.getTime());
+          }
+        }
+      }
+    }
   }
   
   private ExamAttendanceRestModel toRestModel(Long workspaceFolderId) {
