@@ -20,6 +20,7 @@ import { ExamTimerRegistry } from "~/util/exam-timer";
 const examsApi = MApi.getExamApi();
 const workspaceApi = MApi.getWorkspaceApi();
 
+// OVERALL EXAM STATUS
 export type EXAMS_INITIALIZE_STATUS = SpecificActionType<
   "EXAMS_INITIALIZE_STATUS",
   ReducerStateType
@@ -123,14 +124,6 @@ interface StartExamTriggerType {
 }
 
 /**
- * CancelExamTriggerType
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface CancelExamTriggerType {
-  (): AnyActionType;
-}
-
-/**
  * EndExamTriggerType
  */
 interface EndExamTriggerType {
@@ -153,7 +146,7 @@ interface UpdateAssignmentStateTriggerType {
 }
 
 /**
- * InitializeExamTriggerType
+ * Initializes exams. Loads exams and exams composite replies.
  * @param data data
  *
  * @returns AnyActionType
@@ -190,7 +183,7 @@ const initializeExams: InitializeExamsTriggerType = function initializeExams(
 };
 
 /**
- * LoadExamsTriggerType
+ * Loads exams. Sets also timers for exams that are already started.
  * @param data data
  * @returns AnyActionType
  */
@@ -234,7 +227,7 @@ const loadExams: LoadExamsTriggerType = function loadExams(data) {
 };
 
 /**
- * LoadExamsCompositeRepliesTriggerType
+ * Loads exams composite replies.
  * @param data data
  * @returns AnyActionType
  */
@@ -284,7 +277,8 @@ const loadExamsCompositeReplies: LoadExamsCompositeRepliesTriggerType =
   };
 
 /**
- * SelectExamTriggerType
+ * Start exam. Post request to start the exam and update the current exam.
+ * If exam data is returned even if the exam is already started, update the current exam.
  * @param data data
  * @returns AnyActionType
  */
@@ -357,7 +351,8 @@ const startExam: StartExamTriggerType = function startExam(data) {
 };
 
 /**
- * EndExamTriggerType
+ * Ends the exam. Post request to end the exam and update the current exam.
+ * Stops the timer for the exam.
  * @param data data
  * @returns AnyActionType
  */
@@ -414,7 +409,9 @@ const endExam: EndExamTriggerType = function endExam(data) {
 };
 
 /**
- * UpdateAssignmentStateTriggerType
+ * Updates the state of an assignment.
+ * If the assignment is not answered, creates a new reply.
+ * If the assignment is already answered, updates the existing reply.
  * @param data data
  * @returns AnyActionType
  */
