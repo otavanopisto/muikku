@@ -569,7 +569,18 @@ class WorkspaceMaterials extends React.Component<
           />
         </div>
       </h2>
-      <div>Tämä on koe</div>
+
+      <div className="content-panel__item">
+        <article className="material-page">
+          <div className="material-page__content">
+            <Link
+              to={`/workspace/${this.props.workspace.urlName}/exams/${section.workspaceMaterialId}`}
+            >
+              Siirry kokeeseen
+            </Link>
+          </div>
+        </article>
+      </div>
     </section>
   );
 
