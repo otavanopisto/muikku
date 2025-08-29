@@ -94,6 +94,11 @@ public class ExamRESTService {
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response startExam(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
+    
+    // Well, let's check overdue here as well :(
+    
+    endOverdueExam(workspaceFolderId);
+    
     ExamSettingsRestModel settingsJson = examController.getSettingsJson(workspaceFolderId);
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
     
