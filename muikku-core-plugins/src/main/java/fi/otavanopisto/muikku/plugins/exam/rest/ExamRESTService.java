@@ -107,7 +107,7 @@ public class ExamRESTService {
     boolean actuallyStartTheExam = true;
     if (!settingsJson.getOpenForAll() && attendance == null) {
       // You're trying to start an exam you're not part of
-      actuallyStartTheExam = false;
+      return Response.status(Status.FORBIDDEN).build();
     }
     else if (attendance != null && attendance.getEnded() != null && !settingsJson.getAllowMultipleAttempts()) {
       // You're trying to start an exam that has already ended and no restarts are allowed

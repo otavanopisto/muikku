@@ -4687,6 +4687,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ExamAttendance"
+        "403":
+          description: Student is not among students allowed to take the exam
 
   /rest/workspace/exam/end/{workspaceFolderId}:
     post:
