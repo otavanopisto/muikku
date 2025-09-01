@@ -173,7 +173,9 @@ class StudiesApplication extends React.Component<
           <ApplicationPanelBody modifier="tabs">
             <PedagogySupport
               userRole="STUDENT"
-              isFormAccessible={true}
+              pedagogyFormAccess={{
+                accessible: true,
+              }}
               studentIdentifier={this.props.status.userSchoolDataIdentifier}
               studyProgrammeName={this.props.status.profile.studyProgrammeName}
             />

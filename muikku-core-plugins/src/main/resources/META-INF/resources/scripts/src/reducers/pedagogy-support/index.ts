@@ -6,6 +6,7 @@ import {
 import { ActionType } from "~/actions";
 import {
   PedagogyForm,
+  PedagogyFormAccess,
   PedagogyFormImplementedActions,
   PedagogyFormLocked,
 } from "~/generated/client";
@@ -49,6 +50,9 @@ export interface PedagogySupportState {
   pedagogyFormData: PedagogyFormData | null;
   pedagogyFormExtraDetails: string;
 
+  // Pedagogy Form Access State
+  pedagogyFormAccess: Partial<PedagogyFormAccess> | null;
+
   // Implemented Actions State
   implementedActionsStatus: ReducerStateType;
   implementedActions: PedagogyFormImplementedActions | null;
@@ -69,6 +73,7 @@ const initialPedagogySupportState: PedagogySupportState = {
   pedagogyForm: null,
   pedagogyFormData: null,
   pedagogyFormExtraDetails: "",
+  pedagogyFormAccess: null,
   implementedActionsStatus: "IDLE",
   implementedActions: null,
   implementedActionsFormData: [],
@@ -180,6 +185,12 @@ export const pedagogySupport: Reducer<PedagogySupportState> = (
           ...state.pedagogyEditing,
           pedagogyFormData: action.payload,
         },
+      };
+
+    case "PEDAGOGY_SUPPORT_FORM_UPDATE_ACCESS":
+      return {
+        ...state,
+        pedagogyFormAccess: action.payload,
       };
 
     // IMPLEMENTED ACTIONS RELATED ACTIONS

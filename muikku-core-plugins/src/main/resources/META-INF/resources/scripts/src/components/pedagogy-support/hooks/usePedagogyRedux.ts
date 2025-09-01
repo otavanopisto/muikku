@@ -18,6 +18,7 @@ import {
 import { StateType } from "~/reducers";
 import {
   PedagogyForm,
+  PedagogyFormAccess,
   PedagogyFormImplementedActions,
   PedagogyFormLocked,
 } from "~/generated/client";
@@ -29,13 +30,13 @@ export type UsePedagogyReduxType = ReturnType<typeof usePedagogyRedux>;
  * @param studentIdentifier studentIdentifier
  * @param studyProgrammeName studyProgrammeName
  * @param isUppersecondary isUppersecondary
- * @param shouldLoadForm whether to attempt loading the form (based on permissions)
+ * @param pedagogyFormAccess pedagogyFormAccess
  */
 export const usePedagogyRedux = (
   studentIdentifier: string,
   studyProgrammeName: string,
   isUppersecondary: boolean,
-  shouldLoadForm: boolean = true
+  pedagogyFormAccess: Partial<PedagogyFormAccess>
 ) => {
   const dispatch = useDispatch();
 
@@ -114,11 +115,11 @@ export const usePedagogyRedux = (
     dispatch(
       initializePedagogySupport({
         studentIdentifier,
-        shouldLoadForm,
+        pedagogyFormAccess,
         isUppersecondary,
       })
     );
-  }, [dispatch, shouldLoadForm, studentIdentifier, isUppersecondary]);
+  }, [dispatch, pedagogyFormAccess, studentIdentifier, isUppersecondary]);
 
   // Add useEffect to handle beforeunload event
   React.useEffect(() => {

@@ -35,6 +35,10 @@ import {
 } from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
 import PedagogySupport from "~/components/pedagogy-support";
+import {
+  resetPedagogySupport,
+  ResetPedagogySupportTriggerType,
+} from "~/actions/main-function/pedagogy-support";
 /**
  * StudiesTab
  */
@@ -56,6 +60,7 @@ interface DependantApplicationProps extends WithTranslation {
   dependants: DependantsState;
   loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType;
   clearDependantState: clearDependantTriggerType;
+  resetPedagogySupport: ResetPedagogySupportTriggerType;
   dispatch: Dispatch<Action<AnyActionType>>;
 }
 
@@ -149,6 +154,7 @@ class DependantApplication extends React.Component<
   handleDependantSelectChange = async (option: OptionDefault<string>) => {
     window.location.hash = option.value;
     this.props.clearDependantState();
+    this.props.resetPedagogySupport();
 
     const dependantIdentifier = this.props.dependants.list.find(
       (dependant) => dependant.identifier === option.value
@@ -322,12 +328,8 @@ class DependantApplication extends React.Component<
               studyProgrammeName={this.getDependantStudyProgramme(
                 selectedDependantIdentifier
               )}
-              isFormAccessible={
-                this.props.guider.currentStudent.pedagogyFormAvailable &&
+              pedagogyFormAccess={
                 this.props.guider.currentStudent.pedagogyFormAvailable
-                  .accessible &&
-                this.props.guider.currentStudent.pedagogyFormAvailable
-                  .studentParent
               }
             />
           </ApplicationPanelBody>
@@ -370,7 +372,11 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return {
     ...bindActionCreators(
-      { clearDependantState, loadStudentPedagogyFormAccess },
+      {
+        clearDependantState,
+        loadStudentPedagogyFormAccess,
+        resetPedagogySupport,
+      },
       dispatch
     ),
     dispatch,
