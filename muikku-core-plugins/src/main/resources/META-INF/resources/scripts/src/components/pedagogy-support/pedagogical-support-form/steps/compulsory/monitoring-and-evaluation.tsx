@@ -48,6 +48,8 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
       ...formData,
     };
 
+    // Clone the array to avoid mutating the original
+    updatedFormData[type] = [...updatedFormData[type]];
     updatedFormData[type].push({
       creatorIdentifier: status.userSchoolDataIdentifier,
       creatorName: status.profile.displayName,
@@ -73,6 +75,8 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
   ) => {
     const updatedFormData: CompulsoryFormData = { ...formData };
 
+    // Clone the array to avoid mutating the original
+    updatedFormData[type] = [...updatedFormData[type]];
     updatedFormData[type][index] = {
       ...updatedFormData[type][index],
       [key]: value,
@@ -88,6 +92,9 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
    */
   const handleDeleteOpinion = (index: number, type: OpinionType) => {
     const updatedFormData: CompulsoryFormData = { ...formData };
+
+    // Clone the array to avoid mutating the original
+    updatedFormData[type] = [...updatedFormData[type]];
     updatedFormData[type].splice(index, 1);
 
     updatePedagogyFormDataAndUpdateChangedFields(updatedFormData);
@@ -95,17 +102,26 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
 
   const studentOpinionEntries = (formData?.studentOpinionOfSupport &&
     formData?.studentOpinionOfSupport.length > 0 &&
-    formData?.studentOpinionOfSupport.map((iOpinion, index) => (
-      <OpinionItem
-        key={index}
-        index={index}
-        type="studentOpinionOfSupport"
-        opinion={iOpinion}
-        disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
-        onOpinionChange={handleOpinionChange}
-        onDeleteEntryClick={handleDeleteOpinion}
-      />
-    ))) || (
+    formData?.studentOpinionOfSupport.map((iOpinion, index) => {
+      const isOwnerOfEntry =
+        iOpinion.creatorIdentifier === status.userSchoolDataIdentifier;
+
+      return (
+        <OpinionItem
+          key={index}
+          index={index}
+          type="studentOpinionOfSupport"
+          opinion={iOpinion}
+          disabled={
+            userRole !== "SPECIAL_ED_TEACHER" ||
+            !editIsActive ||
+            !isOwnerOfEntry
+          }
+          onOpinionChange={handleOpinionChange}
+          onDeleteEntryClick={handleDeleteOpinion}
+        />
+      );
+    })) || (
     <div className="empty">
       <span>
         {t("content.empty", {
@@ -118,17 +134,26 @@ const MonitoringAndEvaluation: React.FC<MonitoringAndEvaluationProps> = (
 
   const schoolOpinionEntries = (formData?.schoolOpinionOfSupport &&
     formData?.schoolOpinionOfSupport.length > 0 &&
-    formData?.schoolOpinionOfSupport.map((iOpinion, index) => (
-      <OpinionItem
-        key={index}
-        index={index}
-        type="schoolOpinionOfSupport"
-        opinion={iOpinion}
-        disabled={userRole !== "SPECIAL_ED_TEACHER" || !editIsActive}
-        onOpinionChange={handleOpinionChange}
-        onDeleteEntryClick={handleDeleteOpinion}
-      />
-    ))) || (
+    formData?.schoolOpinionOfSupport.map((iOpinion, index) => {
+      const isOwnerOfEntry =
+        iOpinion.creatorIdentifier === status.userSchoolDataIdentifier;
+
+      return (
+        <OpinionItem
+          key={index}
+          index={index}
+          type="schoolOpinionOfSupport"
+          opinion={iOpinion}
+          disabled={
+            userRole !== "SPECIAL_ED_TEACHER" ||
+            !editIsActive ||
+            !isOwnerOfEntry
+          }
+          onOpinionChange={handleOpinionChange}
+          onDeleteEntryClick={handleDeleteOpinion}
+        />
+      );
+    })) || (
     <div className="empty">
       <span>
         {t("content.empty", {
