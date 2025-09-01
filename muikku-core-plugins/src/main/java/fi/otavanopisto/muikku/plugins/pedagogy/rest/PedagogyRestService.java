@@ -760,17 +760,12 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
           
         }
       }
-      
-      PedagogyFormAccessType courseTeacherAccessType = PedagogyFormAccessType.READ;
 
       // Counselor & manager
       
       if (implementedActions) {
         manager = sessionController.hasRole(EnvironmentRoleArchetype.MANAGER);
         studyProgrammeLeader = sessionController.hasRole(EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER);
-        
-        // Teachers can only edit implemented actions, otherwise, read-only access
-        courseTeacherAccessType = PedagogyFormAccessType.WRITE;
       }
       
       boolean isAdmin = sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR); 
@@ -783,7 +778,7 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
         // ...guidance counselors, course teachers, and guardians can only access published form
         // implemented actions  are available to everyone who has access to the student’s guider view. The guardian is granted read-only access
         
-        accessible = (relation != null && relation.isGuidanceCounselor()) || (courseTeacher && accessType == courseTeacherAccessType) || manager || studyProgrammeLeader || (studentParent && accessType == PedagogyFormAccessType.READ);
+        accessible = (relation != null && relation.isGuidanceCounselor()) || courseTeacher || manager || studyProgrammeLeader || (studentParent && accessType == PedagogyFormAccessType.READ);
       }
     }
     return new PedagogyFormAccessRestModel(accessible, specEdTeacher, guidanceCounselor, courseTeacher, studentParent);
