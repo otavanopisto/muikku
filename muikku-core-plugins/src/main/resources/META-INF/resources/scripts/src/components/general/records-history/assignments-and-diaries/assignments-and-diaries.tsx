@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { AnyActionType } from "~/actions";
-import { StateType } from "~/reducers";
 import { useEvaluatedAssignments } from "./hooks/useEvaluated";
 import { useJournals } from "./hooks/useJournals";
 import {
@@ -23,7 +22,6 @@ import { useInterimEvaluationAssigments } from "./hooks/useInterimEvaluation";
 import { useTranslation } from "react-i18next";
 import { useRecordWorkspace } from "./hooks/useRecordWorkpace";
 import { WorkspaceActivity } from "~/generated/client";
-import { StatusType } from "~/reducers/base/status";
 import Material from "./material";
 import Journal from "./journal";
 
@@ -40,7 +38,6 @@ interface AssignmentsAndDiariesProps {
    */
   userEntityId: number;
   credit: WorkspaceActivity;
-  status: StatusType;
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -55,8 +52,7 @@ export type AssignmentsTabType =
  * @returns JSX.Element
  */
 const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
-  const { status, userIdentifier, credit, userEntityId, displayNotification } =
-    props;
+  const { userIdentifier, credit, userEntityId, displayNotification } = props;
 
   const { t } = useTranslation([
     "studies",
@@ -302,7 +298,6 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               material={m}
               workspace={recordWorkspace.workspace}
               compositeReply={compositeReply}
-              status={status}
               open={open}
               onMaterialOpen={handleAssignmentByTypeOpen}
             />
@@ -350,7 +345,6 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
               material={m}
               workspace={recordWorkspace.workspace}
               compositeReply={compositeReply}
-              status={status}
               open={open}
               onMaterialOpen={handleAssignmentByTypeOpen}
             />
@@ -399,7 +393,6 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
                 material={m}
                 workspace={recordWorkspace.workspace}
                 compositeReply={compositeReply}
-                status={status}
                 open={open}
                 onMaterialOpen={handleAssignmentByTypeOpen}
               />
@@ -656,16 +649,6 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 };
 
 /**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    status: state.status,
-  };
-}
-
-/**
  * mapDispatchToProps
  * @param dispatch dispatch
  */
@@ -673,7 +656,4 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators({ displayNotification }, dispatch);
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AssignmentsAndDiaries);
+export default connect(null, mapDispatchToProps)(AssignmentsAndDiaries);
