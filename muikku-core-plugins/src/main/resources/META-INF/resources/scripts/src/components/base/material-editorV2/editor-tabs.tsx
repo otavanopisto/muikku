@@ -489,6 +489,32 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
         </div>
       </div>
 
+      {updatedExamSettings?.random === ExamSettingsRandom.Global && (
+        <div className="material-editor__sub-section">
+          <h3 className="material-editor__sub-title">
+            Satunnaisten tehtävien määrä:
+          </h3>
+
+          <div className="material-editor__select-locale-container">
+            <div className="form__row">
+              <div className="form-element">
+                <NumericFormat
+                  id="duration"
+                  className="form-element__input form-element__input--material-editor"
+                  value={updatedExamSettings?.randomCount || 0}
+                  min={1}
+                  disabled={loading}
+                  decimalScale={0}
+                  onValueChange={(values) =>
+                    handleExamSettingsChange("randomCount", values.floatValue)
+                  }
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Kesto (minuutteina):</h3>
 
