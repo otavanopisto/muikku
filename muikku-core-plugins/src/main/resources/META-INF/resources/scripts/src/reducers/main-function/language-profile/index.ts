@@ -33,6 +33,11 @@ export interface LanguageProfileLanguageData {
   workspaces: LanguageData[];
 }
 
+export type SampleLink = {
+  name: string;
+  url: string;
+};
+
 /**
  * LanguageProfileLanguage
  */
@@ -64,7 +69,7 @@ export interface CVLanguage {
   reading: string;
   listening: string;
   general: LanguageLevels;
-  samples: string[];
+  samples: SampleLink[];
 }
 
 /**

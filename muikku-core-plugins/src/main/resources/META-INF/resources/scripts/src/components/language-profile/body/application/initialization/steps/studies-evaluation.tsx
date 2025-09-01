@@ -35,8 +35,6 @@ const AccomplishmentEvaluation = () => {
       try {
         const workspaceActivity = await recordsApi.getWorkspaceActivity({
           identifier: status.userSchoolDataIdentifier,
-          includeTransferCredits: "true",
-          includeAssignmentStatistics: "true",
         });
 
         const workspaceData = workspaceActivity.activities

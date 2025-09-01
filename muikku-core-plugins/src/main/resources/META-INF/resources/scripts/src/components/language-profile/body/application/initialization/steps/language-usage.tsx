@@ -229,7 +229,7 @@ const LanguageUsage = () => {
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
             <label
-              htmlFor="messageForTeacher"
+              htmlFor="languageLearning"
               className="language-profile__label"
             >
               {t("labels.languageUsageLearningLanguagesLabel", {
@@ -242,7 +242,7 @@ const LanguageUsage = () => {
               })}
             </div>
             <textarea
-              id="messageForTeacher"
+              id="languageLearning"
               defaultValue={languageLearning || ""}
               className="language-profile__textarea"
               onChange={(e) => handleFieldChange(e, "languageLearning")}
