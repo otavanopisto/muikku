@@ -479,6 +479,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         
         sleep(1500);
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+        waitForPresent(".hero__workspace-title");
         
         logout();
         mockBuilder.mockLogin(admin);
