@@ -545,9 +545,7 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
               <select
                 className="form-element__select form-element__select--material-editor"
                 disabled={loading}
-                value={
-                  updatedExamSettings?.allowMultipleAttempts ? "YES" : "NO"
-                }
+                value={updatedExamSettings?.openForAll ? "YES" : "NO"}
                 onChange={(e) =>
                   handleExamSettingsChange(
                     "openForAll",

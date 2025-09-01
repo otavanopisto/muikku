@@ -318,6 +318,19 @@ const startExam: StartExamTriggerType = function startExam(data) {
         }
       }
 
+      // Get instance of the exam timer registry
+      const examTimerRegistry = ExamTimerRegistry.getInstance();
+
+      // In case the exam is started first time (using direct link or button) and timer is not initialized, it must be
+      // done here.
+      if (!examTimerRegistry.hasTimer(updatedExam.folderId)) {
+        examTimerRegistry.startTimer(
+          updatedExam.folderId,
+          updatedExam.started,
+          updatedExam.minutes
+        );
+      }
+
       dispatch({
         type: "EXAMS_UPDATE_CURRENT_EXAM",
         payload: {

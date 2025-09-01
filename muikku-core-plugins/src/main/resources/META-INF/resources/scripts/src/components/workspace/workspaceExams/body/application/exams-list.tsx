@@ -72,7 +72,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
   const isEnded = !!exam.ended;
 
   // Check if exam has been started
-  const isStarted = exam.started && new Date(exam.started).getTime() > 0;
+  const isStarted = !!exam.started;
 
   const hasTimeLimit = exam.minutes > 0;
 
@@ -120,15 +120,9 @@ const ExamsListItem = (props: ExamsListItemProps) => {
         </div>
         <div className="exam-list__item-footer">
           <div className="exam-list__item-footer-actions">
-            {isEnded ? null : isStarted ? (
-              <Link to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}>
-                Jatka koetta
-              </Link>
-            ) : (
-              <Link to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}>
-                Aloita koe
-              </Link>
-            )}
+            <Link to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}>
+              Avaa koe
+            </Link>
           </div>
         </div>
       </div>

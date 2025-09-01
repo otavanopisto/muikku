@@ -14,7 +14,7 @@ import ContentPanel, {
   ContentPanelItem,
 } from "~/components/general/content-panel";
 import TocTopic, { Toc, TocElement } from "~/components/general/toc";
-import { MaterialContentNode } from "~/generated/client";
+import { ExamAttendance, MaterialContentNode } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 //import { useActiveMaterial } from "../../hooks/useActiveMaterial";
@@ -22,7 +22,38 @@ import ExamMaterial from "./material";
 import ExamTimer from "./exam-timer";
 import { displayNotification } from "~/actions/base/notifications";
 import { ExamTimerRegistry } from "~/util/exam-timer";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, Transition, Variants } from "framer-motion";
+
+const variants: Variants = {
+  entering: {
+    opacity: 0,
+    y: 10,
+    scale: 0.95,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+  },
+  exit: {
+    opacity: 0,
+    y: -10,
+    scale: 0.95,
+  },
+};
+
+const transition: Transition = {
+  duration: 0.4,
+  ease: [0.4, 0, 0.2, 1],
+};
+
+const commonMotionProps = {
+  initial: "entering",
+  animate: "visible",
+  exit: "exit",
+  transition: transition,
+  variants: variants,
+};
 
 /**
  * ExamInstanceProps
@@ -42,25 +73,17 @@ interface ExamInstanceProps {
 const ExamInstance = (props: ExamInstanceProps) => {
   const { examId } = props;
 
-  const [isExpired, setIsExpired] = React.useState(false);
+  const [currentExamExpired, setCurrentExamExpired] = React.useState(false);
 
   const dispatch = useDispatch();
 
-  const { initializeStatus, currentExamStatusInfo, currentExam, examsStatus } =
+  const { initializeStatus, currentExamStatusInfo, exams, currentExam } =
     useSelector((state: StateType) => state.exams);
 
-  // Start the exam
-  React.useEffect(() => {
-    // If the exams are not loaded, do not start the exam
-    if (examsStatus !== "READY") {
-      return;
-    }
-
-    // Start the exam if it is not already started when the component is mounted
-    if (examId && currentExamStatusInfo.status === "IDLE") {
-      dispatch(startExam({ workspaceFolderId: examId }));
-    }
-  }, [dispatch, examId, currentExamStatusInfo, examsStatus]);
+  const preExamInfo = React.useMemo(
+    () => exams.find((exam) => exam.folderId === examId),
+    [exams, examId]
+  );
 
   // Handle timer expiration for active exam
   React.useEffect(() => {
@@ -87,7 +110,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
                 "info"
               )
             );
-            setIsExpired(true);
+            setCurrentExamExpired(true);
           },
         })
       );
@@ -117,7 +140,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
     });
   }, [currentExam, examId, dispatch]);
 
-  // Reset the current exam when the component is unmounted
+  // Reset the current exam (if exists) when the component is unmounted
   React.useEffect(
     () => () => {
       // Reset the current exam
@@ -153,32 +176,42 @@ const ExamInstance = (props: ExamInstanceProps) => {
     }
   };
 
-  return (
-    <AnimatePresence>
-      {initializeStatus === "LOADING" ||
-      currentExamStatusInfo.status === "LOADING" ? (
-        <motion.div
-          key="loading"
-          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -10, scale: 0.95 }}
-          transition={{
-            duration: 0.4,
-            ease: [0.4, 0, 0.2, 1],
-          }}
-        >
-          Ladataan kokeen sisältöä...
+  /**
+   * Render content
+   */
+  const renderContent = () => {
+    // If something is loaded, show common loading animation
+    if (
+      initializeStatus === "LOADING" ||
+      currentExamStatusInfo.status === "LOADING"
+    ) {
+      return (
+        <motion.div {...commonMotionProps} key="loading">
+          Ladataan...
         </motion.div>
-      ) : currentExamStatusInfo.status === "ERROR" ? (
+      );
+    }
+
+    // If minimun exams related information is initialized, but current exam is not started
+    // we show pre exam related info
+    if (
+      initializeStatus === "READY" &&
+      currentExamStatusInfo.status === "IDLE"
+    ) {
+      return (
         <motion.div
+          {...commonMotionProps}
+          key="pre-info"
+          className="hops-container__info"
+        >
+          <PreExamInfo exam={preExamInfo} onCloseExam={props.onCloseExam} />
+        </motion.div>
+      );
+    } else if (currentExamStatusInfo.status === "ERROR") {
+      return (
+        <motion.div
+          {...commonMotionProps}
           key="error"
-          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -10, scale: 0.95 }}
-          transition={{
-            duration: 0.4,
-            ease: [0.4, 0, 0.2, 1],
-          }}
           className="hops-container__info"
         >
           <div className="hops-container__state state-FAILED">
@@ -194,16 +227,12 @@ const ExamInstance = (props: ExamInstanceProps) => {
             </Button>
           </div>
         </motion.div>
-      ) : isExpired ? (
+      );
+    } else if (currentExamExpired) {
+      return (
         <motion.div
+          {...commonMotionProps}
           key="expired"
-          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -10, scale: 0.95 }}
-          transition={{
-            duration: 0.4,
-            ease: [0.4, 0, 0.2, 1],
-          }}
           className="hops-container__info"
         >
           <div className="hops-container__state state-INFO">
@@ -221,16 +250,12 @@ const ExamInstance = (props: ExamInstanceProps) => {
             </Button>
           </div>
         </motion.div>
-      ) : currentExam && currentExam.ended ? (
+      );
+    } else if (currentExam && currentExam.ended) {
+      return (
         <motion.div
+          {...commonMotionProps}
           key="ended"
-          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -10, scale: 0.95 }}
-          transition={{
-            duration: 0.4,
-            ease: [0.4, 0, 0.2, 1],
-          }}
           className="hops-container__info"
         >
           <div className="hops-container__state state-INFO">
@@ -247,26 +272,95 @@ const ExamInstance = (props: ExamInstanceProps) => {
             </Button>
           </div>
         </motion.div>
-      ) : (
-        <motion.div
-          key="active"
-          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -10, scale: 0.95 }}
-          transition={{
-            duration: 0.4,
-            ease: [0.4, 0, 0.2, 1],
-          }}
-        >
-          <ExamInstanceContent
-            examId={examId}
-            navigation={<ExamInstanceTableOfContents examId={examId} />}
-          />
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+      );
+    }
+
+    return (
+      <motion.div {...commonMotionProps} key="active">
+        <ExamInstanceContent
+          examId={examId}
+          navigation={<ExamInstanceTableOfContents examId={examId} />}
+        />
+      </motion.div>
+    );
+  };
+
+  return <AnimatePresence>{renderContent()}</AnimatePresence>;
 };
+
+/**
+ * ExamPreInstanceProps
+ * @param props props
+ * @returns ExamPreInstanceProps
+ */
+interface PreExamInfoProps {
+  exam?: ExamAttendance;
+  onCloseExam: () => void;
+}
+
+/**
+ * ExamPreInstance
+ * @param props props
+ * @returns ExamPreInstance
+ */
+const PreExamInfo = React.memo((props: PreExamInfoProps) => {
+  const { exam, onCloseExam } = props;
+
+  const dispatch = useDispatch();
+
+  /**
+   * handleStartExam
+   */
+  const handleStartExam = () => {
+    if (exam && exam.folderId) {
+      dispatch(startExam({ workspaceFolderId: exam.folderId }));
+    }
+  };
+
+  /**
+   * buttonText
+   * @returns button text
+   */
+  const getButtonText = () => {
+    if (exam.allowRestart && !!exam.ended && !!exam.started) {
+      return "Aloita koe uudestaan";
+    }
+
+    if (exam.started) {
+      return "Jatka koetta";
+    }
+
+    return "Aloita koe";
+  };
+
+  if (!exam) {
+    return null;
+  }
+
+  return (
+    <>
+      <div className="hops-container__state state-INFO">
+        <div className="hops-container__state-icon icon-notification"></div>
+        <div className="hops-container__state-text">
+          Tähän tulee info tekstiä kokeeseen liittyen, kuten mahdolliset
+          ajastusrajoitukset yms. timerit...
+        </div>
+      </div>
+
+      <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
+        <Button buttonModifiers={["execute"]} onClick={handleStartExam}>
+          {getButtonText()}
+        </Button>
+
+        <Button buttonModifiers={["execute"]} onClick={onCloseExam}>
+          Sulje koeikkuna
+        </Button>
+      </div>
+    </>
+  );
+});
+
+PreExamInfo.displayName = "PreExamInfo";
 
 /**
  * ExamInstanceContentProps

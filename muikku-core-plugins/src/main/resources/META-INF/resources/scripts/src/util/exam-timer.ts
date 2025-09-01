@@ -17,7 +17,7 @@ export interface TimerCallbacks {
 }
 
 /**
- * ExamTimerService
+ * Exam timer service to handle timer for an exam
  */
 export class ExamTimerService {
   private examId: number;
@@ -31,7 +31,7 @@ export class ExamTimerService {
   private warningCallbackCalled: boolean = false; // Whether the warning callback has been called
 
   /**
-   * ExamTimerService
+   * Exam timer service constructor
    * @param examId examId
    * @param startDate startDate
    * @param durationMinutes durationMinutes
@@ -76,7 +76,7 @@ export class ExamTimerService {
   }
 
   /**
-   * stopTimer
+   * Stop timer
    */
   stopTimer() {
     if (this.interval) {
@@ -86,7 +86,7 @@ export class ExamTimerService {
   }
 
   /**
-   * subscribe
+   * Subscribe to timer updates
    * @param callback callback
    * @returns unsubscribe function
    */
@@ -97,14 +97,14 @@ export class ExamTimerService {
   }
 
   /**
-   * notifySubscribers
+   * Notify subscribers about timer updates
    */
   private notifySubscribers() {
     this.subscribers.forEach((callback) => callback(this.currentValue));
   }
 
   /**
-   * updateTimer
+   * Update timer
    */
   private updateTimer() {
     // Calculate new time
@@ -137,7 +137,7 @@ export class ExamTimerService {
   }
 
   /**
-   * calculateTimeRemaining
+   * Calculate time remaining
    * @returns TimerValue
    */
   private calculateTimeRemaining(): TimerValue {
@@ -168,7 +168,7 @@ export class ExamTimerService {
   }
 
   /**
-   * updateCallbacks
+   * Update timer callbacks
    * @param callbacks callbacks
    */
   updateCallbacks(callbacks: TimerCallbacks) {
@@ -176,7 +176,7 @@ export class ExamTimerService {
   }
 
   /**
-   * getCurrentValue
+   * Get current timer value
    * @returns currentValue
    */
   getCurrentValue(): TimerValue {
@@ -184,7 +184,7 @@ export class ExamTimerService {
   }
 
   /**
-   * getExamId
+   * Get exam id
    * @returns examId
    */
   getExamId(): number {
@@ -192,7 +192,7 @@ export class ExamTimerService {
   }
 
   /**
-   * isRunning
+   * Check if timer is running
    * @returns boolean
    */
   isRunning(): boolean {
@@ -208,7 +208,7 @@ export class ExamTimerRegistry {
   private timers: Map<number, ExamTimerService> = new Map();
 
   /**
-   * getInstance
+   * Get instance of the exam timer registry
    * @returns instance
    */
   static getInstance(): ExamTimerRegistry {
@@ -219,7 +219,7 @@ export class ExamTimerRegistry {
   }
 
   /**
-   * startTimer
+   * Start timer for an exam or update existing timer
    * @param examId examId
    * @param startDate startDate
    * @param durationMinutes durationMinutes
@@ -245,7 +245,7 @@ export class ExamTimerRegistry {
   }
 
   /**
-   * updateTimerCallbacks
+   * Update timer callbacks for an exam
    * @param examId examId
    * @param callbacks callbacks
    */
@@ -257,7 +257,7 @@ export class ExamTimerRegistry {
   }
 
   /**
-   * getTimer
+   * Get timer for an exam
    * @param examId examId
    * @returns timer
    */
@@ -266,7 +266,7 @@ export class ExamTimerRegistry {
   }
 
   /**
-   * getTimerValue
+   * Get timer value for an exam
    * @param examId examId
    * @returns timerValue
    */
@@ -276,7 +276,7 @@ export class ExamTimerRegistry {
   }
 
   /**
-   * stopTimer
+   * Stop timer for an exam
    * @param examId examId
    */
   stopTimer(examId: number) {
@@ -288,7 +288,7 @@ export class ExamTimerRegistry {
   }
 
   /**
-   * stopAllTimers
+   * Stop all timers
    */
   stopAllTimers() {
     this.timers.forEach((timer) => timer.stopTimer());
@@ -296,7 +296,7 @@ export class ExamTimerRegistry {
   }
 
   /**
-   * hasTimer
+   * Check if timer exists for an exam
    * @param examId examId
    * @returns boolean
    */
@@ -305,7 +305,7 @@ export class ExamTimerRegistry {
   }
 
   /**
-   * getActiveTimerCount
+   * Get number of active timers
    * @returns number
    */
   getActiveTimerCount(): number {
