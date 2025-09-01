@@ -3073,7 +3073,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode parentFolder = restFolder.getParentId() == null ? rootFolder : workspaceMaterialController.findWorkspaceNodeById(restFolder.getParentId());
     String title = restFolder.getTitle() == null ? "Untitled" : restFolder.getTitle();
 
-    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentFolder, title, null);
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentFolder, title, null, restFolder.getExam());
     if (nextSibling != null) {
       workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
     }

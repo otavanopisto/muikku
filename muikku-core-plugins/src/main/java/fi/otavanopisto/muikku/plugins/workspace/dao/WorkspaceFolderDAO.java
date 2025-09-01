@@ -22,7 +22,7 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
 
   private static final long serialVersionUID = 9095130166469638314L;
 
-  public WorkspaceFolder create(WorkspaceNode parent, String title, String urlName, Integer orderNumber, Boolean hidden, WorkspaceFolderType folderType, MaterialViewRestrict viewRestrict, WorkspaceLanguage language) {
+  public WorkspaceFolder create(WorkspaceNode parent, String title, String urlName, Integer orderNumber, Boolean hidden, WorkspaceFolderType folderType, MaterialViewRestrict viewRestrict, WorkspaceLanguage language, boolean exam) {
     WorkspaceFolder workspaceFolder = new WorkspaceFolder();
     workspaceFolder.setParent(parent);
     workspaceFolder.setUrlName(urlName);
@@ -32,6 +32,7 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
     workspaceFolder.setHidden(hidden);
     workspaceFolder.setViewRestrict(viewRestrict);
     workspaceFolder.setLanguage(language);
+    workspaceFolder.setExam(exam);
     return persist(workspaceFolder);
   }
 
