@@ -210,6 +210,11 @@
     border-color: lighten($color-disabled, 25%);
   }
 
+  &.INVALID {
+    animation: invalid 0.2s ease 0s normal forwards;
+    border: 2px solid $color-fatal;
+  }
+
   @include breakpoint($breakpoint-pad) {
     height: $select-height-desktop;
   }
@@ -420,4 +425,30 @@
   height: auto;
   text-decoration: none;
   width: auto;
+}
+
+@keyframes invalid {
+	0% {
+		transform: translate(0);
+	}
+
+	20% {
+		transform: translate(-2px, 2px);
+	}
+
+	40% {
+		transform: translate(-2px, -2px);
+	}
+
+	60% {
+		transform: translate(2px, 2px);
+	}
+
+	80% {
+		transform: translate(2px, -2px);
+	}
+
+	100% {
+		transform: translate(0);
+	}
 }

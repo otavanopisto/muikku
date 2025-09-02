@@ -44,21 +44,7 @@ const SkillLevel = (props: SkillLevelProps) => {
     React.useState<CVLanguage>(initialLanguageSkillLevels);
   const [sampleUrl, setSampleUrl] = React.useState<string>("");
   const [sampleName, setSampleName] = React.useState<string>("");
-  const [isValidUrl, setIsValidUrl] = React.useState<boolean>(false);
-
-  // Create a ref to store the timeout ID
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
-  React.useEffect(() => {
-    if (cv) {
-      const currentLanguageSkillLevel = cv.languages.find(
-        (l) => l.code === language.code
-      );
-      if (currentLanguageSkillLevel) {
-        setlanguageSkillLevels(currentLanguageSkillLevel);
-      }
-    }
-  }, [cv, language, languageSkillLevels]);
+  const [isValidUrl, setIsValidUrl] = React.useState<boolean>(true);
 
   /**
    * handleSelectChange handles changes in the select input.
@@ -125,7 +111,7 @@ const SkillLevel = (props: SkillLevelProps) => {
    * @param url string
    * @returns boolean
    */
-  const isValidURL = (url: string): boolean => {
+  const validateURL = (url: string): boolean => {
     if (!url || url.trim() === "") return false;
 
     // Comprehensive URL validation regex
@@ -142,6 +128,14 @@ const SkillLevel = (props: SkillLevelProps) => {
     return urlPattern.test(url);
   };
 
+  const handleUrlFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSampleUrl(e.target.value);
+
+    //if (!isValidUrl) {
+    //  setIsValidUrl(true);
+    //}
+  };
+
   /**
    * handleAddSampleLink adds link to sample
    */
@@ -152,7 +146,7 @@ const SkillLevel = (props: SkillLevelProps) => {
       samples: [...languageSkillLevels.samples, sample],
     };
 
-    if (!isValidURL(sample.url)) {
+    if (!validateURL(sample.url)) {
       setIsValidUrl(false);
       return;
     }
@@ -163,6 +157,8 @@ const SkillLevel = (props: SkillLevelProps) => {
       payload: updatedLanguageSkillLevels,
     } as ActionType);
     setlanguageSkillLevels(updatedLanguageSkillLevels);
+    setSampleUrl("");
+    setSampleName("");
   };
 
   /**
@@ -183,39 +179,16 @@ const SkillLevel = (props: SkillLevelProps) => {
     setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
-  /**
-   * handleSampleURLFieldChange handles changes in the sample URL input field with debounce.
-   * @param e React.ChangeEvent<HTMLInputElement>
-   */
-  const handleSampleFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Get the current value
-    const value = e.target.value;
-
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    if (e.target.name === "sampleUrl") {
-      setIsValidUrl(isValidURL(value));
-    }
-
-    // Set a new timeout
-    timeoutRef.current = setTimeout(() => {
-      if (e.target.name === "sampleName") setSampleName(value);
-      if (e.target.name === "sampleUrl") setSampleUrl(value);
-    }, 300); // 300ms debounce time
-  };
-
-  // Clean up the timeout when the component unmounts
-  React.useEffect(
-    () => () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+  React.useEffect(() => {
+    if (cv) {
+      const currentLanguageSkillLevel = cv.languages.find(
+        (l) => l.code === language.code
+      );
+      if (currentLanguageSkillLevel) {
+        setlanguageSkillLevels(currentLanguageSkillLevel);
       }
-    },
-    []
-  );
+    }
+  }, [cv, language]);
 
   return (
     <fieldset className="language-profile-container__fieldset">
@@ -372,11 +345,12 @@ const SkillLevel = (props: SkillLevelProps) => {
             })}
           </label>
           <input
-            type="url"
+            type="text"
             name="sampleName"
+            value={sampleName}
             id="sampleName"
-            className={`language-profile__input ${isValidUrl ? "" : "INVALID"}`}
-            onChange={(e) => handleSampleFieldChange(e)}
+            className={`language-profile__input`}
+            onChange={(e) => setSampleName(e.target.value)}
           />
           <label htmlFor="sampleUrl" className="language-profile__label">
             {t("labels.linkSampleUrl", {
@@ -386,9 +360,10 @@ const SkillLevel = (props: SkillLevelProps) => {
           <input
             type="url"
             name="sampleUrl"
+            value={sampleUrl}
             id="sampleUrl"
             className={`language-profile__input ${isValidUrl ? "" : "INVALID"}`}
-            onChange={(e) => handleSampleFieldChange(e)}
+            onChange={handleUrlFieldChange}
           />
           <div className="language-profile__sample-buttons language-profile__sample-buttons--add-sample">
             <Button
@@ -400,7 +375,7 @@ const SkillLevel = (props: SkillLevelProps) => {
               {t("actions.test", { ns: "profile" })}
             </Button>
             <Button
-              disabled={!isValidUrl || (isValidUrl && sampleName === "")}
+              disabled={sampleName === "" || sampleUrl === ""}
               buttonModifiers={["execute"]}
               onClick={handleAddSampleLink}
               icon="plus"
