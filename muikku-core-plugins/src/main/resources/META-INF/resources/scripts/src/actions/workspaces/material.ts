@@ -114,6 +114,7 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
       parentMaterial?: MaterialContentNodeWithIdAndLogic;
       makeFolder: boolean;
       rootParentId: number;
+      exam?: boolean;
       nextSibling?: MaterialContentNodeWithIdAndLogic;
       copyWorkspaceId?: number;
       copyMaterialId?: number;
@@ -371,6 +372,7 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
             createWorkspaceFolderRequest: {
               parentId,
               nextSiblingId,
+              exam: data.exam || false,
             },
           });
 

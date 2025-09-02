@@ -116,23 +116,6 @@ export const SectionContentTab = (props: SectionContentTabProps) => {
     );
   };
 
-  /**
-   * Handles exam change
-   * @param e e
-   */
-  const handleExamChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(
-      updateWorkspaceMaterialContentNode({
-        workspace: editorState.currentNodeWorkspace,
-        material: editorState.currentDraftNodeValue,
-        update: {
-          exam: e.currentTarget.value === "YES",
-        },
-        isDraft: true,
-      })
-    );
-  };
-
   if (!editorState.opened) {
     return null;
   }
@@ -178,25 +161,6 @@ export const SectionContentTab = (props: SectionContentTabProps) => {
                     })}
                   </option>
                 ))}
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">Koeosio</h3>
-
-        <div className="material-editor__select-locale-container">
-          <div className="form__row">
-            <div className="form-element">
-              <select
-                className="form-element__select form-element__select--material-editor"
-                value={editorState.currentDraftNodeValue.exam ? "YES" : "NO"}
-                onChange={handleExamChange}
-              >
-                <option value="YES">Kyllä</option>
-                <option value="NO">Ei</option>
               </select>
             </div>
           </div>

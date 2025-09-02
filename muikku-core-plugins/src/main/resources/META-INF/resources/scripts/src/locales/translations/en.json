@@ -1711,6 +1711,7 @@
       "correctAnswers": "Correct answers",
       "create": "$t(common:labels.create)",
       "create_chapter": "Create a new chapter",
+      "create_examChapter": "Create a new exam chapter",
       "create_page": "Create a new page",
       "diaryEntry": "Diary entry",
       "edit": "$t(common:labels.edit)",

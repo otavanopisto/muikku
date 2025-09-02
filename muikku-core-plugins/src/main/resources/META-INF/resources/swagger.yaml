@@ -12646,6 +12646,8 @@ components:
               nextSiblingId:
                 type: integer
                 format: int64
+              exam:
+                type: boolean
 
     WorkspaceNoteCreateRequestBody:
       required: true

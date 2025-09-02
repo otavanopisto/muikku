@@ -1711,6 +1711,7 @@
       "correctAnswers": "Oikeita vastauksia",
       "create": "$t(common:labels.create)",
       "create_chapter": "Lisää uusi osio",
+      "create_examChapter": "Lisää uusi koeosio",
       "create_page": "Lisää uusi sivu",
       "diaryEntry": "Oppimispäiväkirjamerkintä",
       "edit": "$t(labels.edit)",

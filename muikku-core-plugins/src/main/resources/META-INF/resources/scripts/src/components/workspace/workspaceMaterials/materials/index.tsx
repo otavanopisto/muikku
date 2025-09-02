@@ -190,6 +190,12 @@ class WorkspaceMaterials extends React.Component<
       },
       {
         icon: "plus",
+        text: t("labels.create_examChapter", { ns: "materials" }),
+        onClick: this.createSection.bind(this, nextSection, true),
+        file: false,
+      },
+      {
+        icon: "plus",
         text: t("labels.create_page", { ns: "materials" }),
         onClick: this.createPage.bind(this, section, nextSibling),
         file: false,
@@ -301,8 +307,12 @@ class WorkspaceMaterials extends React.Component<
   /**
    * createSection
    * @param nextSibling nextSibling
+   * @param examSection examSection
    */
-  createSection(nextSibling: MaterialContentNodeWithIdAndLogic) {
+  createSection(
+    nextSibling: MaterialContentNodeWithIdAndLogic,
+    examSection: boolean = false
+  ) {
     const { t } = this.props;
 
     this.props.createWorkspaceMaterialContentNode(
@@ -312,6 +322,7 @@ class WorkspaceMaterials extends React.Component<
         nextSibling,
         title: t("labels.newPage", { ns: "materials" }),
         makeFolder: true,
+        exam: examSection,
       },
       "materials"
     );
