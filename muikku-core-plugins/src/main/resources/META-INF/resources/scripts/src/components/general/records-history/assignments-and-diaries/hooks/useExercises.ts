@@ -28,12 +28,14 @@ const workspaceApi = MApi.getWorkspaceApi();
  * Custom hook for student study hours
  *
  * @param workspaceId workspaceId
+ * @param userEntityId userEntityId
  * @param tabOpen tabOpen
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useExerciseAssignments = (
   workspaceId: number,
+  userEntityId: number,
   tabOpen: AssignmentsTabType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
@@ -47,8 +49,12 @@ export const useExerciseAssignments = (
      * loadExercisenData
      * Loads student activity data
      * @param workspaceId of student
+     * @param userEntityId of student
      */
-    const loadExercisenData = async (workspaceId: number) => {
+    const loadExercisenData = async (
+      workspaceId: number,
+      userEntityId: number
+    ) => {
       if (!isCancelled) {
         setExerciseAssignmentsData((exerciseAssignmentsData) => ({
           ...exerciseAssignmentsData,
@@ -65,6 +71,7 @@ export const useExerciseAssignments = (
             const assignments = await workspaceApi.getWorkspaceMaterials({
               workspaceEntityId: workspaceId,
               assignmentType: "EXERCISE",
+              userEntityId: userEntityId,
             });
 
             const [materials] = await Promise.all([
@@ -119,7 +126,7 @@ export const useExerciseAssignments = (
       tabOpen === "EXERCISE" &&
       exerciseAssignmentsData.exerciseAssignments.length === 0
     ) {
-      loadExercisenData(workspaceId);
+      loadExercisenData(workspaceId, userEntityId);
     }
 
     return () => {
@@ -131,6 +138,7 @@ export const useExerciseAssignments = (
     tabOpen,
     exerciseAssignmentsData.exerciseAssignments.length,
     t,
+    userEntityId,
   ]);
 
   return {

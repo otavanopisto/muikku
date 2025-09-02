@@ -78,18 +78,21 @@ const AssignmentsAndDiaries: React.FC<AssignmentsAndDiariesProps> = (props) => {
 
   const { evaluatedAssignmentsData } = useEvaluatedAssignments(
     credit.id,
+    userEntityId,
     activeTab,
     displayNotification
   );
 
   const { exerciseAssignmentsData } = useExerciseAssignments(
     credit.id,
+    userEntityId,
     activeTab,
     displayNotification
   );
 
   const { interimEvaluationeAssignmentsData } = useInterimEvaluationAssigments(
     credit.id,
+    userEntityId,
     activeTab,
     displayNotification
   );

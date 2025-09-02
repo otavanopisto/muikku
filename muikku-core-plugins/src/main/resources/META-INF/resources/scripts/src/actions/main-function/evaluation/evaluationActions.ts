@@ -295,7 +295,11 @@ export interface LoadEvaluationSortFunction {
  * LoadEvaluationCurrentStudentAssigments
  */
 export interface LoadEvaluationCurrentStudentAssigments {
-  (data: { workspaceId: number; workspaceUserEntityId: number }): AnyActionType;
+  (data: {
+    workspaceId: number;
+    workspaceUserEntityId: number;
+    userEntityId: number;
+  }): AnyActionType;
 }
 
 /**
@@ -1816,7 +1820,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
       getState: () => StateType
     ) => {
-      const { workspaceId, workspaceUserEntityId } = data;
+      const { workspaceId, workspaceUserEntityId, userEntityId } = data;
 
       const workspaceApi = MApi.getWorkspaceApi();
       const evaluationApi = MApi.getEvaluationApi();
@@ -1833,6 +1837,7 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
               {
                 workspaceEntityId: workspaceId,
                 assignmentType: "INTERIM_EVALUATION",
+                userEntityId: userEntityId,
               }
             );
 
@@ -1840,12 +1845,14 @@ const loadCurrentStudentAssigmentsData: LoadEvaluationCurrentStudentAssigments =
               await workspaceApi.getWorkspaceMaterials({
                 workspaceEntityId: workspaceId,
                 assignmentType: "EXERCISE",
+                userEntityId: userEntityId,
               });
 
             const assignmentsEvaluated =
               await workspaceApi.getWorkspaceMaterials({
                 workspaceEntityId: workspaceId,
                 assignmentType: "EVALUATED",
+                userEntityId: userEntityId,
               });
 
             const assignments = [

@@ -9922,12 +9922,12 @@ paths:
             format: int64
         - name: assignmentType
           in: query
-          description: Include hidden
+          description: Assignment type. Use conjunction with userEntityId
           schema:
             $ref: "#/components/schemas/MaterialAssigmentType"
         - name: userEntityId
           in: query
-          description: User entity id
+          description: User entity id. MUST be used if assignmentType is defined
           schema:
             type: integer
             format: int64

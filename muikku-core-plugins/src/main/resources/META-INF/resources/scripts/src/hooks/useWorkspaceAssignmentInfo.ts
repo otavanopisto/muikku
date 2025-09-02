@@ -95,6 +95,7 @@ export const useWorkspaceAssignmentInfo = (props: UseWorkspacePointsProps) => {
             const assignments = await workspaceApi.getWorkspaceMaterials({
               workspaceEntityId: workspaceId,
               assignmentType: "EVALUATED",
+              userEntityId: userEntityId,
             });
 
             return assignments;
