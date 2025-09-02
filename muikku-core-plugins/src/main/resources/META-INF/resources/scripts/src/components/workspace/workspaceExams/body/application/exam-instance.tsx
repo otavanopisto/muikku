@@ -17,7 +17,7 @@ import TocTopic, { Toc, TocElement } from "~/components/general/toc";
 import { ExamAttendance, MaterialContentNode } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
-//import { useActiveMaterial } from "../../hooks/useActiveMaterial";
+import { useActiveMaterial } from "../../hooks/useActiveMaterial";
 import ExamMaterial from "./material";
 import ExamTimer from "./exam-timer";
 import { displayNotification } from "~/actions/base/notifications";
@@ -460,7 +460,6 @@ const ExamInstanceContent = withTranslation("workspace")((
       modifier="workspace-exam"
       navigation={navigation}
       aside={aside}
-      title={"Kokeen tiedot"}
       t={tProp}
       i18n={i18n}
       tReady={tReady}
@@ -496,6 +495,10 @@ const ExamInstanceTableOfContents = (
 
   const currentExam = useSelector(
     (state: StateType) => state.exams.currentExam
+  );
+
+  const activeMaterialId = useSelector(
+    (state: StateType) => state.exams.currentExamsActiveNodeId
   );
 
   const examsCompositeReplies = useSelector(
@@ -613,7 +616,7 @@ const ExamInstanceTableOfContents = (
     };
   };
 
-  //const { activeMaterialId } = useActiveMaterial(currentExam?.contents || []);
+  useActiveMaterial(currentExam?.contents || []);
 
   return (
     <Toc modifier="workspace-materials" tocHeaderTitle="Sisällysluettelo">
@@ -642,9 +645,10 @@ const ExamInstanceTableOfContents = (
             <TocElement
               key={`tocElement-${content.workspaceMaterialId}`}
               id={`tocElement-${content.workspaceMaterialId}`}
+              hash={`p-${content.workspaceMaterialId}`}
               className={className}
               modifier={modifier}
-              isActive={false}
+              isActive={activeMaterialId === content.workspaceMaterialId}
               isHidden={false}
               iconAfter={icon}
               iconAfterTitle={iconTitle}

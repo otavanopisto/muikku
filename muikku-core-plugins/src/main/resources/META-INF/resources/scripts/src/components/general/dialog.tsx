@@ -53,7 +53,10 @@ export interface DialogProps {
   executeContent?: React.ReactElement<any>;
   modifier: string | Array<string>;
   localElementId?: string;
-  content: (closePortal: () => void) => JSX.Element | JSX.Element[];
+  content: (
+    closePortal: () => void,
+    contentRef: HTMLDivElement
+  ) => JSX.Element | JSX.Element[];
   disableScroll?: boolean;
   footer?: (closePortal: () => void) => JSX.Element;
   onOpen?: (e?: HTMLElement) => any;
@@ -76,6 +79,8 @@ interface DialogState {
  */
 export default class Dialog extends React.Component<DialogProps, DialogState> {
   private oldOverflow: string;
+
+  private contentRef = React.createRef<HTMLDivElement>();
 
   /**
    * constructor
@@ -148,6 +153,14 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     }
     document.body.style.marginBottom = "0";
     setTimeout(removeFromDOM, 300);
+  }
+
+  /**
+   * getContentRef
+   * @returns HTMLDivElement
+   */
+  getContentRef() {
+    return this.contentRef.current;
   }
 
   /**
@@ -245,11 +258,15 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                             />
                           </header>
                           <section
+                            ref={this.contentRef}
                             className={`dialog__content ${(modifiers || [])
                               .map((s) => `dialog__content--${s}`)
                               .join(" ")}`}
                           >
-                            {this.props.content(closePortal)}
+                            {this.props.content(
+                              closePortal,
+                              this.contentRef.current
+                            )}
                           </section>
                           {this.props.footer ? (
                             <footer

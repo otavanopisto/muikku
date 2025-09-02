@@ -22,6 +22,7 @@ export interface ExamsState {
   exams: ExamAttendance[];
   currentExam: ExamAttendance | null;
   currentExamStatusInfo: ReducerStateInfo;
+  currentExamsActiveNodeId: number | null;
   examsCompositeReplies: MaterialCompositeReply[];
   examsCompositeRepliesStatus: ReducerStateType;
 }
@@ -37,6 +38,7 @@ const initialWorkspaceExamsState: ExamsState = {
   currentExamStatusInfo: {
     status: "IDLE",
   },
+  currentExamsActiveNodeId: null,
   examsCompositeReplies: [],
   examsCompositeRepliesStatus: "IDLE",
 };
@@ -141,6 +143,13 @@ export const exams: Reducer<ExamsState> = (
           statusCode: undefined,
           message: undefined,
         },
+        currentExamsActiveNodeId: null,
+      };
+
+    case "EXAMS_UPDATE_CURRENT_EXAMS_ACTIVE_NODE_ID":
+      return {
+        ...state,
+        currentExamsActiveNodeId: action.payload,
       };
 
     default:

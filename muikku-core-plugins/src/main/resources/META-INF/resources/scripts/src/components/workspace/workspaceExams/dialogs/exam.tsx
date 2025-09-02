@@ -2,6 +2,7 @@ import * as React from "react";
 import { useHistory } from "react-router";
 import Dialog from "~/components/general/dialog";
 import ExamInstance from "../body/application/exam-instance";
+import { ScrollContextProvider } from "../context/scroll-context";
 
 /**
  * ExamDialogProps
@@ -36,9 +37,12 @@ const ExamDialog = (props: ExamDialogProps) => {
   /**
    * content
    * @param closeDialog closeDialog
+   * @param contentRef contentRef
    */
-  const content = (closeDialog: () => void) => (
-    <ExamInstance examId={examId} onCloseExam={closeDialog} />
+  const content = (closeDialog: () => void, contentRef: HTMLDivElement) => (
+    <ScrollContextProvider value={{ scrollContainerRef: contentRef }}>
+      <ExamInstance examId={examId} onCloseExam={closeDialog} />
+    </ScrollContextProvider>
   );
 
   return (
