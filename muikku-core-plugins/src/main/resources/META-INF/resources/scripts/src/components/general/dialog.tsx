@@ -55,6 +55,7 @@ export interface DialogProps {
   localElementId?: string;
   content: (
     closePortal: () => void,
+    headerRef: HTMLDivElement,
     contentRef: HTMLDivElement
   ) => JSX.Element | JSX.Element[];
   disableScroll?: boolean;
@@ -80,6 +81,7 @@ interface DialogState {
 export default class Dialog extends React.Component<DialogProps, DialogState> {
   private oldOverflow: string;
 
+  private headerRef = React.createRef<HTMLDivElement>();
   private contentRef = React.createRef<HTMLDivElement>();
 
   /**
@@ -239,6 +241,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                             </div>
                           ) : null}
                           <header
+                            ref={this.headerRef}
                             className={`dialog__header ${(modifiers || [])
                               .map((s) => `dialog__header--${s}`)
                               .join(" ")}`}
@@ -265,6 +268,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
                           >
                             {this.props.content(
                               closePortal,
+                              this.headerRef.current,
                               this.contentRef.current
                             )}
                           </section>

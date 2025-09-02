@@ -5,6 +5,10 @@ import * as React from "react";
  */
 interface ScrollContextType {
   /**
+   * Header reference
+   */
+  scrollContainerHeaderRef: HTMLElement;
+  /**
    * Scroll container reference
    */
   scrollContainerRef: HTMLElement;

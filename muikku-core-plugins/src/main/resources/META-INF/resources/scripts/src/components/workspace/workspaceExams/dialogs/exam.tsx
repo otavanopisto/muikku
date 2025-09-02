@@ -37,10 +37,20 @@ const ExamDialog = (props: ExamDialogProps) => {
   /**
    * content
    * @param closeDialog closeDialog
+   * @param headerRef headerRef
    * @param contentRef contentRef
    */
-  const content = (closeDialog: () => void, contentRef: HTMLDivElement) => (
-    <ScrollContextProvider value={{ scrollContainerRef: contentRef }}>
+  const content = (
+    closeDialog: () => void,
+    headerRef: HTMLDivElement,
+    contentRef: HTMLDivElement
+  ) => (
+    <ScrollContextProvider
+      value={{
+        scrollContainerHeaderRef: headerRef,
+        scrollContainerRef: contentRef,
+      }}
+    >
       <ExamInstance examId={examId} onCloseExam={closeDialog} />
     </ScrollContextProvider>
   );
