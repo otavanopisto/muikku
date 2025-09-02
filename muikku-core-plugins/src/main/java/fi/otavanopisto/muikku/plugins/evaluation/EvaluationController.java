@@ -287,6 +287,14 @@ public class EvaluationController {
             workspaceEntity, WorkspaceMaterialAssignmentType.EXERCISE);
         exercisesTotal = assignments.size();
         for (WorkspaceMaterial assignment : assignments) {
+
+          // Exam functionality: Don't count exam assignments into statistics
+          
+          if (assignment.isExamAssignment()) {
+            exercisesTotal--;
+            continue;
+          }
+          
           WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController
               .findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(assignment, userEntity);
           if (workspaceMaterialReply != null) {
@@ -309,6 +317,14 @@ public class EvaluationController {
             workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
         evaluablesTotal = assignments.size();
         for (WorkspaceMaterial assignment : assignments) {
+
+          // Exam functionality: Don't count exam assignments into statistics
+          
+          if (assignment.isExamAssignment()) {
+            evaluablesTotal--;
+            continue;
+          }
+          
           WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController
               .findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(assignment, userEntity);
           if (workspaceMaterialReply != null) {

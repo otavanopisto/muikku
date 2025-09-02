@@ -1845,33 +1845,39 @@ public class EvaluationRESTService extends PluginRESTService {
     Long assignmentsTotal = 0L;
     // Assignments total
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(compositeAssessmentRequest.getCourseIdentifier());
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(compositeAssessmentRequest.getUserIdentifier());
     if (workspaceEntity == null) {
       logger.severe(String.format("WorkspaceEntity for course %s not found", compositeAssessmentRequest.getCourseIdentifier()));
+    }
+    else if (userEntity == null) {
+      logger.severe(String.format("UserEntity not found for AssessmentRequest student %s not found", compositeAssessmentRequest.getUserIdentifier()));
     }
     else {
       List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
           workspaceEntity,
           WorkspaceMaterialAssignmentType.EVALUATED);
+      
+      // Exam functionality: Strip exam assignments
+      
+      for (int i = evaluatedAssignments.size() - 1; i >= 0; i--) {
+        if (evaluatedAssignments.get(i).isExamAssignment()) {
+          evaluatedAssignments.remove(i);
+        }
+      }
+      
       assignmentsTotal = Long.valueOf(evaluatedAssignments.size()); 
       // Assignments done by user
       if (assignmentsTotal > 0) {
-        UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(compositeAssessmentRequest.getUserIdentifier());            
-        if (userEntity == null) {
-          logger.severe(String.format("UserEntity not found for AssessmentRequest student %s not found", compositeAssessmentRequest.getUserIdentifier()));
-        }
-        else {
-          List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
-          replyStates.add(WorkspaceMaterialReplyState.FAILED);
-          replyStates.add(WorkspaceMaterialReplyState.PASSED);
-          replyStates.add(WorkspaceMaterialReplyState.SUBMITTED);
-          replyStates.add(WorkspaceMaterialReplyState.INCOMPLETE);
-          assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(userEntity.getId(), replyStates, evaluatedAssignments);
-        }
+        List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
+        replyStates.add(WorkspaceMaterialReplyState.FAILED);
+        replyStates.add(WorkspaceMaterialReplyState.PASSED);
+        replyStates.add(WorkspaceMaterialReplyState.SUBMITTED);
+        replyStates.add(WorkspaceMaterialReplyState.INCOMPLETE);
+        assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(userEntity.getId(), replyStates, evaluatedAssignments);
       }
     }
     
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(compositeAssessmentRequest.getCourseStudentIdentifier());
-    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(compositeAssessmentRequest.getUserIdentifier());
 
     RestAssessmentRequest restAssessmentRequest = new RestAssessmentRequest();
     boolean resolvedState = false;
