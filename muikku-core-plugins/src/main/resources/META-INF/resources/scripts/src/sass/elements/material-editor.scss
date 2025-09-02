@@ -157,3 +157,44 @@
   padding: 4px;
   width: auto;
 }
+
+.material-editor__category-item {
+  background: $color-default-lighter-generic-background;
+  border-radius: 10px;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.material-editor__category-header {
+  align-items: center;
+  border-bottom: 1px solid $color-default-separator-border;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  font-size: 1rem;
+  margin: 0 0 10px;
+  padding: 0 0 5px;
+}
+
+.material-editor__selected-pages {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 5px;
+}
+
+.material-editor__selected-page {
+  align-items: center;
+  background: $color-default-generic-background;
+  border-radius: 3px;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 5px;
+  line-height: 1;
+  margin: 2px 0;
+  padding: 5px 5px 5px 10px;
+}
+
+.material-editor__add-page {
+  margin: 5px 0 0;
+  width: 100%;
+}
