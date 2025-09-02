@@ -74,6 +74,11 @@ export type EXAMS_UPDATE_CURRENT_EXAMS_END_EXAM = SpecificActionType<
   ExamAttendance
 >;
 
+export type EXAMS_UPDATE_CURRENT_EXAMS_ACTIVE_NODE_ID = SpecificActionType<
+  "EXAMS_UPDATE_CURRENT_EXAMS_ACTIVE_NODE_ID",
+  number
+>;
+
 export type EXAMS_RESET_CURRENT_EXAM = SpecificActionType<
   "EXAMS_RESET_CURRENT_EXAM",
   void
@@ -143,6 +148,13 @@ interface UpdateAssignmentStateTriggerType {
     successMessage?: string;
     callback?: () => void;
   }): AnyActionType;
+}
+
+/**
+ * UpdateCurrentExamsActiveNodeIdTriggerType
+ */
+interface UpdateCurrentExamsActiveNodeIdTriggerType {
+  (id: number): AnyActionType;
 }
 
 /**
@@ -508,10 +520,23 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
     };
   };
 
+/**
+ * Updates the current exams active node id.
+ * @param id id
+ */
+const updateCurrentExamsActiveNodeId: UpdateCurrentExamsActiveNodeIdTriggerType =
+  function updateCurrentExamsActiveNodeId(id) {
+    return {
+      type: "EXAMS_UPDATE_CURRENT_EXAMS_ACTIVE_NODE_ID",
+      payload: id,
+    };
+  };
+
 export {
   initializeExams,
   loadExams,
   startExam,
   endExam,
   updateAssignmentState,
+  updateCurrentExamsActiveNodeId,
 };
