@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,6 +71,24 @@ public class ExamController {
   
   public ExamSettings findExamSettings(Long workspaceFolderId) {
     return examSettingsDAO.findByWorkspaceFolderId(workspaceFolderId);
+  }
+  
+  // TODO This might not be needed after all?
+  public boolean isStudentExamAssignment(Long userEntityId, Long examId, Long assignmentId) {
+    ExamAttendance attendance = examAttendanceDAO.findByWorkspaceFolderIdAndUserEntityId(examId, userEntityId);
+    if (attendance == null || attendance.getStarted() == null) {
+      return false; // User is not exam attendee or exam hasn't started yet
+    }
+    if (StringUtils.isBlank(attendance.getWorkspaceMaterialIds())) {
+      return true; // Exam has no randomized assignments
+    }
+    String[] randomIds = attendance.getWorkspaceMaterialIds().split(",");
+    for (int i = 0; i < randomIds.length; i++) {
+      if (ArrayUtils.contains(randomIds, assignmentId.toString())) {
+        return true; // Assignment is part of user's randomized assignments
+      }
+    }
+    return false; // Assignment not part of user's randomized assignments
   }
   
   public ExamSettings createOrUpdateSettings(Long workspaceFolderId, ExamSettingsRestModel settings) {
