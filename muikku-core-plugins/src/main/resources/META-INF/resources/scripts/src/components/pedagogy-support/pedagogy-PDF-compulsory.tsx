@@ -310,7 +310,7 @@ const PedagogyPDFCompulsory = (props: PedagogyPDFCompulsoryProps) => {
           {formData?.supportActions?.includes("other") ? (
             <View style={styles.infoFieldContainer}>
               <Text style={styles.infoFieldLabel}>
-                {t("labels.actionElse", {
+                {t("labels.additionalInfo", {
                   ns: "pedagogySupportPlan",
                 })}
               </Text>

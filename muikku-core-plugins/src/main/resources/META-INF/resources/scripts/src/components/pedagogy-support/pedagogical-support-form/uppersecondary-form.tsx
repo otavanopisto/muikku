@@ -16,7 +16,7 @@ import { useUpperSecondaryForm } from "../hooks/useUppersecondaryForm";
 /**
  * The props for the UpperSecondaryPedagogicalSupportForm component.
  */
-interface UpperSecondaryPedagogicalSupportWizardFormmProps {}
+interface UpperSecondaryPedagogicalSupportWizardFormProps {}
 
 /**
  * Creates a new UpperSecondaryPedagogicalSupportForm component.
@@ -25,7 +25,7 @@ interface UpperSecondaryPedagogicalSupportWizardFormmProps {}
  * @returns JSX.Element
  */
 const UpperSecondaryPedagogicalSupportWizardForm = (
-  props: UpperSecondaryPedagogicalSupportWizardFormmProps
+  props: UpperSecondaryPedagogicalSupportWizardFormProps
 ) => {
   const status = useSelector((state: StateType) => state.status);
 
