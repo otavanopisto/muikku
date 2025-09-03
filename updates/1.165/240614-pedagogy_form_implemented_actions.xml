@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table PedagogyFormImplementedActions (
+      id bigint not null auto_increment,
+      formData longtext not null,
+      userEntityId bigint not null,
+      primary key (id)
+    );
+  </sql>
+  <sql>
+    alter table PedagogyFormImplementedActions 
+       add constraint UK40k4bt8ahyy068v4groanpixw unique (userEntityId);
+  </sql>
+  <sql>
+    alter table PedagogyForm add column published datetime;
+  </sql>
+  <sql>
+    update PedagogyForm p set published=(select max(created) from PedagogyFormHistory 
+    where form_id=p.id and type='EDIT') 
+    where state='ACTIVE' or state='PENDING' or state='APPROVED';
+  </sql>
+  <sql>
+    alter table PedagogyForm drop column state;
+  </sql>
+</update> 
