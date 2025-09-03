@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.exam.rest;
 
 import java.time.OffsetDateTime;
 
-public class ExamAttendee {
+public class ExamAttendeeRestModel {
 
   public boolean isHasImage() {
     return hasImage;

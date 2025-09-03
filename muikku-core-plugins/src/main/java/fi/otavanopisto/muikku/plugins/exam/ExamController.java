@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,7 +28,7 @@ import fi.otavanopisto.muikku.plugins.exam.dao.ExamSettingsDAO;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamSettings;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamAttendanceRestModel;
-import fi.otavanopisto.muikku.plugins.exam.rest.ExamAttendee;
+import fi.otavanopisto.muikku.plugins.exam.rest.ExamAttendeeRestModel;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsCategory;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRandom;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRestModel;
@@ -84,24 +83,6 @@ public class ExamController {
   
   public ExamSettings findExamSettings(Long workspaceFolderId) {
     return examSettingsDAO.findByWorkspaceFolderId(workspaceFolderId);
-  }
-  
-  // TODO This might not be needed after all?
-  public boolean isStudentExamAssignment(Long userEntityId, Long examId, Long assignmentId) {
-    ExamAttendance attendance = examAttendanceDAO.findByWorkspaceFolderIdAndUserEntityId(examId, userEntityId);
-    if (attendance == null || attendance.getStarted() == null) {
-      return false; // User is not exam attendee or exam hasn't started yet
-    }
-    if (StringUtils.isBlank(attendance.getWorkspaceMaterialIds())) {
-      return true; // Exam has no randomized assignments
-    }
-    String[] randomIds = attendance.getWorkspaceMaterialIds().split(",");
-    for (int i = 0; i < randomIds.length; i++) {
-      if (ArrayUtils.contains(randomIds, assignmentId.toString())) {
-        return true; // Assignment is part of user's randomized assignments
-      }
-    }
-    return false; // Assignment not part of user's randomized assignments
   }
   
   public ExamSettings createOrUpdateSettings(Long workspaceFolderId, ExamSettingsRestModel settings) {
@@ -373,9 +354,9 @@ public class ExamController {
     return attendance;
   }
 
-  public ExamAttendee toRestModel(ExamAttendance attendance) {
+  public ExamAttendeeRestModel toRestModel(ExamAttendance attendance) {
     UserEntity userEntity = userEntityController.findUserEntityById(attendance.getUserEntityId());
-    ExamAttendee attendee = new ExamAttendee();
+    ExamAttendeeRestModel attendee = new ExamAttendeeRestModel();
     attendee.setId(attendance.getUserEntityId());
     attendee.setStarted(attendance.getStarted() == null ? null : toOffsetDateTime(attendance.getStarted()));
     attendee.setEnded(attendance.getEnded() == null ? null : toOffsetDateTime(attendance.getEnded()));

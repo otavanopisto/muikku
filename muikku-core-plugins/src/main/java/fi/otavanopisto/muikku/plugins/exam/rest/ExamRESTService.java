@@ -158,12 +158,12 @@ public class ExamRESTService {
     if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    List<ExamAttendee> attendees = new ArrayList<>();
+    List<ExamAttendeeRestModel> attendees = new ArrayList<>();
     List<ExamAttendance> attendances = examController.listAttendees(workspaceFolderId);
     for (ExamAttendance attendance : attendances) {
       attendees.add(examController.toRestModel(attendance));
     }
-    attendees.sort(Comparator.comparing(ExamAttendee::getLastName).thenComparing(ExamAttendee::getFirstName));
+    attendees.sort(Comparator.comparing(ExamAttendeeRestModel::getLastName).thenComparing(ExamAttendeeRestModel::getFirstName));
     return Response.ok().entity(attendees).build();
   }
 
