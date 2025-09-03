@@ -2411,6 +2411,7 @@
       "loadError_pricing": "Virhe kurssin maksutietojen lataamisessa: {{error}}",
       "loadError_sortCategories": "Virhe suodatuksen lajittelutietojen lataamisessa. Päivitä sivu uudelleen ja yritä uudestaan.",
       "loadError_workspaces": "Virhe kurssitietojen lataamisessa. Päivitä sivu uudelleen ja yritä uudestaan.",
+      "loadError_exams": "Virhe koetietojen lataamisessa. Päivitä sivu uudelleen ja yritä uudestaan.",
       "recording": "Äänitetään {{currentLength}} / {{maxLength}}",
       "removeError": "$t(common:notifications.removeError)",
       "removeError_evaluation": "Virhe arviointitapahtuman poistossa: {{error}}",

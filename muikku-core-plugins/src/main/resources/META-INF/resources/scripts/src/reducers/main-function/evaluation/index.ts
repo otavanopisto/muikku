@@ -14,6 +14,7 @@ import {
   EvaluationEvent,
   EvaluationGradeScale,
   EvaluationJournalFeedback,
+  ExamAttendance,
   MaterialCompositeReply,
   WorkspaceJournalEntry,
 } from "~/generated/client";
@@ -51,6 +52,7 @@ export interface EvaluationState {
   };
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;
   evaluationCompositeReplies?: EvaluationStateAndData<MaterialCompositeReply[]>;
+  evaluationExams?: EvaluationStateAndData<ExamAttendance[]>;
   openedAssignmentEvaluationId?: number;
   evaluationBilledPrice?: number;
   needsReloadEvaluationRequests: boolean;
@@ -92,6 +94,10 @@ export const initialState: EvaluationState = {
   evaluationJournalComments: { comments: {}, commentsLoaded: [] },
   evaluationJournalFeedback: { state: "LOADING", data: undefined },
   evaluationDiaryEntries: {
+    state: "LOADING",
+    data: undefined,
+  },
+  evaluationExams: {
     state: "LOADING",
     data: undefined,
   },
@@ -456,6 +462,24 @@ export const evaluations: Reducer<EvaluationState> = (
         evaluationJournalComments: {
           ...state.evaluationJournalComments,
           comments: action.payload.updatedCommentsList,
+        },
+      };
+
+    case "EVALUATION_EXAMS_LOAD":
+      return {
+        ...state,
+        evaluationExams: {
+          state: state.evaluationExams.state,
+          data: action.payload,
+        },
+      };
+
+    case "EVALUATION_EXAMS_STATE_UPDATE":
+      return {
+        ...state,
+        evaluationExams: {
+          state: action.payload,
+          data: state.evaluationExams.data,
         },
       };
 

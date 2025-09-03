@@ -33,6 +33,7 @@ import {
   MaterialCompositeReply,
   UpdateBilledPriceRequest,
   InterimEvaluationRequest,
+  ExamAttendance,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import i18n from "~/locales/i18n";
@@ -246,6 +247,18 @@ export type EVALUATION_JOURNAL_COMMENTS_DELETE = SpecificActionType<
     updatedJournalEntryList: WorkspaceJournalEntry[];
     updatedCommentsList: EvaluationJournalCommentsByJournal;
   }
+>;
+
+// EVALUATION EXAMS
+
+export type EVALUATION_EXAMS_STATE_UPDATE = SpecificActionType<
+  "EVALUATION_EXAMS_STATE_UPDATE",
+  EvaluationStateType
+>;
+
+export type EVALUATION_EXAMS_LOAD = SpecificActionType<
+  "EVALUATION_EXAMS_LOAD",
+  ExamAttendance[]
 >;
 
 // Server events
@@ -622,6 +635,18 @@ export interface DeleteEvaluationJournalCommentTriggerType {
     workspaceEntityId: number;
     success?: () => void;
     fail?: () => void;
+  }): AnyActionType;
+}
+
+/**
+ * LoadEvaluationExamsTriggerType
+ */
+export interface LoadEvaluationExamsTriggerType {
+  (data: {
+    workspaceEntityId: number;
+    studentEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
   }): AnyActionType;
 }
 
@@ -2858,6 +2883,58 @@ const deleteEvaluationJournalComment: DeleteEvaluationJournalCommentTriggerType 
     };
   };
 
+/**
+ * LoadEvaluationExamsTriggerType
+ * @param data data
+ */
+const loadEvaluationExamsFromServer: LoadEvaluationExamsTriggerType =
+  function loadEvaluationExamsFromServer(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { workspaceEntityId, studentEntityId, onSuccess, onFail } = data;
+
+      const evaluationApi = MApi.getEvaluationApi();
+
+      try {
+        const exams = await evaluationApi.listStudentExams({
+          workspaceEntityId: workspaceEntityId,
+          studentEntityId: studentEntityId,
+        });
+
+        dispatch({
+          type: "EVALUATION_EXAMS_LOAD",
+          payload: exams,
+        });
+
+        dispatch({
+          type: "EVALUATION_EXAMS_STATE_UPDATE",
+          payload: "READY",
+        });
+
+        onSuccess && onSuccess();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        dispatch(
+          displayNotification(
+            i18n.t("notifications.loadError", {
+              ns: "evaluation",
+              context: "exams",
+              error: err.message,
+            }),
+            "error"
+          )
+        );
+
+        onFail && onFail();
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -2895,4 +2972,5 @@ export {
   deleteEvaluationJournalFeedback,
   deleteSupplementationRequest,
   toggleLockedAssignment,
+  loadEvaluationExamsFromServer,
 };

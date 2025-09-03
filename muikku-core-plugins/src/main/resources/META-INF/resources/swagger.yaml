@@ -3178,13 +3178,13 @@ paths:
           description: Invalid request was sent to the server
         "403":
           description: Attempted to make a call with unauthorized client
-  
+
   /rest/evaluation/workspaces/{workspaceEntityId}/students/{studentEntityId}/exams:
     get:
       operationId: listStudentExams
       summary: Returns all exams of a student in a given workspace
       tags:
-        - Exam
+        - Evaluation
       parameters:
         - name: workspaceEntityId
           in: path

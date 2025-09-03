@@ -2408,6 +2408,7 @@
       "loadError_pricing": "Loading pricing information failed: {{error}}",
       "loadError_sortCategories": "Loading sort categories failed. Please refresh the page and try again.",
       "loadError_workspaces": "Loading course information failed. Please refresh the page and try again.",
+      "loadError_exams": "Loading exams failed. Please refresh the page and try again.",
       "recording": "Recording {{currentLength}} / {{maxLength}}",
       "removeError": "$t(common:notifications.removeError)",
       "removeError_evaluation": "Deleting evaluation event failed: {{error}}",
