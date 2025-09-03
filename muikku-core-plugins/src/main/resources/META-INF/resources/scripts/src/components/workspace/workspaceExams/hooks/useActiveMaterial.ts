@@ -1,144 +1,148 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { updateCurrentExamsActiveNodeId } from "~/actions/workspaces/exams";
 import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
+import { useScrollContext } from "../context/scroll-context";
 
 /**
  * useActiveMaterial
  * @param materials materials
- * @returns activeMaterialId
  */
 export const useActiveMaterial = (
   materials: MaterialContentNodeWithIdAndLogic[]
 ) => {
-  const [activeMaterialId, setActiveMaterialId] = useState<number | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const atBottomRef = useRef<boolean>(false);
   const lastActiveIdRef = useRef<number | null>(null);
+  const { scrollContainerRef, scrollContainerHeaderRef } = useScrollContext();
+
+  const dispatch = useDispatch();
+
+  /**
+   * Updates the URL hash to reflect the current active material
+   * @param materialId The material ID to set in the hash
+   */
+  const updateUrlHash = (materialId: number) => {
+    const newHash = `#p-${materialId}`;
+
+    // Use history.replaceState to avoid adding to browser history
+    if (history.replaceState) {
+      history.replaceState(null, "", newHash);
+    } else {
+      // Fallback for older browsers
+      window.location.hash = newHash;
+    }
+  };
 
   useEffect(() => {
-    if (!materials.length) return;
+    if (!materials.length || !scrollContainerRef || !scrollContainerHeaderRef)
+      return;
 
     /**
      * handleScroll
      */
     const handleScroll = () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      // Check if scroll has reached bottom
+      const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef;
+      const threshold = 5; // Small threshold for precision
+
+      atBottomRef.current =
+        scrollTop + clientHeight >= scrollHeight - threshold;
+
+      const materialElements = materials.map((material) => ({
+        id: material.workspaceMaterialId,
+        element: document.getElementById(`p-${material.workspaceMaterialId}`),
+      }));
+
+      if (materialElements.length === 0) return;
+
+      const viewportHeight = scrollContainerRef
+        ? scrollContainerRef.clientHeight
+        : window.innerHeight;
+
+      let newActiveMaterialId: number | null = null;
+
+      // Get the scroll container bounds for relative positioning
+      const containerRect = scrollContainerRef
+        ? scrollContainerRef.getBoundingClientRect()
+        : { top: 0, bottom: viewportHeight };
+
+      // Special handling for last item (when scrolled to bottom)
+      const lastElement = materialElements[materialElements.length - 1];
+      if (lastElement.element && atBottomRef.current) {
+        newActiveMaterialId = lastElement.id;
       }
 
-      timeoutRef.current = setTimeout(() => {
-        const materialElements = materials
-          .map((material) => ({
-            id: material.workspaceMaterialId,
-            element: document.getElementById(
-              `p-${material.workspaceMaterialId}`
-            ),
-          }))
-          .filter((item) => item.element);
+      // For all other cases (including top), find the one most centered in viewport
+      if (!newActiveMaterialId) {
+        let mostCenteredMaterialId: number | null = null;
+        let minDistanceFromCenter = Infinity;
 
-        if (materialElements.length === 0) return;
+        materialElements.forEach(({ id, element }) => {
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            const relativeTop = rect.top - containerRect.top;
+            const relativeBottom = rect.bottom - containerRect.top;
 
-        const viewportHeight = window.innerHeight;
+            // Account for dialog header height in visibility calculations
+            // Similar to how materials component accounts for sticky navigation
+            const adjustedTop =
+              relativeTop + scrollContainerHeaderRef.clientHeight;
+            const adjustedBottom =
+              relativeBottom + scrollContainerHeaderRef.clientHeight;
 
-        let newActiveMaterialId: number | null = null;
+            // Only consider materials that are significantly visible within the container
+            const visibleTop = Math.max(
+              adjustedTop,
+              scrollContainerHeaderRef.clientHeight
+            );
+            const visibleBottom = Math.min(adjustedBottom, viewportHeight);
+            const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+            const visibilityRatio = visibleHeight / rect.height;
 
-        // Special handling for first item (when scrolled to top)
-        const firstElement = materialElements[0];
-        if (firstElement.element) {
-          const firstRect = firstElement.element.getBoundingClientRect();
+            // Must be at least 10% visible to be considered
+            if (visibilityRatio >= 0.1) {
+              const elementCenter = adjustedTop + rect.height / 2;
+              const viewportCenter = viewportHeight / 2;
+              const distanceFromCenter = Math.abs(
+                elementCenter - viewportCenter
+              );
 
-          if (firstRect.top <= 200) {
-            console.log("Is scrolled to top", firstElement.id);
-            newActiveMaterialId = firstElement.id;
-          }
-        }
-
-        // Special handling for last item (when scrolled to bottom)
-        const lastElement = materialElements[materialElements.length - 1];
-        if (lastElement.element && !newActiveMaterialId) {
-          const lastRect = lastElement.element.getBoundingClientRect();
-
-          if (lastRect.bottom >= viewportHeight - 200) {
-            console.log("Is scrolled to bottom", lastElement.id);
-            newActiveMaterialId = lastElement.id;
-          }
-        }
-
-        // For middle items, find the one most centered in viewport
-        if (!newActiveMaterialId) {
-          console.log("No top/bottom match, checking middle items...");
-          let mostCenteredMaterialId: number | null = null;
-          let minDistanceFromCenter = Infinity;
-
-          materialElements.forEach(({ id, element }) => {
-            if (element) {
-              const rect = element.getBoundingClientRect();
-
-              // Only consider materials that are significantly visible
-              const visibleHeight =
-                Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0);
-              const visibilityRatio = visibleHeight / rect.height;
-
-              // Must be at least 10% visible to be considered
-              if (visibilityRatio >= 0.1) {
-                const elementCenter = rect.top + rect.height / 2;
-                const viewportCenter = viewportHeight / 2;
-                const distanceFromCenter = Math.abs(
-                  elementCenter - viewportCenter
-                );
-
-                console.log(`Material ${id} center calculation:`, {
-                  elementCenter,
-                  viewportCenter,
-                  distanceFromCenter,
-                  currentMinDistance: minDistanceFromCenter,
-                });
-
-                if (distanceFromCenter < minDistanceFromCenter) {
-                  minDistanceFromCenter = distanceFromCenter;
-                  mostCenteredMaterialId = id;
-                  console.log(
-                    `New most centered: ${id} with distance ${distanceFromCenter}`
-                  );
-                }
+              if (distanceFromCenter < minDistanceFromCenter) {
+                minDistanceFromCenter = distanceFromCenter;
+                mostCenteredMaterialId = id;
               }
             }
-          });
+          }
+        });
 
-          console.log("mostCenteredMaterialId", mostCenteredMaterialId);
-          newActiveMaterialId = mostCenteredMaterialId;
-        }
+        newActiveMaterialId = mostCenteredMaterialId;
+      }
 
-        console.log(
-          "Has changed",
-          newActiveMaterialId && newActiveMaterialId !== lastActiveIdRef.current
-        );
-
-        // Only update if the active material has actually changed
-        if (
-          newActiveMaterialId &&
-          newActiveMaterialId !== lastActiveIdRef.current
-        ) {
-          console.log("New active material:", newActiveMaterialId);
-          setActiveMaterialId(newActiveMaterialId);
-          lastActiveIdRef.current = newActiveMaterialId;
-        }
-      }, 50); // 50ms debounce
+      // Only update if the active material has actually changed
+      if (
+        newActiveMaterialId &&
+        newActiveMaterialId !== lastActiveIdRef.current
+      ) {
+        dispatch(updateCurrentExamsActiveNodeId(newActiveMaterialId));
+        updateUrlHash(newActiveMaterialId);
+        lastActiveIdRef.current = newActiveMaterialId;
+      }
     };
 
     // Set initial active material (first one)
-    if (materials.length > 0 && !activeMaterialId) {
-      setActiveMaterialId(materials[0].workspaceMaterialId);
+    if (materials.length > 0 && !lastActiveIdRef.current) {
+      dispatch(
+        updateCurrentExamsActiveNodeId(materials[0].workspaceMaterialId)
+      );
+      updateUrlHash(materials[0].workspaceMaterialId);
       lastActiveIdRef.current = materials[0].workspaceMaterialId;
     }
 
-    window.addEventListener("scroll", handleScroll, true);
+    // Listen to scroll events on the dialog content container
+    scrollContainerRef.addEventListener("scroll", handleScroll, true);
 
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      window.removeEventListener("scroll", handleScroll);
+      scrollContainerRef.removeEventListener("scroll", handleScroll, true);
     };
-  }, [materials, activeMaterialId]);
-
-  return { activeMaterialId };
+  }, [materials, scrollContainerRef, dispatch, scrollContainerHeaderRef]);
 };

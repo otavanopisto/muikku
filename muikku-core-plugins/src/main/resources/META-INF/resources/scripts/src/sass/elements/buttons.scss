@@ -746,6 +746,19 @@
   text-transform: none;
 }
 
+.button--delete-chip {
+  background: transparent;
+  border: 0;
+  height: 1rem;
+  padding: 0;
+  width: 1rem;
+
+  .button__icon {
+    font-size: 0.5rem;
+    margin: 0;
+  }
+}
+
 .button-icon {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);

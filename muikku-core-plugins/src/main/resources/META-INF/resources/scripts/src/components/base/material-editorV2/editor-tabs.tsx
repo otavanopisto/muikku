@@ -140,29 +140,27 @@ export const SectionContentTab = (props: SectionContentTabProps) => {
 
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">{t("labels.language")}</h3>
-        <div className="material-editor__select-locale-container">
-          <div className="form__row">
-            <div className="form-element">
-              <select
-                className="form-element__select form-element__select--material-editor"
-                onChange={handleTitleLanguageChange}
-                value={editorState.currentDraftNodeValue.titleLanguage || ""}
-              >
-                <option value="">
-                  {t("labels.inherited", {
+        <div className="form__row">
+          <div className="form-element">
+            <select
+              className="form-element__select form-element__select--material-editor"
+              onChange={handleTitleLanguageChange}
+              value={editorState.currentDraftNodeValue.titleLanguage || ""}
+            >
+              <option value="">
+                {t("labels.inherited", {
+                  ns: "workspace",
+                })}
+              </option>
+              {languageOptions.map((language: string) => (
+                <option key={language} value={language}>
+                  {t("labels.language", {
+                    context: language,
                     ns: "workspace",
                   })}
                 </option>
-                {languageOptions.map((language: string) => (
-                  <option key={language} value={language}>
-                    {t("labels.language", {
-                      context: language,
-                      ns: "workspace",
-                    })}
-                  </option>
-                ))}
-              </select>
-            </div>
+              ))}
+            </select>
           </div>
         </div>
       </div>
@@ -304,29 +302,27 @@ export const MaterialContentTab = (props: MaterialContentTabProps) => {
       {props?.locationPage === "Home" && (
         <div className="material-editor__sub-section">
           <h3 className="material-editor__sub-title">{t("labels.language")}</h3>
-          <div className="material-editor__select-locale-container">
-            <div className="form__row">
-              <div className="form-element">
-                <select
-                  className="form-element__select form-element__select--material-editor"
-                  onChange={handleTitleLanguageChange}
-                  value={editorState.currentDraftNodeValue.titleLanguage || ""}
-                >
-                  <option value="">
-                    {t("labels.inherited", {
+          <div className="form__row">
+            <div className="form-element">
+              <select
+                className="form-element__select form-element__select--material-editor"
+                onChange={handleTitleLanguageChange}
+                value={editorState.currentDraftNodeValue.titleLanguage || ""}
+              >
+                <option value="">
+                  {t("labels.inherited", {
+                    ns: "workspace",
+                  })}
+                </option>
+                {languageOptions.map((language: string) => (
+                  <option key={language} value={language}>
+                    {t("labels.language", {
+                      context: language,
                       ns: "workspace",
                     })}
                   </option>
-                  {languageOptions.map((language: string) => (
-                    <option key={language} value={language}>
-                      {t("labels.language", {
-                        context: language,
-                        ns: "workspace",
-                      })}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                ))}
+              </select>
             </div>
           </div>
         </div>
@@ -427,7 +423,6 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
       </div>
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Tehtävien satunnaisuus</h3>
-
         <div className="form__row">
           <div className="form-element">
             <select
@@ -459,21 +454,19 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
             Satunnaisten tehtävien määrä:
           </h3>
 
-          <div className="material-editor__select-locale-container">
-            <div className="form__row">
-              <div className="form-element">
-                <NumericFormat
-                  id="duration"
-                  className="form-element__input form-element__input--material-editor"
-                  value={updatedExamSettings?.randomCount || 0}
-                  min={1}
-                  disabled={loading}
-                  decimalScale={0}
-                  onValueChange={(values) =>
-                    handleExamSettingsChange("randomCount", values.floatValue)
-                  }
-                />
-              </div>
+          <div className="form__row">
+            <div className="form-element">
+              <NumericFormat
+                id="duration"
+                className="form-element__input form-element__input--material-editor"
+                value={updatedExamSettings?.randomCount || 0}
+                min={1}
+                disabled={loading}
+                decimalScale={0}
+                onValueChange={(values) =>
+                  handleExamSettingsChange("randomCount", values.floatValue)
+                }
+              />
             </div>
           </div>
         </div>
@@ -482,71 +475,60 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Kesto (minuutteina):</h3>
 
-        <div className="material-editor__select-locale-container">
-          <div className="form__row">
-            <div className="form-element">
-              <NumericFormat
-                id="duration"
-                className="form-element__input form-element__input--material-editor"
-                value={updatedExamSettings?.minutes || 0}
-                min={1}
-                disabled={loading}
-                decimalScale={0}
-                onValueChange={(values) =>
-                  handleExamSettingsChange("minutes", values.floatValue)
-                }
-              />
-            </div>
+        <div className="form__row">
+          <div className="form-element">
+            <NumericFormat
+              id="duration"
+              className="form-element__input form-element__input--material-editor"
+              value={updatedExamSettings?.minutes || 0}
+              min={1}
+              disabled={loading}
+              decimalScale={0}
+              onValueChange={(values) =>
+                handleExamSettingsChange("minutes", values.floatValue)
+              }
+            />
           </div>
         </div>
       </div>
 
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Salli useat yritykset</h3>
-        <div className="material-editor__select-locale-container">
-          <div className="form__row">
-            <div className="form-element">
-              <select
-                className="form-element__select form-element__select--material-editor"
-                disabled={loading}
-                value={
-                  updatedExamSettings?.allowMultipleAttempts ? "YES" : "NO"
-                }
-                onChange={(e) =>
-                  handleExamSettingsChange(
-                    "allowMultipleAttempts",
-                    e.target.value === "YES"
-                  )
-                }
-              >
-                <option value="YES">Kyllä</option>
-                <option value="NO">Ei</option>
-              </select>
-            </div>
+        <div className="form__row">
+          <div className="form-element">
+            <select
+              className="form-element__select form-element__select--material-editor"
+              disabled={loading}
+              value={updatedExamSettings?.allowMultipleAttempts ? "YES" : "NO"}
+              onChange={(e) =>
+                handleExamSettingsChange(
+                  "allowMultipleAttempts",
+                  e.target.value === "YES"
+                )
+              }
+            >
+              <option value="YES">Kyllä</option>
+              <option value="NO">Ei</option>
+            </select>
           </div>
         </div>
       </div>
 
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Avoin kaikille</h3>
-        <div className="material-editor__select-locale-container">
-          <div className="form__row">
-            <div className="form-element">
-              <select
-                className="form-element__select form-element__select--material-editor"
-                disabled={loading}
-                value={updatedExamSettings?.openForAll ? "YES" : "NO"}
-                onChange={(e) =>
-                  handleExamSettingsChange(
-                    "openForAll",
-                    e.target.value === "YES"
-                  )
-                }
-              >
-                <option value="YES">Kyllä</option>
-                <option value="NO">Ei</option>
-              </select>
-            </div>
+        <div className="form__row">
+          <div className="form-element">
+            <select
+              className="form-element__select form-element__select--material-editor"
+              disabled={loading}
+              value={updatedExamSettings?.openForAll ? "YES" : "NO"}
+              onChange={(e) =>
+                handleExamSettingsChange("openForAll", e.target.value === "YES")
+              }
+            >
+              <option value="YES">Kyllä</option>
+              <option value="NO">Ei</option>
+            </select>
           </div>
         </div>
       </div>
@@ -554,15 +536,13 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Kokeen kategoriat</h3>
 
-        <div className="material-editor__select-locale-container">
-          <ExamCategories
-            categories={updatedExamSettings?.categories || []}
-            onUpdate={(categories) =>
-              handleExamSettingsChange("categories", categories)
-            }
-            disabled={loading}
-          />
-        </div>
+        <ExamCategories
+          categories={updatedExamSettings?.categories || []}
+          onUpdate={(categories) =>
+            handleExamSettingsChange("categories", categories)
+          }
+          disabled={loading}
+        />
       </div>
     </div>
   );
@@ -851,43 +831,39 @@ export const MetadataTab = (props: MetadataTabProps) => {
           <h3 className="material-editor__sub-title">
             {t("labels.license", { ns: "workspace" })}
           </h3>
-          <div className="material-editor__add-license-container">
-            <LicenseSelector
-              wcagLabel="materialLicense"
-              wcagDesc={t("wcag.materialLicense", { ns: "workspace" })}
-              modifier="material-editor"
-              value={editorState.currentDraftNodeValue.license || null}
-              onChange={handleLicenseChange}
-            />
-          </div>
+          <LicenseSelector
+            wcagLabel="materialLicense"
+            wcagDesc={t("wcag.materialLicense", { ns: "workspace" })}
+            modifier="material-editor"
+            value={editorState.currentDraftNodeValue.license || null}
+            onChange={handleLicenseChange}
+          />
         </div>
       )}
 
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">{t("labels.language")}</h3>
-        <div className="material-editor__select-locale-container">
-          <div className="form__row">
-            <div className="form-element">
-              <select
-                className="form-element__select form-element__select--material-editor"
-                onChange={handleTitleLanguageChange}
-                value={editorState.currentDraftNodeValue.titleLanguage || ""}
-              >
-                <option value="">
-                  {t("labels.inherited", {
+        <div className="form__row">
+          <div className="form-element">
+            <select
+              className="form-element__select form-element__select--material-editor"
+              onChange={handleTitleLanguageChange}
+              value={editorState.currentDraftNodeValue.titleLanguage || ""}
+            >
+              <option value="">
+                {t("labels.inherited", {
+                  ns: "workspace",
+                })}
+              </option>
+              {languageOptions.map((language: string) => (
+                <option key={language} value={language}>
+                  {t("labels.language", {
+                    context: language,
                     ns: "workspace",
                   })}
                 </option>
-                {languageOptions.map((language: string) => (
-                  <option key={language} value={language}>
-                    {t("labels.language", {
-                      context: language,
-                      ns: "workspace",
-                    })}
-                  </option>
-                ))}
-              </select>
-            </div>
+              ))}
+            </select>
           </div>
         </div>
       </div>
@@ -896,31 +872,29 @@ export const MetadataTab = (props: MetadataTabProps) => {
         <h3 className="material-editor__sub-title">
           {t("labels.materialAiUse", { ns: "materials" })}
         </h3>
-        <div className="material-editor__select-locale-container">
-          <div className="form__row">
-            <div className="form-element">
-              <select
-                className="form-element__select form-element__select--material-editor"
-                onChange={handleMaterialAiUseChange}
-                value={editorState.currentDraftNodeValue.ai || ""}
-              >
-                <option value="">
-                  {t("labels.materialAiNotDefined", {
-                    ns: "materials",
-                  })}
-                </option>
-                <option value="ALLOWED">
-                  {t("labels.materialAiAllowed", {
-                    ns: "materials",
-                  })}
-                </option>
-                <option value="DISALLOWED">
-                  {t("labels.materialAiDisallowed", {
-                    ns: "materials",
-                  })}
-                </option>
-              </select>
-            </div>
+        <div className="form__row">
+          <div className="form-element">
+            <select
+              className="form-element__select form-element__select--material-editor"
+              onChange={handleMaterialAiUseChange}
+              value={editorState.currentDraftNodeValue.ai || ""}
+            >
+              <option value="">
+                {t("labels.materialAiNotDefined", {
+                  ns: "materials",
+                })}
+              </option>
+              <option value="ALLOWED">
+                {t("labels.materialAiAllowed", {
+                  ns: "materials",
+                })}
+              </option>
+              <option value="DISALLOWED">
+                {t("labels.materialAiDisallowed", {
+                  ns: "materials",
+                })}
+              </option>
+            </select>
           </div>
         </div>
       </div>
@@ -929,18 +903,16 @@ export const MetadataTab = (props: MetadataTabProps) => {
         <h3 className="material-editor__sub-title">
           {t("labels.pointsMax", { ns: "workspace" })}
         </h3>
-        <div className="material-editor__select-locale-container">
-          <div className="form__row">
-            <div className="form-element">
-              <NumericFormat
-                className="form-element__input form-element__input--material-editor-assignment-points"
-                value={editorState.currentDraftNodeValue.maxPoints}
-                decimalScale={2}
-                decimalSeparator=","
-                allowNegative={false}
-                onValueChange={handleMaxPointsChange}
-              />
-            </div>
+        <div className="form__row">
+          <div className="form-element">
+            <NumericFormat
+              className="form-element__input form-element__input--material-editor-assignment-points"
+              value={editorState.currentDraftNodeValue.maxPoints}
+              decimalScale={2}
+              decimalSeparator=","
+              allowNegative={false}
+              onValueChange={handleMaxPointsChange}
+            />
           </div>
         </div>
       </div>

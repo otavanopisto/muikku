@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { ExamSettingsCategory } from "~/generated/client";
 import { StateType } from "~/reducers";
+import Button from "~/components/general/button";
 
 /**
  * ExamCategoriesProps
@@ -132,27 +133,22 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
 
   return (
     <div className="material-editor__exam-categories">
-      <h4>Kategoriat</h4>
-
       {/* Add new category */}
-      <div className="material-editor__add-category">
-        <div className="form__row">
-          <div className="form-element">
-            <input
-              className="form-element__input"
-              value={newCategoryName}
-              onChange={(e) => setNewCategoryName(e.target.value)}
-              placeholder="Kategorian nimi"
-              disabled={disabled}
-            />
-          </div>
-          <button
-            className="button button--primary"
+      <div className="form__row">
+        <div className="form-element form-element--add-exam-category">
+          <label className="visually-hidden">Uusi kategoria</label>
+          <input
+            className="form-element__input form-element__input--add-exam-category"
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+            placeholder="Lisää kategoria"
+            disabled={disabled}
+          />
+          <div
+            className="form-element__input-decoration form-element__input-decoration--add-exam-category icon-plus"
             onClick={addCategory}
-            disabled={disabled || !newCategoryName.trim()}
-          >
-            Lisää kategoria
-          </button>
+            // disabled={disabled || !newCategoryName.trim()}
+          ></div>
         </div>
       </div>
 
@@ -160,130 +156,143 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
       {categories.map((category, index) => (
         <div key={index} className="material-editor__category-item">
           <div className="material-editor__category-header">
-            <h5>Kategoria {index + 1}</h5>
-            <button
-              className="button button--danger"
+            Kategoria {index + 1}
+            <Button
+              icon="trash"
+              buttonModifiers={"remove-extra-row"}
               onClick={() => removeCategory(index)}
               disabled={disabled}
-            >
-              Poista
-            </button>
+            ></Button>
           </div>
 
           <div className="material-editor__category-fields">
             {/* Category name */}
-            <div className="form__row">
-              <div className="form-element">
-                <label>Nimi:</label>
-                <input
-                  className="form-element__input"
-                  value={category.name}
-                  onChange={(e) =>
-                    updateCategory(index, "name", e.target.value)
-                  }
-                  disabled={disabled}
-                />
+            <div className="form__row form__row--split">
+              <div className="form__subdivision">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="exam-category-name">Nimi:</label>
+                    <input
+                      id="exam-category-name"
+                      className="form-element__input form-element__input--material-editor"
+                      value={category.name}
+                      onChange={(e) =>
+                        updateCategory(index, "name", e.target.value)
+                      }
+                      disabled={disabled}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-
-            {/* Random count */}
-            <div className="form__row">
-              <div className="form-element">
-                <label>Satunnaisten tehtävien määrä:</label>
-                <input
-                  className="form-element__input"
-                  value={category.randomCount}
-                  onChange={(e) =>
-                    updateCategory(
-                      index,
-                      "randomCount",
-                      parseInt(e.target.value) || 0
-                    )
-                  }
-                  min={0}
-                  max={category.workspaceMaterialIds.length}
-                  disabled={disabled}
-                />
-                <small>
-                  Max: {category.workspaceMaterialIds.length} tehtävää
-                </small>
+              {/* Random count */}
+              <div className="form__subdivision">
+                <div className="form__row">
+                  <div className="form-element">
+                    <label htmlFor="exam-random-assignments-count">
+                      Satunnaisten tehtävien määrä:
+                    </label>
+                    <input
+                      id="exam-random-assignments-count"
+                      className="form-element__input form-element__input--material-editor"
+                      value={category.randomCount}
+                      onChange={(e) =>
+                        updateCategory(
+                          index,
+                          "randomCount",
+                          parseInt(e.target.value) || 0
+                        )
+                      }
+                      min={0}
+                      max={category.workspaceMaterialIds.length}
+                      disabled={disabled}
+                    />
+                    <div className="form-element__description">
+                      Max: {category.workspaceMaterialIds.length} tehtävää
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Selected pages (assignments) */}
-            <div className="form__row">
-              <div className="form-element">
-                <label>Valitut sivut:</label>
+            {currentExamSectionPages.length > 0 && (
+              <div className="form__row">
+                <div className="form-element">
+                  <label>Valitut sivut:</label>
 
-                {/* Selected pages list */}
-                <div className="material-editor__selected-pages">
-                  {category.workspaceMaterialIds.length > 0 ? (
-                    category.workspaceMaterialIds.map((pageId) => (
-                      <div
-                        key={pageId}
-                        className="material-editor__selected-page"
-                      >
-                        <span className="material-editor__page-title">
-                          {getPageTitle(pageId)}
-                        </span>
-                        <button
-                          className="button button--small button--danger"
-                          onClick={() => removePageFromCategory(index, pageId)}
-                          disabled={disabled}
-                          title="Poista sivu kategoriasta"
+                  {/* Selected pages list */}
+
+                  <div className="material-editor__selected-pages">
+                    {category.workspaceMaterialIds.length > 0 ? (
+                      category.workspaceMaterialIds.map((pageId) => (
+                        <div
+                          key={pageId}
+                          className="material-editor__selected-page"
                         >
-                          ×
-                        </button>
+                          <span className="material-editor__page-title">
+                            {getPageTitle(pageId)}
+                          </span>
+                          <Button
+                            icon="cross"
+                            iconPosition="right"
+                            className="button button--delete-chip button--danger"
+                            onClick={() =>
+                              removePageFromCategory(index, pageId)
+                            }
+                            disabled={disabled}
+                            title="Poista sivu kategoriasta"
+                          ></Button>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="form-element__description">
+                        Ei valittuja sivuja
                       </div>
-                    ))
-                  ) : (
-                    <p className="material-editor__no-pages">
-                      Ei valittuja sivuja
-                    </p>
-                  )}
-                </div>
+                    )}
+                  </div>
 
-                {/* Add new page dropdown */}
-                <div className="material-editor__add-page">
-                  <select
-                    className="form-element__select"
-                    onChange={(e) => {
-                      const pageId = parseInt(e.target.value);
-                      if (pageId && !isNaN(pageId)) {
-                        addPageToCategory(index, pageId);
-                        e.target.value = ""; // Reset selection
+                  {/* Add new page dropdown */}
+                  <div className="material-editor__add-page">
+                    <select
+                      className="form-element__select form-element__select--material-editor"
+                      onChange={(e) => {
+                        const pageId = parseInt(e.target.value);
+                        if (pageId && !isNaN(pageId)) {
+                          addPageToCategory(index, pageId);
+                          e.target.value = ""; // Reset selection
+                        }
+                      }}
+                      disabled={
+                        disabled || getAvailablePages(index).length === 0
                       }
-                    }}
-                    disabled={disabled || getAvailablePages(index).length === 0}
-                  >
-                    <option value="">Lisää sivu kategoriaan...</option>
-                    {getAvailablePages(index).map((page) => (
-                      <option
-                        key={page.workspaceMaterialId}
-                        value={page.workspaceMaterialId}
-                      >
-                        {page.title}
-                      </option>
-                    ))}
-                  </select>
+                    >
+                      <option value="">Lisää sivu kategoriaan...</option>
+                      {getAvailablePages(index).map((page) => (
+                        <option
+                          key={page.workspaceMaterialId}
+                          value={page.workspaceMaterialId}
+                        >
+                          {page.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
                   {getAvailablePages(index).length === 0 && (
-                    <small>Kaikki sivut on jo lisätty kategoriaan</small>
+                    <div className="form-element__description">
+                      Kaikki sivut on jo lisätty kategoriaan
+                    </div>
                   )}
                 </div>
-
-                <small>
-                  {category.workspaceMaterialIds.length} sivu(a) valittuna
-                  kategoriassa
-                </small>
               </div>
-            </div>
+            )}
           </div>
         </div>
       ))}
 
       {categories.length === 0 && (
-        <div className="material-editor__no-categories">
-          <p>Ei kategorioita vielä. Lisää kategoria yllä.</p>
+        <div className="empty">
+          <span>Ei kategorioita vielä. Lisää kategoria yllä.</span>
         </div>
       )}
     </div>

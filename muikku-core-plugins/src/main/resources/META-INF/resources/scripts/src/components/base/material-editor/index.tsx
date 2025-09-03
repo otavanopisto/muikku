@@ -1151,32 +1151,30 @@ class MaterialEditor extends React.Component<
                 <h3 className="material-editor__sub-title">
                   {this.props.i18n.t("labels.language")}
                 </h3>
-                <div className="material-editor__select-locale-container">
-                  <div className="form__row">
-                    <div className="form-element">
-                      <select
-                        className="form-element__select form-element__select--material-editor"
-                        onChange={this.updateTitleLanguage}
-                        value={
-                          this.props.editorState.currentDraftNodeValue
-                            .titleLanguage || ""
-                        }
-                      >
-                        <option value="">
-                          {this.props.i18n.t("labels.inherited", {
+                <div className="form__row">
+                  <div className="form-element">
+                    <select
+                      className="form-element__select form-element__select--material-editor"
+                      onChange={this.updateTitleLanguage}
+                      value={
+                        this.props.editorState.currentDraftNodeValue
+                          .titleLanguage || ""
+                      }
+                    >
+                      <option value="">
+                        {this.props.i18n.t("labels.inherited", {
+                          ns: "workspace",
+                        })}
+                      </option>
+                      {languageOptions.map((language: string) => (
+                        <option key={language} value={language}>
+                          {this.props.i18n.t("labels.language", {
+                            context: language,
                             ns: "workspace",
                           })}
                         </option>
-                        {languageOptions.map((language: string) => (
-                          <option key={language} value={language}>
-                            {this.props.i18n.t("labels.language", {
-                              context: language,
-                              ns: "workspace",
-                            })}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </div>
@@ -1186,22 +1184,20 @@ class MaterialEditor extends React.Component<
               <div className="material-editor__sub-section">
                 <h3 className="material-editor__sub-title">Koeosio</h3>
 
-                <div className="material-editor__select-locale-container">
-                  <div className="form__row">
-                    <div className="form-element">
-                      <select
-                        className="form-element__select form-element__select--material-editor"
-                        onChange={this.updateExam}
-                        value={
-                          this.props.editorState.currentDraftNodeValue.exam
-                            ? "YES"
-                            : "NO"
-                        }
-                      >
-                        <option value="YES">Kyllä</option>
-                        <option value="NO">Ei</option>
-                      </select>
-                    </div>
+                <div className="form__row">
+                  <div className="form-element">
+                    <select
+                      className="form-element__select form-element__select--material-editor"
+                      onChange={this.updateExam}
+                      value={
+                        this.props.editorState.currentDraftNodeValue.exam
+                          ? "YES"
+                          : "NO"
+                      }
+                    >
+                      <option value="YES">Kyllä</option>
+                      <option value="NO">Ei</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -1273,15 +1269,13 @@ class MaterialEditor extends React.Component<
                 <h3 className="material-editor__sub-title">
                   {t("labels.license", { ns: "workspace" })}
                 </h3>
-                <div className="material-editor__add-license-container">
-                  <LicenseSelector
-                    wcagLabel="materialLicense"
-                    wcagDesc={t("wcag.materialLicense", { ns: "workspace" })}
-                    modifier="material-editor"
-                    value={this.props.editorState.currentDraftNodeValue.license}
-                    onChange={this.updateLicense}
-                  />
-                </div>
+                <LicenseSelector
+                  wcagLabel="materialLicense"
+                  wcagDesc={t("wcag.materialLicense", { ns: "workspace" })}
+                  modifier="material-editor"
+                  value={this.props.editorState.currentDraftNodeValue.license}
+                  onChange={this.updateLicense}
+                />
               </div>
             ) : null}
 
@@ -1289,32 +1283,30 @@ class MaterialEditor extends React.Component<
               <h3 className="material-editor__sub-title">
                 {this.props.i18n.t("labels.language")}
               </h3>
-              <div className="material-editor__select-locale-container">
-                <div className="form__row">
-                  <div className="form-element">
-                    <select
-                      className="form-element__select form-element__select--material-editor"
-                      onChange={this.updateTitleLanguage}
-                      value={
-                        this.props.editorState.currentDraftNodeValue
-                          .titleLanguage || ""
-                      }
-                    >
-                      <option value="">
-                        {this.props.i18n.t("labels.inherited", {
+              <div className="form__row">
+                <div className="form-element">
+                  <select
+                    className="form-element__select form-element__select--material-editor"
+                    onChange={this.updateTitleLanguage}
+                    value={
+                      this.props.editorState.currentDraftNodeValue
+                        .titleLanguage || ""
+                    }
+                  >
+                    <option value="">
+                      {this.props.i18n.t("labels.inherited", {
+                        ns: "workspace",
+                      })}
+                    </option>
+                    {languageOptions.map((language: string) => (
+                      <option key={language} value={language}>
+                        {this.props.i18n.t("labels.language", {
+                          context: language,
                           ns: "workspace",
                         })}
                       </option>
-                      {languageOptions.map((language: string) => (
-                        <option key={language} value={language}>
-                          {this.props.i18n.t("labels.language", {
-                            context: language,
-                            ns: "workspace",
-                          })}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                    ))}
+                  </select>
                 </div>
               </div>
             </div>
@@ -1323,33 +1315,31 @@ class MaterialEditor extends React.Component<
               <h3 className="material-editor__sub-title">
                 {this.props.i18n.t("labels.materialAiUse", { ns: "materials" })}
               </h3>
-              <div className="material-editor__select-locale-container">
-                <div className="form__row">
-                  <div className="form-element">
-                    <select
-                      className="form-element__select form-element__select--material-editor"
-                      onChange={this.updateMaterialAiUse}
-                      value={
-                        this.props.editorState.currentDraftNodeValue.ai || ""
-                      }
-                    >
-                      <option value="">
-                        {this.props.i18n.t("labels.materialAiNotDefined", {
-                          ns: "materials",
-                        })}
-                      </option>
-                      <option value="ALLOWED">
-                        {this.props.i18n.t("labels.materialAiAllowed", {
-                          ns: "materials",
-                        })}
-                      </option>
-                      <option value="DISALLOWED">
-                        {this.props.i18n.t("labels.materialAiDisallowed", {
-                          ns: "materials",
-                        })}
-                      </option>
-                    </select>
-                  </div>
+              <div className="form__row">
+                <div className="form-element">
+                  <select
+                    className="form-element__select form-element__select--material-editor"
+                    onChange={this.updateMaterialAiUse}
+                    value={
+                      this.props.editorState.currentDraftNodeValue.ai || ""
+                    }
+                  >
+                    <option value="">
+                      {this.props.i18n.t("labels.materialAiNotDefined", {
+                        ns: "materials",
+                      })}
+                    </option>
+                    <option value="ALLOWED">
+                      {this.props.i18n.t("labels.materialAiAllowed", {
+                        ns: "materials",
+                      })}
+                    </option>
+                    <option value="DISALLOWED">
+                      {this.props.i18n.t("labels.materialAiDisallowed", {
+                        ns: "materials",
+                      })}
+                    </option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -1358,20 +1348,18 @@ class MaterialEditor extends React.Component<
               <h3 className="material-editor__sub-title">
                 {this.props.i18n.t("labels.pointsMax", { ns: "workspace" })}
               </h3>
-              <div className="material-editor__select-locale-container">
-                <div className="form__row">
-                  <div className="form-element">
-                    <NumericFormat
-                      className="form-element__input form-element__input--material-editor-assignment-points"
-                      value={
-                        this.props.editorState.currentDraftNodeValue.maxPoints
-                      }
-                      decimalScale={2}
-                      decimalSeparator=","
-                      allowNegative={false}
-                      onValueChange={this.updateMaxPoints}
-                    />
-                  </div>
+              <div className="form__row">
+                <div className="form-element">
+                  <NumericFormat
+                    className="form-element__input form-element__input--material-editor-assignment-points"
+                    value={
+                      this.props.editorState.currentDraftNodeValue.maxPoints
+                    }
+                    decimalScale={2}
+                    decimalSeparator=","
+                    allowNegative={false}
+                    onValueChange={this.updateMaxPoints}
+                  />
                 </div>
               </div>
             </div>

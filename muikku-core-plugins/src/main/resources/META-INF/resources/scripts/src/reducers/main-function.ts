@@ -30,6 +30,7 @@ import { notebook } from "./notebook/notebook";
 import { journals } from "./workspaces/journals";
 import { credentials } from "./base/credentials";
 import { exams } from "./workspaces/exams";
+import { pedagogySupport } from "./pedagogy-support";
 
 export default combineReducers({
   announcements,
@@ -61,4 +62,5 @@ export default combineReducers({
   journals,
   credentials,
   exams,
+  pedagogySupport,
 });

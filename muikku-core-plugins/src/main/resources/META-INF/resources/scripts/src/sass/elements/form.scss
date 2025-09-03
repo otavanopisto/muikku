@@ -337,6 +337,7 @@ legend {
 }
 
 .form-element--add-producer,
+.form-element--add-exam-category,
 .form-element--search {
   @include form-element-toolbar;
 
@@ -429,7 +430,7 @@ legend {
   flex-grow: 1;
   flex-shrink: 1;
   font-size: 0.8125rem;
-  margin: 10px 0 0;
+  margin: 5px 0;
 }
 
 .form-element__description-chip {
@@ -550,7 +551,7 @@ legend {
 
 .form-element__input--workspace-management,
 .form-element__input--material-editor {
-  margin: 0 0 5px;
+  margin: 0;
   width: 100%;
 }
 
@@ -580,6 +581,7 @@ legend {
 
 .form-element__input--search,
 .form-element__input--add-producer,
+.form-element__input--add-exam-category,
 .form-element__input--add-material-producer {
   background-color: $color-default;
   border-bottom: 2px solid $color-main-function-input-field-border;
@@ -607,7 +609,8 @@ legend {
 }
 
 .form-element__input-decoration--search,
-.form-element__input-decoration--add-producer {
+.form-element__input-decoration--add-producer,
+.form-element__input-decoration--add-exam-category {
   background-color: $color-main-function-input-field-decoration-background;
 
   &::before {
@@ -719,6 +722,7 @@ legend {
 }
 
 .form-element__select--material-editor {
+  background-color: $color-default;
   width: 100%;
 }
 
