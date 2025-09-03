@@ -365,7 +365,6 @@ const SkillLevel = (props: SkillLevelProps) => {
             label={t("labels.linkSampleName", { ns: "languageProfile" })}
             value={sampleName}
             name="sampleName"
-            id="sampleName"
             type="text"
             onChange={(e) => setSampleName(e.target.value)}
           />
@@ -375,7 +374,6 @@ const SkillLevel = (props: SkillLevelProps) => {
             })}
             value={sampleName}
             name="sampleUrl"
-            id="sampleUrl"
             type="url"
             isValid={isValidUrl}
             onChange={handleUrlFieldChange}
