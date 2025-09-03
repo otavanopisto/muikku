@@ -44,7 +44,7 @@ const SkillLevelInputProps = (props: SkillLevelInputProps) => {
 
   return (
     <div className="language-profile__input-container">
-      <label htmlFor={id} className="language-profile__label">
+      <label htmlFor={name} className="language-profile__label">
         {label}
       </label>
       <input
