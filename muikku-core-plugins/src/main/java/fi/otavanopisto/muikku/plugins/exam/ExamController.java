@@ -1,5 +1,9 @@
 package fi.otavanopisto.muikku.plugins.exam;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -24,9 +28,12 @@ import fi.otavanopisto.muikku.plugins.exam.dao.ExamAttendanceDAO;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamSettingsDAO;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamSettings;
+import fi.otavanopisto.muikku.plugins.exam.rest.ExamAttendanceRestModel;
+import fi.otavanopisto.muikku.plugins.exam.rest.ExamAttendee;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsCategory;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRandom;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRestModel;
+import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
@@ -36,8 +43,11 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolderType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserEntityFileController;
+import fi.otavanopisto.muikku.users.UserEntityName;
 
 public class ExamController {
   
@@ -52,6 +62,9 @@ public class ExamController {
   
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+
+  @Inject
+  private UserEntityFileController userEntityFileController;
   
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
@@ -311,6 +324,74 @@ public class ExamController {
       return ids.isEmpty() ? null : StringUtils.join(ids, ',');
     }
     return null;
+  }
+  
+  public ExamAttendanceRestModel toRestModel(Long workspaceFolderId, Long userEntityId, boolean listContentsOfEndedExam) {
+    WorkspaceFolder folder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
+    ExamSettingsRestModel settingsJson = getSettingsJson(workspaceFolderId);
+    ExamAttendanceRestModel attendance = new ExamAttendanceRestModel();
+    attendance.setFolderId(workspaceFolderId);
+    attendance.setName(folder.getTitle());
+    attendance.setContents(Collections.emptyList());
+    attendance.setMinutes(settingsJson.getMinutes());
+    attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
+    ExamAttendance attendanceEntity = findAttendance(workspaceFolderId, userEntityId);
+    if (attendanceEntity != null) {
+      if (attendanceEntity.getStarted() != null) {
+        attendance.setStarted(toOffsetDateTime(attendanceEntity.getStarted()));
+      }
+      if (attendanceEntity.getEnded() != null) {
+        attendance.setEnded(toOffsetDateTime(attendanceEntity.getEnded()));
+      }
+      // Exam has been started so list its contents...
+      if (attendance.getStarted() != null) {
+        // ...unless it has ended too, in which case honor listContentsOfEndedExam flag
+        if (listContentsOfEndedExam || attendance.getEnded() == null) {
+          List<WorkspaceNode> nodes = workspaceMaterialController.listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(folder, WorkspaceFolderType.DEFAULT);
+          List<ContentNode> contentNodes = new ArrayList<>();
+          // See if assignment randomization is used
+          boolean randomInPlay = settingsJson.getRandom() != ExamSettingsRandom.NONE && !StringUtils.isEmpty(attendanceEntity.getWorkspaceMaterialIds());
+          Set<Long> randomAssignmentIds = null;
+          if (randomInPlay) {
+            randomAssignmentIds = Stream.of(attendanceEntity.getWorkspaceMaterialIds().split(",")).map(Long::parseLong).collect(Collectors.toSet());
+          }
+          for (WorkspaceNode node : nodes) {
+            // Skip assignments that were not randomly selected for the student 
+            if (randomInPlay && node instanceof WorkspaceMaterial && ((WorkspaceMaterial) node).isAssignment() && !randomAssignmentIds.contains(node.getId())) {
+              continue;
+            }
+            contentNodes.add(workspaceMaterialController.createContentNode(node, null));
+          }
+          // Since we probably skipped quite a few assignments, adjust content node sibling ids manually
+          for (int i = 1; i < contentNodes.size(); i++) {
+            contentNodes.get(i).setNextSiblingId(contentNodes.get(i - 1).getMaterialId());
+          }
+          attendance.setContents(contentNodes);
+        }
+      }
+    }
+    return attendance;
+  }
+
+  public ExamAttendee toRestModel(ExamAttendance attendance) {
+    UserEntity userEntity = userEntityController.findUserEntityById(attendance.getUserEntityId());
+    ExamAttendee attendee = new ExamAttendee();
+    attendee.setId(attendance.getUserEntityId());
+    attendee.setStarted(attendance.getStarted() == null ? null : toOffsetDateTime(attendance.getStarted()));
+    attendee.setEnded(attendance.getEnded() == null ? null : toOffsetDateTime(attendance.getEnded()));
+    attendee.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
+    UserEntityName name = userEntityController.getName(userEntity, true);
+    attendee.setFirstName(name.getFirstName());
+    attendee.setLastName(name.getLastName());
+    attendee.setLine(name.getStudyProgrammeName());
+    return attendee;
+  }
+  
+  private OffsetDateTime toOffsetDateTime(Date date) {
+    Instant instant = date.toInstant();
+    ZoneId systemId = ZoneId.systemDefault();
+    ZoneOffset offset = systemId.getRules().getOffset(instant);
+    return date.toInstant().atOffset(offset);
   }
 
 }

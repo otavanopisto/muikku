@@ -3178,6 +3178,39 @@ paths:
           description: Invalid request was sent to the server
         "403":
           description: Attempted to make a call with unauthorized client
+  
+  /rest/evaluation/workspaces/{workspaceEntityId}/students/{studentEntityId}/exams:
+    get:
+      operationId: listStudentExams
+      summary: Returns all exams of a student in a given workspace
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Id of the workspace entity
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: studentEntityId
+          in: path
+          description: Id of the student entity
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExamAttendance"
+        "403":
+          description: Attempted to make a call with unauthorized client
 
   /rest/evaluation/workspaceuser/{workspaceUserEntityId}/supplementationrequest:
     post:

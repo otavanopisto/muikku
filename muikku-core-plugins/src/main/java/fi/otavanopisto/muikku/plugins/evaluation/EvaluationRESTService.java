@@ -60,6 +60,8 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGradingScale;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceJournalFeedback;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.exam.ExamController;
+import fi.otavanopisto.muikku.plugins.exam.rest.ExamAttendanceRestModel;
 import fi.otavanopisto.muikku.plugins.guider.GuiderController;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivity;
 import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestModel;
@@ -144,6 +146,9 @@ public class EvaluationRESTService extends PluginRESTService {
 
   @Inject
   private UserController userController;
+
+  @Inject
+  private ExamController examController;
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
@@ -1326,6 +1331,21 @@ public class EvaluationRESTService extends PluginRESTService {
           gradingScale.isActive()));
     }
     return Response.ok(restGradingScales).build();
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTENTITYID}/exams")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listExams(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("STUDENTENTITYID") Long studentEntityId) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    List<ExamAttendanceRestModel> attendances = new ArrayList<>();
+    List<Long> examIds = examController.listExamIds(workspaceEntityId, studentEntityId);
+    for (Long examId : examIds) {
+      attendances.add(examController.toRestModel(examId, studentEntityId, true));
+    }
+    return Response.ok().entity(attendances).build();
   }
 
   @GET
