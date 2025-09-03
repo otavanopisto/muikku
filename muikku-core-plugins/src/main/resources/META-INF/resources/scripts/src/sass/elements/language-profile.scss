@@ -195,6 +195,12 @@
   }
 }
 
+.language-profile__input-container {
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 10px 0;
+}
+
 .language-profile__input {
   background: $color-default;
   border: 2px solid $color-language-profile-form-element-border;

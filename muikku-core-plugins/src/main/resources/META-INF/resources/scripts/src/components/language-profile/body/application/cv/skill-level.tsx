@@ -11,6 +11,7 @@ import { ActionType } from "~/actions";
 import Button from "~/components/general/button";
 import Stars from "./stars";
 import Dropdown from "~/components/general/dropdown";
+import Input from "./skill-level/input";
 
 /**
  * SkillLevelProps
@@ -18,6 +19,7 @@ import Dropdown from "~/components/general/dropdown";
 interface SkillLevelProps {
   language: LanguageProfileLanguage;
 }
+
 /**
  * SkillLevel component
  * @param props SkillLevelProps
@@ -25,6 +27,7 @@ interface SkillLevelProps {
  */
 const SkillLevel = (props: SkillLevelProps) => {
   const { language } = props;
+
   const initialLanguageSkillLevels: CVLanguage = {
     code: language.code,
     description: "",
@@ -95,6 +98,7 @@ const SkillLevel = (props: SkillLevelProps) => {
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     const name = e.target.name;
+
     const updatedLanguageSkillLevels = {
       ...languageSkillLevels,
       [name]: value,
@@ -107,33 +111,49 @@ const SkillLevel = (props: SkillLevelProps) => {
   };
 
   /**
+   * isHostValid checks if the provided host is valid.
+   * @param host string
+   * @returns boolean
+   */
+  const isHostValid = (host: string): boolean => {
+    if (!host) return false;
+    const hostname = host.replace(/^\[|\]$/g, "").split(":")[0];
+    if (/^\d{1,3}(\.\d{1,3}){3}$/.test(hostname)) {
+      return hostname.split(".").every((n) => {
+        const v = Number(n);
+        return Number.isInteger(v) && v >= 0 && v <= 255;
+      });
+    }
+    if (!hostname.includes(".") || hostname.length > 253) return false;
+    return hostname
+      .split(".")
+      .every((l) => /^[a-z0-9-]+$/i.test(l) && l.length > 0 && l.length <= 63);
+  };
+
+  /**
    * isValidURL checks if the provided URL is valid.
    * @param url string
    * @returns boolean
    */
   const validateURL = (url: string): boolean => {
     if (!url || url.trim() === "") return false;
-
-    // Comprehensive URL validation regex
-    const urlPattern = new RegExp(
-      "^(https?:\\/\\/)?" + // protocol
-        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-        "(\\#[-a-z\\d_]*)?$", // fragment locator
-      "i" // case-insensitive
-    );
-
-    return urlPattern.test(url);
+    if (url.length > 2000) return false;
+    try {
+      const p = new URL(url);
+      return isHostValid(p.hostname);
+    } catch {
+      try {
+        const p = new URL("http://" + url);
+        return isHostValid(p.hostname);
+      } catch {
+        return false;
+      }
+    }
   };
 
   const handleUrlFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsValidUrl(validateURL(e.target.value));
     setSampleUrl(e.target.value);
-
-    //if (!isValidUrl) {
-    //  setIsValidUrl(true);
-    //}
   };
 
   /**
@@ -141,21 +161,22 @@ const SkillLevel = (props: SkillLevelProps) => {
    */
   const handleAddSampleLink = () => {
     const sample = { name: sampleName, url: sampleUrl };
-    const updatedLanguageSkillLevels = {
-      ...languageSkillLevels,
-      samples: [...languageSkillLevels.samples, sample],
-    };
-
     if (!validateURL(sample.url)) {
       setIsValidUrl(false);
       return;
     }
+
+    const updatedLanguageSkillLevels = {
+      ...languageSkillLevels,
+      samples: [...languageSkillLevels.samples, sample],
+    };
 
     setIsValidUrl(true);
     dispatch({
       type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
     } as ActionType);
+
     setlanguageSkillLevels(updatedLanguageSkillLevels);
     setSampleUrl("");
     setSampleName("");
@@ -282,6 +303,7 @@ const SkillLevel = (props: SkillLevelProps) => {
           >
             {t("labels.languageCVDescriptionOfSkillLabel", {
               ns: "languageProfile",
+              handleUrlFieldChange,
             })}
           </label>
           <div className="language-profile__field-description">
@@ -339,30 +361,23 @@ const SkillLevel = (props: SkillLevelProps) => {
               ns: "languageProfile",
             })}
           </div>
-          <label htmlFor="sampleName" className="language-profile__label">
-            {t("labels.linkSampleName", {
-              ns: "languageProfile",
-            })}
-          </label>
-          <input
-            type="text"
-            name="sampleName"
+          <Input
+            label={t("labels.linkSampleName", { ns: "languageProfile" })}
             value={sampleName}
+            name="sampleName"
             id="sampleName"
-            className={`language-profile__input`}
+            type="text"
             onChange={(e) => setSampleName(e.target.value)}
           />
-          <label htmlFor="sampleUrl" className="language-profile__label">
-            {t("labels.linkSampleUrl", {
+          <Input
+            label={t("labels.linkSampleUrl", {
               ns: "languageProfile",
             })}
-          </label>
-          <input
-            type="url"
+            value={sampleName}
             name="sampleUrl"
-            value={sampleUrl}
             id="sampleUrl"
-            className={`language-profile__input ${isValidUrl ? "" : "INVALID"}`}
+            type="url"
+            isValid={isValidUrl}
             onChange={handleUrlFieldChange}
           />
           <div className="language-profile__sample-buttons language-profile__sample-buttons--add-sample">
@@ -375,7 +390,7 @@ const SkillLevel = (props: SkillLevelProps) => {
               {t("actions.test", { ns: "profile" })}
             </Button>
             <Button
-              disabled={sampleName === "" || sampleUrl === ""}
+              disabled={sampleName === "" || sampleUrl === "" || !isValidUrl}
               buttonModifiers={["execute"]}
               onClick={handleAddSampleLink}
               icon="plus"
