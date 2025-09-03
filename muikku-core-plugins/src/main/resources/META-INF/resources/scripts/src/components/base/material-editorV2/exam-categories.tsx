@@ -141,7 +141,7 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
             className="form-element__input form-element__input--add-exam-category"
             value={newCategoryName}
             onChange={(e) => setNewCategoryName(e.target.value)}
-            placeholder="Kategorian nimi"
+            placeholder="Lisää kategoria"
             disabled={disabled}
           />
           <div
