@@ -22,8 +22,8 @@ interface EvaluationExamsListItemProps {
 }
 
 /**
- * EvaluationExamsListItemProps
- * @param props props
+ * Evaluation exams list item component
+ * @param props - props
  */
 const EvaluationExamsListItem = React.forwardRef(
   (props: EvaluationExamsListItemProps, ref: React.Ref<HTMLDivElement>) => {
@@ -34,15 +34,6 @@ const EvaluationExamsListItem = React.forwardRef(
     const { t } = useTranslation(["evaluation", "common"]);
 
     const [showContent, setShowContent] = React.useState(false);
-
-    /**
-     * toggleOpen
-     * @param type "open" | "close"
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const toggleContent = (type?: "open" | "close") => {
-      setShowContent(type === "open");
-    };
 
     /**
      * handleToggleOpen
@@ -109,8 +100,8 @@ interface AssignmentItemProps {
 }
 
 /**
- * AssignmentItem
- * @param props props
+ * Assignment item component for exams list
+ * @param props - props
  */
 const AssignmentItem = (props: AssignmentItemProps) => {
   const { content, compositeReply, studentUserEntityId, workspace } = props;
@@ -120,14 +111,14 @@ const AssignmentItem = (props: AssignmentItemProps) => {
   const { t } = useTranslation(["evaluation", "common"]);
 
   /**
-   * handleToggleContent
+   * Handle toggle content
    */
   const handleToggleContent = () => {
     setContentOpen(!contentOpen);
   };
 
   /**
-   * assignmentTypeClass
+   * Get material type class
    * @returns string
    */
   const materialTypeClass = () => {
@@ -138,7 +129,7 @@ const AssignmentItem = (props: AssignmentItemProps) => {
   };
 
   /**
-   * renderAssignmentStatus
+   * Render assignment meta
    * @returns JSX.Element
    */
   const renderAssignmentMeta = () => {

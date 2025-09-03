@@ -15,8 +15,8 @@ interface EvaluationExamsListProps {
 }
 
 /**
- * EvaluationExamsListProps
- * @param props props
+ * Evaluation exams list component
+ * @param props - props
  */
 const EvaluationExamsList = (props: EvaluationExamsListProps) => {
   const { t } = useTranslation(["evaluation", "common"]);
