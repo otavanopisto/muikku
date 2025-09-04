@@ -21,6 +21,7 @@ import { WithTranslation, withTranslation } from "react-i18next";
 import { StateType } from "~/reducers";
 import { useEvaluationState } from "~/components/evaluation/hooks/evaluation";
 import { useEvaluationLogic } from "~/components/evaluation/hooks/evaluation";
+import EvaluationExamsList from "./evaluation-exams-list";
 
 /**
  * CKEditorConfig
@@ -315,6 +316,12 @@ const Evaluation = (props: EvaluationDrawerProps) => {
             workspaces={workspaces}
             selectedAssessment={selectedAssessment}
           />
+
+          <EvaluationExamsList
+            workspaces={workspaces}
+            selectedAssessment={selectedAssessment}
+          />
+
           <EvaluationJournalEventList
             workspaces={workspaces}
             selectedAssessment={selectedAssessment}

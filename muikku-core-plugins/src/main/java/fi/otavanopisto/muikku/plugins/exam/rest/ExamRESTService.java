@@ -1,18 +1,10 @@
 package fi.otavanopisto.muikku.plugins.exam.rest;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -26,23 +18,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
-
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamSettings;
-import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolderType;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserEntityFileController;
-import fi.otavanopisto.muikku.users.UserEntityName;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -58,12 +39,6 @@ public class ExamRESTService {
   
   @Inject
   private UserEntityController userEntityController;
-  
-  @Inject
-  private UserEntityFileController userEntityFileController;
-  
-  @Inject
-  private WorkspaceMaterialController workspaceMaterialController;
   
   @Inject
   private ExamController examController;
@@ -126,7 +101,7 @@ public class ExamRESTService {
     
     // Return attendance info with exam contents and everything
     
-    return Response.ok().entity(toRestModel(workspaceFolderId)).build();
+    return Response.ok().entity(examController.toRestModel(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), false, true)).build();
   }
 
   @Path("/end/{WORKSPACEFOLDERID}")
@@ -149,7 +124,7 @@ public class ExamRESTService {
 
     // Return attendance info with exam contents and everything
     
-    return Response.ok().entity(toRestModel(workspaceFolderId)).build();
+    return Response.ok().entity(examController.toRestModel(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), false, true)).build();
   }
 
   @Path("/attendance/{WORKSPACEFOLDERID}")
@@ -160,7 +135,7 @@ public class ExamRESTService {
     // Front-end should enforce this as well but if the student, for example, leaves during the exam,
     // this ensures that an overdue exam is marked as ended
     endOverdueExam(workspaceFolderId);
-    return Response.ok().entity(toRestModel(workspaceFolderId)).build();
+    return Response.ok().entity(examController.toRestModel(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), false, true)).build();
   }
 
   @Path("/attendances/{WORKSPACEENTITYID}")
@@ -171,7 +146,7 @@ public class ExamRESTService {
     List<Long> examIds = examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId());
     for (Long examId : examIds) {
       endOverdueExam(examId);
-      attendances.add(toRestModel(examId));
+      attendances.add(examController.toRestModel(examId, sessionController.getLoggedUserEntity().getId(), false, true));
     }
     return Response.ok().entity(attendances).build();
   }
@@ -183,12 +158,12 @@ public class ExamRESTService {
     if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    List<ExamAttendee> attendees = new ArrayList<>();
+    List<ExamAttendeeRestModel> attendees = new ArrayList<>();
     List<ExamAttendance> attendances = examController.listAttendees(workspaceFolderId);
     for (ExamAttendance attendance : attendances) {
-      attendees.add(toRestModel(attendance));
+      attendees.add(examController.toRestModel(attendance));
     }
-    attendees.sort(Comparator.comparing(ExamAttendee::getLastName).thenComparing(ExamAttendee::getFirstName));
+    attendees.sort(Comparator.comparing(ExamAttendeeRestModel::getLastName).thenComparing(ExamAttendeeRestModel::getFirstName));
     return Response.ok().entity(attendees).build();
   }
 
@@ -203,7 +178,7 @@ public class ExamRESTService {
     if (attendance == null) {
       attendance = examController.createAttendance(workspaceFolderId, userEntityId, true);
     }
-    return Response.ok().entity(toRestModel(attendance)).build();
+    return Response.ok().entity(examController.toRestModel(attendance)).build();
   }
 
   @Path("/attendees/{WORKSPACEFOLDERID}/user/{USERENTITYID}")
@@ -237,71 +212,6 @@ public class ExamRESTService {
         }
       }
     }
-  }
-  
-  private ExamAttendanceRestModel toRestModel(Long workspaceFolderId) {
-    WorkspaceFolder folder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
-    ExamSettingsRestModel settingsJson = examController.getSettingsJson(workspaceFolderId);
-    ExamAttendanceRestModel attendance = new ExamAttendanceRestModel();
-    attendance.setFolderId(workspaceFolderId);
-    attendance.setName(folder.getTitle());
-    attendance.setContents(Collections.emptyList());
-    attendance.setMinutes(settingsJson.getMinutes());
-    attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
-    ExamAttendance attendanceEntity = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
-    if (attendanceEntity != null) {
-      if (attendanceEntity.getStarted() != null) {
-        attendance.setStarted(toOffsetDateTime(attendanceEntity.getStarted()));
-      }
-      if (attendanceEntity.getEnded() != null) {
-        attendance.setEnded(toOffsetDateTime(attendanceEntity.getEnded()));
-      }
-      // Exam is either ongoing or has been done, so list its contents
-      if (attendance.getStarted() != null || attendance.getEnded() != null) {
-        List<WorkspaceNode> nodes = workspaceMaterialController.listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(folder, WorkspaceFolderType.DEFAULT);
-        List<ContentNode> contentNodes = new ArrayList<>();
-        // See if assignment randomization is used
-        boolean randomInPlay = settingsJson.getRandom() != ExamSettingsRandom.NONE && !StringUtils.isEmpty(attendanceEntity.getWorkspaceMaterialIds());
-        Set<Long> randomAssignmentIds = null;
-        if (randomInPlay) {
-          randomAssignmentIds = Stream.of(attendanceEntity.getWorkspaceMaterialIds().split(",")).map(Long::parseLong).collect(Collectors.toSet());
-        }
-        for (WorkspaceNode node : nodes) {
-          // Skip assignments that were not randomly selected for the student 
-          if (randomInPlay && node instanceof WorkspaceMaterial && ((WorkspaceMaterial) node).isAssignment() && !randomAssignmentIds.contains(node.getId())) {
-            continue;
-          }
-          contentNodes.add(workspaceMaterialController.createContentNode(node, null));
-        }
-        // Since we probably skipped quite a few assignments, adjust content node sibling ids manually
-        for (int i = 1; i < contentNodes.size(); i++) {
-          contentNodes.get(i).setNextSiblingId(contentNodes.get(i - 1).getMaterialId());
-        }
-        attendance.setContents(contentNodes);
-      }
-    }
-    return attendance;
-  }
-  
-  private ExamAttendee toRestModel(ExamAttendance attendance) {
-    UserEntity userEntity = userEntityController.findUserEntityById(attendance.getUserEntityId());
-    ExamAttendee attendee = new ExamAttendee();
-    attendee.setId(attendance.getUserEntityId());
-    attendee.setStarted(attendance.getStarted() == null ? null : toOffsetDateTime(attendance.getStarted()));
-    attendee.setEnded(attendance.getEnded() == null ? null : toOffsetDateTime(attendance.getEnded()));
-    attendee.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
-    UserEntityName name = userEntityController.getName(userEntity, true);
-    attendee.setFirstName(name.getFirstName());
-    attendee.setLastName(name.getLastName());
-    attendee.setLine(name.getStudyProgrammeName());
-    return attendee;
-  }
-  
-  private OffsetDateTime toOffsetDateTime(Date date) {
-    Instant instant = date.toInstant();
-    ZoneId systemId = ZoneId.systemDefault();
-    ZoneOffset offset = systemId.getRules().getOffset(instant);
-    return date.toInstant().atOffset(offset);
   }
 
 }

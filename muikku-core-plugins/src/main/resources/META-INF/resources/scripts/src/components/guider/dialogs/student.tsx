@@ -4,41 +4,27 @@ import Dialog, {
   DialogTitleContainer,
 } from "~/components/general/dialog";
 import Tabs from "~/components/general/tabs";
-import { connect } from "react-redux";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import { AnyActionType } from "~/actions";
+import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import "~/sass/elements/form.scss";
-import { StatusType } from "~/reducers/base/status";
-import {
-  GuiderStudentUserProfileType,
-  GuiderCurrentStudentStateType,
-  GuiderState,
-} from "~/reducers/main-function/guider";
+import { GuiderStudentUserProfileType } from "~/reducers/main-function/guider";
 import StateOfStudies from "./student/tabs/state-of-studies";
 import StudyHistory from "./student/tabs/study-history";
 import GuidanceRelation from "./student/tabs/guidance-relation";
 import {
   loadStudentHistory,
-  LoadStudentTriggerType,
   loadStudentContactLogs,
-  LoadContactLogsTriggerType,
 } from "~/actions/main-function/guider";
 import { getName } from "~/util/modifiers";
 import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
-import UpperSecondaryPedagogicalSupportWizardForm, {
-  UPPERSECONDARY_PEDAGOGYFORM,
-} from "~/components/general/pedagogical-support-form";
 import { PedagogyFormAccess } from "~/generated/client";
 import HopsApplication from "./student/hops/hops";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import {
-  ResetHopsDataTriggerType,
-  resetHopsData,
-} from "~/actions/main-function/hops/";
-import { HopsState } from "~/reducers/hops";
+import { resetHopsData } from "~/actions/main-function/hops/";
+import PedagogySupport from "~/components/pedagogy-support";
+import { resetPedagogySupport } from "~/actions/main-function/pedagogy-support";
 
 export type tabs =
   | "STUDIES"
@@ -58,15 +44,8 @@ type DialogViewMode = "TABS" | "HOPS_VIEW";
 interface StudentDialogProps {
   isOpen?: boolean;
   student: GuiderStudentUserProfileType;
-  guider: GuiderState;
-  currentStudentStatus: GuiderCurrentStudentStateType;
-  hops: HopsState;
   onClose?: () => void;
   onOpen?: () => void;
-  status: StatusType;
-  loadStudentHistory: LoadStudentTriggerType;
-  loadStudentContactLogs: LoadContactLogsTriggerType;
-  resetHopsData: ResetHopsDataTriggerType;
 }
 
 /**
@@ -84,15 +63,11 @@ interface StudentDialogProps {
  * @returns React component
  */
 const StudentDialog: React.FC<StudentDialogProps> = (props) => {
-  const {
-    isOpen,
-    student,
-    guider,
-    onClose,
-    loadStudentHistory,
-    loadStudentContactLogs,
-    resetHopsData,
-  } = props;
+  const { isOpen, student, onClose } = props;
+
+  const { guider } = useSelector((state: StateType) => state);
+
+  const dispatch = useDispatch();
 
   const { t } = useTranslation(["common"]);
 
@@ -123,11 +98,13 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
     setActiveTab(id);
     switch (id) {
       case "STUDY_HISTORY": {
-        loadStudentHistory(studentId);
+        dispatch(loadStudentHistory(studentId));
         break;
       }
       case "GUIDANCE_RELATIONS": {
-        loadStudentContactLogs(studentUserEntityId, contactLogsPerPage, 0);
+        dispatch(
+          loadStudentContactLogs(studentUserEntityId, contactLogsPerPage, 0)
+        );
         break;
       }
     }
@@ -142,7 +119,8 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
       setActiveTab("STUDIES");
       setViewMode("TABS");
     });
-    resetHopsData();
+    dispatch(resetHopsData());
+    dispatch(resetPedagogySupport());
     onClose && onClose();
   };
 
@@ -175,22 +153,20 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
   if (
     guider.currentStudent &&
     guider.currentStudent.basic &&
-    UPPERSECONDARY_PEDAGOGYFORM.includes(
-      guider.currentStudent.basic.studyProgrammeName
-    ) &&
-    guider.currentStudent.pedagogyFormAvailable &&
-    guider.currentStudent.pedagogyFormAvailable.accessible
+    guider.currentStudent.pedagogyFormAvailable
   ) {
     tabs.splice(1, 0, {
       id: "PEDAGOGICAL_SUPPORT",
-      name: t("labels.title", { ns: "pedagogySupportPlan" }),
+      name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
       type: "guider-student",
       component: (
-        <UpperSecondaryPedagogicalSupportWizardForm
+        <PedagogySupport
           userRole={userRoleForForm(
             guider.currentStudent.pedagogyFormAvailable
           )}
-          studentUserEntityId={guider.currentStudent.basic.userEntityId}
+          pedagogyFormAccess={guider.currentStudent.pedagogyFormAvailable}
+          studentIdentifier={guider.currentStudent.basic.id}
+          studyProgrammeName={guider.currentStudent.basic.studyProgrammeName}
         />
       ),
     });
@@ -255,38 +231,6 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
 };
 
 /**
- * Maps Redux state to component props
- *
- * @param state - Application state
- * @returns Object containing mapped state properties
- */
-function mapStateToProps(state: StateType) {
-  return {
-    status: state.status,
-    currentStudentStatus: state.guider.currentStudentState,
-    guider: state.guider,
-    hops: state.hopsNew,
-  };
-}
-
-/**
- * Maps Redux dispatch actions to component props
- *
- * @param dispatch - Redux dispatch function
- * @returns Object containing mapped dispatch actions
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators(
-    {
-      loadStudentHistory,
-      loadStudentContactLogs,
-      resetHopsData,
-    },
-    dispatch
-  );
-}
-
-/**
  * Returns the appropriate user role for the pedagogical support form
  * based on the user's access permissions
  *
@@ -308,4 +252,4 @@ const userRoleForForm = (pedagogyFormAvailable: PedagogyFormAccess) => {
   }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudentDialog);
+export default StudentDialog;

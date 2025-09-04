@@ -20,6 +20,8 @@ import {
   setSelectedAssessmentAndLoadEvents,
   LoadEvaluationJournalFeedbackFromServerTriggerType,
   loadEvaluationJournalFeedbackFromServer,
+  loadEvaluationExamsFromServer,
+  LoadEvaluationExamsTriggerType,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationAssessmentRequest } from "~/generated/client";
 
@@ -42,6 +44,7 @@ interface EvaluateDialogProps {
   loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFromServerTriggerType;
   loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJournalEvents;
   loadBasePriceFromServer: LoadBasePrice;
+  loadEvaluationExamsFromServer: LoadEvaluationExamsTriggerType;
 }
 
 /**
@@ -95,6 +98,11 @@ class EvaluateDialog extends React.Component<
 
     this.props.loadBasePriceFromServer({
       workspaceEntityId: assessment.workspaceEntityId,
+    });
+
+    this.props.loadEvaluationExamsFromServer({
+      workspaceEntityId: assessment.workspaceEntityId,
+      studentEntityId: assessment.userEntityId,
     });
   };
 
@@ -160,6 +168,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       loadEvaluationJournalFeedbackFromServer,
       loadEvaluationSelectedAssessmentJournalEventsFromServer,
       loadBasePriceFromServer,
+      loadEvaluationExamsFromServer,
     },
     dispatch
   );

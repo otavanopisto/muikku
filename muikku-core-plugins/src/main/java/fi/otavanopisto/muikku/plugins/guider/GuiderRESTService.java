@@ -510,7 +510,7 @@ public class GuiderRESTService extends PluginRESTService {
             userEntity.getId(),
             restFlags,
             organizationEntity == null ? null : toRestModel(organizationEntity),
-            pedagogyController.hasPedagogyForm(userEntity.getId()),
+            pedagogyController.isPublished(userEntity.getId()),
             u18Compulsory
           ));
         }
@@ -600,7 +600,7 @@ public class GuiderRESTService extends PluginRESTService {
         null,
         organizationRESTModel,
         user.getMatriculationEligibility(),
-        userEntity == null ? false : pedagogyController.hasPedagogyForm(userEntity.getId()),
+        userEntity == null ? false : pedagogyController.isPublished(userEntity.getId()),
         u18Compulsory,
         user.getCurriculumIdentifier() != null ? courseMetaController.getCurriculumName(user.getCurriculumIdentifier()) : null,
         hopsController.getHOPSStudentPermissions(studentIdentifier),
