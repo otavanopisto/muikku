@@ -2355,7 +2355,6 @@
       "evaluationHistory": "Evaluation history",
       "evaluationRequest": "Evaluation request",
       "evaluationRequests": "Evaluation requests",
-      "exams": "Exams",
       "hasEvaluationRequest": "Evaluation requested",
       "hasInterimEvaluationRequest": "Interim evaluation requested",
       "interimEvaluationFilter1": "Has been given interim evaluation",
@@ -2410,7 +2409,6 @@
       "loadError_pricing": "Loading pricing information failed: {{error}}",
       "loadError_sortCategories": "Loading sort categories failed. Please refresh the page and try again.",
       "loadError_workspaces": "Loading course information failed. Please refresh the page and try again.",
-      "loadError_exams": "Loading exams failed. Please refresh the page and try again.",
       "recording": "Recording {{currentLength}} / {{maxLength}}",
       "removeError": "$t(common:notifications.removeError)",
       "removeError_evaluation": "Deleting evaluation event failed: {{error}}",
@@ -2437,6 +2435,21 @@
       "evaluationAssessmentPoints": "Assessment with points",
       "evaluationAssessmentIncomplete": "Incomplete assessment",
       "evaluationAssessmentUnassessed": "Unassessed assessment"
+    }
+  },
+  "exams": {
+    "actions": {},
+    "content": {},
+    "labels": {
+      "examDuration": "Duration",
+      "examEnded": "Exam ended",
+      "examNotStarted": "Exam not started",
+      "examStarted": "Exam started",
+      "exams": "Exams"
+    },
+    "notifications": {
+      "loadError": "$t(common:notifications.loadError)",
+      "loadError_exams": "Loading exams failed. Please refresh the page and try again."
     }
   },
   "calendar": {

@@ -42,30 +42,94 @@ const EvaluationExamsListItem = React.forwardRef(
       setShowContent(!showContent);
     };
 
-    const assignmentItems =
-      contents && contents.length > 0 ? (
-        contents.map((content) => {
-          const compositeReply = evaluationCompositeReplies.find(
-            (cReply) => cReply.workspaceMaterialId === content.materialId
-          );
+    /**
+     * Render exam meta
+     * @returns JSX.Element
+     */
+    const renderExamMeta = () => {
+      // Check if exam has ended
+      const isEnded = !!exam.ended;
 
-          return (
-            <AssignmentItem
-              key={content.materialId}
-              content={content}
-              studentUserEntityId={studentUserEntityId}
-              workspace={workspace}
-              compositeReply={compositeReply}
-            />
-          );
-        })
-      ) : (
-        <div className="empty">
-          <span>
-            {t("content.empty", { ns: "evaluation", context: "assignments" })}
-          </span>
+      // Check if exam has been started
+      const isStarted = !!exam.started;
+
+      // Check if exam has time limit
+      const hasTimeLimit = exam.minutes > 0;
+
+      return (
+        <div className="evaluation-modal__item-meta">
+          {isEnded ? (
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
+                {t("labels.examEnded", { ns: "exams" })}:
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {`${localize.date(exam.ended)} - ${localize.date(exam.ended, "LT")}`}
+              </span>
+            </div>
+          ) : isStarted ? (
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
+                {t("labels.examStarted", { ns: "exams" })}:
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {`${localize.date(exam.started)} - ${localize.date(exam.started, "LT")}`}
+              </span>
+            </div>
+          ) : (
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
+                {t("labels.examNotStarted", { ns: "exams" })}
+              </span>
+            </div>
+          )}
+
+          {hasTimeLimit && (
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
+                {t("labels.examDuration", { ns: "exams" })}:
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {exam.minutes} minuuttia
+              </span>
+            </div>
+          )}
         </div>
       );
+    };
+
+    /**
+     * Render content
+     * @returns JSX.Element
+     */
+    const renderContent = () => {
+      const assignmentItems =
+        contents && contents.length > 0 ? (
+          contents.map((content) => {
+            const compositeReply = evaluationCompositeReplies.find(
+              (cReply) => cReply.workspaceMaterialId === content.materialId
+            );
+
+            return (
+              <AssignmentItem
+                key={content.materialId}
+                content={content}
+                studentUserEntityId={studentUserEntityId}
+                workspace={workspace}
+                compositeReply={compositeReply}
+              />
+            );
+          })
+        ) : (
+          <div className="empty">
+            <span>
+              {t("content.empty", { ns: "evaluation", context: "assignments" })}
+            </span>
+          </div>
+        );
+
+      return assignmentItems;
+    };
 
     return (
       <>
@@ -77,12 +141,13 @@ const EvaluationExamsListItem = React.forwardRef(
           <div className="evaluation-modal__item-header">
             <div className="evaluation-modal__item-header-title">
               {props.exam.name}
+              {renderExamMeta()}
             </div>
           </div>
         </div>
 
         <AnimateHeight duration={400} height={showContent ? "auto" : 0}>
-          {assignmentItems}
+          {renderContent()}
         </AnimateHeight>
       </>
     );

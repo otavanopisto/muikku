@@ -2922,7 +2922,7 @@ const loadEvaluationExamsFromServer: LoadEvaluationExamsTriggerType =
         dispatch(
           displayNotification(
             i18n.t("notifications.loadError", {
-              ns: "evaluation",
+              ns: "exams",
               context: "exams",
               error: err.message,
             }),

@@ -19,7 +19,7 @@ interface EvaluationExamsListProps {
  * @param props - props
  */
 const EvaluationExamsList = (props: EvaluationExamsListProps) => {
-  const { t } = useTranslation(["evaluation", "common"]);
+  const { t } = useTranslation(["evaluation", "exams", "common"]);
 
   const { evaluationExams, evaluationCompositeReplies } = useSelector(
     (state: StateType) => state.evaluations
@@ -60,7 +60,7 @@ const EvaluationExamsList = (props: EvaluationExamsListProps) => {
   return (
     <div className="evaluation-modal__content">
       <div className="evaluation-modal__content-title">
-        {t("labels.exams", { ns: "evaluation" })}
+        {t("labels.exams", { ns: "exams" })}
       </div>
 
       <div className="evaluation-modal__content-body">
