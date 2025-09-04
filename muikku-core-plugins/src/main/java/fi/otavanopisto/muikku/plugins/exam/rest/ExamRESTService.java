@@ -101,7 +101,7 @@ public class ExamRESTService {
     
     // Return attendance info with exam contents and everything
     
-    return Response.ok().entity(examController.toRestModel(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), false)).build();
+    return Response.ok().entity(examController.toRestModel(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), false, true)).build();
   }
 
   @Path("/end/{WORKSPACEFOLDERID}")
@@ -124,7 +124,7 @@ public class ExamRESTService {
 
     // Return attendance info with exam contents and everything
     
-    return Response.ok().entity(examController.toRestModel(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), false)).build();
+    return Response.ok().entity(examController.toRestModel(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), false, true)).build();
   }
 
   @Path("/attendance/{WORKSPACEFOLDERID}")
@@ -135,7 +135,7 @@ public class ExamRESTService {
     // Front-end should enforce this as well but if the student, for example, leaves during the exam,
     // this ensures that an overdue exam is marked as ended
     endOverdueExam(workspaceFolderId);
-    return Response.ok().entity(examController.toRestModel(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), false)).build();
+    return Response.ok().entity(examController.toRestModel(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), false, true)).build();
   }
 
   @Path("/attendances/{WORKSPACEENTITYID}")
@@ -146,7 +146,7 @@ public class ExamRESTService {
     List<Long> examIds = examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId());
     for (Long examId : examIds) {
       endOverdueExam(examId);
-      attendances.add(examController.toRestModel(examId, sessionController.getLoggedUserEntity().getId(), false));
+      attendances.add(examController.toRestModel(examId, sessionController.getLoggedUserEntity().getId(), false, true));
     }
     return Response.ok().entity(attendances).build();
   }

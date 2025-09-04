@@ -1343,7 +1343,7 @@ public class EvaluationRESTService extends PluginRESTService {
     List<ExamAttendanceRestModel> attendances = new ArrayList<>();
     List<Long> examIds = examController.listExamIds(workspaceEntityId, studentEntityId);
     for (Long examId : examIds) {
-      attendances.add(examController.toRestModel(examId, studentEntityId, true));
+      attendances.add(examController.toRestModel(examId, studentEntityId, true, false));
     }
     return Response.ok().entity(attendances).build();
   }

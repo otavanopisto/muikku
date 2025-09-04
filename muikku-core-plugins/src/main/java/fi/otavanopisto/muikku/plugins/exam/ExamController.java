@@ -307,7 +307,7 @@ public class ExamController {
     return null;
   }
   
-  public ExamAttendanceRestModel toRestModel(Long workspaceFolderId, Long userEntityId, boolean listContentsOfEndedExam) {
+  public ExamAttendanceRestModel toRestModel(Long workspaceFolderId, Long userEntityId, boolean listContentsOfEndedExam, boolean includeTheoryPages) {
     WorkspaceFolder folder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
     ExamSettingsRestModel settingsJson = getSettingsJson(workspaceFolderId);
     ExamAttendanceRestModel attendance = new ExamAttendanceRestModel();
@@ -339,6 +339,10 @@ public class ExamController {
           for (WorkspaceNode node : nodes) {
             // Skip assignments that were not randomly selected for the student 
             if (randomInPlay && node instanceof WorkspaceMaterial && ((WorkspaceMaterial) node).isAssignment() && !randomAssignmentIds.contains(node.getId())) {
+              continue;
+            }
+            // Skip theory pages (used in evaluation)
+            if (!includeTheoryPages && ((WorkspaceMaterial) node).getAssignmentType() == null) {
               continue;
             }
             contentNodes.add(workspaceMaterialController.createContentNode(node, null));
