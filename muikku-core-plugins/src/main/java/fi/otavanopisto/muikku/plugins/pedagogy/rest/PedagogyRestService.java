@@ -53,7 +53,6 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -660,16 +659,18 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     List<GroupStaffMember> studentGuidanceCounselors = userSchoolDataController.listStudentGuidanceCounselors(identifier, false);
     
     for (GroupStaffMember counselor : studentGuidanceCounselors) {
-      User user = userController.findUserByIdentifier(counselor.userSchoolDataIdentifier());
+      UserEntityName userName = userEntityController.getName(counselor.userSchoolDataIdentifier(), true);
       
-      counselorNames.add(user.getDisplayName());
-      
-      if (counselor.isGroupAdvisor()) {
-        groupAdvisors.add(user.getDisplayName());
-      }
-      
-      if (counselor.isStudyAdvisor()) {
-        studyAdvisors.add(user.getDisplayName());
+        if (userName != null) {
+        counselorNames.add(userName.getDisplayName());
+        
+        if (counselor.isGroupAdvisor()) {
+          groupAdvisors.add(userName.getDisplayName());
+        }
+        
+        if (counselor.isStudyAdvisor()) {
+          studyAdvisors.add(userName.getDisplayName());
+        }
       }
     }
     
