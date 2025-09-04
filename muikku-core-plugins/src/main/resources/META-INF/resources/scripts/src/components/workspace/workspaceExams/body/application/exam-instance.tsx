@@ -13,7 +13,12 @@ import Button from "~/components/general/button";
 import ContentPanel, {
   ContentPanelItem,
 } from "~/components/general/content-panel";
-import TocTopic, { Toc, TocElement } from "~/components/general/toc";
+import TocTopic, {
+  BackToToc,
+  Toc,
+  TocElement,
+  TocTopicRef,
+} from "~/components/general/toc";
 import { ExamAttendance, MaterialContentNode } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
@@ -383,7 +388,11 @@ const ExamInstanceContent = withTranslation("workspace")((
 ) => {
   const { navigation, i18n, tReady, t: tProp } = props;
 
+  const contentPanelRef = React.useRef<ContentPanel>(null);
+
   const dispatch = useDispatch();
+
+  const status = useSelector((state: StateType) => state.status);
 
   const currentExam = useSelector(
     (state: StateType) => state.exams.currentExam
@@ -417,13 +426,22 @@ const ExamInstanceContent = withTranslation("workspace")((
       return (
         <ContentPanelItem
           id={`p-${content.workspaceMaterialId}`}
-          key={content.workspaceMaterialId}
+          key={content.workspaceMaterialId + ""}
           dataMaterialId={content.workspaceMaterialId}
         >
           <ExamMaterial
             materialContentNode={content}
             workspace={workspace}
             compositeReply={compositeReply}
+            anchorItem={
+              <BackToToc
+                tocElementId={`tocElement-${content.workspaceMaterialId}`}
+                openToc={
+                  contentPanelRef.current &&
+                  contentPanelRef.current.openNavigation
+                }
+              />
+            }
           />
         </ContentPanelItem>
       );
@@ -440,6 +458,12 @@ const ExamInstanceContent = withTranslation("workspace")((
       <h2 className={`content-panel__chapter-title`}>
         <div className="content-panel__chapter-title-text">
           {currentExam.name}
+          <BackToToc
+            tocElementId={`tocTopic-${currentExam.folderId}_${status.userId}`}
+            openToc={
+              contentPanelRef.current && contentPanelRef.current.openNavigation
+            }
+          />
         </div>
       </h2>
 
@@ -464,6 +488,7 @@ const ExamInstanceContent = withTranslation("workspace")((
       i18n={i18n}
       tReady={tReady}
       footer={footerActions}
+      ref={contentPanelRef}
     >
       {createSectionElement}
     </ContentPanel>
@@ -489,6 +514,10 @@ const ExamInstanceTableOfContents = (
 ) => {
   const { examId } = props;
 
+  const topicRef = React.useRef<TocTopicRef>(null);
+  const elementRefs = React.useRef<{ [key: string]: HTMLAnchorElement[] }>({});
+  const tocElementFocusIndexRef = React.useRef(0);
+
   const { t } = useTranslation();
 
   const status = useSelector((state: StateType) => state.status);
@@ -504,6 +533,130 @@ const ExamInstanceTableOfContents = (
   const examsCompositeReplies = useSelector(
     (state: StateType) => state.exams.examsCompositeReplies
   );
+
+  /**
+   * Handles callback to set ref to toc topic
+   * @param ref ref
+   */
+  const handleCallbackTocTopicRef = (ref: TocTopicRef) => {
+    topicRef.current = ref;
+  };
+
+  /**
+   * Handles callback to set ref to toc element
+   * @param parentIdentifier parentIdentifier
+   * @param index index
+   */
+  const handleCallbackTocElementRef =
+    (parentIdentifier: string, index: number) => (ref: HTMLAnchorElement) => {
+      if (!elementRefs.current[parentIdentifier]) {
+        elementRefs.current[parentIdentifier] = [];
+      }
+
+      elementRefs.current[parentIdentifier][index] = ref;
+    };
+
+  /**
+   * Handle keydown event on toc topic
+   * @param topicIdentifier topicIdentifier
+   */
+  const handleTocTopicTitleKeyDown =
+    (topicIdentifier: string) => (e: React.KeyboardEvent) => {
+      // Change focus to first element in topic
+      if (e.key === "ArrowDown") {
+        e.stopPropagation();
+        e.preventDefault();
+
+        tocElementFocusIndexRef.current = 0;
+
+        // Check if there are any elements in topic top focus
+        if (elementRefs.current[topicIdentifier].length > 0) {
+          elementRefs.current[topicIdentifier][
+            tocElementFocusIndexRef.current
+          ].setAttribute("tabindex", "0");
+          elementRefs.current[topicIdentifier][
+            tocElementFocusIndexRef.current
+          ].focus();
+        }
+      }
+    };
+
+  /**
+   * Handles keydown event on toc element
+   * @param parentIdentifier parentIdentifier
+   * @returns handleTocElementKeyDown
+   */
+  const handleTocElementKeyDown =
+    (parentIdentifier: string) => (e: React.KeyboardEvent) => {
+      /**
+       * elementFocusChange
+       * @param operation operation
+       */
+      const elementFocusChange = (operation: "decrement" | "increment") => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (operation === "decrement") {
+          tocElementFocusIndexRef.current--;
+        } else {
+          tocElementFocusIndexRef.current++;
+        }
+
+        if (tocElementFocusIndexRef.current < 0) {
+          tocElementFocusIndexRef.current =
+            elementRefs.current[parentIdentifier].length - 1;
+        } else if (
+          tocElementFocusIndexRef.current >
+          elementRefs.current[parentIdentifier].length - 1
+        ) {
+          tocElementFocusIndexRef.current = 0;
+        }
+
+        elementRefs.current[parentIdentifier][
+          tocElementFocusIndexRef.current
+        ].setAttribute("tabindex", "0");
+        elementRefs.current[parentIdentifier][
+          tocElementFocusIndexRef.current
+        ].focus();
+      };
+
+      if (e.key === "ArrowUp") {
+        elementFocusChange("decrement");
+      }
+
+      if (e.key === "ArrowDown") {
+        elementFocusChange("increment");
+      }
+    };
+
+  /**
+   * Handle blur event on toc element
+   * @param parentIdentifier parentIdentifier
+   * @param elementIndex elementIndex
+   */
+  const handleTocElementBlur =
+    (parentIdentifier: string, elementIndex: number) =>
+    (e: React.FocusEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      elementRefs.current[parentIdentifier][elementIndex].setAttribute(
+        "tabindex",
+        "-1"
+      );
+    };
+
+  /**
+   * Handle focus event on toc element
+   * @param elementIndex elementIndex
+   */
+  const handleTocElementFocus =
+    (elementIndex: number) => (e: React.FocusEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+
+      tocElementFocusIndexRef.current = elementIndex;
+    };
 
   /**
    * getTopicElementAttributes
@@ -626,9 +779,12 @@ const ExamInstanceTableOfContents = (
         key={`tocTopic-${currentExam.folderId}`}
         // Used to track local storage value for each user and exam topic
         topicId={`tocTopic-${currentExam.folderId}_${status.userId}`}
+        hash={`s-${currentExam.folderId}`}
         name="Tehtävät"
+        ref={handleCallbackTocTopicRef}
+        onTitleKeyDown={handleTocTopicTitleKeyDown(`s-${currentExam.folderId}`)}
       >
-        {currentExam.contents.map((content) => {
+        {currentExam.contents.map((content, contentIndex) => {
           const isAssignment = content.assignmentType === "EVALUATED";
           const isExercise = content.assignmentType === "EXERCISE";
 
@@ -653,6 +809,16 @@ const ExamInstanceTableOfContents = (
               iconAfter={icon}
               iconAfterTitle={iconTitle}
               aria-label={ariaLabel}
+              ref={handleCallbackTocElementRef(
+                `s-${currentExam.folderId}`,
+                contentIndex
+              )}
+              onKeyDown={handleTocElementKeyDown(`s-${currentExam.folderId}`)}
+              onBlur={handleTocElementBlur(
+                `s-${currentExam.folderId}`,
+                contentIndex
+              )}
+              onFocus={handleTocElementFocus(contentIndex)}
             >
               {content.title}
             </TocElement>
