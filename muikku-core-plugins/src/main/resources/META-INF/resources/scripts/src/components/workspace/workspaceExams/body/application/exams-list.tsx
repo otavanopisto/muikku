@@ -112,29 +112,34 @@ const ExamsListItem = (props: ExamsListItemProps) => {
           )}
         </div>
       </div>
-      {!isEnded && (
-        <div className="exam-list__item-footer">
-          <div className="exam-list__item-actions">
-            <Link
-              className={`exam-list__item-actions-button ${isStarted ? "exam-list__item-actions-button--started" : ""}`}
-              to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
-            >
-              {isStarted ? "Jatka koetta" : "Avaa koe"}
-            </Link>
+      {!isEnded ||
+        (exam.allowRestart && (
+          <div className="exam-list__item-footer">
+            <div className="exam-list__item-actions">
+              <Link
+                className={`exam-list__item-actions-button ${isStarted ? "exam-list__item-actions-button--started" : ""}`}
+                to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
+              >
+                {isStarted
+                  ? "Jatka koetta"
+                  : exam.allowRestart
+                    ? "Tee koe uudestaan"
+                    : "Avaa koe"}
+              </Link>
 
-            {hasTimeLimit && !isStarted && (
-              <span className="exam-list__item-duration">
-                Kokeen suorittamiseen on aikaa
-                <span className="exam-list__item-duration-accent">
-                  {exam.minutes} minuuttia
+              {hasTimeLimit && !isStarted && (
+                <span className="exam-list__item-duration">
+                  Kokeen suorittamiseen on aikaa
+                  <span className="exam-list__item-duration-accent">
+                    {exam.minutes} minuuttia
+                  </span>
                 </span>
-              </span>
-            )}
+              )}
 
-            {hasTimeLimit && isStarted && <ExamTimer exam={exam} />}
+              {hasTimeLimit && isStarted && <ExamTimer exam={exam} />}
+            </div>
           </div>
-        </div>
-      )}
+        ))}
     </div>
   );
 };
