@@ -90,6 +90,8 @@ class WorkspaceMaterials extends React.Component<
   private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private contentPanelRef = React.createRef<any>();
+  // Add a refs map to store references to ContentPanelItem components
+  private materialRefs = new Map<number, React.RefObject<ContentPanelItem>>();
 
   /**
    * constructor
@@ -412,12 +414,12 @@ class WorkspaceMaterials extends React.Component<
       let winnerTop: number = null;
       let winnerVisibleWeight: number = null;
 
-      for (const refKey of Object.keys(this.refs)) {
-        const refKeyInt = parseInt(refKey);
-        if (!refKeyInt) {
+      // Iterate through the material refs map instead of this.refs
+      for (const [refKey, ref] of this.materialRefs) {
+        if (!ref.current) {
           continue;
         }
-        const element = (this.refs[refKey] as ContentPanelItem).getComponent();
+        const element = ref.current.getComponent();
         const elementTop = element.getBoundingClientRect().top;
         const elementBottom = element.getBoundingClientRect().bottom;
         const isVisible =
@@ -449,7 +451,7 @@ class WorkspaceMaterials extends React.Component<
           }
 
           if (!winnerVisibleWeight || weight >= winnerVisibleWeight) {
-            winner = refKeyInt;
+            winner = refKey;
             winnerTop = elementTop;
             winnerVisibleWeight = weight;
           }
@@ -463,6 +465,17 @@ class WorkspaceMaterials extends React.Component<
 
     winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
     return winner;
+  }
+
+  /**
+   * getMaterialRef
+   * @param materialId materialId
+   */
+  getMaterialRef(materialId: number): React.RefObject<ContentPanelItem> {
+    if (!this.materialRefs.has(materialId)) {
+      this.materialRefs.set(materialId, React.createRef<ContentPanelItem>());
+    }
+    return this.materialRefs.get(materialId)!;
   }
 
   /**

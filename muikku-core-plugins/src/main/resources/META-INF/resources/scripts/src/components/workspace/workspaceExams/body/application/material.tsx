@@ -29,7 +29,7 @@ interface ExamMaterialProps {
  * @param props props
  */
 const ExamMaterial = (props: ExamMaterialProps) => {
-  const { materialContentNode, workspace, compositeReply } = props;
+  const { materialContentNode, workspace, compositeReply, anchorItem } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const status = useSelector((state: StateType) => state.status);
@@ -48,6 +48,7 @@ const ExamMaterial = (props: ExamMaterialProps) => {
       compositeReplies={compositeReply}
       answerable={true}
       readOnly={false}
+      anchorElement={anchorItem}
       onUpdateAssignmentState={(...args) => {
         dispatch(
           updateAssignmentState({
