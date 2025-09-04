@@ -33,7 +33,6 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   const { visible, language, onClose, sampleType } = props;
   const { status } = useSelector((state: StateType) => state);
   const [audioSamples, setAudioSamples] = React.useState<RecordValue[]>([]);
-
   const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
   const dispatch = useDispatch();
 

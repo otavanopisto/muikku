@@ -14,12 +14,20 @@
 }
 
 .user-language-profile__drawer-header { 
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
   padding: 16px;
 
+}
+
+.user-language-profile__drawer-button {
+  align-items: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  font-size: 1.5rem;
+  justify-content: space-between;
+  padding: 0;
+  width: 100%;
 }
 
 .user-language-profile__drawer-title {

@@ -5,8 +5,9 @@ import AnimateHeight from "react-animate-height";
 /**
  * SliderProps
  */
-export interface SliderProps {
+export interface AccordionProps {
   title: string;
+  id: string;
   children: React.ReactNode;
 }
 
@@ -16,27 +17,40 @@ export interface SliderProps {
  * @param props props
  * @returns JSX.Element
  */
-const Drawer = (props: SliderProps) => {
-  const { children, title } = props;
+const Accordion = (props: AccordionProps) => {
+  const { children, title, id } = props;
   const [open, setOpen] = React.useState(false);
 
   return (
     <section
-      onClick={() => setOpen(!open)}
       className={`user-language-profile__drawer ${open ? "state-OPEN" : ""}`}
     >
       <header className="user-language-profile__drawer-header">
-        <div className="user-language-profile__drawer-title">{title}</div>
-        <IconButton
-          icon={`${open ? "arrow-down" : "arrow-right"}`}
-        ></IconButton>
+        <button
+          className="user-language-profile__drawer-button"
+          onClick={() => setOpen(!open)}
+          aria-expanded={open}
+          aria-controls={id}
+        >
+          <span
+            id={`${id}-drawer-label`}
+            className="user-language-profile__drawer-title"
+          >
+            {title}
+          </span>
+          <IconButton
+            buttonAs={"span"}
+            icon={`${open ? "arrow-down" : "arrow-right"}`}
+          ></IconButton>
+        </button>
       </header>
       <AnimateHeight duration={300} height={open ? "auto" : 0}>
         <div
+          aria-labelledby={`${id}-drawer-label`}
           aria-expanded={open}
           className={`user-language-profile__drawer-body ${open ? "state-OPEN" : ""}`}
         >
-          <div className="user-language-profile__drawer-content">
+          <div id={id} className="user-language-profile__drawer-content">
             {children}
           </div>
         </div>
@@ -45,6 +59,4 @@ const Drawer = (props: SliderProps) => {
   );
 };
 
-Drawer.displayName = "Drawer";
-
-export default Drawer;
+export default Accordion;

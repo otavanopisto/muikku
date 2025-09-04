@@ -124,7 +124,7 @@ class MainFunctionNavbar extends React.Component<
         trail: "language-profile",
         text: t("labels.languageProfile"),
         href: "/language-profile",
-        icon: "bubbles",
+        icon: "language",
         to: true,
         condition: this.props.status.permissions.LANGUAGE_PROFILE_VIEW,
       },
