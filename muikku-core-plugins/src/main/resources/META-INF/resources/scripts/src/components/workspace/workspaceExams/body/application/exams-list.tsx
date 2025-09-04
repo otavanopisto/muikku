@@ -1,13 +1,11 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import ApplicationList, {
-  ApplicationListItem,
-} from "~/components/general/application-list";
 import { ExamAttendance } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import ExamTimer from "./exam-timer";
+import "~/sass/elements/exam-list.scss";
 
 /**
  * ExamsListProps
@@ -26,7 +24,7 @@ const ExamsList = (props: ExamsListProps) => {
   );
 
   if (!currentWorkspace || !exams || examsStatus === "LOADING") {
-    return <ApplicationListItem className="loader-empty" />;
+    return <div className="exam-list__item loader-empty" />;
   }
 
   if (examsStatus === "ERROR") {
@@ -38,17 +36,17 @@ const ExamsList = (props: ExamsListProps) => {
   } else if (exams.length === 0) {
     return (
       <div className="empty">
-        <span>Ei kokeita</span>
+        <span>Kurssilla ei ole kokeita</span>
       </div>
     );
   }
 
   return (
-    <ApplicationList>
+    <div className="exam-list">
       {exams.map((exam) => (
         <ExamsListItem key={exam.folderId} exam={exam} />
       ))}
-    </ApplicationList>
+    </div>
   );
 };
 
@@ -77,56 +75,67 @@ const ExamsListItem = (props: ExamsListItemProps) => {
   const hasTimeLimit = exam.minutes > 0;
 
   return (
-    <ApplicationListItem>
-      <div className="exam-list__item">
-        <div className="exam-list__item-header">
-          <div className="exam-list__item-header-main">
-            <h2>{exam.name}</h2>
+    <div className="exam-list__item">
+      <h2 className="exam-list__item-header">
+        <span>{exam.name}</span>
+        {exam.allowRestart && (
+          <div className="exam-list__item-labels">
+            <span className="exam-list__item-label">
+              Kokeen voi suorittaa uudestaan
+            </span>
           </div>
-          <div className="exam-list__item-header-secondary">
-            {/* Show timer if exam has time limit and has been started */}
+        )}
+      </h2>
+      <div className="exam-list__item-body">
+        {/* Show exam status and time info */}
+        <div className="exam-list__item-content">
+          {exam.folderId} - Lorem ipsum dolor sit amet, consectetur adipiscing
+          elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+          aliqua.Ut enim ad minim veniam, quis nostrud exercitation ullamco
+          laboris nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Ut
+          enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.
+        </div>
+        <div className="exam-list__item-meta">
+          {isEnded ? (
+            <span className="exam-list__item-status exam-list__item-status--ended">
+              Koe suoritettu {localize.date(exam.ended, "l, LT")}
+            </span>
+          ) : isStarted ? (
+            <span className="exam-list__item-status exam-list__item-status--started">
+              Koe aloitettu {localize.date(exam.started, "l, LT")}
+            </span>
+          ) : (
+            <span className="exam-list__item-status exam-list__item-status--not-started">
+              Koetta ei ole aloitettu
+            </span>
+          )}
+        </div>
+      </div>
+      {!isEnded && (
+        <div className="exam-list__item-footer">
+          <div className="exam-list__item-actions">
+            <Link
+              className={`exam-list__item-actions-button ${isStarted ? "exam-list__item-actions-button--started" : ""}`}
+              to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
+            >
+              {isStarted ? "Jatka koetta" : "Avaa koe"}
+            </Link>
+
+            {hasTimeLimit && !isStarted && (
+              <span className="exam-list__item-duration">
+                Kokeen suorittamiseen on aikaa
+                <span className="exam-list__item-duration-accent">
+                  {exam.minutes} minuuttia
+                </span>
+              </span>
+            )}
+
             {hasTimeLimit && isStarted && <ExamTimer exam={exam} />}
           </div>
         </div>
-        <div className="exam-list__item-body">
-          <div className="exam-list__item-body-main">
-            <div className="exam-list__item-body-main-content">
-              {exam.folderId}
-            </div>
-
-            {/* Show exam status and time info */}
-            <div className="exam-list__item-status">
-              {isEnded ? (
-                <span className="exam-status exam-status--ended">
-                  Koe päättynyt {localize.date(exam.ended)}
-                </span>
-              ) : isStarted ? (
-                <span className="exam-status exam-status--started">
-                  Koe aloitettu {localize.date(exam.started)}
-                </span>
-              ) : (
-                <span className="exam-status exam-status--not-started">
-                  Koetta ei ole aloitettu
-                </span>
-              )}
-
-              {hasTimeLimit && (
-                <span className="exam-duration">
-                  Kesto: {exam.minutes} minuuttia
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="exam-list__item-footer">
-          <div className="exam-list__item-footer-actions">
-            <Link to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}>
-              Avaa koe
-            </Link>
-          </div>
-        </div>
-      </div>
-    </ApplicationListItem>
+      )}
+    </div>
   );
 };
 
