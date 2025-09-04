@@ -360,6 +360,8 @@ export class ContentPanelItem extends React.Component<
   ContentPanelItemProps,
   Record<string, unknown>
 > {
+  private myRef = React.createRef<HTMLDivElement>();
+
   /**
    * constructor
    * @param props props
@@ -376,7 +378,7 @@ export class ContentPanelItem extends React.Component<
     return (
       <div
         id={this.props.id}
-        ref="component"
+        ref={this.myRef}
         className="content-panel__item"
         style={
           this.props.scrollMarginTopOffset && {
@@ -394,6 +396,6 @@ export class ContentPanelItem extends React.Component<
    * @returns HTMLElement
    */
   getComponent(): HTMLElement {
-    return this.refs["component"] as HTMLElement;
+    return this.myRef.current;
   }
 }
