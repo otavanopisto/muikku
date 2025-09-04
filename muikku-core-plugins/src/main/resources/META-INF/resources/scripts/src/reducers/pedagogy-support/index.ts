@@ -131,6 +131,15 @@ export const pedagogySupport: Reducer<PedagogySupportState> = (
         },
       };
 
+    case "PEDAGOGY_SUPPORT_SAVE_EDITING":
+      return {
+        ...state,
+        pedagogyEditing: {
+          ...state.pedagogyEditing,
+          changedFields: [],
+        },
+      };
+
     case "PEDAGOGY_SUPPORT_CANCEL_EDITING":
       return {
         ...state,

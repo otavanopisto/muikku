@@ -16,7 +16,7 @@ import { useCompulsoryForm } from "../hooks/useCompulsoryForm";
 /**
  * The props for the UpperSecondaryPedagogicalSupportForm component.
  */
-interface CompulsoryPedagogicalSupportWizardFormmProps {}
+interface CompulsoryPedagogicalSupportWizardFormProps {}
 
 /**
  * Creates a new UpperSecondaryPedagogicalSupportForm component.
@@ -25,7 +25,7 @@ interface CompulsoryPedagogicalSupportWizardFormmProps {}
  * @returns JSX.Element
  */
 const CompulsoryPedagogicalSupportWizardForm = (
-  props: CompulsoryPedagogicalSupportWizardFormmProps
+  props: CompulsoryPedagogicalSupportWizardFormProps
 ) => {
   const { t } = useTranslation(["pedagogySupportPlan"]);
   const status = useSelector((state: StateType) => state.status);

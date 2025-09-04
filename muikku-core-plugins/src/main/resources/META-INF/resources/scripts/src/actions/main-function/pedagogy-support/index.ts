@@ -48,6 +48,11 @@ export type PEDAGOGY_SUPPORT_CHANGE_MODE = SpecificActionType<
   PedagogyMode
 >;
 
+export type PEDAGOGY_SUPPORT_SAVE_EDITING = SpecificActionType<
+  "PEDAGOGY_SUPPORT_SAVE_EDITING",
+  undefined
+>;
+
 export type PEDAGOGY_SUPPORT_CANCEL_EDITING = SpecificActionType<
   "PEDAGOGY_SUPPORT_CANCEL_EDITING",
   undefined
@@ -670,6 +675,11 @@ const savePedagogySupport: SavePedagogySupportTriggerType =
           updateStudentPedagogyFormLockRequest: {
             locked: false,
           },
+        });
+
+        dispatch({
+          type: "PEDAGOGY_SUPPORT_SAVE_EDITING",
+          payload: undefined,
         });
 
         dispatch({
