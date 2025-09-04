@@ -1,0 +1,114 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.exam-list {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 20px;
+  margin: 5px;
+
+  @include breakpoint($breakpoint-pad) {
+    margin: 10px;
+  }
+}
+
+.exam-list__item {
+  background: $color-default-lighter-generic-background;
+  border-left: 3px solid $color-assignment;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.exam-list__item-header {
+  display: flex;
+  flex-flow: column nowrap;
+  font-size: 1.125rem;
+  font-weight: 400;
+  gap: 5px;
+  margin: 0;
+}
+
+.exam-list__item-label s {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.exam-list__item-label {
+  background: lighten($color-info, 50%);
+  border: 1px solid lighten($color-info, 30%);;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  line-height:1;
+  padding: 3px 5px;
+}
+
+.exam-list__item-body {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 20px;
+}
+
+.exam-list__item-status {
+  @include text;
+  
+  font-weight: 600;
+}
+
+.exam-list__item-status--ended {
+  color: $color-success;
+}
+
+.exam-list__item-status--started {
+  color: $color-fatal;
+}
+
+.exam-list__item-status--not-started {
+  color: $color-default-contrast;
+}
+
+.exam-list__item-status-restart-allowed {
+  color: $color-info;
+}
+
+.exam-list__item-duration {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+}
+
+.exam-list__item-duration-accent {
+  color: $color-accent;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.exam-list__item-actions {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 15px;
+}
+
+.exam-list__item-actions-button {
+  align-items: center;
+  background: $color-primary;
+  border: none;
+  border-radius: 20px;
+  color: $color-default;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 0.8125rem;
+  justify-content: center;
+  line-height: 1;
+  padding: 8px 20px;
+  text-transform: uppercase;
+}
+
+.exam-list__item-actions-button--started {
+background: $color-fatal;
+}

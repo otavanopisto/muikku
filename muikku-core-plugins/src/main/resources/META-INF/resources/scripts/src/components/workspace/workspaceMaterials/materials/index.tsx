@@ -585,6 +585,7 @@ class WorkspaceMaterials extends React.Component<
         <article className="material-page">
           <div className="material-page__content">
             <Link
+              href="#"
               to={`/workspace/${this.props.workspace.urlName}/exams/${section.workspaceMaterialId}`}
             >
               Siirry kokeeseen

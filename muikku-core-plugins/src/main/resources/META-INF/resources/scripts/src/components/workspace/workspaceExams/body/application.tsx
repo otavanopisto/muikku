@@ -19,7 +19,7 @@ interface WorkspaceExamsApplicationProps {}
  * @returns WorkspaceExamsApplication
  */
 const WorkspaceExamsApplication = (props: WorkspaceExamsApplicationProps) => {
-  const title = "Kokeet";
+  const title = "Kurssin kokeet";
   return (
     <ApplicationPanel title={title}>
       <ExamsList />
