@@ -25,13 +25,13 @@ const TextSample = (props: FileSampleProps) => {
   return (
     <>
       <label className="language-profile__label">
-        {t("labels.addNewSampleTitle", {
+        {t("labels.addSample", {
           ns: "languageProfile",
           context: "audio",
         })}
       </label>
       <div className="language-profile__field-description">
-        {t("content.addNewSampleDescription", {
+        {t("content.addSample", {
           ns: "languageProfile",
           context: "audio",
         })}

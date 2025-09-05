@@ -58,12 +58,12 @@ const FutureOfStudies = () => {
     <div className="language-profile-container">
       <fieldset className="language-profile-container__fieldset">
         <legend className="language-profile-container__subheader">
-          {t("labels.initializationStep4Title", {
+          {t("labels.futureOfStudies", {
             ns: "languageProfile",
           })}
         </legend>
         <div className="language-profile-container__fieldset-description">
-          {t("content.initializationStep4Description", {
+          {t("content.futureOfStudies", {
             ns: "languageProfile",
           })}
         </div>
@@ -73,12 +73,12 @@ const FutureOfStudies = () => {
               htmlFor="learningFactors"
               className="language-profile__label"
             >
-              {t("labels.futureOfStudiesAffectingFactorsLabel", {
+              {t("labels.studyAffectingFactors", {
                 ns: "languageProfile",
               })}
             </label>
             <div className="language-profile__field-description">
-              {t("content.futureOfStudiesAffectingFactorsDescription", {
+              {t("content.studyAffectingFactors", {
                 ns: "languageProfile",
               })}
             </div>
@@ -93,12 +93,12 @@ const FutureOfStudies = () => {
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
             <label htmlFor="futureUsage" className="language-profile__label">
-              {t("labels.futureOfStudiesNecessityOfLanguagesLabel", {
+              {t("labels.futureUsage", {
                 ns: "languageProfile",
               })}
             </label>
             <div className="language-profile__field-description">
-              {t("content.futureOfStudiesNecessityOfLanguagesDescription", {
+              {t("content.futureUsage", {
                 ns: "languageProfile",
               })}
             </div>
@@ -113,12 +113,12 @@ const FutureOfStudies = () => {
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
             <label htmlFor="skillGoals" className="language-profile__label">
-              {t("labels.futureOfStudiesLanguageSkillGoalsLabel", {
+              {t("labels.languageGoals", {
                 ns: "languageProfile",
               })}
             </label>
             <div className="language-profile__field-description">
-              {t("content.futureOfStudiesLanguageSkillGoalsDescription", {
+              {t("content.languageGoals", {
                 ns: "languageProfile",
               })}
             </div>

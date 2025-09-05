@@ -172,12 +172,12 @@ const LanguageMapping = () => {
     <div className="language-profile-container">
       <fieldset className="language-profile-container__fieldset">
         <legend className="language-profile-container__subheader">
-          {t("labels.initializationStep2Title1", {
+          {t("labels.languageSkillLevels", {
             ns: "languageProfile",
           })}
         </legend>
         <div className="language-profile-container__fieldset-description">
-          {t("content.initializationStep2Description1", {
+          {t("content.languageSkillLevels", {
             ns: "languageProfile",
           })}
         </div>
@@ -188,7 +188,7 @@ const LanguageMapping = () => {
             rel="noreferrer"
             className="link"
           >
-            {t("content.initializationStep2Link1", {
+            {t("content.languageLevelScale", {
               ns: "languageProfile",
             })}
             <span className="visually-hidden">
@@ -223,12 +223,12 @@ const LanguageMapping = () => {
       </fieldset>
       <fieldset className="language-profile-container__fieldset">
         <legend className="language-profile-container__subheader">
-          {t("labels.initializationStep2Title2", {
+          {t("labels.skillsByDivision", {
             ns: "languageProfile",
           })}
         </legend>
         <div className="language-profile-container__fieldset-description">
-          {t("content.initializationStep2Description2", {
+          {t("content.skillsByDivision", {
             ns: "languageProfile",
           })}
         </div>
@@ -236,50 +236,45 @@ const LanguageMapping = () => {
         <div className="language-profile-container__fieldset-description">
           <details className="details details--language-profile">
             <summary className="details__summary">
-              {t("labels.languageSkillByCategoryPronunciationLabel", {
+              {t("labels.pronounciation", {
                 ns: "languageProfile",
               })}
             </summary>
             <div className="details__content">
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryNative",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillNative", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
 
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryExcellence",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillExcellent", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryGood",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillGood", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryMediocre",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillMediocre", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryBeginger",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillBeginner", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
             </div>
@@ -287,50 +282,45 @@ const LanguageMapping = () => {
 
           <details className="details details--language-profile">
             <summary className="details__summary">
-              {t("labels.languageSkillByCategoryGrammarLabel", {
+              {t("labels.grammar", {
                 ns: "languageProfile",
               })}
             </summary>
             <div className="details__content">
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryNative",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillNative", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
 
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryExcellence",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillExcellent", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryGood",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillGood", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryMediocre",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillMediocre", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryBeginger",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillBeginner", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
             </div>
@@ -338,50 +328,45 @@ const LanguageMapping = () => {
 
           <details className="details details--language-profile">
             <summary className="details__summary">
-              {t("labels.languageSkillByCategoryVocabularyLabel", {
+              {t("labels.vocabulary", {
                 ns: "languageProfile",
               })}
             </summary>
             <div className="details__content">
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryNative",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillNative", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
 
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryExcellence",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillExcellent", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryGood",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillGood", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryMediocre",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillMediocre", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryBeginger",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillBeginner", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
             </div>
@@ -389,50 +374,45 @@ const LanguageMapping = () => {
 
           <details className="details details--language-profile">
             <summary className="details__summary">
-              {t("labels.languageSkillByCategoryLanguageVariantsLabel", {
+              {t("labels.languageVariants", {
                 ns: "languageProfile",
               })}
             </summary>
             <div className="details__content">
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryNative",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillNative", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
 
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryExcellence",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillExcellent", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryGood",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillGood", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryMediocre",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillMediocre", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t(
-                    "content.initializationLanguageSkillByCategoryBeginger",
-                    { ns: "languageProfile" }
-                  ),
+                  __html: t("content.languageSkillBeginner", {
+                    ns: "languageProfile",
+                  }),
                 }}
               />
             </div>

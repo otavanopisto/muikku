@@ -145,24 +145,24 @@ const LanguageUsage = () => {
     <div className="language-profile-container">
       <fieldset className="language-profile-container__fieldset">
         <legend className="language-profile-container__subheader">
-          {t("labels.initializationStep1Title", {
+          {t("labels.languageUsageAndStudying", {
             ns: "languageProfile",
           })}
         </legend>
         <div className="language-profile-container__fieldset-description">
-          {t("content.initializationStep1Description", {
+          {t("content.languageUsageAndStudying", {
             ns: "languageProfile",
           })}
         </div>
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
             <label className="language-profile__label">
-              {t("labels.addNewLanguagesTitle", {
+              {t("labels.addLanguages", {
                 ns: "languageProfile",
               })}
             </label>
             <div className="language-profile__field-description">
-              {t("labels.addNewLanguagesDescription", {
+              {t("content.addLanguages", {
                 ns: "languageProfile",
               })}
             </div>
@@ -177,7 +177,7 @@ const LanguageUsage = () => {
               filterBy="code"
               allItems={availableLanguages}
               selectedItems={languages}
-              placeHolder={t("labels.addLanguageFieldLabel", {
+              placeHolder={t("labels.addLanguage", {
                 ns: "languageProfile",
               })}
             />
@@ -186,12 +186,12 @@ const LanguageUsage = () => {
         <div className="language-profile-container__row">
           <div className="language-profile__form-element-container">
             <label htmlFor="languageUsage" className="language-profile__label">
-              {t("labels.languageUsageUseOfLanguagesLabel", {
+              {t("labels.languageUsage", {
                 ns: "languageProfile",
               })}
             </label>
             <div className="language-profile__field-description">
-              {t("labels.languageUsageUseOfLanguagesDescription", {
+              {t("content.languageUsage", {
                 ns: "languageProfile",
               })}
             </div>
@@ -209,12 +209,12 @@ const LanguageUsage = () => {
               htmlFor="studyMotivation"
               className="language-profile__label"
             >
-              {t("labels.languageUsageMotivationInStudyingLabel", {
+              {t("labels.languageMotivation", {
                 ns: "languageProfile",
               })}
             </label>
             <div className="language-profile__field-description">
-              {t("labels.languageUsageMotivationInStudyingDescription", {
+              {t("content.languageMotivation", {
                 ns: "languageProfile",
               })}
             </div>
@@ -232,12 +232,12 @@ const LanguageUsage = () => {
               htmlFor="languageLearning"
               className="language-profile__label"
             >
-              {t("labels.languageUsageLearningLanguagesLabel", {
+              {t("labels.languageLearning", {
                 ns: "languageProfile",
               })}
             </label>
             <div className="language-profile__field-description">
-              {t("labels.languageUsageLearningLanguagesDescription", {
+              {t("content.languageLearning", {
                 ns: "languageProfile",
               })}
             </div>

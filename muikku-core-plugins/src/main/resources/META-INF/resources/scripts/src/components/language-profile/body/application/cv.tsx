@@ -66,24 +66,24 @@ const LanguageCv = () => {
         <div className="language-profile-container">
           <fieldset className="language-profile-container__fieldset">
             <legend className="language-profile-container__subheader">
-              {t("labels.languageCVStepTitle", {
+              {t("labels.languageCv", {
                 ns: "languageProfile",
               })}
             </legend>
             <div className="language-profile-container__fieldset-description">
-              {t("content.languageCVStepDescription", {
+              {t("content.languageCv", {
                 ns: "languageProfile",
               })}
             </div>
             <div className="language-profile-container__row">
               <div className="language-profile__form-element-container">
                 <label htmlFor="cv" className="language-profile__label">
-                  {t("labels.languageCVGeneralLabel", {
+                  {t("labels.general", {
                     ns: "languageProfile",
                   })}
                 </label>
                 <div className="language-profile__field-description">
-                  {t("labels.languageCVGeneralDescription", {
+                  {t("content.general", {
                     ns: "languageProfile",
                   })}
                 </div>

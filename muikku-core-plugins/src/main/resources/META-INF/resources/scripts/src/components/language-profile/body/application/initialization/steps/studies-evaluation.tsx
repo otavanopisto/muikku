@@ -159,17 +159,17 @@ const AccomplishmentEvaluation = () => {
     <div className="language-profile-container">
       <fieldset className="language-profile-container__fieldset">
         <legend className="language-profile-container__subheader">
-          {t("labels.initializationStep3Title", {
+          {t("labels.courseLearning", {
             ns: "languageProfile",
           })}
         </legend>
         <div className="language-profile-container__fieldset-description">
-          {t("content.initializationStep3Description1", {
+          {t("content.courseLearning", {
             ns: "languageProfile",
           })}
         </div>
         <div className="language-profile-container__fieldset-description language-profile-container__fieldset-description--table-legend">
-          {t("content.initializationStep3Description2", {
+          {t("content.courseLearningLevels", {
             ns: "languageProfile",
           })}
         </div>

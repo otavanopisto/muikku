@@ -28,12 +28,12 @@ const LanguageSample = (props: LanguageSampleProps) => {
         <div className="language-profile-container">
           <fieldset className="language-profile-container__fieldset">
             <legend className="language-profile-container__subheader">
-              {t("labels.languageSamplesStepTitle", {
+              {t("labels.languageSamples", {
                 ns: "languageProfile",
               })}
             </legend>
             <div className="language-profile-container__fieldset-description">
-              {t("content.languageSamplesStepDescription", {
+              {t("content.languageSamples", {
                 ns: "languageProfile",
               })}
             </div>

@@ -27,13 +27,13 @@ const FileSample = (props: FileSampleProps) => {
         htmlFor="newLanguageFileSample"
         className="language-profile__label"
       >
-        {t("labels.addNewSampleTitle", {
+        {t("labels.addSample", {
           ns: "languageProfile",
           context: "file",
         })}
       </label>
       <div className="language-profile__field-description">
-        {t("content.addNewSampleDescription", {
+        {t("content.addSample", {
           ns: "languageProfile",
           context: "file",
         })}

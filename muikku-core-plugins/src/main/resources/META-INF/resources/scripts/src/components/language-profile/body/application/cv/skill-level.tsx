@@ -217,7 +217,7 @@ const SkillLevel = (props: SkillLevelProps) => {
         {language.name}
       </legend>
       <div className="language-profile-container__secondary-header">
-        {t("labels.languageCVSkillLevelTitle", {
+        {t("labels.skillLevel", {
           ns: "languageProfile",
         })}
       </div>
@@ -225,7 +225,7 @@ const SkillLevel = (props: SkillLevelProps) => {
         <div className="language-profile__form-element-container">
           <div className="language-profile__input-group-container">
             <Stars
-              label={t("labels.skillLevelInteractionStarLabel", {
+              label={t("labels.skillInteraction", {
                 ns: "languageProfile",
               })}
               name="interaction"
@@ -233,7 +233,7 @@ const SkillLevel = (props: SkillLevelProps) => {
               onChange={handleRadioInputChange}
             />
             <Stars
-              label={t("labels.skillLevelVocalStarLabel", {
+              label={t("labels.skillVocalization", {
                 ns: "languageProfile",
               })}
               name="vocal"
@@ -241,7 +241,7 @@ const SkillLevel = (props: SkillLevelProps) => {
               onChange={handleRadioInputChange}
             />
             <Stars
-              label={t("labels.skillLevelWritingStarLabel", {
+              label={t("labels.skillWriting", {
                 ns: "languageProfile",
               })}
               name="writing"
@@ -249,7 +249,7 @@ const SkillLevel = (props: SkillLevelProps) => {
               onChange={handleRadioInputChange}
             />
             <Stars
-              label={t("labels.skillLevelReadingStarLabel", {
+              label={t("labels.skillReadingComprehension", {
                 ns: "languageProfile",
               })}
               name="reading"
@@ -257,7 +257,7 @@ const SkillLevel = (props: SkillLevelProps) => {
               onChange={handleRadioInputChange}
             />
             <Stars
-              label={t("labels.skillLevelListeningStarLabel", {
+              label={t("labels.skillListeningComprehension", {
                 ns: "languageProfile",
               })}
               name="listening"
@@ -273,7 +273,7 @@ const SkillLevel = (props: SkillLevelProps) => {
             htmlFor="estimateOfSkillLevel"
             className="language-profile__label"
           >
-            {t("labels.languageCVSkillLevelEstimateLabel", {
+            {t("labels.skillEstimate", {
               ns: "languageProfile",
             })}
           </label>
@@ -301,13 +301,13 @@ const SkillLevel = (props: SkillLevelProps) => {
             htmlFor="descriptionOfSkillLevel"
             className="language-profile__label"
           >
-            {t("labels.languageCVDescriptionOfSkillLabel", {
+            {t("labels.descriptionOfCompetence", {
               ns: "languageProfile",
               handleUrlFieldChange,
             })}
           </label>
           <div className="language-profile__field-description">
-            {t("labels.languageCVDescriptionOfSkillDescription", {
+            {t("content.descriptionOfCompetence", {
               ns: "languageProfile",
             })}
           </div>
@@ -321,7 +321,7 @@ const SkillLevel = (props: SkillLevelProps) => {
         </div>
       </div>
       <div className="language-profile-container__secondary-header">
-        {t("labels.languageCVLinkSamplesTitle", {
+        {t("labels.samples", {
           ns: "languageProfile",
         })}
       </div>
@@ -357,7 +357,7 @@ const SkillLevel = (props: SkillLevelProps) => {
       <div className="language-profile-container__row language-profile-container__row--new-sample">
         <div className="language-profile__form-element-container">
           <div className="language-profile__field-description">
-            {t("labels.languageCVLinkSampleFieldDescription", {
+            {t("content.linkToLanguageSample", {
               ns: "languageProfile",
             })}
           </div>

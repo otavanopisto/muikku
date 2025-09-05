@@ -68,7 +68,7 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
         <>
           <Accordion
             id="language-usage-drawer"
-            title={t("labels.initializationStep1Title", {
+            title={t("labels.languageUsageAndStudying", {
               ns: "languageProfile",
             })}
           >
@@ -78,12 +78,12 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
                   htmlFor="languageUsage"
                   className="user-language-profile__label"
                 >
-                  {t("labels.languageUsageUseOfLanguagesLabel", {
+                  {t("labels.languageUsage", {
                     ns: "languageProfile",
                   })}
                 </label>
                 <div className="language-profile__field-description">
-                  {t("labels.languageUsageUseOfLanguagesDescription", {
+                  {t("content.languageUsage", {
                     ns: "languageProfile",
                   })}
                 </div>
@@ -101,12 +101,12 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
                   htmlFor="studyMotivation"
                   className="user-language-profile__label"
                 >
-                  {t("labels.languageUsageMotivationInStudyingLabel", {
+                  {t("labels.languageMotivation", {
                     ns: "languageProfile",
                   })}
                 </label>
                 <div className="language-profile__field-description">
-                  {t("labels.languageUsageMotivationInStudyingDescription", {
+                  {t("content.languageMotivation", {
                     ns: "languageProfile",
                   })}
                 </div>
@@ -124,12 +124,12 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
                   htmlFor="messageForTeacher"
                   className="user-language-profile__label"
                 >
-                  {t("labels.languageUsageLearningLanguagesLabel", {
+                  {t("labels.languageLearning", {
                     ns: "languageProfile",
                   })}
                 </label>
                 <div className="language-profile__field-description">
-                  {t("labels.languageUsageLearningLanguagesDescription", {
+                  {t("content.languageLearning", {
                     ns: "languageProfile",
                   })}
                 </div>
@@ -144,7 +144,7 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
           </Accordion>
           <Accordion
             id="future-of-studies-drawer"
-            title={t("labels.initializationStep4Title", {
+            title={t("labels.futureOfStudies", {
               ns: "languageProfile",
             })}
           >
@@ -154,12 +154,12 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
                   htmlFor="learningFactors"
                   className="user-language-profile__label"
                 >
-                  {t("labels.futureOfStudiesAffectingFactorsLabel", {
+                  {t("labels.studyAffectingFactors", {
                     ns: "languageProfile",
                   })}
                 </label>
                 <div className="language-profile__field-description">
-                  {t("content.futureOfStudiesAffectingFactorsDescription", {
+                  {t("content.studyAffectingFactors", {
                     ns: "languageProfile",
                   })}
                 </div>
@@ -177,12 +177,12 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
                   htmlFor="futureUsage"
                   className="user-language-profile__label"
                 >
-                  {t("labels.futureOfStudiesNecessityOfLanguagesLabel", {
+                  {t("labels.futureUsage", {
                     ns: "languageProfile",
                   })}
                 </label>
                 <div className="language-profile__field-description">
-                  {t("content.futureOfStudiesNecessityOfLanguagesDescription", {
+                  {t("content.futureUsage", {
                     ns: "languageProfile",
                   })}
                 </div>
@@ -200,12 +200,12 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
                   htmlFor="skillGoals"
                   className="user-language-profile__label"
                 >
-                  {t("labels.futureOfStudiesLanguageSkillGoalsLabel", {
+                  {t("labels.languageGoals", {
                     ns: "languageProfile",
                   })}
                 </label>
                 <div className="language-profile__field-description">
-                  {t("content.futureOfStudiesLanguageSkillGoalsDescription", {
+                  {t("content.languageGoals", {
                     ns: "languageProfile",
                   })}
                 </div>
@@ -271,7 +271,7 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
               {lang.skills ? (
                 <div>
                   <h4>
-                    {t("labels.initializationStep2Title2", {
+                    {t("labels.skillsByDivision", {
                       ns: "languageProfile",
                     })}
                   </h4>
@@ -321,7 +321,7 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
               {lang.workspaces ? (
                 <div>
                   <h4>
-                    {t("labels.initializationStep2Title2", {
+                    {t("labels.skillsByDivision", {
                       ns: "languageProfile",
                     })}
                   </h4>
