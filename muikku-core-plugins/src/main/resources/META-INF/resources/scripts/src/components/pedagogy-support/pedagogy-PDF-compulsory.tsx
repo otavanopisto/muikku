@@ -307,18 +307,16 @@ const PedagogyPDFCompulsory = (props: PedagogyPDFCompulsoryProps) => {
             )}
           </View>
 
-          {formData?.supportActions?.includes("other") ? (
-            <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>
-                {t("labels.additionalInfo", {
-                  ns: "pedagogySupportPlan",
-                })}
-              </Text>
-              <Text style={styles.infoFieldValue}>
-                {formData?.supportActionOther || "-"}
-              </Text>
-            </View>
-          ) : null}
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.additionalInfo", {
+                ns: "pedagogySupportPlan",
+              })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {formData?.supportActionOther || "-"}
+            </Text>
+          </View>
         </Page>
 
         {

@@ -5,7 +5,7 @@ import {
   PedagogySupportActionImplemented,
 } from "~/@types/pedagogy-form";
 import _ from "lodash";
-import { getEditedFields } from "../helpers";
+import { getEditedFields, PedagogySupportPermissions } from "../helpers";
 import {
   initializePedagogySupport,
   startEditingPedagogySupport,
@@ -28,15 +28,13 @@ export type UsePedagogyReduxType = ReturnType<typeof usePedagogyRedux>;
 /**
  * usePedagogyRedux. Combined hook for pedagogy form and implemented actions using Redux
  * @param studentIdentifier studentIdentifier
- * @param studyProgrammeName studyProgrammeName
- * @param isUppersecondary isUppersecondary
  * @param pedagogyFormAccess pedagogyFormAccess
+ * @param pedagogySupportStudentPermissions pedagogySupportStudentPermissions
  */
 export const usePedagogyRedux = (
   studentIdentifier: string,
-  studyProgrammeName: string,
-  isUppersecondary: boolean,
-  pedagogyFormAccess: Partial<PedagogyFormAccess>
+  pedagogyFormAccess: Partial<PedagogyFormAccess>,
+  pedagogySupportStudentPermissions: PedagogySupportPermissions
 ) => {
   const dispatch = useDispatch();
 
@@ -116,10 +114,15 @@ export const usePedagogyRedux = (
       initializePedagogySupport({
         studentIdentifier,
         pedagogyFormAccess,
-        isUppersecondary,
+        pedagogySupportStudentPermissions,
       })
     );
-  }, [dispatch, pedagogyFormAccess, studentIdentifier, isUppersecondary]);
+  }, [
+    dispatch,
+    pedagogyFormAccess,
+    studentIdentifier,
+    pedagogySupportStudentPermissions,
+  ]);
 
   // Add useEffect to handle beforeunload event
   React.useEffect(() => {
@@ -310,23 +313,15 @@ export const usePedagogyRedux = (
    * Activate the pedagogy form
    */
   const activatePedagogyForm = React.useCallback(async () => {
-    dispatch(
-      activatePedagogySupport({
-        isUppersecondary,
-      })
-    );
-  }, [dispatch, isUppersecondary]);
+    dispatch(activatePedagogySupport({}));
+  }, [dispatch]);
 
   /**
    * Toggle the publish status of the pedagogy form
    */
   const togglePublishPedagogyForm = React.useCallback(async () => {
-    dispatch(
-      togglePublishPedagogySupportForm({
-        isUppersecondary,
-      })
-    );
-  }, [dispatch, isUppersecondary]);
+    dispatch(togglePublishPedagogySupportForm({}));
+  }, [dispatch]);
 
   /**
    * Save all data
@@ -344,9 +339,8 @@ export const usePedagogyRedux = (
     loading,
     editIsActive,
     studentIdentifier,
-    studyProgrammeName,
-    isUppersecondary,
     editingDisabled,
+    pedagogySupportStudentPermissions,
     resetPedagogyData,
     saveAllData,
     toggleEditIsActive,
