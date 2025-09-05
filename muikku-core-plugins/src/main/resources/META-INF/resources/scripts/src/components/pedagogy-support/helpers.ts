@@ -14,18 +14,125 @@ import { OptionDefault } from "~/components/general/react-select/types";
 import i18n from "~/locales/i18n";
 import _ from "lodash";
 
-// Visibility settings which study programmes have access to the form
+// Access to pedagogy form
 export const UPPERSECONDARY_PEDAGOGYFORM = [
   "Nettilukio",
   "Aikuislukio",
   "Nettilukio/yksityisopiskelu (aineopintoina)",
 ];
-
 export const COMPULSORY_PEDAGOGYFORM = [
   "Nettiperuskoulu",
   "Nettiperuskoulu/yksityisopiskelu",
   "Aikuisten perusopetuksen päättövaihe",
+  "Aikuisten perusopetuksen alkuvaihe",
 ];
+
+// Access to pedagogy support as whole (implemented actions at least)
+export const UPPERSECONDARY_PEDAGOGYSUPPORT = [
+  "Nettilukio",
+  "Aikuislukio",
+  "Nettilukio/yksityisopiskelu (aineopintoina)",
+  "Aineopiskelu/lukio (oppivelvolliset)",
+  "Aineopiskelu/yo-tutkinto",
+  "Nettilukio/yksityisopiskelu (tutkinto)",
+  "Kahden tutkinnon opinnot",
+  "Aineopiskelu/lukio",
+];
+export const COMPULSORY_PEDAGOGYSUPPORT = [
+  "Nettiperuskoulu",
+  "Nettiperuskoulu/yksityisopiskelu",
+  "Aineopiskelu/perusopetus",
+  "Aineopiskelu/perusopetus (oppilaitos ilmoittaa)",
+  "Aineopiskelu/perusopetus (oppivelvolliset)",
+  "Aikuisten perusopetuksen päättövaihe",
+  "Aikuisten perusopetuksen alkuvaihe",
+];
+
+/**
+ * Pedagogy support permissions
+ */
+export class PedagogySupportPermissions {
+  private studyProgrammeName: string;
+  private studyType: "upperSecondary" | "compulsory" | null;
+
+  /**
+   * Constructor
+   * @param studyProgrammeName study programme name
+   */
+  constructor(studyProgrammeName: string) {
+    this.studyProgrammeName = studyProgrammeName;
+    this.studyType = this.determineStudyType();
+  }
+
+  /**
+   * Determine the study type based on the study programme name
+   * @returns "upperSecondary" | "compulsory" | null
+   */
+  private determineStudyType(): "upperSecondary" | "compulsory" | null {
+    if (UPPERSECONDARY_PEDAGOGYSUPPORT.includes(this.studyProgrammeName)) {
+      return "upperSecondary";
+    }
+    if (COMPULSORY_PEDAGOGYSUPPORT.includes(this.studyProgrammeName)) {
+      return "compulsory";
+    }
+    return null;
+  }
+
+  /**
+   * Check if the student has access to pedagogy form
+   */
+  hasPedagogyFormAccess(): boolean {
+    if (!this.studyType) return false;
+    return this.studyType === "upperSecondary"
+      ? UPPERSECONDARY_PEDAGOGYFORM.includes(this.studyProgrammeName)
+      : COMPULSORY_PEDAGOGYFORM.includes(this.studyProgrammeName);
+  }
+
+  /**
+   * Check if the student has access to implemented actions
+   */
+  hasImplementedActionsAccess(): boolean {
+    if (!this.studyType) return false;
+    return this.studyType === "upperSecondary"
+      ? UPPERSECONDARY_PEDAGOGYSUPPORT.includes(this.studyProgrammeName)
+      : COMPULSORY_PEDAGOGYSUPPORT.includes(this.studyProgrammeName);
+  }
+
+  /**
+   * Check if the student is upper secondary
+   */
+  isUpperSecondary(): boolean {
+    return this.studyType === "upperSecondary";
+  }
+
+  /**
+   * Check if the student is compulsory education
+   */
+  isCompulsory(): boolean {
+    return this.studyType === "compulsory";
+  }
+
+  /**
+   * Get the study type
+   */
+  getStudyType(): "upperSecondary" | "compulsory" | null {
+    return this.studyType;
+  }
+
+  /**
+   * Get the study programme name
+   */
+  getStudyProgrammeName(): string {
+    return this.studyProgrammeName;
+  }
+
+  /**
+   * Check if the student has any pedagogy support access (either form or implemented actions)
+   */
+  hasAnyAccess(): boolean {
+    return this.hasPedagogyFormAccess() || this.hasImplementedActionsAccess();
+  }
+}
 
 /**
  * Is used to give correct translation for the list of edited fields

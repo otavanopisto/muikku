@@ -39,6 +39,7 @@ import {
   resetPedagogySupport,
   ResetPedagogySupportTriggerType,
 } from "~/actions/main-function/pedagogy-support";
+import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
 /**
  * StudiesTab
  */
@@ -292,6 +293,10 @@ class DependantApplication extends React.Component<
         <span>{selectedDependant?.label}</span>
       );
 
+    const pedagogySupportPermissions = new PedagogySupportPermissions(
+      this.getDependantStudyProgramme(selectedDependantIdentifier)
+    );
+
     const panelTabs: Tab[] = [
       {
         id: "SUMMARY",
@@ -315,7 +320,10 @@ class DependantApplication extends React.Component<
           </ApplicationPanelBody>
         ),
       },
-      {
+    ];
+
+    if (pedagogySupportPermissions.hasAnyAccess()) {
+      panelTabs.push({
         id: "PEDAGOGY_FORM",
         name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
         hash: "pedagogy-form",
@@ -325,17 +333,15 @@ class DependantApplication extends React.Component<
             <PedagogySupport
               userRole="STUDENT_PARENT"
               studentIdentifier={selectedDependantIdentifier}
-              studyProgrammeName={this.getDependantStudyProgramme(
-                selectedDependantIdentifier
-              )}
+              pedagogySupportStudentPermissions={pedagogySupportPermissions}
               pedagogyFormAccess={
                 this.props.guider.currentStudent.pedagogyFormAvailable
               }
             />
           </ApplicationPanelBody>
         ),
-      },
-    ];
+      });
+    }
 
     return (
       <>

@@ -53,8 +53,12 @@ export const ImplementedActionsListItem: React.FC<
   ImplementedActionsListItemProps
 > = (props) => {
   const { t } = useTranslation(["pedagogySupportPlan", "common"]);
-  const { userRole, editIsActive, studentIdentifier, isUppersecondary } =
-    usePedagogyContext();
+  const {
+    userRole,
+    editIsActive,
+    studentIdentifier,
+    pedagogySupportStudentPermissions,
+  } = usePedagogyContext();
 
   const {
     index,
@@ -68,9 +72,10 @@ export const ImplementedActionsListItem: React.FC<
     userRole === "STUDENT" || !editIsActive || !ownerOfEntry;
 
   // Support actions based on form type
-  const supportActionsOptions = isUppersecondary
-    ? [...supportActionsOptionsUppersecondary]
-    : [...supportActionsOptionsCompulsory];
+  const supportActionsOptions =
+    pedagogySupportStudentPermissions.isUpperSecondary()
+      ? [...supportActionsOptionsUppersecondary]
+      : [...supportActionsOptionsCompulsory];
 
   return (
     <div className="hops-container__section">
