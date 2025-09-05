@@ -51,6 +51,17 @@ public class ExamSettingsRestModel {
   public void setOpenForAll(boolean openForAll) {
     this.openForAll = openForAll;
   }
+  
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  // Exam description
+  private String description;
 
   // How assignments are randomized, if at all
   private ExamSettingsRandom random;
