@@ -69,7 +69,7 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
               {t("labels.creator", { ns: "pedagogySupportPlan" })}
             </Text>
             <Text style={styles.infoFieldValueSameRow}>
-              {opinion.creatorName},{" "}
+              {`${opinion.creatorName}, `}
               {opinion.updatedDate
                 ? `${moment(opinion.creationDate).format("DD.MM.YYYY")} (${t(
                     "labels.updated",
@@ -107,7 +107,7 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
               {t("labels.creator", { ns: "pedagogySupportPlan" })}
             </Text>
             <Text style={styles.infoFieldValueSameRow}>
-              {opinion.creatorName},{" "}
+              {`${opinion.creatorName}, `}
               {opinion.updatedDate
                 ? `${moment(opinion.creationDate).format("DD.MM.YYYY")} (${t(
                     "labels.updated",
@@ -152,7 +152,6 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
         <View style={styles.headerInfoContainerAside}>
           <View style={styles.headerInfoContainerAsidePrimary}>
             <Text style={styles.headerSubtitle}>
-              {" "}
               {t("labels.confidential", { ns: "pedagogySupportPlan" })}
             </Text>
             <Text style={styles.headerSubtitle}>
@@ -235,8 +234,7 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
               {t("labels.authorOfDocument", { ns: "pedagogySupportPlan" })}
             </Text>
             <Text style={styles.infoFieldValue}>
-              {documentCreator},{" "}
-              {t("labels.specialEducationTeacher", { ns: "users", count: 1 })}
+              {`${documentCreator}, ${t("labels.specialEducationTeacher", { ns: "users", count: 1 })}`}
             </Text>
             <Text style={styles.infoFieldValue}>{ownerInfo.phoneNumber}</Text>
             <Text style={styles.infoFieldValue}>{ownerInfo.email}</Text>
@@ -364,18 +362,16 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
             )}
           </View>
 
-          {formData?.supportActions?.includes("other") ? (
-            <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>
-                {t("labels.additionalInfo", {
-                  ns: "pedagogySupportPlan",
-                })}
-              </Text>
-              <Text style={styles.infoFieldValue}>
-                {formData?.supportActionOther || "-"}
-              </Text>
-            </View>
-          ) : null}
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.additionalInfo", {
+                ns: "pedagogySupportPlan",
+              })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {formData?.supportActionOther || "-"}
+            </Text>
+          </View>
 
           <View style={styles.infoFieldContainer}>
             <Text style={styles.infoFieldLabel}>
@@ -391,18 +387,16 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
               ))) || <Text style={styles.infoFieldValue}>-</Text>}
           </View>
 
-          {formData?.matriculationExaminationSupport?.includes("other") ? (
-            <View style={styles.infoFieldContainer}>
-              <Text style={styles.infoFieldLabel}>
-                {t("labels.additionalInfo", {
-                  ns: "pedagogySupportPlan",
-                })}
-              </Text>
-              <Text style={styles.infoFieldValue}>
-                {formData?.matriculationExaminationSupportOther || "-"}
-              </Text>
-            </View>
-          ) : null}
+          <View style={styles.infoFieldContainer}>
+            <Text style={styles.infoFieldLabel}>
+              {t("labels.additionalInfo", {
+                ns: "pedagogySupportPlan",
+              })}
+            </Text>
+            <Text style={styles.infoFieldValue}>
+              {formData?.matriculationExaminationSupportOther || "-"}
+            </Text>
+          </View>
         </Page>
 
         {
@@ -411,7 +405,6 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
         <Page style={styles.body} size="A4">
           {pageHeader}
           <Text style={styles.pageTitle}>
-            {" "}
             {t("labels.implementedActions", {
               ns: "pedagogySupportPlan",
             })}
@@ -422,42 +415,36 @@ const PedagogyPDFUpperSecondary = (props: PedagogyPDFUpperSecondaryProps) => {
                 <View style={styles.implementationInfo} wrap={false}>
                   <View style={styles.infoFieldContainerSameRow}>
                     <Text style={styles.infoFieldLabelSameRow}>
-                      {" "}
                       {t("labels.supportAction", {
                         ns: "pedagogySupportPlan",
                       })}
                     </Text>
                     <Text style={styles.infoFieldValueSameRow}>
-                      {supportActionTranslationByValue[iAction.action]},{" "}
-                      {moment(iAction.date).format("DD.MM.YYYY")}
+                      {`${supportActionTranslationByValue[iAction.action]}, ${moment(iAction.date).format("DD.MM.YYYY")}`}
                     </Text>
                   </View>
 
-                  {iAction?.course?.name ? (
-                    <View style={styles.infoFieldContainerSameRow}>
-                      <Text style={styles.infoFieldLabelSameRow}>
-                        {t("labels.course", {
-                          ns: "common",
-                        })}
-                      </Text>
-                      <Text style={styles.infoFieldValueSameRow}>
-                        {iAction?.course?.name}
-                      </Text>
-                    </View>
-                  ) : null}
+                  <View style={styles.infoFieldContainerSameRow}>
+                    <Text style={styles.infoFieldLabelSameRow}>
+                      {t("labels.course", {
+                        ns: "common",
+                      })}
+                    </Text>
+                    <Text style={styles.infoFieldValueSameRow}>
+                      {iAction?.course?.name || "-"}
+                    </Text>
+                  </View>
 
-                  {iAction?.extraInfoDetails ? (
-                    <View style={styles.infoFieldContainerSameRow}>
-                      <Text style={styles.infoFieldLabelSameRow}>
-                        {t("labels.additionalInfo", {
-                          ns: "pedagogySupportPlan",
-                        })}
-                      </Text>
-                      <Text style={styles.infoFieldValueSameRow}>
-                        {iAction?.extraInfoDetails}
-                      </Text>
-                    </View>
-                  ) : null}
+                  <View style={styles.infoFieldContainerSameRow}>
+                    <Text style={styles.infoFieldLabelSameRow}>
+                      {t("labels.additionalInfo", {
+                        ns: "pedagogySupportPlan",
+                      })}
+                    </Text>
+                    <Text style={styles.infoFieldValueSameRow}>
+                      {iAction?.extraInfoDetails || "-"}
+                    </Text>
+                  </View>
                 </View>
               </View>
             ))) || (
