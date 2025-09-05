@@ -14,6 +14,7 @@ import PedagogyPDFCompulsory from "./pedagogy-PDF-compulsory";
 import ImplementedSupportActions from "./implemented-support-form";
 import { usePedagogyRedux } from "./hooks/usePedagogyRedux";
 import { PedagogyFormAccess } from "~/generated/client";
+import { useTranslation } from "react-i18next";
 
 /**
  * LearningSupportProps
@@ -39,6 +40,8 @@ interface PedagogySupportProps {
  */
 const PedagogySupport = (props: PedagogySupportProps) => {
   const { pedagogyFormAccess, studentIdentifier, studyProgrammeName } = props;
+
+  const { t } = useTranslation(["pedagogySupportPlan", "common"]);
 
   // Check if user's study programme is eligible for pedagogy form
   const isEligibleForUpperSecondary = UPPERSECONDARY_PEDAGOGYFORM.includes(
@@ -119,7 +122,7 @@ const PedagogySupport = (props: PedagogySupportProps) => {
   const pedagogySupportTabs: Tab[] = [
     {
       id: "IMPLEMENTED_ACTIONS",
-      name: "Toteutetut tukitoimet",
+      name: t("labels.implementedActions", { ns: "pedagogySupportPlan" }),
       type: "pedagogy-support",
       component: <ImplementedSupportActions />,
     },
@@ -131,7 +134,7 @@ const PedagogySupport = (props: PedagogySupportProps) => {
   if (shouldShowPedagogyFormTab()) {
     pedagogySupportTabs.push({
       id: "PEDAGOGY_FORM",
-      name: "Pedagogisen tuen lomake",
+      name: t("labels.pedagogySupportPlan", { ns: "pedagogySupportPlan" }),
       type: "pedagogy-support",
       component: <PedagogicalSupportForm isUppersecondary={isUppersecondary} />,
     });
