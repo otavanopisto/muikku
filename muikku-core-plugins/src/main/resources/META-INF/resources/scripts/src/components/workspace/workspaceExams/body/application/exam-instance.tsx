@@ -128,7 +128,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
     const handleWarningCallback = (remainingMinutes: number) => {
       dispatch(
         displayNotification(
-          `Varoitus: Sinulla on alle ${remainingMinutes} minuuttia aikaa jäljellä!`,
+          `Huomio: Sinulla on alle ${remainingMinutes} minuuttia aikaa jäljellä!`,
           "fatal"
         )
       );

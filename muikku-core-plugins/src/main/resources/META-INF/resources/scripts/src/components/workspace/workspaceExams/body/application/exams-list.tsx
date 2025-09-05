@@ -74,67 +74,68 @@ const ExamsListItem = (props: ExamsListItemProps) => {
 
   const hasTimeLimit = exam.minutes > 0;
 
+  const restartAllowed = exam.allowRestart;
+
+  const onGoing = isStarted && !isEnded;
+
   return (
     <div className="exam-list__item">
       <h2 className="exam-list__item-header">
         <span>{exam.name}</span>
-        {exam.allowRestart && (
-          <div className="exam-list__item-labels">
+        <div className="exam-list__item-labels">
+          {restartAllowed && (
             <span className="exam-list__item-label">
               Kokeen voi suorittaa uudestaan
             </span>
-          </div>
-        )}
+          )}
+          {hasTimeLimit && (
+            <span className="exam-list__item-label">
+              Suoritusaika:{" "}
+              <span className="exam-list__item-label-accent">
+                {exam.minutes} minuuttia
+              </span>
+            </span>
+          )}
+        </div>
       </h2>
       <div className="exam-list__item-body">
         {/* Show exam status and time info */}
         <div className="exam-list__item-content">
-          {exam.folderId} - Lorem ipsum dolor sit amet, consectetur adipiscing
-          elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-          aliqua.Ut enim ad minim veniam, quis nostrud exercitation ullamco
-          laboris nisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-          sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Ut
-          enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.
+          Tähän sattaa tulla kokeen kuvaus.
         </div>
         <div className="exam-list__item-meta">
           {isEnded ? (
             <span className="exam-list__item-status exam-list__item-status--ended">
               Koe suoritettu {localize.date(exam.ended, "l, LT")}
             </span>
-          ) : isStarted ? (
-            <span className="exam-list__item-status exam-list__item-status--started">
+          ) : onGoing ? (
+            <span className="exam-list__item-status exam-list__item-status--ongoing">
               Koe aloitettu {localize.date(exam.started, "l, LT")}
             </span>
           ) : (
-            <span className="exam-list__item-status exam-list__item-status--not-started">
+            <span className="exam-list__item-status">
               Koetta ei ole aloitettu
             </span>
           )}
         </div>
       </div>
-      {!isEnded && (
+ 
+      {restartAllowed || !isEnded ? (
         <div className="exam-list__item-footer">
           <div className="exam-list__item-actions">
             <Link
-              className={`exam-list__item-actions-button ${isStarted ? "exam-list__item-actions-button--started" : ""}`}
+              className={`exam-list__item-actions-button ${onGoing ? "exam-list__item-actions-button--ongoing" : ""}`}
               to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
             >
-              {isStarted ? "Jatka koetta" : "Avaa koe"}
+              Avaa koe
             </Link>
 
-            {hasTimeLimit && !isStarted && (
-              <span className="exam-list__item-duration">
-                Kokeen suorittamiseen on aikaa
-                <span className="exam-list__item-duration-accent">
-                  {exam.minutes} minuuttia
-                </span>
-              </span>
+            {hasTimeLimit && isStarted && !restartAllowed && !isEnded && (
+              <ExamTimer exam={exam} />
             )}
-
-            {hasTimeLimit && isStarted && <ExamTimer exam={exam} />}
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

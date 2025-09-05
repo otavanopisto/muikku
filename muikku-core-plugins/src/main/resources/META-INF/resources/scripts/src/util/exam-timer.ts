@@ -157,11 +157,10 @@ export class ExamTimerService {
 
     const remainingMs = endTime - now;
     const remainingMinutes = Math.floor(remainingMs / (1000 * 60));
-    const remainingSeconds = Math.floor((remainingMs % (1000 * 60)) / 1000);
 
     return {
       timeRemainingMs: remainingMs,
-      formattedTime: `${remainingMinutes}:${remainingSeconds.toString().padStart(2, "0")}`,
+      formattedTime: `${remainingMinutes}`,
       isExpired: false,
       endTime,
     };
