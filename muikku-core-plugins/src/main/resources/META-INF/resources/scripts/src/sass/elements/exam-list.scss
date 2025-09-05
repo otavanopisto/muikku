@@ -32,18 +32,26 @@
   margin: 0;
 }
 
-.exam-list__item-label s {
+.exam-list__item-labels {
+  align-items: center;
   display: flex;
   flex-flow: row nowrap;
+  gap: 10px;
+  margin-top: 5px;
 }
 
 .exam-list__item-label {
   background: lighten($color-info, 50%);
-  border: 1px solid lighten($color-info, 30%);;
-  border-radius: 3px;
+  border: 1px solid lighten($color-info, 30%);
+  border-radius: 20px;
   font-size: 0.75rem;
   line-height:1;
-  padding: 3px 5px;
+  padding: 3px 8px;
+}
+
+.exam-list__item-label-accent {
+  color: $color-accent;
+  font-weight: 600;
 }
 
 .exam-list__item-body {
@@ -55,6 +63,7 @@
 .exam-list__item-status {
   @include text;
   
+  color: $color-default-contrast;
   font-weight: 600;
 }
 
@@ -62,16 +71,8 @@
   color: $color-success;
 }
 
-.exam-list__item-status--started {
+.exam-list__item-status--ongoing {
   color: $color-fatal;
-}
-
-.exam-list__item-status--not-started {
-  color: $color-default-contrast;
-}
-
-.exam-list__item-status-restart-allowed {
-  color: $color-info;
 }
 
 .exam-list__item-duration {
@@ -96,7 +97,7 @@
 
 .exam-list__item-actions-button {
   align-items: center;
-  background: $color-primary;
+  background: $color-alt-accent;
   border: none;
   border-radius: 20px;
   color: $color-default;
@@ -109,6 +110,6 @@
   text-transform: uppercase;
 }
 
-.exam-list__item-actions-button--started {
-background: $color-fatal;
+.exam-list__item-actions-button--ongoing {
+  background: $color-accent;
 }
