@@ -28,6 +28,7 @@ import {
   getEditedFields,
   initializeImplemetedSupportActionsFormData,
   initializePedagogyFormData,
+  PedagogySupportPermissions,
 } from "~/components/pedagogy-support/helpers";
 
 const pedagogyApi = MApi.getPedagogyApi();
@@ -38,9 +39,9 @@ export type PEDAGOGY_SUPPORT_UPDATE_INITIALIZE_STATUS = SpecificActionType<
   ReducerInitializeStatusType
 >;
 
-export type PEDAGOGY_SUPPORT_UPDATE_STUDENT_TYPE = SpecificActionType<
-  "PEDAGOGY_SUPPORT_UPDATE_STUDENT_TYPE",
-  "COMPULSORY" | "UPPERSECONDARY"
+export type PEDAGOGY_SUPPORT_UPDATE_PERMISSIONS = SpecificActionType<
+  "PEDAGOGY_SUPPORT_UPDATE_PERMISSIONS",
+  PedagogySupportPermissions
 >;
 
 export type PEDAGOGY_SUPPORT_CHANGE_MODE = SpecificActionType<
@@ -134,7 +135,7 @@ export interface InitializePedagogySupportTriggerType {
   (data: {
     studentIdentifier: string;
     pedagogyFormAccess: Partial<PedagogyFormAccess>;
-    isUppersecondary: boolean;
+    pedagogySupportStudentPermissions: PedagogySupportPermissions;
     onSuccess?: () => void;
     onFail?: () => void;
   }): AnyActionType;
@@ -151,22 +152,14 @@ export interface ResetPedagogySupportTriggerType {
  * ActivatePedagogySupportTriggerType
  */
 export interface ActivatePedagogySupportTriggerType {
-  (data: {
-    isUppersecondary: boolean;
-    onSuccess?: () => void;
-    onFail?: () => void;
-  }): AnyActionType;
+  (data: { onSuccess?: () => void; onFail?: () => void }): AnyActionType;
 }
 
 /**
  * TogglePublishPedagogySupportTriggerType
  */
 export interface TogglePublishPedagogySupportFormTriggerType {
-  (data: {
-    isUppersecondary: boolean;
-    onSuccess?: () => void;
-    onFail?: () => void;
-  }): AnyActionType;
+  (data: { onSuccess?: () => void; onFail?: () => void }): AnyActionType;
 }
 
 /**
@@ -250,6 +243,8 @@ const initializePedagogySupport: InitializePedagogySupportTriggerType =
       ) => Promise<Dispatch<Action<AnyActionType>>>,
       getState: () => StateType
     ) => {
+      const { pedagogySupportStudentPermissions } = data;
+
       const state = getState();
 
       // Get student identifier
@@ -277,10 +272,10 @@ const initializePedagogySupport: InitializePedagogySupportTriggerType =
         payload: "INITIALIZING",
       });
 
-      // Update student type based on passed parameter
+      // And update permissions to store
       dispatch({
-        type: "PEDAGOGY_SUPPORT_UPDATE_STUDENT_TYPE",
-        payload: data.isUppersecondary ? "UPPERSECONDARY" : "COMPULSORY",
+        type: "PEDAGOGY_SUPPORT_UPDATE_PERMISSIONS",
+        payload: pedagogySupportStudentPermissions,
       });
 
       // Update identifier if changed
@@ -405,7 +400,7 @@ const loadPedagogySupportForm: LoadPedagogySupportFormTriggerType =
           type: "PEDAGOGY_SUPPORT_FORM_UPDATE_FORM_DATA",
           payload: initializePedagogyFormData(
             pedagogyForm.formData,
-            state.pedagogySupport.pedagogyStudentType === "UPPERSECONDARY"
+            state.pedagogySupport.permissions?.isUpperSecondary() ?? false
           ),
         });
 
@@ -873,6 +868,8 @@ const activatePedagogySupport: ActivatePedagogySupportTriggerType =
     ) => {
       const state = getState();
 
+      const permissions = state.pedagogySupport.permissions;
+
       const studentIdentifier =
         state.pedagogySupport.currentStudentIdentifier ||
         state.status.userSchoolDataIdentifier;
@@ -899,7 +896,7 @@ const activatePedagogySupport: ActivatePedagogySupportTriggerType =
           type: "PEDAGOGY_SUPPORT_FORM_UPDATE_FORM_DATA",
           payload: initializePedagogyFormData(
             pedagogyData.formData,
-            data.isUppersecondary
+            permissions?.isUpperSecondary() ?? false
           ),
         });
       } catch (err) {
@@ -927,6 +924,8 @@ const togglePublishPedagogySupportForm: TogglePublishPedagogySupportFormTriggerT
     ) => {
       const state = getState();
 
+      const permissions = state.pedagogySupport.permissions;
+
       // Student identifier is either current student identifier
       const studentIdentifier = state.pedagogySupport.currentStudentIdentifier;
 
@@ -949,7 +948,7 @@ const togglePublishPedagogySupportForm: TogglePublishPedagogySupportFormTriggerT
           type: "PEDAGOGY_SUPPORT_FORM_UPDATE_FORM_DATA",
           payload: initializePedagogyFormData(
             updatedPedagogyFormData.formData,
-            data.isUppersecondary
+            permissions?.isUpperSecondary() ?? false
           ),
         });
       } catch (err) {
