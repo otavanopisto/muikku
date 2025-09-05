@@ -119,7 +119,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
           )}
         </div>
       </div>
- 
+
       {restartAllowed || !isEnded ? (
         <div className="exam-list__item-footer">
           <div className="exam-list__item-actions">
