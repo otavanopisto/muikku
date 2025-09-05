@@ -53,7 +53,6 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.StudentGuidanceRelation;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserContactInfo;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -574,12 +573,13 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
 
   private PedagogyFormRestModel toRestModel(PedagogyForm form, Long userEntityId) {
     PedagogyFormRestModel model = new PedagogyFormRestModel();
-    
+
     // Owner and student contact info
-    
+
     UserEntity studentEntity = userEntityController.findUserEntityById(userEntityId);
     SchoolDataIdentifier identifier = studentEntity.defaultSchoolDataIdentifier();
-    UserContactInfo contactInfo = userController.getStudentContactInfo(identifier.getDataSource(), identifier.getIdentifier());
+    UserContactInfo contactInfo = userController.getStudentContactInfo(identifier.getDataSource(),
+        identifier.getIdentifier());
     model.setStudentInfo(toMap(contactInfo));
 
     // For form owner, only return name, email, and phone number
@@ -602,9 +602,9 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
       }
     }
     model.setUserEntityId(userEntityId);
-    
+
     // Normal fields
-    
+
     if (form != null) {
       model.setFormData(form.getFormData());
       model.setId(form.getId());
@@ -649,34 +649,34 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     else {
       model.setHistory(Collections.emptyList());
     }
-    
+
     // Study guiders & counselors
     List<String> counselorNames = new ArrayList<>();
     List<String> studyAdvisors = new ArrayList<>();
     List<String> groupAdvisors = new ArrayList<>();
-    
-    
+
     // Counselors & guiders
-    List<GroupStaffMember> studentGuidanceCounselors = userSchoolDataController.listStudentGuidanceCounselors(identifier, false);
-    
+    List<GroupStaffMember> studentGuidanceCounselors = userSchoolDataController
+        .listStudentGuidanceCounselors(identifier, false);
+
     for (GroupStaffMember counselor : studentGuidanceCounselors) {
-      User user = userController.findUserByIdentifier(counselor.userSchoolDataIdentifier());
-      
-      counselorNames.add(user.getDisplayName());
-      
+      UserEntityName userName = userEntityController.getName(counselor.userSchoolDataIdentifier(), true);
+
+      counselorNames.add(userName.getDisplayName());
+
       if (counselor.isGroupAdvisor()) {
-        groupAdvisors.add(user.getDisplayName());
+        groupAdvisors.add(userName.getDisplayName());
       }
-      
+
       if (counselor.isStudyAdvisor()) {
-        studyAdvisors.add(user.getDisplayName());
+        studyAdvisors.add(userName.getDisplayName());
       }
     }
-    
+
     model.setCounselors(counselorNames);
     model.setGroupAdvisors(groupAdvisors);
     model.setStudyAdvisors(studyAdvisors);
-    
+
     return model;
   }
   

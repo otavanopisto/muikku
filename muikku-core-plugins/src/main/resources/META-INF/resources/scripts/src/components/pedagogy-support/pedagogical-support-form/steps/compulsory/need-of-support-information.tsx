@@ -62,10 +62,6 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
     updatedFormData.supportActions = options.map((option) => option.value);
 
-    if (!updatedFormData.supportActions.includes("other")) {
-      updatedFormData.supportActionOther = undefined;
-    }
-
     updatePedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 

@@ -10,9 +10,10 @@ public class ExamAttendanceRestModel {
   public ExamAttendanceRestModel() {
   }
 
-  public ExamAttendanceRestModel(Long folderId, String name, OffsetDateTime started, OffsetDateTime ended, boolean allowRestart, List<ContentNode> contents) {
+  public ExamAttendanceRestModel(Long folderId, String name, String description, OffsetDateTime started, OffsetDateTime ended, boolean allowRestart, List<ContentNode> contents) {
     this.folderId = folderId;
     this.name = name;
+    this.description = description;
     this.started = started;
     this.ended = ended;
     this.allowRestart = allowRestart;
@@ -75,8 +76,17 @@ public class ExamAttendanceRestModel {
     this.name = name;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   private Long folderId;
   private String name;
+  private String description;
   private OffsetDateTime started;
   private OffsetDateTime ended;
   private boolean allowRestart;

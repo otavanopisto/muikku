@@ -22,6 +22,7 @@ import "~/sass/elements/workspace-assessment.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Action, Dispatch } from "redux";
 import PedagogySupport from "~/components/pedagogy-support";
+import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
 
 /**
  * StudiesApplicationProps
@@ -137,6 +138,10 @@ class StudiesApplication extends React.Component<
 
     const title = t("labels.studies");
 
+    const pedagogySupportPermissions = new PedagogySupportPermissions(
+      this.props.status.profile.studyProgrammeName
+    );
+
     const panelTabs: Tab[] = [
       {
         id: "SUMMARY",
@@ -164,7 +169,10 @@ class StudiesApplication extends React.Component<
           </ApplicationPanelBody>
         ),
       },
-      {
+    ];
+
+    if (pedagogySupportPermissions.hasAnyAccess()) {
+      panelTabs.push({
         id: "PEDAGOGY_FORM",
         name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
         hash: "pedagogy-form",
@@ -177,12 +185,12 @@ class StudiesApplication extends React.Component<
                 accessible: true,
               }}
               studentIdentifier={this.props.status.userSchoolDataIdentifier}
-              studyProgrammeName={this.props.status.profile.studyProgrammeName}
+              pedagogySupportStudentPermissions={pedagogySupportPermissions}
             />
           </ApplicationPanelBody>
         ),
-      },
-    ];
+      });
+    }
 
     /**
      * Just because we need to have all tabs ready first before rendering Application panel

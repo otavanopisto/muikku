@@ -313,6 +313,7 @@ public class ExamController {
     ExamAttendanceRestModel attendance = new ExamAttendanceRestModel();
     attendance.setFolderId(workspaceFolderId);
     attendance.setName(folder.getTitle());
+    attendance.setDescription(settingsJson.getDescription());
     attendance.setContents(Collections.emptyList());
     attendance.setMinutes(settingsJson.getMinutes());
     attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
