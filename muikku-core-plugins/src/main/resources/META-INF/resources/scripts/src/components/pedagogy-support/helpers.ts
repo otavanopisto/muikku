@@ -48,12 +48,14 @@ export const COMPULSORY_PEDAGOGYSUPPORT = [
   "Aikuisten perusopetuksen alkuvaihe",
 ];
 
+type PedagogyStudyType = "upperSecondary" | "compulsory";
+
 /**
  * Pedagogy support permissions
  */
 export class PedagogySupportPermissions {
   private studyProgrammeName: string;
-  private studyType: "upperSecondary" | "compulsory" | null;
+  private studyType: PedagogyStudyType | null;
 
   /**
    * Constructor
@@ -68,7 +70,7 @@ export class PedagogySupportPermissions {
    * Determine the study type based on the study programme name
    * @returns "upperSecondary" | "compulsory" | null
    */
-  private determineStudyType(): "upperSecondary" | "compulsory" | null {
+  private determineStudyType(): PedagogyStudyType | null {
     if (UPPERSECONDARY_PEDAGOGYSUPPORT.includes(this.studyProgrammeName)) {
       return "upperSecondary";
     }
@@ -115,7 +117,7 @@ export class PedagogySupportPermissions {
   /**
    * Get the study type
    */
-  getStudyType(): "upperSecondary" | "compulsory" | null {
+  getStudyType(): PedagogyStudyType | null {
     return this.studyType;
   }
 
