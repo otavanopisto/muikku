@@ -54,6 +54,22 @@ public class ExamRESTService {
     return Response.ok().entity(examController.getSettingsJson(settingsEntity)).build();
   }
 
+  @Path("/allSettings/{WORKSPACEENTITYID}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getAllSettings(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    List<ExamSettingsRestModel> settings = new ArrayList<>();
+    List<Long> examIds = examController.listExamIds(workspaceEntityId);
+    for (Long examId : examIds) {
+      ExamSettings settingsEntity = examController.findExamSettings(examId);
+      settings.add(examController.getSettingsJson(settingsEntity));
+    }
+    return Response.ok().entity(settings).build();
+  }
+
   @Path("/settings/{WORKSPACEFOLDERID}")
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)

@@ -198,6 +198,24 @@ public class ExamController {
   }
   
   /**
+   * Returns a list of all exam folder ids in a workspace.
+   * 
+   * @param workspaceEntityId Workspace entity id
+   * @param userEntityId User id
+   * 
+   * @return Exam folder ids
+   */
+  public List<Long> listExamIds(Long workspaceEntityId) {
+    List<Long> ids = new ArrayList<>();
+    WorkspaceRootFolder rootFolder = workspaceRootFolderDAO.findByWorkspaceEntityId(workspaceEntityId);
+    List<WorkspaceFolder> exams = workspaceFolderDAO.listByParentAndFolderTypeAndExam(rootFolder, WorkspaceFolderType.DEFAULT, true);
+    for (WorkspaceFolder exam : exams) {
+      ids.add(exam.getId());
+    }
+    return ids;
+  }
+
+  /**
    * Returns a list of all exam folder ids in a workspace that the given user is part of.
    * 
    * @param workspaceEntityId Workspace entity id
