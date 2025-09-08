@@ -3018,6 +3018,7 @@
       "createSuccess_textSample": "Text sample creation succeeded",
       "loadError": "Language profile loading failed:  {{error}}",
       "loadError_languageSamples": "Language sample loading failed: {{error}}",
+      "loadError_workspaces": "Workspace loading failed: {{error}}",
       "removeError": "$t(common:notifications.removeError)",
       "removeError_languageSamples": "Language sample removal failed:  {{error}}",
       "removeSuccess": "$t(common:notifications.removeSuccess)",

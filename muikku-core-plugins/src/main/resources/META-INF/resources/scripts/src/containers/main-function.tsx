@@ -133,7 +133,6 @@ import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
 import FrontpageBody from "~/components/frontpage/body";
 import UserCredentials from "~/containers/user-credentials";
-//import ErrorBody from "~/components/error/body";
 
 const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -262,13 +261,10 @@ export default class MainFunction extends React.Component<
       this.loadGuiderData();
     } else if (window.location.pathname.includes("/records")) {
       this.loadRecordsData(window.location.hash.replace("#", ""));
-    } else if (window.location.pathname.includes("/language-profile")) {
-      this.loadLanguageProfileData(window.location.hash.replace("#", ""));
     } else if (window.location.pathname.includes("/hops")) {
       this.loadHopsData(window.location.hash.replace("#", ""));
     } else if (window.location.pathname.includes("/guardian_hops")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [identifier, tab] = hashArray;
 
       this.loadHopsData(tab, identifier, true);
@@ -393,17 +389,17 @@ export default class MainFunction extends React.Component<
    * loadRecordsData
    * @param tab records tab
    */
-  loadLanguageProfileData(tab: string) {
-    const givenLocation = tab;
+  //loadLanguageProfileData(tab: string) {
+  //  const givenLocation = tab;
 
-    if (givenLocation === "initalize" || !givenLocation) {
-      // Not empty
-    } else if (givenLocation === "languages") {
-      // Not empty
-    } else if (givenLocation === "language-cv") {
-      // Not empty
-    }
-  }
+  //  if (givenLocation === "initalize" || !givenLocation) {
+  //    // Not empty
+  //  } else if (givenLocation === "languages") {
+  //    // Not empty
+  //  } else if (givenLocation === "language-cv") {
+  //    // Not empty
+  //  }
+  //}
 
   /**
    * loadHopsData

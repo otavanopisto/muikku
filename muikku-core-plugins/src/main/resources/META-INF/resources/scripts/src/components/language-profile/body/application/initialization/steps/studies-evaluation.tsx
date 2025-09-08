@@ -10,6 +10,7 @@ import MApi, { isMApiError } from "~/api/api";
 import { useEffect } from "react";
 import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
+import { displayNotification } from "~/actions/base/notifications";
 
 /**
  * AccomplishmentEvaluation component
@@ -47,14 +48,23 @@ const AccomplishmentEvaluation = () => {
         setPassedWorkspaces(workspaceData);
       } catch (error) {
         if (isMApiError(error)) {
-          // Handle MApiError
+          throw error;
         } else {
-          // Handle other errors
+          dispatch(
+            displayNotification(
+              t("notifications.loadError", {
+                ns: "languageProfile",
+                context: "workspaces",
+                error: error,
+              }),
+              "error"
+            )
+          );
         }
       }
     };
     fetchData();
-  }, [recordsApi, status.userSchoolDataIdentifier]);
+  }, [recordsApi, t, dispatch, status.userSchoolDataIdentifier]);
 
   /**
    * createRows

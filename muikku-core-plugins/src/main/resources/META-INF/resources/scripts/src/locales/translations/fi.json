@@ -3019,6 +3019,7 @@
       "createSuccess_textSample": "Tekstinäyte luotu onnistuneesti",
       "loadError": "Kieliprofiilin lataaminen epäonnistui:  {{error}}",
       "loadError_languageSamples": "Kielinäytteiden lataaminen epäonnistui: {{error}}",
+      "loadError_workspaces": "Suoritettujen kurssien lataaminen epäonnistui: {{error}}",
       "removeError": "$t(common:notifications.removeError)",
       "removeError_languageSamples": "Kielinäytteiden poistaminen epäonnistui:  {{error}}",
       "removeSuccess": "$t(common:notifications.removeSuccess)",
