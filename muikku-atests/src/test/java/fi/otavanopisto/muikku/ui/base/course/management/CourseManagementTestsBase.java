@@ -471,12 +471,14 @@ public class CourseManagementTestsBase extends AbstractUITest {
         
         MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
         
-        waitAndClickAndConfirm(".button--standard-ok", ".button--standard-ok.disabled", 10, 300);
-
+        waitAndClick(".button--standard-ok");
+        
         mockBuilder
         .addCourseStudent(course1.getId(), courseStudent)
         .build();
         
+        sleep(1500);
+        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".hero__workspace-title");
         
         logout();

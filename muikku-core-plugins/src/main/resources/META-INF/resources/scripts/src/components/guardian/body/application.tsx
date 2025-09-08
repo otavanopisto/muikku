@@ -19,11 +19,7 @@ import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
-import { UPPERSECONDARY_PEDAGOGYFORM } from "~/components/general/pedagogical-support-form";
 import { withTranslation, WithTranslation } from "react-i18next";
-import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
-import MApi from "~/api/api";
-import { PedagogyFormState } from "~/generated/client";
 import { getName } from "~/util/modifiers";
 import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
@@ -38,6 +34,12 @@ import {
   LoadStudentAccessTriggerType,
 } from "~/actions/main-function/guider";
 import { AnyActionType } from "~/actions";
+import PedagogySupport from "~/components/pedagogy-support";
+import {
+  resetPedagogySupport,
+  ResetPedagogySupportTriggerType,
+} from "~/actions/main-function/pedagogy-support";
+import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
 /**
  * StudiesTab
  */
@@ -59,6 +61,8 @@ interface DependantApplicationProps extends WithTranslation {
   dependants: DependantsState;
   loadStudentPedagogyFormAccess: LoadStudentAccessTriggerType;
   clearDependantState: clearDependantTriggerType;
+  resetPedagogySupport: ResetPedagogySupportTriggerType;
+  dispatch: Dispatch<Action<AnyActionType>>;
 }
 
 /**
@@ -67,7 +71,6 @@ interface DependantApplicationProps extends WithTranslation {
 interface DependantApplicationState {
   activeTab: StudiesTab;
   loading: boolean;
-  pedagogyFormState?: PedagogyFormState;
 }
 
 /**
@@ -90,8 +93,6 @@ class DependantApplication extends React.Component<
     };
     this.getCurrentDependantIdentifier =
       this.getCurrentDependantIdentifier.bind(this);
-    this.loadPedagogyFormState = this.loadPedagogyFormState.bind(this);
-    this.isVisible = this.isVisible.bind(this);
     this.onTabChange = this.onTabChange.bind(this);
     this.handleDependantSelectChange =
       this.handleDependantSelectChange.bind(this);
@@ -103,43 +104,6 @@ class DependantApplication extends React.Component<
    */
   getCurrentDependantIdentifier = () =>
     window.location.hash.replace("#", "").split("/")[0];
-  /**
-   * loadPedagogyFormState
-   * @param userEntityId userEntityId
-   */
-  loadPedagogyFormState = async (userEntityId: number) => {
-    const pedagogyApi = MApi.getPedagogyApi();
-    return await pedagogyApi.getPedagogyFormState({
-      userEntityId: userEntityId,
-    });
-  };
-
-  /**
-   * Returns whether section with given hash should be visible or not
-   *
-   * @param tab tab
-   * @returns whether section with given hash should be visible or not
-   */
-  isVisible(tab: Tab) {
-    const currentDependantIdentifier = this.getCurrentDependantIdentifier();
-
-    switch (tab.id) {
-      case "PEDAGOGY_FORM":
-        return (
-          UPPERSECONDARY_PEDAGOGYFORM.includes(
-            this.getDependantStudyProgramme(currentDependantIdentifier)
-          ) &&
-          this.props.guider.currentStudent.pedagogyFormAvailable &&
-          this.props.guider.currentStudent.pedagogyFormAvailable.accessible &&
-          this.props.guider.currentStudent.pedagogyFormAvailable
-            .studentParent &&
-          (this.state?.pedagogyFormState === "PENDING" ||
-            this.state?.pedagogyFormState === "APPROVED")
-        );
-    }
-
-    return true;
-  }
 
   /**
    * getDependantStudyProgramme
@@ -191,20 +155,16 @@ class DependantApplication extends React.Component<
   handleDependantSelectChange = async (option: OptionDefault<string>) => {
     window.location.hash = option.value;
     this.props.clearDependantState();
+    this.props.resetPedagogySupport();
 
-    const dependantUserEntityId = this.props.dependants.list.find(
+    const dependantIdentifier = this.props.dependants.list.find(
       (dependant) => dependant.identifier === option.value
-    )?.userEntityId;
+    )?.identifier;
 
-    if (dependantUserEntityId) {
+    if (dependantIdentifier) {
       // After clearing the state,
       // we reset everything for the newly selected user
-      this.props.loadStudentPedagogyFormAccess(dependantUserEntityId, true);
-      const state = await this.loadPedagogyFormState(dependantUserEntityId);
-
-      this.setState({
-        pedagogyFormState: state,
-      });
+      this.props.loadStudentPedagogyFormAccess(dependantIdentifier, true);
     }
 
     this.setState({
@@ -222,22 +182,20 @@ class DependantApplication extends React.Component<
       );
 
       // If there's no pedagogy form state, we load it
-      if (
-        !this.state.pedagogyFormState &&
-        !this.state.loading &&
-        dependantUserEntityId
-      ) {
-        this.props.loadStudentPedagogyFormAccess(dependantUserEntityId);
-
+      if (!this.state.loading && dependantUserEntityId) {
         this.setState({
           loading: true,
         });
 
-        const state = await this.loadPedagogyFormState(dependantUserEntityId);
-        this.setState({
-          pedagogyFormState: state,
-          loading: false,
-        });
+        this.props.loadStudentPedagogyFormAccess(
+          currentDependantIdentifier,
+          undefined,
+          () => {
+            this.setState({
+              loading: false,
+            });
+          }
+        );
       }
     }
   }
@@ -254,16 +212,8 @@ class DependantApplication extends React.Component<
       // will be done in the componendDidUpdate state
       const currentDependantIdentifier = this.getCurrentDependantIdentifier();
 
-      const dependantUserEntityId = this.getDependantUserEntityId(
-        currentDependantIdentifier
-      );
-
-      if (dependantUserEntityId) {
-        this.props.loadStudentPedagogyFormAccess(dependantUserEntityId);
-        const state = await this.loadPedagogyFormState(dependantUserEntityId);
-        this.setState({
-          pedagogyFormState: state,
-        });
+      if (currentDependantIdentifier) {
+        this.props.loadStudentPedagogyFormAccess(currentDependantIdentifier);
       }
     } else {
       const firstDependant = this.props.dependants.list[0];
@@ -314,9 +264,6 @@ class DependantApplication extends React.Component<
       count: this.props.dependants ? this.props.dependants.list.length : 0,
     });
     const selectedDependantIdentifier = this.getCurrentDependantIdentifier();
-    const selectedDependantUserEntityId = this.getDependantUserEntityId(
-      selectedDependantIdentifier
-    );
 
     const dependants = this.props.dependants
       ? this.props.dependants.list.map((student) => ({
@@ -346,7 +293,11 @@ class DependantApplication extends React.Component<
         <span>{selectedDependant?.label}</span>
       );
 
-    let panelTabs: Tab[] = [
+    const pedagogySupportPermissions = new PedagogySupportPermissions(
+      this.getDependantStudyProgramme(selectedDependantIdentifier)
+    );
+
+    const panelTabs: Tab[] = [
       {
         id: "SUMMARY",
         name: t("labels.summary", { ns: "studies" }),
@@ -369,23 +320,28 @@ class DependantApplication extends React.Component<
           </ApplicationPanelBody>
         ),
       },
-      {
+    ];
+
+    if (pedagogySupportPermissions.hasAnyAccess()) {
+      panelTabs.push({
         id: "PEDAGOGY_FORM",
-        name: "Pedagogisen tuen suunnitelma",
+        name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
         hash: "pedagogy-form",
         type: "pedagogy-form",
         component: (
           <ApplicationPanelBody modifier="tabs">
-            <UpperSecondaryPedagogicalSupportWizardForm
+            <PedagogySupport
               userRole="STUDENT_PARENT"
-              studentUserEntityId={selectedDependantUserEntityId}
+              studentIdentifier={selectedDependantIdentifier}
+              pedagogySupportStudentPermissions={pedagogySupportPermissions}
+              pedagogyFormAccess={
+                this.props.guider.currentStudent.pedagogyFormAvailable
+              }
             />
           </ApplicationPanelBody>
         ),
-      },
-    ];
-
-    panelTabs = panelTabs.filter(this.isVisible);
+      });
+    }
 
     return (
       <>
@@ -420,10 +376,17 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators(
-    { clearDependantState, loadStudentPedagogyFormAccess },
-    dispatch
-  );
+  return {
+    ...bindActionCreators(
+      {
+        clearDependantState,
+        loadStudentPedagogyFormAccess,
+        resetPedagogySupport,
+      },
+      dispatch
+    ),
+    dispatch,
+  };
 }
 
 export default withTranslation(["studies", "common"])(
