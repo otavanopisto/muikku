@@ -172,6 +172,15 @@ class WorkspaceNavbar extends React.Component<
         condition: this.props.status.permissions.WORKSPACE_MATERIALS_VISIBLE,
       },
       {
+        modifier: "exams",
+        trail: "exams",
+        text: t("labels.exams", { ns: "exams" }),
+        href: "/workspace/" + this.props.workspaceUrl + "/exams",
+        icon: "leanpub",
+        to: true,
+        condition: true,
+      },
+      {
         modifier: "discussion",
         trail: "workspace-discussions",
         text: t("labels.discussion"),
