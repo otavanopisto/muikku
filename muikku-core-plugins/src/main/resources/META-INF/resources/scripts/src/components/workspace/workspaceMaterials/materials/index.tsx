@@ -723,6 +723,27 @@ class WorkspaceMaterials extends React.Component<
         return;
       }
 
+      // "section pages"
+      const sectionSpecificContentData: JSX.Element[] = [];
+
+      // If section is an exam section and user is not a student, show the exam description
+      // as first element of the section
+      if (section.exam && !this.props.status.isStudent) {
+        const description = section.examSettings?.description;
+
+        const descriptionElement = description ? (
+          <CkeditorLoaderContent html={description} />
+        ) : null;
+
+        sectionSpecificContentData.push(
+          <div className="content-panel__item">
+            <article className="material-page">
+              <div className="material-page__content">{descriptionElement}</div>
+            </article>
+          </div>
+        );
+      }
+
       // section is restricted in following cases:
       // section is restricted for logged in users and users is not logged in...
       // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
@@ -732,9 +753,6 @@ class WorkspaceMaterials extends React.Component<
         (section.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
           !this.props.workspace.isCourseMember &&
           (this.props.status.isStudent || !this.props.status.loggedIn));
-
-      // "section pages"
-      const sectionSpecificContentData: JSX.Element[] = [];
 
       // If section is restricted we don't return anything
       !isSectionViewRestricted &&
