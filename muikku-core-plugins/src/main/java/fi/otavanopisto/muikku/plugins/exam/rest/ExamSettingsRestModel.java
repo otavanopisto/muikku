@@ -59,6 +59,17 @@ public class ExamSettingsRestModel {
   public void setDescription(String description) {
     this.description = description;
   }
+  
+  public Long getExamId() {
+    return examId;
+  }
+
+  public void setExamId(Long examId) {
+    this.examId = examId;
+  }
+
+  // Exam id 
+  private Long examId;
 
   // Exam description
   private String description;

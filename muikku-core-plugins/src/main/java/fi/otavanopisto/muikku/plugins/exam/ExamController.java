@@ -280,6 +280,7 @@ public class ExamController {
       settings = new ExamSettingsRestModel();
       settings.setCategories(Collections.emptyList());
     }
+    settings.setExamId(settingsEntity.getWorkspaceFolderId());
     return settings;
   }
 

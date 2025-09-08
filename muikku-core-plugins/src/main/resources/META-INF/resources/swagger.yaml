@@ -13956,6 +13956,10 @@ components:
         - allowMultipleAttempts
         - openForAll
       properties:
+        examId:
+          description: Exam folder id
+          type: integer
+          format: int64
         random:
           description: Are exam assignments randomized and if so, globally or per category
           $ref: "#/components/schemas/ExamSettingsRandom"
