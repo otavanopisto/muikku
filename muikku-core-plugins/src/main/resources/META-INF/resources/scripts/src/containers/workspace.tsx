@@ -1339,7 +1339,7 @@ export default class Workspace extends React.Component<
             render={(routeProps) => (
               <ProtectedRoute
                 requireAuth
-                hasPermission
+                hasPermission={this.props.store.getState().status.isStudent}
                 isAuthenticated={isAuthenticated}
                 routeProps={routeProps}
               >
