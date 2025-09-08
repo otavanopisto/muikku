@@ -477,7 +477,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         .addCourseStudent(course1.getId(), courseStudent)
         .build();
         
-        sleep(1500);
+        sleep(3500);
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".hero__workspace-title");
         
