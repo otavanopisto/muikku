@@ -81,6 +81,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
 
   return (
     <div className="exam-list__item">
+      {isEnded && <div className="exam-list__item-completed-marker" />}
       <h2 className="exam-list__item-header">
         <span>{exam.name}</span>
         <div className="exam-list__item-labels">

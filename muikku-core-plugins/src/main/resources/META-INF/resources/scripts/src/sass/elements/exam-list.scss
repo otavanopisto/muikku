@@ -21,6 +21,28 @@
   flex-flow: column nowrap;
   gap: 20px;
   padding: 20px;
+  position: relative;
+}
+
+.exam-list__item-completed-marker {
+  align-items: center;
+  background: $color-default;
+  border: 2px solid $color-assignment;
+  border-radius: 100%;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  left: -14px;
+  position: absolute;
+  top: 20px;
+  width: 1.5rem;
+
+  &::after {
+    color: $color-assignment;
+    content: "\e639";
+    font-family: "muikku";
+    font-size: 1rem;
+  }
 }
 
 .exam-list__item-header {
