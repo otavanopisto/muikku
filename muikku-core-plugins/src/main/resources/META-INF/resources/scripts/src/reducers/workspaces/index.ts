@@ -30,6 +30,7 @@ import {
   MaterialAI,
   ExamSettings,
   ExamAttendee,
+  ExamAttendance,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -275,10 +276,17 @@ export interface WorkspaceMaterialExtraTools {
  */
 export interface MaterialContentNodeWithIdAndLogic extends MaterialContentNode {
   id?: number;
-  // this is usually missing and has to be manually retrieved
+  // these are usually missing and have to be manually retrieved
   childrenAttachments?: MaterialContentNodeWithIdAndLogic[];
   evaluation?: MaterialEvaluation;
   assignment?: WorkspaceMaterial;
+
+  // This are available for other users than student
+  examSettings?: ExamSettings;
+  examAttendees?: ExamAttendee[];
+
+  // This is available for student only
+  examAttendance?: ExamAttendance;
 }
 
 /* export type MaterialContentNodeListType = Array<MaterialContentNodeWithIdAndLogic>; */

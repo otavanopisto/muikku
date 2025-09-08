@@ -48,6 +48,7 @@ import {
   MaterialViewRestriction,
 } from "~/generated/client";
 import { BackToToc } from "~/components/general/toc";
+import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 
 /**
  * WorkspaceMaterialsProps
@@ -561,54 +562,63 @@ class WorkspaceMaterials extends React.Component<
    * @param section section
    * @returns Exam section
    */
-  renderExamSection = (section: MaterialContentNodeWithIdAndLogic) => (
-    <section
-      key={"section-" + section.workspaceMaterialId}
-      className="content-panel__chapter"
-      id={`s-${section.workspaceMaterialId}`}
-      style={{
-        scrollMarginTop: this.state.defaultOffset + "px",
-      }}
-    >
-      {/*TOP OF THE CHAPTER*/}
-      <h2
-        className={`content-panel__chapter-title ${
-          section.hidden ? "state-HIDDEN" : ""
-        }`}
-      >
-        <div
-          className="content-panel__chapter-title-text"
-          lang={section.titleLanguage || this.props.workspace.language}
-        >
-          {section.title}
-          <BackToToc
-            tocElementId={
-              this.props.status.loggedIn
-                ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
-                : `tocTopic-${section.workspaceMaterialId}`
-            }
-            openToc={
-              this.contentPanelRef.current &&
-              this.contentPanelRef.current.openNavigation
-            }
-          />
-        </div>
-      </h2>
+  renderStudentExamSection = (section: MaterialContentNodeWithIdAndLogic) => {
+    const description = section.examAttendance?.description;
 
-      <div className="content-panel__item">
-        <article className="material-page">
-          <div className="material-page__content">
-            <Link
-              href="#"
-              to={`/workspace/${this.props.workspace.urlName}/exams/${section.workspaceMaterialId}`}
-            >
-              Siirry kokeeseen
-            </Link>
+    const descriptionElement = description ? (
+      <CkeditorLoaderContent html={description} />
+    ) : null;
+
+    return (
+      <section
+        key={"section-" + section.workspaceMaterialId}
+        className="content-panel__chapter"
+        id={`s-${section.workspaceMaterialId}`}
+        style={{
+          scrollMarginTop: this.state.defaultOffset + "px",
+        }}
+      >
+        {/*TOP OF THE CHAPTER*/}
+        <h2
+          className={`content-panel__chapter-title ${
+            section.hidden ? "state-HIDDEN" : ""
+          }`}
+        >
+          <div
+            className="content-panel__chapter-title-text"
+            lang={section.titleLanguage || this.props.workspace.language}
+          >
+            {section.title}
+            <BackToToc
+              tocElementId={
+                this.props.status.loggedIn
+                  ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                  : `tocTopic-${section.workspaceMaterialId}`
+              }
+              openToc={
+                this.contentPanelRef.current &&
+                this.contentPanelRef.current.openNavigation
+              }
+            />
           </div>
-        </article>
-      </div>
-    </section>
-  );
+        </h2>
+
+        <div className="content-panel__item">
+          <article className="material-page">
+            <div className="material-page__content">
+              {descriptionElement}
+              <Link
+                href="#"
+                to={`/workspace/${this.props.workspace.urlName}/exams/${section.workspaceMaterialId}`}
+              >
+                Siirry kokeeseen
+              </Link>
+            </div>
+          </article>
+        </div>
+      </section>
+    );
+  };
 
   /**
    * render
@@ -709,7 +719,7 @@ class WorkspaceMaterials extends React.Component<
 
       // If section is an exam section and user is a student, show the exam section
       if (section.exam && this.props.status.isStudent) {
-        results.push(this.renderExamSection(section));
+        results.push(this.renderStudentExamSection(section));
         return;
       }
 
