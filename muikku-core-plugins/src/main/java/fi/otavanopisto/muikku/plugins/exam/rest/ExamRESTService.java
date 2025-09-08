@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
-import fi.otavanopisto.muikku.plugins.exam.model.ExamSettings;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -50,8 +49,7 @@ public class ExamRESTService {
     if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    ExamSettings settingsEntity = examController.findExamSettings(workspaceFolderId);
-    return Response.ok().entity(examController.getSettingsJson(settingsEntity)).build();
+    return Response.ok().entity(examController.getSettingsJson(workspaceFolderId)).build();
   }
 
   @Path("/allSettings/{WORKSPACEENTITYID}")
@@ -64,8 +62,7 @@ public class ExamRESTService {
     List<ExamSettingsRestModel> settings = new ArrayList<>();
     List<Long> examIds = examController.listExamIds(workspaceEntityId);
     for (Long examId : examIds) {
-      ExamSettings settingsEntity = examController.findExamSettings(examId);
-      settings.add(examController.getSettingsJson(settingsEntity));
+      settings.add(examController.getSettingsJson(examId));
     }
     return Response.ok().entity(settings).build();
   }
@@ -212,19 +209,16 @@ public class ExamRESTService {
   }
   
   private void endOverdueExam(Long workspaceFolderId) {
-    ExamSettings examSettings = examController.findExamSettings(workspaceFolderId);
-    if (examSettings != null) {
-      ExamSettingsRestModel settingsJson = examController.getSettingsJson(examSettings);
-      if (settingsJson.getMinutes() > 0) {
-        ExamAttendance attendance = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
-        if (attendance != null && attendance.getStarted() != null && attendance.getEnded() == null) {
-          // User is an attendee who has started the exam but not yet finished it
-          Calendar c = Calendar.getInstance();
-          c.setTime(attendance.getStarted());
-          c.add(Calendar.MINUTE, settingsJson.getMinutes());
-          if (System.currentTimeMillis() > c.getTimeInMillis()) {
-            examController.endExam(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), c.getTime());
-          }
+    ExamSettingsRestModel settingsJson = examController.getSettingsJson(workspaceFolderId);
+    if (settingsJson.getMinutes() > 0) {
+      ExamAttendance attendance = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
+      if (attendance != null && attendance.getStarted() != null && attendance.getEnded() == null) {
+        // User is an attendee who has started the exam but not yet finished it
+        Calendar c = Calendar.getInstance();
+        c.setTime(attendance.getStarted());
+        c.add(Calendar.MINUTE, settingsJson.getMinutes());
+        if (System.currentTimeMillis() > c.getTimeInMillis()) {
+          examController.endExam(workspaceFolderId, sessionController.getLoggedUserEntity().getId(), c.getTime());
         }
       }
     }

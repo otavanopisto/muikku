@@ -255,33 +255,23 @@ public class ExamController {
    * @return Exam settings as JSON object
    */
   public ExamSettingsRestModel getSettingsJson(Long workspaceFolderId) {
-    return getSettingsJson(findExamSettings(workspaceFolderId));
-  }
-
-  /**
-   * Returns exam settings as JSON object.
-   * 
-   * @param settingsEntity Exam settings database entity
-   * 
-   * @return Exam settings as JSON object
-   */
-  public ExamSettingsRestModel getSettingsJson(ExamSettings settingsEntity) {
-    ExamSettingsRestModel settings = null;
-    if (settingsEntity != null && !StringUtils.isEmpty(settingsEntity.getSettings())) {
+    ExamSettingsRestModel restSettings = null;
+    ExamSettings settings =  findExamSettings(workspaceFolderId);
+    if (settings != null && !StringUtils.isEmpty(settings.getSettings())) {
       try {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(settingsEntity.getSettings(), ExamSettingsRestModel.class);
+        restSettings = mapper.readValue(settings.getSettings(), ExamSettingsRestModel.class);
       }
       catch (Exception e) {
         logger.severe(String.format("Malformatted exam settings: %s", e.getMessage()));
       }
     }
-    else {
-      settings = new ExamSettingsRestModel();
-      settings.setCategories(Collections.emptyList());
+    if (settings == null) {
+      restSettings = new ExamSettingsRestModel();
+      restSettings.setCategories(Collections.emptyList());
     }
-    settings.setExamId(settingsEntity.getWorkspaceFolderId());
-    return settings;
+    restSettings.setExamId(workspaceFolderId);
+    return restSettings;
   }
 
   /**
@@ -297,7 +287,7 @@ public class ExamController {
     if (settings == null) {
       return null;
     }
-    ExamSettingsRestModel settingsJson = getSettingsJson(settings);
+    ExamSettingsRestModel settingsJson = getSettingsJson(workspaceFolderId);
     if (settingsJson.getRandom() == ExamSettingsRandom.GLOBAL) {
       WorkspaceFolder folder = workspaceFolderDAO.findById(settings.getWorkspaceFolderId());
       // List all assignment ids and remove random ids until we're down to desired random count
