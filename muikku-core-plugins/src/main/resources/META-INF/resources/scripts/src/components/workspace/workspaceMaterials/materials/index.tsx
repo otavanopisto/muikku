@@ -216,8 +216,9 @@ class WorkspaceMaterials extends React.Component<
       },
     ];
 
+    // If includesSection is false, remove the first two items, as they are section creation options
     if (!includesSection) {
-      materialManagementItemsOptions.shift();
+      materialManagementItemsOptions.splice(0, 2);
     }
 
     return materialManagementItemsOptions;
@@ -640,7 +641,7 @@ class WorkspaceMaterials extends React.Component<
             <ButtonPill
               buttonModifiers="material-management-master"
               icon="plus"
-              onClick={this.createSection.bind(this, null)}
+              onClick={this.createSection.bind(this, null, true)}
             />
           </Dropdown>
         </div>
@@ -675,7 +676,7 @@ class WorkspaceMaterials extends React.Component<
               <ButtonPill
                 buttonModifiers="material-management-master"
                 icon="plus"
-                onClick={this.createSection.bind(this, section)}
+                onClick={this.createSection.bind(this, section, true)}
               />
             </Dropdown>
           </div>
@@ -829,7 +830,7 @@ class WorkspaceMaterials extends React.Component<
             (!isEditable && node.hidden && !showEvenIfHidden) ? null : (
               <ContentPanelItem
                 id={`p-${node.workspaceMaterialId}`}
-                ref={node.workspaceMaterialId + ""}
+                ref={this.getMaterialRef(node.workspaceMaterialId)}
                 key={node.workspaceMaterialId + ""}
                 scrollMarginTopOffset={this.state.defaultOffset}
               >

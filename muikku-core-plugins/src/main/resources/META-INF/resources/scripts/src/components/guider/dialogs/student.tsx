@@ -25,6 +25,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { resetHopsData } from "~/actions/main-function/hops/";
 import PedagogySupport from "~/components/pedagogy-support";
 import { resetPedagogySupport } from "~/actions/main-function/pedagogy-support";
+import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
 
 export type tabs =
   | "STUDIES"
@@ -155,21 +156,28 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
     guider.currentStudent.basic &&
     guider.currentStudent.pedagogyFormAvailable
   ) {
-    tabs.splice(1, 0, {
-      id: "PEDAGOGICAL_SUPPORT",
-      name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
-      type: "guider-student",
-      component: (
-        <PedagogySupport
-          userRole={userRoleForForm(
-            guider.currentStudent.pedagogyFormAvailable
-          )}
-          pedagogyFormAccess={guider.currentStudent.pedagogyFormAvailable}
-          studentIdentifier={guider.currentStudent.basic.id}
-          studyProgrammeName={guider.currentStudent.basic.studyProgrammeName}
-        />
-      ),
-    });
+    const pedagogySupportPermissions = new PedagogySupportPermissions(
+      guider.currentStudent.basic.studyProgrammeName
+    );
+
+    const hasAnyAccess = pedagogySupportPermissions.hasAnyAccess();
+
+    hasAnyAccess &&
+      tabs.splice(1, 0, {
+        id: "PEDAGOGICAL_SUPPORT",
+        name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
+        type: "guider-student",
+        component: (
+          <PedagogySupport
+            userRole={userRoleForForm(
+              guider.currentStudent.pedagogyFormAvailable
+            )}
+            pedagogyFormAccess={guider.currentStudent.pedagogyFormAvailable}
+            studentIdentifier={guider.currentStudent.basic.id}
+            pedagogySupportStudentPermissions={pedagogySupportPermissions}
+          />
+        ),
+      });
   }
 
   /**

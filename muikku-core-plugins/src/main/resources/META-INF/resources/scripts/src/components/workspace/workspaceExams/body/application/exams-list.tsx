@@ -6,6 +6,7 @@ import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import ExamTimer from "./exam-timer";
 import "~/sass/elements/exam-list.scss";
+import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 
 /**
  * ExamsListProps
@@ -80,6 +81,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
 
   return (
     <div className="exam-list__item">
+      {isEnded && <div className="exam-list__item-completed-marker" />}
       <h2 className="exam-list__item-header">
         <span>{exam.name}</span>
         <div className="exam-list__item-labels">
@@ -101,7 +103,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
       <div className="exam-list__item-body">
         {/* Show exam status and time info */}
         <div className="exam-list__item-content">
-          Tähän sattaa tulla kokeen kuvaus.
+          <CkeditorLoaderContent html={exam.description} />
         </div>
         <div className="exam-list__item-meta">
           {isEnded ? (
@@ -119,7 +121,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
           )}
         </div>
       </div>
- 
+
       {restartAllowed || !isEnded ? (
         <div className="exam-list__item-footer">
           <div className="exam-list__item-actions">
