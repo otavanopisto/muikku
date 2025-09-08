@@ -51,13 +51,13 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
    * removeFileFromQueue removes a file from the selected files queue.
    * @param index - The index of the file to remove.
    */
-  const removeFileFromQueue = (index: number) => {
+  const removeFileFromQueue = React.useCallback((index: number) => {
     setSelectedFiles((prevFiles) => {
       const newFiles = [...prevFiles];
       newFiles.splice(index, 1);
       return newFiles;
     });
-  };
+  }, []);
 
   /**
    * HandleFileChange handles the file input change event.
@@ -161,7 +161,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
    * SampleComponent renders the appropriate sample input form based on the sampleType.
    * It uses React.memo to optimize rendering.
    */
-  const renderSampleCreationComponent = React.useMemo(() => {
+  const renderSampleCreationComponent = () => {
     switch (sampleType) {
       case "TEXT":
         return (
@@ -196,20 +196,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
       default:
         return null;
     }
-  }, [
-    sampleType,
-    sample,
-    selectedFiles,
-    audioSamples,
-    handleFieldChange,
-    handleSave,
-    handleCancel,
-    handleFileChange,
-    handleAudioSave,
-    handleFilesSave,
-    handleRecorderChange,
-    handleDeleteAudio,
-  ]);
+  };
 
   if (!visible) {
     return null;

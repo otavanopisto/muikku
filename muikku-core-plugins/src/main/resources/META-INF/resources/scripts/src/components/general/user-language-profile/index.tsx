@@ -23,11 +23,11 @@ interface UserLanguageProfileProps {
 }
 
 /**
- * UserLanguageProfileProps
+ * UserLanguageProfile
  * @param props props
  * @returns JSX.Element
  */
-const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
+const UserLanguageProfile = (props: UserLanguageProfileProps) => {
   const { userId } = props;
   const {
     languageUsage,
@@ -351,4 +351,4 @@ const UserLanguageProfileProps = (props: UserLanguageProfileProps) => {
   );
 };
 
-export default UserLanguageProfileProps;
+export default UserLanguageProfile;

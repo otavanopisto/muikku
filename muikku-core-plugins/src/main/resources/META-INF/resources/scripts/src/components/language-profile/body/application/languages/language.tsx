@@ -44,6 +44,16 @@ const LanguageComponent = (props: LanguageComponentProps) => {
     }
   }, [samples, language.code]);
 
+  // Clean up the timeout when the component unmounts
+  React.useEffect(
+    () => () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    },
+    []
+  );
+
   /**
    * handleFieldChange
    * Handles changes in the text area for text samples.
@@ -55,8 +65,7 @@ const LanguageComponent = (props: LanguageComponentProps) => {
       sample: LanguageProfileSample
     ) => {
       // Get the current value
-      const newSample = { ...sample };
-      newSample.value = e.target.value;
+      const newSample = { ...sample, value: e.target.value };
 
       // Clear any existing timeout
       if (timeoutRef.current) {
@@ -76,16 +85,6 @@ const LanguageComponent = (props: LanguageComponentProps) => {
       }, 1000); // 1000ms debounce time
     },
     [dispatch, changed, setChanged]
-  );
-
-  // Clean up the timeout when the component unmounts
-  React.useEffect(
-    () => () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    },
-    []
   );
 
   return (
