@@ -182,7 +182,6 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
             onCancel={handleCancel}
           />
         );
-
       case "AUDIO":
         return (
           <AudioSample
@@ -205,7 +204,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   return (
     <div className="language-profile-container__row language-profile-container__row--new-sample">
       <div className="language-profile__form-element-container">
-        {renderSampleCreationComponent}
+        {renderSampleCreationComponent()}
       </div>
     </div>
   );

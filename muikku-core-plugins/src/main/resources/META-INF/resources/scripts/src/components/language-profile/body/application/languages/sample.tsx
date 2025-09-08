@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import Button from "~/components/general/button";
+import { IconButton } from "~/components/general/button";
 import { LanguageProfileSample } from "~/generated/client";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
 import PromptDialog from "~/components/general/prompt-dialog";
@@ -28,7 +28,7 @@ interface LanguageSampleProps {
  * @returns JSX.Element
  */
 const Sample = (props: LanguageSampleProps) => {
-  const { sample, onChange } = props;
+  const { sample } = props;
   const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const { status } = useSelector((state: StateType) => state);
@@ -40,15 +40,15 @@ const Sample = (props: LanguageSampleProps) => {
    * @returns JSX.Element
    * @param sample The language profile sample to render.
    */
-  const renderMemoizedSample = React.useMemo(() => {
+  const renderSample = () => {
     switch (sample.type) {
       case "TEXT":
         return (
           <textarea
             id={"sample-" + sample.id}
+            disabled
             className="language-profile__textarea"
-            defaultValue={sample.value || ""}
-            onChange={(e) => onChange(e, sample)}
+            defaultValue={sample.value}
           />
         );
       case "FILE":
@@ -73,7 +73,7 @@ const Sample = (props: LanguageSampleProps) => {
       default:
         return null;
     }
-  }, [sample, onChange]);
+  };
 
   /**
    * Handle deletion of a language profile sample.
@@ -85,7 +85,7 @@ const Sample = (props: LanguageSampleProps) => {
 
   return (
     <div className="language-profile-container__row language-profile-container__row--sample">
-      {renderMemoizedSample}
+      {renderSample()}
       <div className="language-profile__sample-buttons">
         <PromptDialog
           title={t("labels.remove", {
@@ -96,11 +96,11 @@ const Sample = (props: LanguageSampleProps) => {
           })}
           onExecute={() => handleDelete(sample.id)}
         >
-          <Button icon="trash" />
+          <IconButton icon="trash" />
         </PromptDialog>
       </div>
     </div>
   );
 };
 
-export default React.memo(Sample);
+export default Sample;
