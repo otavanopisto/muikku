@@ -829,7 +829,7 @@ class WorkspaceMaterials extends React.Component<
             (!isEditable && node.hidden && !showEvenIfHidden) ? null : (
               <ContentPanelItem
                 id={`p-${node.workspaceMaterialId}`}
-                ref={node.workspaceMaterialId + ""}
+                ref={this.getMaterialRef(node.workspaceMaterialId)}
                 key={node.workspaceMaterialId + ""}
                 scrollMarginTopOffset={this.state.defaultOffset}
               >

@@ -421,6 +421,22 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
           </Dropdown>
         </div>
       </div>
+
+      <div className="material-editor__sub-section">
+        <h3 className="material-editor__sub-title">Kuvaus</h3>
+        <div className="form__row">
+          <div className="form-element">
+            <CKEditor
+              onChange={(content) =>
+                handleExamSettingsChange("description", content)
+              }
+            >
+              {updatedExamSettings?.description || ""}
+            </CKEditor>
+          </div>
+        </div>
+      </div>
+
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Tehtävien satunnaisuus</h3>
         <div className="form__row">
