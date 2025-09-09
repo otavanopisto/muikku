@@ -386,22 +386,6 @@ export default class MainFunction extends React.Component<
   }
 
   /**
-   * loadRecordsData
-   * @param tab records tab
-   */
-  //loadLanguageProfileData(tab: string) {
-  //  const givenLocation = tab;
-
-  //  if (givenLocation === "initalize" || !givenLocation) {
-  //    // Not empty
-  //  } else if (givenLocation === "languages") {
-  //    // Not empty
-  //  } else if (givenLocation === "language-cv") {
-  //    // Not empty
-  //  }
-  //}
-
-  /**
    * loadHopsData
    * @param tab tab
    * @param userId userId
