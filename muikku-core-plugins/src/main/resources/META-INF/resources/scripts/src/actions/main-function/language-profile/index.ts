@@ -27,78 +27,78 @@ export type LanguageProfileLanguagePayload = {
   value: LanguageLevels | SkillLevels | Subjects;
 };
 
-export type SET_LANGUAGE_PROFILE_LOADING_STATE = SpecificActionType<
-  "SET_LANGUAGE_PROFILE_LOADING_STATE",
+export type LANGUAGE_PROFILE_SET_LOADING_STATE = SpecificActionType<
+  "LANGUAGE_PROFILE_SET_LOADING_STATE",
   LoadingState
 >;
-export type SET_LANGUAGE_PROFILE_SAVING_STATE = SpecificActionType<
-  "SET_LANGUAGE_PROFILE_SAVING_STATE",
+export type LANGUAGE_PROFILE_SET_SAVING_STATE = SpecificActionType<
+  "LANGUAGE_PROFILE_SET_SAVING_STATE",
   SaveState
 >;
 
-export type SET_LANGUAGE_PROFILE = SpecificActionType<
-  "SET_LANGUAGE_PROFILE",
+export type LANGUAGE_PROFILE_SET_PROFILE = SpecificActionType<
+  "LANGUAGE_PROFILE_SET_PROFILE",
   LanguageProfileData
 >;
 
-export type UPDATE_LANGUAGE_PROFILE_VALUES = SpecificActionType<
-  "UPDATE_LANGUAGE_PROFILE_VALUES",
+export type LANGUAGE_PROFILE_UPDATE_VALUES = SpecificActionType<
+  "LANGUAGE_PROFILE_UPDATE_VALUES",
   Partial<LanguageProfileData>
 >;
 
-export type UPDATE_LANGUAGE_PROFILE_LANGUAGES = SpecificActionType<
-  "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
+export type LANGUAGE_PROFILE_UPDATE_LANGUAGES = SpecificActionType<
+  "LANGUAGE_PROFILE_UPDATE_LANGUAGES",
   LanguageProfileLanguage
 >;
 
-export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_LEVELS = SpecificActionType<
-  "UPDATE_LANGUAGE_PROFILE_LANGUAGE_LEVELS",
+export type LANGUAGE_PROFILE_UPDATE_LANGUAGE_LEVELS = SpecificActionType<
+  "LANGUAGE_PROFILE_UPDATE_LANGUAGE_LEVELS",
   { code: string; cellId: string; value: LanguageLevels }
 >;
 
-export type UPDATE_LANGUAGE_PROFILE_SKILL_LEVELS = SpecificActionType<
-  "UPDATE_LANGUAGE_PROFILE_SKILL_LEVELS",
+export type LANGUAGE_PROFILE_UPDATE_SKILL_LEVELS = SpecificActionType<
+  "LANGUAGE_PROFILE_UPDATE_SKILL_LEVELS",
   { code: string; cellId: string; value: SkillLevels }
 >;
 
-export type ADD_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE = SpecificActionType<
-  "ADD_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE",
+export type LANGUAGE_PROFILE_ADD_LANGUAGE_WORKSPACE = SpecificActionType<
+  "LANGUAGE_PROFILE_ADD_LANGUAGE_WORKSPACE",
   { code: LanguageCode; identifier: string; value: string; name: string }
 >;
 
-export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE_VALUE =
+export type LANGUAGE_PROFILE_UPDATE_LANGUAGE_WORKSPACE_VALUE =
   SpecificActionType<
-    "UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE_VALUE",
+    "LANGUAGE_PROFILE_UPDATE_LANGUAGE_WORKSPACE_VALUE",
     { code: LanguageCode; identifier: string; value: string }
   >;
 
-export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<
-  "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+export type LANGUAGE_PROFILE_UPDATE_LANGUAGE_SAMPLE = SpecificActionType<
+  "LANGUAGE_PROFILE_UPDATE_LANGUAGE_SAMPLE",
   LanguageProfileSample
 >;
 
-export type UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLES = SpecificActionType<
-  "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLES",
+export type LANGUAGE_PROFILE_UPDATE_LANGUAGE_SAMPLES = SpecificActionType<
+  "LANGUAGE_PROFILE_UPDATE_LANGUAGE_SAMPLES",
   LanguageProfileSample[]
 >;
 
-export type ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<
-  "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+export type LANGUAGE_PROFILE_ADD_LANGUAGE_SAMPLE = SpecificActionType<
+  "LANGUAGE_PROFILE_ADD_LANGUAGE_SAMPLE",
   LanguageProfileSample
 >;
 
-export type DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE = SpecificActionType<
-  "DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+export type LANGUAGE_PROFILE_DELETE_LANGUAGE_SAMPLE = SpecificActionType<
+  "LANGUAGE_PROFILE_DELETE_LANGUAGE_SAMPLE",
   { userEntityId: number; sampleId: number }
 >;
 
-export type UPDATE_LANGUAGE_PROFILE_CV_GENERAL = SpecificActionType<
-  "UPDATE_LANGUAGE_PROFILE_CV_GENERAL",
+export type LANGUAGE_PROFILE_UPDATE_CV_GENERAL = SpecificActionType<
+  "LANGUAGE_PROFILE_UPDATE_CV_GENERAL",
   string
 >;
 
-export type UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE = SpecificActionType<
-  "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
+export type LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE = SpecificActionType<
+  "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
   CVLanguage
 >;
 
@@ -222,7 +222,7 @@ const saveLanguageProfile: SaveLanguageProfileTriggerType =
     ) => {
       try {
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "IN_PROGRESS",
         });
 
@@ -239,17 +239,17 @@ const saveLanguageProfile: SaveLanguageProfileTriggerType =
             },
           });
         dispatch({
-          type: "SET_LANGUAGE_PROFILE",
+          type: "LANGUAGE_PROFILE_SET_PROFILE",
           payload: JSON.parse(
             newLanguageProfile.formData
           ) as LanguageProfileData,
         });
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "SUCCESS",
         });
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "PENDING",
         });
         dispatch(
@@ -266,7 +266,7 @@ const saveLanguageProfile: SaveLanguageProfileTriggerType =
           throw err;
         }
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "FAILED",
         });
         dispatch(
@@ -302,12 +302,12 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
     ) => {
       try {
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          type: "LANGUAGE_PROFILE_SET_LOADING_STATE",
           payload: "LOADING",
         });
         if (clearCurrent) {
           dispatch({
-            type: "SET_LANGUAGE_PROFILE",
+            type: "LANGUAGE_PROFILE_SET_PROFILE",
             payload: initializeLanguageProfileState.data,
           });
         }
@@ -319,12 +319,12 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
         const languageProfileData = data && JSON.parse(data.formData);
 
         dispatch({
-          type: "UPDATE_LANGUAGE_PROFILE_VALUES",
+          type: "LANGUAGE_PROFILE_UPDATE_VALUES",
           payload: languageProfileData as LanguageProfileData,
         });
 
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          type: "LANGUAGE_PROFILE_SET_LOADING_STATE",
           payload: "READY",
         });
         success && success();
@@ -333,7 +333,7 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
           throw err;
         }
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          type: "LANGUAGE_PROFILE_SET_LOADING_STATE",
           payload: "ERROR",
         });
         dispatch(
@@ -369,12 +369,12 @@ const loadLanguageSamples: loadLanguageProfileTriggerType =
     ) => {
       try {
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          type: "LANGUAGE_PROFILE_SET_LOADING_STATE",
           payload: "LOADING",
         });
         if (clearCurrent) {
           dispatch({
-            type: "UPDATE_LANGUAGE_PROFILE_VALUES",
+            type: "LANGUAGE_PROFILE_UPDATE_VALUES",
             payload: {},
           });
         }
@@ -386,11 +386,11 @@ const loadLanguageSamples: loadLanguageProfileTriggerType =
         });
 
         dispatch({
-          type: "UPDATE_LANGUAGE_PROFILE_VALUES",
+          type: "LANGUAGE_PROFILE_UPDATE_VALUES",
           payload: { samples: data },
         });
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          type: "LANGUAGE_PROFILE_SET_LOADING_STATE",
           payload: "READY",
         });
         success && success();
@@ -399,7 +399,7 @@ const loadLanguageSamples: loadLanguageProfileTriggerType =
           throw err;
         }
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_LOADING_STATE",
+          type: "LANGUAGE_PROFILE_SET_LOADING_STATE",
           payload: "ERROR",
         });
         dispatch(
@@ -437,7 +437,7 @@ const createLanguageSample: CreateLanguageProfileSampleTriggerType =
     ) => {
       try {
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "IN_PROGRESS",
         });
 
@@ -452,15 +452,15 @@ const createLanguageSample: CreateLanguageProfileSampleTriggerType =
           },
         });
         dispatch({
-          type: "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+          type: "LANGUAGE_PROFILE_ADD_LANGUAGE_SAMPLE",
           payload: newSample,
         });
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "SUCCESS",
         });
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "PENDING",
         });
         dispatch(
@@ -478,7 +478,7 @@ const createLanguageSample: CreateLanguageProfileSampleTriggerType =
           throw err;
         }
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "FAILED",
         });
         dispatch(
@@ -517,7 +517,7 @@ const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
       getState: () => StateType
     ) => {
       dispatch({
-        type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+        type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
         payload: "IN_PROGRESS",
       });
       //  Can't be done in parallel, because of the file upload
@@ -570,15 +570,15 @@ const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
           );
 
           dispatch({
-            type: "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+            type: "LANGUAGE_PROFILE_ADD_LANGUAGE_SAMPLE",
             payload: response,
           });
           dispatch({
-            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
             payload: "SUCCESS",
           });
           dispatch({
-            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
             payload: "PENDING",
           });
           dispatch(
@@ -598,7 +598,7 @@ const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
             throw err;
           }
           dispatch({
-            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
             payload: "FAILED",
           });
           dispatch(
@@ -638,7 +638,7 @@ const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
       getState: () => StateType
     ) => {
       dispatch({
-        type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+        type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
         payload: "IN_PROGRESS",
       });
       //  Can't be done in parallel, because of the file upload
@@ -692,15 +692,15 @@ const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
           );
 
           dispatch({
-            type: "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+            type: "LANGUAGE_PROFILE_ADD_LANGUAGE_SAMPLE",
             payload: response,
           });
           dispatch({
-            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
             payload: "SUCCESS",
           });
           dispatch({
-            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
             payload: "PENDING",
           });
 
@@ -721,7 +721,7 @@ const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
             throw err;
           }
           dispatch({
-            type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+            type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
             payload: "FAILED",
           });
           dispatch(
@@ -765,7 +765,7 @@ const saveLanguageSamples: SaveLanguageProfileSamplesTriggerType =
           }
           try {
             dispatch({
-              type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+              type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
               payload: "IN_PROGRESS",
             });
 
@@ -787,11 +787,11 @@ const saveLanguageSamples: SaveLanguageProfileSamplesTriggerType =
               )
             );
             dispatch({
-              type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+              type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
               payload: "SUCCESS",
             });
             dispatch({
-              type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+              type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
               payload: "PENDING",
             });
             dispatch(
@@ -809,7 +809,7 @@ const saveLanguageSamples: SaveLanguageProfileSamplesTriggerType =
               throw err;
             }
             dispatch({
-              type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+              type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
               payload: "FAILED",
             });
             dispatch(
@@ -849,7 +849,7 @@ const deleteLanguageSample: DeleteLanguageProfileSampleTriggerType =
     ) => {
       try {
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "IN_PROGRESS",
         });
 
@@ -860,7 +860,7 @@ const deleteLanguageSample: DeleteLanguageProfileSampleTriggerType =
           sampleId: sampleId,
         });
         dispatch({
-          type: "DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+          type: "LANGUAGE_PROFILE_DELETE_LANGUAGE_SAMPLE",
           payload: {
             userEntityId,
             sampleId: sampleId,
@@ -881,7 +881,7 @@ const deleteLanguageSample: DeleteLanguageProfileSampleTriggerType =
           throw err;
         }
         dispatch({
-          type: "SET_LANGUAGE_PROFILE_SAVING_STATE",
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "FAILED",
         });
         dispatch(

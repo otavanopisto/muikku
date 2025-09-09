@@ -63,7 +63,7 @@ const SkillLevel = (props: SkillLevelProps) => {
     };
 
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
+      type: "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
     } as ActionType);
 
@@ -85,7 +85,7 @@ const SkillLevel = (props: SkillLevelProps) => {
       [field]: value,
     };
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
+      type: "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
     } as ActionType);
     setlanguageSkillLevels(updatedLanguageSkillLevels);
@@ -104,7 +104,7 @@ const SkillLevel = (props: SkillLevelProps) => {
       [name]: value,
     };
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
+      type: "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
     } as ActionType);
     setlanguageSkillLevels(updatedLanguageSkillLevels);
@@ -173,7 +173,7 @@ const SkillLevel = (props: SkillLevelProps) => {
 
     setIsValidUrl(true);
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
+      type: "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
     } as ActionType);
 
@@ -194,7 +194,7 @@ const SkillLevel = (props: SkillLevelProps) => {
 
     setIsValidUrl(true);
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE",
+      type: "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
     } as ActionType);
     setlanguageSkillLevels(updatedLanguageSkillLevels);

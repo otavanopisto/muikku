@@ -38,7 +38,7 @@ const FutureOfStudies = () => {
     // Set a new timeout
     timeoutRef.current = setTimeout(() => {
       dispatch({
-        type: "UPDATE_LANGUAGE_PROFILE_VALUES",
+        type: "LANGUAGE_PROFILE_UPDATE_VALUES",
         payload: { [field]: value },
       } as ActionType);
     }, 300); // 300ms debounce time

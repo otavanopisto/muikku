@@ -36,7 +36,7 @@ const LanguageCv = () => {
     // Set a new timeout
     timeoutRef.current = setTimeout(() => {
       dispatch({
-        type: "UPDATE_LANGUAGE_PROFILE_CV_GENERAL",
+        type: "LANGUAGE_PROFILE_UPDATE_CV_GENERAL",
         payload: value,
       } as ActionType);
     }, 300); // 300ms debounce time

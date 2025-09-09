@@ -79,7 +79,7 @@ const LanguageComponent = (props: LanguageComponentProps) => {
         }
 
         dispatch({
-          type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE",
+          type: "LANGUAGE_PROFILE_UPDATE_LANGUAGE_SAMPLE",
           payload: newSample,
         } as ActionType);
       }, 1000); // 1000ms debounce time

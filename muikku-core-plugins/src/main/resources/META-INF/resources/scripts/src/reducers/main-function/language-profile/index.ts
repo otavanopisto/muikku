@@ -136,13 +136,13 @@ export const languageProfile: Reducer<LanguageProfileState> = (
   action: ActionType
 ) => {
   switch (action.type) {
-    case "SET_LANGUAGE_PROFILE_LOADING_STATE": {
+    case "LANGUAGE_PROFILE_SET_LOADING_STATE": {
       return {
         ...state,
         loading: action.payload,
       };
     }
-    case "SET_LANGUAGE_PROFILE_SAVING_STATE": {
+    case "LANGUAGE_PROFILE_SET_SAVING_STATE": {
       return {
         ...state,
         saving: action.payload,
@@ -150,19 +150,19 @@ export const languageProfile: Reducer<LanguageProfileState> = (
     }
 
     // Probably not needed
-    case "SET_LANGUAGE_PROFILE":
+    case "LANGUAGE_PROFILE_SET_PROFILE":
       return {
         ...state,
         data: action.payload,
       };
 
-    case "UPDATE_LANGUAGE_PROFILE_VALUES":
+    case "LANGUAGE_PROFILE_UPDATE_VALUES":
       return {
         ...state,
         data: { ...state.data, ...action.payload },
       };
 
-    case "UPDATE_LANGUAGE_PROFILE_LANGUAGES": {
+    case "LANGUAGE_PROFILE_UPDATE_LANGUAGES": {
       const { payload } = action;
       const updatedLanguages = [...state.data.languages];
       // Check if the language already exists in the array
@@ -182,7 +182,7 @@ export const languageProfile: Reducer<LanguageProfileState> = (
         data: { ...state.data, languages: updatedLanguages },
       };
     }
-    case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_LEVELS": {
+    case "LANGUAGE_PROFILE_UPDATE_LANGUAGE_LEVELS": {
       const { payload } = action;
 
       const languagesUpdate = [...state.data.languages];
@@ -219,7 +219,7 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
-    case "UPDATE_LANGUAGE_PROFILE_SKILL_LEVELS": {
+    case "LANGUAGE_PROFILE_UPDATE_SKILL_LEVELS": {
       const { payload } = action;
       const skillPayload = { [payload.cellId]: payload.value };
       const languagesUpdate = [...state.data.languages];
@@ -256,7 +256,7 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
-    case "ADD_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE": {
+    case "LANGUAGE_PROFILE_ADD_LANGUAGE_WORKSPACE": {
       const { payload } = action;
 
       const languagesUpdate = [...state.data.languages];
@@ -293,7 +293,7 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
-    case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_WORKSPACE_VALUE": {
+    case "LANGUAGE_PROFILE_UPDATE_LANGUAGE_WORKSPACE_VALUE": {
       const { payload } = action;
 
       const languagesUpdate = [...state.data.languages];
@@ -330,7 +330,7 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
-    case "ADD_LANGUAGE_PROFILE_LANGUAGE_SAMPLE": {
+    case "LANGUAGE_PROFILE_ADD_LANGUAGE_SAMPLE": {
       const { payload } = action;
 
       return {
@@ -342,7 +342,7 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
-    case "UPDATE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE": {
+    case "LANGUAGE_PROFILE_UPDATE_LANGUAGE_SAMPLE": {
       const { payload } = action;
 
       const samplesUpdate = [...state.data.samples];
@@ -361,7 +361,7 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
-    case "DELETE_LANGUAGE_PROFILE_LANGUAGE_SAMPLE": {
+    case "LANGUAGE_PROFILE_DELETE_LANGUAGE_SAMPLE": {
       const { payload } = action;
       const newSamples = [...state.data.samples];
 
@@ -376,7 +376,7 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
-    case "UPDATE_LANGUAGE_PROFILE_CV_GENERAL": {
+    case "LANGUAGE_PROFILE_UPDATE_CV_GENERAL": {
       const { payload } = action;
       const updatedCv = { ...state.data.cv, general: payload };
 
@@ -386,7 +386,7 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
-    case "UPDATE_LANGUAGE_PROFILE_CV_LANGUAGE": {
+    case "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE": {
       const { payload } = action;
       const updatedCV = { ...state.data.cv };
       const updatedLanguages = [...updatedCV.languages];

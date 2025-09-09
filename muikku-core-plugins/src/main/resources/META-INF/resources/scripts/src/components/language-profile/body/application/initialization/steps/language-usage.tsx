@@ -50,7 +50,7 @@ const LanguageUsage = () => {
     // Set a new timeout
     timeoutRef.current = setTimeout(() => {
       dispatch({
-        type: "UPDATE_LANGUAGE_PROFILE_VALUES",
+        type: "LANGUAGE_PROFILE_UPDATE_VALUES",
         payload: { [field]: value },
       } as ActionType);
     }, 500); // 500ms debounce time
@@ -96,7 +96,7 @@ const LanguageUsage = () => {
       return;
     }
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
+      type: "LANGUAGE_PROFILE_UPDATE_LANGUAGES",
       payload: language,
     } as ActionType);
   };
@@ -117,7 +117,7 @@ const LanguageUsage = () => {
    */
   const handleRemoveLanguage = (language: LanguageData) => {
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGES",
+      type: "LANGUAGE_PROFILE_UPDATE_LANGUAGES",
       payload: language,
     } as ActionType);
   };

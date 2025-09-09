@@ -82,7 +82,7 @@ const LanguageMapping = () => {
     code: string
   ) => {
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_LANGUAGE_LEVELS",
+      type: "LANGUAGE_PROFILE_UPDATE_LANGUAGE_LEVELS",
       payload: {
         code,
         cellId,
@@ -159,7 +159,7 @@ const LanguageMapping = () => {
     code: string
   ) => {
     dispatch({
-      type: "UPDATE_LANGUAGE_PROFILE_SKILL_LEVELS",
+      type: "LANGUAGE_PROFILE_UPDATE_SKILL_LEVELS",
       payload: {
         code,
         cellId,
