@@ -217,6 +217,7 @@ export const materialSectionOrPageChanges = (
     "maxPoints",
     "ai",
     "exam",
+    "examSettings",
   ];
 
   let canPublish = false;

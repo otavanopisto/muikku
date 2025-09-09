@@ -14,6 +14,7 @@ import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
+import _ from "lodash";
 import { MaterialCompositeReply } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
@@ -611,6 +612,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
     ) => {
       const materialsApi = MApi.getMaterialsApi();
       const workspaceApi = MApi.getWorkspaceApi();
+      const examApi = MApi.getExamApi();
 
       try {
         if (!data.dontTriggerReducerActions) {
@@ -831,6 +833,17 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                 })
               )
             );
+          }
+
+          // If the exam settings changed, we need to update the exam settings
+          if (
+            data.material.type === "folder" &&
+            !_.isEqual(data.material.examSettings, data.update.examSettings)
+          ) {
+            await examApi.createOrUpdateExamSettings({
+              workspaceFolderId: data.material.workspaceMaterialId,
+              examSettings: data.update.examSettings,
+            });
           }
 
           // if the title changed we need to update the path, sadly only the server knows

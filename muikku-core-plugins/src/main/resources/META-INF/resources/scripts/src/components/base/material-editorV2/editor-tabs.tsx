@@ -10,6 +10,7 @@ import Dropdown from "~/components/general/dropdown";
 import LicenseSelector from "~/components/general/license-selector";
 import Link from "~/components/general/link";
 import {
+  ExamSettings,
   Language,
   MaterialAI,
   MaterialAnswersType,
@@ -45,9 +46,7 @@ import {
 } from "~/actions/workspaces/material";
 import { PageLocation, UploadingValue } from "~/@types/shared";
 import ConfirmRemoveAttachment from "../material-editor/confirm-remove-attachment";
-import useExamSettings from "./hooks/useExamSettings";
 import { ExamSettingsRandom } from "~/generated/client";
-import _ from "lodash";
 import Select from "react-select";
 import useExamAttendees from "./hooks/useExamAttendees";
 import { ExamCategories } from "./exam-categories";
@@ -362,65 +361,46 @@ interface ExamSettingsTabProps extends EditorTabProps {}
  * @returns Exam settings tab for the editor
  */
 export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { t } = useTranslation();
 
   const editorState = useSelector(
     (state: StateType) => state.workspaces.materialEditor
   );
 
-  const {
-    loading,
-    examSettings,
-    updatedExamSettings,
-    handleSave,
-    handleCancel,
-    handleExamSettingsChange,
-  } = useExamSettings();
+  const { examSettings } = editorState.currentDraftNodeValue;
+
+  const dispatch = useDispatch();
+
+  /**
+   * Handles exam settings change
+   * @param key key
+   * @param value value
+   */
+  const handleExamSettingsChange = <T extends keyof ExamSettings>(
+    key: T,
+    value: ExamSettings[T]
+  ) => {
+    dispatch(
+      updateWorkspaceMaterialContentNode({
+        workspace: editorState.currentNodeWorkspace,
+        material: editorState.currentDraftNodeValue,
+        update: { examSettings: { ...examSettings, [key]: value } },
+        isDraft: true,
+      })
+    );
+  };
 
   if (!editorState.opened) {
     return null;
   }
 
-  const canSave = !_.isEqual(examSettings, updatedExamSettings);
-
-  const publishModifiers = ["material-editor-publish-page", "material-editor"];
-  const revertModifiers = ["material-editor-revert-page", "material-editor"];
-
-  if (!canSave || loading) {
-    publishModifiers.push("disabled");
-    revertModifiers.push("disabled");
-  }
-
   return (
     <div className="material-editor__content-wrapper">
-      <div className="material-editor__buttonset">
-        <div className="material-editor__buttonset-primary"></div>
-        <div className="material-editor__buttonset-secondary">
-          <Dropdown
-            openByHover
-            modifier="material-management-tooltip"
-            content={t("labels.save", { ns: "materials" })}
-          >
-            <ButtonPill
-              buttonModifiers={publishModifiers}
-              onClick={handleSave}
-              icon="leanpub"
-            />
-          </Dropdown>
-
-          <Dropdown
-            openByHover
-            modifier="material-management-tooltip"
-            content={t("actions.cancel", { ns: "materials" })}
-          >
-            <ButtonPill
-              buttonModifiers={revertModifiers}
-              onClick={handleCancel}
-              icon="undo"
-            />
-          </Dropdown>
-        </div>
-      </div>
+      <EditorButtonSet
+        editorPermissions={props.editorPermissions}
+        examEnabled={props.examEnabled}
+      />
 
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Kuvaus</h3>
@@ -431,7 +411,7 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
                 handleExamSettingsChange("description", content)
               }
             >
-              {updatedExamSettings?.description || ""}
+              {examSettings?.description || ""}
             </CKEditor>
           </div>
         </div>
@@ -443,8 +423,7 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
           <div className="form-element">
             <select
               className="form-element__select form-element__select--material-editor"
-              disabled={loading}
-              value={updatedExamSettings?.random || ExamSettingsRandom.None}
+              value={examSettings?.random || ExamSettingsRandom.None}
               onChange={(e) =>
                 handleExamSettingsChange(
                   "random",
@@ -464,7 +443,7 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
         </div>
       </div>
 
-      {updatedExamSettings?.random === ExamSettingsRandom.Global && (
+      {examSettings?.random === ExamSettingsRandom.Global && (
         <div className="material-editor__sub-section">
           <h3 className="material-editor__sub-title">
             Satunnaisten tehtävien määrä:
@@ -475,9 +454,8 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
               <NumericFormat
                 id="duration"
                 className="form-element__input form-element__input--material-editor"
-                value={updatedExamSettings?.randomCount || 0}
+                value={examSettings?.randomCount || 0}
                 min={1}
-                disabled={loading}
                 decimalScale={0}
                 onValueChange={(values) =>
                   handleExamSettingsChange("randomCount", values.floatValue)
@@ -496,9 +474,8 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
             <NumericFormat
               id="duration"
               className="form-element__input form-element__input--material-editor"
-              value={updatedExamSettings?.minutes || 0}
+              value={examSettings?.minutes || 0}
               min={1}
-              disabled={loading}
               decimalScale={0}
               onValueChange={(values) =>
                 handleExamSettingsChange("minutes", values.floatValue)
@@ -514,8 +491,7 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
           <div className="form-element">
             <select
               className="form-element__select form-element__select--material-editor"
-              disabled={loading}
-              value={updatedExamSettings?.allowMultipleAttempts ? "YES" : "NO"}
+              value={examSettings?.allowMultipleAttempts ? "YES" : "NO"}
               onChange={(e) =>
                 handleExamSettingsChange(
                   "allowMultipleAttempts",
@@ -536,8 +512,7 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
           <div className="form-element">
             <select
               className="form-element__select form-element__select--material-editor"
-              disabled={loading}
-              value={updatedExamSettings?.openForAll ? "YES" : "NO"}
+              value={examSettings?.openForAll ? "YES" : "NO"}
               onChange={(e) =>
                 handleExamSettingsChange("openForAll", e.target.value === "YES")
               }
@@ -553,11 +528,10 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
         <h3 className="material-editor__sub-title">Kokeen kategoriat</h3>
 
         <ExamCategories
-          categories={updatedExamSettings?.categories || []}
+          categories={examSettings?.categories || []}
           onUpdate={(categories) =>
             handleExamSettingsChange("categories", categories)
           }
-          disabled={loading}
         />
       </div>
     </div>
@@ -587,8 +561,6 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
     selectedStudentOptions,
     hasChanges,
     handleExamAttendeeChange,
-    handleSave,
-    handleRevert,
   } = useExamAttendees();
 
   const canSave = hasChanges;
@@ -607,35 +579,6 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
 
   return (
     <div className="material-editor__content-wrapper">
-      <div className="material-editor__buttonset">
-        <div className="material-editor__buttonset-primary"></div>
-        <div className="material-editor__buttonset-secondary">
-          <Dropdown
-            openByHover
-            modifier="material-management-tooltip"
-            content={t("labels.save", { ns: "materials" })}
-          >
-            <ButtonPill
-              buttonModifiers={publishModifiers}
-              onClick={handleSave}
-              icon="leanpub"
-            />
-          </Dropdown>
-
-          <Dropdown
-            openByHover
-            modifier="material-management-tooltip"
-            content={t("actions.cancel", { ns: "materials" })}
-          >
-            <ButtonPill
-              buttonModifiers={revertModifiers}
-              onClick={handleRevert}
-              icon="undo"
-            />
-          </Dropdown>
-        </div>
-      </div>
-
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Kokeen osallistujat</h3>
         <Select
