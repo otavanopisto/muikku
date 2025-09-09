@@ -3,7 +3,7 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.exam-list {
+.exams {
   display: flex;
   flex-flow: column nowrap;
   gap: 20px;
@@ -14,7 +14,7 @@
   }
 }
 
-.exam-list__item {
+.exam {
   background: $color-default-lighter-generic-background;
   border-left: 3px solid $color-assignment;
   display: flex;
@@ -24,7 +24,13 @@
   position: relative;
 }
 
-.exam-list__item-completed-marker {
+.exam--dialog {
+  background: $color-default;
+  border: 0;
+  padding: 0;
+}
+
+.exam__completed-marker {
   align-items: center;
   background: $color-default;
   border: 2px solid $color-assignment;
@@ -45,7 +51,7 @@
   }
 }
 
-.exam-list__item-header {
+.exam__header {
   display: flex;
   flex-flow: column nowrap;
   font-size: 1.125rem;
@@ -54,7 +60,7 @@
   margin: 0;
 }
 
-.exam-list__item-labels {
+.exam__labels {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
@@ -62,7 +68,7 @@
   margin-top: 5px;
 }
 
-.exam-list__item-label {
+.exam__label {
   background: lighten($color-info, 50%);
   border: 1px solid lighten($color-info, 30%);
   border-radius: 20px;
@@ -71,20 +77,20 @@
   padding: 3px 8px;
 }
 
-.exam-list__item-label-accent {
+.exam__label-accent {
   color: $color-accent;
   font-weight: 600;
 }
 
-.exam-list__item-body {
+.exam__body {
   display: flex;
   flex-flow: column nowrap;
   gap: 20px;
 }
 
-.exam-list__item-content {
+.exam__content {
   line-height: 1.25rem;
-  
+
   p {
     margin: 10px 0;
 
@@ -103,44 +109,48 @@
   }
 }
 
-.exam-list__item-status {
+.exam__status {
   @include text;
   
   color: $color-default-contrast;
   font-weight: 600;
 }
 
-.exam-list__item-status--ended {
+.exam__status--ended {
   color: $color-success;
 }
 
-.exam-list__item-status--ongoing {
+.exam__status--ongoing {
   color: $color-fatal;
 }
 
-.exam-list__item-duration {
+.exam__duration {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
   gap: 10px;
 }
 
-.exam-list__item-duration-accent {
+.exam__duration-accent {
   color: $color-accent;
   font-size: 1.125rem;
   font-weight: 600;
 }
 
-.exam-list__item-actions {
+.exam__actions {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
   gap: 15px;
 }
 
-.exam-list__item-actions-button {
+.exam__actions--centered {
+  justify-content: center;
+}
+
+.exam__actions-button {
   align-items: center;
-  background: $color-alt-accent;
+  background: $color-info;
   border: none;
   border-radius: 20px;
   color: $color-default;
@@ -153,6 +163,69 @@
   text-transform: uppercase;
 }
 
-.exam-list__item-actions-button--ongoing {
+.exam__actions-button--ongoing {
   background: $color-accent;
+}
+
+.exam__state {
+  align-items: flex-start;
+  border: 1px solid transparent;
+  border-left-width: 3px;
+  color: $color-default-contrast;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 1rem;
+  margin: 5px;
+  padding: 10px;
+
+  p {
+    margin: 0 0 15px;
+
+    &:last-child {
+      margin: 0 0 5px;
+    }
+  }
+
+  ul {
+    list-style-type: initial;
+    margin: 15px 30px;
+
+    &:last-child {
+      margin: 15px 30px 5px;
+    }
+  }
+
+  li {
+    display: list-item;
+  }
+
+  &.state-INFO {
+    border-color: $color-info;
+
+    .exam__state-icon {
+      color: $color-info;
+    }
+  }
+
+  &.state-FAILED {
+    border-color: $color-fatal;
+
+    .exam__state-icon {
+      color: $color-fatal;
+    }
+  }
+}
+
+.exam__state-icon {
+  flex-basis: 2rem;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 2rem;
+}
+
+.exam__state-text {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 4px 0 0 10px;
 }

@@ -28,6 +28,11 @@ public class ExamAttendanceDAO extends CorePluginsDAO<ExamAttendance> {
     return persist(attendance);
   }
   
+  public ExamAttendance updateExtraMinutes(ExamAttendance attendance, Integer extraMinutes) {
+    attendance.setExtraMinutes(extraMinutes);
+    return persist(attendance);
+  }
+  
   public ExamAttendance updateStarted(ExamAttendance attendance, Date started) {
     attendance.setStarted(started);
     return persist(attendance);

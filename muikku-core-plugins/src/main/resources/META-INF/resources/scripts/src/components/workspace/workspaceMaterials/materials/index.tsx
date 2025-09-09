@@ -20,7 +20,7 @@ import ContentPanel, {
 import ProgressData from "../../progressData";
 
 import WorkspaceMaterial from "./materialsOld";
-import { ButtonPill } from "~/components/general/button";
+import Button, { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { Action, bindActionCreators, Dispatch } from "redux";
@@ -605,14 +605,19 @@ class WorkspaceMaterials extends React.Component<
 
         <div className="content-panel__item">
           <article className="material-page">
-            <div className="material-page__content">
-              {descriptionElement}
-              <Link
-                href="#"
+            <div className="material-page__content-wrapper">
+              <div className="material-page__content rich-text">
+                {descriptionElement}
+              </div>
+            </div>
+            <div className="material-page__de-floater" />
+            <div className="material-page__buttonset rs_skip_always">
+              <Button
+                buttonModifiers={["goto-exam"]}
                 to={`/workspace/${this.props.workspace.urlName}/exams/${section.workspaceMaterialId}`}
               >
                 Siirry kokeeseen
-              </Link>
+              </Button>
             </div>
           </article>
         </div>
