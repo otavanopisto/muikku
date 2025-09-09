@@ -269,9 +269,14 @@ export default class ContentPanel extends React.Component<
         ref="panel"
       >
         <div className="content-panel__container">
-          <div className="content-panel__header">
-            <h1 className="content-panel__header-title">{this.props.title}</h1>
-          </div>
+          {this.props.title ? (
+            <div className="content-panel__header">
+              <h1 className="content-panel__header-title">
+                {this.props.title}
+              </h1>
+            </div>
+          ) : null}
+
           {this.props.aside ? (
             <div className="content-panel__aside">{this.props.aside}</div>
           ) : null}
