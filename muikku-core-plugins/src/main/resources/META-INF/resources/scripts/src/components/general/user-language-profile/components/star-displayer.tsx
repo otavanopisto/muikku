@@ -3,7 +3,7 @@ import * as React from "react";
 /**
  * StarDisplayer
  */
-interface StarsProps {
+interface StarDisplayerProps {
   value: number;
   amount?: number;
 }
@@ -12,7 +12,7 @@ interface StarsProps {
  * @param props props
  * @returns JSX.Element
  */
-const StarDisplayer = (props: StarsProps) => {
+const StarDisplayer = (props: StarDisplayerProps) => {
   const { value, amount } = props;
   const stars = [...Array(amount ? amount : 5).keys()];
 

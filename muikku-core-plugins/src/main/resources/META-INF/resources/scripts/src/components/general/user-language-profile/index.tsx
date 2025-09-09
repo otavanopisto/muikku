@@ -11,7 +11,7 @@ import {
   levelMap,
   skillMap,
 } from "~/components/language-profile/body/application/initialization/steps/language-mapping";
-import StarDisplayer from "./components/stars";
+import StarDisplayer from "./components/star-displayer";
 import "~/sass/elements/user-language-profile.scss";
 import Accordion from "./components/drawer";
 
