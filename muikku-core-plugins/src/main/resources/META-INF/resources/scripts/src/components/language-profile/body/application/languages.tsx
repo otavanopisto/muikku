@@ -38,15 +38,21 @@ const LanguageSample = (props: LanguageSampleProps) => {
               })}
             </div>
           </fieldset>
-          {languages.map((language) => (
-            <Language
-              key={language.code}
-              samples={samples}
-              language={language}
-              changed={changed}
-              setChanged={setChanged}
-            />
-          ))}
+          {languages.length > 0 ? (
+            languages.map((language) => (
+              <Language
+                key={language.code}
+                samples={samples}
+                language={language}
+                changed={changed}
+                setChanged={setChanged}
+              />
+            ))
+          ) : (
+            <div className="empty">
+              {t("content.noAddedLanguages", { ns: "languageProfile" })}
+            </div>
+          )}
         </div>
       </div>
     </div>

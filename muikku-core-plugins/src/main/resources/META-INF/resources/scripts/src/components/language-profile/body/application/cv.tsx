@@ -96,10 +96,15 @@ const LanguageCv = () => {
               </div>
             </div>
           </fieldset>
-
-          {languages.map((language) => (
-            <SkillLevel key={language.code} language={language} />
-          ))}
+          {languages.length > 0 ? (
+            languages.map((language) => (
+              <SkillLevel key={language.code} language={language} />
+            ))
+          ) : (
+            <div className="empty">
+              {t("content.noAddedLanguages", { ns: "languageProfile" })}
+            </div>
+          )}
 
           <div className="language-profile__footer">
             <Button onClick={handleSave} buttonModifiers={["execute"]}>
