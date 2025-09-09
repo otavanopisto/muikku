@@ -328,7 +328,7 @@ public class ExamController {
     attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
     ExamAttendance attendanceEntity = findAttendance(workspaceFolderId, userEntityId);
     if (attendanceEntity != null) {
-      if (attendanceEntity.getExtraMinutes() != null) {
+      if (attendance.getMinutes() > 0 && attendanceEntity.getExtraMinutes() != null) {
         attendance.setMinutes(attendance.getMinutes() + attendanceEntity.getExtraMinutes());
       }
       if (attendanceEntity.getStarted() != null) {
