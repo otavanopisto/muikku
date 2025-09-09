@@ -227,6 +227,21 @@
   }
 }
 
+.button--continue-exam {
+  background: $color-accent;  
+  color: $color-default;
+}
+
+.button--start-exam {
+  background: $color-info; 
+  color: $color-default;
+}
+
+.button--goto-exam {
+  background: $color-info; 
+  color: $color-default;
+}
+
 .button--disconnect-warning {
   background-color: transparent;
   border: 1px solid $color-default;

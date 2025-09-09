@@ -53,16 +53,24 @@ const ExamTimer = (props: ExamTimerProps) => {
   }
 
   return (
-    <span
-      className={`exam-list__item-duration ${timerValue.isExpired ? "exam-list__item-duration--expired" : ""}`}
-    >
-      Aikaa on jäljellä
-      <span
-        className={`exam-list__item-duration-accent ${timerValue.isExpired ? "exam-list__item-duration-accent--expired" : ""}`}
-      >
-        {timerValue.formattedTime} minuuttia
-      </span>
-    </span>
+    <>
+      {timerValue.isExpired ? (
+        <span className="exam__duration exam__duration--expired">
+          <span
+            className={`exam__duration-accent ${timerValue.isExpired ? "exam__duration-accent--expired" : ""}`}
+          >
+            {timerValue.formattedTime}
+          </span>
+        </span>
+      ) : (
+        <span className="exam__duration">
+          Aikaa on jäljellä
+          <span className="exam__duration-accent">
+            {timerValue.formattedTime} minuuttia
+          </span>
+        </span>
+      )}
+    </>
   );
 };
 

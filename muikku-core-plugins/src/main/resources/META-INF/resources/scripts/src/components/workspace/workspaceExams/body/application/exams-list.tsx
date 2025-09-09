@@ -5,7 +5,7 @@ import { ExamAttendance } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import { StateType } from "~/reducers";
 import ExamTimer from "./exam-timer";
-import "~/sass/elements/exam-list.scss";
+import "~/sass/elements/exam.scss";
 import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 
 /**
@@ -25,7 +25,7 @@ const ExamsList = (props: ExamsListProps) => {
   );
 
   if (!currentWorkspace || !exams || examsStatus === "LOADING") {
-    return <div className="exam-list__item loader-empty" />;
+    return <div className="exam loader-empty" />;
   }
 
   if (examsStatus === "ERROR") {
@@ -43,7 +43,7 @@ const ExamsList = (props: ExamsListProps) => {
   }
 
   return (
-    <div className="exam-list">
+    <div className="exams">
       {exams.map((exam) => (
         <ExamsListItem key={exam.folderId} exam={exam} />
       ))}
@@ -80,61 +80,55 @@ const ExamsListItem = (props: ExamsListItemProps) => {
   const onGoing = isStarted && !isEnded;
 
   return (
-    <div className="exam-list__item">
-      {isEnded && <div className="exam-list__item-completed-marker" />}
-      <h2 className="exam-list__item-header">
+    <div className="exam">
+      {isEnded && <div className="exam__completed-marker" />}
+      <h2 className="exam__header">
         <span>{exam.name}</span>
-        <div className="exam-list__item-labels">
+        <div className="exam__labels">
           {restartAllowed && (
-            <span className="exam-list__item-label">
-              Kokeen voi suorittaa uudestaan
-            </span>
+            <span className="exam__label">Kokeen voi suorittaa uudestaan</span>
           )}
           {hasTimeLimit && (
-            <span className="exam-list__item-label">
+            <span className="exam__label">
               Suoritusaika:{" "}
-              <span className="exam-list__item-label-accent">
+              <span className="exam__label-accent">
                 {exam.minutes} minuuttia
               </span>
             </span>
           )}
         </div>
       </h2>
-      <div className="exam-list__item-body">
+      <div className="exam__body">
         {/* Show exam status and time info */}
-        <div className="exam-list__item-content">
+        <div className="exam__content">
           <CkeditorLoaderContent html={exam.description} />
         </div>
-        <div className="exam-list__item-meta">
+        <div className="exam__meta">
           {isEnded ? (
-            <span className="exam-list__item-status exam-list__item-status--ended">
+            <span className="exam__status exam__status--ended">
               Koe suoritettu {localize.date(exam.ended, "l, LT")}
             </span>
           ) : onGoing ? (
-            <span className="exam-list__item-status exam-list__item-status--ongoing">
+            <span className="exam__status exam__status--ongoing">
               Koe aloitettu {localize.date(exam.started, "l, LT")}
             </span>
           ) : (
-            <span className="exam-list__item-status">
-              Koetta ei ole aloitettu
-            </span>
+            <span className="exam__status">Koetta ei ole aloitettu</span>
           )}
         </div>
       </div>
 
       {restartAllowed || !isEnded ? (
-        <div className="exam-list__item-footer">
-          <div className="exam-list__item-actions">
+        <div className="exam__footer">
+          <div className="exam__actions">
             <Link
-              className={`exam-list__item-actions-button ${onGoing ? "exam-list__item-actions-button--ongoing" : ""}`}
+              className={`exam__actions-button ${onGoing ? "exam__actions-button--ongoing" : ""}`}
               to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
             >
               Avaa koe
             </Link>
 
-            {hasTimeLimit && isStarted && !restartAllowed && !isEnded && (
-              <ExamTimer exam={exam} />
-            )}
+            {hasTimeLimit && isStarted && !isEnded && <ExamTimer exam={exam} />}
           </div>
         </div>
       ) : null}

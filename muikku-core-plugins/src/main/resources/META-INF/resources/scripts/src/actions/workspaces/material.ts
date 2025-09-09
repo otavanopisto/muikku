@@ -990,13 +990,64 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
       getState: () => StateType
     ) => {
       const workspaceApi = MApi.getWorkspaceApi();
+      const examApi = MApi.getExamApi();
+
+      const state = getState();
 
       try {
-        const materialContentNodes =
+        let materialContentNodes: MaterialContentNodeWithIdAndLogic[] =
           await workspaceApi.getWorkspaceMaterialContentNodes({
             workspaceEntityId: workspaceId,
             includeHidden,
           });
+
+        if (!state.status.isStudent) {
+          const examSettings = await examApi.getAllExamSettings({
+            workspaceEntityId: workspaceId,
+          });
+
+          materialContentNodes = materialContentNodes.map((node) => {
+            if (node.type !== "folder") {
+              return node;
+            }
+
+            const examSetting = examSettings.find(
+              (setting) => setting.examId === node.workspaceMaterialId
+            );
+
+            if (!examSetting) {
+              return node;
+            }
+
+            return {
+              ...node,
+              examSettings: examSetting,
+            };
+          });
+        } else {
+          const examAttendances = await examApi.getExamAttendances({
+            workspaceEntityId: workspaceId,
+          });
+
+          materialContentNodes = materialContentNodes.map((node) => {
+            if (node.type !== "folder") {
+              return node;
+            }
+
+            const examAttendance = examAttendances.find(
+              (attendance) => attendance.folderId === node.workspaceMaterialId
+            );
+
+            if (!examAttendance) {
+              return node;
+            }
+
+            return {
+              ...node,
+              examAttendance,
+            };
+          });
+        }
 
         dispatch({
           type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",

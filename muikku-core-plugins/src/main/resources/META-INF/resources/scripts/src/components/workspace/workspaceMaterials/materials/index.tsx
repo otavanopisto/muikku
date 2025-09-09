@@ -20,7 +20,7 @@ import ContentPanel, {
 import ProgressData from "../../progressData";
 
 import WorkspaceMaterial from "./materialsOld";
-import { ButtonPill } from "~/components/general/button";
+import Button, { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { Action, bindActionCreators, Dispatch } from "redux";
@@ -48,6 +48,7 @@ import {
   MaterialViewRestriction,
 } from "~/generated/client";
 import { BackToToc } from "~/components/general/toc";
+import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 
 /**
  * WorkspaceMaterialsProps
@@ -561,54 +562,68 @@ class WorkspaceMaterials extends React.Component<
    * @param section section
    * @returns Exam section
    */
-  renderExamSection = (section: MaterialContentNodeWithIdAndLogic) => (
-    <section
-      key={"section-" + section.workspaceMaterialId}
-      className="content-panel__chapter"
-      id={`s-${section.workspaceMaterialId}`}
-      style={{
-        scrollMarginTop: this.state.defaultOffset + "px",
-      }}
-    >
-      {/*TOP OF THE CHAPTER*/}
-      <h2
-        className={`content-panel__chapter-title ${
-          section.hidden ? "state-HIDDEN" : ""
-        }`}
-      >
-        <div
-          className="content-panel__chapter-title-text"
-          lang={section.titleLanguage || this.props.workspace.language}
-        >
-          {section.title}
-          <BackToToc
-            tocElementId={
-              this.props.status.loggedIn
-                ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
-                : `tocTopic-${section.workspaceMaterialId}`
-            }
-            openToc={
-              this.contentPanelRef.current &&
-              this.contentPanelRef.current.openNavigation
-            }
-          />
-        </div>
-      </h2>
+  renderStudentExamSection = (section: MaterialContentNodeWithIdAndLogic) => {
+    const description = section.examAttendance?.description;
 
-      <div className="content-panel__item">
-        <article className="material-page">
-          <div className="material-page__content">
-            <Link
-              href="#"
-              to={`/workspace/${this.props.workspace.urlName}/exams/${section.workspaceMaterialId}`}
-            >
-              Siirry kokeeseen
-            </Link>
+    const descriptionElement = description ? (
+      <CkeditorLoaderContent html={description} />
+    ) : null;
+
+    return (
+      <section
+        key={"section-" + section.workspaceMaterialId}
+        className="content-panel__chapter"
+        id={`s-${section.workspaceMaterialId}`}
+        style={{
+          scrollMarginTop: this.state.defaultOffset + "px",
+        }}
+      >
+        {/*TOP OF THE CHAPTER*/}
+        <h2
+          className={`content-panel__chapter-title ${
+            section.hidden ? "state-HIDDEN" : ""
+          }`}
+        >
+          <div
+            className="content-panel__chapter-title-text"
+            lang={section.titleLanguage || this.props.workspace.language}
+          >
+            {section.title}
+            <BackToToc
+              tocElementId={
+                this.props.status.loggedIn
+                  ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                  : `tocTopic-${section.workspaceMaterialId}`
+              }
+              openToc={
+                this.contentPanelRef.current &&
+                this.contentPanelRef.current.openNavigation
+              }
+            />
           </div>
-        </article>
-      </div>
-    </section>
-  );
+        </h2>
+
+        <div className="content-panel__item">
+          <article className="material-page">
+            <div className="material-page__content-wrapper">
+              <div className="material-page__content rich-text">
+                {descriptionElement}
+              </div>
+            </div>
+            <div className="material-page__de-floater" />
+            <div className="material-page__buttonset rs_skip_always">
+              <Button
+                buttonModifiers={["goto-exam"]}
+                to={`/workspace/${this.props.workspace.urlName}/exams/${section.workspaceMaterialId}`}
+              >
+                Siirry kokeeseen
+              </Button>
+            </div>
+          </article>
+        </div>
+      </section>
+    );
+  };
 
   /**
    * render
@@ -709,8 +724,29 @@ class WorkspaceMaterials extends React.Component<
 
       // If section is an exam section and user is a student, show the exam section
       if (section.exam && this.props.status.isStudent) {
-        results.push(this.renderExamSection(section));
+        results.push(this.renderStudentExamSection(section));
         return;
+      }
+
+      // "section pages"
+      const sectionSpecificContentData: JSX.Element[] = [];
+
+      // If section is an exam section and user is not a student, show the exam description
+      // as first element of the section
+      if (section.exam && !this.props.status.isStudent) {
+        const description = section.examSettings?.description;
+
+        const descriptionElement = description ? (
+          <CkeditorLoaderContent html={description} />
+        ) : null;
+
+        sectionSpecificContentData.push(
+          <div className="content-panel__item">
+            <article className="material-page">
+              <div className="material-page__content">{descriptionElement}</div>
+            </article>
+          </div>
+        );
       }
 
       // section is restricted in following cases:
@@ -722,9 +758,6 @@ class WorkspaceMaterials extends React.Component<
         (section.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
           !this.props.workspace.isCourseMember &&
           (this.props.status.isStudent || !this.props.status.loggedIn));
-
-      // "section pages"
-      const sectionSpecificContentData: JSX.Element[] = [];
 
       // If section is restricted we don't return anything
       !isSectionViewRestricted &&

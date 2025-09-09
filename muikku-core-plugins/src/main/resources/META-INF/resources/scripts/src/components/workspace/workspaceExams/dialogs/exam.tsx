@@ -58,6 +58,7 @@ const ExamDialog = (props: ExamDialogProps) => {
   return (
     <Dialog
       isOpen={isOpen}
+      closeOnOverlayClick={false}
       modifier="exam"
       title="Kokeen tiedot"
       content={content}

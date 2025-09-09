@@ -207,74 +207,77 @@ const ExamInstance = (props: ExamInstanceProps) => {
         <motion.div
           {...commonMotionProps}
           key="pre-info"
-          className="hops-container__info"
+          className="exam__info"
         >
           <PreExamInfo exam={preExamInfo} onCloseExam={props.onCloseExam} />
         </motion.div>
       );
     } else if (currentExamStatusInfo.status === "ERROR") {
       return (
-        <motion.div
-          {...commonMotionProps}
-          key="error"
-          className="hops-container__info"
-        >
-          <div className="hops-container__state state-FAILED">
-            <div className="hops-container__state-icon icon-notification"></div>
-            <div className="hops-container__state-text">
+        <motion.div {...commonMotionProps} key="error" className="exam__info">
+          <div className="exam__state state-FAILED">
+            <div className="exam__state-icon icon-notification"></div>
+            <div className="exam__state-text">
               {getErrorMsgByStatusCode(currentExamStatusInfo.statusCode)}
             </div>
           </div>
 
-          <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
-            <Button buttonModifiers={["execute"]} onClick={props.onCloseExam}>
-              Sulje koeikkuna
-            </Button>
+          <div className="exam__footer">
+            <div className="exam__actions">
+              <Button
+                buttonModifiers={["standard-cancel", "cancel"]}
+                onClick={props.onCloseExam}
+              >
+                Sulje koeikkuna
+              </Button>
+            </div>
           </div>
         </motion.div>
       );
     } else if (currentExamExpired) {
       return (
-        <motion.div
-          {...commonMotionProps}
-          key="expired"
-          className="hops-container__info"
-        >
-          <div className="hops-container__state state-INFO">
-            <div className="hops-container__state-icon icon-notification"></div>
-            <div className="hops-container__state-text">
+        <motion.div {...commonMotionProps} key="expired" className="exam__info">
+          <div className="exam__state state-INFO">
+            <div className="exam__state-icon icon-notification"></div>
+            <div className="exam__state-text">
               Kokeen aika on umpeutunut ja koe on päättynyt. Palauttamattomat
               tehtävät on merkitty automaattisesti palautetuiksi. Voit sulkea
               koeikkunan.
             </div>
           </div>
 
-          <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
-            <Button buttonModifiers={["execute"]} onClick={props.onCloseExam}>
-              Sulje koeikkuna
-            </Button>
+          <div className="exam__footer">
+            <div className="exam__actions">
+              <Button
+                buttonModifiers={["standard-cancel", "cancel"]}
+                onClick={props.onCloseExam}
+              >
+                Sulje koeikkuna
+              </Button>
+            </div>
           </div>
         </motion.div>
       );
     } else if (currentExam && currentExam.ended) {
       return (
-        <motion.div
-          {...commonMotionProps}
-          key="ended"
-          className="hops-container__info"
-        >
-          <div className="hops-container__state state-INFO">
-            <div className="hops-container__state-icon icon-notification"></div>
-            <div className="hops-container__state-text">
+        <motion.div {...commonMotionProps} key="ended" className="exam__info">
+          <div className="exam__state state-INFO">
+            <div className="exam__state-icon icon-notification"></div>
+            <div className="exam__state-text">
               Koe on päättynyt {localize.date(currentExam.ended)}. Voit sulkea
               koe ikkunan
             </div>
           </div>
 
-          <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
-            <Button buttonModifiers={["execute"]} onClick={props.onCloseExam}>
-              Sulje koeikkuna
-            </Button>
+          <div className="exam__footer">
+            <div className="exam__actions">
+              <Button
+                buttonModifiers={["standard-cancel", "cancel"]}
+                onClick={props.onCloseExam}
+              >
+                Sulje koeikkuna
+              </Button>
+            </div>
           </div>
         </motion.div>
       );
@@ -326,16 +329,26 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
    * buttonText
    * @returns button text
    */
-  const getButtonText = () => {
-    if (exam.allowRestart && !!exam.ended && !!exam.started) {
-      return "Aloita koe uudestaan";
+  const getButton = () => {
+    if (exam.started && !exam.ended) {
+      return (
+        <Button
+          buttonModifiers={["standard-ok", "continue-exam"]}
+          onClick={handleStartExam}
+        >
+          Jatka koetta
+        </Button>
+      );
     }
 
-    if (exam.started) {
-      return "Jatka koetta";
-    }
-
-    return "Aloita koe";
+    return (
+      <Button
+        buttonModifiers={["standard-ok", "start-exam"]}
+        onClick={handleStartExam}
+      >
+        Aloita koe
+      </Button>
+    );
   };
 
   if (!exam) {
@@ -343,25 +356,45 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
   }
 
   return (
-    <>
-      <div className="hops-container__state state-INFO">
-        <div className="hops-container__state-icon icon-notification"></div>
-        <div className="hops-container__state-text">
-          Tähän tulee info tekstiä kokeeseen liittyen, kuten mahdolliset
-          ajastusrajoitukset yms. timerit...
+    <div className="exam exam--dialog">
+      <div className="exam__body">
+        <div className="exam__labels">
+          {exam.allowRestart && (
+            <span className="exam__label">Kokeen voi suorittaa uudestaan</span>
+          )}
+
+          {exam.minutes && (
+            <span className="exam__label">
+              Suoritusaika:{" "}
+              <span className="exam__label-accent">
+                {exam.minutes} minuuttia
+              </span>
+            </span>
+          )}
+        </div>
+        <div className="exam__content">
+          {exam.description && (
+            <div
+              className="exam__content"
+              dangerouslySetInnerHTML={{ __html: exam.description }}
+            ></div>
+          )}
+        </div>
+
+        <div className="exam__footer">
+          <div className="exam__actions exam__actions--centered">
+            {getButton()}
+
+            <Button
+              buttonModifiers={["standard-cancel", "cancel"]}
+              onClick={onCloseExam}
+            >
+              Sulje koeikkuna
+            </Button>
+          </div>
         </div>
       </div>
-
-      <div className="hops-container__row hops-container__row--submit-middle-of-the-form">
-        <Button buttonModifiers={["execute"]} onClick={handleStartExam}>
-          {getButtonText()}
-        </Button>
-
-        <Button buttonModifiers={["execute"]} onClick={onCloseExam}>
-          Sulje koeikkuna
-        </Button>
-      </div>
-    </>
+    </div>
   );
 });
 
@@ -472,12 +505,23 @@ const ExamInstanceContent = withTranslation("workspace")((
   );
 
   const aside = (
-    <div className="exam-aside">
+    <div className="exam__aside">
       <ExamTimer exam={currentExam} />
     </div>
   );
 
-  const footerActions = <Button onClick={handleEndExam}>Lopeta koe</Button>;
+  const footerActions = (
+    <div className="exam__footer">
+      <div className="exam__actions exam__actions--centered">
+        <Button
+          buttonModifiers={["standard-ok", "execute"]}
+          onClick={handleEndExam}
+        >
+          Lopeta koe
+        </Button>
+      </div>
+    </div>
+  );
 
   return (
     <ContentPanel
