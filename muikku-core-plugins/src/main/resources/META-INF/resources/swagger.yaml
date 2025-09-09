@@ -4865,13 +4865,42 @@ paths:
             type: integer
       responses:
         "200":
-          description: Exam attendance
+          description: Exam attendee
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ExamAttendance"
+                $ref: "#/components/schemas/ExamAttendee"
         "403":
           description: If called as student
+    put:
+      operationId: updateExamAttendee
+      summary: Updates an exam attendee
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+        - name: userEntityId
+          in: path
+          description: Id of the user to be added as exam attendee
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Exam attendee
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttendee"
+        "403":
+          description: If called as student
+        "404":
+          description: Attendee not found
     delete:
       operationId: removeExamAttendee
       summary: Removes an exam attendee
@@ -14033,15 +14062,15 @@ components:
         line:
           description: Attendee line
           type: string
-        hasImage:
-          description: Attendee has profile image
-          type: boolean
         started:
           description: When the exam was started (OffSetDateTime format)
           type: string
         ended:
           description: When the exam was ended (OffSetDateTime format)
           type: string
+        extraMinutes:
+          description: Number of additional minutes given to complete the exam
+          type: integer
 
     #COMMON
 

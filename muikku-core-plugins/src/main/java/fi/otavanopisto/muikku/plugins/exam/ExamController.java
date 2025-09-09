@@ -45,7 +45,6 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyStat
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserEntityFileController;
 import fi.otavanopisto.muikku.users.UserEntityName;
 
 public class ExamController {
@@ -61,9 +60,6 @@ public class ExamController {
   
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
-
-  @Inject
-  private UserEntityFileController userEntityFileController;
   
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
@@ -137,6 +133,10 @@ public class ExamController {
       attendance = examAttendanceDAO.updateStarted(attendance, new Date());
     }
     return attendance;
+  }
+  
+  public ExamAttendance updateExtraMinutes(ExamAttendance attendance, Integer minutes) {
+    return examAttendanceDAO.updateExtraMinutes(attendance, minutes);
   }
   
   /**
@@ -328,6 +328,9 @@ public class ExamController {
     attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
     ExamAttendance attendanceEntity = findAttendance(workspaceFolderId, userEntityId);
     if (attendanceEntity != null) {
+      if (attendanceEntity.getExtraMinutes() != null) {
+        attendance.setMinutes(attendance.getMinutes() + attendanceEntity.getExtraMinutes());
+      }
       if (attendanceEntity.getStarted() != null) {
         attendance.setStarted(toOffsetDateTime(attendanceEntity.getStarted()));
       }
@@ -374,11 +377,11 @@ public class ExamController {
     attendee.setId(attendance.getUserEntityId());
     attendee.setStarted(attendance.getStarted() == null ? null : toOffsetDateTime(attendance.getStarted()));
     attendee.setEnded(attendance.getEnded() == null ? null : toOffsetDateTime(attendance.getEnded()));
-    attendee.setHasImage(userEntityFileController.hasProfilePicture(userEntity));
     UserEntityName name = userEntityController.getName(userEntity, true);
     attendee.setFirstName(name.getFirstName());
     attendee.setLastName(name.getLastName());
     attendee.setLine(name.getStudyProgrammeName());
+    attendee.setExtraMinutes(attendance.getExtraMinutes());
     return attendee;
   }
   

@@ -4,14 +4,6 @@ import java.time.OffsetDateTime;
 
 public class ExamAttendeeRestModel {
 
-  public boolean isHasImage() {
-    return hasImage;
-  }
-
-  public void setHasImage(boolean hasImage) {
-    this.hasImage = hasImage;
-  }
-
   public OffsetDateTime getStarted() {
     return started;
   }
@@ -60,12 +52,20 @@ public class ExamAttendeeRestModel {
     this.id = id;
   }
 
+  public Integer getExtraMinutes() {
+    return extraMinutes;
+  }
+
+  public void setExtraMinutes(Integer extraMinutes) {
+    this.extraMinutes = extraMinutes;
+  }
+
   private Long id;
   private String firstName;
   private String lastName;
   private String line;
-  private boolean hasImage;
   private OffsetDateTime started;
   private OffsetDateTime ended;
+  private Integer extraMinutes;
 
 }

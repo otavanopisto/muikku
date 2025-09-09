@@ -36,6 +36,14 @@ public class ExamAttendance {
   public void setUserEntityId(Long userEntityId) {
     this.userEntityId = userEntityId;
   }
+  
+  public Integer getExtraMinutes() {
+    return extraMinutes;
+  }
+
+  public void setExtraMinutes(Integer extraMinutes) {
+    this.extraMinutes = extraMinutes;
+  }
 
   public Date getStarted() {
     return started;
@@ -72,6 +80,9 @@ public class ExamAttendance {
   @NotNull
   @Column(nullable = false)
   private Long userEntityId;
+  
+  @Column
+  private Integer extraMinutes;
 
   @Column
   @Temporal(value = TemporalType.TIMESTAMP)

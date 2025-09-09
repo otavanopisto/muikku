@@ -10,6 +10,7 @@
       userEntityId bigint not null,
       workspaceFolderId bigint not null,
       workspaceMaterialIds mediumtext,
+      extraMinutes integer,
       primary key (id)
     );
   </sql>
