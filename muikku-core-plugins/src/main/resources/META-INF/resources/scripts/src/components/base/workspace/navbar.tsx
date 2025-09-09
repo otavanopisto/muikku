@@ -176,7 +176,7 @@ class WorkspaceNavbar extends React.Component<
         trail: "exams",
         text: t("labels.exams", { ns: "exams" }),
         href: "/workspace/" + this.props.workspaceUrl + "/exams",
-        icon: "leanpub",
+        icon: "exams",
         to: true,
         condition: this.props.status.isStudent,
       },

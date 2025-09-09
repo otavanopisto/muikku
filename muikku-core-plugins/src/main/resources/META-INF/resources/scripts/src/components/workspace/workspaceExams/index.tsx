@@ -23,7 +23,7 @@ const WorkspaceExamsBody = (props: WorkspaceExamsBodyProps) => {
     <div>
       <WorkspaceNavbar
         title={t("labels.journal", { ns: "journal" })}
-        activeTrail="journal"
+        activeTrail="exams"
         workspaceUrl={props.workspaceUrl}
       />
       <Application />
