@@ -47,9 +47,11 @@ import {
 import { PageLocation, UploadingValue } from "~/@types/shared";
 import ConfirmRemoveAttachment from "../material-editor/confirm-remove-attachment";
 import { ExamSettingsRandom } from "~/generated/client";
-import Select from "react-select";
+import Select, { ActionMeta, SingleValue } from "react-select";
 import useExamAttendees from "./hooks/useExamAttendees";
 import { ExamCategories } from "./exam-categories";
+import ExamAttendeeCard from "./exam-attendee-card";
+import { OptionDefault } from "~/components/general/react-select/types";
 
 /**
  * Editor tab props
@@ -555,23 +557,40 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
     (state: StateType) => state.workspaces.materialEditor
   );
 
+  const workspaceId = useSelector(
+    (state: StateType) => state.workspaces.currentWorkspace.id
+  );
+
   const {
     loading,
-    studentOptions,
-    selectedStudentOptions,
-    hasChanges,
-    handleExamAttendeeChange,
-  } = useExamAttendees();
+    error,
+    examAttendees,
+    availableStudentOptions,
+    addExamAttendee,
+    removeExamAttendee,
+    updateAttendeeSettings,
+    hasAttendees,
+    attendeeCount,
+  } = useExamAttendees({
+    workspaceFolderId: editorState.currentNodeValue?.workspaceMaterialId || 0,
+    workspaceId,
+  });
 
-  const canSave = hasChanges;
-
-  const publishModifiers = ["material-editor-publish-page", "material-editor"];
-  const revertModifiers = ["material-editor-revert-page", "material-editor"];
-
-  if (!canSave || loading) {
-    publishModifiers.push("disabled");
-    revertModifiers.push("disabled");
-  }
+  /**
+   * Handle student selection from React Select
+   * This function adds the selected student immediately
+   */
+  const handleStudentSelect = React.useCallback(
+    (
+      selectedOption: SingleValue<OptionDefault<number>>,
+      actionMeta: ActionMeta<OptionDefault<number>>
+    ) => {
+      if (selectedOption && actionMeta.action === "select-option") {
+        addExamAttendee(selectedOption.value);
+      }
+    },
+    [addExamAttendee]
+  );
 
   if (!editorState.opened) {
     return null;
@@ -580,32 +599,58 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
   return (
     <div className="material-editor__content-wrapper">
       <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">Kokeen osallistujat</h3>
-        <Select
-          id="examAttendees"
-          className="react-select-override react-select-override--material-editor"
-          classNamePrefix="react-select-override"
-          closeMenuOnSelect={false}
-          isMulti
-          menuPortalTarget={document.body}
-          menuPosition={"fixed"}
-          // eslint-disable-next-line jsdoc/require-jsdoc
-          styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
-          value={selectedStudentOptions}
-          placeholder={t("labels.select", {
-            ns: "common",
-          })}
-          noOptionsMessage={() =>
-            t("content.empty", {
-              ns: "pedagogySupportPlan",
-              context: "options",
-            })
-          }
-          options={studentOptions}
-          onChange={handleExamAttendeeChange}
-          isSearchable={true}
-          isDisabled={loading}
-        />
+        <h3 className="material-editor__sub-title">
+          Kokeen osallistujat {hasAttendees && `(${attendeeCount})`}
+        </h3>
+
+        {error && <div className="material-editor__error">{error}</div>}
+
+        {/* Student Selection Dropdown */}
+        <div className="material-editor__select-wrapper">
+          <Select
+            id="examAttendees"
+            className="react-select-override react-select-override--material-editor"
+            classNamePrefix="react-select-override"
+            menuPortalTarget={document.body}
+            menuPosition={"fixed"}
+            // eslint-disable-next-line jsdoc/require-jsdoc
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
+            value={null} // Always show as empty
+            placeholder={t("labels.select", {
+              ns: "common",
+            })}
+            noOptionsMessage={() =>
+              t("content.empty", {
+                ns: "pedagogySupportPlan",
+                context: "options",
+              })
+            }
+            options={availableStudentOptions}
+            onChange={handleStudentSelect}
+            isSearchable={true}
+            isDisabled={loading}
+            isClearable={false}
+          />
+        </div>
+
+        {/* Selected Students Cards */}
+        {hasAttendees && (
+          <div className="material-editor__attendees-cards">
+            <h4 className="material-editor__attendees-title">
+              Valitut osallistujat:
+            </h4>
+            <div className="material-editor__attendees-grid">
+              {examAttendees.map((attendee) => (
+                <ExamAttendeeCard
+                  key={attendee.id}
+                  attendee={attendee}
+                  onRemove={removeExamAttendee}
+                  onUpdateSettings={updateAttendeeSettings}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -4701,7 +4701,7 @@ paths:
                 $ref: "#/components/schemas/ExamSettings"
         "403":
           description: Caller is not staff
-  
+
   /rest/workspace/exam/allSettings/{workspaceEntityId}:
     get:
       operationId: getAllExamSettings
@@ -4890,6 +4890,8 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceExamAttendeeUpdateBody"
       responses:
         "200":
           description: Exam attendee
@@ -12369,6 +12371,14 @@ components:
           schema:
             allOf:
               - $ref: "#/components/schemas/ExamSettings"
+
+    WorkspaceExamAttendeeUpdateBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ExamAttendee"
 
     SignupStudentToWorkspaceRequestBody:
       required: true
