@@ -2955,8 +2955,10 @@
       "empty": "Kieliprofiilia ei ole vielä aloitettu",
       "empty_languages": "Ei hakua vastaavia kieliä",
       "empty_levels": "Taitotasoja ei ole asetettu",
+      "empty_samples": "Ei yhtään tallennettua kielinäytettä",
       "empty_skills": "Taitoja ei ole arvioitu",
       "empty_workspaces": "Kurssiopiskelua ei ole arvioitu",
+
       "futureOfStudies": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "futureUsage": "Missä tulet tarvitsemaan eri kieliä tulevaisuudessa? Huomioi tässä esimerkiksi jatko-opinnot, työt ja muut suunnitelmat.",
       "general": "Kerro esim. kuinka paljon käytät vieraita kieliä ja millä tavoilla sekä missä asioissa haluaisit kehittyä.",

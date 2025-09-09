@@ -1,33 +1,23 @@
 import * as React from "react";
-import { useTranslation } from "react-i18next";
-import { IconButton } from "~/components/general/button";
 import { LanguageProfileSample } from "~/generated/client";
 import { AudioPoolComponent } from "~/components/general/audio-pool-component";
-import PromptDialog from "~/components/general/prompt-dialog";
-import { deleteLanguageSample } from "~/actions/main-function/language-profile";
-import { useSelector, useDispatch } from "react-redux";
-import { StateType } from "~/reducers";
+
 /**
  * LanguageSampleProps
  * This interface defines the properties for the LanguageSample component.
  */
 interface LanguageSampleProps {
   sample: LanguageProfileSample;
-  candDelete?: boolean;
 }
 
 /**
  * Sample
  * This component renders a language profile sample based on its type (TEXT, FILE, AUDIO).
- * It provides functionality to delete it if necessary.
  * @param props LanguageSampleProps
  * @returns JSX.Element
  */
 const Sample = (props: LanguageSampleProps) => {
-  const { sample, candDelete = false } = props;
-  const { t } = useTranslation(["languageProfile", "common"]);
-  const dispatch = useDispatch();
-  const { status } = useSelector((state: StateType) => state);
+  const { sample } = props;
 
   /**
    * RenderSample
@@ -68,32 +58,9 @@ const Sample = (props: LanguageSampleProps) => {
     }
   };
 
-  /**
-   * Handle deletion of a language profile sample.
-   * @param id the id of the sample to delete
-   */
-  const handleDelete = (id: number) => {
-    dispatch(deleteLanguageSample(status.userId, id));
-  };
-
   return (
     <div className="language-profile-container__row language-profile-container__row--sample">
       {renderSample()}
-      {candDelete && (
-        <div className="language-profile__sample-buttons">
-          <PromptDialog
-            title={t("labels.remove", {
-              context: sample.type.toLowerCase(),
-            })}
-            content={t("content.removing", {
-              context: sample.type.toLowerCase(),
-            })}
-            onExecute={() => handleDelete(sample.id)}
-          >
-            <IconButton icon="trash" />
-          </PromptDialog>
-        </div>
-      )}
     </div>
   );
 };

@@ -136,11 +136,7 @@ const LanguageComponent = (props: LanguageComponentProps) => {
       />
       {filteredSamples &&
         filteredSamples.map((sample) => (
-          <Sample
-            key={sample.id}
-            sample={sample}
-            onChange={handleFieldChange}
-          />
+          <Sample key={sample.id} sample={sample} candDelete={true} />
         ))}
     </fieldset>
   );

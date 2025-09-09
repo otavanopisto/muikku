@@ -14,6 +14,8 @@ import {
 import StarDisplayer from "./components/star-displayer";
 import "~/sass/elements/user-language-profile.scss";
 import Accordion from "./components/accordion";
+import Sample from "~/components/language-profile/body/application/languages/sample";
+import { LanguageData } from "~/@types/shared";
 
 /**
  * UserLanguageProfileProps
@@ -37,6 +39,7 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
     futureUsage,
     skillGoals,
     languages,
+    samples,
   }: LanguageProfileData = useSelector(
     (state: StateType) => state.languageProfile.data
   );
@@ -48,6 +51,14 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
     dispatch(loadLanguageProfile(userId, true));
     dispatch(loadLanguageSamples(userId, true));
   }, [dispatch, userId]);
+
+  /**
+   * getLanguageSamples
+   * @param language language item
+   * @returns languages samples for the given language
+   */
+  const getLanguageSamples = (language: LanguageData) =>
+    samples.filter((sample) => sample.language === language.code);
 
   const isEmpty =
     languageUsage === "" &&
@@ -343,6 +354,25 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
                   })}
                 </div>
               )}
+              <div>
+                <h4>
+                  {t("labels.samples", {
+                    ns: "languageProfile",
+                  })}
+                </h4>
+                {getLanguageSamples(lang).length === 0 ? (
+                  <div className="empty">
+                    {t("content.empty", {
+                      context: "samples",
+                      ns: "languageProfile",
+                    })}
+                  </div>
+                ) : (
+                  getLanguageSamples(lang).map((sample) => (
+                    <Sample key={sample.id} sample={sample} />
+                  ))
+                )}
+              </div>
             </Accordion>
           ))}
         </>
