@@ -114,7 +114,7 @@ interface EvaluationDrawerProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
 }
 
-/**
+/**Kieliprohviili
  * Main component for evaluation model, that combines
  * other sub components, like different lists and drawers.
  * @param props props
@@ -322,7 +322,7 @@ const Evaluation = (props: EvaluationDrawerProps) => {
           />
           <div className="evaluation-modal__content">
             <div className="evaluation-modal__content-title">
-              Kieliprohviili
+              {t("labels.languageProfile")}
             </div>
             <div className="evaluation-modal__item">
               <UserLanguageProfile userId={selectedAssessment.userEntityId} />
