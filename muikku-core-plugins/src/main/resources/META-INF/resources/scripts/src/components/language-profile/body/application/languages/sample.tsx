@@ -10,7 +10,6 @@ import { StateType } from "~/reducers";
 /**
  * LanguageSampleProps
  * This interface defines the properties for the LanguageSample component.
- * It includes the sample data, a flag for removal, and functions for handling changes and deletions.
  */
 interface LanguageSampleProps {
   sample: LanguageProfileSample;
@@ -23,7 +22,7 @@ interface LanguageSampleProps {
 /**
  * Sample
  * This component renders a language profile sample based on its type (TEXT, FILE, AUDIO).
- * It provides functionality to edit the sample and delete it if necessary.
+ * It provides functionality to delete it if necessary.
  * @param props LanguageSampleProps
  * @returns JSX.Element
  */
@@ -34,11 +33,8 @@ const Sample = (props: LanguageSampleProps) => {
   const { status } = useSelector((state: StateType) => state);
 
   /**
-   * RenderMemoizedSample
-   * This function returns a memoized component based on the sample type.
-   * It uses React.useMemo to optimize rendering performance by avoiding unnecessary re-renders.
+   * RenderSample
    * @returns JSX.Element
-   * @param sample The language profile sample to render.
    */
   const renderSample = () => {
     switch (sample.type) {
