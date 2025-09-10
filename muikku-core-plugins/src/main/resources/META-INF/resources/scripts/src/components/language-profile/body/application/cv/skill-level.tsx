@@ -11,7 +11,6 @@ import { ActionType } from "~/actions";
 import Button from "~/components/general/button";
 import Stars from "./stars";
 import Dropdown from "~/components/general/dropdown";
-import Input from "./skill-level/input";
 
 /**
  * SkillLevelProps
@@ -79,14 +78,11 @@ const SkillLevel = (props: SkillLevelProps) => {
     if (url.length > 2000) return false;
     try {
       const p = new URL(url);
+      // require explicit protocol
+      if (p.protocol !== "http:" && p.protocol !== "https:") return false;
       return isHostValid(p.hostname);
     } catch {
-      try {
-        const p = new URL("http://" + url);
-        return isHostValid(p.hostname);
-      } catch {
-        return false;
-      }
+      return false;
     }
   };
 

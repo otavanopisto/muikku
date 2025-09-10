@@ -21,12 +21,6 @@ import {
 } from "~/generated/client";
 import { RecordValue } from "~/@types/recorder";
 
-export type LanguageProfileLanguagePayload = {
-  code: string;
-  cellId: string;
-  value: LanguageLevels | SkillLevels | Subjects;
-};
-
 export type LANGUAGE_PROFILE_SET_LOADING_STATE = SpecificActionType<
   "LANGUAGE_PROFILE_SET_LOADING_STATE",
   LoadingState
@@ -216,6 +210,8 @@ export interface CreateLanguageProfileFileSampleTriggerType {
   ): AnyActionType;
 }
 
+const LanguageProfileApi = MApi.getLanguageProfile();
+
 /**
  * saveLanguageProfileData
  * @param userEntityId student id
@@ -244,7 +240,6 @@ const saveLanguageProfile: SaveLanguageProfileTriggerType =
         // Remove the samples from the data to be saved
         delete dataToBeSaved["samples"];
 
-        const LanguageProfileApi = MApi.getLanguageProfile();
         const newLanguageProfile =
           await LanguageProfileApi.createOrUpdateLanguageProfile({
             userEntityId,
@@ -326,7 +321,6 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
             payload: initializeLanguageProfileState.data,
           });
         }
-        const LanguageProfileApi = MApi.getLanguageProfile();
         const data = await LanguageProfileApi.getLanguageProfile({
           userEntityId,
         });
@@ -388,8 +382,6 @@ const loadLanguageSamples: loadLanguageProfileTriggerType =
           type: "LANGUAGE_PROFILE_SET_LOADING_STATE",
           payload: "LOADING",
         });
-
-        const LanguageProfileApi = MApi.getLanguageProfile();
 
         const data = await LanguageProfileApi.getLanguageProfileSamples({
           userEntityId,
@@ -457,8 +449,6 @@ const createLanguageSample: CreateLanguageProfileSampleTriggerType =
           type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
           payload: "IN_PROGRESS",
         });
-
-        const LanguageProfileApi = MApi.getLanguageProfile();
 
         // Create a new sample
         const newSample = await LanguageProfileApi.createLanguageProfileSample({
@@ -786,7 +776,6 @@ const saveLanguageSamples: SaveLanguageProfileSamplesTriggerType =
               payload: "IN_PROGRESS",
             });
 
-            const LanguageProfileApi = MApi.getLanguageProfile();
             await LanguageProfileApi.updateLanguageProfileSample({
               userEntityId,
               sampleId: sample.id,
