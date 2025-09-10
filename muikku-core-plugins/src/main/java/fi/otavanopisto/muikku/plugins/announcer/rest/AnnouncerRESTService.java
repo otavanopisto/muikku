@@ -392,7 +392,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     Set<Long> userGroupIds = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
     
     List<AnnouncementUserGroup> announcementGroups = announcementController.listAnnouncementUserGroups(announcement);
-    Set<Long> announcementGroupIds = announcementGroups.stream().map(announcementGroup -> announcementGroup.getId()).collect(Collectors.toSet());
+    Set<Long> announcementGroupIds = announcementGroups.stream().map(announcementGroup -> announcementGroup.getUserGroupEntityId()).collect(Collectors.toSet());
 
     if (CollectionUtils.containsAny(announcementGroupIds, userGroupIds)) {
       return true;
