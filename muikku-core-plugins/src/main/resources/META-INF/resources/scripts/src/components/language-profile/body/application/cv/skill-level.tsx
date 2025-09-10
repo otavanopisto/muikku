@@ -66,8 +66,6 @@ const SkillLevel = (props: SkillLevelProps) => {
       type: "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
     } as ActionType);
-
-    setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
   /**
@@ -88,7 +86,6 @@ const SkillLevel = (props: SkillLevelProps) => {
       type: "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
     } as ActionType);
-    setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
   /**
@@ -107,7 +104,6 @@ const SkillLevel = (props: SkillLevelProps) => {
       type: "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
     } as ActionType);
-    setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
   /**
@@ -150,11 +146,11 @@ const SkillLevel = (props: SkillLevelProps) => {
       }
     }
   };
-  
-/**
- * handleUrlFieldChange handles changes in the URL input field. 
- * @param e event
- */
+
+  /**
+   * handleUrlFieldChange handles changes in the URL input field.
+   * @param e event
+   */
   const handleUrlFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsValidUrl(validateURL(e.target.value));
     setSampleUrl(e.target.value);
@@ -201,7 +197,6 @@ const SkillLevel = (props: SkillLevelProps) => {
       type: "LANGUAGE_PROFILE_UPDATE_CV_LANGUAGE",
       payload: updatedLanguageSkillLevels,
     } as ActionType);
-    setlanguageSkillLevels(updatedLanguageSkillLevels);
   };
 
   React.useEffect(() => {

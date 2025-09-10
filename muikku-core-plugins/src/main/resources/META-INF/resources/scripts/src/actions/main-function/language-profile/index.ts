@@ -120,6 +120,7 @@ export interface loadLanguageProfileTriggerType {
 export interface loadLanguageProfileSamplesTriggerType {
   (
     id: number,
+    clearCurrent?: boolean,
     success?: () => void,
     fail?: () => void
   ): AnyActionType;
@@ -367,12 +368,14 @@ const loadLanguageProfile: loadLanguageProfileTriggerType =
 /**
  * loadLanguageProfileSamples
  * @param userEntityId userEntityId
+ * @param clearCurrent clear current data
  * @param success success
  * @param fail fail
  */
-const loadLanguageSamples: loadLanguageProfileSamplesTriggerType =
+const loadLanguageSamples: loadLanguageProfileTriggerType =
   function loadLanguageProfile(
     userEntityId: number,
+    clearCurrent?: boolean,
     success?: () => void,
     fail?: () => void
   ) {
@@ -386,12 +389,18 @@ const loadLanguageSamples: loadLanguageProfileSamplesTriggerType =
           payload: "LOADING",
         });
 
-
         const LanguageProfileApi = MApi.getLanguageProfile();
 
         const data = await LanguageProfileApi.getLanguageProfileSamples({
           userEntityId,
         });
+
+        if (clearCurrent) {
+          dispatch({
+            type: "LANGUAGE_PROFILE_UPDATE_VALUES",
+            payload: { samples: [] },
+          });
+        }
 
         dispatch({
           type: "LANGUAGE_PROFILE_UPDATE_VALUES",
