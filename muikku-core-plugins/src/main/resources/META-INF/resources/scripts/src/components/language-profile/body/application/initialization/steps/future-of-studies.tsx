@@ -16,8 +16,6 @@ const FutureOfStudies = () => {
     (state: StateType) => state.languageProfile.data
   );
 
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
   /**
    * Debounced field change handler
    *  @param e React.ChangeEvent<HTMLTextAreaElement>
@@ -30,29 +28,11 @@ const FutureOfStudies = () => {
     // Get the current value
     const value = e.target.value;
 
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    // Set a new timeout
-    timeoutRef.current = setTimeout(() => {
-      dispatch({
-        type: "LANGUAGE_PROFILE_UPDATE_VALUES",
-        payload: { [field]: value },
-      } as ActionType);
-    }, 300); // 300ms debounce time
+    dispatch({
+      type: "LANGUAGE_PROFILE_UPDATE_VALUES",
+      payload: { [field]: value },
+    } as ActionType);
   };
-
-  // Clean up the timeout when the component unmounts
-  React.useEffect(
-    () => () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    },
-    []
-  );
 
   return (
     <div className="language-profile-container">

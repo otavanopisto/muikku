@@ -6,6 +6,7 @@ import { Step1, Step2, Step3, Step4 } from "./initialization/index";
 import Header from "./initialization/header";
 import Footer from "./initialization/footer";
 import AnimatedStep from "~/components/general/wizard/AnimateStep";
+import { AnimatePresence } from "framer-motion";
 
 /**
  * initializationProps
@@ -53,12 +54,14 @@ const Initialization = (props: initializationProps) => {
     <WizardProvider value={wizardValues}>
       <div className="panguage-profile-form">
         <div className="panguage-profile-form__container">
-          <Wizard
-            modifiers={["language-profile"]}
-            header={<Header />}
-            footer={<Footer />}
-            wrapper={<div>wrapper</div>}
-          />
+          <AnimatePresence initial={false} exitBeforeEnter>
+            <Wizard
+              modifiers={["language-profile"]}
+              header={<Header />}
+              footer={<Footer />}
+              wrapper={<div>wrapper</div>}
+            />
+          </AnimatePresence>
         </div>
       </div>
     </WizardProvider>

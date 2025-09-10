@@ -17,9 +17,6 @@ const LanguageCv = () => {
   const { languageProfile, status } = useSelector((state: StateType) => state);
   const { languages, cv } = languageProfile.data;
 
-  // Create a ref to store the timeout ID
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
   /**
    *
    * @param e React.ChangeEvent<HTMLTextAreaElement>
@@ -28,29 +25,11 @@ const LanguageCv = () => {
     // Get the current value
     const value = e.target.value;
 
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    // Set a new timeout
-    timeoutRef.current = setTimeout(() => {
-      dispatch({
-        type: "LANGUAGE_PROFILE_UPDATE_CV_GENERAL",
-        payload: value,
-      } as ActionType);
-    }, 300); // 300ms debounce time
+    dispatch({
+      type: "LANGUAGE_PROFILE_UPDATE_CV_GENERAL",
+      payload: value,
+    } as ActionType);
   };
-
-  // Clean up the timeout when the component unmounts
-  React.useEffect(
-    () => () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    },
-    []
-  );
 
   /**
    * handleSave

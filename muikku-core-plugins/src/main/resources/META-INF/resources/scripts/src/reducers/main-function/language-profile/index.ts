@@ -190,6 +190,11 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       const languageIndex = languagesUpdate.findIndex(
         (language) => language.code === payload.code
       );
+
+      if (languageIndex === -1) {
+        return state;
+      }
+
       const currentLanguage = languagesUpdate[languageIndex];
 
       // Check if there are levels
@@ -312,6 +317,10 @@ export const languageProfile: Reducer<LanguageProfileState> = (
         (workspace) => workspace.identifier === payload.identifier
       );
 
+      if (workspaceIndex === -1) {
+        return state;
+      }
+
       workspaceUpdate[workspaceIndex] = {
         ...workspaceUpdate[workspaceIndex],
         value: payload.value,
@@ -349,6 +358,10 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       const sampleIndex = samplesUpdate.findIndex(
         (sample) => sample.id === payload.id
       );
+
+      if (sampleIndex === -1) {
+        return state;
+      }
 
       samplesUpdate.splice(sampleIndex, 1, payload);
 

@@ -27,9 +27,6 @@ const LanguageUsage = () => {
     cv,
   } = useSelector((state: StateType) => state.languageProfile.data);
 
-  // Create a ref to store the timeout ID
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
   /**
    * handleFieldChange
    * @param e React.ChangeEvent<HTMLTextAreaElement>
@@ -42,18 +39,10 @@ const LanguageUsage = () => {
     // Get the current value
     const value = e.target.value;
 
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    // Set a new timeout
-    timeoutRef.current = setTimeout(() => {
-      dispatch({
-        type: "LANGUAGE_PROFILE_UPDATE_VALUES",
-        payload: { [field]: value },
-      } as ActionType);
-    }, 500); // 500ms debounce time
+    dispatch({
+      type: "LANGUAGE_PROFILE_UPDATE_VALUES",
+      payload: { [field]: value },
+    } as ActionType);
   };
 
   /**
@@ -100,16 +89,6 @@ const LanguageUsage = () => {
       payload: language,
     } as ActionType);
   };
-
-  // Clean up the timeout when the component unmounts
-  React.useEffect(
-    () => () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    },
-    []
-  );
 
   /**
    * handleRemoveLanguage
