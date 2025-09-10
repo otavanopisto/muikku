@@ -28,7 +28,7 @@ const Stars = (props: StarsProps) => {
         {stars.map((star) => {
           const isFull =
             (typeof skillLevels[name] === "string" &&
-              star <= parseInt(skillLevels[name])) ||
+              star <= parseInt(skillLevels[name] as string)) ||
             false;
 
           return (
