@@ -28,11 +28,10 @@ interface LanguageComponentProps {
  */
 const LanguageComponent = (props: LanguageComponentProps) => {
   const { t } = useTranslation(["languageProfile"]);
-  const { samples, language, changed, setChanged } = props;
+  const { samples, language } = props;
   const [filteredSamples, setFilteredSamples] =
     React.useState<LanguageProfileSample[]>(samples);
   const [sampleType, setSampleType] = React.useState<SampleTypes>("");
-  const dispatch = useDispatch();
 
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
@@ -54,44 +53,8 @@ const LanguageComponent = (props: LanguageComponentProps) => {
     []
   );
 
-  /**
-   * handleFieldChange
-   * Handles changes in the text area for text samples.
-   * Updates the sample state with the new value.
-   */
-  const handleFieldChange = React.useCallback(
-    (
-      e: React.ChangeEvent<HTMLTextAreaElement>,
-      sample: LanguageProfileSample
-    ) => {
-      // Get the current value
-      const newSample = { ...sample, value: e.target.value };
-
-      // Clear any existing timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      // Set a new timeout
-      timeoutRef.current = setTimeout(() => {
-        if (sample.id && !changed.some((changed) => changed === sample.id)) {
-          setChanged([...changed, sample.id]);
-        }
-
-        dispatch({
-          type: "LANGUAGE_PROFILE_UPDATE_LANGUAGE_SAMPLE",
-          payload: newSample,
-        } as ActionType);
-      }, 1000); // 1000ms debounce time
-    },
-    [dispatch, changed, setChanged]
-  );
-
   return (
-    <fieldset
-      className="language-profile-container__fieldset"
-      key={language.code + "-" + "sample"}
-    >
+    <fieldset className="language-profile-container__fieldset">
       <legend className="language-profile-container__subheader">
         {language.name}
       </legend>

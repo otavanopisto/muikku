@@ -150,7 +150,11 @@ const SkillLevel = (props: SkillLevelProps) => {
       }
     }
   };
-
+  
+/**
+ * handleUrlFieldChange handles changes in the URL input field. 
+ * @param e event
+ */
   const handleUrlFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsValidUrl(validateURL(e.target.value));
     setSampleUrl(e.target.value);
