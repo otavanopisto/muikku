@@ -54,14 +54,12 @@ const Initialization = (props: initializationProps) => {
     <WizardProvider value={wizardValues}>
       <div className="panguage-profile-form">
         <div className="panguage-profile-form__container">
-          <AnimatePresence initial={false} exitBeforeEnter>
-            <Wizard
-              modifiers={["language-profile"]}
-              header={<Header />}
-              footer={<Footer />}
-              wrapper={<div>wrapper</div>}
-            />
-          </AnimatePresence>
+          <Wizard
+            modifiers={["language-profile"]}
+            header={<Header />}
+            footer={<Footer />}
+            wrapper={<AnimatePresence initial={false} exitBeforeEnter />}
+          />
         </div>
       </div>
     </WizardProvider>
