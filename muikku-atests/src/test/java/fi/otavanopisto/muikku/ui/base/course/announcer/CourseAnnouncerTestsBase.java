@@ -77,6 +77,10 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       ArrayList<Long> announcementWorkspaceIds = new ArrayList<Long>();
       announcementWorkspaceIds.add(workspace.getId());
       createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, announcementWorkspaceIds);
+      
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
+      waitForPresent(".item-list__announcement-caption");
+      
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       
       waitForElementToAppear(".application-list__item-content-header",10, 1000);
