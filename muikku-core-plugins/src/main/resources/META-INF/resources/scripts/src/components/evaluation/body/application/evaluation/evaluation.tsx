@@ -114,7 +114,7 @@ interface EvaluationDrawerProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
 }
 
-/**Kieliprohviili
+/**
  * Main component for evaluation model, that combines
  * other sub components, like different lists and drawers.
  * @param props props

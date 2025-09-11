@@ -12,6 +12,8 @@ import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import { displayNotification } from "~/actions/base/notifications";
 
+const recordsApi = MApi.getRecordsApi();
+
 /**
  * AccomplishmentEvaluation component
  * This component displays the accomplishment evaluation for each language
@@ -24,8 +26,8 @@ const AccomplishmentEvaluation = () => {
   const [passedWorkspaces, setPassedWorkspaces] = React.useState<
     LanguageData[]
   >([]);
+
   const languages = languageProfile.data.languages;
-  const recordsApi = React.useMemo(() => MApi.getRecordsApi(), []);
 
   useEffect(() => {
     /**
@@ -64,7 +66,7 @@ const AccomplishmentEvaluation = () => {
       }
     };
     fetchData();
-  }, [recordsApi, t, dispatch, status.userSchoolDataIdentifier]);
+  }, [t, dispatch, status.userSchoolDataIdentifier]);
 
   /**
    * createRows

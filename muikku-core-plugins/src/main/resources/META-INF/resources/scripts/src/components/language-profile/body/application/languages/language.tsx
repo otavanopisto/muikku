@@ -27,30 +27,11 @@ interface LanguageComponentProps {
 const LanguageComponent = (props: LanguageComponentProps) => {
   const { t } = useTranslation(["languageProfile"]);
   const { samples, language } = props;
-  const [filteredSamples, setFilteredSamples] =
-    React.useState<LanguageProfileSample[]>(samples);
   const [sampleType, setSampleType] = React.useState<SampleTypes>("");
-
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
-  React.useEffect(() => {
-    if (samples) {
-      setFilteredSamples(
-        samples.filter((sample) => sample.language === language.code)
-      );
-    }
-  }, [samples, language.code]);
-
-  // Clean up the timeout when the component unmounts
-  React.useEffect(
-    () => () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    },
-    []
+  const filteredSamples = React.useMemo(
+    () => samples.filter((sample) => sample.language === language.code),
+    [samples, language.code]
   );
-
   return (
     <fieldset className="language-profile-container__fieldset">
       <legend className="language-profile-container__subheader">

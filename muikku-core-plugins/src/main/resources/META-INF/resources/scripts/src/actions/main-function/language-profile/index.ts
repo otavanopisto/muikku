@@ -842,8 +842,6 @@ const deleteLanguageSample: DeleteLanguageProfileSampleTriggerType =
           payload: "IN_PROGRESS",
         });
 
-        const LanguageProfileApi = MApi.getLanguageProfile();
-
         await LanguageProfileApi.deleteLanguageProfileSample({
           userEntityId,
           sampleId: sampleId,
