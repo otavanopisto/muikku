@@ -1,8 +1,6 @@
 import * as React from "react";
 import Button from "~/components/general/button";
 import NewLanguageSample from "./new-sample";
-import { useDispatch } from "react-redux";
-import { ActionType } from "~/actions";
 import { LanguageCode } from "~/@types/shared";
 import { LanguageProfileLanguage } from "~/reducers/main-function/language-profile";
 import { LanguageProfileSample } from "~/generated/client";
