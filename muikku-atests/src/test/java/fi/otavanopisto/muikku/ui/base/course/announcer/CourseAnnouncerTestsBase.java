@@ -3,6 +3,8 @@ package fi.otavanopisto.muikku.ui.base.course.announcer;
 import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+
 import org.junit.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -72,8 +74,9 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     .addCourseStaffMember(courseId, courseStaffMember)
     .build();
     try{
-      Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
-      updateAnnouncementWorkspace(announcementId, workspace.getId());
+      ArrayList<Long> announcementWorkspaceIds = new ArrayList<Long>();
+      announcementWorkspaceIds.add(workspace.getId());
+      createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, announcementWorkspaceIds);
       navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       
       waitForPresent(".application-list__item-content-header");
