@@ -71,10 +71,6 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
 
     updatedFormData.supportActions = options.map((option) => option.value);
 
-    if (!updatedFormData.supportActions.includes("other")) {
-      updatedFormData.supportActionOther = undefined;
-    }
-
     updatePedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };
 
@@ -93,10 +89,6 @@ const NeedOfSupportInformation: React.FC<NeedOfSupportInformationProps> = (
     updatedFormData.matriculationExaminationSupport = options.map(
       (option) => option.value
     );
-
-    if (!updatedFormData.matriculationExaminationSupport.includes("other")) {
-      updatedFormData.matriculationExaminationSupportOther = undefined;
-    }
 
     updatePedagogyFormDataAndUpdateChangedFields(updatedFormData);
   };

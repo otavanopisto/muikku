@@ -468,18 +468,14 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitAndClick(".application-panel__content-main.loader-empty .application-list__item-header--course");
         waitAndClick(".button--coursepicker-course-action:nth-of-type(2)");
         assertPresent(".dialog--workspace-signup-dialog .button--standard-ok");
+
+        waitAndClickAndConfirm(".button--standard-ok", ".hero__workspace-title", 5, 10000);
         
         MockCourseStudent courseStudent = new MockCourseStudent(2l, course1, student.getId(), TestUtilities.createCourseActivity(course1, CourseActivityState.ONGOING));
-        
-        waitAndClick(".button--standard-ok");
-        
         mockBuilder
         .addCourseStudent(course1.getId(), courseStudent)
         .build();
         
-        sleep(1500);
-        navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-        waitForPresent(".hero__workspace-title");
         
         logout();
         mockBuilder.mockLogin(admin);

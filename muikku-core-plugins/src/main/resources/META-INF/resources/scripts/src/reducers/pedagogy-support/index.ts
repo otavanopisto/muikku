@@ -4,6 +4,7 @@ import {
   PedagogySupportActionImplemented,
 } from "~/@types/pedagogy-form";
 import { ActionType } from "~/actions";
+import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
 import {
   PedagogyForm,
   PedagogyFormAccess,
@@ -37,12 +38,12 @@ export interface PedagogyEditingState {
 export interface PedagogySupportState {
   // Initialization
   initialized: ReducerInitializeStatusType;
+  permissions: PedagogySupportPermissions | null;
   pedagogyLockedStatus: ReducerStateType;
   pedagogyLocked: PedagogyFormLocked | null;
 
   // Current student context
   currentStudentIdentifier?: string;
-  pedagogyStudentType: "COMPULSORY" | "UPPERSECONDARY" | null;
 
   // Pedagogy Form State
   pedagogyFormStatus: ReducerStateType;
@@ -65,10 +66,10 @@ export interface PedagogySupportState {
 
 const initialPedagogySupportState: PedagogySupportState = {
   initialized: "IDLE",
+  permissions: null,
   pedagogyLockedStatus: "IDLE",
   pedagogyLocked: null,
   currentStudentIdentifier: undefined,
-  pedagogyStudentType: null,
   pedagogyFormStatus: "IDLE",
   pedagogyForm: null,
   pedagogyFormData: null,
@@ -109,10 +110,10 @@ export const pedagogySupport: Reducer<PedagogySupportState> = (
         initialized: action.payload,
       };
 
-    case "PEDAGOGY_SUPPORT_UPDATE_STUDENT_TYPE":
+    case "PEDAGOGY_SUPPORT_UPDATE_PERMISSIONS":
       return {
         ...state,
-        pedagogyStudentType: action.payload,
+        permissions: action.payload,
       };
 
     case "PEDAGOGY_SUPPORT_CHANGE_MODE":
