@@ -293,9 +293,11 @@ public class ExamController {
       // List all assignment ids and remove random ids until we're down to desired random count
       int count = settingsJson.getRandomCount();
       List<Long> ids = workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder);
-      Random r = new Random();
-      while (ids.size() > count) {
-        ids.remove(r.nextInt(ids.size()));
+      if (count > 0) {
+        Random r = new Random();
+        while (ids.size() > count) {
+          ids.remove(r.nextInt(ids.size()));
+        }
       }
       return ids.isEmpty() ? null : StringUtils.join(ids, ',');
     }
@@ -305,9 +307,11 @@ public class ExamController {
       List<ExamSettingsCategory> categories = settingsJson.getCategories();
       for (ExamSettingsCategory category : categories) {
         List<Long> categoryIds = category.getWorkspaceMaterialIds();
-        Random r = new Random();
-        while (categoryIds.size() > category.getRandomCount()) {
-          categoryIds.remove(r.nextInt(categoryIds.size()));
+        if (category.getRandomCount() > 0 ) {
+          Random r = new Random();
+          while (categoryIds.size() > category.getRandomCount()) {
+            categoryIds.remove(r.nextInt(categoryIds.size()));
+          }
         }
         ids.addAll(categoryIds);
       }
