@@ -9,7 +9,6 @@ import {
   LanguageProfileData,
   LanguageProfileLanguage,
   SkillLevels,
-  Subjects,
   LanguageLevels,
   CVLanguage,
   initializeLanguageProfileState,
@@ -121,22 +120,6 @@ export interface loadLanguageProfileSamplesTriggerType {
 }
 
 /**
-
-/**
- * clearLanguageProfileDataTriggerType
- */
-export interface clearLanguageProfileDataTriggerType {
-  (success?: () => void, fail?: () => void): AnyActionType;
-}
-
-/**
- * clearLanguageProfileSamplesTriggerType
- */
-export interface clearLanguageProfileSamplesTriggerType {
-  (success?: () => void, fail?: () => void): AnyActionType;
-}
-
-/**
  * saveLanguageProfileTriggerType
  */
 export interface SaveLanguageProfileTriggerType {
@@ -161,7 +144,7 @@ export interface SaveLanguageProfileSamplesTriggerType {
 }
 
 /**
- * DeleteLanguageProfileSamplesTriggerType
+ * DeleteLanguageProfileSampleTriggerType
  */
 export interface DeleteLanguageProfileSampleTriggerType {
   (
@@ -173,7 +156,7 @@ export interface DeleteLanguageProfileSampleTriggerType {
 }
 
 /**
- * CreateLanguageProfileSample
+ * CreateLanguageProfileSampleTriggerType
  */
 export interface CreateLanguageProfileSampleTriggerType {
   (
