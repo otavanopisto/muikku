@@ -31,9 +31,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -524,48 +521,6 @@ UserEntity userEntity = toUserEntity(studentIdentifier);
     msg.setStudentIdentifier(studentIdentifier.toId());
     pedagogyFormWebSocketMessenger.sendMessage(studentIdentifier.toId(), "pedagogy:lock-updated", msg);
     return Response.ok(payload).build();
-  }
-  
-  @GET
-  @Path("/form/migration")
-  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response migrateFormData() throws JsonMappingException, JsonProcessingException {
-    
-    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    // List all
-    List<PedagogyForm> forms = pedagogyController.listAll();
-    
-    // Migration
-    List<String> returnData = new ArrayList<String>();
-    for (PedagogyForm form : forms) {
-      String data = form.getFormData();
-      
-      if (data != null) {
-        // Jackson main object
-        ObjectMapper mapper = new ObjectMapper();
-
-        // Read the json strings and convert it into JsonNode
-        JsonNode node = mapper.readTree(data);
-        
-        // Get old implemented actions
-        JsonNode implementedActions = node.get("supportActionsImplemented");
-        
-        // New implemented actions form only if it does not already exist
-        PedagogyFormImplementedActions implementedActionsForm = pedagogyController.findFormImplementedActionsByUserEntityId(form.getUserEntityId());
-        
-        if (implementedActionsForm == null && implementedActions != null) {
-          PedagogyFormImplementedActions newForm = pedagogyController.createFormForImplementedActions(form.getUserEntityId(), implementedActions.toString());
-          if (newForm != null) {
-            returnData.add("Implemented actions form created for student " + form.getUserEntityId());
-          }
-        }
-      }
-    }
-
-    return Response.ok(returnData).build();
   }
   
   private PedagogyFormRestModel toRestModel(PedagogyForm form) {
