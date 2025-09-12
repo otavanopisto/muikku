@@ -71,6 +71,7 @@ export interface ContextProps {
   dispatch: React.Dispatch<GuiderFilterActions>;
   setView: (view: GuiderView) => void;
 }
+
 export const GuiderContext = React.createContext<ContextProps>({
   view: "students",
   filters: initialState,

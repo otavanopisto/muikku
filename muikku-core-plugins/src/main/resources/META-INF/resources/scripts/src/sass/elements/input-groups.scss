@@ -49,7 +49,7 @@
 .input-group__input {
   align-items: center;
   appearance: none;
-  border: solid 2px $color-hops-dialog-form-element-border;
+  border: solid 2px $color-hops-form-element-border;
   border-radius: 3px;
   display: flex;
   height: 1.5rem;
@@ -139,7 +139,7 @@
 .input-group__item-label {
   align-items: center;
   background-color: $color-default;
-  border: 2px solid $color-hops-dialog-form-element-border;
+  border: 2px solid $color-hops-form-element-border;
   border-radius: 100%;
   color: $color-application-dialog-border-color;
   display: flex;

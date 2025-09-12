@@ -29,6 +29,10 @@ import { WorkspacesActiveFiltersType } from "~/reducers/workspaces";
 import OrganizationAdministrationBody from "../components/organization/body";
 import CommunicatorBody from "../components/communicator/body";
 import {
+  loadLanguageProfile,
+  loadLanguageSamples,
+} from "~/actions/main-function/language-profile";
+import {
   loadNewlyReceivedMessage,
   loadMessageThreads,
   loadMessageThread,
@@ -83,6 +87,7 @@ import { updateStatistics } from "~/actions/main-function/records/statistics";
 import { updateSummary } from "~/actions/main-function/records/summary";
 import loadOrganizationSummary from "~/actions/organization/summary";
 import EvaluationBody from "../components/evaluation/body";
+import LanguageProfileBody from "../components/language-profile/body";
 import CeeposDone from "../components/ceepos/done";
 import CeeposPay from "../components/ceepos/pay";
 import {
@@ -97,7 +102,6 @@ import {
   loadCeeposPurchase,
   loadCeeposPurchaseAndPay,
 } from "~/actions/main-function/ceepos";
-
 import { loadDependants } from "~/actions/main-function/dependants";
 import { registerLocale } from "react-datepicker";
 import { enGB, fi } from "date-fns/locale";
@@ -129,7 +133,6 @@ import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
 import FrontpageBody from "~/components/frontpage/body";
 import UserCredentials from "~/containers/user-credentials";
-//import ErrorBody from "~/components/error/body";
 
 const HTML5toTouch: MultiBackendOptions = {
   backends: [
@@ -196,6 +199,7 @@ export default class MainFunction extends React.Component<
     this.renderHopsBody = this.renderHopsBody.bind(this);
     this.renderRecordsBody = this.renderRecordsBody.bind(this);
     this.renderEvaluationBody = this.renderEvaluationBody.bind(this);
+    this.renderLanguageProfileBody = this.renderLanguageProfileBody.bind(this);
     this.renderCeeposDoneBody = this.renderCeeposDoneBody.bind(this);
     this.renderCeeposPayBody = this.renderCeeposPayBody.bind(this);
     this.renderFrontpageBody = this.renderFrontpageBody.bind(this);
@@ -261,7 +265,6 @@ export default class MainFunction extends React.Component<
       this.loadHopsData(window.location.hash.replace("#", ""));
     } else if (window.location.pathname.includes("/guardian_hops")) {
       const hashArray = window.location.hash.replace("#", "").split("/");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [identifier, tab] = hashArray;
 
       this.loadHopsData(tab, identifier, true);
@@ -1160,6 +1163,29 @@ export default class MainFunction extends React.Component<
   }
 
   /**
+   * renderEvaluationBody
+   */
+  renderLanguageProfileBody() {
+    this.updateFirstTime();
+    if (this.itsFirstTime) {
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+      );
+    }
+
+    this.props.store.dispatch(
+      loadLanguageProfile(this.props.store.getState().status.userId) as Action
+    );
+    this.props.store.dispatch(
+      loadLanguageSamples(this.props.store.getState().status.userId) as Action
+    );
+
+    return <LanguageProfileBody />;
+  }
+
+  /**
    * renderCeeposDoneBody
    * @returns JSX.Element
    */
@@ -1343,6 +1369,19 @@ export default class MainFunction extends React.Component<
                     isAuthenticated={isAuthenticated}
                   >
                     {this.renderGuiderBody}
+                  </ProtectedRoute>
+                )}
+              />
+
+              <Route
+                path="/language-profile"
+                render={() => (
+                  <ProtectedRoute
+                    requireAuth
+                    hasPermission={permissions.LANGUAGE_PROFILE_VIEW}
+                    isAuthenticated={isAuthenticated}
+                  >
+                    {this.renderLanguageProfileBody}
                   </ProtectedRoute>
                 )}
               />

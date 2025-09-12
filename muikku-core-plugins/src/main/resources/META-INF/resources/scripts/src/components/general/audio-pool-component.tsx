@@ -50,6 +50,7 @@ export class AudioPoolComponent extends React.Component<
       killed: false,
     };
   }
+
   /**
    * initialSetup
    */

@@ -4,14 +4,14 @@
 @import "../base/breakpoints";
 
 .list__container--section {
-  border-top: 2px solid $color-hops-dialog-form-element-border;
+  border-top: 2px solid $color-hops-form-element-border;
   display: flex;
   flex-flow: column wrap;
   padding: 5px 0;
   width: 100%;
 
   &:last-child {
-    border-bottom: 2px solid $color-hops-dialog-form-element-border;
+    border-bottom: 2px solid $color-hops-form-element-border;
   }
 }
 

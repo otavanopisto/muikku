@@ -48,9 +48,7 @@ interface FileUploaderProps {
   displayNotificationOnError?: boolean;
   displayNotificationOnSuccess?: boolean;
   notificationOfSuccessText?: string;
-
   invisible?: boolean;
-
   displayNotification: DisplayNotificationTriggerType;
 }
 

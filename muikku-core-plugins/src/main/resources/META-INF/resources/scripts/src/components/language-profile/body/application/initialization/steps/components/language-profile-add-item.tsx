@@ -1,0 +1,110 @@
+import * as React from "react";
+import "~/sass/elements/form.scss";
+import "~/sass/elements/language-profile.scss";
+import { filterMatch } from "~/util/modifiers";
+import { LanguageData } from "~/@types/shared";
+import { useTranslation } from "react-i18next";
+
+// import { useDispatch, useSelector } from "react-redux";
+
+/**
+ * AddItemProps
+ */
+interface AddItemProps {
+  action: (item: LanguageData | string) => void;
+  allItems: LanguageData[];
+  selectedItems: LanguageData[];
+  filterBy: "name" | "code";
+  placeHolder?: string;
+}
+
+/**
+ * AddItem
+ * Component to add a new item to the list
+ * @param props the props of the component
+ */
+const AddItem = (props: AddItemProps) => {
+  const { action, selectedItems, filterBy, allItems, placeHolder } = props;
+  const [filter, setFilter] = React.useState<string>("");
+  const [active, setActive] = React.useState<boolean>(false);
+  const { t } = useTranslation(["languageProfile", "common"]);
+  /**
+   * filterLanguages
+   * @param value the value to filter the languages
+   */
+  const handleFieldChange = (value: string) => {
+    setFilter(value);
+  };
+
+  /**
+   * toggleDropdown toggles the visibility of the dropdown
+   * @param visible whether the dropdown should be visible or not
+   */
+  const toggleDropdown = (visible: boolean) => {
+    setActive(visible);
+  };
+
+  /**
+   * handleAdd
+   * @param item the item to add
+   */
+  const handleAdd = (item: LanguageData) => {
+    action(item);
+    setActive(false);
+    setFilter("");
+  };
+
+  /**
+   * clearComponent
+   */
+  const clearComponent = () => {
+    setActive(false);
+    setFilter("");
+  };
+
+  const filteredItems = allItems.filter(
+    (item) =>
+      filterMatch(item.name, filter) &&
+      !selectedItems.some((i) => i[filterBy] === item[filterBy])
+  );
+  return (
+    <div className="language-profile__add-language">
+      <div className="language-profile__textfield-container">
+        <input
+          className="language-profile__input"
+          type="text"
+          placeholder={placeHolder ? placeHolder : undefined}
+          onFocus={() => toggleDropdown(true)}
+          onChange={(e) => handleFieldChange(e.target.value)}
+          value={filter}
+        />
+        {active && filter && (
+          <div className="language-profile__language-dropdown">
+            {filteredItems.length === 0 ? (
+              <div
+                onClick={clearComponent}
+                className="language-profile__dropdown-item"
+              >
+                {t("content.empty", {
+                  context: "languages",
+                })}
+              </div>
+            ) : (
+              filteredItems.map((item) => (
+                <div
+                  key={item.code}
+                  className="language-profile__dropdown-item"
+                  onClick={() => handleAdd(item)}
+                >
+                  {item.name}
+                </div>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AddItem;

@@ -31,6 +31,7 @@ const initialState: Recorder = {
 interface UseRecorderProps {
   status: StatusType;
   values?: RecordValue[];
+  saveTempFile?: boolean;
 }
 
 /**
@@ -43,7 +44,7 @@ interface UseRecorderProps {
 export default function useRecorder(props: UseRecorderProps) {
   const [recorderState, setRecorderState] = useState<Recorder>(initialState);
 
-  const { values } = props;
+  const { values, saveTempFile = true } = props;
 
   useEffect(() => {
     if (JSON.stringify(values)) {
@@ -138,7 +139,7 @@ export default function useRecorder(props: UseRecorderProps) {
               ...initialState,
               audio: window.URL.createObjectURL(blob),
               values: newValues,
-              uploading: true,
+              uploading: saveTempFile,
               blob,
             };
           } else {
@@ -151,7 +152,7 @@ export default function useRecorder(props: UseRecorderProps) {
             blob,
             url: URL.createObjectURL(blob),
             contentType: blob.type,
-            uploading: true,
+            uploading: saveTempFile,
             progress: 0,
           },
           newValues
@@ -186,88 +187,99 @@ export default function useRecorder(props: UseRecorderProps) {
     //we add it to the file
     formData.append("file", file);
     //and do the thing
-    $.ajax({
-      url: props.status.contextPath + "/tempFileUploadServlet",
-      type: "POST",
-      data: formData,
-      // eslint-disable-next-line
-      success: (data: any) => {
-        newValue.uploading = false;
-        newValue.id = data.fileId;
-        //if the server does not return a content type we'll use whatever the blob recorded, this shouldn't be the case the server should return somethings
-        newValue.contentType = data.fileContentType || file.type;
-        //if user didn't provide a name we will give one, this happens when recording in place, such is the default behaviour
-        newValue.name = newValue.name || data.fileId; //NO extension, we don't need it
 
-        const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
+    if (!saveTempFile) {
+      const updatedAllValues = [...initialValue, valueToSave];
 
-        const updatedAllValues = initialValue.concat(newValueSavedToServer);
+      setRecorderState((prevState) => ({
+        ...prevState,
+        audio: window.URL.createObjectURL(valueToSave.blob),
+        values: updatedAllValues,
+        uploading: false,
+      }));
+    } else {
+      $.ajax({
+        url: props.status.contextPath + "/tempFileUploadServlet",
+        type: "POST",
+        data: formData,
+        // eslint-disable-next-line
+        success: (data: any) => {
+          newValue.uploading = false;
+          newValue.id = data.fileId;
+          //if the server does not return a content type we'll use whatever the blob recorded, this shouldn't be the case the server should return somethings
+          newValue.contentType = data.fileContentType || file.type;
+          //if user didn't provide a name we will give one, this happens when recording in place, such is the default behaviour
+          newValue.name = newValue.name || data.fileId; //NO extension, we don't need it
 
-        setRecorderState(() => ({
-          ...initialState,
-          uploading: false,
-          audio: window.URL.createObjectURL(valueToSave.blob),
-          values: updatedAllValues,
-        }));
-      },
-      //in case of error
-      // eslint-disable-next-line
-      error: () => {
-        newValue.uploading = false;
-        newValue.failed = true;
-        newValue.contentType = file.type;
+          const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
 
-        const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
+          const updatedAllValues = initialValue.concat(newValueSavedToServer);
 
-        const updatedAllValues = initialValue.concat(newValueSavedToServer);
+          setRecorderState(() => ({
+            ...initialState,
+            uploading: false,
+            audio: window.URL.createObjectURL(valueToSave.blob),
+            values: updatedAllValues,
+          }));
+        },
+        //in case of error
+        // eslint-disable-next-line
+        error: () => {
+          newValue.uploading = false;
+          newValue.failed = true;
+          newValue.contentType = file.type;
 
-        setRecorderState(() => ({
-          ...initialState,
-          audio: window.URL.createObjectURL(valueToSave.blob),
-          values: updatedAllValues,
-        }));
-      },
-      // eslint-disable-next-line
-      xhr: () => {
-        //we need to get the upload progress
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const xhr = new (window as any).XMLHttpRequest();
-        //Upload progress
+          const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
 
-        xhr.upload.addEventListener(
-          "progress",
+          const updatedAllValues = initialValue.concat(newValueSavedToServer);
+
+          setRecorderState(() => ({
+            ...initialState,
+            audio: window.URL.createObjectURL(valueToSave.blob),
+            values: updatedAllValues,
+          }));
+        },
+        // eslint-disable-next-line
+        xhr: () => {
+          //we need to get the upload progress
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (evt: any) => {
-            if (evt.lengthComputable) {
-              //we calculate the percent
-              const percentComplete = evt.loaded / evt.total;
-              //make a copy of the values
+          const xhr = new (window as any).XMLHttpRequest();
+          //Upload progress
 
-              newValue.progress = percentComplete;
+          xhr.upload.addEventListener(
+            "progress",
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (evt: any) => {
+              if (evt.lengthComputable) {
+                //we calculate the percent
+                const percentComplete = evt.loaded / evt.total;
+                //make a copy of the values
 
-              const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
+                newValue.progress = percentComplete;
 
-              const updatedAllValues = initialValue.concat(
-                newValueSavedToServer
-              );
+                const newValueSavedToServer: RecordValue[] = [{ ...newValue }];
 
-              setRecorderState((prevState) => ({
-                ...prevState,
-                audio: window.URL.createObjectURL(valueToSave.blob),
-                values: updatedAllValues,
-                uploading: true,
-              }));
-            }
-          },
-          false
-        );
-        return xhr;
-      },
+                const updatedAllValues = initialValue.concat(
+                  newValueSavedToServer
+                );
 
-      cache: false,
-      contentType: false,
-      processData: false,
-    });
+                setRecorderState((prevState) => ({
+                  ...prevState,
+                  audio: window.URL.createObjectURL(valueToSave.blob),
+                  values: updatedAllValues,
+                  uploading: true,
+                }));
+              }
+            },
+            false
+          );
+          return xhr;
+        },
+        cache: false,
+        contentType: false,
+        processData: false,
+      });
+    }
   };
 
   return {
