@@ -263,6 +263,34 @@
   justify-content: flex-start;
 }
 
+.material-editor__attendee-meta {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.material-editor__attendee-status {
+  border-radius: 5px;
+  color: $color-default;
+  display: inline-flex;
+  font-weight: 600;
+  padding: 5px 10px;
+  width: auto;;
+}
+
+.material-editor__attendee-status--completed {
+  background-color: $color-success;
+}
+
+.material-editor__attendee-status--in-progress {
+  background-color: $color-info;
+}
+
+.material-editor__attendee-status--not-started {
+  background-color: $color-cancel;
+}
+
 .material-editor__attendee-dates {
   display: flex;
   flex-flow: column nowrap;

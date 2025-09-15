@@ -162,28 +162,33 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
 
       {/* Card Body */}
       <div className="material-editor__attendee-body">
-        <div className={`material-editor__attendee-status ${getStatusColor()}`}>
-          <strong>Kokeen tila:</strong> {getExamStatus()}
+        <div className="material-editor__attendee-meta">
+          <span
+            className={`material-editor__attendee-status  ${getStatusColor()} `}
+          >
+            {getExamStatus()}
+          </span>
         </div>
-        <div className="material-editor__attendee-dates">
-          {isEnded ? (
-            <>
-              <div className="material-editor__attendee-date">
-                <strong>Aloitettu:</strong>{" "}
-                {localize.date(attendee.started, "l, LT")}
-              </div>
-              <div className="material-editor__attendee-date">
-                <strong>Lopetettu:</strong>{" "}
-                {localize.date(attendee.ended, "l, LT")}
-              </div>
-            </>
-          ) : isStarted ? (
+
+        {isEnded ? (
+          <div className="material-editor__attendee-dates">
             <div className="material-editor__attendee-date">
               <strong>Aloitettu:</strong>{" "}
               {localize.date(attendee.started, "l, LT")}
             </div>
-          ) : null}
-        </div>
+            <div className="material-editor__attendee-date">
+              <strong>Lopetettu:</strong>{" "}
+              {localize.date(attendee.ended, "l, LT")}
+            </div>
+          </div>
+        ) : isStarted ? (
+          <div className="material-editor__attendee-dates">
+            <div className="material-editor__attendee-date">
+              <strong>Aloitettu:</strong>{" "}
+              {localize.date(attendee.started, "l, LT")}
+            </div>
+          </div>
+        ) : null}
 
         {/* Extra Time Settings */}
         <div className="material-editor__attendee-settings">
