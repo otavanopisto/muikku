@@ -484,6 +484,10 @@ legend {
     border-color: $color-success;
   }
 
+  &[disabled] {
+    border-color: $color-disabled-background;
+  }
+
   @include form-focus;
 }
 

@@ -2,7 +2,7 @@
 import * as React from "react";
 import { ExamAttendee } from "~/generated/client";
 import { localize } from "~/locales/i18n";
-import Button, { IconButton } from "~/components/general/button";
+import Button from "~/components/general/button";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
@@ -132,29 +132,27 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
     >
       {/* Card Header */}
       <div className="material-editor__attendee-header">
-        <div className="material-editor__attendee-header-info">
-          <span className="material-editor__attendee-name">
-            {attendee.firstName} {attendee.lastName}
-          </span>
-          <span
-            className={`material-editor__attendee-status ${getStatusColor()}`}
-          >
-            {getExamStatus()}
-          </span>
+        <div className="material-editor__attendee-header-title">
+          {attendee.firstName} {attendee.lastName}
         </div>
+        {attendee.line && (
+          <div className="material-editor__attendee-line">
+            ({attendee.line})
+          </div>
+        )}
 
         <div className="material-editor__attendee-header-actions">
-          <IconButton
+          <Button
             icon="pencil"
-            className="material-editor__attendee-edit-btn"
+            buttonModifiers={"edit-extra-row"}
             onClick={handleStartEditing}
             disabled={saving || isEditing}
             title="Muokkaa asetuksia"
           />
 
-          <IconButton
+          <Button
             icon="trash"
-            className="material-editor__attendee-remove"
+            buttonModifiers={"remove-extra-row"}
             onClick={() => onRemove(attendee.id!)}
             disabled={saving}
             title="Poista osallistuja"
@@ -164,42 +162,48 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
 
       {/* Card Body */}
       <div className="material-editor__attendee-body">
-        {attendee.line && (
-          <div className="material-editor__attendee-line">{attendee.line}</div>
-        )}
-
+        <div className={`material-editor__attendee-status ${getStatusColor()}`}>
+          <strong>Kokeen tila:</strong> {getExamStatus()}
+        </div>
         <div className="material-editor__attendee-dates">
           {isEnded ? (
-            <div className="material-editor__attendee-date">
-              <strong>Lopetettu:</strong> {localize.date(attendee.ended)}
-            </div>
+            <>
+              <div className="material-editor__attendee-date">
+                <strong>Aloitettu:</strong>{" "}
+                {localize.date(attendee.started, "l, LT")}
+              </div>
+              <div className="material-editor__attendee-date">
+                <strong>Lopetettu:</strong>{" "}
+                {localize.date(attendee.ended, "l, LT")}
+              </div>
+            </>
           ) : isStarted ? (
             <div className="material-editor__attendee-date">
-              <strong>Aloitettu:</strong> {localize.date(attendee.started)}
+              <strong>Aloitettu:</strong>{" "}
+              {localize.date(attendee.started, "l, LT")}
             </div>
-          ) : (
-            <div className="material-editor__attendee-date">
-              <strong>Ei aloitettu:</strong>
-            </div>
-          )}
+          ) : null}
         </div>
 
         {/* Extra Time Settings */}
         <div className="material-editor__attendee-settings">
-          <div className="material-editor__attendee-edit-form">
-            <label className="material-editor__attendee-label">
+          <div className="form-element">
+            <label
+              htmlFor="extra-time"
+              className="material-editor__attendee-label"
+            >
               Lisäaika (minuuttia):
-              <NumericFormat
-                min={0}
-                max={120}
-                decimalScale={0}
-                value={extraTimeMinutes}
-                onValueChange={handleExtraTimeChange}
-                className="material-editor__attendee-input"
-                disabled={saving || !isEditing}
-              />
             </label>
-
+            <NumericFormat
+              id="extra-time"
+              min={0}
+              max={120}
+              decimalScale={0}
+              value={extraTimeMinutes}
+              onValueChange={handleExtraTimeChange}
+              className="form-element__input form-element__input--material-editor"
+              disabled={saving || !isEditing}
+            />
             {error && (
               <div className="material-editor__attendee-error">{error}</div>
             )}
@@ -210,22 +214,20 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
       {/* Card Footer - Only show when editing */}
       {isEditing && (
         <div className="material-editor__attendee-footer">
-          <div className="material-editor__attendee-actions">
-            <Button
-              className="material-editor__attendee-save"
-              onClick={handleSaveSettings}
-              disabled={saving || !hasUnsavedChanges}
-            >
-              {saving ? "Tallennetaan..." : "Tallenna"}
-            </Button>
-            <Button
-              className="material-editor__attendee-cancel"
-              onClick={handleCancel}
-              disabled={saving}
-            >
-              Peruuta
-            </Button>
-          </div>
+          <Button
+            buttonModifiers={["standard-ok", "execute"]}
+            onClick={handleSaveSettings}
+            disabled={saving || !hasUnsavedChanges}
+          >
+            {saving ? "Tallennetaan..." : "Tallenna"}
+          </Button>
+          <Button
+            buttonModifiers={["standard-cancel", "cancel"]}
+            onClick={handleCancel}
+            disabled={saving}
+          >
+            Peruuta
+          </Button>
         </div>
       )}
     </div>

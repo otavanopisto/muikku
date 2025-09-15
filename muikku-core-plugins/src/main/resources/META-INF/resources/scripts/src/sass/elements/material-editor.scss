@@ -165,7 +165,8 @@
   padding: 10px;
 }
 
-.material-editor__category-header {
+.material-editor__category-header,
+.material-editor__attendee-header {
   align-items: center;
   border-bottom: 1px solid $color-default-separator-border;
   display: flex;
@@ -198,4 +199,81 @@
 .material-editor__add-page {
   margin: 5px 0 0;
   width: 100%;
+}
+
+.material-editor__attendees {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: flex-start;
+  margin: 20px 0;
+}
+
+.material-editor__attendees-title {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  font-size: 1rem;
+}
+
+.material-editor__attendee-header {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.material-editor__attendee-header-title {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.material-editor__attendee-line {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.material-editor__attendee-header-actions {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 5px;
+}
+
+.material-editor__attendees-cards {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.material-editor__attendee-card {
+  background: $color-default-lighter-generic-background;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.material-editor__attendee-body {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.material-editor__attendee-dates {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.material-editor__attendee-footer {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 10px;
 }

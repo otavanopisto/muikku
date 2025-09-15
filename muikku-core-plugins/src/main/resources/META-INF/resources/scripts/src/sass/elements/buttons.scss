@@ -2533,6 +2533,38 @@
   }
 }
 
+.button--edit-extra-row {
+  background: transparent;
+  height: 2.25rem;
+  padding: 5px;
+  width: 2.25rem;
+
+  .icon-pencil {
+    align-items: center;
+    color: $color-info;
+    display: flex;
+    font-size: 1.25rem;
+    height: 2.25rem;
+    justify-content: center;
+    margin: 0;
+    padding: 5px;
+    width: 2.25rem;
+  }
+
+  &.disabled {
+    background: transparent;
+
+    .icon-trash {
+      color: $color-disabled;
+    }
+
+    &:hover {
+      background: transparent;
+      color: $color-disabled;
+    }
+  }
+}
+
 .button--whatsapp-me {
   background: linear-gradient($color-whatsapp-light, $color-whatsapp-dark);
   color: $color-default;

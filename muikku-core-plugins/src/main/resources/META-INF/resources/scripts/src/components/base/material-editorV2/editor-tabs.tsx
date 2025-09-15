@@ -635,11 +635,11 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
 
         {/* Selected Students Cards */}
         {hasAttendees && (
-          <div className="material-editor__attendees-cards">
-            <h4 className="material-editor__attendees-title">
+          <div className="material-editor__attendees">
+            <div className="material-editor__attendees-title">
               Valitut osallistujat:
-            </h4>
-            <div className="material-editor__attendees-grid">
+            </div>
+            <div className="material-editor__attendees-cards">
               {examAttendees.map((attendee) => (
                 <ExamAttendeeCard
                   key={attendee.id}
