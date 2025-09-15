@@ -366,8 +366,12 @@
   background: $color-default;
   border: 1px solid $color-panel-border-color;
   border-radius: 2px;
-  margin: 10px 0;
+  margin: 10px 0 0;
   padding: 0 10px 10px;
+}
+
+.evaluation-modal__content-sub-item {
+  margin: 0 0 0 10px;
 }
 
 .evaluation-modal__item-header {

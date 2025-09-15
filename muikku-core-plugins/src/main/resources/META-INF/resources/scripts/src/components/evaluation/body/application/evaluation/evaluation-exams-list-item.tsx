@@ -112,13 +112,17 @@ const EvaluationExamsListItem = React.forwardRef(
             );
 
             return (
-              <AssignmentItem
+              <div
                 key={content.materialId}
-                content={content}
-                studentUserEntityId={studentUserEntityId}
-                workspace={workspace}
-                compositeReply={compositeReply}
-              />
+                className="evaluation-modal__content-sub-item"
+              >
+                <AssignmentItem
+                  content={content}
+                  studentUserEntityId={studentUserEntityId}
+                  workspace={workspace}
+                  compositeReply={compositeReply}
+                />
+              </div>
             );
           })
         ) : (

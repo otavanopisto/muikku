@@ -26,8 +26,8 @@
 
 .exam--dialog {
   background: $color-default;
-  border: 0;
-  padding: 0;
+  border: solid 1px $color-application-panel-box-border;
+
 }
 
 .exam__completed-marker {

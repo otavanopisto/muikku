@@ -19,6 +19,29 @@
 
 .content-panel--workspace-exam {
   padding: 0;
+
+  .content-panel__navigation {
+    height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop}) - 30px);
+    top: 0;
+  }
+
+  .content-panel__aside {
+    margin: -30px 12px 10px auto;
+    top: 12px;
+  }
+
+  .toc  {
+    border: solid 1px $color-application-panel-box-border;
+  }
+
+  .toc__header {
+    display: none;
+  }
+
+  .toc__section-title-container {
+    margin: 4px;
+  }
+
 }
 
 .content-panel__container {
@@ -81,6 +104,7 @@
     /* stylelint-enable value-no-vendor-prefix, declaration-block-no-duplicate-properties */
 
     top: calc(#{$navbar-desktop-height} * 1.25 + (1 * #{$panel-header-title-margin}));
+    z-index: 9;
   }
 }
 

@@ -201,6 +201,10 @@
   }
 }
 
+.dialog__window--exam {
+  background-color: $color-default-generic-background;
+}
+
 .dialog__window--exam,
 .dialog__window--wizard,
 .dialog__window--studies {
@@ -413,7 +417,6 @@
   }
 }
 
-.dialog__header--exam,
 .dialog__header--wizard,
 .dialog__header--course-description {
   background: $color-default;
@@ -430,6 +433,15 @@
     display: flex;
     height: 3rem;
     padding: 0 20px;
+  }
+}
+
+.dialog__header--exam {
+  background-color: $color-default-generic-background;
+  color: $color-default-contrast;
+
+  .button-icon--dialog-close {
+    color: $color-default-contrast;
   }
 }
 
@@ -460,8 +472,7 @@
   }
 }
 
-.dialog__header--chat,
-.dialog__header--exam {
+.dialog__header--chat {
   background: $color-default;
   color: $color-default-contrast;
 

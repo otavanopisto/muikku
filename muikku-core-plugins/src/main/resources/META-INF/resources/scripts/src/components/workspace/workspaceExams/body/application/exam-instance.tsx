@@ -186,7 +186,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
    */
   const renderContent = () => {
     // If something is loaded, show common loading animation
-    if (
+    /* if (
       initializeStatus === "LOADING" ||
       currentExamStatusInfo.status === "LOADING"
     ) {
@@ -195,7 +195,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
           Ladataan...
         </motion.div>
       );
-    }
+    } */
 
     // If minimun exams related information is initialized, but current exam is not started
     // we show pre exam related info
