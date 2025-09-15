@@ -238,6 +238,19 @@ paths:
               - CURRENTANDEXPIRED
               - CURRENTANDUPCOMING
             default: CURRENT
+        - name: firstResult
+          in: query
+          description: First result
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: maxResults
+          in: query
+          description: Max results
+          schema:
+            type: integer
+            default: 10
       responses:
         "200":
           description: Fetch announcements successfully
