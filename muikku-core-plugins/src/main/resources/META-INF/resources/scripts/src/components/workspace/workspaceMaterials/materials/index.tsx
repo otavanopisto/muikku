@@ -743,7 +743,11 @@ class WorkspaceMaterials extends React.Component<
         sectionSpecificContentData.push(
           <div className="content-panel__item">
             <article className="material-page">
-              <div className="material-page__content">{descriptionElement}</div>
+              <div className="material-page__content-wrapper">
+                <div className="material-page__content rich-text">
+                  {descriptionElement}
+                </div>
+              </div>
             </article>
           </div>
         );
