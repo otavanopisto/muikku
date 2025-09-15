@@ -16444,7 +16444,6 @@ components:
         - city
         - region
         - country
-        - type
         - defaultAddress
       properties:
         identifier:
@@ -16461,8 +16460,6 @@ components:
           type: string
         country:
           type: string
-        type:
-          type: string
         defaultAddress:
           type: boolean
 
@@ -16471,13 +16468,10 @@ components:
       description: UserStudentEmail object
       required:
         - studentIdentifier
-        - type
         - address
         - defaultAddress
       properties:
         studentIdentifier:
-          type: string
-        type:
           type: string
         address:
           type: string
@@ -16489,13 +16483,10 @@ components:
       description: UserStudentPhoneNumber object
       required:
         - studentIdentifier
-        - type
         - number
         - defaultNumber
       properties:
         studentIdentifier:
-          type: string
-        type:
           type: string
         number:
           type: string

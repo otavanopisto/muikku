@@ -12,7 +12,6 @@ public abstract class AbstractUserAddress implements UserAddress {
       String city,
       String region,
       String country,
-      String type,
       Boolean defaultAddress) {
     super();
     this.identifier = identifier;
@@ -22,7 +21,6 @@ public abstract class AbstractUserAddress implements UserAddress {
     this.city = city;
     this.region = region;
     this.country = country;
-    this.type = type;
     this.defaultAddress = defaultAddress;
   }
 
@@ -82,11 +80,6 @@ public abstract class AbstractUserAddress implements UserAddress {
   }
   
   @Override
-  public String getType() {
-    return type;
-  }
-  
-  @Override
   public Boolean getDefaultAddress() {
     return defaultAddress;
   }
@@ -107,6 +100,5 @@ public abstract class AbstractUserAddress implements UserAddress {
   private String city;
   private String region;
   private String country;
-  private String type;
   private Boolean defaultAddress;
 }

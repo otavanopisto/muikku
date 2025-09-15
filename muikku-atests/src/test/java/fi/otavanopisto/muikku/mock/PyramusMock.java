@@ -646,7 +646,7 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(student))
               .withStatus(200)));
 
-          Email email = new Email(student.getId(), (long) 1, true, mockStudent.getEmail());
+          Email email = new Email(student.getId(), true, mockStudent.getEmail());
           Email[] emails = { email };
           
           stubFor(get(urlEqualTo(String.format("/1/users/users/%d/defaultEmailAddress", student.getId())))
@@ -850,7 +850,7 @@ public class PyramusMock {
               .withBody(pmock.objectMapper.writeValueAsString(staffMemberArray))
               .withStatus(200)));
           
-          Email email = new Email(staffMember.getId(), 1l, true, mockStaffMember.getEmail());
+          Email email = new Email(staffMember.getId(), true, mockStaffMember.getEmail());
           Email[] emails = { email };
 
           stubFor(get(urlEqualTo(String.format("/1/users/users/%d/defaultEmailAddress", staffMember.getId())))

@@ -1632,7 +1632,7 @@ public class UserRESTService extends AbstractRESTService {
     List<StudentPhoneNumber> result = new ArrayList<>();
     
     for (UserPhoneNumber entity : entities) {
-      result.add(new StudentPhoneNumber(toId(entity.getUserIdentifier()), entity.getType(), entity.getNumber(), entity.getDefaultNumber()));
+      result.add(new StudentPhoneNumber(toId(entity.getUserIdentifier()), entity.getNumber(), entity.getDefaultNumber()));
     }
 
     return result;
@@ -1642,7 +1642,7 @@ public class UserRESTService extends AbstractRESTService {
     List<StudentEmail> result = new ArrayList<>();
     
     for (UserEmail entity : entities) {
-      result.add(new StudentEmail(toId(entity.getUserIdentifier()), entity.getType(), entity.getAddress(), entity.getDefaultAddress()));
+      result.add(new StudentEmail(toId(entity.getUserIdentifier()), entity.getAddress(), entity.getDefaultAddress()));
     }
 
     return result;
@@ -1660,7 +1660,6 @@ public class UserRESTService extends AbstractRESTService {
           entity.getCity(),
           entity.getRegion(),
           entity.getCountry(),
-          entity.getType(),
           entity.getDefaultAddress())
       );
     }
