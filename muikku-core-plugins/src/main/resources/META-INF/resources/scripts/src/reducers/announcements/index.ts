@@ -43,7 +43,11 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
   },
 ];
 
-export type AnnouncementsStateType = "LOADING" | "ERROR" | "READY";
+export type AnnouncementsStateType =
+  | "LOADING"
+  | "ERROR"
+  | "READY"
+  | "LOADING_MORE";
 
 /**
  * AnnouncementsState
@@ -58,6 +62,7 @@ export interface AnnouncementsState {
   toolbarLock: boolean;
   navigation: AnnouncerNavigationItemListType;
   workspaceId?: number;
+  hasMore: boolean;
 }
 
 /**
@@ -73,6 +78,7 @@ export interface AnnouncementsStatePatch {
   toolbarLock?: boolean;
   navigation?: AnnouncerNavigationItemListType;
   workspaceId?: number;
+  hasMore?: boolean;
 }
 
 /**
@@ -88,6 +94,7 @@ const initialAnnouncementsState: AnnouncementsState = {
   toolbarLock: false,
   navigation: defaultNavigation,
   workspaceId: null,
+  hasMore: false,
 };
 
 /**

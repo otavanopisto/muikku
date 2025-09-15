@@ -12,7 +12,10 @@ import "~/sass/elements/announcement.scss";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/form.scss";
-import { AnnouncementsState as AnnouncementsStateType } from "~/reducers/announcements";
+import {
+  AnnouncementsState,
+  AnnouncementsStateType,
+} from "~/reducers/announcements";
 import BodyScrollKeeper from "~/components/general/body-scroll-keeper";
 import SelectableList from "~/components/general/selectable-list";
 import Link from "~/components/general/link";
@@ -21,6 +24,8 @@ import {
   RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected,
   addToAnnouncementsSelected,
+  LoadMoreAnnouncementsTriggerType,
+  loadMoreAnnouncements,
 } from "~/actions/announcements";
 import DeleteAnnouncementDialog from "../../dialogs/delete-announcement";
 import ApplicationList, {
@@ -35,13 +40,16 @@ import ApplicationList, {
 import { UserIndexState } from "~/reducers/user-index";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
-
+import BodyScrollLoader from "~/components/general/body-scroll-loader";
 /**
  * AnnouncementsProps
  */
 interface AnnouncementsProps extends WithTranslation {
-  announcements: AnnouncementsStateType;
+  announcements: AnnouncementsState;
   userIndex: UserIndexState;
+  hasMore: boolean;
+  state: AnnouncementsStateType;
+  loadMoreAnnouncements: LoadMoreAnnouncementsTriggerType;
   addToAnnouncementsSelected: AddToAnnouncementsSelectedTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
 }
@@ -49,15 +57,28 @@ interface AnnouncementsProps extends WithTranslation {
 /**
  * AnnouncementsState
  */
-interface AnnouncementsState {}
+interface AnnouncementsComponentState {}
 
 /**
  * Announcements
  */
-class Announcements extends React.Component<
+class Announcements extends BodyScrollLoader<
   AnnouncementsProps,
-  AnnouncementsState
+  AnnouncementsComponentState
 > {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: AnnouncementsProps) {
+    super(props);
+
+    this.statePropertyLocation = "state";
+    this.hasMorePropertyLocation = "hasMore";
+
+    this.loadMoreTriggerFunctionLocation = "loadMoreAnnouncements";
+  }
+
   /**
    * setCurrentAnnouncement
    * @param announcement announcement
@@ -206,6 +227,8 @@ function mapStateToProps(state: StateType) {
   return {
     announcements: state.announcements,
     userIndex: state.userIndex,
+    hasMore: state.announcements.hasMore,
+    state: state.announcements.state,
   };
 }
 
@@ -217,6 +240,7 @@ function mapStateToProps(state: StateType) {
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
     {
+      loadMoreAnnouncements,
       addToAnnouncementsSelected,
       removeFromAnnouncementsSelected,
     },
