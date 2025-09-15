@@ -107,7 +107,8 @@ const EvaluationExamsListItem = React.forwardRef(
         contents && contents.length > 0 ? (
           contents.map((content) => {
             const compositeReply = evaluationCompositeReplies.find(
-              (cReply) => cReply.workspaceMaterialId === content.materialId
+              (cReply) =>
+                cReply.workspaceMaterialId === content.workspaceMaterialId
             );
 
             return (
