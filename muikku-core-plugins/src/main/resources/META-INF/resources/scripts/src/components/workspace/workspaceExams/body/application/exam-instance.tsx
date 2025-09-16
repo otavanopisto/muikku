@@ -185,18 +185,6 @@ const ExamInstance = (props: ExamInstanceProps) => {
    * Render content
    */
   const renderContent = () => {
-    // If something is loaded, show common loading animation
-    /* if (
-      initializeStatus === "LOADING" ||
-      currentExamStatusInfo.status === "LOADING"
-    ) {
-      return (
-        <motion.div {...commonMotionProps} key="loading">
-          Ladataan...
-        </motion.div>
-      );
-    } */
-
     // If minimun exams related information is initialized, but current exam is not started
     // we show pre exam related info
     if (
@@ -302,7 +290,11 @@ const ExamInstance = (props: ExamInstanceProps) => {
     );
   };
 
-  return <AnimatePresence>{renderContent()}</AnimatePresence>;
+  return (
+    <AnimatePresence exitBeforeEnter initial={false}>
+      {renderContent()}
+    </AnimatePresence>
+  );
 };
 
 /**
@@ -334,12 +326,25 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
     }
   };
 
+  // Check if exam has been started
+  const isStarted = !!exam?.started;
+  // Check if exam has ended
+  const isEnded = !!exam?.ended;
+  // Check if exam allows restart
+  const allowRestart = exam?.allowRestart || false;
+  // Check if exam has time limit
+  const hasTimeLimit = exam?.minutes > 0 || false;
+
   /**
    * buttonText
    * @returns button text
    */
   const getButton = () => {
-    if (exam.started && !exam.ended) {
+    if (!allowRestart && isEnded) {
+      return null;
+    }
+
+    if (isStarted && !isEnded) {
       return (
         <Button
           buttonModifiers={["standard-ok", "continue-exam"]}
@@ -364,6 +369,44 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
     return null;
   }
 
+  // If user is trying to access the exam after it has ended and the exam does not allow restart, show a message
+  if (!allowRestart && isEnded) {
+    return (
+      <div className="exam exam--dialog">
+        <div className="exam__body">
+          <div className="exam__content">
+            {exam.description && (
+              <div
+                className="exam__content"
+                dangerouslySetInnerHTML={{ __html: exam.description }}
+              ></div>
+            )}
+
+            <div className="exam__state state-INFO">
+              <div className="exam__state-icon icon-notification"></div>
+              <div className="exam__state-text">
+                Olet jo suorittanut kokeen, jota ei voida suorittaa uudestaan.
+                Mikäli haluat suorittaa kokeen uudestaan, ole yhteydessä
+                opettajaasi. Voit sulkea koeikkunan.
+              </div>
+            </div>
+          </div>
+
+          <div className="exam__footer">
+            <div className="exam__actions exam__actions--centered">
+              <Button
+                buttonModifiers={["standard-cancel", "cancel"]}
+                onClick={props.onCloseExam}
+              >
+                Sulje koeikkuna
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="exam exam--dialog">
       <div className="exam__body">
@@ -372,7 +415,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
             <span className="exam__label">Kokeen voi suorittaa uudestaan</span>
           )}
 
-          {exam.minutes && (
+          {hasTimeLimit && (
             <span className="exam__label">
               Suoritusaika:{" "}
               <span className="exam__label-accent">
