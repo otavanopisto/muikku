@@ -214,8 +214,7 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @GET
-  // TODO Technically path should be nodes rather than materials; clean up later
-  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACENODEID}/evaluations/")
+  @Path("/workspaces/{WORKSPACEENTITYID}/nodes/{WORKSPACENODEID}/evaluations/")
   @RESTPermit(handling = Handling.INLINE)
   public Response listWorkspaceNodeEvaluations(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACENODEID") Long workspaceNodeId, @QueryParam("userEntityId") Long userEntityId) {
     if (!sessionController.isLoggedIn()) {

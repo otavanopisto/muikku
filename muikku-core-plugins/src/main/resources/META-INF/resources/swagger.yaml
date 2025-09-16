@@ -2818,11 +2818,11 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
-  /rest/evaluation/workspaces/{workspaceId}/materials/{workspaceMaterialId}/evaluations/:
+  /rest/evaluation/workspaces/{workspaceId}/nodes/{workspaceNodeId}/evaluations/:
     get:
-      operationId: getWorkspaceMaterialEvaluations
-      summary: Get workspace material evaluations
-      description: Get workspace material evaluations
+      operationId: getWorkspaceNodeEvaluations
+      summary: Get workspace node evaluations
+      description: Get workspace node evaluations
       tags:
         - Evaluation
       parameters:
@@ -2833,9 +2833,9 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: workspaceMaterialId
+        - name: workspaceNodeId
           in: path
-          description: Workspace material id
+          description: Workspace node id (page or folder)
           required: true
           schema:
             type: integer
@@ -2849,7 +2849,7 @@ paths:
             format: int64
       responses:
         "200":
-          description: Workspace material evaluations
+          description: Workspace node evaluations
           content:
             application/json:
               schema:
