@@ -550,8 +550,8 @@ public class EvaluationController {
     return interimEvaluationRequestDAO.listByUserAndWorkspace(userEntityId, workspaceEntityId);
   }
 
-  public List<InterimEvaluationRequest> listInterimEvaluationRequests(UserEntity userEntity, WorkspaceMaterial workspaceMaterial, Boolean archived) {
-    return interimEvaluationRequestDAO.listByUserAndMaterialAndArchived(userEntity.getId(), workspaceMaterial.getId(), archived);
+  public List<InterimEvaluationRequest> listInterimEvaluationRequests(UserEntity userEntity, WorkspaceNode workspaceNode, Boolean archived) {
+    return interimEvaluationRequestDAO.listByUserAndMaterialAndArchived(userEntity.getId(), workspaceNode.getId(), archived);
   }
 
   public void archiveInterimEvaluationRequest(InterimEvaluationRequest interimEvaluationRequest) {
@@ -644,7 +644,7 @@ public class EvaluationController {
 
   public WorkspaceNodeEvaluation createWorkspaceNodeEvaluation(
       UserEntity student,
-      WorkspaceMaterial workspaceMaterial,
+      WorkspaceNode workspaceNode,
       GradingScale gradingScale,
       GradingScaleItem grade,
       UserEntity assessor,
@@ -653,7 +653,7 @@ public class EvaluationController {
       Double points,
       WorkspaceNodeEvaluationType evaluationType) {
     WorkspaceNodeEvaluation evaluation = workspaceNodeEvaluationDAO.create(student.getId(), 
-        workspaceMaterial.getId(),  
+        workspaceNode.getId(),  
         gradingScale != null ? gradingScale.getIdentifier() : null, 
         gradingScale != null ? gradingScale.getSchoolDataSource() : null, 
         grade != null ? grade.getIdentifier() : null, 
@@ -663,7 +663,6 @@ public class EvaluationController {
         verbalAssessment,
         points,
         evaluationType);
-    WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
 
     WorkspaceMaterialReplyState state = null;
     switch (evaluationType) {
@@ -677,14 +676,18 @@ public class EvaluationController {
       break;
     }
 
+    WorkspaceMaterialReply reply = null;
+    if (workspaceNode instanceof WorkspaceMaterial) {
+      reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity((WorkspaceMaterial) workspaceNode, student);
+    }
     if (reply != null) {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
 
     // #4595: Communicator message about interim evaluation
 
-    if (workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
-      WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(workspaceMaterial);
+    if (workspaceNode instanceof WorkspaceMaterial && ((WorkspaceMaterial) workspaceNode).getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
+      WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(workspaceNode);
       String workspaceName = workspaceEntityController.getName(workspaceEntity).getDisplayName();
       String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
       String messageTitle = localeController.getText(
