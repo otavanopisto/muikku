@@ -375,21 +375,9 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
       <div className="exam exam--dialog">
         <div className="exam__body">
           <div className="exam__content">
-            {exam.description && (
-              <div
-                className="exam__content"
-                dangerouslySetInnerHTML={{ __html: exam.description }}
-              ></div>
-            )}
-
-            <div className="exam__state state-INFO">
-              <div className="exam__state-icon icon-notification"></div>
-              <div className="exam__state-text">
-                Olet jo suorittanut kokeen, jota ei voida suorittaa uudestaan.
-                Mikäli haluat suorittaa kokeen uudestaan, ole yhteydessä
-                opettajaasi. Voit sulkea koeikkunan.
-              </div>
-            </div>
+            Olet jo suorittanut kokeen, jota ei voida suorittaa uudestaan.
+            Mikäli haluat suorittaa kokeen uudestaan, ole yhteydessä
+            opettajaasi. Voit sulkea koeikkunan.
           </div>
 
           <div className="exam__footer">
