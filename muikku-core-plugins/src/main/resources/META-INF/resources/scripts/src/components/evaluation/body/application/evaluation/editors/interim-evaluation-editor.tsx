@@ -29,8 +29,8 @@ import {
   AudioAssessment,
   EvaluationAssessmentRequest,
   EvaluationGradeScale,
-  MaterialEvaluation,
-  SaveWorkspaceAssigmentAssessmentRequest,
+  NodeEvaluation,
+  CreateWorkspaceNodeAssessmentRequest,
   MaterialCompositeReply,
   WorkspaceMaterial,
 } from "~/generated/client";
@@ -38,11 +38,11 @@ import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
- * AssignmentEditorProps
+ * InterimEvaluationEditorProps
  */
 interface InterimEvaluationEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
-  materialEvaluation?: MaterialEvaluation;
+  materialEvaluation?: NodeEvaluation;
   materialAssignment: WorkspaceMaterial;
   compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
@@ -68,7 +68,7 @@ interface InterimEvaluationEditorProps extends WithTranslation {
 }
 
 /**
- * AssignmentEditorState
+ * InterimEvaluationEditorState
  */
 interface InterimEvaluationEditorState {
   literalEvaluation: string;
@@ -81,7 +81,7 @@ interface InterimEvaluationEditorState {
 }
 
 /**
- * AssignmentEditor
+ * InterimEvaluationEditor
  */
 class InterimEvaluationEditor extends SessionStateComponent<
   InterimEvaluationEditorProps,
@@ -173,7 +173,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
     workspaceEntityId: number;
     userEntityId: number;
     workspaceMaterialId: number;
-    dataToSave: SaveWorkspaceAssigmentAssessmentRequest;
+    dataToSave: CreateWorkspaceNodeAssessmentRequest;
     materialId: number;
   }) => {
     const evaluationApi = MApi.getEvaluationApi();
@@ -189,11 +189,11 @@ class InterimEvaluationEditor extends SessionStateComponent<
 
     try {
       const assessmentWithAudio =
-        await evaluationApi.saveWorkspaceAssigmentAssessment({
+        await evaluationApi.createWorkspaceNodeAssessment({
           workspaceId: workspaceEntityId,
           userEntityId: userEntityId,
-          workspaceMaterialId: workspaceMaterialId,
-          saveWorkspaceAssigmentAssessmentRequest: {
+          workspaceNodeId: workspaceMaterialId,
+          createWorkspaceNodeAssessmentRequest: {
             ...dataToSave,
           },
         });

@@ -20,20 +20,20 @@ import {
   AssessmentWithAudio,
   AudioAssessment,
   EvaluationAssessmentRequest,
-  MaterialEvaluation,
-  SaveWorkspaceAssigmentAssessmentRequest,
+  CreateWorkspaceNodeAssessmentRequest,
   MaterialCompositeReply,
   WorkspaceMaterial,
+  NodeEvaluation,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
- * AssignmentEditorProps
+ * ExerciseEditorProps
  */
-interface AssignmentEditorProps extends WithTranslation {
+interface ExerciseEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
-  materialEvaluation?: MaterialEvaluation;
+  materialEvaluation?: NodeEvaluation;
   materialAssignment: WorkspaceMaterial;
   compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
@@ -54,9 +54,9 @@ interface AssignmentEditorProps extends WithTranslation {
 }
 
 /**
- * AssignmentEditorState
+ * ExerciseEditorState
  */
-interface AssignmentEditorState {
+interface ExerciseEditorState {
   literalEvaluation: string;
   audioAssessments: AudioAssessment[];
   draftId: string;
@@ -65,17 +65,17 @@ interface AssignmentEditorState {
 }
 
 /**
- * AssignmentEditor
+ * ExerciseEditor
  */
 class ExerciseEditor extends SessionStateComponent<
-  AssignmentEditorProps,
-  AssignmentEditorState
+  ExerciseEditorProps,
+  ExerciseEditorState
 > {
   /**
    * constructor
    * @param props props
    */
-  constructor(props: AssignmentEditorProps) {
+  constructor(props: ExerciseEditorProps) {
     super(props, `exercise-editor`);
 
     const { compositeReplies, selectedAssessment, materialAssignment } = props;
@@ -146,7 +146,7 @@ class ExerciseEditor extends SessionStateComponent<
     workspaceEntityId: number;
     userEntityId: number;
     workspaceMaterialId: number;
-    dataToSave: SaveWorkspaceAssigmentAssessmentRequest;
+    dataToSave: CreateWorkspaceNodeAssessmentRequest;
     materialId: number;
   }) => {
     const evaluationApi = MApi.getEvaluationApi();
@@ -160,11 +160,11 @@ class ExerciseEditor extends SessionStateComponent<
 
     try {
       const assessmentWithAudio =
-        await evaluationApi.saveWorkspaceAssigmentAssessment({
+        await evaluationApi.createWorkspaceNodeAssessment({
           workspaceId: workspaceEntityId,
           userEntityId,
-          workspaceMaterialId,
-          saveWorkspaceAssigmentAssessmentRequest: {
+          workspaceNodeId: workspaceMaterialId,
+          createWorkspaceNodeAssessmentRequest: {
             ...dataToSave,
           },
         });

@@ -26,7 +26,7 @@ import {
   SaveWorkspaceUserSupplementationRequestRequest,
   UpdateWorkspaceUserSupplementationRequestRequest,
   UpdateWorkspaceUserAssessmentRequest,
-  UpdateWorkspaceAssigmentAssessmentRequest,
+  UpdateWorkspaceNodeAssessmentRequest,
   CreateWorkspaceJournalCommentRequest,
   UpdateWorkspaceJournalCommentRequest,
   WorkspaceJournalEntry,
@@ -409,7 +409,7 @@ export interface UpdateWorkspaceEvaluation {
     type: "new" | "edit";
     workspaceEvaluation:
       | SaveWorkspaceUserAssessmentRequest
-      | UpdateWorkspaceAssigmentAssessmentRequest;
+      | UpdateWorkspaceNodeAssessmentRequest;
     billingPrice?: string;
     onSuccess?: () => void;
     onFail?: () => void;

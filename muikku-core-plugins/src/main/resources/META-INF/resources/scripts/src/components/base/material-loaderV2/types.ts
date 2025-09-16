@@ -5,7 +5,7 @@ import {
   MaterialCompositeReply,
   MaterialCompositeReplyStateType,
   MaterialContentNode,
-  MaterialEvaluation,
+  NodeEvaluation,
   WorkspaceActivity,
   WorkspaceMaterial,
 } from "~/generated/client";
@@ -95,7 +95,7 @@ export interface DataProvider {
   // Material data
   readonly material: {
     readonly contentVersion: ContentVersion;
-    readonly evaluation?: MaterialEvaluation;
+    readonly evaluation?: NodeEvaluation;
     readonly assignment?: WorkspaceMaterial;
   } & MaterialContentNode;
 

@@ -22,7 +22,7 @@ import {
   Language,
   WorkspaceMaterial,
   InterimEvaluationRequest,
-  MaterialEvaluation,
+  NodeEvaluation,
   WorkspaceAccess,
   WorkspaceMandatority,
   WorkspaceSettings,
@@ -278,7 +278,7 @@ export interface MaterialContentNodeWithIdAndLogic extends MaterialContentNode {
   id?: number;
   // these are usually missing and have to be manually retrieved
   childrenAttachments?: MaterialContentNodeWithIdAndLogic[];
-  evaluation?: MaterialEvaluation;
+  evaluation?: NodeEvaluation;
   assignment?: WorkspaceMaterial;
 
   // This are available for other users than student
