@@ -10,14 +10,16 @@ import {
 } from "~/components/general/table";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/table.scss";
+import { m } from "framer-motion";
 
 /**
  * DisplayLanguagesProps
  */
 interface DisplayLanguagesProps {
+  rows: LanguageData[];
+  modifier?: string;
   labels?: string[];
   title?: string;
-  rows: LanguageData[];
   disabledItems?: string[];
   singleColumn?: boolean;
 
@@ -44,20 +46,32 @@ const DisplayLanguages = (props: DisplayLanguagesProps) => {
     rows,
     title,
     singleColumn,
+    modifier,
     cellAction,
     columnAction,
     onItemClick,
   } = props;
-  const firstCellModifiers = !singleColumn
-    ? ["centered", "language-profile-first-cell"]
-    : ["language-profile-single-column"];
+
+  const firstCellModifiers = [
+    ...(!singleColumn
+      ? ["centered", "language-profile-first-cell"]
+      : ["language-profile-single-column"]),
+    ...(modifier ? [modifier] : []),
+  ];
+
   return (
     <div className="language-profile__languages-wrapper">
       <Table modifiers={["language-profile__languages"]}>
         {labels && (
           <TableHead modifiers={["sticky"]}>
             <Tr>
-              <Th modifiers={["centered", "language-profile-first-cell"]}>
+              <Th
+                modifiers={[
+                  "centered",
+                  "language-profile-first-cell",
+                  modifier && modifier,
+                ]}
+              >
                 {title
                   ? title
                   : t("labels.language", {
@@ -94,7 +108,7 @@ const DisplayLanguages = (props: DisplayLanguagesProps) => {
               >
                 <Td modifiers={firstCellModifiers} key={item.code + "-name"}>
                   <span>{item.name}</span>
-                  {singleColumn && columnAction && !isDisabled && (
+                  {columnAction && !isDisabled && (
                     <span>{columnAction(item)}</span>
                   )}
                 </Td>

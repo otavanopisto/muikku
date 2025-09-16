@@ -2925,6 +2925,7 @@
       "remove_file": "Remove file sample",
       "remove_language": "Remove language: {{language}}",
       "remove_text": "Remove text sample",
+      "remove_workspace": "Remove workspace: {{workspace}}",
       "samples": "Samples",
       "skill": "Skill",
       "skillEstimate": "Overall skill level estimate",
@@ -2981,6 +2982,7 @@
       "removing_file": "Are you sure you want to remove the file sample?",
       "removing_language": "Are you sure, you want to remove this language?",
       "removing_text": "Are you sure you want to remove the text sample?",
+      "removing_workspace": "Are you sure you want to remove the workspace?",
       "skillsByDivision": "How would you describe your skills in different languages regarding pronunciation, grammar, vocabulary, and language variants?",
       "studyAffectingFactors": "Are there any factors affecting your language studies that your language course teachers should know about? You can mention them here."
     },

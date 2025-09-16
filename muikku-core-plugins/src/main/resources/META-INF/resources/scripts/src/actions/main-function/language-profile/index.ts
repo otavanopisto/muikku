@@ -59,6 +59,11 @@ export type LANGUAGE_PROFILE_ADD_LANGUAGE_WORKSPACE = SpecificActionType<
   { code: LanguageCode; identifier: string; value: string; name: string }
 >;
 
+export type LANGUAGE_PROFILE_REMOVE_LANGUAGE_WORKSPACE = SpecificActionType<
+  "LANGUAGE_PROFILE_REMOVE_LANGUAGE_WORKSPACE",
+  { code: LanguageCode; identifier: string; value: string; name: string }
+>;
+
 export type LANGUAGE_PROFILE_UPDATE_LANGUAGE_WORKSPACE_VALUE =
   SpecificActionType<
     "LANGUAGE_PROFILE_UPDATE_LANGUAGE_WORKSPACE_VALUE",

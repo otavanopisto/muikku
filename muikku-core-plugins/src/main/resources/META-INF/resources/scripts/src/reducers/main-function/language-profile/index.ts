@@ -298,6 +298,33 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
+    case "LANGUAGE_PROFILE_REMOVE_LANGUAGE_WORKSPACE": {
+      const { payload } = action;
+
+      const languagesUpdate = [...state.data.languages];
+      // find the language to update
+      const languageIndex = languagesUpdate.findIndex(
+        (language) => language.code === payload.code
+      );
+      const currentLanguage = languagesUpdate[languageIndex];
+
+      const workspacesUpdate = currentLanguage.workspaces;
+
+      const updatedWorkspaces = {
+        ...currentLanguage,
+        workspaces: workspacesUpdate.filter(
+          (workspace) => workspace.identifier !== payload.identifier
+        ),
+      };
+
+      languagesUpdate[languageIndex] = updatedWorkspaces;
+
+      return {
+        ...state,
+        data: { ...state.data, languages: languagesUpdate },
+      };
+    }
+
     case "LANGUAGE_PROFILE_UPDATE_LANGUAGE_WORKSPACE_VALUE": {
       const { payload } = action;
 

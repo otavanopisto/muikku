@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import Select from "react-select";
 import { OptionDefault } from "~/components/general/react-select/types";
 import { displayNotification } from "~/actions/base/notifications";
+import Button from "~/components/general/button";
+import PromptDialog from "~/components/general/prompt-dialog";
 
 const recordsApi = MApi.getRecordsApi();
 
@@ -141,6 +143,39 @@ const AccomplishmentEvaluation = () => {
   };
 
   /**
+   * handleRemoveWorkspace
+   * @param workspace workspace to remove
+   */
+  const handleRemoveWorkspace = (workspace: LanguageData) => {
+    dispatch({
+      type: "LANGUAGE_PROFILE_REMOVE_LANGUAGE_WORKSPACE",
+      payload: {
+        code: workspace.code,
+        identifier: workspace.identifier,
+      },
+    } as ActionType);
+  };
+
+  /**
+   * removeWorkspace
+   * @param workspace the workspace to remove
+   */
+  const removeWorkspace = (workspace: LanguageData) => (
+    <PromptDialog
+      title={t("labels.remove", {
+        context: "workspace",
+        workspace: workspace.name,
+      })}
+      content={t("content.removing", {
+        context: "workspace",
+      })}
+      onExecute={() => handleRemoveWorkspace(workspace)}
+    >
+      <Button buttonModifiers={["remove-language"]} icon="trash" />
+    </PromptDialog>
+  );
+
+  /**
    * handleAddLanguage
    * @param value the value of the new language to add
    * @param code the language code
@@ -191,6 +226,8 @@ const AccomplishmentEvaluation = () => {
               key={language.code}
               rows={createRows(language)}
               cellAction={accomplishmentEvaluationSelect}
+              columnAction={removeWorkspace}
+              modifier="evaluate-workspaces"
               labels={Array.from(Array(5).keys()).map((i) =>
                 (i + 1).toString()
               )}

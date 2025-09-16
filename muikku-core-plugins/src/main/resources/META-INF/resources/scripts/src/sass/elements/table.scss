@@ -151,8 +151,24 @@
 }
 
 .table__head--language-profile-first-cell {
-  width: 200px;
+  overflow: hidden;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 200px;
+  }
+
 }
+
+.table__head--evaluate-workspaces {
+  overflow: hidden;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 400px;
+  }
+}
+
 
 .table__head--right,
 .table__data--right {
@@ -166,7 +182,24 @@
 }
 
 .table__data--language-profile-first-cell {
-  width: 200px;
+  overflow: hidden;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 200px;
+  }
+}
+
+.table__data--evaluate-workspaces {
+  align-items: center;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: start;
+
+  @include breakpoint($breakpoint-pad) {
+    white-space: nowrap;
+    width: 400px;
+  }
 }
 
 .table__data--language-profile-single-column {

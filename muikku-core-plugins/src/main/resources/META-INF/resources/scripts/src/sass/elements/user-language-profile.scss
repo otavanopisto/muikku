@@ -73,8 +73,7 @@
 
   &[disabled] {
     background-color: lighten($color-disabled, 25%);
-    color: $color-disabled;
-  }
+}
 }
 
 .user-language-profile__drawer-skill {

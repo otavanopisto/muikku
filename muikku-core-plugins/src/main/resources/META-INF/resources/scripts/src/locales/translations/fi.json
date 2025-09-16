@@ -2926,6 +2926,7 @@
       "remove_file": "Poista tiedostonäyte",
       "remove_language": "Poista kieli: {{language}}",
       "remove_text": "Poista tekstinäyte",
+      "remove_workspace": "Poista opintojakso: {{workspace}}",
       "samples": "Näytteet",
       "skill": "Taito",
       "skillEstimate": "Arvio kokonaistasosta",
@@ -2958,7 +2959,6 @@
       "empty_samples": "Ei yhtään tallennettua kielinäytettä",
       "empty_skills": "Taitoja ei ole arvioitu",
       "empty_workspaces": "Kurssiopiskelua ei ole arvioitu",
-
       "futureOfStudies": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       "futureUsage": "Missä tulet tarvitsemaan eri kieliä tulevaisuudessa? Huomioi tässä esimerkiksi jatko-opinnot, työt ja muut suunnitelmat.",
       "general": "Kerro esim. kuinka paljon käytät vieraita kieliä ja millä tavoilla sekä missä asioissa haluaisit kehittyä.",
@@ -2983,6 +2983,7 @@
       "removing_file": "Oletko varma, että haluat poistaa näytteen?",
       "removing_language": "Oletko varma, että haluat poistaa kielen?",
       "removing_text": "Oletko varma, että haluat poistaa tekstinäytteen?",
+      "removing_workspace": "Oletko varma, että haluat poistaa opintojakson?",
       "skillsByDivision": "Kuinka kuvailisit taitojasi eri kielissä ääntämisen, kieliopin, sanaston ja kielellisten varianttien suhteen?",
       "studyAffectingFactors": "Onko olemassa sellaisia kieltenopiskeluusi vaikuttavia asioita, jotka valitsemiesi kielten opintojaksojen opettajiesi olisi syytä tietää? Voit kertoa niistä tässä."
     },
