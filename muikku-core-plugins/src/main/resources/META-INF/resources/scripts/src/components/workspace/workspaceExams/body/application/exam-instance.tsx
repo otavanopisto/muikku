@@ -214,16 +214,19 @@ const ExamInstance = (props: ExamInstanceProps) => {
       );
     } else if (currentExamStatusInfo.status === "ERROR") {
       return (
-        <motion.div {...commonMotionProps} key="error" className="exam__info">
-          <div className="exam__state state-FAILED">
-            <div className="exam__state-icon icon-notification"></div>
-            <div className="exam__state-text">
+        <motion.div
+          {...commonMotionProps}
+          key="error"
+          className="exam exam--dialog"
+        >
+          <div className="exam__body">
+            <div className="exam__content">
               {getErrorMsgByStatusCode(currentExamStatusInfo.statusCode)}
             </div>
           </div>
 
           <div className="exam__footer">
-            <div className="exam__actions">
+            <div className="exam__actions exam__actions--centered">
               <Button
                 buttonModifiers={["standard-cancel", "cancel"]}
                 onClick={props.onCloseExam}
@@ -236,10 +239,13 @@ const ExamInstance = (props: ExamInstanceProps) => {
       );
     } else if (currentExamExpired) {
       return (
-        <motion.div {...commonMotionProps} key="expired" className="exam__info">
-          <div className="exam__state state-INFO">
-            <div className="exam__state-icon icon-notification"></div>
-            <div className="exam__state-text">
+        <motion.div
+          {...commonMotionProps}
+          key="expired"
+          className="exam exam--dialog"
+        >
+          <div className="exam__body">
+            <div className="exam__content">
               Kokeen aika on umpeutunut ja koe on päättynyt. Palauttamattomat
               tehtävät on merkitty automaattisesti palautetuiksi. Voit sulkea
               koeikkunan.
@@ -247,7 +253,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
           </div>
 
           <div className="exam__footer">
-            <div className="exam__actions">
+            <div className="exam__actions exam__actions--centered">
               <Button
                 buttonModifiers={["standard-cancel", "cancel"]}
                 onClick={props.onCloseExam}
@@ -260,17 +266,20 @@ const ExamInstance = (props: ExamInstanceProps) => {
       );
     } else if (currentExam && currentExam.ended) {
       return (
-        <motion.div {...commonMotionProps} key="ended" className="exam__info">
-          <div className="exam__state state-INFO">
-            <div className="exam__state-icon icon-notification"></div>
-            <div className="exam__state-text">
+        <motion.div
+          {...commonMotionProps}
+          key="ended"
+          className="exam exam--dialog"
+        >
+          <div className="exam__body">
+            <div className="exam__content">
               Koe on päättynyt {localize.date(currentExam.ended)}. Voit sulkea
               koe ikkunan
             </div>
           </div>
 
           <div className="exam__footer">
-            <div className="exam__actions">
+            <div className="exam__actions exam__actions--centered">
               <Button
                 buttonModifiers={["standard-cancel", "cancel"]}
                 onClick={props.onCloseExam}
@@ -372,14 +381,12 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
             </span>
           )}
         </div>
-        <div className="exam__content">
-          {exam.description && (
-            <div
-              className="exam__content"
-              dangerouslySetInnerHTML={{ __html: exam.description }}
-            ></div>
-          )}
-        </div>
+        {exam.description && (
+          <div
+            className="exam__content"
+            dangerouslySetInnerHTML={{ __html: exam.description }}
+          ></div>
+        )}
 
         <div className="exam__footer">
           <div className="exam__actions exam__actions--centered">

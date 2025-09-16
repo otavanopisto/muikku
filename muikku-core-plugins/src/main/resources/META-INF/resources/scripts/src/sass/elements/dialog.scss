@@ -205,7 +205,6 @@
   background-color: $color-default-generic-background;
 }
 
-.dialog__window--exam,
 .dialog__window--wizard,
 .dialog__window--studies {
   bottom: 0;
@@ -296,19 +295,34 @@
 }
 
 .dialog__window--exam {
-  max-height: 100%;
-  max-width: none;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  max-width: 100%;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: auto;
 
-  @include breakpoint($breakpoint-pad) {
-    border-radius: 5px;
-    left: auto;
-    max-height: calc(100% - 30px);
-    right: auto;
-    width: 100%;
+  .dialog__content {
+    display: flex;
+    flex-basis: auto;
+    flex-flow: column nowrap;
+    flex-grow: 1;
+    flex-shrink: 1;
+    max-height: 100%;
   }
 
   @include breakpoint($breakpoint-desktop) {
+    border-radius: 5px;
+    bottom: 20px;
+    left: auto;
+    max-height: calc(100% - 30px);
     max-width: 1240px;
+    right: auto;
+    top: 20px;
+    width: 100%;
   }
 }
 

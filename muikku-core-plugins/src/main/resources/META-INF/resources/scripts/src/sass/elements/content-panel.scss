@@ -21,13 +21,21 @@
   padding: 0;
 
   .content-panel__navigation {
-    height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop}) - 30px);
+    height: unset;
     top: 0;
+
+     @include breakpoint($breakpoint-desktop) {
+      height: calc(100vh - (#{$navbar-desktop-height} * 1.25 + (3 * #{$panel-header-title-margin}) + #{$panel-header-title-height-desktop}) - 30px);
+    }
   }
 
   .content-panel__aside {
-    margin: -30px 12px 10px auto;
+    margin: 0 0 10px;
     top: 12px;
+
+    @include breakpoint($breakpoint-desktop) {
+      margin: -30px 12px 10px auto;
+    }
   }
 
   .toc  {
