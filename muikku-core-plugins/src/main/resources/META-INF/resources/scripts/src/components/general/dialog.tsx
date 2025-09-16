@@ -81,8 +81,8 @@ interface DialogState {
 export default class Dialog extends React.Component<DialogProps, DialogState> {
   private oldOverflow: string;
 
-  private headerRef = React.createRef<HTMLDivElement>();
-  private contentRef = React.createRef<HTMLDivElement>();
+  headerRef = React.createRef<HTMLDivElement>();
+  contentRef = React.createRef<HTMLDivElement>();
 
   /**
    * constructor

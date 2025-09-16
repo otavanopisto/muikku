@@ -2687,11 +2687,11 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/evaluation/workspace/{workspaceId}/user/{userEntityId}/workspacematerial/{workspaceMaterialId}/assessment:
+  /rest/evaluation/workspace/{workspaceId}/user/{userEntityId}/node/{workspaceNodeId}/assessment:
     post:
-      operationId: saveWorkspaceAssigmentAssessment
-      summary: Save workspace material assessment
-      description: Save workspace material assessment
+      operationId: createWorkspaceNodeAssessment
+      summary: Save workspace node assessment
+      description: Save workspace node assessment
       tags:
         - Evaluation
       parameters:
@@ -2704,20 +2704,20 @@ paths:
             format: int64
         - name: userEntityId
           in: path
-          description: User entity id
+          description: User entity id (page or folder)
           required: true
           schema:
             type: integer
             format: int64
-        - name: workspaceMaterialId
+        - name: workspaceNodeId
           in: path
-          description: Workspace material id
+          description: Workspace node id
           required: true
           schema:
             type: integer
             format: int64
       requestBody:
-        $ref: "#/components/requestBodies/EvaluationSaveAssignmentAssessmentRequestBody"
+        $ref: "#/components/requestBodies/EvaluationCreateNodeAssessmentRequestBody"
       responses:
         "200":
           description: Workspace material assessment created successfully
@@ -2732,11 +2732,11 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/evaluation/workspace/{workspaceId}/user/{userEntityId}/workspacematerial/{workspaceMaterialId}/assessment/{assessmentId}:
+  /rest/evaluation/workspace/{workspaceId}/user/{userEntityId}/node/{workspaceNodeId}/assessment/{assessmentId}:
     put:
-      operationId: updateWorkspaceAssigmentAssessment
-      summary: Update workspace material assessment
-      description: Update workspace material assessment
+      operationId: updateWorkspaceNodeAssessment
+      summary: Update workspace node assessment
+      description: Update workspace node assessment
       tags:
         - Evaluation
       parameters:
@@ -2754,9 +2754,9 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: workspaceMaterialId
+        - name: workspaceNodeId
           in: path
-          description: Workspace material id
+          description: Workspace node id (page or folder)
           required: true
           schema:
             type: integer
@@ -2769,10 +2769,10 @@ paths:
             type: integer
             format: int64
       requestBody:
-        $ref: "#/components/requestBodies/EvaluationUpdateAssignmentAssessmentRequestBody"
+        $ref: "#/components/requestBodies/EvaluationUpdateNodeAssessmentRequestBody"
       responses:
         "200":
-          description: Workspace material assessment updated successfully
+          description: Workspace node assessment updated successfully
           content:
             application/json:
               schema:
@@ -2855,7 +2855,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MaterialEvaluation"
+                  $ref: "#/components/schemas/NodeEvaluation"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -11523,13 +11523,13 @@ components:
               requestText:
                 type: string
 
-    EvaluationSaveAssignmentAssessmentRequestBody:
+    EvaluationCreateNodeAssessmentRequestBody:
       required: true
       content:
         application/json:
           schema:
             type: object
-            description: EvaluationAssignmentAssessment object
+            description: EvaluationNodeAssessment object
             required:
               - evaluationType
               - assessorIdentifier
@@ -11560,13 +11560,13 @@ components:
                 items:
                   $ref: "#/components/schemas/AudioAssessment"
 
-    EvaluationUpdateAssignmentAssessmentRequestBody:
+    EvaluationUpdateNodeAssessmentRequestBody:
       required: true
       content:
         application/json:
           schema:
             type: object
-            description: EvaluationAssignmentAssessment object
+            description: EvaluationNodeAssessment object
             required:
               - identifier
               - evaluationType
@@ -14056,7 +14056,7 @@ components:
             $ref: "#/components/schemas/MaterialContentNode"
         evaluationInfo:
           description: Exam evaluation info
-          $ref: "#/components/schemas/MaterialEvaluationInfo"
+          $ref: "#/components/schemas/NodeEvaluationInfo"
 
     ExamAttendee:
       type: object
@@ -15261,15 +15261,15 @@ components:
           description: State of the material assignment
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
 
-    MaterialEvaluationGradeType:
-      description: Material evaluation grade type enum
+    NodeEvaluationGradeType:
+      description: Node evaluation grade type enum
       type: string
       enum:
         - PASSED
         - INCOMPLETE
         - FAILED
 
-    MaterialEvaluationInfo:
+    NodeEvaluationInfo:
       type: object
       description: Evaluation info of the material assignments
       required:
@@ -15287,7 +15287,7 @@ components:
           format: int64
         type:
           description: Type of grade given
-          $ref: "#/components/schemas/MaterialEvaluationGradeType"
+          $ref: "#/components/schemas/NodeEvaluationGradeType"
         evaluationType:
           description: Type of the evaluation
           $ref: "#/components/schemas/EvaluationType"
@@ -15385,7 +15385,7 @@ components:
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
         evaluationInfo:
           description: Evaluation info of the material assignments
-          $ref: "#/components/schemas/MaterialEvaluationInfo"
+          $ref: "#/components/schemas/NodeEvaluationInfo"
           nullable: true
         created:
           description: Date when the material assignment was created
@@ -15448,9 +15448,9 @@ components:
         - ON_REQUEST
         - NEVER
 
-    MaterialEvaluation:
+    NodeEvaluation:
       type: object
-      description: MaterialEvaluation object
+      description: NodeEvaluation object
       required:
         - id
         - evaluated
