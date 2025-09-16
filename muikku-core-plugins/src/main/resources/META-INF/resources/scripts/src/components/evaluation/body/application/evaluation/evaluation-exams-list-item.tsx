@@ -10,6 +10,7 @@ import { localize } from "~/locales/i18n";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import EvaluationMaterial from "./evaluation-material";
 import "~/sass/elements/evaluation.scss";
+import { convertTimeRangeToMinutes } from "~/helper-functions/time-helpers";
 
 /**
  * EvaluationExamsListItemProps
@@ -59,14 +60,25 @@ const EvaluationExamsListItem = React.forwardRef(
       return (
         <div className="evaluation-modal__item-meta">
           {isEnded ? (
-            <div className="evaluation-modal__item-meta-item">
-              <span className="evaluation-modal__item-meta-item-label">
-                {t("labels.examEnded", { ns: "exams" })}:
-              </span>
-              <span className="evaluation-modal__item-meta-item-data">
-                {`${localize.date(exam.ended)} - ${localize.date(exam.ended, "LT")}`}
-              </span>
-            </div>
+            <>
+              <div className="evaluation-modal__item-meta-item">
+                <span className="evaluation-modal__item-meta-item-label">
+                  {t("labels.examEnded", { ns: "exams" })}:
+                </span>
+                <span className="evaluation-modal__item-meta-item-data">
+                  {`${localize.date(exam.ended)} - ${localize.date(exam.ended, "LT")}`}
+                </span>
+              </div>
+
+              <div className="evaluation-modal__item-meta-item">
+                <span className="evaluation-modal__item-meta-item-label">
+                  {t("labels.examDuration", { ns: "exams" })}:
+                </span>
+                <span className="evaluation-modal__item-meta-item-data">
+                  {`${convertTimeRangeToMinutes(exam.started, exam.ended)} (${exam.minutes}) minuuttia`}
+                </span>
+              </div>
+            </>
           ) : isStarted ? (
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
@@ -84,7 +96,7 @@ const EvaluationExamsListItem = React.forwardRef(
             </div>
           )}
 
-          {hasTimeLimit && (
+          {!isEnded && hasTimeLimit && (
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
                 {t("labels.examDuration", { ns: "exams" })}:

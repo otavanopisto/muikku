@@ -7,6 +7,7 @@ import { StateType } from "~/reducers";
 import ExamTimer from "./exam-timer";
 import "~/sass/elements/exam.scss";
 import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
+import { convertTimeRangeToMinutes } from "~/helper-functions/time-helpers";
 
 /**
  * ExamsListProps
@@ -88,14 +89,21 @@ const ExamsListItem = (props: ExamsListItemProps) => {
           {restartAllowed && (
             <span className="exam__label">Kokeen voi suorittaa uudestaan</span>
           )}
-          {hasTimeLimit && (
+          {isEnded && hasTimeLimit ? (
+            <span className="exam__label">
+              Suoritusaika:{" "}
+              <span className="exam__label-accent">
+                {`${convertTimeRangeToMinutes(exam.started, exam.ended)} (${exam.minutes}) minuuttia`}
+              </span>
+            </span>
+          ) : !isEnded && hasTimeLimit ? (
             <span className="exam__label">
               Suoritusaika:{" "}
               <span className="exam__label-accent">
                 {exam.minutes} minuuttia
               </span>
             </span>
-          )}
+          ) : null}
         </div>
       </h2>
       <div className="exam__body">
