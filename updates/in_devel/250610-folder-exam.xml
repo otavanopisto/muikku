@@ -24,5 +24,9 @@
   </sql>
   <sql>alter table ExamAttendance add constraint UK3hgnf4dyvv91xapriimcw023j unique (workspaceFolderId, userEntityId);</sql>
   <sql>alter table ExamSettings add constraint UKfguje00k4okjd89vkspoin2th unique (workspaceFolderId);</sql>
+  
+  <sql>rename table WorkspaceMaterialEvaluation to WorkspaceNodeEvaluation;</sql>
+  <sql>rename table WorkspaceMaterialEvaluationAudioClip to WorkspaceNodeEvaluationAudioClip;</sql>
+  <sql>alter table WorkspaceNodeEvaluation change column workspaceMaterialId workspaceNodeId bigint not null;</sql>
 
 </update>

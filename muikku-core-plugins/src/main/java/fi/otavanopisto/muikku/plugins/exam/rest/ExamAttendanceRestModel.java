@@ -3,23 +3,11 @@ package fi.otavanopisto.muikku.plugins.exam.rest;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 
 public class ExamAttendanceRestModel {
   
-  public ExamAttendanceRestModel() {
-  }
-
-  public ExamAttendanceRestModel(Long folderId, String name, String description, OffsetDateTime started, OffsetDateTime ended, boolean allowRestart, List<ContentNode> contents) {
-    this.folderId = folderId;
-    this.name = name;
-    this.description = description;
-    this.started = started;
-    this.ended = ended;
-    this.allowRestart = allowRestart;
-    this.contents = contents;
-  }
-
   public OffsetDateTime getStarted() {
     return started;
   }
@@ -84,6 +72,14 @@ public class ExamAttendanceRestModel {
     this.description = description;
   }
 
+  public RestAssignmentEvaluation getEvaluationInfo() {
+    return evaluationInfo;
+  }
+
+  public void setEvaluationInfo(RestAssignmentEvaluation evaluationInfo) {
+    this.evaluationInfo = evaluationInfo;
+  }
+
   private Long folderId;
   private String name;
   private String description;
@@ -92,5 +88,6 @@ public class ExamAttendanceRestModel {
   private boolean allowRestart;
   private int minutes;
   private List<ContentNode> contents;
+  private RestAssignmentEvaluation evaluationInfo;
 
 }
