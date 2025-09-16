@@ -14054,6 +14054,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/MaterialContentNode"
+        evaluationInfo:
+          description: Exam evaluation info
+          $ref: "#/components/schemas/MaterialEvaluationInfo"
 
     ExamAttendee:
       type: object

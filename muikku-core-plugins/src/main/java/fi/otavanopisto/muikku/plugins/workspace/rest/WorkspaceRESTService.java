@@ -2261,7 +2261,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
           reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
           reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
-        compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity, reply.getWorkspaceMaterial()));
+        compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity.getId(), reply.getWorkspaceMaterial().getId()));
       }
       return Response.ok(compositeReply).build();
     }
@@ -2351,7 +2351,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
             reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
             reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
-          compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity, reply.getWorkspaceMaterial()));
+          compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity.getId(), reply.getWorkspaceMaterial().getId()));
         }
 
         result.add(compositeReply);

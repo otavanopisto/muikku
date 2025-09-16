@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamAttendanceDAO;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamSettingsDAO;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
@@ -60,6 +61,9 @@ public class ExamController {
   
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  
+  @Inject
+  private EvaluationController evaluationController;
   
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
@@ -330,6 +334,7 @@ public class ExamController {
     attendance.setContents(Collections.emptyList());
     attendance.setMinutes(settingsJson.getMinutes());
     attendance.setAllowRestart(settingsJson.getAllowMultipleAttempts());
+    attendance.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntityId, workspaceFolderId));
     ExamAttendance attendanceEntity = findAttendance(workspaceFolderId, userEntityId);
     if (attendanceEntity != null) {
       if (attendance.getMinutes() > 0 && attendanceEntity.getExtraMinutes() != null) {

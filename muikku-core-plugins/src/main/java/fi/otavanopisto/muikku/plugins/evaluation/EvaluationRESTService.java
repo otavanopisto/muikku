@@ -44,9 +44,9 @@ import fi.otavanopisto.muikku.plugins.evaluation.model.AssessmentRequestCancella
 import fi.otavanopisto.muikku.plugins.evaluation.model.InterimEvaluationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceJournalFeedback;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationType;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationAudioClip;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
@@ -59,7 +59,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceAssessm
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceGradingScale;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceJournalFeedback;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestWorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamAttendanceRestModel;
 import fi.otavanopisto.muikku.plugins.guider.GuiderController;
@@ -68,10 +68,12 @@ import fi.otavanopisto.muikku.plugins.guider.GuiderStudentWorkspaceActivityRestM
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRestModels;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceSubjectRestModel;
@@ -162,6 +164,8 @@ public class EvaluationRESTService extends PluginRESTService {
   @Inject
   private PedagogyController pedagogyController;
   
+  @Inject
+  private WorkspaceNodeDAO workspaceNodeDAO;
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/activity")
@@ -210,9 +214,10 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
+  // TODO Technically path should be nodes rather than materials; clean up later
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACENODEID}/evaluations/")
   @RESTPermit(handling = Handling.INLINE)
-  public Response listWorkspaceMaterialEvaluations(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam("userEntityId") Long userEntityId) {
+  public Response listWorkspaceNodeEvaluations(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACENODEID") Long workspaceNodeId, @QueryParam("userEntityId") Long userEntityId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -237,12 +242,12 @@ public class EvaluationRESTService extends PluginRESTService {
       }
     }
     
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-    if (workspaceMaterial == null) {
+    WorkspaceNode workspaceNode = workspaceNodeDAO.findById(workspaceNodeId);
+    if (workspaceNode == null) {
       return Response.status(Status.NOT_FOUND).entity("workspaceMaterial not found").build();
     }
 
-    WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+    WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceNode);
     if (rootFolder == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
@@ -251,22 +256,23 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    List<fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation> result = new ArrayList<>();
+    // TODO Why a list when we essentially return just the latest? Tidy up later
+    List<WorkspaceNodeEvaluation> result = new ArrayList<>();
     
-    fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findLatestUnarchivedWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
-    if (workspaceMaterialEvaluation != null) {
-      result.add(workspaceMaterialEvaluation);
+    WorkspaceNodeEvaluation workspaceNodeEvaluation = evaluationController.findLatestUnarchivedWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceNode.getId(), userEntity.getId());
+    if (workspaceNodeEvaluation != null) {
+      result.add(workspaceNodeEvaluation);
     }
     
     if (result.isEmpty()) {
       return Response.ok(Collections.emptyList()).build();
     }
     
-    if (!workspaceMaterialEvaluation.getWorkspaceMaterialId().equals(workspaceMaterial.getId())) {
+    if (!workspaceNodeEvaluation.getWorkspaceNodeId().equals(workspaceNode.getId())) {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    return Response.ok(createRestModel(result.toArray(new fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation[0]))).build();
+    return Response.ok(createRestModel(result.toArray(new WorkspaceNodeEvaluation[0]))).build();
   }
 
   @DELETE
@@ -496,7 +502,7 @@ public class EvaluationRESTService extends PluginRESTService {
         WorkspaceMaterialAssignmentType.INTERIM_EVALUATION,
         BooleanPredicate.IGNORE);
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-      WorkspaceMaterialEvaluation evaluation = evaluationController.findLatestUnarchivedWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, studentEntity);
+      WorkspaceNodeEvaluation evaluation = evaluationController.findLatestUnarchivedWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceMaterial.getId(), studentEntity.getId());
       if (evaluation != null) {
         UserEntity assessor = userEntityController.findUserEntityById(evaluation.getAssessorEntityId());
         RestEvaluationEvent event = new RestEvaluationEvent();
@@ -592,7 +598,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     // Create material assessment
     
-    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.createWorkspaceMaterialEvaluation(
+    WorkspaceNodeEvaluation evaluation = evaluationController.createWorkspaceNodeEvaluation(
         userEntity,
         workspaceMaterial,
         gradingScale,
@@ -603,7 +609,7 @@ public class EvaluationRESTService extends PluginRESTService {
         points,
         payload.getEvaluationType());
     
-    evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
+    evaluationController.synchronizeWorkspaceNodeEvaluationAudioAssessments(evaluation, payload.getAudioAssessments());
 
     // Archive related interim evaluation requests
     
@@ -619,30 +625,30 @@ public class EvaluationRESTService extends PluginRESTService {
     
     // #7352: If a page is evaluated as supplementation requested, make sure it becomes unlocked
     
-    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST) {
+    if (payload.getEvaluationType() == WorkspaceNodeEvaluationType.SUPPLEMENTATIONREQUEST) {
       WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
       if (reply != null && reply.getLocked()) {
         workspaceMaterialReplyController.updateWorkspaceMaterialReplyLocked(reply, false);
       }
     }
 
-    // WorkspaceMaterialEvaluation to RestAssessment
+    // WorkspaceNodeEvaluation to RestAssessment
     
-    List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(workspaceMaterialEvaluation);
+    List<WorkspaceNodeEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(evaluation);
     List<RestAssignmentEvaluationAudioClip> audioAssessments = evaluationAudioClips.stream()
         .map(audioClip -> new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
         .collect(Collectors.toList());
     
     RestAssessmentWithAudio restAssessment = new RestAssessmentWithAudio(
-        workspaceMaterialEvaluation.getId().toString(),
+        evaluation.getId().toString(),
         assessorIdentifier.toId(),
         gradingScaleIdentifier != null ? gradingScaleIdentifier.toId() : null,
         gradeIdentifier != null ? gradeIdentifier.toId() : null,
-        workspaceMaterialEvaluation.getVerbalAssessment(),
-        workspaceMaterialEvaluation.getEvaluated(),
+        evaluation.getVerbalAssessment(),
+        evaluation.getEvaluated(),
         gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
-        workspaceMaterialEvaluation.getPoints(),
-        workspaceMaterialEvaluation.getEvaluationType(),
+        evaluation.getPoints(),
+        evaluation.getEvaluationType(),
         audioAssessments);
     return Response.ok(restAssessment).build();
   }
@@ -682,10 +688,10 @@ public class EvaluationRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    // Find Workspace material evaluation for update
+    // Find workspace node evaluation for update
     
-    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluation(assessmentId);
-    if (workspaceMaterialEvaluation == null) {
+    WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluation(assessmentId);
+    if (evaluation == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
 
@@ -731,8 +737,8 @@ public class EvaluationRESTService extends PluginRESTService {
     
     // Update material assessment
     
-    workspaceMaterialEvaluation = evaluationController.updateWorkspaceMaterialEvaluation(
-        workspaceMaterialEvaluation,
+    evaluation = evaluationController.updateWorkspaceNodeEvaluation(
+        evaluation,
         gradingScale,
         gradingScaleItem,
         assessor,
@@ -741,7 +747,7 @@ public class EvaluationRESTService extends PluginRESTService {
         points,
         payload.getEvaluationType());
     
-    evaluationController.synchronizeWorkspaceMaterialEvaluationAudioAssessments(workspaceMaterialEvaluation, payload.getAudioAssessments());
+    evaluationController.synchronizeWorkspaceNodeEvaluationAudioAssessments(evaluation, payload.getAudioAssessments());
 
     // Archive related interim evaluation requests
     
@@ -757,30 +763,30 @@ public class EvaluationRESTService extends PluginRESTService {
 
     // #7352: If a page is evaluated as supplementation requested, make sure it becomes unlocked
     
-    if (payload.getEvaluationType() == WorkspaceMaterialEvaluationType.SUPPLEMENTATIONREQUEST) {
+    if (payload.getEvaluationType() == WorkspaceNodeEvaluationType.SUPPLEMENTATIONREQUEST) {
       WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
       if (reply != null && reply.getLocked()) {
         workspaceMaterialReplyController.updateWorkspaceMaterialReplyLocked(reply, false);
       }
     }
 
-    // WorkspaceMaterialEvaluation to RestAssessment
+    // WorkspaceNodeEvaluation to RestAssessment
     
-    List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(workspaceMaterialEvaluation);
+    List<WorkspaceNodeEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(evaluation);
     List<RestAssignmentEvaluationAudioClip> audioAssessments = evaluationAudioClips.stream()
         .map(audioClip -> new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
         .collect(Collectors.toList());
     
     RestAssessmentWithAudio restAssessment = new RestAssessmentWithAudio(
-        workspaceMaterialEvaluation.getId().toString(),
+        evaluation.getId().toString(),
         assessorIdentifier.toId(),
         gradingScaleIdentifier != null ? gradingScaleIdentifier.toId() : null,
         gradeIdentifier != null ? gradeIdentifier.toId() : null,
-        workspaceMaterialEvaluation.getVerbalAssessment(),
-        workspaceMaterialEvaluation.getEvaluated(),
+        evaluation.getVerbalAssessment(),
+        evaluation.getEvaluated(),
         gradingScaleItem != null ? gradingScaleItem.isPassingGrade() : null,
-        workspaceMaterialEvaluation.getPoints(),
-        workspaceMaterialEvaluation.getEvaluationType(),
+        evaluation.getPoints(),
+        evaluation.getEvaluationType(),
         audioAssessments);
     return Response.ok(restAssessment).build();
   }
@@ -1789,10 +1795,10 @@ public class EvaluationRESTService extends PluginRESTService {
     return restSupplementationRequest;
   }
   
-  private List<RestWorkspaceMaterialEvaluation> createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation... entries) {
-    List<RestWorkspaceMaterialEvaluation> result = new ArrayList<>();
+  private List<RestWorkspaceNodeEvaluation> createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation... entries) {
+    List<RestWorkspaceNodeEvaluation> result = new ArrayList<>();
 
-    for (fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation entry : entries) {
+    for (fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation entry : entries) {
       result.add(createRestModel(entry));
     }
 
@@ -1800,7 +1806,7 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   
-  private RestWorkspaceMaterialEvaluation createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation evaluation) {
+  private RestWorkspaceNodeEvaluation createRestModel(fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation evaluation) {
     Boolean passingGrade = null;
     String grade = null;
     String gradingScaleStr = null;
@@ -1838,17 +1844,17 @@ public class EvaluationRESTService extends PluginRESTService {
 
     // Audio Assessments
     
-    List<WorkspaceMaterialEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(evaluation);
+    List<WorkspaceNodeEvaluationAudioClip> evaluationAudioClips = evaluationController.listEvaluationAudioClips(evaluation);
     List<RestAssignmentEvaluationAudioClip> audioAssessments = evaluationAudioClips.stream()
         .map(audioClip -> new RestAssignmentEvaluationAudioClip(audioClip.getClipId(), audioClip.getFileName(), audioClip.getContentType()))
         .collect(Collectors.toList());
     
-    return new RestWorkspaceMaterialEvaluation(
+    return new RestWorkspaceNodeEvaluation(
         evaluation.getId(), 
         evaluation.getEvaluated(), 
         evaluation.getAssessorEntityId(), 
         evaluation.getStudentEntityId(), 
-        evaluation.getWorkspaceMaterialId(), 
+        evaluation.getWorkspaceNodeId(), 
         evaluation.getGradingScaleIdentifier(), 
         evaluation.getGradingScaleSchoolDataSource(), 
         grade,
