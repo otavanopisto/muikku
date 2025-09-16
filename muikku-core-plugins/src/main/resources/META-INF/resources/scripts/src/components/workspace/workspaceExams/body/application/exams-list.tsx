@@ -74,9 +74,11 @@ const ExamsListItem = (props: ExamsListItemProps) => {
   // Check if exam has been started
   const isStarted = !!exam.started;
 
-  const hasTimeLimit = exam.minutes > 0;
+  // Check if exam has time limit
+  const hasTimeLimit = exam?.minutes > 0 || false;
 
-  const restartAllowed = exam.allowRestart;
+  // Check if exam allows restart
+  const restartAllowed = exam?.allowRestart || false;
 
   const onGoing = isStarted && !isEnded;
 
