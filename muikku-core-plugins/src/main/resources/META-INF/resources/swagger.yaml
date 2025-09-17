@@ -2818,6 +2818,40 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
+  /rest/evaluation/nodes/{workspaceNodeId}/users/{userEntityId}/evaluationInfo:
+    get:
+      operationId: getWorkspaceNodeEvaluation
+      summary: Get workspace node evaluation
+      description: Returns evaluation info for a single page and user
+      tags:
+        - Evaluation
+      parameters:
+        - name: workspaceNodeId
+          in: path
+          description: Workspace node id (page or folder)
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Workspace node evaluation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NodeEvaluationInfo"
+        "204":
+          description: User has no evaluation for the given node
+        "403":
+          description: Attempted to make a call with unauthorized client
+
   /rest/evaluation/workspaces/{workspaceId}/nodes/{workspaceNodeId}/evaluations/:
     get:
       operationId: getWorkspaceNodeEvaluations

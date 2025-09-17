@@ -49,6 +49,7 @@ import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationAu
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationType;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentWithAudio;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignmentEvaluationAudioClip;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluablesLock;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestEvaluationEvent;
@@ -213,6 +214,20 @@ public class EvaluationRESTService extends PluginRESTService {
     return Response.ok(guiderStudentWorkspaceActivityRestModel).build();
   }
   
+  @GET
+  @Path("/nodes/{WORKSPACENODEID}/users/{USERENTITYID}/evaluationInfo")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceNodeEvaluationInfo(@PathParam("WORKSPACENODEID") Long workspaceNodeId, @PathParam("USERENTITYID") Long userEntityId) {
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    RestAssignmentEvaluation evaluation = evaluationController.getEvaluationInfo(userEntityId, workspaceNodeId);
+    if (evaluation == null) {
+      return Response.noContent().build();
+    }
+    return Response.ok(evaluation).build();
+  }
+
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/nodes/{WORKSPACENODEID}/evaluations/")
   @RESTPermit(handling = Handling.INLINE)
