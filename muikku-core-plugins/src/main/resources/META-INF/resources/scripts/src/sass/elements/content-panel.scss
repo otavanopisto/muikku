@@ -264,6 +264,10 @@
   }
 }
 
+.content-panel__chapter--exam {
+  border-top: 3px solid $color-default-contrast;
+}
+
 .content-panel__chapter-title {
   background: $color-default;
   border-bottom: dashed 2px $color-default-item-separator-border;

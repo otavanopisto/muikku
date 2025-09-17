@@ -572,7 +572,7 @@ class WorkspaceMaterials extends React.Component<
     return (
       <section
         key={"section-" + section.workspaceMaterialId}
-        className="content-panel__chapter"
+        className={`content-panel__chapter ${section.exam ? "content-panel__chapter--exam" : ""}`}
         id={`s-${section.workspaceMaterialId}`}
         style={{
           scrollMarginTop: this.state.defaultOffset + "px",
@@ -904,7 +904,7 @@ class WorkspaceMaterials extends React.Component<
       results.push(
         <section
           key={"section-" + section.workspaceMaterialId}
-          className="content-panel__chapter"
+          className={`content-panel__chapter ${section.exam ? "content-panel__chapter--exam" : ""}`}
           id={`s-${section.workspaceMaterialId}`}
           style={{
             scrollMarginTop: this.state.defaultOffset + "px",
