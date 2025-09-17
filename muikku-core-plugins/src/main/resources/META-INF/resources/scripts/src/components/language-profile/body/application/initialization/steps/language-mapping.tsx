@@ -236,7 +236,7 @@ const LanguageMapping = () => {
         <div className="language-profile-container__fieldset-description">
           <details className="details details--language-profile">
             <summary className="details__summary">
-              {t("labels.pronounciation", {
+              {t("labels.pronunciation", {
                 ns: "languageProfile",
               })}
             </summary>
@@ -244,14 +244,15 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillNative", {
+                    context: "pronunciation",
                     ns: "languageProfile",
                   }),
                 }}
               />
-
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillExcellent", {
+                    context: "pronunciation",
                     ns: "languageProfile",
                   }),
                 }}
@@ -259,13 +260,15 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillGood", {
+                    context: "pronunciation",
                     ns: "languageProfile",
                   }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t("content.languageSkillMediocre", {
+                  __html: t("content.languageSkillFair", {
+                    context: "pronunciation",
                     ns: "languageProfile",
                   }),
                 }}
@@ -273,6 +276,7 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillBeginner", {
+                    context: "pronunciation",
                     ns: "languageProfile",
                   }),
                 }}
@@ -290,14 +294,15 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillNative", {
+                    context: "grammar",
                     ns: "languageProfile",
                   }),
                 }}
               />
-
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillExcellent", {
+                    context: "grammar",
                     ns: "languageProfile",
                   }),
                 }}
@@ -305,13 +310,15 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillGood", {
+                    context: "grammar",
                     ns: "languageProfile",
                   }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t("content.languageSkillMediocre", {
+                  __html: t("content.languageSkillFair", {
+                    context: "grammar",
                     ns: "languageProfile",
                   }),
                 }}
@@ -319,6 +326,7 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillBeginner", {
+                    context: "grammar",
                     ns: "languageProfile",
                   }),
                 }}
@@ -336,6 +344,7 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillNative", {
+                    context: "vocabulary",
                     ns: "languageProfile",
                   }),
                 }}
@@ -344,6 +353,7 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillExcellent", {
+                    context: "vocabulary",
                     ns: "languageProfile",
                   }),
                 }}
@@ -351,13 +361,15 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillGood", {
+                    context: "vocabulary",
                     ns: "languageProfile",
                   }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t("content.languageSkillMediocre", {
+                  __html: t("content.languageSkillFair", {
+                    context: "vocabulary",
                     ns: "languageProfile",
                   }),
                 }}
@@ -382,14 +394,15 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillNative", {
+                    context: "variants",
                     ns: "languageProfile",
                   }),
                 }}
               />
-
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillExcellent", {
+                    context: "variants",
                     ns: "languageProfile",
                   }),
                 }}
@@ -397,13 +410,15 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillGood", {
+                    context: "variants",
                     ns: "languageProfile",
                   }),
                 }}
               />
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t("content.languageSkillMediocre", {
+                  __html: t("content.languageSkillFair", {
+                    context: "variants",
                     ns: "languageProfile",
                   }),
                 }}
@@ -411,6 +426,7 @@ const LanguageMapping = () => {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t("content.languageSkillBeginner", {
+                    context: "variants",
                     ns: "languageProfile",
                   }),
                 }}
