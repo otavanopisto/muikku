@@ -18630,6 +18630,9 @@ components:
         ai:
           description: Is usage of AI allowed
           $ref: "#/components/schemas/MaterialAI"
+        exam:
+          description: If the material is part of an exam
+          type: boolean
 
     WorkspaceFolder:
       type: object
