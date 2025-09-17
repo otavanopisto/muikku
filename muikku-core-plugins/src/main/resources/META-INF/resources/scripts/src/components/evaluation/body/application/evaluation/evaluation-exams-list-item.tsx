@@ -18,6 +18,7 @@ import { StateType } from "~/reducers";
 import ExamAssessmentEditor from "./editors/exam-assessment-editor";
 import ExamAssignmentEditor from "./editors/exam-assignment-editor";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
+import { createAssignmentInfoArray } from "~/components/general/evaluation-assessment-details/helper";
 
 /**
  * EvaluationExamsListItemProps
@@ -62,6 +63,19 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
     workspaceNodeId: exam.folderId,
     userEntityId: studentUserEntityId,
   });
+
+  const currentExamContentIds = React.useMemo(
+    () => exam.contents.map((nodeContent) => nodeContent.workspaceMaterialId),
+    [exam.contents]
+  );
+
+  const currentExamAssigments = React.useMemo(
+    () =>
+      evaluationCurrentStudentAssigments.data?.assigments.filter((assignment) =>
+        currentExamContentIds.includes(assignment.id)
+      ),
+    [evaluationCurrentStudentAssigments.data, currentExamContentIds]
+  );
 
   // Lets create list of nodes with logic,
   // that merged node content object with assignment object
@@ -392,6 +406,12 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
     return assignmentItems;
   };
 
+  // Assignment info array
+  const assignmentInfoArray = createAssignmentInfoArray(
+    evaluationCompositeReplies,
+    currentExamAssigments
+  );
+
   return (
     <>
       <div className="evaluation-modal__item" onClick={handleShowExamContent}>
@@ -431,6 +451,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
               context: "assignment",
             })}
             exam={exam}
+            assignmentInfoArray={assignmentInfoArray}
             materialEvaluation={examNodeEvaluation}
             isRecording={isRecording}
             onIsRecordingChange={handleIsRecordingChange}

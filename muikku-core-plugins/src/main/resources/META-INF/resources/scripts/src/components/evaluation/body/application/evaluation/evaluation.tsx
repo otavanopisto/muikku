@@ -10,7 +10,10 @@ import ArchiveDialog from "../../../dialogs/archive";
 import Button from "~/components/general/button";
 import EvaluationJournalEventList from "./evaluation-journal-event-list";
 import EvaluationAssessmentList from "./evaluation-assessment-list";
-import { createAssignmentInfoArray } from "~/components/general/assignment-info-details/helper";
+import {
+  createAssignmentInfoArray,
+  createExamInfoArray,
+} from "~/components/general/evaluation-assessment-details/helper";
 import { WorkspaceDataType } from "~/reducers/workspaces";
 import { EvaluationAssessmentRequest } from "~/generated/client";
 import "~/sass/elements/evaluation.scss";
@@ -168,15 +171,20 @@ const Evaluation = (props: EvaluationDrawerProps) => {
 
   // Initialized evaluation state variables with default values
   const compsoiteReplies = evaluation.evaluationCompositeReplies?.data || [];
-  const currentStudentAssigments =
-    evaluation.evaluationCurrentStudentAssigments?.data?.assigments || [];
+  const currentStudentAssigments = (
+    evaluation.evaluationCurrentStudentAssigments?.data?.assigments || []
+  ).filter((assignment) => !assignment.exam);
   const evaluationsEvents = evaluation.evaluationAssessmentEvents?.data || [];
+  const currentStudentExams = evaluation.evaluationExams?.data || [];
 
   // Assignment info array
   const assignmentInfoArray = createAssignmentInfoArray(
     compsoiteReplies,
     currentStudentAssigments
   );
+
+  // Exam info array
+  const examInfoArray = createExamInfoArray(currentStudentExams);
 
   // Check if evaluation has been completed
   const isEvaluated = evaluationsEvents.length > 0;
@@ -400,6 +408,7 @@ const Evaluation = (props: EvaluationDrawerProps) => {
                             ns: "evaluation",
                           })}
                           assignmentInfoArray={assignmentInfoArray}
+                          examInfoArray={examInfoArray}
                           workspaceSubjectToBeEvaluatedIdentifier={
                             subject.identifier
                           }
@@ -466,6 +475,7 @@ const Evaluation = (props: EvaluationDrawerProps) => {
                           ns: "evaluation",
                         })}
                         assignmentInfoArray={assignmentInfoArray}
+                        examInfoArray={examInfoArray}
                         selectedAssessment={selectedAssessment}
                         workspaceSubjectToBeEvaluatedIdentifier={
                           state.subjectToBeEvaluated.identifier

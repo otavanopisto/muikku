@@ -34,6 +34,8 @@ import {
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
+import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
+import { AssignmentInfo } from "~/components/general/evaluation-assessment-details/helper";
 
 /**
  * ExamAssessmentEditorProps
@@ -43,8 +45,8 @@ interface ExamAssessmentEditorProps extends WithTranslation {
   evaluations: EvaluationState;
   status: StatusType;
   locale: LocaleState;
-
   selectedAssessment: EvaluationAssessmentRequest;
+  assignmentInfoArray: AssignmentInfo[];
   materialEvaluation?: NodeEvaluation;
   exam: ExamAttendance;
   editorLabel?: string;
@@ -544,7 +546,7 @@ class ExamAssessmentEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const { t } = this.props;
+    const { t, assignmentInfoArray } = this.props;
 
     const renderGradingOptions = this.state.activeGradeSystems.map((gScale) => (
       <optgroup key={`${gScale.dataSource}-${gScale.id}`} label={gScale.name}>
@@ -579,6 +581,14 @@ class ExamAssessmentEditor extends SessionStateComponent<
 
     return (
       <div className="form" role="form">
+        <div className="form__row">
+          <AssignmentDetails
+            sectionTitle="Koetehtävien pisteet"
+            assignmentInfoList={assignmentInfoArray}
+            omitColumns={["grade"]}
+          />
+        </div>
+
         <div className="form__row">
           <div className="form-element">
             {this.props.editorLabel && <label>{this.props.editorLabel}</label>}

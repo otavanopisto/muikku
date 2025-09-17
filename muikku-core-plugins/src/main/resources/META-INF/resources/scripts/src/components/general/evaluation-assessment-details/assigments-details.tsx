@@ -17,6 +17,8 @@ import { useTranslation } from "react-i18next";
  */
 interface AssignmentDetailsProps {
   assignmentInfoList: AssignmentInfo[];
+  omitColumns?: ("grade" | "points")[];
+  sectionTitle?: string;
 }
 
 /**
@@ -25,7 +27,7 @@ interface AssignmentDetailsProps {
  * @returns JSX.Element
  */
 const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
-  const { assignmentInfoList } = props;
+  const { assignmentInfoList, omitColumns = [], sectionTitle } = props;
 
   const { t } = useTranslation(["workspace"]);
 
@@ -57,7 +59,8 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
     <div className="form__row">
       <details className="details details--evaluation">
         <summary className="details__summary">
-          {t("labels.assignmentDetailsTitle", { ns: "workspace" })}
+          {sectionTitle ||
+            t("labels.assignmentDetailsTitle", { ns: "workspace" })}
         </summary>
         <div className="details__content">
           <ScrollableTableWrapper>
@@ -67,8 +70,13 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
                   <Th modifiers={["left"]}>
                     {t("labels.assignmentTitle", { ns: "workspace" })}
                   </Th>
-                  <Th>{t("labels.grade", { ns: "workspace" })}</Th>
-                  <Th>{t("labels.points", { ns: "workspace" })}</Th>
+                  {!omitColumns.includes("grade") && (
+                    <Th>{t("labels.grade", { ns: "workspace" })}</Th>
+                  )}
+
+                  {!omitColumns.includes("points") && (
+                    <Th>{t("labels.points", { ns: "workspace" })}</Th>
+                  )}
                 </Tr>
               </TableHead>
               <Tbody>
@@ -93,8 +101,12 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
                   return (
                     <Tr key={index}>
                       <Td>{assignment.title}</Td>
-                      <Td modifiers={["centered"]}>{gradeToShow}</Td>
-                      <Td modifiers={["centered"]}>{pointsToShow}</Td>
+                      {!omitColumns.includes("grade") && (
+                        <Td modifiers={["centered"]}>{gradeToShow}</Td>
+                      )}
+                      {!omitColumns.includes("points") && (
+                        <Td modifiers={["centered"]}>{pointsToShow}</Td>
+                      )}
                     </Tr>
                   );
                 })}
@@ -106,27 +118,36 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
             <TableHead>
               <Tr>
                 <Th></Th>
-                <Th>{t("labels.gradesAverage", { ns: "workspace" })}</Th>
-                <Th>{t("labels.pointsSummary", { ns: "workspace" })}</Th>
+                {!omitColumns.includes("grade") && (
+                  <Th>{t("labels.gradesAverage", { ns: "workspace" })}</Th>
+                )}
+                {!omitColumns.includes("points") && (
+                  <Th>{t("labels.pointsSummary", { ns: "workspace" })}</Th>
+                )}
               </Tr>
             </TableHead>
             <Tbody>
               <Tr>
                 <Td modifiers={["centered"]}></Td>
-                <Td modifiers={["centered"]}>
-                  {isNaN(gradesAverage)
-                    ? "—"
-                    : localize.number(gradesAverage, {
-                        maximumFractionDigits: 2,
-                      })}
-                </Td>
-                <Td modifiers={["centered"]}>
-                  {pointsSum
-                    ? localize.number(pointsSum, {
-                        maximumFractionDigits: 2,
-                      })
-                    : "—"}
-                </Td>
+                {!omitColumns.includes("grade") && (
+                  <Td modifiers={["centered"]}>
+                    {isNaN(gradesAverage)
+                      ? "—"
+                      : localize.number(gradesAverage, {
+                          maximumFractionDigits: 2,
+                        })}
+                  </Td>
+                )}
+
+                {!omitColumns.includes("points") && (
+                  <Td modifiers={["centered"]}>
+                    {pointsSum
+                      ? localize.number(pointsSum, {
+                          maximumFractionDigits: 2,
+                        })
+                      : "—"}
+                  </Td>
+                )}
               </Tr>
             </Tbody>
           </Table>
