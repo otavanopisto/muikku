@@ -2782,7 +2782,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(),
-        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi());
+        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), workspaceMaterial.isExamAssignment());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(

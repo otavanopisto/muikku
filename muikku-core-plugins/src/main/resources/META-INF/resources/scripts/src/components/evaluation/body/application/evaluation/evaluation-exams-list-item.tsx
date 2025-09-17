@@ -1,13 +1,12 @@
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import { useTranslation } from "react-i18next";
-import {
-  ExamAttendance,
-  MaterialCompositeReply,
-  MaterialContentNode,
-} from "~/generated/client";
+import { ExamAttendance, MaterialCompositeReply } from "~/generated/client";
 import { localize } from "~/locales/i18n";
-import { WorkspaceDataType } from "~/reducers/workspaces";
+import {
+  MaterialContentNodeWithIdAndLogic,
+  WorkspaceDataType,
+} from "~/reducers/workspaces";
 import EvaluationMaterial from "./evaluation-material";
 import "~/sass/elements/evaluation.scss";
 import { convertTimeRangeToMinutes } from "~/helper-functions/time-helpers";
@@ -36,13 +35,13 @@ interface EvaluationExamsListItemProps {
 const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
   const { studentUserEntityId, workspace, exam, evaluationCompositeReplies } =
     props;
-  const { contents } = exam;
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
   const evaluations = useSelector((state: StateType) => state.evaluations);
 
-  const { evaluationSelectedAssessmentId } = evaluations;
+  const { evaluationSelectedAssessmentId, evaluationCurrentStudentAssigments } =
+    evaluations;
 
   const { t } = useTranslation(["evaluation", "common"]);
 
@@ -62,6 +61,31 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
     workspaceNodeId: exam.folderId,
     userEntityId: studentUserEntityId,
   });
+
+  // Lets create list of nodes with logic,
+  // that merged node content object with assignment object
+  const contentNodesWithLogic: MaterialContentNodeWithIdAndLogic[] =
+    React.useMemo(() => {
+      if (!evaluationCurrentStudentAssigments.data) {
+        return [];
+      }
+
+      return exam.contents.map((nodeContent) => {
+        const assignment =
+          evaluationCurrentStudentAssigments.data?.assigments.find(
+            (assignment) => assignment.id === nodeContent.workspaceMaterialId
+          );
+
+        if (assignment) {
+          return {
+            ...nodeContent,
+            assignment: evaluationCurrentStudentAssigments.data.assigments.find(
+              (assignment) => assignment.id === nodeContent.workspaceMaterialId
+            ),
+          };
+        }
+      });
+    }, [evaluationCurrentStudentAssigments.data, exam.contents]);
 
   /**
    * Handles is recording change
@@ -185,21 +209,17 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
    */
   const renderContent = () => {
     const assignmentItems =
-      contents && contents.length > 0 ? (
-        contents.map((content) => {
+      contentNodesWithLogic && contentNodesWithLogic.length > 0 ? (
+        contentNodesWithLogic.map((cNode) => {
           const compositeReply = evaluationCompositeReplies.find(
-            (cReply) =>
-              cReply.workspaceMaterialId === content.workspaceMaterialId
+            (cReply) => cReply.workspaceMaterialId === cNode.assignment.id
           );
 
           return (
-            <div
-              key={content.materialId}
-              className="evaluation-modal__content-sub-item"
-            >
+            <div key={cNode.id} className="evaluation-modal__content-sub-item">
               <AssignmentItem
                 exam={exam}
-                content={content}
+                contentNode={cNode}
                 studentUserEntityId={studentUserEntityId}
                 workspace={workspace}
                 compositeReply={compositeReply}
@@ -279,8 +299,8 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
  */
 interface AssignmentItemProps {
   exam: ExamAttendance;
+  contentNode: MaterialContentNodeWithIdAndLogic;
   studentUserEntityId: number;
-  content: MaterialContentNode;
   compositeReply?: MaterialCompositeReply;
   workspace: WorkspaceDataType;
 }
@@ -290,7 +310,7 @@ interface AssignmentItemProps {
  * @param props - props
  */
 const AssignmentItem = (props: AssignmentItemProps) => {
-  const { content, compositeReply, studentUserEntityId, workspace, exam } =
+  const { compositeReply, studentUserEntityId, workspace, exam, contentNode } =
     props;
 
   const [contentOpen, setContentOpen] = React.useState(false);
@@ -345,7 +365,7 @@ const AssignmentItem = (props: AssignmentItemProps) => {
    * @returns string
    */
   const materialTypeClass = () => {
-    if (content.assignmentType === "EVALUATED") {
+    if (contentNode.assignment.assignmentType === "EVALUATED") {
       return "assignment";
     }
     return "exercise";
@@ -398,7 +418,7 @@ const AssignmentItem = (props: AssignmentItemProps) => {
           onClick={handleToggleContent}
           className={`evaluation-modal__item-header-title ${titleModifiers.map((modifier) => `evaluation-modal__item-header-title--${modifier}`).join(" ")}`}
         >
-          {content.title}
+          {contentNode.assignment.title}
           {renderAssignmentMeta()}
         </div>
 
@@ -414,7 +434,7 @@ const AssignmentItem = (props: AssignmentItemProps) => {
       </div>
 
       <SlideDrawer
-        title={`${props.exam.name} - ${content.title}`}
+        title={`${props.exam.name} - ${contentNode.assignment.title}`}
         show={assignmentEditorOpen}
         onClose={handleCloseAssessmentEditor}
       >
@@ -424,16 +444,16 @@ const AssignmentItem = (props: AssignmentItemProps) => {
             ns: "evaluation",
             context: "assignment",
           })}
-          materialAssignment={content}
+          materialAssignment={contentNode.assignment}
           compositeReply={compositeReply}
           onClose={handleCloseAssessmentEditor}
         />
       </SlideDrawer>
 
       <AnimateHeight duration={400} height={contentOpen ? "auto" : 0}>
-        {workspace && content && (
+        {workspace && contentNode.assignment && (
           <EvaluationMaterial
-            material={content}
+            material={contentNode}
             workspace={workspace}
             compositeReply={compositeReply}
             userEntityId={studentUserEntityId}
