@@ -17,6 +17,7 @@ import { ButtonPill } from "~/components/general/button";
 import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import ExamAssessmentEditor from "./editors/exam-assessment-editor";
+import ExamAssignmentEditor from "./editors/exam-assignment-editor";
 
 /**
  * EvaluationExamsListItemProps
@@ -197,6 +198,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
               className="evaluation-modal__content-sub-item"
             >
               <AssignmentItem
+                exam={exam}
                 content={content}
                 studentUserEntityId={studentUserEntityId}
                 workspace={workspace}
@@ -251,6 +253,10 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
         ) : (
           <ExamAssessmentEditor
             selectedAssessment={evaluationSelectedAssessmentId}
+            editorLabel={t("labels.literalEvaluation", {
+              ns: "evaluation",
+              context: "assignment",
+            })}
             exam={exam}
             materialEvaluation={examNodeEvaluation}
             isRecording={isRecording}
@@ -272,6 +278,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
  * AssignmentItemProps
  */
 interface AssignmentItemProps {
+  exam: ExamAttendance;
   studentUserEntityId: number;
   content: MaterialContentNode;
   compositeReply?: MaterialCompositeReply;
@@ -283,17 +290,54 @@ interface AssignmentItemProps {
  * @param props - props
  */
 const AssignmentItem = (props: AssignmentItemProps) => {
-  const { content, compositeReply, studentUserEntityId, workspace } = props;
+  const { content, compositeReply, studentUserEntityId, workspace, exam } =
+    props;
 
   const [contentOpen, setContentOpen] = React.useState(false);
+  const [assignmentEditorOpen, setAssignmentEditorOpen] = React.useState(false);
+
+  const myRef = React.useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation(["evaluation", "common"]);
+
+  const evaluations = useSelector((state: StateType) => state.evaluations);
+
+  const { evaluationSelectedAssessmentId } = evaluations;
 
   /**
    * Handle toggle content
    */
   const handleToggleContent = () => {
     setContentOpen(!contentOpen);
+  };
+
+  /**
+   * Handles opening editor
+   * @param e - event
+   */
+  const handleOpenEditor = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    setAssignmentEditorOpen(true);
+    setContentOpen(true);
+    handleExecuteScrollToElement();
+  };
+
+  /**
+   * Handles closing editor
+   */
+  const handleCloseAssessmentEditor = () => {
+    setAssignmentEditorOpen(false);
+  };
+
+  /**
+   * Scrolls to opened element
+   */
+  const handleExecuteScrollToElement = () => {
+    window.dispatchEvent(new Event("resize"));
+
+    myRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   /**
@@ -348,7 +392,7 @@ const AssignmentItem = (props: AssignmentItemProps) => {
   const titleModifiers = [materialTypeClass()];
 
   return (
-    <div className="evaluation-modal__item">
+    <div className="evaluation-modal__item" ref={myRef}>
       <div className="evaluation-modal__item-header">
         <div
           onClick={handleToggleContent}
@@ -357,7 +401,34 @@ const AssignmentItem = (props: AssignmentItemProps) => {
           {content.title}
           {renderAssignmentMeta()}
         </div>
+
+        {!!exam?.ended && (
+          <div className="evaluation-modal__item-functions">
+            <ButtonPill
+              onClick={handleOpenEditor}
+              buttonModifiers={["evaluate"]}
+              icon="evaluate"
+            />
+          </div>
+        )}
       </div>
+
+      <SlideDrawer
+        title={`${props.exam.name} - ${content.title}`}
+        show={assignmentEditorOpen}
+        onClose={handleCloseAssessmentEditor}
+      >
+        <ExamAssignmentEditor
+          selectedAssessment={evaluationSelectedAssessmentId}
+          editorLabel={t("labels.literalEvaluation", {
+            ns: "evaluation",
+            context: "assignment",
+          })}
+          materialAssignment={content}
+          compositeReply={compositeReply}
+          onClose={handleCloseAssessmentEditor}
+        />
+      </SlideDrawer>
 
       <AnimateHeight duration={400} height={contentOpen ? "auto" : 0}>
         {workspace && content && (
