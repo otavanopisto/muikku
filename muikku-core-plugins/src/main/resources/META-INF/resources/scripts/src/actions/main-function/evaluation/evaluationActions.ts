@@ -261,6 +261,11 @@ export type EVALUATION_EXAMS_LOAD = SpecificActionType<
   ExamAttendance[]
 >;
 
+export type EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO = SpecificActionType<
+  "EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO",
+  ExamAttendance
+>;
+
 // Server events
 /**
  * LoadEvaluationSystem
@@ -649,6 +654,20 @@ export interface LoadEvaluationExamsTriggerType {
     onFail?: () => void;
   }): AnyActionType;
 }
+
+/**
+ * UpdateEvaluationExamEvaluationInfoTriggerType
+ */
+export interface UpdateEvaluationExamEvaluationInfoTriggerType {
+  (data: {
+    workspaceNodeId: number;
+    userEntityId: number;
+    onSuccess?: () => void;
+    onFail?: () => void;
+  }): AnyActionType;
+}
+
+const evaluationApi = MApi.getEvaluationApi();
 
 // Actions
 
@@ -2935,6 +2954,51 @@ const loadEvaluationExamsFromServer: LoadEvaluationExamsTriggerType =
     };
   };
 
+/**
+ * updateEvaluationExamEvaluationInfo
+ * @param data data
+ */
+const updateEvaluationExamEvaluationInfo: UpdateEvaluationExamEvaluationInfoTriggerType =
+  function updateEvaluationExamEvaluationInfo(data) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      const { workspaceNodeId, userEntityId, onFail, onSuccess } = data;
+
+      const state = getState();
+
+      try {
+        const updatedEvaluationInfo =
+          await evaluationApi.getWorkspaceNodeEvaluation({
+            workspaceNodeId: workspaceNodeId,
+            userEntityId: userEntityId,
+          });
+
+        const updatedExam = state.evaluations.evaluationExams?.data?.find(
+          (exam) => exam.folderId === workspaceNodeId
+        );
+
+        if (updatedExam) {
+          updatedExam.evaluationInfo = updatedEvaluationInfo;
+        }
+
+        dispatch({
+          type: "EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO",
+          payload: updatedExam,
+        });
+
+        onSuccess && onSuccess();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        onFail && onFail();
+      }
+    };
+  };
+
 export {
   loadEvaluationAssessmentRequestsFromServer,
   loadEvaluationWorkspacesFromServer,
@@ -2973,4 +3037,5 @@ export {
   deleteSupplementationRequest,
   toggleLockedAssignment,
   loadEvaluationExamsFromServer,
+  updateEvaluationExamEvaluationInfo,
 };

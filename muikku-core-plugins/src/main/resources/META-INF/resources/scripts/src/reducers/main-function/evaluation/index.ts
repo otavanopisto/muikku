@@ -483,6 +483,20 @@ export const evaluations: Reducer<EvaluationState> = (
         },
       };
 
+    case "EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO": {
+      const updatedExams = state.evaluationExams.data?.map((exam) =>
+        exam.folderId === action.payload.folderId ? action.payload : exam
+      );
+
+      return {
+        ...state,
+        evaluationExams: {
+          ...state.evaluationExams,
+          data: updatedExams,
+        },
+      };
+    }
+
     default:
       return state;
   }
