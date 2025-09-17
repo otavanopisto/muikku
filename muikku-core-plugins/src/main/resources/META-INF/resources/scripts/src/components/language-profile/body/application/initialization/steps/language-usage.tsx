@@ -10,6 +10,7 @@ import { availableLanguages } from "~/mock/mock-data";
 import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
 import PromptDialog from "~/components/general/prompt-dialog";
+
 /**
  * LanguageUsage
  * This component allows users to manage their language usage, learning,

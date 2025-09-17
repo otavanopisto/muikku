@@ -173,6 +173,19 @@ export interface CreateLanguageProfileSampleTriggerType {
 }
 
 /**
+ * UpdateLanguageProfileSampleTriggerType
+ */
+export interface UpdateLanguageProfileSampleTriggerType {
+  (
+    userEntityId: number,
+    sampleId: number,
+    sample: CreateLanguageProfileSampleRequest,
+    success?: () => void,
+    fail?: () => void
+  ): AnyActionType;
+}
+
+/**
  * CreateLanguageProfileAudioSampleTriggerType
  */
 export interface CreateLanguageProfileAudioSampleTriggerType {
@@ -479,6 +492,85 @@ const createLanguageSample: CreateLanguageProfileSampleTriggerType =
         dispatch(
           notificationActions.displayNotification(
             i18n.t("notifications.createError", {
+              error: err,
+              ns: "languageProfile",
+              context: "textSample",
+            }),
+            "error"
+          )
+        );
+        fail && fail();
+      }
+    };
+  };
+
+/**
+ * updateLanguageSample
+ * @param userEntityId student id
+ * @param sampleId sample id
+ * @param sample request sample
+ * @param success executed on success
+ * @param fail executed on fail
+ */
+const updateLanguageSample: UpdateLanguageProfileSampleTriggerType =
+  function updateLanguageSample(
+    userEntityId: number,
+    sampleId: number,
+    sample: CreateLanguageProfileSampleRequest,
+    success?: () => void,
+    fail?: () => void
+  ) {
+    return async (
+      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+      getState: () => StateType
+    ) => {
+      try {
+        dispatch({
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
+          payload: "IN_PROGRESS",
+        });
+
+        const updatedSample =
+          await LanguageProfileApi.updateLanguageProfileSample({
+            userEntityId,
+            sampleId,
+            updateLanguageProfileSampleRequest: {
+              value: sample.value,
+            },
+          });
+        dispatch({
+          type: "LANGUAGE_PROFILE_UPDATE_LANGUAGE_SAMPLE",
+          payload: updatedSample,
+        });
+        dispatch({
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
+          payload: "SUCCESS",
+        });
+        dispatch({
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
+          payload: "PENDING",
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateSuccess", {
+              ns: "languageProfile",
+              context: "textSample",
+            }),
+            "success"
+          )
+        );
+        success && success();
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+        dispatch({
+          type: "LANGUAGE_PROFILE_SET_SAVING_STATE",
+          payload: "FAILED",
+        });
+        dispatch(
+          notificationActions.displayNotification(
+            i18n.t("notifications.updateError", {
               error: err,
               ns: "languageProfile",
               context: "textSample",
@@ -897,6 +989,7 @@ export {
   saveLanguageProfile,
   saveLanguageSamples,
   deleteLanguageSample,
+  updateLanguageSample,
   createLanguageSample,
   createLanguageAudioSamples,
   createLanguageFileSamples,

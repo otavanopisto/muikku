@@ -3056,7 +3056,11 @@
       "saveError": "Saving language profile failed: {{error}}",
       "saveError_languageSamples": "Saving language samples failed:: {{error}}",
       "saveSuccess": "Saving language profile succeeded",
-      "saveSuccess_languageSamples": "Saving language samples succeeded"
+      "saveSuccess_languageSamples": "Saving language samples succeeded",
+      "updateError": "$t(common:notifications.updateError)",
+      "updateError_textSample": "Text sample update failed: {{error}}",
+      "updateSuccess": "$t(common:notifications.updateSuccess)",
+      "updateSuccess_textSample": "Text sample updated successfully"
     },
     "languages": {
       "aa": "Afar",

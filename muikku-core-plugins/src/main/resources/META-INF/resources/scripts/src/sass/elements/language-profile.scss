@@ -118,12 +118,24 @@
   position: relative;
 }
 
+.language-profile__button-container {
+  height: 0;
+  transform: height 0.3s ease-in-out;
+  transition: height 0.3s ease-in-out;
+  
+  &.state-OPEN {
+    height: 30px;
+    transition: height 0.3s ease-in-out;
+  }
+}
+
 .language-profile__sample {
   display: flex;
   flex-flow: column nowrap;
   gap: 10px;
   justify-content: center;
 }
+
 
 .language-profile__sample-buttons {
   align-items: center;
@@ -137,6 +149,11 @@
 .language-profile__sample-buttons--add-sample {
   margin: 10px 0 0;
 }
+
+.language-profile__sample-buttons--edit-sample {
+  margin: 10px 0;
+}
+
 
 .language-profile__select {
   background: $color-default;
@@ -177,6 +194,10 @@
    @include breakpoint($breakpoint-pad) {
     flex-wrap: nowrap;
   }
+}
+
+.language-profile__text-sample {
+  flex-basis: 100%;
 }
 
 .language-profile__textarea {

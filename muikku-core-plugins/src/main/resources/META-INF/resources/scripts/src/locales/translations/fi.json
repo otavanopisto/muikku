@@ -3057,7 +3057,13 @@
       "saveError": "Kieliprofiilin tallentaminen epäonnistui: {{error}}",
       "saveError_languageSamples": "Kielinäytteiden tallentaminen epäonnistui: {{error}}",
       "saveSuccess": "Kieliprofiili tallennettu onnistuneesti",
-      "saveSuccess_languageSamples": "Kielinäytteet tallennettu onnistuneesti"
+      "saveSuccess_languageSamples": "Kielinäytteet tallennettu onnistuneesti",
+      "updateError": "$t(common:notifications.updateError)",
+      "updateError_textSample": "Tekstinäytteen päivittäminen epäonnistui: {{error}}",
+      "updateSuccess": "$t(common:notifications.updateSuccess)",
+      "updateSuccess_textSample": "Tekstinäyte päivitetty onnistuneesti"
+
+
     },
     "languages": {
       "aa": "Afar",
