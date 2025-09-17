@@ -18589,6 +18589,7 @@ components:
         - correctAnswers
         - path
         - title
+        - exam
       properties:
         id:
           description: The id of the material

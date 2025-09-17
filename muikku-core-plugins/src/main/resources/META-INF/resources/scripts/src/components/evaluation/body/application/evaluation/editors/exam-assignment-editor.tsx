@@ -17,7 +17,7 @@ import {
   EvaluationAssessmentRequest,
   CreateWorkspaceNodeAssessmentRequest,
   MaterialCompositeReply,
-  MaterialContentNode,
+  WorkspaceMaterial,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -28,7 +28,7 @@ import { NumberFormatValues, NumericFormat } from "react-number-format";
  */
 interface ExamAssignmentEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
-  materialAssignment: MaterialContentNode;
+  materialAssignment: WorkspaceMaterial;
   compositeReply: MaterialCompositeReply;
   status: StatusType;
   updateCurrentStudentCompositeRepliesData: UpdateCurrentStudentEvaluationCompositeRepliesData;
@@ -66,7 +66,7 @@ class ExamAssignmentEditor extends SessionStateComponent<
 
     const { userEntityId } = selectedAssessment;
 
-    const draftId = `${userEntityId}-${materialAssignment.materialId}`;
+    const draftId = `${userEntityId}-${materialAssignment.id}`;
 
     this.state = {
       ...this.getRecoverStoredState(
@@ -199,7 +199,7 @@ class ExamAssignmentEditor extends SessionStateComponent<
     this.saveAssignmentEvaluationGradeToServer({
       workspaceEntityId: workspaceEntityId,
       userEntityId: userEntityId,
-      workspaceMaterialId: this.props.materialAssignment.workspaceMaterialId,
+      workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
         evaluationType: "POINTS",
         assessorIdentifier: this.props.status.userSchoolDataIdentifier,
