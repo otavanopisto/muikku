@@ -22,6 +22,7 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
+import { localize } from "~/locales/i18n";
 
 /**
  * ExamAssignmentEditorProps
@@ -299,6 +300,15 @@ class ExamAssignmentEditor extends SessionStateComponent<
                 allowNegative={false}
                 onValueChange={this.handlePointsValueChange}
               />
+
+              {this.props.materialAssignment.maxPoints && (
+                <>
+                  <span className="form-element__divider">/</span>
+                  <span className="form-element__description-chip">
+                    {localize.number(this.props.materialAssignment.maxPoints)}
+                  </span>
+                </>
+              )}
             </div>
           </fieldset>
         </div>

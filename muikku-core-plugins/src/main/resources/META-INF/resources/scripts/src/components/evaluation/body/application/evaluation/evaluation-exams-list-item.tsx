@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import ExamAssessmentEditor from "./editors/exam-assessment-editor";
 import ExamAssignmentEditor from "./editors/exam-assignment-editor";
+import RecordingsList from "~/components/general/voice-recorder/recordings-list";
 
 /**
  * EvaluationExamsListItemProps
@@ -137,10 +138,35 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
   };
 
   /**
+   * assigmentGradeClass
+   * @param exam - exam
+   * @returns classMod
+   */
+  const assigmentGradeClass = (exam?: ExamAttendance) => {
+    const { evaluationInfo } = exam;
+
+    if (!evaluationInfo) {
+      return;
+    }
+
+    if (evaluationInfo) {
+      switch (evaluationInfo.type) {
+        case "FAILED":
+          return "state-FAILED";
+
+        default:
+          return "state-EVALUATED";
+      }
+    }
+  };
+
+  /**
    * Render exam meta
    * @returns JSX.Element
    */
   const renderExamMeta = () => {
+    const { evaluationInfo } = exam;
+
     // Check if exam has ended
     const isEnded = !!exam.ended;
 
@@ -149,6 +175,18 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
 
     // Check if exam has time limit
     const hasTimeLimit = exam.minutes > 0;
+
+    // Evaluation date if evaluated
+    const evaluationDate = evaluationInfo && evaluationInfo.date;
+
+    // Checking if its evaluated with grade
+    const evaluatedWithGrade = evaluationInfo && evaluationInfo.grade;
+
+    // Points and max points object
+    const pointsAndMaxPoints = {
+      points: exam.evaluationInfo?.points,
+      show: exam.evaluationInfo?.points !== undefined,
+    };
 
     return (
       <div className="evaluation-modal__item-meta">
@@ -171,6 +209,41 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
                 {`${convertTimeRangeToMinutes(exam.started, exam.ended)} (${exam.minutes}) minuuttia`}
               </span>
             </div>
+
+            {evaluationDate && (
+              <div className="evaluation-modal__item-meta-item">
+                <span className="evaluation-modal__item-meta-item-label">
+                  {t("labels.evaluated", { ns: "workspace" })}
+                </span>
+                <span className="evaluation-modal__item-meta-item-data">
+                  {localize.date(evaluationDate)}
+                </span>
+              </div>
+            )}
+
+            {evaluatedWithGrade && (
+              <div className="evaluation-modal__item-meta-item">
+                <span className="evaluation-modal__item-meta-item-label">
+                  {t("labels.grade", { ns: "workspace" })}
+                </span>
+                <span
+                  className={`evaluation-modal__item-meta-item-data evaluation-modal__item-meta-item-data--grade ${assigmentGradeClass(exam)}`}
+                >
+                  {evaluationInfo.grade}
+                </span>
+              </div>
+            )}
+
+            {pointsAndMaxPoints.show && (
+              <div className="evaluation-modal__item-meta-item">
+                <span className="evaluation-modal__item-meta-item-label">
+                  {t("labels.points", { ns: "workspace" })}
+                </span>
+                <span className="evaluation-modal__item-meta-item-data">
+                  {localize.number(pointsAndMaxPoints.points)}
+                </span>
+              </div>
+            )}
           </>
         ) : isStarted ? (
           <div className="evaluation-modal__item-meta-item">
@@ -204,27 +277,108 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
   };
 
   /**
+   * Render assessment content
+   * @returns JSX.Element
+   */
+  const renderAssessmentContent = () => {
+    const { evaluationInfo } = exam;
+
+    if (!evaluationInfo) {
+      return null;
+    }
+
+    let evalStateClassName = "";
+    let evalStateIcon = "";
+
+    switch (evaluationInfo.type) {
+      case "FAILED":
+        evalStateClassName = "material-page__assignment-assessment--failed";
+        evalStateIcon = "icon-thumb-down";
+        break;
+      case "PASSED":
+        evalStateClassName = "material-page__assignment-assessment--passed";
+        evalStateIcon = "icon-thumb-up";
+        break;
+    }
+
+    return (
+      <div
+        className={`material-page__assignment-assessment ${evalStateClassName}`}
+      >
+        <div
+          className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
+        ></div>
+        <div className="material-page__assignment-assessment-literal">
+          <div className="material-page__assignment-assessment-literal-label">
+            {t("labels.literalEvaluation", { ns: "evaluation" })}
+          </div>
+          <div
+            className="material-page__assignment-assessment-literal-data rich-text"
+            dangerouslySetInnerHTML={{ __html: evaluationInfo.text }}
+          ></div>
+
+          {evaluationInfo.audioAssessments !== undefined &&
+          evaluationInfo.audioAssessments.length > 0 ? (
+            <>
+              <div className="material-page__assignment-assessment-verbal-label">
+                {t("labels.verbalEvaluation", { ns: "evaluation" })}:
+              </div>
+              <div className="voice-container">
+                <RecordingsList
+                  records={evaluationInfo.audioAssessments}
+                  noDeleteFunctions
+                />
+              </div>
+            </>
+          ) : null}
+        </div>
+      </div>
+    );
+  };
+
+  /**
    * Render content
    * @returns JSX.Element
    */
   const renderContent = () => {
     const assignmentItems =
       contentNodesWithLogic && contentNodesWithLogic.length > 0 ? (
-        contentNodesWithLogic.map((cNode) => {
+        contentNodesWithLogic.map((cNode, i) => {
           const compositeReply = evaluationCompositeReplies.find(
             (cReply) => cReply.workspaceMaterialId === cNode.assignment.id
           );
 
-          return (
-            <div key={cNode.id} className="evaluation-modal__content-sub-item">
-              <AssignmentItem
-                exam={exam}
-                contentNode={cNode}
-                studentUserEntityId={studentUserEntityId}
-                workspace={workspace}
-                compositeReply={compositeReply}
-              />
-            </div>
+          // First item is assessment always
+          return i === 0 ? (
+            <>
+              <div
+                key={`exam-assessment-${exam.folderId}`}
+                className="evaluation-modal__content-sub-item"
+              >
+                {renderAssessmentContent()}
+              </div>
+
+              <div
+                key={cNode.id}
+                className="evaluation-modal__content-sub-item"
+              >
+                <AssignmentItem
+                  exam={exam}
+                  contentNode={cNode}
+                  studentUserEntityId={studentUserEntityId}
+                  workspace={workspace}
+                  compositeReply={compositeReply}
+                />
+              </div>
+            </>
+          ) : (
+            <AssignmentItem
+              exam={exam}
+              contentNode={cNode}
+              studentUserEntityId={studentUserEntityId}
+              workspace={workspace}
+              compositeReply={compositeReply}
+            />
           );
         })
       ) : (
@@ -240,12 +394,11 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
 
   return (
     <>
-      <div
-        ref={myRef}
-        className="evaluation-modal__item"
-        onClick={handleShowExamContent}
-      >
-        <div className="evaluation-modal__item-header">
+      <div className="evaluation-modal__item" onClick={handleShowExamContent}>
+        <div
+          ref={myRef}
+          className={`evaluation-modal__item-header ${assigmentGradeClass(exam)}`}
+        >
           <div className="evaluation-modal__item-header-title">
             {props.exam.name}
             {renderExamMeta()}
@@ -372,6 +525,27 @@ const AssignmentItem = (props: AssignmentItemProps) => {
   };
 
   /**
+   * assignmentFunctionClass
+   * @param compositeReply compositeReply
+   * @returns Assignment function button class
+   */
+  const assignmentFunctionClass = (compositeReply?: MaterialCompositeReply) => {
+    if (compositeReply) {
+      const { evaluationInfo } = compositeReply;
+
+      if (evaluationInfo) {
+        switch (evaluationInfo.type) {
+          case "FAILED":
+            return "state-FAILED";
+
+          default:
+            return "state-EVALUATED";
+        }
+      }
+    }
+  };
+
+  /**
    * Render assignment meta
    * @returns JSX.Element
    */
@@ -380,9 +554,21 @@ const AssignmentItem = (props: AssignmentItemProps) => {
       return null;
     }
 
+    const { evaluationInfo } = compositeReply;
+
     // Checking if assigments is submitted at all.
     // Its date string
     const hasSubmitted = compositeReply.submitted;
+
+    // Evaluation date if evaluated
+    const evaluationDate = evaluationInfo && evaluationInfo.date;
+
+    // Points and max points object
+    const pointsAndMaxPoints = {
+      points: compositeReply.evaluationInfo?.points,
+      maxPoints: contentNode.assignment.maxPoints,
+      show: compositeReply.evaluationInfo?.points !== undefined,
+    };
 
     return (
       <div className="evaluation-modal__item-meta">
@@ -405,6 +591,32 @@ const AssignmentItem = (props: AssignmentItemProps) => {
             </div>
           )
         )}
+
+        {evaluationDate && (
+          <div className="evaluation-modal__item-meta-item">
+            <span className="evaluation-modal__item-meta-item-label">
+              {t("labels.evaluated", { ns: "workspace" })}
+            </span>
+            <span className="evaluation-modal__item-meta-item-data">
+              {localize.date(evaluationDate)}
+            </span>
+          </div>
+        )}
+
+        {pointsAndMaxPoints.show && (
+          <div className="evaluation-modal__item-meta-item">
+            <span className="evaluation-modal__item-meta-item-label">
+              {t("labels.points", { ns: "workspace" })}
+            </span>
+            <span className="evaluation-modal__item-meta-item-data">
+              {!pointsAndMaxPoints.maxPoints
+                ? localize.number(pointsAndMaxPoints.points)
+                : `${localize.number(
+                    pointsAndMaxPoints.points
+                  )} / ${localize.number(pointsAndMaxPoints.maxPoints)}`}
+            </span>
+          </div>
+        )}
       </div>
     );
   };
@@ -412,8 +624,11 @@ const AssignmentItem = (props: AssignmentItemProps) => {
   const titleModifiers = [materialTypeClass()];
 
   return (
-    <div className="evaluation-modal__item" ref={myRef}>
-      <div className="evaluation-modal__item-header">
+    <div className="evaluation-modal__item">
+      <div
+        ref={myRef}
+        className={`evaluation-modal__item-header ${assignmentFunctionClass(compositeReply)}`}
+      >
         <div
           onClick={handleToggleContent}
           className={`evaluation-modal__item-header-title ${titleModifiers.map((modifier) => `evaluation-modal__item-header-title--${modifier}`).join(" ")}`}
