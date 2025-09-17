@@ -2119,13 +2119,11 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.ok(Collections.emptyList()).build();
     }
     
-    // Exam functionality: Don't list exam assignments
+    // Exam functionality: Never list exam assignments via this endpoint
     
-    if (workspaceAssignmentType == WorkspaceMaterialAssignmentType.EXERCISE || workspaceAssignmentType == WorkspaceMaterialAssignmentType.EVALUATED) {
-      for (int i = workspaceMaterials.size() - 1; i >= 0; i--) {
-        if (workspaceMaterials.get(i).isExamAssignment()) {
-          workspaceMaterials.remove(i);
-        }
+    for (int i = workspaceMaterials.size() - 1; i >= 0; i--) {
+      if (workspaceMaterials.get(i).isExamAssignment()) {
+        workspaceMaterials.remove(i);
       }
     }
 
