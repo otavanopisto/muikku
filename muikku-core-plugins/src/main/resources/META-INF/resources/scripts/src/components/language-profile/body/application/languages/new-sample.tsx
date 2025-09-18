@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { unstable_batchedUpdates } from "react-dom";
 import { StateType } from "~/reducers";
 import {
   createLanguageSample,
@@ -35,6 +36,17 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   const [audioSamples, setAudioSamples] = React.useState<RecordValue[]>([]);
   const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
   const dispatch = useDispatch();
+
+  /**
+   * Clears the input fields.
+   * @returns void
+   */
+  const clearFields = () =>
+    unstable_batchedUpdates(() => {
+      setSample("");
+      setAudioSamples([]);
+      setSelectedFiles([]);
+    });
 
   /**
    * Handles changes in the text area for text samples.
@@ -87,9 +99,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
    * handleCancel resets the state and closes the modal.
    */
   const handleCancel = React.useCallback(() => {
-    setAudioSamples([]);
-    setSample("");
-    setSelectedFiles([]);
+    clearFields();
     onClose();
   }, [onClose]);
 
@@ -105,9 +115,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
           value: sample,
         },
         () => {
-          setAudioSamples([]);
-          setSample("");
-          setSelectedFiles([]);
+          clearFields();
           onClose();
         }
       )
@@ -120,9 +128,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   const handleFilesSave = React.useCallback(() => {
     dispatch(
       createLanguageFileSamples(status.userId, selectedFiles, language, () => {
-        setAudioSamples([]);
-        setSample("");
-        setSelectedFiles([]);
+        clearFields();
         onClose();
       })
     );
@@ -134,9 +140,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   const handleAudioSave = React.useCallback(() => {
     dispatch(
       createLanguageAudioSamples(status.userId, audioSamples, language, () => {
-        setAudioSamples([]);
-        setSample("");
-        setSelectedFiles([]);
+        clearFields();
         onClose();
       })
     );

@@ -36,6 +36,10 @@ const Sample = (props: LanguageSampleProps) => {
   const [editMode, setEditMode] = React.useState(false);
   const [textValue, setTextValue] = React.useState(sample.value);
 
+  /**
+   * Handles updating the text sample.
+   * Dispatches an action to update the sample in the store.
+   */
   const handleTextSampleUpdate = () => {
     // Handle text sample update logic here
     dispatch(

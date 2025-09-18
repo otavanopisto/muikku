@@ -1,4 +1,5 @@
 import * as React from "react";
+import { unstable_batchedUpdates } from "react-dom";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/language-profile.scss";
 import { filterMatch } from "~/util/modifiers";
@@ -28,6 +29,16 @@ const AddItem = (props: AddItemProps) => {
   const [filter, setFilter] = React.useState<string>("");
   const [active, setActive] = React.useState<boolean>(false);
   const { t } = useTranslation(["languageProfile", "common"]);
+
+  /**
+   * Clears the input fields and resets the component state.
+   * @returns void
+   */
+  const clearStates = () =>
+    unstable_batchedUpdates(() => {
+      setActive(false);
+      setFilter("");
+    });
   /**
    * filterLanguages
    * @param value the value to filter the languages
@@ -50,16 +61,14 @@ const AddItem = (props: AddItemProps) => {
    */
   const handleAdd = (item: LanguageData) => {
     action(item);
-    setActive(false);
-    setFilter("");
+    clearStates();
   };
 
   /**
    * clearComponent
    */
   const clearComponent = () => {
-    setActive(false);
-    setFilter("");
+    clearStates();
   };
 
   const filteredItems = allItems.filter(

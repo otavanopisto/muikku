@@ -2,6 +2,7 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
+import { unstable_batchedUpdates } from "react-dom";
 import {
   LanguageProfileLanguage,
   CVLanguage,
@@ -47,6 +48,16 @@ const SkillLevel = (props: SkillLevelProps) => {
   const [sampleUrl, setSampleUrl] = React.useState<string>("");
   const [sampleName, setSampleName] = React.useState<string>("");
   const [isValidUrl, setIsValidUrl] = React.useState<boolean>(true);
+
+  /**
+   * clearFields Clears the sample fields.
+   * @returns void
+   */
+  const clearFields = () =>
+    unstable_batchedUpdates(() => {
+      setSampleUrl("");
+      setSampleName("");
+    });
 
   /**
    * Checks if host is valid
@@ -172,8 +183,7 @@ const SkillLevel = (props: SkillLevelProps) => {
       payload: updatedLanguageSkillLevels,
     } as ActionType);
 
-    setSampleUrl("");
-    setSampleName("");
+    clearFields();
   };
 
   /**
