@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "build-full": "npm run build-api && npm run build",
     "build-api": "openapi-generator-cli generate -i ../../swagger.yaml -o generated/client -c generator-config.json -g typescript-fetch",
     "lint": "eslint .",
