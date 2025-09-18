@@ -17302,6 +17302,7 @@ components:
         - hasEvaluationFees
         - isDefaultOrganization
         - services
+        - studyLevel
       properties:
         id:
           type: integer
@@ -17398,6 +17399,9 @@ components:
           nullable: true
         services:
           $ref: "#/components/schemas/UserWhoAmIServices"
+        studyLevel:
+          type: string
+          nullable: true
 
     UserWhoAmIServices:
       type: object
