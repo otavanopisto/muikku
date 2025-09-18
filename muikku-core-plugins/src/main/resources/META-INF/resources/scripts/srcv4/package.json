@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build-full": "npm run build-api && npm run build",
+    "build-api": "openapi-generator-cli generate -i ../../swagger.yaml -o generated/client -c generator-config.json -g typescript-fetch",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -14,7 +16,8 @@
     "react-dom": "^19.1.1",
     "typescript": "~5.8.3",
     "vite": "^7.1.6",
-    "@vitejs/plugin-react": "^5.0.2"
+    "@vitejs/plugin-react": "^5.0.2",
+    "@openapitools/openapi-generator-cli": "2.16.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
