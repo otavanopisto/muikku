@@ -110,6 +110,7 @@ const LanguageMapping = () => {
       <Select
         className="react-select-override react-select-override--language-profile-form"
         classNamePrefix="react-select-override"
+        placeholder={t("labels.select")}
         value={selectedValue}
         onChange={(value) =>
           handleLanguageLevelsSelectChange(value.value, cellId, languageCode)
@@ -138,6 +139,7 @@ const LanguageMapping = () => {
       <Select
         className="react-select-override react-select-override--language-profile-form"
         classNamePrefix="react-select-override"
+        placeholder={t("labels.select")}
         value={selectedValue}
         onChange={(option) =>
           handleSkillsSelectChange(option.value, cellId, languageCode)
