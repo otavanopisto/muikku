@@ -8,6 +8,9 @@ import ExamTimer from "./exam-timer";
 import "~/sass/elements/exam.scss";
 import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 import { convertTimeRangeToMinutes } from "~/helper-functions/time-helpers";
+import RecordingsList from "~/components/general/voice-recorder/recordings-list";
+import { useTranslation } from "react-i18next";
+import { RecordValue } from "~/@types/recorder";
 
 /**
  * ExamsListProps
@@ -67,6 +70,108 @@ interface ExamsListItemProps {
 const ExamsListItem = (props: ExamsListItemProps) => {
   const { exam } = props;
   const { workspaceUrl } = useParams<{ workspaceUrl: string }>();
+  const { t } = useTranslation(["evaluation", "common"]);
+
+  /**
+   * Render assessment content
+   * @returns JSX.Element
+   */
+  const renderAssessmentContent = () => {
+    if (!exam.ended || !exam.evaluationInfo) {
+      return null;
+    }
+
+    let evalStateClassName = "";
+    let evalStateIcon = "";
+
+    switch (exam.evaluationInfo.type) {
+      case "FAILED":
+        evalStateClassName = "material-page__assignment-assessment--failed";
+        evalStateIcon = "icon-thumb-down";
+        break;
+      case "PASSED":
+        evalStateClassName = "material-page__assignment-assessment--passed";
+        evalStateIcon = "icon-thumb-up";
+        break;
+    }
+
+    const literalAssesment = exam.evaluationInfo.text;
+    const audioAssessments = exam.evaluationInfo.audioAssessments;
+
+    const audioRecords =
+      audioAssessments &&
+      audioAssessments.map(
+        (aAssessment) =>
+          ({
+            id: aAssessment.id,
+            name: aAssessment.name,
+            contentType: aAssessment.contentType,
+            url: `/rest/workspace/materialevaluationaudioassessment/${aAssessment.id}`,
+          }) as RecordValue
+      );
+
+    return (
+      <div
+        className={`material-page__assignment-assessment ${evalStateClassName}`}
+      >
+        <div
+          className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
+        ></div>
+
+        <div className="material-page__assignment-assessment-date">
+          <span className="material-page__assignment-assessment-date-label">
+            {t("labels.date")}:
+          </span>
+          <span className="material-page__assignment-assessment-date-data">
+            {localize.date(exam.evaluationInfo.date)}
+          </span>
+        </div>
+
+        {exam.evaluationInfo.grade && (
+          <div className="material-page__assignment-assessment-grade">
+            <span className="material-page__assignment-assessment-grade-label">
+              {t("labels.grade", { ns: "workspace" })}:
+            </span>
+            <span className="material-page__assignment-assessment-grade-data">
+              {exam.evaluationInfo.grade}
+            </span>
+          </div>
+        )}
+
+        {exam.evaluationInfo.points && (
+          <div className="material-page__assignment-assessment-points">
+            <span className="material-page__assignment-assessment-points-label">
+              {t("labels.points", { ns: "workspace" })}:
+            </span>
+            <span className="material-page__assignment-assessment-points-data">
+              {localize.number(exam.evaluationInfo.points)}
+            </span>
+          </div>
+        )}
+
+        <div className="material-page__assignment-assessment-literal">
+          <div className="material-page__assignment-assessment-literal-label">
+            {t("labels.literalEvaluation", { ns: "evaluation" })}:
+          </div>
+          <div
+            className="material-page__assignment-assessment-literal-data rich-text"
+            dangerouslySetInnerHTML={{ __html: literalAssesment }}
+          ></div>
+
+          {audioAssessments !== undefined && audioAssessments.length > 0 ? (
+            <>
+              <div className="material-page__assignment-assessment-verbal-label">
+                {t("labels.verbalEvaluation", { ns: "evaluation" })}:
+              </div>
+              <div className="voice-container">
+                <RecordingsList records={audioRecords} noDeleteFunctions />
+              </div>
+            </>
+          ) : null}
+        </div>
+      </div>
+    );
+  };
 
   // Check if exam has ended
   const isEnded = !!exam.ended;
@@ -112,6 +217,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
         {/* Show exam status and time info */}
         <div className="exam__content">
           <CkeditorLoaderContent html={exam.description} />
+          {renderAssessmentContent()}
         </div>
         <div className="exam__meta">
           {isEnded ? (
