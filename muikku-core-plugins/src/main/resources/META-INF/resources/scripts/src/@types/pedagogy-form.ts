@@ -1,5 +1,7 @@
 import { PedagogyWorkspace } from "~/generated/client";
 
+export type PedagogyFormType = "compulsory" | "upperSecondary";
+
 // used for frontend logic
 const useRoles = [
   "STUDENT",
@@ -27,6 +29,10 @@ const supportActions = [
   "extraTime",
   "scheduledStudies",
   "routedStudies",
+  "linguisticAssistance",
+  "customisedRoutedStudies",
+  "feedbackAndAssessment",
+  "exemptionByPrincipal",
   "other",
 ] as const;
 
@@ -39,6 +45,10 @@ const matriculationExaminationSupport = [
   "assistant",
   "assistedPrintAndScan",
   "limitedAudioMaterial",
+  "fontSizeIncrease",
+  "largerDisplay",
+  "adjustableWorkstation",
+  "visionImpairedExamArrangement",
   "other",
 ] as const;
 
@@ -61,7 +71,7 @@ export type OpinionType = "studentOpinionOfSupport" | "schoolOpinionOfSupport";
  * Part of JSON
  * Support actions that have been implemented
  */
-export interface SupportActionImplementation {
+export interface PedagogySupportActionImplemented {
   /**
    * Name of the user who created the mark
    */
@@ -116,7 +126,7 @@ export interface Opinion {
 }
 
 /**
- * FormData JSON object with type definitions
+ * FormData JSON object with type definitions (deprecated)
  */
 export interface FormData {
   /**
@@ -127,6 +137,114 @@ export interface FormData {
    * Other participants in the document
    */
   cooperativePartners?: string;
+  /**
+   * The description of the student's strengths
+   */
+  studentStrengths?: string;
+  /**
+   * The description of the student's challenges
+   */
+  needOfSupport?: string;
+  /**
+   * Actions to support the student
+   */
+  supportActions: SupportAction[];
+  /**
+   * Some other support actions. Works as Extra info
+   */
+  supportActionOther?: string;
+  /**
+   * Support actions that have been implemented
+   */
+  supportActionsImplemented: PedagogySupportActionImplemented[];
+  /**
+   * Support plan for the matriculation examination
+   */
+  matriculationExaminationSupport: SupportActionMatriculationExamination[];
+  /**
+   * Some other support plan for the matriculation examination. Works as Extra info
+   */
+  matriculationExaminationSupportOther?: string;
+  /**
+   * The student's opinion of the support
+   */
+  studentOpinionOfSupport?: Opinion[];
+  /**
+   * School's opinion of the support
+   */
+  schoolOpinionOfSupport?: Opinion[];
+}
+
+/**
+ * CompulsoryFormData JSON object with type definitions
+ */
+export interface CompulsoryFormData {
+  /**
+   * Form type
+   */
+  formType: PedagogyFormType;
+  /**
+   * Teacher or teachers responsible for the document
+   */
+  documentParticipants?: string;
+  /**
+   * Other participants in the document
+   */
+  cooperativePartners?: string;
+  /**
+   * The description of the student's strengths
+   */
+  studentStrengths?: string;
+  /**
+   * The description of the student's challenges
+   */
+  needOfSupport?: string;
+  /**
+   * Actions to support the student
+   */
+  supportActions: SupportAction[];
+  /**
+   * Some other support actions. Works as Extra info
+   */
+  supportActionOther?: string;
+  /**
+   * The student's opinion of the support
+   */
+  studentOpinionOfSupport?: Opinion[];
+  /**
+   * School's opinion of the support
+   */
+  schoolOpinionOfSupport?: Opinion[];
+}
+
+/**
+ * UpperSecondaryFormData JSON object with type definitions
+ */
+export interface UpperSecondaryFormData {
+  /**
+   * Form type
+   */
+  formType: PedagogyFormType;
+  /**
+   * Teacher or teachers responsible for the document
+   */
+  documentParticipants?: string;
+  /**
+   * Other participants in the document
+   */
+  cooperativePartners?: string;
+  /**
+   * Decision to support the student
+   */
+  decisionToSpecialEducation: boolean;
+  /**
+   * The maker of the decision to support the student
+   */
+  decisionToSpecialEducationMaker?: string;
+  /**
+   * Date of the decision to support the student
+   */
+  decisionToSpecialEducationDate?: Date;
   /**
    * The description of the student's strengths
    */
@@ -152,10 +270,6 @@ export interface FormData {
    */
   matriculationExaminationSupportOther?: string;
   /**
-   * Support actions that have been implemented
-   */
-  supportActionsImplemented: SupportActionImplementation[];
-  /**
    * The student's opinion of the support
    */
   studentOpinionOfSupport?: Opinion[];
@@ -164,3 +278,26 @@ export interface FormData {
    */
   schoolOpinionOfSupport?: Opinion[];
 }
+
+/**
+ * Union type for all form data
+ */
+export type PedagogyFormData = UpperSecondaryFormData | CompulsoryFormData;
+
+/**
+ * Checks if the form is a CompulsoryFormData
+ * @param form PedagogyFormData
+ * @returns boolean
+ */
+export const isCompulsoryForm = (
+  form: PedagogyFormData
+): form is CompulsoryFormData => form.formType === "compulsory";
+
+/**
+ * Checks if the form is a UpperSecondaryFormData
+ * @param form PedagogyFormData
+ * @returns boolean
+ */
+export const isUpperSecondaryForm = (
+  form: PedagogyFormData
+): form is UpperSecondaryFormData => form.formType === "upperSecondary";

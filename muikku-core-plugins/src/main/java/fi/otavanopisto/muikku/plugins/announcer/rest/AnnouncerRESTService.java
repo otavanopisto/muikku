@@ -107,7 +107,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @POST
   @Path("/announcements")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createAnnouncement(AnnouncementRESTModel restModel) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
@@ -179,7 +179,7 @@ public class AnnouncerRESTService extends PluginRESTService {
 
   @PUT
   @Path("/announcements/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateAnnouncement(@PathParam("ID") Long announcementId, AnnouncementRESTModel restModel) {
     if (announcementId == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -347,7 +347,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @GET
   @Path("/announcements/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response findAnnouncementById(@PathParam("ID") Long announcementId) {
     
     Announcement announcement = announcementController.findById(announcementId);
@@ -377,6 +377,11 @@ public class AnnouncerRESTService extends PluginRESTService {
      * - Is the user member of a workspace the announcement is for
      * - Is the announcement public
      */
+    
+    // hasOrganizationAccess returns false anyways if the user doesn't exist, so just shortcut it here too
+    if (userIdentifier == null) {
+      return false;
+    }
 
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(userIdentifier);
     if (!hasOrganizationAccess(announcement, userSchoolDataIdentifier)) {
@@ -387,7 +392,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     Set<Long> userGroupIds = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
     
     List<AnnouncementUserGroup> announcementGroups = announcementController.listAnnouncementUserGroups(announcement);
-    Set<Long> announcementGroupIds = announcementGroups.stream().map(announcementGroup -> announcementGroup.getId()).collect(Collectors.toSet());
+    Set<Long> announcementGroupIds = announcementGroups.stream().map(announcementGroup -> announcementGroup.getUserGroupEntityId()).collect(Collectors.toSet());
 
     if (CollectionUtils.containsAny(announcementGroupIds, userGroupIds)) {
       return true;
@@ -420,6 +425,10 @@ public class AnnouncerRESTService extends PluginRESTService {
   }
 
   private boolean hasOrganizationAccess(Announcement announcement, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    if (announcement == null || userSchoolDataIdentifier == null) {
+      return false;
+    }
+    
     Long announcementOrganizationId = announcement.getOrganizationEntityId();
     Long userOrganizationId = userSchoolDataIdentifier.getOrganization() != null ? userSchoolDataIdentifier.getOrganization().getId() : null;
 
@@ -518,7 +527,7 @@ public class AnnouncerRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/announcements/{ID}")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteAnnouncement(@PathParam("ID") Long announcementId) {
     Announcement announcement = announcementController.findById(announcementId);
     if (announcement == null) {
