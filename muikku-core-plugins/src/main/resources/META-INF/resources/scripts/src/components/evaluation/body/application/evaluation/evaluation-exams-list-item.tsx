@@ -20,8 +20,6 @@ import ExamAssignmentEditor from "./editors/exam-assignment-editor";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
 import { createAssignmentInfoArray } from "~/components/general/evaluation-assessment-details/helper";
 import { updateOpenedAssignmentOrExamId } from "~/actions/main-function/evaluation/evaluationActions";
-// eslint-disable-next-line camelcase
-import { unstable_batchedUpdates } from "react-dom";
 
 /**
  * EvaluationExamsListItemProps
