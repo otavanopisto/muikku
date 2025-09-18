@@ -367,11 +367,15 @@
   border: 1px solid $color-panel-border-color;
   border-radius: 2px;
   margin: 10px 0 0;
-  padding: 0 10px 10px;
+  padding: 0 10px;
+
+  .material-page__assignment-assessment {
+    margin: 10px 0;
+  }
 }
 
 .evaluation-modal__content-sub-item {
-  margin: 0 0 0 10px;
+  margin: 0 0 0 15px;
 }
 
 .evaluation-modal__item-header {
@@ -414,6 +418,10 @@
   font-size: 1.125rem;
   font-weight: 400;
   padding: 5px 10px;
+}
+
+.evaluation-modal__item-header-title--exam {
+  border-left-color: $color-default-contrast;
 }
 
 .evaluation-modal__item-header-title--journal {

@@ -366,13 +366,6 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
           return i === 0 ? (
             <>
               <div
-                key={`exam-assessment-${exam.folderId}`}
-                className="evaluation-modal__content-sub-item"
-              >
-                {renderAssessmentContent()}
-              </div>
-
-              <div
                 key={cNode.id}
                 className="evaluation-modal__content-sub-item"
               >
@@ -386,13 +379,15 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
               </div>
             </>
           ) : (
-            <AssignmentItem
-              exam={exam}
-              contentNode={cNode}
-              studentUserEntityId={studentUserEntityId}
-              workspace={workspace}
-              compositeReply={compositeReply}
-            />
+            <div key={cNode.id} className="evaluation-modal__content-sub-item">
+              <AssignmentItem
+                exam={exam}
+                contentNode={cNode}
+                studentUserEntityId={studentUserEntityId}
+                workspace={workspace}
+                compositeReply={compositeReply}
+              />
+            </div>
           );
         })
       ) : (
@@ -419,7 +414,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
           ref={myRef}
           className={`evaluation-modal__item-header ${assigmentGradeClass(exam)}`}
         >
-          <div className="evaluation-modal__item-header-title">
+          <div className="evaluation-modal__item-header-title evaluation-modal__item-header-title--exam">
             {props.exam.name}
             {renderExamMeta()}
           </div>
@@ -434,6 +429,9 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
             </div>
           )}
         </div>
+        <AnimateHeight duration={400} height={showExamContent ? "auto" : 0}>
+          {renderAssessmentContent()}
+        </AnimateHeight>
       </div>
 
       <SlideDrawer
