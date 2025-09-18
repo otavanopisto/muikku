@@ -13,12 +13,15 @@ import { convertTimeRangeToMinutes } from "~/helper-functions/time-helpers";
 import SlideDrawer from "./slide-drawer";
 import { useExamAssessment } from "~/components/evaluation/hooks/exam-assessment";
 import { ButtonPill } from "~/components/general/button";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import ExamAssessmentEditor from "./editors/exam-assessment-editor";
 import ExamAssignmentEditor from "./editors/exam-assignment-editor";
 import RecordingsList from "~/components/general/voice-recorder/recordings-list";
 import { createAssignmentInfoArray } from "~/components/general/evaluation-assessment-details/helper";
+import { updateOpenedAssignmentOrExamId } from "~/actions/main-function/evaluation/evaluationActions";
+// eslint-disable-next-line camelcase
+import { unstable_batchedUpdates } from "react-dom";
 
 /**
  * EvaluationExamsListItemProps
@@ -42,8 +45,13 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
 
   const evaluations = useSelector((state: StateType) => state.evaluations);
 
-  const { evaluationSelectedAssessmentId, evaluationCurrentStudentAssigments } =
-    evaluations;
+  const dispatch = useDispatch();
+
+  const {
+    evaluationSelectedAssessmentId,
+    evaluationCurrentStudentAssigments,
+    openedAssigmentOrExamId,
+  } = evaluations;
 
   const { t } = useTranslation(["evaluation", "common"]);
 
@@ -119,6 +127,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
    */
   const handleCloseAssessmentEditor = () => {
     closeAssessmentEditor(false);
+    dispatch(updateOpenedAssignmentOrExamId({ assignmentOrExamId: undefined }));
   };
 
   /**
@@ -143,11 +152,14 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
    * Handles opening editor
    * @param e - event
    */
-  const handleOpenEditor = (
+  const handleOpenAssessmentEditor = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     e.stopPropagation();
     openAssessmentEditor();
+    dispatch(
+      updateOpenedAssignmentOrExamId({ assignmentOrExamId: exam.folderId })
+    );
     handleExecuteScrollToElement();
   };
 
@@ -412,6 +424,13 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
     currentExamAssigments
   );
 
+  // Check if assessment editor is open
+  const isAssessmentEditorOpen =
+    assessmentEditorOpen && openedAssigmentOrExamId === exam.folderId;
+
+  // Check if content is open
+  const showContent = showExamContent || isAssessmentEditorOpen;
+
   return (
     <>
       <div className="evaluation-modal__item" onClick={handleShowExamContent}>
@@ -427,7 +446,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
           {!!exam?.ended && (
             <div className="evaluation-modal__item-functions">
               <ButtonPill
-                onClick={handleOpenEditor}
+                onClick={handleOpenAssessmentEditor}
                 buttonModifiers={["evaluate"]}
                 icon="evaluate"
               />
@@ -438,7 +457,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
 
       <SlideDrawer
         title={props.exam.name}
-        show={assessmentEditorOpen}
+        show={isAssessmentEditorOpen}
         onClose={handleCloseAssessmentEditor}
       >
         {isLoading ? (
@@ -461,7 +480,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
         )}
       </SlideDrawer>
 
-      <AnimateHeight duration={400} height={showExamContent ? "auto" : 0}>
+      <AnimateHeight duration={400} height={showContent ? "auto" : 0}>
         {renderContent()}
       </AnimateHeight>
     </>
@@ -487,34 +506,43 @@ const AssignmentItem = (props: AssignmentItemProps) => {
   const { compositeReply, studentUserEntityId, workspace, exam, contentNode } =
     props;
 
-  const [contentOpen, setContentOpen] = React.useState(false);
+  const [showExamAssignmentContent, setShowExamAssignmentContent] =
+    React.useState(false);
   const [assignmentEditorOpen, setAssignmentEditorOpen] = React.useState(false);
 
   const myRef = React.useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation(["evaluation", "common"]);
 
+  const dispatch = useDispatch();
+
   const evaluations = useSelector((state: StateType) => state.evaluations);
 
-  const { evaluationSelectedAssessmentId } = evaluations;
+  const { evaluationSelectedAssessmentId, openedAssigmentOrExamId } =
+    evaluations;
 
   /**
    * Handle toggle content
    */
   const handleToggleContent = () => {
-    setContentOpen(!contentOpen);
+    setShowExamAssignmentContent((prev) => !prev);
   };
 
   /**
    * Handles opening editor
    * @param e - event
    */
-  const handleOpenEditor = (
+  const handleOpenAssignmentEditor = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     e.stopPropagation();
+
     setAssignmentEditorOpen(true);
-    setContentOpen(true);
+    dispatch(
+      updateOpenedAssignmentOrExamId({
+        assignmentOrExamId: contentNode.assignment.id,
+      })
+    );
     handleExecuteScrollToElement();
   };
 
@@ -523,6 +551,7 @@ const AssignmentItem = (props: AssignmentItemProps) => {
    */
   const handleCloseAssessmentEditor = () => {
     setAssignmentEditorOpen(false);
+    dispatch(updateOpenedAssignmentOrExamId({ assignmentOrExamId: undefined }));
   };
 
   /**
@@ -644,6 +673,14 @@ const AssignmentItem = (props: AssignmentItemProps) => {
 
   const titleModifiers = [materialTypeClass()];
 
+  // Check if assessment editor is open
+  const isAssessmentEditorOpen =
+    assignmentEditorOpen &&
+    openedAssigmentOrExamId === contentNode.assignment.id;
+
+  // Check if content is open
+  const showContent = showExamAssignmentContent || isAssessmentEditorOpen;
+
   return (
     <div className="evaluation-modal__item">
       <div
@@ -661,7 +698,7 @@ const AssignmentItem = (props: AssignmentItemProps) => {
         {!!exam?.ended && (
           <div className="evaluation-modal__item-functions">
             <ButtonPill
-              onClick={handleOpenEditor}
+              onClick={handleOpenAssignmentEditor}
               buttonModifiers={["evaluate"]}
               icon="evaluate"
             />
@@ -671,7 +708,7 @@ const AssignmentItem = (props: AssignmentItemProps) => {
 
       <SlideDrawer
         title={`${props.exam.name} - ${contentNode.assignment.title}`}
-        show={assignmentEditorOpen}
+        show={isAssessmentEditorOpen}
         onClose={handleCloseAssessmentEditor}
       >
         <ExamAssignmentEditor
@@ -686,7 +723,7 @@ const AssignmentItem = (props: AssignmentItemProps) => {
         />
       </SlideDrawer>
 
-      <AnimateHeight duration={400} height={contentOpen ? "auto" : 0}>
+      <AnimateHeight duration={400} height={showContent ? "auto" : 0}>
         {workspace && contentNode.assignment && (
           <EvaluationMaterial
             material={contentNode}

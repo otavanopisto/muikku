@@ -55,16 +55,12 @@ export const useExamAssessment = (props: UseExamAssessmentProps) => {
   const openAssessmentEditor = async () => {
     // If material evaluation data exist, just show content and editor straight away
     if (dataLoaded.current) {
-      unstable_batchedUpdates(() => {
-        setAssessmentEditorOpen(true);
-        setShowExamContent(true);
-      });
+      setAssessmentEditorOpen(true);
       return;
     }
 
     unstable_batchedUpdates(() => {
       setAssessmentEditorOpen(true);
-      setShowExamContent(true);
       setIsLoading(true);
     });
 

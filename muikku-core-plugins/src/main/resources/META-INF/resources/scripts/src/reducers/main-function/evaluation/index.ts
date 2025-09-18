@@ -53,7 +53,7 @@ export interface EvaluationState {
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;
   evaluationCompositeReplies?: EvaluationStateAndData<MaterialCompositeReply[]>;
   evaluationExams?: EvaluationStateAndData<ExamAttendance[]>;
-  openedAssignmentEvaluationId?: number;
+  openedAssigmentOrExamId?: number;
   evaluationBilledPrice?: number;
   needsReloadEvaluationRequests: boolean;
   basePrice: EvaluationStateAndData<EvaluationBasePriceById>;
@@ -89,7 +89,7 @@ export const initialState: EvaluationState = {
   },
   evaluationSelectedAssessmentId: undefined,
   evaluationCurrentStudentAssigments: { state: "LOADING", data: undefined },
-  openedAssignmentEvaluationId: undefined,
+  openedAssigmentOrExamId: undefined,
   evaluationBilledPrice: undefined,
   evaluationJournalComments: { comments: {}, commentsLoaded: [] },
   evaluationJournalFeedback: { state: "LOADING", data: undefined },
@@ -243,16 +243,16 @@ export const evaluations: Reducer<EvaluationState> = (
       };
     }
 
-    case "EVALUATION_OPENED_ASSIGNMENT_UPDATE":
+    case "EVALUATION_OPENED_ASSIGNMENT_OR_EXAM_ID_UPDATE":
       return {
         ...state,
-        openedAssignmentEvaluationId: action.payload,
+        openedAssigmentOrExamId: action.payload,
       };
 
     case "EVALUATION_BILLED_PRICE_LOAD":
       return {
         ...state,
-        openedAssignmentEvaluationId: action.payload,
+        openedAssigmentOrExamId: action.payload,
       };
 
     case "EVALUATION_COMPOSITE_REPLIES_LOAD":

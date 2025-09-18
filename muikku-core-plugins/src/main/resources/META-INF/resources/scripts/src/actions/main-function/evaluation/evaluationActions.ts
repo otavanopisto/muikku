@@ -167,8 +167,8 @@ export type EVALUATION_LOCKED_ASSIGNMENTS_UPDATE = SpecificActionType<
   number[]
 >;
 
-export type EVALUATION_OPENED_ASSIGNMENT_UPDATE = SpecificActionType<
-  "EVALUATION_OPENED_ASSIGNMENT_UPDATE",
+export type EVALUATION_OPENED_ASSIGNMENT_OR_EXAM_ID_UPDATE = SpecificActionType<
+  "EVALUATION_OPENED_ASSIGNMENT_OR_EXAM_ID_UPDATE",
   number
 >;
 
@@ -546,10 +546,10 @@ export interface UpdateImportance {
 }
 
 /**
- * UpdateOpenedAssignmentEvaluationId
+ * UpdateOpenedAssignmentOrExamId
  */
-export interface UpdateOpenedAssignmentEvaluationId {
-  (data: { assignmentId?: number }): AnyActionType;
+export interface UpdateOpenedAssignmentOrExamId {
+  (data: { assignmentOrExamId?: number }): AnyActionType;
 }
 
 /**
@@ -2320,17 +2320,17 @@ const updateImportance: UpdateImportance = function updateImportance(data) {
 };
 
 /**
- * updateOpenedAssignmentEvaluation
+ * updateOpenedAssignmentOrExamId
  * @param data data
  */
-const updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId =
-  function updateOpenedAssignmentEvaluation(data) {
+const updateOpenedAssignmentOrExamId: UpdateOpenedAssignmentOrExamId =
+  function updateOpenedAssignmentOrExamId(data) {
     return async (
       dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>
     ) => {
       dispatch({
-        type: "EVALUATION_OPENED_ASSIGNMENT_UPDATE",
-        payload: data.assignmentId,
+        type: "EVALUATION_OPENED_ASSIGNMENT_OR_EXAM_ID_UPDATE",
+        payload: data.assignmentOrExamId,
       });
     };
   };
@@ -3020,7 +3020,7 @@ export {
   updateImportance,
   setSelectedAssessmentAndLoadEvents,
   updateCurrentStudentCompositeRepliesData,
-  updateOpenedAssignmentEvaluation,
+  updateOpenedAssignmentOrExamId,
   loadEvaluationAssessmentEventsFromServer,
   loadEvaluationSelectedAssessmentJournalEventsFromServer,
   loadBasePriceFromServer,
