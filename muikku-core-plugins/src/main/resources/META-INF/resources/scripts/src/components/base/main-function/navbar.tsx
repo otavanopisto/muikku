@@ -126,7 +126,9 @@ class MainFunctionNavbar extends React.Component<
         href: "/language-profile",
         icon: "language",
         to: true,
-        condition: this.props.status.permissions.LANGUAGE_PROFILE_VIEW,
+        condition:
+          this.props.status.profile.studyLevel === "lukio" &&
+          this.props.status.permissions.LANGUAGE_PROFILE_VIEW,
       },
       {
         modifier: "hops",
