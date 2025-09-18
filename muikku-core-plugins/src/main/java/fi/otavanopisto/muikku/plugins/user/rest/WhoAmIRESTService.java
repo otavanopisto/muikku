@@ -220,6 +220,7 @@ public class WhoAmIRESTService extends AbstractRESTService {
         user == null ? null : user.getNickName(),
         user == null ? null : user.getStudyProgrammeName(),
         user == null || user.getStudyProgrammeIdentifier() == null ? null : user.getStudyProgrammeIdentifier().toId(),
+        user == null ? null : user.getStudyProgrammeEducationType(),
         hasImage,
         user == null ? false : user.getHasEvaluationFees(),
         user == null || user.getCurriculumIdentifier() == null ? null : user.getCurriculumIdentifier().toId(),
