@@ -6,8 +6,6 @@ import { filterMatch } from "~/util/modifiers";
 import { LanguageData } from "~/@types/shared";
 import { useTranslation } from "react-i18next";
 
-// import { useDispatch, useSelector } from "react-redux";
-
 /**
  * AddItemProps
  */
