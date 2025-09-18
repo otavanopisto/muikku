@@ -2441,12 +2441,20 @@
     }
   },
   "exams": {
-    "actions": {},
+    "actions": {
+      "closeExam": "Sulje koeikkuna",
+      "continueExam": "Jatka koetta",
+      "endExam": "Lopeta koe",
+      "openExam": "Avaa koe",
+      "startExam": "Aloita koe"
+    },
     "content": {},
     "labels": {
+      "examAllowRestart": "Kokeen voi suorittaa uudestaan",
       "examDuration": "Kesto",
+      "examTimeLimit": "Aikaraja",
       "examEnded": "Koe päättynyt",
-      "examNotStarted": "Koe ei ole aloitettu",
+      "examNotStarted": "Koetta ei ole aloitettu",
       "examStarted": "Koe aloitettu",
       "exams": "Kokeet"
     },

@@ -194,21 +194,30 @@ const ExamsListItem = (props: ExamsListItemProps) => {
         <span>{exam.name}</span>
         <div className="exam__labels">
           {restartAllowed && (
-            <span className="exam__label">Kokeen voi suorittaa uudestaan</span>
+            <span className="exam__label">
+              {t("labels.examAllowRestart", { ns: "exams" })}
+            </span>
           )}
           {isEnded && hasTimeLimit ? (
-            <span className="exam__label">
-              Suoritusaika:{" "}
-              <span className="exam__label-accent">
-                {`${convertTimeRangeToMinutes(exam.started, exam.ended)} (${exam.minutes}) minuuttia`}
+            <>
+              <span className="exam__label">
+                {t("labels.examDuration", { ns: "exams" })}:{" "}
+                <span className="exam__label-accent">
+                  {convertTimeRangeToMinutes(exam.started, exam.ended)} min
+                </span>
               </span>
-            </span>
+
+              <span className="exam__label">
+                {t("labels.examTimeLimit", { ns: "exams" })}:{" "}
+                <span className="exam__label-accent">
+                  <span className="exam__label-accent">{exam.minutes} min</span>
+                </span>
+              </span>
+            </>
           ) : !isEnded && hasTimeLimit ? (
             <span className="exam__label">
-              Suoritusaika:{" "}
-              <span className="exam__label-accent">
-                {exam.minutes} minuuttia
-              </span>
+              {t("labels.examTimeLimit", { ns: "exams" })}:{" "}
+              <span className="exam__label-accent">{exam.minutes} min</span>
             </span>
           ) : null}
         </div>
@@ -222,14 +231,18 @@ const ExamsListItem = (props: ExamsListItemProps) => {
         <div className="exam__meta">
           {isEnded ? (
             <span className="exam__status exam__status--ended">
-              Koe suoritettu {localize.date(exam.ended, "l, LT")}
+              {t("labels.examEnded", { ns: "exams" })}{" "}
+              {localize.date(exam.ended, "l, LT")}
             </span>
           ) : onGoing ? (
             <span className="exam__status exam__status--ongoing">
-              Koe aloitettu {localize.date(exam.started, "l, LT")}
+              {t("labels.examStarted", { ns: "exams" })}{" "}
+              {localize.date(exam.started, "l, LT")}
             </span>
           ) : (
-            <span className="exam__status">Koetta ei ole aloitettu</span>
+            <span className="exam__status">
+              {t("labels.examNotStarted", { ns: "exams" })}
+            </span>
           )}
         </div>
       </div>
@@ -241,7 +254,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
               className={`exam__actions-button ${onGoing ? "exam__actions-button--ongoing" : ""}`}
               to={`/workspace/${workspaceUrl}/exams/${exam.folderId}`}
             >
-              Avaa koe
+              {t("actions.openExam", { ns: "exams" })}
             </Link>
 
             {hasTimeLimit && isStarted && !isEnded && <ExamTimer exam={exam} />}

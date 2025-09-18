@@ -2438,10 +2438,18 @@
     }
   },
   "exams": {
-    "actions": {},
+    "actions": {
+      "closeExam": "Close exam",
+      "continueExam": "Continue exam",
+      "endExam": "End exam",
+      "openExam": "Open exam",
+      "startExam": "Start exam"
+    },
     "content": {},
     "labels": {
+      "examAllowRestart": "Restart allowed",
       "examDuration": "Duration",
+      "examTimeLimit": "Timelimit",
       "examEnded": "Exam ended",
       "examNotStarted": "Exam not started",
       "examStarted": "Exam started",

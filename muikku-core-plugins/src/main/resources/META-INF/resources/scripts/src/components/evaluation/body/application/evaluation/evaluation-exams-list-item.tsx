@@ -218,6 +218,15 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
           <>
             <div className="evaluation-modal__item-meta-item">
               <span className="evaluation-modal__item-meta-item-label">
+                {t("labels.examStarted", { ns: "exams" })}:
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {`${localize.date(exam.started)} - ${localize.date(exam.started, "LT")}`}
+              </span>
+            </div>
+
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
                 {t("labels.examEnded", { ns: "exams" })}:
               </span>
               <span className="evaluation-modal__item-meta-item-data">
@@ -230,7 +239,16 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
                 {t("labels.examDuration", { ns: "exams" })}:
               </span>
               <span className="evaluation-modal__item-meta-item-data">
-                {`${convertTimeRangeToMinutes(exam.started, exam.ended)} (${exam.minutes}) minuuttia`}
+                {convertTimeRangeToMinutes(exam.started, exam.ended)} min
+              </span>
+            </div>
+
+            <div className="evaluation-modal__item-meta-item">
+              <span className="evaluation-modal__item-meta-item-label">
+                {t("labels.examTimeLimit", { ns: "exams" })}:
+              </span>
+              <span className="evaluation-modal__item-meta-item-data">
+                {exam.minutes} min
               </span>
             </div>
 
@@ -292,7 +310,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
               {t("labels.examDuration", { ns: "exams" })}:
             </span>
             <span className="evaluation-modal__item-meta-item-data">
-              {exam.minutes} minuuttia
+              {exam.minutes} min
             </span>
           </div>
         )}
