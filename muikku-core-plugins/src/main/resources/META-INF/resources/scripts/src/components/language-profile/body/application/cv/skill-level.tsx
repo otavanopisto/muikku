@@ -2,11 +2,9 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
+/* eslint-disable camelcase */
 import { unstable_batchedUpdates } from "react-dom";
-import {
-  LanguageProfileLanguage,
-  CVLanguage,
-} from "~/reducers/main-function/language-profile";
+import { LanguageProfileLanguage } from "~/reducers/main-function/language-profile";
 import { languageLevelOptions } from "~/mock/mock-data";
 import { ActionType } from "~/actions";
 import Button from "~/components/general/button";
