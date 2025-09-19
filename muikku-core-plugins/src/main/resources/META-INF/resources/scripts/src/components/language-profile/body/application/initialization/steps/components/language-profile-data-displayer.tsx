@@ -10,7 +10,6 @@ import {
 } from "~/components/general/table";
 import { useTranslation } from "react-i18next";
 import "~/sass/elements/table.scss";
-import { m } from "framer-motion";
 
 /**
  * DisplayLanguagesProps
