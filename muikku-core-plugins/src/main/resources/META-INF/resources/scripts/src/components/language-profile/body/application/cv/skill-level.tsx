@@ -27,27 +27,17 @@ interface SkillLevelProps {
  */
 const SkillLevel = (props: SkillLevelProps) => {
   const { language } = props;
-
-  const initialLanguageSkillLevels: CVLanguage = {
-    code: language.code,
-    description: "",
-    interaction: "0",
-    vocal: "0",
-    writing: "0",
-    reading: "0",
-    listening: "0",
-    general: "A11",
-    samples: [],
-  };
-
   const { t } = useTranslation(["languageProfile", "profile"]);
   const dispatch = useDispatch();
   const { cv } = useSelector((state: StateType) => state.languageProfile.data);
-  const [languageSkillLevels, setlanguageSkillLevels] =
-    React.useState<CVLanguage>(initialLanguageSkillLevels);
   const [sampleUrl, setSampleUrl] = React.useState<string>("");
   const [sampleName, setSampleName] = React.useState<string>("");
   const [isValidUrl, setIsValidUrl] = React.useState<boolean>(true);
+
+  const languageSkillLevels = React.useMemo(
+    () => cv.languages.find((l) => l.code === language.code),
+    [cv, language]
+  );
 
   /**
    * clearFields Clears the sample fields.
@@ -159,11 +149,7 @@ const SkillLevel = (props: SkillLevelProps) => {
    * @param e event
    */
   const handleUrlFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (validateURL(e.target.value)) {
-      setIsValidUrl(true);
-    } else {
-      setIsValidUrl(false);
-    }
+    setIsValidUrl(validateURL(e.target.value));
     setSampleUrl(e.target.value);
   };
 
@@ -201,17 +187,6 @@ const SkillLevel = (props: SkillLevelProps) => {
       payload: updatedLanguageSkillLevels,
     } as ActionType);
   };
-
-  React.useEffect(() => {
-    if (cv) {
-      const currentLanguageSkillLevel = cv.languages.find(
-        (l) => l.code === language.code
-      );
-      if (currentLanguageSkillLevel) {
-        setlanguageSkillLevels(currentLanguageSkillLevel);
-      }
-    }
-  }, [cv, language]);
 
   return (
     <fieldset className="language-profile-container__fieldset">
@@ -283,7 +258,7 @@ const SkillLevel = (props: SkillLevelProps) => {
             id="estimateOfSkillLevel"
             name="general"
             className="language-profile__select"
-            onChange={(e) => handleSelectChange(e)}
+            onChange={handleSelectChange}
           >
             {languageLevelOptions.map((option) => (
               <option
@@ -317,7 +292,7 @@ const SkillLevel = (props: SkillLevelProps) => {
             defaultValue={languageSkillLevels.description || ""}
             className="language-profile__textarea"
             name="description"
-            onChange={(e) => handleTextAreaChange(e)}
+            onChange={handleTextAreaChange}
           />
         </div>
       </div>
