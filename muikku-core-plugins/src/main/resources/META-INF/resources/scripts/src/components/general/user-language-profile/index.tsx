@@ -237,7 +237,7 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
             >
               {lang.levels ? (
                 lang.levels.map((level, idx) => (
-                  <div key={idx}>
+                  <div key={`level-${idx}`}>
                     {Object.entries(level).map(([level, value]) => {
                       // Extracting the context index from the skill string
                       // the skill keys are in the format "fi-0", "fi-1", etc.
@@ -294,7 +294,7 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
                   {lang.skills?.map((skill, idx) => (
                     <div
                       className="user-language-profile__drawer-skill"
-                      key={idx}
+                      key={`skill-${idx}`}
                     >
                       {Object.entries(skill).map(([label, value]) => {
                         // Extracting the context index from the label string
@@ -346,7 +346,7 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
                   {lang.workspaces?.map((workspace, idx) => (
                     <div
                       className="user-language-profile__drawer-skill"
-                      key={idx}
+                      key={`workspace-${idx}`}
                     >
                       <span>{workspace.name}:</span>
                       <StarDisplayer value={Number(workspace.value)} />
