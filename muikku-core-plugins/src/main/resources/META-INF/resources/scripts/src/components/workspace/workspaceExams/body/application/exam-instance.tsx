@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
 import {
   useTranslation,
@@ -28,6 +26,7 @@ import ExamTimer from "./exam-timer";
 import { displayNotification } from "~/actions/base/notifications";
 import { ExamTimerRegistry } from "~/util/exam-timer";
 import { AnimatePresence, motion, Transition, Variants } from "framer-motion";
+import EndExamWarning from "../../dialogs/end-exam-warning";
 
 const variants: Variants = {
   entering: {
@@ -444,7 +443,9 @@ PreExamInfo.displayName = "PreExamInfo";
 interface ExamInstanceContentProps extends WithTranslation {
   examId: number;
   navigation: React.ReactElement<
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     string | React.JSXElementConstructor<any>
   >;
 }
@@ -461,8 +462,6 @@ const ExamInstanceContent = withTranslation("workspace")((
 
   const contentPanelRef = React.useRef<ContentPanel>(null);
 
-  const dispatch = useDispatch();
-
   const status = useSelector((state: StateType) => state.status);
 
   const currentExam = useSelector(
@@ -476,13 +475,6 @@ const ExamInstanceContent = withTranslation("workspace")((
   const workspace = useSelector(
     (state: StateType) => state.workspaces.currentWorkspace
   );
-
-  /**
-   * Handles end exam
-   */
-  const handleEndExam = () => {
-    dispatch(endExam({}));
-  };
 
   if (!currentExam || !workspace) {
     return null;
@@ -551,12 +543,11 @@ const ExamInstanceContent = withTranslation("workspace")((
   const footerActions = (
     <div className="exam__footer">
       <div className="exam__actions exam__actions--centered">
-        <Button
-          buttonModifiers={["standard-ok", "execute"]}
-          onClick={handleEndExam}
-        >
-          Lopeta koe
-        </Button>
+        <EndExamWarning>
+          <Button buttonModifiers={["standard-ok", "execute"]}>
+            Lopeta koe
+          </Button>
+        </EndExamWarning>
       </div>
     </div>
   );
@@ -594,8 +585,6 @@ interface ExamInstanceTableOfContentsProps {
 const ExamInstanceTableOfContents = (
   props: ExamInstanceTableOfContentsProps
 ) => {
-  const { examId } = props;
-
   const topicRef = React.useRef<TocTopicRef>(null);
   const elementRefs = React.useRef<{ [key: string]: HTMLAnchorElement[] }>({});
   const tocElementFocusIndexRef = React.useRef(0);
