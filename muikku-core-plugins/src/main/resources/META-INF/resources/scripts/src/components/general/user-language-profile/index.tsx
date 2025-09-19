@@ -238,35 +238,40 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
               {lang.levels ? (
                 lang.levels.map((level, idx) => (
                   <div key={idx}>
-                    <h4>
-                      {t("labels.languageSkillLevel", {
-                        ns: "languageProfile",
-                        context: levelMap[idx],
-                      })}
-                    </h4>
-                    {Object.entries(level).map(([skill, value]) => {
+                    {Object.entries(level).map(([level, value]) => {
                       // Extracting the context index from the skill string
                       // the skill keys are in the format "fi-0", "fi-1", etc.
-                      const contextIndex = Number(skill.split("-")[1]);
+                      // This is because how the data handling component works
+
+                      const contextIndex = Number(level.split("-")[1]);
                       return (
-                        <div
-                          className="user-language-profile__drawer-skill"
-                          key={skill}
-                        >
-                          <h5>
-                            {t([`levels.${value}`, "levels.unknown"], {
-                              ns: "languageProfile",
-                              defaultValue: "Unknown",
-                            })}
-                          </h5>
-                          <p>
-                            {t([`levels.${value}`, "levels.unknown"], {
+                        <>
+                          <h4>
+                            {t("labels.languageSkillLevel", {
                               ns: "languageProfile",
                               context: levelMap[contextIndex],
-                              defaultValue: "Unknown",
                             })}
-                          </p>
-                        </div>
+                          </h4>
+
+                          <div
+                            className="user-language-profile__drawer-skill"
+                            key={level}
+                          >
+                            <h5>
+                              {t([`levels.${value}`, "levels.unknown"], {
+                                ns: "languageProfile",
+                                defaultValue: "Unknown",
+                              })}
+                            </h5>
+                            <p>
+                              {t([`levels.${value}`, "levels.unknown"], {
+                                ns: "languageProfile",
+                                context: levelMap[contextIndex],
+                                defaultValue: "Unknown",
+                              })}
+                            </p>
+                          </div>
+                        </>
                       );
                     })}
                   </div>
@@ -292,8 +297,10 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
                       key={idx}
                     >
                       {Object.entries(skill).map(([label, value]) => {
-                        // Extracting the context index from the skill string
+                        // Extracting the context index from the label string
                         // the skill keys are in the format "fi-0", "fi-1", etc.
+                        // This is because how the data handling component works
+
                         const contextIndex = Number(label.split("-")[1]);
                         return (
                           <>
