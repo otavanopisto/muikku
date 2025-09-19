@@ -245,7 +245,7 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
 
                       const contextIndex = Number(level.split("-")[1]);
                       return (
-                        <>
+                        <React.Fragment key={level}>
                           <h4>
                             {t("labels.languageSkillLevel", {
                               ns: "languageProfile",
@@ -271,7 +271,7 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
                               })}
                             </p>
                           </div>
-                        </>
+                        </React.Fragment>
                       );
                     })}
                   </div>
@@ -303,7 +303,7 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
 
                         const contextIndex = Number(label.split("-")[1]);
                         return (
-                          <>
+                          <React.Fragment key={`skill-${idx}`}>
                             <h5>
                               {t("labels.skill", {
                                 ns: "languageProfile",
@@ -322,7 +322,7 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
                                 }
                               )}
                             </p>
-                          </>
+                          </React.Fragment>
                         );
                       })}
                     </div>
