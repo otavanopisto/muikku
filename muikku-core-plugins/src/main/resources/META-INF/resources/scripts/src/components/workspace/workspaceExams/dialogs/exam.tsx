@@ -1,6 +1,8 @@
 import * as React from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import Dialog from "~/components/general/dialog";
+import { StateType } from "~/reducers";
 import ExamInstance from "../body/application/exam-instance";
 import { ScrollContextProvider } from "../context/scroll-context";
 
@@ -20,6 +22,14 @@ interface ExamDialogProps {
 const ExamDialog = (props: ExamDialogProps) => {
   const { examId, workspaceUrl } = props;
   const [isOpen, setIsOpen] = React.useState(true);
+
+  const { exams, currentExam } = useSelector((state: StateType) => state.exams);
+
+  // Get current exam or find it from exams list by examId if current exam is not set yet
+  const selectedExam = React.useMemo(
+    () => currentExam || exams.find((exam) => exam.folderId === examId),
+    [currentExam, exams, examId]
+  );
 
   const history = useHistory();
 
@@ -60,7 +70,7 @@ const ExamDialog = (props: ExamDialogProps) => {
       isOpen={isOpen}
       closeOnOverlayClick={false}
       modifier="exam"
-      title="Kokeen tiedot"
+      title={selectedExam?.name || "-"}
       content={content}
       onClose={handleClose}
     />
