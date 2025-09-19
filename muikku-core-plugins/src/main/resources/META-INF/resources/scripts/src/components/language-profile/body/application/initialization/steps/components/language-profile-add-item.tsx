@@ -1,4 +1,5 @@
 import * as React from "react";
+/* eslint-disable camelcase */
 import { unstable_batchedUpdates } from "react-dom";
 import "~/sass/elements/form.scss";
 import "~/sass/elements/language-profile.scss";

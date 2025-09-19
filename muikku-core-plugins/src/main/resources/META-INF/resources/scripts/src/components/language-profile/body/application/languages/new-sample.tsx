@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
+/* eslint-disable camelcase */
 import { unstable_batchedUpdates } from "react-dom";
 import { StateType } from "~/reducers";
 import {
