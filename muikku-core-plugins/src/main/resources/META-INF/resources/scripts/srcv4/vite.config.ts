@@ -2,6 +2,9 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
+
+// Configuration for Vite.
+// Includes build configuration and dev server configuration.
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
@@ -11,9 +14,10 @@ export default defineConfig(({ mode }) => {
       "process.env.NODE_ENV": JSON.stringify(env.NODE_ENV || "development"),
     },
 
+    // Add base path configuration based on the mode
     base: mode === "production" ? "/scripts/dist" : "/",
 
-    // Add base path configuration
+    // Add build configuration
     build: {
       // Match your esbuild output structure
       outDir: "../dist",
@@ -22,9 +26,6 @@ export default defineConfig(({ mode }) => {
       sourcemap: env.NODE_ENV !== "production",
 
       assetsDir: "",
-
-      // Inline small assets like your esbuild
-      assetsInlineLimit: 4096, // 4kb limit for inlining
 
       // Create multiple entry points like your esbuild
       rollupOptions: {
@@ -59,13 +60,14 @@ export default defineConfig(({ mode }) => {
       },
     },
 
+    // Dev server configuration, with proxys
     server: {
       watch: {
         usePolling: true,
       },
-      host: "dev.muikkuverkko.fi", // needed for the Docker Container port mapping to work
+      host: "dev.muikkuverkko.fi",
       strictPort: true,
-      port: 8000, // you can replace this port with any port,
+      port: 8000,
       proxy: {
         "/gfx": {
           target: "https://dev.muikkuverkko.fi:8443/gfx",
