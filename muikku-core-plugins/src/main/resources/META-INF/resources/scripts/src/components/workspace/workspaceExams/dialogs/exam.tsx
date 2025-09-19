@@ -1,10 +1,12 @@
 import * as React from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
+import Button from "~/components/general/button";
 import Dialog from "~/components/general/dialog";
 import { StateType } from "~/reducers";
 import ExamInstance from "../body/application/exam-instance";
 import { ScrollContextProvider } from "../context/scroll-context";
+import EndExamWarning from "./end-exam-warning";
 
 /**
  * ExamDialogProps
@@ -65,6 +67,27 @@ const ExamDialog = (props: ExamDialogProps) => {
     </ScrollContextProvider>
   );
 
+  /**
+   * Footer of the dialog
+   * @param closeDialog - closeDialog
+   */
+  const footer = (closeDialog: () => void) => {
+    // Don't show footer if current exam (exam instance started)
+    if (!currentExam || !currentExam.started || currentExam?.ended) {
+      return null;
+    }
+
+    return (
+      <div className="dialog__button-set">
+        <EndExamWarning>
+          <Button buttonModifiers={["standard-ok", "execute"]}>
+            Lopeta koe
+          </Button>
+        </EndExamWarning>
+      </div>
+    );
+  };
+
   return (
     <Dialog
       isOpen={isOpen}
@@ -73,6 +96,7 @@ const ExamDialog = (props: ExamDialogProps) => {
       title={selectedExam?.name || "-"}
       content={content}
       onClose={handleClose}
+      footer={footer}
     />
   );
 };

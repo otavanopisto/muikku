@@ -26,7 +26,6 @@ import ExamTimer from "./exam-timer";
 import { displayNotification } from "~/actions/base/notifications";
 import { ExamTimerRegistry } from "~/util/exam-timer";
 import { AnimatePresence, motion, Transition, Variants } from "framer-motion";
-import EndExamWarning from "../../dialogs/end-exam-warning";
 
 const variants: Variants = {
   entering: {
@@ -540,18 +539,6 @@ const ExamInstanceContent = withTranslation("workspace")((
     </div>
   );
 
-  const footerActions = (
-    <div className="exam__footer">
-      <div className="exam__actions exam__actions--centered">
-        <EndExamWarning>
-          <Button buttonModifiers={["standard-ok", "execute"]}>
-            Lopeta koe
-          </Button>
-        </EndExamWarning>
-      </div>
-    </div>
-  );
-
   return (
     <ContentPanel
       modifier="workspace-exam"
@@ -560,7 +547,6 @@ const ExamInstanceContent = withTranslation("workspace")((
       t={tProp}
       i18n={i18n}
       tReady={tReady}
-      footer={footerActions}
       ref={contentPanelRef}
     >
       {createSectionElement}
