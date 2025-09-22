@@ -1,28 +1,27 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
 import { MantineProvider } from "@mantine/core";
-import { BrowserRouter } from "react-router";
-import { jotaiStore } from "./jotaiStore.ts";
 import { Provider } from "jotai";
 import { DevTools } from "jotai-devtools";
-import { DebugAtoms } from "./utils/DebugAtoms.ts";
+import { jotaiStore } from "./jotaiStore";
+import { DebugAtoms } from "./utils/DebugAtoms";
+import App from "./App.tsx";
+import "@mantine/core/styles.css";
+import "jotai-devtools/styles.css";
 
 createRoot(document.getElementById("app")!).render(
   <StrictMode>
     <MantineProvider>
-      <BrowserRouter>
-        <Provider store={jotaiStore}>
-          {process.env.NODE_ENV === "development" && (
-            <>
-              <DebugAtoms />
-              <DevTools />
-            </>
-          )}
-          <App />
-        </Provider>
-      </BrowserRouter>
+      <Provider store={jotaiStore}>
+        {process.env.NODE_ENV === "development" && (
+          <>
+            <DebugAtoms />
+            <DevTools store={jotaiStore} />
+          </>
+        )}
+        <App />
+      </Provider>
     </MantineProvider>
   </StrictMode>
 );
