@@ -1872,7 +1872,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           userIdentifier, ExceptionUtils.getStackTrace(new Throwable())));
     }
 
-    if (userContacts != null) {
+    if (userContacts.getEntity() != null) {
       List<UserContact> result = new ArrayList<>();
 
       for (fi.otavanopisto.pyramus.rest.model.UserContact userContact : userContacts.getEntity()) {

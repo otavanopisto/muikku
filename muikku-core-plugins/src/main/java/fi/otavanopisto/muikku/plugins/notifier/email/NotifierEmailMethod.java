@@ -1,18 +1,12 @@
 package fi.otavanopisto.muikku.plugins.notifier.email;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.mail.Mailer;
-import fi.otavanopisto.muikku.model.users.UserEmailEntity;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.notifier.NotifierAction;
 import fi.otavanopisto.muikku.notifier.NotifierContext;
 import fi.otavanopisto.muikku.notifier.NotifierMethod;
@@ -24,9 +18,6 @@ public class NotifierEmailMethod implements NotifierMethod {
 
   @Inject
   private Mailer mailer;
-  
-  @Inject
-  private SystemSettingsController systemSettingsController;
   
   @Inject
   private UserEmailEntityController userEmailEntityController;
@@ -41,7 +32,6 @@ public class NotifierEmailMethod implements NotifierMethod {
 
   @Override
   public String getDisplayName() {
-    // TODO: localize
     return "Email";
   }
 
@@ -49,12 +39,12 @@ public class NotifierEmailMethod implements NotifierMethod {
   public void sendNotification(NotifierAction action, NotifierContext context) {
     NotifierEmailMessageComposer message = emailMessageComposer.select(new NotifierEmailContentAnnotationLiteral(action.getName())).get();
     if (message != null) {
-      // List email addresses of user entity (only default identifier)
-      UserEntity userEntity = context.getRecipient();
-      SchoolDataIdentifier identifier = userEntity.defaultSchoolDataIdentifier();
-      List<String> addresses = userEmailEntityController.getUserEmailAddresses(identifier).stream().map(UserEmailEntity::getAddress).collect(Collectors.toList());;
-      if (CollectionUtils.isNotEmpty(addresses)) {
-        mailer.sendMail(message.getEmailMimeType(context), systemSettingsController.getSystemEmailSenderAddress(), addresses, message.getEmailSubject(context), message.getEmailContent(context));
+      SchoolDataIdentifier identifier = context.getRecipient().defaultSchoolDataIdentifier();
+      if (identifier != null) {
+        String address = userEmailEntityController.getUserDefaultEmailAddress(identifier, false);
+        if (!StringUtils.isBlank(address)) {
+          mailer.sendMail(message.getEmailMimeType(context), address, message.getEmailSubject(context), message.getEmailContent(context));
+        }
       }
     }
   }
@@ -64,5 +54,4 @@ public class NotifierEmailMethod implements NotifierMethod {
     return !emailMessageComposer.select(new NotifierEmailContentAnnotationLiteral(action.getName())).isUnsatisfied();
   }
 
-  
 }

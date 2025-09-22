@@ -20,10 +20,9 @@ import "~/sass/elements/application-list.scss";
 import "~/sass/elements/journal.scss";
 import "~/sass/elements/workspace-assessment.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
-import UpperSecondaryPedagogicalSupportWizardForm from "~/components/general/pedagogical-support-form";
-import MApi from "~/api/api";
-import { PedagogyFormState } from "~/generated/client";
 import { Action, Dispatch } from "redux";
+import PedagogySupport from "~/components/pedagogy-support";
+import { PedagogySupportPermissions } from "~/components/pedagogy-support/helpers";
 
 /**
  * StudiesApplicationProps
@@ -50,7 +49,6 @@ type StudiesTab =
 interface StudiesApplicationState {
   activeTab: StudiesTab;
   loading: boolean;
-  pedagogyFormState?: PedagogyFormState;
 }
 
 /**
@@ -72,8 +70,6 @@ class StudiesApplication extends React.Component<
       activeTab: "SUMMARY",
     };
 
-    this.loadPedagogyFormState = this.loadPedagogyFormState.bind(this);
-    this.isVisible = this.isVisible.bind(this);
     this.onTabChange = this.onTabChange.bind(this);
   }
 
@@ -81,17 +77,11 @@ class StudiesApplication extends React.Component<
    * componentDidMount
    */
   async componentDidMount() {
-    this.setState({ loading: true });
-
-    const state = await this.loadPedagogyFormState();
-
-    this.setState({ loading: false, pedagogyFormState: state });
     /**
      * If page is refreshed, we need to check hash which
      * tab was opened and set that at the start to state as
      * opened tab again
      */
-
     switch (this.props.location) {
       case "summary":
         this.setState({
@@ -118,35 +108,6 @@ class StudiesApplication extends React.Component<
         });
         break;
     }
-  }
-
-  /**
-   * loadPedagogyFormState
-   */
-  loadPedagogyFormState = async () => {
-    const pedagogyApi = MApi.getPedagogyApi();
-
-    return await pedagogyApi.getPedagogyFormState({
-      userEntityId: this.props.status.userId,
-    });
-  };
-
-  /**
-   * Returns whether section with given hash should be visible or not
-   *
-   * @param tab a tab
-   * @returns whether section with given hash should be visible or not
-   */
-  isVisible(tab: Tab) {
-    switch (tab.id) {
-      case "PEDAGOGY_FORM":
-        return (
-          this.state?.pedagogyFormState === "PENDING" ||
-          this.state?.pedagogyFormState === "APPROVED"
-        );
-    }
-
-    return true;
   }
 
   /**
@@ -177,7 +138,11 @@ class StudiesApplication extends React.Component<
 
     const title = t("labels.studies");
 
-    let panelTabs: Tab[] = [
+    const pedagogySupportPermissions = new PedagogySupportPermissions(
+      this.props.status.profile.studyProgrammeName
+    );
+
+    const panelTabs: Tab[] = [
       {
         id: "SUMMARY",
         name: t("labels.summary", { ns: "studies" }),
@@ -204,23 +169,28 @@ class StudiesApplication extends React.Component<
           </ApplicationPanelBody>
         ),
       },
-      {
+    ];
+
+    if (pedagogySupportPermissions.hasAnyAccess()) {
+      panelTabs.push({
         id: "PEDAGOGY_FORM",
-        name: t("labels.title", { ns: "pedagogySupportPlan" }),
+        name: t("labels.pedagogySupport", { ns: "pedagogySupportPlan" }),
         hash: "pedagogy-form",
         type: "pedagogy-form",
         component: (
           <ApplicationPanelBody modifier="tabs">
-            <UpperSecondaryPedagogicalSupportWizardForm
+            <PedagogySupport
               userRole="STUDENT"
-              studentUserEntityId={this.props.status.userId}
+              pedagogyFormAccess={{
+                accessible: true,
+              }}
+              studentIdentifier={this.props.status.userSchoolDataIdentifier}
+              pedagogySupportStudentPermissions={pedagogySupportPermissions}
             />
           </ApplicationPanelBody>
         ),
-      },
-    ];
-
-    panelTabs = panelTabs.filter(this.isVisible);
+      });
+    }
 
     /**
      * Just because we need to have all tabs ready first before rendering Application panel

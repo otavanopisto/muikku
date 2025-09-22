@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.pedagogy;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -19,10 +20,11 @@ import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.pedagogy.dao.PedagogyFormDAO;
 import fi.otavanopisto.muikku.plugins.pedagogy.dao.PedagogyFormHistoryDAO;
+import fi.otavanopisto.muikku.plugins.pedagogy.dao.PedagogyFormImplementedActionsDAO;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyForm;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistory;
 import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormHistoryType;
-import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormState;
+import fi.otavanopisto.muikku.plugins.pedagogy.model.PedagogyFormImplementedActions;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -37,45 +39,64 @@ public class PedagogyController {
 
   @Inject
   private HttpServletRequest httpRequest;
-
+  
   @Inject
   private SessionController sessionController;
-
-  @Inject
-  private LocaleController localeController;
-
-  @Inject
-  private UserEmailEntityController userEmailEntityController;
-
-  @Inject
-  private UserEntityController userEntityController;
-
-  @Inject
-  private UserSchoolDataController userSchoolDataController;
 
   @Inject
   private PedagogyFormDAO pedagogyFormDAO;
 
   @Inject
   private PedagogyFormHistoryDAO pedagogyFormHistoryDAO;
+  
+  @Inject
+  private PedagogyFormImplementedActionsDAO pedagogyFormImplementedActionsDAO;
+  
+  @Inject
+  private UserEntityController userEntityController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
+  private LocaleController localeController;
+  
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
 
   public PedagogyForm createForm(Long userEntityId, String formData) {
 
     // Default values for a new form
 
-    PedagogyFormState state = PedagogyFormState.ACTIVE;
     Long creator = sessionController.getLoggedUserEntity().getId();
-    String visibility = null;
 
     // Create form and a history entry about that having happened (doubles as the creator and creation date of the form)
 
-    PedagogyForm form = pedagogyFormDAO.create(userEntityId, formData, state, visibility);
+    PedagogyForm form = pedagogyFormDAO.create(userEntityId, formData);
     pedagogyFormHistoryDAO.create(form, "Asiakirja luotiin", creator, PedagogyFormHistoryType.EDIT);
 
     return form;
   }
+  
+  public PedagogyFormImplementedActions createFormForImplementedActions(Long userEntityId, String formData) {
 
+    // Create form and a history entry about that having happened (doubles as the creator and creation date of the form)
+
+    return pedagogyFormImplementedActionsDAO.create(userEntityId, formData);
+  }
+  
+  public PedagogyFormImplementedActions updateFormDataImplementedActions(PedagogyFormImplementedActions form, String formData) {
+
+    // Form data update
+
+    return pedagogyFormImplementedActionsDAO.updateFormData(form, formData);
+  }
+  
+  public PedagogyFormImplementedActions findFormImplementedActionsByUserEntityId(Long userEntityId) {
+    return pedagogyFormImplementedActionsDAO.findByUserEntityId(userEntityId);
+  }
+  
   public PedagogyForm updateFormData(PedagogyForm form, String formData, List<String> modifiedFields, String details, Long modifierId) {
 
     // Form data update
@@ -90,35 +111,36 @@ public class PedagogyController {
 
     return form;
   }
+  
+  public PedagogyForm updatePublished(PedagogyForm form, Long modifierId) {
 
-  public PedagogyForm updateState(PedagogyForm form, PedagogyFormState state, Long modifierId) {
+    // Student
+    
+    UserEntity studentEntity = userEntityController.findUserEntityById(form.getUserEntityId());
 
-    // State update
-
-    form = pedagogyFormDAO.updateState(form, state);
-
-    // History entry
-
-    String details = null;
-    switch (state) {
-    case PENDING:
-      details = "Suunnitelma odottaa opiskelijan hyväksyntää";
-      break;
-    case APPROVED:
-      details = "Opiskelija hyväksyi suunnitelman";
-      break;
-     default:
-       break;
+    // PublishDate determines whether the form is published. If PublishDate has already been set previously, we need to change it to null so that the form can be set as unpublished.
+    boolean published = form.getPublished() != null;
+    Date date = null;
+    
+    if (published == false) {
+      date = new Date();
     }
-    pedagogyFormHistoryDAO.create(form, details, modifierId, PedagogyFormHistoryType.EDIT);
 
-    // Notification about student accepting the form
+    // Form data update
+    form = pedagogyFormDAO.updatePublished(form, date);
 
-    if (state == PedagogyFormState.APPROVED) {
-      UserEntityName userEntityName = userEntityController.getName(sessionController.getLoggedUser(), true);
+    String details;
+    SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+    
+    if (form.getPublished() != null) {
+      details = "Asiakirja julkaistu " + df.format(date);
 
+      // Notification to counselors about published form
+      UserEntityName loggedUserEntityName = userEntityController.getName(sessionController.getLoggedUser(), true);
+      UserEntityName userEntityName = userEntityController.getName(studentEntity.defaultSchoolDataIdentifier(), true);
 
-      List<SpecEdTeacher> specEdTeachers = userSchoolDataController.listStudentSpecEdTeachers(sessionController.getLoggedUser(), true, true);
+      List<SpecEdTeacher> specEdTeachers = userSchoolDataController
+          .listStudentSpecEdTeachers(studentEntity.defaultSchoolDataIdentifier(), true, true);
       if (!specEdTeachers.isEmpty()) {
 
         StringBuffer url = new StringBuffer();
@@ -126,66 +148,62 @@ public class PedagogyController {
         url.append("://");
         url.append(httpRequest.getServerName());
         url.append("/guider#?c=");
-        url.append(sessionController.getLoggedUser().toId());
+        url.append(studentEntity.defaultSchoolDataIdentifier().toId());
 
-        String subject = localeController.getText(
-            sessionController.getLocale(),
-            "plugin.pedagogy.approval.subject",
-            new String[] {userEntityName.getDisplayNameWithLine()});
+        String subject = localeController.getText(sessionController.getLocale(),
+            "plugin.pedagogy.published.counselor.subject", new String[] { userEntityName.getDisplayNameWithLine() });
 
-        String content = localeController.getText(
-            sessionController.getLocale(),
-            "plugin.pedagogy.approval.content",
-            new String[] {userEntityName.getDisplayNameWithLine(), url.toString()});
+        String content = localeController.getText(sessionController.getLocale(),
+            "plugin.pedagogy.published.counselor.content",
+            new String[] { userEntityName.getDisplayNameWithLine(), url.toString() });
 
         for (SpecEdTeacher specEdTeacher : specEdTeachers) {
           String email = userEmailEntityController.getUserDefaultEmailAddress(specEdTeacher.getIdentifier(), false);
-          mailer.sendMail(MailType.HTML,
-              Arrays.asList(email),
-              subject,
-              content);
+          mailer.sendMail(MailType.HTML, Arrays.asList(email), subject, content);
         }
       }
+      
+      // Notification to student
+      
+        StringBuffer url = new StringBuffer();
+        url.append(httpRequest.getScheme());
+        url.append("://");
+        url.append(httpRequest.getServerName());
+        url.append("/records#pedagogy-form");
+        url.append(studentEntity.defaultSchoolDataIdentifier().toId());
 
+        String subject = localeController.getText(sessionController.getLocale(),
+            "plugin.pedagogy.published.student.subject", new String[] { loggedUserEntityName.getDisplayNameWithLine() });
+
+        String content = localeController.getText(sessionController.getLocale(),
+            "plugin.pedagogy.published.student.content",
+            new String[] { loggedUserEntityName.getDisplayNameWithLine(), url.toString() });
+
+          String email = userEmailEntityController.getUserDefaultEmailAddress(studentEntity, false);
+          mailer.sendMail(MailType.HTML, Arrays.asList(email), subject, content);
+        
+      
     }
-
-    // Notification about pending form
-
-    else if (state == PedagogyFormState.PENDING) {
-      UserEntityName staffName = userEntityController.getName(sessionController.getLoggedUser(), true);
-      String staffMail = userEmailEntityController.getUserDefaultEmailAddress(sessionController.getLoggedUser(), false);
-      UserEntity studentEntity = userEntityController.findUserEntityById(form.getUserEntityId());
-      UserEntityName studentName = userEntityController.getName(studentEntity, true);
-      String studentMail = userEmailEntityController.getUserDefaultEmailAddress(studentEntity, false);
-
-      StringBuffer url = new StringBuffer();
-      url.append(httpRequest.getScheme());
-      url.append("://");
-      url.append(httpRequest.getServerName());
-      url.append("/records#pedagogy-form");
-
-      String subject = localeController.getText(
-          sessionController.getLocale(),
-          "plugin.pedagogy.pending.subject",
-          new String[] {});
-
-      String content = localeController.getText(
-          sessionController.getLocale(),
-          "plugin.pedagogy.pending.content",
-          new String[] {studentName.getDisplayNameWithLine(), staffName.getDisplayName(), url.toString(), staffMail});
-
-      mailer.sendMail(MailType.HTML,
-          Arrays.asList(studentMail),
-          subject,
-          content);
-
+    else {
+      details = "Asiakirja asetettu ei-julkaistu-tilaan " + df.format(new Date());
     }
+    
+    // History entry about modify
+    pedagogyFormHistoryDAO.create(form, details, modifierId, null, PedagogyFormHistoryType.EDIT);
 
     return form;
   }
-
+  
   public PedagogyForm findFormByUserEntityId(Long userEntityId) {
     return pedagogyFormDAO.findByUserEntityId(userEntityId);
+  }
+
+  public PedagogyForm findFormByUserEntityIdAndPublished(Long userEntityId) {
+    return pedagogyFormDAO.findByUserEntityIdAndPublished(userEntityId);
+  }
+  
+  public List<PedagogyForm> listAll() {
+    return pedagogyFormDAO.listAll();
   }
 
   public void createViewHistory(PedagogyForm form, Long modifierId) {
@@ -212,9 +230,8 @@ public class PedagogyController {
     history.sort(Comparator.comparing(PedagogyFormHistory::getCreated).reversed());
     return history;
   }
-  
-  public boolean hasPedagogyForm(Long userEntityId) {
-    return findFormByUserEntityId(userEntityId) != null;
-  }
 
+  public boolean isPublished(Long userEntityId) {
+    return findFormByUserEntityIdAndPublished(userEntityId) != null;
+  }
 }
