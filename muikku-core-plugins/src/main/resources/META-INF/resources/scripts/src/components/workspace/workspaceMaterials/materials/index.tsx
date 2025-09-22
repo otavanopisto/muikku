@@ -569,6 +569,10 @@ class WorkspaceMaterials extends React.Component<
       <CkeditorLoaderContent html={description} />
     ) : null;
 
+    if (section.hidden) {
+      return null;
+    }
+
     return (
       <section
         key={"section-" + section.workspaceMaterialId}
@@ -579,11 +583,7 @@ class WorkspaceMaterials extends React.Component<
         }}
       >
         {/*TOP OF THE CHAPTER*/}
-        <h2
-          className={`content-panel__chapter-title ${
-            section.hidden ? "state-HIDDEN" : ""
-          }`}
-        >
+        <h2 className="content-panel__chapter-title">
           <div
             className="content-panel__chapter-title-text"
             lang={section.titleLanguage || this.props.workspace.language}
@@ -742,7 +742,9 @@ class WorkspaceMaterials extends React.Component<
 
         sectionSpecificContentData.push(
           <div className="content-panel__item">
-            <article className="material-page">
+            <article
+              className={`material-page ${section.hidden ? "state-HIDDEN" : ""}`}
+            >
               <div className="material-page__content-wrapper">
                 <div className="material-page__content rich-text">
                   {descriptionElement}
