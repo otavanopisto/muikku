@@ -339,7 +339,7 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
               {lang.workspaces ? (
                 <div>
                   <h4>
-                    {t("labels.skillsByDivision", {
+                    {t("labels.courseLearning", {
                       ns: "languageProfile",
                     })}
                   </h4>

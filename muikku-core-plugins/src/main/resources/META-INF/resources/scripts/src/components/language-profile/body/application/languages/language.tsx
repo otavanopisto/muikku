@@ -29,7 +29,7 @@ const LanguageComponent = (props: LanguageComponentProps) => {
   const { samples, language } = props;
   const [sampleType, setSampleType] = React.useState<SampleTypes>("");
   const filteredSamples = React.useMemo(
-    () => samples.filter((sample) => sample.language === language.code),
+    () => samples?.filter((sample) => sample.language === language.code),
     [samples, language.code]
   );
   return (
