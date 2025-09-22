@@ -3,7 +3,10 @@ import { initializeAuthStatusAtom } from "../atoms/auth";
 import { loadLangAtom } from "../atoms/locale";
 import { initializeWorkspaceStatusAtom } from "../atoms/workspace";
 import { executeAtomAction } from "../jotaiStore";
-import { globalInitializedAtom } from "../atoms/shared";
+import {
+  globalInitializedAtom,
+  workspaceInitializedAtom,
+} from "../atoms/shared";
 
 /**
  * Core global initialization logic
@@ -44,6 +47,7 @@ export async function globalInit() {
  */
 export async function workspaceInit(workspaceUrlName: string) {
   await executeAtomAction(initializeWorkspaceStatusAtom, workspaceUrlName);
+  executeAtomAction(workspaceInitializedAtom, workspaceUrlName);
 }
 
 /**
