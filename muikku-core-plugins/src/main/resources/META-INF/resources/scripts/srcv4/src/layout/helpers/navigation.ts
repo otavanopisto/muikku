@@ -10,6 +10,9 @@ import {
   IconSettings,
   IconLogout,
 } from "@tabler/icons-react";
+import { type Params } from "react-router";
+
+export type NavigationContext = "environment" | "workspace";
 
 export interface NavigationLink {
   label: string;
@@ -21,7 +24,7 @@ export interface NavigationItem {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: React.FC<any>;
   // For simple navigation links
-  link?: string;
+  link?: string | ((params: Params) => string);
   onClick?: () => void;
   // For collapsible groups
   links?: NavigationLink[];
@@ -32,7 +35,7 @@ export interface NavigationItem {
   active?: boolean;
 }
 
-export const navigationItems: NavigationItem[] = [
+export const navigationItemsEnviroment: NavigationItem[] = [
   {
     label: "Etusivu",
     icon: IconHome,
@@ -104,6 +107,22 @@ export const navigationItems: NavigationItem[] = [
   },
 ];
 
+const navigationItemsWorkspace: NavigationItem[] = [
+  {
+    label: "Etusivu",
+    icon: IconHome,
+    link: (params) => `/workspace/${params.workspaceUrlName}`,
+    canAccess: (user) => user?.loggedIn ?? false, // Always visible
+  },
+  {
+    label: "Asetukset",
+    icon: IconSettings,
+    link: (params) =>
+      `/workspace/${params.workspaceUrlName}/workspaceManagement`,
+    canAccess: (user) => user?.loggedIn ?? false, // Always visible
+  },
+];
+
 /**
  * Filter navigation items based on user permissions
  * @param items - Navigation items to filter
@@ -130,10 +149,13 @@ export function filterNavigationItems(
  */
 export function getNavigationItems(
   user: User | null,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _context: "environment" | "workspace" = "environment"
+  context: NavigationContext = "environment"
 ): NavigationItem[] {
+  if (context === "workspace") {
+    return filterNavigationItems(navigationItemsWorkspace, user);
+  }
+
   // You can add context-specific filtering here if needed
   // For now, we'll use the same items for both contexts
-  return filterNavigationItems(navigationItems, user);
+  return filterNavigationItems(navigationItemsEnviroment, user);
 }

@@ -9,7 +9,7 @@ import {
   UnstyledButton,
   Tooltip,
 } from "@mantine/core";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useParams, type Params } from "react-router";
 import classes from "./NavbarLinksGroup.module.css";
 
 interface LinksGroupProps {
@@ -19,7 +19,7 @@ interface LinksGroupProps {
   initiallyOpened?: boolean;
   links?: { label: string; link: string }[];
   // New props for simple navigation links
-  link?: string;
+  link?: string | ((params: Params) => string);
   onClick?: () => void;
   active?: boolean;
   // New prop for collapsed state
@@ -37,6 +37,7 @@ export function LinksGroup({
   collapsed = false,
 }: LinksGroupProps) {
   const location = useLocation();
+  const params = useParams();
   const hasLinks = Array.isArray(links) && links.length > 0;
   const isSimpleLink = !hasLinks && (link ?? onClick);
   const [opened, setOpened] = useState(initiallyOpened ?? false);
@@ -118,7 +119,7 @@ export function LinksGroup({
     isSimpleLink && link ? (
       <UnstyledButton
         component={Link}
-        to={link}
+        to={link instanceof Function ? link(params) : link}
         onClick={handleClick}
         className={`${classes.control} ${isActive ? classes.active : ""} ${
           collapsed ? classes.collapsed : ""

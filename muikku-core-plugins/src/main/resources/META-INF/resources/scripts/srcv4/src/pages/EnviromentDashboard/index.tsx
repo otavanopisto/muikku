@@ -22,10 +22,10 @@ export function EnvironmentDashboard() {
         </Text>
 
         <Group>
-          <Button component="a" href="/dashboard" variant="filled">
+          <Button component={Link} to="/dashboard" variant="filled">
             Go to Dashboard
           </Button>
-          <Button component="a" href="/about" variant="outline">
+          <Button component={Link} to="/about" variant="outline">
             Learn More
           </Button>
         </Group>

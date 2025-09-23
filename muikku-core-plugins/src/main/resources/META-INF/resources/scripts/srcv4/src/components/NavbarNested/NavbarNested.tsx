@@ -7,16 +7,14 @@ import classes from "./NavbarNested.module.css";
 import { type NavigationItem } from "~/src/layout/helpers/navigation";
 
 interface NavbarNestedProps {
+  title: string;
   items: NavigationItem[];
   collapsed?: boolean;
   onToggleCollapse?: () => void;
 }
 
-export function NavbarNested({
-  items,
-  collapsed = false,
-  onToggleCollapse,
-}: NavbarNestedProps) {
+export function NavbarNested(props: NavbarNestedProps) {
+  const { items, collapsed = false, onToggleCollapse, title } = props;
   const links = items.map((item) => (
     <LinksGroup key={item.label} {...item} collapsed={collapsed} />
   ));
@@ -40,7 +38,7 @@ export function NavbarNested({
                   overflow: "hidden",
                 }}
               >
-                Muikku V4
+                {title}
               </Title>
             )}
 

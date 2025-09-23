@@ -3,23 +3,26 @@ import { Outlet } from "react-router";
 import { NavbarNested } from "~/src/components/NavbarNested/NavbarNested";
 import { userAtom } from "~/src/atoms/auth";
 import { useAtomValue } from "jotai";
-import { getNavigationItems } from "../helpers/navigation";
+import {
+  getNavigationItems,
+  type NavigationContext,
+} from "../helpers/navigation";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
 import classes from "./SharedLayout.module.css";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface SharedLayoutProps {}
+interface SharedLayoutProps {
+  title?: string;
+  context?: NavigationContext;
+}
 
 /**
  * Shared layout for the application
  * @param props - Shared layout props
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function SharedLayout(_props: SharedLayoutProps) {
+export function SharedLayout(props: SharedLayoutProps) {
+  const { title = "Muikku V4", context = "environment" } = props;
   const user = useAtomValue(userAtom);
-  const [opened, { toggle }] = useDisclosure(); // Mobile navbar state
-  const [desktopCollapsed, setDesktopCollapsed] = useState(false); // Desktop collapsed state
+  const [opened, { toggle }] = useDisclosure(); // Navbar state
 
   return (
     <AppShell
@@ -29,7 +32,7 @@ export function SharedLayout(_props: SharedLayoutProps) {
         offset: false, // This prevents the main content from being offset when header is hidden
       }}
       navbar={{
-        width: desktopCollapsed ? 60 : 300, // Dynamic width based on collapsed state
+        width: !opened ? 60 : 300, // Dynamic width based on collapsed state
         breakpoint: "sm",
         collapsed: { mobile: !opened },
       }}
@@ -43,7 +46,7 @@ export function SharedLayout(_props: SharedLayoutProps) {
             aria-label="Toggle navigation"
           />
           <Title order={3} c="dimmed">
-            Muikku V4
+            {title}
           </Title>
           <Box w={24} /> {/* Spacer to center the title */}
         </Group>
@@ -51,9 +54,10 @@ export function SharedLayout(_props: SharedLayoutProps) {
 
       <AppShell.Navbar className={classes.navbarTransition}>
         <NavbarNested
-          items={getNavigationItems(user)}
-          collapsed={desktopCollapsed} // Use desktop collapsed state
-          onToggleCollapse={() => setDesktopCollapsed(!desktopCollapsed)} // Toggle desktop collapsed state
+          title={title}
+          items={getNavigationItems(user, context)}
+          collapsed={!opened} // Use desktop collapsed state
+          onToggleCollapse={toggle} // Toggle desktop collapsed state
         />
       </AppShell.Navbar>
 

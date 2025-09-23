@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/workspace/:workspaceUrlName",
-    element: <SharedLayout />,
+    element: <SharedLayout context="workspace" />,
     loader: workspaceLoader,
     children: [
       {
