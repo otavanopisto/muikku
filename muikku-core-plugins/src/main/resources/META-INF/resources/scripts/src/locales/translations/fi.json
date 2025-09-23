@@ -2980,6 +2980,7 @@
       "languageSkillGood_vocabulary": "<b>Hyvä</b> - perussanastoni on hyvä, mutta minun täytyy tarkistaa melko usein sanojen merkitys joko selitettynä kohdekielellä tai äidinkielelläni.",
       "languageSkillGood_variants": "<b>Hyvä</b> - ymmärrän tavallisimpia aksentteja/murteita hyvin mutta muut tuntuvat vaikeilta. Videolta materiaali on selvästi helpompaa ymmärtää kuin jos vain kuulen sen.",
       "languageSkillLevels": "Arvioi omaa kielitaitoasi alla olevan asteikon avulla. Pohdi kielitaitoasi eri osaamisalueiden kannalta, ja merkitse taulukkoon se taitotaso (esim. A2.1), jonka kuvaus vastaa mielestäsi parhaiten tämänhetkistä tilannettasi kunkin kielen kohdalla. ",
+      "languageSkillLevelsEmpty": "Taitotasoja ei ole asetettu",
       "languageSkillFair": "<b>Kohtalainen</b>",
       "languageSkillFair_pronunciation": "<b>Kohtalainen</b> - en ole ääntämisineni ja painotuksineni täysin hakoteillä, ja tiedän, kuinka tavallisimmat sanat äännetään.",
       "languageSkillFair_grammar": "<b>Kohtalainen</b> - en ole täysin hakoteillä ja tiedän perusasiat, mutta äidinkieli vaikuttaa melko paljon kohdekieleeni.",
