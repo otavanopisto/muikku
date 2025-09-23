@@ -1,0 +1,33 @@
+{
+  "name": "srcv4",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --emptyOutDir",
+    "build-full": "npm run build-api && npm run build",
+    "build-api": "openapi-generator-cli generate -i ../../swagger.yaml -o generated/client -c generator-config.json -g typescript-fetch",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@openapitools/openapi-generator-cli": "2.16.3",
+    "@vitejs/plugin-react": "5.0.2",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "typescript": "5.8.3",
+    "vite": "7.1.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.35.0",
+    "@types/node": "24.5.2",
+    "@types/react": "19.1.13",
+    "@types/react-dom": "19.1.9",
+    "eslint": "9.35.0",
+    "eslint-plugin-react-hooks": "5.2.0",
+    "eslint-plugin-react-refresh": "0.4.20",
+    "globals": "16.4.0",
+    "typescript-eslint": "8.43.0"
+  }
+}

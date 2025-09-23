@@ -11,6 +11,11 @@ export interface WizardStep {
    */
   name?: string;
   /**
+   * Namespace of the steps
+   * shorcut for localization
+   */
+  namespace?: string;
+  /**
    * Component to render
    */
   component: React.ReactElement;
@@ -51,6 +56,21 @@ interface WizardProps {
   wrapper?: React.ReactElement;
 }
 
+/**
+ * An utility function to create WizardSteps from array of JSX elements
+ * @param steps Array of JSX elements
+ * @param namespace A locale namespace for the steps
+ * @returns Array of WizardSteps
+ */
+export const createWizardSteps = (
+  steps: (() => JSX.Element)[],
+  namespace: string
+): WizardStep[] =>
+  steps.map((step, index) => ({
+    index,
+    namespace,
+    component: step(),
+  }));
 /**
  * Creates Wizard component
  *

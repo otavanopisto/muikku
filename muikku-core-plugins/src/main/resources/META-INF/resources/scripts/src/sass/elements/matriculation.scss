@@ -209,7 +209,7 @@
 .matriculation__input[type="checkbox"] {
   align-items: center;
   appearance: none;
-  border: solid 2px $color-matriculation-dialog-form-element-border;
+  border: solid 2px $color-matriculation-form-element-border;
   border-radius: 3px;
   display: flex;
   height: 1.5rem;
@@ -220,7 +220,7 @@
 .matriculation__input[type="radio"] {
   align-items: center;
   appearance: none;
-  border: solid 2px $color-matriculation-dialog-form-element-border;
+  border: solid 2px $color-matriculation-form-element-border;
   border-radius: 100%;
   display: flex;
   height: 1.5rem;
@@ -242,7 +242,7 @@
 
 .matriculation__input {
   background: $color-default;
-  border: 2px solid $color-matriculation-dialog-form-element-border;
+  border: 2px solid $color-matriculation-form-element-border;
   border-radius: 3px;
   height: $select-height-mobile;
   padding: 4px 8px;
@@ -257,7 +257,7 @@
 
 .matriculation__select {
   background: $color-default;
-  border: 2px solid $color-matriculation-dialog-form-element-border;
+  border: 2px solid $color-matriculation-form-element-border;
   border-radius: 3px;
   display: inline-block;
   height: $select-height-mobile;
@@ -273,7 +273,7 @@
 
 .matriculation__textarea {
   background: $color-default;
-  border: 2px solid $color-matriculation-dialog-form-element-border;
+  border: 2px solid $color-matriculation-form-element-border;
   border-radius: 3px;
   display: inline-block;
   height: 5rem;

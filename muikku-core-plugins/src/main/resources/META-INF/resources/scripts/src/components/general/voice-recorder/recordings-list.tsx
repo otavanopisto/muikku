@@ -34,6 +34,7 @@ function RecordingsList(props: RecordingsListProps) {
         <Record
           controls
           record={record}
+          index={index} // used as id if no id
           src={record.url}
           key={record.id || index}
           noDeleteFunctions={noDeleteFunctions}

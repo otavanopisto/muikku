@@ -5929,6 +5929,164 @@ paths:
         "500":
           description: Internal server error
 
+  #LANGUAGE PROFILE
+  /rest/languageprofile/user/{userEntityId}:
+    get:
+      operationId: getLanguageProfile
+      summary: Returns the language profile of the given user
+      description: Returns the language profile of the given user
+      tags:
+        - LanguageProfile
+      parameters:
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Language profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LanguageProfile"
+        "204":
+          description: If user doesn't have a language profile
+    post:
+      operationId: createOrUpdateLanguageProfile
+      summary: Creates or updates the language profile of the given user
+      description: Creates or updates the language profile of the given user
+      tags:
+        - LanguageProfile 
+      parameters:
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/LanguageProfileCreateOrUpdateRequestBody"
+      responses:
+        "200":
+          description: Created or updated language profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LanguageProfile"
+
+  /rest/languageprofile/user/{userEntityId}/samples:
+    get:
+      operationId: getLanguageProfileSamples
+      summary: Returns samples of the given user's language profile'
+      description: Returns samples of the given user's language profile'
+      tags:
+        - LanguageProfile
+      parameters:
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: language
+          in: query
+          description: Sample language
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Language profile samples
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LanguageProfileSample"
+    post:
+      operationId: createLanguageProfileSample
+      summary: Creates a text sample
+      description: Creates a text sample
+      tags:
+        - LanguageProfile 
+      parameters:
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/LanguageProfileSampleCreateRequestBody"
+      responses:
+        "200":
+          description: Created sample
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LanguageProfileSample"
+  
+  /rest/languageprofile/user/{userEntityId}/samples/{sampleId}:
+    put:
+      operationId: updateLanguageProfileSample
+      summary: Updates a text sample
+      description: Updates a text sample
+      tags:
+        - LanguageProfile 
+      parameters:
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: sampleId
+          in: path
+          description: Sample id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/LanguageProfileSampleUpdateRequestBody"
+      responses:
+        "200":
+          description: Updated sample
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LanguageProfileSample"
+    delete:
+      operationId: deleteLanguageProfileSample
+      summary: Deletes a sample
+      description: Deletes a sample
+      tags:
+        - LanguageProfile 
+      parameters:
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: sampleId
+          in: path
+          description: Sample id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: Sample deleted successfully
+
   #MATERIALS
   /rest/materials/binary:
     post:
@@ -11745,6 +11903,48 @@ components:
               courseNumber:
                 type: integer
 
+    LanguageProfileCreateOrUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: Payload for creating or updating a language profile
+            required:
+              - formData
+            properties:
+              formData:
+                type: string
+
+    LanguageProfileSampleCreateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: Payload for creating a text sample
+            required:
+              - language
+              - value
+            properties:
+              language:
+                type: string
+              value:
+                type: string
+    
+    LanguageProfileSampleUpdateRequestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            description: Payload for updating a text sample
+            required:
+              - value
+            properties:
+              value:
+                type: string
+
     ToggleSuggestionUpdateRequestBody:
       required: true
       content:
@@ -15066,6 +15266,54 @@ components:
           items:
             $ref: "#/components/schemas/AudioAssessment"
 
+    LanguageProfileSampleType:
+      description: Language profile sample type
+      type: string
+      enum:
+        - FILE
+        - AUDIO
+        - TEXT
+
+    LanguageProfile:
+      type: object
+      description: Language profile
+      required:
+        - formData
+      properties:
+        formData:
+          description: Language profile form data as json
+          type: string
+        lastModified:
+          type: string
+          format: date-time
+
+    LanguageProfileSample:
+      type: object
+      description: Language profile sample
+      required:
+        - language
+        - type
+      properties:
+        id:
+          description: The id of the language profile sample
+          type: integer
+          format: int64
+        language:
+          description: Language code of the sample
+          type: string
+        type:
+          description: Type of the language profile sample
+          $ref: "#/components/schemas/LanguageProfileSampleType"
+        fileName:
+          description: Sample file name, if type is FILE or AUDIO
+          type: string
+        value:
+          description: Sample content, if type is TEXT
+          type: string
+        lastModified:
+          type: string
+          format: date-time
+    
     MaterialProducer:
       type: object
       description: MaterialProducer information
@@ -17054,6 +17302,7 @@ components:
         - hasEvaluationFees
         - isDefaultOrganization
         - services
+        - studyLevel
       properties:
         id:
           type: integer
@@ -17150,6 +17399,9 @@ components:
           nullable: true
         services:
           $ref: "#/components/schemas/UserWhoAmIServices"
+        studyLevel:
+          type: string
+          nullable: true
 
     UserWhoAmIServices:
       type: object
