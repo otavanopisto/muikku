@@ -120,6 +120,17 @@ class MainFunctionNavbar extends React.Component<
           this.props.status.services.hops.isAvailable,
       },
       {
+        modifier: "language-profile",
+        trail: "language-profile",
+        text: t("labels.languageProfile"),
+        href: "/language-profile",
+        icon: "language",
+        to: true,
+        condition:
+          this.props.status.profile.studyLevel === "lukio" &&
+          this.props.status.permissions.LANGUAGE_PROFILE_VIEW,
+      },
+      {
         modifier: "hops",
         trail: "guardian_hops",
         text: "Hops",

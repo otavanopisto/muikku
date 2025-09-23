@@ -645,8 +645,7 @@ legend {
 // SELECT
 .form-element__select {
   appearance: none;
-  background:
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
     no-repeat right 5px center;
   background-color: transparent;
   border: 2px solid $color-form-element-border;
@@ -671,8 +670,7 @@ legend {
   }
 
   &[disabled] {
-    background:
-      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='lightgrey'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='lightgrey'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>")
       no-repeat right 5px center;
     border: 2px solid lighten($color-disabled, 20%);
   }
