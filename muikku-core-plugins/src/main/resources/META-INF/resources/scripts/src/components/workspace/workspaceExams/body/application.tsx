@@ -7,6 +7,7 @@ import "~/sass/elements/react-select-override.scss";
 import ExamsList from "./application/exams-list";
 import { Route, Switch } from "react-router-dom";
 import ExamDialog from "../dialogs/exam";
+import { useTranslation } from "react-i18next";
 
 /**
  * WorkspaceJournalApplicationProps
@@ -19,7 +20,8 @@ interface WorkspaceExamsApplicationProps {}
  * @returns WorkspaceExamsApplication
  */
 const WorkspaceExamsApplication = (props: WorkspaceExamsApplicationProps) => {
-  const title = "Kurssin kokeet";
+  const { t } = useTranslation(["common", "workspace"]);
+  const title = t("labels.exams", { ns: "exams" });
   return (
     <ApplicationPanel title={title}>
       <ExamsList />
