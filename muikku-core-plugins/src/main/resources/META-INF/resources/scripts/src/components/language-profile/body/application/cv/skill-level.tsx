@@ -198,48 +198,54 @@ const SkillLevel = (props: SkillLevelProps) => {
       </div>
       <div className="language-profile-container__row">
         <div className="language-profile__form-element-container">
-          <div className="language-profile__input-group-container">
-            <Stars
-              label={t("labels.skillInteraction", {
-                ns: "languageProfile",
-              })}
-              name="interaction"
-              skillLevels={languageSkillLevels}
-              onChange={handleRadioInputChange}
-            />
-            <Stars
-              label={t("labels.skillVocalization", {
-                ns: "languageProfile",
-              })}
-              name="vocal"
-              skillLevels={languageSkillLevels}
-              onChange={handleRadioInputChange}
-            />
-            <Stars
-              label={t("labels.skillWriting", {
-                ns: "languageProfile",
-              })}
-              name="writing"
-              skillLevels={languageSkillLevels}
-              onChange={handleRadioInputChange}
-            />
-            <Stars
-              label={t("labels.skillReadingComprehension", {
-                ns: "languageProfile",
-              })}
-              name="reading"
-              skillLevels={languageSkillLevels}
-              onChange={handleRadioInputChange}
-            />
-            <Stars
-              label={t("labels.skillListeningComprehension", {
-                ns: "languageProfile",
-              })}
-              name="listening"
-              skillLevels={languageSkillLevels}
-              onChange={handleRadioInputChange}
-            />
-          </div>
+          {languageSkillLevels ? (
+            <div className="language-profile__input-group-container">
+              <Stars
+                label={t("labels.skillInteraction", {
+                  ns: "languageProfile",
+                })}
+                name="interaction"
+                skillLevels={languageSkillLevels}
+                onChange={handleRadioInputChange}
+              />
+              <Stars
+                label={t("labels.skillVocalization", {
+                  ns: "languageProfile",
+                })}
+                name="vocal"
+                skillLevels={languageSkillLevels}
+                onChange={handleRadioInputChange}
+              />
+              <Stars
+                label={t("labels.skillWriting", {
+                  ns: "languageProfile",
+                })}
+                name="writing"
+                skillLevels={languageSkillLevels}
+                onChange={handleRadioInputChange}
+              />
+              <Stars
+                label={t("labels.skillReadingComprehension", {
+                  ns: "languageProfile",
+                })}
+                name="reading"
+                skillLevels={languageSkillLevels}
+                onChange={handleRadioInputChange}
+              />
+              <Stars
+                label={t("labels.skillListeningComprehension", {
+                  ns: "languageProfile",
+                })}
+                name="listening"
+                skillLevels={languageSkillLevels}
+                onChange={handleRadioInputChange}
+              />
+            </div>
+          ) : (
+            <div className="empty">
+              {t("content.languageSkillLevelsEmpty", { ns: "languageProfile" })}
+            </div>
+          )}
         </div>
       </div>
       <div className="language-profile-container__row">
@@ -262,7 +268,7 @@ const SkillLevel = (props: SkillLevelProps) => {
               <option
                 key={option.value}
                 value={option.value}
-                selected={option.value === languageSkillLevels.general}
+                selected={option.value === languageSkillLevels?.general}
               >
                 {option.label}
               </option>
@@ -287,7 +293,7 @@ const SkillLevel = (props: SkillLevelProps) => {
           </div>
           <textarea
             id="descriptionOfSkillLevel"
-            defaultValue={languageSkillLevels.description || ""}
+            defaultValue={languageSkillLevels?.description || ""}
             className="language-profile__textarea"
             name="description"
             onChange={handleTextAreaChange}
@@ -299,7 +305,7 @@ const SkillLevel = (props: SkillLevelProps) => {
           ns: "languageProfile",
         })}
       </div>
-      {languageSkillLevels.samples.map((sample, index) => (
+      {languageSkillLevels?.samples.map((sample, index) => (
         <div
           key={"sample-link" + index}
           className="language-profile-container__row language-profile-container__row--sample "
