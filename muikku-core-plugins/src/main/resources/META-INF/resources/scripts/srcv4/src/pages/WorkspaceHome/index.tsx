@@ -16,7 +16,7 @@ export function WorkspaceHome() {
           This is the home page for your workspace.
         </Text>
         <Text size="md">
-          <b>Workspace:</b> {workspaceInfo?.name || workspaceUrlName}
+          <b>Workspace:</b> {workspaceInfo?.name ?? workspaceUrlName}
         </Text>
       </Paper>
     </Container>

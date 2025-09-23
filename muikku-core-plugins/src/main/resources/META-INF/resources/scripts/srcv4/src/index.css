@@ -13,6 +13,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+#app {
+  width: 100%;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -65,4 +69,26 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* Add smooth transitions for AppShell */
+.mantine-AppShell-root {
+  transition: all 300ms ease;
+}
+
+.mantine-AppShell-navbar {
+  transition: all 300ms ease;
+}
+
+.mantine-AppShell-main {
+  transition: all 300ms ease;
+}
+
+/* Smooth transitions for Mantine components */
+.mantine-ThemeIcon-root {
+  transition: all 300ms ease;
+}
+
+.mantine-UnstyledButton-root {
+  transition: all 300ms ease;
 }

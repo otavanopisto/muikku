@@ -25,6 +25,7 @@
     "@mantine/nprogress": "8.3.1",
     "@mantine/spotlight": "8.3.1",
     "@openapitools/openapi-generator-cli": "2.23.4",
+    "@tabler/icons-react": "^3.35.0",
     "@vitejs/plugin-react": "5.0.2",
     "dayjs": "1.11.18",
     "embla-carousel": "8.6.0",

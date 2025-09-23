@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
-import { Layout } from "./layout/Layout";
-import { WorkspaceLayout } from "./layout/workspaceLayout/WorkspaceLayout";
+/* import { Layout } from "./layout/Layout";
+import { WorkspaceLayout } from "./layout/workspaceLayout/WorkspaceLayout"; */
 import { EnvironmentDashboard } from "./pages/EnviromentDashboard";
 import { WorkspaceHome } from "./pages/WorkspaceHome";
 import { WorkspaceSettings } from "./pages/WorkspaceSettings";
@@ -13,11 +13,12 @@ import {
   workspaceHomeLoader,
   workspaceSettingsLoader,
 } from "./routeLoaders";
+import { SharedLayout } from "./layout/shared/SharedLayout";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: <SharedLayout />,
     loader: environmentLoader,
     children: [
       {
@@ -40,7 +41,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/workspace/:workspaceUrlName",
-    element: <WorkspaceLayout />,
+    element: <SharedLayout />,
     loader: workspaceLoader,
     children: [
       {
