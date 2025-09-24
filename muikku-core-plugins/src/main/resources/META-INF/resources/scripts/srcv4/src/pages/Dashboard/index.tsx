@@ -4,9 +4,9 @@ import { userAtom } from "~/src/atoms/auth";
 import { Link } from "react-router";
 
 /**
- * EnvironmentDashboard - Environment dashboard page
+ * Dashboard - Dashboard page
  */
-export function EnvironmentDashboard() {
+export function Dashboard() {
   const user = useAtomValue(userAtom);
 
   return (
@@ -23,15 +23,6 @@ export function EnvironmentDashboard() {
           authenticated users. Use the navigation bar above to explore different
           sections.
         </Text>
-
-        <Group>
-          <Button component={Link} to="/dashboard" variant="filled">
-            Go to Dashboard
-          </Button>
-          <Button component={Link} to="/about" variant="outline">
-            Learn More
-          </Button>
-        </Group>
       </Paper>
 
       <Paper p="xl" withBorder>

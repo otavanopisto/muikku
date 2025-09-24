@@ -120,10 +120,26 @@ export const permissionMiddlewares = {
     },
   }),
 
-  // ENVIRONMENT PERMISSIONS MIDDLEWARES
+  // AUTHENTICATED MIDDLEWARES
 
   // Dashboard view
   dashboardView: createPermissionMiddleware({
+    requireAuth: true,
+  }),
+
+  // Communicator view
+  communicatorView: createPermissionMiddleware({
+    requireAuth: true,
+    customCheck(user) {
+      return user?.isActive ?? false;
+    },
+  }),
+
+  // Coursepicker view
+  coursepickerView: createPermissionMiddleware({}),
+
+  // Profile view
+  profileView: createPermissionMiddleware({
     requireAuth: true,
   }),
 
@@ -161,6 +177,29 @@ export const permissionMiddlewares = {
   evaluationView: createPermissionMiddleware({
     requireAuth: true,
     userPermissions: ["EVALUATION_VIEW_INDEX"],
+  }),
+
+  // Announcements view
+  announcementsView: createPermissionMiddleware({
+    requireAuth: true,
+  }),
+
+  // Announcer view
+  announcerView: createPermissionMiddleware({
+    requireAuth: true,
+    userPermissions: ["ANNOUNCER_TOOL"],
+  }),
+
+  // Studies view
+  studiesView: createPermissionMiddleware({
+    requireAuth: true,
+    userPermissions: ["TRANSCRIPT_OF_RECORDS_VIEW"],
+  }),
+
+  // Hops view
+  hopsView: createPermissionMiddleware({
+    requireAuth: true,
+    userPermissions: ["HOP_VIEW"],
   }),
 
   // WORKSPACE PERMISSIONS MIDDLEWARES
