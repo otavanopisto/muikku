@@ -46,7 +46,9 @@ interface WebSocketOptions {
   maxReconnectAttempts: number;
 }
 
-// Extend the options type
+/**
+ * WebsocketInitOptions - Extend the options type
+ */
 export interface WebSocketInitOptions extends WebSocketOptions {
   // Event listeners for the WebSocket
   eventListeners?: WebSocketListener;
@@ -55,9 +57,7 @@ export interface WebSocketInitOptions extends WebSocketOptions {
 /**
  * WebSocket listener type
  */
-export type WebSocketListener = {
-  [event: string]: ((data?: unknown) => void)[];
-};
+export type WebSocketListener = Record<string, ((data?: unknown) => void)[]>;
 
 /**
  * Internal state of the WebSocket connection
@@ -119,8 +119,8 @@ export class MuikkuWebsocket extends EventEmitter {
   private pingInterval: NodeJS.Timeout | null = null;
   private reconnectTimeout: NodeJS.Timeout | null = null;
   private ticket: string | null = null;
-  private waitingPong: boolean = false;
-  private gotPong: boolean = false;
+  private waitingPong = false;
+  private gotPong = false;
 
   /**
    * Creates a new MuikkuWebsocket instance
@@ -213,6 +213,7 @@ export class MuikkuWebsocket extends EventEmitter {
         );
 
         if (checkResponse.ok) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           const isValid = await checkResponse.json();
           if (isValid) {
             return; // Ticket is valid, we can use it
@@ -273,6 +274,7 @@ export class MuikkuWebsocket extends EventEmitter {
    * @throws {WebSocketError} If connection fails
    * @private
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   private async establishConnection(): Promise<void> {
     if (this.socket) {
       this.cleanup();
@@ -327,7 +329,7 @@ export class MuikkuWebsocket extends EventEmitter {
 
     this.socket.onmessage = (event) => {
       try {
-        const message = JSON.parse(event.data) as WebSocketMessage;
+        const message = JSON.parse(event.data as string) as WebSocketMessage;
         if (message.eventType === "ping:pong") {
           this.gotPong = true;
           this.emit("pong");
@@ -370,6 +372,7 @@ export class MuikkuWebsocket extends EventEmitter {
           "NOT_INITIALIZED"
         );
       }
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await this.socket.send(JSON.stringify(message));
       this.emit("messageSent", message);
     } catch (error) {
@@ -420,6 +423,7 @@ export class MuikkuWebsocket extends EventEmitter {
     this.state.isReconnecting = true;
     this.state.reconnectAttempts++;
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.reconnectTimeout = setTimeout(async () => {
       try {
         await this.connect();
@@ -439,11 +443,11 @@ export class MuikkuWebsocket extends EventEmitter {
         if (!this.waitingPong) {
           this.waitingPong = true;
           this.gotPong = false;
-          this.send("ping:ping", {});
+          void this.send("ping:ping", {});
         } else if (this.gotPong) {
           this.waitingPong = true;
           this.gotPong = false;
-          this.send("ping:ping", {});
+          void this.send("ping:ping", {});
         } else {
           // No pong received, reconnect
           this.handleConnectionLoss();
@@ -460,7 +464,7 @@ export class MuikkuWebsocket extends EventEmitter {
     while (this.messageQueue.length > 0) {
       const message = this.messageQueue.shift();
       if (message) {
-        this.sendMessage(message);
+        void this.sendMessage(message);
       }
     }
   }
@@ -544,9 +548,7 @@ export class MuikkuWebsocket extends EventEmitter {
     options: WebSocketInitOptions,
     callbacks: WebSocketCallbacks
   ): MuikkuWebsocket {
-    if (!MuikkuWebsocket.instance) {
-      MuikkuWebsocket.instance = new MuikkuWebsocket(options, callbacks);
-    }
+    MuikkuWebsocket.instance ??= new MuikkuWebsocket(options, callbacks);
     return MuikkuWebsocket.instance;
   }
 

@@ -49,15 +49,15 @@ export function LinksGroup(props: LinksGroupProps) {
   const isSimpleLink = !hasLinks && (link ?? onClick);
   const [opened, setOpened] = useState(initiallyOpened ?? false);
 
-  const isActive = useMemo(() => {
-    return (
+  const isActive = useMemo(
+    () =>
       active ||
       (link &&
         (typeof link === "function"
           ? link(params) === location.pathname
-          : link === location.pathname))
-    );
-  }, [active, link, location.pathname, params]);
+          : link === location.pathname)),
+    [active, link, location.pathname, params]
+  );
 
   /**
    * Handle click for simple links

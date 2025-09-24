@@ -2,6 +2,9 @@ import type { Role, UserWhoAmI } from "~/generated/client";
 import MApi from "~/api";
 import { PermissionsService, type UserPermissions } from "./permissions";
 
+/**
+ * User - Interface for the user
+ */
 export interface User {
   loggedIn: boolean;
   id: UserWhoAmI["id"];
@@ -31,7 +34,6 @@ export class AuthService {
   /**
    * Login to the system
    * @param loginPath - The path to redirect to after login
-   * @returns The user data
    */
   static login(loginPath = `/login?redirectUrl=${window.location.pathname}`) {
     window.location.href = loginPath;

@@ -16,11 +16,17 @@ import type { WorkspacePermissions } from "~/src/services/permissions";
 
 export type NavigationContext = "environment" | "workspace";
 
+/**
+ * NavigationLink - Interface for a navigation link
+ */
 export interface NavigationLink {
   label: string;
   link: string;
 }
 
+/**
+ * NavigationItem - Interface for a navigation item
+ */
 export interface NavigationItem {
   label: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,6 +1,8 @@
-// Browser-compatible EventEmitter implementation
+/**
+ * EventEmitter - Browser-compatible EventEmitter implementation
+ */
 export class EventEmitter {
-  private events: { [key: string]: ((...args: unknown[]) => void)[] } = {};
+  private events: Record<string, ((...args: unknown[]) => void)[]> = {};
 
   /**
    * Adds a listener to an event

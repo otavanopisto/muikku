@@ -6,6 +6,9 @@ import { LinksGroup } from "../NavbarLinksGroup/NavbarLinksGroup";
 import classes from "./NavbarNested.module.css";
 import { type NavigationItem } from "~/src/layout/helpers/navigation";
 
+/**
+ * NavbarNestedProps - Interface for navbar nested props
+ */
 interface NavbarNestedProps {
   title: string;
   items: NavigationItem[];
@@ -13,6 +16,11 @@ interface NavbarNestedProps {
   onToggleCollapse?: () => void;
 }
 
+/**
+ * NavbarNested - Navbar nested component
+ * @param props - Navbar nested props
+ * @returns Navbar nested component
+ */
 export function NavbarNested(props: NavbarNestedProps) {
   const { items, collapsed = false, onToggleCollapse, title } = props;
   const links = items.map((item) => (

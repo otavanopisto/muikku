@@ -3,43 +3,33 @@ import { type LoaderFunction } from "react-router";
 /**
  * Global initialization loader
  */
-export const environmentLoader: LoaderFunction = () => {
-  return null;
-};
+export const environmentLoader: LoaderFunction = () => null;
 
 /**
  * Home page loader (for unauthenticated users)
  */
-export const homeLoader: LoaderFunction = () => {
-  return null;
-};
+export const homeLoader: LoaderFunction = () => null;
 
 /**
  * Dashboard loader (for authenticated users)
  */
-export const dashboardLoader: LoaderFunction = () => {
-  return null;
-};
+export const dashboardLoader: LoaderFunction = () => null;
 
 /**
  * Workspace initialization loader
  */
-export const workspaceLoader: LoaderFunction = () => {
-  return null;
-};
+export const workspaceLoader: LoaderFunction = () => null;
 
 /**
  * Workspace home loader
  */
-export const workspaceHomeLoader: LoaderFunction = () => {
+export const workspaceHomeLoader: LoaderFunction = () =>
   // Authentication is already checked in workspaceLoader
-  return null;
-};
+  null;
 
 /**
  * Workspace settings loader
  */
-export const workspaceSettingsLoader: LoaderFunction = () => {
+export const workspaceSettingsLoader: LoaderFunction = () =>
   // Authentication is already checked in workspaceLoader
-  return null;
-};
+  null;

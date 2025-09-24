@@ -14,6 +14,9 @@ import { langAtom, setLangAtom } from "../atoms/locale";
 import { useAtomValue, useSetAtom } from "jotai";
 import { languages } from "../shared/langs";
 
+/**
+ * NavItem - Interface for a navigation item
+ */
 interface NavItem {
   label: string;
   path: string;
@@ -42,6 +45,9 @@ const navItems: NavItem[] = [
   },
 ];
 
+/**
+ * Navbar - Navbar component
+ */
 export function Navbar() {
   const location = useLocation();
   const user = useAtomValue(userAtom);
@@ -51,8 +57,8 @@ export function Navbar() {
   /**
    * Handle logout
    */
-  const handleLogout = async () => {
-    await AuthService.logout();
+  const handleLogout = () => {
+    AuthService.logout();
   };
 
   /**
@@ -113,7 +119,7 @@ export function Navbar() {
               {languages.map((language) => (
                 <Menu.Item
                   key={language.code}
-                  onClick={() => handleLanguageChange(language.code)}
+                  onClick={() => void handleLanguageChange(language.code)}
                   fw={lang === language.code ? "bold" : "normal"}
                 >
                   {language.label}
@@ -122,7 +128,7 @@ export function Navbar() {
             </Menu.Dropdown>
           </Menu>
 
-          {user && user.loggedIn ? (
+          {user?.loggedIn ? (
             <Menu shadow="md" width={200}>
               <Menu.Target>
                 <Button variant="subtle" size="sm">

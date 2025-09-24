@@ -1,5 +1,8 @@
 import { Container, Text, Paper } from "@mantine/core";
 
+/**
+ * Home - Home page
+ */
 export function Home() {
   return (
     <Container size="lg">

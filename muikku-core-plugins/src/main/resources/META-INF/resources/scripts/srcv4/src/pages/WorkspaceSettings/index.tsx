@@ -1,6 +1,9 @@
 import { Container, Title, Text, Paper } from "@mantine/core";
 import { useParams } from "react-router";
 
+/**
+ * WorkspaceSettings - Workspace settings page
+ */
 export function WorkspaceSettings() {
   const { workspaceUrlName } = useParams();
   return (

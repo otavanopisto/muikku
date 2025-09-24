@@ -27,7 +27,7 @@ export const availableLanguages = Object.keys(resources);
 export const defaultNS = "common";
 const lang = document.querySelector("html")?.lang ?? "fi";
 
-i18n.use(initReactI18next).init({
+await i18n.use(initReactI18next).init({
   debug: false,
   resources,
   lng: "fi",
@@ -53,8 +53,8 @@ function outputCorrectDayjsLocale(language: string): string {
   return localeMap[language] || "fi";
 }
 
-/**Localize
- * Helper functions for time localization
+/**
+ * Localize - Helper functions for time localization
  */
 export class Localize {
   lang: string;
@@ -87,7 +87,7 @@ export class Localize {
   set language(lang: string) {
     this.lang = lang;
     document.querySelector("html")!.lang = lang;
-    i18n.changeLanguage(lang);
+    void i18n.changeLanguage(lang);
   }
 
   /**
@@ -96,7 +96,7 @@ export class Localize {
    * @param format format
    */
   date(date?: Date | string, format = "l") {
-    const dateParam = date ? date : new Date();
+    const dateParam = date ?? new Date();
 
     return dayjs(dateParam)
       .locale(outputCorrectDayjsLocale(this.language.toLowerCase()))
@@ -150,7 +150,7 @@ export class Localize {
 
   /**
    * duration
-   * @param inp input
+   * @param time time
    * @param unit unit
    * @returns dayjs duration
    */

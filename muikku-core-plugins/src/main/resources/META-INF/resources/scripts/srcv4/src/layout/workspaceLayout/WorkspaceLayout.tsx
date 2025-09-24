@@ -1,6 +1,9 @@
 import { AppShell, Group, Title } from "@mantine/core";
 import { Outlet, useParams } from "react-router";
 
+/**
+ * WorkspaceLayout - Workspace layout
+ */
 export function WorkspaceLayout() {
   const { workspaceUrlName } = useParams();
   return (

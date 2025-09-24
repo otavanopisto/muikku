@@ -44,6 +44,11 @@ import {
  * This is openapi-generator issue and hopefully will be fixed in the future
  */
 class NoContentMiddleware implements Middleware {
+  /**
+   * Handles 204 No Content responses
+   * @param context - Response context
+   * @returns Response or void
+   */
   public post?(context: ResponseContext): Promise<Response | void> {
     if (context.response.status === 204) {
       // change response json to null.

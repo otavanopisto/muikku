@@ -11,6 +11,9 @@ import { useDisclosure } from "@mantine/hooks";
 import classes from "./SharedLayout.module.css";
 import { workspacePermissionsAtom } from "~/src/atoms/permissions";
 
+/**
+ * Shared layout props
+ */
 interface SharedLayoutProps {
   title?: string;
   context?: NavigationContext;

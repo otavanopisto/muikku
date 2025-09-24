@@ -27,6 +27,7 @@ export const initializeDiscussionAreaPermissionsAtom = atom(
       return;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const areaPermissions = user?.services?.environmentForum?.isAvailable
       ? await discussionApi.getDiscussionEnvironmentAreaPermissions()
       : null;

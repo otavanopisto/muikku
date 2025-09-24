@@ -3,6 +3,9 @@ import { useParams } from "react-router";
 import { useAtomValue } from "jotai";
 import { workspaceInfoAtom } from "~/src/atoms/workspace";
 
+/**
+ * WorkspaceHome - Workspace home page
+ */
 export function WorkspaceHome() {
   const { workspaceUrlName } = useParams();
   const workspaceInfo = useAtomValue(workspaceInfoAtom);

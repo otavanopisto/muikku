@@ -6,11 +6,12 @@ import { workspaceInit } from "../services/initialization";
 /**
  * Workspace middleware
  * Runs after authMiddleware to check workspace-specific permissions
+ * @param args - The args
+ * @param next - The next middleware
+ * @returns The next middleware
  */
-export const workspaceMiddleware: MiddlewareFunction = async (
-  { params },
-  next
-) => {
+export const workspaceMiddleware: MiddlewareFunction = async (args, next) => {
+  const { params } = args;
   const workspaceUrlName = params.workspaceUrlName;
 
   if (!workspaceUrlName) {
