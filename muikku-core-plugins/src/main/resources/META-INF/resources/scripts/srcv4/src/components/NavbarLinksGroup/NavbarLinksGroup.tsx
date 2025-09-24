@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { IconCalendarStats, IconChevronRight } from "@tabler/icons-react";
+import { IconChevronRight } from "@tabler/icons-react";
 import {
-  Box,
   Collapse,
   Group,
   Text,
@@ -159,31 +158,5 @@ export function LinksGroup({
       {mainElement}
       {hasLinks && !collapsed ? <Collapse in={opened}>{items}</Collapse> : null}
     </>
-  );
-}
-
-const mockdata = {
-  label: "Releases",
-  icon: IconCalendarStats,
-  links: [
-    { label: "Upcoming releases", link: "/" },
-    { label: "Previous releases", link: "/" },
-    { label: "Releases schedule", link: "/" },
-  ],
-};
-
-// Example of a simple link item
-const simpleLinkData = {
-  label: "Dashboard",
-  icon: IconCalendarStats,
-  link: "/dashboard",
-};
-
-export function NavbarLinksGroup() {
-  return (
-    <Box mih={220} p="md">
-      <LinksGroup {...mockdata} />
-      <LinksGroup {...simpleLinkData} />
-    </Box>
   );
 }
