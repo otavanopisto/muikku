@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { IconChevronRight } from "@tabler/icons-react";
 import {
   Collapse,
@@ -11,6 +11,9 @@ import {
 import { Link, useLocation, useParams, type Params } from "react-router";
 import classes from "./NavbarLinksGroup.module.css";
 
+/**
+ * LinksGroupProps
+ */
 interface LinksGroupProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: React.FC<any>;
@@ -25,26 +28,40 @@ interface LinksGroupProps {
   collapsed?: boolean;
 }
 
-export function LinksGroup({
-  icon: Icon,
-  label,
-  initiallyOpened,
-  links,
-  link,
-  onClick,
-  active = false,
-  collapsed = false,
-}: LinksGroupProps) {
+/**
+ * LinksGroup component
+ * @param props - LinksGroupProps
+ */
+export function LinksGroup(props: LinksGroupProps) {
+  const {
+    icon: Icon,
+    label,
+    initiallyOpened,
+    links,
+    link,
+    onClick,
+    active = false,
+    collapsed = false,
+  } = props;
   const location = useLocation();
   const params = useParams();
   const hasLinks = Array.isArray(links) && links.length > 0;
   const isSimpleLink = !hasLinks && (link ?? onClick);
   const [opened, setOpened] = useState(initiallyOpened ?? false);
 
-  // Determine if this item is active
-  const isActive = active || (link && location.pathname === link);
+  const isActive = useMemo(() => {
+    return (
+      active ||
+      (link &&
+        (typeof link === "function"
+          ? link(params) === location.pathname
+          : link === location.pathname))
+    );
+  }, [active, link, location.pathname, params]);
 
-  // Handle click for simple links
+  /**
+   * Handle click for simple links
+   */
   const handleClick = () => {
     if (isSimpleLink) {
       if (onClick) {

@@ -133,6 +133,12 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     label: "Etusivu",
     icon: IconHome,
+    link: "/dashboard",
+    canAccess: (user) => user?.loggedIn ?? false,
+  },
+  {
+    label: "Työtilan etusivu",
+    icon: IconHome,
     link: (params) => `/workspace/${params.workspaceUrlName}`,
     canAccess: (_, workspacePermissions) =>
       workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
