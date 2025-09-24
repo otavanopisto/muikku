@@ -28,7 +28,7 @@ async function performGlobalInitialization() {
     //updateUnreadMessages(),
   ]);
 
-  executeAtomAction(globalInitializedAtom, true);
+  await executeAtomAction(globalInitializedAtom, true);
 }
 
 /**
@@ -47,7 +47,7 @@ export async function globalInit() {
  */
 export async function workspaceInit(workspaceUrlName: string) {
   await executeAtomAction(initializeWorkspaceStatusAtom, workspaceUrlName);
-  executeAtomAction(workspaceInitializedAtom, workspaceUrlName);
+  await executeAtomAction(workspaceInitializedAtom, workspaceUrlName);
 }
 
 /**

@@ -9,6 +9,7 @@ import {
 } from "../helpers/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./SharedLayout.module.css";
+import { workspacePermissionsAtom } from "~/src/atoms/permissions";
 
 interface SharedLayoutProps {
   title?: string;
@@ -22,6 +23,7 @@ interface SharedLayoutProps {
 export function SharedLayout(props: SharedLayoutProps) {
   const { title = "Muikku V4", context = "environment" } = props;
   const user = useAtomValue(userAtom);
+  const workspacePermissions = useAtomValue(workspacePermissionsAtom);
   const [opened, { toggle }] = useDisclosure(); // Navbar state
 
   return (
@@ -55,7 +57,7 @@ export function SharedLayout(props: SharedLayoutProps) {
       <AppShell.Navbar className={classes.navbarTransition}>
         <NavbarNested
           title={title}
-          items={getNavigationItems(user, context)}
+          items={getNavigationItems(user, workspacePermissions, context)}
           collapsed={!opened} // Use desktop collapsed state
           onToggleCollapse={toggle} // Toggle desktop collapsed state
         />

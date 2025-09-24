@@ -33,16 +33,14 @@ export class AuthService {
    * @param loginPath - The path to redirect to after login
    * @returns The user data
    */
-  static async login(
-    loginPath: string = `/login?redirectUrl=${window.location.pathname}`
-  ) {
+  static login(loginPath = `/login?redirectUrl=${window.location.pathname}`) {
     window.location.href = loginPath;
   }
 
   /**
    * Logout from the system
    */
-  static async logout() {
+  static logout() {
     // Clear session, redirect to logout
     window.location.replace("/logout");
   }

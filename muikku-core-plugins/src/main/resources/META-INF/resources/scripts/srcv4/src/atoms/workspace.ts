@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import MApi, { isMApiError, isResponseError } from "~/api";
+import MApi, { isMApiError } from "~/api";
 import type { WorkspaceBasicInfo } from "~/generated/client";
 import { initializeWorkspacePermissionsAtom } from "./permissions";
 
@@ -23,37 +23,16 @@ export const initializeWorkspaceStatusAtom = atom(
       workspaceBasicInfo = await workspaceApi.getWorkspaceBasicInfo({
         urlName: workspaceUrlName,
       });
+
+      if (workspaceBasicInfo) {
+        set(workspaceInfoAtom, workspaceBasicInfo);
+        await set(loadCanUserSignupToWorkspaceAtom, workspaceBasicInfo.id);
+        await set(initializeWorkspacePermissionsAtom, workspaceBasicInfo.id);
+      }
     } catch (err) {
       if (!isMApiError(err)) {
         throw err;
       }
-
-      // Handling workspace errors
-      if (isResponseError(err)) {
-        const status = err.response.status;
-
-        switch (status) {
-          case 401:
-            window.location.href = `/login?redirectUrl=${window.location.pathname}`;
-            break;
-          case 403:
-            window.location.href = `/error/403?workspace=true`;
-            break;
-          case 404:
-            window.location.href = `/error/404?workspace=true`;
-            break;
-          default:
-            window.location.href = `/error/${status}?workspace=true`;
-            break;
-        }
-        return;
-      }
-    }
-
-    if (workspaceBasicInfo) {
-      set(workspaceInfoAtom, workspaceBasicInfo);
-      set(loadCanUserSignupToWorkspaceAtom, workspaceBasicInfo.id);
-      set(initializeWorkspacePermissionsAtom, workspaceBasicInfo.id);
     }
   }
 );

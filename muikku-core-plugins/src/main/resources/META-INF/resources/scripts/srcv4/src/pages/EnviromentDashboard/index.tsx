@@ -2,9 +2,12 @@ import { Container, Title, Text, Paper, Button, Group } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { userAtom } from "~/src/atoms/auth";
 import { Link } from "react-router";
+import { workspacePermissionsAtom } from "~/src/atoms/permissions";
 
 export function EnvironmentDashboard() {
   const user = useAtomValue(userAtom);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const workspacePermissions = useAtomValue(workspacePermissionsAtom);
 
   return (
     <Container size="lg">

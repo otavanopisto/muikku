@@ -1,4 +1,4 @@
-import type { User } from "~/src/services/auth";
+import { AuthService, type User } from "~/src/services/auth";
 import {
   IconHome,
   IconBuilding,
@@ -9,8 +9,10 @@ import {
   IconUser,
   IconSettings,
   IconLogout,
+  IconLogin,
 } from "@tabler/icons-react";
 import { type Params } from "react-router";
+import type { WorkspacePermissions } from "~/src/services/permissions";
 
 export type NavigationContext = "environment" | "workspace";
 
@@ -30,7 +32,10 @@ export interface NavigationItem {
   links?: NavigationLink[];
   initiallyOpened?: boolean;
   // Permission checking
-  canAccess?: (user: User | null) => boolean;
+  canAccess?: (
+    user: User | null,
+    workspacePermissions?: WorkspacePermissions | null
+  ) => boolean;
   // Additional props
   active?: boolean;
 }
@@ -40,25 +45,32 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     label: "Etusivu",
     icon: IconHome,
     link: "/",
-    canAccess: () => true, // Always visible
+    canAccess: (user) => !(user?.loggedIn ?? false), // Only visible if user is unauthenticated
+  },
+  {
+    label: "Etusivu",
+    icon: IconHome,
+    link: "/dashboard",
+    canAccess: (user) => user?.loggedIn ?? false, // Only visible if user is authenticated
   },
   {
     label: "Kurssipoimuri",
     icon: IconBuilding,
     link: "/coursepicker",
-    canAccess: (user) => user?.loggedIn ?? false,
+    canAccess: () => true,
   },
   {
     label: "Viestin",
     icon: IconMail,
     link: "/messages",
-    canAccess: (user) => user?.loggedIn ?? false,
+    canAccess: (user) => (user?.loggedIn && user?.isActive) ?? false,
   },
   {
     label: "Ohjaamo",
     icon: IconList,
-    link: "/dashboard",
-    canAccess: (user) => user?.loggedIn ?? false,
+    link: "/guider",
+    canAccess: (user) =>
+      (user?.loggedIn && user?.permissions.GUIDER_VIEW) ?? false,
   },
 
   {
@@ -82,8 +94,59 @@ export const navigationItemsEnviroment: NavigationItem[] = [
       { label: "Oikeuksien hallinta", link: "/organization/permissions" },
     ],
     initiallyOpened: false,
-    canAccess: (user) => user?.permissions?.ORGANIZATION_VIEW ?? false,
+    canAccess: (user) =>
+      (user?.loggedIn && user?.permissions?.ORGANIZATION_VIEW) ?? false,
   },
+  {
+    label: "Omat tiedot",
+    icon: IconUser,
+    link: "/profile",
+    canAccess: (user) => user?.loggedIn ?? false,
+  },
+  {
+    label: "Asetukset",
+    icon: IconSettings,
+    link: "/settings",
+    canAccess: (user) => user?.loggedIn ?? false,
+  },
+  {
+    label: "Kirjaudu sisään",
+    icon: IconLogin,
+    onClick: () => {
+      // This will be handled by the parent component
+      AuthService.login();
+    },
+    canAccess: (user) => !(user?.loggedIn ?? false),
+  },
+  {
+    label: "Kirjaudu ulos",
+    icon: IconLogout,
+    onClick: () => {
+      // This will be handled by the parent component
+      AuthService.logout();
+    },
+    canAccess: (user) => user?.loggedIn ?? false,
+  },
+];
+
+const navigationItemsWorkspace: NavigationItem[] = [
+  {
+    label: "Etusivu",
+    icon: IconHome,
+    link: (params) => `/workspace/${params.workspaceUrlName}`,
+    canAccess: (_, workspacePermissions) =>
+      workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
+  },
+  {
+    label: "Työtilan hallinta",
+    icon: IconBuildingStore,
+    link: (params) =>
+      `/workspace/${params.workspaceUrlName}/workspaceManagement`,
+    canAccess: (user, workspacePermissions) =>
+      (user?.loggedIn && workspacePermissions?.WORKSPACE_MANAGE_WORKSPACE) ??
+      false, // Always visible
+  },
+
   {
     label: "Omat tiedot",
     icon: IconUser,
@@ -101,25 +164,9 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     icon: IconLogout,
     onClick: () => {
       // This will be handled by the parent component
-      console.log("Logout clicked");
+      AuthService.logout();
     },
     canAccess: (user) => user?.loggedIn ?? false,
-  },
-];
-
-const navigationItemsWorkspace: NavigationItem[] = [
-  {
-    label: "Etusivu",
-    icon: IconHome,
-    link: (params) => `/workspace/${params.workspaceUrlName}`,
-    canAccess: (user) => user?.loggedIn ?? false, // Always visible
-  },
-  {
-    label: "Asetukset",
-    icon: IconSettings,
-    link: (params) =>
-      `/workspace/${params.workspaceUrlName}/workspaceManagement`,
-    canAccess: (user) => user?.loggedIn ?? false, // Always visible
   },
 ];
 
@@ -131,13 +178,14 @@ const navigationItemsWorkspace: NavigationItem[] = [
  */
 export function filterNavigationItems(
   items: NavigationItem[],
-  user: User | null
+  user: User | null,
+  workspacePermissions?: WorkspacePermissions | null
 ): NavigationItem[] {
   return items.filter((item) => {
     if (!item.canAccess) {
       return true; // Show if no access check defined
     }
-    return item.canAccess(user);
+    return item.canAccess(user, workspacePermissions);
   });
 }
 
@@ -149,10 +197,15 @@ export function filterNavigationItems(
  */
 export function getNavigationItems(
   user: User | null,
+  workspacePermissions?: WorkspacePermissions | null,
   context: NavigationContext = "environment"
 ): NavigationItem[] {
   if (context === "workspace") {
-    return filterNavigationItems(navigationItemsWorkspace, user);
+    return filterNavigationItems(
+      navigationItemsWorkspace,
+      user,
+      workspacePermissions
+    );
   }
 
   // You can add context-specific filtering here if needed

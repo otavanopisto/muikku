@@ -65,6 +65,9 @@ export class PermissionsService {
       FORUM_DELETEENVIRONMENTFORUM:
         permissions?.has("FORUM_DELETEENVIRONMENTFORUM") ?? false,
       WORKLIST_AVAILABLE: services?.worklist?.isAvailable ?? false,
+      HOP_VIEW: services?.hops?.isAvailable ?? false,
+      ENVIRONMENT_FORUM_VIEW: services?.environmentForum?.isAvailable ?? false,
+      CHAT: services?.chat?.isAvailable ?? false,
     };
   }
 

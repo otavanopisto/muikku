@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 import { AuthService, type User } from "~/src/services/auth";
+import type { UserPermissions } from "../services/permissions";
 
 // User state
 export const userAtom = atom<User | null>(null);
@@ -11,10 +12,10 @@ export const authErrorAtom = atom<string | null>(null);
 export const authInitializedAtom = atom<boolean>(false);
 
 // User metadata
-export const userProfileAtom = atom((get) => get(userAtom)?.profile || null);
-export const userRolesAtom = atom((get) => get(userAtom)?.roles || []);
+export const userProfileAtom = atom((get) => get(userAtom)?.profile ?? null);
+export const userRolesAtom = atom((get) => get(userAtom)?.roles ?? []);
 export const userPermissionsAtom = atom(
-  (get) => get(userAtom)?.permissions || []
+  (get) => get(userAtom)?.permissions ?? ({} as UserPermissions)
 );
 
 /**
