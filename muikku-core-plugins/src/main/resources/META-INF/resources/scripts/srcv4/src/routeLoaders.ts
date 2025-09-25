@@ -15,6 +15,8 @@ export const homeLoader: LoaderFunction = () => null;
  */
 export const dashboardLoader: LoaderFunction = () => null;
 
+export const communicatorLoader: LoaderFunction = () => null;
+
 /**
  * Workspace initialization loader
  */
