@@ -31,10 +31,10 @@ import {
   WorkspaceMaterials,
   WorkspaceJournal,
   WorkspaceHelp,
+  NotFound,
 } from "~/src/pages/";
-import { ErrorBoundaryRoot } from "./components/ErrorBoundaryRoot/ErrorBoundaryRoot";
-import { ErrorBoundaryPage } from "./components/ErrorBoundaryPage/ErrorBoundaryPage";
-import { NotFound } from "./pages/NotFound";
+import { ErrorBoundaryRoot } from "~/src/components/ErrorBoundaryRoot/ErrorBoundaryRoot";
+import { ErrorBoundaryPage } from "~/src/components/ErrorBoundaryPage/ErrorBoundaryPage";
 
 export const router = createBrowserRouter([
   {

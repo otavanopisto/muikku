@@ -17,6 +17,7 @@ import { WorkspaceHelp } from "~/src/pages/WorkspaceHelp";
 import { WorkspaceJournal } from "~/src/pages/WorkspaceJournal";
 import { WorkspaceMaterials } from "~/src/pages/WorkspaceMaterials";
 import { WorkspaceUsers } from "~/src/pages/WorkspaceUsers";
+import { NotFound } from "~/src/pages/NotFound";
 
 export {
   Home,
@@ -38,4 +39,5 @@ export {
   WorkspaceJournal,
   WorkspaceMaterials,
   WorkspaceUsers,
+  NotFound,
 };
