@@ -35,16 +35,16 @@ import {
 export const router = createBrowserRouter([
   {
     path: "/",
+    index: true,
+    element: <Home />,
+    loader: homeLoader,
+    middleware: [authMiddleware, permissionMiddlewares.homeView],
+  },
+  {
     element: <SharedLayout />,
     //loader: environmentLoader,
     middleware: [authMiddleware],
     children: [
-      {
-        index: true,
-        element: <Home />,
-        loader: homeLoader,
-        middleware: [permissionMiddlewares.homeView],
-      },
       {
         path: "dashboard",
         element: <Dashboard />,
