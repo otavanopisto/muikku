@@ -113,7 +113,6 @@ export const permissionMiddlewares = {
 
   // Home view
   homeView: createPermissionMiddleware({
-    requireAuth: false,
     redirectPath: "/dashboard",
     customCheck(user) {
       return !user?.loggedIn;
@@ -202,6 +201,9 @@ export const permissionMiddlewares = {
     userPermissions: ["HOP_VIEW"],
   }),
 
+  // App settings view
+  appSettingsView: createPermissionMiddleware({}),
+
   // WORKSPACE PERMISSIONS MIDDLEWARES
 
   // Workspace home view
@@ -220,6 +222,30 @@ export const permissionMiddlewares = {
   workspaceEvaluationView: createPermissionMiddleware({
     requireAuth: true,
     workspacePermissions: ["WORKSPACE_ACCESS_EVALUATION"],
+  }),
+
+  // Workspace help view
+  workspaceHelpView: createPermissionMiddleware({
+    requireAuth: true,
+    workspacePermissions: ["WORKSPACE_GUIDES_VISIBLE"],
+  }),
+
+  // Workspace journal view
+  workspaceJournalView: createPermissionMiddleware({
+    requireAuth: true,
+    workspacePermissions: ["WORKSPACE_JOURNAL_VISIBLE"],
+  }),
+
+  // Workspace materials view
+  workspaceMaterialsView: createPermissionMiddleware({
+    requireAuth: true,
+    workspacePermissions: ["WORKSPACE_MATERIALS_VISIBLE"],
+  }),
+
+  // Workspace users view
+  workspaceUsersView: createPermissionMiddleware({
+    requireAuth: true,
+    workspacePermissions: ["WORKSPACE_USERS_VISIBLE"],
   }),
 
   // Custom permission checker

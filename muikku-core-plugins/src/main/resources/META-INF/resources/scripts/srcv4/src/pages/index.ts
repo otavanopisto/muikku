@@ -10,8 +10,13 @@ import { Organization } from "~/src/pages/Organization";
 import { Announcements } from "~/src/pages/Announcements";
 import { Announcer } from "~/src/pages/Announcer";
 import { Profile } from "~/src/pages/Profile";
+import { AppSettings } from "~/src/pages/AppSettings";
 import { WorkspaceHome } from "~/src/pages/WorkspaceHome";
 import { WorkspaceSettings } from "~/src/pages/WorkspaceSettings";
+import { WorkspaceHelp } from "~/src/pages/WorkspaceHelp";
+import { WorkspaceJournal } from "~/src/pages/WorkspaceJournal";
+import { WorkspaceMaterials } from "~/src/pages/WorkspaceMaterials";
+import { WorkspaceUsers } from "~/src/pages/WorkspaceUsers";
 
 export {
   Home,
@@ -26,6 +31,11 @@ export {
   Announcements,
   Announcer,
   Profile,
+  AppSettings,
   WorkspaceHome,
   WorkspaceSettings,
+  WorkspaceHelp,
+  WorkspaceJournal,
+  WorkspaceMaterials,
+  WorkspaceUsers,
 };

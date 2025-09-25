@@ -25,6 +25,11 @@ import {
   Profile,
   WorkspaceHome,
   WorkspaceSettings,
+  AppSettings,
+  WorkspaceUsers,
+  WorkspaceMaterials,
+  WorkspaceJournal,
+  WorkspaceHelp,
 } from "~/src/pages/";
 
 export const router = createBrowserRouter([
@@ -106,6 +111,13 @@ export const router = createBrowserRouter([
         //loader: profileLoader,
         middleware: [permissionMiddlewares.profileView],
       },
+
+      {
+        path: "appSettings",
+        element: <AppSettings />,
+        //loader: appSettingsLoader,
+        middleware: [permissionMiddlewares.appSettingsView],
+      },
       // Future routes can be added here with their own loaders
       // {
       //   path: "coursepicker",
@@ -131,6 +143,30 @@ export const router = createBrowserRouter([
         element: <WorkspaceSettings />,
         loader: workspaceSettingsLoader,
         middleware: [permissionMiddlewares.workspaceManagementView],
+      },
+      {
+        path: "workspaceHelp",
+        element: <WorkspaceHelp />,
+        //loader: workspaceHelpLoader,
+        middleware: [permissionMiddlewares.workspaceHelpView],
+      },
+      {
+        path: "workspaceJournal",
+        element: <WorkspaceJournal />,
+        //loader: workspaceJournalLoader,
+        middleware: [permissionMiddlewares.workspaceJournalView],
+      },
+      {
+        path: "workspaceMaterials",
+        element: <WorkspaceMaterials />,
+        //loader: workspaceMaterialsLoader,
+        middleware: [permissionMiddlewares.workspaceMaterialsView],
+      },
+      {
+        path: "workspaceUsers",
+        element: <WorkspaceUsers />,
+        //loader: workspaceUsersLoader,
+        middleware: [permissionMiddlewares.workspaceUsersView],
       },
     ],
   },

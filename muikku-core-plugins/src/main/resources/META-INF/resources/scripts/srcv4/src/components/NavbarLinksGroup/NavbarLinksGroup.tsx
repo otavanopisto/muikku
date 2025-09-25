@@ -152,6 +152,24 @@ export function LinksGroup(props: LinksGroupProps) {
           </Group>
         )}
       </UnstyledButton>
+    ) : link ? (
+      <UnstyledButton
+        component={Link}
+        to={link instanceof Function ? link(params) : link}
+        onClick={handleClick}
+        className={`${classes.control} ${isActive ? classes.active : ""} ${
+          collapsed ? classes.collapsed : ""
+        }`}
+        p="sm"
+      >
+        {collapsed ? (
+          <Tooltip label={label} position="right" withArrow>
+            {MainLinkContent}
+          </Tooltip>
+        ) : (
+          <Group gap={0}>{MainLinkContent}</Group>
+        )}
+      </UnstyledButton>
     ) : (
       <UnstyledButton
         onClick={handleClick}

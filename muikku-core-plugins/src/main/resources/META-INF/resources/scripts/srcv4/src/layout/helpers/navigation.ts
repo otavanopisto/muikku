@@ -10,6 +10,9 @@ import {
   IconSettings,
   IconLogout,
   IconLogin,
+  IconHelp,
+  IconCalendar,
+  IconBook,
 } from "@tabler/icons-react";
 import { type Params } from "react-router";
 import type { WorkspacePermissions } from "~/src/services/permissions";
@@ -68,7 +71,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
   {
     label: "Viestin",
     icon: IconMail,
-    link: "/messages",
+    link: "/communicator",
     canAccess: (user) => (user?.loggedIn && user?.isActive) ?? false,
   },
   {
@@ -82,6 +85,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
   {
     label: "Arviointi",
     icon: IconEdit,
+    link: "/evaluation",
     links: [
       { label: "Arviointien hallinta", link: "/evaluation/manage" },
       { label: "Arviointiraportit", link: "/evaluation/reports" },
@@ -93,6 +97,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
   {
     label: "Organisaation hallinta",
     icon: IconBuildingStore,
+    link: "/organization",
     links: [
       { label: "Organisaation tiedot", link: "/organization/info" },
       { label: "Käyttäjien hallinta", link: "/organization/users" },
@@ -112,8 +117,8 @@ export const navigationItemsEnviroment: NavigationItem[] = [
   {
     label: "Asetukset",
     icon: IconSettings,
-    link: "/settings",
-    canAccess: (user) => user?.loggedIn ?? false,
+    link: "/appSettings",
+    canAccess: () => true,
   },
   {
     label: "Kirjaudu sisään",
@@ -158,7 +163,39 @@ const navigationItemsWorkspace: NavigationItem[] = [
       (user?.loggedIn && workspacePermissions?.WORKSPACE_MANAGE_WORKSPACE) ??
       false, // Always visible
   },
-
+  {
+    label: "Ohjeet",
+    icon: IconHelp,
+    link: (params) => `/workspace/${params.workspaceUrlName}/workspaceHelp`,
+    canAccess: (user, workspacePermissions) =>
+      (user?.loggedIn && workspacePermissions?.WORKSPACE_GUIDES_VISIBLE) ??
+      false, // Always visible
+  },
+  {
+    label: "Materiaalit",
+    icon: IconBook,
+    link: (params) =>
+      `/workspace/${params.workspaceUrlName}/workspaceMaterials`,
+    canAccess: (user, workspacePermissions) =>
+      (user?.loggedIn && workspacePermissions?.WORKSPACE_MATERIALS_VISIBLE) ??
+      false, // Always visible
+  },
+  {
+    label: "Oppimispäiväkirja",
+    icon: IconCalendar,
+    link: (params) => `/workspace/${params.workspaceUrlName}/workspaceJournal`,
+    canAccess: (user, workspacePermissions) =>
+      (user?.loggedIn && workspacePermissions?.WORKSPACE_JOURNAL_VISIBLE) ??
+      false, // Always visible
+  },
+  {
+    label: "Käyttäjät",
+    icon: IconUser,
+    link: (params) => `/workspace/${params.workspaceUrlName}/workspaceUsers`,
+    canAccess: (user, workspacePermissions) =>
+      (user?.loggedIn && workspacePermissions?.WORKSPACE_USERS_VISIBLE) ??
+      false, // Always visible
+  },
   {
     label: "Omat tiedot",
     icon: IconUser,
@@ -168,7 +205,7 @@ const navigationItemsWorkspace: NavigationItem[] = [
   {
     label: "Asetukset",
     icon: IconSettings,
-    link: "/settings",
+    link: "/appSettings",
     canAccess: (user) => user?.loggedIn ?? false,
   },
   {
