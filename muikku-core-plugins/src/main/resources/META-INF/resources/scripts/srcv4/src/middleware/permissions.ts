@@ -66,9 +66,8 @@ export function createPermissionMiddleware(
     );
 
     if (!hasUserPermissions) {
-      throw new Response("", {
-        status: 302,
-        headers: { Location: redirectPath },
+      throw new Response("Not found", {
+        status: 404,
       });
     }
 
@@ -81,9 +80,8 @@ export function createPermissionMiddleware(
         ));
 
     if (!hasWorkspacePermissions) {
-      throw new Response("", {
-        status: 302,
-        headers: { Location: redirectPath },
+      throw new Response("Not found", {
+        status: 404,
       });
     }
 

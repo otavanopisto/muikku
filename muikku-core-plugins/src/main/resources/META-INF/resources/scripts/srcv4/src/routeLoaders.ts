@@ -25,13 +25,9 @@ export const workspaceLoader: LoaderFunction = () => null;
 /**
  * Workspace home loader
  */
-export const workspaceHomeLoader: LoaderFunction = () =>
-  // Authentication is already checked in workspaceLoader
-  null;
+export const workspaceHomeLoader: LoaderFunction = () => null;
 
 /**
  * Workspace settings loader
  */
-export const workspaceSettingsLoader: LoaderFunction = () =>
-  // Authentication is already checked in workspaceLoader
-  null;
+export const workspaceSettingsLoader: LoaderFunction = () => null;

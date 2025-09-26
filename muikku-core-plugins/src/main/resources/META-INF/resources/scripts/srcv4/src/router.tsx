@@ -82,7 +82,7 @@ export const router = createBrowserRouter([
               {
                 path: "hops",
                 element: <Hops />,
-                //loader: hopsLoader,
+                // loader: hopsLoader,
                 middleware: [permissionMiddlewares.hopsView],
               },
               {
