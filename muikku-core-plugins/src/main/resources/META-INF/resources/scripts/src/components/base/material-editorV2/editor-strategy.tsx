@@ -4,6 +4,7 @@ import { PageLocation } from "~/@types/shared";
 import {
   AttachmentsTab,
   ExamAttendeesTab,
+  ExamCategoriesTab,
   ExamSettingsTab,
   MaterialContentTab,
   MetadataTab,
@@ -104,13 +105,8 @@ export class SectionEditorStrategy extends BaseEditorStrategy {
   ): boolean {
     // Custom logic for sections
     switch (tabId) {
-      case "exam-settings":
-      case "exam-attendees":
-        // Only show exam tabs when exam is enabled
-        return examEnabled;
-
       case "content":
-        // Content tab is always visible
+        // Content tab is visible when exam is not enabled
         return true;
 
       default:
@@ -141,36 +137,90 @@ export class SectionEditorStrategy extends BaseEditorStrategy {
       },
     ];
 
-    // Exam tabs only show when exam is enabled
-    if (this.shouldShowTab("exam-settings", permissions, examEnabled)) {
-      tabs.push(
-        {
-          id: "exam-settings",
-          name: "Koeasetukset",
-          // eslint-disable-next-line jsdoc/require-jsdoc
-          component: (
-            <ExamSettingsTab
-              editorPermissions={permissions}
-              examEnabled={examEnabled}
-            />
-          ),
-          stateManagement: "local",
-          visible: true,
-        },
-        {
-          id: "exam-attendees",
-          name: "Kokeeseen osallistujat",
-          // eslint-disable-next-line jsdoc/require-jsdoc
-          component: (
-            <ExamAttendeesTab
-              editorPermissions={permissions}
-              examEnabled={examEnabled}
-            />
-          ),
-          stateManagement: "local",
-          visible: true,
-        }
-      );
+    return tabs;
+  }
+}
+
+/**
+ * Strategy for editing sections (folders)
+ */
+export class ExamSectionEditorStrategy extends BaseEditorStrategy {
+  /**
+   * Check if a tab should be visible based on permissions and state
+   * @param tabId - Id of the tab
+   * @param permissions - Permissions for the editor
+   * @param examEnabled - Whether exam is enabled
+   * @returns True if the tab should be visible, false otherwise
+   */
+  protected shouldShowTab(
+    tabId: string,
+    permissions: EditorPermissions,
+    examEnabled: boolean
+  ): boolean {
+    // Custom logic for sections
+    switch (tabId) {
+      case "content":
+      case "exam-attendees":
+      case "exam-categories":
+        // Only show exam tabs
+        return true;
+
+      default:
+        return true;
+    }
+  }
+
+  /**
+   * Get tabs for the section editor
+   * @param examEnabled - Whether exam is enabled
+   * @param permissions - Permissions for the editor
+   * @returns Tabs for the section editor
+   */
+  getTabs(examEnabled: boolean, permissions: EditorPermissions): EditorTab[] {
+    const tabs: EditorTab[] = [
+      {
+        id: "content",
+        name: "Koeasetukset",
+        // eslint-disable-next-line jsdoc/require-jsdoc
+        component: (
+          <ExamSettingsTab
+            editorPermissions={permissions}
+            examEnabled={examEnabled}
+          />
+        ),
+        stateManagement: "redux",
+        visible: true,
+      },
+    ];
+
+    if (this.shouldShowTab("exam-categories", permissions, examEnabled)) {
+      tabs.push({
+        id: "exam-categories",
+        name: "Kokeen kategoriat",
+        component: (
+          <ExamCategoriesTab
+            editorPermissions={permissions}
+            examEnabled={examEnabled}
+          />
+        ),
+        stateManagement: "redux",
+        visible: true,
+      });
+    }
+
+    if (this.shouldShowTab("exam-attendees", permissions, examEnabled)) {
+      tabs.push({
+        id: "exam-attendees",
+        name: "Kokeeseen osallistujat",
+        component: (
+          <ExamAttendeesTab
+            editorPermissions={permissions}
+            examEnabled={examEnabled}
+          />
+        ),
+        stateManagement: "redux",
+        visible: true,
+      });
     }
 
     return tabs;
@@ -285,7 +335,9 @@ export const getEditorStrategy = (
   hasExam: boolean
 ): EditorStrategy => {
   if (entityType === "section") {
-    return new SectionEditorStrategy();
+    return hasExam
+      ? new ExamSectionEditorStrategy()
+      : new SectionEditorStrategy();
   } else {
     return new MaterialPageEditorStrategy();
   }

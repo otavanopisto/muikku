@@ -375,6 +375,43 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
   const dispatch = useDispatch();
 
   /**
+   * Handles title change
+   * @param e e
+   */
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      updateWorkspaceMaterialContentNode({
+        workspace: editorState.currentNodeWorkspace,
+        material: editorState.currentDraftNodeValue,
+        update: { title: e.target.value },
+        isDraft: true,
+      })
+    );
+  };
+
+  /**
+   * Handles title language change
+   * @param e e
+   */
+  const handleTitleLanguageChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    dispatch(
+      updateWorkspaceMaterialContentNode({
+        workspace: editorState.currentNodeWorkspace,
+        material: editorState.currentDraftNodeValue,
+        update: {
+          titleLanguage:
+            e.currentTarget.value !== ""
+              ? (e.currentTarget.value as Language)
+              : null,
+        },
+        isDraft: true,
+      })
+    );
+  };
+
+  /**
    * Handles exam settings change
    * @param key key
    * @param value value
@@ -403,6 +440,45 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
         editorPermissions={props.editorPermissions}
         examEnabled={props.examEnabled}
       />
+
+      {editorState.canSetTitle && (
+        <div className="form__row">
+          <div className="form-element">
+            <input
+              className="form-element__input form-element__input--material-editor-title"
+              value={editorState.currentDraftNodeValue.title}
+              onChange={handleTitleChange}
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="material-editor__sub-section">
+        <h3 className="material-editor__sub-title">{t("labels.language")}</h3>
+        <div className="form__row">
+          <div className="form-element">
+            <select
+              className="form-element__select form-element__select--material-editor"
+              onChange={handleTitleLanguageChange}
+              value={editorState.currentDraftNodeValue.titleLanguage || ""}
+            >
+              <option value="">
+                {t("labels.inherited", {
+                  ns: "workspace",
+                })}
+              </option>
+              {languageOptions.map((language: string) => (
+                <option key={language} value={language}>
+                  {t("labels.language", {
+                    context: language,
+                    ns: "workspace",
+                  })}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
 
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Kuvaus</h3>
@@ -527,7 +603,58 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
 
+/**
+ * Exam categories tab props
+ */
+interface ExamCategoriesTabProps extends EditorTabProps {}
+
+/**
+ * Simple exam categories tab component
+ * @param props - Props for the component
+ * @returns Exam categories tab for the editor
+ */
+export const ExamCategoriesTab = (props: ExamCategoriesTabProps) => {
+  const editorState = useSelector(
+    (state: StateType) => state.workspaces.materialEditor
+  );
+
+  const { examSettings } = editorState.currentDraftNodeValue;
+
+  const dispatch = useDispatch();
+
+  /**
+   * Handles exam settings change
+   * @param key key
+   * @param value value
+   */
+  const handleExamSettingsChange = <T extends keyof ExamSettings>(
+    key: T,
+    value: ExamSettings[T]
+  ) => {
+    dispatch(
+      updateWorkspaceMaterialContentNode({
+        workspace: editorState.currentNodeWorkspace,
+        material: editorState.currentDraftNodeValue,
+        update: { examSettings: { ...examSettings, [key]: value } },
+        isDraft: true,
+      })
+    );
+  };
+
+  if (!editorState.opened) {
+    return null;
+  }
+
+  return (
+    <div className="material-editor__content-wrapper">
+      <EditorButtonSet
+        editorPermissions={props.editorPermissions}
+        examEnabled={props.examEnabled}
+      />
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">Kokeen kategoriat</h3>
 
