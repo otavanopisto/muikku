@@ -1014,52 +1014,54 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
             includeHidden,
           });
 
-        if (!state.status.isStudent) {
-          const examSettings = await examApi.getAllExamSettings({
-            workspaceEntityId: workspaceId,
-          });
+        if (state.status.loggedIn) {
+          if (!state.status.isStudent) {
+            const examSettings = await examApi.getAllExamSettings({
+              workspaceEntityId: workspaceId,
+            });
 
-          materialContentNodes = materialContentNodes.map((node) => {
-            if (node.type !== "folder") {
-              return node;
-            }
+            materialContentNodes = materialContentNodes.map((node) => {
+              if (node.type !== "folder") {
+                return node;
+              }
 
-            const examSetting = examSettings.find(
-              (setting) => setting.examId === node.workspaceMaterialId
-            );
+              const examSetting = examSettings.find(
+                (setting) => setting.examId === node.workspaceMaterialId
+              );
 
-            if (!examSetting) {
-              return node;
-            }
+              if (!examSetting) {
+                return node;
+              }
 
-            return {
-              ...node,
-              examSettings: examSetting,
-            };
-          });
-        } else {
-          const examAttendances = await examApi.getExamAttendances({
-            workspaceEntityId: workspaceId,
-          });
+              return {
+                ...node,
+                examSettings: examSetting,
+              };
+            });
+          } else {
+            const examAttendances = await examApi.getExamAttendances({
+              workspaceEntityId: workspaceId,
+            });
 
-          materialContentNodes = materialContentNodes.map((node) => {
-            if (node.type !== "folder") {
-              return node;
-            }
+            materialContentNodes = materialContentNodes.map((node) => {
+              if (node.type !== "folder") {
+                return node;
+              }
 
-            const examAttendance = examAttendances.find(
-              (attendance) => attendance.folderId === node.workspaceMaterialId
-            );
+              const examAttendance = examAttendances.find(
+                (attendance) => attendance.folderId === node.workspaceMaterialId
+              );
 
-            if (!examAttendance) {
-              return node;
-            }
+              if (!examAttendance) {
+                return node;
+              }
 
-            return {
-              ...node,
-              examAttendance,
-            };
-          });
+              return {
+                ...node,
+                examAttendance,
+              };
+            });
+          }
         }
 
         dispatch({
