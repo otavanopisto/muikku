@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 import SkillLevel from "./cv/skill-level";
+import CvPdf from "./cv/pdf";
 import { saveLanguageProfile } from "~/actions/main-function/language-profile";
 import Button from "~/components/general/button";
 import { useTranslation } from "react-i18next";
@@ -40,57 +41,60 @@ const LanguageCv = () => {
   };
 
   return (
-    <div className="language-profile-form">
-      <div className="language-profile-form__container">
-        <div className="language-profile-container">
-          <fieldset className="language-profile-container__fieldset">
-            <legend className="language-profile-container__subheader">
-              {t("labels.languageCv", {
-                ns: "languageProfile",
-              })}
-            </legend>
-            <div className="language-profile-container__fieldset-description">
-              {t("content.languageCv", {
-                ns: "languageProfile",
-              })}
-            </div>
-            <div className="language-profile-container__row">
-              <div className="language-profile__form-element-container">
-                <label htmlFor="cv" className="language-profile__label">
-                  {t("labels.general", {
-                    ns: "languageProfile",
-                  })}
-                </label>
-                <div className="language-profile__field-description">
-                  {t("content.general", {
-                    ns: "languageProfile",
-                  })}
-                </div>
-                <textarea
-                  id="cv"
-                  defaultValue={cv.general || ""}
-                  className="language-profile__textarea"
-                  onChange={(e) => handleFieldChange(e)}
-                />
+    <div>
+      <CvPdf />
+      <div className="language-profile-form">
+        <div className="language-profile-form__container">
+          <div className="language-profile-container">
+            <fieldset className="language-profile-container__fieldset">
+              <legend className="language-profile-container__subheader">
+                {t("labels.languageCv", {
+                  ns: "languageProfile",
+                })}
+              </legend>
+              <div className="language-profile-container__fieldset-description">
+                {t("content.languageCv", {
+                  ns: "languageProfile",
+                })}
               </div>
-            </div>
-          </fieldset>
-          {languages.length > 0 ? (
-            languages.map((language) => (
-              <SkillLevel key={language.code} language={language} />
-            ))
-          ) : (
-            <div className="empty">
-              {t("content.noAddedLanguages", { ns: "languageProfile" })}
-            </div>
-          )}
+              <div className="language-profile-container__row">
+                <div className="language-profile__form-element-container">
+                  <label htmlFor="cv" className="language-profile__label">
+                    {t("labels.general", {
+                      ns: "languageProfile",
+                    })}
+                  </label>
+                  <div className="language-profile__field-description">
+                    {t("content.general", {
+                      ns: "languageProfile",
+                    })}
+                  </div>
+                  <textarea
+                    id="cv"
+                    defaultValue={cv.general || ""}
+                    className="language-profile__textarea"
+                    onChange={(e) => handleFieldChange(e)}
+                  />
+                </div>
+              </div>
+            </fieldset>
+            {languages.length > 0 ? (
+              languages.map((language) => (
+                <SkillLevel key={language.code} language={language} />
+              ))
+            ) : (
+              <div className="empty">
+                {t("content.noAddedLanguages", { ns: "languageProfile" })}
+              </div>
+            )}
 
-          <div className="language-profile__footer">
-            <Button onClick={handleSave} buttonModifiers={["execute"]}>
-              {t("actions.save", {
-                ns: "common",
-              })}
-            </Button>
+            <div className="language-profile__footer">
+              <Button onClick={handleSave} buttonModifiers={["execute"]}>
+                {t("actions.save", {
+                  ns: "common",
+                })}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
