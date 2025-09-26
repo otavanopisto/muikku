@@ -16,7 +16,7 @@ const LanguageCv = () => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const { languageProfile, status } = useSelector((state: StateType) => state);
-  const { languages, cv } = languageProfile.data;
+  const { cv, languages } = languageProfile.data;
 
   /**
    *
@@ -78,8 +78,8 @@ const LanguageCv = () => {
                 </div>
               </div>
             </fieldset>
-            {languages.length > 0 ? (
-              languages.map((language) => (
+            {cv.languages.length > 0 ? (
+              cv.languages.map((language) => (
                 <SkillLevel key={language.code} language={language} />
               ))
             ) : (

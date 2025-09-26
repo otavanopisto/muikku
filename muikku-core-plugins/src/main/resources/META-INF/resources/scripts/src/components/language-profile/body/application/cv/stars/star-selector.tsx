@@ -6,8 +6,8 @@ const PdfStarDisplayer = (props: { value: number }) => {
 
   const fill = () => {
     const fillArray = [];
-    for (let i = 0; i < 4; i++) {
-      if (i <= value && value > 0) {
+    for (let i = 0; i < 5; i++) {
+      if (i + 1 <= value && value > 0) {
         fillArray.push("#800080");
       } else {
         fillArray.push("none");
