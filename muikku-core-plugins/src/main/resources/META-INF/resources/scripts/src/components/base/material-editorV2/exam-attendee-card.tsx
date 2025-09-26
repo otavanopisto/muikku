@@ -146,7 +146,7 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
             icon="pencil"
             buttonModifiers={"edit-extra-row"}
             onClick={handleStartEditing}
-            disabled={saving || isEditing}
+            disabled={saving || isEditing || isEnded || isStarted}
             title="Muokkaa asetuksia"
           />
 
@@ -154,7 +154,7 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
             icon="trash"
             buttonModifiers={"remove-extra-row"}
             onClick={() => onRemove(attendee.id!)}
-            disabled={saving}
+            disabled={saving || isEnded || isStarted}
             title="Poista osallistuja"
           />
         </div>
