@@ -532,6 +532,7 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
         <h3 className="material-editor__sub-title">Kokeen kategoriat</h3>
 
         <ExamCategories
+          examRandom={examSettings?.random || ExamSettingsRandom.None}
           categories={examSettings?.categories || []}
           onUpdate={(categories) =>
             handleExamSettingsChange("categories", categories)

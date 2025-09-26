@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { ExamSettingsCategory } from "~/generated/client";
+import { ExamSettingsCategory, ExamSettingsRandom } from "~/generated/client";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
 
@@ -8,6 +8,7 @@ import Button from "~/components/general/button";
  * ExamCategoriesProps
  */
 interface ExamCategoriesProps {
+  examRandom: ExamSettingsRandom;
   categories: ExamSettingsCategory[];
   onUpdate: (categories: ExamSettingsCategory[]) => void;
   disabled?: boolean;
@@ -19,7 +20,7 @@ interface ExamCategoriesProps {
  * @returns Exam categories
  */
 export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
-  const { categories, onUpdate, disabled = false } = props;
+  const { categories, onUpdate, disabled = false, examRandom } = props;
 
   const currentExamSectionPages = useSelector(
     (state: StateType) =>
@@ -86,15 +87,17 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
 
   /**
    * Get available pages
-   * @param categoryIndex - Category index
    * @returns Available pages
    */
-  const getAvailablePages = (categoryIndex: number) => {
-    const category = categories[categoryIndex];
-    const selectedIds = category.workspaceMaterialIds;
+  const getAvailablePages = () => {
+    // Get all page IDs that are already assigned to any category
+    const allSelectedIds = categories.reduce<number[]>(
+      (acc, cat) => [...acc, ...cat.workspaceMaterialIds],
+      []
+    );
 
     return currentExamSectionPages.filter(
-      (page) => !selectedIds.includes(page.workspaceMaterialId)
+      (page) => !allSelectedIds.includes(page.workspaceMaterialId)
     );
   };
 
@@ -131,6 +134,19 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
     onUpdate(updatedCategories);
   };
 
+  /**
+   * Handle key press in category name input
+   * @param e - Event
+   */
+  const handleCategoryNameKeyPress = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addCategory();
+    }
+  };
+
   return (
     <div className="material-editor__exam-categories">
       {/* Add new category */}
@@ -140,7 +156,10 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
           <input
             className="form-element__input form-element__input--add-exam-category"
             value={newCategoryName}
-            onChange={(e) => setNewCategoryName(e.target.value)}
+            onChange={(e) => {
+              setNewCategoryName(e.target.value);
+            }}
+            onKeyPress={handleCategoryNameKeyPress}
             placeholder="Lisää kategoria"
             disabled={disabled}
           />
@@ -184,34 +203,37 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
                   </div>
                 </div>
               </div>
-              {/* Random count */}
-              <div className="form__subdivision">
-                <div className="form__row">
-                  <div className="form-element">
-                    <label htmlFor="exam-random-assignments-count">
-                      Satunnaisten tehtävien määrä:
-                    </label>
-                    <input
-                      id="exam-random-assignments-count"
-                      className="form-element__input form-element__input--material-editor"
-                      value={category.randomCount}
-                      onChange={(e) =>
-                        updateCategory(
-                          index,
-                          "randomCount",
-                          parseInt(e.target.value) || 0
-                        )
-                      }
-                      min={0}
-                      max={category.workspaceMaterialIds.length}
-                      disabled={disabled}
-                    />
-                    <div className="form-element__description">
-                      Max: {category.workspaceMaterialIds.length} tehtävää
+
+              {/* Random count. Show only if exam random setting value is category */}
+              {examRandom === ExamSettingsRandom.Category && (
+                <div className="form__subdivision">
+                  <div className="form__row">
+                    <div className="form-element">
+                      <label htmlFor="exam-random-assignments-count">
+                        Satunnaisten tehtävien määrä:
+                      </label>
+                      <input
+                        id="exam-random-assignments-count"
+                        className="form-element__input form-element__input--material-editor"
+                        value={category.randomCount}
+                        onChange={(e) =>
+                          updateCategory(
+                            index,
+                            "randomCount",
+                            parseInt(e.target.value) || 0
+                          )
+                        }
+                        min={0}
+                        max={category.workspaceMaterialIds.length}
+                        disabled={disabled}
+                      />
+                      <div className="form-element__description">
+                        Max: {category.workspaceMaterialIds.length} tehtävää
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Selected pages (assignments) */}
@@ -262,12 +284,10 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
                           e.target.value = ""; // Reset selection
                         }
                       }}
-                      disabled={
-                        disabled || getAvailablePages(index).length === 0
-                      }
+                      disabled={disabled || getAvailablePages().length === 0}
                     >
                       <option value="">Lisää sivu kategoriaan...</option>
-                      {getAvailablePages(index).map((page) => (
+                      {getAvailablePages().map((page) => (
                         <option
                           key={page.workspaceMaterialId}
                           value={page.workspaceMaterialId}
@@ -278,9 +298,9 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
                     </select>
                   </div>
 
-                  {getAvailablePages(index).length === 0 && (
+                  {getAvailablePages().length === 0 && (
                     <div className="form-element__description">
-                      Kaikki sivut on jo lisätty kategoriaan
+                      Kaikki sivut on jo lisätty
                     </div>
                   )}
                 </div>
