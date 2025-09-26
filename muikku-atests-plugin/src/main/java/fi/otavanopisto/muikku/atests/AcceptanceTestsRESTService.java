@@ -779,6 +779,14 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
     OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
     Announcement announcement = announcementController.createAnnouncement(user, organizationEntity, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible());
+       
+    if(payload.getWorkspaceEntityIds() != null) {
+      List<Long> workspaceEntityIds = payload.getWorkspaceEntityIds();
+      for (Long wsId : workspaceEntityIds) {
+        announcementController.addAnnouncementWorkspace(announcement, workspaceEntityController.findWorkspaceEntityById(wsId));
+      }
+    }
+    
     if(payload.getUserGroupEntityIds() != null) {
       List<Long> userGroups = payload.getUserGroupEntityIds();
       for (Long userGroupId : userGroups) {

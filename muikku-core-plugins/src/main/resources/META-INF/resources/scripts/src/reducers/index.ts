@@ -29,6 +29,7 @@ import { NoteBookState } from "./notebook/notebook";
 import { DependantsState } from "./main-function/dependants";
 import { HopsState } from "./hops";
 import { ExamsState } from "./workspaces/exams";
+import { LanguageProfileState } from "./main-function/language-profile";
 import { PedagogySupportState } from "./pedagogy-support";
 
 /**
@@ -65,5 +66,6 @@ export interface StateType {
   notebook?: NoteBookState;
   hopsNew?: HopsState;
   exams?: ExamsState;
+  languageProfile?: LanguageProfileState;
   pedagogySupport?: PedagogySupportState;
 }

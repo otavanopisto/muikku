@@ -26,6 +26,7 @@ import { organizationWorkspaces } from "./workspaces/organization";
 import { contacts } from "./base/contacts";
 import { dependants } from "./main-function/dependants";
 import { hopsNew } from "./hops/index";
+import { languageProfile } from "./main-function/language-profile";
 import { notebook } from "./notebook/notebook";
 import { journals } from "./workspaces/journals";
 import { credentials } from "./base/credentials";
@@ -58,6 +59,7 @@ export default combineReducers({
   websocket,
   workspaces,
   hopsNew,
+  languageProfile,
   notebook,
   journals,
   credentials,

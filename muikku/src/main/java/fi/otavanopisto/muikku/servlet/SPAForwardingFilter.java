@@ -39,7 +39,8 @@ public class SPAForwardingFilter implements Filter {
       "/hops",
       "/organization",
       "/profile",
-      "/records"
+      "/records",
+      "/languageprofile"
   );
 
   // Partial paths to forward to the SPA Entrypoint

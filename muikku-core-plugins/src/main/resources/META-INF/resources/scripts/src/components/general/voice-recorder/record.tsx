@@ -19,8 +19,9 @@ interface RecordProps
     HTMLAudioElement
   > {
   record: RecordValue;
+  index: number;
   noDeleteFunctions: boolean;
-  onClickDelete?: (recordId: string) => void;
+  onClickDelete?: (recordId: string | number) => void;
 }
 
 /**
@@ -40,7 +41,7 @@ const defaultRecordtProps = {
 function Record(props: RecordProps) {
   props = { ...defaultRecordtProps, ...props };
 
-  const { record, onClickDelete, noDeleteFunctions, ...rest } = props;
+  const { record, index, onClickDelete, noDeleteFunctions, ...rest } = props;
   const { t } = useTranslation();
 
   const open = record.uploading || record.failed;
@@ -49,7 +50,7 @@ function Record(props: RecordProps) {
    * handleClickDelete
    */
   const handleClickDelete = () => {
-    onClickDelete && onClickDelete(record.id);
+    onClickDelete && onClickDelete(record.id ? record.id : index);
   };
 
   return (
