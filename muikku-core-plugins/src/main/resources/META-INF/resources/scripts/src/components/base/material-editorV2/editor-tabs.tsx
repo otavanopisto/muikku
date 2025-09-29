@@ -25,7 +25,7 @@ import {
   MaterialAnswersTypeConfig,
   MATERIAL_ANSWERS_TYPE_CONFIGS,
 } from "./helpers";
-import DeleteWorkspaceMaterialDialog from "../material-editor/delete-dialog";
+import DeleteWorkspaceMaterialDialog from "../material-editorV2/delete-dialog";
 import { EditorPermissions } from "./editor-strategy";
 import {
   assignmentPageType,
@@ -45,7 +45,7 @@ import {
   updateWorkspaceMaterialContentNode,
 } from "~/actions/workspaces/material";
 import { PageLocation, UploadingValue } from "~/@types/shared";
-import ConfirmRemoveAttachment from "../material-editor/confirm-remove-attachment";
+import ConfirmRemoveAttachment from "../material-editorV2/confirm-remove-attachment";
 import { ExamSettingsRandom } from "~/generated/client";
 import Select, { ActionMeta, SingleValue } from "react-select";
 import useExamAttendees from "./hooks/useExamAttendees";

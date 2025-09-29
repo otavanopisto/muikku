@@ -9,10 +9,10 @@ import { setWorkspaceMaterialEditorState } from "~/actions/workspaces/material";
 import { ButtonPill } from "~/components/general/button";
 import Tabs, { Tab } from "~/components/general/tabs";
 import { StateType } from "~/reducers";
-import ConfirmPublishPageWithAnswersDialog from "../material-editor/confirm-publish-page-with-answers-dialog";
-import ConfirmPublishPageWithLinkedMaterialDialog from "../material-editor/confirm-publish-page-with-linked-material-dialog";
-import ConfirmRemovePageWithAnswersDialog from "../material-editor/confirm-remove-page-with-answers-dialog";
-import ConfirmPublishRemovePageWithLinkedAnswersDialog from "../material-editor/confirm-remove-page-with-linked-answers-dialog";
+import ConfirmPublishPageWithAnswersDialog from "../material-editorV2/confirm-publish-page-with-answers-dialog";
+import ConfirmPublishPageWithLinkedMaterialDialog from "../material-editorV2/confirm-publish-page-with-linked-material-dialog";
+import ConfirmRemovePageWithAnswersDialog from "../material-editorV2/confirm-remove-page-with-answers-dialog";
+import ConfirmPublishRemovePageWithLinkedAnswersDialog from "../material-editorV2/confirm-remove-page-with-linked-answers-dialog";
 import { getEditorStrategy } from "./editor-strategy";
 import { PageLocation } from "~/@types/shared";
 

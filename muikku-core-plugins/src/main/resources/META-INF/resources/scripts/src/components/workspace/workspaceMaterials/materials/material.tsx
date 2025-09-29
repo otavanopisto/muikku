@@ -1,366 +1,291 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import * as React from "react";
 import { StateType } from "~/reducers";
-import { useDispatch, useSelector } from "react-redux";
-
-//import MaterialLoader from "~/components/base/material-loader";
+import { connect } from "react-redux";
+import MaterialLoader from "~/components/base/material-loader";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
+  WorkspaceEditModeStateType,
 } from "~/reducers/workspaces";
-import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loaderV2/components/editor-buttonset";
-import { MaterialLoaderTitle } from "~/components/base/material-loaderV2/components/title";
-import { MaterialLoaderAI } from "~/components/base/material-loaderV2/components/ai";
-import { MaterialLoaderContent } from "~/components/base/material-loaderV2/components/content";
-import { MaterialLoaderProducersLicense } from "~/components/base/material-loaderV2/components/producers-license";
-import { MaterialLoaderButtons } from "~/components/base/material-loaderV2/components/buttons";
-import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loaderV2/components/correct-answer-counter";
-import { MaterialLoaderAssesment } from "~/components/base/material-loaderV2/components/assesment";
-import { MaterialLoaderGrade } from "~/components/base/material-loaderV2/components/grade";
-import { MaterialLoaderDate } from "~/components/base/material-loaderV2/components/date";
-import LazyLoader from "~/components/general/lazy-loader";
-import { MaterialLoaderExternalContent } from "~/components/base/material-loaderV2/components/external-content";
-import { MaterialCompositeReply } from "~/generated/client";
-import { MaterialLoaderPoints } from "~/components/base/material-loaderV2/components/points";
-import { MaterialLoaderAssignmentLock } from "~/components/base/material-loaderV2/components/assigment-lock";
-import MaterialLoaderV2 from "~/components/base/material-loaderV2";
-import { STATE_CONFIGS } from "~/components/base/material-loaderV2/state/StateConfig";
-import { createMaterialsProvider } from "~/components/base/material-loaderV2/providers/MaterialsProvider";
 import {
-  requestWorkspaceMaterialContentNodeAttachments,
+  setCurrentWorkspace,
+  SetCurrentWorkspaceTriggerType,
+} from "~/actions/workspaces";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
+import { MaterialLoaderTitle } from "~/components/base/material-loader/title";
+import { MaterialLoaderAI } from "~/components/base/material-loader/ai";
+import { MaterialLoaderContent } from "~/components/base/material-loader/content";
+import { MaterialLoaderProducersLicense } from "~/components/base/material-loader/producers-license";
+import { MaterialLoaderButtons } from "~/components/base/material-loader/buttons";
+import { MaterialLoaderCorrectAnswerCounter } from "~/components/base/material-loader/correct-answer-counter";
+import { MaterialLoaderAssesment } from "~/components/base/material-loader/assesment";
+import { MaterialLoaderGrade } from "~/components/base/material-loader/grade";
+import { MaterialLoaderDate } from "~/components/base/material-loader/date";
+import LazyLoader from "~/components/general/lazy-loader";
+import { StatusType } from "~/reducers/base/status";
+import { AnyActionType } from "~/actions";
+import { MaterialLoaderExternalContent } from "~/components/base/material-loader/external-content";
+import { MaterialCompositeReply } from "~/generated/client";
+import { withTranslation, WithTranslation } from "react-i18next";
+import { MaterialLoaderPoints } from "~/components/base/material-loader/points";
+import { MaterialLoaderAssignmentLock } from "~/components/base/material-loader/assigment-lock";
+import {
+  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  SetWorkspaceMaterialEditorStateTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
   setWorkspaceMaterialEditorState,
+  updateWorkspaceMaterialContentNode,
+  requestWorkspaceMaterialContentNodeAttachments,
 } from "~/actions/workspaces/material";
-import { EditorPermissions } from "~/components/base/material-loaderV2/types";
+import {
+  UpdateAssignmentStateTriggerType,
+  updateAssignmentState,
+} from "~/actions/workspaces";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
+import { WebsocketStateType } from "~/reducers/util/websocket";
 
 /**
  * WorkspaceMaterialProps
  */
-interface WorkspaceMaterialProps {
-  // status: StatusType;
-  // workspaceEditMode: WorkspaceEditModeStateType;
-  // materialsAreDisabled: boolean;
+interface WorkspaceMaterialProps extends WithTranslation {
   materialContentNode: MaterialContentNodeWithIdAndLogic;
   folder: MaterialContentNodeWithIdAndLogic;
   compositeReplies: MaterialCompositeReply;
   isViewRestricted: boolean;
   showEvenIfHidden: boolean;
   workspace: WorkspaceDataType;
-  // setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
   anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
+
+  // Redux state properties
+  status: StatusType;
+  websocket: WebsocketStateType;
+  workspaceEditMode: WorkspaceEditModeStateType;
+  materialsAreDisabled: boolean;
+
+  // Actions
+  setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
+  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType;
+  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
+  updateAssignmentState: UpdateAssignmentStateTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
- * WorkspaceMaterial
- * @param props props
+ * WorkspaceMaterialState
  */
-const WorkspaceMaterial = React.memo((props: WorkspaceMaterialProps) => {
-  const {
-    materialContentNode,
-    compositeReplies,
-    workspace,
-    // status,
-    // materialsAreDisabled,
-    // workspaceEditMode,
-    // isViewRestricted,
-    // readspeakerComponent,
-    // anchorItem,
-    folder,
-  } = props;
+interface WorkspaceMaterialState {}
 
-  const workspaceEditMode = useSelector(
-    (state: StateType) => state.workspaces.editMode
-  );
-
-  const status = useSelector((state: StateType) => state.status);
-
-  const materialsAreDisabled = useSelector(
-    (state: StateType) => state.workspaces.materialsAreDisabled
-  );
-
-  const dispatch = useDispatch();
+/**
+ * WorkspaceMaterial
+ */
+class WorkspaceMaterial extends React.Component<
+  WorkspaceMaterialProps,
+  WorkspaceMaterialState
+> {
+  /**
+   * constructor
+   * @param props props
+   */
+  constructor(props: WorkspaceMaterialProps) {
+    super(props);
+    this.updateWorkspaceActivity = this.updateWorkspaceActivity.bind(this);
+  }
 
   /**
    * updateWorkspaceActivity
    */
-  // const updateWorkspaceActivity = () => {
-  //   //This function is very efficient and reuses as much data as possible so it won't call anything from the server other than
-  //   //to refresh the activity and that's because we are forcing it to do so
-  //   dispatch(
-  //     setCurrentWorkspace({
-  //       workspaceId: workspace.id,
-  //       refreshActivity: true,
-  //     })
-  //   );
-  // };
-
-  const isAssignment =
-    materialContentNode.assignmentType === "EVALUATED" ||
-    materialContentNode.assignmentType === "EXERCISE" ||
-    materialContentNode.assignmentType === "INTERIM_EVALUATION";
-
-  const isEvaluatedAsPassed =
-    compositeReplies && compositeReplies.state === "PASSED";
-
-  const hasEvaluation =
-    compositeReplies &&
-    compositeReplies.evaluationInfo &&
-    (compositeReplies.state === "INCOMPLETE" ||
-      compositeReplies.state === "PASSED" ||
-      compositeReplies.state === "FAILED" ||
-      compositeReplies.state === "WITHDRAWN");
-
-  const isBinary = materialContentNode.type === "binary";
-  let evalStateClassName = "";
-  let evalStateIcon = "";
-
-  if (compositeReplies) {
-    switch (compositeReplies.state) {
-      case "INCOMPLETE":
-        evalStateClassName = "material-page__assignment-assessment--incomplete";
-        break;
-      case "FAILED":
-        evalStateClassName = "material-page__assignment-assessment--failed";
-        evalStateIcon = "icon-thumb-down";
-        break;
-      case "PASSED":
-        evalStateClassName = "material-page__assignment-assessment--passed";
-        evalStateIcon = "icon-thumb-up";
-        break;
-      case "WITHDRAWN":
-        evalStateClassName = "material-page__assignment-assessment--withdrawn";
-        break;
-    }
+  updateWorkspaceActivity() {
+    //This function is very efficient and reuses as much data as possible so it won't call anything from the server other than
+    //to refresh the activity and that's because we are forcing it to do so
+    this.props.setCurrentWorkspace({
+      workspaceId: this.props.workspace.id,
+      refreshActivity: true,
+    });
   }
 
-  const editorPermissions: EditorPermissions = React.useMemo(
-    () => ({
-      editable: workspaceEditMode.active,
-      canPublish: true,
-      canRevert: true,
-      canCopy: !isBinary,
-      canHide: true,
-      canDelete: true,
-      canRestrictView: true,
-      canChangePageType: !isBinary,
-      canChangeExerciseType: !isBinary,
-      canSetLicense: !isBinary,
-      canSetProducers: !isBinary,
-      canAddAttachments: !isBinary,
-      canEditContent: !isBinary,
-    }),
-    [workspaceEditMode.active, isBinary]
-  );
+  /**
+   * render
+   */
+  render() {
+    const isAssignment =
+      this.props.materialContentNode.assignmentType === "EVALUATED" ||
+      this.props.materialContentNode.assignmentType === "EXERCISE" ||
+      this.props.materialContentNode.assignmentType === "INTERIM_EVALUATION";
 
-  const dataProvider = React.useMemo(
-    () =>
-      createMaterialsProvider({
-        userId: status.userId,
-        folder: {
-          ...folder,
-          contentVersion: "ckeditor4",
-        },
-        material: {
-          ...materialContentNode,
-          contentVersion: "ckeditor4",
-          assignment: materialContentNode.assignment,
-          evaluation: materialContentNode.evaluation,
-        },
-        workspace: {
-          id: workspace.id,
-          urlName: workspace.urlName,
-          language: workspace.language,
-        },
-        context: {
-          tool: "materials",
-          contextPath: status.contextPath,
-        },
-        currentState: compositeReplies?.state,
-        assignmentType: materialContentNode.assignmentType,
-        canEdit: false,
-        canSubmit: false,
-        canViewAnswers: false,
-        editorPermissions,
-        fields: [],
-        answers: [],
-        compositeReply: compositeReplies,
-        getInterimEvaluationRequest: () =>
-          props.workspace.interimEvaluationRequests &&
-          props.workspace.interimEvaluationRequests.find(
-            (request) =>
-              request.workspaceMaterialId ===
-              materialContentNode.workspaceMaterialId
-          ),
+    const isEvaluatedAsPassed =
+      this.props.compositeReplies &&
+      this.props.compositeReplies.state === "PASSED";
 
-        startEditor: () => {
-          if (
-            typeof editorPermissions.canAddAttachments === "undefined" ||
-            editorPermissions.canAddAttachments
-          ) {
-            dispatch(
-              requestWorkspaceMaterialContentNodeAttachments(
-                workspace,
-                materialContentNode
-              )
-            );
-          }
+    const hasEvaluation =
+      this.props.compositeReplies &&
+      this.props.compositeReplies.evaluationInfo &&
+      (this.props.compositeReplies.state === "INCOMPLETE" ||
+        this.props.compositeReplies.state === "PASSED" ||
+        this.props.compositeReplies.state === "FAILED" ||
+        this.props.compositeReplies.state === "WITHDRAWN");
 
-          dispatch(
-            setWorkspaceMaterialEditorState(
-              {
-                currentNodeWorkspace: props.workspace,
-                currentNodeValue: materialContentNode,
-                parentNodeValue: props.folder,
-                section: false,
-                opened: true,
-                canDelete:
-                  typeof editorPermissions.canDelete === "undefined"
-                    ? false
-                    : editorPermissions.canDelete,
-                canHide:
-                  typeof editorPermissions.canHide === "undefined"
-                    ? false
-                    : editorPermissions.canHide,
-                disablePlugins: !!editorPermissions.disablePlugins,
-                canPublish:
-                  typeof editorPermissions.canPublish === "undefined"
-                    ? false
-                    : editorPermissions.canPublish,
-                canRevert:
-                  typeof editorPermissions.canRevert === "undefined"
-                    ? false
-                    : editorPermissions.canRevert,
-                canRestrictView:
-                  typeof editorPermissions.canRestrictView === "undefined"
-                    ? false
-                    : editorPermissions.canRestrictView,
-                canCopy:
-                  typeof editorPermissions.canCopy === "undefined"
-                    ? false
-                    : editorPermissions.canCopy,
-                canChangePageType:
-                  typeof editorPermissions.canChangePageType === "undefined"
-                    ? false
-                    : editorPermissions.canChangePageType,
-                canChangeExerciseType:
-                  typeof editorPermissions.canChangeExerciseType === "undefined"
-                    ? false
-                    : editorPermissions.canChangeExerciseType,
-                canSetLicense:
-                  typeof editorPermissions.canSetLicense === "undefined"
-                    ? false
-                    : editorPermissions.canSetLicense,
-                canSetProducers:
-                  typeof editorPermissions.canSetProducers === "undefined"
-                    ? false
-                    : editorPermissions.canSetProducers,
-                canAddAttachments:
-                  typeof editorPermissions.canAddAttachments === "undefined"
-                    ? false
-                    : editorPermissions.canAddAttachments,
-                canEditContent:
-                  typeof editorPermissions.canEditContent === "undefined"
-                    ? true
-                    : editorPermissions.canEditContent,
-                canSetTitle:
-                  typeof editorPermissions.canSetTitle === "undefined"
-                    ? true
-                    : editorPermissions.canSetTitle,
-                showRemoveAnswersDialogForPublish: false,
-                showRemoveAnswersDialogForDelete: false,
-                showUpdateLinkedMaterialsDialogForPublish: false,
-                showRemoveLinkedAnswersDialogForPublish: false,
-                showUpdateLinkedMaterialsDialogForPublishCount: 0,
-              },
-              true
-            )
-          );
-        },
-        onToggleAnswersVisible: () => {
-          // eslint-disable-next-line no-console
-          console.log("onToggleAnswersVisible from parent");
-        },
-        onFieldChange: () => {},
-        onSubmit: () => Promise.resolve(),
-        onModify: () => Promise.resolve(),
-      }),
-    [
-      status.userId,
-      status.contextPath,
-      folder,
-      materialContentNode,
-      workspace,
-      compositeReplies,
-      editorPermissions,
-      props.workspace,
-      props.folder,
-      dispatch,
-    ]
-  );
+    const isBinary = this.props.materialContentNode.type === "binary";
+    let evalStateClassName = "";
+    let evalStateIcon = "";
 
-  return (
-    <LazyLoader
-      useChildrenAsLazy={true}
-      className="material-lazy-loader-container"
-    >
-      {(loaded: boolean) => (
-        <MaterialLoaderV2
-          dataProvider={dataProvider}
-          stateConfigs={STATE_CONFIGS}
-          websocket={null}
-          invisible={!loaded}
-          readOnly={!status.loggedIn || materialsAreDisabled}
-        >
-          {(props, state, stateConfiguration) => (
-            <div>
-              <MaterialLoaderEditorButtonSet {...props} {...state} />
-              <MaterialLoaderTitle {...props} {...state} />
-              {props.material.ai && !props.material.contentHiddenForUser ? (
-                <MaterialLoaderAI {...props} {...state} />
-              ) : null}
-              <MaterialLoaderContent
-                {...props}
-                {...state}
-                dataProvider={dataProvider}
-                stateConfiguration={stateConfiguration}
-              />
-              <MaterialLoaderExternalContent
-                {...props}
-                {...state}
-                stateConfiguration={stateConfiguration}
-              />
-              <div className="material-page__de-floater"></div>
-              {!isEvaluatedAsPassed && !props.material.contentHiddenForUser ? (
-                <MaterialLoaderButtons
+    if (this.props.compositeReplies) {
+      switch (this.props.compositeReplies.state) {
+        case "INCOMPLETE":
+          evalStateClassName =
+            "material-page__assignment-assessment--incomplete";
+          break;
+        case "FAILED":
+          evalStateClassName = "material-page__assignment-assessment--failed";
+          evalStateIcon = "icon-thumb-down";
+          break;
+        case "PASSED":
+          evalStateClassName = "material-page__assignment-assessment--passed";
+          evalStateIcon = "icon-thumb-up";
+          break;
+        case "WITHDRAWN":
+          evalStateClassName =
+            "material-page__assignment-assessment--withdrawn";
+          break;
+      }
+    }
+
+    return (
+      <LazyLoader
+        useChildrenAsLazy={true}
+        className="material-lazy-loader-container"
+      >
+        {(loaded: boolean) => (
+          <MaterialLoader
+            status={this.props.status}
+            websocket={this.props.websocket}
+            canPublish
+            canRevert
+            canCopy={!isBinary}
+            canHide
+            canDelete
+            canRestrictView
+            canChangePageType={!isBinary}
+            canChangeExerciseType={!isBinary}
+            canSetLicense={!isBinary}
+            canSetProducers={!isBinary}
+            canAddAttachments={!isBinary}
+            canEditContent={!isBinary}
+            folder={this.props.folder}
+            editable={this.props.workspaceEditMode.active}
+            material={this.props.materialContentNode}
+            workspace={this.props.workspace}
+            compositeReplies={this.props.compositeReplies}
+            answerable={
+              this.props.status.loggedIn && !this.props.materialsAreDisabled
+            }
+            readOnly={
+              !this.props.status.loggedIn || this.props.materialsAreDisabled
+            }
+            invisible={!loaded}
+            isViewRestricted={this.props.isViewRestricted}
+            readspeakerComponent={this.props.readspeakerComponent}
+            anchorElement={this.props.anchorItem}
+            onAssignmentStateModified={this.updateWorkspaceActivity}
+            onDisplayNotification={this.props.displayNotification}
+            onUpdateWorkspaceMaterialContentNode={
+              this.props.updateWorkspaceMaterialContentNode
+            }
+            onRequestWorkspaceMaterialContentNodeAttachments={
+              this.props.requestWorkspaceMaterialContentNodeAttachments
+            }
+            onSetWorkspaceMaterialEditorState={
+              this.props.setWorkspaceMaterialEditorState
+            }
+            onUpdateAssignmentState={this.props.updateAssignmentState}
+          >
+            {(props, state, stateConfiguration) => (
+              <div>
+                <MaterialLoaderEditorButtonSet {...props} {...state} />
+                <MaterialLoaderTitle {...props} {...state} />
+                {props.material.ai && !props.material.contentHiddenForUser ? (
+                  <MaterialLoaderAI {...props} {...state} />
+                ) : null}
+                <MaterialLoaderContent
                   {...props}
                   {...state}
                   stateConfiguration={stateConfiguration}
                 />
-              ) : null}
-              <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
-              <MaterialLoaderAssignmentLock {...props} {...state} />
-              {isAssignment && hasEvaluation ? (
-                <div
-                  className={`material-page__assignment-assessment ${evalStateClassName} rs_skip_always`}
-                >
+                <MaterialLoaderExternalContent
+                  {...props}
+                  {...state}
+                  stateConfiguration={stateConfiguration}
+                />
+                <div className="material-page__de-floater"></div>
+                {!isEvaluatedAsPassed &&
+                !props.material.contentHiddenForUser ? (
+                  <MaterialLoaderButtons
+                    {...props}
+                    {...state}
+                    stateConfiguration={stateConfiguration}
+                  />
+                ) : null}
+                <MaterialLoaderCorrectAnswerCounter {...props} {...state} />
+                <MaterialLoaderAssignmentLock {...props} {...state} />
+                {isAssignment && hasEvaluation ? (
                   <div
-                    className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
-                  ></div>
-                  <MaterialLoaderDate {...props} {...state} />
-                  <MaterialLoaderGrade {...props} {...state} />
-                  <MaterialLoaderPoints {...props} {...state} />
-                  <MaterialLoaderAssesment {...props} {...state} />
-                </div>
-              ) : null}
-              <MaterialLoaderProducersLicense {...props} {...state} />
-            </div>
-          )}
-        </MaterialLoaderV2>
-      )}
-    </LazyLoader>
+                    className={`material-page__assignment-assessment ${evalStateClassName} rs_skip_always`}
+                  >
+                    <div
+                      className={`material-page__assignment-assessment-icon ${evalStateIcon}`}
+                    ></div>
+                    <MaterialLoaderDate {...props} {...state} />
+                    <MaterialLoaderGrade {...props} {...state} />
+                    <MaterialLoaderPoints {...props} {...state} />
+                    <MaterialLoaderAssesment {...props} {...state} />
+                  </div>
+                ) : null}
+                <MaterialLoaderProducersLicense {...props} {...state} />
+              </div>
+            )}
+          </MaterialLoader>
+        )}
+      </LazyLoader>
+    );
+  }
+}
+
+/**
+ * mapStateToProps
+ * @param state state
+ */
+function mapStateToProps(state: StateType) {
+  return {
+    workspaceEditMode: state.workspaces.editMode,
+    status: state.status,
+    materialsAreDisabled: state.workspaces.materialsAreDisabled,
+    websocket: state.websocket,
+  };
+}
+
+/**
+ * mapDispatchToProps
+ * @param dispatch dispatch
+ */
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators(
+    {
+      setCurrentWorkspace,
+      updateWorkspaceMaterialContentNode,
+      requestWorkspaceMaterialContentNodeAttachments,
+      setWorkspaceMaterialEditorState,
+      updateAssignmentState,
+      displayNotification,
+    },
+    dispatch
   );
-});
+}
 
-WorkspaceMaterial.displayName = "WorkspaceMaterial";
-
-export default WorkspaceMaterial;
+export default withTranslation(["common"])(
+  connect(mapStateToProps, mapDispatchToProps)(WorkspaceMaterial)
+);

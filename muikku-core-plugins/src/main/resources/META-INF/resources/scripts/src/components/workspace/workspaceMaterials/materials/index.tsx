@@ -19,7 +19,7 @@ import ContentPanel, {
 } from "~/components/general/content-panel";
 import ProgressData from "../../progressData";
 
-import WorkspaceMaterial from "./materialsOld";
+import WorkspaceMaterial from "./material";
 import Button, { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
