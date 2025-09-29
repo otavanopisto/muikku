@@ -165,14 +165,22 @@ export const languageProfile: Reducer<LanguageProfileState> = (
     case "LANGUAGE_PROFILE_UPDATE_LANGUAGES": {
       const { payload } = action;
       const updatedLanguages = [...state.data.languages];
+      const existingCvLanguages = state.data.cv.languages;
       // Check if the language already exists in the array
       const existingLanguageIndex = updatedLanguages.findIndex(
+        (language) => language.code === payload.code
+      );
+
+      const existingCvLanguageIndex = existingCvLanguages.findIndex(
         (language) => language.code === payload.code
       );
 
       if (existingLanguageIndex !== -1) {
         // If it exists, remove from the array
         updatedLanguages.splice(existingLanguageIndex, 1);
+        if (existingCvLanguageIndex !== -1) {
+          existingCvLanguages.splice(existingCvLanguageIndex, 1);
+        }
       } else {
         updatedLanguages.push(payload);
       }

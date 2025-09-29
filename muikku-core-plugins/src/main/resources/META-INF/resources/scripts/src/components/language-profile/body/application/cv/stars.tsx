@@ -28,7 +28,7 @@ const Stars = (props: StarsProps) => {
         {stars.map((star) => {
           const isFull =
             (typeof skillLevels[name] === "string" &&
-              star <= parseInt(skillLevels[name] as string)) ||
+              star + 1 <= parseInt(skillLevels[name] as string)) ||
             false;
 
           return (
@@ -37,11 +37,11 @@ const Stars = (props: StarsProps) => {
               className={`language-profile__star icon-star-${isFull ? "full" : "empty"}`}
               aria-labelledby={id}
               defaultValue={skillLevels.interaction || ""}
-              checked={star.toString() === skillLevels[name]}
+              checked={(star + 1).toString() === skillLevels[name]}
               onChange={(e) => onChange(e, name)}
               name={id}
               key={"star-" + id + "-" + star}
-              value={star}
+              value={star + 1}
             />
           );
         })}
