@@ -1,7 +1,7 @@
 import type { MiddlewareFunction } from "react-router";
-import { getAtomValue } from "../jotaiStore";
-import { workspaceInitializedAtom } from "../atoms/shared";
-import { workspaceInit } from "../services/initialization";
+import { getAtomValue } from "../../jotaiStore";
+import { workspaceInitializedAtom } from "../../atoms/shared";
+import { workspaceInit } from "../../services/initialization";
 
 /**
  * Workspace middleware

@@ -8,11 +8,11 @@ import {
   Text,
 } from "@mantine/core";
 import { Link, useLocation } from "react-router";
-import { AuthService, type User } from "../services/auth";
-import { userAtom } from "../atoms/auth";
-import { langAtom, setLangAtom } from "../atoms/locale";
+import { AuthService, type User } from "~/src/services/auth";
+import { userAtom } from "~/src/atoms/auth";
+import { langAtom, setLangAtom } from "~/src/atoms/locale";
 import { useAtomValue, useSetAtom } from "jotai";
-import { languages } from "../shared/langs";
+import { languages } from "~/src/locales/langs";
 
 /**
  * NavItem - Interface for a navigation item

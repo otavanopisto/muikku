@@ -6,7 +6,7 @@ import { useAtomValue } from "jotai";
 import {
   getNavigationItems,
   type NavigationContext,
-} from "../helpers/navigation";
+} from "~/src/layout/helpers/navigation";
 import classes from "./SharedLayout.module.css";
 import { workspacePermissionsAtom } from "~/src/atoms/permissions";
 import { useAppLayout } from "~/src/hooks/useAppLayout";

@@ -6,11 +6,13 @@ import {
   workspaceHomeLoader,
   workspaceSettingsLoader,
   communicatorLoader,
-} from "./routeLoaders";
-import { SharedLayout } from "~/src/layout/shared/SharedLayout";
-import { authMiddleware } from "~/src/middleware/auth";
-import { workspaceMiddleware } from "~/src/middleware/workspace";
-import { permissionMiddlewares } from "~/src/middleware/permissions";
+} from "~/src/router/routeLoaders";
+import { SharedLayout } from "~/src/layout/SharedLayout/SharedLayout";
+import {
+  authMiddleware,
+  permissionMiddlewares,
+  workspaceMiddleware,
+} from "~/src/router/middleware";
 import {
   Home,
   Dashboard,
@@ -33,10 +35,13 @@ import {
   WorkspaceHelp,
   NotFound,
 } from "~/src/pages/";
-import { ErrorBoundaryRoot } from "~/src/components/ErrorBoundaryRoot/ErrorBoundaryRoot";
-import { ErrorBoundaryPage } from "~/src/components/ErrorBoundaryPage/ErrorBoundaryPage";
-import { ErrorBoundaryLayout } from "./components/ErrorBoundaryLayout/ErrorBoundaryLayout";
+import {
+  ErrorBoundaryRoot,
+  ErrorBoundaryPage,
+  ErrorBoundaryLayout,
+} from "~/src/components";
 
+// Router
 export const router = createBrowserRouter([
   {
     errorElement: <ErrorBoundaryRoot />,

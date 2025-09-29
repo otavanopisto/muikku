@@ -1,6 +1,6 @@
-import { getAtomValue } from "../jotaiStore";
-import { globalInitializedAtom } from "../atoms/shared";
-import { globalInit } from "../services/initialization";
+import { getAtomValue } from "../../jotaiStore";
+import { globalInitializedAtom } from "../../atoms/shared";
+import { globalInit } from "../../services/initialization";
 import type { MiddlewareFunction } from "react-router";
 
 /**

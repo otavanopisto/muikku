@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/only-throw-error */
-import { getAtomValue } from "../jotaiStore";
-import { userAtom, userPermissionsAtom } from "../atoms/auth";
-import { workspacePermissionsAtom } from "../atoms/permissions";
+import { getAtomValue } from "../../jotaiStore";
+import { userAtom, userPermissionsAtom } from "../../atoms/auth";
+import { workspacePermissionsAtom } from "../../atoms/permissions";
 import type { MiddlewareFunction } from "react-router";
 import type {
   UserPermissions,
   WorkspacePermissions,
-} from "../services/permissions";
-import type { User } from "../services/auth";
+} from "../../services/permissions";
+import type { User } from "../../services/auth";
 
 /**
  * Permission check configuration
