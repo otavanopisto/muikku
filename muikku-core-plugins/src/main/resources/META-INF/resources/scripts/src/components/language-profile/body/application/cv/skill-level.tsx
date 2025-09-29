@@ -59,8 +59,7 @@ const SkillLevel = (props: SkillLevelProps) => {
         payload: updatedLanguageSkillLevels,
       } as ActionType);
     }
-  }),
-    [languageSkillLevels];
+  }, [languageSkillLevels, dispatch, language]);
 
   /**
    * clearFields Clears the sample fields.
