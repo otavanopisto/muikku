@@ -40,9 +40,8 @@ const SkillLevel = (props: SkillLevelProps) => {
     [cv, language]
   );
 
-  // Initialize language skill levels if not present
-
   React.useEffect(() => {
+    // Initialize language skill levels if not present
     if (!languageSkillLevels) {
       const updatedLanguageSkillLevels: CVLanguage = {
         code: language.code,

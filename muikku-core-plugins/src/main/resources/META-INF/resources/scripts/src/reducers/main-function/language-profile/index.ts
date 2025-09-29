@@ -165,21 +165,24 @@ export const languageProfile: Reducer<LanguageProfileState> = (
     case "LANGUAGE_PROFILE_UPDATE_LANGUAGES": {
       const { payload } = action;
       const updatedLanguages = [...state.data.languages];
-      const existingCvLanguages = state.data.cv.languages;
+      const updatedCv = { ...state.data.cv };
+
       // Check if the language already exists in the array
       const existingLanguageIndex = updatedLanguages.findIndex(
         (language) => language.code === payload.code
       );
 
-      const existingCvLanguageIndex = existingCvLanguages.findIndex(
+      // Also check if the language exists in cv languages
+      const existingCvLanguageIndex = updatedCv.languages.findIndex(
         (language) => language.code === payload.code
       );
 
       if (existingLanguageIndex !== -1) {
         // If it exists, remove from the array
         updatedLanguages.splice(existingLanguageIndex, 1);
+        // Also remove from cv languages, if exists
         if (existingCvLanguageIndex !== -1) {
-          existingCvLanguages.splice(existingCvLanguageIndex, 1);
+          updatedCv.languages.splice(existingCvLanguageIndex, 1);
         }
       } else {
         updatedLanguages.push(payload);
@@ -187,7 +190,7 @@ export const languageProfile: Reducer<LanguageProfileState> = (
 
       return {
         ...state,
-        data: { ...state.data, languages: updatedLanguages },
+        data: { ...state.data, languages: updatedLanguages, cv: updatedCv },
       };
     }
     case "LANGUAGE_PROFILE_UPDATE_LANGUAGE_LEVELS": {
