@@ -7,9 +7,9 @@ import {
   getNavigationItems,
   type NavigationContext,
 } from "../helpers/navigation";
-import { useDisclosure } from "@mantine/hooks";
 import classes from "./SharedLayout.module.css";
 import { workspacePermissionsAtom } from "~/src/atoms/permissions";
+import { useAppLayout } from "~/src/hooks/useAppLayout";
 
 /**
  * Shared layout props
@@ -27,7 +27,8 @@ export function SharedLayout(props: SharedLayoutProps) {
   const { title = "Muikku V4", context = "environment" } = props;
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);
-  const [opened, { toggle }] = useDisclosure(); // Navbar state
+  //const [opened, { toggle }] = useDisclosure(); // Navbar state
+  const { sidebarOpened, toggleSidebar } = useAppLayout();
 
   return (
     <AppShell
@@ -37,16 +38,16 @@ export function SharedLayout(props: SharedLayoutProps) {
         offset: false, // This prevents the main content from being offset when header is hidden
       }}
       navbar={{
-        width: !opened ? 60 : 300, // Dynamic width based on collapsed state
+        width: !sidebarOpened ? 60 : 300, // Dynamic width based on collapsed state
         breakpoint: "sm",
-        collapsed: { mobile: !opened },
+        collapsed: { mobile: !sidebarOpened },
       }}
     >
       <AppShell.Header hiddenFrom="sm">
         <Group h="100%" px="md" justify="space-between">
           <Burger
-            opened={opened}
-            onClick={toggle}
+            opened={sidebarOpened}
+            onClick={toggleSidebar}
             size="sm"
             aria-label="Toggle navigation"
           />
@@ -61,8 +62,8 @@ export function SharedLayout(props: SharedLayoutProps) {
         <NavbarNested
           title={title}
           items={getNavigationItems(user, workspacePermissions, context)}
-          collapsed={!opened} // Use desktop collapsed state
-          onToggleCollapse={toggle} // Toggle desktop collapsed state
+          collapsed={!sidebarOpened} // Use desktop collapsed state
+          onToggleCollapse={toggleSidebar} // Toggle desktop collapsed state
         />
       </AppShell.Navbar>
 
