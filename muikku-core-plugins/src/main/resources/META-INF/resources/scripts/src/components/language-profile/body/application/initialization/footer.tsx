@@ -9,7 +9,9 @@ import { StateType } from "~/reducers";
 /**
  * PedagogyFormWizardFooter
  */
-interface PedagogyFormWizardFooterProps {}
+interface PedagogyFormWizardFooterProps {
+  canSave?: boolean;
+}
 
 /**
  * PedagogyFormWizardFooter
@@ -18,32 +20,47 @@ interface PedagogyFormWizardFooterProps {}
  * @returns JSX.Element
  */
 const InitializationFooter = (props: PedagogyFormWizardFooterProps) => {
+  const { canSave = false } = props;
   const { t } = useTranslation(["common"]);
   const { previous, next, isFirstStep, isLastStep } = useWizardContext();
   const dispatch = useDispatch();
   const { languageProfile, status } = useSelector((state: StateType) => state);
+  const [saveDisabled, setSaveDisabled] = React.useState(canSave);
 
   /**
    * handleNextStep
+   * Handles the action for the next step in the wizard.
+   * Calls the next function from the wizard context and enables the save button by setting SaveDisabled to false.
+   * Enables the save button to allow saving changes made in previous steps.
    */
   const handleNextStep = () => {
     next();
+    setSaveDisabled(false);
   };
 
   /**
    * handlePreviousStep
+   * Handles the action for the previous step in the wizard.
+   * Calls the previous function from the wizard context and enables the save button by setting SaveDisabled to false.
+   * Enables the save button to allow saving changes made in previous steps.
    */
   const handlePreviousStep = () => {
     previous();
+    setSaveDisabled(false);
   };
 
   /**
    * handleSave
    * Saves the language profile data to the store.
    * Dispatches the saveLanguageProfile action with userId and languageProfile data.
+   * sets SaveDisabled to true after saving to prevent multiple saves.
    */
   const handleSave = () => {
-    dispatch(saveLanguageProfile(status.userId, languageProfile.data));
+    dispatch(
+      saveLanguageProfile(status.userId, languageProfile.data, () =>
+        setSaveDisabled(true)
+      )
+    );
   };
 
   return (
@@ -68,7 +85,11 @@ const InitializationFooter = (props: PedagogyFormWizardFooterProps) => {
         </Button>
       )}
       {isLastStep && (
-        <Button onClick={handleSave} buttonModifiers={["execute"]}>
+        <Button
+          onClick={handleSave}
+          buttonModifiers={["execute"]}
+          disabled={saveDisabled}
+        >
           {t("actions.save", { ns: "common" })}
         </Button>
       )}
