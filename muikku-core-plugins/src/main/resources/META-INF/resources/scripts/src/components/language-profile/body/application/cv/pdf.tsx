@@ -41,8 +41,6 @@ const styles = StyleSheet.create({
  */
 interface CvPdfProps {
   children?: React.ReactElement;
-  isOpen?: boolean;
-  onClose?: () => void;
 }
 
 /**
@@ -51,7 +49,7 @@ interface CvPdfProps {
  * @returns JSX.Element
  */
 const CvPdfDialog = (props: CvPdfProps) => {
-  const { children, isOpen, onClose } = props;
+  const { children } = props;
   const { languageProfile, status } = useSelector((state: StateType) => state);
   const cv = languageProfile.data.cv;
   const name = status.profile.displayName;
