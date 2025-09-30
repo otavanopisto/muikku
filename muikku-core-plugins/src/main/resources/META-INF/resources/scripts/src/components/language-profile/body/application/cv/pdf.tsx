@@ -1,10 +1,44 @@
 import * as React from "react";
-import { Document, Page, Text, View, PDFViewer } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  PDFViewer,
+  StyleSheet,
+} from "@react-pdf/renderer";
 import { StateType } from "~/reducers";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import FiveStars from "./pdf/pdfFiveStars";
 
+const styles = StyleSheet.create({
+  page: {
+    fontSize: 15,
+    padding: 10,
+    backgroundColor: "#009fe3",
+    color: "white",
+  },
+  section: { margin: 10, padding: 10, backgroundColor: "#f0f0f0" },
+  header: { fontSize: 12, marginBottom: 10 },
+  subheader: { fontSize: 11, marginBottom: 5 },
+  text: { fontSize: 10, marginBottom: 5, paddingLeft: 5 },
+  paragraph: { marginBottom: 10 },
+  starContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingTop: 5,
+    marginTop: 5,
+    paddingBottom: 5,
+    marginBottom: 5,
+  },
+});
+
+/**
+ * CvPdf component
+ * @returns JSX.Element
+ */
 const CvPdf = () => {
   const { languageProfile, status } = useSelector((state: StateType) => state);
   const cv = languageProfile.data.cv;
@@ -12,116 +46,87 @@ const CvPdf = () => {
   const { t } = useTranslation(["languageProfile", "common"]);
 
   return (
-    <div>
-      <div>
-        <img height="15" width={85} src="/gfx/stars/3.png" />
-      </div>
-      <PDFViewer style={{ width: "100%", height: "100vh" }}>
-        <Document>
-          <Page size="A4">
-            <View>
-              <Text
-                style={{
-                  fontSize: 15,
-                  padding: 10,
-                  backgroundColor: "#009fe3",
-                  color: "white",
-                }}
-              >
-                Kieli-CV - {name}
+    <PDFViewer style={{ width: "100%", height: "100vh" }}>
+      <Document>
+        <Page size="A4">
+          <View>
+            <Text style={styles.page}>Kieli-CV - {name}</Text>
+          </View>
+          <View style={styles.section}>
+            <Text style={styles.header}>Yleistä</Text>
+            <Text style={styles.text}>{cv.general}</Text>
+          </View>
+          {cv.languages.map((language, index: number) => (
+            <View wrap={false} key={"language-" + index} style={styles.section}>
+              <Text style={styles.header}>
+                {t(`languages.${language.code}`, {
+                  defaultValue: language.code,
+                  ns: "languageProfile",
+                })}
               </Text>
-            </View>
-            <View
-              style={{ padding: 10, margin: 10, backgroundColor: "#f0f0f0" }}
-            >
-              <Text style={{ fontSize: 12, marginBottom: 10 }}>Yleistä</Text>
-              <Text style={{ fontSize: 11, marginBottom: 10 }}>
-                {cv.general}
-              </Text>
-            </View>
-            {cv.languages.map((language, index: number) => (
-              <View
-                wrap={false}
-                key={"language-" + index}
-                style={{ padding: 10, margin: 10, backgroundColor: "#f0f0f0" }}
-              >
-                <Text style={{ fontSize: 12, marginBottom: 10 }}>
-                  {t(`languages.${language.code}`, {
-                    defaultValue: language.code,
-                    ns: "languageProfile",
-                  })}
-                </Text>
-                <Text style={{ fontSize: 10, marginBottom: 5 }}>
+              <View style={styles.paragraph}>
+                <Text style={styles.subheader}>
                   {t("labels.descriptionOfCompetence", {
                     ns: "languageProfile",
                   })}
                 </Text>
-                <Text style={{ fontSize: 9, marginBottom: 10 }}>
-                  {language.description}
-                </Text>
-                <Text style={{ fontSize: 10, marginBottom: 5 }}>
+                <Text style={styles.text}>{language.description}</Text>
+              </View>
+              <View style={styles.paragraph}>
+                <Text style={styles.subheader}>
                   {t("labels.skillEstimate", {
                     ns: "languageProfile",
                   })}
                 </Text>
-                <Text style={{ fontSize: 9, marginBottom: 10 }}>
-                  {language.general}
-                </Text>
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginBottom: 5,
-                  }}
-                >
-                  <View>
-                    <Text style={{ fontSize: 9, marginBottom: 5 }}>
-                      {t("labels.skillVocalization", {
-                        ns: "languageProfile",
-                      })}
-                    </Text>
-                    <FiveStars value={Number(language.vocal)} />
-                  </View>
-                  <View>
-                    <Text style={{ fontSize: 9, marginBottom: 5 }}>
-                      {t("labels.skillWriting", {
-                        ns: "languageProfile",
-                      })}
-                    </Text>
-                    <FiveStars value={Number(language.writing)} />
-                  </View>
-                  <View>
-                    <Text style={{ fontSize: 9, marginBottom: 5 }}>
-                      {t("labels.skillReadingComprehension", {
-                        ns: "languageProfile",
-                      })}
-                    </Text>
-                    <FiveStars value={Number(language.reading)} />
-                  </View>
-                  <View>
-                    <Text style={{ fontSize: 9, marginBottom: 5 }}>
-                      {t("labels.skillInteraction", {
-                        ns: "languageProfile",
-                      })}
-                    </Text>
-                    <FiveStars value={Number(language.interaction)} />
-                  </View>
-                  <View>
-                    <Text style={{ fontSize: 9, marginBottom: 5 }}>
-                      {t("labels.skillListeningComprehension", {
-                        ns: "languageProfile",
-                      })}
-                    </Text>
-                    <FiveStars value={Number(language.listening)} />
-                  </View>
+                <Text style={styles.text}>{language.general}</Text>
+              </View>
+              <View style={styles.starContainer}>
+                <View>
+                  <Text style={styles.subheader}>
+                    {t("labels.skillVocalization", {
+                      ns: "languageProfile",
+                    })}
+                  </Text>
+                  <FiveStars value={Number(language.vocal)} />
+                </View>
+                <View>
+                  <Text style={styles.subheader}>
+                    {t("labels.skillWriting", {
+                      ns: "languageProfile",
+                    })}
+                  </Text>
+                  <FiveStars value={Number(language.writing)} />
+                </View>
+                <View>
+                  <Text style={styles.subheader}>
+                    {t("labels.skillReadingComprehension", {
+                      ns: "languageProfile",
+                    })}
+                  </Text>
+                  <FiveStars value={Number(language.reading)} />
+                </View>
+                <View>
+                  <Text style={styles.subheader}>
+                    {t("labels.skillInteraction", {
+                      ns: "languageProfile",
+                    })}
+                  </Text>
+                  <FiveStars value={Number(language.interaction)} />
+                </View>
+                <View>
+                  <Text style={styles.subheader}>
+                    {t("labels.skillListeningComprehension", {
+                      ns: "languageProfile",
+                    })}
+                  </Text>
+                  <FiveStars value={Number(language.listening)} />
                 </View>
               </View>
-            ))}
-          </Page>
-        </Document>
-      </PDFViewer>
-    </div>
+            </View>
+          ))}
+        </Page>
+      </Document>
+    </PDFViewer>
   );
 };
 
