@@ -1,8 +1,7 @@
 import { AppShell, Group, Title, Button, ScrollArea } from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { LinksGroup } from "../NavbarLinksGroup/NavbarLinksGroup";
-//import { UserButton } from "../UserButton/UserButton";
-//import { Logo } from "./Logo";
+import { NavbarLink } from "../NavbarLink/NavbarLink";
 import classes from "./NavbarNested.module.css";
 import { type NavigationItem } from "~/src/layout/helpers/navigation";
 
@@ -23,9 +22,15 @@ interface NavbarNestedProps {
  */
 export function NavbarNested(props: NavbarNestedProps) {
   const { items, collapsed = false, onToggleCollapse, title } = props;
-  const links = items.map((item) => (
-    <LinksGroup key={item.label} {...item} collapsed={collapsed} />
-  ));
+
+  const links = items.map((item) => {
+    // Use LinksGroup if item has sub-links, otherwise use NavbarLink
+    if (item.type === "group") {
+      return <LinksGroup key={item.label} {...item} collapsed={collapsed} />;
+    } else if (item.type === "link") {
+      return <NavbarLink key={item.label} {...item} collapsed={collapsed} />;
+    }
+  });
 
   return (
     <>
@@ -94,10 +99,6 @@ export function NavbarNested(props: NavbarNestedProps) {
           {links}
         </div>
       </AppShell.Section>
-
-      {/* <AppShell.Section className={classes.footer}>
-        <UserButton collapsed={collapsed} />
-      </AppShell.Section> */}
     </>
   );
 }

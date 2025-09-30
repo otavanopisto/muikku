@@ -11,10 +11,13 @@ export const environmentLoader: LoaderFunction = () => null;
 export const homeLoader: LoaderFunction = () => null;
 
 /**
- * Dashboard loader (for authenticated users)
+ * Dashboard loader
  */
 export const dashboardLoader: LoaderFunction = () => null;
 
+/**
+ * Communicator loader
+ */
 export const communicatorLoader: LoaderFunction = () => null;
 
 /**

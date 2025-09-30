@@ -7,30 +7,24 @@ import {
   ThemeIcon,
   UnstyledButton,
   Tooltip,
+  Loader,
 } from "@mantine/core";
-import { Link, useLocation, useParams, type Params } from "react-router";
+import { useLocation, useParams, useNavigate } from "react-router";
 import classes from "./NavbarLinksGroup.module.css";
+import type { NavigationGroupItem } from "~/src/layout/helpers/navigation";
+import { NavbarSubLink } from "../NavbarSubLink/NavbarSubLink";
 
 /**
- * LinksGroupProps
+ * LinksGroupProps - Interface for collapsible navigation group
  */
-interface LinksGroupProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon: React.FC<any>;
-  label: string;
-  initiallyOpened?: boolean;
-  links?: { label: string; link: string }[];
-  // New props for simple navigation links
-  link?: string | ((params: Params) => string);
-  onClick?: () => void;
-  active?: boolean;
-  // New prop for collapsed state
+interface LinksGroupProps extends NavigationGroupItem {
   collapsed?: boolean;
 }
 
 /**
- * LinksGroup component
+ * LinksGroup - Collapsible navigation group component
  * @param props - LinksGroupProps
+ * @returns LinksGroup component
  */
 export function LinksGroup(props: LinksGroupProps) {
   const {
@@ -38,54 +32,118 @@ export function LinksGroup(props: LinksGroupProps) {
     label,
     initiallyOpened,
     links,
+    parentBehavior = "toggle",
     link,
-    onClick,
+    queryParams,
+    replaceState = false,
     active = false,
     collapsed = false,
+    loading = false,
   } = props;
+
   const location = useLocation();
   const params = useParams();
-  const hasLinks = Array.isArray(links) && links.length > 0;
-  const isSimpleLink = !hasLinks && (link ?? onClick);
+  const navigate = useNavigate();
   const [opened, setOpened] = useState(initiallyOpened ?? false);
+
+  // Check if any sub-link is active (including query params)
+  const isAnySubLinkActive = useMemo(
+    () =>
+      links.some((subLink) => {
+        if (subLink.active) {
+          return true;
+        }
+        if (subLink.link) {
+          const subLinkPath =
+            typeof subLink.link === "function"
+              ? subLink.link(params)
+              : subLink.link;
+          if (subLinkPath === location.pathname) {
+            return true;
+          }
+        }
+        // Check if sub-link query params are active
+        if (subLink.queryParams) {
+          const currentSearchParams = new URLSearchParams(location.search);
+          return Object.entries(subLink.queryParams).every(([key, value]) => {
+            const currentValue = currentSearchParams.get(key);
+            return currentValue === String(value);
+          });
+        }
+        return false;
+      }),
+    [links, location.pathname, location.search, params]
+  );
 
   const isActive = useMemo(
     () =>
       active ||
+      isAnySubLinkActive ||
       (link &&
         (typeof link === "function"
           ? link(params) === location.pathname
           : link === location.pathname)),
-    [active, link, location.pathname, params]
+    [active, isAnySubLinkActive, link, location.pathname, params]
   );
 
   /**
-   * Handle click for simple links
+   * Handle query parameter navigation
    */
-  const handleClick = () => {
-    if (isSimpleLink) {
-      if (onClick) {
-        onClick();
+  const handleQueryParams = async () => {
+    if (queryParams) {
+      const currentSearchParams = new URLSearchParams(location.search);
+
+      // Update query parameters
+      Object.entries(queryParams).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+          currentSearchParams.set(key, String(value));
+        } else {
+          currentSearchParams.delete(key);
+        }
+      });
+
+      const newSearch = currentSearchParams.toString();
+      const newUrl = `${location.pathname}${newSearch ? `?${newSearch}` : ""}`;
+
+      if (replaceState) {
+        await navigate(newUrl, { replace: true });
+      } else {
+        await navigate(newUrl);
       }
-      // If it's a link, React Router will handle navigation
-    } else if (hasLinks) {
-      setOpened((o) => !o);
     }
   };
 
-  // Render sub-links for collapsible groups
-  const items = (hasLinks ? links : []).map((subLink) => (
-    <Text<typeof Link>
-      component={Link}
-      className={classes.link}
-      to={subLink.link}
-      key={subLink.label}
-    >
-      {subLink.label}
-    </Text>
+  /**
+   * Handle parent click
+   */
+  const handleParentClick = () => {
+    // Handle parent behavior
+    if (parentBehavior === "both" && link) {
+      // Navigate to parent link
+      const targetLink = typeof link === "function" ? link(params) : link;
+      void navigate(targetLink);
+      // Toggle sub-links
+      setOpened((o) => !o);
+    } else if (parentBehavior === "link" && link) {
+      // Only navigate
+      const targetLink = typeof link === "function" ? link(params) : link;
+      void navigate(targetLink);
+    } else {
+      // Default toggle behavior
+      setOpened((o) => !o);
+    }
+
+    if (queryParams) {
+      void handleQueryParams();
+    }
+  };
+
+  // Render sub-links using the dedicated component
+  const items = links.map((subLink) => (
+    <NavbarSubLink key={subLink.label} {...subLink} />
   ));
 
-  // Icon component - always centered when collapsed
+  // Icon component
   const IconComponent = (
     <ThemeIcon
       variant="light"
@@ -96,7 +154,7 @@ export function LinksGroup(props: LinksGroupProps) {
         color: isActive ? "white" : "#228be6",
       }}
     >
-      <Icon size={20} />
+      {loading ? <Loader size={16} /> : <Icon size={20} />}
     </ThemeIcon>
   );
 
@@ -111,18 +169,16 @@ export function LinksGroup(props: LinksGroupProps) {
       }}
     >
       {label}
-      {hasLinks && (
-        <IconChevronRight
-          className={classes.chevron}
-          stroke={1.5}
-          size={16}
-          style={{ transform: opened ? "rotate(-90deg)" : "none" }}
-        />
-      )}
+      <IconChevronRight
+        className={classes.chevron}
+        stroke={1.5}
+        size={16}
+        style={{ transform: opened ? "rotate(-90deg)" : "none" }}
+      />
     </Text>
   );
 
-  // Main content - clean separation of icon and text
+  // Main content
   const MainLinkContent = (
     <Group gap="md" align="center" className={classes.mainContent}>
       {IconComponent}
@@ -130,68 +186,31 @@ export function LinksGroup(props: LinksGroupProps) {
     </Group>
   );
 
-  // Render the main button/link
-  const mainElement =
-    isSimpleLink && link ? (
-      <UnstyledButton
-        component={Link}
-        to={link instanceof Function ? link(params) : link}
-        onClick={handleClick}
-        className={`${classes.control} ${isActive ? classes.active : ""} ${
-          collapsed ? classes.collapsed : ""
-        }`}
-        p="sm"
-      >
-        {collapsed ? (
-          <Tooltip label={label} position="right" withArrow>
-            {MainLinkContent}
-          </Tooltip>
-        ) : (
-          <Group justify="space-between" gap={0}>
-            {MainLinkContent}
-          </Group>
-        )}
-      </UnstyledButton>
-    ) : link ? (
-      <UnstyledButton
-        component={Link}
-        to={link instanceof Function ? link(params) : link}
-        onClick={handleClick}
-        className={`${classes.control} ${isActive ? classes.active : ""} ${
-          collapsed ? classes.collapsed : ""
-        }`}
-        p="sm"
-      >
-        {collapsed ? (
-          <Tooltip label={label} position="right" withArrow>
-            {MainLinkContent}
-          </Tooltip>
-        ) : (
-          <Group gap={0}>{MainLinkContent}</Group>
-        )}
-      </UnstyledButton>
-    ) : (
-      <UnstyledButton
-        onClick={handleClick}
-        className={`${classes.control} ${isActive ? classes.active : ""} ${
-          collapsed ? classes.collapsed : ""
-        }`}
-        p="sm"
-      >
-        {collapsed ? (
-          <Tooltip label={label} position="right" withArrow>
-            {MainLinkContent}
-          </Tooltip>
-        ) : (
-          <Group gap={0}>{MainLinkContent}</Group>
-        )}
-      </UnstyledButton>
-    );
+  // Render the main button
+  const mainElement = (
+    <UnstyledButton
+      onClick={handleParentClick}
+      className={`${classes.control} ${isActive ? classes.active : ""} ${
+        collapsed ? classes.collapsed : ""
+      }`}
+      p="sm"
+    >
+      {collapsed ? (
+        <Tooltip label={label} position="right" withArrow>
+          {MainLinkContent}
+        </Tooltip>
+      ) : (
+        <Group justify="space-between" gap={0}>
+          {MainLinkContent}
+        </Group>
+      )}
+    </UnstyledButton>
+  );
 
   return (
     <>
       {mainElement}
-      {hasLinks && !collapsed ? <Collapse in={opened}>{items}</Collapse> : null}
+      {!collapsed ? <Collapse in={opened}>{items}</Collapse> : null}
     </>
   );
 }

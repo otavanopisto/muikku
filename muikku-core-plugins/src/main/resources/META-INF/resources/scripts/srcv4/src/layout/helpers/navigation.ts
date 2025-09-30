@@ -20,26 +20,34 @@ import type { WorkspacePermissions } from "~/src/services/permissions";
 export type NavigationContext = "environment" | "workspace";
 
 /**
- * NavigationLink - Interface for a navigation link
+ * NavigationLink - Interface for a navigation link (now supports all navigation features)
  */
 export interface NavigationLink {
   label: string;
-  link: string;
+  // Navigation options
+  link?: string | ((params: Params) => string);
+  onClick?: () => void;
+  // Query parameter navigation
+  queryParams?: Record<string, string | number | boolean>;
+  replaceState?: boolean;
+  // State
+  active?: boolean;
+  loading?: boolean;
 }
 
 /**
- * NavigationItem - Interface for a navigation item
+ * BaseNavigationItem - Common properties for all navigation items
  */
-export interface NavigationItem {
+interface BaseNavigationItem {
   label: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: React.FC<any>;
-  // For simple navigation links
+  // Navigation options
   link?: string | ((params: Params) => string);
   onClick?: () => void;
-  // For collapsible groups
-  links?: NavigationLink[];
-  initiallyOpened?: boolean;
+  // Query parameter navigation
+  queryParams?: Record<string, string | number | boolean>;
+  replaceState?: boolean;
   // Permission checking
   canAccess?: (
     user: User | null,
@@ -47,34 +55,71 @@ export interface NavigationItem {
   ) => boolean;
   // Additional props
   active?: boolean;
+  // Loading state for dynamic content
+  loading?: boolean;
 }
+
+/**
+ * NavigationLinkItem - Navigation link item
+ */
+export interface NavigationLinkItem extends BaseNavigationItem {
+  type: "link";
+}
+
+/**
+ * NavigationGroupItem - Navigation group item
+ */
+export interface NavigationGroupItem extends BaseNavigationItem {
+  type: "group";
+  links: NavigationLink[];
+  initiallyOpened?: boolean;
+  parentBehavior?: "link" | "toggle" | "both";
+}
+
+/**
+ * NavigationItem - Discriminated union of navigation item types
+ */
+export type NavigationItem = NavigationLinkItem | NavigationGroupItem;
 
 export const navigationItemsEnviroment: NavigationItem[] = [
   {
+    type: "link",
     label: "Etusivu",
     icon: IconHome,
     link: "/",
     canAccess: (user) => !(user?.loggedIn ?? false), // Only visible if user is unauthenticated
   },
   {
+    type: "link",
     label: "Etusivu",
     icon: IconHome,
     link: "/dashboard",
     canAccess: (user) => user?.loggedIn ?? false, // Only visible if user is authenticated
   },
   {
+    type: "link",
     label: "Kurssipoimuri",
     icon: IconBuilding,
     link: "/coursepicker",
     canAccess: () => true,
   },
   {
+    type: "group",
     label: "Viestin",
     icon: IconMail,
     link: "/communicator",
+    parentBehavior: "both",
+    links: [
+      { label: "Saapuneet", queryParams: { tab: "Inbox" } },
+      { label: "Lukemattomat", queryParams: { tab: "Unread" } },
+      { label: "Lähetetyt", queryParams: { tab: "Sent" } },
+      { label: "Roskakori", queryParams: { tab: "Trash" } },
+    ],
+    initiallyOpened: false,
     canAccess: (user) => (user?.loggedIn && user?.isActive) ?? false,
   },
   {
+    type: "link",
     label: "Ohjaamo",
     icon: IconList,
     link: "/guider",
@@ -83,9 +128,11 @@ export const navigationItemsEnviroment: NavigationItem[] = [
   },
 
   {
+    type: "group",
     label: "Arviointi",
     icon: IconEdit,
     link: "/evaluation",
+    parentBehavior: "both",
     links: [
       { label: "Arviointien hallinta", link: "/evaluation/manage" },
       { label: "Arviointiraportit", link: "/evaluation/reports" },
@@ -95,11 +142,13 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     canAccess: (user) => user?.permissions?.EVALUATION_VIEW_INDEX ?? false,
   },
   {
+    type: "group",
     label: "Organisaation hallinta",
     icon: IconBuildingStore,
     link: "/organization",
+    parentBehavior: "both",
     links: [
-      { label: "Organisaation tiedot", link: "/organization/info" },
+      { label: "Organisaation tiedot", queryParams: { tab: "info" } },
       { label: "Käyttäjien hallinta", link: "/organization/users" },
       { label: "Roolien hallinta", link: "/organization/roles" },
       { label: "Oikeuksien hallinta", link: "/organization/permissions" },
@@ -109,18 +158,21 @@ export const navigationItemsEnviroment: NavigationItem[] = [
       (user?.loggedIn && user?.permissions?.ORGANIZATION_VIEW) ?? false,
   },
   {
+    type: "link",
     label: "Omat tiedot",
     icon: IconUser,
     link: "/profile",
     canAccess: (user) => user?.loggedIn ?? false,
   },
   {
+    type: "link",
     label: "Asetukset",
     icon: IconSettings,
     link: "/appSettings",
     canAccess: () => true,
   },
   {
+    type: "link",
     label: "Kirjaudu sisään",
     icon: IconLogin,
     onClick: () => {
@@ -130,6 +182,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     canAccess: (user) => !(user?.loggedIn ?? false),
   },
   {
+    type: "link",
     label: "Kirjaudu ulos",
     icon: IconLogout,
     onClick: () => {
@@ -142,12 +195,14 @@ export const navigationItemsEnviroment: NavigationItem[] = [
 
 const navigationItemsWorkspace: NavigationItem[] = [
   {
+    type: "link",
     label: "Etusivu",
     icon: IconHome,
     link: "/dashboard",
     canAccess: (user) => user?.loggedIn ?? false,
   },
   {
+    type: "link",
     label: "Työtilan etusivu",
     icon: IconHome,
     link: (params) => `/workspace/${params.workspaceUrlName}`,
@@ -155,6 +210,7 @@ const navigationItemsWorkspace: NavigationItem[] = [
       workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
   },
   {
+    type: "link",
     label: "Työtilan hallinta",
     icon: IconBuildingStore,
     link: (params) =>
@@ -164,6 +220,7 @@ const navigationItemsWorkspace: NavigationItem[] = [
       false, // Always visible
   },
   {
+    type: "link",
     label: "Ohjeet",
     icon: IconHelp,
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceHelp`,
@@ -172,6 +229,7 @@ const navigationItemsWorkspace: NavigationItem[] = [
       false, // Always visible
   },
   {
+    type: "link",
     label: "Materiaalit",
     icon: IconBook,
     link: (params) =>
@@ -181,6 +239,7 @@ const navigationItemsWorkspace: NavigationItem[] = [
       false, // Always visible
   },
   {
+    type: "link",
     label: "Oppimispäiväkirja",
     icon: IconCalendar,
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceJournal`,
@@ -189,6 +248,7 @@ const navigationItemsWorkspace: NavigationItem[] = [
       false, // Always visible
   },
   {
+    type: "link",
     label: "Käyttäjät",
     icon: IconUser,
     link: (params) => `/workspace/${params.workspaceUrlName}/workspaceUsers`,
@@ -197,18 +257,21 @@ const navigationItemsWorkspace: NavigationItem[] = [
       false, // Always visible
   },
   {
+    type: "link",
     label: "Omat tiedot",
     icon: IconUser,
     link: "/profile",
     canAccess: (user) => user?.loggedIn ?? false,
   },
   {
+    type: "link",
     label: "Asetukset",
     icon: IconSettings,
     link: "/appSettings",
     canAccess: (user) => user?.loggedIn ?? false,
   },
   {
+    type: "link",
     label: "Kirjaudu ulos",
     icon: IconLogout,
     onClick: () => {
