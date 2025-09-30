@@ -3,7 +3,7 @@ import { Document, Page, Text, View, PDFViewer } from "@react-pdf/renderer";
 import { StateType } from "~/reducers";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import FiveStars from "./stars/star-selector";
+import FiveStars from "./pdf/pdfFiveStars";
 
 const CvPdf = () => {
   const { languageProfile, status } = useSelector((state: StateType) => state);
@@ -43,7 +43,7 @@ const CvPdf = () => {
               <View
                 wrap={false}
                 key={"language-" + index}
-                style={{ padding: 10, margin: 10 }}
+                style={{ padding: 10, margin: 10, backgroundColor: "#f0f0f0" }}
               >
                 <Text style={{ fontSize: 12, marginBottom: 10 }}>
                   {t(`languages.${language.code}`, {
@@ -51,8 +51,21 @@ const CvPdf = () => {
                     ns: "languageProfile",
                   })}
                 </Text>
-                <Text style={{ fontSize: 11, marginBottom: 10 }}>
+                <Text style={{ fontSize: 10, marginBottom: 5 }}>
+                  {t("labels.descriptionOfCompetence", {
+                    ns: "languageProfile",
+                  })}
+                </Text>
+                <Text style={{ fontSize: 9, marginBottom: 10 }}>
                   {language.description}
+                </Text>
+                <Text style={{ fontSize: 10, marginBottom: 5 }}>
+                  {t("labels.skillEstimate", {
+                    ns: "languageProfile",
+                  })}
+                </Text>
+                <Text style={{ fontSize: 9, marginBottom: 10 }}>
+                  {language.general}
                 </Text>
                 <View
                   style={{
@@ -63,7 +76,7 @@ const CvPdf = () => {
                   }}
                 >
                   <View>
-                    <Text style={{ fontSize: 11 }}>
+                    <Text style={{ fontSize: 9, marginBottom: 5 }}>
                       {t("labels.skillVocalization", {
                         ns: "languageProfile",
                       })}
@@ -71,7 +84,7 @@ const CvPdf = () => {
                     <FiveStars value={Number(language.vocal)} />
                   </View>
                   <View>
-                    <Text style={{ fontSize: 11 }}>
+                    <Text style={{ fontSize: 9, marginBottom: 5 }}>
                       {t("labels.skillWriting", {
                         ns: "languageProfile",
                       })}
@@ -79,7 +92,7 @@ const CvPdf = () => {
                     <FiveStars value={Number(language.writing)} />
                   </View>
                   <View>
-                    <Text style={{ fontSize: 11 }}>
+                    <Text style={{ fontSize: 9, marginBottom: 5 }}>
                       {t("labels.skillReadingComprehension", {
                         ns: "languageProfile",
                       })}
@@ -87,7 +100,7 @@ const CvPdf = () => {
                     <FiveStars value={Number(language.reading)} />
                   </View>
                   <View>
-                    <Text style={{ fontSize: 11 }}>
+                    <Text style={{ fontSize: 9, marginBottom: 5 }}>
                       {t("labels.skillInteraction", {
                         ns: "languageProfile",
                       })}
@@ -95,7 +108,7 @@ const CvPdf = () => {
                     <FiveStars value={Number(language.interaction)} />
                   </View>
                   <View>
-                    <Text style={{ fontSize: 11 }}>
+                    <Text style={{ fontSize: 9, marginBottom: 5 }}>
                       {t("labels.skillListeningComprehension", {
                         ns: "languageProfile",
                       })}
@@ -103,9 +116,6 @@ const CvPdf = () => {
                     <FiveStars value={Number(language.listening)} />
                   </View>
                 </View>
-                <Text style={{ fontSize: 11, marginBottom: 10 }}>
-                  {language.general}
-                </Text>
               </View>
             ))}
           </Page>

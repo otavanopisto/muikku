@@ -1,14 +1,30 @@
 import * as React from "react";
 import { Svg, G, Path } from "@react-pdf/renderer";
 
-const PdfStarDisplayer = (props: { value: number }) => {
-  const { value } = props;
+/**
+ * Props for the PdfFiveStars component.
+ */
+interface PdfFiveStarsProps {
+  value: number;
+}
 
+/**
+ * Renders an SVG component that displays 5 stars with fill colors based on the provided rating value.
+ * @param props - component props
+ * @returns an SVG component that renders 5 stars with fill colors based on the rating value
+ */
+const PdfFiveStars = (props: PdfFiveStarsProps) => {
+  const { value } = props;
+  const color = "#ab1566";
+  /**
+   * Generates an array of fill colors for the 5 stars based on the rating value.
+   * @returns Array<string> array of fill colors for 5 stars
+   */
   const fill = () => {
     const fillArray = [];
     for (let i = 0; i < 5; i++) {
       if (i + 1 <= value && value > 0) {
-        fillArray.push("#800080");
+        fillArray.push(color);
       } else {
         fillArray.push("none");
       }
@@ -22,7 +38,7 @@ const PdfStarDisplayer = (props: { value: number }) => {
         <Path
           d="m 65.484375,59.928125 -4.466931,-2.301909 -4.428629,2.374763 0.808889,-4.959632 -3.627055,-3.478035 4.966851,-0.763311 2.186985,-4.524307 2.260794,4.48788 4.978687,0.681859 -3.569604,3.536974 z"
           fill={fill()[0]}
-          stroke="#800080"
+          stroke={color}
           strokeWidth={0.264583}
           strokeOpacity={1}
           transform="matrix(0.99955557,0,0,1.0236523,0.02709543,-1.4215512)"
@@ -32,7 +48,7 @@ const PdfStarDisplayer = (props: { value: number }) => {
         <Path
           d="m 65.484375,59.928125 -4.466931,-2.301909 -4.428629,2.374763 0.808889,-4.959632 -3.627055,-3.478035 4.966851,-0.763311 2.186985,-4.524307 2.260794,4.48788 4.978687,0.681859 -3.569604,3.536974 z"
           fill={fill()[1]}
-          stroke="#800080"
+          stroke={color}
           strokeWidth={0.264583}
           strokeOpacity={1}
           transform="matrix(0.99955557,0,0,1.0236523,0.02709543,-1.4215512)"
@@ -42,7 +58,7 @@ const PdfStarDisplayer = (props: { value: number }) => {
         <Path
           d="m 65.484375,59.928125 -4.466931,-2.301909 -4.428629,2.374763 0.808889,-4.959632 -3.627055,-3.478035 4.966851,-0.763311 2.186985,-4.524307 2.260794,4.48788 4.978687,0.681859 -3.569604,3.536974 z"
           fill={fill()[2]}
-          stroke="#800080"
+          stroke={color}
           strokeWidth={0.264583}
           strokeOpacity={1}
           transform="matrix(0.99955557,0,0,1.0236523,0.02709543,-1.4215512)"
@@ -52,7 +68,7 @@ const PdfStarDisplayer = (props: { value: number }) => {
         <Path
           d="m 65.484375,59.928125 -4.466931,-2.301909 -4.428629,2.374763 0.808889,-4.959632 -3.627055,-3.478035 4.966851,-0.763311 2.186985,-4.524307 2.260794,4.48788 4.978687,0.681859 -3.569604,3.536974 z"
           fill={fill()[3]}
-          stroke="#800080"
+          stroke={color}
           strokeWidth={0.264583}
           strokeOpacity={1}
           transform="matrix(0.99955557,0,0,1.0236523,0.02709543,-1.4215512)"
@@ -62,7 +78,7 @@ const PdfStarDisplayer = (props: { value: number }) => {
         <Path
           d="m 65.484375,59.928125 -4.466931,-2.301909 -4.428629,2.374763 0.808889,-4.959632 -3.627055,-3.478035 4.966851,-0.763311 2.186985,-4.524307 2.260794,4.48788 4.978687,0.681859 -3.569604,3.536974 z"
           fill={fill()[4]}
-          stroke="#800080"
+          stroke={color}
           strokeWidth={0.264583}
           strokeOpacity={1}
           transform="matrix(0.99955557,0,0,1.0236523,0.02709543,-1.4215512)"
@@ -72,4 +88,4 @@ const PdfStarDisplayer = (props: { value: number }) => {
   );
 };
 
-export default PdfStarDisplayer;
+export default PdfFiveStars;
