@@ -7,9 +7,9 @@ import type { NavigationLink } from "~/src/layout/helpers/navigation";
 /**
  * NavbarSubLinkProps - Interface for navbar sub-link props
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface NavbarSubLinkProps extends NavigationLink {
   // Additional props specific to sub-links
+  parentRoute?: string; // Parent route to restrict query params to
 }
 
 /**
@@ -26,22 +26,31 @@ export function NavbarSubLink(props: NavbarSubLinkProps) {
     replaceState = false,
     active = false,
     loading = false,
+    parentRoute,
   } = props;
 
   const location = useLocation();
   const params = useParams();
   const navigate = useNavigate();
 
+  // Check if query parameters are allowed on current route (restrict to parent route)
+  const areQueryParamsAllowed = useMemo(() => {
+    if (!queryParams || !parentRoute) return true;
+
+    // Check if current pathname starts with parent route
+    return location.pathname.startsWith(parentRoute);
+  }, [queryParams, parentRoute, location.pathname]);
+
   // Check if query parameters are currently active
   const isQueryParamsActive = useMemo(() => {
-    if (!queryParams) return false;
+    if (!queryParams || !areQueryParamsAllowed) return false;
 
     const currentSearchParams = new URLSearchParams(location.search);
     return Object.entries(queryParams).every(([key, value]) => {
       const currentValue = currentSearchParams.get(key);
       return currentValue === String(value);
     });
-  }, [queryParams, location.search]);
+  }, [queryParams, areQueryParamsAllowed, location.search]);
 
   const isActive = useMemo(
     () =>
@@ -58,7 +67,7 @@ export function NavbarSubLink(props: NavbarSubLinkProps) {
    * Handle query parameter navigation with toggle behavior
    */
   const handleQueryParams = async () => {
-    if (queryParams) {
+    if (queryParams && areQueryParamsAllowed) {
       const currentSearchParams = new URLSearchParams(location.search);
 
       // Check if all query params are currently active
@@ -103,7 +112,7 @@ export function NavbarSubLink(props: NavbarSubLinkProps) {
     if (onClick) {
       onClick();
     }
-    if (queryParams) {
+    if (queryParams && areQueryParamsAllowed) {
       void handleQueryParams();
     }
   };

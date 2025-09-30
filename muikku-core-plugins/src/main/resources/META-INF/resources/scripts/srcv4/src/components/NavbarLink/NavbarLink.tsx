@@ -40,16 +40,32 @@ export function NavbarLink(props: NavbarLinkProps) {
   const params = useParams();
   const navigate = useNavigate();
 
+  // For main navigation links, we can restrict query params to their own route
+  const parentRoute = useMemo(() => {
+    if (link) {
+      return typeof link === "function" ? link(params) : link;
+    }
+    return location.pathname;
+  }, [link, params, location.pathname]);
+
+  // Check if query parameters are allowed on current route
+  const areQueryParamsAllowed = useMemo(() => {
+    if (!queryParams) return true;
+
+    // For main links, restrict to their own route
+    return location.pathname.startsWith(parentRoute);
+  }, [queryParams, parentRoute, location.pathname]);
+
   // Check if query parameters are currently active
   const isQueryParamsActive = useMemo(() => {
-    if (!queryParams) return false;
+    if (!queryParams || !areQueryParamsAllowed) return false;
 
     const currentSearchParams = new URLSearchParams(location.search);
     return Object.entries(queryParams).every(([key, value]) => {
       const currentValue = currentSearchParams.get(key);
       return currentValue === String(value);
     });
-  }, [queryParams, location.search]);
+  }, [queryParams, areQueryParamsAllowed, location.search]);
 
   const isActive = useMemo(
     () =>
@@ -66,7 +82,7 @@ export function NavbarLink(props: NavbarLinkProps) {
    * Handle query parameter navigation with toggle behavior
    */
   const handleQueryParams = async () => {
-    if (queryParams) {
+    if (queryParams && areQueryParamsAllowed) {
       const currentSearchParams = new URLSearchParams(location.search);
 
       // Check if all query params are currently active
@@ -111,7 +127,7 @@ export function NavbarLink(props: NavbarLinkProps) {
     if (onClick) {
       onClick();
     }
-    if (queryParams) {
+    if (queryParams && areQueryParamsAllowed) {
       void handleQueryParams();
     }
   };

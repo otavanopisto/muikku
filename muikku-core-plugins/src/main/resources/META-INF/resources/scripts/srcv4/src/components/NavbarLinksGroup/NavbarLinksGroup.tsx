@@ -46,6 +46,15 @@ export function LinksGroup(props: LinksGroupProps) {
   const navigate = useNavigate();
   const [opened, setOpened] = useState(initiallyOpened ?? false);
 
+  // Determine parent route for query parameter restrictions
+  const parentRoute = useMemo(() => {
+    if (link) {
+      return typeof link === "function" ? link(params) : link;
+    }
+    // If no parent link, use the current pathname as fallback
+    return location.pathname;
+  }, [link, params, location.pathname]);
+
   // Check if any sub-link is active (including query params)
   const isAnySubLinkActive = useMemo(
     () =>
@@ -62,8 +71,8 @@ export function LinksGroup(props: LinksGroupProps) {
             return true;
           }
         }
-        // Check if sub-link query params are active
-        if (subLink.queryParams) {
+        // Check if sub-link query params are active (only if on parent route)
+        if (subLink.queryParams && location.pathname.startsWith(parentRoute)) {
           const currentSearchParams = new URLSearchParams(location.search);
           return Object.entries(subLink.queryParams).every(([key, value]) => {
             const currentValue = currentSearchParams.get(key);
@@ -72,7 +81,7 @@ export function LinksGroup(props: LinksGroupProps) {
         }
         return false;
       }),
-    [links, location.pathname, location.search, params]
+    [links, location.pathname, location.search, params, parentRoute]
   );
 
   const isActive = useMemo(
@@ -138,9 +147,9 @@ export function LinksGroup(props: LinksGroupProps) {
     }
   };
 
-  // Render sub-links using the dedicated component
+  // Render sub-links using the dedicated component with parent route
   const items = links.map((subLink) => (
-    <NavbarSubLink key={subLink.label} {...subLink} />
+    <NavbarSubLink key={subLink.label} {...subLink} parentRoute={parentRoute} />
   ));
 
   // Icon component
