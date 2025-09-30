@@ -51,6 +51,8 @@ const NoteBookPDFDialog = (props: NoteBookPDFDialogProps) => {
   return (
     <Dialog
       modifier="notebook-pdf-dialog"
+      isOpen={isOpen}
+      onClose={onClose}
       title="Muistiinpanot"
       content={content}
       disableScroll
