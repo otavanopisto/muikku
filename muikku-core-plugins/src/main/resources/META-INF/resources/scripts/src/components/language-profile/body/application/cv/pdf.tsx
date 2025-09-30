@@ -155,8 +155,6 @@ const CvPdfDialog = (props: CvPdfProps) => {
   return (
     <Dialog
       modifier="cv-pdf-dialog"
-      isOpen={isOpen}
-      onClose={onClose}
       title={t("labels.languageCv", {
         ns: "languageProfile",
       })}
