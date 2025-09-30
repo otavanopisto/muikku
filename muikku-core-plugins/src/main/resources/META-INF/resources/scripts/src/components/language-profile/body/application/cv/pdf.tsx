@@ -11,6 +11,7 @@ import { StateType } from "~/reducers";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import FiveStars from "./pdf/pdfFiveStars";
+import Dialog from "~/components/general/dialog";
 
 const styles = StyleSheet.create({
   page: {
@@ -36,21 +37,43 @@ const styles = StyleSheet.create({
 });
 
 /**
+ * CvPdfProps
+ */
+interface CvPdfProps {
+  children?: React.ReactElement;
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+/**
  * CvPdf component
+ * @param props CvPdfProps
  * @returns JSX.Element
  */
-const CvPdf = () => {
+const CvPdfDialog = (props: CvPdfProps) => {
+  const { children, isOpen, onClose } = props;
   const { languageProfile, status } = useSelector((state: StateType) => state);
   const cv = languageProfile.data.cv;
   const name = status.profile.displayName;
   const { t } = useTranslation(["languageProfile", "common"]);
 
-  return (
+  /**
+   * content
+   * @param closeDialog closeDialog
+   * @returns JSX.Element
+   */
+  const content = (closeDialog: () => void) => (
     <PDFViewer style={{ width: "100%", height: "100vh" }}>
       <Document>
         <Page size="A4">
           <View>
-            <Text style={styles.page}>Kieli-CV - {name}</Text>
+            <Text style={styles.page}>
+              {t("labels.languageCv", {
+                ns: "languageProfile",
+              })}
+              {" - "}
+              {name}
+            </Text>
           </View>
           <View style={styles.section}>
             <Text style={styles.header}>Yleistä</Text>
@@ -128,6 +151,21 @@ const CvPdf = () => {
       </Document>
     </PDFViewer>
   );
+
+  return (
+    <Dialog
+      modifier="cv-pdf-dialog"
+      isOpen={isOpen}
+      onClose={onClose}
+      title={t("labels.languageCv", {
+        ns: "languageProfile",
+      })}
+      content={content}
+      disableScroll
+    >
+      {children}
+    </Dialog>
+  );
 };
 
-export default CvPdf;
+export default CvPdfDialog;

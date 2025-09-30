@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 import SkillLevel from "./cv/skill-level";
-import CvPdf from "./cv/pdf";
+import CvPdfDialog from "./cv/pdf";
 import { saveLanguageProfile } from "~/actions/main-function/language-profile";
-import Button from "~/components/general/button";
+import Button, { IconButton } from "~/components/general/button";
 import { useTranslation } from "react-i18next";
 
 /**
@@ -42,15 +42,20 @@ const LanguageCv = () => {
 
   return (
     <div>
-      <CvPdf />
+      {/*<CvPdf />*/}
       <div className="language-profile-form">
         <div className="language-profile-form__container">
           <div className="language-profile-container">
             <fieldset className="language-profile-container__fieldset">
-              <legend className="language-profile-container__subheader">
-                {t("labels.languageCv", {
-                  ns: "languageProfile",
-                })}
+              <legend className="language-profile-container__subheader language-profile-container__subheader--cv">
+                <div>
+                  {t("labels.languageCv", {
+                    ns: "languageProfile",
+                  })}
+                </div>
+                <CvPdfDialog>
+                  <IconButton icon="pdf" disablePropagation={true} />
+                </CvPdfDialog>
               </legend>
               <div className="language-profile-container__fieldset-description">
                 {t("content.languageCv", {
@@ -78,8 +83,8 @@ const LanguageCv = () => {
                 </div>
               </div>
             </fieldset>
-            {cv.languages.length > 0 ? (
-              cv.languages.map((language) => (
+            {languages.length > 0 ? (
+              languages.map((language) => (
                 <SkillLevel key={language.code} language={language} />
               ))
             ) : (

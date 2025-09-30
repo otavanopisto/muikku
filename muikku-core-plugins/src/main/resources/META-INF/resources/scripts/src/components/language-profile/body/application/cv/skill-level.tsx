@@ -18,7 +18,7 @@ import Dropdown from "~/components/general/dropdown";
  * SkillLevelProps
  */
 interface SkillLevelProps {
-  language: CVLanguage;
+  language: LanguageProfileLanguage;
 }
 
 /**
