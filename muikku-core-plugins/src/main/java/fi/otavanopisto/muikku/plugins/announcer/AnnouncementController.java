@@ -83,7 +83,7 @@ public class AnnouncementController {
   }
   
   public List<Announcement> listAnnouncements(Collection<SchoolDataIdentifier> userIdentifiers, OrganizationEntity organizationEntity, boolean includeGroups, boolean includeWorkspaces, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyArchived) {
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyArchived,  Integer firstResult, Integer maxResults) {
     List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserIdentifiers(userIdentifiers) : Collections.emptyList();
     List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listActiveWorkspaceEntitiesByUserIdentifiers(userIdentifiers) : Collections.emptyList();
 
@@ -94,13 +94,15 @@ public class AnnouncementController {
         environment, 
         timeFrame, 
         announcementOwner,
-        onlyArchived);
+        onlyArchived,
+        firstResult, 
+        maxResults);
     
     return announcements;
   }
 
   public List<Announcement> listWorkspaceAnnouncements(OrganizationEntity organizationEntity, List<WorkspaceEntity> workspaceEntities, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyArchived) {
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyArchived, Integer firstResult, Integer maxResults) {
     List<Announcement> announcements = announcementDAO.listAnnouncements(
         organizationEntity,
         Collections.emptyList(),
@@ -108,7 +110,9 @@ public class AnnouncementController {
         environment, 
         timeFrame, 
         announcementOwner,
-        onlyArchived);
+        onlyArchived,
+        firstResult, 
+        maxResults);
     
     return announcements;
   }
@@ -121,7 +125,7 @@ public class AnnouncementController {
     return announcementDAO.findById(id);
   }
   
-  public List<Announcement> listActiveByWorkspaceEntities(OrganizationEntity organizationEntity, List<WorkspaceEntity> workspaceEntities) {
+  public List<Announcement> listActiveByWorkspaceEntities(OrganizationEntity organizationEntity, List<WorkspaceEntity> workspaceEntities,  Integer firstResult, Integer maxResults) {
     List<Long> workspaceEntityIds = new ArrayList<>(workspaceEntities.size());
     
     for (WorkspaceEntity workspaceEntity : workspaceEntities) {
@@ -129,7 +133,7 @@ public class AnnouncementController {
     }
     
     List<Announcement> result = new ArrayList<>(announcementDAO.listAnnouncements(organizationEntity,
-        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT, false));
+        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT, false, firstResult, maxResults));
     
     Collections.sort(result, new Comparator<Announcement>() {
       public int compare(Announcement o1, Announcement o2) {
