@@ -7,7 +7,7 @@ import type { NavigationLink } from "~/src/layout/helpers/navigation";
 /**
  * NavbarSubLinkProps - Interface for navbar sub-link props
  */
-interface NavbarSubLinkProps extends NavigationLink {
+interface NavbarSubLinkProps extends Omit<NavigationLink, "type"> {
   // Additional props specific to sub-links
   parentRoute?: string; // Parent route to restrict query params to
 }

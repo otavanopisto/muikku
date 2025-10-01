@@ -40,6 +40,7 @@ import {
   ErrorBoundaryPage,
   ErrorBoundaryLayout,
 } from "~/src/components";
+import { PageLayout } from "../layout/PageLayout/PageLayout";
 
 // Router
 export const router = createBrowserRouter([
@@ -70,74 +71,180 @@ export const router = createBrowserRouter([
               },
               {
                 path: "communicator",
-                element: <Communicator />,
+                element: (
+                  <PageLayout title="Viestin">
+                    <Communicator />
+                  </PageLayout>
+                ),
                 loader: communicatorLoader,
                 middleware: [permissionMiddlewares.communicatorView],
               },
               {
                 path: "coursepicker",
-                element: <Coursepicker />,
+                element: (
+                  <PageLayout title="Kurssipoimuri">
+                    <Coursepicker />
+                  </PageLayout>
+                ),
                 //loader: coursepickerLoader,
                 middleware: [permissionMiddlewares.coursepickerView],
               },
               {
                 path: "studies",
-                element: <Studies />,
+                element: (
+                  <PageLayout title="Opinnot">
+                    <Studies />
+                  </PageLayout>
+                ),
                 //loader: studiesLoader,
                 middleware: [permissionMiddlewares.studiesView],
               },
               {
                 path: "hops",
-                element: <Hops />,
+                element: (
+                  <PageLayout title="HOPS">
+                    <Hops />
+                  </PageLayout>
+                ),
                 // loader: hopsLoader,
                 middleware: [permissionMiddlewares.hopsView],
               },
               {
                 path: "guider",
-                element: <Guider />,
+                element: (
+                  <PageLayout title="Opiskelijat">
+                    <Guider />
+                  </PageLayout>
+                ),
                 //loader: guiderLoader,
                 middleware: [permissionMiddlewares.guiderView],
+                children: [
+                  {
+                    index: true,
+                    element: <>Opiskelijalistaus</>,
+                    //loader: guiderHomeLoader,
+                  },
+                  {
+                    path: "tasks",
+                    element: <>Tehtävät</>,
+                    //loader: guiderHomeLoader,
+                  },
+                  {
+                    path: ":studentId",
+                    //loader: guiderHomeLoader,
+                    children: [
+                      {
+                        index: true,
+                        element: <>Opiskelijan tiedot</>,
+                        //loader: guiderHomeLoader,
+                      },
+                      {
+                        path: "activity",
+                        element: <>Aktiivisuus</>,
+                        //loader: guiderHomeLoader,
+                      },
+                      {
+                        path: "hops",
+                        element: <>Opiskelusuunnitelma (HOPS)</>,
+                        //loader: guiderHomeLoader,
+                      },
+                      {
+                        path: "pedagogy-support",
+                        element: <>Oppimisen tuki</>,
+                        //loader: guiderHomeLoader,
+                      },
+                      {
+                        path: "guidance-relationship",
+                        element: <>Ohjaussuhde</>,
+                        //loader: guiderHomeLoader,
+                      },
+                      {
+                        path: "study-history",
+                        element: <>Opintohistoria</>,
+                        //loader: guiderHomeLoader,
+                      },
+                      {
+                        path: "files",
+                        element: <>Tiedostot</>,
+                        //loader: guiderHomeLoader,
+                      },
+                      {
+                        path: "files",
+                        element: <>Tiedostot</>,
+                        //loader: guiderHomeLoader,
+                      },
+                    ],
+                  },
+                ],
               },
               {
                 path: "evaluation",
-                element: <Evaluation />,
+                element: (
+                  <PageLayout title="Arviointi">
+                    <Evaluation />
+                  </PageLayout>
+                ),
                 //loader: evaluationLoader,
                 middleware: [permissionMiddlewares.evaluationView],
               },
               {
                 path: "organization",
-                element: <Organization />,
+                element: (
+                  <PageLayout title="Organisaatio">
+                    <Organization />
+                  </PageLayout>
+                ),
                 //loader: organizationLoader,
                 middleware: [permissionMiddlewares.organizationView],
               },
               {
                 path: "announcements",
-                element: <Announcements />,
+                element: (
+                  <PageLayout title="Ilmoitukset">
+                    <Announcements />
+                  </PageLayout>
+                ),
                 //loader: announcementsLoader,
                 middleware: [permissionMiddlewares.announcementsView],
               },
               {
                 path: "announcer",
-                element: <Announcer />,
+                element: (
+                  <PageLayout title="Ilmoittaja">
+                    <Announcer />
+                  </PageLayout>
+                ),
                 //loader: announcerLoader,
                 middleware: [permissionMiddlewares.announcerView],
               },
               {
                 path: "profile",
-                element: <Profile />,
+                element: (
+                  <PageLayout title="Profiili">
+                    <Profile />
+                  </PageLayout>
+                ),
                 //loader: profileLoader,
                 middleware: [permissionMiddlewares.profileView],
               },
 
               {
                 path: "appSettings",
-                element: <AppSettings />,
+                element: (
+                  <PageLayout title="Asetukset">
+                    <AppSettings />
+                  </PageLayout>
+                ),
                 //loader: appSettingsLoader,
                 middleware: [permissionMiddlewares.appSettingsView],
               },
               {
                 path: "*",
-                element: <NotFound />,
+                element: (
+                  <PageLayout title="Ei löydy">
+                    <NotFound />
+                  </PageLayout>
+                ),
               },
 
               // Future routes can be added here with their own loaders

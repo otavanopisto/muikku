@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { IconChevronRight } from "@tabler/icons-react";
 import {
   Collapse,
@@ -11,7 +11,11 @@ import {
 } from "@mantine/core";
 import { useLocation, useParams, useNavigate } from "react-router";
 import classes from "./NavbarLinksGroup.module.css";
-import type { NavigationGroupItem } from "~/src/layout/helpers/navigation";
+import type {
+  NavigationGroupItem,
+  NavigationContent,
+  NavigationLink,
+} from "~/src/layout/helpers/navigation";
 import { NavbarSubLink } from "../NavbarSubLink/NavbarSubLink";
 
 /**
@@ -31,7 +35,7 @@ export function LinksGroup(props: LinksGroupProps) {
     icon: Icon,
     label,
     initiallyOpened,
-    links,
+    contents,
     parentBehavior = "toggle",
     link,
     queryParams,
@@ -58,30 +62,36 @@ export function LinksGroup(props: LinksGroupProps) {
   // Check if any sub-link is active (including query params)
   const isAnySubLinkActive = useMemo(
     () =>
-      links.some((subLink) => {
-        if (subLink.active) {
-          return true;
-        }
-        if (subLink.link) {
-          const subLinkPath =
-            typeof subLink.link === "function"
-              ? subLink.link(params)
-              : subLink.link;
-          if (subLinkPath === location.pathname) {
+      contents.some((content) => {
+        // Only check NavigationLink items for active state
+        if (content.type === "link") {
+          if (content.active) {
             return true;
           }
-        }
-        // Check if sub-link query params are active (only if on parent route)
-        if (subLink.queryParams && location.pathname.startsWith(parentRoute)) {
-          const currentSearchParams = new URLSearchParams(location.search);
-          return Object.entries(subLink.queryParams).every(([key, value]) => {
-            const currentValue = currentSearchParams.get(key);
-            return currentValue === String(value);
-          });
+          if (content.link) {
+            /* const subLinkPath =
+              typeof content.link === "function"
+                ? content.link(params)
+                : content.link;
+            if (subLinkPath === location.pathname) {
+              return true;
+            } */
+          }
+          // Check if sub-link query params are active (only if on parent route)
+          /* if (
+            content.queryParams &&
+            location.pathname.startsWith(parentRoute)
+          ) {
+            const currentSearchParams = new URLSearchParams(location.search);
+            return Object.entries(content.queryParams).every(([key, value]) => {
+              const currentValue = currentSearchParams.get(key);
+              return currentValue === String(value);
+            });
+          } */
         }
         return false;
       }),
-    [links, location.pathname, location.search, params, parentRoute]
+    [contents]
   );
 
   const isActive = useMemo(
@@ -131,7 +141,7 @@ export function LinksGroup(props: LinksGroupProps) {
       // Navigate to parent link
       const targetLink = typeof link === "function" ? link(params) : link;
       void navigate(targetLink);
-      // Toggle sub-links
+      // Toggle sub-contents
       setOpened((o) => !o);
     } else if (parentBehavior === "link" && link) {
       // Only navigate
@@ -147,10 +157,30 @@ export function LinksGroup(props: LinksGroupProps) {
     }
   };
 
-  // Render sub-links using the dedicated component with parent route
-  const items = links.map((subLink) => (
-    <NavbarSubLink key={subLink.label} {...subLink} parentRoute={parentRoute} />
-  ));
+  // Process contents - handle both NavigationLink and NavigationDynamicContent
+  const processedContents = useMemo(
+    () =>
+      contents.map((content) => {
+        if (content.type === "component") {
+          // Render dynamic content component
+          return (
+            <React.Fragment key={content.id}>
+              {content.component}
+            </React.Fragment>
+          );
+        }
+        if (content.type === "link") {
+          return (
+            <NavbarSubLink
+              key={content.label}
+              {...content}
+              parentRoute={parentRoute}
+            />
+          );
+        }
+      }),
+    [contents, parentRoute]
+  );
 
   // Icon component
   const IconComponent = (
@@ -219,7 +249,7 @@ export function LinksGroup(props: LinksGroupProps) {
   return (
     <>
       {mainElement}
-      {!collapsed ? <Collapse in={opened}>{items}</Collapse> : null}
+      {!collapsed ? <Collapse in={opened}>{processedContents}</Collapse> : null}
     </>
   );
 }

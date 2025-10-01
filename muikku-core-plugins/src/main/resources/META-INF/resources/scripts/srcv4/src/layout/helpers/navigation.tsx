@@ -16,6 +16,7 @@ import {
 } from "@tabler/icons-react";
 import { type Params } from "react-router";
 import type { WorkspacePermissions } from "~/src/services/permissions";
+import { StudentNavigationContent } from "~/src/router/components/StudentNavigationContent/StudentNavigationContent";
 
 export type NavigationContext = "environment" | "workspace";
 
@@ -23,6 +24,7 @@ export type NavigationContext = "environment" | "workspace";
  * NavigationLink - Interface for a navigation link (now supports all navigation features)
  */
 export interface NavigationLink {
+  type: "link";
   label: string;
   // Navigation options
   link?: string | ((params: Params) => string);
@@ -71,7 +73,7 @@ export interface NavigationLinkItem extends BaseNavigationItem {
  */
 export interface NavigationGroupItem extends BaseNavigationItem {
   type: "group";
-  links: NavigationLink[];
+  contents: NavigationContent[];
   initiallyOpened?: boolean;
   parentBehavior?: "link" | "toggle" | "both";
 }
@@ -80,6 +82,18 @@ export interface NavigationGroupItem extends BaseNavigationItem {
  * NavigationItem - Discriminated union of navigation item types
  */
 export type NavigationItem = NavigationLinkItem | NavigationGroupItem;
+
+// Union type for navigation content
+export type NavigationContent = NavigationLink | NavigationDynamicContent;
+
+/**
+ * NavigationContentComponent - Navigation content component
+ */
+export interface NavigationDynamicContent {
+  type: "component";
+  id: string;
+  component: React.ReactNode;
+}
 
 export const navigationItemsEnviroment: NavigationItem[] = [
   {
@@ -109,20 +123,30 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     icon: IconMail,
     link: "/communicator",
     parentBehavior: "both",
-    links: [
-      { label: "Saapuneet", queryParams: { tab: "Inbox" } },
-      { label: "Lukemattomat", queryParams: { tab: "Unread" } },
-      { label: "Lähetetyt", queryParams: { tab: "Sent" } },
-      { label: "Roskakori", queryParams: { tab: "Trash" } },
+    contents: [
+      { type: "link", label: "Saapuneet", queryParams: { tab: "Inbox" } },
+      { type: "link", label: "Lukemattomat", queryParams: { tab: "Unread" } },
+      { type: "link", label: "Lähetetyt", queryParams: { tab: "Sent" } },
+      { type: "link", label: "Roskakori", queryParams: { tab: "Trash" } },
     ],
     initiallyOpened: false,
     canAccess: (user) => (user?.loggedIn && user?.isActive) ?? false,
   },
   {
-    type: "link",
+    type: "group",
     label: "Ohjaamo",
     icon: IconList,
     link: "/guider",
+    parentBehavior: "both",
+    contents: [
+      { type: "link", label: "Opiskelijalistaus", link: "/guider" },
+      { type: "link", label: "Tehtävät", link: "/guider/tasks" },
+      {
+        type: "component",
+        id: "guider-student_item",
+        component: <StudentNavigationContent parentRoute="/guider" />,
+      },
+    ],
     canAccess: (user) =>
       (user?.loggedIn && user?.permissions.GUIDER_VIEW) ?? false,
   },
@@ -133,10 +157,18 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     icon: IconEdit,
     link: "/evaluation",
     parentBehavior: "both",
-    links: [
-      { label: "Arviointien hallinta", link: "/evaluation/manage" },
-      { label: "Arviointiraportit", link: "/evaluation/reports" },
-      { label: "Arviointiasetukset", link: "/evaluation/settings" },
+    contents: [
+      {
+        type: "link",
+        label: "Arviointien hallinta",
+        link: "/evaluation/manage",
+      },
+      { type: "link", label: "Arviointiraportit", link: "/evaluation/reports" },
+      {
+        type: "link",
+        label: "Arviointiasetukset",
+        link: "/evaluation/settings",
+      },
     ],
     initiallyOpened: false,
     canAccess: (user) => user?.permissions?.EVALUATION_VIEW_INDEX ?? false,
@@ -147,11 +179,23 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     icon: IconBuildingStore,
     link: "/organization",
     parentBehavior: "both",
-    links: [
-      { label: "Organisaation tiedot", queryParams: { tab: "info" } },
-      { label: "Käyttäjien hallinta", link: "/organization/users" },
-      { label: "Roolien hallinta", link: "/organization/roles" },
-      { label: "Oikeuksien hallinta", link: "/organization/permissions" },
+    contents: [
+      {
+        type: "link",
+        label: "Organisaation tiedot",
+        queryParams: { tab: "info" },
+      },
+      {
+        type: "link",
+        label: "Käyttäjien hallinta",
+        link: "/organization/users",
+      },
+      { type: "link", label: "Roolien hallinta", link: "/organization/roles" },
+      {
+        type: "link",
+        label: "Oikeuksien hallinta",
+        link: "/organization/permissions",
+      },
     ],
     initiallyOpened: false,
     canAccess: (user) =>
