@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -50,8 +51,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   }
 
   public List<Announcement> listAnnouncements(OrganizationEntity organizationEntity, List<UserGroupEntity> userGroupEntities, 
-      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean onlyUnread, Long loggedUser, boolean archived) {
-    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, onlyUnread, loggedUser, archived);
+      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean onlyUnread, Long loggedUser,  boolean archived, Integer firstResult, Integer maxResults) {
+    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, onlyUnread, loggedUser, archived, firstResult, maxResults);
   }
   
   public List<Announcement> listAnnouncements(
@@ -63,7 +64,9 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       UserEntity announcementOwner,
       boolean onlyUnread,
       Long loggedUser,
-      boolean archived) {
+      boolean archived,
+      Integer firstResult, 
+      Integer maxResults) {
     EntityManager entityManager = getEntityManager();
     Date currentDate = onlyDateFields(new Date());
     
@@ -190,7 +193,12 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)), criteriaBuilder.desc(root.get(Announcement_.id)));
     
-    return entityManager.createQuery(criteria).getResultList();
+    TypedQuery<Announcement> query = entityManager.createQuery(criteria);
+    
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+    
+    return query.getResultList();
   }
   
   public Announcement updateCaption(Announcement announcement, String caption) {
