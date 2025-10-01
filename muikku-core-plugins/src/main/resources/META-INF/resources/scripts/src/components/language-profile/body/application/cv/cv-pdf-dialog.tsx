@@ -10,7 +10,7 @@ import {
 import { StateType } from "~/reducers";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
-import FiveStars from "./pdf/pdfFiveStars";
+import FiveStars from "./pdf/pdf-five-stars";
 import Dialog from "~/components/general/dialog";
 
 const styles = StyleSheet.create({
