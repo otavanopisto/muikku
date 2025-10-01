@@ -47,6 +47,7 @@ import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestr
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
@@ -57,6 +58,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -82,6 +84,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -273,6 +278,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
       @QueryParam("onlyEditable") @DefaultValue("false") boolean onlyEditable,
       @QueryParam("onlyArchived") @DefaultValue("false") boolean onlyArchived,
+      @QueryParam("onlyUnread") @DefaultValue("false") boolean onlyUnread,
       @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame
   ) {
     if (!sessionController.isLoggedIn()) {
@@ -313,7 +319,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       boolean includeGroups = !hideGroupAnnouncements;
       boolean includeWorkspaces = !hideWorkspaceAnnouncements;
       announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
-          includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
+          includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyUnread, sessionController.getLoggedUserEntity().getId(), onlyArchived);
     }
     else {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
@@ -326,7 +332,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       }
       
       announcements = announcementController.listWorkspaceAnnouncements(organizationEntity,
-          Arrays.asList(workspaceEntity), environment, timeFrame, onlyMine ? currentUserEntity : null, onlyArchived);
+          Arrays.asList(workspaceEntity), environment, timeFrame, onlyMine ? currentUserEntity : null, onlyUnread, sessionController.getLoggedUserEntity().getId(), onlyArchived);
     }
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
@@ -337,7 +343,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       
       List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
       List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
-          
+      
       AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces);
       restModels.add(restModel);
     }
@@ -368,6 +374,39 @@ public class AnnouncerRESTService extends PluginRESTService {
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, loggedUser);
     
     return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces)).build();
+  }
+  
+  @POST
+  @Path("/announcements/{ANNOUNCEMENTID}/markAsRead")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response markAnnouncementAsRead(@PathParam("ANNOUNCEMENTID") Long announcementId) {
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(sessionController.getLoggedUserEntity().getId());
+    
+    Announcement announcement = announcementController.findById(announcementId);
+    
+    if (announcement == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid announcementId").build();
+    }
+    
+    AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, userEntity.getId());
+    
+    if (announcementRecipient == null) {
+
+      announcementRecipient = announcementController.createAnnouncementRecipient(announcement, userEntity.getId());
+    }
+    AnnouncementRecipientRESTModel restModel = new AnnouncementRecipientRESTModel();
+    
+    if (announcementRecipient != null) {
+      restModel.setAnnouncementId(announcementRecipient.getAnnouncement().getId());
+      restModel.setReadDate(announcementRecipient.getReadDate());
+      restModel.setUserEntityId(announcementRecipient.getUserEntityId());
+      restModel.setId(announcementRecipient.getId());
+    }
+
+    return Response
+        .ok(restModel)
+        .build();
   }
 
   private boolean canSeeAnnouncement(Announcement announcement, SchoolDataIdentifier userIdentifier) {
@@ -488,6 +527,10 @@ public class AnnouncerRESTService extends PluginRESTService {
     } else {
       restModel.setTemporalStatus(AnnouncementTemporalStatus.ACTIVE);
     }
+    
+    boolean unread = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId()) == null;
+    
+    restModel.setUnread(unread);
 
     return restModel;
   }
@@ -558,6 +601,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
 
     announcementController.archive(announcement);
+    
     return Response.noContent().build();
   }
   
