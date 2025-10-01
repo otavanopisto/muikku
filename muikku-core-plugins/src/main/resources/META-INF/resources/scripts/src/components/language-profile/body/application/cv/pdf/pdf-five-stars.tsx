@@ -11,7 +11,7 @@ interface PdfFiveStarsProps {
 /**
  * Renders an SVG component that displays 5 stars with fill colors based on the provided rating value.
  * @param props - component props
- * @returns an SVG component that renders 5 stars with fill colors based on the rating value
+ * @returns a react-pdf SVG component that renders 5 stars with fill colors based on the rating value
  */
 const PdfFiveStars = (props: PdfFiveStarsProps) => {
   const { value } = props;
