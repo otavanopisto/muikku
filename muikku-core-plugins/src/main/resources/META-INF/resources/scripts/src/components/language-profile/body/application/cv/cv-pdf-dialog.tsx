@@ -4,6 +4,7 @@ import {
   Page,
   Text,
   View,
+  Link,
   PDFViewer,
   StyleSheet,
 } from "@react-pdf/renderer";
@@ -37,18 +38,18 @@ const styles = StyleSheet.create({
 });
 
 /**
- * CvPdfProps
+ * CvPdfDialogProps
  */
-interface CvPdfProps {
+interface CvPdfDialogProps {
   children?: React.ReactElement;
 }
 
 /**
- * CvPdf component
- * @param props CvPdfProps
+ * CvPdfDialog component
+ * @param props CvPdfDialogProps
  * @returns JSX.Element
  */
-const CvPdfDialog = (props: CvPdfProps) => {
+const CvPdfDialog = (props: CvPdfDialogProps) => {
   const { children } = props;
   const { languageProfile, status } = useSelector((state: StateType) => state);
   const cv = languageProfile.data.cv;
@@ -143,6 +144,20 @@ const CvPdfDialog = (props: CvPdfProps) => {
                   <FiveStars value={Number(language.listening)} />
                 </View>
               </View>
+              {language.samples.length > 0 && (
+                <View style={styles.paragraph}>
+                  <Text style={styles.subheader}>Näytteet</Text>
+                  {language.samples.map((sample, index) => (
+                    <Link
+                      style={styles.text}
+                      key={`language-${language.code}-sample-${index}`}
+                      src={sample.url}
+                    >
+                      {sample.name}
+                    </Link>
+                  ))}
+                </View>
+              )}
             </View>
           ))}
         </Page>
