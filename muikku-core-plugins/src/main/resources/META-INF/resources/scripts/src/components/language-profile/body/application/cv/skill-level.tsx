@@ -41,6 +41,7 @@ const SkillLevel = (props: SkillLevelProps) => {
   );
 
   React.useEffect(() => {
+    // Initialize language skill levels if not present
     if (!languageSkillLevels) {
       const updatedLanguageSkillLevels: CVLanguage = {
         code: language.code,
@@ -58,7 +59,7 @@ const SkillLevel = (props: SkillLevelProps) => {
         payload: updatedLanguageSkillLevels,
       } as ActionType);
     }
-  });
+  }, [languageSkillLevels, dispatch, language]);
 
   /**
    * clearFields Clears the sample fields.
