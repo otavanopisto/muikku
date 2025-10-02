@@ -5,6 +5,7 @@ import { Coursepicker } from "~/src/pages/Coursepicker";
 import { Studies } from "~/src/pages/Studies";
 import { Hops } from "~/src/pages/Hops";
 import { Guider } from "~/src/pages/Guider";
+import { GuiderStudent } from "~/src/pages/GuiderStudent";
 import { Evaluation } from "~/src/pages/Evaluation";
 import { Organization } from "~/src/pages/Organization";
 import { Announcements } from "~/src/pages/Announcements";
@@ -27,6 +28,7 @@ export {
   Studies,
   Hops,
   Guider,
+  GuiderStudent,
   Evaluation,
   Organization,
   Announcements,

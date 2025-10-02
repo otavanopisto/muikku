@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 import {
   workspaceLoader,
   homeLoader,
@@ -6,6 +6,7 @@ import {
   workspaceHomeLoader,
   workspaceSettingsLoader,
   communicatorLoader,
+  guiderStudentLoader,
 } from "~/src/router/routeLoaders";
 import { SharedLayout } from "~/src/layout/SharedLayout/SharedLayout";
 import {
@@ -34,6 +35,7 @@ import {
   WorkspaceJournal,
   WorkspaceHelp,
   NotFound,
+  GuiderStudent,
 } from "~/src/pages/";
 import {
   ErrorBoundaryRoot,
@@ -71,52 +73,33 @@ export const router = createBrowserRouter([
               },
               {
                 path: "communicator",
-                element: (
-                  <PageLayout title="Viestin">
-                    <Communicator />
-                  </PageLayout>
-                ),
+                element: <Communicator />,
                 loader: communicatorLoader,
                 middleware: [permissionMiddlewares.communicatorView],
               },
               {
                 path: "coursepicker",
-                element: (
-                  <PageLayout title="Kurssipoimuri">
-                    <Coursepicker />
-                  </PageLayout>
-                ),
+                element: <Coursepicker />,
                 //loader: coursepickerLoader,
                 middleware: [permissionMiddlewares.coursepickerView],
               },
               {
                 path: "studies",
-                element: (
-                  <PageLayout title="Opinnot">
-                    <Studies />
-                  </PageLayout>
-                ),
+                element: <Studies />,
                 //loader: studiesLoader,
                 middleware: [permissionMiddlewares.studiesView],
               },
               {
                 path: "hops",
-                element: (
-                  <PageLayout title="HOPS">
-                    <Hops />
-                  </PageLayout>
-                ),
+                element: <Hops />,
                 // loader: hopsLoader,
                 middleware: [permissionMiddlewares.hopsView],
               },
               {
                 path: "guider",
-                element: (
-                  <PageLayout title="Opiskelijat">
-                    <Guider />
-                  </PageLayout>
-                ),
+                element: <Guider />,
                 //loader: guiderLoader,
+                errorElement: <ErrorBoundaryPage />,
                 middleware: [permissionMiddlewares.guiderView],
                 children: [
                   {
@@ -129,51 +112,54 @@ export const router = createBrowserRouter([
                     element: <>Tehtävät</>,
                     //loader: guiderHomeLoader,
                   },
+                ],
+              },
+              {
+                path: "guider/:studentId",
+                element: <GuiderStudent />,
+                errorElement: <ErrorBoundaryPage />,
+                loader: guiderStudentLoader,
+                middleware: [permissionMiddlewares.guiderView],
+                children: [
                   {
-                    path: ":studentId",
+                    index: true,
+                    element: <>Opiskelijan tiedot</>,
                     //loader: guiderHomeLoader,
-                    children: [
-                      {
-                        index: true,
-                        element: <>Opiskelijan tiedot</>,
-                        //loader: guiderHomeLoader,
-                      },
-                      {
-                        path: "activity",
-                        element: <>Aktiivisuus</>,
-                        //loader: guiderHomeLoader,
-                      },
-                      {
-                        path: "hops",
-                        element: <>Opiskelusuunnitelma (HOPS)</>,
-                        //loader: guiderHomeLoader,
-                      },
-                      {
-                        path: "pedagogy-support",
-                        element: <>Oppimisen tuki</>,
-                        //loader: guiderHomeLoader,
-                      },
-                      {
-                        path: "guidance-relationship",
-                        element: <>Ohjaussuhde</>,
-                        //loader: guiderHomeLoader,
-                      },
-                      {
-                        path: "study-history",
-                        element: <>Opintohistoria</>,
-                        //loader: guiderHomeLoader,
-                      },
-                      {
-                        path: "files",
-                        element: <>Tiedostot</>,
-                        //loader: guiderHomeLoader,
-                      },
-                      {
-                        path: "files",
-                        element: <>Tiedostot</>,
-                        //loader: guiderHomeLoader,
-                      },
-                    ],
+                  },
+                  {
+                    path: "activity",
+                    element: <>Aktiivisuus</>,
+                    //loader: guiderHomeLoader,
+                  },
+                  {
+                    path: "hops",
+                    element: <>Opiskelusuunnitelma (HOPS)</>,
+                    //loader: guiderHomeLoader,
+                  },
+                  {
+                    path: "pedagogy-support",
+                    element: <>Oppimisen tuki</>,
+                    //loader: guiderHomeLoader,
+                  },
+                  {
+                    path: "guidance-relationship",
+                    element: <>Ohjaussuhde</>,
+                    //loader: guiderHomeLoader,
+                  },
+                  {
+                    path: "study-history",
+                    element: <>Opintohistoria</>,
+                    //loader: guiderHomeLoader,
+                  },
+                  {
+                    path: "files",
+                    element: <>Tiedostot</>,
+                    //loader: guiderHomeLoader,
+                  },
+                  {
+                    path: "files",
+                    element: <>Tiedostot</>,
+                    //loader: guiderHomeLoader,
                   },
                 ],
               },

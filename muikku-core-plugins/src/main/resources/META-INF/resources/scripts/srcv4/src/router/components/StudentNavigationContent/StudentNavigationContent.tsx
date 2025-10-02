@@ -71,12 +71,9 @@ export function StudentNavigationContent({
     );
   }
 
-  //if (!currentStudent.currentStudent) return null;
+  if (!currentStudent.currentStudent) return null;
 
-  const currentStudentData = {
-    name: "Testi Studentti",
-    id: "PYRAMUS-XX",
-  };
+  const { currentStudent: currentStudentData } = currentStudent;
 
   return (
     <>
@@ -87,7 +84,9 @@ export function StudentNavigationContent({
         parentRoute={parentRoute}
       /> */}
 
-      <Title order={4}>{currentStudentData.name}</Title>
+      <Title order={4}>
+        {currentStudentData.firstName} {currentStudentData.lastName}
+      </Title>
 
       {/* Student-specific sub-links */}
       <NavbarSubLink

@@ -69,16 +69,17 @@ export function LinksGroup(props: LinksGroupProps) {
             return true;
           }
           if (content.link) {
-            /* const subLinkPath =
+            const subLinkPath =
               typeof content.link === "function"
                 ? content.link(params)
                 : content.link;
+
             if (subLinkPath === location.pathname) {
               return true;
-            } */
+            }
           }
           // Check if sub-link query params are active (only if on parent route)
-          /* if (
+          if (
             content.queryParams &&
             location.pathname.startsWith(parentRoute)
           ) {
@@ -87,11 +88,12 @@ export function LinksGroup(props: LinksGroupProps) {
               const currentValue = currentSearchParams.get(key);
               return currentValue === String(value);
             });
-          } */
+          }
         }
+
         return false;
       }),
-    [contents]
+    [contents, location.pathname, location.search, params, parentRoute]
   );
 
   const isActive = useMemo(
