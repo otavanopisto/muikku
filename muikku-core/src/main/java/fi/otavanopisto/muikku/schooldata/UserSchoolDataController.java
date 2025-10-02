@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.rest.StudentContactLogWithRecipientsRestModel;
 import fi.otavanopisto.muikku.schooldata.entity.GroupStaffMember;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.Guardian;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependent;
 import fi.otavanopisto.muikku.schooldata.entity.GuardiansDependentWorkspace;
 import fi.otavanopisto.muikku.schooldata.entity.SpecEdTeacher;
@@ -375,6 +376,15 @@ public class UserSchoolDataController {
     return getUserBridge(schoolDataSource).listUserContacts(userIdentifier);
   }
 
+  public BridgeResponse<UserContact> updateContactInfoAllowStudyDiscussions(SchoolDataIdentifier studentIdentifier, Long contactInfoId,
+      boolean allowStudyDiscussions) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).updateContactInfoAllowStudyDiscussions(studentIdentifier, contactInfoId, allowStudyDiscussions);
+  }
+
   public List<UserStudyPeriod> listStudentStudyPeriods(SchoolDataIdentifier userIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
     if (schoolDataSource == null) {
@@ -542,6 +552,26 @@ public class UserSchoolDataController {
     }
  
     return getUserBridge(schoolDataSource).updateActive(studentIdentifier.getIdentifier(), active);
+  }
+
+  // Student's Guardians
+  
+  public List<Guardian> listStudentsGuardians(SchoolDataIdentifier studentIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+ 
+    return getUserBridge(schoolDataSource).listStudentsGuardians(studentIdentifier);
+  }
+
+  public BridgeResponse<Guardian> updateStudentsGuardianContinuedViewPermission(SchoolDataIdentifier studentIdentifier, 
+      SchoolDataIdentifier guardianIdentifier, boolean continuedViewPermission) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(studentIdentifier.getDataSource());
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", studentIdentifier.getDataSource()));
+    }
+    return getUserBridge(schoolDataSource).updateStudentsGuardianContinuedViewPermission(studentIdentifier, guardianIdentifier, continuedViewPermission);
   }
 
 }
