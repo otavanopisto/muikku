@@ -23,6 +23,7 @@ import {
   EvaluationAssessmentRequest,
   EvaluationEventType,
   EvaluationGradeScale,
+  WorkspacePrice,
 } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import MApi from "~/api/api";
@@ -60,7 +61,7 @@ interface WorkspaceEditorState {
   literalEvaluation: string;
   grade: string;
   draftId: string;
-  basePriceFromServer?: number;
+  basePriceFromServer?: WorkspacePrice;
   selectedPriceOption?: string;
   existingBilledPriceObject?: BilledPrice;
   locked: boolean;
@@ -92,7 +93,7 @@ class WorkspaceEditor extends SessionStateComponent<
     // This is wierd one, setting namespace and identificated type for it from props...
     super(props, `workspace-editor-${props.type ? props.type : "new"}`);
 
-    const { evaluationAssessmentEvents, basePrice, evaluationGradeSystem } =
+    const { evaluationAssessmentEvents, evaluationGradeSystem, basePrice } =
       props.evaluations;
 
     const { selectedAssessment, workspaceSubjectToBeEvaluatedIdentifier } =
@@ -590,13 +591,13 @@ class WorkspaceEditor extends SessionStateComponent<
           /**
            * By default selected price should be base price from api
            */
-          billingPrice = this.state.basePriceFromServer.toString();
+          billingPrice = this.state.basePriceFromServer.full.toString();
 
           /**
            * If its raised, then default selected price is half of base
            */
           if (isRaised) {
-            billingPrice = (this.state.basePriceFromServer / 2).toString();
+            billingPrice = this.state.basePriceFromServer.half.toString();
           }
         }
 
@@ -620,7 +621,7 @@ class WorkspaceEditor extends SessionStateComponent<
           literalEvaluation: "",
           grade: `${activeGradeSystems[0].grades[0].dataSource}-${activeGradeSystems[0].grades[0].id}`,
           selectedPriceOption: this.state.basePriceFromServer
-            ? this.state.basePriceFromServer.toString()
+            ? this.state.basePriceFromServer.full.toString()
             : undefined,
         },
         this.state.draftId
@@ -671,149 +672,111 @@ class WorkspaceEditor extends SessionStateComponent<
    */
   parsePriceOptions = (): EvaluationPriceObject[] | undefined => {
     const { t, type, workspaceSubjectToBeEvaluatedIdentifier } = this.props;
-    const { evaluationAssessmentEvents } = this.props.evaluations;
-    let { basePriceFromServer } = this.state;
+    const { evaluationAssessmentEvents, basePrice } = this.props.evaluations;
+    const { basePriceFromServer } = this.state;
 
+    // Workspace basePriceId
+    const basePriceSubjectId = workspaceSubjectToBeEvaluatedIdentifier;
+
+    // Check if base price is loaded
     if (basePriceFromServer === undefined) {
       return undefined;
     }
 
-    /**
-     * We want to get latest event data
-     */
+    // We want to get latest event data
     let latestEvent = evaluationAssessmentEvents.data.find(
       (event) =>
         event.workspaceSubjectIdentifier ===
         workspaceSubjectToBeEvaluatedIdentifier
     );
 
-    /**
-     * If editing existing event, we need to find that specific event from event list by its' id
-     */
+    // If editing existing event, we need to find that specific event from event list by its' id
     if (this.props.eventId && type === "edit") {
       latestEvent = evaluationAssessmentEvents.data.find(
         (eItem) => eItem.identifier === this.props.eventId
       );
     }
 
-    /**
-     * Check if raising grade or giving new one
-     */
+    // Check if raising grade or giving new one
     const isRaised =
       (type === "new" && this.hasGradedEvaluations()) ||
       (type === "edit" &&
         latestEvent &&
         latestEvent.type === "EVALUATION_IMPROVED");
 
-    /**
-     * Default options
-     */
+    // Default options
     const priceOptionsArray: EvaluationPriceObject[] = [];
 
-    /**
-     * Check if base price is loaded
-     */
-    if (basePriceFromServer) {
-      /**
-       * If giving a raised grade, the price is half of the base price
-       */
-      if (isRaised) {
-        basePriceFromServer = basePriceFromServer / 2;
-      }
+    let priceToUse = basePrice.data[basePriceSubjectId].full;
 
-      /**
-       * Full billing -> available for course evaluations and raised grades
-       */
+    // If giving a raised grade, the price is half of the base price
+    if (isRaised) {
+      priceToUse = basePrice.data[basePriceSubjectId].half;
+    }
+
+    // Full billing -> available for course evaluations and raised grades
+    // depending on if the grade is raised or not
+    priceOptionsArray.push({
+      name: `${t("labels.billing", {
+        ns: "evaluation",
+        context: "full",
+      })} ${priceToUse} €`,
+      value: priceToUse,
+    });
+
+    // Half billing -> only available for course evaluations
+    if (!isRaised) {
       priceOptionsArray.push({
         name: `${t("labels.billing", {
           ns: "evaluation",
-          context: "full",
-        })} ${(
-          Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100
-        ).toFixed(2)} €`,
-        value: parseFloat(
-          (
-            Math.round((basePriceFromServer + Number.EPSILON) * 100) / 100
-          ).toFixed(2)
-        ),
+          context: "half",
+        })} ${basePrice.data[basePriceSubjectId].half} €`,
+        value: basePrice.data[basePriceSubjectId].half,
       });
+    }
 
-      /**
-       * Half billing -> only available for course evaluations
-       */
-      if (!isRaised) {
+    // No billing -> available for course evaluations and raised grades
+    priceOptionsArray.push({
+      name: `${t("labels.billing", {
+        ns: "evaluation",
+        context: "none",
+      })} 0,00 €`,
+      value: 0,
+    });
+
+    // If editing, check if existing price data is loaded
+    if (type === "edit" && this.state.existingBilledPriceObject) {
+      // If the price from server is not in our options...
+
+      const condition1 =
+        basePriceFromServer.full !== this.state.existingBilledPriceObject.price;
+
+      const condition2 =
+        basePriceFromServer.half !== this.state.existingBilledPriceObject.price;
+
+      const condition3 = this.state.existingBilledPriceObject.price > 0;
+
+      if (condition1 && condition2 && condition3) {
+        // ...then add a custom option with the current price
         priceOptionsArray.push({
           name: `${t("labels.billing", {
             ns: "evaluation",
-            context: "half",
+            context: "else",
           })} ${(
-            Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100
-          ).toFixed(2)} €`,
+            Math.round(
+              (this.state.existingBilledPriceObject.price + Number.EPSILON) *
+                100
+            ) / 100
+          ).toFixed(2)}`,
           value: parseFloat(
             (
-              Math.round((basePriceFromServer / 2 + Number.EPSILON) * 100) / 100
-            ).toFixed(2)
-          ),
-        });
-      }
-
-      /**
-       * No billing -> available for course evaluations and raised grades
-       */
-      priceOptionsArray.push({
-        name: `${t("labels.billing", {
-          ns: "evaluation",
-          context: "none",
-        })} 0,00 €`,
-        value: 0,
-      });
-
-      /**
-       * If editing, check if existing price data is loaded
-       */
-      if (type === "edit" && this.state.existingBilledPriceObject) {
-        /**
-         * If the price from server is not in our options...
-         */
-
-        const condition1 =
-          this.state.basePriceFromServer !==
-          this.state.existingBilledPriceObject.price;
-
-        const condition2 =
-          Math.round(
-            (this.state.basePriceFromServer / 2 + Number.EPSILON) * 100
-          ) /
-            100 !==
-          this.state.existingBilledPriceObject.price;
-
-        const condition3 = this.state.existingBilledPriceObject.price > 0;
-
-        if (condition1 && condition2 && condition3) {
-          /**
-           * ...then add a custom option with the current price
-           */
-          priceOptionsArray.push({
-            name: `${t("labels.billing", {
-              ns: "evaluation",
-              context: "else",
-            })} ${(
               Math.round(
                 (this.state.existingBilledPriceObject.price + Number.EPSILON) *
                   100
               ) / 100
-            ).toFixed(2)}`,
-            value: parseFloat(
-              (
-                Math.round(
-                  (this.state.existingBilledPriceObject.price +
-                    Number.EPSILON) *
-                    100
-                ) / 100
-              ).toFixed(2)
-            ),
-          });
-        }
+            ).toFixed(2)
+          ),
+        });
       }
     }
 

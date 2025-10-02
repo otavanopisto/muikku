@@ -5972,7 +5972,7 @@ paths:
       summary: Creates or updates the language profile of the given user
       description: Creates or updates the language profile of the given user
       tags:
-        - LanguageProfile 
+        - LanguageProfile
       parameters:
         - name: userEntityId
           in: path
@@ -6025,7 +6025,7 @@ paths:
       summary: Creates a text sample
       description: Creates a text sample
       tags:
-        - LanguageProfile 
+        - LanguageProfile
       parameters:
         - name: userEntityId
           in: path
@@ -6043,14 +6043,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LanguageProfileSample"
-  
+
   /rest/languageprofile/user/{userEntityId}/samples/{sampleId}:
     put:
       operationId: updateLanguageProfileSample
       summary: Updates a text sample
       description: Updates a text sample
       tags:
-        - LanguageProfile 
+        - LanguageProfile
       parameters:
         - name: userEntityId
           in: path
@@ -6080,7 +6080,7 @@ paths:
       summary: Deletes a sample
       description: Deletes a sample
       tags:
-        - LanguageProfile 
+        - LanguageProfile
       parameters:
         - name: userEntityId
           in: path
@@ -8952,7 +8952,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object # <--Should use patternProperties when it is supported by generator
+                $ref: "#/components/schemas/WorkspacePrices"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -11944,7 +11944,7 @@ components:
                 type: string
               value:
                 type: string
-    
+
     LanguageProfileSampleUpdateRequestBody:
       required: true
       content:
@@ -13215,6 +13215,12 @@ components:
         half:
           type: number
           format: double
+
+    WorkspacePrices:
+      type: object
+      description: Hashmap for evaluation workspace price
+      additionalProperties:
+        $ref: "#/components/schemas/WorkspacePrice"
 
     BilledPrice:
       type: object
@@ -15336,7 +15342,7 @@ components:
         lastModified:
           type: string
           format: date-time
-    
+
     MaterialProducer:
       type: object
       description: MaterialProducer information
