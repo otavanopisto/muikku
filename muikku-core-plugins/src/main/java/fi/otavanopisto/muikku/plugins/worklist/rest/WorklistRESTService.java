@@ -496,7 +496,7 @@ public class WorklistRESTService {
   @GET
   @Path("/workspacePrices")
   @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
-  public Response getWorkspaceBasePrice(@QueryParam("workspaceEntityId") Long workspaceEntityId) {
+  public Response getWorkspacePrices(@QueryParam("workspaceEntityId") Long workspaceEntityId) {
 
     if (!worklistController.isWorklistAvailable()) {
       return Response.status(Status.NOT_FOUND).build();
@@ -508,7 +508,7 @@ public class WorklistRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     price = workspaceSchoolDataController.getWorkspacePrices(workspaceEntity);
-    return price == null ? Response.status(Status.NOT_FOUND).build() : Response.ok(price).build();
+    return price == null ? Response.noContent().build() : Response.ok(price).build();
   }
 
   @GET
