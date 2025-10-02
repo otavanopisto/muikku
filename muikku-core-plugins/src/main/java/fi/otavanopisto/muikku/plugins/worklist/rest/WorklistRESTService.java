@@ -37,7 +37,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistApproverRestModel;
-import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistWorkspacePricesRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemStateChangeRestModel;
@@ -494,7 +494,7 @@ public class WorklistRESTService {
   }
   
   @GET
-  @Path("/basePrice")
+  @Path("/workspacePrices")
   @RESTPermit(MuikkuPermissions.ACCESS_WORKLIST_BILLING)
   public Response getWorkspaceBasePrice(@QueryParam("workspaceEntityId") Long workspaceEntityId) {
 
@@ -502,12 +502,12 @@ public class WorklistRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    WorklistBasePriceRestModel price = null;
+    WorklistWorkspacePricesRestModel price = null;
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    price = workspaceSchoolDataController.getWorkspaceBasePrice(workspaceEntity);
+    price = workspaceSchoolDataController.getWorkspacePrices(workspaceEntity);
     return price == null ? Response.status(Status.NOT_FOUND).build() : Response.ok(price).build();
   }
 

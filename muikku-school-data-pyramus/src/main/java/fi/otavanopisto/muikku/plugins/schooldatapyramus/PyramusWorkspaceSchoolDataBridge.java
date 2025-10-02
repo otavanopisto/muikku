@@ -29,8 +29,9 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
-import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistWorkspacePricesRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistWorkspacePrice;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseDescription;
 import fi.otavanopisto.pyramus.rest.model.CourseLength;
@@ -44,6 +45,8 @@ import fi.otavanopisto.pyramus.rest.model.Subject;
 import fi.otavanopisto.pyramus.rest.model.course.CourseAssessmentPrice;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudentGroup;
 import fi.otavanopisto.pyramus.rest.model.course.CourseSignupStudyProgramme;
+import fi.otavanopisto.pyramus.rest.model.worklist.WorklistCoursePrice;
+import fi.otavanopisto.pyramus.rest.model.worklist.WorklistCoursePricesRestModel;
 
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
   
@@ -437,17 +440,19 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
 
   @Override
-  public WorklistBasePriceRestModel getWorkspaceBasePrice(String workspaceIdentifier) {
-    fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel pyramusPriceModel = pyramusClient.responseGet(String.format("/worklist/basePrice?course=%s", workspaceIdentifier), fi.otavanopisto.pyramus.rest.model.worklist.WorklistBasePriceRestModel.class).getEntity();
-    
-    WorklistBasePriceRestModel result = new WorklistBasePriceRestModel();
-    
-    if (pyramusPriceModel != null) {
-      for (Long courseModuleId : pyramusPriceModel.keySet()) {
-        result.put(identifierMapper.getCourseModuleIdentifier(courseModuleId).toId(), pyramusPriceModel.get(courseModuleId));
+  public WorklistWorkspacePricesRestModel getWorkspacePrices(String workspaceIdentifier) {
+    WorklistCoursePricesRestModel pyramusPrices = pyramusClient.responseGet(String.format("/worklist/coursePrices?course=%s", workspaceIdentifier), WorklistCoursePricesRestModel.class).getEntity();
+    WorklistWorkspacePricesRestModel result = new WorklistWorkspacePricesRestModel();
+    if (pyramusPrices != null) {
+      for (Long courseModuleId : pyramusPrices.keySet()) {
+        WorklistCoursePrice pyramusPrice = pyramusPrices.get(courseModuleId);
+        if (pyramusPrice != null) {
+          WorklistWorkspacePrice price = new WorklistWorkspacePrice(pyramusPrice.getFull(), pyramusPrice.getHalf()); 
+          result.put(identifierMapper.getCourseModuleIdentifier(courseModuleId).toId(), price);
+          
+        }
       }
     }
-    
     return result;
   }
 

@@ -8932,10 +8932,10 @@ paths:
           description: Internal server error
 
   #WORKLIST
-  /rest/worklist/basePrice:
+  /rest/worklist/workspacePrices:
     get:
-      operationId: getBasePrice
-      description: Returns base price object for the given workspace. Values in the object use pattern (key-value) where key is the assessment identifier and value is the base price. Depending how many modules there is, so many key-value pairs are returned.
+      operationId: getWorkspacePrices
+      description: Returns base price object for the given workspace. Values in the object use pattern (key-value) where key is a course module identifier and value is WorkspacePrice. Depending how many modules there is, so many key-value pairs are returned.
       tags:
         - Worklist
       parameters:
@@ -8948,7 +8948,7 @@ paths:
             format: int64
       responses:
         "200":
-          description: Base price
+          description: Workspace prices
           content:
             application/json:
               schema:
@@ -13205,6 +13205,16 @@ components:
         date:
           type: string
           format: date-time
+
+    WorkspacePrice:
+      type: object
+      properties:
+        full:
+          type: number
+          format: double
+        half:
+          type: number
+          format: double
 
     BilledPrice:
       type: object
