@@ -720,7 +720,8 @@ class WorkspaceEditor extends SessionStateComponent<
       name: `${t("labels.billing", {
         ns: "evaluation",
         context: "full",
-      })} ${priceToUse} €`,
+        price: priceToUse,
+      })}`,
       value: priceToUse,
     });
 
@@ -730,7 +731,8 @@ class WorkspaceEditor extends SessionStateComponent<
         name: `${t("labels.billing", {
           ns: "evaluation",
           context: "half",
-        })} ${basePrice.data[basePriceSubjectId].half} €`,
+          price: basePrice.data[basePriceSubjectId].half,
+        })}`,
         value: basePrice.data[basePriceSubjectId].half,
       });
     }
@@ -740,7 +742,8 @@ class WorkspaceEditor extends SessionStateComponent<
       name: `${t("labels.billing", {
         ns: "evaluation",
         context: "none",
-      })} 0,00 €`,
+        price: "0,00",
+      })}`,
       value: 0,
     });
 
@@ -757,25 +760,20 @@ class WorkspaceEditor extends SessionStateComponent<
       const condition3 = this.state.existingBilledPriceObject.price > 0;
 
       if (condition1 && condition2 && condition3) {
+        const price = (
+          Math.round(
+            (this.state.existingBilledPriceObject.price + Number.EPSILON) * 100
+          ) / 100
+        ).toFixed(2);
+
         // ...then add a custom option with the current price
         priceOptionsArray.push({
           name: `${t("labels.billing", {
             ns: "evaluation",
             context: "else",
-          })} ${(
-            Math.round(
-              (this.state.existingBilledPriceObject.price + Number.EPSILON) *
-                100
-            ) / 100
-          ).toFixed(2)}`,
-          value: parseFloat(
-            (
-              Math.round(
-                (this.state.existingBilledPriceObject.price + Number.EPSILON) *
-                  100
-              ) / 100
-            ).toFixed(2)
-          ),
+            price,
+          })}`,
+          value: parseFloat(price),
         });
       }
     }
