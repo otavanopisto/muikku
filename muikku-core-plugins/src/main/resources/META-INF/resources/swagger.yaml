@@ -5121,6 +5121,49 @@ paths:
         "500":
           description: Internal server error
 
+  /rest/user/contacts/{userIdentifier}/contactInfos/{contactInfoId}:
+    put:
+      operationId: updateUserContactAllowStudyDiscussions
+      summary: Sets allowStudyDiscussions property of a contact info
+      description: Sets allowStudyDiscussions property of a contact info
+      tags:
+        - User
+      parameters:
+        - name: userIdentifier
+          in: path
+          description: User identifier
+          required: true
+          schema:
+            type: string
+        - name: contactInfoId
+          in: path
+          description: Id of the contact info
+          required: true
+          schema:
+            type: number
+            format: int64
+        - name: allowStudyDiscussions
+          in: query
+          description: allowStudyDiscussions
+          required: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: UserContact
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserContact"
+        "400":
+          description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+        "500":
+          description: Internal server error
+
   /rest/guider/users/{userId}/contactLog:
     get:
       operationId: getGuiderUserContactLog
@@ -8602,6 +8645,72 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/UserStudentPhoneNumber"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/user/students/{studentIdentifier}/guardians:
+    get:
+      operationId: getStudentsGuardians
+      summary: Get Student's Guardians
+      description: Get Student's Guardians
+      tags:
+        - User
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Student's Guardians
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Guardian"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/user/students/{studentIdentifier}/guardians/{guardianIdentifier}/continuedViewPermission:
+    put:
+      operationId: updateGuardiansContinuedViewPermission
+      summary: Updates Student's Guardian's Continued View Permission property
+      description: Updates Student's Guardian's Continued View Permission property
+      tags:
+        - User
+      parameters:
+        - name: studentIdentifier
+          in: path
+          description: Student identifier
+          required: true
+          schema:
+            type: string
+        - name: guardianIdentifier
+          in: path
+          description: Guardian's' identifier
+          required: true
+          schema:
+            type: string
+        - name: continuedViewPermission
+          in: query
+          description: continuedViewPermission
+          required: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Student's Guardians
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Guardian"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -14250,6 +14359,27 @@ components:
         contactType:
           type: string
         defaultContact:
+          type: boolean
+        allowStudyDiscussions:
+          type: boolean
+          description: Is the contact a Guardian etc who can be contacted for study discussions, null for other contacts
+
+    Guardian:
+      type: object
+      description: Guardian object
+      required:
+        - id
+        - firstName
+        - lastName
+        - continuedViewPermission
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        continuedViewPermission:
           type: boolean
 
     GuidanceCounselorContact:
