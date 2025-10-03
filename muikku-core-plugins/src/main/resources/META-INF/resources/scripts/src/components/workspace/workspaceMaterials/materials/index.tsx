@@ -651,12 +651,26 @@ class WorkspaceMaterials extends React.Component<
           <Dropdown
             openByHover
             modifier="material-management-tooltip"
-            content={t("labels.create_chapter", { ns: "materials" })}
+            items={this.renderDropdownItems([
+              {
+                icon: "plus",
+                text: t("labels.create_chapter", { ns: "materials" }),
+                // eslint-disable-next-line jsdoc/require-jsdoc
+                onClick: this.createSection.bind(this, null, false),
+                file: false,
+              },
+              {
+                icon: "plus",
+                text: t("labels.create_examChapter", { ns: "materials" }),
+                // eslint-disable-next-line jsdoc/require-jsdoc
+                onClick: this.createSection.bind(this, null, true),
+                file: false,
+              },
+            ])}
           >
             <ButtonPill
               buttonModifiers="material-management-master"
               icon="plus"
-              onClick={this.createSection.bind(this, null, true)}
             />
           </Dropdown>
         </div>
@@ -686,12 +700,26 @@ class WorkspaceMaterials extends React.Component<
             <Dropdown
               openByHover
               modifier="material-management-tooltip"
-              content={t("labels.create_chapter", { ns: "materials" })}
+              items={this.renderDropdownItems([
+                {
+                  icon: "plus",
+                  text: t("labels.create_chapter", { ns: "materials" }),
+                  // eslint-disable-next-line jsdoc/require-jsdoc
+                  onClick: this.createSection.bind(this, section, false),
+                  file: false,
+                },
+                {
+                  icon: "plus",
+                  text: t("labels.create_examChapter", { ns: "materials" }),
+                  // eslint-disable-next-line jsdoc/require-jsdoc
+                  onClick: this.createSection.bind(this, section, true),
+                  file: false,
+                },
+              ])}
             >
               <ButtonPill
                 buttonModifiers="material-management-master"
                 icon="plus"
-                onClick={this.createSection.bind(this, section, true)}
               />
             </Dropdown>
           </div>
