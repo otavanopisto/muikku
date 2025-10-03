@@ -27,14 +27,31 @@ export interface NavigationLink {
   type: "link";
   label: string;
   // Navigation options
-  link?: string | ((params: Params) => string);
+  link: string | ((params: Params) => string);
   onClick?: () => void;
-  // Query parameter navigation
-  queryParams?: Record<string, string | number | boolean>;
   replaceState?: boolean;
   // State
   active?: boolean;
   loading?: boolean;
+}
+
+/**
+ * NavigationQueryLink - Interface for a navigation query link
+ */
+export interface NavigationQueryLink {
+  type: "queryLink";
+  label: string;
+  queryParams: Record<string, string | number | boolean>;
+  replaceState?: boolean;
+}
+
+/**
+ * NavigationContentComponent - Navigation content component
+ */
+export interface NavigationDynamicContent {
+  type: "component";
+  id: string;
+  component: React.ReactNode;
 }
 
 /**
@@ -44,12 +61,7 @@ interface BaseNavigationItem {
   label: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: React.FC<any>;
-  // Navigation options
-  link?: string | ((params: Params) => string);
   onClick?: () => void;
-  // Query parameter navigation
-  queryParams?: Record<string, string | number | boolean>;
-  replaceState?: boolean;
   // Permission checking
   canAccess?: (
     user: User | null,
@@ -66,16 +78,21 @@ interface BaseNavigationItem {
  */
 export interface NavigationLinkItem extends BaseNavigationItem {
   type: "link";
+  // Navigation options
+  link?: string | ((params: Params) => string);
+  // Query parameter navigation
+  queryParams?: Record<string, string | number | boolean>;
+  replaceState?: boolean;
 }
 
 /**
  * NavigationGroupItem - Navigation group item
  */
 export interface NavigationGroupItem extends BaseNavigationItem {
-  type: "group";
+  type: "folder";
+  basePath: string | ((params: Params) => string);
   contents: NavigationContent[];
   initiallyOpened?: boolean;
-  parentBehavior?: "link" | "toggle" | "both";
 }
 
 /**
@@ -84,16 +101,10 @@ export interface NavigationGroupItem extends BaseNavigationItem {
 export type NavigationItem = NavigationLinkItem | NavigationGroupItem;
 
 // Union type for navigation content
-export type NavigationContent = NavigationLink | NavigationDynamicContent;
-
-/**
- * NavigationContentComponent - Navigation content component
- */
-export interface NavigationDynamicContent {
-  type: "component";
-  id: string;
-  component: React.ReactNode;
-}
+export type NavigationContent =
+  | NavigationLink
+  | NavigationQueryLink
+  | NavigationDynamicContent;
 
 export const navigationItemsEnviroment: NavigationItem[] = [
   {
@@ -118,26 +129,40 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     canAccess: () => true,
   },
   {
-    type: "group",
+    type: "folder",
     label: "Viestin",
     icon: IconMail,
-    link: "/communicator",
-    parentBehavior: "both",
+    basePath: "/communicator",
     contents: [
-      { type: "link", label: "Saapuneet", queryParams: { tab: "Inbox" } },
-      { type: "link", label: "Lukemattomat", queryParams: { tab: "Unread" } },
-      { type: "link", label: "Lähetetyt", queryParams: { tab: "Sent" } },
-      { type: "link", label: "Roskakori", queryParams: { tab: "Trash" } },
+      {
+        type: "queryLink",
+        label: "Saapuneet",
+        queryParams: { tab: "Inbox" },
+      },
+      {
+        type: "queryLink",
+        label: "Lukemattomat",
+        queryParams: { tab: "Unread" },
+      },
+      {
+        type: "queryLink",
+        label: "Lähetetyt",
+        queryParams: { tab: "Sent" },
+      },
+      {
+        type: "queryLink",
+        label: "Roskakori",
+        queryParams: { tab: "Trash" },
+      },
     ],
     initiallyOpened: false,
     canAccess: (user) => (user?.loggedIn && user?.isActive) ?? false,
   },
   {
-    type: "group",
+    type: "folder",
     label: "Ohjaamo",
     icon: IconList,
-    link: "/guider",
-    parentBehavior: "both",
+    basePath: "/guider",
     contents: [
       { type: "link", label: "Opiskelijalistaus", link: "/guider" },
       { type: "link", label: "Tehtävät", link: "/guider/tasks" },
@@ -152,52 +177,17 @@ export const navigationItemsEnviroment: NavigationItem[] = [
   },
 
   {
-    type: "group",
+    type: "link",
     label: "Arviointi",
     icon: IconEdit,
     link: "/evaluation",
-    parentBehavior: "both",
-    contents: [
-      {
-        type: "link",
-        label: "Arviointien hallinta",
-        link: "/evaluation/manage",
-      },
-      { type: "link", label: "Arviointiraportit", link: "/evaluation/reports" },
-      {
-        type: "link",
-        label: "Arviointiasetukset",
-        link: "/evaluation/settings",
-      },
-    ],
-    initiallyOpened: false,
     canAccess: (user) => user?.permissions?.EVALUATION_VIEW_INDEX ?? false,
   },
   {
-    type: "group",
+    type: "link",
     label: "Organisaation hallinta",
     icon: IconBuildingStore,
     link: "/organization",
-    parentBehavior: "both",
-    contents: [
-      {
-        type: "link",
-        label: "Organisaation tiedot",
-        queryParams: { tab: "info" },
-      },
-      {
-        type: "link",
-        label: "Käyttäjien hallinta",
-        link: "/organization/users",
-      },
-      { type: "link", label: "Roolien hallinta", link: "/organization/roles" },
-      {
-        type: "link",
-        label: "Oikeuksien hallinta",
-        link: "/organization/permissions",
-      },
-    ],
-    initiallyOpened: false,
     canAccess: (user) =>
       (user?.loggedIn && user?.permissions?.ORGANIZATION_VIEW) ?? false,
   },

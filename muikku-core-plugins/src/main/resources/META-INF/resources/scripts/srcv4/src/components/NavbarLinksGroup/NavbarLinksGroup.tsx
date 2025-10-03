@@ -9,14 +9,11 @@ import {
   Tooltip,
   Loader,
 } from "@mantine/core";
-import { useLocation, useParams, useNavigate } from "react-router";
 import classes from "./NavbarLinksGroup.module.css";
-import type {
-  NavigationGroupItem,
-  NavigationContent,
-  NavigationLink,
-} from "~/src/layout/helpers/navigation";
+import type { NavigationGroupItem } from "~/src/layout/helpers/navigation";
 import { NavbarSubLink } from "../NavbarSubLink/NavbarSubLink";
+import { NavbarSubQueryLink } from "../NavbarSubQueryLink/NavbarSubQueryLink";
+import { useParams } from "react-router";
 
 /**
  * LinksGroupProps - Interface for collapsible navigation group
@@ -36,152 +33,58 @@ export function LinksGroup(props: LinksGroupProps) {
     label,
     initiallyOpened,
     contents,
-    parentBehavior = "toggle",
-    link,
-    queryParams,
-    replaceState = false,
-    active = false,
+    basePath,
     collapsed = false,
     loading = false,
   } = props;
 
-  const location = useLocation();
-  const params = useParams();
-  const navigate = useNavigate();
   const [opened, setOpened] = useState(initiallyOpened ?? false);
+  const params = useParams();
 
-  // Determine parent route for query parameter restrictions
-  const parentRoute = useMemo(() => {
-    if (link) {
-      return typeof link === "function" ? link(params) : link;
-    }
-    // If no parent link, use the current pathname as fallback
-    return location.pathname;
-  }, [link, params, location.pathname]);
+  // Check if the folder is active based on base route
+  const isFolderActive = useMemo(() => {
+    if (!basePath) return false;
 
-  // Check if any sub-link is active (including query params)
-  const isAnySubLinkActive = useMemo(
-    () =>
-      contents.some((content) => {
-        // Only check NavigationLink items for active state
-        if (content.type === "link") {
-          if (content.active) {
-            return true;
-          }
-          if (content.link) {
-            const subLinkPath =
-              typeof content.link === "function"
-                ? content.link(params)
-                : content.link;
-
-            if (subLinkPath === location.pathname) {
-              return true;
-            }
-          }
-          // Check if sub-link query params are active (only if on parent route)
-          if (
-            content.queryParams &&
-            location.pathname.startsWith(parentRoute)
-          ) {
-            const currentSearchParams = new URLSearchParams(location.search);
-            return Object.entries(content.queryParams).every(([key, value]) => {
-              const currentValue = currentSearchParams.get(key);
-              return currentValue === String(value);
-            });
-          }
-        }
-
-        return false;
-      }),
-    [contents, location.pathname, location.search, params, parentRoute]
-  );
-
-  const isActive = useMemo(
-    () =>
-      active ||
-      isAnySubLinkActive ||
-      (link &&
-        (typeof link === "function"
-          ? link(params) === location.pathname
-          : link === location.pathname)),
-    [active, isAnySubLinkActive, link, location.pathname, params]
-  );
-
-  /**
-   * Handle query parameter navigation
-   */
-  const handleQueryParams = async () => {
-    if (queryParams) {
-      const currentSearchParams = new URLSearchParams(location.search);
-
-      // Update query parameters
-      Object.entries(queryParams).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          currentSearchParams.set(key, String(value));
-        } else {
-          currentSearchParams.delete(key);
-        }
-      });
-
-      const newSearch = currentSearchParams.toString();
-      const newUrl = `${location.pathname}${newSearch ? `?${newSearch}` : ""}`;
-
-      if (replaceState) {
-        await navigate(newUrl, { replace: true });
-      } else {
-        await navigate(newUrl);
-      }
-    }
-  };
+    const folderPath =
+      typeof basePath === "function" ? basePath(params) : basePath;
+    return location.pathname.startsWith(folderPath);
+  }, [basePath, params]);
 
   /**
    * Handle parent click
    */
-  const handleParentClick = () => {
-    // Handle parent behavior
-    if (parentBehavior === "both" && link) {
-      // Navigate to parent link
-      const targetLink = typeof link === "function" ? link(params) : link;
-      void navigate(targetLink);
-      // Toggle sub-contents
-      setOpened((o) => !o);
-    } else if (parentBehavior === "link" && link) {
-      // Only navigate
-      const targetLink = typeof link === "function" ? link(params) : link;
-      void navigate(targetLink);
-    } else {
-      // Default toggle behavior
-      setOpened((o) => !o);
-    }
-
-    if (queryParams) {
-      void handleQueryParams();
-    }
+  const handleClick = () => {
+    setOpened((o) => !o);
   };
 
   // Process contents - handle both NavigationLink and NavigationDynamicContent
   const processedContents = useMemo(
     () =>
       contents.map((content) => {
-        if (content.type === "component") {
-          // Render dynamic content component
-          return (
-            <React.Fragment key={content.id}>
-              {content.component}
-            </React.Fragment>
-          );
-        }
-        if (content.type === "link") {
-          return (
-            <NavbarSubLink
-              key={content.label}
-              {...content}
-              parentRoute={parentRoute}
-            />
-          );
+        switch (content.type) {
+          case "component":
+            return (
+              <React.Fragment key={content.id}>
+                {content.component}
+              </React.Fragment>
+            );
+          case "link":
+            return <NavbarSubLink key={content.label} {...content} />;
+          case "queryLink":
+            return (
+              <NavbarSubQueryLink
+                key={content.label}
+                {...content}
+                basePath={
+                  basePath instanceof Function ? basePath(params) : basePath
+                }
+              />
+            );
+          default:
+            return null;
         }
       }),
-    [contents, parentRoute]
+    [basePath, contents, params]
   );
 
   // Icon component
@@ -191,8 +94,8 @@ export function LinksGroup(props: LinksGroupProps) {
       size={36}
       className={classes.icon}
       style={{
-        backgroundColor: isActive ? "#228be6" : "transparent",
-        color: isActive ? "white" : "#228be6",
+        backgroundColor: isFolderActive ? "#228be6" : "transparent",
+        color: isFolderActive ? "white" : "#228be6",
       }}
     >
       {loading ? <Loader size={16} /> : <Icon size={20} />}
@@ -207,6 +110,7 @@ export function LinksGroup(props: LinksGroupProps) {
         opacity: collapsed ? 0 : 1,
         whiteSpace: "nowrap",
         overflow: "hidden",
+        fontWeight: isFolderActive ? 600 : 400,
       }}
     >
       {label}
@@ -230,9 +134,9 @@ export function LinksGroup(props: LinksGroupProps) {
   // Render the main button
   const mainElement = (
     <UnstyledButton
-      onClick={handleParentClick}
-      className={`${classes.control} ${isActive ? classes.active : ""} ${
-        collapsed ? classes.collapsed : ""
+      onClick={handleClick}
+      className={`${classes.control} ${collapsed ? classes.collapsed : ""} ${
+        isFolderActive ? classes.active : ""
       }`}
       p="sm"
     >

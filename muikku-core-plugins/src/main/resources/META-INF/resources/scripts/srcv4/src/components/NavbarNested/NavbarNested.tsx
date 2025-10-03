@@ -4,6 +4,7 @@ import { LinksGroup } from "../NavbarLinksGroup/NavbarLinksGroup";
 import { NavbarLink } from "../NavbarLink/NavbarLink";
 import classes from "./NavbarNested.module.css";
 import { type NavigationItem } from "~/src/layout/helpers/navigation";
+import { UserButton } from "../UserButton/UserButton";
 
 /**
  * NavbarNestedProps - Interface for navbar nested props
@@ -25,7 +26,7 @@ export function NavbarNested(props: NavbarNestedProps) {
 
   const links = items.map((item) => {
     // Use LinksGroup if item has sub-links, otherwise use NavbarLink
-    if (item.type === "group") {
+    if (item.type === "folder") {
       return <LinksGroup key={item.label} {...item} collapsed={collapsed} />;
     } else if (item.type === "link") {
       return <NavbarLink key={item.label} {...item} collapsed={collapsed} />;
@@ -97,6 +98,9 @@ export function NavbarNested(props: NavbarNestedProps) {
           }}
         >
           {links}
+          <div className={classes.footer}>
+            <UserButton />
+          </div>
         </div>
       </AppShell.Section>
     </>
