@@ -435,12 +435,18 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
     currentExamAssigments
   );
 
+  // In case of any assignment editor is open, we need to show the content of exam
+  const isAnyAssignmentEditorOpen = (contentNodesWithLogic || []).some(
+    (cNode) => cNode.assignment.id === openedAssigmentOrExamId
+  );
+
   // Check if assessment editor is open
   const isAssessmentEditorOpen =
     assessmentEditorOpen && openedAssigmentOrExamId === exam.folderId;
 
   // Check if content is open
-  const showContent = showExamContent || isAssessmentEditorOpen;
+  const showContent =
+    showExamContent || isAssessmentEditorOpen || isAnyAssignmentEditorOpen;
 
   return (
     <>
