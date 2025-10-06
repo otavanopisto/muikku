@@ -434,6 +434,34 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
   
+  /rest/announcer/announcements/markAllAsRead:
+    post:
+      operationId: markAllAnnouncementsAsRead
+      summary: Mark all announcements as read by logged user
+      tags:
+        - Announcer
+      responses:
+        "200":
+          description: Announcements marked as read successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnnouncementRecipient"
+        "403":
+          description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+
   /rest/announcer/announcements/{announcementId}/markAsRead:
     post:
       operationId: markAnnouncementAsRead

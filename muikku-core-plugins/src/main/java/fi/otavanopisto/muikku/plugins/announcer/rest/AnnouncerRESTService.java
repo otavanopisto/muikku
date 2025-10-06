@@ -177,6 +177,10 @@ public class AnnouncerRESTService extends PluginRESTService {
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
     
+    
+    // Mark the announcement as read directly on behalf of the creator
+    announcementController.createAnnouncementRecipient(announcement, sessionController.getLoggedUserEntity().getId());
+    
     return Response
         .ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces))
         .build();
@@ -412,6 +416,50 @@ public class AnnouncerRESTService extends PluginRESTService {
         .build();
   }
 
+  @POST
+  @Path("/announcements/markAllAsRead")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response markUsersAllAnnouncementAsRead() {
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(sessionController.getLoggedUserEntity().getId());
+    
+    Set<SchoolDataIdentifier> announcementsForUser = Set.of(sessionController.getLoggedUser());
+    
+    UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+    OrganizationEntity organizationEntity = schoolDataIdentifier.getOrganization();
+    
+    List<Announcement> announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
+        true, true, AnnouncementEnvironmentRestriction.PUBLICANDGROUP, AnnouncementTimeFrame.CURRENTANDEXPIRED, null, true, sessionController.getLoggedUserEntity().getId(), false, 0, 100);
+
+    List<AnnouncementRecipientRESTModel> restModels = new ArrayList<AnnouncementRecipientRESTModel>();
+    
+    if (announcements.isEmpty()) {
+      return Response.status(Status.NO_CONTENT).entity("No announcements found").build();
+    }
+    
+    for (Announcement announcement : announcements) {
+      AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, userEntity.getId());
+      
+      if (announcementRecipient == null) {
+  
+        announcementRecipient = announcementController.createAnnouncementRecipient(announcement, userEntity.getId());
+      }
+      AnnouncementRecipientRESTModel restModel = new AnnouncementRecipientRESTModel();
+      
+      if (announcementRecipient != null) {
+        restModel.setAnnouncementId(announcementRecipient.getAnnouncement().getId());
+        restModel.setReadDate(announcementRecipient.getReadDate());
+        restModel.setUserEntityId(announcementRecipient.getUserEntityId());
+        restModel.setId(announcementRecipient.getId());
+      }
+      restModels.add(restModel);
+    }
+
+    return Response
+        .ok(restModels)
+        .build();
+  }
+  
   private boolean canSeeAnnouncement(Announcement announcement, SchoolDataIdentifier userIdentifier) {
     /**
      * This is not very efficient, but things needed to be checked are
