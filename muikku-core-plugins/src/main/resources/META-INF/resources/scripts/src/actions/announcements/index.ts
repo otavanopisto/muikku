@@ -82,6 +82,13 @@ export interface LoadAnnouncementsTriggerType {
 }
 
 /**
+ * LoadMoreAnnouncementsTriggerType
+ */
+export interface LoadMoreAnnouncementsTriggerType {
+  (): AnyActionType;
+}
+
+/**
  * LoadAnnouncementTriggerType
  */
 export interface LoadAnnouncementTriggerType {
@@ -222,8 +229,17 @@ const loadAnnouncements: LoadAnnouncementsTriggerType =
       location,
       workspaceId,
       notOverrideCurrent,
-      force
+      force,
+      true // initial = true
     );
+  };
+
+/**
+ * loadMoreAnnouncements
+ */
+const loadMoreAnnouncements: LoadMoreAnnouncementsTriggerType =
+  function loadMoreAnnouncements() {
+    return loadAnnouncementsHelper.bind(this, null, null, false, false, false);
   };
 
 /**
@@ -613,6 +629,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
 
 export {
   loadAnnouncements,
+  loadMoreAnnouncements,
   addToAnnouncementsSelected,
   removeFromAnnouncementsSelected,
   updateAnnouncement,
@@ -624,6 +641,7 @@ export {
 };
 export default {
   loadAnnouncements,
+  loadMoreAnnouncements,
   addToAnnouncementsSelected,
   removeFromAnnouncementsSelected,
   updateAnnouncement,
