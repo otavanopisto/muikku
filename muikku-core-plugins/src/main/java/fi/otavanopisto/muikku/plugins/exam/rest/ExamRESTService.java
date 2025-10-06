@@ -5,6 +5,9 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -19,12 +22,25 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReplyLock;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -49,11 +65,70 @@ public class ExamRESTService {
   private ExamController examController;
   
   @Inject
+  private EvaluationController evaluationController;
+
+  @Inject
   private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private WorkspaceMaterialFieldController workspaceMaterialFieldController;
+
+  @Inject
+  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
+  @Path("/compositeReplies/{WORKSPACEFOLDERID}")
+  @GET
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getCompositeReplies(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
+    List<WorkspaceCompositeReply> result = new ArrayList<>();
+    ExamAttendance attendanceEntity = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
+    if (attendanceEntity != null) {
+      Set<Long> chosenAssignmentIds = null;
+      String assignmentIdStr = attendanceEntity.getWorkspaceMaterialIds();
+      if (!StringUtils.isEmpty(assignmentIdStr)) {
+        chosenAssignmentIds = Stream.of(assignmentIdStr.split(",")).map(Long::parseLong).collect(Collectors.toSet());
+      }
+      for (Long id : chosenAssignmentIds) {
+        WorkspaceMaterial material = workspaceMaterialController.findWorkspaceMaterialById(id);
+        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(material, sessionController.getLoggedUserEntity());
+        List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
+        List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
+        for (WorkspaceMaterialField field : fields) {
+          try {
+            String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
+            WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+            answers.add(answer);
+          }
+          catch (WorkspaceFieldIOException e) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Error retrieving field answers: %s", e.getMessage())).build();
+          }
+        }
+
+        WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(
+            reply.getWorkspaceMaterial().getId(),
+            reply.getId(),
+            reply.getState(),
+            reply.getSubmitted(),
+            answers,
+            WorkspaceCompositeReplyLock.NONE);
+
+        // Evaluation info for evaluable materials
+
+        if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
+            reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
+            reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
+          compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(sessionController.getLoggedUserEntity().getId(), reply.getWorkspaceMaterial().getId()));
+        }
+
+        result.add(compositeReply);
+      }
+    }
+    return Response.ok(result).build();
+  }
+
   @Path("/settings/{WORKSPACEFOLDERID}")
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)

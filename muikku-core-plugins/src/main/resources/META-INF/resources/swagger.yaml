@@ -4692,6 +4692,35 @@ paths:
           description: Internal server error
 
   #WORKSPACE EXAMS
+  /rest/workspace/exam/compositeReplies/{workspaceFolderId}:
+    get:
+      operationId: getExamCompositeReplies
+      summary: Returns a list of composite replies for the current user in the given exam
+      description: Returns a list of composite replies for the current user in the given exam
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam composite replies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MaterialCompositeReply"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
   /rest/workspace/exam/settings/{workspaceFolderId}:
     get:
       operationId: getExamSettings
