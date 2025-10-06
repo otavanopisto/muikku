@@ -19,11 +19,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -42,6 +47,12 @@ public class ExamRESTService {
   
   @Inject
   private ExamController examController;
+  
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Path("/settings/{WORKSPACEFOLDERID}")
   @GET
@@ -84,6 +95,15 @@ public class ExamRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response startExam(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
     
+    // Access check
+    
+    WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
+    WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    WorkspaceUserEntity user = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+    if (user == null) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     // Well, let's check overdue here as well :(
     
     endOverdueExam(workspaceFolderId);
@@ -122,10 +142,16 @@ public class ExamRESTService {
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response endExam(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
-    ExamAttendance attendance = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
 
-    // Various access checks
+    // Access check
     
+    WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
+    WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    WorkspaceUserEntity user = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+    if (user == null) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    ExamAttendance attendance = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
     if (attendance == null) {
       return Response.status(Status.BAD_REQUEST).entity("Attendance not found").build();
     }
