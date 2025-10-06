@@ -1,4 +1,8 @@
-import { WorkspaceJournalComment, WorkspaceMaterial } from "~/generated/client";
+import {
+  WorkspaceJournalComment,
+  WorkspaceMaterial,
+  WorkspacePrice,
+} from "~/generated/client";
 
 /**
  * EvaluationJournalFilters
@@ -33,8 +37,8 @@ export interface EvaluationStatus {
 /**
  * BasePriceById
  */
-export interface EvaluationBasePriceById {
-  [id: string]: number;
+export interface EvaluationPrices {
+  [id: string]: WorkspacePrice;
 }
 
 /**
