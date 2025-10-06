@@ -24,7 +24,7 @@ interface SharedLayoutProps {
  * @param props - Shared layout props
  */
 export function SharedLayout(props: SharedLayoutProps) {
-  const { title = "Muikku V4", context = "environment" } = props;
+  const { title = "Muikku V4" } = props;
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);
   //const [opened, { toggle }] = useDisclosure(); // Navbar state
@@ -61,7 +61,18 @@ export function SharedLayout(props: SharedLayoutProps) {
       <AppShell.Navbar className={classes.navbarTransition}>
         <NavbarNested
           title={title}
-          items={getNavigationItems(user, workspacePermissions, context)}
+          items={{
+            environment: getNavigationItems(
+              user,
+              workspacePermissions,
+              "environment"
+            ),
+            workspace: getNavigationItems(
+              user,
+              workspacePermissions,
+              "workspace"
+            ),
+          }}
           collapsed={!sidebarOpened} // Use desktop collapsed state
           onToggleCollapse={toggleSidebar} // Toggle desktop collapsed state
         />

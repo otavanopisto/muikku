@@ -1,20 +1,35 @@
-import { AppShell, Group, Title, Button, ScrollArea } from "@mantine/core";
+import {
+  AppShell,
+  Group,
+  Title,
+  Button,
+  ScrollArea,
+  SegmentedControl,
+} from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { LinksGroup } from "../NavbarLinksGroup/NavbarLinksGroup";
 import { NavbarLink } from "../NavbarLink/NavbarLink";
 import classes from "./NavbarNested.module.css";
 import { type NavigationItem } from "~/src/layout/helpers/navigation";
 import { UserButton } from "../UserButton/UserButton";
+import { useState } from "react";
+import { workspaceInfoAtom } from "~/src/atoms/workspace";
+import { useAtomValue } from "jotai";
 
 /**
  * NavbarNestedProps - Interface for navbar nested props
  */
 interface NavbarNestedProps {
   title: string;
-  items: NavigationItem[];
+  items: {
+    environment: NavigationItem[];
+    workspace: NavigationItem[];
+  };
   collapsed?: boolean;
   onToggleCollapse?: () => void;
 }
+
+type Section = "environment" | "workspace";
 
 /**
  * NavbarNested - Navbar nested component
@@ -24,7 +39,11 @@ interface NavbarNestedProps {
 export function NavbarNested(props: NavbarNestedProps) {
   const { items, collapsed = false, onToggleCollapse, title } = props;
 
-  const links = items.map((item) => {
+  const [section, setSection] = useState<Section>("environment");
+
+  const workspaceInfo = useAtomValue(workspaceInfoAtom);
+
+  const links = items[section].map((item) => {
     // Use LinksGroup if item has sub-links, otherwise use NavbarLink
     if (item.type === "folder") {
       return <LinksGroup key={item.label} {...item} collapsed={collapsed} />;
@@ -36,12 +55,8 @@ export function NavbarNested(props: NavbarNestedProps) {
   return (
     <>
       <AppShell.Section className={classes.header}>
-        <Group
-          justify="space-between"
-          align="center"
-          className={classes.headerContent}
-        >
-          <Group p="sm" gap="sm" align="center" className={classes.titleGroup}>
+        <Group p="sm" className={classes.headerContent}>
+          <Group align="center" className={classes.titleGroup}>
             {!collapsed && (
               <Title
                 order={3}
@@ -78,6 +93,32 @@ export function NavbarNested(props: NavbarNestedProps) {
               </Button>
             )}
           </Group>
+
+          {!collapsed && (
+            <Group
+              gap="sm"
+              align="center"
+              justify="center"
+              className={classes.segmentedControl}
+            >
+              <SegmentedControl
+                value={section}
+                onChange={(value) => setSection(value as Section)}
+                transitionTimingFunction="ease"
+                fullWidth
+                data={[
+                  { label: "Ympäristötaso", value: "environment" },
+                  {
+                    label: workspaceInfo
+                      ? workspaceInfo.name
+                      : "Viimeisin työtila",
+                    value: "workspace",
+                    disabled: !workspaceInfo,
+                  },
+                ]}
+              />
+            </Group>
+          )}
         </Group>
       </AppShell.Section>
 
@@ -98,10 +139,11 @@ export function NavbarNested(props: NavbarNestedProps) {
           }}
         >
           {links}
-          <div className={classes.footer}>
-            <UserButton />
-          </div>
         </div>
+      </AppShell.Section>
+
+      <AppShell.Section className={classes.footer}>
+        <UserButton />
       </AppShell.Section>
     </>
   );

@@ -14,11 +14,13 @@
 }
 
 .header {
-  padding: var(--mantine-spacing-sm);
-  margin-left: calc(var(--mantine-spacing-md) * -1);
   color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
   border-bottom: 1px solid
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+}
+
+.segmentedControl {
+  width: 100%;
 }
 
 .links {

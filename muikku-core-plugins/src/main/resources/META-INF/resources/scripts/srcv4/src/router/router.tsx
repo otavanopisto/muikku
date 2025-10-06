@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet } from "react-router";
+import { createBrowserRouter } from "react-router";
 import {
   workspaceLoader,
   homeLoader,

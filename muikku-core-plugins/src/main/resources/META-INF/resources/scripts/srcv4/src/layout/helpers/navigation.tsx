@@ -232,20 +232,13 @@ const navigationItemsWorkspace: NavigationItem[] = [
     type: "link",
     label: "Etusivu",
     icon: IconHome,
-    link: "/dashboard",
-    canAccess: (user) => user?.loggedIn ?? false,
-  },
-  {
-    type: "link",
-    label: "Työtilan etusivu",
-    icon: IconHome,
     link: (params) => `/workspace/${params.workspaceUrlName}`,
     canAccess: (_, workspacePermissions) =>
       workspacePermissions?.WORKSPACE_HOME_VISIBLE ?? false, // Always visible
   },
   {
     type: "link",
-    label: "Työtilan hallinta",
+    label: "Hallinta",
     icon: IconBuildingStore,
     link: (params) =>
       `/workspace/${params.workspaceUrlName}/workspaceManagement`,
@@ -289,20 +282,6 @@ const navigationItemsWorkspace: NavigationItem[] = [
     canAccess: (user, workspacePermissions) =>
       (user?.loggedIn && workspacePermissions?.WORKSPACE_USERS_VISIBLE) ??
       false, // Always visible
-  },
-  {
-    type: "link",
-    label: "Omat tiedot",
-    icon: IconUser,
-    link: "/profile",
-    canAccess: (user) => user?.loggedIn ?? false,
-  },
-  {
-    type: "link",
-    label: "Asetukset",
-    icon: IconSettings,
-    link: "/appSettings",
-    canAccess: (user) => user?.loggedIn ?? false,
   },
   {
     type: "link",
