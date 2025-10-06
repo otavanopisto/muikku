@@ -15,25 +15,30 @@ import FiveStars from "./pdf/pdf-five-stars";
 import Dialog from "~/components/general/dialog";
 
 const styles = StyleSheet.create({
-  page: {
+  pageTitle: {
     fontSize: 15,
-    padding: 10,
-    backgroundColor: "#009fe3",
-    color: "white",
+    padding: 20,
+    backgroundColor: "#fff",
+    borderBottom: "1px solid #f2f2f2",
+    color: "#000",
   },
-  section: { margin: 10, padding: 10, backgroundColor: "#f0f0f0" },
-  header: { fontSize: 12, marginBottom: 10 },
-  subheader: { fontSize: 11, marginBottom: 5 },
-  text: { fontSize: 10, marginBottom: 5, paddingLeft: 5 },
-  paragraph: { marginBottom: 10 },
+  section: {
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 20,
+    backgroundColor: "#fff",
+  },
+  header: { fontSize: 16, marginBottom: 10 },
+  subheader: { fontSize: 13, marginBottom: 5 },
+  label: { fontSize: 10, marginBottom: 5 },
+  text: { fontSize: 10, marginTop: 5, marginBottom: 5 },
+  paragraph: { marginTop: 10, marginBottom: 10, lineHeight: 1.35 },
   starContainer: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingTop: 5,
-    marginTop: 5,
-    paddingBottom: 5,
-    marginBottom: 5,
+    marginTop: 10,
+    marginBottom: 10,
   },
 });
 
@@ -66,7 +71,7 @@ const CvPdfDialog = (props: CvPdfDialogProps) => {
       <Document>
         <Page size="A4">
           <View>
-            <Text style={styles.page}>
+            <Text style={styles.pageTitle}>
               {t("labels.languageCv", {
                 ns: "languageProfile",
               })}
@@ -76,7 +81,9 @@ const CvPdfDialog = (props: CvPdfDialogProps) => {
           </View>
           <View style={styles.section}>
             <Text style={styles.header}>Yleistä</Text>
-            <Text style={styles.text}>{cv.general}</Text>
+            <View style={styles.paragraph}>
+              <Text style={styles.text}>{cv.general}</Text>
+            </View>
           </View>
           {cv.languages.map((language, index: number) => (
             <View wrap={false} key={"language-" + index} style={styles.section}>
@@ -102,51 +109,63 @@ const CvPdfDialog = (props: CvPdfDialogProps) => {
                 </Text>
                 <Text style={styles.text}>{language.general}</Text>
               </View>
-              <View style={styles.starContainer}>
-                <View>
-                  <Text style={styles.subheader}>
-                    {t("labels.skillVocalization", {
-                      ns: "languageProfile",
-                    })}
-                  </Text>
-                  <FiveStars value={Number(language.vocal)} />
-                </View>
-                <View>
-                  <Text style={styles.subheader}>
-                    {t("labels.skillWriting", {
-                      ns: "languageProfile",
-                    })}
-                  </Text>
-                  <FiveStars value={Number(language.writing)} />
-                </View>
-                <View>
-                  <Text style={styles.subheader}>
-                    {t("labels.skillReadingComprehension", {
-                      ns: "languageProfile",
-                    })}
-                  </Text>
-                  <FiveStars value={Number(language.reading)} />
-                </View>
-                <View>
-                  <Text style={styles.subheader}>
-                    {t("labels.skillInteraction", {
-                      ns: "languageProfile",
-                    })}
-                  </Text>
-                  <FiveStars value={Number(language.interaction)} />
-                </View>
-                <View>
-                  <Text style={styles.subheader}>
-                    {t("labels.skillListeningComprehension", {
-                      ns: "languageProfile",
-                    })}
-                  </Text>
-                  <FiveStars value={Number(language.listening)} />
+
+              <View style={styles.paragraph}>
+                <Text style={styles.subheader}>
+                  {t("labels.skillLevel", {
+                    ns: "languageProfile",
+                  })}
+                </Text>
+                <View style={styles.starContainer}>
+                  <View>
+                    <Text style={styles.label}>
+                      {t("labels.skillVocalization", {
+                        ns: "languageProfile",
+                      })}
+                    </Text>
+                    <FiveStars value={Number(language.vocal)} />
+                  </View>
+                  <View>
+                    <Text style={styles.label}>
+                      {t("labels.skillWriting", {
+                        ns: "languageProfile",
+                      })}
+                    </Text>
+                    <FiveStars value={Number(language.writing)} />
+                  </View>
+                  <View>
+                    <Text style={styles.label}>
+                      {t("labels.skillReadingComprehension", {
+                        ns: "languageProfile",
+                      })}
+                    </Text>
+                    <FiveStars value={Number(language.reading)} />
+                  </View>
+                  <View>
+                    <Text style={styles.label}>
+                      {t("labels.skillInteraction", {
+                        ns: "languageProfile",
+                      })}
+                    </Text>
+                    <FiveStars value={Number(language.interaction)} />
+                  </View>
+                  <View>
+                    <Text style={styles.label}>
+                      {t("labels.skillListeningComprehension", {
+                        ns: "languageProfile",
+                      })}
+                    </Text>
+                    <FiveStars value={Number(language.listening)} />
+                  </View>
                 </View>
               </View>
               {language.samples.length > 0 && (
                 <View style={styles.paragraph}>
-                  <Text style={styles.subheader}>Näytteet</Text>
+                  <Text style={styles.subheader}>
+                    {t("labels.samples", {
+                      ns: "languageProfile",
+                    })}
+                  </Text>
                   {language.samples.map((sample, index) => (
                     <Link
                       style={styles.text}
