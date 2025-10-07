@@ -4984,6 +4984,11 @@ paths:
           required: true
           schema:
             type: integer
+        - name: permanent
+          in: query
+          description: Should the user be removed altogether or just archived
+          schema:
+            type: boolean
       responses:
         "204":
           description: Attendee removed
@@ -14347,12 +14352,6 @@ components:
         extraMinutes:
           description: Number of additional minutes given to complete the exam
           type: integer
-        resetAssignments:
-          description: When updating attendee, should previously randomized assignments be reset
-          type: boolean
-        resetTimes:
-          description: When updating attendee, should exam start and end dates be reset
-          type: boolean
 
     #COMMON
 

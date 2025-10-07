@@ -18,6 +18,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -295,6 +296,9 @@ public class ExamRESTService {
     if (attendance == null) {
       attendance = examController.createAttendance(workspaceFolderId, userEntityId, true);
     }
+    else if (attendance.getArchived()) {
+      attendance = examController.restoreAttendance(attendance);
+    }
     return Response.ok().entity(examController.toRestModel(attendance)).build();
   }
 
@@ -310,25 +314,19 @@ public class ExamRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     attendance = examController.updateExtraMinutes(attendance, payload.getExtraMinutes());
-    if (payload.getResetAssignments()) {
-      attendance = examController.resetAssignments(attendance);
-    }
-    if (payload.getResetTimes()) {
-      attendance = examController.resetTimes(attendance);
-    }
     return Response.ok().entity(examController.toRestModel(attendance)).build();
   }
 
   @Path("/attendees/{WORKSPACEFOLDERID}/user/{USERENTITYID}")
   @DELETE
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response removeAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId) {
+  public Response removeAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId, @QueryParam("permanent") boolean permanent) {
     if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, userEntityId);
     if (attendance != null) {
-      examController.removeAttendance(attendance);
+      examController.removeAttendance(attendance, permanent);
     }
     return Response.noContent().build();
   }

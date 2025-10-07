@@ -111,8 +111,17 @@ public class ExamController {
     }
   }
   
-  public void removeAttendance(ExamAttendance attendance) {
-    examAttendanceDAO.delete(attendance);
+  public void removeAttendance(ExamAttendance attendance, boolean permanent) {
+    if (permanent) {
+      examAttendanceDAO.delete(attendance);
+    }
+    else {
+      examAttendanceDAO.updateArchived(attendance, true);
+    }
+  }
+  
+  public ExamAttendance restoreAttendance(ExamAttendance attendance) {
+    return examAttendanceDAO.updateArchived(attendance, false);
   }
   
   /**
@@ -130,7 +139,12 @@ public class ExamController {
       attendance = createAttendance(workspaceFolderId, userEntityId, true);
     }
     else {
-      attendance = examAttendanceDAO.updateWorkspaceMaterialIds(attendance, randomizeAssignments(workspaceFolderId));
+      if (StringUtils.isBlank(attendance.getWorkspaceMaterialIds())) {
+        String assignments = randomizeAssignments(workspaceFolderId);
+        if (!StringUtils.isBlank(assignments)) {
+          attendance = examAttendanceDAO.updateWorkspaceMaterialIds(attendance, assignments);
+        }
+      }
       if (attendance.getEnded() != null) {
         attendance = examAttendanceDAO.updateEnded(attendance, null);
       }
@@ -143,16 +157,6 @@ public class ExamController {
     return examAttendanceDAO.updateExtraMinutes(attendance, minutes);
   }
 
-  public ExamAttendance resetTimes(ExamAttendance attendance) {
-    attendance = examAttendanceDAO.updateStarted(attendance, null);
-    attendance = examAttendanceDAO.updateEnded(attendance, null);
-    return attendance;
-  }
-
-  public ExamAttendance resetAssignments(ExamAttendance attendance) {
-    return examAttendanceDAO.updateWorkspaceMaterialIds(attendance, null);
-  }
-  
   /**
    * Ends an exam for the user.
    * 
@@ -258,7 +262,7 @@ public class ExamController {
    * @return List of attendees to the given exam
    */
   public List<ExamAttendance> listAttendees(Long workspaceFolderId) {
-    return examAttendanceDAO.listByWorkspaceFolderId(workspaceFolderId);
+    return examAttendanceDAO.listByWorkspaceFolderIdAndArchived(workspaceFolderId, false);
   }
   
   /**

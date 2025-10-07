@@ -38,6 +38,11 @@ public class ExamAttendanceDAO extends CorePluginsDAO<ExamAttendance> {
     return persist(attendance);
   }
 
+  public ExamAttendance updateArchived(ExamAttendance attendance, boolean archived) {
+    attendance.setArchived(archived);
+    return persist(attendance);
+  }
+
   public ExamAttendance updateEnded(ExamAttendance attendance, Date ended) {
     attendance.setEnded(ended);
     return persist(attendance);
@@ -59,6 +64,21 @@ public class ExamAttendanceDAO extends CorePluginsDAO<ExamAttendance> {
     );
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public List<ExamAttendance> listByWorkspaceFolderIdAndArchived(Long workspaceFolderId, boolean archived) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<ExamAttendance> criteria = criteriaBuilder.createQuery(ExamAttendance.class);
+    Root<ExamAttendance> root = criteria.from(ExamAttendance.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(          
+        criteriaBuilder.equal(root.get(ExamAttendance_.workspaceFolderId), workspaceFolderId),
+        criteriaBuilder.equal(root.get(ExamAttendance_.archived), archived)
+      )
+    );
+    return entityManager.createQuery(criteria).getResultList();
+  }
   
   public ExamAttendance findByWorkspaceFolderIdAndUserEntityId(Long workspaceFolderId, Long userEntityId) {
     EntityManager entityManager = getEntityManager();
@@ -67,10 +87,10 @@ public class ExamAttendanceDAO extends CorePluginsDAO<ExamAttendance> {
     Root<ExamAttendance> root = criteria.from(ExamAttendance.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.and(          
-          criteriaBuilder.equal(root.get(ExamAttendance_.workspaceFolderId), workspaceFolderId),
-          criteriaBuilder.equal(root.get(ExamAttendance_.userEntityId), userEntityId)
-        )
+       criteriaBuilder.and(          
+         criteriaBuilder.equal(root.get(ExamAttendance_.workspaceFolderId), workspaceFolderId),
+         criteriaBuilder.equal(root.get(ExamAttendance_.userEntityId), userEntityId)
+       )
     );
     return getSingleResult(entityManager.createQuery(criteria));
   }
