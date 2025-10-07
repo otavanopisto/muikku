@@ -389,15 +389,12 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
             title={t("labels.languageCv", { ns: "languageProfile" })}
           >
             <div className="user-language-profile-container__row">
-              <label
-                htmlFor="cv-general"
-                className="user-language-profile__label"
-              >
+              <div className="user-language-profile-container__subheader">
                 {t("labels.general", {
                   ns: "languageProfile",
                 })}
-              </label>
-              <p>{cv.general}</p>
+              </div>
+              <div>{cv.general}</div>
             </div>
             <div className="user-language-profile-container__row">
               {cv.languages.length > 0 &&
@@ -406,102 +403,100 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
                     className="user-language-profile__cv-language"
                     key={language.code}
                   >
-                    <h4>
-                      {t(`languages.${language.code}`, {
-                        ns: "languageProfile",
-                        defaultValue: language.code,
-                      })}
-                    </h4>
-                    <div className="user-language-profile__cv-language-skill">
-                      <fieldset className="user-language-profile__skills-container">
-                        <div className="user-language-profile__label">
-                          {t("labels.skillLevel", {
+                    <fieldset className="user-language-profile__skills-container">
+                      <legend className="user-language-profile-container__subheader">
+                        {t(`languages.${language.code}`, {
+                          ns: "languageProfile",
+                          defaultValue: language.code,
+                        })}
+                      </legend>
+                      <div className="user-language-profile-container__secondary-header">
+                        {t("labels.skillLevel", {
+                          ns: "languageProfile",
+                        })}
+                      </div>
+                      <div className="user-language-profile__skill-row">
+                        <StarDisplayer
+                          label={t("labels.skillInteraction", {
                             ns: "languageProfile",
                           })}
-                        </div>
-                        <div className="user-language-profile__skill-row">
-                          <StarDisplayer
-                            label={t("labels.skillInteraction", {
-                              ns: "languageProfile",
-                            })}
-                            value={parseInt(language.interaction)}
-                          />
+                          value={parseInt(language.interaction)}
+                        />
 
-                          <StarDisplayer
-                            label={t("labels.skillVocalization", {
-                              ns: "languageProfile",
-                            })}
-                            value={parseInt(language.vocal)}
-                          />
-                          <StarDisplayer
-                            label={t("labels.skillWriting", {
-                              ns: "languageProfile",
-                            })}
-                            value={parseInt(language.writing)}
-                          />
-                          <StarDisplayer
-                            label={t("labels.skillReadingComprehension", {
-                              ns: "languageProfile",
-                            })}
-                            value={parseInt(language.reading)}
-                          />
-                          <StarDisplayer
-                            label={t("labels.skillListeningComprehension", {
-                              ns: "languageProfile",
-                            })}
-                            value={parseInt(language.listening)}
-                          />
-                        </div>
-                        <div className="user-language-profile__label">
-                          {t("labels.skillEstimate", {
+                        <StarDisplayer
+                          label={t("labels.skillVocalization", {
                             ns: "languageProfile",
                           })}
-                          <div className="user-language-profile__skill-row">
-                            {language.general}
-                          </div>
-                        </div>
-                        <div className="user-language-profile__label">
-                          {t("labels.descriptionOfCompetence", {
+                          value={parseInt(language.vocal)}
+                        />
+                        <StarDisplayer
+                          label={t("labels.skillWriting", {
                             ns: "languageProfile",
                           })}
-                        </div>
+                          value={parseInt(language.writing)}
+                        />
+                        <StarDisplayer
+                          label={t("labels.skillReadingComprehension", {
+                            ns: "languageProfile",
+                          })}
+                          value={parseInt(language.reading)}
+                        />
+                        <StarDisplayer
+                          label={t("labels.skillListeningComprehension", {
+                            ns: "languageProfile",
+                          })}
+                          value={parseInt(language.listening)}
+                        />
+                      </div>
+                      <div className="user-language-profile__label">
+                        {t("labels.skillEstimate", {
+                          ns: "languageProfile",
+                        })}
                         <div className="user-language-profile__skill-row">
-                          {language.description ? (
-                            language.description
-                          ) : (
-                            <i>
-                              {t("content.empty", {
-                                ns: "common",
-                              })}
-                            </i>
-                          )}
+                          {language.general}
                         </div>
-                        {language.samples?.length > 0 && (
-                          <>
-                            <div className="user-language-profile__label">
-                              {t("labels.samples", {
-                                ns: "languageProfile",
-                              })}
-                            </div>
-                            {language.samples.map((sample, index) => (
-                              <div
-                                key={"sample-link" + index}
-                                className="user-language-profile__skill-row user-language-profile__skill-row--sample"
-                              >
-                                <a
-                                  href={sample.url}
-                                  rel="noreferrer"
-                                  target="_blank"
-                                  className="user-language-profile__sample-link"
-                                >
-                                  {sample.name}
-                                </a>
-                              </div>
-                            ))}
-                          </>
+                      </div>
+                      <div className="user-language-profile__label">
+                        {t("labels.descriptionOfCompetence", {
+                          ns: "languageProfile",
+                        })}
+                      </div>
+                      <div className="user-language-profile__skill-row">
+                        {language.description ? (
+                          language.description
+                        ) : (
+                          <i>
+                            {t("content.empty", {
+                              ns: "common",
+                            })}
+                          </i>
                         )}
-                      </fieldset>
-                    </div>
+                      </div>
+                      {language.samples?.length > 0 && (
+                        <>
+                          <div className="user-language-profile__label">
+                            {t("labels.samples", {
+                              ns: "languageProfile",
+                            })}
+                          </div>
+                          {language.samples.map((sample, index) => (
+                            <div
+                              key={"sample-link" + index}
+                              className="user-language-profile__skill-row user-language-profile__skill-row--sample"
+                            >
+                              <a
+                                href={sample.url}
+                                rel="noreferrer"
+                                target="_blank"
+                                className="user-language-profile__sample-link"
+                              >
+                                {sample.name}
+                              </a>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </fieldset>
                   </div>
                 ))}
             </div>
