@@ -140,7 +140,7 @@ const useExamAttendees = (props: UseExamAttendeesProps) => {
    * Remove a student from exam attendees
    */
   const removeExamAttendee = React.useCallback(
-    async (userEntityId: number) => {
+    async (userEntityId: number, permanent: boolean = false) => {
       if (!workspaceFolderId) return;
 
       setLoading(true);
@@ -150,6 +150,7 @@ const useExamAttendees = (props: UseExamAttendeesProps) => {
         await examApi.removeExamAttendee({
           workspaceFolderId,
           userEntityId,
+          permanent,
         });
 
         if (isMounted.current) {

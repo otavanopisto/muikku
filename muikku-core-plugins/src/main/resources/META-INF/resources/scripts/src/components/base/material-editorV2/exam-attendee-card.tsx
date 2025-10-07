@@ -6,13 +6,14 @@ import Button from "~/components/general/button";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import ConfirmResetExamAttendeeDialog from "./confirm-reset-exam-attendee-dialog";
 
 /**
  * Props for the ExamAttendeeCard component
  */
 interface ExamAttendeeCardProps {
   attendee: ExamAttendee;
-  onRemove: (attendeeId: number) => void;
+  onRemove: (attendeeId: number, permanent: boolean) => void;
   onUpdateSettings: (updatedAttendee: ExamAttendee) => Promise<void>;
 }
 
@@ -146,16 +147,16 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
             icon="pencil"
             buttonModifiers={"edit-extra-row"}
             onClick={handleStartEditing}
-            disabled={saving || isEditing || isEnded || isStarted}
+            disabled={saving || isEditing || (isStarted && !isEnded)}
             title="Muokkaa asetuksia"
           />
 
           <Button
-            icon="trash"
+            icon="cross"
             buttonModifiers={"remove-extra-row"}
-            onClick={() => onRemove(attendee.id!)}
-            disabled={saving || isEnded || isStarted}
-            title="Poista osallistuja"
+            onClick={() => onRemove(attendee.id!, false)}
+            disabled={saving || (isStarted && !isEnded)}
+            title="Poista osallistuja listalta"
           />
         </div>
       </div>
@@ -233,6 +234,16 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
           >
             Peruuta
           </Button>
+
+          {isEnded && (
+            <ConfirmResetExamAttendeeDialog
+              onConfirm={() => onRemove(attendee.id!, true)}
+            >
+              <Button buttonModifiers={["fatal", "execute"]} disabled={saving}>
+                Resetoi
+              </Button>
+            </ConfirmResetExamAttendeeDialog>
+          )}
         </div>
       )}
     </div>
