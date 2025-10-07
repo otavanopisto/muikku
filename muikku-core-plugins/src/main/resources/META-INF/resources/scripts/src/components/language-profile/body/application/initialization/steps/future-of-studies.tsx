@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ActionType } from "~/actions";
 import { LanguageProfileData } from "~/reducers/main-function/language-profile";
 import { StateType } from "~/reducers";
+import { useLanguageProfileContext } from "~/components/language-profile/body/application";
 
 /**
  * FutureOfStudies component
@@ -12,6 +13,7 @@ import { StateType } from "~/reducers";
 const FutureOfStudies = () => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
+  const { setInitializationUnsavedChanges } = useLanguageProfileContext();
   const { learningFactors, futureUsage, skillGoals } = useSelector(
     (state: StateType) => state.languageProfile.data
   );
@@ -32,6 +34,7 @@ const FutureOfStudies = () => {
       type: "LANGUAGE_PROFILE_UPDATE_VALUES",
       payload: { [field]: value },
     } as ActionType);
+    setInitializationUnsavedChanges(true);
   };
 
   return (

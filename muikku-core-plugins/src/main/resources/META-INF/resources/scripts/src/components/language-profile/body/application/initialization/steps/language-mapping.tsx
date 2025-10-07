@@ -13,6 +13,7 @@ import { StateType } from "~/reducers";
 import { ActionType } from "~/actions";
 import { languageLevelOptions } from "~/mock/mock-data";
 import { IconButton } from "~/components/general/button";
+import { useLanguageProfileContext } from "~/components/language-profile/body/application";
 
 export const levelMap: Record<number, string> = {
   0: "interaction",
@@ -35,6 +36,7 @@ const LanguageMapping = () => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const { data } = useSelector((state: StateType) => state.languageProfile);
+  const { setInitializationUnsavedChanges } = useLanguageProfileContext();
   const { languages } = useSelector(
     (state: StateType) => state.languageProfile.data
   );
@@ -90,6 +92,7 @@ const LanguageMapping = () => {
         value,
       },
     } as ActionType);
+    setInitializationUnsavedChanges(true);
   };
 
   /**
@@ -170,6 +173,7 @@ const LanguageMapping = () => {
         value,
       },
     } as ActionType);
+    setInitializationUnsavedChanges(true);
   };
 
   /**
@@ -181,6 +185,7 @@ const LanguageMapping = () => {
       type: "LANGUAGE_PROFILE_CLEAR_LANGUAGE_LEVELS",
       payload: language.code,
     } as ActionType);
+    setInitializationUnsavedChanges(true);
   };
 
   /**
@@ -206,6 +211,7 @@ const LanguageMapping = () => {
       type: "LANGUAGE_PROFILE_CLEAR_LANGUAGE_SKILL_LEVELS",
       payload: language.code,
     } as ActionType);
+    setInitializationUnsavedChanges(true);
   };
 
   /**

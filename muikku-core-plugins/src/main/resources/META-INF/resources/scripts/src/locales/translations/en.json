@@ -3079,7 +3079,8 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_textSample": "Text sample update failed: {{error}}",
       "updateSuccess": "$t(common:notifications.updateSuccess)",
-      "updateSuccess_textSample": "Text sample updated successfully"
+      "updateSuccess_textSample": "Text sample updated successfully",
+      "unsaved": "You have unsaved changes in the language profile initialization, are you sure you want to leave without saving?"
     },
     "languages": {
       "aa": "Afar",
