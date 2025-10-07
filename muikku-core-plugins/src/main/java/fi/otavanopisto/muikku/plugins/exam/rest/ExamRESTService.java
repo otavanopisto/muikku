@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -86,7 +87,7 @@ public class ExamRESTService {
     List<WorkspaceCompositeReply> result = new ArrayList<>();
     ExamAttendance attendanceEntity = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
     if (attendanceEntity != null) {
-      Set<Long> chosenAssignmentIds = null;
+      Set<Long> chosenAssignmentIds = new HashSet<>();
       String assignmentIdStr = attendanceEntity.getWorkspaceMaterialIds();
       if (!StringUtils.isEmpty(assignmentIdStr)) {
         chosenAssignmentIds = Stream.of(assignmentIdStr.split(",")).map(Long::parseLong).collect(Collectors.toSet());
