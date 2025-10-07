@@ -97,36 +97,38 @@ public class ExamRESTService {
       for (Long id : chosenAssignmentIds) {
         WorkspaceMaterial material = workspaceMaterialController.findWorkspaceMaterialById(id);
         WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(material, sessionController.getLoggedUserEntity());
-        List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
-        List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
-        for (WorkspaceMaterialField field : fields) {
-          try {
-            String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
-            WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
-            answers.add(answer);
+        if (reply != null) {
+          List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
+          List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(material);
+          for (WorkspaceMaterialField field : fields) {
+            try {
+              String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
+              WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+              answers.add(answer);
+            }
+            catch (WorkspaceFieldIOException e) {
+              return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Error retrieving field answers: %s", e.getMessage())).build();
+            }
           }
-          catch (WorkspaceFieldIOException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Error retrieving field answers: %s", e.getMessage())).build();
+
+          WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(
+              reply.getWorkspaceMaterial().getId(),
+              reply.getId(),
+              reply.getState(),
+              reply.getSubmitted(),
+              answers,
+              WorkspaceCompositeReplyLock.NONE);
+
+          // Evaluation info for evaluable materials
+
+          if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
+              reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
+              reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
+            compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(sessionController.getLoggedUserEntity().getId(), reply.getWorkspaceMaterial().getId()));
           }
+
+          result.add(compositeReply);
         }
-
-        WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(
-            reply.getWorkspaceMaterial().getId(),
-            reply.getId(),
-            reply.getState(),
-            reply.getSubmitted(),
-            answers,
-            WorkspaceCompositeReplyLock.NONE);
-
-        // Evaluation info for evaluable materials
-
-        if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
-            reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
-            reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
-          compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(sessionController.getLoggedUserEntity().getId(), reply.getWorkspaceMaterial().getId()));
-        }
-
-        result.add(compositeReply);
       }
     }
     return Response.ok(result).build();
