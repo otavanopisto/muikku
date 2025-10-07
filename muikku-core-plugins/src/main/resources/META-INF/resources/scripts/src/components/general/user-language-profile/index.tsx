@@ -456,23 +456,34 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
                           {t("labels.skillEstimate", {
                             ns: "languageProfile",
                           })}
-                          <div className="user-language-profile__skill-row"></div>
+                          <div className="user-language-profile__skill-row">
+                            {language.general}
+                          </div>
                         </div>
-
                         <div className="user-language-profile__label">
                           {t("labels.descriptionOfCompetence", {
                             ns: "languageProfile",
                           })}
                         </div>
-                        <div className="user-language-profile__skill-row"></div>
-                        {language.samples?.length && (
+                        <div className="user-language-profile__skill-row">
+                          {language.description ? (
+                            language.description
+                          ) : (
+                            <i>
+                              {t("content.empty", {
+                                ns: "common",
+                              })}
+                            </i>
+                          )}
+                        </div>
+                        {language.samples?.length > 0 && (
                           <>
                             <div className="user-language-profile__label">
                               {t("labels.samples", {
                                 ns: "languageProfile",
                               })}
                             </div>
-                            {language.samples?.map((sample, index) => (
+                            {language.samples.map((sample, index) => (
                               <div
                                 key={"sample-link" + index}
                                 className="user-language-profile__skill-row user-language-profile__skill-row--sample"

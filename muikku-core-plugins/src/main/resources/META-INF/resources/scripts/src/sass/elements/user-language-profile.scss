@@ -94,20 +94,23 @@
   }
 }
 
+.user-language-profile__cv-language-skill {
+  margin: 10px;
+}
+
 .user-language-profile__skills-container {
   border: 0;
 }
 
 .user-language-profile__skill-row {
+  display: flex;
+  justify-content: space-between;
   padding: 0 10px 10px;
 }
 
 .user-language-profile__star-displayer {
-  align-items: center;
   display: flex;
-  flex-flow: row nowrap;
-  gap: 10px;
-}
+  flex-flow: column nowrap;}
 
 .user-language-profile__stars {
   align-items: flex-start;
