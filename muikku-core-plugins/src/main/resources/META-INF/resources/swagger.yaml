@@ -6040,7 +6040,7 @@ paths:
       summary: Creates or updates the language profile of the given user
       description: Creates or updates the language profile of the given user
       tags:
-        - LanguageProfile 
+        - LanguageProfile
       parameters:
         - name: userEntityId
           in: path
@@ -6093,7 +6093,7 @@ paths:
       summary: Creates a text sample
       description: Creates a text sample
       tags:
-        - LanguageProfile 
+        - LanguageProfile
       parameters:
         - name: userEntityId
           in: path
@@ -6111,14 +6111,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LanguageProfileSample"
-  
+
   /rest/languageprofile/user/{userEntityId}/samples/{sampleId}:
     put:
       operationId: updateLanguageProfileSample
       summary: Updates a text sample
       description: Updates a text sample
       tags:
-        - LanguageProfile 
+        - LanguageProfile
       parameters:
         - name: userEntityId
           in: path
@@ -6148,7 +6148,7 @@ paths:
       summary: Deletes a sample
       description: Deletes a sample
       tags:
-        - LanguageProfile 
+        - LanguageProfile
       parameters:
         - name: userEntityId
           in: path
@@ -9000,10 +9000,10 @@ paths:
           description: Internal server error
 
   #WORKLIST
-  /rest/worklist/basePrice:
+  /rest/worklist/workspacePrices:
     get:
-      operationId: getBasePrice
-      description: Returns base price object for the given workspace. Values in the object use pattern (key-value) where key is the assessment identifier and value is the base price. Depending how many modules there is, so many key-value pairs are returned.
+      operationId: getWorkspacePrices
+      description: Returns base price object for the given workspace. Values in the object use pattern (key-value) where key is a course module identifier and value is WorkspacePrice. Depending how many modules there is, so many key-value pairs are returned.
       tags:
         - Worklist
       parameters:
@@ -9016,11 +9016,11 @@ paths:
             format: int64
       responses:
         "200":
-          description: Base price
+          description: Workspace prices
           content:
             application/json:
               schema:
-                type: object # <--Should use patternProperties when it is supported by generator
+                $ref: "#/components/schemas/WorkspacePrices"
         "400":
           description: Invalid request was sent to the server
         "500":
@@ -12012,7 +12012,7 @@ components:
                 type: string
               value:
                 type: string
-    
+
     LanguageProfileSampleUpdateRequestBody:
       required: true
       content:
@@ -13298,6 +13298,22 @@ components:
         date:
           type: string
           format: date-time
+
+    WorkspacePrice:
+      type: object
+      properties:
+        full:
+          type: number
+          format: double
+        half:
+          type: number
+          format: double
+
+    WorkspacePrices:
+      type: object
+      description: Hashmap for evaluation workspace price
+      additionalProperties:
+        $ref: "#/components/schemas/WorkspacePrice"
 
     BilledPrice:
       type: object
@@ -15419,7 +15435,7 @@ components:
         lastModified:
           type: string
           format: date-time
-    
+
     MaterialProducer:
       type: object
       description: MaterialProducer information
