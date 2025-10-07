@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -87,10 +85,13 @@ public class ExamRESTService {
     List<WorkspaceCompositeReply> result = new ArrayList<>();
     ExamAttendance attendanceEntity = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
     if (attendanceEntity != null) {
-      Set<Long> chosenAssignmentIds = new HashSet<>();
+      List<Long> chosenAssignmentIds = new ArrayList<>();
       String assignmentIdStr = attendanceEntity.getWorkspaceMaterialIds();
       if (!StringUtils.isEmpty(assignmentIdStr)) {
-        chosenAssignmentIds = Stream.of(assignmentIdStr.split(",")).map(Long::parseLong).collect(Collectors.toSet());
+        chosenAssignmentIds = Stream.of(assignmentIdStr.split(",")).map(Long::parseLong).collect(Collectors.toList());
+      }
+      else {
+        chosenAssignmentIds = examController.listExamAssignmentIds(workspaceFolderId);
       }
       for (Long id : chosenAssignmentIds) {
         WorkspaceMaterial material = workspaceMaterialController.findWorkspaceMaterialById(id);
@@ -309,6 +310,12 @@ public class ExamRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     attendance = examController.updateExtraMinutes(attendance, payload.getExtraMinutes());
+    if (payload.getResetAssignments()) {
+      attendance = examController.resetAssignments(attendance);
+    }
+    if (payload.getResetTimes()) {
+      attendance = examController.resetTimes(attendance);
+    }
     return Response.ok().entity(examController.toRestModel(attendance)).build();
   }
 

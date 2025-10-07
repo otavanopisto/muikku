@@ -142,6 +142,16 @@ public class ExamController {
   public ExamAttendance updateExtraMinutes(ExamAttendance attendance, Integer minutes) {
     return examAttendanceDAO.updateExtraMinutes(attendance, minutes);
   }
+
+  public ExamAttendance resetTimes(ExamAttendance attendance) {
+    attendance = examAttendanceDAO.updateStarted(attendance, null);
+    attendance = examAttendanceDAO.updateEnded(attendance, null);
+    return attendance;
+  }
+
+  public ExamAttendance resetAssignments(ExamAttendance attendance) {
+    return examAttendanceDAO.updateWorkspaceMaterialIds(attendance, null);
+  }
   
   /**
    * Ends an exam for the user.
@@ -277,6 +287,18 @@ public class ExamController {
     restSettings.setExamId(workspaceFolderId);
     return restSettings;
   }
+  
+  /**
+   * Returns the id list of all visible assignments in the given exam.
+   * 
+   * @param workspaceFolderId Exam folder id
+   * 
+   * @return Assignment ids of the given exam
+   */
+  public List<Long> listExamAssignmentIds(Long workspaceFolderId) {
+    WorkspaceFolder folder = workspaceFolderDAO.findById(workspaceFolderId);
+    return workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder);
+  }
 
   /**
    * Randomizes assignments of the given exam and returns their ids as a comma-limited string.
@@ -293,10 +315,9 @@ public class ExamController {
     }
     ExamSettingsRestModel settingsJson = getSettingsJson(workspaceFolderId);
     if (settingsJson.getRandom() == ExamSettingsRandom.GLOBAL) {
-      WorkspaceFolder folder = workspaceFolderDAO.findById(settings.getWorkspaceFolderId());
       // List all assignment ids and remove random ids until we're down to desired random count
       int count = settingsJson.getRandomCount();
-      List<Long> ids = workspaceMaterialController.listVisibleWorkspaceAssignmentIds(folder);
+      List<Long> ids = listExamAssignmentIds(workspaceFolderId);
       if (count > 0) {
         Random r = new Random();
         while (ids.size() > count) {
