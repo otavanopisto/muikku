@@ -467,7 +467,7 @@ const ExamInstanceContent = withTranslation("workspace")((
     (state: StateType) => state.exams.currentExam
   );
 
-  const { examsCompositeReplies } = useSelector(
+  const { currentExamCompositeReplies } = useSelector(
     (state: StateType) => state.exams
   );
 
@@ -481,7 +481,7 @@ const ExamInstanceContent = withTranslation("workspace")((
 
   const sectionSpecificContentData: JSX.Element[] = currentExam.contents.map(
     (content) => {
-      const compositeReply = examsCompositeReplies.find(
+      const compositeReply = currentExamCompositeReplies.find(
         (reply) => reply.workspaceMaterialId === content.workspaceMaterialId
       );
 
@@ -588,7 +588,7 @@ const ExamInstanceTableOfContents = (
   );
 
   const examsCompositeReplies = useSelector(
-    (state: StateType) => state.exams.examsCompositeReplies
+    (state: StateType) => state.exams.currentExamCompositeReplies
   );
 
   /**
