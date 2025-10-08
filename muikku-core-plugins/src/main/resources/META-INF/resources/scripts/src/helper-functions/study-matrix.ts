@@ -79,6 +79,14 @@ const SUBJECTS_NOT_INCLUDED = [
   "KT",
 ];
 
+export const ALL_LANGUAGE_SUBJECTS = [
+  ...NATIVE_LANGUAGE_SUBJECTS_CS,
+  ...LANGUAGE_SUBJECTS_A1_US,
+  ...LANGUAGE_SUBJECTS_B1_US,
+  ...LANGUAGE_SUBJECTS_B2_US,
+  ...LANGUAGE_SUBJECTS_B3_US,
+];
+
 /**
  * Filters special subjects away depending options selected by student
  * or loaded from pyramus

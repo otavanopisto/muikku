@@ -44,12 +44,12 @@
 }
 
 .table__tbody {
-  border-bottom: 2px solid $color-hops-dialog-form-element-border;
+  border-bottom: 2px solid $color-hops-form-element-border;
 }
 
 .table__thead th {
   background: $color-default;
-  border-bottom: 2px solid $color-hops-dialog-form-element-border;
+  border-bottom: 2px solid $color-hops-form-element-border;
   z-index: 3;
 }
 
@@ -85,6 +85,16 @@
 
 .table__row {
   background-color: $color-default;
+}
+
+.table__row--clickable {
+  cursor: pointer;
+}
+
+.table__row--disabled {
+  color: $color-disabled;
+  cursor: not-allowed;
+  font-style: italic;
 }
 
 .table__row--empty {
@@ -140,6 +150,26 @@
   text-align: center;
 }
 
+.table__head--language-profile-first-cell {
+  overflow: hidden;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 200px;
+  }
+
+}
+
+.table__head--evaluate-workspaces {
+  overflow: hidden;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 400px;
+  }
+}
+
+
 .table__head--right,
 .table__data--right {
   text-align: right;
@@ -149,6 +179,33 @@
   padding: 5px;
   position: relative;
   width: auto;
+}
+
+.table__data--language-profile-first-cell {
+  overflow: hidden;
+  width: auto;
+
+  @include breakpoint($breakpoint-pad) {
+    width: 200px;
+  }
+}
+
+.table__data--evaluate-workspaces {
+  align-items: center;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: start;
+
+  @include breakpoint($breakpoint-pad) {
+    white-space: nowrap;
+    width: 400px;
+  }
+}
+
+.table__data--language-profile-single-column {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
 }
 
 .table__data--subtitle {

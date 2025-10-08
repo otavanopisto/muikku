@@ -22,6 +22,7 @@ import { PedagogyFormAccess } from "~/generated/client";
 import HopsApplication from "./student/hops/hops";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
+import LanguageProfile from "~/components/general/user-language-profile";
 import { resetHopsData } from "~/actions/main-function/hops/";
 import PedagogySupport from "~/components/pedagogy-support";
 import { resetPedagogySupport } from "~/actions/main-function/pedagogy-support";
@@ -32,7 +33,8 @@ export type tabs =
   | "STUDY_PLAN"
   | "GUIDANCE_RELATIONS"
   | "STUDY_HISTORY"
-  | "PEDAGOGICAL_SUPPORT";
+  | "PEDAGOGICAL_SUPPORT"
+  | "LANGUAGE_PROFILE";
 
 /**
  * Dialog view modes
@@ -148,6 +150,12 @@ const StudentDialog: React.FC<StudentDialogProps> = (props) => {
       name: t("labels.studyHistory", { ns: "guider" }),
       type: "guider-student",
       component: <StudyHistory />,
+    },
+    {
+      id: "LANGUAGE_PROFILE",
+      name: t("labels.languageProfile"),
+      type: "guider-student",
+      component: <LanguageProfile userId={student.basic?.userEntityId} />,
     },
   ];
 

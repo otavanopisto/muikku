@@ -127,6 +127,24 @@ details {
   }
 }
 
+.details--language-profile {
+  border-color: $color-default-lighter-generic-background;
+  border-width: 2px;
+
+  summary {
+    background: $color-default-lighter-generic-background;
+    color: $color-language-profile-accent-color;
+
+    &::after {
+      color: $color-language-profile-accent-color;
+    }
+  }
+
+  p {
+    margin: 5px 0;
+  }
+}
+
 .details--evaluation {
   border-color: $taskfield-border-color;
   border-width: 2px;
