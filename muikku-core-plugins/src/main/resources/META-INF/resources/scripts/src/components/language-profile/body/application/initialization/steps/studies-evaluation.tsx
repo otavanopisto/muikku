@@ -48,7 +48,7 @@ const AccomplishmentEvaluation = () => {
           .map((workspace) => ({
             identifier: workspace.identifier
               ? workspace.identifier
-              : workspace.name.toLowerCase().replace(/[^a-z0-9]/g, "-"), // Fallback if identifier is missing, sanitized name
+              : workspace.name.toLowerCase().replace(/[^a-z0-9]/g, "-"), // Fallback if identifier is missing, sanitizes the name
             name: workspace.name,
           }));
 
