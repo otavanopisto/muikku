@@ -3,7 +3,7 @@ import {
   EvaluationStateType,
   EvaluationSort,
   EvaluationAssigmentData,
-  EvaluationBasePriceById,
+  EvaluationPrices,
   EvaluationFilters,
   EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
@@ -54,7 +54,7 @@ export interface EvaluationState {
   openedAssignmentEvaluationId?: number;
   evaluationBilledPrice?: number;
   needsReloadEvaluationRequests: boolean;
-  basePrice: EvaluationStateAndData<EvaluationBasePriceById>;
+  basePrice: EvaluationStateAndData<EvaluationPrices>;
 }
 
 /**
@@ -394,7 +394,7 @@ export const evaluations: Reducer<EvaluationState> = (
         needsReloadEvaluationRequests: action.payload,
       };
 
-    case "EVALUATION_BASE_PRICE_LOAD":
+    case "EVALUATION_BASE_PRICES_LOAD":
       return {
         ...state,
         basePrice: { state: state.basePrice.state, data: action.payload },

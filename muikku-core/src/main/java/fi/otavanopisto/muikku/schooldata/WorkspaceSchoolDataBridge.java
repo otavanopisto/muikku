@@ -8,7 +8,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentPrice;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
-import fi.otavanopisto.muikku.schooldata.payload.WorklistBasePriceRestModel;
+import fi.otavanopisto.muikku.schooldata.payload.WorklistWorkspacePricesRestModel;
 import fi.otavanopisto.muikku.schooldata.payload.WorklistItemBilledPriceRestModel;
 
 public interface WorkspaceSchoolDataBridge {
@@ -53,7 +53,7 @@ public interface WorkspaceSchoolDataBridge {
   
   /* Worklist related functionality */
   
-  public WorklistBasePriceRestModel getWorkspaceBasePrice(String workspaceIdentifier);
+  public WorklistWorkspacePricesRestModel getWorkspacePrices(String workspaceIdentifier);
   public BridgeResponse<WorklistItemBilledPriceRestModel> getWorkspaceBilledPrice(String courseAssessmentIdentifier);
   public BridgeResponse<WorklistItemBilledPriceRestModel> updateWorkspaceBilledPrice(WorklistItemBilledPriceRestModel payload);
   
