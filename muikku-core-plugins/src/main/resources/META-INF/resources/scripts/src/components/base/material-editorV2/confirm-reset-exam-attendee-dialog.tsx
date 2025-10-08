@@ -42,7 +42,7 @@ const ConfirmResetExamAttendeeDialog = (
    * @param closeDialog - closeDialog
    */
   const content = (closeDialog: () => void) => (
-    <div>Oletko varma, että haluat resetoia osallistujan koesuorituksen?</div>
+    <div>Oletko varma, että haluat resetoida osallistujan koesuorituksen?</div>
   );
 
   /**
