@@ -13,7 +13,8 @@ import { useLanguageProfileContext } from "~/components/language-profile/body/ap
 const FutureOfStudies = () => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
-  const { setInitializationUnsavedChanges } = useLanguageProfileContext();
+  const { initializationUnsavedChanges, setInitializationUnsavedChanges } =
+    useLanguageProfileContext();
   const { learningFactors, futureUsage, skillGoals } = useSelector(
     (state: StateType) => state.languageProfile.data
   );
@@ -34,7 +35,10 @@ const FutureOfStudies = () => {
       type: "LANGUAGE_PROFILE_UPDATE_VALUES",
       payload: { [field]: value },
     } as ActionType);
-    setInitializationUnsavedChanges(true);
+
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   return (

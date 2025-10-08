@@ -29,7 +29,8 @@ const AccomplishmentEvaluation = () => {
   const [passedWorkspaces, setPassedWorkspaces] = React.useState<
     LanguageData[]
   >([]);
-  const { setInitializationUnsavedChanges } = useLanguageProfileContext();
+  const { initializationUnsavedChanges, setInitializationUnsavedChanges } =
+    useLanguageProfileContext();
 
   const languages = languageProfile.data.languages;
 
@@ -142,7 +143,9 @@ const AccomplishmentEvaluation = () => {
         value: e.target.value,
       },
     } as ActionType);
-    setInitializationUnsavedChanges(true);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
@@ -157,7 +160,9 @@ const AccomplishmentEvaluation = () => {
         identifier: workspace.identifier,
       },
     } as ActionType);
-    setInitializationUnsavedChanges(true);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
@@ -198,7 +203,9 @@ const AccomplishmentEvaluation = () => {
         value: "",
       },
     } as ActionType);
-    setInitializationUnsavedChanges(true);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   const workspaceOptions: OptionDefault<string>[] = passedWorkspaces.map(

@@ -36,7 +36,8 @@ const LanguageMapping = () => {
   const { t } = useTranslation(["languageProfile", "common"]);
   const dispatch = useDispatch();
   const { data } = useSelector((state: StateType) => state.languageProfile);
-  const { setInitializationUnsavedChanges } = useLanguageProfileContext();
+  const { initializationUnsavedChanges, setInitializationUnsavedChanges } =
+    useLanguageProfileContext();
   const { languages } = useSelector(
     (state: StateType) => state.languageProfile.data
   );
@@ -92,7 +93,9 @@ const LanguageMapping = () => {
         value,
       },
     } as ActionType);
-    setInitializationUnsavedChanges(true);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
@@ -173,7 +176,9 @@ const LanguageMapping = () => {
         value,
       },
     } as ActionType);
-    setInitializationUnsavedChanges(true);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
@@ -185,7 +190,9 @@ const LanguageMapping = () => {
       type: "LANGUAGE_PROFILE_CLEAR_LANGUAGE_LEVELS",
       payload: language.code,
     } as ActionType);
-    setInitializationUnsavedChanges(true);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
@@ -211,7 +218,9 @@ const LanguageMapping = () => {
       type: "LANGUAGE_PROFILE_CLEAR_LANGUAGE_SKILL_LEVELS",
       payload: language.code,
     } as ActionType);
-    setInitializationUnsavedChanges(true);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**

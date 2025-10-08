@@ -28,7 +28,8 @@ const LanguageUsage = () => {
     samples,
     cv,
   } = useSelector((state: StateType) => state.languageProfile.data);
-  const { setInitializationUnsavedChanges } = useLanguageProfileContext();
+  const { initializationUnsavedChanges, setInitializationUnsavedChanges } =
+    useLanguageProfileContext();
   /**
    * handleFieldChange
    * @param e React.ChangeEvent<HTMLTextAreaElement>
@@ -90,7 +91,9 @@ const LanguageUsage = () => {
       type: "LANGUAGE_PROFILE_UPDATE_LANGUAGES",
       payload: language,
     } as ActionType);
-    setInitializationUnsavedChanges(true);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
@@ -102,7 +105,9 @@ const LanguageUsage = () => {
       type: "LANGUAGE_PROFILE_UPDATE_LANGUAGES",
       payload: language,
     } as ActionType);
-    setInitializationUnsavedChanges(true);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
