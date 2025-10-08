@@ -16,7 +16,6 @@ import "~/sass/elements/user-language-profile.scss";
 import Accordion from "./components/accordion";
 import Sample from "~/components/language-profile/body/application/languages/sample";
 import { LanguageData } from "~/@types/shared";
-import Stars from "~/components/language-profile/body/application/cv/stars";
 
 /**
  * UserLanguageProfileProps
