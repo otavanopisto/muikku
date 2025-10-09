@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { devtools } from "@tanstack/devtools-vite";
 
 // https://vite.dev/config/
 
@@ -9,14 +10,20 @@ import path from "path";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
+  const plugins = [
+    react({
+      babel: {
+        presets: ["jotai/babel/preset"],
+      },
+    }),
+  ];
+
+  if (env.NODE_ENV === "development") {
+    plugins.push(devtools());
+  }
+
   return {
-    plugins: [
-      react({
-        babel: {
-          presets: ["jotai/babel/preset"],
-        },
-      }),
-    ],
+    plugins,
     resolve: {
       // Alias for the src directory
       alias: {
