@@ -6,58 +6,20 @@ import { useAtomValue } from "jotai";
 /**
  * StudentNavigationContentProps - Props for student navigation content
  */
-interface StudentNavigationContentProps {
-  parentRoute: string;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface StudentNavigationContentProps {}
 
 /**
  * StudentNavigationContent - Dynamic content component for student-specific navigation
- * @param props - StudentNavigationContentProps
+ * @param _props - StudentNavigationContentProps
  * @returns StudentNavigationContent component
  */
-export function StudentNavigationContent({
-  parentRoute,
-}: StudentNavigationContentProps) {
+export function StudentNavigationContent(
+  _props: StudentNavigationContentProps
+) {
   const currentStudent = useAtomValue(currentStudentAtom);
-  //const location = useLocation();
 
-  // Extract student ID from current route
-  /* const studentId = useMemo(() => {
-    const match = location.pathname.match(/\/guider\/([^\/]+)/);
-    return match?.[1];
-  }, [location.pathname]); */
-
-  // Mock function to load student data - replace with actual API call
-  /* const loadStudentData = async (id: string): Promise<Student> => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return {
-      id,
-      name: `Student ${id}`, // Replace with actual student name
-    };
-  }; */
-
-  // Load student data when studentId changes
-  /* useEffect(() => {
-    if (studentId) {
-      setLoading(true);
-      loadStudentData(studentId)
-        .then((student) => {
-          setSelectedStudent(student);
-          setLoading(false);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    } else {
-      setSelectedStudent(null);
-    }
-  }, [studentId]); */
-
-  // Don't render anything if no student selected
-  //if (!studentId) return null;
-
-  if (currentStudent.currentStudentState === "loading") {
+  if (currentStudent.state === "loading") {
     return (
       <Group
         gap="sm"
@@ -71,9 +33,9 @@ export function StudentNavigationContent({
     );
   }
 
-  if (!currentStudent.currentStudent) return null;
+  if (!currentStudent.data) return null;
 
-  const { currentStudent: currentStudentData } = currentStudent;
+  const { data: currentStudentData } = currentStudent;
 
   return (
     <>
@@ -92,37 +54,37 @@ export function StudentNavigationContent({
       <NavbarSubLink
         label="Perustiedot | Tilanne"
         link={`/guider/${currentStudentData.id}/`}
-        parentRoute={parentRoute}
+        //parentRoute={parentRoute}
       />
       <NavbarSubLink
         label="Aktiivisuus"
         link={`/guider/${currentStudentData.id}/activity`}
-        parentRoute={parentRoute}
+        //parentRoute={parentRoute}
       />
       <NavbarSubLink
         label="Opiskelusuunnitelma (HOPS)"
         link={`/guider/${currentStudentData.id}/hops`}
-        parentRoute={parentRoute}
+        //parentRoute={parentRoute}
       />
       <NavbarSubLink
         label="Oppimisen tuki"
         link={`/guider/${currentStudentData.id}/pedagogy-support`}
-        parentRoute={parentRoute}
+        //parentRoute={parentRoute}
       />
       <NavbarSubLink
         label="Ohjaussuhde"
         link={`/guider/${currentStudentData.id}/guidance-relationship`}
-        parentRoute={parentRoute}
+        //parentRoute={parentRoute}
       />
       <NavbarSubLink
         label="Opintohistoria"
         link={`/guider/${currentStudentData.id}/study-history`}
-        parentRoute={parentRoute}
+        //parentRoute={parentRoute}
       />
       <NavbarSubLink
         label="Tiedostot"
         link={`/guider/${currentStudentData.id}/files`}
-        parentRoute={parentRoute}
+        //parentRoute={parentRoute}
       />
     </>
   );

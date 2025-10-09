@@ -60,7 +60,14 @@ export function ErrorBoundaryLayout(props: SharedLayoutProps) {
       <AppShell.Navbar className={classes.navbarTransition}>
         <NavbarNested
           title={title}
-          items={getNavigationItems(user, workspacePermissions, context)}
+          items={{
+            environment: getNavigationItems(
+              user,
+              workspacePermissions,
+              context
+            ),
+            workspace: getNavigationItems(user, workspacePermissions, context),
+          }}
           collapsed={!sidebarOpened} // Use desktop collapsed state
           onToggleCollapse={toggleSidebar} // Toggle desktop collapsed state
         />

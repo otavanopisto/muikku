@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Group, Text, UnstyledButton } from "@mantine/core";
-import { useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useParams } from "react-router";
 import classes from "./NavbarSubQueryLink.module.css";
 import type { NavigationQueryLink } from "~/src/layout/helpers/navigation";
 
@@ -17,62 +17,36 @@ interface NavbarSubQueryLinkProps extends Omit<NavigationQueryLink, "type"> {
  * @returns NavbarSubQueryLink component
  */
 export function NavbarSubQueryLink(props: NavbarSubQueryLinkProps) {
-  const { label, basePath, queryParams, replaceState = false } = props;
+  const { label, basePath, link } = props;
 
   const location = useLocation();
-  const navigate = useNavigate();
-
-  // Check if query parameters are currently active
-  const isQueryParamsActive = useMemo(() => {
-    const currentSearchParams = new URLSearchParams(location.search);
-    return Object.entries(queryParams).every(([key, value]) => {
-      const currentValue = currentSearchParams.get(key);
-      return currentValue === String(value);
-    });
-  }, [queryParams, location.search]);
+  const params = useParams();
 
   // Check if the link is active (either by path or query params)
   const isActive = useMemo(() => {
     const isPathActive = basePath === location.pathname;
-    return isPathActive && isQueryParamsActive;
-  }, [basePath, location.pathname, isQueryParamsActive]);
 
-  /**
-   * Handle navigation with query parameters
-   */
-  const handleNavigation = async () => {
-    if (queryParams) {
-      // Create new URL with query parameters
-      const searchParams = new URLSearchParams();
-      Object.entries(queryParams).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          searchParams.set(key, String(value));
-        }
-      });
+    if (!isPathActive) return false;
 
-      const newUrl = `${basePath}${
-        searchParams.toString() ? `?${searchParams.toString()}` : ""
-      }`;
-
-      if (replaceState) {
-        await navigate(newUrl, { replace: true });
-      } else {
-        await navigate(newUrl);
-      }
-    } else {
-      // Navigate to base path only
-      if (replaceState) {
-        await navigate(basePath, { replace: true });
-      } else {
-        await navigate(basePath);
-      }
+    // Check search params if they exist
+    if (link && typeof link === "object" && "search" in link) {
+      return location.search === link.search;
     }
-  };
+
+    return isPathActive;
+  }, [basePath, location.pathname, location.search, link]);
+
+  const linkTo = useMemo(
+    () => (typeof link === "function" ? link(params) : link),
+    [link, params]
+  );
 
   // Render the sub-query-link
   const subLinkElement = (
     <UnstyledButton
-      onClick={() => void handleNavigation()}
+      component={Link}
+      to={linkTo}
+      //onClick={() => void handleNavigation()}
       className={`${classes.link} ${isActive ? classes.active : ""}`}
       p="xs"
     >

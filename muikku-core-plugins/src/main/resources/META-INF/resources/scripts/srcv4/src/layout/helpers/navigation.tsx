@@ -14,7 +14,7 @@ import {
   IconCalendar,
   IconBook,
 } from "@tabler/icons-react";
-import { type Params } from "react-router";
+import { type Params, type To } from "react-router";
 import type { WorkspacePermissions } from "~/src/services/permissions";
 import { StudentNavigationContent } from "~/src/router/components/StudentNavigationContent/StudentNavigationContent";
 
@@ -27,7 +27,7 @@ export interface NavigationLink {
   type: "link";
   label: string;
   // Navigation options
-  link: string | ((params: Params) => string);
+  link: To | ((params: Params) => To);
   onClick?: () => void;
   replaceState?: boolean;
   // State
@@ -41,8 +41,7 @@ export interface NavigationLink {
 export interface NavigationQueryLink {
   type: "queryLink";
   label: string;
-  queryParams: Record<string, string | number | boolean>;
-  replaceState?: boolean;
+  link: To | ((params: Params) => To);
 }
 
 /**
@@ -137,22 +136,34 @@ export const navigationItemsEnviroment: NavigationItem[] = [
       {
         type: "queryLink",
         label: "Saapuneet",
-        queryParams: { tab: "Inbox" },
+        link: {
+          pathname: "/communicator",
+          search: "?tab=Inbox",
+        },
       },
       {
         type: "queryLink",
         label: "Lukemattomat",
-        queryParams: { tab: "Unread" },
+        link: {
+          pathname: "/communicator",
+          search: "?tab=Unread",
+        },
       },
       {
         type: "queryLink",
         label: "Lähetetyt",
-        queryParams: { tab: "Sent" },
+        link: {
+          pathname: "/communicator",
+          search: "?tab=Sent",
+        },
       },
       {
         type: "queryLink",
         label: "Roskakori",
-        queryParams: { tab: "Trash" },
+        link: {
+          pathname: "/communicator",
+          search: "?tab=Trash",
+        },
       },
     ],
     initiallyOpened: false,
@@ -169,7 +180,7 @@ export const navigationItemsEnviroment: NavigationItem[] = [
       {
         type: "component",
         id: "guider-student_item",
-        component: <StudentNavigationContent parentRoute="/guider" />,
+        component: <StudentNavigationContent />,
       },
     ],
     canAccess: (user) =>
