@@ -1,58 +1,25 @@
 import { type LoaderFunction } from "react-router";
-import { getCurrentStudentAtom } from "../atoms/guider";
-import { executeAtomAction } from "../jotaiStore";
+import { currentStudentIdAtom } from "~/src/atoms/guider";
+import { setAtomValue } from "~/src/jotaiStore";
 
-/**
- * Global initialization loader
- */
-export const environmentLoader: LoaderFunction = () => null;
+export const routeLoaders: Record<string, LoaderFunction> = {
+  environmentLoader: () => null,
+  homeLoader: () => null,
+  dashboardLoader: () => null,
+  communicatorLoader: () => null,
+  guiderLoader: () => null,
+  guiderStudentLoader: ({ params }) => {
+    const { studentId } = params;
 
-/**
- * Home page loader (for unauthenticated users)
- */
-export const homeLoader: LoaderFunction = () => null;
+    if (!studentId) {
+      throw new Error("Student ID is required");
+    }
 
-/**
- * Dashboard loader
- */
-export const dashboardLoader: LoaderFunction = () => null;
+    setAtomValue(currentStudentIdAtom, studentId);
 
-/**
- * Communicator loader
- */
-export const communicatorLoader: LoaderFunction = () => null;
-
-/**
- * Guider loader
- */
-export const guiderLoader: LoaderFunction = () => null;
-
-/**
- * Guider student loader
- */
-export const guiderStudentLoader: LoaderFunction = ({ params }) => {
-  const { studentId } = params;
-
-  if (!studentId) {
-    throw new Error("Student ID is required");
-  }
-
-  void executeAtomAction(getCurrentStudentAtom, studentId);
-
-  return null;
+    return null;
+  },
+  workspaceLoader: () => null,
+  workspaceHomeLoader: () => null,
+  workspaceSettingsLoader: () => null,
 };
-
-/**
- * Workspace initialization loader
- */
-export const workspaceLoader: LoaderFunction = () => null;
-
-/**
- * Workspace home loader
- */
-export const workspaceHomeLoader: LoaderFunction = () => null;
-
-/**
- * Workspace settings loader
- */
-export const workspaceSettingsLoader: LoaderFunction = () => null;

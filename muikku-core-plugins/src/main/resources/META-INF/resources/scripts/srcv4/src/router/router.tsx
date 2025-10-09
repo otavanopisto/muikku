@@ -1,13 +1,5 @@
 import { createBrowserRouter } from "react-router";
-import {
-  workspaceLoader,
-  homeLoader,
-  dashboardLoader,
-  workspaceHomeLoader,
-  workspaceSettingsLoader,
-  communicatorLoader,
-  guiderStudentLoader,
-} from "~/src/router/routeLoaders";
+import { routeLoaders } from "~/src/router/routeLoaders";
 import { SharedLayout } from "~/src/layout/SharedLayout/SharedLayout";
 import {
   authMiddleware,
@@ -53,7 +45,7 @@ export const router = createBrowserRouter([
         path: "/",
         index: true,
         element: <Home />,
-        loader: homeLoader,
+        loader: routeLoaders.homeLoader,
         middleware: [authMiddleware, permissionMiddlewares.homeView],
       },
       {
@@ -68,13 +60,13 @@ export const router = createBrowserRouter([
               {
                 path: "dashboard",
                 element: <Dashboard />,
-                loader: dashboardLoader,
+                loader: routeLoaders.dashboardLoader,
                 middleware: [permissionMiddlewares.dashboardView],
               },
               {
                 path: "communicator",
                 element: <Communicator />,
-                loader: communicatorLoader,
+                loader: routeLoaders.communicatorLoader,
                 middleware: [permissionMiddlewares.communicatorView],
               },
               {
@@ -118,7 +110,7 @@ export const router = createBrowserRouter([
                 path: "guider/:studentId",
                 element: <GuiderStudent />,
                 errorElement: <ErrorBoundaryPage />,
-                loader: guiderStudentLoader,
+                loader: routeLoaders.guiderStudentLoader,
                 middleware: [permissionMiddlewares.guiderView],
                 children: [
                   {
@@ -248,7 +240,7 @@ export const router = createBrowserRouter([
         element: <SharedLayout context="workspace" />,
         errorElement: <ErrorBoundaryLayout context="workspace" />,
         middleware: [authMiddleware, workspaceMiddleware],
-        loader: workspaceLoader,
+        loader: routeLoaders.workspaceLoader,
         children: [
           {
             errorElement: <ErrorBoundaryPage />,
@@ -256,13 +248,13 @@ export const router = createBrowserRouter([
               {
                 index: true,
                 element: <WorkspaceHome />,
-                loader: workspaceHomeLoader,
+                loader: routeLoaders.workspaceHomeLoader,
                 middleware: [permissionMiddlewares.workspaceHomeView],
               },
               {
                 path: "workspaceManagement",
                 element: <WorkspaceSettings />,
-                loader: workspaceSettingsLoader,
+                loader: routeLoaders.workspaceSettingsLoader,
                 middleware: [permissionMiddlewares.workspaceManagementView],
               },
               {
