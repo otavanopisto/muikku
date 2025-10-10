@@ -181,7 +181,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       
       subquery.select(announcementRecipient.get(AnnouncementRecipient_.announcement));
       subquery.where(
-              announcementRecipient.get(AnnouncementRecipient_.userEntityId).in(loggedUser)
+          criteriaBuilder.equal(announcementRecipient.get(AnnouncementRecipient_.userEntityId), loggedUser)
           );
       
       predicates.add(criteriaBuilder.not(root.in(subquery)));

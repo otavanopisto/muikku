@@ -388,19 +388,17 @@ public class AnnouncerRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response markAnnouncementAsRead(@PathParam("ANNOUNCEMENTID") Long announcementId) {
     
-    UserEntity userEntity = userEntityController.findUserEntityById(sessionController.getLoggedUserEntity().getId());
-    
     Announcement announcement = announcementController.findById(announcementId);
     
     if (announcement == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid announcementId").build();
     }
     
-    AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, userEntity.getId());
+    AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId());
     
     if (announcementRecipient == null) {
 
-      announcementRecipient = announcementController.createAnnouncementRecipient(announcement, userEntity.getId());
+      announcementRecipient = announcementController.createAnnouncementRecipient(announcement, sessionController.getLoggedUserEntity().getId());
     }
     AnnouncementRecipientRESTModel restModel = new AnnouncementRecipientRESTModel();
     
@@ -429,29 +427,24 @@ public class AnnouncerRESTService extends PluginRESTService {
     OrganizationEntity organizationEntity = schoolDataIdentifier.getOrganization();
     
     List<Announcement> announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
-        true, true, AnnouncementEnvironmentRestriction.PUBLICANDGROUP, AnnouncementTimeFrame.CURRENTANDEXPIRED, null, true, sessionController.getLoggedUserEntity().getId(), false, 0, 100);
+        true, true, AnnouncementEnvironmentRestriction.PUBLICANDGROUP, AnnouncementTimeFrame.CURRENT, null, true, sessionController.getLoggedUserEntity().getId(), false, 0, 100);
 
     List<AnnouncementRecipientRESTModel> restModels = new ArrayList<AnnouncementRecipientRESTModel>();
-    
-    if (announcements.isEmpty()) {
-      return Response.status(Status.NO_CONTENT).entity("No announcements found").build();
-    }
     
     for (Announcement announcement : announcements) {
       AnnouncementRecipient announcementRecipient = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, userEntity.getId());
       
       if (announcementRecipient == null) {
-  
         announcementRecipient = announcementController.createAnnouncementRecipient(announcement, userEntity.getId());
       }
+      
       AnnouncementRecipientRESTModel restModel = new AnnouncementRecipientRESTModel();
       
-      if (announcementRecipient != null) {
-        restModel.setAnnouncementId(announcementRecipient.getAnnouncement().getId());
-        restModel.setReadDate(announcementRecipient.getReadDate());
-        restModel.setUserEntityId(announcementRecipient.getUserEntityId());
-        restModel.setId(announcementRecipient.getId());
-      }
+      restModel.setAnnouncementId(announcementRecipient.getAnnouncement().getId());
+      restModel.setReadDate(announcementRecipient.getReadDate());
+      restModel.setUserEntityId(announcementRecipient.getUserEntityId());
+      restModel.setId(announcementRecipient.getId());
+      
       restModels.add(restModel);
     }
 
