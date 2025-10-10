@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamAttendanceDAO;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamSettingsDAO;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
@@ -35,12 +36,14 @@ import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRandom;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolderType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
@@ -60,7 +63,10 @@ public class ExamController {
   private WorkspaceMaterialController workspaceMaterialController;
   
   @Inject
-  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  private WorkspaceMaterialReplyController replyController;
+  
+  @Inject
+  private WorkspaceMaterialFieldAnswerController answerController;
   
   @Inject
   private EvaluationController evaluationController;
@@ -113,6 +119,33 @@ public class ExamController {
   
   public void removeAttendance(ExamAttendance attendance, boolean permanent) {
     if (permanent) {
+      List<Long> assignmentIds = listExamAssignmentIds(attendance.getWorkspaceFolderId());
+      for (Long assignmentId : assignmentIds) {
+        UserEntity userEntity = userEntityController.findUserEntityById(attendance.getUserEntityId());
+        WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(assignmentId);
+        if (userEntity != null && workspaceMaterial != null) {
+          // Delete field answers
+          WorkspaceMaterialReply reply = replyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+          if (reply != null) {
+            List<WorkspaceMaterialFieldAnswer> answers = answerController.listWorkspaceMaterialFieldAnswersByReply(reply);
+            for (WorkspaceMaterialFieldAnswer answer : answers) {
+              answerController.deleteWorkspaceMaterialFieldAnswer(answer);
+            }
+            replyController.deleteWorkspaceMaterialReply(reply);
+          }
+          // Delete assignment evaluation
+          WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeIdAndStudentEntityId(assignmentId, attendance.getUserEntityId());
+          if (evaluation != null) {
+            evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
+          }
+        }
+      }
+      // Delete exam evaluation
+      WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeIdAndStudentEntityId(attendance.getWorkspaceFolderId(), attendance.getUserEntityId());
+      if (evaluation != null) {
+        evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
+      }
+      // Delete attendance
       examAttendanceDAO.delete(attendance);
     }
     else {
@@ -189,12 +222,12 @@ public class ExamController {
           }
           WorkspaceMaterial material = workspaceMaterialController.findWorkspaceMaterialById(assignmentId);
           if (material != null) {
-            WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(material, userEntity);
+            WorkspaceMaterialReply reply = replyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(material, userEntity);
             if (reply == null) {
-              workspaceMaterialReplyController.createWorkspaceMaterialReply(material, WorkspaceMaterialReplyState.SUBMITTED, userEntity, false);
+              replyController.createWorkspaceMaterialReply(material, WorkspaceMaterialReplyState.SUBMITTED, userEntity, false);
             }
             else if (reply.getState() == WorkspaceMaterialReplyState.UNANSWERED || reply.getState() == WorkspaceMaterialReplyState.ANSWERED) {
-              workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.SUBMITTED);
+              replyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.SUBMITTED);
             }
           }
         }

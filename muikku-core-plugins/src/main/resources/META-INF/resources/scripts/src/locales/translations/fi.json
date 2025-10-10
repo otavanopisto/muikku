@@ -1729,6 +1729,7 @@
       "diaryEntry": "Oppimispäiväkirjamerkintä",
       "edit": "$t(labels.edit)",
       "edit_chapter": "Muokkaa osiota",
+      "edit_exam": "Muokkaa koeosiota",
       "edit_page": "Muokkaa sivua",
       "evaluated": "Tämä tehtävä on arvioitu",
       "evaluated_failed": "Opettaja on arvioinut tämän tehtävän hylätyksi",
