@@ -23,8 +23,7 @@ export interface ExamsState {
   currentExam: ExamAttendance | null;
   currentExamStatusInfo: ReducerStateInfo;
   currentExamsActiveNodeId: number | null;
-  examsCompositeReplies: MaterialCompositeReply[];
-  examsCompositeRepliesStatus: ReducerStateType;
+  currentExamCompositeReplies: MaterialCompositeReply[];
 }
 
 /**
@@ -39,8 +38,7 @@ const initialWorkspaceExamsState: ExamsState = {
     status: "IDLE",
   },
   currentExamsActiveNodeId: null,
-  examsCompositeReplies: [],
-  examsCompositeRepliesStatus: "IDLE",
+  currentExamCompositeReplies: [],
 };
 
 /**
@@ -72,21 +70,15 @@ export const exams: Reducer<ExamsState> = (
         examsStatus: action.payload,
       };
 
-    case "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES":
+    case "EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLIES":
       return {
         ...state,
-        examsCompositeReplies: action.payload,
+        currentExamCompositeReplies: action.payload,
       };
 
-    case "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES_STATUS":
-      return {
-        ...state,
-        examsCompositeRepliesStatus: action.payload,
-      };
-
-    case "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER": {
+    case "EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER": {
       let wasUpdated = false;
-      let newExamsCompositeReplies = state.examsCompositeReplies.map(
+      let newExamsCompositeReplies = state.currentExamCompositeReplies.map(
         (compositeReplies) => {
           if (
             compositeReplies.workspaceMaterialId ===
@@ -103,7 +95,10 @@ export const exams: Reducer<ExamsState> = (
           <MaterialCompositeReply>{ ...action.payload, lock: "NONE" },
         ]);
       }
-      return { ...state, examsCompositeReplies: newExamsCompositeReplies };
+      return {
+        ...state,
+        currentExamCompositeReplies: newExamsCompositeReplies,
+      };
     }
 
     case "EXAMS_UPDATE_CURRENT_EXAM":

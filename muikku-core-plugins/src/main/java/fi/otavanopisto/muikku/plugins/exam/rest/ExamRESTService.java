@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,6 +18,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -86,44 +86,49 @@ public class ExamRESTService {
     List<WorkspaceCompositeReply> result = new ArrayList<>();
     ExamAttendance attendanceEntity = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
     if (attendanceEntity != null) {
-      Set<Long> chosenAssignmentIds = null;
+      List<Long> chosenAssignmentIds = new ArrayList<>();
       String assignmentIdStr = attendanceEntity.getWorkspaceMaterialIds();
       if (!StringUtils.isEmpty(assignmentIdStr)) {
-        chosenAssignmentIds = Stream.of(assignmentIdStr.split(",")).map(Long::parseLong).collect(Collectors.toSet());
+        chosenAssignmentIds = Stream.of(assignmentIdStr.split(",")).map(Long::parseLong).collect(Collectors.toList());
+      }
+      else {
+        chosenAssignmentIds = examController.listExamAssignmentIds(workspaceFolderId);
       }
       for (Long id : chosenAssignmentIds) {
         WorkspaceMaterial material = workspaceMaterialController.findWorkspaceMaterialById(id);
         WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(material, sessionController.getLoggedUserEntity());
-        List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
-        List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
-        for (WorkspaceMaterialField field : fields) {
-          try {
-            String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
-            WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
-            answers.add(answer);
+        if (reply != null) {
+          List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
+          List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(material);
+          for (WorkspaceMaterialField field : fields) {
+            try {
+              String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
+              WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+              answers.add(answer);
+            }
+            catch (WorkspaceFieldIOException e) {
+              return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Error retrieving field answers: %s", e.getMessage())).build();
+            }
           }
-          catch (WorkspaceFieldIOException e) {
-            return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Error retrieving field answers: %s", e.getMessage())).build();
+
+          WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(
+              reply.getWorkspaceMaterial().getId(),
+              reply.getId(),
+              reply.getState(),
+              reply.getSubmitted(),
+              answers,
+              WorkspaceCompositeReplyLock.NONE);
+
+          // Evaluation info for evaluable materials
+
+          if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
+              reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
+              reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
+            compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(sessionController.getLoggedUserEntity().getId(), reply.getWorkspaceMaterial().getId()));
           }
+
+          result.add(compositeReply);
         }
-
-        WorkspaceCompositeReply compositeReply = new WorkspaceCompositeReply(
-            reply.getWorkspaceMaterial().getId(),
-            reply.getId(),
-            reply.getState(),
-            reply.getSubmitted(),
-            answers,
-            WorkspaceCompositeReplyLock.NONE);
-
-        // Evaluation info for evaluable materials
-
-        if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
-            reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
-            reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
-          compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(sessionController.getLoggedUserEntity().getId(), reply.getWorkspaceMaterial().getId()));
-        }
-
-        result.add(compositeReply);
       }
     }
     return Response.ok(result).build();
@@ -293,6 +298,9 @@ public class ExamRESTService {
     if (attendance == null) {
       attendance = examController.createAttendance(workspaceFolderId, userEntityId, true);
     }
+    else if (attendance.getArchived()) {
+      attendance = examController.restoreAttendance(attendance);
+    }
     return Response.ok().entity(examController.toRestModel(attendance)).build();
   }
 
@@ -314,13 +322,13 @@ public class ExamRESTService {
   @Path("/attendees/{WORKSPACEFOLDERID}/user/{USERENTITYID}")
   @DELETE
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response removeAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId) {
+  public Response removeAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId, @QueryParam("permanent") boolean permanent) {
     if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
       return Response.status(Status.FORBIDDEN).build();
     }
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, userEntityId);
     if (attendance != null) {
-      examController.removeAttendance(attendance);
+      examController.removeAttendance(attendance, permanent);
     }
     return Response.noContent().build();
   }

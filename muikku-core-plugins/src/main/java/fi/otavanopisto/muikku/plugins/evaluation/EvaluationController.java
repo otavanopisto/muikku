@@ -785,6 +785,10 @@ public class EvaluationController {
     return evaluations.get(0);
   }
 
+  public WorkspaceNodeEvaluation findWorkspaceNodeEvaluationByWorkspaceNodeIdAndStudentEntityId(Long workspaceNodeId, Long studentEntityId) {
+    return workspaceNodeEvaluationDAO.findByWorkspaceNodeIdAndStudentEntityId(workspaceNodeId, studentEntityId);
+  }
+
   public WorkspaceNodeEvaluation findWorkspaceNodeEvaluation(Long id) {
     return workspaceNodeEvaluationDAO.findById(id);
   }

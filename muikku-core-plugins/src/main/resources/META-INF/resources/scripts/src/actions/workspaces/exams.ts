@@ -38,19 +38,14 @@ export type EXAMS_UPDATE_EXAMS_STATUS = SpecificActionType<
 >;
 
 // EXAMS_COMPOSITE_REPLIES
-export type EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES = SpecificActionType<
-  "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES",
+export type EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLIES = SpecificActionType<
+  "EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLIES",
   MaterialCompositeReply[]
 >;
 
-export type EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES_STATUS = SpecificActionType<
-  "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES_STATUS",
-  ReducerStateType
->;
-
-export type EXAMS_UPDATE_EXAMS_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER =
+export type EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER =
   SpecificActionType<
-    "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
+    "EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
     {
       state: MaterialCompositeReplyStateType;
       workspaceMaterialId: number;
@@ -99,17 +94,6 @@ interface InitializeExamsTriggerType {
  * LoadExamsTriggerType
  */
 interface LoadExamsTriggerType {
-  (data: {
-    workspaceEntityId: number;
-    onSuccess?: () => void;
-    onFail?: () => void;
-  }): AnyActionType;
-}
-
-/**
- * LoadExamsCompositeRepliesTriggerType
- */
-interface LoadExamsCompositeRepliesTriggerType {
   (data: {
     workspaceEntityId: number;
     onSuccess?: () => void;
@@ -183,9 +167,9 @@ const initializeExams: InitializeExamsTriggerType = function initializeExams(
 
     const promises = [
       dispatch(loadExams({ workspaceEntityId: data.workspaceEntityId })),
-      dispatch(
-        loadExamsCompositeReplies({ workspaceEntityId: data.workspaceEntityId })
-      ),
+      // dispatch(
+      //   loadExamsCompositeReplies({ workspaceEntityId: data.workspaceEntityId })
+      // ),
     ];
 
     await Promise.all(promises);
@@ -239,57 +223,7 @@ const loadExams: LoadExamsTriggerType = function loadExams(data) {
 };
 
 /**
- * Loads exams composite replies.
- * @param data data
- * @returns AnyActionType
- */
-const loadExamsCompositeReplies: LoadExamsCompositeRepliesTriggerType =
-  function loadExamsCompositeReplies(data) {
-    return async (
-      dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
-      getState: () => StateType
-    ) => {
-      const state = getState();
-
-      if (state.exams.examsCompositeRepliesStatus === "LOADING") {
-        return;
-      }
-
-      dispatch({
-        type: "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES_STATUS",
-        payload: "LOADING",
-      });
-
-      try {
-        const compositeReplies =
-          await workspaceApi.getWorkspaceCompositeReplies({
-            workspaceEntityId: data.workspaceEntityId,
-          });
-
-        dispatch({
-          type: "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES",
-          payload: compositeReplies || [],
-        });
-
-        dispatch({
-          type: "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES_STATUS",
-          payload: "READY",
-        });
-      } catch (error) {
-        if (!isMApiError(error)) {
-          throw error;
-        }
-
-        dispatch({
-          type: "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLIES_STATUS",
-          payload: "ERROR",
-        });
-      }
-    };
-  };
-
-/**
- * Start exam. Post request to start the exam and update the current exam.
+ * Start exam. Loads exams composite replies and post request to start the exam and update the current exam.
  * If exam data is returned even if the exam is already started, update the current exam.
  * @param data data
  * @returns AnyActionType
@@ -318,6 +252,10 @@ const startExam: StartExamTriggerType = function startExam(data) {
         workspaceFolderId: data.workspaceFolderId,
       });
 
+      const compositeReplies = await examsApi.getExamCompositeReplies({
+        workspaceFolderId: data.workspaceFolderId,
+      });
+
       // Variable whether to update the exams list also
       let updateExamToList = false;
 
@@ -342,6 +280,11 @@ const startExam: StartExamTriggerType = function startExam(data) {
           updatedExam.minutes
         );
       }
+
+      dispatch({
+        type: "EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLIES",
+        payload: compositeReplies || [],
+      });
 
       dispatch({
         type: "EXAMS_UPDATE_CURRENT_EXAM",
@@ -493,7 +436,7 @@ const updateAssignmentState: UpdateAssignmentStateTriggerType =
         }
 
         dispatch({
-          type: "EXAMS_UPDATE_EXAMS_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
+          type: "EXAMS_UPDATE_CURRENT_EXAM_COMPOSITE_REPLY_STATE_VIA_ID_NO_ANSWER",
           payload: {
             workspaceMaterialReplyId: replyId,
             state: successState,

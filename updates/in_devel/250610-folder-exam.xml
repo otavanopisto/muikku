@@ -11,6 +11,7 @@
       workspaceFolderId bigint not null,
       workspaceMaterialIds mediumtext,
       extraMinutes integer,
+      archived bit not null,
       primary key (id)
     );
   </sql>

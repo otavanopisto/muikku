@@ -69,6 +69,14 @@ public class ExamAttendance {
     this.workspaceMaterialIds = workspaceMaterialIds;
   }
 
+  public boolean getArchived() {
+    return archived;
+  }
+
+  public void setArchived(boolean archived) {
+    this.archived = archived;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -94,5 +102,9 @@ public class ExamAttendance {
   
   @Column(columnDefinition = "mediumtext")
   private String workspaceMaterialIds; // CDT of assignment ids randomly assigned for this user when they began the exam
+  
+  @NotNull
+  @Column(nullable = false)
+  private boolean archived;
 
 }
