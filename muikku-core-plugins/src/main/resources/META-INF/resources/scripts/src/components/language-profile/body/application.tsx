@@ -13,6 +13,33 @@ import LanguageSample from "./application/languages";
 interface LanguageProfileApplicationProps {}
 
 /**
+ * LanguageProfileContextType
+ */
+interface LanguageProfileContextType {
+  initializationUnsavedChanges: boolean;
+  setInitializationUnsavedChanges: (value: boolean) => void;
+}
+
+const LanguageProfileContext = React.createContext<
+  LanguageProfileContextType | undefined
+>(undefined);
+
+/**
+ * Custom hook to use the language profile context
+ * @returns LanguageProfileContextType
+ * @throws Error if used outside of LanguageProfileProvider
+ */
+export const useLanguageProfileContext = () => {
+  const context = React.useContext(LanguageProfileContext);
+  if (!context) {
+    throw new Error(
+      "useLanguageProfileContext must be used within LanguageProfileProvider"
+    );
+  }
+  return context;
+};
+
+/**
  * LanguageProfileApplication component
  * @param props LanguageProfileApplicationProps
  * @returns JSX.Element
@@ -20,11 +47,13 @@ interface LanguageProfileApplicationProps {}
 const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
   const { t } = useTranslation("languageProfile");
   const [activeTab, setActiveTab] = React.useState("INITIALIZE");
+  const [initializationUnsavedChanges, setInitializationUnsavedChanges] =
+    React.useState(false);
 
   /**
    * StudiesTab
    */
-  type LanguageProfileTab = "INITIALIZE" | "LANGUGES" | "CV";
+  type LanguageProfileTab = "INITIALIZE" | "LANGUAGES" | "CV";
 
   const panelTabs: Tab[] = [
     {
@@ -72,6 +101,16 @@ const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
    * @param hash hash
    */
   const onTabChange = (id: LanguageProfileTab, hash?: string | Tab) => {
+    if (initializationUnsavedChanges) {
+      const confirmLeave = window.confirm(t("notifications.unsaved"));
+
+      if (confirmLeave) {
+        setInitializationUnsavedChanges(false);
+      } else {
+        return;
+      }
+    }
+
     if (hash) {
       if (typeof hash === "string" || hash instanceof String) {
         window.location.hash = hash as string;
@@ -89,13 +128,23 @@ const LanguageProfileApplication = (props: LanguageProfileApplicationProps) => {
     }
   }, []);
 
+  const contextValue = React.useMemo(
+    () => ({
+      initializationUnsavedChanges,
+      setInitializationUnsavedChanges,
+    }),
+    [initializationUnsavedChanges]
+  );
+
   return (
-    <ApplicationPanel
-      title={t("labels.languageProfile", { ns: "common" })}
-      onTabChange={onTabChange}
-      activeTab={activeTab}
-      panelTabs={panelTabs}
-    />
+    <LanguageProfileContext.Provider value={contextValue}>
+      <ApplicationPanel
+        title={t("labels.languageProfile", { ns: "common" })}
+        onTabChange={onTabChange}
+        activeTab={activeTab}
+        panelTabs={panelTabs}
+      />
+    </LanguageProfileContext.Provider>
   );
 };
 

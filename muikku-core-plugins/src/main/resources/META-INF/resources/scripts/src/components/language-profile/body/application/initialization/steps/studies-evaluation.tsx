@@ -13,6 +13,7 @@ import { OptionDefault } from "~/components/general/react-select/types";
 import { displayNotification } from "~/actions/base/notifications";
 import Button from "~/components/general/button";
 import PromptDialog from "~/components/general/prompt-dialog";
+import { useLanguageProfileContext } from "~/components/language-profile/body/application";
 
 const recordsApi = MApi.getRecordsApi();
 
@@ -28,6 +29,8 @@ const AccomplishmentEvaluation = () => {
   const [passedWorkspaces, setPassedWorkspaces] = React.useState<
     LanguageData[]
   >([]);
+  const { initializationUnsavedChanges, setInitializationUnsavedChanges } =
+    useLanguageProfileContext();
 
   const languages = languageProfile.data.languages;
 
@@ -140,6 +143,9 @@ const AccomplishmentEvaluation = () => {
         value: e.target.value,
       },
     } as ActionType);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
@@ -154,6 +160,9 @@ const AccomplishmentEvaluation = () => {
         identifier: workspace.identifier,
       },
     } as ActionType);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
@@ -194,6 +203,9 @@ const AccomplishmentEvaluation = () => {
         value: "",
       },
     } as ActionType);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   const workspaceOptions: OptionDefault<string>[] = passedWorkspaces.map(
