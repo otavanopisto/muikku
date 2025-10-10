@@ -1,13 +1,17 @@
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
+import { FileSample } from "~/reducers/main-function/language-profile";
+import { LanguageCode } from "~/@types/shared";
 
 /**
  * FileSampleProps
  */
 interface FileSampleProps {
-  files: File[];
+  samples: FileSample[];
+  language: LanguageCode;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFileDescriptionChange: (index: number, description: string) => void;
   onRemoveFile: (index: number) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -20,7 +24,16 @@ interface FileSampleProps {
  */
 const FileSample = (props: FileSampleProps) => {
   const { t } = useTranslation(["languageProfile", "common"]);
-  const { files, onFileChange, onRemoveFile, onSave, onCancel } = props;
+  const {
+    samples,
+    language,
+    onFileChange,
+    onFileDescriptionChange,
+    onRemoveFile,
+    onSave,
+    onCancel,
+  } = props;
+
   return (
     <>
       <label
@@ -42,19 +55,29 @@ const FileSample = (props: FileSampleProps) => {
         <div className="language-profile__file-uploader-container">
           <div>{t("content.add", { ns: "materials", context: "file" })}</div>
           <input
-            id="newLanguageFileSample"
+            id={`newLanguageFileSample-${language}`}
             type="file"
             className="language-profile__file-uploader-field"
             onChange={onFileChange}
           />
         </div>
         <div className="language-profile__file-uploader-files">
-          {files.map((file, index) => (
+          {samples.map((sample, index) => (
             <div
               className="language-profile__sample-file"
               key={`file-${index}`}
             >
-              <span>{file.name}</span>
+              <input
+                type="text"
+                className="language-profile__file-description-input"
+                id={`file-description-${language}-${index}`}
+                placeholder={t("labels.fileDescription", {
+                  ns: "languageProfile",
+                })}
+                value={sample.description}
+                onChange={(e) => onFileDescriptionChange(index, e.target.value)}
+              />
+              <span>{sample.file.name}</span>
               <a
                 className="language-profile__remove-button icon-trash"
                 onClick={() => onRemoveFile(index)}

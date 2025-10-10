@@ -416,6 +416,11 @@
   width: 100%;
 }
 
+.language-profile__file-description-input {
+  border: 2px solid $color-language-profile-form-element-border;
+  padding: 3px;
+}
+
 .language-profile__remove-button {
   background: transparent;
   color: $color-fatal;

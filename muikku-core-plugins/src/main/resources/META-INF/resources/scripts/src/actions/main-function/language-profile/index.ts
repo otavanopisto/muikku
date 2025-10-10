@@ -12,6 +12,7 @@ import {
   LanguageLevels,
   CVLanguage,
   initializeLanguageProfileState,
+  FileSample,
 } from "~/reducers/main-function/language-profile";
 import { LoadingState, SaveState, LanguageCode } from "~/@types/shared";
 import {
@@ -199,12 +200,16 @@ export interface CreateLanguageProfileAudioSampleTriggerType {
 }
 
 /**
+ *
+ */
+
+/**
  * CreateLanguageProfileFileSampleTriggerType
  */
 export interface CreateLanguageProfileFileSampleTriggerType {
   (
     userEntityId: number,
-    files: File[],
+    samples: FileSample[],
     language: LanguageCode,
     success?: () => void,
     fail?: () => void
@@ -707,15 +712,15 @@ const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
 /**
  * createLanguageFileSamples
  * @param userEntityId student id
- * @param files request files
- * @param language language code
+ * @param samples request samples
+ * @param language language codet
  * @param success executed on success
- * @param fail executed on faoö
+ * @param fail executed on fail
  */
 const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
   function createLanguageFileSamples(
     userEntityId: number,
-    files: File[],
+    samples: FileSample[],
     language: LanguageCode,
     success?: () => void,
     fail?: () => void
@@ -730,16 +735,16 @@ const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
       });
       //  Can't be done in parallel, because of the file upload
       //  and the server can't handle multiple file uploads at once
-      for (const file of files) {
+      for (const sample of samples) {
         try {
           // const contextPath = getState().status.contextPath;
           const formData = new FormData();
 
-          formData.append("file", file);
+          formData.append("file", sample.file);
           formData.append("language", language);
           formData.append("type", "FILE");
-          formData.append("fileName", file.name);
-          formData.append("description", "");
+          formData.append("fileName", sample.file.name);
+          formData.append("value", sample.description || "");
           formData.append("userEntityId", userEntityId.toString());
 
           // Make the POST request
