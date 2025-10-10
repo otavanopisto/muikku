@@ -156,7 +156,7 @@ export class ExamTimerService {
     }
 
     const remainingMs = endTime - now;
-    const remainingMinutes = Math.floor(remainingMs / (1000 * 60));
+    const remainingMinutes = Math.ceil(remainingMs / (1000 * 60));
 
     return {
       timeRemainingMs: remainingMs,
