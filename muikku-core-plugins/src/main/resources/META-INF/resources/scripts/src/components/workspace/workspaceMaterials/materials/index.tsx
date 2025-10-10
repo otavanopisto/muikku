@@ -951,10 +951,17 @@ class WorkspaceMaterials extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="material-management-tooltip"
-                  content={t("labels.edit", {
-                    ns: "materials",
-                    context: "chapter",
-                  })}
+                  content={
+                    section.exam
+                      ? t("labels.edit", {
+                          ns: "materials",
+                          context: "exam",
+                        })
+                      : t("labels.edit", {
+                          ns: "materials",
+                          context: "chapter",
+                        })
+                  }
                 >
                   <ButtonPill
                     buttonModifiers="material-management-chapter"

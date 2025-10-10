@@ -1728,6 +1728,7 @@
       "diaryEntry": "Diary entry",
       "edit": "$t(common:labels.edit)",
       "edit_chapter": "Edit chapter",
+      "edit_exam": "Edit exam section",
       "edit_page": "Edit page",
       "evaluated": "This assignment has been evaluated",
       "evaluated_failed": "Teacher has evaluated this assignment as failed",
