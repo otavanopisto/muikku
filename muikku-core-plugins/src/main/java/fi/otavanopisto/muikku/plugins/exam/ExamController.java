@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamAttendanceDAO;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamSettingsDAO;
 import fi.otavanopisto.muikku.plugins.exam.model.ExamAttendance;
@@ -123,6 +124,7 @@ public class ExamController {
         UserEntity userEntity = userEntityController.findUserEntityById(attendance.getUserEntityId());
         WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(assignmentId);
         if (userEntity != null && workspaceMaterial != null) {
+          // Delete field answers
           WorkspaceMaterialReply reply = replyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
           if (reply != null) {
             List<WorkspaceMaterialFieldAnswer> answers = answerController.listWorkspaceMaterialFieldAnswersByReply(reply);
@@ -131,8 +133,19 @@ public class ExamController {
             }
             replyController.deleteWorkspaceMaterialReply(reply);
           }
+          // Delete assignment evaluation
+          WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeIdAndStudentEntityId(assignmentId, attendance.getUserEntityId());
+          if (evaluation != null) {
+            evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
+          }
         }
       }
+      // Delete exam evaluation
+      WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeIdAndStudentEntityId(attendance.getWorkspaceFolderId(), attendance.getUserEntityId());
+      if (evaluation != null) {
+        evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
+      }
+      // Delete attendance
       examAttendanceDAO.delete(attendance);
     }
     else {
