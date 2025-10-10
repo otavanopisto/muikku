@@ -43,12 +43,15 @@ const AccomplishmentEvaluation = () => {
       try {
         const workspaceActivity = await recordsApi.getWorkspaceActivity({
           identifier: status.userSchoolDataIdentifier,
+          includeTransferCredits: "true",
         });
 
         const workspaceData = workspaceActivity.activities
           .filter((a) => a.assessmentStates.some((state) => state.passingGrade))
           .map((workspace) => ({
-            identifier: workspace.identifier,
+            identifier: workspace.identifier
+              ? workspace.identifier
+              : workspace.name.toLowerCase().replace(/[^a-z0-9]/g, "-"), // Fallback if identifier is missing, sanitizes the name
             name: workspace.name,
           }));
 
