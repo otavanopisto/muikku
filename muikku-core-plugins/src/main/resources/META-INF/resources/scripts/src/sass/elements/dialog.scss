@@ -138,7 +138,8 @@
   width: 100%;
 }
 
-.dialog__window--notebook-pdf-dialog {
+.dialog__window--notebook-pdf-dialog, 
+.dialog__window--cv-pdf-dialog {
   @include breakpoint($breakpoint-pad) {
     height: 90%;
     max-width: 1000px;
