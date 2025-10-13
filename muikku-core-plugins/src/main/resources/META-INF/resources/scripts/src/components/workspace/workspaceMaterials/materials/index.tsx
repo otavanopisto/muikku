@@ -563,6 +563,7 @@ class WorkspaceMaterials extends React.Component<
    * @returns Exam section
    */
   renderStudentExamSection = (section: MaterialContentNodeWithIdAndLogic) => {
+    const { t } = this.props;
     const description = section.examAttendance?.description;
 
     const descriptionElement = description ? (
@@ -616,7 +617,7 @@ class WorkspaceMaterials extends React.Component<
                 buttonModifiers={["goto-exam"]}
                 to={`/workspace/${this.props.workspace.urlName}/exams/${section.workspaceMaterialId}`}
               >
-                Siirry kokeeseen
+                {t("actions.goToExam", { ns: "exams" })}
               </Button>
             </div>
           </article>
