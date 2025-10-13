@@ -68,11 +68,14 @@ export const useExerciseAssignments = (
          */
         const [materials] = await Promise.all([
           (async () => {
-            const assignments = await workspaceApi.getWorkspaceMaterials({
+            let assignments = await workspaceApi.getWorkspaceMaterials({
               workspaceEntityId: workspaceId,
               assignmentType: "EXERCISE",
               userEntityId: userEntityId,
             });
+
+            // Filter out assignments that are marked to be part of exam
+            assignments = assignments.filter((assignment) => !assignment.exam);
 
             const [materials] = await Promise.all([
               Promise.all(
