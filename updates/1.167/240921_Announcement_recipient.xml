@@ -16,4 +16,7 @@
        foreign key (announcementId) 
        references Announcement (id);
   </sql>
+  <sql>
+    create index IDXc65jvsmaa72tf80qf72j9s75m on AnnouncementRecipient (userEntityId);
+  </sql>
 </update> 
