@@ -19,7 +19,7 @@ export function StudentNavigationContent(
 ) {
   const currentStudent = useAtomValue(currentStudentAtom);
 
-  if (currentStudent.state === "loading") {
+  if (currentStudent.isLoading) {
     return (
       <Group
         gap="sm"
