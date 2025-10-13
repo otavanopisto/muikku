@@ -1,16 +1,26 @@
 import { atom } from "jotai";
 import MApi, { isMApiError, isResponseError } from "~/api";
-import { atomWithQuery } from "jotai-tanstack-query";
-import type { GuiderStudent } from "~/generated/client";
-import type { AsyncStateData } from "~/src/types/AsyncState";
 import {
-  createAsyncError,
-  parseAsyncStateFromQuery,
-} from "../utils/AtomHelpers";
+  atomWithQuery,
+  atomWithInfiniteQuery,
+  type AtomWithQueryResult,
+  type AtomWithInfiniteQueryResult,
+} from "jotai-tanstack-query";
+import type { FlaggedStudent, GuiderStudent } from "~/generated/client";
+import type { InfiniteData } from "@tanstack/react-query";
+import { userAtom } from "./auth";
 
 const guiderApi = MApi.getGuiderApi();
 
-export type CurrentStudent = AsyncStateData<GuiderStudent>;
+export type FlaggedStudents = AtomWithInfiniteQueryResult<
+  InfiniteData<{
+    data: FlaggedStudent[];
+    hasMore: boolean;
+    nextPage: number | undefined;
+  }>
+>;
+
+export type CurrentStudent = AtomWithQueryResult<GuiderStudent>;
 
 // Student ID atom - this will trigger the query
 export const currentStudentIdAtom = atom<string | null>(null);
@@ -60,15 +70,88 @@ export const currentStudentQueryAtom = atomWithQuery((get) => {
 // Derived atoms for easy access
 export const currentStudentAtom = atom<CurrentStudent>((get) => {
   const query = get(currentStudentQueryAtom);
-  return {
-    data: query.data ?? null,
-    state: parseAsyncStateFromQuery(query),
-    error: createAsyncError(query.error),
-  };
+
+  return query;
 });
 
 // Keep the original getCurrentStudentAtom for backward compatibility
 export const getCurrentStudentAtom = atom(null, (_, set, studentId: string) => {
   // Simply set the student ID, which will trigger the query
   set(currentStudentIdAtom, studentId);
+});
+
+// Query filter atom
+export const guiderStudentsQueryAtom = atom<string>("");
+
+// Students infinite query atom
+export const guiderStudentsInfiniteQueryAtom = atomWithInfiniteQuery((get) => {
+  const query = get(guiderStudentsQueryAtom);
+  const flagOwnerIdentifier = get(userAtom)?.identifier ?? "";
+
+  if (!flagOwnerIdentifier) {
+    throw new Error("Flag owner identifier is required");
+  }
+
+  return {
+    initialPageParam: 0,
+    queryKey: ["guider-students", query, flagOwnerIdentifier],
+    queryFn: async ({ pageParam = 0 }) => {
+      const MAX_LOADED_AT_ONCE = 25;
+      const firstResult = pageParam as number;
+      const maxResults = MAX_LOADED_AT_ONCE + 1;
+
+      try {
+        let students = await guiderApi.getGuiderStudents({
+          firstResult,
+          maxResults,
+          flagOwnerIdentifier,
+          q: query || undefined,
+        });
+
+        // Handle null response (server returns null instead of empty array)
+        students = students || [];
+        const hasMore = students.length === MAX_LOADED_AT_ONCE + 1;
+
+        // Remove extra item if we have more results
+        const actualStudents = students.concat([]);
+        if (hasMore) {
+          actualStudents.pop();
+        }
+
+        return {
+          data: actualStudents,
+          hasMore,
+          nextPage: hasMore ? firstResult + MAX_LOADED_AT_ONCE : undefined,
+        };
+      } catch (err) {
+        if (!isMApiError(err)) {
+          throw err;
+        }
+
+        if (isResponseError(err)) {
+          const error = new Error(err.message);
+          throw error;
+        }
+
+        throw new Error("Failed to load students");
+      }
+    },
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    enabled: !!flagOwnerIdentifier,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: false,
+  };
+});
+
+export const guiderStudents = atom((get) => {
+  const query = get(guiderStudentsInfiniteQueryAtom);
+
+  return query;
+});
+
+export const loadMoreGuiderStudentsAtom = atom(null, (get) => {
+  const query = get(guiderStudentsInfiniteQueryAtom);
+  if (query.hasNextPage && !query.isFetchingNextPage) {
+    void query.fetchNextPage();
+  }
 });

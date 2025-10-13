@@ -90,7 +90,7 @@ export const router = createBrowserRouter([
               {
                 path: "guider",
                 element: <Guider />,
-                //loader: guiderLoader,
+                loader: routeLoaders.guiderLoader,
                 errorElement: <ErrorBoundaryPage />,
                 middleware: [permissionMiddlewares.guiderView],
                 children: [
