@@ -1,6 +1,7 @@
 import React from "react";
 import { ExamAttendance } from "~/generated/client";
 import { ExamTimerRegistry, TimerValue } from "~/util/exam-timer";
+import { useTranslation } from "react-i18next";
 
 /**
  * ExamTimerProps
@@ -15,6 +16,7 @@ interface ExamTimerProps {
  * @returns ExamTimer
  */
 const ExamTimer = (props: ExamTimerProps) => {
+  const { t } = useTranslation(["exams", "common"]);
   const { exam } = props;
   const [timerValue, setTimerValue] = React.useState<TimerValue | null>(null);
 
@@ -64,9 +66,14 @@ const ExamTimer = (props: ExamTimerProps) => {
         </span>
       ) : (
         <span className="exam__duration">
-          Aikaa on jäljellä
+          {t("labels.timeLeft", {
+            ns: "exams",
+          })}{" "}
           <span className="exam__duration-accent">
-            {timerValue.formattedTime} minuuttia
+            {timerValue.formattedTime}{" "}
+            {t("labels.minutes", {
+              ns: "common",
+            })}
           </span>
         </span>
       )}

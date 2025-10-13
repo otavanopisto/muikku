@@ -1,5 +1,6 @@
 // components/base/material-editorV2/exam-attendee-card.tsx
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { ExamAttendee } from "~/generated/client";
 import { localize } from "~/locales/i18n";
 import Button from "~/components/general/button";
@@ -7,6 +8,7 @@ import { NumberFormatValues, NumericFormat } from "react-number-format";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
 import ConfirmResetExamAttendeeDialog from "./confirm-reset-exam-attendee-dialog";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * Props for the ExamAttendeeCard component
@@ -23,6 +25,7 @@ interface ExamAttendeeCardProps {
  * @param props - ExamAttendeeCardProps
  */
 export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
+  const { t } = useTranslation();
   const { attendee, onRemove, onUpdateSettings } = props;
 
   const refrenceValueRef = React.useRef<ExamAttendee | null>(null);
@@ -97,11 +100,17 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
    */
   const getExamStatus = () => {
     if (attendee.started && attendee.ended) {
-      return "Valmis";
+      return t("labels.completed", {
+        ns: "common",
+      });
     } else if (attendee.started) {
-      return "Käynnissä";
+      return t("labels.inProgress", {
+        ns: "common",
+      });
     } else {
-      return "Ei aloitettu";
+      return t("labels.notStarted", {
+        ns: "common",
+      });
     }
   };
 
@@ -143,21 +152,36 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
         )}
 
         <div className="material-editor__attendee-header-actions">
-          <Button
-            icon="pencil"
-            buttonModifiers={"edit-extra-row"}
-            onClick={handleStartEditing}
-            disabled={saving || isEditing || (isStarted && !isEnded)}
-            title="Muokkaa asetuksia"
-          />
+          <Dropdown
+            openByHover
+            key="frontpage"
+            content={t("actions.edit", {
+              ns: "common",
+            })}
+          >
+            <Button
+              icon="pencil"
+              buttonModifiers={"edit-extra-row"}
+              onClick={handleStartEditing}
+              disabled={saving || isEditing || (isStarted && !isEnded)}
+            />
+          </Dropdown>
 
-          <Button
-            icon="cross"
-            buttonModifiers={"remove-extra-row"}
-            onClick={() => onRemove(attendee.id!, false)}
-            disabled={saving || (isStarted && !isEnded)}
-            title="Poista osallistuja listalta"
-          />
+          <Dropdown
+            openByHover
+            key="frontpage"
+            content={t("actions.remove", {
+              ns: "common",
+              context: "fromParticipantList",
+            })}
+          >
+            <Button
+              icon="cross"
+              buttonModifiers={"remove-extra-row"}
+              onClick={() => onRemove(attendee.id!, false)}
+              disabled={saving || (isStarted && !isEnded)}
+            />
+          </Dropdown>
         </div>
       </div>
 
@@ -174,18 +198,34 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
         {isEnded ? (
           <div className="material-editor__attendee-dates">
             <div className="material-editor__attendee-date">
-              <strong>Aloitettu:</strong>{" "}
+              <strong>
+                {t("labels.started", {
+                  ns: "common",
+                })}
+                :
+              </strong>{" "}
               {localize.date(attendee.started, "l, LT")}
             </div>
             <div className="material-editor__attendee-date">
-              <strong>Lopetettu:</strong>{" "}
+              <strong>
+                {t("labels.finished", {
+                  ns: "common",
+                })}
+                :
+              </strong>{" "}
               {localize.date(attendee.ended, "l, LT")}
             </div>
           </div>
         ) : isStarted ? (
           <div className="material-editor__attendee-dates">
             <div className="material-editor__attendee-date">
-              <strong>Aloitettu:</strong>{" "}
+              <strong>
+                {" "}
+                {t("labels.started", {
+                  ns: "common",
+                })}
+                :
+              </strong>{" "}
               {localize.date(attendee.started, "l, LT")}
             </div>
           </div>
@@ -198,7 +238,11 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
               htmlFor="extra-time"
               className="material-editor__attendee-label"
             >
-              Lisäaika (minuuttia):
+              {t("labels.examExtraTime", {
+                ns: "exams",
+                context: "minutes",
+              })}
+              :
             </label>
             <NumericFormat
               id="extra-time"
@@ -225,22 +269,31 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
             onClick={handleSaveSettings}
             disabled={saving || !hasUnsavedChanges}
           >
-            {saving ? "Tallennetaan..." : "Tallenna"}
+            {t("actions.save", {
+              ns: "common",
+            })}
           </Button>
           <Button
             buttonModifiers={["standard-cancel", "cancel"]}
             onClick={handleCancel}
             disabled={saving}
           >
-            Peruuta
+            {t("actions.cancel", {
+              ns: "common",
+            })}
           </Button>
 
           {isEnded && (
             <ConfirmResetExamAttendeeDialog
               onConfirm={() => onRemove(attendee.id!, true)}
             >
-              <Button buttonModifiers={["fatal", "execute"]} disabled={saving}>
-                Resetoi
+              <Button
+                buttonModifiers={["standard-ok", "fatal"]}
+                disabled={saving}
+              >
+                {t("actions.reset", {
+                  ns: "common",
+                })}
               </Button>
             </ConfirmResetExamAttendeeDialog>
           )}

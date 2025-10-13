@@ -44,7 +44,7 @@ const EndExamWarning = (props: EndExamWarningProps) => {
    * @param closeDialog - closeDialog
    */
   const content = (closeDialog: () => void) => (
-    <div>Oletko varma, että haluat päättää kokeen?</div>
+    <div>{t("content.endExamConfirmation", { ns: "exams" })}</div>
   );
 
   /**
@@ -57,7 +57,7 @@ const EndExamWarning = (props: EndExamWarningProps) => {
         buttonModifiers={["fatal", "standard-ok"]}
         onClick={handleEndExamClick(closeDialog)}
       >
-        Päätä koe
+        {t("actions.endExam", { ns: "exams" })}
       </Button>
       <Button
         buttonModifiers={["cancel", "standard-cancel"]}
@@ -71,7 +71,7 @@ const EndExamWarning = (props: EndExamWarningProps) => {
   return (
     <Dialog
       modifier="end-exam-warning"
-      title="Päätä koe"
+      title={t("actions.endExam", { ns: "exams" })}
       content={content}
       footer={footer}
     >

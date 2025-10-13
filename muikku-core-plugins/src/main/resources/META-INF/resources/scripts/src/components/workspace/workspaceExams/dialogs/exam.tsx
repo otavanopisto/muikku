@@ -7,6 +7,7 @@ import { StateType } from "~/reducers";
 import ExamInstance from "../body/application/exam-instance";
 import { ScrollContextProvider } from "../context/scroll-context";
 import EndExamWarning from "./end-exam-warning";
+import { useTranslation } from "react-i18next";
 
 /**
  * ExamDialogProps
@@ -22,6 +23,7 @@ interface ExamDialogProps {
  * @returns ExamDialog
  */
 const ExamDialog = (props: ExamDialogProps) => {
+  const { t } = useTranslation(["exams", "common"]);
   const { examId, workspaceUrl } = props;
   const [isOpen, setIsOpen] = React.useState(true);
 
@@ -81,7 +83,7 @@ const ExamDialog = (props: ExamDialogProps) => {
       <div className="dialog__button-set">
         <EndExamWarning>
           <Button buttonModifiers={["standard-ok", "execute"]}>
-            Lopeta koe
+            {t("actions.endExam", { ns: "exams" })}
           </Button>
         </EndExamWarning>
       </div>

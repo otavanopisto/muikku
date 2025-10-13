@@ -74,6 +74,7 @@ interface ExamInstanceProps {
  * @returns ExamInstance
  */
 const ExamInstance = (props: ExamInstanceProps) => {
+  const { t } = useTranslation(["exams", "common"]);
   const { examId } = props;
 
   const [currentExamExpired, setCurrentExamExpired] = React.useState(false);
@@ -109,7 +110,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
           onSuccess: () => {
             dispatch(
               displayNotification(
-                "Koe on päättynyt. Vastauksesi on tallennettu automaattisesti",
+                t("notifications.examEnded", { ns: "exams" }),
                 "info"
               )
             );
@@ -126,7 +127,10 @@ const ExamInstance = (props: ExamInstanceProps) => {
     const handleWarningCallback = (remainingMinutes: number) => {
       dispatch(
         displayNotification(
-          `Huomio: Sinulla on alle ${remainingMinutes} minuuttia aikaa jäljellä!`,
+          t("notifications.durationRunningOut", {
+            ns: "exams",
+            timeLeft: remainingMinutes,
+          }),
           "fatal"
         )
       );
@@ -168,14 +172,14 @@ const ExamInstance = (props: ExamInstanceProps) => {
    */
   const getErrorMsgByStatusCode = (statusCode?: number) => {
     if (!statusCode) {
-      return "Tapahtui virhe kokeen alustamisessa. Sulje koeikkuna ja yritä uudelleen.";
+      return t("content.loadError", { ns: "exams" });
     }
 
     switch (statusCode) {
       case 403:
-        return "Sinulla ei ole oikeuksia kokeeseen";
+        return t("content.noPermissions", { ns: "exams" });
       default:
-        return "Tapahtui virhe kokeen alustamisessa. Sulje koeikkuna ja yritä uudelleen.";
+        return t("content.loadError", { ns: "exams" });
     }
   };
 
@@ -217,7 +221,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
                 buttonModifiers={["standard-cancel", "cancel"]}
                 onClick={props.onCloseExam}
               >
-                Sulje koeikkuna
+                {t("actions.closeExam", { ns: "exams" })}
               </Button>
             </div>
           </div>
@@ -232,9 +236,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
         >
           <div className="exam__body">
             <div className="exam__content">
-              Kokeen aika on umpeutunut ja koe on päättynyt. Palauttamattomat
-              tehtävät on merkitty automaattisesti palautetuiksi. Voit sulkea
-              koeikkunan.
+              {t("content.examDurationExceeded", { ns: "exams" })}
             </div>
           </div>
 
@@ -244,7 +246,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
                 buttonModifiers={["standard-cancel", "cancel"]}
                 onClick={props.onCloseExam}
               >
-                Sulje koeikkuna
+                {t("actions.closeExam", { ns: "exams" })}
               </Button>
             </div>
           </div>
@@ -259,8 +261,10 @@ const ExamInstance = (props: ExamInstanceProps) => {
         >
           <div className="exam__body">
             <div className="exam__content">
-              Koe on päättynyt {localize.date(currentExam.ended)}. Voit sulkea
-              koe ikkunan
+              {t("content.examHasEnded", {
+                ns: "exams",
+                endDate: localize.date(currentExam.ended),
+              })}
             </div>
           </div>
 
@@ -270,7 +274,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
                 buttonModifiers={["standard-cancel", "cancel"]}
                 onClick={props.onCloseExam}
               >
-                Sulje koeikkuna
+                {t("actions.closeExam", { ns: "exams" })}
               </Button>
             </div>
           </div>
@@ -311,6 +315,7 @@ interface PreExamInfoProps {
  * @returns ExamPreInstance
  */
 const PreExamInfo = React.memo((props: PreExamInfoProps) => {
+  const { t } = useTranslation(["exams", "common"]);
   const { exam, onCloseExam } = props;
 
   const dispatch = useDispatch();
@@ -348,7 +353,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
           buttonModifiers={["standard-ok", "continue-exam"]}
           onClick={handleStartExam}
         >
-          Jatka koetta
+          {t("actions.continueExam", { ns: "exams" })}
         </Button>
       );
     }
@@ -358,7 +363,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
         buttonModifiers={["standard-ok", "start-exam"]}
         onClick={handleStartExam}
       >
-        Aloita koe
+        {t("actions.startExam", { ns: "exams" })}
       </Button>
     );
   };
@@ -373,9 +378,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
       <div className="exam exam--dialog">
         <div className="exam__body">
           <div className="exam__content">
-            Olet jo suorittanut kokeen, jota ei voida suorittaa uudestaan.
-            Mikäli haluat suorittaa kokeen uudestaan, ole yhteydessä
-            opettajaasi. Voit sulkea koeikkunan.
+            {t("content.examAlreadyCompleted", { ns: "exams" })}
           </div>
 
           <div className="exam__footer">
@@ -384,7 +387,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
                 buttonModifiers={["standard-cancel", "cancel"]}
                 onClick={props.onCloseExam}
               >
-                Sulje koeikkuna
+                {t("actions.closeExam", { ns: "exams" })}
               </Button>
             </div>
           </div>
@@ -398,14 +401,19 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
       <div className="exam__body">
         <div className="exam__labels">
           {exam.allowRestart && (
-            <span className="exam__label">Kokeen voi suorittaa uudestaan</span>
+            <span className="exam__label">
+              {t("labels.allowMultipleAttempts", {
+                ns: "exams",
+                context: "student",
+              })}
+            </span>
           )}
 
           {hasTimeLimit && (
             <span className="exam__label">
-              Suoritusaika:{" "}
+              {t("labels.examDuration", { ns: "exams" })}:{" "}
               <span className="exam__label-accent">
-                {exam.minutes} minuuttia
+                {exam.minutes} {t("labels.minutesShort", { ns: "common" })}
               </span>
             </span>
           )}
@@ -425,7 +433,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
               buttonModifiers={["standard-cancel", "cancel"]}
               onClick={onCloseExam}
             >
-              Sulje koeikkuna
+              {t("actions.closeExam", { ns: "exams" })}
             </Button>
           </div>
         </div>

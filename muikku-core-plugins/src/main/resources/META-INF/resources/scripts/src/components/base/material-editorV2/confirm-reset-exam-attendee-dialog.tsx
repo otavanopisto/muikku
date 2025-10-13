@@ -42,7 +42,11 @@ const ConfirmResetExamAttendeeDialog = (
    * @param closeDialog - closeDialog
    */
   const content = (closeDialog: () => void) => (
-    <div>Oletko varma, että haluat resetoida osallistujan koesuorituksen?</div>
+    <div>
+      {t("content.resetExam", {
+        ns: "exams",
+      })}
+    </div>
   );
 
   /**
@@ -55,7 +59,9 @@ const ConfirmResetExamAttendeeDialog = (
         buttonModifiers={["fatal", "standard-ok"]}
         onClick={handleConfirmClick(closeDialog)}
       >
-        Resetoi
+        {t("actions.reset", {
+          ns: "common",
+        })}
       </Button>
       <Button
         buttonModifiers={["cancel", "standard-cancel"]}
@@ -69,7 +75,9 @@ const ConfirmResetExamAttendeeDialog = (
   return (
     <Dialog
       modifier="end-exam-warning"
-      title="Resetoi osallistuja"
+      title={t("labels.resetExam", {
+        ns: "exams",
+      })}
       content={content}
       footer={footer}
     >

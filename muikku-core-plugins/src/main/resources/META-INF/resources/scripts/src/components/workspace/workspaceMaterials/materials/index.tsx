@@ -631,7 +631,7 @@ class WorkspaceMaterials extends React.Component<
   render() {
     const { t } = this.props;
 
-    t("labels.create_chapter", { ns: "materials" });
+    t("labels.create", { ns: "materials", context: "chapter" });
 
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirect} />;
@@ -654,14 +654,20 @@ class WorkspaceMaterials extends React.Component<
             items={this.renderDropdownItems([
               {
                 icon: "plus",
-                text: t("labels.create_chapter", { ns: "materials" }),
+                text: t("labels.create", {
+                  ns: "materials",
+                  context: "chapter",
+                }),
                 // eslint-disable-next-line jsdoc/require-jsdoc
                 onClick: this.createSection.bind(this, null, false),
                 file: false,
               },
               {
                 icon: "plus",
-                text: t("labels.create_examChapter", { ns: "materials" }),
+                text: t("labels.create", {
+                  ns: "materials",
+                  context: "examChapter",
+                }),
                 // eslint-disable-next-line jsdoc/require-jsdoc
                 onClick: this.createSection.bind(this, null, true),
                 file: false,
@@ -703,14 +709,20 @@ class WorkspaceMaterials extends React.Component<
               items={this.renderDropdownItems([
                 {
                   icon: "plus",
-                  text: t("labels.create_chapter", { ns: "materials" }),
+                  text: t("labels.create", {
+                    ns: "materials",
+                    context: "chapter",
+                  }),
                   // eslint-disable-next-line jsdoc/require-jsdoc
                   onClick: this.createSection.bind(this, section, false),
                   file: false,
                 },
                 {
                   icon: "plus",
-                  text: t("labels.create_examChapter", { ns: "materials" }),
+                  text: t("labels.create_examChapter", {
+                    ns: "materials",
+                    context: "examChapter",
+                  }),
                   // eslint-disable-next-line jsdoc/require-jsdoc
                   onClick: this.createSection.bind(this, section, true),
                   file: false,
@@ -955,7 +967,7 @@ class WorkspaceMaterials extends React.Component<
                     section.exam
                       ? t("labels.edit", {
                           ns: "materials",
-                          context: "exam",
+                          context: "examChapter",
                         })
                       : t("labels.edit", {
                           ns: "materials",

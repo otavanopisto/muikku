@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { ExamSettingsCategory, ExamSettingsRandom } from "~/generated/client";
 import { StateType } from "~/reducers";
 import Button from "~/components/general/button";
+import Dropdown from "~/components/general/dropdown";
 
 /**
  * ExamCategoriesProps
@@ -20,6 +22,7 @@ interface ExamCategoriesProps {
  * @returns Exam categories
  */
 export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
+  const { t } = useTranslation();
   const { categories, onUpdate, disabled = false, examRandom } = props;
 
   const currentExamSectionPages = useSelector(
@@ -152,7 +155,11 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
       {/* Add new category */}
       <div className="form__row">
         <div className="form-element form-element--add-exam-category">
-          <label className="visually-hidden">Uusi kategoria</label>
+          <label className="visually-hidden">
+            {t("labels.addCategory", {
+              ns: "exams",
+            })}
+          </label>
           <input
             className="form-element__input form-element__input--add-exam-category"
             value={newCategoryName}
@@ -160,7 +167,9 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
               setNewCategoryName(e.target.value);
             }}
             onKeyPress={handleCategoryNameKeyPress}
-            placeholder="Lisää kategoria"
+            placeholder={t("labels.addCategory", {
+              ns: "exams",
+            })}
             disabled={disabled}
           />
           <div
@@ -175,13 +184,24 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
       {categories.map((category, index) => (
         <div key={index} className="material-editor__category-item">
           <div className="material-editor__category-header">
-            Kategoria {index + 1}
-            <Button
-              icon="trash"
-              buttonModifiers={"remove-extra-row"}
-              onClick={() => removeCategory(index)}
-              disabled={disabled}
-            ></Button>
+            {t("labels.category", {
+              ns: "common",
+            })}{" "}
+            {index + 1}
+            <Dropdown
+              openByHover
+              key="frontpage"
+              content={t("actions.remove", {
+                ns: "common",
+              })}
+            >
+              <Button
+                icon="trash"
+                buttonModifiers={"remove-extra-row"}
+                onClick={() => removeCategory(index)}
+                disabled={disabled}
+              ></Button>
+            </Dropdown>
           </div>
 
           <div className="material-editor__category-fields">
@@ -190,7 +210,11 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
               <div className="form__subdivision">
                 <div className="form__row">
                   <div className="form-element">
-                    <label htmlFor="exam-category-name">Nimi:</label>
+                    <label htmlFor="exam-category-name">
+                      {t("labels.name", {
+                        ns: "common",
+                      })}
+                    </label>
                     <input
                       id="exam-category-name"
                       className="form-element__input form-element__input--material-editor"
@@ -210,7 +234,9 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
                   <div className="form__row">
                     <div className="form-element">
                       <label htmlFor="exam-random-assignments-count">
-                        Satunnaisten tehtävien määrä:
+                        {t("labels.randomizedQuestionCount", {
+                          ns: "exams",
+                        })}
                       </label>
                       <input
                         id="exam-random-assignments-count"
@@ -228,7 +254,10 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
                         disabled={disabled}
                       />
                       <div className="form-element__description">
-                        Max: {category.workspaceMaterialIds.length} tehtävää
+                        {t("labels.maxQuestionCount", {
+                          ns: "exams",
+                          count: category.workspaceMaterialIds.length,
+                        })}
                       </div>
                     </div>
                   </div>
@@ -240,7 +269,11 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
             {currentExamSectionPages.length > 0 && (
               <div className="form__row">
                 <div className="form-element">
-                  <label>Valitut sivut:</label>
+                  <label>
+                    {t("labels.selectedPages", {
+                      ns: "exams",
+                    })}
+                  </label>
 
                   {/* Selected pages list */}
 
@@ -268,7 +301,9 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
                       ))
                     ) : (
                       <div className="form-element__description">
-                        Ei valittuja sivuja
+                        {t("content.noSelectedPages", {
+                          ns: "exams",
+                        })}
                       </div>
                     )}
                   </div>
@@ -286,7 +321,11 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
                       }}
                       disabled={disabled || getAvailablePages().length === 0}
                     >
-                      <option value="">Lisää sivu kategoriaan...</option>
+                      <option value="">
+                        {t("labels.addPageToCategory", {
+                          ns: "exams",
+                        })}
+                      </option>
                       {getAvailablePages().map((page) => (
                         <option
                           key={page.workspaceMaterialId}
@@ -300,7 +339,9 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
 
                   {getAvailablePages().length === 0 && (
                     <div className="form-element__description">
-                      Kaikki sivut on jo lisätty
+                      {t("content.allPagesAdded", {
+                        ns: "exams",
+                      })}
                     </div>
                   )}
                 </div>
@@ -312,7 +353,12 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
 
       {categories.length === 0 && (
         <div className="empty">
-          <span>Ei kategorioita vielä. Lisää kategoria yllä.</span>
+          <span>
+            {t("content.empty", {
+              ns: "exams",
+              context: "categories",
+            })}
+          </span>
         </div>
       )}
     </div>
