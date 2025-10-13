@@ -205,8 +205,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
           {isEnded && hasTimeLimit ? (
             <>
               <span className="exam__label">
-                {t("labels.examDuration", { ns: "exams", context: "students" })}
-                :{" "}
+                {t("labels.examCompletionTime", { ns: "exams" })}:{" "}
                 <span className="exam__label-accent">
                   {convertTimeRangeToMinutes(exam.started, exam.ended)}{" "}
                   {t("labels.minutesShort", { ns: "common" })}
