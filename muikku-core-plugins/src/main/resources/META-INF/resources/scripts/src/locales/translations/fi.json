@@ -2467,7 +2467,7 @@
       "empty_options": "Ei enempää vaihtoehtoja",
       "endExamConfirmation": "Oletko varma, että haluat lopettaa kokeen? Et voi enää palata kokeeseen lopettamisen jälkeen.",
       "examAlreadyCompleted": "Olet jo tehnyt kokeen, jota ei voi tehdä uudestaan. Mikäli haluaisit tehdä kokeen uudestaan, ole yhteydessä opettajaasi. Voit nyt sulkea koeikkunan.",
-      "examDurationExceeded": "Kokeen aika on umpeutunut ja koe on päättynyt. Palauttamattomat tehtävät on merkitty automaattisesti palautetuiksi. Voit sulkea koeikkunan.",
+      "examDurationExceeded": "Kokeen aika on umpeutunut ja koe on päättynyt. Palauttamattomat tehtävät on merkitty automaattisesti palautetuiksi. Voit nyt sulkea koeikkunan.",
       "examHasEnded": "Koe on päättynyt {{endDate}}. Voit nyt sulkea koeikkunan.",
       "loadError": "Tapahtui virhe kokeen alustamisessa. Sulje koeikkuna ja yritä uudelleen.",
       "noPermissions": "Sinulla ei ole oikeuksia kokeeseen. Ota yhteyttä kurssin opettajaan.",
