@@ -744,7 +744,9 @@ const createLanguageFileSamples: CreateLanguageProfileFileSampleTriggerType =
           formData.append("language", language);
           formData.append("type", "FILE");
           formData.append("fileName", sample.file.name);
-          formData.append("value", sample.description || "");
+          if (sample.description) {
+            formData.append("value", sample.description);
+          }
           formData.append("userEntityId", userEntityId.toString());
 
           // Make the POST request

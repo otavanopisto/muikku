@@ -101,12 +101,15 @@ const Sample = (props: LanguageSampleProps) => {
       case "FILE":
         return (
           <div>
-            <a
-              className="language-profile__sample-link"
-              href={`/languageProfileSampleServlet?sampleId=${sample.id}`}
-            >
-              {sample.fileName}
-            </a>
+            <div>{sample.value}</div>
+            <div>
+              <a
+                className="language-profile__sample-link"
+                href={`/languageProfileSampleServlet?sampleId=${sample.id}`}
+              >
+                {sample.fileName}
+              </a>
+            </div>
           </div>
         );
       case "AUDIO":

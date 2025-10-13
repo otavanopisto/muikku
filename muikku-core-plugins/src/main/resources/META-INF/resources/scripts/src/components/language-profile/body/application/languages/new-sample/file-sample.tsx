@@ -64,24 +64,31 @@ const FileSample = (props: FileSampleProps) => {
         <div className="language-profile__file-uploader-files">
           {samples.map((sample, index) => (
             <div
-              className="language-profile__sample-file"
+              className="language-profile__file-uploader-file"
               key={`file-${index}`}
             >
-              <input
-                type="text"
-                className="language-profile__file-description-input"
-                id={`file-description-${language}-${index}`}
-                placeholder={t("labels.fileDescription", {
-                  ns: "languageProfile",
-                })}
-                value={sample.description}
-                onChange={(e) => onFileDescriptionChange(index, e.target.value)}
-              />
-              <span>{sample.file.name}</span>
-              <a
-                className="language-profile__remove-button icon-trash"
-                onClick={() => onRemoveFile(index)}
-              ></a>
+              <div className="language-profile__sample-file-description">
+                <label htmlFor={`file-description-${language}-${index}`}>
+                  {t("labels.fileDescription", {
+                    ns: "languageProfile",
+                  })}
+                </label>
+                <textarea
+                  className="language-profile__file-description-input"
+                  id={`file-description-${language}-${index}`}
+                  value={sample.description}
+                  onChange={(e) =>
+                    onFileDescriptionChange(index, e.target.value)
+                  }
+                />
+              </div>
+              <div className="language-profile__sample-file">
+                <span>{sample.file.name}</span>
+                <a
+                  className="language-profile__remove-button icon-trash"
+                  onClick={() => onRemoveFile(index)}
+                ></a>
+              </div>
             </div>
           ))}
         </div>
