@@ -39,15 +39,6 @@
   padding: 16px;
 }
 
-.user-language-profile__label {
-  display: block;
-  font-weight: 600;
-  margin: 0 0 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  
-}
-
 .user-language-profile-container__row {
   margin: 10px 0;
   width: 100%;
@@ -92,4 +83,63 @@
   > span:last-child {
     margin-left: 5px;
   }
+}
+
+.user-language-profile__skills-container {
+  border: 0;
+  margin-top: 20px;
+  padding: 10px 0;
+}
+
+.user-language-profile-container__subheader { 
+  font-size: 1.25rem;
+}
+
+.user-language-profile-container__secondary-header {
+  font-size: 1.125rem;
+  padding: 10px 0;
+}
+
+.user-language-profile__label,
+.user-language-profile__star-label {
+  font-weight: 600;
+  margin: 0 0 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.user-language-profile__cv-language-skill {
+  margin: 10px;
+}
+
+
+
+.user-language-profile__skill-row {
+  display: flex;
+  justify-content: space-between;
+  padding:0 10px 10px;
+}
+
+.user-language-profile__star-displayer {
+  display: flex;
+  flex-flow: column nowrap;}
+
+.user-language-profile__stars {
+  align-items: flex-start;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 5px;
+
+}
+
+.user-language-profile__star {
+  appearance: none;
+  background-color: $color-default;
+  color: $color-language-profile-accent-color;
+  cursor: pointer;
+  font-size: 1rem;
+  height: auto;
+  text-decoration: none;
+  width: auto;
 }

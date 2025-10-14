@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { saveLanguageProfile } from "~/actions/main-function/language-profile";
 import { useSelector, useDispatch } from "react-redux";
 import { StateType } from "~/reducers";
+import { useLanguageProfileContext } from "~/components/language-profile/body/application";
 
 /**
  * PedagogyFormWizardFooter
@@ -26,6 +27,7 @@ const InitializationFooter = (props: PedagogyFormWizardFooterProps) => {
   const dispatch = useDispatch();
   const { languageProfile, status } = useSelector((state: StateType) => state);
   const [saveDisabled, setSaveDisabled] = React.useState(canSave);
+  const { setInitializationUnsavedChanges } = useLanguageProfileContext();
 
   /**
    * handleNextStep
@@ -61,6 +63,7 @@ const InitializationFooter = (props: PedagogyFormWizardFooterProps) => {
         setSaveDisabled(true)
       )
     );
+    setInitializationUnsavedChanges(false);
   };
 
   return (
