@@ -14,7 +14,7 @@ export const websocketErrorAtom = atom<string | null>(null);
 
 export const websocketDisconnectedAtom = atom<{
   showModal: boolean;
-  code: string | null;
+  code: number | null;
 }>({
   showModal: false,
   code: null,
@@ -76,13 +76,11 @@ export const initializeWebSocketAtom = atom(
           onDesync: () => {
             callbacks.onDesync?.();
           },
-          openNotificationDialog: (message) => {
-            console.log("openNotificationDialog", message);
+          openNotificationDialog: (code) => {
             set(websocketDisconnectedAtom, {
               showModal: true,
-              code: message,
+              code: code,
             });
-            callbacks.openNotificationDialog?.(message);
           },
         }
       );

@@ -30,7 +30,7 @@ export interface WebSocketCallbacks {
   onMessage?: (message: WebSocketMessage) => void;
   onSync?: () => void;
   onDesync?: () => void;
-  openNotificationDialog?: (message: string) => void;
+  openNotificationDialog?: (code: number) => void;
 }
 
 /**
@@ -72,6 +72,8 @@ interface WebSocketState {
   reconnectAttempts: number;
   /** Last error that occurred, if any */
   lastError: Error | null;
+  /** Whether the WebSocket has been discarded and should not attempt reconnection */
+  discarded: boolean;
 }
 
 /**
@@ -114,6 +116,7 @@ export class MuikkuWebsocket extends EventEmitter {
     isReconnecting: false,
     reconnectAttempts: 0,
     lastError: null,
+    discarded: false,
   };
   private messageQueue: QueuedMessage[] = [];
   private pingInterval: NodeJS.Timeout | null = null;
@@ -154,6 +157,10 @@ export class MuikkuWebsocket extends EventEmitter {
    * @throws {WebSocketError} If ticket retrieval or connection fails
    */
   public async connect(): Promise<void> {
+    if (this.state.discarded) {
+      throw new WebSocketError("WebSocket has been discarded", "DISCARDED");
+    }
+
     try {
       await this.getTicket();
       if (!this.ticket) {
@@ -205,6 +212,10 @@ export class MuikkuWebsocket extends EventEmitter {
    * @private
    */
   private async getTicket(): Promise<void> {
+    if (this.state.discarded) {
+      return;
+    }
+
     try {
       // If we have a ticket, validate it first
       if (this.ticket) {
@@ -220,13 +231,21 @@ export class MuikkuWebsocket extends EventEmitter {
           }
           // Ticket is invalid, we'll get a new one
         } else {
-          // According to server, we are no longer logged in. Stop everything, user needs to login again
+          // Handle 403 errors specially - stop all reconnection attempts immediately
           if (checkResponse.status === 403) {
-            this.callbacks.openNotificationDialog?.("403");
+            this.stopReconnectionAndShowError(403);
+            return;
           }
-          // Server is down. Stop everything, user needs to reload page
-          if (checkResponse.status === 502) {
-            this.callbacks.openNotificationDialog?.("502");
+          // For other errors, only show notification dialogs if we're not in reconnection mode
+          // or if we've exhausted all reconnection attempts
+          if (
+            !this.state.isReconnecting ||
+            this.state.reconnectAttempts >= this.options.maxReconnectAttempts
+          ) {
+            // Server is down. Stop everything, user needs to reload page
+            if (checkResponse.status === 502) {
+              this.callbacks.openNotificationDialog?.(502);
+            }
           }
         }
       }
@@ -253,12 +272,27 @@ export class MuikkuWebsocket extends EventEmitter {
    * @private
    */
   private async createTicket(): Promise<string | null> {
+    if (this.state.discarded) {
+      return null;
+    }
+
     try {
       const response = await fetch("/rest/websocket/ticket");
       if (!response.ok) {
         if (response.status === 403) {
+          this.stopReconnectionAndShowError(403);
           this.callbacks.onError?.(new WebSocketError("403", "AUTH_FAILED"));
           throw new WebSocketError("Authentication failed", "AUTH_FAILED");
+        }
+        if (response.status === 502) {
+          // Only show notification dialogs if we're not in reconnection mode
+          // or if we've exhausted all reconnection attempts
+          if (
+            !this.state.isReconnecting ||
+            this.state.reconnectAttempts >= this.options.maxReconnectAttempts
+          ) {
+            this.callbacks.openNotificationDialog?.(502);
+          }
         }
         throw new WebSocketError("Failed to get ticket", "TICKET_FAILED");
       }
@@ -276,6 +310,10 @@ export class MuikkuWebsocket extends EventEmitter {
    */
   // eslint-disable-next-line @typescript-eslint/require-await
   private async establishConnection(): Promise<void> {
+    if (this.state.discarded) {
+      return;
+    }
+
     if (this.socket) {
       this.cleanup();
     }
@@ -306,6 +344,7 @@ export class MuikkuWebsocket extends EventEmitter {
       this.state.isConnected = true;
       this.state.isReconnecting = false;
       this.state.reconnectAttempts = 0;
+      this.state.discarded = false; // Reset discarded state on successful connection
       this.startPingInterval();
       this.processMessageQueue();
       this.emit("connected");
@@ -405,7 +444,7 @@ export class MuikkuWebsocket extends EventEmitter {
     this.state.isConnected = false;
     this.cleanup();
 
-    if (!this.state.isReconnecting) {
+    if (!this.state.isReconnecting && !this.state.discarded) {
       this.startReconnection();
     }
   }
@@ -415,10 +454,13 @@ export class MuikkuWebsocket extends EventEmitter {
    * @private
    */
   private startReconnection(): void {
-    console.log("Starting reconnection");
+    if (this.state.discarded) {
+      return;
+    }
+
     if (this.state.reconnectAttempts >= this.options.maxReconnectAttempts) {
       console.error("Max reconnection attempts reached");
-      this.callbacks.onError?.(new WebSocketError("502", "CONNECTION_FAILED"));
+      this.stopReconnectionAndShowError(502);
       return;
     }
 
@@ -428,14 +470,34 @@ export class MuikkuWebsocket extends EventEmitter {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.reconnectTimeout = setTimeout(async () => {
       try {
-        console.log("Attempting to reconnect");
         await this.connect();
-        console.log("Reconnected successfully");
       } catch (error) {
-        console.error("Error reconnecting", error);
         this.handleError(error as Error);
+        // If reconnection failed, try again if we haven't exceeded max attempts
+        if (this.state.reconnectAttempts < this.options.maxReconnectAttempts) {
+          this.startReconnection();
+        } else {
+          console.error("Max reconnection attempts reached, giving up");
+          this.stopReconnectionAndShowError(502);
+        }
       }
     }, this.options.reconnectInterval);
+  }
+
+  /**
+   * Stops reconnection attempts and shows appropriate error dialog
+   * @param errorCode - Error code to show in dialog
+   * @private
+   */
+  private stopReconnectionAndShowError(errorCode: number): void {
+    this.state.isReconnecting = false;
+    this.state.reconnectAttempts = 0;
+    this.state.discarded = true; // Prevent any further connection attempts
+    this.cleanup();
+    this.callbacks.openNotificationDialog?.(errorCode);
+    this.callbacks.onError?.(
+      new WebSocketError("WebSocket connection failed", "CONNECTION_FAILED")
+    );
   }
 
   /**
@@ -444,7 +506,7 @@ export class MuikkuWebsocket extends EventEmitter {
    */
   private startPingInterval(): void {
     this.pingInterval = setInterval(() => {
-      if (this.state.isConnected) {
+      if (this.state.isConnected && !this.state.discarded) {
         if (!this.waitingPong) {
           this.waitingPong = true;
           this.gotPong = false;
@@ -511,6 +573,7 @@ export class MuikkuWebsocket extends EventEmitter {
 
     this.state.isConnected = false;
     this.state.isReconnecting = false;
+    // Note: We don't reset discarded state here as it should persist until a successful connection
   }
 
   /**
