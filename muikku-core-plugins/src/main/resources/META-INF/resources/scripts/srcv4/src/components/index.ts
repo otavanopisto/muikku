@@ -4,6 +4,7 @@ import { ErrorBoundaryLayout } from "./ErrorBoundaryLayout/ErrorBoundaryLayout";
 import { NavbarNested } from "./NavbarNested/NavbarNested";
 import { LinksGroup as NavbarLinksGroup } from "./NavbarLinksGroup/NavbarLinksGroup";
 import { NavbarSubLink } from "./NavbarSubLink/NavbarSubLink";
+import { DisconnectModal } from "./DisconnectModal/DisconnectModal";
 
 export {
   ErrorBoundaryRoot,
@@ -12,4 +13,5 @@ export {
   NavbarNested,
   NavbarLinksGroup,
   NavbarSubLink,
+  DisconnectModal,
 };

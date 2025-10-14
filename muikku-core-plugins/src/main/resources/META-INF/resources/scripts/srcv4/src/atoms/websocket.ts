@@ -12,6 +12,14 @@ export const websocketAtom = atom<MuikkuWebsocket | null>(null);
 export const websocketConnectedAtom = atom<boolean>(false);
 export const websocketErrorAtom = atom<string | null>(null);
 
+export const websocketDisconnectedAtom = atom<{
+  showModal: boolean;
+  code: string | null;
+}>({
+  showModal: false,
+  code: null,
+});
+
 // Initial WebSocket listeners
 const initialWebsocketListeners: WebSocketListener = {
   "Communicator:newmessagereceived": [() => console.log("newmessagereceived")],
@@ -69,6 +77,11 @@ export const initializeWebSocketAtom = atom(
             callbacks.onDesync?.();
           },
           openNotificationDialog: (message) => {
+            console.log("openNotificationDialog", message);
+            set(websocketDisconnectedAtom, {
+              showModal: true,
+              code: message,
+            });
             callbacks.openNotificationDialog?.(message);
           },
         }

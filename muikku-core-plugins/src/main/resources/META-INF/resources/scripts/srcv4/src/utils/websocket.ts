@@ -415,7 +415,9 @@ export class MuikkuWebsocket extends EventEmitter {
    * @private
    */
   private startReconnection(): void {
+    console.log("Starting reconnection");
     if (this.state.reconnectAttempts >= this.options.maxReconnectAttempts) {
+      console.error("Max reconnection attempts reached");
       this.callbacks.onError?.(new WebSocketError("502", "CONNECTION_FAILED"));
       return;
     }
@@ -426,8 +428,11 @@ export class MuikkuWebsocket extends EventEmitter {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.reconnectTimeout = setTimeout(async () => {
       try {
+        console.log("Attempting to reconnect");
         await this.connect();
+        console.log("Reconnected successfully");
       } catch (error) {
+        console.error("Error reconnecting", error);
         this.handleError(error as Error);
       }
     }, this.options.reconnectInterval);
