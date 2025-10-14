@@ -2950,6 +2950,8 @@
       "addSample_audio": "Record your speech using the recorder below.",
       "addSample_file": "Upload a file saved on your computer to the field below. You can save, for example, an audio or a text file to the field.",
       "addSample_text": "Paste the text you have written into the field below.",
+      "clearLanguageLevels": "Clear language proficiency level selections",
+      "clearLanguageSkills": "Clear language skill selections",
       "courseLearning": "If you have already completed language courses at Nettilukio, how well do you feel you learned the topics mentioned in the course descriptions? For each language, add the courses you have completed and assess your learning using the scale below.",
       "courseLearningLevels": "1 = poorly, 2 = satisfactorily, 3 = quite well, 4 = well, 5 = very well",
       "descriptionOfCompetence": "Describe your practical skills in your own words.",
@@ -3078,7 +3080,8 @@
       "updateError": "$t(common:notifications.updateError)",
       "updateError_textSample": "Text sample update failed: {{error}}",
       "updateSuccess": "$t(common:notifications.updateSuccess)",
-      "updateSuccess_textSample": "Text sample updated successfully"
+      "updateSuccess_textSample": "Text sample updated successfully",
+      "unsaved": "You have unsaved changes in the language profile initialization, are you sure you want to leave without saving?"
     },
     "languages": {
       "aa": "Afar",

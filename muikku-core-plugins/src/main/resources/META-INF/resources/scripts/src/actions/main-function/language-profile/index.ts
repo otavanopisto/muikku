@@ -50,6 +50,16 @@ export type LANGUAGE_PROFILE_UPDATE_LANGUAGE_LEVELS = SpecificActionType<
   { code: string; cellId: string; value: LanguageLevels }
 >;
 
+export type LANGUAGE_PROFILE_CLEAR_LANGUAGE_LEVELS = SpecificActionType<
+  "LANGUAGE_PROFILE_CLEAR_LANGUAGE_LEVELS",
+  string
+>;
+
+export type LANGUAGE_PROFILE_CLEAR_LANGUAGE_SKILL_LEVELS = SpecificActionType<
+  "LANGUAGE_PROFILE_CLEAR_LANGUAGE_SKILL_LEVELS",
+  string
+>;
+
 export type LANGUAGE_PROFILE_UPDATE_SKILL_LEVELS = SpecificActionType<
   "LANGUAGE_PROFILE_UPDATE_SKILL_LEVELS",
   { code: string; cellId: string; value: SkillLevels }
