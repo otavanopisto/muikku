@@ -65,18 +65,18 @@ function Record(props: RecordProps) {
     <>
       <div className="voice-recorder__file-container" key={rest.key}>
         {onDescriptionChange && (
-          <div className="voice-recorder__sample-audio-description">
+          <div className="voice-recorder__file-description">
             <label htmlFor={`audio-description-${record.id}`}>
               {t("labels.description")}
             </label>
             <textarea
-              className="voice-recorder__sample-audio-description-field"
+              className="voice-recorder__file-description-field"
               id={`audio-description-${record.id}`}
               onChange={(e) => onDescriptionChange(index, e.target.value)}
             />
           </div>
         )}
-        <div className="voice-recorder__sample-audio-file">
+        <div className="voice-recorder__file-content">
           <AudioPoolComponent
             className="voice-recorder__file"
             controls={rest.controls}
