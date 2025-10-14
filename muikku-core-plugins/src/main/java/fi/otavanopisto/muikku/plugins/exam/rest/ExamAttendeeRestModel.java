@@ -60,22 +60,6 @@ public class ExamAttendeeRestModel {
     this.extraMinutes = extraMinutes;
   }
 
-  public boolean getResetAssignments() {
-    return resetAssignments;
-  }
-
-  public void setResetAssignments(boolean resetAssignments) {
-    this.resetAssignments = resetAssignments;
-  }
-
-  public boolean getResetTimes() {
-    return resetTimes;
-  }
-
-  public void setResetTimes(boolean resetTimes) {
-    this.resetTimes = resetTimes;
-  }
-
   private Long id;
   private String firstName;
   private String lastName;
@@ -83,7 +67,5 @@ public class ExamAttendeeRestModel {
   private OffsetDateTime started;
   private OffsetDateTime ended;
   private Integer extraMinutes;
-  private boolean resetAssignments;
-  private boolean resetTimes;
 
 }
