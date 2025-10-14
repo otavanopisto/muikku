@@ -121,13 +121,18 @@ export class SectionEditorStrategy extends BaseEditorStrategy {
    * Get tabs for the section editor
    * @param examEnabled - Whether exam is enabled
    * @param permissions - Permissions for the editor
+   * @param t - Localization function
    * @returns Tabs for the section editor
    */
-  getTabs(examEnabled: boolean, permissions: EditorPermissions, t: TFunction): EditorTab[] {
+  getTabs(
+    examEnabled: boolean,
+    permissions: EditorPermissions,
+    t: TFunction
+  ): EditorTab[] {
     const tabs: EditorTab[] = [
       {
         id: "content",
-        name: "Sisältö",
+        name: t("labels.content", { ns: "materials" }),
         // eslint-disable-next-line jsdoc/require-jsdoc
         component: (
           <SectionContentTab
@@ -177,13 +182,18 @@ export class ExamSectionEditorStrategy extends BaseEditorStrategy {
    * Get tabs for the section editor
    * @param examEnabled - Whether exam is enabled
    * @param permissions - Permissions for the editor
+   * @param t - Localization function
    * @returns Tabs for the section editor
    */
-  getTabs(examEnabled: boolean, permissions: EditorPermissions): EditorTab[] {
+  getTabs(
+    examEnabled: boolean,
+    permissions: EditorPermissions,
+    t: TFunction
+  ): EditorTab[] {
     const tabs: EditorTab[] = [
       {
         id: "content",
-        name: "Koeasetukset",
+        name: t("labels.examSettings", { ns: "exams" }),
         // eslint-disable-next-line jsdoc/require-jsdoc
         component: (
           <ExamSettingsTab
@@ -199,7 +209,7 @@ export class ExamSectionEditorStrategy extends BaseEditorStrategy {
     if (this.shouldShowTab("exam-categories", permissions, examEnabled)) {
       tabs.push({
         id: "exam-categories",
-        name: "Kokeen kategoriat",
+        name: t("labels.examCategories", { ns: "exams" }),
         component: (
           <ExamCategoriesTab
             editorPermissions={permissions}
@@ -214,7 +224,7 @@ export class ExamSectionEditorStrategy extends BaseEditorStrategy {
     if (this.shouldShowTab("exam-attendees", permissions, examEnabled)) {
       tabs.push({
         id: "exam-attendees",
-        name: "Kokeeseen osallistujat",
+        name: t("labels.examParticipants", { ns: "exams" }),
         component: (
           <ExamAttendeesTab
             editorPermissions={permissions}
@@ -265,6 +275,7 @@ export class MaterialPageEditorStrategy extends BaseEditorStrategy {
    * Get tabs for the material page editor
    * @param examEnabled - Whether exam is enabled
    * @param permissions - Permissions for the editor
+   * @param t - Localization function
    * @param locationPage - Location page
    * @returns Tabs for the material page editor
    */
@@ -277,7 +288,7 @@ export class MaterialPageEditorStrategy extends BaseEditorStrategy {
     const tabs: EditorTab[] = [
       {
         id: "content",
-        name: "Sisältö",
+        name: t("labels.content", { ns: "materials" }),
         // eslint-disable-next-line jsdoc/require-jsdoc
         component: (
           <MaterialContentTab
@@ -295,7 +306,7 @@ export class MaterialPageEditorStrategy extends BaseEditorStrategy {
     if (this.shouldShowTab("metadata", permissions, examEnabled)) {
       tabs.push({
         id: "metadata",
-        name: "Tiedot",
+        name: t("labels.metadata", { ns: "materials" }),
         // eslint-disable-next-line jsdoc/require-jsdoc
         component: (
           <MetadataTab
@@ -311,7 +322,7 @@ export class MaterialPageEditorStrategy extends BaseEditorStrategy {
     if (this.shouldShowTab("attachments", permissions, examEnabled)) {
       tabs.push({
         id: "attachments",
-        name: "Liitteet",
+        name: t("labels.attachments", { ns: "materials" }),
         // eslint-disable-next-line jsdoc/require-jsdoc
         component: (
           <AttachmentsTab

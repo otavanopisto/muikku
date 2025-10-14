@@ -31,7 +31,8 @@ interface MaterialEditorV2Props {
  */
 export const MaterialEditorV2: React.FC<MaterialEditorV2Props> = (props) => {
   const [activeTab, setActiveTab] = useState("content");
-  const { t } = useTranslation();
+
+  const { t } = useTranslation(["materials", "exams"]);
 
   const dispatch = useDispatch();
 
