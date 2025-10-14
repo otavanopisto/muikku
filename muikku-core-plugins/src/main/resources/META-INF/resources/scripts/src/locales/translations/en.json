@@ -2491,6 +2491,7 @@
       "examExtraTime_minutes": "Extra time (in minutes)",
       "examNotStarted": "The exam has not been started.",
       "examParticipants": "Exam participants",
+      "examSettings": "Exam settings",
       "examStarted": "Exam started",
       "fullQuestionRandomization": "Randomization of all questions",
       "maxQuestionCount": "Max: {{count}} questions",
