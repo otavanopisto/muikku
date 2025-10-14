@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { TFunction } from "i18next";
 import * as React from "react";
 import { PageLocation } from "~/@types/shared";
 import {
@@ -56,6 +57,7 @@ export interface EditorStrategy {
   getTabs(
     examEnabled: boolean,
     permissions: EditorPermissions,
+    t: TFunction,
     locationPage?: PageLocation
   ): EditorTab[];
 }
@@ -67,6 +69,7 @@ export abstract class BaseEditorStrategy implements EditorStrategy {
   abstract getTabs(
     examEnabled: boolean,
     permissions: EditorPermissions,
+    t: TFunction,
     locationPage?: PageLocation
   ): EditorTab[];
 
@@ -120,7 +123,7 @@ export class SectionEditorStrategy extends BaseEditorStrategy {
    * @param permissions - Permissions for the editor
    * @returns Tabs for the section editor
    */
-  getTabs(examEnabled: boolean, permissions: EditorPermissions): EditorTab[] {
+  getTabs(examEnabled: boolean, permissions: EditorPermissions, t: TFunction): EditorTab[] {
     const tabs: EditorTab[] = [
       {
         id: "content",
@@ -268,6 +271,7 @@ export class MaterialPageEditorStrategy extends BaseEditorStrategy {
   getTabs(
     examEnabled: boolean,
     permissions: EditorPermissions,
+    t: TFunction,
     locationPage?: PageLocation
   ): EditorTab[] {
     const tabs: EditorTab[] = [

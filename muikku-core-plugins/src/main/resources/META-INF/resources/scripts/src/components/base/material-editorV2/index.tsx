@@ -15,6 +15,7 @@ import ConfirmRemovePageWithAnswersDialog from "../material-editorV2/confirm-rem
 import ConfirmPublishRemovePageWithLinkedAnswersDialog from "../material-editorV2/confirm-remove-page-with-linked-answers-dialog";
 import { getEditorStrategy } from "./editor-strategy";
 import { PageLocation } from "~/@types/shared";
+import { useTranslation } from "react-i18next";
 
 /**
  * Props for the new material editor
@@ -30,6 +31,7 @@ interface MaterialEditorV2Props {
  */
 export const MaterialEditorV2: React.FC<MaterialEditorV2Props> = (props) => {
   const [activeTab, setActiveTab] = useState("content");
+  const { t } = useTranslation();
 
   const dispatch = useDispatch();
 
@@ -68,6 +70,7 @@ export const MaterialEditorV2: React.FC<MaterialEditorV2Props> = (props) => {
       canSetTitle: editorState.canSetTitle,
       canHide: editorState.canHide,
     },
+    t,
     props.locationPage
   );
 
