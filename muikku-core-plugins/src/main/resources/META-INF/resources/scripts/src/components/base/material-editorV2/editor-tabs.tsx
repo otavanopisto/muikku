@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { Instructions } from "~/components/general/instructions";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { ButtonPill } from "~/components/general/button";
@@ -506,6 +507,25 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
           {t("labels.questionRandomization", {
             ns: "exams",
           })}
+          <span>
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: t("content.randomizationInfo", {
+                      ns: "exams",
+                    }),
+                  }}
+                />
+              }
+            />
+          </span>
         </h3>
         <div className="form__row">
           <div className="form-element">
@@ -626,6 +646,25 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
           {t("labels.openToAllStudents", {
             ns: "exams",
           })}
+          <span>
+            <Instructions
+              modifier="instructions"
+              alignSelfVertically="top"
+              openByHover={false}
+              closeOnClick={true}
+              closeOnOutsideClick={true}
+              persistent
+              content={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: t("content.openToAllStudentsInfo", {
+                      ns: "exams",
+                    }),
+                  }}
+                />
+              }
+            />
+          </span>
         </h3>
         <div className="form__row">
           <div className="form-element">
@@ -786,6 +825,23 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
             ns: "exams",
           })}{" "}
           {hasAttendees && `(${attendeeCount})`}
+          <Instructions
+            modifier="instructions"
+            alignSelfVertically="top"
+            openByHover={false}
+            closeOnClick={true}
+            closeOnOutsideClick={true}
+            persistent
+            content={
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: t("content.examParticipantsInfo", {
+                    ns: "exams",
+                  }),
+                }}
+              />
+            }
+          />
         </h3>
 
         {error && <div className="material-editor__error">{error}</div>}

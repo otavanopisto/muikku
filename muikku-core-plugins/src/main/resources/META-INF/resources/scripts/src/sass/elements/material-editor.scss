@@ -122,8 +122,11 @@
 
 // this is the same in add-producer component style and probably with all the subtitles everywhere. TODO mixin.
 .material-editor__sub-title {
+  align-items: center;
+  display: flex;
   font-size: 1.25rem;
   font-weight: 300;
+  justify-content: space-between;
   line-height: 1;
   margin: 0 0 10px;
 }

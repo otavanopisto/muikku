@@ -2472,9 +2472,12 @@
       "examAlreadyCompleted": "You have already taken this exam and it cannot be retaken. If you would like to take the exam again, please contact your teacher. You may now close the exam window.",
       "examDurationExceeded": "The exam time has expired and the exam has ended. Unsubmitted assignments have been automatically marked as submitted. You can close the exam window.",
       "examHasEnded": "The exam ended on {{endDate}}. You may now close the exam window.",
+      "examParticipantsInfo": "If the exam is not open to all students on the course, only those who have been added to the participant list will be able to take it. It is recommended to add the students at the time the exam starts, because once they are on the list, they can begin the exam whenever they wish.",
       "loadError": "An error occurred while initializing the exam. Close the exam window and try again.",
       "noPermissions": "You do not have permission to access the exam. Please contact the course teacher.",
       "noSelectedPages": "No selected pages",
+      "openToAllStudentsInfo": "The exam can be made open to all students on the course, which allows every student to start and take the exam independently. You should only select \"yes\" here if the exam uses automatic proctoring or if no supervision is required. Otherwise, select \"no\", in which case the participants for the exam must be selected on the \"Test participants\" tab.",
+      "randomizationInfo": "<p>Question randomization means that a specified number of questions are randomly drawn for the exam. There are two types of randomization available.</p><p><b>1. Randomize from all questions:</b> This means that questions are drawn randomly from the entire pool of questions created for the test section. When you select this option, a field will appear where you can enter the total number of questions to be drawn for the exam.</p><p><b>2. Randomize by category:</b> This means you first create categories in the \"Test categories\" tab and then add questions to each category. A specified number of questions will then be randomly drawn from each of those categories for the exam.</p>",
       "resetExam": "Are you sure you want to reset the participant's exam attempt? Resetting will delete all of the student's participation data and their answers."
     },
     "labels": {
