@@ -23,6 +23,7 @@ interface ExamsListProps {}
  * @returns ExamsList
  */
 const ExamsList = (props: ExamsListProps) => {
+  const { t } = useTranslation(["exams", "evaluation", "common"]);
   const { exams, examsStatus } = useSelector((state: StateType) => state.exams);
   const currentWorkspace = useSelector(
     (state: StateType) => state.workspaces.currentWorkspace
@@ -41,7 +42,7 @@ const ExamsList = (props: ExamsListProps) => {
   } else if (exams.length === 0) {
     return (
       <div className="empty">
-        <span>Kurssilla ei ole kokeita</span>
+        <span>{t("content.empty", { ns: "exams", context: "exams" })}</span>
       </div>
     );
   }
@@ -195,29 +196,37 @@ const ExamsListItem = (props: ExamsListItemProps) => {
         <div className="exam__labels">
           {restartAllowed && (
             <span className="exam__label">
-              {t("labels.examAllowRestart", { ns: "exams" })}
+              {t("labels.allowMultipleAttempts", {
+                ns: "exams",
+                context: "student",
+              })}
             </span>
           )}
           {isEnded && hasTimeLimit ? (
             <>
               <span className="exam__label">
-                {t("labels.examDuration", { ns: "exams" })}:{" "}
+                {t("labels.examCompletionTime", { ns: "exams" })}:{" "}
                 <span className="exam__label-accent">
-                  {convertTimeRangeToMinutes(exam.started, exam.ended)} min
+                  {convertTimeRangeToMinutes(exam.started, exam.ended)}{" "}
+                  {t("labels.minutesShort", { ns: "common" })}
                 </span>
               </span>
 
               <span className="exam__label">
-                {t("labels.examTimeLimit", { ns: "exams" })}:{" "}
+                {t("labels.examDuration", { ns: "exams" })}:{" "}
                 <span className="exam__label-accent">
-                  <span className="exam__label-accent">{exam.minutes} min</span>
+                  <span className="exam__label-accent">
+                    {exam.minutes} {t("labels.minutesShort", { ns: "common" })}
+                  </span>
                 </span>
               </span>
             </>
           ) : !isEnded && hasTimeLimit ? (
             <span className="exam__label">
-              {t("labels.examTimeLimit", { ns: "exams" })}:{" "}
-              <span className="exam__label-accent">{exam.minutes} min</span>
+              {t("labels.examDuration", { ns: "exams" })}:{" "}
+              <span className="exam__label-accent">
+                {exam.minutes} {t("labels.minutesShort", { ns: "common" })}
+              </span>
             </span>
           ) : null}
         </div>

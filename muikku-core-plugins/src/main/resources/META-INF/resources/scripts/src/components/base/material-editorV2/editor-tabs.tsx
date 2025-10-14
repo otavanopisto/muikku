@@ -481,7 +481,11 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
       </div>
 
       <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">Kuvaus</h3>
+        <h3 className="material-editor__sub-title">
+          {t("labels.description", {
+            ns: "common",
+          })}
+        </h3>
         <div className="material-editor__editor-container">
           <div className="form__row">
             <div className="form-element">
@@ -498,7 +502,11 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
       </div>
 
       <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">Tehtävien satunnaisuus</h3>
+        <h3 className="material-editor__sub-title">
+          {t("labels.questionRandomization", {
+            ns: "exams",
+          })}
+        </h3>
         <div className="form__row">
           <div className="form-element">
             <select
@@ -511,12 +519,20 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
                 )
               }
             >
-              <option value={ExamSettingsRandom.None}>Ei satunnaisuutta</option>
+              <option value={ExamSettingsRandom.None}>
+                {t("labels.noQuestionRandomization", {
+                  ns: "exams",
+                })}
+              </option>
               <option value={ExamSettingsRandom.Global}>
-                Koko kokeen satunnaisuus
+                {t("labels.fullQuestionRandomization", {
+                  ns: "exams",
+                })}
               </option>
               <option value={ExamSettingsRandom.Category}>
-                Kategoria-perusteinen satunnaisuus
+                {t("labels.categoryBasedQuestionRandomization", {
+                  ns: "exams",
+                })}
               </option>
             </select>
           </div>
@@ -526,7 +542,9 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
       {examSettings?.random === ExamSettingsRandom.Global && (
         <div className="material-editor__sub-section">
           <h3 className="material-editor__sub-title">
-            Satunnaisten tehtävien määrä:
+            {t("labels.randomizedQuestionCount", {
+              ns: "exams",
+            })}
           </h3>
 
           <div className="form__row">
@@ -547,7 +565,12 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
       )}
 
       <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">Kesto (minuutteina):</h3>
+        <h3 className="material-editor__sub-title">
+          {t("labels.examDuration", {
+            ns: "exams",
+            context: "minutes",
+          })}
+        </h3>
 
         <div className="form__row">
           <div className="form-element">
@@ -566,7 +589,11 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
       </div>
 
       <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">Salli useat yritykset</h3>
+        <h3 className="material-editor__sub-title">
+          {t("labels.allowMultipleAttempts", {
+            ns: "exams",
+          })}
+        </h3>
         <div className="form__row">
           <div className="form-element">
             <select
@@ -579,15 +606,27 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
                 )
               }
             >
-              <option value="YES">Kyllä</option>
-              <option value="NO">Ei</option>
+              <option value="YES">
+                {t("labels.yes", {
+                  ns: "common",
+                })}
+              </option>
+              <option value="NO">
+                {t("labels.no", {
+                  ns: "common",
+                })}
+              </option>
             </select>
           </div>
         </div>
       </div>
 
       <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">Avoin kaikille</h3>
+        <h3 className="material-editor__sub-title">
+          {t("labels.openToAllStudents", {
+            ns: "exams",
+          })}
+        </h3>
         <div className="form__row">
           <div className="form-element">
             <select
@@ -597,8 +636,16 @@ export const ExamSettingsTab = (props: ExamSettingsTabProps) => {
                 handleExamSettingsChange("openForAll", e.target.value === "YES")
               }
             >
-              <option value="YES">Kyllä</option>
-              <option value="NO">Ei</option>
+              <option value="YES">
+                {t("labels.yes", {
+                  ns: "common",
+                })}
+              </option>
+              <option value="NO">
+                {t("labels.no", {
+                  ns: "common",
+                })}
+              </option>
             </select>
           </div>
         </div>
@@ -618,6 +665,7 @@ interface ExamCategoriesTabProps extends EditorTabProps {}
  * @returns Exam categories tab for the editor
  */
 export const ExamCategoriesTab = (props: ExamCategoriesTabProps) => {
+  const { t } = useTranslation();
   const editorState = useSelector(
     (state: StateType) => state.workspaces.materialEditor
   );
@@ -656,7 +704,11 @@ export const ExamCategoriesTab = (props: ExamCategoriesTabProps) => {
         examEnabled={props.examEnabled}
       />
       <div className="material-editor__sub-section">
-        <h3 className="material-editor__sub-title">Kokeen kategoriat</h3>
+        <h3 className="material-editor__sub-title">
+          {t("labels.examCategories", {
+            ns: "exams",
+          })}
+        </h3>
 
         <ExamCategories
           examRandom={examSettings?.random || ExamSettingsRandom.None}
@@ -730,7 +782,10 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
     <div className="material-editor__content-wrapper">
       <div className="material-editor__sub-section">
         <h3 className="material-editor__sub-title">
-          Kokeen osallistujat {hasAttendees && `(${attendeeCount})`}
+          {t("labels.examParticipants", {
+            ns: "exams",
+          })}{" "}
+          {hasAttendees && `(${attendeeCount})`}
         </h3>
 
         {error && <div className="material-editor__error">{error}</div>}
@@ -751,7 +806,7 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
             })}
             noOptionsMessage={() =>
               t("content.empty", {
-                ns: "pedagogySupportPlan",
+                ns: "exams",
                 context: "options",
               })
             }
@@ -766,9 +821,11 @@ export const ExamAttendeesTab = (props: ExamAttendeesTabProps) => {
         {/* Selected Students Cards */}
         {hasAttendees && (
           <div className="material-editor__attendees">
-            <div className="material-editor__attendees-title">
-              Valitut osallistujat:
-            </div>
+            <h3 className="material-editor__sub-title">
+              {t("labels.selectedParticipants", {
+                ns: "exams",
+              })}
+            </h3>
             <div className="material-editor__attendees-cards">
               {examAttendees.map((attendee) => (
                 <ExamAttendeeCard
