@@ -2491,6 +2491,7 @@
       "examExtraTime_minutes": "Lisäaika (minuuttia)",
       "examNotStarted": "Koetta ei ole aloitettu.",
       "examParticipants": "Kokeen osallistujat",
+      "examSettings": "Koeasetukset",
       "examStarted": "Koe aloitettu",
       "fullQuestionRandomization": "Kaikkien tehtävien satunnaisuus",
       "maxQuestionCount": "Max: {{count}} tehtävää",
