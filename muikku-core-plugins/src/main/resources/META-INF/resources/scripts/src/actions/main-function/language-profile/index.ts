@@ -623,6 +623,9 @@ const createLanguageAudioSamples: CreateLanguageProfileAudioSampleTriggerType =
           formData.append("language", language);
           formData.append("type", "AUDIO");
           formData.append("fileName", sample.name);
+          if (sample.description) {
+            formData.append("value", sample.description);
+          }
           formData.append("file", sample.blob);
 
           // Make the POST request

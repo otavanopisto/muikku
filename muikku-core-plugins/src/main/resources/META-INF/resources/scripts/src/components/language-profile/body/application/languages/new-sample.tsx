@@ -86,6 +86,17 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   };
 
   /**
+   * Handles changes to the file description.
+   * @param index - The index of the file to update.
+   * @param description - The new description for the file.
+   */
+  const handleAudioDescriptionChange = (index: number, description: string) => {
+    const audioUpdate = [...audioSamples];
+    audioUpdate[index].description = description;
+    setAudioSamples(audioUpdate);
+  };
+
+  /**
    * HandleFileChange handles the file input change event.
    * @param event - The change event from the file input.
    */
@@ -219,6 +230,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
           <AudioSample
             samples={audioSamples}
             onChange={handleRecorderChange}
+            onDescriptionChange={handleAudioDescriptionChange}
             onDelete={handleDeleteAudio}
             onSave={handleAudioSave}
             onCancel={handleCancel}

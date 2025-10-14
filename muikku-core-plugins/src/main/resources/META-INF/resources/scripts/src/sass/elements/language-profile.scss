@@ -418,7 +418,25 @@
   width: 100%;
 }
 
+.language-profile__file-sample {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: center;
+}
 
+.language-profile__audio-sample {
+  flex-grow: 1;
+}
+
+.language-profile__audio-sample-description { 
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.language-profile__file-sample-description {
+  font-weight: 600;
+}
 
 .language-profile__file-uploader-container {
   align-items: center;

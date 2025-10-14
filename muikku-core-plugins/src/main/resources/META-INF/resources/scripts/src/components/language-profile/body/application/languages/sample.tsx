@@ -100,13 +100,14 @@ const Sample = (props: LanguageSampleProps) => {
         );
       case "FILE":
         return (
-          <div>
-            <div>{sample.value}</div>
-            <div>
-              <a
-                className="language-profile__sample-link"
-                href={`/languageProfileSampleServlet?sampleId=${sample.id}`}
-              >
+          <div className="language-profile__file-sample">
+            {sample.value && (
+              <div className="language-profile__file-sample-description">
+                {sample.value}
+              </div>
+            )}
+            <div className="language-profile__file-sample-link">
+              <a href={`/languageProfileSampleServlet?sampleId=${sample.id}`}>
                 {sample.fileName}
               </a>
             </div>
@@ -114,11 +115,19 @@ const Sample = (props: LanguageSampleProps) => {
         );
       case "AUDIO":
         return (
-          <AudioPoolComponent
-            controls
-            src={`/languageProfileSampleServlet?sampleId=${sample.id}`}
-            preload="metadata"
-          />
+          <div className="language-profile__audio-sample">
+            {sample.value && (
+              <div className="language-profile__audio-sample-description">
+                {sample.value}
+              </div>
+            )}
+
+            <AudioPoolComponent
+              controls
+              src={`/languageProfileSampleServlet?sampleId=${sample.id}`}
+              preload="metadata"
+            />
+          </div>
         );
       default:
         return null;
