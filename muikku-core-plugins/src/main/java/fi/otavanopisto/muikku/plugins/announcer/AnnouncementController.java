@@ -198,6 +198,12 @@ public class AnnouncementController {
     announcementDAO.delete(announcement);
   }
   
+  public void deleteAnnouncementRecipientsByAnnouncement(Announcement announcement) {
+    for (AnnouncementRecipient recipient : announcementRecipientDAO.listByAnnouncement(announcement)) {
+      announcementRecipientDAO.delete(recipient);
+    }
+  }
+  
   public void deleteAnnouncementTargetGroups(Announcement announcement) {
     for (AnnouncementUserGroup announcementUserGroup : announcementUserGroupDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE)) {
       announcementUserGroupDAO.delete(announcementUserGroup);

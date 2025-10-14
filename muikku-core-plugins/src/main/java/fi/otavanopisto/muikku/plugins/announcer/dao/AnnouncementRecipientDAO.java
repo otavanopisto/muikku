@@ -38,6 +38,18 @@ public class AnnouncementRecipientDAO extends CorePluginsDAO<AnnouncementRecipie
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  public List<AnnouncementRecipient> listByAnnouncement(Announcement announcement){
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<AnnouncementRecipient> criteria = criteriaBuilder.createQuery(AnnouncementRecipient.class);
+    Root<AnnouncementRecipient> root = criteria.from(AnnouncementRecipient.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.equal(root.get(AnnouncementRecipient_.announcement), announcement));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   public void delete(AnnouncementRecipient announcementRecipient){
     super.delete(announcementRecipient);
   }
