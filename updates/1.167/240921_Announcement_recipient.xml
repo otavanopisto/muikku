@@ -6,14 +6,14 @@
         id bigint not null auto_increment,
         readDate date not null,
         userEntityId bigint not null,
-        announcementId bigint not null,
+        announcement_id bigint not null,
         primary key (id)
     );
   </sql>
   <sql>
     alter table AnnouncementRecipient 
        add constraint FKlsugj119udyxd6tkucby6puh3 
-       foreign key (announcementId) 
+       foreign key (announcement_id) 
        references Announcement (id);
   </sql>
   <sql>
