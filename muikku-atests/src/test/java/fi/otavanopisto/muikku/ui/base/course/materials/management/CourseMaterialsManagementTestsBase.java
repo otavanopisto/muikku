@@ -106,8 +106,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClick(".tabs #tabControl-metadata");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC0");
+          waitForClickable("#materialLicense");
+          selectOption("#materialLicense", "CC0");
           waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
@@ -167,8 +167,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClick(".tabs #tabControl-metadata");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC4");
+          waitForClickable("#materialLicense");
+          selectOption("#materialLicense", "CC4");
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
@@ -228,8 +228,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClick(".tabs #tabControl-metadata");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "CC3");
+          waitForClickable("#materialLicense");
+          selectOption("#materialLicense", "CC3");
           waitAndClickAndConfirm(".material-editor__buttonset-secondary .icon-leanpub", ".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub", 5, 1000);
           waitForPresent(".material-editor__buttonset-secondary .button-pill--disabled .icon-leanpub");
           waitAndClick(".button-pill--material-page-close-editor .icon-arrow-left");
@@ -288,8 +288,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
           click("#editingMasterSwitch");
           waitAndClick(".material-admin-panel--workspace-materials .button-pill--material-management-page");
           waitAndClick(".tabs #tabControl-metadata");
-          waitForClickable(".material-editor__add-license-container .form-element__select--material-editor");
-          selectOption(".material-editor__add-license-container .form-element__select--material-editor", "text_or_link");
+          waitForClickable("#materialLicense");
+          selectOption("#materialLicense", "text_or_link");
           waitForVisible(".license-selector .form-element__input--material-editor");
           sendKeys(".license-selector .form-element__input--material-editor", "www.test.com");
           waitAndClick(".material-editor__buttonset-secondary .icon-leanpub");
