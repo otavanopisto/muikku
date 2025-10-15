@@ -165,21 +165,32 @@ export const languageProfile: Reducer<LanguageProfileState> = (
     case "LANGUAGE_PROFILE_UPDATE_LANGUAGES": {
       const { payload } = action;
       const updatedLanguages = [...state.data.languages];
+      const updatedCv = { ...state.data.cv };
+
       // Check if the language already exists in the array
       const existingLanguageIndex = updatedLanguages.findIndex(
+        (language) => language.code === payload.code
+      );
+
+      // Also check if the language exists in cv languages
+      const existingCvLanguageIndex = updatedCv.languages.findIndex(
         (language) => language.code === payload.code
       );
 
       if (existingLanguageIndex !== -1) {
         // If it exists, remove from the array
         updatedLanguages.splice(existingLanguageIndex, 1);
+        // Also remove from cv languages, if exists
+        if (existingCvLanguageIndex !== -1) {
+          updatedCv.languages.splice(existingCvLanguageIndex, 1);
+        }
       } else {
         updatedLanguages.push(payload);
       }
 
       return {
         ...state,
-        data: { ...state.data, languages: updatedLanguages },
+        data: { ...state.data, languages: updatedLanguages, cv: updatedCv },
       };
     }
     case "LANGUAGE_PROFILE_UPDATE_LANGUAGE_LEVELS": {
@@ -224,6 +235,31 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
+    case "LANGUAGE_PROFILE_CLEAR_LANGUAGE_LEVELS": {
+      const { payload } = action;
+
+      const languagesUpdate = [...state.data.languages];
+      // find the language to update
+      const languageIndex = languagesUpdate.findIndex(
+        (language) => language.code === payload
+      );
+
+      if (languageIndex === -1) {
+        return state;
+      }
+
+      const currentLanguage = languagesUpdate[languageIndex];
+
+      currentLanguage.levels = [];
+
+      languagesUpdate[languageIndex] = currentLanguage;
+
+      return {
+        ...state,
+        data: { ...state.data, languages: languagesUpdate },
+      };
+    }
+
     case "LANGUAGE_PROFILE_UPDATE_SKILL_LEVELS": {
       const { payload } = action;
       const skillPayload = { [payload.cellId]: payload.value };
@@ -254,6 +290,31 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
 
       languagesUpdate[languageIndex] = updatedSkills;
+
+      return {
+        ...state,
+        data: { ...state.data, languages: languagesUpdate },
+      };
+    }
+
+    case "LANGUAGE_PROFILE_CLEAR_LANGUAGE_SKILL_LEVELS": {
+      const { payload } = action;
+
+      const languagesUpdate = [...state.data.languages];
+      // find the language to update
+      const languageIndex = languagesUpdate.findIndex(
+        (language) => language.code === payload
+      );
+
+      if (languageIndex === -1) {
+        return state;
+      }
+
+      const currentLanguage = languagesUpdate[languageIndex];
+
+      currentLanguage.skills = [];
+
+      languagesUpdate[languageIndex] = currentLanguage;
 
       return {
         ...state,
