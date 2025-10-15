@@ -216,6 +216,7 @@ export const router = createBrowserRouter([
                 //loader: appSettingsLoader,
                 middleware: [permissionMiddlewares.appSettingsView],
               },
+
               {
                 path: "*",
                 element: (
@@ -295,6 +296,15 @@ export const router = createBrowserRouter([
             ],
           },
         ],
+      },
+      {
+        path: "login",
+        element: null, // This will never render, route loader will handle the redirect, which backend catches
+        loader: () => {
+          // This loader will run before the component renders
+          window.location.replace(`/login?redirectUrl=${window.location.href}`);
+          return null;
+        },
       },
     ],
   },

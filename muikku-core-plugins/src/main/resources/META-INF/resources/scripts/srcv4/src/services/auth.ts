@@ -35,7 +35,7 @@ export class AuthService {
    * Login to the system
    * @param loginPath - The path to redirect to after login
    */
-  static login(loginPath = `/login?redirectUrl=${window.location.pathname}`) {
+  static login(loginPath = `/login?redirectUrl=${window.location.href}`) {
     window.location.href = loginPath;
   }
 

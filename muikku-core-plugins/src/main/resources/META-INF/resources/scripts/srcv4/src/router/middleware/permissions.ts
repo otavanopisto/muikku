@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/only-throw-error */
-import { getAtomValue } from "../../jotaiStore";
-import { userAtom, userPermissionsAtom } from "../../atoms/auth";
-import { workspacePermissionsAtom } from "../../atoms/permissions";
+import { getAtomValue } from "~/src/jotaiStore";
+import { userAtom, userPermissionsAtom } from "~/src/atoms/auth";
+import { workspacePermissionsAtom } from "~/src/atoms/permissions";
 import type { MiddlewareFunction } from "react-router";
 import type {
   UserPermissions,
   WorkspacePermissions,
-} from "../../services/permissions";
-import type { User } from "../../services/auth";
+} from "~/src/services/permissions";
+import { type User } from "~/src/services/auth";
 
 /**
  * Permission check configuration
@@ -49,7 +49,7 @@ export function createPermissionMiddleware(
       workspacePermissions: requiredWorkspacePermissions = [],
       customCheck,
       redirectPath = "/",
-      loginPath = `/login?redirectUrl=${encodeURIComponent(request.url)}`,
+      loginPath = `/login?redirectUrl=${request.url}`,
     } = config;
 
     // Check authentication
