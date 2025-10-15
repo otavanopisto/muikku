@@ -235,6 +235,31 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
     }
 
+    case "LANGUAGE_PROFILE_CLEAR_LANGUAGE_LEVELS": {
+      const { payload } = action;
+
+      const languagesUpdate = [...state.data.languages];
+      // find the language to update
+      const languageIndex = languagesUpdate.findIndex(
+        (language) => language.code === payload
+      );
+
+      if (languageIndex === -1) {
+        return state;
+      }
+
+      const currentLanguage = languagesUpdate[languageIndex];
+
+      currentLanguage.levels = [];
+
+      languagesUpdate[languageIndex] = currentLanguage;
+
+      return {
+        ...state,
+        data: { ...state.data, languages: languagesUpdate },
+      };
+    }
+
     case "LANGUAGE_PROFILE_UPDATE_SKILL_LEVELS": {
       const { payload } = action;
       const skillPayload = { [payload.cellId]: payload.value };
@@ -265,6 +290,31 @@ export const languageProfile: Reducer<LanguageProfileState> = (
       };
 
       languagesUpdate[languageIndex] = updatedSkills;
+
+      return {
+        ...state,
+        data: { ...state.data, languages: languagesUpdate },
+      };
+    }
+
+    case "LANGUAGE_PROFILE_CLEAR_LANGUAGE_SKILL_LEVELS": {
+      const { payload } = action;
+
+      const languagesUpdate = [...state.data.languages];
+      // find the language to update
+      const languageIndex = languagesUpdate.findIndex(
+        (language) => language.code === payload
+      );
+
+      if (languageIndex === -1) {
+        return state;
+      }
+
+      const currentLanguage = languagesUpdate[languageIndex];
+
+      currentLanguage.skills = [];
+
+      languagesUpdate[languageIndex] = currentLanguage;
 
       return {
         ...state,

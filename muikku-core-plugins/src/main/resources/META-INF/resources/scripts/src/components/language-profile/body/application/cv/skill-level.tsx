@@ -5,8 +5,8 @@ import { StateType } from "~/reducers";
 /* eslint-disable camelcase */
 import { unstable_batchedUpdates } from "react-dom";
 import {
-  LanguageProfileLanguage,
   CVLanguage,
+  LanguageProfileLanguage,
 } from "~/reducers/main-function/language-profile";
 import { languageLevelOptions } from "~/mock/mock-data";
 import { ActionType } from "~/actions";
@@ -214,8 +214,8 @@ const SkillLevel = (props: SkillLevelProps) => {
     <fieldset className="language-profile-container__fieldset">
       <legend className="language-profile-container__subheader">
         {t(`languages.${language.code}`, {
-          ns: "languageProfile",
           defaultValue: language.code,
+          ns: "languageProfile",
         })}
       </legend>
       <div className="language-profile-container__secondary-header">
