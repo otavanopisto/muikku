@@ -225,6 +225,12 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: onlyUnread
+          in: query
+          description: Only unread
+          schema:
+            type: boolean
+            default: false
         - name: timeFrame
           in: query
           description: Announcement time frame
@@ -415,6 +421,68 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
+        "403":
+          description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+  
+  /rest/announcer/announcements/markAllAsRead:
+    post:
+      operationId: markAllAnnouncementsAsRead
+      summary: Mark all announcements as read by logged user
+      tags:
+        - Announcer
+      responses:
+        "200":
+          description: Announcements marked as read successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnnouncementRecipient"
+        "403":
+          description: Attempted to make a call with unauthorized client
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+
+  /rest/announcer/announcements/{announcementId}/markAsRead:
+    post:
+      operationId: markAnnouncementAsRead
+      summary: Mark announcement as read by logged user
+      tags:
+        - Announcer
+      parameters:
+        - name: announcementId
+          in: path
+          description: Announcement id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Announcement marked as read successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnnouncementRecipient"
         "403":
           description: Attempted to make a call with unauthorized client
           content:
@@ -13134,6 +13202,7 @@ components:
         - publisherUserEntityId
         - startDate
         - temporalStatus
+        - unread
         - userGroupEntityIds
         - workspaceEntityIds
         - workspaces
@@ -13156,6 +13225,8 @@ components:
         publisherUserEntityId:
           type: integer
           format: int64
+        unread:
+          type: boolean
         startDate:
           type: string
         temporalStatus:
@@ -13174,6 +13245,28 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceBasicInfo"
+    
+    AnnouncementRecipient:
+      type: object
+      description: AnnouncementRecipient object
+      required:
+        - id
+        - announcementId
+        - userEntityId
+        - readDate
+      properties:
+        id:
+          type: integer
+          format: int64
+        announcementId:
+          type: integer
+          format: int64
+        readDate:
+          type: string
+          format: date-time
+        userEntityId:
+          type: integer
+          format: int64
 
     AssessmentRequest:
       type: object
