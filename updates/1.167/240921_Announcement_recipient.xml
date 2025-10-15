@@ -6,7 +6,7 @@
         id bigint not null auto_increment,
         readDate date not null,
         userEntityId bigint not null,
-        announcement_id bigint,
+        announcement_id bigint not null,
         primary key (id)
     );
   </sql>
