@@ -103,6 +103,14 @@ public class AnnouncementRESTModel {
     this.temporalStatus = temporalStatus;
   }
 
+  public boolean isUnread() {
+    return unread;
+  }
+
+  public void setUnread(boolean unread) {
+    this.unread = unread;
+  }
+
   public List<WorkspaceBasicInfo> getWorkspaces() {
     return workspaces;
   }
@@ -123,6 +131,6 @@ public class AnnouncementRESTModel {
   private List<Long> workspaceEntityIds;
   private Boolean publiclyVisible;
   private AnnouncementTemporalStatus temporalStatus;
-
+  private boolean unread;
   private List<WorkspaceBasicInfo> workspaces;
 }

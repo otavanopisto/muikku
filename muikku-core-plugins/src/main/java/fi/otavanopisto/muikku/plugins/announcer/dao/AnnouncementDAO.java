@@ -22,6 +22,8 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient_;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup_;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement_;
@@ -49,8 +51,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   }
 
   public List<Announcement> listAnnouncements(OrganizationEntity organizationEntity, List<UserGroupEntity> userGroupEntities, 
-      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean archived,  Integer firstResult, Integer maxResults) {
-    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, archived, firstResult, maxResults);
+      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean onlyUnread, Long loggedUser,  boolean archived, Integer firstResult, Integer maxResults) {
+    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, onlyUnread, loggedUser, archived, firstResult, maxResults);
   }
   
   public List<Announcement> listAnnouncements(
@@ -60,6 +62,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       AnnouncementEnvironmentRestriction environment, 
       AnnouncementTimeFrame timeFrame, 
       UserEntity announcementOwner,
+      boolean onlyUnread,
+      Long loggedUser,
       boolean archived,
       Integer firstResult, 
       Integer maxResults) {
@@ -166,6 +170,21 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
           ));
       
       groupPredicates.add(root.in(subquery));
+    }
+    
+    /**
+     * User recipients for unread announcements:
+     */
+    if (onlyUnread) {
+      Subquery<Announcement> subquery = criteria.subquery(Announcement.class);
+      Root<AnnouncementRecipient> announcementRecipient = subquery.from(AnnouncementRecipient.class);
+      
+      subquery.select(announcementRecipient.get(AnnouncementRecipient_.announcement));
+      subquery.where(
+          criteriaBuilder.equal(announcementRecipient.get(AnnouncementRecipient_.userEntityId), loggedUser)
+          );
+      
+      predicates.add(criteriaBuilder.not(root.in(subquery)));
     }
     
     predicates.add(criteriaBuilder.or(groupPredicates.toArray(new Predicate[0])));

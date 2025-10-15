@@ -10,6 +10,7 @@ import { availableLanguages } from "~/mock/mock-data";
 import { useTranslation } from "react-i18next";
 import Button from "~/components/general/button";
 import PromptDialog from "~/components/general/prompt-dialog";
+import { useLanguageProfileContext } from "~/components/language-profile/body/application";
 
 /**
  * LanguageUsage
@@ -27,7 +28,8 @@ const LanguageUsage = () => {
     samples,
     cv,
   } = useSelector((state: StateType) => state.languageProfile.data);
-
+  const { initializationUnsavedChanges, setInitializationUnsavedChanges } =
+    useLanguageProfileContext();
   /**
    * handleFieldChange
    * @param e React.ChangeEvent<HTMLTextAreaElement>
@@ -89,6 +91,9 @@ const LanguageUsage = () => {
       type: "LANGUAGE_PROFILE_UPDATE_LANGUAGES",
       payload: language,
     } as ActionType);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**
@@ -100,6 +105,9 @@ const LanguageUsage = () => {
       type: "LANGUAGE_PROFILE_UPDATE_LANGUAGES",
       payload: language,
     } as ActionType);
+    if (!initializationUnsavedChanges) {
+      setInitializationUnsavedChanges(true);
+    }
   };
 
   /**

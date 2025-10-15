@@ -20,11 +20,13 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementAttachmentDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestriction;
+import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementRecipientDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementUserGroupDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementWorkspaceDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -50,6 +52,9 @@ public class AnnouncementController {
 
   @Inject
   private AnnouncementAttachmentDAO announcementAttachmentDAO;
+  
+  @Inject
+  private AnnouncementRecipientDAO announcementRecipientDAO;
   
   public Announcement createAnnouncement(UserEntity publisher, OrganizationEntity organizationEntity, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible) {
     return announcementDAO.create(
@@ -83,7 +88,8 @@ public class AnnouncementController {
   }
   
   public List<Announcement> listAnnouncements(Collection<SchoolDataIdentifier> userIdentifiers, OrganizationEntity organizationEntity, boolean includeGroups, boolean includeWorkspaces, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyArchived,  Integer firstResult, Integer maxResults) {
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyUnread, Long loggedUser,  boolean onlyArchived, Integer firstResult, Integer maxResults) {
+
     List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserIdentifiers(userIdentifiers) : Collections.emptyList();
     List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listActiveWorkspaceEntitiesByUserIdentifiers(userIdentifiers) : Collections.emptyList();
 
@@ -94,6 +100,8 @@ public class AnnouncementController {
         environment, 
         timeFrame, 
         announcementOwner,
+        onlyUnread,
+        loggedUser,
         onlyArchived,
         firstResult, 
         maxResults);
@@ -102,7 +110,8 @@ public class AnnouncementController {
   }
 
   public List<Announcement> listWorkspaceAnnouncements(OrganizationEntity organizationEntity, List<WorkspaceEntity> workspaceEntities, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyArchived, Integer firstResult, Integer maxResults) {
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyUnread, Long loggedUser,  boolean onlyArchived, Integer firstResult, Integer maxResults) {
+    
     List<Announcement> announcements = announcementDAO.listAnnouncements(
         organizationEntity,
         Collections.emptyList(),
@@ -110,6 +119,8 @@ public class AnnouncementController {
         environment, 
         timeFrame, 
         announcementOwner,
+        onlyUnread,
+        loggedUser,
         onlyArchived,
         firstResult, 
         maxResults);
@@ -133,7 +144,8 @@ public class AnnouncementController {
     }
     
     List<Announcement> result = new ArrayList<>(announcementDAO.listAnnouncements(organizationEntity,
-        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT, false, firstResult, maxResults));
+        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT, false, null, false, firstResult, maxResults));
+
     
     Collections.sort(result, new Comparator<Announcement>() {
       public int compare(Announcement o1, Announcement o2) {
@@ -186,6 +198,12 @@ public class AnnouncementController {
     announcementDAO.delete(announcement);
   }
   
+  public void deleteAnnouncementRecipientsByAnnouncement(Announcement announcement) {
+    for (AnnouncementRecipient recipient : announcementRecipientDAO.listByAnnouncement(announcement)) {
+      announcementRecipientDAO.delete(recipient);
+    }
+  }
+  
   public void deleteAnnouncementTargetGroups(Announcement announcement) {
     for (AnnouncementUserGroup announcementUserGroup : announcementUserGroupDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE)) {
       announcementUserGroupDAO.delete(announcementUserGroup);
@@ -218,5 +236,12 @@ public class AnnouncementController {
     return announcementAttachmentDAO.findByName(name);
   }
   
+  public AnnouncementRecipient findAnnouncementRecipientByAnnouncementAndUserEntityId(Announcement announcement, Long userEntityId) {
+    return announcementRecipientDAO.findByAnnouncementAndUserEntityId(announcement, userEntityId);
+  }
+  
+  public AnnouncementRecipient createAnnouncementRecipient(Announcement announcement, Long userEntityId) {
+    return announcementRecipientDAO.create(announcement, userEntityId);
+  }
 }
  
