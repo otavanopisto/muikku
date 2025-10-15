@@ -12,7 +12,7 @@ import {
   EvaluationSort,
   EvaluationStatus,
   EvaluationStateType,
-  EvaluationBasePriceById,
+  EvaluationPrices,
   EvaluationJournalCommentsByJournal,
 } from "../../../@types/evaluation";
 import { WorkspaceDataType } from "~/reducers/workspaces";
@@ -89,9 +89,9 @@ export type EVALUATION_ASSESSMENT_ASSIGNMENTS_STATE_UPDATE = SpecificActionType<
   EvaluationStateType
 >;
 
-export type EVALUATION_BASE_PRICE_LOAD = SpecificActionType<
-  "EVALUATION_BASE_PRICE_LOAD",
-  EvaluationBasePriceById
+export type EVALUATION_BASE_PRICES_LOAD = SpecificActionType<
+  "EVALUATION_BASE_PRICES_LOAD",
+  EvaluationPrices
 >;
 
 export type EVALUATION_IMPORTANT_ASSESSMENTS_LOAD = SpecificActionType<
@@ -2533,7 +2533,7 @@ const loadBasePriceFromServer: LoadBasePrice =
     ) => {
       const worklistApi = MApi.getWorklistApi();
 
-      let basePrice: EvaluationBasePriceById | undefined = undefined;
+      let basePrice: EvaluationPrices | undefined = undefined;
 
       dispatch({
         type: "EVALUATION_BASE_PRICE_STATE_UPDATE",
@@ -2541,12 +2541,12 @@ const loadBasePriceFromServer: LoadBasePrice =
       });
 
       await worklistApi
-        .getBasePrice({
+        .getWorkspacePrices({
           workspaceEntityId: workspaceEntityId,
         })
         .then(
-          (data) => {
-            basePrice = data as EvaluationBasePriceById;
+          (rValue) => {
+            basePrice = rValue as EvaluationPrices;
           },
           () => {
             basePrice = undefined;
@@ -2554,8 +2554,8 @@ const loadBasePriceFromServer: LoadBasePrice =
         );
 
       dispatch({
-        type: "EVALUATION_BASE_PRICE_LOAD",
-        payload: basePrice,
+        type: "EVALUATION_BASE_PRICES_LOAD",
+        payload: basePrice as EvaluationPrices,
       });
 
       dispatch({
