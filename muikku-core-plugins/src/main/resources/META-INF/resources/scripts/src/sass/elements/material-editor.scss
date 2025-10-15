@@ -174,9 +174,9 @@
   border-bottom: 1px solid $color-default-separator-border;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
   font-size: 1rem;
   font-weight: 600;
+  justify-content: space-between;
   margin: 0 0 10px;
   padding: 0 0 5px;
 }
@@ -217,8 +217,8 @@
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
   font-size: 1rem;
+  justify-content: space-between;
 }
 
 .material-editor__attendee-header {
