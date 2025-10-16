@@ -1,5 +1,5 @@
 import * as React from "react";
-import { IconButton } from "~/components/general/button";
+import Button, { IconButton } from "~/components/general/button";
 import AnimateHeight from "react-animate-height";
 
 /**
@@ -26,7 +26,7 @@ const Accordion = (props: AccordionProps) => {
       className={`user-language-profile__drawer ${open ? "state-OPEN" : ""}`}
     >
       <header className="user-language-profile__drawer-header">
-        <button
+        <Button
           className="user-language-profile__drawer-button"
           onClick={() => setOpen(!open)}
           aria-expanded={open}
@@ -42,7 +42,7 @@ const Accordion = (props: AccordionProps) => {
             buttonAs={"span"}
             icon={`${open ? "arrow-down" : "arrow-right"}`}
           ></IconButton>
-        </button>
+        </Button>
       </header>
       <AnimateHeight duration={300} height={open ? "auto" : 0}>
         <div
