@@ -13203,6 +13203,7 @@ components:
         - content
         - created
         - endDate
+        - pinned
         - publiclyVisible
         - publisherUserEntityId
         - startDate
@@ -13225,6 +13226,8 @@ components:
         id:
           type: integer
           format: int64
+        pinned:
+          type: boolean
         publiclyVisible:
           type: boolean
         publisherUserEntityId:
