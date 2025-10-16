@@ -28,7 +28,7 @@ export function SharedLayout(props: SharedLayoutProps) {
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);
   //const [opened, { toggle }] = useDisclosure(); // Navbar state
-  const { sidebarOpened, toggleSidebar } = useAppLayout();
+  const { primaryNavOpened, togglePrimaryNav } = useAppLayout();
 
   return (
     <AppShell
@@ -38,16 +38,21 @@ export function SharedLayout(props: SharedLayoutProps) {
         offset: false, // This prevents the main content from being offset when header is hidden
       }}
       navbar={{
-        width: !sidebarOpened ? 60 : 300, // Dynamic width based on collapsed state
+        width: !primaryNavOpened ? 60 : 300, // Dynamic width based on collapsed state
         breakpoint: "sm",
-        collapsed: { mobile: !sidebarOpened },
+        collapsed: { mobile: !primaryNavOpened },
+      }}
+      aside={{
+        width: 300,
+        breakpoint: "sm",
+        collapsed: { mobile: !primaryNavOpened },
       }}
     >
       <AppShell.Header hiddenFrom="sm">
         <Group h="100%" px="md" justify="space-between">
           <Burger
-            opened={sidebarOpened}
-            onClick={toggleSidebar}
+            opened={primaryNavOpened}
+            onClick={togglePrimaryNav}
             size="sm"
             aria-label="Toggle navigation"
           />
@@ -73,8 +78,8 @@ export function SharedLayout(props: SharedLayoutProps) {
               "workspace"
             ),
           }}
-          collapsed={!sidebarOpened} // Use desktop collapsed state
-          onToggleCollapse={toggleSidebar} // Toggle desktop collapsed state
+          collapsed={!primaryNavOpened} // Use desktop collapsed state
+          onToggleCollapse={togglePrimaryNav} // Toggle desktop collapsed state
         />
       </AppShell.Navbar>
 

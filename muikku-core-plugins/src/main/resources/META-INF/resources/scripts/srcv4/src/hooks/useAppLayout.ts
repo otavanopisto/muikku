@@ -1,38 +1,66 @@
 import { useAtom } from "jotai";
-import { sidebarOpenedAtom } from "../atoms/layout";
+import { secondaryNavOpenedAtom, primaryNavOpenedAtom } from "../atoms/layout";
 
 /**
  * Hook for managing the app layout
  * @returns Object containing sidebar state and control functions
  */
 export const useAppLayout = () => {
-  const [sidebarOpened, setSidebarOpened] = useAtom(sidebarOpenedAtom);
+  const [primaryNavOpened, setPrimaryNavOpened] = useAtom(primaryNavOpenedAtom);
+  const [secondaryNavOpened, setSecondaryNavOpened] = useAtom(
+    secondaryNavOpenedAtom
+  );
 
   /**
    * Open the sidebar
    */
-  const openSidebar = () => {
-    setSidebarOpened(true);
+  const openPrimaryNav = () => {
+    setPrimaryNavOpened(true);
   };
 
   /**
    * Close the sidebar
    */
-  const closeSidebar = () => {
-    setSidebarOpened(false);
+  const closePrimaryNav = () => {
+    setPrimaryNavOpened(false);
   };
 
   /**
    * Toggle the sidebar
    */
-  const toggleSidebar = () => {
-    setSidebarOpened(!sidebarOpened);
+  const togglePrimaryNav = () => {
+    setPrimaryNavOpened(!primaryNavOpened);
+  };
+
+  /**
+   * Open the secondary sidebar
+   */
+  const openSecondaryNav = () => {
+    setSecondaryNavOpened(true);
+  };
+
+  /**
+   * Close the secondary sidebar
+   */
+  const closeSecondaryNav = () => {
+    setSecondaryNavOpened(false);
+  };
+
+  /**
+   * Toggle the secondary sidebar
+   */
+  const toggleSecondaryNav = () => {
+    setSecondaryNavOpened(!secondaryNavOpened);
   };
 
   return {
-    sidebarOpened,
-    openSidebar,
-    closeSidebar,
-    toggleSidebar,
+    primaryNavOpened,
+    openPrimaryNav,
+    closePrimaryNav,
+    togglePrimaryNav,
+    secondaryNavOpened,
+    openSecondaryNav,
+    closeSecondaryNav,
+    toggleSecondaryNav,
   };
 };

@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import { routeLoaders } from "~/src/router/routeLoaders";
-import { SharedLayout } from "~/src/layout/SharedLayout/SharedLayout";
+//import { SharedLayout } from "~/src/layout/SharedLayout/SharedLayout";
+import { SharedLayout } from "~/src/layout/SharedLayout2/SharedLayout";
 import {
   authMiddleware,
   permissionMiddlewares,
