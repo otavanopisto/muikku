@@ -11089,7 +11089,6 @@ components:
               - publiclyVisible
               - userGroupEntityIds
               - workspaceEntityIds
-              - pinned
             properties:
               caption:
                 type: string
