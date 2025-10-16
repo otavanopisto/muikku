@@ -1208,6 +1208,7 @@
       "category_archived": "Archived",
       "category_expired": "Expired",
       "category_own": "Own",
+      "category_unread": "Unread",
       "create": "$t(common:labels.create)",
       "create_message": "New message",
       "create_announcement": "New announcement",

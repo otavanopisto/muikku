@@ -24,6 +24,12 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     text: "active",
   },
   {
+    location: "unread",
+    id: "unread",
+    icon: "folder",
+    text: "unread",
+  },
+  {
     location: "expired",
     id: "expired",
     icon: "folder",

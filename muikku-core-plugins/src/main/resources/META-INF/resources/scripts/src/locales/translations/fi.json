@@ -1209,6 +1209,7 @@
       "category_archived": "Arkistoidut",
       "category_expired": "Vanhentuneet",
       "category_own": "Omat",
+      "category_unread": "Lukemattomat",
       "create": "$t(common:labels.create)",
       "create_message": "Uusi viesti",
       "create_announcement": "Uusi tiedote",

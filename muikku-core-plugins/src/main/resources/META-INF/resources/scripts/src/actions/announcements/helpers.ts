@@ -109,6 +109,10 @@ export async function loadAnnouncementsHelper(
     case "expired":
       params.timeFrame = "EXPIRED";
       break;
+    case "unread":
+      params.timeFrame = "ALL";
+      params.onlyUnread = true;
+      break;
     case "archived":
       params.timeFrame = "ALL";
       params.onlyArchived = true;

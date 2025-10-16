@@ -38,7 +38,6 @@ interface AnnouncerToolbarProps extends WithTranslation {
  * AnnouncerToolbarState
  */
 interface AnnouncerToolbarState {}
-
 /**
  * AnnouncerToolbar
  */
