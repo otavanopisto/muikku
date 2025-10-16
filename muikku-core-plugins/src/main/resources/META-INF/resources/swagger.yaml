@@ -11089,6 +11089,7 @@ components:
               - publiclyVisible
               - userGroupEntityIds
               - workspaceEntityIds
+              - pinned
             properties:
               caption:
                 type: string
@@ -11096,6 +11097,8 @@ components:
                 type: string
               endDate:
                 type: string
+              pinned:
+                type: boolean
               publiclyVisible:
                 type: boolean
               startDate:
@@ -11133,6 +11136,8 @@ components:
               id:
                 type: integer
                 format: int64
+              pinned:
+                type: boolean
               publiclyVisible:
                 type: boolean
               publisherUserEntityId:

@@ -36,7 +36,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   
   public Announcement create(Long publisherUserEntityId, OrganizationEntity organizationEntity, 
       String caption, String content, Date created, Date startDate, 
-      Date endDate, Boolean archived, Boolean publiclyVisible) {
+      Date endDate, Boolean archived, Boolean publiclyVisible, boolean pinned) {
     Announcement announcement = new Announcement();
     announcement.setPublisherUserEntityId(publisherUserEntityId);
     announcement.setOrganizationEntityId(organizationEntity.getId());
@@ -47,6 +47,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     announcement.setEndDate(endDate);
     announcement.setArchived(archived);
     announcement.setPubliclyVisible(publiclyVisible);
+    announcement.setPinned(pinned);
     return persist(announcement);
   }
 
@@ -192,6 +193,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     
     criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)), criteriaBuilder.desc(root.get(Announcement_.id)));
+    criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.pinned)), criteriaBuilder.desc(root.get(Announcement_.id)));
     
     TypedQuery<Announcement> query = entityManager.createQuery(criteria);
     
@@ -228,6 +230,11 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   
   public Announcement updateArchived(Announcement announcement, Boolean archived) {
     announcement.setArchived(archived);
+    return persist(announcement);
+  }
+  
+  public Announcement updatePinned(Announcement announcement, boolean pinned) {
+    announcement.setPinned(pinned);
     return persist(announcement);
   }
   
