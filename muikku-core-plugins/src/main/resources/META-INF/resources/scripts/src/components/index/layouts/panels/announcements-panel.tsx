@@ -134,7 +134,7 @@ class AnnouncementsPanel extends React.Component<
               announcement.workspaces.length
                 ? "item-list__item--has-workspaces"
                 : ""
-            }`}
+            } ${announcement.unread ? "item-list__item--unread" : ""}`}
             href={`/announcements#${announcement.id}`}
             to={`/announcements#${announcement.id}`}
           >

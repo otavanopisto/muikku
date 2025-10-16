@@ -242,6 +242,8 @@ const loadMoreAnnouncements: LoadMoreAnnouncementsTriggerType =
     return loadAnnouncementsHelper.bind(this, null, null, false, false, false);
   };
 
+const announcerApi = MApi.getAnnouncerApi();
+
 /**
  * loadAnnouncement
  * @param location location
@@ -264,8 +266,6 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
     );
     try {
       if (!announcement) {
-        const announcerApi = MApi.getAnnouncerApi();
-
         // There is chance that user will try url with id that is not (anymore) available, then this try catch will take
         // care of it if that happens
         try {
@@ -297,6 +297,10 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
         );
       }
 
+      // Mark as read if unread
+      if (announcement.unread) {
+        announcerApi.markAnnouncementAsRead({ announcementId });
+      }
       dispatch({
         type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
         payload: {
@@ -361,8 +365,6 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
       if (!validateAnnouncement(dispatch, getState, data.announcement)) {
         return data.fail && data.fail();
       }
-
-      const announcerApi = MApi.getAnnouncerApi();
 
       try {
         const nAnnouncement: Announcement = Object.assign(
@@ -436,8 +438,6 @@ const deleteAnnouncement: DeleteAnnouncementTriggerType =
       getState: () => StateType
     ) => {
       try {
-        const announcerApi = MApi.getAnnouncerApi();
-
         await announcerApi.deleteAnnouncement({
           announcementId: data.announcement.id,
         });
@@ -467,7 +467,6 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
     ) => {
       const state = getState();
       const announcements: AnnouncementsState = state.announcements;
-      const announcerApi = MApi.getAnnouncerApi();
 
       await Promise.all(
         announcements.selected.map(async (announcement) => {
@@ -515,8 +514,6 @@ const createAnnouncement: CreateAnnouncementTriggerType =
       if (!validateAnnouncement(dispatch, getState, data.announcement)) {
         return data.fail && data.fail();
       }
-
-      const announcerApi = MApi.getAnnouncerApi();
 
       try {
         await announcerApi.createAnnouncement({
@@ -584,7 +581,6 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
         const loadUserGroups = options.loadUserGroups;
         delete options.loadUserGroups;
 
-        const announcerApi = MApi.getAnnouncerApi();
         const announcements = await announcerApi.getAnnouncements(fetchParams);
 
         if (loadUserGroups) {

@@ -54,7 +54,7 @@ class AnnouncementsAside extends React.Component<
                       announcement.workspaces.length
                         ? "item-list__item--has-workspaces"
                         : ""
-                    }`}
+                    } ${announcement.unread ? "item-list__item--unread" : ""}`}
                     href={`#${announcement.id}`}
                   >
                     <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
