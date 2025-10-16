@@ -650,7 +650,6 @@ class WorkspaceMaterials extends React.Component<
       this.props.materials.length === 0 && isEditable ? (
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown
-            openByHover
             modifier="material-management-tooltip"
             items={this.renderDropdownItems([
               {
@@ -705,7 +704,6 @@ class WorkspaceMaterials extends React.Component<
             className="material-admin-panel material-admin-panel--master-functions"
           >
             <Dropdown
-              openByHover
               modifier="material-management-tooltip"
               items={this.renderDropdownItems([
                 {
