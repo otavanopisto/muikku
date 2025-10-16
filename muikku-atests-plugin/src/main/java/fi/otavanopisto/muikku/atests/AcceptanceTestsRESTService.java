@@ -635,7 +635,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
     
-    List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceMaterialId(workspaceMaterialId);
+    List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeId(workspaceMaterialId);
     for (WorkspaceNodeEvaluation evaluation : evaluations) {
       evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
     }

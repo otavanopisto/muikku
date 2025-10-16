@@ -831,7 +831,7 @@ public class WorkspaceMaterialController {
 
   public List<Long> listVisibleWorkspaceAssignmentIds(WorkspaceFolder workspaceFolder) {
     Set<WorkspaceMaterialAssignmentType> types = Set.of(WorkspaceMaterialAssignmentType.EVALUATED, WorkspaceMaterialAssignmentType.EXERCISE); 
-    return workspaceMaterialDAO.listIdsByParentAndAssignmentTypesAndHidden(workspaceFolder, types);
+    return workspaceMaterialDAO.listIdsByParentAndAssignmentTypesAndHidden(workspaceFolder, types, false);
   }
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity,

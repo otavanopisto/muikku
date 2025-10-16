@@ -793,7 +793,7 @@ public class EvaluationController {
     return workspaceNodeEvaluationDAO.findById(id);
   }
 
-  public List<WorkspaceNodeEvaluation> listWorkspaceNodeEvaluationsByWorkspaceMaterialId(Long workspaceNodeId) {
+  public List<WorkspaceNodeEvaluation> listWorkspaceNodeEvaluationsByWorkspaceNodeId(Long workspaceNodeId) {
     return workspaceNodeEvaluationDAO.listByWorkspaceNodeId(workspaceNodeId);
   }
   
