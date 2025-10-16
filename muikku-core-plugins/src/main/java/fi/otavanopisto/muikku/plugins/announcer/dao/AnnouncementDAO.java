@@ -192,8 +192,11 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     
-    criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)), criteriaBuilder.desc(root.get(Announcement_.id)));
-    criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.pinned)), criteriaBuilder.desc(root.get(Announcement_.id)));
+    criteria.orderBy(
+        criteriaBuilder.desc(root.get(Announcement_.pinned)),
+        criteriaBuilder.desc(root.get(Announcement_.startDate)),
+        criteriaBuilder.desc(root.get(Announcement_.id))
+    );
     
     TypedQuery<Announcement> query = entityManager.createQuery(criteria);
     
