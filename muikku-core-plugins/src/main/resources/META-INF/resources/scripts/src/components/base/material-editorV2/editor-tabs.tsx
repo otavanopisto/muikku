@@ -1082,7 +1082,7 @@ export const MetadataTab = (props: MetadataTabProps) => {
             wcagLabel="materialLicense"
             wcagDesc={t("wcag.materialLicense", { ns: "workspace" })}
             modifier="material-editor"
-            value={editorState.currentDraftNodeValue.license || null}
+            value={editorState.currentDraftNodeValue.license}
             onChange={handleLicenseChange}
           />
         </div>
