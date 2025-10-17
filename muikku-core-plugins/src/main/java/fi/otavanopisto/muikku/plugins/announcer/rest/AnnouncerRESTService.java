@@ -238,7 +238,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       }
     }
     
-    boolean pinned = false;
+    boolean pinned = oldAnnouncement.isPinned();
     
     if (oldAnnouncement.isPinned() != restModel.isPinned() && sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       pinned = restModel.isPinned();
