@@ -655,6 +655,7 @@ public class MatriculationRESTService {
     result.setYear(grade.getYear());
     result.setTerm(grade.getTerm());
     result.setGrade(grade.getGrade());
+    result.setTotalPoints(grade.getTotalPoints());
     result.setGradeDate(grade.getGradeDate());
 
     return result;
