@@ -19,6 +19,7 @@ import { WorkspaceJournal } from "~/src/pages/WorkspaceJournal";
 import { WorkspaceMaterials } from "~/src/pages/WorkspaceMaterials";
 import { WorkspaceUsers } from "~/src/pages/WorkspaceUsers";
 import { NotFound } from "~/src/pages/NotFound";
+import { ErrorBoundary } from "~/src/pages/ErrorBoundary/ErrorBoundary";
 
 export {
   Home,
@@ -42,4 +43,5 @@ export {
   WorkspaceMaterials,
   WorkspaceUsers,
   NotFound,
+  ErrorBoundary,
 };

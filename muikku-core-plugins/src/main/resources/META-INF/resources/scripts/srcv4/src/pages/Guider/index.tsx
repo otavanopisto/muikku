@@ -1,6 +1,6 @@
 import { Paper, Button } from "@mantine/core";
 import { ActionBar } from "~/src/components/ActionBar/ActionBar";
-import { PageLayout } from "~/src/layout/PageLayout/PageLayout";
+import { PageLayout } from "~/src/layouts/PageLayout/PageLayout";
 import StudentsList from "./StudentsList";
 
 /**

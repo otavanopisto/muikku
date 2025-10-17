@@ -3,7 +3,7 @@ import { useAtomValue } from "jotai";
 import { currentStudentAtom } from "~/src/atoms/guider";
 import { ActionBar } from "~/src/components/ActionBar/ActionBar";
 import { AsyncState } from "~/src/components/AsyncState/AsyncState";
-import { PageLayout } from "~/src/layout/PageLayout/PageLayout";
+import { PageLayout } from "~/src/layouts/PageLayout/PageLayout";
 import {
   createAsyncError,
   parseAsyncStateFromQuery,

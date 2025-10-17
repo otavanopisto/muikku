@@ -1,7 +1,7 @@
 import { Group, Text, Loader, Title } from "@mantine/core";
-import { NavbarSubLink } from "~/src/components";
 import { currentStudentAtom } from "~/src/atoms/guider";
 import { useAtomValue } from "jotai";
+import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
 
 /**
  * StudentNavigationContentProps - Props for student navigation content
@@ -39,52 +39,45 @@ export function StudentNavigationContent(
 
   return (
     <>
-      {/* Student name as a sub-link */}
-      {/* <NavbarSubLink
-        label={selectedStudent.name}
-        link={`/guider/${selectedStudent.id}`}
-        parentRoute={parentRoute}
-      /> */}
-
       <Title order={4}>
         {currentStudentData.firstName} {currentStudentData.lastName}
       </Title>
 
       {/* Student-specific sub-links */}
-      <NavbarSubLink
+      <NavbarLink
         label="Perustiedot | Tilanne"
         link={`/guider/${currentStudentData.id}/`}
-        //parentRoute={parentRoute}
+        exactMatch
       />
-      <NavbarSubLink
+      <NavbarLink
         label="Aktiivisuus"
         link={`/guider/${currentStudentData.id}/activity`}
-        //parentRoute={parentRoute}
+        exactMatch
       />
-      <NavbarSubLink
+      <NavbarLink
         label="Opiskelusuunnitelma (HOPS)"
         link={`/guider/${currentStudentData.id}/hops`}
-        //parentRoute={parentRoute}
+        exactMatch
       />
-      <NavbarSubLink
+      <NavbarLink
         label="Oppimisen tuki"
         link={`/guider/${currentStudentData.id}/pedagogy-support`}
-        //parentRoute={parentRoute}
+        exactMatch
       />
-      <NavbarSubLink
+      <NavbarLink
         label="Ohjaussuhde"
         link={`/guider/${currentStudentData.id}/guidance-relationship`}
-        //parentRoute={parentRoute}
+        exactMatch
       />
-      <NavbarSubLink
+      <NavbarLink
         label="Opintohistoria"
         link={`/guider/${currentStudentData.id}/study-history`}
-        //parentRoute={parentRoute}
+        exactMatch
       />
-      <NavbarSubLink
+      <NavbarLink
         label="Tiedostot"
         link={`/guider/${currentStudentData.id}/files`}
-        //parentRoute={parentRoute}
+        exactMatch
       />
     </>
   );

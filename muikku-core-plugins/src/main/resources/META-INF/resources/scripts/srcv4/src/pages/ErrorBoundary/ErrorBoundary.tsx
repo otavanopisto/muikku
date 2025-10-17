@@ -6,7 +6,7 @@ import { useRouteError } from "react-router";
  * ErrorBoundaryPage
  * @returns React.ReactNode
  */
-export function ErrorBoundaryPage() {
+export function ErrorBoundary() {
   const error = useRouteError();
 
   /**

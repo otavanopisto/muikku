@@ -1,4 +1,4 @@
-.control {
+.link {
   display: block;
   width: 100%;
   padding: var(--mantine-spacing-xs);
@@ -8,31 +8,12 @@
   transition: all 0.2s ease;
 }
 
-.control:hover {
+.link:hover {
   background-color: var(--mantine-color-gray-0);
   color: var(--mantine-color-text);
 }
 
-.control.active {
+.link.active {
   background-color: var(--mantine-color-blue-0);
   color: var(--mantine-color-blue-6);
-}
-
-.control.collapsed {
-  padding: var(--mantine-spacing-xs);
-  justify-content: center;
-}
-
-.mainContent {
-  width: 100%;
-}
-
-.icon {
-  flex-shrink: 0;
-}
-
-.text {
-  font-weight: 500;
-  font-size: var(--mantine-font-size-sm);
-  line-height: 1;
 }

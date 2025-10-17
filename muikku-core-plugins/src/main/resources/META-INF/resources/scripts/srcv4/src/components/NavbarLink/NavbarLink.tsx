@@ -1,21 +1,16 @@
 import { useMemo } from "react";
-import {
-  Group,
-  Text,
-  ThemeIcon,
-  UnstyledButton,
-  Tooltip,
-  Loader,
-} from "@mantine/core";
-import { Link, useLocation, useParams, useNavigate } from "react-router";
+import { Group, Text, ThemeIcon, UnstyledButton, Tooltip } from "@mantine/core";
+import { useParams, useResolvedPath, useMatch, Link } from "react-router";
 import classes from "./NavbarLink.module.css";
-import type { NavigationLinkItem } from "~/src/layout/helpers/navigation";
+import type { NavigationLink } from "~/src/layouts/helpers/navigation";
 
 /**
  * NavbarLinkProps - Interface for navbar link props
  */
-interface NavbarLinkProps extends NavigationLinkItem {
+interface NavbarLinkProps extends Omit<NavigationLink, "type"> {
   collapsed?: boolean;
+  onSelect?: () => void;
+  exactMatch?: boolean;
 }
 
 /**
@@ -28,182 +23,81 @@ export function NavbarLink(props: NavbarLinkProps) {
     icon: Icon,
     label,
     link,
-    onClick,
-    queryParams,
-    replaceState = false,
-    active = false,
     collapsed = false,
-    loading = false,
+    onSelect,
+    exactMatch = false,
   } = props;
 
-  const location = useLocation();
   const params = useParams();
-  const navigate = useNavigate();
 
-  // For main navigation links, we can restrict query params to their own route
-  const parentRoute = useMemo(() => {
-    if (link) {
-      return typeof link === "function" ? link(params) : link;
+  const linkValue = useMemo(() => {
+    if (link instanceof Function) {
+      return link(params);
     }
-    return location.pathname;
-  }, [link, params, location.pathname]);
+    return link;
+  }, [link, params]);
 
-  // Check if query parameters are allowed on current route
-  const areQueryParamsAllowed = useMemo(() => {
-    if (!queryParams) return true;
-
-    // For main links, restrict to their own route
-    return location.pathname.startsWith(parentRoute);
-  }, [queryParams, parentRoute, location.pathname]);
-
-  // Check if query parameters are currently active
-  const isQueryParamsActive = useMemo(() => {
-    if (!queryParams || !areQueryParamsAllowed) return false;
-
-    const currentSearchParams = new URLSearchParams(location.search);
-    return Object.entries(queryParams).every(([key, value]) => {
-      const currentValue = currentSearchParams.get(key);
-      return currentValue === String(value);
-    });
-  }, [queryParams, areQueryParamsAllowed, location.search]);
-
-  const isActive = useMemo(
-    () =>
-      active ||
-      isQueryParamsActive ||
-      (link &&
-        (typeof link === "function"
-          ? link(params) === location.pathname
-          : link === location.pathname)),
-    [active, isQueryParamsActive, link, location.pathname, params]
-  );
-
-  /**
-   * Handle query parameter navigation with toggle behavior
-   */
-  const handleQueryParams = async () => {
-    if (queryParams && areQueryParamsAllowed) {
-      const currentSearchParams = new URLSearchParams(location.search);
-
-      // Check if all query params are currently active
-      const allParamsActive = Object.entries(queryParams).every(
-        ([key, value]) => {
-          const currentValue = currentSearchParams.get(key);
-          return currentValue === String(value);
-        }
-      );
-
-      if (allParamsActive) {
-        // Remove the query parameters (toggle off)
-        Object.keys(queryParams).forEach((key) => {
-          currentSearchParams.delete(key);
-        });
-      } else {
-        // Add/update the query parameters (toggle on)
-        Object.entries(queryParams).forEach(([key, value]) => {
-          if (value !== null && value !== undefined) {
-            currentSearchParams.set(key, String(value));
-          } else {
-            currentSearchParams.delete(key);
-          }
-        });
-      }
-
-      const newSearch = currentSearchParams.toString();
-      const newUrl = `${location.pathname}${newSearch ? `?${newSearch}` : ""}`;
-
-      if (replaceState) {
-        await navigate(newUrl, { replace: true });
-      } else {
-        await navigate(newUrl);
-      }
-    }
-  };
+  const resolved = useResolvedPath(linkValue);
+  const match = useMatch({ path: resolved.pathname, end: exactMatch });
 
   /**
    * Handle click
    */
   const handleClick = () => {
-    if (onClick) {
-      onClick();
-    }
-    if (queryParams && areQueryParamsAllowed) {
-      void handleQueryParams();
-    }
+    onSelect?.();
+
+    // if (queryParams && areQueryParamsAllowed) {
+    //   void handleQueryParams();
+    // }
   };
 
-  // Icon component
-  const IconComponent = (
-    <ThemeIcon
-      variant="light"
-      size={36}
-      className={classes.icon}
-      style={{
-        backgroundColor: isActive ? "#228be6" : "transparent",
-        color: isActive ? "white" : "#228be6",
-      }}
-    >
-      {loading ? <Loader size={16} /> : <Icon size={20} />}
-    </ThemeIcon>
-  );
-
-  // Text component - hidden when collapsed
-  const TextComponent = !collapsed && (
-    <Text
-      className={classes.text}
-      style={{
-        opacity: collapsed ? 0 : 1,
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-      }}
-    >
-      {label}
-    </Text>
-  );
-
   // Main content
-  const MainLinkContent = (
+  const renderMainLinkContent = ({ isActive }: { isActive: boolean }) => (
     <Group gap="md" align="center" className={classes.mainContent}>
-      {IconComponent}
-      {TextComponent}
+      {Icon && (
+        <ThemeIcon
+          variant="light"
+          size={36}
+          className={classes.icon}
+          style={{
+            backgroundColor: isActive ? "#228be6" : "transparent",
+            color: isActive ? "white" : "#228be6",
+          }}
+        >
+          <Icon size={20} />
+          {/* {loading ? <Loader size={16} /> : <Icon size={20} />} */}
+        </ThemeIcon>
+      )}
+      <Text
+        className={classes.text}
+        style={{
+          opacity: collapsed ? 0 : 1,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+        }}
+      >
+        {label}
+      </Text>
     </Group>
   );
 
   // Render the link/button
-  const linkElement = link ? (
+  const linkElement = (
     <UnstyledButton
       component={Link}
-      to={link instanceof Function ? link(params) : link}
+      to={linkValue}
       onClick={handleClick}
-      className={`${classes.control} ${isActive ? classes.active : ""} ${
-        collapsed ? classes.collapsed : ""
-      }`}
       p="sm"
+      className={`${classes.link} ${match ? classes.active : ""}`}
     >
       {collapsed ? (
         <Tooltip label={label} position="right" withArrow>
-          {MainLinkContent}
+          {renderMainLinkContent({ isActive: match ? true : false })}
         </Tooltip>
       ) : (
         <Group justify="space-between" gap={0}>
-          {MainLinkContent}
+          {renderMainLinkContent({ isActive: match ? true : false })}
         </Group>
-      )}
-    </UnstyledButton>
-  ) : (
-    <UnstyledButton
-      onClick={handleClick}
-      className={`${classes.control} ${isActive ? classes.active : ""} ${
-        collapsed ? classes.collapsed : ""
-      }`}
-      p="sm"
-    >
-      {collapsed ? (
-        <Tooltip label={label} position="right" withArrow>
-          {MainLinkContent}
-        </Tooltip>
-      ) : (
-        <Group gap={0}>{MainLinkContent}</Group>
       )}
     </UnstyledButton>
   );

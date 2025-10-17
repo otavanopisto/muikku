@@ -25,8 +25,6 @@
 
 .links {
   flex: 1;
-  margin-left: calc(var(--mantine-spacing-md) * -1);
-  margin-right: calc(var(--mantine-spacing-md) * -1);
 }
 
 .linksInner {

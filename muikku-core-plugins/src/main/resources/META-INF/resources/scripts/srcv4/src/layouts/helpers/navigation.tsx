@@ -1,4 +1,4 @@
-import { AuthService, type User } from "~/src/services/auth";
+import { type User } from "~/src/services/auth";
 import {
   IconHome,
   IconBuilding,
@@ -21,31 +21,42 @@ import { StudentNavigationContent } from "~/src/router/components/StudentNavigat
 export type NavigationContext = "environment" | "workspace";
 
 /**
- * NavigationLink - Interface for a navigation link (now supports all navigation features)
+ * BaseNavigationItem - Base interface for all navigation items
  */
-export interface NavigationLink {
-  type: "link";
+export interface BaseNavigationItem {
   label: string;
-  // Navigation options
+  icon?: React.FC<any>;
+  canAccess?: (
+    user: User | null,
+    workspacePermissions?: WorkspacePermissions | null
+  ) => boolean;
+  contents?: NavigationContent[];
+}
+
+/**
+ * NavigationLink - Interface for navigation link
+ */
+export interface NavigationLink extends BaseNavigationItem {
+  type: "link";
   link: To | ((params: Params) => To);
   onClick?: () => void;
   replaceState?: boolean;
-  // State
   active?: boolean;
   loading?: boolean;
 }
 
 /**
- * NavigationQueryLink - Interface for a navigation query link
+ * NavigationQueryLink - Interface for navigation query link
  */
-export interface NavigationQueryLink {
+export interface NavigationQueryLink extends BaseNavigationItem {
   type: "queryLink";
-  label: string;
   link: To | ((params: Params) => To);
+  queryName: string;
+  queryValue: string;
 }
 
 /**
- * NavigationContentComponent - Navigation content component
+ * NavigationDynamicContent - Interface for navigation dynamic content
  */
 export interface NavigationDynamicContent {
   type: "component";
@@ -53,57 +64,20 @@ export interface NavigationDynamicContent {
   component: React.ReactNode;
 }
 
-/**
- * BaseNavigationItem - Common properties for all navigation items
- */
-interface BaseNavigationItem {
-  label: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  icon: React.FC<any>;
-  onClick?: () => void;
-  // Permission checking
-  canAccess?: (
-    user: User | null,
-    workspacePermissions?: WorkspacePermissions | null
-  ) => boolean;
-  // Additional props
-  active?: boolean;
-  // Loading state for dynamic content
-  loading?: boolean;
-}
-
-/**
- * NavigationLinkItem - Navigation link item
- */
-export interface NavigationLinkItem extends BaseNavigationItem {
-  type: "link";
-  // Navigation options
-  link?: string | ((params: Params) => string);
-  // Query parameter navigation
-  queryParams?: Record<string, string | number | boolean>;
-  replaceState?: boolean;
-}
-
-/**
- * NavigationGroupItem - Navigation group item
- */
-export interface NavigationGroupItem extends BaseNavigationItem {
-  type: "folder";
-  basePath: string | ((params: Params) => string);
-  contents: NavigationContent[];
-  initiallyOpened?: boolean;
-}
-
-/**
- * NavigationItem - Discriminated union of navigation item types
- */
-export type NavigationItem = NavigationLinkItem | NavigationGroupItem;
-
-// Union type for navigation content
+// Union for content items (nested items)
 export type NavigationContent =
   | NavigationLink
   | NavigationQueryLink
   | NavigationDynamicContent;
+
+// Union for top-level navigation items
+export type TopLevelNavigationItem = NavigationLink | NavigationQueryLink;
+
+// Union for any navigation item
+export type NavigationItem =
+  | NavigationLink
+  | NavigationQueryLink
+  | NavigationContent;
 
 export const navigationItemsEnviroment: NavigationItem[] = [
   {
@@ -128,52 +102,47 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     canAccess: () => true,
   },
   {
-    type: "folder",
+    type: "link",
     label: "Viestin",
     icon: IconMail,
-    basePath: "/communicator",
+    link: "/communicator?tab=Inbox",
     contents: [
       {
         type: "queryLink",
         label: "Saapuneet",
-        link: {
-          pathname: "/communicator",
-          search: "?tab=Inbox",
-        },
+        link: "?tab=Inbox",
+        queryName: "tab",
+        queryValue: "Inbox",
       },
       {
         type: "queryLink",
         label: "Lukemattomat",
-        link: {
-          pathname: "/communicator",
-          search: "?tab=Unread",
-        },
+        link: "?tab=Unread",
+        queryName: "tab",
+        queryValue: "Unread",
       },
       {
         type: "queryLink",
         label: "Lähetetyt",
-        link: {
-          pathname: "/communicator",
-          search: "?tab=Sent",
-        },
+        link: "?tab=Sent",
+        queryName: "tab",
+        queryValue: "Sent",
       },
       {
         type: "queryLink",
         label: "Roskakori",
-        link: {
-          pathname: "/communicator",
-          search: "?tab=Trash",
-        },
+        link: "?tab=Trash",
+        queryName: "tab",
+        queryValue: "Trash",
       },
     ],
-    initiallyOpened: false,
     canAccess: (user) => (user?.loggedIn && user?.isActive) ?? false,
   },
   {
-    type: "folder",
+    type: "link",
     label: "Ohjaamo",
     icon: IconList,
-    basePath: "/guider",
+    link: "/guider",
     contents: [
       { type: "link", label: "Opiskelijalistaus", link: "/guider" },
       { type: "link", label: "Tehtävät", link: "/guider/tasks" },
@@ -220,20 +189,14 @@ export const navigationItemsEnviroment: NavigationItem[] = [
     type: "link",
     label: "Kirjaudu sisään",
     icon: IconLogin,
-    onClick: () => {
-      // This will be handled by the parent component
-      AuthService.login();
-    },
+    link: "/login",
     canAccess: (user) => !(user?.loggedIn ?? false),
   },
   {
     type: "link",
     label: "Kirjaudu ulos",
     icon: IconLogout,
-    onClick: () => {
-      // This will be handled by the parent component
-      AuthService.logout();
-    },
+    link: "/logout",
     canAccess: (user) => user?.loggedIn ?? false,
   },
 ];
@@ -298,10 +261,7 @@ const navigationItemsWorkspace: NavigationItem[] = [
     type: "link",
     label: "Kirjaudu ulos",
     icon: IconLogout,
-    onClick: () => {
-      // This will be handled by the parent component
-      AuthService.logout();
-    },
+    link: "/logout",
     canAccess: (user) => user?.loggedIn ?? false,
   },
 ];
@@ -318,7 +278,7 @@ export function filterNavigationItems(
   workspacePermissions?: WorkspacePermissions | null
 ): NavigationItem[] {
   return items.filter((item) => {
-    if (!item.canAccess) {
+    if (!("canAccess" in item) || !item.canAccess) {
       return true; // Show if no access check defined
     }
     return item.canAccess(user, workspacePermissions);

@@ -1,15 +1,15 @@
-import { Outlet } from "react-router";
 import { userAtom } from "~/src/atoms/auth";
 import { useAtomValue } from "jotai";
 import {
   getNavigationItems,
   type NavigationContext,
-} from "~/src/layout/helpers/navigation";
-import classes from "./SharedLayout.module.css";
+} from "~/src/layouts/helpers/navigation";
+import classes from "./ErrorBoundaryLayout.module.css";
 import { workspacePermissionsAtom } from "~/src/atoms/permissions";
+import { ErrorBoundary } from "~/src/pages/";
 import { useAppLayout } from "~/src/hooks/useAppLayout";
-import { PrimaryNavSection } from "./components/PrimaryNavSection";
-import { SecondaryNavSection } from "./components/SecondaryNavSection";
+import { SecondaryNavSection } from "~/src/layouts/SharedLayout/components/SecondaryNavSection";
+import { PrimaryNavSection } from "~/src/layouts/SharedLayout/components/PrimaryNavSection";
 
 /**
  * Shared layout props
@@ -23,7 +23,7 @@ interface SharedLayoutProps {
  * Shared layout for the application
  * @param props - Shared layout props
  */
-export function SharedLayout(props: SharedLayoutProps) {
+export function ErrorBoundaryLayout(props: SharedLayoutProps) {
   const { title = "Muikku V4" } = props;
   const user = useAtomValue(userAtom);
   const workspacePermissions = useAtomValue(workspacePermissionsAtom);
@@ -33,6 +33,7 @@ export function SharedLayout(props: SharedLayoutProps) {
     secondaryNavOpened,
     togglePrimaryNav,
     toggleSecondaryNav,
+    selectedNavItem,
   } = useAppLayout();
 
   return (
@@ -68,19 +69,7 @@ export function SharedLayout(props: SharedLayoutProps) {
         >
           {secondaryNavOpened && (
             <SecondaryNavSection
-              title="Etusivu"
-              items={{
-                environment: getNavigationItems(
-                  user,
-                  workspacePermissions,
-                  "environment"
-                ),
-                workspace: getNavigationItems(
-                  user,
-                  workspacePermissions,
-                  "workspace"
-                ),
-              }}
+              selectedItem={selectedNavItem}
               collapsed={!secondaryNavOpened} // Use desktop collapsed state
               onToggleCollapse={toggleSecondaryNav} // Toggle desktop collapsed state
             />
@@ -88,7 +77,7 @@ export function SharedLayout(props: SharedLayoutProps) {
         </div>
       </nav>
       <main className={classes.mainContent}>
-        <Outlet />
+        <ErrorBoundary />
       </main>
     </div>
   );

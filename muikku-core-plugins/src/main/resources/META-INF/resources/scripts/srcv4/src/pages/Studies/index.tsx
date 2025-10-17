@@ -1,5 +1,5 @@
 import { Text, Paper } from "@mantine/core";
-import { PageLayout } from "~/src/layout/PageLayout/PageLayout";
+import { PageLayout } from "~/src/layouts/PageLayout/PageLayout";
 
 /**
  * Studies - Studies page

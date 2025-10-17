@@ -1,17 +1,6 @@
 import { ErrorBoundaryRoot } from "./ErrorBoundaryRoot/ErrorBoundaryRoot";
-import { ErrorBoundaryPage } from "./ErrorBoundaryPage/ErrorBoundaryPage";
-import { ErrorBoundaryLayout } from "./ErrorBoundaryLayout/ErrorBoundaryLayout";
-import { NavbarNested } from "./NavbarNested/NavbarNested";
-import { LinksGroup as NavbarLinksGroup } from "./NavbarLinksGroup/NavbarLinksGroup";
-import { NavbarSubLink } from "./NavbarSubLink/NavbarSubLink";
 import { DisconnectModal } from "./DisconnectModal/DisconnectModal";
+import { NavbarLink } from "./NavbarLink/NavbarLink";
+import { NavbarQueryLink } from "./NavbarQueryLink/NavbarQueryLink";
 
-export {
-  ErrorBoundaryRoot,
-  ErrorBoundaryPage,
-  ErrorBoundaryLayout,
-  NavbarNested,
-  NavbarLinksGroup,
-  NavbarSubLink,
-  DisconnectModal,
-};
+export { ErrorBoundaryRoot, DisconnectModal, NavbarLink, NavbarQueryLink };

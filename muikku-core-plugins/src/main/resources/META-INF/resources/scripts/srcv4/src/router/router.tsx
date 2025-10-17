@@ -1,7 +1,5 @@
 import { createBrowserRouter } from "react-router";
 import { routeLoaders } from "~/src/router/routeLoaders";
-//import { SharedLayout } from "~/src/layout/SharedLayout/SharedLayout";
-import { SharedLayout } from "~/src/layout/SharedLayout2/SharedLayout";
 import {
   authMiddleware,
   permissionMiddlewares,
@@ -29,13 +27,10 @@ import {
   WorkspaceHelp,
   NotFound,
   GuiderStudent,
+  ErrorBoundary,
 } from "~/src/pages/";
-import {
-  ErrorBoundaryRoot,
-  ErrorBoundaryPage,
-  ErrorBoundaryLayout,
-} from "~/src/components";
-import { PageLayout } from "../layout/PageLayout/PageLayout";
+import { ErrorBoundaryRoot } from "~/src/components";
+import { PageLayout, SharedLayout, ErrorBoundaryLayout } from "~/src/layouts";
 
 // Router
 export const router = createBrowserRouter([
@@ -56,7 +51,7 @@ export const router = createBrowserRouter([
         middleware: [authMiddleware],
         children: [
           {
-            errorElement: <ErrorBoundaryPage />,
+            errorElement: <ErrorBoundary />,
             children: [
               {
                 path: "dashboard",
@@ -92,11 +87,10 @@ export const router = createBrowserRouter([
                 path: "guider",
                 element: <Guider />,
                 loader: routeLoaders.guiderLoader,
-                errorElement: <ErrorBoundaryPage />,
                 middleware: [permissionMiddlewares.guiderView],
                 children: [
                   {
-                    index: true,
+                    index: false,
                     element: <>Opiskelijalistaus</>,
                     //loader: guiderHomeLoader,
                   },
@@ -110,7 +104,6 @@ export const router = createBrowserRouter([
               {
                 path: "guider/:studentId",
                 element: <GuiderStudent />,
-                errorElement: <ErrorBoundaryPage />,
                 loader: routeLoaders.guiderStudentLoader,
                 middleware: [permissionMiddlewares.guiderView],
                 children: [
@@ -245,7 +238,7 @@ export const router = createBrowserRouter([
         loader: routeLoaders.workspaceLoader,
         children: [
           {
-            errorElement: <ErrorBoundaryPage />,
+            errorElement: <ErrorBoundary />,
             children: [
               {
                 index: true,
@@ -304,6 +297,15 @@ export const router = createBrowserRouter([
         loader: () => {
           // This loader will run before the component renders
           window.location.replace(`/login?redirectUrl=${window.location.href}`);
+          return null;
+        },
+      },
+      {
+        path: "logout",
+        element: null, // This will never render, route loader will handle the redirect, which backend catches
+        loader: () => {
+          // This loader will run before the component renders
+          window.location.replace(`/logout`);
           return null;
         },
       },
