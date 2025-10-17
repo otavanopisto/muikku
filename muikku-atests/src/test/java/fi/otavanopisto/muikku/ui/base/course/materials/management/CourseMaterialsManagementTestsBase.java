@@ -46,6 +46,7 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         click("#editingMasterSwitch");
         waitForPresent(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
         click(".material-admin-panel--master-functions .button-pill__icon.icon-plus");
+        waitAndClick(".dropdown--material-management-tooltip .dropdown__container-item:first-child .link--material-management-dropdown");
         waitAndClickAndConfirm(".material-admin-panel--chapter-functions .icon-pencil", ".material-editor--visible .form-element__input--material-editor-title", 5, 3000);
         waitForVisible(".material-editor--visible .form-element__input--material-editor-title");
         clearElement(".material-editor--visible .form-element__input--material-editor-title");
@@ -337,8 +338,8 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         click("#editingMasterSwitch");
         waitForPresent(".content-panel__chapter .material-admin-panel--master-functions .button-pill__icon.icon-plus");
         click(".content-panel__chapter .material-admin-panel--master-functions .button-pill__icon.icon-plus");
-        waitForPresent(".dropdown--material-management.visible .dropdown__container-item:nth-child(2)");
-        click(".dropdown--material-management.visible .dropdown__container-item:nth-child(2)");
+        waitForPresent(".dropdown--material-management.visible .dropdown__container-item:nth-child(3)");
+        click(".dropdown--material-management.visible .dropdown__container-item:nth-child(3)");
         waitForPresent(".material-admin-panel--workspace-materials .button-pill--material-management-page:first-child");
         click(".material-admin-panel--workspace-materials .button-pill--material-management-page:first-child");
         waitForPresent(".material-editor--visible .form-element__input--material-editor-title");
@@ -360,7 +361,6 @@ public class CourseMaterialsManagementTestsBase extends AbstractUITest{
         waitAndClick(".button-pill--material-editor-delete-page");
         sleep(2500);
         waitAndClickAndConfirmVisibilityGoesAway(".button--standard-ok", ".button--standard-ok", 3, 1000);
-//        waitAndClick(".button--standard-ok");
         sleep(2500);
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent("#editingMasterSwitch");
