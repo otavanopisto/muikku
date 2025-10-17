@@ -62,12 +62,13 @@ export const useAppLayout = () => {
   const selectNavItem = (item: NavigationItem) => {
     setSelectedNavItem(item);
 
-    /* if (item.contents && item.contents.length > 0) {
+    if ("contents" in item && item.contents && item.contents.length > 0) {
       closePrimaryNav();
       openSecondaryNav();
     } else {
+      openPrimaryNav();
       closeSecondaryNav();
-    } */
+    }
   };
 
   return {

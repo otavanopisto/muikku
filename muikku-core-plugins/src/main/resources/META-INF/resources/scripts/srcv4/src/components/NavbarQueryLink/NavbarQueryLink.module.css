@@ -6,7 +6,6 @@
   text-decoration: none;
   border-radius: var(--mantine-radius-sm);
   transition: all 0.2s ease;
-  margin-left: var(--mantine-spacing-md);
 }
 
 .link:hover {

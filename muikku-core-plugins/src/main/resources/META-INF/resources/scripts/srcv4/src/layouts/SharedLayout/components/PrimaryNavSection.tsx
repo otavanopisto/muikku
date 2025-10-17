@@ -1,5 +1,4 @@
-import { Group, Title, Button, ScrollArea, Box } from "@mantine/core";
-import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { Group, Title, ScrollArea, Box } from "@mantine/core";
 import { NavbarLink } from "~/src/components/NavbarLink/NavbarLink";
 import classes from "./PrimaryNavSection.module.css";
 import { type NavigationItem } from "~/src/layouts/helpers/navigation";
@@ -26,8 +25,8 @@ interface PrimaryNavSectionProps {
  * @returns Navbar nested component
  */
 export function PrimaryNavSection(props: PrimaryNavSectionProps) {
-  const { items, collapsed = false, onToggleCollapse, title } = props;
-  const { toggleSecondaryNav, selectNavItem } = useAppLayout();
+  const { items, collapsed = false, title } = props;
+  const { selectNavItem } = useAppLayout();
 
   const links = items.environment.map((item) => {
     switch (item.type) {
@@ -69,50 +68,6 @@ export function PrimaryNavSection(props: PrimaryNavSectionProps) {
               >
                 {title}
               </Title>
-            )}
-
-            {onToggleCollapse && (
-              <Button
-                variant="subtle"
-                color="gray"
-                size="xs"
-                onClick={onToggleCollapse}
-                className={classes.toggleButton}
-                style={{
-                  padding: "4px",
-                  minWidth: "auto",
-                  height: "auto",
-                }}
-                p="xs"
-              >
-                {collapsed ? (
-                  <IconChevronRight size={16} />
-                ) : (
-                  <IconChevronLeft size={16} />
-                )}
-              </Button>
-            )}
-
-            {toggleSecondaryNav && (
-              <Button
-                variant="subtle"
-                color="gray"
-                size="xs"
-                onClick={toggleSecondaryNav}
-                className={classes.toggleButton}
-                style={{
-                  padding: "4px",
-                  minWidth: "auto",
-                  height: "auto",
-                }}
-                p="xs"
-              >
-                {collapsed ? (
-                  <IconChevronRight size={16} />
-                ) : (
-                  <IconChevronLeft size={16} />
-                )}
-              </Button>
             )}
           </Group>
         </Group>
