@@ -62,6 +62,7 @@ const useExamAttendees = (props: UseExamAttendeesProps) => {
           workspaceApi.getWorkspaceStudents({
             workspaceEntityId: workspaceId,
             active: true,
+            maxResults: 999,
             q: "",
           }),
         ]);
