@@ -155,6 +155,8 @@ export interface CreateAnnouncementTriggerType {
   }): AnyActionType;
 }
 
+const announcerApi = MApi.getAnnouncerApi();
+
 /**
  * validateAnnouncement
  * @param dispatch dispatch
@@ -235,14 +237,44 @@ const loadAnnouncements: LoadAnnouncementsTriggerType =
   };
 
 /**
+ * markAllAsRead
+ * @param location location
+ * @param workspaceId workspaceId
+ * @param notOverrideCurrent notOverrideCurrent
+ * @param force force
+ */
+const markAllAsRead: LoadAnnouncementsTriggerType = function markAllAsRead(
+  location,
+  workspaceId
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    try {
+      await announcerApi.markAllAnnouncementsAsRead();
+      dispatch(loadAnnouncements(location, workspaceId, false, true));
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          "test",
+          //i18n.t("notifications.markAllAsReadError", {
+          //  ns: "messaging",
+          //}),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
  * loadMoreAnnouncements
  */
 const loadMoreAnnouncements: LoadMoreAnnouncementsTriggerType =
   function loadMoreAnnouncements() {
     return loadAnnouncementsHelper.bind(this, null, null, false, false, false);
   };
-
-const announcerApi = MApi.getAnnouncerApi();
 
 /**
  * loadAnnouncement
@@ -302,7 +334,7 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
         announcerApi.markAnnouncementAsRead({ announcementId });
 
         // Refresh the announcement object to reflect the read status
-        //dispatch(loadAnnouncements(location, workspaceId, true, false));
+        dispatch(loadAnnouncements(location, workspaceId, false, true));
       }
       dispatch({
         type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
@@ -627,6 +659,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
   };
 
 export {
+  markAllAsRead,
   loadAnnouncements,
   loadMoreAnnouncements,
   addToAnnouncementsSelected,

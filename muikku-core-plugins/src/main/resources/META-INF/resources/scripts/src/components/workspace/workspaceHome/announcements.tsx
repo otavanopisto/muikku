@@ -64,7 +64,7 @@ class WorkspaceAnnouncements extends React.Component<
                     }
                     key={a.id}
                     as="div"
-                    className="item-list__item item-list__item--announcements item-list__item--has-workspaces"
+                    className={`item-list__item item-list__item--announcements  ${a.unread ? "item-list__item--unread" : ""} item-list__item--has-workspaces`}
                   >
                     <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
                     <span className="item-list__text-body item-list__text-body--multiline">

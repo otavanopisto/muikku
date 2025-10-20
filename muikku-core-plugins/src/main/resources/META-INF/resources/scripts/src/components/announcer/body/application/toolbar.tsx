@@ -16,6 +16,8 @@ import {
 } from "~/components/general/application-panel/application-panel";
 import { ButtonPill } from "~/components/general/button";
 import {
+  markAllAsRead,
+  LoadAnnouncementsTriggerType,
   updateAnnouncement,
   UpdateAnnouncementTriggerType,
   RemoveFromAnnouncementsSelectedTriggerType,
@@ -31,6 +33,7 @@ import { Announcement } from "~/generated/client";
 interface AnnouncerToolbarProps extends WithTranslation {
   announcements: AnnouncementsState;
   updateAnnouncement: UpdateAnnouncementTriggerType;
+  markAllAsRead: LoadAnnouncementsTriggerType;
   removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType;
 }
 
@@ -57,6 +60,19 @@ class AnnouncerToolbar extends React.Component<
       this.restoreCurrentAnnouncement.bind(this);
     this.restoreSelectedAnnouncements =
       this.restoreSelectedAnnouncements.bind(this);
+    this.markAllAsRead = this.markAllAsRead.bind(this);
+  }
+
+  /**
+   * markAllAsRead
+   */
+  markAllAsRead() {
+    this.props.markAllAsRead(
+      this.props.announcements.location,
+      this.props.announcements.workspaceId,
+      false,
+      true
+    );
   }
 
   /**
@@ -239,6 +255,11 @@ class AnnouncerToolbar extends React.Component<
                 onClick={this.restoreSelectedAnnouncements}
               />
             ) : null}
+            <ButtonPill
+              buttonModifiers="mark-all-read"
+              icon="envelope-open"
+              onClick={this.markAllAsRead}
+            />
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>
       );
@@ -266,7 +287,7 @@ function mapStateToProps(state: StateType) {
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
   return bindActionCreators(
-    { updateAnnouncement, removeFromAnnouncementsSelected },
+    { updateAnnouncement, removeFromAnnouncementsSelected, markAllAsRead },
     dispatch
   );
 }
