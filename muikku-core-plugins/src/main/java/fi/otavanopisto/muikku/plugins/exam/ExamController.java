@@ -408,7 +408,7 @@ public class ExamController {
       if (attendance.getStarted() != null) {
         // ...unless it has ended too, in which case honor listContentsOfEndedExam flag
         if (listContentsOfEndedExam || attendance.getEnded() == null) {
-          List<WorkspaceNode> nodes = workspaceMaterialController.listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(folder, WorkspaceFolderType.DEFAULT);
+          List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(folder, WorkspaceFolderType.DEFAULT);
           List<ContentNode> contentNodes = new ArrayList<>();
           // See if assignment randomization is used
           boolean randomInPlay = settingsJson.getRandom() != ExamSettingsRandom.NONE && !StringUtils.isEmpty(attendanceEntity.getWorkspaceMaterialIds());
@@ -417,17 +417,29 @@ public class ExamController {
             randomAssignmentIds = Stream.of(attendanceEntity.getWorkspaceMaterialIds().split(",")).map(Long::parseLong).collect(Collectors.toSet());
           }
           for (WorkspaceNode node : nodes) {
-            // Skip assignments that were not randomly selected for the student 
-            if (randomInPlay && node instanceof WorkspaceMaterial && ((WorkspaceMaterial) node).isAssignment() && !randomAssignmentIds.contains(node.getId())) {
-              continue;
+            if (node instanceof WorkspaceMaterial) { // everything under folders is a page but let's be extra sure
+              // Always skip hidden theory pages
+              if (node.getHidden() && !((WorkspaceMaterial) node).isAssignment()) {
+                continue;
+              }
+              // Skip hidden assignments unless the student has answered them 
+              if (node.getHidden() && ((WorkspaceMaterial) node).isAssignment()) {
+                if (replyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntityId((WorkspaceMaterial) node, attendanceEntity.getUserEntityId()) == null) {
+                  continue;
+                }
+              }
+              // Skip assignments that were not randomly selected for the student 
+              if (randomInPlay && ((WorkspaceMaterial) node).isAssignment() && !randomAssignmentIds.contains(node.getId())) {
+                continue;
+              }
+              // Skip theory pages (used in evaluation)
+              if (!includeTheoryPages && !((WorkspaceMaterial) node).isAssignment()) {
+                continue;
+              }
+              contentNodes.add(workspaceMaterialController.createContentNode(node, null));
             }
-            // Skip theory pages (used in evaluation)
-            if (!includeTheoryPages && ((WorkspaceMaterial) node).getAssignmentType() == null) {
-              continue;
-            }
-            contentNodes.add(workspaceMaterialController.createContentNode(node, null));
           }
-          // Since we probably skipped quite a few assignments, adjust content node sibling ids manually
+          // Since we probably skipped quite a few nodes, adjust content node sibling ids manually
           for (int i = 1; i < contentNodes.size(); i++) {
             contentNodes.get(i).setNextSiblingId(contentNodes.get(i - 1).getMaterialId());
           }

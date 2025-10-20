@@ -61,6 +61,11 @@ public class WorkspaceMaterialReplyController {
     return reply;
   }
 
+  public WorkspaceMaterialReply findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntityId(
+      WorkspaceMaterial workspaceMaterial, Long userEntityId) {
+    return workspaceMaterialReplyDAO.findByWorkspaceMaterialAndUserEntityId(workspaceMaterial, userEntityId);
+  }
+
   public WorkspaceMaterialReply findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(
       WorkspaceMaterial workspaceMaterial, UserEntity userEntity) {
     return workspaceMaterialReplyDAO.findByWorkspaceMaterialAndUserEntityId(workspaceMaterial, userEntity.getId());
