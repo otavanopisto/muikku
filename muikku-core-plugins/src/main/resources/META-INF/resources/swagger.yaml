@@ -13267,6 +13267,21 @@ components:
         userEntityId:
           type: integer
           format: int64
+    
+    AnnouncementWithUnreadCount:
+      type: object
+      description: AnnouncementWithUnreadCount object
+      required:
+        - unreadCount
+        - announcements
+      properties:
+        unreadCount:
+          type: integer
+          format: int64
+        announcements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Announcement"
 
     AssessmentRequest:
       type: object
