@@ -427,7 +427,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     OrganizationEntity organizationEntity = schoolDataIdentifier.getOrganization();
     
     List<Announcement> announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
-        true, true, AnnouncementEnvironmentRestriction.PUBLICANDGROUP, AnnouncementTimeFrame.CURRENT, null, true, sessionController.getLoggedUserEntity().getId(), false, 0, 100);
+        true, true, AnnouncementEnvironmentRestriction.PUBLICANDGROUP, AnnouncementTimeFrame.CURRENTANDEXPIRED, null, true, sessionController.getLoggedUserEntity().getId(), false, 0, 100);
 
     List<AnnouncementRecipientRESTModel> restModels = new ArrayList<AnnouncementRecipientRESTModel>();
     
