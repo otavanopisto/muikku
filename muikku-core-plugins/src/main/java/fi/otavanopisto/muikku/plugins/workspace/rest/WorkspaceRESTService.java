@@ -86,6 +86,7 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestControl
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
@@ -262,6 +263,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
+  private ExamController examController;
 
   @Inject
   @Any
@@ -928,6 +932,15 @@ public class WorkspaceRESTService extends PluginRESTService {
         permissionSet.add(permission.getName());
       }
     }
+    
+    // #7400: Exam functionality; special permission for workspace students with exams present
+    
+    if (sessionController.isLoggedIn()) {
+      if (!examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId()).isEmpty()) {
+        permissionSet.add(MuikkuPermissions.IS_WORKSPACE_STUDENT_WITH_EXAMS);
+      }
+    }
+    
     return Response.ok(permissionSet).build();
   }
 
