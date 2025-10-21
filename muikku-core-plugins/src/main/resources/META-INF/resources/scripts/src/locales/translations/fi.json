@@ -2473,7 +2473,6 @@
       "examDurationExceeded": "Kokeen aika on umpeutunut ja koe on päättynyt. Palauttamattomat tehtävät on merkitty automaattisesti palautetuiksi. Voit nyt sulkea koeikkunan.",
       "examHasEnded": "Koe on päättynyt {{endDate}}. Voit nyt sulkea koeikkunan.",
       "examParticipantsInfo": "Jos koe ei ole avoin kaikille kurssin opiskelijoille, kokeen pääsevät tekemään vain osallistujalistalle lisätyt opiskelijat. Lisäys kannattaa tehdä kokeen käynnistyessä, koska listalle lisätyt opiskelijat pääsevät aloittamaan kokeen milloin haluavat.",
-      "loadError": "Tapahtui virhe kokeen alustamisessa. Sulje koeikkuna ja yritä uudelleen.",
       "noPermissions": "Sinulla ei ole oikeuksia kokeeseen. Ota yhteyttä kurssin opettajaan.",
       "noSelectedPages": "Ei valittuja sivuja",
       "openToAllStudentsInfo": "Koe voi olla avoin kaikille kurssin opiskelijoille, jolloin kaikki kurssin opiskelijat voivat itsenäisesti käynnistää kokeen ja tehdä sen. Tässä kannattaa valita kyllä vain, jos kokeessa on käytössä automaattinen valvonta tai valvontaa ei tarvita. Muussa tapauksessa valitse ei, jolloin kokeen suorittajat poimitaan kokeeseen Kokeeseen osallistujat -välilehdellä.",
