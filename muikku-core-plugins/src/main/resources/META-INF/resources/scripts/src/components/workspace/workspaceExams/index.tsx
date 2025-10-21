@@ -1,20 +1,19 @@
 import WorkspaceNavbar from "~/components/base/workspace/navbar";
 import Application from "./body/application";
-//import Aside from "./body/aside";
 import * as React from "react";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/footer.scss";
 import { useTranslation } from "react-i18next";
 
 /**
- * WorkspaceJournalBodyProps
+ * WorkspaceExamsBodyProps
  */
 interface WorkspaceExamsBodyProps {
   workspaceUrl: string;
 }
 
 /**
- * WorkspaceJournalBody
+ * WorkspaceExamsBody
  * @param props props
  */
 const WorkspaceExamsBody = (props: WorkspaceExamsBodyProps) => {

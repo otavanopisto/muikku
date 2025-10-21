@@ -158,7 +158,7 @@
       "loading": "Ladataan...",
       "mandatory": "Pakollinen",
       "minutes": "minuuttia",
-      "minutesShort": "min",
+      "min": "min",
       "month": "Kuukausi",
       "month_january": "Tammikuu",
       "month_february": "Helmikuu",
@@ -2512,6 +2512,7 @@
     "notifications": {
       "loadError": "$t(common:notifications.loadError)",
       "loadError_exam": "Kokeiden lataus epäonnistui. Yritä uudelleen.",
+      "examInitError": "Tapahtui virhe kokeen alustamisessa. Sulje koeikkuna ja yritä uudelleen.",
       "examEnded": "Koe on päättynyt. Vastauksesi on tallennettu automaattisesti.",
       "durationRunningOut": "Huomio! Sinulla on alle {{timeLeft}} minuuttia aikaa jäljellä!"
     }

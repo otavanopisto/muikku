@@ -13,8 +13,7 @@ import { endExam } from "~/actions/workspaces/exams";
  * EndExamWarningProps
  */
 interface EndExamWarningProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  children: React.ReactElement<any>;
+  children: React.ReactElement;
 }
 
 /**

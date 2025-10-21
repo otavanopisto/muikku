@@ -16,17 +16,12 @@ import { IconButton } from "~/components/general/button";
  */
 interface ContentPanelProps extends WithTranslation {
   modifier: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  title?: React.ReactElement<any> | string;
+  title?: React.ReactElement | string;
   readspeakerComponent?: JSX.Element;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  navigation?: React.ReactElement<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  aside?: React.ReactElement<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  footer?: React.ReactElement<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onOpenNavigation?: () => any;
+  navigation?: React.ReactElement;
+  aside?: React.ReactElement;
+  footer?: React.ReactElement;
+  onOpenNavigation?: () => void;
 }
 
 /**

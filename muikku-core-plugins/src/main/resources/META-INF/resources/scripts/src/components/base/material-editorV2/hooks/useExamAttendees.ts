@@ -53,8 +53,10 @@ const useExamAttendees = (props: UseExamAttendeesProps) => {
         return;
       }
 
-      setLoading(true);
-      setError(null);
+      unstable_batchedUpdates(() => {
+        setLoading(true);
+        setError(null);
+      });
 
       try {
         const [examAttendeesData, studentsData] = await Promise.all([
@@ -108,8 +110,10 @@ const useExamAttendees = (props: UseExamAttendeesProps) => {
     async (userEntityId: number) => {
       if (!workspaceFolderId) return;
 
-      setLoading(true);
-      setError(null);
+      unstable_batchedUpdates(() => {
+        setLoading(true);
+        setError(null);
+      });
 
       try {
         const addedExamAttendee = await examApi.addExamAttendee({
@@ -144,8 +148,10 @@ const useExamAttendees = (props: UseExamAttendeesProps) => {
     async (userEntityId: number, permanent: boolean = false) => {
       if (!workspaceFolderId) return;
 
-      setLoading(true);
-      setError(null);
+      unstable_batchedUpdates(() => {
+        setLoading(true);
+        setError(null);
+      });
 
       try {
         await examApi.removeExamAttendee({

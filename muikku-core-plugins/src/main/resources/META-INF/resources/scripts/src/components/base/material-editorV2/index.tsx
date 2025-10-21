@@ -100,7 +100,13 @@ export const MaterialEditorV2: React.FC<MaterialEditorV2Props> = (props) => {
    * Handle delete success
    */
   const onDeleteSuccess = () => {
-    console.log("onDeleteSuccess");
+    dispatch(
+      setWorkspaceMaterialEditorState({
+        ...editorState,
+        opened: false,
+      })
+    );
+    setActiveTab("content");
   };
 
   // Convert our EditorTab format to Tabs component format

@@ -240,7 +240,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
               </span>
               <span className="evaluation-modal__item-meta-item-data">
                 {convertTimeRangeToMinutes(exam.started, exam.ended)}{" "}
-                {t("labels.minutesShort", { ns: "common" })}
+                {t("labels.min", { ns: "common" })}
               </span>
             </div>
 
@@ -249,7 +249,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
                 {t("labels.examDuration", { ns: "exams" })}:
               </span>
               <span className="evaluation-modal__item-meta-item-data">
-                {exam.minutes} {t("labels.minutesShort", { ns: "common" })}
+                {exam.minutes} {t("labels.min", { ns: "common" })}
               </span>
             </div>
 
@@ -311,7 +311,7 @@ const EvaluationExamsListItem = (props: EvaluationExamsListItemProps) => {
               {t("labels.examDuration", { ns: "exams" })}:
             </span>
             <span className="evaluation-modal__item-meta-item-data">
-              {exam.minutes} {t("labels.minutesShort", { ns: "common" })}
+              {exam.minutes} {t("labels.min", { ns: "common" })}
             </span>
           </div>
         )}

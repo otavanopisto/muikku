@@ -126,8 +126,6 @@
     background: $color-toc-item-link-selected-background;
     color: $color-default;
     font-weight: 400;
-    
-    // letter-spacing: -0.026rem; // This prevents active toc item to create unnecessary line break as font weight increases
   }
 
   &.hidden {

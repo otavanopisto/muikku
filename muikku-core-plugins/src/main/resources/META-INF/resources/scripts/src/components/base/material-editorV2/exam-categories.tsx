@@ -175,8 +175,7 @@ export const ExamCategories: React.FC<ExamCategoriesProps> = (props) => {
           <div
             className="form-element__input-decoration form-element__input-decoration--add-exam-category icon-plus"
             onClick={addCategory}
-            // disabled={disabled || !newCategoryName.trim()}
-          ></div>
+          />
         </div>
       </div>
 

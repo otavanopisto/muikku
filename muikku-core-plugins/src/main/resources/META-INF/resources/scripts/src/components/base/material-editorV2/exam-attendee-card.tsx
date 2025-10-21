@@ -58,8 +58,10 @@ export const ExamAttendeeCard = (props: ExamAttendeeCardProps) => {
   const handleSaveSettings = async () => {
     if (saving) return;
 
-    setSaving(true);
-    setError(null);
+    unstable_batchedUpdates(() => {
+      setSaving(true);
+      setError(null);
+    });
 
     try {
       await onUpdateSettings({

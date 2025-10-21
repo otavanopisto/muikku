@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TFunction } from "i18next";
 import * as React from "react";
 import { PageLocation } from "~/@types/shared";
