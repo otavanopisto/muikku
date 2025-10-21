@@ -148,10 +148,7 @@ class ExamAssignmentEditor extends SessionStateComponent<
         workspaceMaterialId: workspaceMaterialId,
       });
 
-      this.justClear(
-        ["literalEvaluation", "points"],
-        this.state.draftId
-      );
+      this.justClear(["literalEvaluation", "points"], this.state.draftId);
 
       // Clears localstorage on success
       this.setState(
