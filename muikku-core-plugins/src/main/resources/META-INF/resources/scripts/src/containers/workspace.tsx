@@ -1339,7 +1339,9 @@ export default class Workspace extends React.Component<
             render={(routeProps) => (
               <ProtectedRoute
                 requireAuth
-                hasPermission={permissions.WORKSPACE_IS_WORKSPACE_STUDENT_WITH_EXAMS}
+                hasPermission={
+                  permissions.WORKSPACE_IS_WORKSPACE_STUDENT_WITH_EXAMS
+                }
                 isAuthenticated={isAuthenticated}
                 routeProps={routeProps}
               >
