@@ -11,8 +11,7 @@ import { useTranslation } from "react-i18next";
  */
 interface ConfirmResetExamAttendeeDialogProps {
   onConfirm: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  children: React.ReactElement<any>;
+  children: React.ReactElement;
 }
 
 /**

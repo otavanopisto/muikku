@@ -1,7 +1,7 @@
 import * as React from "react";
 // eslint-disable-next-line camelcase
 import { unstable_batchedUpdates } from "react-dom";
-import MApi from "~/api/api";
+import MApi, { isMApiError } from "~/api/api";
 import { AssessmentWithAudio, NodeEvaluation } from "~/generated/client";
 
 const evaluationApi = MApi.getEvaluationApi();
@@ -78,8 +78,9 @@ export const useExamAssessment = (props: UseExamAssessmentProps) => {
         setIsLoading(false);
       });
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err);
+      if (!isMApiError(err)) {
+        throw err;
+      }
     } finally {
       setIsLoading(false);
     }

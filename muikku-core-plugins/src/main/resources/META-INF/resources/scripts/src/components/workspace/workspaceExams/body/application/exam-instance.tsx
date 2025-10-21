@@ -145,7 +145,7 @@ const ExamInstance = (props: ExamInstanceProps) => {
       // eslint-disable-next-line jsdoc/require-jsdoc
       onWarning: handleWarningCallback,
     });
-  }, [currentExam, examId, dispatch]);
+  }, [currentExam, examId, dispatch, t]);
 
   // Reset the current exam (if exists) when the component is unmounted
   React.useEffect(
@@ -172,14 +172,14 @@ const ExamInstance = (props: ExamInstanceProps) => {
    */
   const getErrorMsgByStatusCode = (statusCode?: number) => {
     if (!statusCode) {
-      return t("content.loadError", { ns: "exams" });
+      return t("notifications.examInitError", { ns: "exams" });
     }
 
     switch (statusCode) {
       case 403:
         return t("content.noPermissions", { ns: "exams" });
       default:
-        return t("content.loadError", { ns: "exams" });
+        return t("notifications.examInitError", { ns: "exams" });
     }
   };
 
@@ -413,7 +413,7 @@ const PreExamInfo = React.memo((props: PreExamInfoProps) => {
             <span className="exam__label">
               {t("labels.examDuration", { ns: "exams" })}:{" "}
               <span className="exam__label-accent">
-                {exam.minutes} {t("labels.minutesShort", { ns: "common" })}
+                {exam.minutes} {t("labels.min", { ns: "common" })}
               </span>
             </span>
           )}

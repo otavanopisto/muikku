@@ -208,7 +208,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
                 {t("labels.examCompletionTime", { ns: "exams" })}:{" "}
                 <span className="exam__label-accent">
                   {convertTimeRangeToMinutes(exam.started, exam.ended)}{" "}
-                  {t("labels.minutesShort", { ns: "common" })}
+                  {t("labels.min", { ns: "common" })}
                 </span>
               </span>
 
@@ -216,7 +216,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
                 {t("labels.examDuration", { ns: "exams" })}:{" "}
                 <span className="exam__label-accent">
                   <span className="exam__label-accent">
-                    {exam.minutes} {t("labels.minutesShort", { ns: "common" })}
+                    {exam.minutes} {t("labels.min", { ns: "common" })}
                   </span>
                 </span>
               </span>
@@ -225,7 +225,7 @@ const ExamsListItem = (props: ExamsListItemProps) => {
             <span className="exam__label">
               {t("labels.examDuration", { ns: "exams" })}:{" "}
               <span className="exam__label-accent">
-                {exam.minutes} {t("labels.minutesShort", { ns: "common" })}
+                {exam.minutes} {t("labels.min", { ns: "common" })}
               </span>
             </span>
           ) : null}

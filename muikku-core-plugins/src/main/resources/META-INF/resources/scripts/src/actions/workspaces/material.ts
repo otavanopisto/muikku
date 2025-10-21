@@ -246,6 +246,10 @@ export interface MaterialShowOrHideExtraToolsTriggerType {
   (): AnyActionType;
 }
 
+const workspaceApi = MApi.getWorkspaceApi();
+const materialsApi = MApi.getMaterialsApi();
+const examApi = MApi.getExamApi();
+
 /**
  * createWorkspaceMaterialContentNode
  * @param data data
@@ -257,9 +261,6 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-      const materialsApi = MApi.getMaterialsApi();
-
       try {
         const parentId = data.parentMaterial
           ? data.parentMaterial.workspaceMaterialId
@@ -419,9 +420,6 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const materialsApi = MApi.getMaterialsApi();
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         /**
          * Up keep updated values when mapping them
@@ -563,8 +561,6 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
 const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
     return async (dispatch: (arg: AnyActionType) => any) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         const childrenAttachments = await workspaceApi.getWorkspaceMaterials({
           workspaceEntityId: workspace.id,
@@ -610,10 +606,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const materialsApi = MApi.getMaterialsApi();
-      const workspaceApi = MApi.getWorkspaceApi();
-      const examApi = MApi.getExamApi();
-
       try {
         if (!data.dontTriggerReducerActions) {
           dispatch({
@@ -1002,9 +994,6 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-      const examApi = MApi.getExamApi();
-
       const state = getState();
 
       try {
@@ -1097,8 +1086,6 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         if (!getState().status.loggedIn) {
           dispatch({
@@ -1195,8 +1182,6 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         if (data.material.type === "folder") {
           // Check if folder has child nodes, if so, we cannot delete it
@@ -1289,8 +1274,6 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         const materialContentNodes = await workspaceApi.getWorkspaceHelp({
           workspaceId: workspaceId,

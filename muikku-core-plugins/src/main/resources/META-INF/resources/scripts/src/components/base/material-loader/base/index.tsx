@@ -323,10 +323,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       .addBack("object")
       .each((index: number, element: HTMLElement) => {
         // We get the object element as in, the react component that it will be replaced with
-        const rElement: React.ReactElement<any> = this.createFieldElement(
-          element,
-          props
-        );
+        const rElement = this.createFieldElement(element, props);
 
         const newAnswerCheckableState =
           answerCheckables[element.getAttribute("type")] &&
