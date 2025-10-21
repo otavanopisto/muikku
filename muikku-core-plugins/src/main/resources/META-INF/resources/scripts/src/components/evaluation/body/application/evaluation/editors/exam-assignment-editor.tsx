@@ -149,7 +149,7 @@ class ExamAssignmentEditor extends SessionStateComponent<
       });
 
       this.justClear(
-        ["literalEvaluation", "needsSupplementation"],
+        ["literalEvaluation", "points"],
         this.state.draftId
       );
 
