@@ -328,6 +328,8 @@ public class ExamRESTService {
     }
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, userEntityId);
     if (attendance != null) {
+      // If an attendee is removed when they haven't even started the exam, consider it a permanent removal as nothing is lost
+      permanent = permanent || attendance.getStarted() == null;
       examController.removeAttendance(attendance, permanent);
     }
     return Response.noContent().build();
