@@ -9,7 +9,7 @@ export const convertTimeRangeToMinutes = (start: string, end: string) => {
   const endDate = new Date(end);
   const timeRange = endDate.getTime() - startDate.getTime();
 
-  const minutes = Math.floor(timeRange / (1000 * 60));
+  const minutes = Math.round(timeRange / (1000 * 60));
 
   return minutes;
 };
