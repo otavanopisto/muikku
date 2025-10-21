@@ -1,8 +1,8 @@
 // srcv4/src/materials/MaterialLoader/core/hooks/useContentProcessor.ts
 import { useMemo } from "react";
-import { HTMLProcessor } from "../HTMLProcessor";
-import { type ProcessingRule } from "../HTMLProcessor";
-import { defaultProcessingRules } from "../../processors/ProcessingRules";
+import { HTMLProcessor } from "../processors/HTMLProcessor";
+import { type ProcessingRule } from "../processors/HTMLProcessor";
+import { defaultProcessingRules } from "../processors/ProcessingRules";
 
 /**
  * useContentProcessor

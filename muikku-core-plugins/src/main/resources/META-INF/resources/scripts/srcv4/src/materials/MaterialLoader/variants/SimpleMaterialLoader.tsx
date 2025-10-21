@@ -1,9 +1,12 @@
-// srcv4/src/materials/MaterialLoader/variants/SimpleMaterialLoader.tsx
-import * as React from "react";
-import { useMemo } from "react";
-import { useContentProcessor } from "../core/hooks/useContentProcessor";
-import { type ProcessingRule } from "../core/HTMLProcessor";
-import { defaultProcessingRules } from "../processors/ProcessingRules";
+import { type ProcessingRule } from "../core/processors/HTMLProcessor";
+import { defaultProcessingRules } from "../core/processors/ProcessingRules";
+import { MaterialLoaderCore } from "../core/MaterialLoaderCore";
+import {
+  defaultConfig,
+  type MaterialLoaderConfig,
+} from "../configs/MaterialLoaderConfigs";
+import { MaterialLoaderTitle } from "../components/MaterialLoaderTitle";
+import { MaterialLoaderContent } from "../components/MaterialLoaderContent";
 
 /**
  * SimpleMaterialLoaderProps
@@ -13,7 +16,6 @@ interface SimpleMaterialLoaderProps {
   material?: { html: string; title?: string };
   processingRules?: ProcessingRule[];
   modifiers?: string | string[];
-  children?: (props: { processedContent: React.ReactNode }) => React.ReactNode;
 }
 
 /**
@@ -27,32 +29,38 @@ export function SimpleMaterialLoader(props: SimpleMaterialLoaderProps) {
     material,
     processingRules = defaultProcessingRules,
     modifiers,
-    children,
   } = props;
 
   const contentToProcess = html ?? material?.html;
-  const processedContent = useContentProcessor(
+  /* const processedContent = useContentProcessor(
     contentToProcess,
     processingRules
-  );
+  ); */
 
-  console.log("processedContent", processedContent);
+  const config: MaterialLoaderConfig = {
+    ...defaultConfig,
+    readOnly: true,
+    answerable: false,
+    processingRules: processingRules || defaultConfig.processingRules,
+    modifiers,
+  };
 
-  /* const className = useMemo(() => {
-    const baseClass = "rich-text";
-    const modifierClasses = modifiers
-      ? Array.isArray(modifiers)
-        ? modifiers.map((m) => `material-page--${m}`).join(" ")
-        : `material-page--${modifiers}`
-      : "";
-    return `${baseClass} ${modifierClasses}`.trim();
-  }, [modifiers]); */
+  const materialObj = {
+    id: "simple",
+    title: material?.title ?? "Simple Material",
+    html: contentToProcess ?? "",
+    assignmentType: "THEORY" as const,
+  };
 
-  /* if (children) {
-    return <>{children({ processedContent })}</>;
-  } */
+  // eslint-disable-next-line no-console
+  console.log("materialObj", materialObj);
 
   return (
-    <div className="material-page__content rich-text">{processedContent}</div>
+    <MaterialLoaderCore material={materialObj} config={config}>
+      <div>
+        <MaterialLoaderTitle />
+        <MaterialLoaderContent />
+      </div>
+    </MaterialLoaderCore>
   );
 }

@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// srcv4/src/materials/MaterialLoader/processors/ProcessingRules.ts
-import * as React from "react";
-import type { ProcessingRule, ProcessingContext } from "../core/HTMLProcessor";
+import type { ProcessingRule, ProcessingContext } from "./HTMLProcessor";
 
 export const defaultProcessingRules: ProcessingRule[] = [
   // Object/Field processing
@@ -12,9 +10,9 @@ export const defaultProcessingRules: ProcessingRule[] = [
       const fieldType = element.getAttribute("type");
       const props = extractFieldProps(element);
 
-      // if (context.fieldManager) {
-      //   return context.fieldManager.createField(fieldType, props);
-      // }
+      if (context.fieldManager) {
+        return context.fieldManager.createField(fieldType, props);
+      }
 
       return <span key={context.key}>Field: {fieldType}</span>;
     },
@@ -22,7 +20,10 @@ export const defaultProcessingRules: ProcessingRule[] = [
 
   // Image processing
   {
-    matches: (element) => element.classList.contains("image"),
+    matches: (element) =>
+      (element.tagName === "FIGURE" || element.tagName === "SPAN") &&
+      element.classList.contains("image"),
+    preventChildProcessing: true,
     process: (element, context) => <>Kuva</>,
   },
 
@@ -53,7 +54,24 @@ export const defaultProcessingRules: ProcessingRule[] = [
       const dataset = extractDataSet(element);
       return <>IFRAME</>;
     },
+    preventChildProcessing: true,
   },
+
+  /* {
+    matches: (element) =>
+      element.tagName === "DIV" && element.hasAttribute("data-show"),
+    process: (element, context) => {
+      // Get answer state from context (passed from MaterialLoader)
+      const shouldShow = context.answerManager?.shouldShowAnswers() || false;
+
+      // Clone element and update data-show attribute
+      const newElement = element.cloneNode(true) as HTMLElement;
+      newElement.setAttribute("data-show", shouldShow.toString());
+
+      // Process children with updated element
+      return processElementWithRules(newElement, context);
+    },
+  }, */
 
   // Word definition processing
   //   {

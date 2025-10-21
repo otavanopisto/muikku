@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // srcv4/src/materials/MaterialLoader/core/HTMLProcessor.ts
 import * as React from "react";
+import type { FieldProps } from "./FieldProcessor";
 
 /**
  * ProcessingRule
@@ -17,11 +18,22 @@ export interface ProcessingRule {
 }
 
 /**
+ * FieldManagerLike
+ */
+export type FieldManagerLike = {
+  createField: (
+    type: string | null,
+    rawParams: FieldProps,
+    key?: React.Key
+  ) => React.ReactNode;
+};
+
+/**
  * ProcessingContext
  */
 export interface ProcessingContext {
   processingRules: ProcessingRule[];
-  fieldManager?: any; // We'll type this properly later
+  fieldManager?: FieldManagerLike;
   path?: string;
   invisible?: boolean;
   key?: number;
