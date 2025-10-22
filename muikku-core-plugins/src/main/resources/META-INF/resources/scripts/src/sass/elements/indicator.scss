@@ -22,7 +22,8 @@
   text-overflow: ellipsis;
   top: 0;
 
-  &.indicator--main-function {
+  &.indicator--main-function,
+  &.indicator--workspace {
     right: 14px;
     top: 15px;
   }
