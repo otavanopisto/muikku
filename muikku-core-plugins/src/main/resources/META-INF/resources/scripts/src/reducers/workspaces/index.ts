@@ -664,6 +664,13 @@ export const workspaces: Reducer<WorkspacesState> = (
       newEditor.showRemoveLinkedAnswersDialogForPublish =
         action.payload.showRemoveLinkedAnswersDialogForPublish;
 
+      if (action.payload.isDraft) {
+        return {
+          ...state,
+          materialEditor: newEditor,
+        };
+      }
+
       return {
         ...state,
         currentWorkspace: newCurrentWorkspace,
