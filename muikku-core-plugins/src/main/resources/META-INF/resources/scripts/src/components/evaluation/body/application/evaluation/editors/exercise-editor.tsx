@@ -24,6 +24,7 @@ import {
   MaterialCompositeReply,
   WorkspaceMaterial,
   NodeEvaluation,
+  UpdateWorkspaceNodeAssessmentRequest,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
@@ -141,13 +142,17 @@ class ExerciseEditor extends SessionStateComponent<
    * @param data.workspaceMaterialId workspaceMaterialId
    * @param data.dataToSave dataToSave
    * @param data.materialId materialId
+   * @param data.edit edit
    */
   saveAssignmentEvaluationGradeToServer = async (data: {
     workspaceEntityId: number;
     userEntityId: number;
     workspaceMaterialId: number;
-    dataToSave: CreateWorkspaceNodeAssessmentRequest;
+    dataToSave:
+      | CreateWorkspaceNodeAssessmentRequest
+      | UpdateWorkspaceNodeAssessmentRequest;
     materialId: number;
+    edit: boolean;
   }) => {
     const evaluationApi = MApi.getEvaluationApi();
 
@@ -159,15 +164,25 @@ class ExerciseEditor extends SessionStateComponent<
     });
 
     try {
-      const assessmentWithAudio =
-        await evaluationApi.createWorkspaceNodeAssessment({
-          workspaceId: workspaceEntityId,
-          userEntityId,
-          workspaceNodeId: workspaceMaterialId,
-          createWorkspaceNodeAssessmentRequest: {
-            ...dataToSave,
-          },
-        });
+      const assessmentWithAudio = data.edit
+        ? await evaluationApi.updateWorkspaceNodeAssessment({
+            workspaceId: workspaceEntityId,
+            userEntityId,
+            workspaceNodeId: workspaceMaterialId,
+            assessmentId: this.props.compositeReplies.evaluationInfo.id,
+            updateWorkspaceNodeAssessmentRequest: {
+              ...(dataToSave as UpdateWorkspaceNodeAssessmentRequest),
+              ...dataToSave,
+            },
+          })
+        : await evaluationApi.createWorkspaceNodeAssessment({
+            workspaceId: workspaceEntityId,
+            userEntityId,
+            workspaceNodeId: workspaceMaterialId,
+            createWorkspaceNodeAssessmentRequest: {
+              ...(dataToSave as CreateWorkspaceNodeAssessmentRequest),
+            },
+          });
 
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,
@@ -220,7 +235,8 @@ class ExerciseEditor extends SessionStateComponent<
   handleSaveAssignment = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
-    const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
+    const { compositeReplies, selectedAssessment } = this.props;
+    const { workspaceEntityId, userEntityId } = selectedAssessment;
 
     /**
      * Backend endpoint is different for normal grade evalution and supplementation
@@ -231,6 +247,9 @@ class ExerciseEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
+        identifier: compositeReplies.evaluationInfo
+          ? compositeReplies.evaluationInfo.id.toString()
+          : undefined,
         evaluationType: "GRADED",
         assessorIdentifier: this.props.status.userSchoolDataIdentifier,
         gradingScaleIdentifier: null,
@@ -240,6 +259,7 @@ class ExerciseEditor extends SessionStateComponent<
         audioAssessments: this.state.audioAssessments,
       },
       materialId: this.props.materialAssignment.materialId,
+      edit: !!compositeReplies.evaluationInfo,
     });
   };
 
