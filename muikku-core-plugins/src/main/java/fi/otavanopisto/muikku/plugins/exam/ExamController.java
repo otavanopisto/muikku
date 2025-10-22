@@ -133,16 +133,16 @@ public class ExamController {
             }
             replyController.deleteWorkspaceMaterialReply(reply);
           }
-          // Delete assignment evaluation
-          WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeIdAndStudentEntityId(assignmentId, attendance.getUserEntityId());
-          if (evaluation != null) {
+          // Delete assignment evaluations (TODO There really should be only one but a bug has caused several?)
+          List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeIdAndStudentEntityId(assignmentId, attendance.getUserEntityId());
+          for (WorkspaceNodeEvaluation evaluation : evaluations) {
             evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
           }
         }
       }
-      // Delete exam evaluation
-      WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeIdAndStudentEntityId(attendance.getWorkspaceFolderId(), attendance.getUserEntityId());
-      if (evaluation != null) {
+      // Delete exam evaluations (TODO There really should be only one but a bug has caused several?)
+      List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeIdAndStudentEntityId(attendance.getWorkspaceFolderId(), attendance.getUserEntityId());
+      for (WorkspaceNodeEvaluation evaluation : evaluations) {
         evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
       }
       // Delete attendance

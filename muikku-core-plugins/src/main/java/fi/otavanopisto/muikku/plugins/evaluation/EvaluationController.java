@@ -785,8 +785,9 @@ public class EvaluationController {
     return evaluations.get(0);
   }
 
-  public WorkspaceNodeEvaluation findWorkspaceNodeEvaluationByWorkspaceNodeIdAndStudentEntityId(Long workspaceNodeId, Long studentEntityId) {
-    return workspaceNodeEvaluationDAO.findByWorkspaceNodeIdAndStudentEntityId(workspaceNodeId, studentEntityId);
+  // TODO There really should be just one but a bug has caused several?
+  public List<WorkspaceNodeEvaluation> listWorkspaceNodeEvaluationsByWorkspaceNodeIdAndStudentEntityId(Long workspaceNodeId, Long studentEntityId) {
+    return workspaceNodeEvaluationDAO.listByWorkspaceNodeIdAndStudentEntityId(workspaceNodeId, studentEntityId);
   }
 
   public WorkspaceNodeEvaluation findWorkspaceNodeEvaluation(Long id) {
