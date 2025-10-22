@@ -27,7 +27,9 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./*"]
-    }
+    },
+
+    "types": ["jquery"]
   },
   "include": ["src", "api", "generated"]
 }
