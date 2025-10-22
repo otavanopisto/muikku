@@ -263,9 +263,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Announcement"
+                $ref: "#/components/schemas/AnnouncementWithUnreadCount"
         "400":
           description: Invalid request was sent to the server
           content:
@@ -433,7 +431,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
-  
+
   /rest/announcer/announcements/markAllAsRead:
     post:
       operationId: markAllAnnouncementsAsRead
@@ -13252,7 +13250,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceBasicInfo"
-    
+
     AnnouncementRecipient:
       type: object
       description: AnnouncementRecipient object
@@ -13274,7 +13272,7 @@ components:
         userEntityId:
           type: integer
           format: int64
-    
+
     AnnouncementWithUnreadCount:
       type: object
       description: AnnouncementWithUnreadCount object

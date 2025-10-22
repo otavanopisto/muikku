@@ -101,7 +101,6 @@ class AnnouncementsPanel extends React.Component<
    */
   render() {
     const { announcements, currentPage, itemsPerPage } = this.state;
-
     const offset = currentPage * itemsPerPage;
 
     /**

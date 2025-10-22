@@ -61,6 +61,7 @@ export type AnnouncementsStateType =
 export interface AnnouncementsState {
   state: AnnouncementsStateType;
   announcements: Announcement[];
+  unreadCount: number;
   current: Announcement;
   selected: Announcement[];
   selectedIds: Array<number>;
@@ -77,6 +78,7 @@ export interface AnnouncementsState {
 export interface AnnouncementsStatePatch {
   state?: AnnouncementsStateType;
   announcements?: Announcement[];
+  unreadCount?: number;
   current?: Announcement;
   selected?: Announcement[];
   selectedIds?: Array<number>;
@@ -93,6 +95,7 @@ export interface AnnouncementsStatePatch {
 const initialAnnouncementsState: AnnouncementsState = {
   state: "LOADING",
   announcements: [],
+  unreadCount: 0,
   current: null,
   selected: [],
   selectedIds: [],

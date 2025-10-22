@@ -619,7 +619,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
         const announcements = await announcerApi.getAnnouncements(fetchParams);
 
         if (loadUserGroups) {
-          announcements.forEach((a) =>
+          announcements.announcements.forEach((a) =>
             a.userGroupEntityIds.forEach((id) =>
               dispatch(loadUserGroupIndex(id))
             )
@@ -628,7 +628,8 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
 
         const payload: AnnouncementsStatePatch = {
           state: "READY",
-          announcements,
+          announcements: announcements.announcements,
+          unreadCount: announcements.unreadCount,
           location: null,
           selected: [],
           selectedIds: [],
@@ -640,7 +641,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
           payload,
         });
 
-        callback && callback(announcements);
+        callback && callback(announcements.announcements);
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;

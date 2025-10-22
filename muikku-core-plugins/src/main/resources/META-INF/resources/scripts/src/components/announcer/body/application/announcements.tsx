@@ -108,9 +108,13 @@ class Announcements extends BodyScrollLoader<
               const className = announcement.workspaces.length
                 ? "announcement announcement--workspace"
                 : "announcement announcement--environment";
+              const modifiers = announcement.unread
+                ? "application-list__item--highlight"
+                : "";
               return {
                 as: ApplicationListItem,
                 className,
+                modifiers,
                 onSelect: this.props.addToAnnouncementsSelected.bind(
                   null,
                   announcement
@@ -151,7 +155,10 @@ class Announcements extends BodyScrollLoader<
                         />
                       </ApplicationListHeaderPrimary>
                     </ApplicationListItemHeader>
-                    <ApplicationListItemBody header={announcement.caption} />
+                    <ApplicationListItemBody
+                      modifiers={announcement.unread ? "unread" : ""}
+                      header={announcement.caption}
+                    />
                     {announcement.workspaces.length !== 0 ||
                     announcement.userGroupEntityIds.length !== 0 ? (
                       <div className="labels item-list__announcement-workspaces">

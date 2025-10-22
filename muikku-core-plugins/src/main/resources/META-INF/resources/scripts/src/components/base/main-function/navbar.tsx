@@ -38,6 +38,7 @@ interface MainFunctionNavbarProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   status: StatusType;
+  announcementCount: number;
   messageCount: number;
   title: string;
   dependants: Dependant[];
@@ -156,6 +157,7 @@ class MainFunctionNavbar extends React.Component<
         icon: "paper-plane",
         to: true,
         condition: this.props.status.permissions.ANNOUNCER_TOOL,
+        badge: this.props.announcementCount,
       },
       {
         modifier: "evaluation",
@@ -317,6 +319,7 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     messageCount: state.messages.unreadThreadCount,
+    announcementCount: state.announcements.unreadCount,
     dependants: (state.dependants && state.dependants.list) || [],
   };
 }
