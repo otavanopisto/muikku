@@ -2486,6 +2486,7 @@
       "allowMultipleAttempts_student": "Multiple attempts are allowed",
       "categoryBasedQuestionRandomization": "Randomization based on categories",
       "exams": "Exams",
+      "examAssignmentsPoints": "Exam assignments points",
       "examCategories": "Exam categories",
       "examCompletionTime": "Time spent",
       "examDuration": "Exam duration",

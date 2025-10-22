@@ -583,7 +583,7 @@ class ExamAssessmentEditor extends SessionStateComponent<
       <div className="form" role="form">
         <div className="form__row">
           <AssignmentDetails
-            sectionTitle="Koetehtävien pisteet"
+            sectionTitle={t("labels.examAssignmentsPoints", { ns: "exams" })}
             assignmentInfoList={assignmentInfoArray}
             omitColumns={["grade"]}
           />

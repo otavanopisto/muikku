@@ -37,6 +37,10 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
     (assignment) => assignment.points !== null
   );
 
+  const calculateMaxSummary = assignmentInfoList.some(
+    (assignment) => assignment.maxPoints !== null
+  );
+
   // Calculate sum of points
   const pointsSum = calculateSummary
     ? assignmentInfoList.reduce(
@@ -44,6 +48,29 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
         0
       )
     : undefined;
+
+  const pointsMaxSum = calculateMaxSummary
+    ? assignmentInfoList.reduce(
+        (sum, assignment) => sum + (assignment.maxPoints || 0),
+        0
+      )
+    : undefined;
+
+  let pointsString = "–";
+
+  if (pointsMaxSum) {
+    // If pointsSum is not available, use 0 as default and show only max points (0/MaxPoints)
+    pointsString = `${localize.number(pointsSum || 0, {
+      maximumFractionDigits: 2,
+    })}/${localize.number(pointsMaxSum)}`;
+
+    // If pointsSum is available, show both points and max points
+    if (pointsSum) {
+      pointsString = `${localize.number(pointsSum, {
+        maximumFractionDigits: 2,
+      })}/${localize.number(pointsMaxSum)}`;
+    }
+  }
 
   // Calculate average of grades
   const gradesAverage =
@@ -140,13 +167,7 @@ const AssignmentDetails: React.FC<AssignmentDetailsProps> = (props) => {
                 )}
 
                 {!omitColumns.includes("points") && (
-                  <Td modifiers={["centered"]}>
-                    {pointsSum
-                      ? localize.number(pointsSum, {
-                          maximumFractionDigits: 2,
-                        })
-                      : "—"}
-                  </Td>
+                  <Td modifiers={["centered"]}>{pointsString}</Td>
                 )}
               </Tr>
             </Tbody>
