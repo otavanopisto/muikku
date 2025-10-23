@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // srcv4/src/materials/MaterialLoaderV2/core/processors/FieldProcessor.tsx
 
 import * as React from "react";
@@ -122,7 +121,7 @@ export class FieldProcessor {
     // Create component props
     const componentProps: FieldComponentProps<FieldContent> = {
       content: parameters.content,
-      status: parameters.status,
+      status: null,
       readOnly: parameters.readOnly,
       usedAs: parameters.usedAs,
       initialValue: parameters.initialValue,
@@ -355,13 +354,19 @@ function createBaseFieldParameters(
   context: ProcessingRuleContext,
   content: { content: FieldContent | null; type: string }
 ): FieldParameters {
+  let initialValue = getInitialValue(content.content, context);
+
+  if (typeof initialValue !== "string") {
+    initialValue = initialValue?.value;
+  }
+
   return {
     content: content.content,
     type: content.type,
     status: null,
     readOnly: context.readOnly,
     usedAs: context.usedAs,
-    initialValue: getInitialValue(content.content, context),
+    initialValue: initialValue,
     onChange: context.onValueChange,
     displayCorrectAnswers: context.displayCorrectAnswers,
     checkAnswers: context.checkAnswers,
@@ -382,7 +387,7 @@ function getInitialValue(
   context: ProcessingRuleContext
 ) {
   if (!context.compositeReplies?.answers || !content) {
-    return null;
+    return;
   }
 
   const answer = context.compositeReplies.answers.find(
@@ -390,7 +395,7 @@ function getInitialValue(
   );
 
   if (!answer) {
-    return null;
+    return;
   }
 
   // Handle value extraction

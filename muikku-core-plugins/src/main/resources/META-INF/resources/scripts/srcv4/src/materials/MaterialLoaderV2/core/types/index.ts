@@ -488,7 +488,7 @@ export interface FieldParameters {
   status: any; // This should be StatusType from your existing types
   readOnly: boolean;
   usedAs: string;
-  initialValue: any; // This should be properly typed based on field type
+  initialValue?: string; // This should be properly typed based on field type
   onChange: (
     context: React.Component<any, any>,
     name: string,
