@@ -1322,6 +1322,7 @@
       "restoreError_messageThread": "Restoring the thread failed",
       "sendError": "Sending the message failed. Please try again.",
       "sendSuccess": "Sending the message succeeded.",
+      "setAllUnreadError": "Kaikkien tiedotteiden asettaminen luetuiksi epäonnistui.",
       "statusChangeError": "Changing the message status failed. Please try again.",
       "updateError": "$t(common:notifications.updateError)",
       "updateError_message": "Editing the message failed. Please try again.",

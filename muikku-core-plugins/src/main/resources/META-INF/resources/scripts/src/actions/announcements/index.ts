@@ -257,10 +257,9 @@ const markAllAsRead: LoadAnnouncementsTriggerType = function markAllAsRead(
     } catch (err) {
       dispatch(
         notificationActions.displayNotification(
-          "test",
-          //i18n.t("notifications.markAllAsReadError", {
-          //  ns: "messaging",
-          //}),
+          i18n.t("notifications.setAllUnreadError", {
+            ns: "messaging",
+          }),
           "error"
         )
       );

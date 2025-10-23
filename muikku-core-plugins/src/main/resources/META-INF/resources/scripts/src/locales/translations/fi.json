@@ -1323,6 +1323,7 @@
       "restoreError_messageThread": "Keskusteluketjun palautus epäonnistui",
       "sendError": "Viestin lähetys epäonnistui. Yritä lähettää viesti uudelleen.",
       "sendSuccess": "Viestin lähetys onnistui",
+      "setAllUnreadError": "Kaikkien tiedotteiden asettaminen luetuiksi epäonnistui.",
       "statusChangeError": "Viestin tilan muutos epäonnistui. Yritä uudelleen.",
       "updateError": "$t(common:notifications.updateError)",
       "updateError_message": "Viestin muokkaus epäonnistui",
