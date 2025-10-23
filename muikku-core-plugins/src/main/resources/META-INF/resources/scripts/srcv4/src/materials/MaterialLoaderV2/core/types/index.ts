@@ -212,3 +212,52 @@ export interface MaterialLoaderReturn {
 export interface MaterialLoaderContextValue extends MaterialLoaderReturn {
   // Additional context-specific properties can be added here
 }
+
+// DATASETS
+/**
+ * WordDefinitionDataset
+ */
+export interface WordDefinitionDataset {
+  muikkuWordDefinition: string;
+}
+
+/**
+ * LinkDataset
+ */
+export interface LinkDataset {
+  url?: string;
+}
+
+/**
+ * ImageDataset
+ */
+export interface ImageDataset {
+  author: string;
+  authorUrl: string;
+  license: string;
+  licenseUrl: string;
+  source: string;
+  sourceUrl: string;
+  original?: string;
+}
+
+/**
+ * IframeDataset
+ */
+export interface IframeDataset {
+  url?: string;
+}
+
+/**
+ * SourceDataset
+ */
+export interface SourceDataset {
+  original?: string;
+}
+
+export type StaticDataset =
+  | WordDefinitionDataset
+  | LinkDataset
+  | ImageDataset
+  | IframeDataset
+  | SourceDataset;
