@@ -261,3 +261,26 @@ export type StaticDataset =
   | ImageDataset
   | IframeDataset
   | SourceDataset;
+
+/**
+ * Common field props interface
+ */
+export interface CommonFieldProps {
+  userId: number;
+  key?: number;
+  type: string;
+  readOnly?: boolean;
+  initialValue?: string;
+  status: any;
+  usedAs: UsedAs;
+  content: any;
+  onChange?: (
+    context: React.Component<any, any>,
+    name: string,
+    newValue: any
+  ) => any;
+  invisible?: boolean;
+  displayCorrectAnswers?: boolean;
+  checkAnswers?: boolean;
+  onAnswerChange?: (name: string, value: boolean) => any;
+}

@@ -8,7 +8,7 @@
 // srcv4/src/materials/MaterialLoaderV2/core/processors/FieldProcessor.ts
 
 import * as React from "react";
-import type { ProcessingRuleContext } from "../types";
+import type { CommonFieldProps, ProcessingRuleContext } from "../types";
 
 // Import field components (these will need to be imported from the existing field components)
 // For now, I'll create placeholder imports
@@ -78,11 +78,11 @@ export class FieldProcessor {
     context: ProcessingRuleContext,
     key?: number
   ): React.ReactElement {
-    const fieldType = element.getAttribute("type");
-    const ActualElement = this.objects[fieldType ?? ""];
+    const fieldType = element.getAttribute("type") ?? "";
+    const FieldComponent = this.objects[fieldType];
 
     // This is here in case we get some brand new stuff, it should never come here
-    if (!ActualElement) {
+    if (!FieldComponent) {
       return (
         <span key={key}>
           Invalid Element {fieldType} {element.innerHTML}
@@ -90,57 +90,18 @@ export class FieldProcessor {
       );
     }
 
-    // Extract parameters from element
-    const parameters: Record<string, any> = {};
-    element.querySelectorAll("param").forEach((node) => {
-      if (parameters[node.getAttribute("name") ?? ""]) {
-        parameters[node.getAttribute("name") ?? ""] =
-          node.getAttribute("value");
-      }
-    });
+    const commonProps = extractCommonFieldProps(element, context, key);
 
-    // Parse JSON content
-    if (parameters["type"] === "application/json") {
-      try {
-        parameters["content"] =
-          parameters["content"] && JSON.parse(parameters["content"]);
-      } catch (e) {
-        // Handle parse error silently
-      }
-    }
+    // Extract field-specific initial value
+    const initialValue = extractFieldInitialValue(
+      commonProps.content,
+      context.compositeReplies
+    );
 
-    parameters["type"] ??= "application/json";
+    commonProps.initialValue = initialValue;
+    commonProps.onChange = context.onValueChange.bind(context);
 
-    parameters["content"] ??= null;
-
-    // Add context parameters
-    //parameters["status"] = context.status;
-    parameters["readOnly"] = context.readOnly;
-    parameters["usedAs"] = context.usedAs;
-    parameters["onChange"] = context.onValueChange;
-    parameters["displayCorrectAnswers"] = context.displayCorrectAnswers;
-    parameters["checkAnswers"] = context.checkAnswers;
-    parameters["onAnswerChange"] = context.onAnswerChange;
-    parameters["invisible"] = context.invisible;
-    //parameters["userId"] = context.status.userId;
-
-    // Set initial value from composite replies
-    parameters["initialValue"] = null;
-    if (context.compositeReplies?.answers) {
-      parameters["initialValue"] = context.compositeReplies.answers.find(
-        (answer) => answer.fieldName === parameters.content?.name
-      );
-    }
-
-    // Handle value field extraction
-    if (
-      parameters["initialValue"] &&
-      typeof parameters["initialValue"].value !== "undefined"
-    ) {
-      parameters["initialValue"] = parameters["initialValue"].value;
-    }
-
-    return <ActualElement key={key} {...parameters} />;
+    return <FieldComponent key={key} {...commonProps} />;
   }
 
   /**
@@ -157,4 +118,83 @@ export class FieldProcessor {
   static getRegisteredFieldTypes(): string[] {
     return Object.keys(this.objects);
   }
+}
+
+/**
+ * Extract common props that are the same for all field components
+ * @param element HTML element containing field data
+ * @param props Base props from MaterialLoader
+ * @param key React key
+ * @returns Object with common props for field components
+ */
+export function extractCommonFieldProps(
+  element: HTMLElement,
+  context: ProcessingRuleContext,
+  key?: number
+) {
+  // Extract parameters from <param> elements
+  const parameters: Record<string, any> = {};
+
+  element.querySelectorAll("param").forEach((node) => {
+    parameters[node.getAttribute("name") ?? ""] = node.getAttribute("value");
+  });
+
+  // Handle JSON content parsing
+  if (parameters["type"] === "application/json") {
+    try {
+      parameters["content"] =
+        parameters["content"] && JSON.parse(parameters["content"]);
+    } catch (e) {
+      // Keep original content if parsing fails
+    }
+  }
+
+  // Set defaults
+  parameters["type"] ??= "application/json";
+  parameters["content"] ??= null;
+
+  // Add common props from MaterialLoader
+  const commonProps: CommonFieldProps = {
+    // Field parameters
+    type: parameters["type"],
+    content: parameters["content"],
+
+    // MaterialLoader props
+    status: null,
+    readOnly: context.readOnly,
+    usedAs: context.usedAs,
+    displayCorrectAnswers: context.displayCorrectAnswers,
+    checkAnswers: context.checkAnswers,
+    onAnswerChange: context.onAnswerChange,
+    invisible: context.invisible,
+    userId: 0,
+
+    // React key
+    key: key,
+  };
+
+  return commonProps;
+}
+
+/**
+ * Extract field-specific initial value from composite replies
+ * @param content Field content object
+ * @param compositeReplies Composite replies from props
+ * @returns Initial value for the field
+ */
+export function extractFieldInitialValue(content: any, compositeReplies: any) {
+  if (!compositeReplies?.answers || !content?.name) {
+    return null;
+  }
+
+  const answer = compositeReplies.answers.find(
+    (answer: any) => answer.fieldName === content.name
+  );
+
+  if (!answer) {
+    return null;
+  }
+
+  // Handle .value field if it exists
+  return typeof answer.value !== "undefined" ? answer.value : answer;
 }
