@@ -67,6 +67,9 @@ import NotFoundBody from "~/components/not-found/body";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+let loadAnnouncementsTimer: ReturnType<typeof setTimeout> | null = null;
+
 /**
  * WorkspaceProps
  */
@@ -538,13 +541,20 @@ export default class Workspace extends React.Component<
 
       const state = this.props.store.getState();
 
+      // Delay loading announcements to let the unread state to settle first
+      // They are usually already loaded on frontpage load
+      // where clicking an announcements sets it as read
+      // but without delay the announcements would load "unread" again
       //Maybe we shouldn't load again, but whatever, maybe it updates
-      this.props.store.dispatch(
-        loadAnnouncementsAsAClient({
-          hideEnvironmentAnnouncements: true,
-          workspaceEntityId: state.status.currentWorkspaceId,
-        }) as Action
-      );
+      loadAnnouncementsTimer = setTimeout(() => {
+        this.props.store.dispatch(
+          loadAnnouncementsAsAClient({
+            hideEnvironmentAnnouncements: true,
+            workspaceEntityId: state.status.currentWorkspaceId,
+          }) as Action
+        );
+        loadAnnouncementsTimer = null;
+      }, 500); // 500ms delay
 
       this.loadWorkspaceAnnouncementsData(
         parseInt(window.location.hash.replace("#", ""))

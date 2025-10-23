@@ -333,8 +333,13 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
       if (announcement.unread) {
         announcerApi.markAnnouncementAsRead({ announcementId });
 
-        // Refresh the announcement object to reflect the read status
-        dispatch(loadAnnouncements(location, workspaceId, false, true));
+        dispatch({
+          type: "UPDATE_ONE_ANNOUNCEMENT",
+          payload: {
+            update: { unread: false },
+            announcement,
+          },
+        });
       }
       dispatch({
         type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
