@@ -284,3 +284,267 @@ export interface CommonFieldProps {
   checkAnswers?: boolean;
   onAnswerChange?: (name: string, value: boolean) => any;
 }
+
+/**
+ * Base field content interface
+ */
+export interface BaseFieldContent {
+  name: string;
+  fieldName: string;
+}
+
+/**
+ * Text field content interface
+ */
+export interface TextFieldContent extends BaseFieldContent {
+  fieldName: "text";
+  autogrow: boolean;
+  columns: string;
+  hint: string;
+  name: string;
+  rightAnswers: {
+    caseSensitive: boolean;
+    correct: boolean;
+    normalizeWhitespace: boolean;
+    text: string;
+  }[];
+}
+
+/**
+ * Select field content interface
+ */
+export interface SelectFieldContent extends BaseFieldContent {
+  fieldName: "select";
+  name: string;
+  explanation: string;
+  listType: "dropdown" | "list" | "radio-horizontal" | "radio-vertical";
+  options: {
+    correct: boolean;
+    text: string;
+    value: string;
+  }[];
+}
+
+/**
+ * Multi select field content interface
+ */
+export interface MultiSelectFieldContent extends BaseFieldContent {
+  fieldName: "multiselect";
+  name: string;
+  explanation: string;
+  listType: "checkbox-horizontal" | "checkbox-vertical";
+  options: {
+    correct: boolean;
+    text: string;
+    value: string;
+  }[];
+}
+
+/**
+ * Memo field content interface
+ */
+export interface MemoFieldContent extends BaseFieldContent {
+  fieldName: "memo";
+  example: string;
+  columns: string;
+  rows: string;
+  name: string;
+  richedit: boolean;
+  maxChars: string;
+  maxWords: string;
+}
+
+/**
+ * File field content interface
+ */
+export interface FileFieldContent extends BaseFieldContent {
+  fieldName: "file";
+  name: string;
+}
+
+/**
+ * FieldType
+ */
+interface FieldType {
+  name: string;
+  text: string;
+}
+
+/**
+ * Connect field content interface
+ */
+export interface ConnectFieldContent extends BaseFieldContent {
+  fieldName: "connect";
+  name: string;
+  fields: FieldType[];
+  counterparts: FieldType[];
+  connections: {
+    field: string;
+    counterpart: string;
+  }[];
+}
+
+/**
+ * TermType
+ */
+interface TermType {
+  id: string;
+  name: string;
+}
+
+/**
+ * CategoryType
+ */
+interface CategoryType {
+  id: string;
+  name: string;
+}
+
+/**
+ * CategoryTerm
+ */
+interface CategoryTerm {
+  category: string;
+  terms: string[];
+}
+
+/**
+ * Organizer field content interface
+ */
+export interface OrganizerFieldContent extends BaseFieldContent {
+  fieldName: "organizer";
+  name: string;
+  termTitle: string;
+  terms: TermType[];
+  categories: CategoryType[];
+  categoryTerms: CategoryTerm[];
+}
+
+/**
+ * SorterFieldItemType
+ */
+interface SorterFieldItemType {
+  id: string;
+  name: string;
+}
+
+/**
+ * Sorter field content interface
+ */
+export interface SorterFieldContent extends BaseFieldContent {
+  fieldName: "sorter";
+  name: string;
+  orientation: "vertical" | "horizontal";
+  capitalize: boolean;
+  items: SorterFieldItemType[];
+}
+
+/**
+ * Math field content interface
+ */
+export interface MathFieldContent extends BaseFieldContent {
+  fieldName: "math";
+  name: string;
+}
+
+/**
+ * Journal field content interface
+ */
+export interface JournalFieldContent extends BaseFieldContent {
+  fieldName: "journal";
+  name: string;
+}
+
+/**
+ * Audio field content interface
+ */
+export interface AudioFieldContent extends BaseFieldContent {
+  fieldName: "audio";
+  name: string;
+}
+
+/**
+ * Union type for all field content types
+ */
+export type FieldContent =
+  | TextFieldContent
+  | SelectFieldContent
+  | MultiSelectFieldContent
+  | MemoFieldContent
+  | FileFieldContent
+  | ConnectFieldContent
+  | OrganizerFieldContent
+  | SorterFieldContent
+  | MathFieldContent
+  | JournalFieldContent
+  | AudioFieldContent;
+
+/**
+ * Field parameters that get passed to field components
+ */
+export interface FieldParameters {
+  content: FieldContent | null;
+  type: string;
+  status: any; // This should be StatusType from your existing types
+  readOnly: boolean;
+  usedAs: string;
+  initialValue: any; // This should be properly typed based on field type
+  onChange: (
+    context: React.Component<any, any>,
+    name: string,
+    newValue: any
+  ) => void;
+  displayCorrectAnswers: boolean;
+  checkAnswers: boolean;
+  onAnswerChange: (name: string, value: boolean) => void;
+  invisible: boolean;
+  userId: number;
+}
+
+/**
+ * Field component props interface
+ */
+export interface FieldComponentProps<T extends FieldContent> {
+  content: T | null;
+  status: any; // StatusType
+  readOnly: boolean;
+  usedAs: string;
+  initialValue?: string;
+  onChange: (
+    context: React.Component<any, any>,
+    name: string,
+    newValue: any
+  ) => void;
+  displayCorrectAnswers: boolean;
+  checkAnswers: boolean;
+  onAnswerChange: (name: string, value: boolean) => void;
+  invisible: boolean;
+  userId: number;
+}
+
+/**
+ * Field type registry entry
+ */
+export interface FieldRegistryEntry {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  component: any;
+  processor: (
+    element: HTMLElement,
+    context: ProcessingRuleContext
+  ) => FieldParameters;
+  validator?: (content: FieldContent) => boolean;
+  canCheckAnswers: (content: FieldContent) => boolean;
+}
+
+/**
+ * Answer checkable function type
+ */
+export type AnswerCheckableFunction = (content: FieldContent) => boolean;
+
+/**
+ * Field processor function type
+ */
+export type FieldProcessorFunction = (
+  element: HTMLElement,
+  context: ProcessingRuleContext
+) => FieldParameters;
