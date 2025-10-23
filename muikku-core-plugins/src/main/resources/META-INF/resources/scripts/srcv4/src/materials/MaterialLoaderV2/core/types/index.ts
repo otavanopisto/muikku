@@ -1,70 +1,30 @@
 // srcv4/src/materials/MaterialLoaderV2/core/types/index.ts
 
+import type {
+  MaterialCompositeReply,
+  MaterialContentNode,
+  WorkspaceMaterial,
+} from "~/generated/client";
+
 /**
- * Core types for MaterialLoaderV2
+ * Workspace
  */
-
-export interface Material {
-  id: string;
-  title: string;
-  html: string;
-  assignmentType:
-    | "EXERCISE"
-    | "EVALUATED"
-    | "JOURNAL"
-    | "INTERIM_EVALUATION"
-    | "THEORY";
-  correctAnswers?: "ALWAYS" | "NEVER" | "ON_REQUEST";
-  hidden?: boolean;
-  contentHiddenForUser?: boolean;
-  ai?: boolean;
-}
-
 export interface Workspace {
   id: number;
   urlName: string;
 }
 
-export interface MaterialCompositeReply {
-  state?: string;
-  lock?: "NONE" | "LOCKED";
-  answers?: {
-    fieldName: string;
-    value: any;
-  }[];
-  workspaceMaterialReplyId?: number;
-}
-
-export interface StatusType {
-  userId: number;
-  loggedIn: boolean;
-}
-
-export interface WebsocketStateType {
-  websocket?: {
-    addEventCallback: (event: string, callback: (data: any) => void) => void;
-    sendMessage: (
-      event: string,
-      data: string,
-      callback: any,
-      stackId: string
-    ) => void;
-    queueMessage: (
-      event: string,
-      data: string,
-      callback: any,
-      stackId: string
-    ) => void;
-  };
-}
-
 export type UsedAs = "default" | "evaluationTool";
 
+/**
+ * ProcessingRuleContext
+ */
 export interface ProcessingRuleContext {
   // Material data
-  material: Material;
+  material: MaterialContentNode;
   workspace: Workspace;
   compositeReplies?: MaterialCompositeReply;
+  assignment?: WorkspaceMaterial;
 
   // State
   readOnly: boolean;
@@ -82,12 +42,13 @@ export interface ProcessingRuleContext {
   ) => void;
 
   // Other props
-  status: StatusType;
   usedAs: UsedAs;
   answerRegistry: Record<string, any>;
-  websocketState: WebsocketStateType;
 }
 
+/**
+ * MaterialLoaderConfig
+ */
 export interface MaterialLoaderConfig {
   readOnly?: boolean;
   answerable?: boolean;
@@ -104,17 +65,23 @@ export interface MaterialLoaderConfig {
   className?: string;
 }
 
+/**
+ * MaterialLoaderContextValue
+ */
 export interface MaterialLoaderContextValue {
-  material: Material;
+  material: MaterialContentNode;
   workspace: Workspace;
   compositeReplies?: MaterialCompositeReply;
+  assignment?: WorkspaceMaterial;
   assignmentState: AssignmentStateReturn;
   answerManager: AnswerManagerReturn;
   contentProcessor: React.ReactNode[];
   config: MaterialLoaderConfig;
 }
 
-// These will be defined in their respective hook files
+/**
+ * AssignmentStateReturn
+ */
 export interface AssignmentStateReturn {
   currentState: string;
   stateConfig: AssignmentStateConfig | null;
@@ -124,6 +91,9 @@ export interface AssignmentStateReturn {
   handleStateTransition: (newState: string) => void;
 }
 
+/**
+ * AnswerManagerReturn
+ */
 export interface AnswerManagerReturn {
   answersVisible: boolean;
   answersChecked: boolean;
@@ -131,8 +101,12 @@ export interface AnswerManagerReturn {
   answerRegistry: Record<string, any>;
   handleAnswerChange: (name: string, value: boolean) => void;
   toggleAnswersVisible: () => void;
+  handleAnswerCheckableChange: (checkable: boolean) => void;
 }
 
+/**
+ * ButtonConfig
+ */
 export interface ButtonConfig {
   className: string;
   text: string;
@@ -141,6 +115,9 @@ export interface ButtonConfig {
   successText?: string;
 }
 
+/**
+ * AssignmentStateConfig
+ */
 export interface AssignmentStateConfig {
   assignmentType: string;
   state: string | string[];
@@ -155,7 +132,9 @@ export interface AssignmentStateConfig {
   modifyState?: string;
 }
 
-// Add processor types
+/**
+ * EnhancedHTMLToReactComponentRule
+ */
 export interface EnhancedHTMLToReactComponentRule {
   shouldProcessHTMLElement: (tag: string, element: HTMLElement) => boolean;
   preventChildProcessing?: boolean;
@@ -175,4 +154,61 @@ export interface EnhancedHTMLToReactComponentRule {
   ) => string | void;
   preprocessElement?: (element: HTMLElement) => string | void;
   id?: string;
+}
+
+/**
+ * FieldManagerReturn
+ */
+export interface FieldManagerReturn {
+  handleValueChange: (
+    context: React.Component<any, any>,
+    name: string,
+    newValue: any,
+    onModification?: () => void
+  ) => void;
+  nameContextRegistry: Record<string, React.Component<any, any>>;
+}
+
+/**
+ * MaterialLoaderReturn
+ */
+export interface MaterialLoaderReturn {
+  // Core data
+  material: MaterialContentNode;
+  workspace: Workspace;
+  compositeReplies?: MaterialCompositeReply;
+  assignment?: WorkspaceMaterial;
+
+  // State
+  currentState: string;
+  stateConfig: AssignmentStateConfig | null;
+  readOnly: boolean;
+  answerable: boolean;
+  buttonConfig: ButtonConfig | null;
+  answersVisible: boolean;
+  answersChecked: boolean;
+  answerCheckable: boolean;
+  answerRegistry: Record<string, any>;
+
+  // Processed content
+  processedContent: React.ReactNode[];
+
+  // Event handlers
+  onAnswerChange: (name: string, value: boolean) => void;
+  onPushAnswer: (newState: string) => void;
+  onToggleAnswersVisible: () => void;
+
+  // Configuration
+  config: MaterialLoaderConfig;
+
+  // Field management
+  fieldManager: FieldManagerReturn;
+}
+
+/**
+ * MaterialLoaderContextValue
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface MaterialLoaderContextValue extends MaterialLoaderReturn {
+  // Additional context-specific properties can be added here
 }

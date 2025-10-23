@@ -2,7 +2,8 @@ import { Container, Title, Text, Paper, Button, Group } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { userAtom } from "~/src/atoms/auth";
 import { Link } from "react-router";
-import { SimpleMaterialLoader } from "~/src/materials/MaterialLoader/variants/SimpleMaterialLoader";
+//import { SimpleMaterialLoader } from "~/src/materials/MaterialLoader/variants/SimpleMaterialLoader";
+import { SimpleMaterialLoader } from "~/src/materials/MaterialLoaderV2/variants/SimpleLoader";
 
 const sampleHTML = `
   <div>
@@ -13,10 +14,6 @@ const sampleHTML = `
       <tr><th>Header 1</th><th>Header 2</th></tr>
       <tr><td>Cell 1</td><td>Cell 2</td></tr>
     </table>
-    <object type="application/vnd.muikku.field.text">
-      <param name="type" value="application/json" />
-      <param name="content" value='{"name":"test-field","hint":"Enter your answer"}' />
-    </object>
   </div>
 `;
 

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // srcv4/src/materials/MaterialLoaderV2/core/processors/HTMLPreprocessor.ts
 
 import $ from "jquery";

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -107,16 +109,12 @@ export class FieldProcessor {
       }
     }
 
-    if (!parameters["type"]) {
-      parameters["type"] = "application/json";
-    }
+    parameters["type"] ??= "application/json";
 
-    if (!parameters["content"]) {
-      parameters["content"] = null;
-    }
+    parameters["content"] ??= null;
 
     // Add context parameters
-    parameters["status"] = context.status;
+    //parameters["status"] = context.status;
     parameters["readOnly"] = context.readOnly;
     parameters["usedAs"] = context.usedAs;
     parameters["onChange"] = context.onValueChange;
@@ -124,7 +122,7 @@ export class FieldProcessor {
     parameters["checkAnswers"] = context.checkAnswers;
     parameters["onAnswerChange"] = context.onAnswerChange;
     parameters["invisible"] = context.invisible;
-    parameters["userId"] = context.status.userId;
+    //parameters["userId"] = context.status.userId;
 
     // Set initial value from composite replies
     parameters["initialValue"] = null;
@@ -139,7 +137,6 @@ export class FieldProcessor {
       parameters["initialValue"] &&
       typeof parameters["initialValue"].value !== "undefined"
     ) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       parameters["initialValue"] = parameters["initialValue"].value;
     }
 

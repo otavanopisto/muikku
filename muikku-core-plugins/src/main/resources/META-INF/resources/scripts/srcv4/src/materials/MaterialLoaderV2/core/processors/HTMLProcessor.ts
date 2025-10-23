@@ -172,7 +172,7 @@ export function HTMLtoReactComponent(
     React.createElement(tag, props, children);
 
   const actualProcessor = matchingRule
-    ? matchingRule.processingFunction || defaultProcessor
+    ? matchingRule.processingFunction ?? defaultProcessor
     : defaultProcessor;
 
   const props: any = {

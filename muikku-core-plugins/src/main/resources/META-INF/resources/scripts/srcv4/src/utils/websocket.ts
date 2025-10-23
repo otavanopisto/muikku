@@ -119,8 +119,8 @@ export class MuikkuWebsocket extends EventEmitter {
     discarded: false,
   };
   private messageQueue: QueuedMessage[] = [];
-  private pingInterval: NodeJS.Timeout | null = null;
-  private reconnectTimeout: NodeJS.Timeout | null = null;
+  private pingInterval: ReturnType<typeof setInterval> | null = null;
+  private reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
   private ticket: string | null = null;
   private waitingPong = false;
   private gotPong = false;
@@ -196,6 +196,31 @@ export class MuikkuWebsocket extends EventEmitter {
   ): Promise<void> {
     const message: WebSocketMessage = { eventType, data };
     await this.sendMessage(message, stackId);
+  }
+
+  /**
+   * Queues a message for sending when the WebSocket is connected
+   * @param eventType - Type of event to send
+   * @param data - Data to send with the event
+   * @param onSent - Optional callback when message is sent
+   * @param stackId - Optional stack ID for message deduplication
+   */
+  public queueMessage(
+    eventType: string,
+    data: unknown,
+    stackId?: string
+  ): void {
+    const message: WebSocketMessage = { eventType, data };
+
+    // Check for existing message with same stackId and replace it
+
+    const index = this.messageQueue.findIndex((m) => m.stackId === stackId);
+
+    if (index !== -1) {
+      this.messageQueue[index] = message;
+    } else {
+      this.messageQueue.push(message);
+    }
   }
 
   /**
@@ -459,6 +484,7 @@ export class MuikkuWebsocket extends EventEmitter {
     }
 
     if (this.state.reconnectAttempts >= this.options.maxReconnectAttempts) {
+      // eslint-disable-next-line no-console
       console.error("Max reconnection attempts reached");
       this.stopReconnectionAndShowError(502);
       return;
@@ -467,16 +493,16 @@ export class MuikkuWebsocket extends EventEmitter {
     this.state.isReconnecting = true;
     this.state.reconnectAttempts++;
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    this.reconnectTimeout = setTimeout(async () => {
+    this.reconnectTimeout = setTimeout(() => {
       try {
-        await this.connect();
+        void this.connect();
       } catch (error) {
         this.handleError(error as Error);
         // If reconnection failed, try again if we haven't exceeded max attempts
         if (this.state.reconnectAttempts < this.options.maxReconnectAttempts) {
           this.startReconnection();
         } else {
+          // eslint-disable-next-line no-console
           console.error("Max reconnection attempts reached, giving up");
           this.stopReconnectionAndShowError(502);
         }
