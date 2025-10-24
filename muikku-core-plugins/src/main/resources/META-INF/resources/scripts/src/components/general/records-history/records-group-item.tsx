@@ -16,7 +16,7 @@ import { RecordWorkspaceActivityByLine } from "./types";
 import { useRecordsInfoContext } from "./context/records-info-context";
 import { getAssessmentData } from "~/helper-functions/shared";
 import { useWorkspaceAssignmentInfo } from "~/hooks/useWorkspaceAssignmentInfo";
-import AssignmentDetails from "~/components/general/assignment-info-details";
+import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
 import { suitabilityMapHelper } from "~/@shared/suitability";
 
 /**

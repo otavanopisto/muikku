@@ -56,8 +56,8 @@ public class LanguageProfileController {
     return languageProfileDAO.create(userEntityId, formData);
   }
   
-  public LanguageProfileSample createSample(LanguageProfile languageProfile, String language, LanguageProfileSampleType type, String fileId, String fileName, String contentType) {
-    LanguageProfileSample sample = languageProfileSampleDAO.create(languageProfile, language, type, fileId, fileName, contentType);
+  public LanguageProfileSample createSample(LanguageProfile languageProfile, String language, LanguageProfileSampleType type, String fileId, String fileName, String value, String contentType) {
+    LanguageProfileSample sample = languageProfileSampleDAO.create(languageProfile, language, type, fileId, fileName, value, contentType);
     languageProfileDAO.updateLastModified(languageProfile, sample.getLastModified());
     return sample;
   }

@@ -22,12 +22,15 @@ import {
   Language,
   WorkspaceMaterial,
   InterimEvaluationRequest,
-  MaterialEvaluation,
+  NodeEvaluation,
   WorkspaceAccess,
   WorkspaceMandatority,
   WorkspaceSettings,
   StaffMember,
   MaterialAI,
+  ExamSettings,
+  ExamAttendee,
+  ExamAttendance,
 } from "~/generated/client";
 import { repairContentNodes } from "~/util/modifiers";
 
@@ -232,6 +235,10 @@ export interface WorkspaceMaterialEditorType {
   currentNodeValue?: MaterialContentNodeWithIdAndLogic;
   currentDraftNodeValue?: MaterialContentNodeWithIdAndLogic;
   parentNodeValue?: MaterialContentNodeWithIdAndLogic;
+  currentNodeExamSettings?: ExamSettings;
+  currentNodeExamSettingsDraft?: ExamSettings;
+  currentNodeExamAttendees?: ExamAttendee[];
+  currentNodeExamAttendeesDraft?: ExamAttendee[];
   section: boolean;
   opened: boolean;
   canDelete: boolean;
@@ -269,10 +276,17 @@ export interface WorkspaceMaterialExtraTools {
  */
 export interface MaterialContentNodeWithIdAndLogic extends MaterialContentNode {
   id?: number;
-  // this is usually missing and has to be manually retrieved
+  // these are usually missing and have to be manually retrieved
   childrenAttachments?: MaterialContentNodeWithIdAndLogic[];
-  evaluation?: MaterialEvaluation;
+  evaluation?: NodeEvaluation;
   assignment?: WorkspaceMaterial;
+
+  // This are available for other users than student
+  examSettings?: ExamSettings;
+  examAttendees?: ExamAttendee[];
+
+  // This is available for student only
+  examAttendance?: ExamAttendance;
 }
 
 /* export type MaterialContentNodeListType = Array<MaterialContentNodeWithIdAndLogic>; */
@@ -365,6 +379,10 @@ const initialWorkspacesState: WorkspacesState = {
     currentNodeValue: null,
     currentDraftNodeValue: null,
     parentNodeValue: null,
+    currentNodeExamSettings: null,
+    currentNodeExamSettingsDraft: null,
+    currentNodeExamAttendees: null,
+    currentNodeExamAttendeesDraft: null,
     section: false,
     opened: false,
     canDelete: true,
@@ -645,6 +663,13 @@ export const workspaces: Reducer<WorkspacesState> = (
         action.payload.showUpdateLinkedMaterialsDialogForPublishCount;
       newEditor.showRemoveLinkedAnswersDialogForPublish =
         action.payload.showRemoveLinkedAnswersDialogForPublish;
+
+      if (action.payload.isDraft) {
+        return {
+          ...state,
+          materialEditor: newEditor,
+        };
+      }
 
       return {
         ...state,

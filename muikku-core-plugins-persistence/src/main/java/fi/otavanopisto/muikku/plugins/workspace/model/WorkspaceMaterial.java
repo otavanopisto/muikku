@@ -24,6 +24,16 @@ public class WorkspaceMaterial extends WorkspaceNode {
   public WorkspaceNodeType getType() {
     return WorkspaceNodeType.MATERIAL;
   }
+  
+  @Transient
+  public boolean isExamAssignment() {
+    return getParent() != null && getParent() instanceof WorkspaceFolder && ((WorkspaceFolder) getParent()).getExam();
+  }
+  
+  @Transient
+  public boolean isAssignment() {
+    return assignmentType == WorkspaceMaterialAssignmentType.EVALUATED || assignmentType == WorkspaceMaterialAssignmentType.EXERCISE;
+  }
 
   public WorkspaceMaterialAssignmentType getAssignmentType() {
     return assignmentType;

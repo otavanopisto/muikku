@@ -4,7 +4,6 @@ import Flash from "./flash";
 import Image from "./image";
 import Audio from "./audio";
 import * as React from "react";
-import { MaterialContentNode } from "~/generated/client";
 import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
 const registry = {

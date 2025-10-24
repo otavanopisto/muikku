@@ -30,8 +30,8 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
         <h2
           className="material-page__title"
           lang={
-            props.material.titleLanguage ||
-            props.folder.titleLanguage ||
+            props.material?.titleLanguage ||
+            props.folder?.titleLanguage ||
             props.workspace.language
           }
         >
@@ -74,8 +74,8 @@ export function MaterialLoaderTitle(props: MaterialLoaderTitleProps) {
       <h2
         className={`material-page__title material-page__title--${materialPageType}`}
         lang={
-          props.material.titleLanguage ||
-          props.folder.titleLanguage ||
+          props.material?.titleLanguage ||
+          props.folder?.titleLanguage ||
           props.workspace.language
         }
       >

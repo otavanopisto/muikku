@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StateType } from "~/reducers";
 import { connect } from "react-redux";
-
 import MaterialLoader from "~/components/base/material-loader";
 import {
   MaterialContentNodeWithIdAndLogic,
@@ -31,23 +30,50 @@ import { MaterialCompositeReply } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { MaterialLoaderPoints } from "~/components/base/material-loader/points";
 import { MaterialLoaderAssignmentLock } from "~/components/base/material-loader/assigment-lock";
+import {
+  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  SetWorkspaceMaterialEditorStateTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+  setWorkspaceMaterialEditorState,
+  updateWorkspaceMaterialContentNode,
+  requestWorkspaceMaterialContentNodeAttachments,
+} from "~/actions/workspaces/material";
+import {
+  UpdateAssignmentStateTriggerType,
+  updateAssignmentState,
+} from "~/actions/workspaces";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
+import { WebsocketStateType } from "~/reducers/util/websocket";
 
 /**
  * WorkspaceMaterialProps
  */
 interface WorkspaceMaterialProps extends WithTranslation {
-  status: StatusType;
-  workspaceEditMode: WorkspaceEditModeStateType;
-  materialsAreDisabled: boolean;
   materialContentNode: MaterialContentNodeWithIdAndLogic;
   folder: MaterialContentNodeWithIdAndLogic;
   compositeReplies: MaterialCompositeReply;
   isViewRestricted: boolean;
   showEvenIfHidden: boolean;
   workspace: WorkspaceDataType;
-  setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
   anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
+
+  // Redux state properties
+  status: StatusType;
+  websocket: WebsocketStateType;
+  workspaceEditMode: WorkspaceEditModeStateType;
+  materialsAreDisabled: boolean;
+
+  // Actions
+  setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
+  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType;
+  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
+  updateAssignmentState: UpdateAssignmentStateTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -136,6 +162,8 @@ class WorkspaceMaterial extends React.Component<
       >
         {(loaded: boolean) => (
           <MaterialLoader
+            status={this.props.status}
+            websocket={this.props.websocket}
             canPublish
             canRevert
             canCopy={!isBinary}
@@ -159,11 +187,22 @@ class WorkspaceMaterial extends React.Component<
             readOnly={
               !this.props.status.loggedIn || this.props.materialsAreDisabled
             }
-            onAssignmentStateModified={this.updateWorkspaceActivity}
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
             readspeakerComponent={this.props.readspeakerComponent}
             anchorElement={this.props.anchorItem}
+            onAssignmentStateModified={this.updateWorkspaceActivity}
+            onDisplayNotification={this.props.displayNotification}
+            onUpdateWorkspaceMaterialContentNode={
+              this.props.updateWorkspaceMaterialContentNode
+            }
+            onRequestWorkspaceMaterialContentNodeAttachments={
+              this.props.requestWorkspaceMaterialContentNodeAttachments
+            }
+            onSetWorkspaceMaterialEditorState={
+              this.props.setWorkspaceMaterialEditorState
+            }
+            onUpdateAssignmentState={this.props.updateAssignmentState}
           >
             {(props, state, stateConfiguration) => (
               <div>
@@ -225,6 +264,7 @@ function mapStateToProps(state: StateType) {
     workspaceEditMode: state.workspaces.editMode,
     status: state.status,
     materialsAreDisabled: state.workspaces.materialsAreDisabled,
+    websocket: state.websocket,
   };
 }
 
@@ -233,7 +273,17 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ setCurrentWorkspace }, dispatch);
+  return bindActionCreators(
+    {
+      setCurrentWorkspace,
+      updateWorkspaceMaterialContentNode,
+      requestWorkspaceMaterialContentNodeAttachments,
+      setWorkspaceMaterialEditorState,
+      updateAssignmentState,
+      displayNotification,
+    },
+    dispatch
+  );
 }
 
 export default withTranslation(["common"])(

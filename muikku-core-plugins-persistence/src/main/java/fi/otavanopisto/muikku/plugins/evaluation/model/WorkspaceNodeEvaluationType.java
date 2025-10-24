@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.evaluation.model;
 
-public enum WorkspaceMaterialEvaluationType {
+public enum WorkspaceNodeEvaluationType {
 
   GRADED,
   POINTS,

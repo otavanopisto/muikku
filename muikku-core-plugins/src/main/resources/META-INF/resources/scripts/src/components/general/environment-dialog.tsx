@@ -50,13 +50,21 @@ export default class EnvironmentDialog extends Dialog {
                     >
                       <div role="form" className="env-dialog__content">
                         <header
+                          ref={this.headerRef}
                           className="env-dialog__header"
                           id={`dialog-title-${this.props.modifier}`}
                         >
                           {this.props.title}
                         </header>
-                        <section className="env-dialog__body">
-                          {this.props.content(closePortal)}
+                        <section
+                          ref={this.contentRef}
+                          className="env-dialog__body"
+                        >
+                          {this.props.content(
+                            closePortal,
+                            this.headerRef.current,
+                            this.contentRef.current
+                          )}
                         </section>
                         <footer className="env-dialog__footer">
                           {this.props.footer && this.props.footer(closePortal)}

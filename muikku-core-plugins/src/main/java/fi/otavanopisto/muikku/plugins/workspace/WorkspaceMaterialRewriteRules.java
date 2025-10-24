@@ -53,8 +53,9 @@ public class WorkspaceMaterialRewriteRules extends HttpConfigurationProvider {
 
     configuration
       .addRule(Join.path("/rest/workspace/audioanswer/{clipId}").to("/workspaceAudioAnswerServlet?clipId={clipId}"));
+    // TODO Technically nodeevaluationaudioassessment; can be cleaned up later
     configuration
-      .addRule(Join.path("/rest/workspace/materialevaluationaudioassessment/{clipId}").to("/workspaceMaterialAudioEvaluationServlet?clipId={clipId}"));
+      .addRule(Join.path("/rest/workspace/materialevaluationaudioassessment/{clipId}").to("/workspaceNodeAudioEvaluationServlet?clipId={clipId}"));
 
     return configuration;
   }

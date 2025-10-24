@@ -28,7 +28,10 @@ import {
 import { withTranslation, WithTranslation } from "react-i18next";
 import MApi from "~/api/api";
 import { BilledPrice } from "~/generated/client";
-import AssignmentDetails from "~/components/general/assignment-info-details";
+import AssignmentDetails from "~/components/general/evaluation-assessment-details/assigments-details";
+import { AssignmentInfo } from "~/components/general/evaluation-assessment-details/helper";
+import ExamDetails from "~/components/general/evaluation-assessment-details/exams-details";
+import { ExamInfo } from "~/components/general/evaluation-assessment-details/helper";
 
 /**
  * WorkspaceEditorProps
@@ -38,12 +41,8 @@ interface WorkspaceEditorProps extends WithTranslation {
   evaluations: EvaluationState;
   locale: LocaleState;
   selectedAssessment: EvaluationAssessmentRequest;
-  assignmentInfoArray: {
-    title: string;
-    grade?: string | null;
-    points?: number;
-    maxPoints?: number;
-  }[];
+  assignmentInfoArray: AssignmentInfo[];
+  examInfoArray: ExamInfo[];
   type?: "new" | "edit";
   editorLabel?: string;
   eventId?: string;
@@ -806,7 +805,7 @@ class WorkspaceEditor extends SessionStateComponent<
    * @returns JSX.Element
    */
   render() {
-    const { t, assignmentInfoArray } = this.props;
+    const { t, assignmentInfoArray, examInfoArray } = this.props;
     const { existingBilledPriceObject, activeGradeSystems } = this.state;
 
     const options = this.renderSelectOptions();
@@ -852,6 +851,10 @@ class WorkspaceEditor extends SessionStateComponent<
       <div className="form" role="form">
         <div className="form__row">
           <AssignmentDetails assignmentInfoList={assignmentInfoArray} />
+        </div>
+
+        <div className="form__row">
+          <ExamDetails examInfoList={examInfoArray} />
         </div>
 
         <div className="form__row">
