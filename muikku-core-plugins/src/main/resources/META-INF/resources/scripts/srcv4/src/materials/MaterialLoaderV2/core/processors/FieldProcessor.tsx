@@ -22,7 +22,7 @@ import { ConnectField } from "../../components/fields/ConnectField";
 import { OrganizerField } from "../../components/fields/OrganizerField";
 ///import { AudioField } from "../components/fields/AudioField";
 import { JournalField } from "../../components/fields/JournalField";
-import { SorterField } from "../../components/fields/Sorterfield";
+import { SorterField } from "../../components/fields/SorterField";
 //import { MathField } from "../../components/fields/MathField";
 
 /**

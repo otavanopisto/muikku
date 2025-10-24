@@ -15,14 +15,20 @@ export interface EnhancedHTMLToReactComponentRule {
   preventChildProcessing?: boolean;
   processingFunction?: (
     tag: string,
-    props: any,
-    children: any[],
+    props: {
+      key?: number;
+      [key: string]: any;
+    },
+    children: React.ReactNode[],
     element: HTMLElement,
     context?: ProcessingRuleContext
   ) => any;
   preprocessReactProperties?: (
     tag: string,
-    props: any,
+    props: {
+      key?: number;
+      [key: string]: any;
+    },
     children: any[],
     element: HTMLElement,
     context?: ProcessingRuleContext
@@ -175,7 +181,10 @@ export function HTMLtoReactComponent(
     ? matchingRule.processingFunction ?? defaultProcessor
     : defaultProcessor;
 
-  const props: any = {
+  const props: {
+    key?: number;
+    [key: string]: any;
+  } = {
     key,
   };
 
@@ -215,5 +224,6 @@ export function HTMLtoReactComponent(
 
   const finalChildren = children.length === 0 ? [] : children;
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return actualProcessor(tagname, props, finalChildren, element, context);
 }

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-// srcv4/src/materials/MaterialLoaderV2/core/processors/ProcessingRules.ts
-
 import type { EnhancedHTMLToReactComponentRule } from "./HTMLProcessor";
 import { FieldProcessor } from "./FieldProcessor";
 import type {
@@ -11,15 +8,12 @@ import type {
   StaticDataset,
   WordDefinitionDataset,
 } from "../types";
-
-// Import static components (these will need to be imported from existing components)
-/* import Image from "~/components/base/material-loader/static/image";
-import WordDefinition from "~/components/base/material-loader/static/word-definition";
-import IFrame from "~/components/base/material-loader/static/iframe";
-import Link from "~/components/base/material-loader/static/link";
-import Table from "~/components/base/material-loader/static/table";
-import MathJAX from "~/components/base/material-loader/static/mathjax";
-import { AudioPoolComponent } from "~/components/general/audio-pool-component"; */
+import WordDefinition from "../../components/static/WordDefinition";
+import IFrame from "../../components/static/IFrame";
+import Image from "../../components/static/Image";
+import Link from "../../components/static/Link";
+import Table from "../../components/static/Table";
+import MathJAX from "../../components/static/MathJAX";
 
 const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
   {
@@ -125,11 +119,21 @@ const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
     shouldProcessHTMLElement: (tagname) => tagname === "iframe",
     preventChildProcessing: true,
 
-    processingFunction: (_tag, _props, _children, element, context) => {
+    processingFunction: (_tag, props, children, element, context) => {
       if (!context) return;
       const dataset = extractDataSet<IframeDataset>(element);
       const path = `/workspace/${context?.workspace.urlName}/materials/${context?.material.path}`;
-      return <>IFrame</>;
+      return (
+        <IFrame
+          key={props.key}
+          element={element}
+          dataset={dataset}
+          invisible={context.invisible}
+          path={path}
+        >
+          {children}
+        </IFrame>
+      );
     },
   },
   {
@@ -139,10 +143,18 @@ const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
     shouldProcessHTMLElement: (tagname, element) =>
       !!(tagname === "mark" && element.dataset.muikkuWordDefinition),
 
-    processingFunction: (_tag, _props, _children, element, context) => {
+    processingFunction: (_tag, props, children, element, context) => {
       if (!context) return;
       const dataset = extractDataSet<WordDefinitionDataset>(element);
-      return <>WordDefinition</>;
+      return (
+        <WordDefinition
+          key={props.key}
+          dataset={dataset}
+          invisible={context.invisible}
+        >
+          {children}
+        </WordDefinition>
+      );
     },
   },
   {
@@ -154,11 +166,20 @@ const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
       element.classList.contains("image"),
     preventChildProcessing: true,
 
-    processingFunction: (_tag, _props, _children, element, context) => {
+    processingFunction: (_tag, props, _children, element, context) => {
       if (!context) return;
       const dataset = extractDataSet<ImageDataset>(element);
       const path = `/workspace/${context?.workspace.urlName}/materials/${context?.material.path}`;
-      return <>Image</>;
+      return (
+        <Image
+          key={props.key}
+          element={element}
+          dataset={dataset}
+          invisible={context.invisible}
+          path={path}
+          processingRules={MATERIALS_AND_HELP_RULES}
+        />
+      );
     },
     id: "image-rule",
   },
@@ -169,8 +190,12 @@ const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
     shouldProcessHTMLElement: (tagname, element) =>
       tagname === "span" && element.classList.contains("math-tex"),
 
-    processingFunction: (_tag, _props, _children, _element, _context) => (
-      <>MathJAX</>
+    processingFunction: (_tag, props, children, _element, context) => (
+      <MathJAX
+        key={props.key}
+        invisible={context?.invisible}
+        children={children}
+      />
     ),
   },
   {
@@ -182,11 +207,20 @@ const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
     id: "link-rule",
     preventChildProcessing: true,
 
-    processingFunction: (_tag, _props, _children, element, context) => {
+    processingFunction: (_tag, props, _children, element, context) => {
       if (!context) return;
       const dataset = extractDataSet<LinkDataset>(element);
       const path = `/workspace/${context?.workspace.urlName}/materials/${context?.material.path}`;
-      return <>Link</>;
+      return (
+        <Link
+          key={props.key}
+          element={element}
+          dataset={dataset}
+          invisible={context.invisible}
+          path={path}
+          processingRules={MATERIALS_AND_HELP_RULES}
+        />
+      );
     },
   },
   {
@@ -195,7 +229,14 @@ const MATERIALS_AND_HELP_RULES: EnhancedHTMLToReactComponentRule[] = [
      */
     shouldProcessHTMLElement: (tagname) => tagname === "table",
 
-    processingFunction: (_tag, _props, _children, _element) => <>Table</>,
+    processingFunction: (_tag, props, children, element, _context) => (
+      <Table
+        key={props.key}
+        element={element}
+        props={props}
+        children={children}
+      />
+    ),
   },
   {
     /**
@@ -252,7 +293,9 @@ const SIMPLE_RULES: EnhancedHTMLToReactComponentRule[] = [
      * @param _element  element
      * @returns any
      */
-    processingFunction: (_tag, _props, _children, _element) => <>MathJAX</>,
+    processingFunction: (_tag, _props, children, _element) => (
+      <MathJAX invisible={false} children={children} />
+    ),
   },
   {
     /**
@@ -269,14 +312,23 @@ const SIMPLE_RULES: EnhancedHTMLToReactComponentRule[] = [
     /**
      * processingFunction
      * @param _tag tag
-     * @param _props props
+     * @param props props
      * @param _children children
      * @param element element
      * @returns any
      */
-    processingFunction: (_tag, _props, _children, element) => {
+    processingFunction: (_tag, props, _children, element) => {
       const dataset = extractDataSet<ImageDataset>(element);
-      return <>Image</>;
+      return (
+        <Image
+          key={props.key}
+          element={element}
+          dataset={dataset}
+          invisible={false}
+          path={""}
+          processingRules={MATERIALS_AND_HELP_RULES}
+        />
+      );
     },
     id: "image-rule",
   },
@@ -300,9 +352,18 @@ const SIMPLE_RULES: EnhancedHTMLToReactComponentRule[] = [
      * @param element element
      * @returns any
      */
-    processingFunction: (_tag, _props, _children, element) => {
+    processingFunction: (_tag, props, _children, element) => {
       const dataset = extractDataSet<LinkDataset>(element);
-      return <>Link</>;
+      return (
+        <Link
+          key={props.key}
+          element={element}
+          dataset={dataset}
+          invisible={false}
+          path={""}
+          processingRules={MATERIALS_AND_HELP_RULES}
+        />
+      );
     },
   },
 ];
