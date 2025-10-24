@@ -43,8 +43,8 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeRep
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -60,13 +60,13 @@ public class ExamRESTService {
   private SessionController sessionController;
   
   @Inject
-  private UserEntityController userEntityController;
-  
-  @Inject
   private ExamController examController;
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
   
   @Inject
   private EvaluationController evaluationController;
@@ -142,7 +142,9 @@ public class ExamRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getSettings(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
-    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+    WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
+    WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     return Response.ok().entity(examController.getSettingsJson(workspaceFolderId)).build();
@@ -152,7 +154,8 @@ public class ExamRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getAllSettings(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     List<ExamSettingsRestModel> settings = new ArrayList<>();
@@ -281,7 +284,9 @@ public class ExamRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listAttendees(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
-    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+    WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
+    WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     List<ExamAttendeeRestModel> attendees = new ArrayList<>();
@@ -297,7 +302,9 @@ public class ExamRESTService {
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response addAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId) {
-    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+    WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
+    WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, userEntityId);
@@ -314,7 +321,9 @@ public class ExamRESTService {
   @PUT
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response updateAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId, ExamAttendeeRestModel payload) {
-    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+    WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
+    WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, userEntityId);
@@ -329,7 +338,9 @@ public class ExamRESTService {
   @DELETE
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response removeAttendee(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, @PathParam("USERENTITYID") Long userEntityId, @QueryParam("permanent") boolean permanent) {
-    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+    WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
+    WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, userEntityId);
