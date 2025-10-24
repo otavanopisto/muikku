@@ -60,6 +60,7 @@ interface NewEditAnnouncementState {
   locked: boolean;
   startDate: Date;
   endDate: Date;
+  pinned?: boolean;
 }
 
 /**
@@ -83,7 +84,7 @@ class NewEditAnnouncement extends SessionStateComponent<
     this.handleDateChange = this.handleDateChange.bind(this);
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
-
+    this.handlePinnedChange = this.handlePinnedChange.bind(this);
     this.baseAnnouncementCurrentTarget = props.announcement
       ? props.announcement.workspaces
           .map(
@@ -113,6 +114,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         currentTarget: this.baseAnnouncementCurrentTarget,
         subject: props.announcement ? props.announcement.caption : "",
         locked: false,
+        pinned: props.announcement ? props.announcement.pinned : false,
         startDate: props.announcement
           ? localize
               .getLocalizedMoment(this.props.announcement.startDate)
@@ -412,6 +414,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           archived: false,
           caption: this.state.subject,
           content: this.state.text,
+          pinned: this.state.pinned,
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
@@ -451,6 +454,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         announcement: {
           caption: this.state.subject,
           content: this.state.text,
+          pinned: this.state.pinned,
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
@@ -505,6 +509,19 @@ class NewEditAnnouncement extends SessionStateComponent<
     nState[stateLocation] = newDate;
     this.setStateAndStore(
       nState,
+      (this.props.announcement ? this.props.announcement.id + "-" : "") +
+        (this.props.workspaceId || "")
+    );
+  }
+
+  /**
+   * handlePinnedChange
+   * @param e event
+   */
+  handlePinnedChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const pinned = e.target.checked;
+    this.setStateAndStore(
+      { pinned },
       (this.props.announcement ? this.props.announcement.id + "-" : "") +
         (this.props.workspaceId || "")
     );
@@ -566,6 +583,21 @@ class NewEditAnnouncement extends SessionStateComponent<
             locale={outputCorrectDatePickerLocale(localize.language)}
             dateFormat="P"
           />
+        </div>
+        <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
+          <input
+            id="announcementPinned"
+            type="checkbox"
+            className="env-dialog__input"
+            checked={this.state.pinned}
+            onChange={this.handlePinnedChange}
+          />
+          <label
+            htmlFor="announcementPinned"
+            className="env-dialog__input-label"
+          >
+            {this.props.i18n.t("labels.pinAnnouncement", { ns: "messaging" })}
+          </label>
         </div>
       </div>,
       <InputContactsAutofill

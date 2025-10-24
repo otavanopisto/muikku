@@ -165,6 +165,9 @@ class AnnouncementsPanel extends React.Component<
                 </div>
               ) : null}
             </span>
+            {announcement.pinned ? (
+              <span className="icon icon-pin"></span>
+            ) : null}
           </Link>
         );
       }

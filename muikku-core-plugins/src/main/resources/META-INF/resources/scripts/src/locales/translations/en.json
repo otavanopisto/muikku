@@ -1236,6 +1236,7 @@
       "message": "Message",
       "name_discussionArea": "Discussion area name",
       "pin": "Pin message",
+      "pinAnnouncement": "Pin announcement",
       "recipients_one": "Recipient",
       "recipients_other": "Recipients",
       "remove": "$t(common:labels.remove)",
