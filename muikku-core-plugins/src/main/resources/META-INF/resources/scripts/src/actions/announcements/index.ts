@@ -240,8 +240,6 @@ const loadAnnouncements: LoadAnnouncementsTriggerType =
  * markAllAsRead
  * @param location location
  * @param workspaceId workspaceId
- * @param notOverrideCurrent notOverrideCurrent
- * @param force force
  */
 const markAllAsRead: LoadAnnouncementsTriggerType = function markAllAsRead(
   location,

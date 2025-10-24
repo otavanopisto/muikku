@@ -26,6 +26,7 @@ import {
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
+import { t } from "i18next";
 
 /**
  * AnnouncerToolbarProps
@@ -258,6 +259,7 @@ class AnnouncerToolbar extends React.Component<
             <ButtonPill
               buttonModifiers="mark-all-read"
               icon="envelope-open"
+              disabled={this.props.announcements.unreadCount === 0}
               onClick={this.markAllAsRead}
             />
           </ApplicationPanelToolbarActionsMain>
