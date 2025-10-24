@@ -20,6 +20,7 @@ import {
 import MApi, { isMApiError } from "~/api/api";
 import { InterimEvaluationRequest } from "~/generated/client";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { StateConfig } from "../types";
 
 /* eslint-disable camelcase */
 const ckEditorConfig = {
@@ -65,8 +66,7 @@ const ckEditorConfig = {
 interface InterimEvaluationEditorProps
   extends MaterialLoaderProps,
     WithTranslation {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  stateConfiguration: any;
+  stateConfiguration: StateConfig;
   updateCurrentWorkspaceInterimEvaluationRequests: UpdateCurrentWorkspaceInterimEvaluationRequestsTrigger;
   displayNotification: DisplayNotificationTriggerType;
 }
@@ -165,7 +165,7 @@ class InterimEvaluationEditor extends React.Component<
 
     // If there is no request data, we need to create a new one
     // otherwise delete existing one
-    if (this.props.stateConfiguration.state === "SUBMITTED") {
+    if (this.props.stateConfiguration.states === "SUBMITTED") {
       try {
         const requestData = await evaluationApi.deleteInterimEvaluationRequest({
           interimEvaluationRequestId: this.state.requestData.id,
@@ -257,10 +257,10 @@ class InterimEvaluationEditor extends React.Component<
 
     const isSubmitted =
       this.props.stateConfiguration &&
-      this.props.stateConfiguration.state === "SUBMITTED";
+      this.props.stateConfiguration.states === "SUBMITTED";
     const isEvaluated =
       this.props.stateConfiguration &&
-      this.props.stateConfiguration.state === "PASSED";
+      this.props.stateConfiguration.states === "PASSED";
 
     if (this.props.workspace && this.props.workspace.activity) {
       creatingInterimEvaluationRequestBlocked =
@@ -291,20 +291,20 @@ class InterimEvaluationEditor extends React.Component<
 
     const buttons = this.props.stateConfiguration ? (
       <div className="material-page__buttonset">
-        {!this.props.stateConfiguration["button-disabled"] ? (
+        {!this.props.stateConfiguration.buttonDisabled ? (
           <Button
             disabled={this.state.loading}
-            buttonModifiers={this.props.stateConfiguration["button-class"]}
+            buttonModifiers={this.props.stateConfiguration.buttonClass}
             onClick={this.handlePushInterimRequest}
           >
-            {t(this.props.stateConfiguration["button-text"], {
+            {t(this.props.stateConfiguration.buttonText, {
               ns: "workspace",
+              defaultValue: this.props.stateConfiguration.buttonText,
             })}
           </Button>
         ) : null}
-        {this.props.stateConfiguration[
-          "displays-hide-show-answers-on-request-button-if-allowed"
-        ] && this.props.material.correctAnswers === "ON_REQUEST" ? (
+        {this.props.stateConfiguration.displaysHideShowAnswersButton &&
+        this.props.material.correctAnswers === "ON_REQUEST" ? (
           <Button
             disabled={this.state.loading}
             buttonModifiers="muikku-show-correct-answers-button"

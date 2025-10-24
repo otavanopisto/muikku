@@ -3,12 +3,12 @@ package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 import java.util.Date;
 import java.util.List;
 
-public class RestWorkspaceMaterialEvaluation {
+public class RestWorkspaceNodeEvaluation {
   
-  public RestWorkspaceMaterialEvaluation() {
+  public RestWorkspaceNodeEvaluation() {
   }
   
-  public RestWorkspaceMaterialEvaluation(
+  public RestWorkspaceNodeEvaluation(
       Long id,
       Date evaluated, 
       Long assessorEntityId, 
@@ -160,7 +160,7 @@ public class RestWorkspaceMaterialEvaluation {
   private Date evaluated;
   private Long assessorEntityId;
   private Long studentEntityId;
-  private Long workspaceMaterialId;
+  private Long workspaceMaterialId; // TODO Swagger + rename to workspaceNodeId
   private String gradingScaleIdentifier;
   private String gradingScaleSchoolDataSource;
   private String grade;

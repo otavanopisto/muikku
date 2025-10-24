@@ -8,6 +8,7 @@ import { RecordValue } from "~/@types/recorder";
  */
 interface FileSampleProps {
   samples: RecordValue[];
+  onDescriptionChange?: (index: number, description: string) => void;
   onChange: (values: RecordValue[]) => void;
   onDelete: (index: number) => void;
   onSave: () => void;
@@ -21,7 +22,8 @@ interface FileSampleProps {
  */
 const TextSample = (props: FileSampleProps) => {
   const { t } = useTranslation(["languageProfile", "common"]);
-  const { samples, onChange, onDelete, onSave, onCancel } = props;
+  const { samples, onChange, onDelete, onSave, onCancel, onDescriptionChange } =
+    props;
   return (
     <>
       <label className="language-profile__label">
@@ -40,6 +42,7 @@ const TextSample = (props: FileSampleProps) => {
         modifier="language-profile"
         saveTempfile={false}
         values={samples}
+        onDescriptionChange={onDescriptionChange}
         onDeleteAudio={onDelete}
         onChange={onChange}
       />

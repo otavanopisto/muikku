@@ -9,6 +9,7 @@ export interface RecordingsListProps {
   records: RecordValue[] | null;
   noDeleteFunctions?: boolean;
   deleteAudio?: (recordId: string) => void;
+  onDescriptionChange?: (index: number, description: string) => void;
 }
 
 /**
@@ -25,8 +26,8 @@ const defaultRecordListProps = {
  */
 function RecordingsList(props: RecordingsListProps) {
   props = { ...defaultRecordListProps, ...props };
-
-  const { records, deleteAudio, noDeleteFunctions } = props;
+  const { records, deleteAudio, noDeleteFunctions, onDescriptionChange } =
+    props;
 
   return records.length > 0 ? (
     <div className="voice-recorder__files-container">
@@ -39,6 +40,7 @@ function RecordingsList(props: RecordingsListProps) {
           key={record.id || index}
           noDeleteFunctions={noDeleteFunctions}
           onClickDelete={deleteAudio}
+          onDescriptionChange={onDescriptionChange}
         />
       ))}
     </div>

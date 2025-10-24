@@ -13,6 +13,7 @@ import { notebook } from "./notebook/notebook";
 import { combineReducers } from "redux";
 import { journals } from "./workspaces/journals";
 import { contacts } from "./base/contacts";
+import { exams } from "./workspaces/exams";
 
 export default combineReducers({
   announcements,
@@ -29,4 +30,5 @@ export default combineReducers({
   userIndex,
   websocket,
   workspaces,
+  exams,
 });

@@ -6,6 +6,7 @@ import { UsedAs } from "~/@types/shared";
 import Image from "../static/image";
 import Link from "../static/link";
 import MathJAX from "../static/mathjax";
+import { ImageDataset, LinkDataset } from "../../material-loader/types";
 
 /**
  * BaseProps
@@ -177,7 +178,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => {
-          const dataset = extractDataSet(element);
+          const dataset = extractDataSet<ImageDataset>(element);
           return (
             <Image
               key={props.key}
@@ -212,7 +213,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
          * @returns any
          */
         processingFunction: (tag, props, children, element) => {
-          const dataset = extractDataSet(element);
+          const dataset = extractDataSet<LinkDataset>(element);
           return (
             <Link
               key={props.key}

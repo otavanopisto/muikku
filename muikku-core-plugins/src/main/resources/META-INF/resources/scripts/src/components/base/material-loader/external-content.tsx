@@ -1,6 +1,7 @@
 import * as React from "react";
 import InterimEvaluationEditor from "./external-content/interim-evaluation-editor";
 import { MaterialLoaderProps } from "./index";
+import { StateConfig } from "./types";
 
 /**
  * MaterialLoaderExternalContentProps
@@ -8,8 +9,7 @@ import { MaterialLoaderProps } from "./index";
 interface MaterialLoaderExternalContentProps extends MaterialLoaderProps {
   answersChecked: boolean;
   answersVisible: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  stateConfiguration: any;
+  stateConfiguration: StateConfig;
 }
 
 /**

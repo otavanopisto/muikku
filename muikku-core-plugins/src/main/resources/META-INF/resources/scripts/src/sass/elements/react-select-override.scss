@@ -154,6 +154,13 @@
   }
 }
 
+.react-select-override--material-editor {
+  .react-select-override__control {
+    max-width: unset;
+    width: 100%
+  }
+}
+
 .react-select-override--chat {
   .react-select-override__control {
     border-color: $color-chat-primary;

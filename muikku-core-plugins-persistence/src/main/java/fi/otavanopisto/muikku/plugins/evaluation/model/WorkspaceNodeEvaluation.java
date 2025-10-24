@@ -19,10 +19,10 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(
     uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"studentEntityId", "workspaceMaterialId"})
+        @UniqueConstraint(columnNames = {"studentEntityId", "workspaceNodeId"})
     }
 )
-public class WorkspaceMaterialEvaluation {
+public class WorkspaceNodeEvaluation {
 
   public Long getId() {
     return id;
@@ -56,12 +56,12 @@ public class WorkspaceMaterialEvaluation {
     this.studentEntityId = studentEntityId;
   }
 
-  public Long getWorkspaceMaterialId() {
-    return workspaceMaterialId;
+  public Long getWorkspaceNodeId() {
+    return workspaceNodeId;
   }
   
-  public void setWorkspaceMaterialId(Long workspaceMaterialId) {
-    this.workspaceMaterialId = workspaceMaterialId;
+  public void setWorkspaceNodeId(Long workspaceNodeId) {
+    this.workspaceNodeId = workspaceNodeId;
   }
 
   public String getGradeIdentifier() {
@@ -112,11 +112,11 @@ public class WorkspaceMaterialEvaluation {
     this.archived = archived;
   }
 
-  public WorkspaceMaterialEvaluationType getEvaluationType() {
+  public WorkspaceNodeEvaluationType getEvaluationType() {
     return evaluationType;
   }
 
-  public void setEvaluationType(WorkspaceMaterialEvaluationType evaluationType) {
+  public void setEvaluationType(WorkspaceNodeEvaluationType evaluationType) {
     this.evaluationType = evaluationType;
   }
 
@@ -147,7 +147,7 @@ public class WorkspaceMaterialEvaluation {
 
   @Column(nullable = false)
   @NotNull
-  private Long workspaceMaterialId;
+  private Long workspaceNodeId;
 
   @Column
   private String gradingScaleIdentifier;
@@ -169,7 +169,7 @@ public class WorkspaceMaterialEvaluation {
   
   @Column (nullable = false)
   @Enumerated (EnumType.STRING)
-  private WorkspaceMaterialEvaluationType evaluationType;
+  private WorkspaceNodeEvaluationType evaluationType;
   
   @NotNull
   @Column(nullable = false)

@@ -3,6 +3,7 @@ import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Base from "~/components/base/material-loader/base";
 import BinaryMaterialLoader from "~/components/base/material-loader/binary";
 import i18n from "~/locales/i18n";
+import { StateConfig } from "./types";
 
 /**
  * MaterialLoaderContentProps
@@ -10,8 +11,7 @@ import i18n from "~/locales/i18n";
 interface MaterialLoaderContentProps extends MaterialLoaderProps {
   answersChecked: boolean;
   answersVisible: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  stateConfiguration: any;
+  stateConfiguration: StateConfig;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   answerRegistry: { [name: string]: any };
 }
@@ -40,15 +40,18 @@ function onConfirmedAndSyncedModification(props: MaterialLoaderContentProps) {
     //We just want to make the answer answered and we know that it has been updated
     //already as the answer has been synced
     //that is why the true flag is there not to call the server
-    props.updateAssignmentState(
+    props.onUpdateAssignmentState(
       "ANSWERED",
       true,
       props.workspace.id,
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
       props.stateConfiguration &&
-        props.stateConfiguration["success-text"] !== undefined
-        ? i18n.t(props.stateConfiguration["success-text"], { ns: "materials" })
+        props.stateConfiguration.successText !== undefined
+        ? i18n.t(props.stateConfiguration.successText, {
+            ns: "materials",
+            defaultValue: props.stateConfiguration.successText,
+          })
         : undefined
     );
   }
@@ -64,20 +67,23 @@ function onModification(props: MaterialLoaderContentProps) {
   const compositeReplies = props.compositeReplies;
   if (
     props.stateConfiguration &&
-    props.stateConfiguration["modify-state"] &&
+    props.stateConfiguration.modifyState &&
     (compositeReplies || { state: "UNANSWERED" }).state !==
-      props.stateConfiguration["modify-state"]
+      props.stateConfiguration.modifyState
   ) {
     //The modify state is forced in so we use false to call to the server
-    props.updateAssignmentState(
-      props.stateConfiguration["modify-state"],
+    props.onUpdateAssignmentState(
+      props.stateConfiguration.modifyState,
       false,
       props.workspace.id,
       props.material.workspaceMaterialId,
       compositeReplies && compositeReplies.workspaceMaterialReplyId,
       props.stateConfiguration &&
-        props.stateConfiguration["success-text"] !== undefined
-        ? i18n.t(props.stateConfiguration["success-text"], { ns: "materials" })
+        props.stateConfiguration.successText !== undefined
+        ? i18n.t(props.stateConfiguration.successText, {
+            ns: "materials",
+            defaultValue: props.stateConfiguration.successText,
+          })
         : undefined,
       props.onAssignmentStateModified
     );

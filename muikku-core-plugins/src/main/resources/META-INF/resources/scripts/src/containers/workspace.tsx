@@ -64,6 +64,8 @@ import i18n from "../locales/i18n";
 import ReadspeakerProvider from "~/components/context/readspeaker-context";
 import { ProtectedRoute } from "~/routes/protected-route";
 import NotFoundBody from "~/components/not-found/body";
+import WorkspaceExamsBody from "~/components/workspace/workspaceExams";
+import { initializeExams } from "~/actions/workspaces/exams";
 registerLocale("fi", fi);
 registerLocale("enGB", enGB);
 
@@ -120,6 +122,7 @@ export default class Workspace extends React.Component<
     this.renderWorkspaceJournal = this.renderWorkspaceJournal.bind(this);
     this.renderWorkspaceManagement = this.renderWorkspaceManagement.bind(this);
     this.renderWorkspaceEvaluation = this.renderWorkspaceEvaluation.bind(this);
+    this.renderWorkspaceExams = this.renderWorkspaceExams.bind(this);
     this.loadWorkspaceDiscussionData =
       this.loadWorkspaceDiscussionData.bind(this);
     this.loadWorkspaceAnnouncementsData =
@@ -1110,8 +1113,6 @@ export default class Workspace extends React.Component<
         `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
       );
 
-      this.props.websocket && this.props.websocket.restoreEventListeners();
-
       this.props.store.dispatch(
         setCurrentWorkspace({
           workspaceId: state.status.currentWorkspaceId,
@@ -1153,6 +1154,44 @@ export default class Workspace extends React.Component<
       <WorkspaceEvaluationBody
         workspaceUrl={props.match.params["workspaceUrl"]}
       />
+    );
+  }
+
+  /**
+   * renderWorkspaceExams
+   * @param props props
+   * @returns JSX.Element
+   */
+  renderWorkspaceExams(props: RouteComponentProps<any>) {
+    this.updateFirstTime();
+
+    if (this.itsFirstTime) {
+      const state = this.props.store.getState();
+
+      this.props.websocket && this.props.websocket.restoreEventListeners();
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib(
+        `//cdn.muikkuverkko.fi/libs/ckeditor/${CKEDITOR_VERSION}/ckeditor.js`
+      );
+
+      this.props.store.dispatch(
+        setCurrentWorkspace({
+          workspaceId: state.status.currentWorkspaceId,
+          // eslint-disable-next-line jsdoc/require-jsdoc
+          success: (workspace) => {
+            this.props.store.dispatch(
+              initializeExams({
+                workspaceEntityId: workspace.id,
+              }) as Action
+            );
+          },
+        }) as Action
+      );
+    }
+
+    return (
+      <WorkspaceExamsBody workspaceUrl={props.match.params["workspaceUrl"]} />
     );
   }
 
@@ -1291,6 +1330,22 @@ export default class Workspace extends React.Component<
                 routeProps={routeProps}
               >
                 {this.renderWorkspaceEvaluation}
+              </ProtectedRoute>
+            )}
+          />
+
+          <Route
+            path="/workspace/:workspaceUrl/exams"
+            render={(routeProps) => (
+              <ProtectedRoute
+                requireAuth
+                hasPermission={
+                  permissions.WORKSPACE_IS_WORKSPACE_STUDENT_WITH_EXAMS
+                }
+                isAuthenticated={isAuthenticated}
+                routeProps={routeProps}
+              >
+                {this.renderWorkspaceExams}
               </ProtectedRoute>
             )}
           />

@@ -86,6 +86,7 @@ import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestControl
 import fi.otavanopisto.muikku.plugins.chat.ChatController;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.exam.ExamController;
 import fi.otavanopisto.muikku.plugins.forum.ForumAreaSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
@@ -102,7 +103,6 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialException;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
@@ -263,6 +263,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
+  private ExamController examController;
 
   @Inject
   @Any
@@ -762,12 +765,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
     	return Response.status(Status.NOT_FOUND).build();
     }
-    try {
-      WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
-      return Response.ok(workspaceMaterialController.createContentNode(frontPage, null)).build();
-    } catch (WorkspaceMaterialException e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
+    WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
+    return Response.ok(workspaceMaterialController.createContentNode(frontPage, null)).build();
   }
 
   @GET
@@ -778,13 +777,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
     	return Response.status(Status.NOT_FOUND).build();
     }
-    try {
-      List<ContentNode> helpPages = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
-      return Response.ok(helpPages).build();
-    }
-    catch (WorkspaceMaterialException e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
+    List<ContentNode> helpPages = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
+    return Response.ok(helpPages).build();
   }
 
   @GET
@@ -796,13 +790,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null || node == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    try {
-      WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(node);
-      return Response.ok(workspaceMaterialController.createContentNode(node, nextSibling)).build();
-    }
-    catch (WorkspaceMaterialException e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
-    }
+    WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(node);
+    return Response.ok(workspaceMaterialController.createContentNode(node, nextSibling)).build();
   }
 
   @GET
@@ -943,6 +932,15 @@ public class WorkspaceRESTService extends PluginRESTService {
         permissionSet.add(permission.getName());
       }
     }
+    
+    // #7400: Exam functionality; special permission for workspace students with exams present
+    
+    if (sessionController.isLoggedIn()) {
+      if (!examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId()).isEmpty()) {
+        permissionSet.add(MuikkuPermissions.IS_WORKSPACE_STUDENT_WITH_EXAMS);
+      }
+    }
+    
     return Response.ok(permissionSet).build();
   }
 
@@ -2078,12 +2076,15 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/")
-  @RESTPermitUnimplemented
-  public Response listWorkspaceMaterials(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("parentId") Long parentId, @QueryParam ("assignmentType") String assignmentType) {
-    // TODO: SecuritY???
-
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listWorkspaceMaterials(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("parentId") Long parentId, @QueryParam("assignmentType") String assignmentType, @QueryParam("userEntityId") Long userEntityId) {
     if (parentId == null && assignmentType == null) {
       return Response.status(Status.NOT_IMPLEMENTED).entity("Listing workspace materials without parentId or assignmentType is currently not implemented").build();
+    }
+    
+    boolean isStudent = userEntityController.isStudent(sessionController.getLoggedUserEntity());
+    if (userEntityId != null && isStudent && !userEntityId.equals(sessionController.getLoggedUserEntity().getId())) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     WorkspaceMaterialAssignmentType workspaceAssignmentType = null;
@@ -2122,12 +2123,23 @@ public class WorkspaceRESTService extends PluginRESTService {
       } else {
         workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParent(parent);
       }
-    } else {
+    }
+    else {
       workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(workspaceEntity, workspaceAssignmentType, BooleanPredicate.IGNORE);
     }
 
     if (workspaceMaterials.isEmpty()) {
       return Response.ok(Collections.emptyList()).build();
+    }
+    
+    // Exam functionality: Never list exam assignments to students via this endpoint
+    
+    if (isStudent) {
+      for (int i = workspaceMaterials.size() - 1; i >= 0; i--) {
+        if (workspaceMaterials.get(i).isExamAssignment()) {
+          workspaceMaterials.remove(i);
+        }
+      }
     }
 
     return Response.ok(createRestModel(workspaceMaterials.toArray(new WorkspaceMaterial[0]))).build();
@@ -2149,12 +2161,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     List<ContentNode> workspaceMaterials;
-    try {
-      workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, includeHidden);
-    } catch (WorkspaceMaterialException e) {
-      return Response.noContent().build();
-    }
-
+    workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, includeHidden);
     if (workspaceMaterials.isEmpty()) {
     	return Response.ok(Collections.emptyList()).build();
     }
@@ -2267,7 +2274,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
           reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
           reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
-        compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity, reply.getWorkspaceMaterial()));
+        compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity.getId(), reply.getWorkspaceMaterial().getId()));
       }
       return Response.ok(compositeReply).build();
     }
@@ -2357,7 +2364,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED ||
             reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.EXERCISE ||
             reply.getWorkspaceMaterial().getAssignmentType() == WorkspaceMaterialAssignmentType.INTERIM_EVALUATION) {
-          compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity, reply.getWorkspaceMaterial()));
+          compositeReply.setEvaluationInfo(evaluationController.getEvaluationInfo(userEntity.getId(), reply.getWorkspaceMaterial().getId()));
         }
 
         result.add(compositeReply);
@@ -2788,7 +2795,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(),
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle(),
-        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi());
+        workspaceNode.getLanguage(), workspaceMaterial.getMaxPoints(), workspaceMaterial.getAi(), workspaceMaterial.isExamAssignment());
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
@@ -2849,7 +2856,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceFolder.getTitle(),
         workspaceFolder.getPath(),
         workspaceFolder.getViewRestrict(),
-        workspaceFolder.getLanguage());
+        workspaceFolder.getLanguage(),
+        workspaceFolder.getExam());
   }
 
   @DELETE
@@ -3036,7 +3044,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         nextSibling,
         restFolder.getHidden(),
         restFolder.getViewRestrict(),
-        restFolder.getTitleLanguage());
+        restFolder.getTitleLanguage(),
+        restFolder.getExam());
    
     return Response.ok(createRestModel(workspaceFolder)).build();
   }
@@ -3067,7 +3076,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode parentFolder = restFolder.getParentId() == null ? rootFolder : workspaceMaterialController.findWorkspaceNodeById(restFolder.getParentId());
     String title = restFolder.getTitle() == null ? "Untitled" : restFolder.getTitle();
 
-    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentFolder, title, null);
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentFolder, title, null, restFolder.getExam());
     if (nextSibling != null) {
       workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
     }
