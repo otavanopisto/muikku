@@ -5,6 +5,7 @@ import type { Workspace, MaterialLoaderConfig } from "./types";
 import type {
   MaterialCompositeReply,
   MaterialContentNode,
+  WorkspaceMaterial,
 } from "~/generated/client";
 import { useMaterialLoader } from "./hooks/useMaterialLoader";
 import { MaterialLoaderProvider } from "./MaterialLoaderProvider";
@@ -16,6 +17,7 @@ export interface MaterialLoaderCoreProps {
   material: MaterialContentNode;
   workspace: Workspace;
   compositeReplies?: MaterialCompositeReply;
+  assignment?: WorkspaceMaterial;
   config?: MaterialLoaderConfig;
   onModification?: () => void;
   children: ReactNode;
@@ -29,6 +31,7 @@ export function MaterialLoaderCore({
   material,
   workspace,
   compositeReplies,
+  assignment,
   config = {},
   onModification,
   children,
@@ -38,6 +41,7 @@ export function MaterialLoaderCore({
     material,
     workspace,
     compositeReplies,
+    assignment,
     config,
     onModification
   );

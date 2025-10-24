@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // srcv4/src/materials/MaterialLoaderV2/core/hooks/useAnswerManager.ts
 
-import { useState, useCallback, useMemo, useEffect } from "react";
-import type { AnswerManagerReturn } from "../types";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import type {
+  AnswerManagerReturn,
+  AssignmentStateConfig,
+  MaterialLoaderConfig,
+} from "../types";
 import type {
   MaterialCompositeReply,
   MaterialContentNode,
 } from "~/generated/client";
+import _ from "lodash";
 
 /**
  * Hook for managing answer checking and validation
@@ -15,12 +20,16 @@ import type {
 export function useAnswerManager(
   material: MaterialContentNode,
   _compositeReplies?: MaterialCompositeReply,
-  checkAnswers = false,
-  _displayCorrectAnswers = false
+  stateConfig?: AssignmentStateConfig | null,
+  config?: MaterialLoaderConfig
 ): AnswerManagerReturn {
+  const previousStateConfigRef = useRef<AssignmentStateConfig | null>(
+    stateConfig
+  );
+
   // Answer visibility state
   const [answersVisible, setAnswersVisible] = useState<boolean>(() => {
-    if (checkAnswers) {
+    if (config?.checkAnswers) {
       return (material.correctAnswers ?? "ALWAYS") === "ALWAYS";
     }
     return false;
@@ -28,7 +37,7 @@ export function useAnswerManager(
 
   // Answer checked state
   const [answersChecked, setAnswersChecked] = useState<boolean>(() => {
-    if (checkAnswers) {
+    if (config?.checkAnswers) {
       return (material.correctAnswers ?? "NEVER") !== "NEVER";
     }
     return false;
@@ -45,15 +54,29 @@ export function useAnswerManager(
 
   // Update answer states when checkAnswers changes
   useEffect(() => {
-    if (checkAnswers) {
-      const isAlwaysShow = (material.correctAnswers ?? "ALWAYS") === "ALWAYS";
-      setAnswersChecked(true);
-      setAnswersVisible(isAlwaysShow);
-    } else {
-      setAnswersChecked(false);
-      setAnswersVisible(false);
+    if (!material || !config?.answerable) return;
+
+    if (_.isEqual(previousStateConfigRef.current, stateConfig)) {
+      return;
     }
-  }, [checkAnswers, material.correctAnswers]);
+
+    previousStateConfigRef.current = stateConfig;
+
+    const shouldCheck = stateConfig?.checksAnswers ?? false;
+    const isAlwaysShow = (material.correctAnswers ?? "ALWAYS") === "ALWAYS";
+
+    if (shouldCheck && !answersChecked) {
+      if (isAlwaysShow) {
+        setAnswersVisible(true);
+        setAnswersChecked(true);
+      } else {
+        setAnswersChecked(true);
+      }
+    } else if (!shouldCheck && answersChecked) {
+      setAnswersVisible(false);
+      setAnswersChecked(false);
+    }
+  }, [answersChecked, config, material, stateConfig]);
 
   // Handle answer change from fields
   const handleAnswerChange = useCallback(

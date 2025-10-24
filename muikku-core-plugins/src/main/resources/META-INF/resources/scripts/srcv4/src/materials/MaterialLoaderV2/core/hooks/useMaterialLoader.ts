@@ -13,6 +13,7 @@ import { useContentProcessor } from "./useContentProcessor";
 import type {
   MaterialCompositeReply,
   MaterialContentNode,
+  WorkspaceMaterial,
 } from "~/generated/client";
 import { createProcessingRules } from "../processors/ProcessingRules";
 
@@ -24,6 +25,7 @@ export function useMaterialLoader(
   material: MaterialContentNode,
   workspace: Workspace,
   compositeReplies?: MaterialCompositeReply,
+  assignment?: WorkspaceMaterial,
   config: MaterialLoaderConfig = {},
   onModification?: () => void
 ) {
@@ -34,8 +36,8 @@ export function useMaterialLoader(
   const answerManager = useAnswerManager(
     material,
     compositeReplies,
-    config.checkAnswers,
-    config.showAnswers
+    assignmentState.stateConfig,
+    config
   );
 
   // Field management
@@ -82,15 +84,30 @@ export function useMaterialLoader(
     processingContext
   );
 
+  const { answersVisible, answersChecked, answerCheckable, answerRegistry } =
+    answerManager;
+
+  const { currentState, stateConfig, readOnly, answerable, buttonConfig } =
+    assignmentState;
+
   return {
     // Core data
     material,
     workspace,
     compositeReplies,
+    assignment,
 
     // State
-    ...assignmentState,
-    ...answerManager,
+    currentState,
+    stateConfig,
+    readOnly,
+    answerable,
+    buttonConfig,
+    // Answer management
+    answersVisible,
+    answersChecked,
+    answerCheckable,
+    answerRegistry,
 
     // Processed content
     processedContent,

@@ -5,17 +5,33 @@ import { useMaterialLoaderContext } from "../core/MaterialLoaderProvider";
  * Displays action buttons based on state configuration
  */
 export function MaterialLoaderButtons() {
-  const { buttonConfig, onPushAnswer, config } = useMaterialLoaderContext();
+  const {
+    buttonConfig,
+    onToggleAnswersVisible,
+    onPushAnswer,
+    config,
+    material,
+  } = useMaterialLoaderContext();
 
   // Don't render if buttons are disabled
   if (!config.enableButtons || !buttonConfig) {
     return null;
   }
 
+  /**
+   * Handle button click
+   */
   const handleButtonClick = () => {
     if (buttonConfig.successState) {
       onPushAnswer(buttonConfig.successState);
     }
+  };
+
+  /**
+   * Handle hide show answers button click
+   */
+  const handleHideShowAnswersButtonClick = () => {
+    onToggleAnswersVisible();
   };
 
   return (
@@ -28,6 +44,16 @@ export function MaterialLoaderButtons() {
       >
         {buttonConfig.text}
       </button>
+
+      {buttonConfig.displaysHideShowAnswersOnRequestButtonIfAllowed && (
+        <button
+          type="button"
+          className="material-page__button muikku-show-correct-answers-button"
+          onClick={handleHideShowAnswersButtonClick}
+        >
+          {material.correctAnswers === "ON_REQUEST" ? "Hide" : "Show"}
+        </button>
+      )}
     </div>
   );
 }

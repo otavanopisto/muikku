@@ -1,13 +1,12 @@
 // srcv4/src/materials/MaterialLoaderV2/core/hooks/useMaterialLoaderUtils.ts
 
 import { useMemo } from "react";
-import type { Material } from "../types";
-
+import type { MaterialContentNode } from "~/generated/client";
 /**
  * Utility hook for material page type determination
  * Extracted from MaterialLoader's returnMaterialPageType method
  */
-export function useMaterialPageType(material: Material): string {
+export function useMaterialPageType(material: MaterialContentNode): string {
   return useMemo(() => {
     switch (material.assignmentType) {
       case "EXERCISE":
@@ -28,8 +27,8 @@ export function useMaterialPageType(material: Material): string {
  * Utility hook for determining if material is hidden
  */
 export function useMaterialVisibility(
-  material: Material,
-  folder?: Material
+  material: MaterialContentNode,
+  folder?: MaterialContentNode
 ): boolean {
   return useMemo(
     () => material.hidden ?? folder?.hidden ?? false,
@@ -41,9 +40,9 @@ export function useMaterialVisibility(
  * Utility hook for CSS class generation
  */
 export function useMaterialClassName(
-  material: Material,
+  material: MaterialContentNode,
   modifiers?: string | string[],
-  folder?: Material
+  folder?: MaterialContentNode
 ): string {
   const pageType = useMaterialPageType(material);
   const isHidden = useMaterialVisibility(material, folder);

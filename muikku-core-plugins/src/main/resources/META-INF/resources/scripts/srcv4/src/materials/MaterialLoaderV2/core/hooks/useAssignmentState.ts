@@ -52,14 +52,19 @@ export function useAssignmentState(
   const buttonConfig = useMemo((): ButtonConfig | null => {
     if (!stateConfig) return null;
 
+    const displaysHideShowAnswersOnRequestButtonIfAllowed =
+      stateConfig.displaysHideShowAnswersOnRequestButtonIfAllowed &&
+      material.correctAnswers === "ON_REQUEST";
+
     return {
       className: stateConfig.buttonClass ?? "",
       text: stateConfig.buttonText ?? "",
       disabled: stateConfig.buttonDisabled ?? false,
       successState: stateConfig.successState,
       successText: stateConfig.successText,
+      displaysHideShowAnswersOnRequestButtonIfAllowed,
     };
-  }, [stateConfig]);
+  }, [material.correctAnswers, stateConfig]);
 
   /**
    * Handle state transition with full API integration

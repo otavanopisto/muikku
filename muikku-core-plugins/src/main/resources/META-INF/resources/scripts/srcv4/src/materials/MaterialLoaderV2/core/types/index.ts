@@ -85,7 +85,7 @@ export interface MaterialLoaderContextValue {
  * AssignmentStateReturn
  */
 export interface AssignmentStateReturn {
-  currentState: string;
+  currentState: MaterialCompositeReplyStateType;
   stateConfig: AssignmentStateConfig | null;
   readOnly: boolean;
   answerable: boolean;
@@ -115,6 +115,7 @@ export interface ButtonConfig {
   disabled: boolean;
   successState?: MaterialCompositeReplyStateType;
   successText?: string;
+  displaysHideShowAnswersOnRequestButtonIfAllowed?: boolean;
 }
 
 /**
@@ -182,11 +183,12 @@ export interface MaterialLoaderReturn {
   assignment?: WorkspaceMaterial;
 
   // State
-  currentState: string;
+  currentState: MaterialCompositeReplyStateType;
   stateConfig: AssignmentStateConfig | null;
   readOnly: boolean;
   answerable: boolean;
   buttonConfig: ButtonConfig | null;
+  // Answer management
   answersVisible: boolean;
   answersChecked: boolean;
   answerCheckable: boolean;
@@ -197,7 +199,7 @@ export interface MaterialLoaderReturn {
 
   // Event handlers
   onAnswerChange: (name: string, value: boolean) => void;
-  onPushAnswer: (newState: string) => void;
+  onPushAnswer: (newState: MaterialCompositeReplyStateType) => void;
   onToggleAnswersVisible: () => void;
 
   // Configuration
