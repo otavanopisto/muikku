@@ -20,7 +20,7 @@ import ContentPanel, {
 import ProgressData from "../../progressData";
 
 import WorkspaceMaterial from "./material";
-import { ButtonPill } from "~/components/general/button";
+import Button, { ButtonPill } from "~/components/general/button";
 import Dropdown from "~/components/general/dropdown";
 import Link from "~/components/general/link";
 import { Action, bindActionCreators, Dispatch } from "redux";
@@ -48,6 +48,7 @@ import {
   MaterialViewRestriction,
 } from "~/generated/client";
 import { BackToToc } from "~/components/general/toc";
+import CkeditorLoaderContent from "~/components/base/ckeditor-loader/content";
 
 /**
  * WorkspaceMaterialsProps
@@ -88,7 +89,10 @@ class WorkspaceMaterials extends React.Component<
   WorkspaceMaterialsState
 > {
   private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
-  private contentPanelRef = React.createRef<ContentPanel>();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private contentPanelRef = React.createRef<any>();
+  // Add a refs map to store references to ContentPanelItem components
+  private materialRefs = new Map<number, React.RefObject<ContentPanelItem>>();
 
   /**
    * constructor
@@ -189,6 +193,12 @@ class WorkspaceMaterials extends React.Component<
       },
       {
         icon: "plus",
+        text: t("labels.create_examChapter", { ns: "materials" }),
+        onClick: this.createSection.bind(this, nextSection, true),
+        file: false,
+      },
+      {
+        icon: "plus",
         text: t("labels.create_page", { ns: "materials" }),
         onClick: this.createPage.bind(this, section, nextSibling),
         file: false,
@@ -207,8 +217,9 @@ class WorkspaceMaterials extends React.Component<
       },
     ];
 
+    // If includesSection is false, remove the first two items, as they are section creation options
     if (!includesSection) {
-      materialManagementItemsOptions.shift();
+      materialManagementItemsOptions.splice(0, 2);
     }
 
     return materialManagementItemsOptions;
@@ -300,8 +311,12 @@ class WorkspaceMaterials extends React.Component<
   /**
    * createSection
    * @param nextSibling nextSibling
+   * @param examSection examSection
    */
-  createSection(nextSibling: MaterialContentNodeWithIdAndLogic) {
+  createSection(
+    nextSibling: MaterialContentNodeWithIdAndLogic,
+    examSection: boolean = false
+  ) {
     const { t } = this.props;
 
     this.props.createWorkspaceMaterialContentNode(
@@ -311,6 +326,7 @@ class WorkspaceMaterials extends React.Component<
         nextSibling,
         title: t("labels.newPage", { ns: "materials" }),
         makeFolder: true,
+        exam: examSection,
       },
       "materials"
     );
@@ -400,12 +416,12 @@ class WorkspaceMaterials extends React.Component<
       let winnerTop: number = null;
       let winnerVisibleWeight: number = null;
 
-      for (const refKey of Object.keys(this.refs)) {
-        const refKeyInt = parseInt(refKey);
-        if (!refKeyInt) {
+      // Iterate through the material refs map instead of this.refs
+      for (const [refKey, ref] of this.materialRefs) {
+        if (!ref.current) {
           continue;
         }
-        const element = (this.refs[refKey] as ContentPanelItem).getComponent();
+        const element = ref.current.getComponent();
         const elementTop = element.getBoundingClientRect().top;
         const elementBottom = element.getBoundingClientRect().bottom;
         const isVisible =
@@ -437,7 +453,7 @@ class WorkspaceMaterials extends React.Component<
           }
 
           if (!winnerVisibleWeight || weight >= winnerVisibleWeight) {
-            winner = refKeyInt;
+            winner = refKey;
             winnerTop = elementTop;
             winnerVisibleWeight = weight;
           }
@@ -451,6 +467,17 @@ class WorkspaceMaterials extends React.Component<
 
     winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
     return winner;
+  }
+
+  /**
+   * getMaterialRef
+   * @param materialId materialId
+   */
+  getMaterialRef(materialId: number): React.RefObject<ContentPanelItem> {
+    if (!this.materialRefs.has(materialId)) {
+      this.materialRefs.set(materialId, React.createRef<ContentPanelItem>());
+    }
+    return this.materialRefs.get(materialId)!;
   }
 
   /**
@@ -483,6 +510,7 @@ class WorkspaceMaterials extends React.Component<
    * @param closeDropdown Function to close the dropdown
    * @returns Rendered dropdown item
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderDropdownItem = (item: any, closeDropdown: () => void) => {
     if (item.file) {
       return (
@@ -522,6 +550,7 @@ class WorkspaceMaterials extends React.Component<
    * @param items Array of dropdown items
    * @returns Array of rendered dropdown items
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderDropdownItems = (items: any[]) =>
     items.map(
       (item) => (closeDropdown: () => void) =>
@@ -529,12 +558,81 @@ class WorkspaceMaterials extends React.Component<
     );
 
   /**
+   * renderExamSection
+   * @param section section
+   * @returns Exam section
+   */
+  renderStudentExamSection = (section: MaterialContentNodeWithIdAndLogic) => {
+    const { t } = this.props;
+    const description = section.examAttendance?.description;
+
+    const descriptionElement = description ? (
+      <CkeditorLoaderContent html={description} />
+    ) : null;
+
+    if (section.hidden) {
+      return null;
+    }
+
+    return (
+      <section
+        key={"section-" + section.workspaceMaterialId}
+        className={`content-panel__chapter ${section.exam ? "content-panel__chapter--exam" : ""}`}
+        id={`s-${section.workspaceMaterialId}`}
+        style={{
+          scrollMarginTop: this.state.defaultOffset + "px",
+        }}
+      >
+        {/*TOP OF THE CHAPTER*/}
+        <h2 className="content-panel__chapter-title">
+          <div
+            className="content-panel__chapter-title-text"
+            lang={section.titleLanguage || this.props.workspace.language}
+          >
+            {section.title}
+            <BackToToc
+              tocElementId={
+                this.props.status.loggedIn
+                  ? `tocTopic-${section.workspaceMaterialId}_${this.props.status.userId}`
+                  : `tocTopic-${section.workspaceMaterialId}`
+              }
+              openToc={
+                this.contentPanelRef.current &&
+                this.contentPanelRef.current.openNavigation
+              }
+            />
+          </div>
+        </h2>
+
+        <div className="content-panel__item">
+          <article className="material-page">
+            <div className="material-page__content-wrapper">
+              <div className="material-page__content rich-text">
+                {descriptionElement}
+              </div>
+            </div>
+            <div className="material-page__de-floater" />
+            <div className="material-page__buttonset rs_skip_always">
+              <Button
+                buttonModifiers={["goto-exam"]}
+                to={`/workspace/${this.props.workspace.urlName}/exams/${section.workspaceMaterialId}`}
+              >
+                {t("actions.goToExam", { ns: "exams" })}
+              </Button>
+            </div>
+          </article>
+        </div>
+      </section>
+    );
+  };
+
+  /**
    * render
    */
   render() {
     const { t } = this.props;
 
-    t("labels.create_chapter", { ns: "materials" });
+    t("labels.create", { ns: "materials", context: "chapter" });
 
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirect} />;
@@ -552,14 +650,33 @@ class WorkspaceMaterials extends React.Component<
       this.props.materials.length === 0 && isEditable ? (
         <div className="material-admin-panel material-admin-panel--master-functions">
           <Dropdown
-            openByHover
             modifier="material-management-tooltip"
-            content={t("labels.create_chapter", { ns: "materials" })}
+            items={this.renderDropdownItems([
+              {
+                icon: "plus",
+                text: t("labels.create", {
+                  ns: "materials",
+                  context: "chapter",
+                }),
+                // eslint-disable-next-line jsdoc/require-jsdoc
+                onClick: this.createSection.bind(this, null, false),
+                file: false,
+              },
+              {
+                icon: "plus",
+                text: t("labels.create", {
+                  ns: "materials",
+                  context: "examChapter",
+                }),
+                // eslint-disable-next-line jsdoc/require-jsdoc
+                onClick: this.createSection.bind(this, null, true),
+                file: false,
+              },
+            ])}
           >
             <ButtonPill
               buttonModifiers="material-management-master"
               icon="plus"
-              onClick={this.createSection.bind(this, null)}
             />
           </Dropdown>
         </div>
@@ -587,14 +704,33 @@ class WorkspaceMaterials extends React.Component<
             className="material-admin-panel material-admin-panel--master-functions"
           >
             <Dropdown
-              openByHover
               modifier="material-management-tooltip"
-              content={t("labels.create_chapter", { ns: "materials" })}
+              items={this.renderDropdownItems([
+                {
+                  icon: "plus",
+                  text: t("labels.create", {
+                    ns: "materials",
+                    context: "chapter",
+                  }),
+                  // eslint-disable-next-line jsdoc/require-jsdoc
+                  onClick: this.createSection.bind(this, section, false),
+                  file: false,
+                },
+                {
+                  icon: "plus",
+                  text: t("labels.create_examChapter", {
+                    ns: "materials",
+                    context: "examChapter",
+                  }),
+                  // eslint-disable-next-line jsdoc/require-jsdoc
+                  onClick: this.createSection.bind(this, section, true),
+                  file: false,
+                },
+              ])}
             >
               <ButtonPill
                 buttonModifiers="material-management-master"
                 icon="plus"
-                onClick={this.createSection.bind(this, section)}
               />
             </Dropdown>
           </div>
@@ -625,6 +761,39 @@ class WorkspaceMaterials extends React.Component<
         </div>
       ) : null;
 
+      // If section is an exam section and user is a student, show the exam section
+      if (section.exam && this.props.status.isStudent) {
+        results.push(this.renderStudentExamSection(section));
+        return;
+      }
+
+      // "section pages"
+      const sectionSpecificContentData: JSX.Element[] = [];
+
+      // If section is an exam section and user is not a student, show the exam description
+      // as first element of the section
+      if (section.exam && !this.props.status.isStudent) {
+        const description = section.examSettings?.description;
+
+        const descriptionElement = description ? (
+          <CkeditorLoaderContent html={description} />
+        ) : null;
+
+        sectionSpecificContentData.push(
+          <div className="content-panel__item">
+            <article
+              className={`material-page ${section.hidden ? "state-HIDDEN" : ""}`}
+            >
+              <div className="material-page__content-wrapper">
+                <div className="material-page__content rich-text">
+                  {descriptionElement}
+                </div>
+              </div>
+            </article>
+          </div>
+        );
+      }
+
       // section is restricted in following cases:
       // section is restricted for logged in users and users is not logged in...
       // section is restricted for members only and user is not workspace member and isStudent or is not logged in...
@@ -634,9 +803,6 @@ class WorkspaceMaterials extends React.Component<
         (section.viewRestrict === MaterialViewRestriction.WorkspaceMembers &&
           !this.props.workspace.isCourseMember &&
           (this.props.status.isStudent || !this.props.status.loggedIn));
-
-      // "section pages"
-      const sectionSpecificContentData: JSX.Element[] = [];
 
       // If section is restricted we don't return anything
       !isSectionViewRestricted &&
@@ -742,7 +908,7 @@ class WorkspaceMaterials extends React.Component<
             (!isEditable && node.hidden && !showEvenIfHidden) ? null : (
               <ContentPanelItem
                 id={`p-${node.workspaceMaterialId}`}
-                ref={node.workspaceMaterialId + ""}
+                ref={this.getMaterialRef(node.workspaceMaterialId)}
                 key={node.workspaceMaterialId + ""}
                 scrollMarginTopOffset={this.state.defaultOffset}
               >
@@ -779,7 +945,7 @@ class WorkspaceMaterials extends React.Component<
       results.push(
         <section
           key={"section-" + section.workspaceMaterialId}
-          className="content-panel__chapter"
+          className={`content-panel__chapter ${section.exam ? "content-panel__chapter--exam" : ""}`}
           id={`s-${section.workspaceMaterialId}`}
           style={{
             scrollMarginTop: this.state.defaultOffset + "px",
@@ -796,10 +962,17 @@ class WorkspaceMaterials extends React.Component<
                 <Dropdown
                   openByHover
                   modifier="material-management-tooltip"
-                  content={t("labels.edit", {
-                    ns: "materials",
-                    context: "chapter",
-                  })}
+                  content={
+                    section.exam
+                      ? t("labels.edit", {
+                          ns: "materials",
+                          context: "examChapter",
+                        })
+                      : t("labels.edit", {
+                          ns: "materials",
+                          context: "chapter",
+                        })
+                  }
                 >
                   <ButtonPill
                     buttonModifiers="material-management-chapter"

@@ -2768,11 +2768,11 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/evaluation/workspace/{workspaceId}/user/{userEntityId}/workspacematerial/{workspaceMaterialId}/assessment:
+  /rest/evaluation/workspace/{workspaceId}/user/{userEntityId}/node/{workspaceNodeId}/assessment:
     post:
-      operationId: saveWorkspaceAssigmentAssessment
-      summary: Save workspace material assessment
-      description: Save workspace material assessment
+      operationId: createWorkspaceNodeAssessment
+      summary: Save workspace node assessment
+      description: Save workspace node assessment
       tags:
         - Evaluation
       parameters:
@@ -2785,20 +2785,20 @@ paths:
             format: int64
         - name: userEntityId
           in: path
-          description: User entity id
+          description: User entity id (page or folder)
           required: true
           schema:
             type: integer
             format: int64
-        - name: workspaceMaterialId
+        - name: workspaceNodeId
           in: path
-          description: Workspace material id
+          description: Workspace node id
           required: true
           schema:
             type: integer
             format: int64
       requestBody:
-        $ref: "#/components/requestBodies/EvaluationSaveAssignmentAssessmentRequestBody"
+        $ref: "#/components/requestBodies/EvaluationCreateNodeAssessmentRequestBody"
       responses:
         "200":
           description: Workspace material assessment created successfully
@@ -2813,11 +2813,11 @@ paths:
         "500":
           description: Internal server error
 
-  /rest/evaluation/workspace/{workspaceId}/user/{userEntityId}/workspacematerial/{workspaceMaterialId}/assessment/{assessmentId}:
+  /rest/evaluation/workspace/{workspaceId}/user/{userEntityId}/node/{workspaceNodeId}/assessment/{assessmentId}:
     put:
-      operationId: updateWorkspaceAssigmentAssessment
-      summary: Update workspace material assessment
-      description: Update workspace material assessment
+      operationId: updateWorkspaceNodeAssessment
+      summary: Update workspace node assessment
+      description: Update workspace node assessment
       tags:
         - Evaluation
       parameters:
@@ -2835,9 +2835,9 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: workspaceMaterialId
+        - name: workspaceNodeId
           in: path
-          description: Workspace material id
+          description: Workspace node id (page or folder)
           required: true
           schema:
             type: integer
@@ -2850,10 +2850,10 @@ paths:
             type: integer
             format: int64
       requestBody:
-        $ref: "#/components/requestBodies/EvaluationUpdateAssignmentAssessmentRequestBody"
+        $ref: "#/components/requestBodies/EvaluationUpdateNodeAssessmentRequestBody"
       responses:
         "200":
-          description: Workspace material assessment updated successfully
+          description: Workspace node assessment updated successfully
           content:
             application/json:
               schema:
@@ -2899,11 +2899,45 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
-  /rest/evaluation/workspaces/{workspaceId}/materials/{workspaceMaterialId}/evaluations/:
+  /rest/evaluation/nodes/{workspaceNodeId}/users/{userEntityId}/evaluationInfo:
     get:
-      operationId: getWorkspaceMaterialEvaluations
-      summary: Get workspace material evaluations
-      description: Get workspace material evaluations
+      operationId: getWorkspaceNodeEvaluation
+      summary: Get workspace node evaluation
+      description: Returns evaluation info for a single page and user
+      tags:
+        - Evaluation
+      parameters:
+        - name: workspaceNodeId
+          in: path
+          description: Workspace node id (page or folder)
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userEntityId
+          in: path
+          description: User entity id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Workspace node evaluation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NodeEvaluationInfo"
+        "204":
+          description: User has no evaluation for the given node
+        "403":
+          description: Attempted to make a call with unauthorized client
+
+  /rest/evaluation/workspaces/{workspaceId}/nodes/{workspaceNodeId}/evaluations/:
+    get:
+      operationId: getWorkspaceNodeEvaluations
+      summary: Get workspace node evaluations
+      description: Get workspace node evaluations
       tags:
         - Evaluation
       parameters:
@@ -2914,9 +2948,9 @@ paths:
           schema:
             type: integer
             format: int64
-        - name: workspaceMaterialId
+        - name: workspaceNodeId
           in: path
-          description: Workspace material id
+          description: Workspace node id (page or folder)
           required: true
           schema:
             type: integer
@@ -2930,13 +2964,13 @@ paths:
             format: int64
       responses:
         "200":
-          description: Workspace material evaluations
+          description: Workspace node evaluations
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/MaterialEvaluation"
+                  $ref: "#/components/schemas/NodeEvaluation"
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -3257,6 +3291,39 @@ paths:
                   $ref: "#/components/schemas/EvaluationEvent"
         "400":
           description: Invalid request was sent to the server
+        "403":
+          description: Attempted to make a call with unauthorized client
+
+  /rest/evaluation/workspaces/{workspaceEntityId}/students/{studentEntityId}/exams:
+    get:
+      operationId: listStudentExams
+      summary: Returns all exams of a student in a given workspace
+      tags:
+        - Evaluation
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Id of the workspace entity
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: studentEntityId
+          in: path
+          description: Id of the student entity
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExamAttendance"
         "403":
           description: Attempted to make a call with unauthorized client
 
@@ -4704,6 +4771,311 @@ paths:
           description: Invalid request was sent to the server
         "500":
           description: Internal server error
+
+  #WORKSPACE EXAMS
+  /rest/workspace/exam/compositeReplies/{workspaceFolderId}:
+    get:
+      operationId: getExamCompositeReplies
+      summary: Returns a list of composite replies for the current user in the given exam
+      description: Returns a list of composite replies for the current user in the given exam
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam composite replies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MaterialCompositeReply"
+        "400":
+          description: Invalid request was sent to the server
+        "500":
+          description: Internal server error
+
+  /rest/workspace/exam/settings/{workspaceFolderId}:
+    get:
+      operationId: getExamSettings
+      summary: Returns the settings of an exam
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Exam settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamSettings"
+    post:
+      operationId: createOrUpdateExamSettings
+      summary: Creates or updates the settings of an exam
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceExamSettingsUpdateBody"
+      responses:
+        "200":
+          description: Exam settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamSettings"
+        "403":
+          description: Caller is not staff
+
+  /rest/workspace/exam/allSettings/{workspaceEntityId}:
+    get:
+      operationId: getAllExamSettings
+      summary: Returns all exam settings of a workspace
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Id of the workspace
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Exam settings list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExamSettings"
+        "403":
+          description: Caller is not staff
+
+  /rest/workspace/exam/start/{workspaceFolderId}:
+    post:
+      operationId: startExam
+      summary: Starts an exam
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttendance"
+        "403":
+          description: Student is not among students allowed to take the exam
+
+  /rest/workspace/exam/end/{workspaceFolderId}:
+    post:
+      operationId: endExam
+      summary: Ends an exam
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttendance"
+        "400":
+          description: Attendance not found, i.e. exam never started
+
+  /rest/workspace/exam/attendance/{workspaceFolderId}:
+    get:
+      operationId: getExamAttendance
+      summary: Returns the exam attendance of a student
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttendance"
+
+  /rest/workspace/exam/attendances/{workspaceEntityId}:
+    get:
+      operationId: getExamAttendances
+      summary: Returns all exam attendances of a workspace that the user can participate in
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceEntityId
+          in: path
+          description: Id of the workspace entity
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Exam attendance
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExamAttendance"
+
+  /rest/workspace/exam/attendees/{workspaceFolderId}:
+    get:
+      operationId: getExamAttendees
+      summary: Returns a list of exam attendees
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Exam attendees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExamAttendee"
+        "403":
+          description: If called as student
+
+  /rest/workspace/exam/attendees/{workspaceFolderId}/user/{userEntityId}:
+    post:
+      operationId: addExamAttendee
+      summary: Adds an exam attendee
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+        - name: userEntityId
+          in: path
+          description: Id of the user to be added as exam attendee
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Exam attendee
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttendee"
+        "403":
+          description: If called as student
+    put:
+      operationId: updateExamAttendee
+      summary: Updates an exam attendee
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+        - name: userEntityId
+          in: path
+          description: Id of the user to be added as exam attendee
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        $ref: "#/components/requestBodies/WorkspaceExamAttendeeUpdateBody"
+      responses:
+        "200":
+          description: Exam attendee
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttendee"
+        "403":
+          description: If called as student
+        "404":
+          description: Attendee not found
+    delete:
+      operationId: removeExamAttendee
+      summary: Removes an exam attendee
+      tags:
+        - Exam
+      parameters:
+        - name: workspaceFolderId
+          in: path
+          description: Id of the workspace folder acting as an exam
+          required: true
+          schema:
+            type: integer
+        - name: userEntityId
+          in: path
+          description: Id of the user to be removed as exam attendee
+          required: true
+          schema:
+            type: integer
+        - name: permanent
+          in: query
+          description: Should the user be removed altogether or just archived
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "204":
+          description: Attendee removed
+        "403":
+          description: If called as student
 
   #GUIDER
   /rest/guider/student/{studentId}/workspace/{workspaceId}/signup:
@@ -10023,9 +10395,15 @@ paths:
             format: int64
         - name: assignmentType
           in: query
-          description: Include hidden
+          description: Assignment type. Use conjunction with userEntityId
           schema:
             $ref: "#/components/schemas/MaterialAssigmentType"
+        - name: userEntityId
+          in: query
+          description: User entity id. MUST be used if assignmentType is defined
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: Workspace materials results object
@@ -11096,6 +11474,8 @@ components:
                 type: string
               endDate:
                 type: string
+              pinned:
+                type: boolean
               publiclyVisible:
                 type: boolean
               startDate:
@@ -11133,6 +11513,8 @@ components:
               id:
                 type: integer
                 format: int64
+              pinned:
+                type: boolean
               publiclyVisible:
                 type: boolean
               publisherUserEntityId:
@@ -11453,13 +11835,13 @@ components:
               requestText:
                 type: string
 
-    EvaluationSaveAssignmentAssessmentRequestBody:
+    EvaluationCreateNodeAssessmentRequestBody:
       required: true
       content:
         application/json:
           schema:
             type: object
-            description: EvaluationAssignmentAssessment object
+            description: EvaluationNodeAssessment object
             required:
               - evaluationType
               - assessorIdentifier
@@ -11490,13 +11872,13 @@ components:
                 items:
                   $ref: "#/components/schemas/AudioAssessment"
 
-    EvaluationUpdateAssignmentAssessmentRequestBody:
+    EvaluationUpdateNodeAssessmentRequestBody:
       required: true
       content:
         application/json:
           schema:
             type: object
-            description: EvaluationAssignmentAssessment object
+            description: EvaluationNodeAssessment object
             required:
               - identifier
               - evaluationType
@@ -12336,6 +12718,22 @@ components:
             allOf:
               - $ref: "#/components/schemas/HopsUppersecondary"
 
+    WorkspaceExamSettingsUpdateBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ExamSettings"
+
+    WorkspaceExamAttendeeUpdateBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ExamAttendee"
+
     SignupStudentToWorkspaceRequestBody:
       required: true
       content:
@@ -12782,7 +13180,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/AnyValue"
+            $ref: "#/components/schemas/WorkspaceFolder"
 
     WorkspaceFolderCreateRequestBody:
       required: true
@@ -12801,6 +13199,8 @@ components:
               nextSiblingId:
                 type: integer
                 format: int64
+              exam:
+                type: boolean
 
     WorkspaceNoteCreateRequestBody:
       required: true
@@ -13198,6 +13598,7 @@ components:
         - content
         - created
         - endDate
+        - pinned
         - publiclyVisible
         - publisherUserEntityId
         - startDate
@@ -13220,6 +13621,8 @@ components:
         id:
           type: integer
           format: int64
+        pinned:
+          type: boolean
         publiclyVisible:
           type: boolean
         publisherUserEntityId:
@@ -13953,6 +14356,134 @@ components:
         latestMessage:
           type: string
           nullable: true
+
+    #WORKSPACE EXAMS
+
+    ExamSettingsRandom:
+      type: string
+      enum:
+        - NONE
+        - GLOBAL
+        - CATEGORY
+
+    ExamSettingsCategory:
+      type: object
+      description: Exam cateogry
+      required:
+        - name
+      properties:
+        name:
+          description: Category name
+          type: string
+        workspaceMaterialIds:
+          description: List of workspace material ids belonging to this category
+          type: array
+          items:
+            type: integer
+            format: int64
+        randomCount:
+          description: Number of assignments to randomly select from this category when exam random is CATEGORY
+          type: integer
+
+    ExamSettings:
+      type: object
+      description: Exam settings
+      required:
+        - random
+        - allowMultipleAttempts
+        - openForAll
+      properties:
+        examId:
+          description: Exam folder id
+          type: integer
+          format: int64
+        random:
+          description: Are exam assignments randomized and if so, globally or per category
+          $ref: "#/components/schemas/ExamSettingsRandom"
+        randomCount:
+          description: Number of assignments to randomly select when random is GLOBAL
+          type: integer
+        categories:
+          description: Exam categories
+          type: array
+          items:
+            $ref: "#/components/schemas/ExamSettingsCategory"
+        allowMultipleAttempts:
+          description: Is the student allowed to take this exam multiple times
+          type: boolean
+        openForAll:
+          description: Is the exam available for all workspace students or only the selected few
+          type: boolean
+        minutes:
+          description: Number of minutes to complete the exam (0 if unlimited)
+          type: integer
+        description:
+          description: Exam description
+          type: string
+
+    ExamAttendance:
+      type: object
+      description: Student's attendance to an exam
+      properties:
+        folderId:
+          description: Exam folder id
+          type: integer
+          format: int64
+        name:
+          description: The name of the exam, i.e. folder title
+          type: string
+        description:
+          description: Exam description
+          type: string
+        started:
+          description: When the exam was started (OffSetDateTime format)
+          type: string
+        ended:
+          description: When the exam was ended (OffSetDateTime format)
+          type: string
+        allowRestart:
+          description: Is the student allowed to restart a once completed exam
+          type: boolean
+        minutes:
+          description: Number of minutes to complete the exam (0 if unlimited)
+          type: integer
+        contents:
+          description: Exam contents for the student
+          type: array
+          items:
+            $ref: "#/components/schemas/MaterialContentNode"
+        evaluationInfo:
+          description: Exam evaluation info
+          $ref: "#/components/schemas/NodeEvaluationInfo"
+
+    ExamAttendee:
+      type: object
+      description: Exam attendee
+      properties:
+        id:
+          description: Attendee userEntityId
+          type: integer
+          format: int64
+        firstName:
+          description: Attendee first name
+          type: string
+        lastName:
+          description: Attendee last name
+          type: string
+        line:
+          description: Attendee line
+          type: string
+        started:
+          description: When the exam was started (OffSetDateTime format)
+          type: string
+        ended:
+          description: When the exam was ended (OffSetDateTime format)
+          type: string
+        extraMinutes:
+          description: Number of additional minutes given to complete the exam
+          type: integer
+
+    #COMMON
 
     EducationType:
       type: object
@@ -15128,15 +15659,15 @@ components:
           description: State of the material assignment
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
 
-    MaterialEvaluationGradeType:
-      description: Material evaluation grade type enum
+    NodeEvaluationGradeType:
+      description: Node evaluation grade type enum
       type: string
       enum:
         - PASSED
         - INCOMPLETE
         - FAILED
 
-    MaterialEvaluationInfo:
+    NodeEvaluationInfo:
       type: object
       description: Evaluation info of the material assignments
       required:
@@ -15154,7 +15685,7 @@ components:
           format: int64
         type:
           description: Type of grade given
-          $ref: "#/components/schemas/MaterialEvaluationGradeType"
+          $ref: "#/components/schemas/NodeEvaluationGradeType"
         evaluationType:
           description: Type of the evaluation
           $ref: "#/components/schemas/EvaluationType"
@@ -15252,7 +15783,7 @@ components:
           $ref: "#/components/schemas/MaterialCompositeReplyStateType"
         evaluationInfo:
           description: Evaluation info of the material assignments
-          $ref: "#/components/schemas/MaterialEvaluationInfo"
+          $ref: "#/components/schemas/NodeEvaluationInfo"
           nullable: true
         created:
           description: Date when the material assignment was created
@@ -15315,9 +15846,9 @@ components:
         - ON_REQUEST
         - NEVER
 
-    MaterialEvaluation:
+    NodeEvaluation:
       type: object
-      description: MaterialEvaluation object
+      description: NodeEvaluation object
       required:
         - id
         - evaluated
@@ -15548,6 +16079,7 @@ components:
         - contentHiddenForUser
         - assignmentType
         - ai
+        - exam
       properties:
         title:
           description: The title of the material
@@ -15624,6 +16156,9 @@ components:
           description: Is usage of AI allowed
           $ref: "#/components/schemas/MaterialAI"
           nullable: true
+        exam:
+          description: Is this node part of an exam
+          type: boolean
 
     Message:
       type: object
@@ -18470,6 +19005,7 @@ components:
         - correctAnswers
         - path
         - title
+        - exam
       properties:
         id:
           description: The id of the material
@@ -18511,6 +19047,9 @@ components:
         ai:
           description: Is usage of AI allowed
           $ref: "#/components/schemas/MaterialAI"
+        exam:
+          description: If the material is part of an exam
+          type: boolean
 
     WorkspaceFolder:
       type: object
@@ -18519,16 +19058,24 @@ components:
         id:
           type: integer
           format: int64
+        parentId:
+          type: integer
+          format: int64
+        nextSiblingId:
+          type: integer
+          format: int64
         hidden:
           type: boolean
-        orderNumber:
-          type: integer
+        viewRestrict:
+          $ref: "#/components/schemas/MaterialViewRestriction"
         title:
           type: string
-        urlName:
-          type: string
+        titleLanguage:
+          $ref: "#/components/schemas/Language"
         path:
           type: string
+        exam:
+          type: boolean
 
     WorkspaceCansignup:
       type: object

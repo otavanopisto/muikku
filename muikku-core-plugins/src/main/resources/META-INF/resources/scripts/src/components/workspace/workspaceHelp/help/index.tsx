@@ -71,6 +71,7 @@ const DEFAULT_OFFSET = 67;
 class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
   private flattenedMaterial: MaterialContentNodeWithIdAndLogic[];
   private contentPanelRef = React.createRef<ContentPanel>();
+  private materialRefs = new Map<number, React.RefObject<ContentPanelItem>>();
 
   /**
    * constructor
@@ -369,40 +370,49 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
       document.documentElement.scrollHeight -
         document.documentElement.scrollTop ===
       document.documentElement.clientHeight;
+
     if (!isAllTheWayToTheBottom) {
       let winnerTop: number = null;
       let winnerVisibleWeight: number = null;
-      for (const refKey of Object.keys(this.refs)) {
-        const refKeyInt = parseInt(refKey);
-        if (!refKeyInt) {
+
+      // Iterate through the material refs map instead of this.refs
+      for (const [refKey, ref] of this.materialRefs) {
+        if (!ref.current) {
           continue;
         }
-        const element = (this.refs[refKey] as ContentPanelItem).getComponent();
+        const element = ref.current.getComponent();
         const elementTop = element.getBoundingClientRect().top;
         const elementBottom = element.getBoundingClientRect().bottom;
         const isVisible =
           elementTop < window.innerHeight &&
           elementBottom >=
             (document.querySelector("#stick") as HTMLElement).offsetHeight;
+
         if (isVisible) {
           let cropBottom = window.innerHeight - elementBottom;
+
           if (cropBottom > 0) {
             cropBottom = 0;
           }
+
           let cropTop = elementTop;
+
           if (cropTop > 0) {
             cropTop = 0;
           }
+
           const cropTotal = -cropTop - cropBottom;
 
           const visibleFraction =
             (element.offsetHeight - cropTotal) / element.offsetHeight;
           let weight = visibleFraction;
+
           if (!winner || elementTop < winnerTop) {
             weight += 0.4;
           }
+
           if (!winnerVisibleWeight || weight >= winnerVisibleWeight) {
-            winner = refKeyInt;
+            winner = refKey;
             winnerTop = elementTop;
             winnerVisibleWeight = weight;
           }
@@ -416,6 +426,17 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
 
     winner = winner || this.flattenedMaterial[0].workspaceMaterialId;
     return winner;
+  }
+
+  /**
+   * getMaterialRef
+   * @param materialId materialId
+   */
+  getMaterialRef(materialId: number): React.RefObject<ContentPanelItem> {
+    if (!this.materialRefs.has(materialId)) {
+      this.materialRefs.set(materialId, React.createRef<ContentPanelItem>());
+    }
+    return this.materialRefs.get(materialId)!;
   }
 
   /**
@@ -677,7 +698,7 @@ class Help extends React.Component<HelpMaterialsProps, HelpMaterialsState> {
             !this.props.workspace || (!isEditable && node.hidden) ? null : (
               <ContentPanelItem
                 id={`p-${node.workspaceMaterialId}`}
-                ref={node.workspaceMaterialId + ""}
+                ref={this.getMaterialRef(node.workspaceMaterialId)}
                 key={node.workspaceMaterialId + ""}
               >
                 <div

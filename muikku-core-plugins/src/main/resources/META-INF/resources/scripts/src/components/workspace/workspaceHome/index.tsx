@@ -8,10 +8,10 @@ import WorkspaceTeachers from "./teachers";
 import WorkspaceAnnouncements from "./announcements";
 import WorkspaceLicense from "./license";
 import WorkspaceProducers from "./producers";
-import MaterialEditor from "~/components/base/material-editor";
 import WorkspaceEvaluation from "./evaluation";
 import "~/sass/elements/panel.scss";
 import "~/sass/elements/footer.scss";
+import { MaterialEditorV2 } from "~/components/base/material-editorV2";
 
 /**
  * WorkspaceHomeBodyProps
@@ -28,7 +28,7 @@ const WorkspaceHomeBody = (props: WorkspaceHomeBodyProps) => (
   <div>
     <WorkspaceNavbar activeTrail="index" workspaceUrl={props.workspaceUrl} />
     <ScreenContainer viewModifiers="workspace">
-      <MaterialEditor locationPage="Home" />
+      <MaterialEditorV2 locationPage="Home" />
       <WorkspaceHomeHeader />
       <WorkspaceEvaluation />
       <div className="panel-group panel-group--workspace-main">

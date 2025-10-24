@@ -2,12 +2,13 @@ import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { MaterialLoaderProps } from "~/components/base/material-loader";
 import Button from "~/components/general/button";
+import { StateConfig } from "./types";
 
 /**
  * MaterialLoaderButtonsProps
  */
 interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
-  stateConfiguration: any;
+  stateConfiguration: StateConfig;
   answerCheckable: boolean;
   answersVisible: boolean;
 }
@@ -18,9 +19,10 @@ interface MaterialLoaderButtonsProps extends MaterialLoaderProps {
  */
 export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
   const { t } = useTranslation(["materials", "common"]);
+  // eslint-disable-next-line jsdoc/require-jsdoc
   const namespace = () => {
-    const p = props.stateConfiguration["assignment-type"]
-      ? props.stateConfiguration["assignment-type"]
+    const p = props.stateConfiguration.assignmentType
+      ? props.stateConfiguration.assignmentType
       : "";
 
     switch (p) {
@@ -51,19 +53,19 @@ export function MaterialLoaderButtons(props: MaterialLoaderButtonsProps) {
 
   return (
     <div className="material-page__buttonset rs_skip_always">
-      {!props.stateConfiguration["button-disabled"] ? (
+      {!props.stateConfiguration.buttonDisabled ? (
         <Button
-          buttonModifiers={props.stateConfiguration["button-class"]}
+          buttonModifiers={props.stateConfiguration.buttonClass}
           onClick={props.onPushAnswer}
         >
-          {t(props.stateConfiguration["button-text"], {
+          {t(props.stateConfiguration.buttonText, {
             ns: namespace(),
+            defaultValue: props.stateConfiguration.buttonText,
           })}
         </Button>
       ) : null}
-      {props.stateConfiguration[
-        "displays-hide-show-answers-on-request-button-if-allowed"
-      ] && props.material.correctAnswers === "ON_REQUEST" ? (
+      {props.stateConfiguration.displaysHideShowAnswersButton &&
+      props.material.correctAnswers === "ON_REQUEST" ? (
         <Button
           buttonModifiers="muikku-show-correct-answers-button"
           onClick={props.onToggleAnswersVisible}

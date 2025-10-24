@@ -314,6 +314,9 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @Scope (PermissionScope.WORKSPACE)
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT })
   public static final String IS_WORKSPACE_STUDENT = "IS_WORKSPACE_STUDENT";
+
+  @Scope (PermissionScope.WORKSPACE)
+  public static final String IS_WORKSPACE_STUDENT_WITH_EXAMS = "IS_WORKSPACE_STUDENT_WITH_EXAMS";
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })

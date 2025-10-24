@@ -13,8 +13,8 @@ import AnimateHeight from "react-animate-height";
 import SlideDrawer from "./slide-drawer";
 import { StateType } from "~/reducers/index";
 import {
-  UpdateOpenedAssignmentEvaluationId,
-  updateOpenedAssignmentEvaluation,
+  UpdateOpenedAssignmentOrExamId,
+  updateOpenedAssignmentOrExamId,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationState } from "~/reducers/main-function/evaluation";
 import InterimEvaluationEditor from "./editors/interim-evaluation-editor";
@@ -40,7 +40,7 @@ interface EvaluationAssessmentInterminEvaluationRequestProps
   open: boolean;
   evaluations: EvaluationState;
   selectedAssessment: EvaluationAssessmentRequest;
-  updateOpenedAssignmentEvaluation: UpdateOpenedAssignmentEvaluationId;
+  updateOpenedAssignmentOrExamId: UpdateOpenedAssignmentOrExamId;
   showAsHidden: boolean;
   compositeReply?: MaterialCompositeReply;
   onClickOpen?: (id: number) => void;
@@ -158,9 +158,9 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           id: assigment.materialId,
         });
 
-        const evaluation = await evaluationApi.getWorkspaceMaterialEvaluations({
+        const evaluation = await evaluationApi.getWorkspaceNodeEvaluations({
           workspaceId: workspace.id,
-          workspaceMaterialId: assigment.id,
+          workspaceNodeId: assigment.id,
           userEntityId,
         });
 
@@ -257,7 +257,9 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    * Closes slide drawer
    */
   handleCloseSlideDrawer = () => {
-    this.props.updateOpenedAssignmentEvaluation({ assignmentId: undefined });
+    this.props.updateOpenedAssignmentOrExamId({
+      assignmentOrExamId: undefined,
+    });
 
     this.setState({
       openDrawer: false,
@@ -273,10 +275,10 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    */
   handleOpenSlideDrawer =
     (assignmentId: number, assignmentType: MaterialAssigmentType) => () => {
-      if (
-        this.props.evaluations.openedAssignmentEvaluationId !== assignmentId
-      ) {
-        this.props.updateOpenedAssignmentEvaluation({ assignmentId });
+      if (this.props.evaluations.openedAssigmentOrExamId !== assignmentId) {
+        this.props.updateOpenedAssignmentOrExamId({
+          assignmentOrExamId: assignmentId,
+        });
       }
 
       if (this.state.materialNode === undefined) {
@@ -297,7 +299,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
    */
   handleExecuteScrollToElement = () => {
     window.dispatchEvent(new Event("resize"));
-    if (this.props.evaluations.openedAssignmentEvaluationId) {
+    if (this.props.evaluations.openedAssigmentOrExamId) {
       setTimeout(() => {
         this.myRef.scrollIntoView({ behavior: "smooth" });
       }, 600);
@@ -403,7 +405,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
     if (
       this.state.openContent ||
       (this.state.openDrawer &&
-        this.props.evaluations.openedAssignmentEvaluationId ===
+        this.props.evaluations.openedAssigmentOrExamId ===
           this.props.assigment.id)
     ) {
       /**
@@ -420,8 +422,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
 
     if (
       this.state.openDrawer &&
-      this.props.evaluations.openedAssignmentEvaluationId ===
-        this.props.assigment.id
+      this.props.evaluations.openedAssigmentOrExamId === this.props.assigment.id
     ) {
       /**
        * Assigning class mod to evaluation material title if corresponding dialog is open
@@ -488,7 +489,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           modifiers={["interim-evaluation"]}
           show={
             this.state.openDrawer &&
-            this.props.evaluations.openedAssignmentEvaluationId ===
+            this.props.evaluations.openedAssigmentOrExamId ===
               this.props.assigment.id
           }
           disableClose={this.state.isRecording}
@@ -564,7 +565,7 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ updateOpenedAssignmentEvaluation }, dispatch);
+  return bindActionCreators({ updateOpenedAssignmentOrExamId }, dispatch);
 }
 
 export default withTranslation(["evaluation", "workspace", "common"])(

@@ -18,7 +18,7 @@ public class LanguageProfileSampleDAO  extends CorePluginsDAO<LanguageProfileSam
 
   private static final long serialVersionUID = 1931059641710773523L;
   
-  public LanguageProfileSample create(LanguageProfile languageProfile, String language, LanguageProfileSampleType type, String fileId, String fileName, String contentType) {
+  public LanguageProfileSample create(LanguageProfile languageProfile, String language, LanguageProfileSampleType type, String fileId, String fileName, String value, String contentType) {
     LanguageProfileSample languageProfileSample = new LanguageProfileSample();
     languageProfileSample.setContentType(contentType);
     languageProfileSample.setFileId(fileId);
@@ -27,6 +27,7 @@ public class LanguageProfileSampleDAO  extends CorePluginsDAO<LanguageProfileSam
     languageProfileSample.setLanguageProfile(languageProfile);
     languageProfileSample.setType(type);
     languageProfileSample.setLastModified(new Date());
+    languageProfileSample.setValue(value);
     return persist(languageProfileSample);
   }
 
@@ -38,6 +39,7 @@ public class LanguageProfileSampleDAO  extends CorePluginsDAO<LanguageProfileSam
     languageProfileSample.setType(type);
     languageProfileSample.setLastModified(new Date());
     languageProfileSample.setValue(value);
+    
     return persist(languageProfileSample);
   }
   

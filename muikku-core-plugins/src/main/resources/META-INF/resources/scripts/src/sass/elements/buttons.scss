@@ -227,6 +227,21 @@
   }
 }
 
+.button--continue-exam {
+  background: $color-accent;
+  color: $color-default;
+}
+
+.button--start-exam {
+  background: $color-info;
+  color: $color-default;
+}
+
+.button--goto-exam {
+  background: $color-info;
+  color: $color-default;
+}
+
 .button--disconnect-warning {
   background-color: transparent;
   border: 1px solid $color-default;
@@ -744,6 +759,19 @@
   margin: 0 4px;
   padding: 0;
   text-transform: none;
+}
+
+.button--delete-chip {
+  background: transparent;
+  border: 0;
+  height: 1rem;
+  padding: 0;
+  width: 1rem;
+
+  .button__icon {
+    font-size: 0.5rem;
+    margin: 0;
+  }
 }
 
 .button-icon {
@@ -2508,6 +2536,38 @@
     background: transparent;
 
     .icon-trash {
+      color: $color-disabled;
+    }
+
+    &:hover {
+      background: transparent;
+      color: $color-disabled;
+    }
+  }
+}
+
+.button--edit-extra-row {
+  background: transparent;
+  height: 2.25rem;
+  padding: 5px;
+  width: 2.25rem;
+
+  .icon-pencil {
+    align-items: center;
+    color: $color-info;
+    display: flex;
+    font-size: 1.25rem;
+    height: 2.25rem;
+    justify-content: center;
+    margin: 0;
+    padding: 5px;
+    width: 2.25rem;
+  }
+
+  &.disabled {
+    background: transparent;
+
+    .icon-pencil {
       color: $color-disabled;
     }
 

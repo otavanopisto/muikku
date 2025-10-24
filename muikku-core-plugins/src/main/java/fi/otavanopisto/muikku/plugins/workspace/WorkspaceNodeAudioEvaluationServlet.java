@@ -20,16 +20,17 @@ import org.apache.commons.lang3.math.NumberUtils;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationFileStorageUtils;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationAudioClip;
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationAudioClip;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 
-@WebServlet(urlPatterns = "/workspaceMaterialAudioEvaluationServlet/*")
-public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/workspaceNodeAudioEvaluationServlet/*")
+public class WorkspaceNodeAudioEvaluationServlet extends HttpServlet {
   
   private static final long serialVersionUID = -5852968845384722139L;
 
@@ -50,6 +51,9 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
 
   @Inject
   private EvaluationFileStorageUtils evaluationFileStorageUtils;
+  
+  @Inject
+  private WorkspaceNodeDAO workspaceNodeDAO;
   
   @Override
   public void init() throws ServletException {
@@ -75,20 +79,20 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
     }
 
     String clipId = request.getParameter("clipId");
-    WorkspaceMaterialEvaluationAudioClip evaluationAudioClip = evaluationController.findEvaluationAudioClip(clipId);
+    WorkspaceNodeEvaluationAudioClip evaluationAudioClip = evaluationController.findEvaluationAudioClip(clipId);
     if (evaluationAudioClip == null) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
     
-    WorkspaceMaterialEvaluation materialEvaluation = evaluationAudioClip.getEvaluation();
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(materialEvaluation.getWorkspaceMaterialId());
-    if (workspaceMaterial == null) {
+    WorkspaceNodeEvaluation evaluation = evaluationAudioClip.getEvaluation();
+    WorkspaceNode workspaceNode = workspaceNodeDAO.findById(evaluation.getWorkspaceNodeId());
+    if (workspaceNode == null) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
 
-    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceNode);
     if (workspaceRootFolder == null) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
@@ -100,7 +104,7 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
       return;
     }
     
-    if (!materialEvaluation.getStudentEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+    if (!evaluation.getStudentEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
       if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;
@@ -109,7 +113,7 @@ public class WorkspaceMaterialAudioEvaluationServlet extends HttpServlet {
     
     byte[] content = null;
     if (content == null) {
-      Long userEntityId = materialEvaluation.getStudentEntityId();
+      Long userEntityId = evaluation.getStudentEntityId();
       try {
         if (evaluationFileStorageUtils.isFileInFileSystem(userEntityId, evaluationAudioClip.getClipId())) {
           content = evaluationFileStorageUtils.getFileContent(userEntityId, evaluationAudioClip.getClipId());

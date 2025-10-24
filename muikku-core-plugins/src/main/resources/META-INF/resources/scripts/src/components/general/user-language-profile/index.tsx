@@ -451,9 +451,13 @@ const UserLanguageProfile = (props: UserLanguageProfileProps) => {
                         {t("labels.skillEstimate", {
                           ns: "languageProfile",
                         })}
-                        <div className="user-language-profile__skill-row">
-                          {language.general}
-                        </div>
+                      </div>
+                      <div className="user-language-profile__skill-row">
+                        {t(`levels.${language.general}`, {
+                          ns: "languageProfile",
+                          context: "cv",
+                          defaultValue: language.general,
+                        })}
                       </div>
                       <div className="user-language-profile__label">
                         {t("labels.descriptionOfCompetence", {

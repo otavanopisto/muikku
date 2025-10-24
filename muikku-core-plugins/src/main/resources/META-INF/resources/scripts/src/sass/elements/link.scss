@@ -377,8 +377,6 @@
   font-weight: 600;
 }
 
-
-
 .link--material-editor-dropdown-exercise {
   .link__icon {
     color: $color-exercise;
@@ -402,6 +400,26 @@
     color: $color-default-helper;
   }
 }
+
+// Material editor's answers type dropdown links
+.link--material-editor-dropdown-always {
+  .link__icon {
+    color: $color-material-page-admin-panel-always-show-answers-color;
+  }
+}
+
+.link--material-editor-dropdown-on-request {
+  .link__icon {
+    color: $color-material-page-admin-panel-on-request-color;
+  }
+}
+
+.link--material-editor-dropdown-never {
+  .link__icon {
+    color: $color-material-page-admin-panel-never-show-answers-color;
+  }
+}
+
 
 // Links used in dropdowns of main functions
 .link--main-functions-settings-dropdown {
