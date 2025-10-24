@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeRep
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReplyLock;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -63,6 +64,9 @@ public class ExamRESTService {
   
   @Inject
   private ExamController examController;
+
+  @Inject
+  private WorkspaceController workspaceController;
   
   @Inject
   private EvaluationController evaluationController;
@@ -163,7 +167,9 @@ public class ExamRESTService {
   @POST
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response createOrUpdateSettings(@PathParam("WORKSPACEFOLDERID") Long workspaceFolderId, ExamSettingsRestModel settings) {
-    if (userEntityController.isStudent(sessionController.getLoggedUserEntity())) {
+    WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
+    WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     examController.createOrUpdateSettings(workspaceFolderId, settings);

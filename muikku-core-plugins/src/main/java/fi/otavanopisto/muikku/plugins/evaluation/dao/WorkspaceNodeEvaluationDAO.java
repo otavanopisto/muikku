@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.evaluation.dao;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -126,27 +125,6 @@ public class WorkspaceNodeEvaluationDAO extends CorePluginsDAO<WorkspaceNodeEval
         criteriaBuilder.equal(root.get(WorkspaceNodeEvaluation_.studentEntityId), studentEntityId)
       )
     );
-    return entityManager.createQuery(criteria).getResultList();
-  }
-
-  public List<WorkspaceNodeEvaluation> findByWorkspaceNodeIdsAndStudentEntityId(List<Long> workspaceNodeIds, Long studentEntityId) {
-    EntityManager entityManager = getEntityManager(); 
-    
-    if (workspaceNodeIds.isEmpty()) {
-      return Collections.emptyList();
-    }
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<WorkspaceNodeEvaluation> criteria = criteriaBuilder.createQuery(WorkspaceNodeEvaluation.class);
-    Root<WorkspaceNodeEvaluation> root = criteria.from(WorkspaceNodeEvaluation.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        root.get(WorkspaceNodeEvaluation_.studentEntityId).in(workspaceNodeIds),
-        criteriaBuilder.equal(root.get(WorkspaceNodeEvaluation_.studentEntityId), studentEntityId)
-      )
-    );
-
     return entityManager.createQuery(criteria).getResultList();
   }
 
