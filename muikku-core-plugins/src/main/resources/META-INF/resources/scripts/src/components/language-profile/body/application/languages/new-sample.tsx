@@ -35,7 +35,9 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
   const { visible, language, onClose, sampleType } = props;
   const { status } = useSelector((state: StateType) => state);
   const [audioSamples, setAudioSamples] = React.useState<RecordValue[]>([]);
-  const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
+  const [selectedFileSamples, setSelectedFileSamples] = React.useState<
+    FileSample[]
+  >([]);
   const dispatch = useDispatch();
 
   /**
@@ -46,7 +48,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
     unstable_batchedUpdates(() => {
       setSample("");
       setAudioSamples([]);
-      setSelectedFiles([]);
+      setSelectedFileSamples([]);
     });
 
   /**
@@ -65,12 +67,34 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
    * @param index - The index of the file to remove.
    */
   const removeFileFromQueue = React.useCallback((index: number) => {
-    setSelectedFiles((prevFiles) => {
+    setSelectedFileSamples((prevFiles) => {
       const newFiles = [...prevFiles];
       newFiles.splice(index, 1);
       return newFiles;
     });
   }, []);
+
+  /**
+   * Handles changes to the file description.
+   * @param index - The index of the file to update.
+   * @param description - The new description for the file.
+   */
+  const handleFileDescriptionChange = (index: number, description: string) => {
+    const filesUpdate = [...selectedFileSamples];
+    filesUpdate[index].description = description;
+    setSelectedFileSamples(filesUpdate);
+  };
+
+  /**
+   * Handles changes to the file description.
+   * @param index - The index of the file to update.
+   * @param description - The new description for the file.
+   */
+  const handleAudioDescriptionChange = (index: number, description: string) => {
+    const audioUpdate = [...audioSamples];
+    audioUpdate[index].description = description;
+    setAudioSamples(audioUpdate);
+  };
 
   /**
    * HandleFileChange handles the file input change event.
@@ -80,11 +104,18 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
       if (files && files.length > 0) {
-        setSelectedFiles((prevFiles) => [...prevFiles, ...Array.from(files)]);
+        setSelectedFileSamples((prevFiles) => [
+          ...prevFiles,
+          ...Array.from(files).map((file) => ({
+            file,
+            description: "",
+          })),
+        ]);
       }
     },
-    [setSelectedFiles]
+    [setSelectedFileSamples]
   );
+
   /**
    * handleRecorderChange handles changes in the audio recorder component.
    * @param recordedAudio
@@ -128,12 +159,17 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
    */
   const handleFilesSave = React.useCallback(() => {
     dispatch(
-      createLanguageFileSamples(status.userId, selectedFiles, language, () => {
-        clearFields();
-        onClose();
-      })
+      createLanguageFileSamples(
+        status.userId,
+        selectedFileSamples,
+        language,
+        () => {
+          clearFields();
+          onClose();
+        }
+      )
     );
-  }, [dispatch, status.userId, selectedFiles, language, onClose]);
+  }, [dispatch, status.userId, selectedFileSamples, language, onClose]);
 
   /**
    * handleAudioSave saves the audio samples to the server.
@@ -180,8 +216,10 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
       case "FILE":
         return (
           <FileSample
-            files={selectedFiles}
+            samples={selectedFileSamples}
+            language={language}
             onFileChange={handleFileChange}
+            onFileDescriptionChange={handleFileDescriptionChange}
             onRemoveFile={removeFileFromQueue}
             onSave={handleFilesSave}
             onCancel={handleCancel}
@@ -192,6 +230,7 @@ const NewLanguageSample = (props: LanguageSampleProps) => {
           <AudioSample
             samples={audioSamples}
             onChange={handleRecorderChange}
+            onDescriptionChange={handleAudioDescriptionChange}
             onDelete={handleDeleteAudio}
             onSave={handleAudioSave}
             onCancel={handleCancel}
