@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // srcv4/src/materials/MaterialLoaderV2/core/hooks/useAssignmentState.ts
 
 import { useMemo, useCallback } from "react";
@@ -5,6 +6,7 @@ import { AssignmentStateManager } from "../state/AssignmentStateManager";
 import { type AssignmentStateReturn, type ButtonConfig } from "../types";
 import type {
   MaterialCompositeReply,
+  MaterialCompositeReplyStateType,
   MaterialContentNode,
 } from "~/generated/client";
 
@@ -14,14 +16,24 @@ import type {
  */
 export function useAssignmentState(
   material: MaterialContentNode,
-  compositeReplies?: MaterialCompositeReply
+  compositeReplies?: MaterialCompositeReply,
+  onAssignmentStateModified?: () => void,
+  updateAssignmentState?: (
+    newState: MaterialCompositeReplyStateType,
+    localOnly: boolean,
+    workspaceId: number,
+    workspaceMaterialId: number,
+    workspaceMaterialReplyId?: number,
+    successText?: string,
+    callback?: () => void
+  ) => void
 ): AssignmentStateReturn {
   const currentState = compositeReplies?.state ?? "UNANSWERED";
 
   const stateConfig = useMemo(
     () =>
       AssignmentStateManager.getStateConfiguration(
-        material.assignmentType ?? "",
+        material.assignmentType,
         currentState
       ),
     [material.assignmentType, currentState]
@@ -50,16 +62,47 @@ export function useAssignmentState(
   }, [stateConfig]);
 
   /**
-   * handleStateTransition
-   * @param newState newState
+   * Handle state transition with full API integration
    */
   const handleStateTransition = useCallback(
-    (newState: string) => {
-      // This will be implemented in Phase 3 when we add API integration
-      // eslint-disable-next-line no-console
-      console.log(`Transitioning from ${currentState} to ${newState}`);
+    (newState: MaterialCompositeReplyStateType) => {
+      if (!stateConfig) {
+        console.error("No state configuration available for transition");
+        return;
+      }
+
+      // Validate transition
+      /* if (
+        !AssignmentStateManager.isValidTransition(
+          material.assignmentType,
+          currentState,
+          newState
+        )
+      ) {
+        console.error(`Invalid transition from ${currentState} to ${newState}`);
+        return;
+      } */
+
+      // If we have an updateAssignmentState function, use it
+      if (updateAssignmentState) {
+        updateAssignmentState(
+          newState,
+          false, // localOnly = false (update server)
+          0, // This should come from workspace prop
+          material.workspaceMaterialId ?? 0,
+          compositeReplies?.workspaceMaterialReplyId,
+          stateConfig.successText,
+          onAssignmentStateModified
+        );
+      }
     },
-    [currentState]
+    [
+      stateConfig,
+      updateAssignmentState,
+      material.workspaceMaterialId,
+      compositeReplies?.workspaceMaterialReplyId,
+      onAssignmentStateModified,
+    ]
   );
 
   return {

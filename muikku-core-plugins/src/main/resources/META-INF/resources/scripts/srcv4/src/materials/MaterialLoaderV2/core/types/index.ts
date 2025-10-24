@@ -1,7 +1,9 @@
 // srcv4/src/materials/MaterialLoaderV2/core/types/index.ts
 
 import type {
+  MaterialAssigmentType,
   MaterialCompositeReply,
+  MaterialCompositeReplyStateType,
   MaterialContentNode,
   WorkspaceMaterial,
 } from "~/generated/client";
@@ -88,7 +90,7 @@ export interface AssignmentStateReturn {
   readOnly: boolean;
   answerable: boolean;
   buttonConfig: ButtonConfig | null;
-  handleStateTransition: (newState: string) => void;
+  handleStateTransition: (newState: MaterialCompositeReplyStateType) => void;
 }
 
 /**
@@ -111,7 +113,7 @@ export interface ButtonConfig {
   className: string;
   text: string;
   disabled: boolean;
-  successState?: string;
+  successState?: MaterialCompositeReplyStateType;
   successText?: string;
 }
 
@@ -119,17 +121,17 @@ export interface ButtonConfig {
  * AssignmentStateConfig
  */
 export interface AssignmentStateConfig {
-  assignmentType: string;
-  state: string | string[];
+  assignmentType: MaterialAssigmentType;
+  states: MaterialCompositeReplyStateType[] | MaterialCompositeReplyStateType;
   displaysHideShowAnswersOnRequestButtonIfAllowed?: boolean;
   buttonClass?: string;
   buttonText?: string;
   buttonDisabled?: boolean;
-  successState?: string;
+  successState?: MaterialCompositeReplyStateType;
   successText?: string;
   fieldsReadOnly?: boolean;
   checksAnswers?: boolean;
-  modifyState?: string;
+  modifyState?: MaterialCompositeReplyStateType;
 }
 
 /**

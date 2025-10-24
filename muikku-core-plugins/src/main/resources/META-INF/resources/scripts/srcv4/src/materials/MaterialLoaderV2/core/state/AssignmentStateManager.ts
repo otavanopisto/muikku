@@ -1,5 +1,9 @@
 // srcv4/src/materials/MaterialLoaderV2/core/state/AssignmentStateManager.ts
 
+import type {
+  MaterialAssigmentType,
+  MaterialCompositeReplyStateType,
+} from "~/generated/client";
 import type { AssignmentStateConfig } from "../types";
 
 /**
@@ -12,7 +16,7 @@ export class AssignmentStateManager {
       assignmentType: "EXERCISE",
       //usually exercises cannot be withdrawn but they might be in extreme cases when a evaluated has
       //been modified
-      state: ["UNANSWERED", "ANSWERED", "WITHDRAWN"],
+      states: ["UNANSWERED", "ANSWERED", "WITHDRAWN"],
 
       //when an exercise is in the state unanswered answered or withdrawn then it doesn't
       //display this button
@@ -33,7 +37,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "EXERCISE",
-      state: ["SUBMITTED"],
+      states: ["SUBMITTED"],
 
       //With this property active whenever in this state the answers will be checked
       checksAnswers: true,
@@ -47,7 +51,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "EXERCISE",
-      state: ["PASSED", "FAILED", "INCOMPLETE"],
+      states: ["PASSED", "FAILED", "INCOMPLETE"],
 
       //With this property active whenever in this state the answers will be checked
       checksAnswers: true,
@@ -61,7 +65,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "EVALUATED",
-      state: ["UNANSWERED", "ANSWERED"],
+      states: ["UNANSWERED", "ANSWERED"],
       buttonClass: "muikku-submit-assignment",
       buttonText: "actions.send_assignment",
       //Represents a message that will be shown once the state changes to the success state
@@ -72,7 +76,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "EVALUATED",
-      state: "SUBMITTED",
+      states: "SUBMITTED",
       buttonClass: "muikku-withdraw-assignment",
       buttonText: "actions.cancel_assignment",
       successText: "notifications.assignmentWithdrawn",
@@ -82,7 +86,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "EVALUATED",
-      state: ["FAILED"],
+      states: ["FAILED"],
       buttonClass: "muikku-withdraw-assignment",
       buttonText: "actions.cancel_assignment",
       successText: "notifications.assignmentWithdrawn",
@@ -91,7 +95,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "EVALUATED",
-      state: ["INCOMPLETE"],
+      states: ["INCOMPLETE"],
       buttonClass: "muikku-withdraw-assignment",
       buttonText: "actions.cancel_assignment",
       successText: "notifications.assignmentWithdrawn",
@@ -101,7 +105,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "EVALUATED",
-      state: "WITHDRAWN",
+      states: "WITHDRAWN",
       buttonClass: "muikku-update-assignment",
       buttonText: "actions.update",
       successText: "notifications.assignmentUpdated",
@@ -111,7 +115,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "EVALUATED",
-      state: "PASSED",
+      states: "PASSED",
       buttonClass: "muikku-evaluated-assignment",
       buttonText: "actions.evaluated",
       buttonDisabled: true,
@@ -119,7 +123,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "JOURNAL",
-      state: ["UNANSWERED", "ANSWERED"],
+      states: ["UNANSWERED", "ANSWERED"],
       buttonClass: "muikku-submit-journal",
       buttonText: "actions.save",
       successState: "SUBMITTED",
@@ -128,7 +132,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "JOURNAL",
-      state: "SUBMITTED",
+      states: "SUBMITTED",
       buttonClass: "muikku-submit-journal",
       buttonText: "actions.edit",
       successState: "ANSWERED",
@@ -137,7 +141,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "INTERIM_EVALUATION",
-      state: ["UNANSWERED", "ANSWERED"],
+      states: ["UNANSWERED", "ANSWERED"],
       buttonClass: "muikku-submit-interim-evaluation",
       buttonText: "actions.send_interimEvaluationRequest",
       successState: "SUBMITTED",
@@ -146,7 +150,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "INTERIM_EVALUATION",
-      state: "SUBMITTED",
+      states: "SUBMITTED",
       buttonClass: "muikku-submit-interim-evaluation",
       buttonText: "actions.cancel_interimEvaluationRequest",
       successState: "ANSWERED",
@@ -155,7 +159,7 @@ export class AssignmentStateManager {
     },
     {
       assignmentType: "INTERIM_EVALUATION",
-      state: "PASSED",
+      states: "PASSED",
       buttonClass: "muikku-evaluated-assignment",
       buttonText: "actions.evaluated",
       buttonDisabled: true,
@@ -167,28 +171,30 @@ export class AssignmentStateManager {
    * Get state configuration for a specific assignment type and current state
    */
   static getStateConfiguration(
-    assignmentType: string,
-    currentState: string
+    assignmentType: MaterialAssigmentType | null,
+    currentState: MaterialCompositeReplyStateType
   ): AssignmentStateConfig | null {
     return (
       this.STATES.find(
         (config) =>
           config.assignmentType === assignmentType &&
-          (config.state === currentState ||
-            (Array.isArray(config.state) &&
-              config.state.includes(currentState)))
-      ) || null
+          (config.states === currentState ||
+            (Array.isArray(config.states) &&
+              config.states.includes(currentState)))
+      ) ?? null
     );
   }
 
   /**
    * Get all available states for an assignment type
    */
-  static getAvailableStates(assignmentType: string): string[] {
+  static getAvailableStates(
+    assignmentType: MaterialAssigmentType | null
+  ): MaterialCompositeReplyStateType[] {
     return this.STATES.filter(
       (config) => config.assignmentType === assignmentType
     ).flatMap((config) =>
-      Array.isArray(config.state) ? config.state : [config.state]
+      Array.isArray(config.states) ? config.states : [config.states]
     );
   }
 
@@ -196,9 +202,9 @@ export class AssignmentStateManager {
    * Check if a state transition is valid
    */
   static isValidTransition(
-    assignmentType: string,
-    fromState: string,
-    toState: string
+    assignmentType: MaterialAssigmentType | null,
+    _fromState: MaterialCompositeReplyStateType,
+    toState: MaterialCompositeReplyStateType
   ): boolean {
     const availableStates = this.getAvailableStates(assignmentType);
     return availableStates.includes(toState);
