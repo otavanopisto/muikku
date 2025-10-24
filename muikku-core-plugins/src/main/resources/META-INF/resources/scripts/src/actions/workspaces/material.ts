@@ -14,6 +14,7 @@ import { StateType } from "~/reducers";
 import $ from "~/lib/jquery";
 import actions, { displayNotification } from "~/actions/base/notifications";
 import equals = require("deep-equal");
+import _ from "lodash";
 import { MaterialCompositeReply } from "~/generated/client";
 import i18n from "~/locales/i18n";
 import MApi, { isMApiError, isResponseError } from "~/api/api";
@@ -114,6 +115,7 @@ export interface CreateWorkspaceMaterialContentNodeTriggerType {
       parentMaterial?: MaterialContentNodeWithIdAndLogic;
       makeFolder: boolean;
       rootParentId: number;
+      exam?: boolean;
       nextSibling?: MaterialContentNodeWithIdAndLogic;
       copyWorkspaceId?: number;
       copyMaterialId?: number;
@@ -244,6 +246,10 @@ export interface MaterialShowOrHideExtraToolsTriggerType {
   (): AnyActionType;
 }
 
+const workspaceApi = MApi.getWorkspaceApi();
+const materialsApi = MApi.getMaterialsApi();
+const examApi = MApi.getExamApi();
+
 /**
  * createWorkspaceMaterialContentNode
  * @param data data
@@ -255,9 +261,6 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-      const materialsApi = MApi.getMaterialsApi();
-
       try {
         const parentId = data.parentMaterial
           ? data.parentMaterial.workspaceMaterialId
@@ -371,6 +374,7 @@ const createWorkspaceMaterialContentNode: CreateWorkspaceMaterialContentNodeTrig
             createWorkspaceFolderRequest: {
               parentId,
               nextSiblingId,
+              exam: data.exam || false,
             },
           });
 
@@ -416,9 +420,6 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const materialsApi = MApi.getMaterialsApi();
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         /**
          * Up keep updated values when mapping them
@@ -560,8 +561,6 @@ const createWorkspaceMaterialAttachment: CreateWorkspaceMaterialAttachmentTrigge
 const requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType =
   function requestWorkspaceMaterialContentNodeAttachments(workspace, material) {
     return async (dispatch: (arg: AnyActionType) => any) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         const childrenAttachments = await workspaceApi.getWorkspaceMaterials({
           workspaceEntityId: workspace.id,
@@ -607,9 +606,6 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const materialsApi = MApi.getMaterialsApi();
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         if (!data.dontTriggerReducerActions) {
           dispatch({
@@ -694,6 +690,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               "titleLanguage",
               "path",
               "viewRestrict",
+              "exam",
             ];
           }
 
@@ -717,7 +714,7 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
               const updatedFolder = await workspaceApi.updateWorkspaceFolder({
                 workspaceId: data.workspace.id,
                 workspaceFolderId: data.material.workspaceMaterialId,
-                body: result,
+                workspaceFolder: result,
               });
 
               newPath = updatedFolder.path;
@@ -828,6 +825,17 @@ const updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTrig
                 })
               )
             );
+          }
+
+          // If the exam settings changed, we need to update the exam settings
+          if (
+            data.material.type === "folder" &&
+            !_.isEqual(data.material.examSettings, data.update.examSettings)
+          ) {
+            await examApi.createOrUpdateExamSettings({
+              workspaceFolderId: data.material.workspaceMaterialId,
+              examSettings: data.update.examSettings,
+            });
           }
 
           // if the title changed we need to update the path, sadly only the server knows
@@ -986,14 +994,64 @@ const loadWholeWorkspaceMaterials: LoadWholeWorkspaceMaterialsTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
+      const state = getState();
 
       try {
-        const materialContentNodes =
+        let materialContentNodes: MaterialContentNodeWithIdAndLogic[] =
           await workspaceApi.getWorkspaceMaterialContentNodes({
             workspaceEntityId: workspaceId,
             includeHidden,
           });
+
+        if (state.status.loggedIn) {
+          if (!state.status.isStudent) {
+            const examSettings = await examApi.getAllExamSettings({
+              workspaceEntityId: workspaceId,
+            });
+
+            materialContentNodes = materialContentNodes.map((node) => {
+              if (node.type !== "folder") {
+                return node;
+              }
+
+              const examSetting = examSettings.find(
+                (setting) => setting.examId === node.workspaceMaterialId
+              );
+
+              if (!examSetting) {
+                return node;
+              }
+
+              return {
+                ...node,
+                examSettings: examSetting,
+              };
+            });
+          } else {
+            const examAttendances = await examApi.getExamAttendances({
+              workspaceEntityId: workspaceId,
+            });
+
+            materialContentNodes = materialContentNodes.map((node) => {
+              if (node.type !== "folder") {
+                return node;
+              }
+
+              const examAttendance = examAttendances.find(
+                (attendance) => attendance.folderId === node.workspaceMaterialId
+              );
+
+              if (!examAttendance) {
+                return node;
+              }
+
+              return {
+                ...node,
+                examAttendance,
+              };
+            });
+          }
+        }
 
         dispatch({
           type: "UPDATE_WORKSPACES_SET_CURRENT_MATERIALS",
@@ -1028,8 +1086,6 @@ const loadWorkspaceCompositeMaterialReplies: LoadWorkspaceCompositeMaterialRepli
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         if (!getState().status.loggedIn) {
           dispatch({
@@ -1126,8 +1182,6 @@ const deleteWorkspaceMaterialContentNode: DeleteWorkspaceMaterialContentNodeTrig
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         if (data.material.type === "folder") {
           // Check if folder has child nodes, if so, we cannot delete it
@@ -1220,8 +1274,6 @@ const loadWholeWorkspaceHelp: LoadWholeWorkspaceHelpTriggerType =
       dispatch: (arg: AnyActionType) => any,
       getState: () => StateType
     ) => {
-      const workspaceApi = MApi.getWorkspaceApi();
-
       try {
         const materialContentNodes = await workspaceApi.getWorkspaceHelp({
           workspaceId: workspaceId,

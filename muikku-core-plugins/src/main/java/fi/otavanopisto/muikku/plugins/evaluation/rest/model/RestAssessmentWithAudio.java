@@ -3,7 +3,7 @@ package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 import java.util.Date;
 import java.util.List;
 
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluationType;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluationType;
 
 public class RestAssessmentWithAudio extends RestAssessment {
   
@@ -11,7 +11,7 @@ public class RestAssessmentWithAudio extends RestAssessment {
   }
 
   public RestAssessmentWithAudio(String identifier, String assessorIdentifier, String gradingScaleIdentifier, String gradeIdentifier,
-      String verbalAssessment, Date assessmentDate, Boolean passing, Double points, WorkspaceMaterialEvaluationType evaluationType,
+      String verbalAssessment, Date assessmentDate, Boolean passing, Double points, WorkspaceNodeEvaluationType evaluationType,
       List<RestAssignmentEvaluationAudioClip> audioAssessments) {
     super(identifier, assessorIdentifier, gradingScaleIdentifier, gradeIdentifier, verbalAssessment, assessmentDate, passing, points);
     this.evaluationType = evaluationType;
@@ -26,14 +26,14 @@ public class RestAssessmentWithAudio extends RestAssessment {
     this.audioAssessments = audioAssessments;
   }
 
-  public WorkspaceMaterialEvaluationType getEvaluationType() {
+  public WorkspaceNodeEvaluationType getEvaluationType() {
     return evaluationType;
   }
 
-  public void setEvaluationType(WorkspaceMaterialEvaluationType evaluationType) {
+  public void setEvaluationType(WorkspaceNodeEvaluationType evaluationType) {
     this.evaluationType = evaluationType;
   }
 
-  private WorkspaceMaterialEvaluationType evaluationType;
+  private WorkspaceNodeEvaluationType evaluationType;
   private List<RestAssignmentEvaluationAudioClip> audioAssessments;
 }

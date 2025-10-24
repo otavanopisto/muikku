@@ -227,6 +227,9 @@ async function loadWorkspacePermissions(
         WORKSPACE_IS_WORKSPACE_STUDENT: permissions.includes(
           "IS_WORKSPACE_STUDENT"
         ),
+        WORKSPACE_IS_WORKSPACE_STUDENT_WITH_EXAMS: permissions.includes(
+          "IS_WORKSPACE_STUDENT_WITH_EXAMS"
+        ),
         WORKSPACE_JOURNAL_VISIBLE: permissions.includes(
           "ACCESS_WORKSPACE_JOURNAL"
         ),

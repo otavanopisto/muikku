@@ -16,15 +16,12 @@ import { IconButton } from "~/components/general/button";
  */
 interface ContentPanelProps extends WithTranslation {
   modifier: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  title?: React.ReactElement<any> | string;
+  title?: React.ReactElement | string;
   readspeakerComponent?: JSX.Element;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  navigation?: React.ReactElement<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  aside?: React.ReactElement<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onOpenNavigation?: () => any;
+  navigation?: React.ReactElement;
+  aside?: React.ReactElement;
+  footer?: React.ReactElement;
+  onOpenNavigation?: () => void;
 }
 
 /**
@@ -267,9 +264,14 @@ export default class ContentPanel extends React.Component<
         ref="panel"
       >
         <div className="content-panel__container">
-          <div className="content-panel__header">
-            <h1 className="content-panel__header-title">{this.props.title}</h1>
-          </div>
+          {this.props.title ? (
+            <div className="content-panel__header">
+              <h1 className="content-panel__header-title">
+                {this.props.title}
+              </h1>
+            </div>
+          ) : null}
+
           {this.props.aside ? (
             <div className="content-panel__aside">{this.props.aside}</div>
           ) : null}
@@ -332,6 +334,10 @@ export default class ContentPanel extends React.Component<
               </div>
             </div>
           </div>
+
+          {this.props.footer ? (
+            <div className="content-panel__footer">{this.props.footer}</div>
+          ) : null}
         </div>
       </main>
     );
@@ -343,6 +349,7 @@ export default class ContentPanel extends React.Component<
  */
 interface ContentPanelItemProps {
   id?: string;
+  dataMaterialId?: number;
   scrollMarginTopOffset?: number;
 }
 
@@ -353,6 +360,8 @@ export class ContentPanelItem extends React.Component<
   ContentPanelItemProps,
   Record<string, unknown>
 > {
+  private myRef = React.createRef<HTMLDivElement>();
+
   /**
    * constructor
    * @param props props
@@ -369,13 +378,14 @@ export class ContentPanelItem extends React.Component<
     return (
       <div
         id={this.props.id}
-        ref="component"
+        ref={this.myRef}
         className="content-panel__item"
         style={
           this.props.scrollMarginTopOffset && {
             scrollMarginTop: `${this.props.scrollMarginTopOffset}px`,
           }
         }
+        data-material-id={this.props.dataMaterialId}
       >
         {this.props.children}
       </div>
@@ -386,6 +396,6 @@ export class ContentPanelItem extends React.Component<
    * @returns HTMLElement
    */
   getComponent(): HTMLElement {
-    return this.refs["component"] as HTMLElement;
+    return this.myRef.current;
   }
 }

@@ -7,7 +7,7 @@ import Synchronizer from "./base/synchronizer";
 import TextareaAutosize from "react-textarea-autosize";
 import { connect } from "react-redux";
 import { StrMathJAX } from "../static/strmathjax";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
@@ -19,12 +19,12 @@ import {
 } from "~/actions/base/notifications";
 import "~/sass/elements/memofield.scss";
 import { isValidHTML } from "~/util/html";
+import { CommonFieldProps } from "../types";
 
 /**
  * MemoFieldProps
  */
-interface MemoFieldProps extends WithTranslation {
-  type: string;
+interface MemoFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     example: string;
     columns: string;
@@ -34,20 +34,7 @@ interface MemoFieldProps extends WithTranslation {
     maxChars: string;
     maxWords: string;
   };
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => any;
   displayNotification: DisplayNotificationTriggerType;
-  invisible?: boolean;
 }
 
 /**

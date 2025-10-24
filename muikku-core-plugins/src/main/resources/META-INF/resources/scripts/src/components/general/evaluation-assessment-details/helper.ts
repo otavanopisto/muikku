@@ -1,4 +1,8 @@
-import { MaterialCompositeReply, WorkspaceMaterial } from "~/generated/client";
+import {
+  ExamAttendance,
+  MaterialCompositeReply,
+  WorkspaceMaterial,
+} from "~/generated/client";
 
 /**
  * Assignment info interface
@@ -104,4 +108,55 @@ export const createAssignmentInfoArray = (
   });
 
   return assignmentInfoArray;
+};
+
+/**
+ * Exam info interface
+ */
+export interface ExamInfo {
+  title: string;
+  grade?: string | null;
+  points?: number | null;
+}
+
+/**
+ * Creates an array of exam info objects containing title, grade, points and maxPoints
+ * from ExamAttendance objects
+ *
+ * @param examAttendances ExamAttendance[]
+ * @returns Array of exam info objects
+ */
+export const createExamInfoArray = (
+  examAttendances?: ExamAttendance[]
+): ExamInfo[] => {
+  if (!examAttendances) {
+    return [];
+  }
+
+  const examInfoArray: ExamInfo[] = [];
+
+  examAttendances.forEach((exam) => {
+    const newExamInfo: ExamInfo = {
+      title: exam.name || "Untitled Exam",
+      grade: null,
+      points: null,
+    };
+
+    if (!exam.evaluationInfo) {
+      examInfoArray.push(newExamInfo);
+      return;
+    }
+
+    // Extract grade and points from evaluation info
+    newExamInfo.grade = exam.evaluationInfo.grade;
+    newExamInfo.points = exam.evaluationInfo.points || null;
+
+    // Note: maxPoints is not available in ExamAttendance/NodeEvaluationInfo
+    // If you need maxPoints, it would need to come from a different source
+    // or be passed as a separate parameter
+
+    examInfoArray.push(newExamInfo);
+  });
+
+  return examInfoArray;
 };

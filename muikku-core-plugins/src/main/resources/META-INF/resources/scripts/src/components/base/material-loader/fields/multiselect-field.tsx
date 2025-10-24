@@ -4,17 +4,17 @@ import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import { v4 as uuidv4 } from "uuid";
 import { StrMathJAX } from "../static/strmathjax";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import "~/sass/elements/checkboxfield.scss";
+import { CommonFieldProps } from "../types";
 
 /**
  * MultiSelectFieldProps
  */
-interface MultiSelectFieldProps extends WithTranslation {
-  type: string;
+interface MultiSelectFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     name: string;
     explanation: string;
@@ -25,20 +25,6 @@ interface MultiSelectFieldProps extends WithTranslation {
       correct: boolean;
     }>;
   };
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => any;
-
-  invisible?: boolean;
 }
 
 /**

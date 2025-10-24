@@ -258,6 +258,17 @@ export const TocElement = React.forwardRef<HTMLAnchorElement, TocElementProps>(
       const pageElement = document.getElementById(hash as string);
 
       if (pageElement) {
+        if (!pageElement.hasAttribute("tabindex")) {
+          pageElement.setAttribute("tabindex", "-1");
+
+          // Add a one-time blur event listener to clean up the tabindex
+          // eslint-disable-next-line jsdoc/require-jsdoc
+          const handleBlur = () => {
+            pageElement.removeAttribute("tabindex");
+            pageElement.removeEventListener("blur", handleBlur);
+          };
+          pageElement.addEventListener("blur", handleBlur);
+        }
         pageElement.focus();
       }
     };

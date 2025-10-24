@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>alter table WorkspaceFolder add column exam bit(1) not null;</sql>
+  <sql>
+    create table ExamAttendance (
+      id bigint not null auto_increment,
+      started datetime,
+      ended datetime,
+      userEntityId bigint not null,
+      workspaceFolderId bigint not null,
+      workspaceMaterialIds mediumtext,
+      extraMinutes integer,
+      archived bit not null,
+      primary key (id)
+    );
+  </sql>
+  <sql>
+    create table ExamSettings (
+      id bigint not null auto_increment,
+      settings mediumtext not null,
+      workspaceFolderId bigint not null,
+      primary key (id)
+    );
+  </sql>
+  <sql>alter table ExamAttendance add constraint UK3hgnf4dyvv91xapriimcw023j unique (workspaceFolderId, userEntityId);</sql>
+  <sql>alter table ExamSettings add constraint UKfguje00k4okjd89vkspoin2th unique (workspaceFolderId);</sql>
+  
+  <sql>rename table WorkspaceMaterialEvaluation to WorkspaceNodeEvaluation;</sql>
+  <sql>rename table WorkspaceMaterialEvaluationAudioClip to WorkspaceNodeEvaluationAudioClip;</sql>
+  <sql>alter table WorkspaceNodeEvaluation change column workspaceMaterialId workspaceNodeId bigint not null;</sql>
+
+</update>

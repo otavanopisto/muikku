@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
-import { MaterialContentNode, User } from "~/generated/client";
+import { StaticDataset } from "~/components/base/material-loader/types";
+import { User } from "~/generated/client";
 import $ from "~/lib/jquery";
 import { MaterialContentNodeWithIdAndLogic } from "~/reducers/workspaces";
 
@@ -579,7 +581,9 @@ export function HTMLtoReactComponent(
  * extractDataSet
  * @param element element
  */
-export function extractDataSet(element: HTMLElement): any {
+export function extractDataSet<T extends StaticDataset>(
+  element: HTMLElement
+): T {
   let finalThing: any = {
     ...element.dataset,
   };
