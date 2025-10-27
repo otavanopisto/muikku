@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from "react-router";
 import { userAtom } from "~/src/atoms/auth";
 import { workspacePermissionsAtom } from "~/src/atoms/permissions";
 import { workspaceInfoAtom } from "~/src/atoms/workspace";
+import { PageLayout } from "~/src/layouts/PageLayout/PageLayout";
 
 /**
  * NotFound page for 404 errors with workspace context detection
@@ -90,44 +91,46 @@ export function NotFound() {
   );
 
   return (
-    <Paper p="xl" withBorder>
-      <Title order={1} mb="md">
-        {context.title}
-      </Title>
+    <PageLayout title="Page Not Found">
+      <Paper p="xl" withBorder>
+        <Title order={1} mb="md">
+          {context.title}
+        </Title>
 
-      {isWorkspaceContext && (
-        <Badge color="blue" variant="light" mb="md">
-          Workspace Context
-        </Badge>
-      )}
+        {isWorkspaceContext && (
+          <Badge color="blue" variant="light" mb="md">
+            Workspace Context
+          </Badge>
+        )}
 
-      <Text mb="md">{context.message}</Text>
+        <Text mb="md">{context.message}</Text>
 
-      <Text size="sm" c="dimmed" mb="md">
-        <strong>Attempted path:</strong> <Code>{attemptedPath}</Code>
-      </Text>
-
-      {isWorkspaceContext && workspaceName && (
         <Text size="sm" c="dimmed" mb="md">
-          <strong>Workspace:</strong> <Code>{workspaceName}</Code>
+          <strong>Attempted path:</strong> <Code>{attemptedPath}</Code>
         </Text>
-      )}
 
-      <Text size="sm" c="dimmed" mb="xl">
-        {context.suggestion}
-      </Text>
+        {isWorkspaceContext && workspaceName && (
+          <Text size="sm" c="dimmed" mb="md">
+            <strong>Workspace:</strong> <Code>{workspaceName}</Code>
+          </Text>
+        )}
 
-      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-        {navigationOptions.map((option, index) => (
-          <Button
-            key={`${option.label}`}
-            variant={index === 0 ? "filled" : "outline"}
-            onClick={() => void option.action()}
-          >
-            {option.label}
-          </Button>
-        ))}
-      </div>
-    </Paper>
+        <Text size="sm" c="dimmed" mb="xl">
+          {context.suggestion}
+        </Text>
+
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          {navigationOptions.map((option, index) => (
+            <Button
+              key={`${option.label}`}
+              variant={index === 0 ? "filled" : "outline"}
+              onClick={() => void option.action()}
+            >
+              {option.label}
+            </Button>
+          ))}
+        </div>
+      </Paper>
+    </PageLayout>
   );
 }

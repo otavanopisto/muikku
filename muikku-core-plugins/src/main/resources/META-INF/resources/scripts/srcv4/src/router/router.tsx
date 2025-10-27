@@ -30,7 +30,7 @@ import {
   ErrorBoundary,
 } from "~/src/pages/";
 import { ErrorBoundaryRoot } from "~/src/components";
-import { PageLayout, SharedLayout, ErrorBoundaryLayout } from "~/src/layouts";
+import { SharedLayout, ErrorBoundaryLayout } from "~/src/layouts";
 
 // Router
 export const router = createBrowserRouter([
@@ -151,73 +151,45 @@ export const router = createBrowserRouter([
               },
               {
                 path: "evaluation",
-                element: (
-                  <PageLayout title="Arviointi">
-                    <Evaluation />
-                  </PageLayout>
-                ),
+                element: <Evaluation />,
                 //loader: evaluationLoader,
                 middleware: [permissionMiddlewares.evaluationView],
               },
               {
                 path: "organization",
-                element: (
-                  <PageLayout title="Organisaatio">
-                    <Organization />
-                  </PageLayout>
-                ),
+                element: <Organization />,
                 //loader: organizationLoader,
                 middleware: [permissionMiddlewares.organizationView],
               },
               {
                 path: "announcements",
-                element: (
-                  <PageLayout title="Ilmoitukset">
-                    <Announcements />
-                  </PageLayout>
-                ),
+                element: <Announcements />,
                 //loader: announcementsLoader,
                 middleware: [permissionMiddlewares.announcementsView],
               },
               {
                 path: "announcer",
-                element: (
-                  <PageLayout title="Ilmoittaja">
-                    <Announcer />
-                  </PageLayout>
-                ),
+                element: <Announcer />,
                 //loader: announcerLoader,
                 middleware: [permissionMiddlewares.announcerView],
               },
               {
                 path: "profile",
-                element: (
-                  <PageLayout title="Profiili">
-                    <Profile />
-                  </PageLayout>
-                ),
+                element: <Profile />,
                 //loader: profileLoader,
                 middleware: [permissionMiddlewares.profileView],
               },
 
               {
                 path: "appSettings",
-                element: (
-                  <PageLayout title="Asetukset">
-                    <AppSettings />
-                  </PageLayout>
-                ),
+                element: <AppSettings />,
                 //loader: appSettingsLoader,
                 middleware: [permissionMiddlewares.appSettingsView],
               },
 
               {
                 path: "*",
-                element: (
-                  <PageLayout title="Ei löydy">
-                    <NotFound />
-                  </PageLayout>
-                ),
+                element: <NotFound />,
               },
 
               // Future routes can be added here with their own loaders
