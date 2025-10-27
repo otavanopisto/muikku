@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationDeleteController;
+import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceNodeEvaluationDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -14,9 +15,12 @@ public class WorkspaceNodeDeleteController {
   
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
+
+  @Inject
+  private WorkspaceNodeEvaluationDAO workspaceNodeEvaluationDAO;
   
   @Inject
-  private EvaluationController evaluationController;
+  private EvaluationDeleteController evaluationDeleteController;
   
   /**
    * Deletes a workspace node and all data associated to it. Assumes that the node no longer has any child nodes. 
@@ -25,9 +29,9 @@ public class WorkspaceNodeDeleteController {
    */
   public void deleteWorkspaceNode(WorkspaceNode node) {
     // Node evaluations have a soft reference, so this ensures no orphans will remain  
-    List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeId(node.getId());
+    List<WorkspaceNodeEvaluation> evaluations = workspaceNodeEvaluationDAO.listByWorkspaceNodeId(node.getId());
     for (WorkspaceNodeEvaluation evaluation : evaluations) {
-      evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
+      evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
     }
     if (node instanceof WorkspaceMaterial) {
       // TODO Stage 2: If the node is a material and that material would be orphaned, delete the material as well

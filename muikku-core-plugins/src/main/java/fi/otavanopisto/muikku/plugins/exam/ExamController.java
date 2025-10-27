@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationDeleteController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamAttendanceDAO;
 import fi.otavanopisto.muikku.plugins.exam.dao.ExamSettingsDAO;
@@ -70,6 +71,9 @@ public class ExamController {
   
   @Inject
   private EvaluationController evaluationController;
+
+  @Inject
+  private EvaluationDeleteController evaluationDeleteController;
   
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
@@ -136,14 +140,14 @@ public class ExamController {
           // Delete assignment evaluation
           WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(assignmentId, attendance.getUserEntityId());
           if (evaluation != null) {
-            evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
+            evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
           }
         }
       }
       // Delete exam evaluation
       WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(attendance.getWorkspaceFolderId(), attendance.getUserEntityId());
       if (evaluation != null) {
-        evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
+        evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
       }
       // Delete attendance
       examAttendanceDAO.delete(attendance);

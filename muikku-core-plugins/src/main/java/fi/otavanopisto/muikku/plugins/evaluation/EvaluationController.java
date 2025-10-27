@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -720,26 +719,6 @@ public class EvaluationController {
 
   public void deleteSupplementationRequest(SupplementationRequest supplementationRequest) {
     supplementationRequestDAO.archive(supplementationRequest);
-  }
-
-  public void deleteWorkspaceNodeEvaluation(WorkspaceNodeEvaluation evaluation) {
-    if (evaluation != null) {
-      List<WorkspaceNodeEvaluationAudioClip> evaluationAudioClips = listEvaluationAudioClips(evaluation);
-      for (WorkspaceNodeEvaluationAudioClip evaluationAudioClip : evaluationAudioClips) {
-        if (file.isFileInFileSystem(evaluation.getStudentEntityId(), evaluationAudioClip.getClipId())) {
-          try {
-            file.removeFileFromFileSystem(evaluation.getStudentEntityId(), evaluationAudioClip.getClipId());
-          } catch (IOException e) {
-            logger.log(Level.SEVERE, String.format("Could not remove clip %s", evaluationAudioClip.getClipId()), e);
-          }
-        }
-
-        // Remove db entry
-        workspaceNodeEvaluationAudioClipDAO.delete(evaluationAudioClip);
-      }
-
-      workspaceNodeEvaluationDAO.delete(evaluation);
-    }
   }
 
   public SupplementationRequest findSupplementationRequestById(Long supplementationRequestId) {

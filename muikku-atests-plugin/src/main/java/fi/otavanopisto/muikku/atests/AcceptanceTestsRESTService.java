@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationDeleteController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
@@ -155,6 +156,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
   @Inject
   private EvaluationController evaluationController;
+
+  @Inject
+  private EvaluationDeleteController evaluationDeleteController;
   
   @Inject
   private ForumController forumController;
@@ -637,7 +641,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeId(workspaceMaterialId);
     for (WorkspaceNodeEvaluation evaluation : evaluations) {
-      evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
+      evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
     }
     
     htmlMaterialController.deleteHtmlMaterial(htmlMaterial);

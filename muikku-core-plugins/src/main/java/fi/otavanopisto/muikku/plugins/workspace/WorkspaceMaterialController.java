@@ -131,6 +131,9 @@ public class WorkspaceMaterialController {
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
+  
+  @Inject
+  private WorkspaceNodeDeleteController workspaceNodeDeleteController;
 
   private static final int FLATTENING_LEVEL = 1;
 
@@ -703,7 +706,7 @@ public class WorkspaceMaterialController {
       throw e;
     }
 
-    workspaceNodeDAO.delete(workspaceMaterial);
+    workspaceNodeDeleteController.deleteWorkspaceNode(workspaceMaterial);
   }
 
   /**
