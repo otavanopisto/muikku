@@ -358,7 +358,8 @@ public class WorkspaceMaterialController {
     switch (node.getType()) {
     case FRONT_PAGE_FOLDER:
     case FOLDER:
-      deleteWorkspaceFolder((WorkspaceFolder) node);
+    case ROOT_FOLDER:
+      workspaceNodeDeleteController.deleteWorkspaceNode(node);
       break;
     case MATERIAL:
       try {
@@ -367,9 +368,6 @@ public class WorkspaceMaterialController {
       catch (WorkspaceMaterialContainsAnswersExeption e) {
         // Ignored since removeAnswers flag has been explicitly set to true
       }
-      break;
-    case ROOT_FOLDER:
-      deleteWorkspaceRootFolder((WorkspaceRootFolder) node);
       break;
     }
   }
@@ -691,7 +689,7 @@ public class WorkspaceMaterialController {
           deleteWorkspaceMaterial((WorkspaceMaterial) childNode, removeAnswers);
         }
         else if (childNode instanceof WorkspaceFolder) {
-          deleteWorkspaceFolder((WorkspaceFolder) childNode);
+          workspaceNodeDeleteController.deleteWorkspaceNode(childNode);
         }
       }
     }
@@ -755,10 +753,6 @@ public class WorkspaceMaterialController {
     return (WorkspaceRootFolder) node;
   }
 
-  public void deleteWorkspaceRootFolder(WorkspaceRootFolder workspaceRootFolder) {
-    workspaceRootFolderDAO.delete(workspaceRootFolder);
-  }
-
   /* Folder */
 
   public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName, WorkspaceLanguage language, boolean exam) {
@@ -810,10 +804,6 @@ public class WorkspaceMaterialController {
 
   public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
     return workspaceFolderDAO.findById(workspaceFolderId);
-  }
-
-  public void deleteWorkspaceFolder(WorkspaceFolder workspaceFolder) {
-    workspaceFolderDAO.delete(workspaceFolder);
   }
 
   public void updateDefaultMaterial(WorkspaceFolder workspaceFolder, WorkspaceNode defaultMaterial) {

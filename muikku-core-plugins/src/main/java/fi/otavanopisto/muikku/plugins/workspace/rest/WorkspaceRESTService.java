@@ -106,6 +106,7 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceNodeDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
@@ -248,6 +249,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private WorkspaceNodeDeleteController workspaceNodeDeleteController;
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
@@ -2981,7 +2985,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     // WorkspaceFolder
     WorkspaceFolder workspaceFolder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
     if (workspaceFolder != null) {
-      workspaceMaterialController.deleteWorkspaceFolder(workspaceFolder);
+      workspaceNodeDeleteController.deleteWorkspaceNode(workspaceFolder);
     }
 
     return Response.ok(createRestModel(workspaceFolder)).build();
