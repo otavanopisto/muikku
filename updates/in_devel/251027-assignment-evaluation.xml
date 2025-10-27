@@ -13,6 +13,10 @@
     ) t2 on t1.studentEntityId = t2.studentEntityId and t1.workspaceNodeId = t2.workspaceNodeId and t1.id != t2.max_id;
   </sql>
   
+  <!-- Delete orphan node evaluations -->
+  
+  <sql>delete from WorkspaceNodeEvaluation where workspaceNodeId not in (select id from WorkspaceNode);</sql>
+  
   <!-- Delete archived node evaluations and archived column -->
   
   <sql>delete from WorkspaceNodeEvaluation where archived=true;</sql>
