@@ -121,6 +121,9 @@ export const announcements: Reducer<AnnouncementsState> = (
     case "UPDATE_ANNOUNCEMENTS":
       return { ...state, announcements: action.payload };
 
+    case "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT":
+      return { ...state, unreadCount: action.payload };
+
     case "UPDATE_ANNOUNCEMENTS_STATE":
       return { ...state, state: action.payload };
 
