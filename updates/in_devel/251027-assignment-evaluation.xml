@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <!-- Delete duplicate node evaluations by leaving the latest one -->
+  
+  <sql>
+    delete t1
+    from WorkspaceNodeEvaluation t1
+    join (
+      select studentEntityId, workspaceNodeId, max(id) as max_id
+      from WorkspaceNodeEvaluation
+      group by studentEntityId, workspaceNodeId
+    ) t2 on t1.studentEntityId = t2.studentEntityId and t1.workspaceNodeId = t2.workspaceNodeId and t1.id != t2.max_id;
+  </sql>
+  
+  <!-- Delete archived node evaluations and archived column -->
+  
+  <sql>delete from WorkspaceNodeEvaluation where archived=true;</sql>
+  <sql>alter table WorkspaceNodeEvaluation drop column archived;</sql>
+  
+  <!-- Index cleaning -->
+  
+  <sql>alter table WorkspaceNodeEvaluation drop index wme_student_material;</sql>
+  <sql>alter table WorkspaceNodeEvaluation add constraint UKnlusuy0hlnj3m6w7a3jey2pfe unique (studentEntityId, workspaceNodeId);</sql>
+
+</update>

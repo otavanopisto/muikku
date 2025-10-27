@@ -133,16 +133,16 @@ public class ExamController {
             }
             replyController.deleteWorkspaceMaterialReply(reply);
           }
-          // Delete assignment evaluations (TODO There really should be only one but a bug has caused several?)
-          List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeIdAndStudentEntityId(assignmentId, attendance.getUserEntityId());
-          for (WorkspaceNodeEvaluation evaluation : evaluations) {
+          // Delete assignment evaluation
+          WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(assignmentId, attendance.getUserEntityId());
+          if (evaluation != null) {
             evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
           }
         }
       }
-      // Delete exam evaluations (TODO There really should be only one but a bug has caused several?)
-      List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeIdAndStudentEntityId(attendance.getWorkspaceFolderId(), attendance.getUserEntityId());
-      for (WorkspaceNodeEvaluation evaluation : evaluations) {
+      // Delete exam evaluation
+      WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(attendance.getWorkspaceFolderId(), attendance.getUserEntityId());
+      if (evaluation != null) {
         evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
       }
       // Delete attendance
