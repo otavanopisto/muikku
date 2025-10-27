@@ -180,7 +180,7 @@ class WorkspaceNavbar extends React.Component<
         to: true,
         condition:
           this.props.status.permissions
-            .WORKSPACE_IS_WORKSPACE_STUDENT_WITH_EXAMS,
+            .WORKSPACE_SHOW_EXAMS,
       },
       {
         modifier: "discussion",

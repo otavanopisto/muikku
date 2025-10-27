@@ -940,13 +940,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (sessionController.isLoggedIn()) {
       if (canManageMaterials && !examController.listExamIds(workspaceEntityId).isEmpty()) {
         // Staff: for those who can manage materials and the course has any exam 
-        permissionSet.add(MuikkuPermissions.IS_WORKSPACE_STUDENT_WITH_EXAMS);
+        permissionSet.add(MuikkuPermissions.SHOW_EXAMS);
       }
       else {
         // Student: need to be workspace student and the course has any exam that the student can participate in
         boolean isWorkspaceMember = workspaceUserEntityController.isWorkspaceMember(sessionController.getLoggedUser(), workspaceEntity);
         if (isWorkspaceMember && !examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId()).isEmpty()) {
-          permissionSet.add(MuikkuPermissions.IS_WORKSPACE_STUDENT_WITH_EXAMS);
+          permissionSet.add(MuikkuPermissions.SHOW_EXAMS);
         }
       }
     }
