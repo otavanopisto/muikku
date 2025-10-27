@@ -2,8 +2,7 @@ import { Container, Title, Text, Paper, Button, Group } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { userAtom } from "~/src/atoms/auth";
 import { Link } from "react-router";
-//import { SimpleMaterialLoader } from "~/src/materials/MaterialLoader/variants/SimpleMaterialLoader";
-import { SimpleMaterialLoader } from "~/src/materials/MaterialLoaderV2/variants/SimpleLoader";
+import { SimpleMaterialLoader } from "~/src/materials/MaterialLoaderV2";
 
 const sampleHTML = `
   <div>

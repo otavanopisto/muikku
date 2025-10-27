@@ -5,12 +5,15 @@ import type {
 } from "../../core/types";
 
 /**
- * TextFieldProps
+ * JournalFieldProps
  */
 interface JournalFieldProps extends FieldComponentProps<JournalFieldContent> {}
 
-export const JournalField: React.FC<JournalFieldProps> = (props) => {
-  const { content, ...rest } = props;
-
-  return <div>JournalField</div>;
-};
+/**
+ * JournalField component
+ * @param props - The props for the JournalField component
+ * @returns The JournalField component
+ */
+export function JournalField(props: JournalFieldProps) {
+  return <div>{props.content?.name}</div>;
+}

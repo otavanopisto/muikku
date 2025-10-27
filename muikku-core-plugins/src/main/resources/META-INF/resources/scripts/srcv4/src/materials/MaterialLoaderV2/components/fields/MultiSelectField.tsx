@@ -5,13 +5,16 @@ import type {
 } from "../../core/types";
 
 /**
- * TextFieldProps
+ * MultiSelectFieldProps
  */
 interface MultiSelectFieldProps
   extends FieldComponentProps<MultiSelectFieldContent> {}
 
-export const MultiSelectField: React.FC<MultiSelectFieldProps> = (props) => {
-  const { content, ...rest } = props;
-
-  return <div>MultiSelectField</div>;
-};
+/**
+ * MultiSelectField component
+ * @param props - The props for the MultiSelectField component
+ * @returns The MultiSelectField component
+ */
+export function MultiSelectField(props: MultiSelectFieldProps) {
+  return <div>{props.content?.name}</div>;
+}

@@ -1,5 +1,3 @@
-// srcv4/src/materials/MaterialLoaderV2/core/processors/FieldProcessor.tsx
-
 import * as React from "react";
 import type {
   ProcessingRuleContext,
@@ -93,6 +91,10 @@ export class FieldProcessor {
 
   /**
    * Create field element from HTML object element with proper typing
+   * @param element - The element to create the field element from
+   * @param context - The context to use for the field
+   * @param key - The key to use for the field
+   * @returns The created field element
    */
   static createFieldElement(
     element: HTMLElement,
@@ -141,6 +143,9 @@ export class FieldProcessor {
 
   /**
    * Check if a field type can check answers
+   * @param fieldType - The type of the field
+   * @param content - The content of the field
+   * @returns True if the field can check answers, false otherwise
    */
   static canCheckAnswers(fieldType: string, content: FieldContent): boolean {
     const fieldEntry = this.fieldRegistry[fieldType];
@@ -157,8 +162,8 @@ export class FieldProcessor {
 
 /**
  * Create text field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 function createTextFieldParameters(
@@ -171,8 +176,8 @@ function createTextFieldParameters(
 
 /**
  * Create select field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 function createSelectFieldParameters(
@@ -185,8 +190,8 @@ function createSelectFieldParameters(
 
 /**
  * Create multi select field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 function createMultiSelectFieldParameters(
@@ -199,8 +204,8 @@ function createMultiSelectFieldParameters(
 
 /**
  * Create memo field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 function createMemoFieldParameters(
@@ -213,8 +218,8 @@ function createMemoFieldParameters(
 
 /**
  * Create file field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 /* function createFileFieldParameters(
@@ -227,8 +232,8 @@ function createMemoFieldParameters(
 
 /**
  * Create connect field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 function createConnectFieldParameters(
@@ -241,8 +246,8 @@ function createConnectFieldParameters(
 
 /**
  * Create organizer field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 function createOrganizerFieldParameters(
@@ -255,8 +260,8 @@ function createOrganizerFieldParameters(
 
 /**
  * Create audio field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 /* function createAudioFieldParameters(
@@ -269,8 +274,8 @@ function createOrganizerFieldParameters(
 
 /**
  * Create sorter field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 function createSorterFieldParameters(
@@ -283,8 +288,8 @@ function createSorterFieldParameters(
 
 /**
  * Create math field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 /* function createMathFieldParameters(
@@ -297,8 +302,8 @@ function createSorterFieldParameters(
 
 /**
  * Create journal field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
+ * @param element - HTMLElement
+ * @param context - ProcessingRuleContext
  * @returns FieldParameters
  */
 function createJournalFieldParameters(
@@ -312,7 +317,7 @@ function createJournalFieldParameters(
 // Helper methods
 /**
  * Parse field content
- * @param element HTMLElement
+ * @param element - HTMLElement
  * @returns FieldContent | null
  */
 function parseFieldContent(element: HTMLElement): {
@@ -344,9 +349,9 @@ function parseFieldContent(element: HTMLElement): {
 
 /**
  * Create base field parameters
- * @param element HTMLElement
- * @param context ProcessingRuleContext
- * @param content FieldContent | null
+ * @param _element - HTMLElement
+ * @param context - ProcessingRuleContext
+ * @param content - content object
  * @returns FieldParameters
  */
 function createBaseFieldParameters(
@@ -378,8 +383,8 @@ function createBaseFieldParameters(
 
 /**
  * Get the initial value of a field
- * @param content FieldContent | null
- * @param context ProcessingRuleContext
+ * @param content - FieldContent | null
+ * @param context - ProcessingRuleContext
  * @returns any
  */
 function getInitialValue(
@@ -408,7 +413,7 @@ function getInitialValue(
 
 /**
  * Check if a text field can check answers
- * @param content TextFieldContent
+ * @param content - TextFieldContent
  * @returns boolean
  */
 function canCheckTextAnswers(content: TextFieldContent): boolean {
@@ -417,7 +422,7 @@ function canCheckTextAnswers(content: TextFieldContent): boolean {
 
 /**
  * Check if a select field can check answers
- * @param content SelectFieldContent | MultiSelectFieldContent
+ * @param content - SelectFieldContent | MultiSelectFieldContent
  * @returns boolean
  */
 function canCheckSelectAnswers(

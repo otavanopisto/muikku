@@ -2,12 +2,15 @@
 import type { FieldComponentProps, SorterFieldContent } from "../../core/types";
 
 /**
- * TextFieldProps
+ * SorterFieldProps
  */
 interface SorterFieldProps extends FieldComponentProps<SorterFieldContent> {}
 
-export const SorterField: React.FC<SorterFieldProps> = (props) => {
-  const { content, ...rest } = props;
-
-  return <div>SorterField</div>;
-};
+/**
+ * SorterField component
+ * @param props - The props for the SorterField component
+ * @returns The SorterField component
+ */
+export function SorterField(props: SorterFieldProps) {
+  return <div>{props.content?.name}</div>;
+}

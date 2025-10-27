@@ -1,10 +1,10 @@
-// srcv4/src/materials/MaterialLoaderV2/core/hooks/useMaterialLoaderUtils.ts
-
 import { useMemo } from "react";
 import type { MaterialContentNode } from "~/generated/client";
 /**
  * Utility hook for material page type determination
  * Extracted from MaterialLoader's returnMaterialPageType method
+ * @param material - The material to determine the page type for
+ * @returns The page type of the material
  */
 export function useMaterialPageType(material: MaterialContentNode): string {
   return useMemo(() => {
@@ -25,6 +25,9 @@ export function useMaterialPageType(material: MaterialContentNode): string {
 
 /**
  * Utility hook for determining if material is hidden
+ * @param material - The material to determine the visibility for
+ * @param folder - The folder to use for the visibility
+ * @returns The visibility of the material
  */
 export function useMaterialVisibility(
   material: MaterialContentNode,
@@ -38,6 +41,10 @@ export function useMaterialVisibility(
 
 /**
  * Utility hook for CSS class generation
+ * @param material - The material to generate the class for
+ * @param modifiers - The modifiers to apply to the class
+ * @param folder - The folder to use for the class
+ * @returns The generated class
  */
 export function useMaterialClassName(
   material: MaterialContentNode,

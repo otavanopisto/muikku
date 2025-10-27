@@ -1,5 +1,3 @@
-// srcv4/src/materials/MaterialLoaderV2/core/state/AssignmentStateManager.ts
-
 import type {
   MaterialAssigmentType,
   MaterialCompositeReplyStateType,
@@ -169,6 +167,9 @@ export class AssignmentStateManager {
 
   /**
    * Get state configuration for a specific assignment type and current state
+   * @param assignmentType - The assignment type to get the state configuration for
+   * @param currentState - The current state
+   * @returns The state configuration
    */
   static getStateConfiguration(
     assignmentType: MaterialAssigmentType | null,
@@ -187,6 +188,8 @@ export class AssignmentStateManager {
 
   /**
    * Get all available states for an assignment type
+   * @param assignmentType - The assignment type to get the available states for
+   * @returns The available states
    */
   static getAvailableStates(
     assignmentType: MaterialAssigmentType | null
@@ -200,6 +203,10 @@ export class AssignmentStateManager {
 
   /**
    * Check if a state transition is valid
+   * @param assignmentType - The assignment type to check the transition for
+   * @param _fromState - The current state
+   * @param toState - The state to transition to
+   * @returns True if the transition is valid, false otherwise
    */
   static isValidTransition(
     assignmentType: MaterialAssigmentType | null,

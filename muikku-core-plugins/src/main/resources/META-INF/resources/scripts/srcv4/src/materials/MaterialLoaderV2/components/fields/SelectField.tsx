@@ -2,12 +2,15 @@
 import type { FieldComponentProps, SelectFieldContent } from "../../core/types";
 
 /**
- * TextFieldProps
+ * SelectFieldProps
  */
 interface SelectFieldProps extends FieldComponentProps<SelectFieldContent> {}
 
-export const SelectField: React.FC<SelectFieldProps> = (props) => {
-  const { content, ...rest } = props;
-
-  return <div>SelectField</div>;
-};
+/**
+ * SelectField component
+ * @param props - The props for the SelectField component
+ * @returns The SelectField component
+ */
+export function SelectField(props: SelectFieldProps) {
+  return <div>{props.content?.name}</div>;
+}

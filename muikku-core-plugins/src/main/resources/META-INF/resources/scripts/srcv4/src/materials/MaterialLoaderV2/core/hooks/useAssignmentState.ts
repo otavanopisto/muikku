@@ -1,6 +1,4 @@
 /* eslint-disable no-console */
-// srcv4/src/materials/MaterialLoaderV2/core/hooks/useAssignmentState.ts
-
 import { useMemo, useCallback } from "react";
 import { AssignmentStateManager } from "../state/AssignmentStateManager";
 import { type AssignmentStateReturn, type ButtonConfig } from "../types";
@@ -13,6 +11,11 @@ import type {
 /**
  * Hook for managing assignment state logic
  * Extracted from MaterialLoader component
+ * @param material - material
+ * @param compositeReplies - compositeReplies
+ * @param onAssignmentStateModified - onAssignmentStateModified
+ * @param updateAssignmentState - updateAssignmentState
+ * @returns AssignmentStateReturn
  */
 export function useAssignmentState(
   material: MaterialContentNode,
@@ -68,6 +71,7 @@ export function useAssignmentState(
 
   /**
    * Handle state transition with full API integration
+   * @param newState - newState
    */
   const handleStateTransition = useCallback(
     (newState: MaterialCompositeReplyStateType) => {

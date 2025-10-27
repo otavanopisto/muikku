@@ -2,12 +2,15 @@
 import type { FieldComponentProps, MemoFieldContent } from "../../core/types";
 
 /**
- * TextFieldProps
+ * MemoFieldProps
  */
 interface MemoFieldProps extends FieldComponentProps<MemoFieldContent> {}
 
-export const MemoField: React.FC<MemoFieldProps> = (props) => {
-  const { content, ...rest } = props;
-
-  return <div>MemoField</div>;
-};
+/**
+ * MemoField component
+ * @param props - The props for the MemoField component
+ * @returns The MemoField component
+ */
+export function MemoField(props: MemoFieldProps) {
+  return <div>{props.content?.name}</div>;
+}

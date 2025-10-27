@@ -1,5 +1,3 @@
-// srcv4/src/materials/MaterialLoaderV2/core/processors/HTMLPreprocessor.ts
-
 import $ from "jquery";
 
 /**
@@ -9,6 +7,8 @@ import $ from "jquery";
 export class HTMLPreprocessor {
   /**
    * Fixes the html inconsistencies because there are some of them which shouldn't but hey that's the case
+   * @param $html - The HTML to preprocess
+   * @returns The preprocessed HTML
    */
   static preprocess($html: JQuery<HTMLElement>): JQuery<HTMLElement> {
     $html.find("img").each(function () {

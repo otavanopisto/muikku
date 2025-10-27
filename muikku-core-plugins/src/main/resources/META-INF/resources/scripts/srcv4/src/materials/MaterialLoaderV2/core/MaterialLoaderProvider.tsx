@@ -1,5 +1,3 @@
-// srcv4/src/materials/MaterialLoaderV2/core/MaterialLoaderProvider.tsx
-
 import { createContext, use, type ReactNode } from "react";
 import type { MaterialLoaderReturn } from "./types";
 
@@ -7,6 +5,9 @@ const MaterialLoaderContext = createContext<MaterialLoaderReturn | null>(null);
 
 /**
  * Provider for MaterialLoader context
+ * @param children - The children to render
+ * @param value - The value to provide to the context
+ * @returns The MaterialLoaderProvider
  */
 export function MaterialLoaderProvider({
   children,

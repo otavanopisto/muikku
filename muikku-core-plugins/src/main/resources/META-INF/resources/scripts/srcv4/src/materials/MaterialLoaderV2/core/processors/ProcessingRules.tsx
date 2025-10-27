@@ -1,4 +1,4 @@
-import type { EnhancedHTMLToReactComponentRule } from "./HTMLProcessor";
+import type { EnhancedHTMLToReactComponentRule } from "../types";
 import { FieldProcessor } from "./FieldProcessor";
 import type {
   IframeDataset,
@@ -371,6 +371,8 @@ const SIMPLE_RULES: EnhancedHTMLToReactComponentRule[] = [
 /**
  * Create processing rules with context support
  * Extracted from Base component's processingRules array
+ * @param type - The type of processing rules to create
+ * @returns The processing rules
  */
 export function createProcessingRules(type: "materials" | "simple") {
   switch (type) {
@@ -386,6 +388,8 @@ export function createProcessingRules(type: "materials" | "simple") {
 /**
  * Extract dataset from element and its children
  * Extracted from modifiers.ts
+ * @param element - The element to extract the dataset from
+ * @returns The extracted dataset
  */
 function extractDataSet<T extends StaticDataset>(element: HTMLElement): T {
   let finalThing = {

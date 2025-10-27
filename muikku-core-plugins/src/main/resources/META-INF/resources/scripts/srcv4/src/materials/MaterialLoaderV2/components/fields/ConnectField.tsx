@@ -5,12 +5,15 @@ import type {
 } from "../../core/types";
 
 /**
- * TextFieldProps
+ * ConnectFieldProps
  */
 interface ConnectFieldProps extends FieldComponentProps<ConnectFieldContent> {}
 
-export const ConnectField: React.FC<ConnectFieldProps> = (props) => {
-  const { content, ...rest } = props;
-
-  return <div>ConnectField</div>;
-};
+/**
+ * ConnectField component
+ * @param props - The props for the ConnectField component
+ * @returns The ConnectField component
+ */
+export function ConnectField(props: ConnectFieldProps) {
+  return <div>{props.content?.name}</div>;
+}

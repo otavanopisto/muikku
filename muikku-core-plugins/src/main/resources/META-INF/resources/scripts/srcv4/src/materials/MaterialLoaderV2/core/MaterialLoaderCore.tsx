@@ -1,5 +1,3 @@
-// srcv4/src/materials/MaterialLoaderV2/core/MaterialLoaderCore.tsx
-
 import type { ReactNode } from "react";
 import type { Workspace, MaterialLoaderConfig } from "./types";
 import type {
@@ -32,6 +30,7 @@ export function MaterialLoaderCore({
   workspace,
   compositeReplies,
   assignment,
+  // eslint-disable-next-line react-x/no-unstable-default-props
   config = {},
   onModification,
   children,

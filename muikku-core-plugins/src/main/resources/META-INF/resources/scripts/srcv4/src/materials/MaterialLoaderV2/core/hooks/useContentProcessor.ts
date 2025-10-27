@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-// srcv4/src/materials/MaterialLoaderV2/core/hooks/useContentProcessor.ts
-
 import { useMemo } from "react";
 import $ from "jquery";
 import { HTMLtoReactComponent } from "../processors/HTMLProcessor";
@@ -13,6 +11,10 @@ import type {
 /**
  * Hook for processing HTML content into React components
  * Combines HTML preprocessing, processing rules, and React conversion
+ * @param html - The HTML content to process
+ * @param processingRules - The processing rules to apply
+ * @param context - The context to use for processing
+ * @returns The processed content as React components
  */
 export function useContentProcessor(
   html: string | null,

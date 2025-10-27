@@ -17,6 +17,9 @@ export interface SimpleMaterialLoaderProps {
 /**
  * SimpleMaterialLoader - Replaces ckeditor-loader functionality
  * For basic rich content rendering without assignment features
+ * @param html - The HTML to render
+ * @param material - The material to render
+ * @returns The SimpleMaterialLoader
  */
 export function SimpleMaterialLoader({
   html,

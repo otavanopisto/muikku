@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // srcv4/src/materials/MaterialLoaderV2/core/types/index.ts
 
 import type {
@@ -136,21 +137,27 @@ export interface AssignmentStateConfig {
 }
 
 /**
- * EnhancedHTMLToReactComponentRule
+ * Enhanced HTML to React Component Rule interface
  */
 export interface EnhancedHTMLToReactComponentRule {
   shouldProcessHTMLElement: (tag: string, element: HTMLElement) => boolean;
   preventChildProcessing?: boolean;
   processingFunction?: (
     tag: string,
-    props: any,
-    children: any[],
+    props: {
+      key?: number;
+      [key: string]: any;
+    },
+    children: React.ReactNode[],
     element: HTMLElement,
     context?: ProcessingRuleContext
   ) => any;
   preprocessReactProperties?: (
     tag: string,
-    props: any,
+    props: {
+      key?: number;
+      [key: string]: any;
+    },
     children: any[],
     element: HTMLElement,
     context?: ProcessingRuleContext
@@ -530,7 +537,6 @@ export interface FieldComponentProps<T extends FieldContent> {
  * Field type registry entry
  */
 export interface FieldRegistryEntry {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component: any;
   processor: (
     element: HTMLElement,

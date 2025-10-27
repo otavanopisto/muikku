@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// srcv4/src/materials/MaterialLoaderV2/core/hooks/useAnswerManager.ts
-
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import type {
   AnswerManagerReturn,
@@ -16,6 +14,11 @@ import _ from "lodash";
 /**
  * Hook for managing answer checking and validation
  * Extracted from MaterialLoader component's answer management logic
+ * @param material - material
+ * @param _compositeReplies - compositeReplies
+ * @param stateConfig - stateConfig
+ * @param config - config
+ * @returns AnswerManagerReturn
  */
 export function useAnswerManager(
   material: MaterialContentNode,
@@ -78,7 +81,11 @@ export function useAnswerManager(
     }
   }, [answersChecked, config, material, stateConfig]);
 
-  // Handle answer change from fields
+  /**
+   * Handle answer change from fields
+   * @param name - name
+   * @param value - value
+   */
   const handleAnswerChange = useCallback(
     (name: string, value: boolean | null) => {
       // Update sync registry immediately
@@ -94,12 +101,17 @@ export function useAnswerManager(
     [answerRegistrySync]
   );
 
-  // Toggle answers visibility
+  /**
+   * Toggle answers visibility
+   */
   const toggleAnswersVisible = useCallback(() => {
     setAnswersVisible((prev) => !prev);
   }, []);
 
-  // Handle answer checkable change
+  /**
+   * Handle answer checkable change
+   * @param checkable - checkable
+   */
   const handleAnswerCheckableChange = useCallback((checkable: boolean) => {
     setAnswerCheckable(checkable);
   }, []);

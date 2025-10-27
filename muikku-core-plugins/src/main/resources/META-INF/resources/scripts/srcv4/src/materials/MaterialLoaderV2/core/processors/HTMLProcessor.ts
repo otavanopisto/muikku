@@ -2,40 +2,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// srcv4/src/materials/MaterialLoaderV2/core/processors/HTMLProcessor.ts
-
 import * as React from "react";
-import { type ProcessingRuleContext } from "../types";
-
-/**
- * Enhanced HTML to React Component Rule interface
- */
-export interface EnhancedHTMLToReactComponentRule {
-  shouldProcessHTMLElement: (tag: string, element: HTMLElement) => boolean;
-  preventChildProcessing?: boolean;
-  processingFunction?: (
-    tag: string,
-    props: {
-      key?: number;
-      [key: string]: any;
-    },
-    children: React.ReactNode[],
-    element: HTMLElement,
-    context?: ProcessingRuleContext
-  ) => any;
-  preprocessReactProperties?: (
-    tag: string,
-    props: {
-      key?: number;
-      [key: string]: any;
-    },
-    children: any[],
-    element: HTMLElement,
-    context?: ProcessingRuleContext
-  ) => string | void;
-  preprocessElement?: (element: HTMLElement) => string | void;
-  id?: string;
-}
+import {
+  type EnhancedHTMLToReactComponentRule,
+  type ProcessingRuleContext,
+} from "../types";
 
 // Attribute translations from HTML to React props
 const translations: Record<string, string> = {
@@ -112,6 +83,8 @@ const translations: Record<string, string> = {
  * Converts a style property string into a camel case based one
  * this is basically to convert things like text-align into textAlign
  * for use within react
+ * @param str - The string to convert
+ * @returns The converted string
  */
 function convertStylePropertyToCamelCase(str: string): string {
   // first we split the dashes
@@ -134,6 +107,8 @@ function convertStylePropertyToCamelCase(str: string): string {
 
 /**
  * CSSStyleDeclarationToObject
+ * @param declaration - The CSSStyleDeclaration to convert
+ * @returns The converted object
  */
 export function CSSStyleDeclarationToObject(
   declaration: CSSStyleDeclaration
@@ -151,6 +126,11 @@ export function CSSStyleDeclarationToObject(
 /**
  * HTMLtoReactComponent - Enhanced version with context support
  * Extracted from modifiers.ts
+ * @param element - The element to convert to a React component
+ * @param rules - The rules to use for the conversion
+ * @param key - The key to use for the conversion
+ * @param context - The context to use for the conversion
+ * @returns The converted React component
  */
 export function HTMLtoReactComponent(
   element: HTMLElement,
@@ -173,6 +153,10 @@ export function HTMLtoReactComponent(
 
   /**
    * defaultProcessor
+   * @param tag - The tag to convert to a React component
+   * @param props - The props to use for the conversion
+   * @param children - The children to use for the conversion
+   * @returns The converted React component
    */
   const defaultProcessor = (tag: string, props: any, children: any[]) =>
     React.createElement(tag, props, children);

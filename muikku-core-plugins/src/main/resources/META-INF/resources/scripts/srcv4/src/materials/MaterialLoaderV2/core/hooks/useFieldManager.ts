@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// srcv4/src/materials/MaterialLoaderV2/core/hooks/useFieldManager.ts
-
 import { useCallback, useRef, useEffect } from "react";
 import type { Workspace } from "../types";
 import { MuikkuWebsocket } from "~/src/utils/websocket";
@@ -16,6 +14,8 @@ const TIME_IT_WAITS_TO_TRIGGER_A_CHANGE_EVENT_IF_NO_OTHER_CHANGE_EVENT_IS_IN_QUE
 /**
  * Hook for managing field synchronization and websocket communication
  * Extracted from Base component's field management logic
+ * @param material - The material to manage
+ * @param workspace - The workspace to manage
  */
 export function useFieldManager(
   material: MaterialContentNode,
@@ -34,7 +34,13 @@ export function useFieldManager(
 
   const websocketInstance = MuikkuWebsocket.getInstance();
 
-  // Handle field value change
+  /**
+   * Handle field value change
+   * @param context - The context to use for the field
+   * @param name - The name of the field
+   * @param newValue - The new value of the field
+   * @param onModification - The callback to call when the field is modified
+   */
   const handleValueChange = useCallback(
     (
       context: React.Component<any, any>,
@@ -99,7 +105,10 @@ export function useFieldManager(
 
   // Setup websocket listeners
   useEffect(() => {
-    // Handle answer saved at server
+    /**
+     * Handle answer saved at server
+     * @param data - The data from the server
+     */
     const onAnswerSavedAtServer = (data: unknown) => {
       // For some reason the data comes as string
       const actualData: any = JSON.parse(data as string);
