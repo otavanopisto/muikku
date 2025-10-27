@@ -199,7 +199,7 @@ class AnnouncementsPanel extends React.Component<
 
     return (
       <Panel
-        header={this.props.t("labels.announcement", {
+        header={this.props.t("labels.announcements", {
           ns: "messaging",
           context: "other",
         })}

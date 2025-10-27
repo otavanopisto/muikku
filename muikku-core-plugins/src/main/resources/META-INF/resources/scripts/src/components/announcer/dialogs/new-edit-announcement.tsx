@@ -182,6 +182,7 @@ class NewEditAnnouncement extends SessionStateComponent<
             subject: nextProps.announcement.caption,
             text: nextProps.announcement.content,
             currentTarget: this.baseAnnouncementCurrentTarget,
+            pinned: nextProps.announcement.pinned,
             startDate: localize
               .getLocalizedMoment(nextProps.announcement.startDate)
               .toDate(),
@@ -200,6 +201,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           {
             subject: "",
             text: "",
+            pinned: false,
             currentTarget: this.baseAnnouncementCurrentTarget,
             startDate: localize.getLocalizedMoment().toDate(),
             endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
@@ -236,6 +238,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
+          pinned: this.props.announcement.pinned,
           startDate: localize
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
@@ -266,6 +269,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: "",
           text: "",
+          pinned: false,
           currentTarget: this.getPredefinedWorkspaceByIdToConcat(this.props),
           startDate: localize.getLocalizedMoment().toDate(),
           endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
@@ -286,6 +290,7 @@ class NewEditAnnouncement extends SessionStateComponent<
         {
           subject: "",
           text: "",
+          pinned: false,
           startDate: localize.getLocalizedMoment().toDate(),
           endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
           currentTarget: this.baseAnnouncementCurrentTarget,
@@ -307,6 +312,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           subject: this.props.announcement.caption,
           text: this.props.announcement.content,
           currentTarget: this.baseAnnouncementCurrentTarget,
+          pinned: this.props.announcement.pinned,
           startDate: localize
             .getLocalizedMoment(this.props.announcement.startDate)
             .toDate(),
@@ -437,12 +443,25 @@ class NewEditAnnouncement extends SessionStateComponent<
             {
               ...this.state,
               locked: false,
+              pinned: false,
             },
             this.props.announcement.id + "-" + (this.props.workspaceId || "")
           );
           closeDialog();
         },
-        /**
+        /**tollanen näyttäs tekevän sen värin
+:thumbsup:
+Click to react
+:eyes:
+Click to react
+:smile:
+Click to react
+Add Reaction
+Edit
+Forward
+More
+NEW
+
          * If fail set locked false
          */
         fail: () => {
