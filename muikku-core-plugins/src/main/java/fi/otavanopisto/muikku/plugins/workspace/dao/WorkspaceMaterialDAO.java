@@ -201,8 +201,4 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return persist(workspaceMaterial);
   }
 
-  public void delete(WorkspaceMaterial workspaceMaterial) {
-    super.delete(workspaceMaterial);
-  }
-
 }

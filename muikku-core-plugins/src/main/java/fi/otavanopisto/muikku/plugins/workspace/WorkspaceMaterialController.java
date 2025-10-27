@@ -703,7 +703,7 @@ public class WorkspaceMaterialController {
       throw e;
     }
 
-    workspaceMaterialDAO.delete(workspaceMaterial);
+    workspaceNodeDAO.delete(workspaceMaterial);
   }
 
   /**
