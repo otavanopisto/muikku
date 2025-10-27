@@ -178,9 +178,7 @@ class WorkspaceNavbar extends React.Component<
         href: "/workspace/" + this.props.workspaceUrl + "/exams",
         icon: "exams",
         to: true,
-        condition:
-          this.props.status.permissions
-            .WORKSPACE_SHOW_EXAMS,
+        condition: this.props.status.permissions.WORKSPACE_SHOW_EXAMS,
       },
       {
         modifier: "discussion",
