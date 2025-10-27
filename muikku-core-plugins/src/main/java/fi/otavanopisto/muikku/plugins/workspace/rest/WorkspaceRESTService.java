@@ -935,7 +935,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
     
-    // #7400: Exam functionality; special permission for workspace students with exams present (also staff who can manage materials)
+    // #7400: Exam functionality; special permission to determine whether exams should be shown
     
     if (sessionController.isLoggedIn()) {
       if (canManageMaterials && !examController.listExamIds(workspaceEntityId).isEmpty()) {
