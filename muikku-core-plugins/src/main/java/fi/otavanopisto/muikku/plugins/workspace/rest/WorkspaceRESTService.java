@@ -2914,7 +2914,7 @@ public class WorkspaceRESTService extends PluginRESTService {
                   if (childWorkspaceMaterial.getId().equals(workspaceMaterial.getId())) {
                     continue; // skip the one we delete below
                   }
-                  workspaceMaterialController.deleteWorkspaceMaterial(childWorkspaceMaterial, removeAnswers != null ? removeAnswers : false);
+                  workspaceNodeDeleteController.deleteWorkspaceMaterial(childWorkspaceMaterial, removeAnswers != null ? removeAnswers : false);
                 }
               }
             }
@@ -2923,7 +2923,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
         // Actual delete
 
-        workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, removeAnswers != null ? removeAnswers : false);
+        workspaceNodeDeleteController.deleteWorkspaceMaterial(workspaceMaterial, removeAnswers != null ? removeAnswers : false);
         return Response.noContent().build();
       }
       catch (WorkspaceMaterialContainsAnswersExeption e) {
