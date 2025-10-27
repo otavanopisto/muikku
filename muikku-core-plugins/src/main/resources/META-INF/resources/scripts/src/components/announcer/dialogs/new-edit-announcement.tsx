@@ -420,7 +420,9 @@ class NewEditAnnouncement extends SessionStateComponent<
           archived: false,
           caption: this.state.subject,
           content: this.state.text,
-          pinned: this.state.pinned,
+          pinned: this.props.status.roles.includes("ADMINISTRATOR") // This shouldn't be needed, but I want to make sure normal teachers can't pin announcements
+            ? this.state.pinned
+            : false,
           publiclyVisible: this.state.currentTarget.length === 0 ? true : false,
           endDate:
             this.state.endDate &&
@@ -449,19 +451,7 @@ class NewEditAnnouncement extends SessionStateComponent<
           );
           closeDialog();
         },
-        /**tollanen näyttäs tekevän sen värin
-:thumbsup:
-Click to react
-:eyes:
-Click to react
-:smile:
-Click to react
-Add Reaction
-Edit
-Forward
-More
-NEW
-
+        /**
          * If fail set locked false
          */
         fail: () => {
@@ -497,6 +487,7 @@ NEW
               locked: false,
               subject: "",
               text: "",
+              pinned: false,
               startDate: localize.getLocalizedMoment().toDate(),
               endDate: localize.getLocalizedMoment().add(1, "day").toDate(),
               currentTarget: this.getPredefinedWorkspaceByIdToConcat(
@@ -603,21 +594,23 @@ NEW
             dateFormat="P"
           />
         </div>
-        <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
-          <input
-            id="announcementPinned"
-            type="checkbox"
-            className="env-dialog__input"
-            checked={this.state.pinned}
-            onChange={this.handlePinnedChange}
-          />
-          <label
-            htmlFor="announcementPinned"
-            className="env-dialog__input-label"
-          >
-            {this.props.i18n.t("labels.pinAnnouncement", { ns: "messaging" })}
-          </label>
-        </div>
+        {this.props.status.roles.includes("ADMINISTRATOR") && (
+          <div className="env-dialog__form-element-container env-dialog__form-element-container--pinned-thread">
+            <input
+              id="announcementPinned"
+              type="checkbox"
+              className="env-dialog__input"
+              checked={this.state.pinned}
+              onChange={this.handlePinnedChange}
+            />
+            <label
+              htmlFor="announcementPinned"
+              className="env-dialog__input-label"
+            >
+              {this.props.i18n.t("labels.pinAnnouncement", { ns: "messaging" })}
+            </label>
+          </div>
+        )}
       </div>,
       <InputContactsAutofill
         identifier="announcementRecipients"
