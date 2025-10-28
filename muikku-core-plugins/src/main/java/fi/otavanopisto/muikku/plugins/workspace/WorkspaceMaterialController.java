@@ -354,8 +354,7 @@ public class WorkspaceMaterialController {
     switch (node.getType()) {
     case FRONT_PAGE_FOLDER:
     case FOLDER:
-    case ROOT_FOLDER:
-      workspaceNodeDeleteController.deleteWorkspaceNode(node);
+      workspaceNodeDeleteController.deleteWorkspaceFolder((WorkspaceFolder) node);
       break;
     case MATERIAL:
       try {
@@ -364,6 +363,9 @@ public class WorkspaceMaterialController {
       catch (WorkspaceMaterialContainsAnswersExeption e) {
         // Ignored since removeAnswers flag has been explicitly set to true
       }
+      break;
+    case ROOT_FOLDER:
+      workspaceNodeDeleteController.deleteWorkspaceRootFolder((WorkspaceRootFolder) node);
       break;
     }
   }

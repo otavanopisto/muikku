@@ -2985,7 +2985,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     // WorkspaceFolder
     WorkspaceFolder workspaceFolder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
     if (workspaceFolder != null) {
-      workspaceNodeDeleteController.deleteWorkspaceNode(workspaceFolder);
+      workspaceNodeDeleteController.deleteWorkspaceFolder(workspaceFolder);
     }
 
     return Response.ok(createRestModel(workspaceFolder)).build();

@@ -13,6 +13,7 @@ import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialDeleteEv
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
 public class WorkspaceNodeDeleteController {
   
@@ -54,22 +55,41 @@ public class WorkspaceNodeDeleteController {
       throw e;
     }
 
+    // TODO Stage 2: If the underlying material would be orphaned, delete it as well
+
     deleteWorkspaceNode(workspaceMaterial);
+  }
+  
+  /**
+   * Deletes a workspace folder. Assumes that the folder no longer has any child nodes.
+   * 
+   * @param folder Workspace folder to be deleted
+   */
+  public void deleteWorkspaceFolder(WorkspaceFolder folder) {
+    deleteWorkspaceNode(folder);
   }
 
   /**
-   * Deletes a workspace node and all data associated to it. Assumes that the node no longer has any child nodes. 
+   * Deletes a workspace root folder. Assumes that the folder no longer has any child nodes.
+   * 
+   * @param folder Workspace root folder to be deleted
+   */
+  public void deleteWorkspaceRootFolder(WorkspaceRootFolder folder) {
+    deleteWorkspaceNode(folder);
+  }
+
+  /**
+   * Deletes a workspace node and all data associated to it. Assumes that the node no longer has any child nodes.
+   * Private mostly for safety reasons, as especially deleting workspace materials (which are nodes too) need
+   * to go through extra checks for answers and such.
    * 
    * @param node Workspace node to be deleted
    */
-  public void deleteWorkspaceNode(WorkspaceNode node) {
+  private void deleteWorkspaceNode(WorkspaceNode node) {
     // Node evaluations have a soft reference, so this ensures no orphans will remain  
     List<WorkspaceNodeEvaluation> evaluations = workspaceNodeEvaluationDAO.listByWorkspaceNodeId(node.getId());
     for (WorkspaceNodeEvaluation evaluation : evaluations) {
       evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
-    }
-    if (node instanceof WorkspaceMaterial) {
-      // TODO Stage 2: If the node is a material and that material would be orphaned, delete the material as well
     }
     // Delete the node. Thanks to inheritance, this will also delete associated WorkspaceMaterial, WorkspaceFolder, and WorkspaceRootFolder
     workspaceNodeDAO.delete(node);
