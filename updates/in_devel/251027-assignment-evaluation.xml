@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
-  <!-- Node evaluation audio clips need to go first :'( )-->
+  <!--
+    Node evaluation audio clips need to go first :'( These will sadly be left on disk but there's only a couple of dozen
+    of them and they can later be identified and removed with a system tool or something
+  -->
   
   <sql>
     delete from WorkspaceNodeEvaluationAudioClip where evaluation_id in (
@@ -11,7 +14,7 @@
         select studentEntityId, workspaceNodeId, max(id) as max_id
         from WorkspaceNodeEvaluation
         group by studentEntityId, workspaceNodeId
-      ) t2 on t1.studentEntityId = t2.studentEntityId and t1.workspaceNodeId = t2.workspaceNodeId and t1.id != t2.max_id;
+      ) t2 on t1.studentEntityId = t2.studentEntityId and t1.workspaceNodeId = t2.workspaceNodeId and t1.id != t2.max_id
     );
   </sql>
   
@@ -27,7 +30,7 @@
     );
   </sql>
   
-  <!-- Delete duplicate node evaluations by leaving the latest one -->
+  <!-- Delete duplicate node evaluations by leaving the newest one -->
   
   <sql>
     delete t1
@@ -39,7 +42,7 @@
     ) t2 on t1.studentEntityId = t2.studentEntityId and t1.workspaceNodeId = t2.workspaceNodeId and t1.id != t2.max_id;
   </sql>
   
-  <!-- Delete orphan node evaluations -->
+  <!-- Delete orphaned node evaluations -->
   
   <sql>delete from WorkspaceNodeEvaluation where workspaceNodeId not in (select id from WorkspaceNode);</sql>
   
