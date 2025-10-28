@@ -28,6 +28,9 @@ public class EvaluationDeleteController {
 
   public void deleteWorkspaceNodeEvaluation(WorkspaceNodeEvaluation evaluation) {
     if (evaluation != null) {
+      
+      // First get rid of audio clips associated with the evaluation
+      
       List<WorkspaceNodeEvaluationAudioClip> evaluationAudioClips = workspaceNodeEvaluationAudioClipDAO.listByEvaluation(evaluation);
       for (WorkspaceNodeEvaluationAudioClip evaluationAudioClip : evaluationAudioClips) {
         if (file.isFileInFileSystem(evaluation.getStudentEntityId(), evaluationAudioClip.getClipId())) {
@@ -38,9 +41,12 @@ public class EvaluationDeleteController {
           }
         }
 
-        // Remove db entry
+        // Remove the audio clip from the database
+        
         workspaceNodeEvaluationAudioClipDAO.delete(evaluationAudioClip);
       }
+      
+      // Remove the evaluation itself
 
       workspaceNodeEvaluationDAO.delete(evaluation);
     }
