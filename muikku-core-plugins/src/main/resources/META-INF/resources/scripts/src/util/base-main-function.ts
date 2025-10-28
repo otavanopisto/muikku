@@ -10,6 +10,7 @@ import {
   loadWorkspaceStatus,
   updateStatusChatSettings,
 } from "~/actions/base/status";
+import { loadLastWorkspacesFromServer } from "~/actions/workspaces";
 
 /**
  * getOptionValue
@@ -55,6 +56,10 @@ export default async function (
       },
       "chat:settings-change": {
         actions: [updateStatusChatSettings],
+        callbacks: [],
+      },
+      "workspace:last-workspaces-updated": {
+        actions: [loadLastWorkspacesFromServer],
         callbacks: [],
       },
     };
