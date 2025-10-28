@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
 
+  <!-- Node evaluation audio clips need to go first :'( )-->
+  
+  <sql>
+    delete from WorkspaceNodeEvaluationAudioClip where evaluation_id in (
+      select id
+      from WorkspaceNodeEvaluation t1
+      join (
+        select studentEntityId, workspaceNodeId, max(id) as max_id
+        from WorkspaceNodeEvaluation
+        group by studentEntityId, workspaceNodeId
+      ) t2 on t1.studentEntityId = t2.studentEntityId and t1.workspaceNodeId = t2.workspaceNodeId and t1.id != t2.max_id;
+    );
+  </sql>
+  
+  <sql>
+    delete from WorkspaceNodeEvaluationAudioClip where evaluation_id in (
+      select id from WorkspaceNodeEvaluation where workspaceNodeId not in (select id from WorkspaceNode)
+    );
+  </sql>
+
+  <sql>
+    delete from WorkspaceNodeEvaluationAudioClip where evaluation_id in (
+      select id from WorkspaceNodeEvaluation where archived=true
+    );
+  </sql>
+  
   <!-- Delete duplicate node evaluations by leaving the latest one -->
   
   <sql>
