@@ -28,6 +28,11 @@
     top: 15px;
   }
 
+  &.indicator--panel-header {
+    right: 2px;
+    top: 0;
+  }
+
   .menu &.indicator--main-function {
     margin-top: -10px;
     right: 14px;
