@@ -32,6 +32,11 @@ public class WorkspaceNodeDeleteController {
   public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial, boolean removeAnswers)
       throws WorkspaceMaterialContainsAnswersExeption {
     try {
+      
+      // If removeAnswers is true, this event will cause all fields and replies associated with the
+      // workspace material to be deleted so that the workspace material itself no longer has associated
+      // entities preventing deletion. Otherwise, the call will fail on WorkspaceMaterialContainsAnswersExeption
+      
       workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial, removeAnswers));
 
       List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceMaterial);
@@ -39,7 +44,7 @@ public class WorkspaceNodeDeleteController {
         if (childNode instanceof WorkspaceMaterial) {
           deleteWorkspaceMaterial((WorkspaceMaterial) childNode, removeAnswers);
         }
-        else if (childNode instanceof WorkspaceFolder) {
+        else {
           deleteWorkspaceNode(childNode);
         }
       }
