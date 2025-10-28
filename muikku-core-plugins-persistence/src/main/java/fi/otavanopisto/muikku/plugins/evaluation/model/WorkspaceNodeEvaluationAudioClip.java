@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
-public class WorkspaceMaterialEvaluationAudioClip {
+public class WorkspaceNodeEvaluationAudioClip {
   
   public Long getId() {
     return id;
@@ -41,11 +41,11 @@ public class WorkspaceMaterialEvaluationAudioClip {
     this.clipId = clipId;
   }
 
-  public WorkspaceMaterialEvaluation getEvaluation() {
+  public WorkspaceNodeEvaluation getEvaluation() {
     return evaluation;
   }
 
-  public void setEvaluation(WorkspaceMaterialEvaluation evaluation) {
+  public void setEvaluation(WorkspaceNodeEvaluation evaluation) {
     this.evaluation = evaluation;
   }
 
@@ -54,7 +54,7 @@ public class WorkspaceMaterialEvaluationAudioClip {
   private Long id;
   
   @ManyToOne
-  private WorkspaceMaterialEvaluation evaluation;
+  private WorkspaceNodeEvaluation evaluation;
   
   @NotNull
   @NotEmpty

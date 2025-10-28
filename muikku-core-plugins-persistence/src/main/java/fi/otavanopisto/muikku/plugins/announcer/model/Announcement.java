@@ -104,6 +104,14 @@ public class Announcement {
   public void setCategories(List<AnnouncementCategory> categories) {
     this.categories = categories;
   }
+    
+  public boolean isPinned() {
+    return pinned;
+  }
+
+  public void setPinned(boolean pinned) {
+    this.pinned = pinned;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -150,4 +158,7 @@ public class Announcement {
   @OneToMany
   @JoinTable (name = "AnnouncementCategoryIds", joinColumns = @JoinColumn(name = "announcement_Id"), inverseJoinColumns = @JoinColumn(name = "announcementCategory_id"))
   private List<AnnouncementCategory> categories;
+
+  @Column (nullable=false)
+  private boolean pinned;
 }

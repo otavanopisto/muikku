@@ -21,6 +21,7 @@ interface RecordProps
   record: RecordValue;
   index: number;
   noDeleteFunctions: boolean;
+  onDescriptionChange?: (index: number, description: string) => void;
   onClickDelete?: (recordId: string | number) => void;
 }
 
@@ -41,7 +42,14 @@ const defaultRecordtProps = {
 function Record(props: RecordProps) {
   props = { ...defaultRecordtProps, ...props };
 
-  const { record, index, onClickDelete, noDeleteFunctions, ...rest } = props;
+  const {
+    record,
+    index,
+    onClickDelete,
+    onDescriptionChange,
+    noDeleteFunctions,
+    ...rest
+  } = props;
   const { t } = useTranslation();
 
   const open = record.uploading || record.failed;
@@ -56,27 +64,40 @@ function Record(props: RecordProps) {
   return (
     <>
       <div className="voice-recorder__file-container" key={rest.key}>
-        <AudioPoolComponent
-          className="voice-recorder__file"
-          controls={rest.controls}
-          src={record.url}
-          preload="metadata"
-        />
-
-        <Link
-          className="voice-recorder__download-button icon-download"
-          title={t("actions.download")}
-          href={record.url}
-          openInNewTab={record.name}
-        />
-        {!noDeleteFunctions ? (
-          <DeleteDialog onDeleteAudio={handleClickDelete}>
-            <Link
-              className="voice-recorder__remove-button icon-trash"
-              title={t("actions.remove")}
+        {onDescriptionChange && (
+          <div className="voice-recorder__file-description">
+            <label htmlFor={`audio-description-${record.id}`}>
+              {t("labels.description")}
+            </label>
+            <textarea
+              className="voice-recorder__file-description-field"
+              id={`audio-description-${record.id}`}
+              onChange={(e) => onDescriptionChange(index, e.target.value)}
             />
-          </DeleteDialog>
-        ) : null}
+          </div>
+        )}
+        <div className="voice-recorder__file-content">
+          <AudioPoolComponent
+            className="voice-recorder__file"
+            controls={rest.controls}
+            src={record.url}
+            preload="metadata"
+          />
+          <Link
+            className="voice-recorder__download-button icon-download"
+            title={t("actions.download")}
+            href={record.url}
+            openInNewTab={record.name}
+          />
+          {!noDeleteFunctions ? (
+            <DeleteDialog onDeleteAudio={handleClickDelete}>
+              <Link
+                className="voice-recorder__remove-button icon-trash"
+                title={t("actions.remove")}
+              />
+            </DeleteDialog>
+          ) : null}
+        </div>
       </div>
       <AnimateHeight height={open ? "auto" : 0}>
         {record.uploading ? (

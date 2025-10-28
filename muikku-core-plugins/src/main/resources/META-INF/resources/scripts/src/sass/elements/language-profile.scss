@@ -71,7 +71,7 @@
 }
 
 .language-profile-container__row--new-sample {
-  background: $color-default-lighter-generic-background;
+  background: $color-default-generic-background;
   border-radius: 5px;
   display: flex;
   flex-flow: column nowrap;
@@ -383,9 +383,20 @@
   justify-content: center;
 }
 
+.language-profile__sample-file-description {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+
+  label {
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+}
+
 .language-profile__sample-file {
   align-items: center;
-  background: $color-default-lighter-generic-background;
+  background: $color-default-generic-background;
   border-radius: 5px;
   display: flex;
   font-size: 0.75rem;
@@ -393,7 +404,13 @@
   height: 30px;
   justify-content: space-between;
   margin: 5px 0;
-  padding: 5px 5px 5px 10px;
+  padding: 5px 0 5px 10px;
+}
+
+.language-profile__file-uploader-file {
+  background-color: $color-default;
+  margin: 10px 0;
+  padding: 10px;
 }
 
 .language-profile__file-uploader-field {
@@ -405,6 +422,26 @@
   right: 0;
   top: 0;
   width: 100%;
+}
+
+.language-profile__file-sample {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.language-profile__audio-sample {
+  flex-grow: 1;
+}
+
+.language-profile__audio-sample-description { 
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.language-profile__file-sample-description {
+  font-weight: 600;
 }
 
 .language-profile__file-uploader-container {
@@ -420,6 +457,11 @@
   position: relative;
   text-align: center;
   width: 100%;
+}
+
+.language-profile__file-description-input {
+  border: 2px solid $color-language-profile-form-element-border;
+  padding: 3px;
 }
 
 .language-profile__remove-button {

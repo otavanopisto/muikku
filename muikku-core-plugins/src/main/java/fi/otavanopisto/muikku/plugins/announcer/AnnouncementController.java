@@ -61,7 +61,8 @@ public class AnnouncementController {
   @Inject
   private AnnouncementCategoryDAO announcementCategoryDAO;
   
-  public Announcement createAnnouncement(UserEntity publisher, OrganizationEntity organizationEntity, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible, List<AnnouncementCategory> categories) {
+  public Announcement createAnnouncement(UserEntity publisher, OrganizationEntity organizationEntity, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible, List<AnnouncementCategory> categories, boolean pinned) {
+
     return announcementDAO.create(
         publisher.getId(),
         organizationEntity,
@@ -72,7 +73,8 @@ public class AnnouncementController {
         endDate,
         Boolean.FALSE,
         publiclyVisible,
-        categories);
+        categories,
+        pinned);
   }
 
   public AnnouncementUserGroup addAnnouncementTargetGroup(Announcement announcement, UserGroupEntity userGroupEntity) {
@@ -83,13 +85,14 @@ public class AnnouncementController {
     return announcementWorkspaceDAO.create(announcement, workspaceEntity.getId(), Boolean.FALSE);
   }
 
-  public Announcement updateAnnouncement(Announcement announcement, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible, boolean archived) {
+  public Announcement updateAnnouncement(Announcement announcement, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible, boolean archived, boolean pinned) {
     announcementDAO.updateCaption(announcement, caption);
     announcementDAO.updateContent(announcement, content);
     announcementDAO.updateStartDate(announcement, startDate);
     announcementDAO.updateEndDate(announcement, endDate);
     announcementDAO.updatePubliclyVisible(announcement, publiclyVisible);
     announcementDAO.updateArchived(announcement, archived);
+    announcementDAO.updatePinned(announcement, pinned);
     return announcement;
   }
   

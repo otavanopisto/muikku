@@ -36,8 +36,9 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   private static final long serialVersionUID = -8721990589622544635L;
   
   public Announcement create(Long publisherUserEntityId, OrganizationEntity organizationEntity, 
-      String caption, String content, Date created, Date startDate, 
-      Date endDate, Boolean archived, Boolean publiclyVisible, List<AnnouncementCategory> categories) {
+      String caption, String content, Date created, Date startDate,
+      Date endDate, Boolean archived, Boolean publiclyVisible, List<AnnouncementCategory> categories, boolean pinned) {
+
     Announcement announcement = new Announcement();
     announcement.setPublisherUserEntityId(publisherUserEntityId);
     announcement.setOrganizationEntityId(organizationEntity.getId());
@@ -49,6 +50,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     announcement.setArchived(archived);
     announcement.setPubliclyVisible(publiclyVisible);
     announcement.setCategories(categories);
+    announcement.setPinned(pinned);
     return persist(announcement);
   }
 
@@ -193,7 +195,11 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     
-    criteria.orderBy(criteriaBuilder.desc(root.get(Announcement_.startDate)), criteriaBuilder.desc(root.get(Announcement_.id)));
+    criteria.orderBy(
+        criteriaBuilder.desc(root.get(Announcement_.pinned)),
+        criteriaBuilder.desc(root.get(Announcement_.startDate)),
+        criteriaBuilder.desc(root.get(Announcement_.id))
+    );
     
     TypedQuery<Announcement> query = entityManager.createQuery(criteria);
     
@@ -235,6 +241,11 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   
   public Announcement updateCategories(Announcement announcement, List<AnnouncementCategory> categories) {
     announcement.setCategories(categories);
+    return persist(announcement);
+  }
+  
+  public Announcement updatePinned(Announcement announcement, boolean pinned) {
+    announcement.setPinned(pinned);
     return persist(announcement);
   }
   

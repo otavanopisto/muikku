@@ -109,7 +109,7 @@ public class LanguageProfileRestService {
   @POST
   @Path("/user/{USERENTITYID}/samples")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createTextSample(@PathParam("USERENTITYID") Long userEntityId, LanguageProfileSampleRestModel payload) {
+  public Response createSample(@PathParam("USERENTITYID") Long userEntityId, LanguageProfileSampleRestModel payload) {
     
     // Access check; write for owner only
     
@@ -136,7 +136,7 @@ public class LanguageProfileRestService {
   @PUT
   @Path("/user/{USERENTITYID}/samples/{SAMPLEID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response updateTextSample(@PathParam("USERENTITYID") Long userEntityId, @PathParam("SAMPLEID") Long sampleId, LanguageProfileSampleRestModel payload) {
+  public Response updateSample(@PathParam("USERENTITYID") Long userEntityId, @PathParam("SAMPLEID") Long sampleId, LanguageProfileSampleRestModel payload) {
     
     // Access check; write for owner only
     
@@ -156,9 +156,6 @@ public class LanguageProfileRestService {
     }
     if (!profile.getId().equals(sample.getLanguageProfile().getId())) {
       return Response.status(Status.BAD_REQUEST).entity("Profile sample mismatch").build();
-    }
-    if (sample.getType() != LanguageProfileSampleType.TEXT) {
-      return Response.status(Status.BAD_REQUEST).entity("Sample is not of type TEXT").build();
     }
     sample = languageProfileController.updateSample(sample, payload.getValue());
     return Response.ok().entity(toRestModel(sample)).build();

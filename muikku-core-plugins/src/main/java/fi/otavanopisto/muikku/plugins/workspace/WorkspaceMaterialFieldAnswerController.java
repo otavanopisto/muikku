@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -100,8 +101,42 @@ public class WorkspaceMaterialFieldAnswerController {
   public List<WorkspaceMaterialFieldAnswer> listWorkspaceMaterialFieldAnswersByField(WorkspaceMaterialField field) {
     return workspaceMaterialFieldAnswerDAO.listByField(field);
   }
+
+  public List<WorkspaceMaterialFieldAnswer> listWorkspaceMaterialFieldAnswersByReply(WorkspaceMaterialReply reply) {
+    return workspaceMaterialFieldAnswerDAO.listByReply(reply);
+  }
   
   public void deleteWorkspaceMaterialFieldAnswer(WorkspaceMaterialFieldAnswer answer) {
+    if (answer instanceof WorkspaceMaterialAudioFieldAnswer) {
+      List<WorkspaceMaterialAudioFieldAnswerClip> audioAnswerClips = listWorkspaceMaterialAudioFieldAnswerClipsByFieldAnswer((WorkspaceMaterialAudioFieldAnswer) answer);
+      for (WorkspaceMaterialAudioFieldAnswerClip audioAnswerClip : audioAnswerClips) {
+        try {
+          deleteWorkspaceMaterialAudioFieldAnswerClip(audioAnswerClip);
+        }
+        catch (Exception e) {
+          // Audio field was removed completely but it's not fatal if its answer files in file system fail to remove
+          logger.log(Level.WARNING, String.format("Problems removing file system files related to audio answer %d", answer.getId()), e);
+        }
+      }
+    }
+    else if (answer instanceof WorkspaceMaterialFileFieldAnswer) {
+      List<WorkspaceMaterialFileFieldAnswerFile> fileAnswerFiles = listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer((WorkspaceMaterialFileFieldAnswer) answer);
+      for (WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile : fileAnswerFiles) {
+        try {
+          deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
+        }
+        catch (Exception e) {
+          // File field was removed completely but it's not fatal if its answer files in file system fail to remove
+          logger.log(Level.WARNING, String.format("Problems removing file system files related to file answer %d", answer.getId()), e);
+        }
+      }
+    }
+    else if (answer instanceof WorkspaceMaterialMultiSelectFieldAnswer) {
+      List<WorkspaceMaterialMultiSelectFieldAnswerOption> options = listWorkspaceMaterialMultiSelectFieldAnswerOptions((WorkspaceMaterialMultiSelectFieldAnswer) answer); 
+      for (WorkspaceMaterialMultiSelectFieldAnswerOption option : options) {
+        deleteWorkspaceMaterialMultiSelectFieldAnswerOption(option);
+      }
+    }
     workspaceMaterialFieldAnswerDAO.delete(answer);
   }
 

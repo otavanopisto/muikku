@@ -33,6 +33,14 @@ export interface LanguageProfileLanguageData {
   workspaces: LanguageData[];
 }
 
+/**
+ * SampleLink
+ */
+export interface FileSample {
+  file: File;
+  description: string;
+}
+
 export type SampleLink = {
   name: string;
   url: string;

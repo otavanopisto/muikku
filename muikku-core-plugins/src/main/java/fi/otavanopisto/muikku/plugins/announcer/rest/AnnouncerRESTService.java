@@ -159,7 +159,13 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
     OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
-
+    
+    boolean pinned = false;
+    
+    if (sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      pinned = restModel.isPinned();
+    }
+    
     Announcement announcement = announcementController.createAnnouncement(
         userEntity,
         organizationEntity,
@@ -168,7 +174,8 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getStartDate(),
         restModel.getEndDate(),
         restModel.getPubliclyVisible(),
-        categories);
+        categories,
+        pinned);
     
     for (Long userGroupEntityId : userGroupEntityIds) {
       UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
@@ -246,6 +253,12 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to update workspace announcement").build();
       }
     }
+    
+    boolean pinned = oldAnnouncement.isPinned();
+    
+    if (oldAnnouncement.isPinned() != restModel.isPinned() && sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      pinned = restModel.isPinned();
+    }
 
     Announcement newAnnouncement = announcementController.updateAnnouncement(
         oldAnnouncement,
@@ -254,7 +267,8 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getStartDate(),
         restModel.getEndDate(),
         restModel.getPubliclyVisible(),
-        restModel.isArchived()
+        restModel.isArchived(),
+        pinned
     );
 
     announcementController.clearAnnouncementTargetGroups(newAnnouncement);
@@ -613,6 +627,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setId(announcement.getId());
     restModel.setPubliclyVisible(announcement.getPubliclyVisible());
     restModel.setArchived(announcement.getArchived());
+    restModel.setPinned(announcement.isPinned());
 
     List<Long> userGroupEntityIds = new ArrayList<>();
     for (AnnouncementUserGroup announcementUserGroup : announcementUserGroups) {

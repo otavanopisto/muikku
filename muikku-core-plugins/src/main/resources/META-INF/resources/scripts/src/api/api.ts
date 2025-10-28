@@ -35,6 +35,7 @@ import {
   ResponseContext,
   ActivitylogsApi,
   StudentCardsApi,
+  ExamApi,
   LanguageProfileApi,
 } from "../generated/client";
 
@@ -203,6 +204,15 @@ export default class MApi {
    */
   public static getEvaluationApi() {
     return new EvaluationApi(configuration);
+  }
+
+  /**
+   * Get initialized ExamApi API
+   *
+   * @returns initialized ExamApi API
+   */
+  public static getExamApi() {
+    return new ExamApi(configuration);
   }
 
   /**

@@ -63,7 +63,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
 import fi.otavanopisto.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
@@ -580,7 +580,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       }
     }
     
-    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentNode, payload.getTitle(), null);
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(parentNode, payload.getTitle(), null, false);
     if (workspaceFolder == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not create workspace folder").build(); 
     }
@@ -636,9 +636,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
     
-    List<WorkspaceMaterialEvaluation> evaluations = evaluationController.listWorkspaceMaterialEvaluationsByWorkspaceMaterialId(workspaceMaterialId);
-    for (WorkspaceMaterialEvaluation evaluation : evaluations) {
-      evaluationController.deleteWorkspaceMaterialEvaluation(evaluation);
+    List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeId(workspaceMaterialId);
+    for (WorkspaceNodeEvaluation evaluation : evaluations) {
+      evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
     }
     
     htmlMaterialController.deleteHtmlMaterial(htmlMaterial);
@@ -780,8 +780,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     SchoolDataIdentifier schoolDataIdentifier = new SchoolDataIdentifier(user.getDefaultIdentifier(), user.getDefaultSchoolDataSource().getIdentifier());
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(schoolDataIdentifier);
     OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
-    Announcement announcement = announcementController.createAnnouncement(user, organizationEntity, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible(), new ArrayList<AnnouncementCategory>());
-       
+    
+    Announcement announcement = announcementController.createAnnouncement(user, organizationEntity, payload.getCaption(), payload.getContent(), payload.getStartDate(), payload.getEndDate(), payload.getPubliclyVisible(), new ArrayList<AnnouncementCategory>(), false);
+    
     if(payload.getWorkspaceEntityIds() != null) {
       List<Long> workspaceEntityIds = payload.getWorkspaceEntityIds();
       for (Long wsId : workspaceEntityIds) {
