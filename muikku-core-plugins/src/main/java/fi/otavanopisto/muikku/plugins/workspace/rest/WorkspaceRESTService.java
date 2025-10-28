@@ -61,6 +61,10 @@ import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
@@ -97,6 +101,7 @@ import fi.otavanopisto.muikku.plugins.material.rest.HtmlRestMaterial;
 import fi.otavanopisto.muikku.plugins.pedagogy.PedagogyController;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
+import fi.otavanopisto.muikku.plugins.websocket.WebSocketMessenger;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
@@ -168,6 +173,7 @@ import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.PublicityRestriction
 import fi.otavanopisto.muikku.search.WorkspaceSearchBuilder.TemplateRestriction;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.LastWorkspace;
 import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
@@ -194,6 +200,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private UserIndexer userIndexer;
+
+  @Inject
+  private WebSocketMessenger webSocketMessenger;
 
   @Inject
   private AssessmentRequestController assessmentRequestController;
@@ -3315,6 +3324,35 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Update activity in Muikku
 
     workspaceUserEntityController.updateActive(workspaceUserEntity, workspaceStudentRestModel.getActive());
+    // #6620 + 7477: If student was removed from workspace, remove it from their last workspaces and send a websocket message about it.
+    // Technically all of this should be in WorkspaceUserEntityController.updateActive but that remains in core project whereas
+    // websocket messaging is in core-plugins :( Merging those projects should be considered at some point.
+    if (!workspaceStudentRestModel.getActive()) {
+      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+      UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity, "last-workspaces");
+      if (lastWorkspaces != null) {
+        if (StringUtils.isNotEmpty(lastWorkspaces.getValue())) {
+          ObjectMapper objectMapper = new ObjectMapper();
+          List<LastWorkspace> lastWorkspaceList = null;
+          String lastWorkspaceJson = lastWorkspaces.getValue();
+          try {
+            lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {});
+            int lastWorkspaceListSize = lastWorkspaceList.size();
+            if (lastWorkspaceList != null) {
+              lastWorkspaceList.removeIf(item -> workspaceEntityId.equals(item.getWorkspaceId()));
+              if (lastWorkspaceListSize != lastWorkspaceList.size()) {
+                String newList = objectMapper.writeValueAsString(lastWorkspaceList);
+                userEntityController.setUserEntityProperty(userEntity, "last-workspaces", newList);
+                webSocketMessenger.sendMessage("workspace:last-workspaces-updated", newList, Collections.singletonList(userEntity));
+              }
+            }
+          }
+          catch (JsonProcessingException e) {
+            logger.log(Level.WARNING, String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
+          }
+        }
+      }
+    }
 
     // Update activity in Pyramus (participation type in course might change)
 

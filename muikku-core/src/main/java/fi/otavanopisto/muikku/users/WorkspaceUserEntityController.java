@@ -6,21 +6,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.model.users.UserEntity;
-import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -38,9 +31,6 @@ public class WorkspaceUserEntityController {
   
   @Inject
   private WorkspaceUserEntityDAO workspaceUserEntityDAO;
-  
-  @Inject
-  private UserEntityController userEntityController;
 
   public WorkspaceUserEntity createWorkspaceUserEntity(UserSchoolDataIdentifier userSchoolDataIdentifier, WorkspaceEntity workspaceEntity, String identifier, WorkspaceRoleEntity workspaceUserRole) {
     return workspaceUserEntityDAO.create(userSchoolDataIdentifier, workspaceEntity, workspaceUserRole, identifier, Boolean.TRUE, Boolean.FALSE);
@@ -238,37 +228,6 @@ public class WorkspaceUserEntityController {
   }
 
   public WorkspaceUserEntity updateActive(WorkspaceUserEntity workspaceUserEntity, Boolean active) {
-    if (Boolean.FALSE.equals(active)) {
-      // #6620: Remove past workspaces from the list of student's last workspaces
-      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUserEntity.getUserSchoolDataIdentifier().getDataSource(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-      UserEntityProperty lastWorkspaces = userEntityController.getUserEntityPropertyByKey(userEntity, "last-workspaces");
-      
-      if (lastWorkspaces != null) {
-        if (StringUtils.isNotEmpty(lastWorkspaces.getValue())) {
-          ObjectMapper objectMapper = new ObjectMapper();
-          List<LastWorkspace> lastWorkspaceList = null;
-          String lastWorkspaceJson = lastWorkspaces.getValue();
-          
-          try {
-            lastWorkspaceList = objectMapper.readValue(lastWorkspaceJson, new TypeReference<ArrayList<LastWorkspace>>() {});
-            
-            int lastWorkspaceListSize = lastWorkspaceList.size();
-            
-            if(lastWorkspaceList != null) {
-              Long workspaceEntityId = workspaceUserEntity.getWorkspaceEntity().getId();
-              lastWorkspaceList.removeIf(item -> workspaceEntityId.equals(item.getWorkspaceId()));
-            
-              if (lastWorkspaceListSize != lastWorkspaceList.size()) {
-              userEntityController.setUserEntityProperty(userEntity, "last-workspaces", objectMapper.writeValueAsString(lastWorkspaceList));
-              }
-            }
-          }
-          catch (JsonProcessingException e) {
-            logger.log(Level.WARNING, String.format("Parsing last workspaces of user %d failed: %s", userEntity.getId(), e.getMessage()));
-          }
-        }
-      }
-    }
     return workspaceUserEntityDAO.updateActive(workspaceUserEntity, active);
   }
 
