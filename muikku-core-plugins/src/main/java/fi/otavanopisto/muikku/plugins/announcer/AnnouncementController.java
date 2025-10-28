@@ -18,6 +18,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementAttachmentDAO;
+import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementCategoryDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestriction;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementRecipientDAO;
@@ -26,6 +27,7 @@ import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementUserGroupDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementWorkspaceDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementCategory;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
@@ -56,7 +58,10 @@ public class AnnouncementController {
   @Inject
   private AnnouncementRecipientDAO announcementRecipientDAO;
   
-  public Announcement createAnnouncement(UserEntity publisher, OrganizationEntity organizationEntity, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible) {
+  @Inject
+  private AnnouncementCategoryDAO announcementCategoryDAO;
+  
+  public Announcement createAnnouncement(UserEntity publisher, OrganizationEntity organizationEntity, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible, List<AnnouncementCategory> categories) {
     return announcementDAO.create(
         publisher.getId(),
         organizationEntity,
@@ -66,7 +71,8 @@ public class AnnouncementController {
         startDate,
         endDate,
         Boolean.FALSE,
-        publiclyVisible);
+        publiclyVisible,
+        categories);
   }
 
   public AnnouncementUserGroup addAnnouncementTargetGroup(Announcement announcement, UserGroupEntity userGroupEntity) {
@@ -242,6 +248,26 @@ public class AnnouncementController {
   
   public AnnouncementRecipient createAnnouncementRecipient(Announcement announcement, Long userEntityId) {
     return announcementRecipientDAO.create(announcement, userEntityId);
+  }
+  
+  public AnnouncementCategory createCategory(String category) {
+    AnnouncementCategory categoryEntity = announcementCategoryDAO.findByName(category);
+    if (categoryEntity == null) {
+      categoryEntity = announcementCategoryDAO.create(category);
+    }
+    return categoryEntity;
+  }
+  
+  public List<AnnouncementCategory> listAnnouncementCategories(){
+    return announcementCategoryDAO.listAll();
+  }
+  
+  public AnnouncementCategory findAnnouncementCategoryById(Long id) {
+    return announcementCategoryDAO.findById(id);
+  }
+  
+  public void deleteAnnouncementCategory(AnnouncementCategory announcementCategory) {
+    announcementCategoryDAO.delete(announcementCategory);
   }
 }
  

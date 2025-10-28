@@ -119,6 +119,14 @@ public class AnnouncementRESTModel {
     this.workspaces = workspaces;
   }
 
+  public List<AnnouncementCategoryRESTModel> getCategories() {
+    return categories;
+  }
+
+  public void setCategories(List<AnnouncementCategoryRESTModel> categories) {
+    this.categories = categories;
+  }
+
   private Long id;
   private Long publisherUserEntityId;
   private String caption;
@@ -133,4 +141,5 @@ public class AnnouncementRESTModel {
   private AnnouncementTemporalStatus temporalStatus;
   private boolean unread;
   private List<WorkspaceBasicInfo> workspaces;
+  private List<AnnouncementCategoryRESTModel> categories;
 }

@@ -47,6 +47,7 @@ import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestr
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementCategory;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
@@ -141,10 +142,24 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create workspace announcement").build();
       }
     }
-
+    
+    // Categories
+    List<AnnouncementCategory> categories = new ArrayList<AnnouncementCategory>();
+    
+    if (restModel.getCategories() == null) {
+      categories = Collections.emptyList();
+    } else {
+      for (AnnouncementCategoryRESTModel categoryRest : restModel.getCategories()) {
+        AnnouncementCategory category = announcementController.findAnnouncementCategoryById(categoryRest.getId());
+        
+        if (category != null) {
+          categories.add(category);
+        }
+      }
+    }
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
     OrganizationEntity organizationEntity = userSchoolDataIdentifier.getOrganization();
-    
+
     Announcement announcement = announcementController.createAnnouncement(
         userEntity,
         organizationEntity,
@@ -152,7 +167,8 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getContent(),
         restModel.getStartDate(),
         restModel.getEndDate(),
-        restModel.getPubliclyVisible());
+        restModel.getPubliclyVisible(),
+        categories);
     
     for (Long userGroupEntityId : userGroupEntityIds) {
       UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(userGroupEntityId);
@@ -453,6 +469,66 @@ public class AnnouncerRESTService extends PluginRESTService {
         .build();
   }
   
+  @POST
+  @Path("/announcements/categories/create")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createAnnouncementCategory(String category) {
+    
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create announcement categories").build();
+    }
+
+    AnnouncementCategory announcementCategory = announcementController.createCategory(category);
+    
+    return Response
+        .ok(toRestModel(announcementCategory))
+        .build();
+  }
+  
+  @GET
+  @Path("/announcements/categories")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listCategories() {
+    List<AnnouncementCategory> categories = announcementController.listAnnouncementCategories();
+    
+    List<AnnouncementCategoryRESTModel> categoriesRestList = new ArrayList<AnnouncementCategoryRESTModel>();
+    for (AnnouncementCategory category : categories) {
+      categoriesRestList.add(toRestModel(category));
+    }
+    
+    return Response
+        .ok(categoriesRestList)
+        .build();
+  }
+  
+  @DELETE
+  @Path("/announcements/category/{ID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteAnnouncementCategory(@PathParam("ID") Long announcementCategoryId) {
+    AnnouncementCategory announcementCategory = announcementController.findAnnouncementCategoryById(announcementCategoryId);
+    
+    if (announcementCategory == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    announcementController.deleteAnnouncementCategory(announcementCategory);
+    
+    return Response.noContent().build();
+  }
+  
+  private AnnouncementCategoryRESTModel toRestModel(AnnouncementCategory category) {
+    AnnouncementCategoryRESTModel restModel = new AnnouncementCategoryRESTModel();
+    
+    restModel.setCategory(category.getCategoryName());
+    restModel.setId(category.getId());
+    
+    return restModel;
+  }
+  
   private boolean canSeeAnnouncement(Announcement announcement, SchoolDataIdentifier userIdentifier) {
     /**
      * This is not very efficient, but things needed to be checked are
@@ -575,6 +651,16 @@ public class AnnouncerRESTService extends PluginRESTService {
     boolean unread = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, sessionController.getLoggedUserEntity().getId()) == null;
     
     restModel.setUnread(unread);
+    
+    // categories
+    List<AnnouncementCategoryRESTModel> categories = new ArrayList<AnnouncementCategoryRESTModel>();
+    List<AnnouncementCategory> announcementCategories = announcement.getCategories();
+    
+    for (AnnouncementCategory announcementCategory : announcementCategories) {
+      categories.add(toRestModel(announcementCategory));
+    }
+    
+    restModel.setCategories(categories);
 
     return restModel;
   }

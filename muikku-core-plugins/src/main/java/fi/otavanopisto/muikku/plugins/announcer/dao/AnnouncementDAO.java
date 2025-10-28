@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementCategory;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementRecipient_;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
@@ -36,7 +37,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   
   public Announcement create(Long publisherUserEntityId, OrganizationEntity organizationEntity, 
       String caption, String content, Date created, Date startDate, 
-      Date endDate, Boolean archived, Boolean publiclyVisible) {
+      Date endDate, Boolean archived, Boolean publiclyVisible, List<AnnouncementCategory> categories) {
     Announcement announcement = new Announcement();
     announcement.setPublisherUserEntityId(publisherUserEntityId);
     announcement.setOrganizationEntityId(organizationEntity.getId());
@@ -47,6 +48,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     announcement.setEndDate(endDate);
     announcement.setArchived(archived);
     announcement.setPubliclyVisible(publiclyVisible);
+    announcement.setCategories(categories);
     return persist(announcement);
   }
 
@@ -228,6 +230,11 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   
   public Announcement updateArchived(Announcement announcement, Boolean archived) {
     announcement.setArchived(archived);
+    return persist(announcement);
+  }
+  
+  public Announcement updateCategories(Announcement announcement, List<AnnouncementCategory> categories) {
+    announcement.setCategories(categories);
     return persist(announcement);
   }
   
