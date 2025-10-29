@@ -129,7 +129,7 @@ public class WorkspaceMaterialController {
   private HtmlMaterialController htmlMaterialController;
   
   @Inject
-  private WorkspaceNodeDeleteController workspaceNodeDeleteController;
+  private MaterialDeleteController materialDeleteController;
 
   private static final int FLATTENING_LEVEL = 1;
 
@@ -354,18 +354,18 @@ public class WorkspaceMaterialController {
     switch (node.getType()) {
     case FRONT_PAGE_FOLDER:
     case FOLDER:
-      workspaceNodeDeleteController.deleteWorkspaceFolder((WorkspaceFolder) node);
+      materialDeleteController.deleteWorkspaceFolder((WorkspaceFolder) node);
       break;
     case MATERIAL:
       try {
-        workspaceNodeDeleteController.deleteWorkspaceMaterial((WorkspaceMaterial) node, true);
+        materialDeleteController.deleteWorkspaceMaterial((WorkspaceMaterial) node, true);
       }
       catch (WorkspaceMaterialContainsAnswersExeption e) {
         // Ignored since removeAnswers flag has been explicitly set to true
       }
       break;
     case ROOT_FOLDER:
-      workspaceNodeDeleteController.deleteWorkspaceRootFolder((WorkspaceRootFolder) node);
+      materialDeleteController.deleteWorkspaceRootFolder((WorkspaceRootFolder) node);
       break;
     }
   }

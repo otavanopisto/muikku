@@ -15,7 +15,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
-public class WorkspaceNodeDeleteController {
+public class MaterialDeleteController {
   
   @Inject
   private Event<WorkspaceMaterialDeleteEvent> workspaceMaterialDeleteEvent;
@@ -85,18 +85,24 @@ public class WorkspaceNodeDeleteController {
 
   /**
    * Deletes a workspace node and all data associated to it. Assumes that the node no longer has any child nodes.
+   * 
    * Private mostly for safety reasons, as especially deleting workspace materials (which are nodes too) need
    * to go through extra checks for answers and such.
    * 
    * @param node Workspace node to be deleted
    */
   private void deleteWorkspaceNode(WorkspaceNode node) {
+
     // Node evaluations have a soft reference, so this ensures no orphans will remain  
+    
     List<WorkspaceNodeEvaluation> evaluations = workspaceNodeEvaluationDAO.listByWorkspaceNodeId(node.getId());
     for (WorkspaceNodeEvaluation evaluation : evaluations) {
       evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
     }
-    // Delete the node. Thanks to inheritance, this will also delete associated WorkspaceMaterial, WorkspaceFolder, and WorkspaceRootFolder
+    
+    // Delete the node. Thanks to entity inheritance, this will also delete associated
+    // WorkspaceMaterial, WorkspaceFolder, or WorkspaceRootFolder
+    
     workspaceNodeDAO.delete(node);
   }
 

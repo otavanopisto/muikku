@@ -18,7 +18,7 @@ public class WorkspaceHtmlMaterialDeleteListener {
   private WorkspaceMaterialDAO workspaceMaterialDAO;
 
   @Inject
-  private WorkspaceNodeDeleteController workspaceNodeDeleteController;
+  private MaterialDeleteController materialDeleteController;
   
   public void onHtmlMaterialDelete(@Observes HtmlMaterialDeleteEvent htmlMaterialDeleteEvent) throws WorkspaceMaterialContainsAnswersExeption {
     // TODO: This should not be limited to html materials
@@ -26,7 +26,7 @@ public class WorkspaceHtmlMaterialDeleteListener {
     
     List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByMaterialId(material.getId());
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-      workspaceNodeDeleteController.deleteWorkspaceMaterial(workspaceMaterial, htmlMaterialDeleteEvent.getRemoveAnswers());
+      materialDeleteController.deleteWorkspaceMaterial(workspaceMaterial, htmlMaterialDeleteEvent.getRemoveAnswers());
     }
     
   }

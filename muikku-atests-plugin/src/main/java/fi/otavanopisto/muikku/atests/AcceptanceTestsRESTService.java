@@ -82,7 +82,7 @@ import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceNodeDeleteController;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -153,7 +153,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   private WorkspaceMaterialController workspaceMaterialController; 
 
   @Inject
-  private WorkspaceNodeDeleteController workspaceNodeDeleteController; 
+  private MaterialDeleteController materialDeleteController; 
 
   @Inject
   private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO; 
@@ -638,7 +638,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     
     try {
-      workspaceNodeDeleteController.deleteWorkspaceMaterial(workspaceMaterial, true);
+      materialDeleteController.deleteWorkspaceMaterial(workspaceMaterial, true);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
