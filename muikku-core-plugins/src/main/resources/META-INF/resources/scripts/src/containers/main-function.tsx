@@ -720,7 +720,10 @@ export default class MainFunction extends React.Component<
         this.props.store.dispatch(loadDependants() as Action);
       }
       this.props.store.dispatch(
-        loadAnnouncementsAsAClient({}, { loadUserGroups: false }) as Action
+        loadAnnouncementsAsAClient(
+          { maxResults: 999 },
+          { loadUserGroups: false }
+        ) as Action
       );
 
       this.props.store.getState().status.loggedIn &&
@@ -928,7 +931,7 @@ export default class MainFunction extends React.Component<
       loadAnnouncementsTimer = setTimeout(() => {
         this.props.store.dispatch(
           loadAnnouncementsAsAClient(
-            { hideWorkspaceAnnouncements: false },
+            { hideWorkspaceAnnouncements: false, maxResults: 999 },
             (announcements: Announcement[]) => {
               announcements;
             }
