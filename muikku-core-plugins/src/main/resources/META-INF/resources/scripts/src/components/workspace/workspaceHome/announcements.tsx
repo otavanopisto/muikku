@@ -25,7 +25,6 @@ interface WorkspaceAnnouncementsProps extends WithTranslation {
  */
 interface WorkspaceAnnouncementsState {
   currentPage: number;
-  announcements: Announcement[];
   itemsPerPage: number;
 }
 
@@ -46,7 +45,6 @@ class WorkspaceAnnouncements extends React.Component<
     this.state = {
       itemsPerPage: 10,
       currentPage: 0,
-      announcements: props.announcements,
     };
   }
 
@@ -62,6 +60,9 @@ class WorkspaceAnnouncements extends React.Component<
     });
   };
 
+  /**
+   * Gets current announcements depending on current page and items per page
+   */
   getCurrentAnnouncements = () => {
     const { currentPage, itemsPerPage } = this.state;
     const allAnnouncements = [...this.props.announcements];
@@ -74,20 +75,13 @@ class WorkspaceAnnouncements extends React.Component<
    */
   render() {
     const { t } = this.props;
-    const { currentPage, itemsPerPage, announcements } = this.state;
-    const offset = currentPage * itemsPerPage;
-    /**
-     * Defines current announcements that will be mapped
-     */
-    const currentAnnouncements = announcements.slice(
-      offset,
-      offset + itemsPerPage
-    );
+    const { currentPage, itemsPerPage } = this.state;
+
     /**
      * Calculates amount of pages
      * depends how many items there is per page
      */
-    const pageCount = Math.ceil(announcements.length / itemsPerPage);
+    const pageCount = Math.ceil(this.props.announcements.length / itemsPerPage);
     /**
      * renders pagination body as one of announcements list item
      */

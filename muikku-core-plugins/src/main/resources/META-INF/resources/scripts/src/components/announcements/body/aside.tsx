@@ -26,7 +26,6 @@ interface AnnouncementsAsideProps extends WithTranslation {
  */
 interface AnnouncementsAsideState {
   currentPage: number;
-  announcements: Announcement[];
   itemsPerPage: number;
 }
 
@@ -47,7 +46,6 @@ class AnnouncementsAside extends React.Component<
     this.state = {
       itemsPerPage: 10,
       currentPage: 0,
-      announcements: props.announcements.announcements,
     };
   }
   /**
@@ -62,27 +60,31 @@ class AnnouncementsAside extends React.Component<
     });
   };
 
-  getCurrentAnnouncements = React.useMemo(() => {
+  /**
+   * Gets the current announcements to display
+   * @returns an array of announcements depending on current page and items per page
+   */
+  getCurrentAnnouncements = () => {
     const { currentPage, itemsPerPage } = this.state;
-    const announcements = this.props.announcements.announcements;
     const offset = currentPage * itemsPerPage;
-    return announcements.slice(offset, offset + itemsPerPage);
-  }, [
-    this.state.currentPage,
-    this.state.itemsPerPage,
-    this.props.announcements.announcements,
-  ]);
+    return this.props.announcements.announcements.slice(
+      offset,
+      offset + itemsPerPage
+    );
+  };
   /**
    * Component render method
    * @returns JSX.Element
    */
   render() {
-    const { currentPage, itemsPerPage, announcements } = this.state;
+    const { currentPage, itemsPerPage } = this.state;
     /**
      * Calculates amount of pages
      * depends how many items there is per page
      */
-    const pageCount = Math.ceil(announcements.length / itemsPerPage);
+    const pageCount = Math.ceil(
+      this.props.announcements.announcements.length / itemsPerPage
+    );
     /**
      * renders pagination body as one of announcements list item
      */
@@ -111,7 +113,7 @@ class AnnouncementsAside extends React.Component<
         {this.props.announcements.announcements.length !== 0 ? (
           <>
             <div className="item-list item-list--panel-announcements">
-              {this.getCurrentAnnouncements.map(
+              {this.getCurrentAnnouncements().map(
                 (announcement: Announcement) => {
                   const extraWorkspaces =
                     announcement.workspaces && announcement.workspaces.length
