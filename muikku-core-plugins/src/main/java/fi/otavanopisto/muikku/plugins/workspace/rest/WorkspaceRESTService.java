@@ -913,6 +913,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
+    boolean canManageMaterials = workspaceController.canIManageWorkspaceMaterials(workspaceEntity);
+    boolean canManageWorkspace = workspaceController.canIManageWorkspace(workspaceEntity);
     Set<String> permissionSet = new HashSet<String>();
     List<Permission> permissions = permissionController.listPermissionsByScope("WORKSPACE");
     for (Permission permission : permissions) {
@@ -921,11 +923,11 @@ public class WorkspaceRESTService extends PluginRESTService {
         /*
          * The following have exception cases which are handled differently with separate methods.
          */
-        if (MuikkuPermissions.MANAGE_WORKSPACE.equals(permission.getName()) && !workspaceController.canIManageWorkspace(workspaceEntity)) {
+        if (MuikkuPermissions.MANAGE_WORKSPACE.equals(permission.getName()) && !canManageWorkspace) {
           continue;
         }
 
-        if (MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS.equals(permission.getName()) && !workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
+        if (MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS.equals(permission.getName()) && !canManageMaterials) {
           continue;
         }
 
@@ -933,11 +935,19 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
     
-    // #7400: Exam functionality; special permission for workspace students with exams present
+    // #7400: Exam functionality; special permission to determine whether exams should be shown
     
     if (sessionController.isLoggedIn()) {
-      if (!examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId()).isEmpty()) {
-        permissionSet.add(MuikkuPermissions.IS_WORKSPACE_STUDENT_WITH_EXAMS);
+      if (canManageMaterials && !examController.listExamIds(workspaceEntityId).isEmpty()) {
+        // Staff: for those who can manage materials and the course has any exam 
+        permissionSet.add(MuikkuPermissions.SHOW_EXAMS);
+      }
+      else {
+        // Student: need to be workspace student and the course has any exam that the student can participate in
+        boolean isWorkspaceMember = workspaceUserEntityController.isWorkspaceMember(sessionController.getLoggedUser(), workspaceEntity);
+        if (isWorkspaceMember && !examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId()).isEmpty()) {
+          permissionSet.add(MuikkuPermissions.SHOW_EXAMS);
+        }
       }
     }
     

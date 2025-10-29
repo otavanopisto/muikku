@@ -154,14 +154,13 @@ public class ExamRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getAllSettings(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
     List<ExamSettingsRestModel> settings = new ArrayList<>();
-    List<Long> examIds = examController.listExamIds(workspaceEntityId);
-    for (Long examId : examIds) {
-      settings.add(examController.getSettingsJson(examId));
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
+      List<Long> examIds = examController.listExamIds(workspaceEntityId);
+      for (Long examId : examIds) {
+        settings.add(examController.getSettingsJson(examId));
+      }
     }
     return Response.ok().entity(settings).build();
   }
@@ -188,8 +187,10 @@ public class ExamRESTService {
     
     WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
     WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
+    boolean canManageMaterials = workspaceController.canIManageWorkspaceMaterials(workspaceEntity);
     WorkspaceUserEntity user = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-    if (user == null) {
+    // Allow access for non-course staff members who can manage course materials
+    if (user == null && !canManageMaterials) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -203,7 +204,7 @@ public class ExamRESTService {
     // Let's assume this endpoint will actually do what it is told
     
     boolean actuallyStartTheExam = true;
-    if (!settingsJson.getOpenForAll() && attendance == null) {
+    if (!settingsJson.getOpenForAll() && attendance == null && !canManageMaterials) {
       // You're trying to start an exam you're not part of
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -237,8 +238,9 @@ public class ExamRESTService {
     WorkspaceNode node = workspaceMaterialController.findWorkspaceNodeById(workspaceFolderId);
     WorkspaceEntity workspaceEntity = workspaceMaterialController.findWorkspaceEntityByNode(node);
     WorkspaceUserEntity user = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-    if (user == null) {
-      return Response.status(Status.FORBIDDEN).build();
+    // Allow access for non-course staff members who can manage course materials
+    if (user == null && !workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
     }
     ExamAttendance attendance = examController.findAttendance(workspaceFolderId, sessionController.getLoggedUserEntity().getId());
     if (attendance == null) {
@@ -271,8 +273,12 @@ public class ExamRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getAttendances(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     List<ExamAttendanceRestModel> attendances = new ArrayList<>();
-    List<Long> examIds = examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId());
+    // For those capable of managing workspace materials, return all exams. For others, only exams they can participate in
+    List<Long> examIds = workspaceController.canIManageWorkspaceMaterials(workspaceEntity)
+        ? examController.listExamIds(workspaceEntityId)
+        : examController.listExamIds(workspaceEntityId, sessionController.getLoggedUserEntity().getId());
     for (Long examId : examIds) {
       endOverdueExam(examId);
       attendances.add(examController.toRestModel(examId, sessionController.getLoggedUserEntity().getId(), false, true));
