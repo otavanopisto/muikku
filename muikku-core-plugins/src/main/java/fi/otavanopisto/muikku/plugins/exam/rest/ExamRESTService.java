@@ -154,14 +154,13 @@ public class ExamRESTService {
   @GET
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response getAllSettings(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
     List<ExamSettingsRestModel> settings = new ArrayList<>();
-    List<Long> examIds = examController.listExamIds(workspaceEntityId);
-    for (Long examId : examIds) {
-      settings.add(examController.getSettingsJson(examId));
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
+      List<Long> examIds = examController.listExamIds(workspaceEntityId);
+      for (Long examId : examIds) {
+        settings.add(examController.getSettingsJson(examId));
+      }
     }
     return Response.ok().entity(settings).build();
   }
