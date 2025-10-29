@@ -26,7 +26,6 @@ import {
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
-import { t } from "i18next";
 
 /**
  * AnnouncerToolbarProps
