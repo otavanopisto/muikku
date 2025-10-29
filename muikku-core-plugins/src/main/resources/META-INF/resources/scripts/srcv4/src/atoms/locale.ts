@@ -1,8 +1,7 @@
 import { atom } from "jotai";
-import MApi from "~/api";
 import type { LocaleType, LocalizationLocale } from "~/generated/client";
-
-const meApi = MApi.getMeApi();
+import { getMeApi } from "~/api";
+const meApi = getMeApi();
 
 export const langAtom = atom<LocaleType>("fi");
 

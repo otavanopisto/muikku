@@ -1,13 +1,13 @@
 import { atom } from "jotai";
-import MApi from "~/api";
+import { getDiscussionApi, getWorkspaceApi } from "~/api";
 import { userAtom } from "./auth";
 import {
   PermissionsService,
   type WorkspacePermissions,
 } from "../services/permissions";
 
-const discussionApi = MApi.getDiscussionApi();
-const workspaceApi = MApi.getWorkspaceApi();
+const discussionApi = getDiscussionApi();
+const workspaceApi = getWorkspaceApi();
 
 // Discussion area permissions atom
 export const discussionAreaPermissionsAtom = atom<unknown>(null);

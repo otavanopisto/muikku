@@ -1,5 +1,4 @@
 import { atom } from "jotai";
-import MApi, { isMApiError, isResponseError } from "~/api";
 import {
   atomWithQuery,
   atomWithInfiniteQuery,
@@ -9,8 +8,8 @@ import {
 import type { FlaggedStudent, GuiderStudent } from "~/generated/client";
 import type { InfiniteData } from "@tanstack/react-query";
 import { userAtom } from "./auth";
-
-const guiderApi = MApi.getGuiderApi();
+import { getGuiderApi, isMApiError, isResponseError } from "~/api";
+const guiderApi = getGuiderApi();
 
 export type FlaggedStudents = AtomWithInfiniteQueryResult<
   InfiniteData<{

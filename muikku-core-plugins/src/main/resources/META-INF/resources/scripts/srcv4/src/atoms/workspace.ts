@@ -1,10 +1,10 @@
 import { atom } from "jotai";
-import MApi, { isMApiError } from "~/api";
+import { getWorkspaceApi, getCoursepickerApi, isMApiError } from "~/api";
 import type { WorkspaceBasicInfo } from "~/generated/client";
 import { initializeWorkspacePermissionsAtom } from "./permissions";
 
-const workspaceApi = MApi.getWorkspaceApi();
-const coursepickerApi = MApi.getCoursepickerApi();
+const workspaceApi = getWorkspaceApi();
+const coursepickerApi = getCoursepickerApi();
 
 // Workspace info atom
 export const workspaceInfoAtom = atom<WorkspaceBasicInfo | null>(null);

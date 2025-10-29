@@ -106,276 +106,351 @@ const configuration = new Configuration({
   middleware: [new NoContentMiddleware()],
 });
 
+let activitylogsApi: ActivitylogsApi;
+let announcerApi: AnnouncerApi;
+let chatApi: ChatApi;
+let assessmentApi: AssessmentRequestApi;
+let ceeposApi: CeeposApi;
+let communicatorApi: CommunicatorApi;
+let coursepickerApi: CoursepickerApi;
+let credentialsApi: CredentialsApi;
+let discussionApi: DiscussionApi;
+let evaluationApi: EvaluationApi;
+let feedsApi: FeedsApi;
+let guiderApi: GuiderApi;
+let hopsApi: HopsApi;
+let hopsUpperSecondaryApi: HopsUpperSecondaryApi;
+let materialsApi: MaterialsApi;
+let matriculationApi: MatriculationApi;
+let meApi: MeApi;
+let notesApi: NotesApi;
+let organizationApi: OrganizationApi;
+let pedagogyApi: PedagogyApi;
+let recordsApi: RecordsApi;
+let userApi: UserApi;
+let usergroupApi: UsergroupApi;
+let userpluginApi: UserpluginApi;
+let worklistApi: WorklistApi;
+let workspaceApi: WorkspaceApi;
+let workspaceDiscussionApi: WorkspaceDiscussionApi;
+let workspaceNotesApi: WorkspaceNotesApi;
+let studentCardApi: StudentCardsApi;
+
 /**
- * Utility class for loading api with predefined configuration
+ * Gets initialized WorkspaceApi
+ * @returns WorkspaceApi
  */
-export default class MApi {
-  /**
-   * Gets initialized discussions API
-   *
-   * @returns initialized workspaces API
-   */
-  public static getActivitylogsApi() {
-    return new ActivitylogsApi(configuration);
+export function getWorkspaceApi() {
+  if (!workspaceApi) {
+    workspaceApi = new WorkspaceApi(configuration);
   }
-  /**
-   * Get initialized AnnouncerApi API
-   *
-   * @returns initialized ForumApi API
-   */
-  public static getAnnouncerApi() {
-    return new AnnouncerApi(configuration);
-  }
+  return workspaceApi;
+}
 
-  /**
-   * Get initialized ChatApi API
-   *
-   * @returns initialized ChatApi API
-   */
-  public static getChatApi() {
-    return new ChatApi(configuration);
+/**
+ * Gets initialized ActivitylogsApi
+ * @returns ActivitylogsApi
+ */
+export function getActivitylogsApi() {
+  if (!activitylogsApi) {
+    activitylogsApi = new ActivitylogsApi(configuration);
   }
+  return activitylogsApi;
+}
 
-  /**
-   * Get initialized AssessmentRequestApi API
-   *
-   * @returns initialized AssessmentRequestApi API
-   */
-  public static getAssessmentApi() {
-    return new AssessmentRequestApi(configuration);
+/**
+ * Gets initialized AnnouncerApi
+ * @returns AnnouncerApi
+ */
+export function getAnnouncerApi() {
+  if (!announcerApi) {
+    announcerApi = new AnnouncerApi(configuration);
   }
+  return announcerApi;
+}
 
-  /**
-   * Gets initialized Ceepos API
-   *
-   * @returns initialized workspaces API
-   */
-  public static getCeeposApi() {
-    return new CeeposApi(configuration);
+/**
+ * Gets initialized ChatApi
+ * @returns ChatApi
+ */
+export function getChatApi() {
+  if (!chatApi) {
+    chatApi = new ChatApi(configuration);
   }
+  return chatApi;
+}
 
-  /**
-   * Get initialized CommunicatorApi API
-   *
-   * @returns initialized ForumApi API
-   */
-  public static getCommunicatorApi() {
-    return new CommunicatorApi(configuration);
+/**
+ * Gets initialized AssessmentApi
+ * @returns AssessmentApi
+ */
+export function getAssessmentApi() {
+  if (!assessmentApi) {
+    assessmentApi = new AssessmentRequestApi(configuration);
   }
+  return assessmentApi;
+}
 
-  /**
-   * Get initialized Coursepicker API
-   *
-   * @returns initialized ForumApi API
-   */
-  public static getCoursepickerApi() {
-    return new CoursepickerApi(configuration);
+/**
+ * Gets initialized CeeposApi
+ * @returns CeeposApi
+ */
+export function getCeeposApi() {
+  if (!ceeposApi) {
+    ceeposApi = new CeeposApi(configuration);
   }
+  return ceeposApi;
+}
 
-  /**
-   * Get initialized CredentialsApi API
-   *
-   * @returns initialized CredentialsApi API
-   */
-  public static getCredentialsApi() {
-    return new CredentialsApi(configuration);
+/**
+ * Gets initialized CommunicatorApi
+ * @returns CommunicatorApi
+ */
+export function getCommunicatorApi() {
+  if (!communicatorApi) {
+    communicatorApi = new CommunicatorApi(configuration);
   }
+  return communicatorApi;
+}
 
-  /**
-   * Get initialized Discussion API
-   *
-   * @returns initialized ForumApi API
-   */
-  public static getDiscussionApi() {
-    return new DiscussionApi(configuration);
+/**
+ * Gets initialized CoursepickerApi
+ * @returns CoursepickerApi
+ */
+export function getCoursepickerApi() {
+  if (!coursepickerApi) {
+    coursepickerApi = new CoursepickerApi(configuration);
   }
+  return coursepickerApi;
+}
 
-  /**
-   * Get initialized EvaluationApi API
-   *
-   * @returns initialized EvaluationApi API
-   */
-  public static getEvaluationApi() {
-    return new EvaluationApi(configuration);
+/**
+ * Gets initialized CredentialsApi
+ * @returns CredentialsApi
+ */
+export function getCredentialsApi() {
+  if (!credentialsApi) {
+    credentialsApi = new CredentialsApi(configuration);
   }
+  return credentialsApi;
+}
 
-  /**
-   * Gets initialized Feeds API
-   *
-   * @returns initialized whoAmI API
-   */
-  public static getFeedsApi() {
-    return new FeedsApi(configuration);
+/**
+ * Gets initialized DiscussionApi
+ * @returns DiscussionApi
+ */
+export function getDiscussionApi() {
+  if (!discussionApi) {
+    discussionApi = new DiscussionApi(configuration);
   }
+  return discussionApi;
+}
 
-  /**
-   * Get initialized GuiderApi API
-   *
-   * @returns initialized GuiderApi API
-   */
-  public static getGuiderApi() {
-    return new GuiderApi(configuration);
+/**
+ * Gets initialized EvaluationApi
+ * @returns EvaluationApi
+ */
+export function getEvaluationApi() {
+  if (!evaluationApi) {
+    evaluationApi = new EvaluationApi(configuration);
   }
+  return evaluationApi;
+}
 
-  /**
-   * Gets initialized HopsApi API
-   *
-   * @returns initialized HopsApi API
-   */
-  public static getHopsApi() {
-    return new HopsApi(configuration);
+/**
+ * Gets initialized FeedsApi
+ * @returns FeedsApi
+ */
+export function getFeedsApi() {
+  if (!feedsApi) {
+    feedsApi = new FeedsApi(configuration);
   }
+  return feedsApi;
+}
 
-  /**
-   * Gets initialized HopsUpperSecondaryApi API
-   *
-   * @returns initialized HopsUpperSecondaryApi API
-   */
-  public static getHopsUpperSecondaryApi() {
-    return new HopsUpperSecondaryApi(configuration);
+/**
+ * Gets initialized GuiderApi
+ * @returns GuiderApi
+ */
+export function getGuiderApi() {
+  if (!guiderApi) {
+    guiderApi = new GuiderApi(configuration);
   }
+  return guiderApi;
+}
 
-  /**
-   * Get initialized MaterialsApi API
-   *
-   * @returns initialized MaterialsApi API
-   */
-  public static getMaterialsApi() {
-    return new MaterialsApi(configuration);
+/**
+ * Gets initialized HopsApi
+ * @returns HopsApi
+ */
+export function getHopsApi() {
+  if (!hopsApi) {
+    hopsApi = new HopsApi(configuration);
   }
+  return hopsApi;
+}
 
-  /**
-   * Get initialized MatriculationApi API
-   *
-   * @returns initialized MatriculationApi API
-   */
-  public static getMatriculationApi() {
-    return new MatriculationApi(configuration);
+/**
+ * Gets initialized HopsUpperSecondaryApi
+ * @returns HopsUpperSecondaryApi
+ */
+export function getHopsUpperSecondaryApi() {
+  if (!hopsUpperSecondaryApi) {
+    hopsUpperSecondaryApi = new HopsUpperSecondaryApi(configuration);
   }
+  return hopsUpperSecondaryApi;
+}
 
-  /**
-   * Gets initialized MeApi API
-   *
-   * @returns initialized MeApi API
-   */
-  public static getMeApi() {
-    return new MeApi(configuration);
+/**
+ * Gets initialized MaterialsApi
+ * @returns MaterialsApi
+ */
+export function getMaterialsApi() {
+  if (!materialsApi) {
+    materialsApi = new MaterialsApi(configuration);
   }
+  return materialsApi;
+}
 
-  /**
-   * Get initialized NotesApi API
-   *
-   * @returns initialized NotesApi API
-   */
-  public static getNotesApi() {
-    return new NotesApi(configuration);
+/**
+ * Gets initialized MatriculationApi
+ * @returns MatriculationApi
+ */
+export function getMatriculationApi() {
+  if (!matriculationApi) {
+    matriculationApi = new MatriculationApi(configuration);
   }
+  return matriculationApi;
+}
 
-  /**
-   * Get initialized OrganizationApi API
-   *
-   * @returns initialized OrganizationApi API
-   */
-  public static getOrganizationApi() {
-    return new OrganizationApi(configuration);
+/**
+ * Gets initialized MeApi
+ * @returns MeApi
+ */
+export function getMeApi() {
+  if (!meApi) {
+    meApi = new MeApi(configuration);
   }
+  return meApi;
+}
 
-  /**
-   * Get initialized PedagogyApi API
-   *
-   * @returns initialized PedagogyApi API
-   */
-  public static getPedagogyApi() {
-    return new PedagogyApi(configuration);
+/**
+ * Gets initialized NotesApi
+ * @returns NotesApi
+ */
+export function getNotesApi() {
+  if (!notesApi) {
+    notesApi = new NotesApi(configuration);
   }
+  return notesApi;
+}
 
-  /**
-   * Gets initialized RecordsApi API
-   *
-   * @returns initialized RecordsApi API
-   */
-  public static getRecordsApi() {
-    return new RecordsApi(configuration);
+/**
+ * Gets initialized OrganizationApi
+ * @returns OrganizationApi
+ */
+export function getOrganizationApi() {
+  if (!organizationApi) {
+    organizationApi = new OrganizationApi(configuration);
   }
+  return organizationApi;
+}
 
-  /**
-   * Get initialized UserApi API
-   *
-   * @returns initialized UserApi API
-   */
-  public static getUserApi() {
-    return new UserApi(configuration);
+/**
+ * Gets initialized PedagogyApi
+ * @returns PedagogyApi
+ */
+export function getPedagogyApi() {
+  if (!pedagogyApi) {
+    pedagogyApi = new PedagogyApi(configuration);
   }
+  return pedagogyApi;
+}
 
-  /**
-   * Get initialized UsergroupApi API
-   *
-   * @returns initialized UsergroupApi API
-   */
-  public static getUsergroupApi() {
-    return new UsergroupApi(configuration);
+/**
+ * Gets initialized RecordsApi
+ * @returns RecordsApi
+ */
+export function getRecordsApi() {
+  if (!recordsApi) {
+    recordsApi = new RecordsApi(configuration);
   }
+  return recordsApi;
+}
 
-  /**
-   * Get initialized UserpluginApi API
-   *
-   * @returns initialized UserpluginApi API
-   */
-  public static getUserpluginApi() {
-    return new UserpluginApi(configuration);
+/**
+ * Gets initialized UserApi
+ * @returns UserApi
+ */
+export function getUserApi() {
+  if (!userApi) {
+    userApi = new UserApi(configuration);
   }
+  return userApi;
+}
 
-  /**
-   * Get initialized Worklist API
-   *
-   * @returns initialized Worklist API
-   */
-  public static getWorklistApi() {
-    return new WorklistApi(configuration);
+/**
+ * Gets initialized UsergroupApi
+ * @returns UsergroupApi
+ */
+export function getUsergroupApi() {
+  if (!usergroupApi) {
+    usergroupApi = new UsergroupApi(configuration);
   }
+  return usergroupApi;
+}
 
-  /**
-   * Gets initialized workspaces API
-   *
-   * @returns initialized workspaces API
-   */
-  public static getWorkspaceApi() {
-    return new WorkspaceApi(configuration);
+/**
+ * Gets initialized UserpluginApi
+ * @returns UserpluginApi
+ */
+export function getUserpluginApi() {
+  if (!userpluginApi) {
+    userpluginApi = new UserpluginApi(configuration);
   }
+  return userpluginApi;
+}
 
-  /**
-   * Get initialized WorkspaceDiscussionApi API
-   *
-   * @returns initialized WorkspaceDiscussionApi API
-   */
-  public static getWorkspaceDiscussionApi() {
-    return new WorkspaceDiscussionApi(configuration);
+/**
+ * Gets initialized WorklistApi
+ * @returns WorklistApi
+ */
+export function getWorklistApi() {
+  if (!worklistApi) {
+    worklistApi = new WorklistApi(configuration);
   }
+  return worklistApi;
+}
 
-  /**
-   * Gets initialized workspace notes API
-   *
-   * @returns initialized workspace notes API
-   */
-  public static getWorkspaceNotesApi() {
-    return new WorkspaceNotesApi(configuration);
+/**
+ * Gets initialized WorkspaceDiscussionApi
+ * @returns WorkspaceDiscussionApi
+ */
+export function getWorkspaceDiscussionApi() {
+  if (!workspaceDiscussionApi) {
+    workspaceDiscussionApi = new WorkspaceDiscussionApi(configuration);
   }
+  return workspaceDiscussionApi;
+}
 
-  /**
-   * Gets initialized StudentCard API
-   *
-   * @returns initialized StudentCard API
-   */
-  public static getStudentCardApi() {
-    return new StudentCardsApi(configuration);
+/**
+ * Gets initialized WorkspaceNotesApi
+ * @returns WorkspaceNotesApi
+ */
+export function getWorkspaceNotesApi() {
+  if (!workspaceNotesApi) {
+    workspaceNotesApi = new WorkspaceNotesApi(configuration);
   }
+  return workspaceNotesApi;
+}
 
-  /**
-   * Gets initialized discussions API
-   *
-   * @returns initialized workspaces API
-   */
-  /* public static getDiscussionApi() {
-      return new DiscussionApi();
-    } */
+/**
+ * Gets initialized StudentCardApi
+ * @returns StudentCardApi
+ */
+export function getStudentCardApi() {
+  if (!studentCardApi) {
+    studentCardApi = new StudentCardsApi(configuration);
+  }
+  return studentCardApi;
 }

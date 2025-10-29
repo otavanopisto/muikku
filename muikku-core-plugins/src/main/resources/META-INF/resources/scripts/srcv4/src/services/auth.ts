@@ -1,5 +1,5 @@
 import type { Role, UserWhoAmI } from "~/generated/client";
-import MApi from "~/api";
+import { getUserApi } from "~/api";
 import { PermissionsService, type UserPermissions } from "./permissions";
 
 /**
@@ -52,7 +52,7 @@ export class AuthService {
    * @returns The user data
    */
   static async checkAuthenticationStatus() {
-    const userApi = MApi.getUserApi();
+    const userApi = getUserApi();
     const whoAmI = await userApi.getWhoAmI();
     return this.transformUserData(whoAmI);
   }
