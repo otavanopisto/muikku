@@ -14,6 +14,7 @@ import {
   EvaluationEvent,
   EvaluationGradeScale,
   EvaluationJournalFeedback,
+  ExamAttendance,
   MaterialCompositeReply,
   WorkspaceJournalEntry,
 } from "~/generated/client";
@@ -51,7 +52,8 @@ export interface EvaluationState {
   };
   evaluationCurrentStudentAssigments?: EvaluationStateAndData<EvaluationAssigmentData>;
   evaluationCompositeReplies?: EvaluationStateAndData<MaterialCompositeReply[]>;
-  openedAssignmentEvaluationId?: number;
+  evaluationExams?: EvaluationStateAndData<ExamAttendance[]>;
+  openedAssigmentOrExamId?: number;
   evaluationBilledPrice?: number;
   needsReloadEvaluationRequests: boolean;
   basePrice: EvaluationStateAndData<EvaluationPrices>;
@@ -87,11 +89,15 @@ export const initialState: EvaluationState = {
   },
   evaluationSelectedAssessmentId: undefined,
   evaluationCurrentStudentAssigments: { state: "LOADING", data: undefined },
-  openedAssignmentEvaluationId: undefined,
+  openedAssigmentOrExamId: undefined,
   evaluationBilledPrice: undefined,
   evaluationJournalComments: { comments: {}, commentsLoaded: [] },
   evaluationJournalFeedback: { state: "LOADING", data: undefined },
   evaluationDiaryEntries: {
+    state: "LOADING",
+    data: undefined,
+  },
+  evaluationExams: {
     state: "LOADING",
     data: undefined,
   },
@@ -237,16 +243,16 @@ export const evaluations: Reducer<EvaluationState> = (
       };
     }
 
-    case "EVALUATION_OPENED_ASSIGNMENT_UPDATE":
+    case "EVALUATION_OPENED_ASSIGNMENT_OR_EXAM_ID_UPDATE":
       return {
         ...state,
-        openedAssignmentEvaluationId: action.payload,
+        openedAssigmentOrExamId: action.payload,
       };
 
     case "EVALUATION_BILLED_PRICE_LOAD":
       return {
         ...state,
-        openedAssignmentEvaluationId: action.payload,
+        openedAssigmentOrExamId: action.payload,
       };
 
     case "EVALUATION_COMPOSITE_REPLIES_LOAD":
@@ -458,6 +464,38 @@ export const evaluations: Reducer<EvaluationState> = (
           comments: action.payload.updatedCommentsList,
         },
       };
+
+    case "EVALUATION_EXAMS_LOAD":
+      return {
+        ...state,
+        evaluationExams: {
+          state: state.evaluationExams.state,
+          data: action.payload,
+        },
+      };
+
+    case "EVALUATION_EXAMS_STATE_UPDATE":
+      return {
+        ...state,
+        evaluationExams: {
+          state: action.payload,
+          data: state.evaluationExams.data,
+        },
+      };
+
+    case "EVALUATION_EXAMS_UPDATE_EXAM_EVALUATION_INFO": {
+      const updatedExams = state.evaluationExams.data?.map((exam) =>
+        exam.folderId === action.payload.folderId ? action.payload : exam
+      );
+
+      return {
+        ...state,
+        evaluationExams: {
+          ...state.evaluationExams,
+          data: updatedExams,
+        },
+      };
+    }
 
     default:
       return state;

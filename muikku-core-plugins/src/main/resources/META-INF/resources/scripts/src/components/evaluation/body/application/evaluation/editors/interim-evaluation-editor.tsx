@@ -29,20 +29,21 @@ import {
   AudioAssessment,
   EvaluationAssessmentRequest,
   EvaluationGradeScale,
-  MaterialEvaluation,
-  SaveWorkspaceAssigmentAssessmentRequest,
+  NodeEvaluation,
+  CreateWorkspaceNodeAssessmentRequest,
   MaterialCompositeReply,
   WorkspaceMaterial,
+  UpdateWorkspaceNodeAssessmentRequest,
 } from "~/generated/client";
 import MApi, { isMApiError } from "~/api/api";
 import { withTranslation, WithTranslation } from "react-i18next";
 
 /**
- * AssignmentEditorProps
+ * InterimEvaluationEditorProps
  */
 interface InterimEvaluationEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
-  materialEvaluation?: MaterialEvaluation;
+  materialEvaluation?: NodeEvaluation;
   materialAssignment: WorkspaceMaterial;
   compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
@@ -68,7 +69,7 @@ interface InterimEvaluationEditorProps extends WithTranslation {
 }
 
 /**
- * AssignmentEditorState
+ * InterimEvaluationEditorState
  */
 interface InterimEvaluationEditorState {
   literalEvaluation: string;
@@ -81,7 +82,7 @@ interface InterimEvaluationEditorState {
 }
 
 /**
- * AssignmentEditor
+ * InterimEvaluationEditor
  */
 class InterimEvaluationEditor extends SessionStateComponent<
   InterimEvaluationEditorProps,
@@ -168,13 +169,17 @@ class InterimEvaluationEditor extends SessionStateComponent<
    * @param data.workspaceMaterialId workspaceMaterialId
    * @param data.dataToSave data ToSave
    * @param data.materialId materialId
+   * @param data.edit edit
    */
   saveAssignmentEvaluationGradeToServer = async (data: {
     workspaceEntityId: number;
     userEntityId: number;
     workspaceMaterialId: number;
-    dataToSave: SaveWorkspaceAssigmentAssessmentRequest;
+    dataToSave:
+      | CreateWorkspaceNodeAssessmentRequest
+      | UpdateWorkspaceNodeAssessmentRequest;
     materialId: number;
+    edit: boolean;
   }) => {
     const evaluationApi = MApi.getEvaluationApi();
 
@@ -188,15 +193,24 @@ class InterimEvaluationEditor extends SessionStateComponent<
       data;
 
     try {
-      const assessmentWithAudio =
-        await evaluationApi.saveWorkspaceAssigmentAssessment({
-          workspaceId: workspaceEntityId,
-          userEntityId: userEntityId,
-          workspaceMaterialId: workspaceMaterialId,
-          saveWorkspaceAssigmentAssessmentRequest: {
-            ...dataToSave,
-          },
-        });
+      const assessmentWithAudio = data.edit
+        ? await evaluationApi.updateWorkspaceNodeAssessment({
+            workspaceId: workspaceEntityId,
+            userEntityId: userEntityId,
+            workspaceNodeId: workspaceMaterialId,
+            assessmentId: this.props.compositeReplies.evaluationInfo.id,
+            updateWorkspaceNodeAssessmentRequest: {
+              ...(dataToSave as UpdateWorkspaceNodeAssessmentRequest),
+            },
+          })
+        : await evaluationApi.createWorkspaceNodeAssessment({
+            workspaceId: workspaceEntityId,
+            userEntityId: userEntityId,
+            workspaceNodeId: workspaceMaterialId,
+            createWorkspaceNodeAssessmentRequest: {
+              ...(dataToSave as CreateWorkspaceNodeAssessmentRequest),
+            },
+          });
 
       this.props.updateCurrentStudentCompositeRepliesData({
         workspaceId: workspaceEntityId,
@@ -260,7 +274,8 @@ class InterimEvaluationEditor extends SessionStateComponent<
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
     /* const { evaluationGradeSystem } = this.props.evaluations; */
-    const { workspaceEntityId, userEntityId } = this.props.selectedAssessment;
+    const { compositeReplies, selectedAssessment } = this.props;
+    const { workspaceEntityId, userEntityId } = selectedAssessment;
 
     /**
      * Backend endpoint is different for normal grade evalution and supplementation
@@ -270,6 +285,9 @@ class InterimEvaluationEditor extends SessionStateComponent<
       userEntityId: userEntityId,
       workspaceMaterialId: this.props.materialAssignment.id,
       dataToSave: {
+        identifier: compositeReplies.evaluationInfo
+          ? compositeReplies.evaluationInfo.id.toString()
+          : undefined,
         assessorIdentifier: this.props.status.userSchoolDataIdentifier,
         verbalAssessment: this.state.literalEvaluation,
         assessmentDate: new Date().getTime(),
@@ -277,6 +295,7 @@ class InterimEvaluationEditor extends SessionStateComponent<
         evaluationType: "GRADED",
       },
       materialId: this.props.materialAssignment.materialId,
+      edit: !!compositeReplies.evaluationInfo,
     });
   };
 

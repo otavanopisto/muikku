@@ -3,18 +3,17 @@ import equals = require("deep-equal");
 import Dropdown from "~/components/general/dropdown";
 import Synchronizer from "./base/synchronizer";
 import AutosizeInput from "react-input-autosize";
-import { UsedAs } from "~/@types/shared";
 import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import "~/sass/elements/textfield.scss";
+import { CommonFieldProps } from "../types";
 
 /**
  * TextFieldProps
  */
-interface TextFieldProps extends WithTranslation {
-  type: string;
+interface TextFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     autogrow: boolean;
     columns: string;
@@ -27,19 +26,6 @@ interface TextFieldProps extends WithTranslation {
       text: string;
     }>;
   };
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-  readOnly?: boolean;
-  initialValue?: string;
-  usedAs: UsedAs;
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => any;
-
-  invisible: boolean;
 }
 
 /**
@@ -340,6 +326,7 @@ class TextField extends React.Component<TextFieldProps, TextFieldState> {
     const doNotInjectStyles = {
       injectStyles: false,
       minWidth: textfieldWidth,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
     const wrapperStyle = {

@@ -111,6 +111,14 @@ public class AnnouncementRESTModel {
     this.unread = unread;
   }
 
+  public boolean isPinned() {
+    return pinned;
+  }
+
+  public void setPinned(boolean pinned) {
+    this.pinned = pinned;
+  }
+
   public List<WorkspaceBasicInfo> getWorkspaces() {
     return workspaces;
   }
@@ -132,5 +140,6 @@ public class AnnouncementRESTModel {
   private Boolean publiclyVisible;
   private AnnouncementTemporalStatus temporalStatus;
   private boolean unread;
+  private boolean pinned;
   private List<WorkspaceBasicInfo> workspaces;
 }

@@ -288,6 +288,7 @@ const EvaluationJournalEvent = React.forwardRef<
         assignmentType: "JOURNAL",
         ai: "DISALLOWED",
         path: workspaceMaterialPath,
+        exam: false,
       };
 
       return (

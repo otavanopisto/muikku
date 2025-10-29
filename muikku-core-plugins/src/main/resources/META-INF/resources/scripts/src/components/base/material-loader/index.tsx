@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 //NOTE this is a sandbox file, because the code in the material loader is so complex I created this self contained
 //blackbox environment that makes it so that the material loader behaves like one component, this is bad because
 //it does not have the same capabilities and efficiency as the other components, and cannot be easily modified
@@ -7,40 +8,27 @@ import * as React from "react";
 import {
   MaterialContentNodeWithIdAndLogic,
   WorkspaceDataType,
+  WorkspaceMaterialEditorType,
 } from "~/reducers/workspaces";
 import { StatusType } from "~/reducers/base/status";
-import { StateType } from "~/reducers";
 import { WebsocketStateType } from "~/reducers/util/websocket";
-import { Action, bindActionCreators, Dispatch } from "redux";
-import {
-  UpdateAssignmentStateTriggerType,
-  updateAssignmentState,
-} from "~/actions/workspaces";
-import {
-  DisplayNotificationTriggerType,
-  displayNotification,
-} from "~/actions/base/notifications";
 import "~/sass/elements/rich-text.scss";
 import "~/sass/elements/material-page.scss";
 import { UsedAs } from "~/@types/shared";
 import {
-  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
-  SetWorkspaceMaterialEditorStateTriggerType,
-  UpdateWorkspaceMaterialContentNodeTriggerType,
-  setWorkspaceMaterialEditorState,
-  updateWorkspaceMaterialContentNode,
-  requestWorkspaceMaterialContentNodeAttachments,
-} from "~/actions/workspaces/material";
-import { MaterialCompositeReply } from "~/generated/client";
-import { AnyActionType } from "~/actions";
+  MaterialCompositeReply,
+  MaterialCompositeReplyStateType,
+} from "~/generated/client";
 import MApi from "~/api/api";
-import { connect } from "react-redux";
 import { isEqual } from "lodash";
+import { NotificationSeverityType } from "~/reducers/base/notifications";
+import { STATES } from "./helpers";
+import { StateConfig } from "./types";
 
 /* i18n.t("", { ns: "materials" }); */
 
 //These represent the states assignments and exercises can be in
-const STATES = [
+/* const STATES = [
   {
     "assignment-type": "EXERCISE",
     //usually exercises cannot be withdrawn but they might be in extreme cases when a evaluated has
@@ -194,7 +182,71 @@ const STATES = [
     "button-disabled": true,
     "fields-read-only": true,
   },
-];
+]; */
+
+/**
+ * Callback parameter types for MaterialLoader
+ */
+export interface AssignmentStateChangeCallback {
+  (
+    newState: MaterialCompositeReplyStateType,
+    shouldUpdateServer: boolean,
+    workspaceId: number,
+    workspaceMaterialId: number,
+    workspaceMaterialReplyId?: number,
+    successText?: string,
+    onComplete?: () => void
+  ): void;
+}
+
+/**
+ * EditorStateChangeParams
+ */
+export interface EditorStateChangeCallback {
+  (
+    newState: WorkspaceMaterialEditorType,
+    loadCurrentDraftNodeValue?: boolean
+  ): void;
+}
+
+/**
+ * ContentNodeUpdateParams
+ */
+export interface ContentNodeUpdateCallback {
+  (data: {
+    workspace: WorkspaceDataType;
+    material: MaterialContentNodeWithIdAndLogic;
+    update: Partial<MaterialContentNodeWithIdAndLogic>;
+    isDraft?: boolean;
+    updateLinked?: boolean;
+    removeAnswers?: boolean;
+    success?: () => any;
+    fail?: () => any;
+    dontTriggerReducerActions?: boolean;
+  }): void;
+}
+
+/**
+ * NotificationParams
+ */
+export interface NotificationCallback {
+  (
+    message: string,
+    severity: NotificationSeverityType,
+    timeout?: number,
+    customId?: string | number
+  ): void;
+}
+
+/**
+ * AttachmentsRequestParams
+ */
+export interface AttachmentsRequestCallback {
+  (
+    workspace: WorkspaceDataType,
+    material: MaterialContentNodeWithIdAndLogic
+  ): void;
+}
 
 /**
  * MaterialLoaderProps
@@ -253,7 +305,7 @@ export interface MaterialLoaderProps {
 
   /**
    * A boolean to load the composite replies if they haven't been given
-   * Shouldn't use if answerable as the updateAssignmentState function is
+   * Shouldn't use if answerable as the onUpdateAssignmentState function is
    * used
    */
   loadCompositeReplies?: boolean;
@@ -261,11 +313,11 @@ export interface MaterialLoaderProps {
 
   readOnly?: boolean;
 
-  updateAssignmentState: UpdateAssignmentStateTriggerType;
-  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
-  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
-  displayNotification: DisplayNotificationTriggerType;
-  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType;
+  onUpdateAssignmentState?: AssignmentStateChangeCallback;
+  onSetWorkspaceMaterialEditorState?: EditorStateChangeCallback;
+  onUpdateWorkspaceMaterialContentNode?: ContentNodeUpdateCallback;
+  onDisplayNotification?: NotificationCallback;
+  onRequestWorkspaceMaterialContentNodeAttachments?: AttachmentsRequestCallback;
 
   onAnswerChange?: (name: string, value?: boolean) => any;
   onAnswerCheckableChange?: (answerCheckable: boolean) => any;
@@ -308,7 +360,7 @@ interface MaterialLoaderState {
 
   //A registry for the right and wrong answers as told by the material
   answerRegistry: { [name: string]: any };
-  stateConfiguration: any;
+  stateConfiguration: StateConfig | null;
 }
 
 //A cheap cache for material replies and composite replies used by the hack
@@ -371,23 +423,23 @@ class MaterialLoader extends React.Component<
     this.onAnswerChange = this.onAnswerChange.bind(this);
     this.onAnswerCheckableChange = this.onAnswerCheckableChange.bind(this);
 
-    let stateConfiguration = null;
+    let stateConfiguration: StateConfig | null = null;
 
     //if it is answerable
     if (props.answerable && props.material) {
       //lets try and get the state configuration
       stateConfiguration = STATES.filter(
-        (state: any) =>
+        (state) =>
           // by assignment type first. If it is not found, then it is not answerable
           // There two type situation. First is for normal workspace material use and
           // second is for evaluation use.
-          state["assignment-type"] === props.material.assignmentType
-      ).find((state: any) => {
+          state.assignmentType === props.material.assignmentType
+      ).find((state) => {
         //then by state, if no composite reply is given assume UNANSWERED
         const stateRequired =
           (props.compositeReplies && props.compositeReplies.state) ||
           "UNANSWERED";
-        const statesInIt = state["state"];
+        const statesInIt = state.states;
         return (
           statesInIt === stateRequired ||
           (statesInIt instanceof Array && statesInIt.includes(stateRequired))
@@ -395,7 +447,7 @@ class MaterialLoader extends React.Component<
       });
 
       //If checks answers, make it with answersChecked and answersVisible starting as true
-      if (stateConfiguration && stateConfiguration["checks-answers"]) {
+      if (stateConfiguration && stateConfiguration?.checksAnswers) {
         state.answersChecked =
           (props.material.correctAnswers || "NEVER") !== "NEVER";
         state.answersVisible =
@@ -458,11 +510,11 @@ class MaterialLoader extends React.Component<
 
     // Calculate new state configuration
     const newStateConfiguration = STATES.filter(
-      (state: any) => state["assignment-type"] === props.material.assignmentType
-    ).find((state: any) => {
+      (state) => state.assignmentType === props.material.assignmentType
+    ).find((state) => {
       const stateRequired =
         (compositeReplies && compositeReplies.state) || "UNANSWERED";
-      const statesInIt = state["state"];
+      const statesInIt = state.states;
       return (
         statesInIt === stateRequired ||
         (statesInIt instanceof Array && statesInIt.includes(stateRequired))
@@ -492,7 +544,7 @@ class MaterialLoader extends React.Component<
 
     // Handle answer checking logic when stateConfiguration changes
     if (!isEqual(prevState.stateConfiguration, this.state.stateConfiguration)) {
-      const shouldCheck = this.state.stateConfiguration["checks-answers"];
+      const shouldCheck = this.state.stateConfiguration?.checksAnswers;
       const isAlwaysShow =
         (this.props.material.correctAnswers || "ALWAYS") === "ALWAYS";
 
@@ -578,7 +630,7 @@ class MaterialLoader extends React.Component<
    */
   onPushAnswer(params?: any) {
     //So now we need that juicy success state
-    if (this.state.stateConfiguration["success-state"]) {
+    if (this.state.stateConfiguration?.successState) {
       //Get the composite reply
       const compositeReplies =
         this.props.compositeReplies || this.state.compositeRepliesInState;
@@ -588,17 +640,18 @@ class MaterialLoader extends React.Component<
       //we put the required workspace id and workspace material id
       //add a worspaceMaterialReplyId if we have one, and hopefully we will, for most of the cases that is
       //We add the success text if we have one, ofc it is a string to translate
-      this.props.updateAssignmentState(
-        this.state.stateConfiguration["success-state"],
-        false,
-        this.props.workspace.id,
-        this.props.material.workspaceMaterialId,
-        compositeReplies && compositeReplies.workspaceMaterialReplyId,
-        this.state.stateConfiguration["success-text"]
-          ? this.state.stateConfiguration["success-text"]
-          : undefined,
-        this.props.onAssignmentStateModified
-      );
+      this.props.onUpdateAssignmentState &&
+        this.props.onUpdateAssignmentState(
+          this.state.stateConfiguration?.successState,
+          false,
+          this.props.workspace.id,
+          this.props.material.workspaceMaterialId,
+          compositeReplies && compositeReplies.workspaceMaterialReplyId,
+          this.state.stateConfiguration?.successText
+            ? this.state.stateConfiguration?.successText
+            : undefined,
+          this.props.onAssignmentStateModified
+        );
     }
 
     this.props.onPushAnswer && this.props.onPushAnswer();
@@ -716,7 +769,7 @@ class MaterialLoader extends React.Component<
     if (
       this.props.answerable &&
       this.state.stateConfiguration &&
-      this.state.stateConfiguration["fields-read-only"]
+      this.state.stateConfiguration?.fieldsReadOnly
     ) {
       return true;
     }
@@ -803,32 +856,4 @@ class MaterialLoader extends React.Component<
   }
 }
 
-/**
- * mapStateToProps
- * @param state state
- */
-function mapStateToProps(state: StateType) {
-  return {
-    status: state.status,
-    websocket: state.websocket,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators(
-    {
-      updateAssignmentState,
-      setWorkspaceMaterialEditorState,
-      updateWorkspaceMaterialContentNode,
-      displayNotification,
-      requestWorkspaceMaterialContentNodeAttachments,
-    },
-    dispatch
-  );
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(MaterialLoader);
+export default MaterialLoader;

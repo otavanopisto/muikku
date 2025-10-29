@@ -8,6 +8,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer_;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
@@ -26,6 +27,20 @@ public class WorkspaceMaterialFieldAnswerDAO extends CorePluginsDAO<WorkspaceMat
     criteria.select(root);
     criteria.where(
       criteriaBuilder.equal(root.get(WorkspaceMaterialFieldAnswer_.field), field)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<WorkspaceMaterialFieldAnswer> listByReply(WorkspaceMaterialReply reply) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterialFieldAnswer> criteria = criteriaBuilder.createQuery(WorkspaceMaterialFieldAnswer.class);
+    Root<WorkspaceMaterialFieldAnswer> root = criteria.from(WorkspaceMaterialFieldAnswer.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceMaterialFieldAnswer_.reply), reply)
     );
 
     return entityManager.createQuery(criteria).getResultList();

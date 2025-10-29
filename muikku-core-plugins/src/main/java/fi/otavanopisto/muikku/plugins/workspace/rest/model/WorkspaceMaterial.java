@@ -12,7 +12,7 @@ public class WorkspaceMaterial {
 
   public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, boolean hidden,
       WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers,
-      String path, String title, WorkspaceLanguage titleLanguage, Double maxPoints, WorkspaceMaterialAI ai) {
+      String path, String title, WorkspaceLanguage titleLanguage, Double maxPoints, WorkspaceMaterialAI ai, boolean exam) {
     super();
     this.id = id;
     this.materialId = materialId;
@@ -26,6 +26,7 @@ public class WorkspaceMaterial {
     this.titleLanguage = titleLanguage;
     this.maxPoints = maxPoints;
     this.ai = ai;
+    this.exam = exam;
   }
   
   public Long getId() {
@@ -128,6 +129,14 @@ public class WorkspaceMaterial {
     this.ai = ai;
   }
 
+  public boolean isExam() {
+    return exam;
+  }
+
+  public void setExam(boolean exam) {
+    this.exam = exam;
+  }
+
   private Long id;
   private Long materialId;
   private Long parentId;
@@ -140,5 +149,6 @@ public class WorkspaceMaterial {
   private WorkspaceLanguage titleLanguage;
   private Double maxPoints;
   private WorkspaceMaterialAI ai;
+  private boolean exam;
   
 }

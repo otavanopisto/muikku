@@ -10,7 +10,7 @@ export interface RecordValue {
   contentType: string;
   uploading?: boolean;
   failed?: boolean;
-
+  description?: string;
   //only has a value while uploading
   progress?: number;
   file?: File;
