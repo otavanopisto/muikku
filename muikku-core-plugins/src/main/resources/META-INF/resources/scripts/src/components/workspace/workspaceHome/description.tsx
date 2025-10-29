@@ -18,14 +18,22 @@ import {
   displayNotification,
   DisplayNotificationTriggerType,
 } from "~/actions/base/notifications";
+import { WebsocketStateType } from "~/reducers/util/websocket";
+import { StatusType } from "~/reducers/base/status";
 
 /**
  * DescriptionPanelProps
  */
 interface DescriptionPanelProps extends WithTranslation {
-  workspace: WorkspaceDataType;
   isInFrontPage?: boolean;
+
+  // Redux state
   workspaceEditMode: WorkspaceEditModeStateType;
+  workspace: WorkspaceDataType;
+  status: StatusType;
+  websocket: WebsocketStateType;
+
+  // Redux actions
   displayNotification: DisplayNotificationTriggerType;
 }
 
@@ -59,6 +67,8 @@ class DescriptionPanel extends React.Component<
         <div className="panel__body">
           {this.props.workspace && (
             <MaterialLoader
+              status={this.props.status}
+              websocket={this.props.websocket}
               editable={this.props.workspaceEditMode.active}
               modifiers="workspace-description"
               material={this.props.workspace.contentDescription}
@@ -99,6 +109,8 @@ class DescriptionPanel extends React.Component<
  */
 function mapStateToProps(state: StateType) {
   return {
+    status: state.status,
+    websocket: state.websocket,
     workspace: state.workspaces.currentWorkspace,
     workspaceEditMode: state.workspaces.editMode,
   };

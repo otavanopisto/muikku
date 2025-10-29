@@ -20,6 +20,8 @@ import {
   setSelectedAssessmentAndLoadEvents,
   LoadEvaluationJournalFeedbackFromServerTriggerType,
   loadEvaluationJournalFeedbackFromServer,
+  loadEvaluationExamsFromServer,
+  LoadEvaluationExamsTriggerType,
 } from "~/actions/main-function/evaluation/evaluationActions";
 import { EvaluationAssessmentRequest } from "~/generated/client";
 
@@ -42,6 +44,7 @@ interface EvaluateDialogProps {
   loadEvaluationJournalFeedbackFromServer: LoadEvaluationJournalFeedbackFromServerTriggerType;
   loadEvaluationSelectedAssessmentJournalEventsFromServer: LoadEvaluationJournalEvents;
   loadBasePriceFromServer: LoadBasePrice;
+  loadEvaluationExamsFromServer: LoadEvaluationExamsTriggerType;
 }
 
 /**
@@ -74,13 +77,14 @@ class EvaluateDialog extends React.Component<
     this.props.setSelectedAssessmentAndLoadEvents({ assessment });
 
     this.props.loadEvaluationCompositeRepliesFromServer({
-      userEntityId: this.props.assessment.userEntityId,
+      userEntityId: assessment.userEntityId,
       workspaceId: assessment.workspaceEntityId,
     });
 
     this.props.loadCurrentStudentAssigmentsData({
       workspaceId: assessment.workspaceEntityId,
       workspaceUserEntityId: assessment.workspaceUserEntityId,
+      userEntityId: assessment.userEntityId,
     });
 
     this.props.loadEvaluationJournalFeedbackFromServer({
@@ -94,6 +98,11 @@ class EvaluateDialog extends React.Component<
 
     this.props.loadBasePriceFromServer({
       workspaceEntityId: assessment.workspaceEntityId,
+    });
+
+    this.props.loadEvaluationExamsFromServer({
+      workspaceEntityId: assessment.workspaceEntityId,
+      studentEntityId: assessment.userEntityId,
     });
   };
 
@@ -159,6 +168,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
       loadEvaluationJournalFeedbackFromServer,
       loadEvaluationSelectedAssessmentJournalEventsFromServer,
       loadBasePriceFromServer,
+      loadEvaluationExamsFromServer,
     },
     dispatch
   );

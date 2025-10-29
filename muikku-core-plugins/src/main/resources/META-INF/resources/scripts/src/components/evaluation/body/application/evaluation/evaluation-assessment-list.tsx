@@ -108,42 +108,44 @@ const AssessmentList = (props: AssessmentListProps) => {
       );
     }
 
+    const nonExamAssignments =
+      evaluation.evaluationCurrentStudentAssigments.data.assigments.filter(
+        (item) => !item.exam
+      );
+
     // Render assignments
-    return evaluation.evaluationCurrentStudentAssigments.data.assigments.map(
-      (item, i) => {
-        const compositeReply =
-          evaluation.evaluationCompositeReplies?.data?.find(
-            (cReply) => cReply.workspaceMaterialId === item.id
-          );
+    return nonExamAssignments.map((item, i) => {
+      const compositeReply = evaluation.evaluationCompositeReplies?.data?.find(
+        (cReply) => cReply.workspaceMaterialId === item.id
+      );
 
-        const showAsHidden = item.hidden
-          ? showAsHiddenEvaluationAssignment(compositeReply)
-          : false;
+      const showAsHidden = item.hidden
+        ? showAsHiddenEvaluationAssignment(compositeReply)
+        : false;
 
-        // If assignment is hidden and condition to show as hidden is not met, return null
-        if (item.hidden && !showAsHidden) return null;
+      // If assignment is hidden and condition to show as hidden is not met, return null
+      if (item.hidden && !showAsHidden) return null;
 
-        // Get workspace
-        const workspace = workspaces.find(
-          (eWorkspace) => eWorkspace.id === selectedAssessment.workspaceEntityId
-        );
+      // Get workspace
+      const workspace = workspaces.find(
+        (eWorkspace) => eWorkspace.id === selectedAssessment.workspaceEntityId
+      );
 
-        // Render assignment
-        return (
-          <AssignmentItem
-            key={i}
-            item={item}
-            workspace={workspace}
-            compositeReply={compositeReply}
-            showAsHidden={showAsHidden}
-            isOpen={openAssignmentIds.includes(item.id)}
-            onOpenClick={handleToggleAssignment}
-            onSave={handleCloseAll}
-            selectedAssessment={selectedAssessment}
-          />
-        );
-      }
-    );
+      // Render assignment
+      return (
+        <AssignmentItem
+          key={i}
+          item={item}
+          workspace={workspace}
+          compositeReply={compositeReply}
+          showAsHidden={showAsHidden}
+          isOpen={openAssignmentIds.includes(item.id)}
+          onOpenClick={handleToggleAssignment}
+          onSave={handleCloseAll}
+          selectedAssessment={selectedAssessment}
+        />
+      );
+    });
   };
 
   return (

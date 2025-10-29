@@ -183,6 +183,25 @@ public class LanguageProfileSampleServlet extends HttpServlet {
         IOUtils.closeQuietly(input);
       }
     }
+    
+    // Value
+    
+    String value = null;
+    Part valuePart = req.getPart("value");
+    if (valuePart != null) {
+      input = valuePart.getInputStream();
+      try {
+        value = IOUtils.toString(input, StandardCharsets.UTF_8); 
+      }
+      catch (Exception e) {
+        sendResponse(resp, String.format("Error parsing value: %s", e.getMessage()), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        return;
+      }
+      finally {
+        IOUtils.closeQuietly(input);
+      }
+    }
+
 
     // Student + folder
     
@@ -226,7 +245,7 @@ public class LanguageProfileSampleServlet extends HttpServlet {
         contentType = Files.probeContentType(sampleFile.toPath());
       }
       
-      LanguageProfileSample sample = languageProfileController.createSample(profile, language, type, fileUuid, fileName, contentType);
+      LanguageProfileSample sample = languageProfileController.createSample(profile, language, type, fileUuid, fileName, value, contentType);
       LanguageProfileSampleRestModel model = new LanguageProfileSampleRestModel();
       model.setFileName(sample.getFileName());
       model.setId(sample.getId());

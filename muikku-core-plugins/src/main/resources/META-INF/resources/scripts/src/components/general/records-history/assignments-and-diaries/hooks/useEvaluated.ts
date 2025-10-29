@@ -28,12 +28,14 @@ const workspaceApi = MApi.getWorkspaceApi();
  * Custom hook for student study hours
  *
  * @param workspaceId workspaceId
+ * @param userEntityId userEntityId
  * @param tabOpen tabOpen
  * @param displayNotification displayNotification
  * @returns student study hours
  */
 export const useEvaluatedAssignments = (
   workspaceId: number,
+  userEntityId: number,
   tabOpen: AssignmentsTabType,
   displayNotification: DisplayNotificationTriggerType
 ) => {
@@ -64,10 +66,14 @@ export const useEvaluatedAssignments = (
          */
         const [materials] = await Promise.all([
           (async () => {
-            const assignments = await workspaceApi.getWorkspaceMaterials({
+            let assignments = await workspaceApi.getWorkspaceMaterials({
               workspaceEntityId: workspaceId,
               assignmentType: "EVALUATED",
+              userEntityId: userEntityId,
             });
+
+            // Filter out assignments that are marked to be part of exam
+            assignments = assignments.filter((assignment) => !assignment.exam);
 
             const [materials] = await Promise.all([
               Promise.all(
@@ -138,6 +144,7 @@ export const useEvaluatedAssignments = (
     tabOpen,
     evaluatedAssignmentsData.evaluatedAssignments.length,
     t,
+    userEntityId,
   ]);
 
   return {

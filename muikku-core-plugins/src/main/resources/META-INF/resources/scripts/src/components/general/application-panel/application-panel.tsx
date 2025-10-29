@@ -68,43 +68,40 @@ export default class ApplicationPanel extends React.Component<
           }`}
         >
           {this.props.title ? (
-            <div className="application-panel__header">
-              <div
-                className={`application-panel__header   ${
+            <h1
+              className={`application-panel__header   ${
+                this.props.modifier
+                  ? "application-panel__header--" + this.props.modifier
+                  : ""
+              }`}
+            >
+              <span
+                className={`application-panel__header-title ${
                   this.props.modifier
-                    ? "application-panel__header--" + this.props.modifier
+                    ? "application-panel__header-title--" + this.props.modifier
                     : ""
                 }`}
               >
+                {this.props.title}
+                {this.props.panelOptions ? (
+                  <div className="application-panel__header-options">
+                    {this.props.panelOptions}
+                  </div>
+                ) : null}
+              </span>
+              {this.props.icon ? (
                 <span
-                  className={`application-panel__header-title ${
+                  className={`application-panel__header-actions ${
                     this.props.modifier
-                      ? "application-panel__header-title--" +
+                      ? "application-panele__header-actions--" +
                         this.props.modifier
                       : ""
                   }`}
                 >
-                  {this.props.title}
-                  {this.props.panelOptions ? (
-                    <div className="application-panel__header-options">
-                      {this.props.panelOptions}
-                    </div>
-                  ) : null}
+                  {this.props.icon}
                 </span>
-                {this.props.icon ? (
-                  <span
-                    className={`application-panel__header-actions ${
-                      this.props.modifier
-                        ? "application-panele__header-actions--" +
-                          this.props.modifier
-                        : ""
-                    }`}
-                  >
-                    {this.props.icon}
-                  </span>
-                ) : null}
-              </div>
-            </div>
+              ) : null}
+            </h1>
           ) : null}
 
           {this.props.panelTabs ? (

@@ -27,9 +27,9 @@ import {
   EvaluationAssessmentRequest,
   EvaluationGradeScale,
   EvaluationType,
-  MaterialEvaluation,
-  SaveWorkspaceAssigmentAssessmentRequest,
-  UpdateWorkspaceAssigmentAssessmentRequest,
+  NodeEvaluation,
+  CreateWorkspaceNodeAssessmentRequest,
+  UpdateWorkspaceNodeAssessmentRequest,
   MaterialCompositeReply,
   WorkspaceMaterial,
 } from "~/generated/client";
@@ -42,7 +42,7 @@ import { localize } from "~/locales/i18n";
  */
 interface AssignmentEditorProps extends WithTranslation {
   selectedAssessment: EvaluationAssessmentRequest;
-  materialEvaluation?: MaterialEvaluation;
+  materialEvaluation?: NodeEvaluation;
   materialAssignment: WorkspaceMaterial;
   compositeReplies: MaterialCompositeReply;
   evaluations: EvaluationState;
@@ -295,8 +295,8 @@ class AssignmentEditor extends SessionStateComponent<
     userEntityId: number;
     workspaceMaterialId: number;
     dataToSave:
-      | SaveWorkspaceAssigmentAssessmentRequest
-      | UpdateWorkspaceAssigmentAssessmentRequest;
+      | CreateWorkspaceNodeAssessmentRequest
+      | UpdateWorkspaceNodeAssessmentRequest;
     materialId: number;
     defaultGrade: string;
     edit: boolean;
@@ -314,21 +314,21 @@ class AssignmentEditor extends SessionStateComponent<
 
     try {
       const assessmentWithAudio = data.edit
-        ? await evaluationApi.updateWorkspaceAssigmentAssessment({
+        ? await evaluationApi.updateWorkspaceNodeAssessment({
             workspaceId: workspaceEntityId,
             userEntityId: userEntityId,
-            workspaceMaterialId: workspaceMaterialId,
+            workspaceNodeId: workspaceMaterialId,
             assessmentId: this.props.compositeReplies.evaluationInfo.id,
-            updateWorkspaceAssigmentAssessmentRequest: {
-              ...(dataToSave as UpdateWorkspaceAssigmentAssessmentRequest),
+            updateWorkspaceNodeAssessmentRequest: {
+              ...(dataToSave as UpdateWorkspaceNodeAssessmentRequest),
             },
           })
-        : await evaluationApi.saveWorkspaceAssigmentAssessment({
+        : await evaluationApi.createWorkspaceNodeAssessment({
             workspaceId: workspaceEntityId,
             userEntityId: userEntityId,
-            workspaceMaterialId: workspaceMaterialId,
-            saveWorkspaceAssigmentAssessmentRequest: {
-              ...(dataToSave as SaveWorkspaceAssigmentAssessmentRequest),
+            workspaceNodeId: workspaceMaterialId,
+            createWorkspaceNodeAssessmentRequest: {
+              ...(dataToSave as CreateWorkspaceNodeAssessmentRequest),
             },
           });
 

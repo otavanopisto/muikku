@@ -4,12 +4,13 @@ import Draggable, { Droppable } from "~/components/general/draggable";
 import equals = require("deep-equal");
 import Synchronizer from "./base/synchronizer";
 import { StrMathJAX } from "../static/strmathjax";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../base/index";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import { Instructions } from "~/components/general/instructions";
 import { withTranslation, WithTranslation } from "react-i18next";
 import "~/sass/elements/organizerfield.scss";
+import { CommonFieldProps } from "../types";
 
 /**
  * TermType
@@ -38,8 +39,7 @@ interface CategoryTerm {
 /**
  * OrganizerFieldProps
  */
-interface OrganizerFieldProps extends WithTranslation {
-  type: string;
+interface OrganizerFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     name: string;
     termTitle: string;
@@ -47,21 +47,6 @@ interface OrganizerFieldProps extends WithTranslation {
     categories: Array<CategoryType>;
     categoryTerms: Array<CategoryTerm>;
   };
-
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  displayCorrectAnswers?: boolean;
-  checkAnswers?: boolean;
-  onAnswerChange?: (name: string, value: boolean) => any;
-
-  invisible?: boolean;
 }
 
 type OrganizerFieldanswerStateType = {

@@ -1,34 +1,22 @@
 import * as React from "react";
-import { StatusType } from "~/reducers/base/status";
 import equals = require("deep-equal");
 import ConfirmRemoveDialog from "./confirm-remove-dialog";
 import FileUploader from "~/components/general/file-uploader";
 import Synchronizer from "../base/synchronizer";
-import { UsedAs, FieldStateStatus } from "~/@types/shared";
+import { FieldStateStatus } from "~/@types/shared";
 import { createFieldSavedStateClass } from "../../base/index";
 import { WithTranslation, withTranslation } from "react-i18next";
 import { ReadspeakerMessage } from "~/components/general/readspeaker";
 import "~/sass/elements/filefield.scss";
+import { CommonFieldProps } from "../../types";
 
 /**
  * FileFieldProps
  */
-interface FileFieldProps extends WithTranslation {
-  type: string;
+interface FileFieldProps extends CommonFieldProps, WithTranslation {
   content: {
     name: string;
   };
-  status: StatusType;
-  usedAs: UsedAs;
-  readOnly?: boolean;
-  initialValue?: string;
-  onChange?: (
-    context: React.Component<any, any>,
-    name: string,
-    newValue: any
-  ) => any;
-
-  invisible?: boolean;
 }
 
 /**

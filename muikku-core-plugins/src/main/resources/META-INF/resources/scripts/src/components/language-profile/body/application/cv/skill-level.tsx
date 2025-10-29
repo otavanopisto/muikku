@@ -297,7 +297,11 @@ const SkillLevel = (props: SkillLevelProps) => {
                 value={option.value}
                 selected={option.value === languageSkillLevels?.general}
               >
-                {option.label}
+                {t(`levels.${option.value}`, {
+                  ns: "languageProfile",
+                  context: "cv",
+                  defaultValue: option.value,
+                })}
               </option>
             ))}
           </select>

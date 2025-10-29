@@ -10,6 +10,8 @@ import {
 import {
   setCurrentWorkspace,
   SetCurrentWorkspaceTriggerType,
+  UpdateAssignmentStateTriggerType,
+  updateAssignmentState,
 } from "~/actions/workspaces";
 import { Action, bindActionCreators, Dispatch } from "redux";
 import { MaterialLoaderEditorButtonSet } from "~/components/base/material-loader/editor-buttonset";
@@ -24,20 +26,43 @@ import LazyLoader from "~/components/general/lazy-loader";
 import { StatusType } from "~/reducers/base/status";
 import { AnyActionType } from "~/actions";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { WebsocketStateType } from "~/reducers/util/websocket";
+import {
+  SetWorkspaceMaterialEditorStateTriggerType,
+  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+  setWorkspaceMaterialEditorState,
+  updateWorkspaceMaterialContentNode,
+  requestWorkspaceMaterialContentNodeAttachments,
+} from "~/actions/workspaces/material";
+import {
+  DisplayNotificationTriggerType,
+  displayNotification,
+} from "~/actions/base/notifications";
 
 /**
  * HelpMaterialProps
  */
 interface HelpMaterialProps extends WithTranslation {
-  status: StatusType;
-  workspaceEditMode: WorkspaceEditModeStateType;
   materialContentNode: MaterialContentNodeWithIdAndLogic;
   folder: MaterialContentNodeWithIdAndLogic;
   isViewRestricted: boolean;
   workspace: WorkspaceDataType;
-  setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
   anchorItem?: JSX.Element;
   readspeakerComponent?: JSX.Element;
+
+  // Redux state properties
+  status: StatusType;
+  websocket: WebsocketStateType;
+  workspaceEditMode: WorkspaceEditModeStateType;
+
+  // Actions
+  setCurrentWorkspace: SetCurrentWorkspaceTriggerType;
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
+  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType;
+  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
+  updateAssignmentState: UpdateAssignmentStateTriggerType;
+  displayNotification: DisplayNotificationTriggerType;
 }
 
 /**
@@ -90,6 +115,8 @@ class WorkspaceMaterial extends React.Component<
       >
         {(loaded: boolean) => (
           <MaterialLoader
+            status={this.props.status}
+            websocket={this.props.websocket}
             canPublish
             canRevert
             canCopy={!isBinary}
@@ -109,6 +136,17 @@ class WorkspaceMaterial extends React.Component<
             answerable={this.props.status.loggedIn}
             readOnly={!this.props.status.loggedIn}
             onAssignmentStateModified={this.updateWorkspaceActivity}
+            onSetWorkspaceMaterialEditorState={
+              this.props.setWorkspaceMaterialEditorState
+            }
+            onUpdateWorkspaceMaterialContentNode={
+              this.props.updateWorkspaceMaterialContentNode
+            }
+            onRequestWorkspaceMaterialContentNodeAttachments={
+              this.props.requestWorkspaceMaterialContentNodeAttachments
+            }
+            onUpdateAssignmentState={this.props.updateAssignmentState}
+            onDisplayNotification={this.props.displayNotification}
             invisible={!loaded}
             isViewRestricted={this.props.isViewRestricted}
             readspeakerComponent={this.props.readspeakerComponent}
@@ -155,6 +193,7 @@ function mapStateToProps(state: StateType) {
   return {
     workspaceEditMode: state.workspaces.editMode,
     status: state.status,
+    websocket: state.websocket,
   };
 }
 
@@ -163,7 +202,17 @@ function mapStateToProps(state: StateType) {
  * @param dispatch dispatch
  */
 function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return bindActionCreators({ setCurrentWorkspace }, dispatch);
+  return bindActionCreators(
+    {
+      setCurrentWorkspace,
+      setWorkspaceMaterialEditorState,
+      updateWorkspaceMaterialContentNode,
+      requestWorkspaceMaterialContentNodeAttachments,
+      displayNotification,
+      updateAssignmentState,
+    },
+    dispatch
+  );
 }
 
 export default withTranslation(["common"])(
