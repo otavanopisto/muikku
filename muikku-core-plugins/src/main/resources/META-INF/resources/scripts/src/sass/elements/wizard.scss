@@ -206,8 +206,9 @@
 
 .wizard__container {
   min-height: 400px;
-  overflow: clip;
+  overflow-x: clip;
 }
+
 
 .wizard__footer {
   align-items: center;
