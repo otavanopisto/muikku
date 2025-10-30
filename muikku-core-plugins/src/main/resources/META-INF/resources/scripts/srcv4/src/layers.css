@@ -1,0 +1,8 @@
+/* layers.css */
+@layer devtools, mantine;
+
+/* Import Mantine styles in a layer */
+@import "@mantine/core/styles.css" layer(mantine);
+
+/* Import jotai-devtools styles in the devtools layer */
+@import "jotai-devtools/styles.css" layer(devtools);

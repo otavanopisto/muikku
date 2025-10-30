@@ -81,6 +81,7 @@ class WorkspaceAnnouncements extends React.Component<
                         {localize.date(a.startDate)}
                       </span>
                     </span>
+                    {a.pinned && <span className="icon icon-pin"></span>}
                   </Link>
                 ))}
               </div>

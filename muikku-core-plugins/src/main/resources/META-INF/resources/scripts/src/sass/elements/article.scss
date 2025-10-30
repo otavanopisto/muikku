@@ -5,7 +5,8 @@
 
 .article {
   @include text;
-
+  
+  flex-basis: 100%;
   max-width: 100%;
 }
 
@@ -17,6 +18,13 @@
     font-size: 1.125rem;
   }
 }
+
+.article__header--announcement {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
 
 .article__date {
   color: $color-index-text-panels-date-color;

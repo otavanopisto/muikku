@@ -181,8 +181,8 @@ public class ExamController {
       if (attendance.getEnded() != null) {
         attendance = examAttendanceDAO.updateEnded(attendance, null);
       }
-      attendance = examAttendanceDAO.updateStarted(attendance, new Date());
     }
+    attendance = examAttendanceDAO.updateStarted(attendance, new Date());
     return attendance;
   }
   
