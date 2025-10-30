@@ -1,34 +1,46 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { RouterProvider } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { router } from "~/src/router/router";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
+import { DisconnectModal } from "~/src/components";
+import { websocketAtom } from "./atoms/websocket";
+import { useAtomValue } from "jotai";
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      //staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
+/**
+ * App component
+ * @returns React.ReactNode
+ */
 function App() {
-  const [count, setCount] = useState(0);
+  const websocket = useAtomValue(websocketAtom);
+  // The routing is now handled by createBrowserRouter
+  //return <RouterProvider router={router} />;
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+      {process.env.NODE_ENV === "development" && (
+        <TanStackDevtools
+          plugins={[
+            {
+              name: "TanStack Query",
+              render: <ReactQueryDevtoolsPanel />,
+            },
+          ]}
+        />
+      )}
+      <DisconnectModal />
+    </QueryClientProvider>
   );
 }
 

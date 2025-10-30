@@ -21,7 +21,15 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    // Paths
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"]
+    }
+
+    //"types": ["jquery"]
   },
-  "include": ["src"]
+  "include": ["src", "api", "generated"]
 }
