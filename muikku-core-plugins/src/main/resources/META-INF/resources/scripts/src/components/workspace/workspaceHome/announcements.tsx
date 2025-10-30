@@ -9,6 +9,7 @@ import "~/sass/elements/panel.scss";
 import "~/sass/elements/item-list.scss";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
+import PagerV2 from "~/components/general/pagerV2";
 
 /**
  * WorkspaceAnnouncementsProps
@@ -23,7 +24,10 @@ interface WorkspaceAnnouncementsProps extends WithTranslation {
 /**
  * WorkspaceAnnouncementsState
  */
-interface WorkspaceAnnouncementsState {}
+interface WorkspaceAnnouncementsState {
+  currentPage: number;
+  itemsPerPage: number;
+}
 
 /**
  * WorkspaceAnnouncements
@@ -33,11 +37,75 @@ class WorkspaceAnnouncements extends React.Component<
   WorkspaceAnnouncementsState
 > {
   /**
+   * AnnouncementsPanelProps
+   * @param props props
+   */
+  constructor(props: WorkspaceAnnouncementsProps) {
+    super(props);
+
+    this.state = {
+      itemsPerPage: 10,
+      currentPage: 0,
+    };
+  }
+
+  /**
+   * handles page changes,
+   * sets selected page as currentPage to state
+   * @param selectedItem selectedItem
+   * @param selectedItem.selected selected
+   */
+  handlePageChange = (selectedItem: { selected: number }) => {
+    this.setState({
+      currentPage: selectedItem.selected,
+    });
+  };
+
+  /**
+   * Gets current announcements depending on current page and items per page
+   */
+  getCurrentAnnouncements = () => {
+    const { currentPage, itemsPerPage } = this.state;
+    const allAnnouncements = [...this.props.announcements];
+    const offset = currentPage * itemsPerPage;
+    return allAnnouncements.slice(offset, offset + itemsPerPage);
+  };
+
+  /**
    * render
    */
   render() {
     const { t } = this.props;
+    const { currentPage, itemsPerPage } = this.state;
 
+    /**
+     * Calculates amount of pages
+     * depends how many items there is per page
+     */
+    const pageCount = Math.ceil(this.props.announcements.length / itemsPerPage);
+    /**
+     * renders pagination body as one of announcements list item
+     */
+    const renderPaginationBody = (
+      <div
+        className="item-list__item item-list__item--announcements"
+        aria-label={this.props.t("wcag.pager", { ns: "messaging" })}
+      >
+        <span className="item-list__text-body item-list__text-body--multiline--footer">
+          <PagerV2
+            previousLabel=""
+            nextLabel=""
+            breakLabel="..."
+            initialPage={currentPage}
+            forcePage={currentPage}
+            marginPagesDisplayed={1}
+            pageCount={pageCount}
+            pageRangeDisplayed={2}
+            onPageChange={this.handlePageChange}
+          />
+        </span>
+      </div>
+    );
     if (
       this.props.status.loggedIn &&
       this.props.status.isActiveUser &&
@@ -59,7 +127,7 @@ class WorkspaceAnnouncements extends React.Component<
           {this.props.announcements.length && this.props.workspace ? (
             <div className="panel__body">
               <div className="item-list item-list--panel-announcements">
-                {this.props.announcements.map((a) => (
+                {this.getCurrentAnnouncements().map((a) => (
                   <Link
                     to={
                       this.props.status.contextPath +
@@ -85,6 +153,9 @@ class WorkspaceAnnouncements extends React.Component<
                   </Link>
                 ))}
               </div>
+              {this.props.announcements.length > itemsPerPage
+                ? renderPaginationBody
+                : null}
             </div>
           ) : (
             <div className="panel__body panel__body--empty">

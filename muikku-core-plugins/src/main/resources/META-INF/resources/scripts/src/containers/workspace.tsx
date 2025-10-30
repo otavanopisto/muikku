@@ -420,6 +420,7 @@ export default class Workspace extends React.Component<
         this.props.store.dispatch(
           loadAnnouncementsAsAClient({
             hideEnvironmentAnnouncements: true,
+            maxResults: 999,
             workspaceEntityId: state.status.currentWorkspaceId,
           }) as Action
         );
@@ -554,6 +555,7 @@ export default class Workspace extends React.Component<
           loadAnnouncementsAsAClient({
             hideEnvironmentAnnouncements: true,
             workspaceEntityId: state.status.currentWorkspaceId,
+            maxResults: 999,
           }) as Action
         );
         loadAnnouncementsTimer = null;
