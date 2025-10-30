@@ -134,6 +134,9 @@ import NotFoundBody from "~/components/not-found/body";
 import FrontpageBody from "~/components/frontpage/body";
 import UserCredentials from "~/containers/user-credentials";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+let loadAnnouncementsTimer: ReturnType<typeof setTimeout> | null = null;
+
 const HTML5toTouch: MultiBackendOptions = {
   backends: [
     {
@@ -918,14 +921,21 @@ export default class MainFunction extends React.Component<
     if (this.itsFirstTime) {
       this.props.websocket && this.props.websocket.restoreEventListeners();
 
-      this.props.store.dispatch(
-        loadAnnouncementsAsAClient(
-          { hideWorkspaceAnnouncements: false },
-          (announcements: Announcement[]) => {
-            announcements;
-          }
-        ) as Action
-      );
+      // Delay loading announcements to let the unread state to settle first
+      // They are usually already loaded on frontpage load
+      // where clicking an announcements sets it as read
+      // but without delay the announcements would load "unread" again
+      loadAnnouncementsTimer = setTimeout(() => {
+        this.props.store.dispatch(
+          loadAnnouncementsAsAClient(
+            { hideWorkspaceAnnouncements: false },
+            (announcements: Announcement[]) => {
+              announcements;
+            }
+          ) as Action
+        );
+        loadAnnouncementsTimer = null;
+      }, 500); // 500ms delay
 
       const hashId = parseInt(window.location.hash.replace("#", ""));
 

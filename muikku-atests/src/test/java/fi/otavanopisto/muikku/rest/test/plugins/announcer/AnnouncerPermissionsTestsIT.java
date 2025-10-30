@@ -203,7 +203,7 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
   
   private void testListAndFind(RequestSpecification request, TestRole role, int expectedCount) {
     Response response = request.get("/announcer/announcements");
-    response.then().statusCode(200).body("id.size()", is(expectedCount));
+    response.then().statusCode(200).body("announcements.id.size()", is(expectedCount));
 
     List<Long> ids = response.body().jsonPath().getList("id", Long.class);
     for (Long announcementId : ids) {

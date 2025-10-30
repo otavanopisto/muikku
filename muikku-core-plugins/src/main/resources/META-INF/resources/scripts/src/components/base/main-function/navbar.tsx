@@ -14,6 +14,7 @@ import { Dependant } from "~/reducers/main-function/dependants";
 import { Action, Dispatch } from "redux";
 import Link from "~/components/general/link";
 import { Link as RouterLink } from "react-router-dom";
+import { Announcement } from "~/generated/client";
 
 /**
  * ItemDataElement
@@ -38,6 +39,8 @@ interface MainFunctionNavbarProps extends WithTranslation {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation?: React.ReactElement<any>;
   status: StatusType;
+  announcements: Announcement[];
+  announcementCount: number;
   messageCount: number;
   title: string;
   dependants: Dependant[];
@@ -59,8 +62,15 @@ class MainFunctionNavbar extends React.Component<
    * render
    */
   render() {
-    const { t } = this.props;
-
+    const {
+      t,
+      announcements,
+      dependants,
+      announcementCount,
+      messageCount,
+      status,
+    } = this.props;
+    const firstAnnouncement = announcements[0]?.id;
     const itemData: ItemDataElement[] = [
       {
         modifier: "home",
@@ -86,9 +96,9 @@ class MainFunctionNavbar extends React.Component<
         text: t("labels.communicator"),
         href: "/communicator",
         icon: "envelope",
-        condition: this.props.status.isActiveUser && this.props.status.loggedIn,
+        condition: status.isActiveUser && status.loggedIn,
         to: true,
-        badge: this.props.messageCount,
+        badge: messageCount,
       },
       {
         modifier: "guider",
@@ -97,7 +107,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/guider",
         icon: "users",
         to: true,
-        condition: this.props.status.permissions.GUIDER_VIEW,
+        condition: status.permissions.GUIDER_VIEW,
       },
       {
         modifier: "records",
@@ -106,7 +116,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/records",
         icon: "profile",
         to: true,
-        condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW,
+        condition: status.permissions.TRANSCRIPT_OF_RECORDS_VIEW,
       },
       {
         modifier: "hops",
@@ -115,9 +125,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/hops",
         icon: "compass",
         to: true,
-        condition:
-          this.props.status.services &&
-          this.props.status.services.hops.isAvailable,
+        condition: status.services && status.services.hops.isAvailable,
       },
       {
         modifier: "language-profile",
@@ -127,8 +135,8 @@ class MainFunctionNavbar extends React.Component<
         icon: "language",
         to: true,
         condition:
-          this.props.status.profile.studyLevel === "lukio" &&
-          this.props.status.permissions.LANGUAGE_PROFILE_VIEW,
+          status.profile.studyLevel === "lukio" &&
+          status.permissions.LANGUAGE_PROFILE_VIEW,
       },
       {
         modifier: "hops",
@@ -137,16 +145,26 @@ class MainFunctionNavbar extends React.Component<
         href: "/guardian_hops",
         icon: "compass",
         to: true,
-        condition: this.props.status.permissions.GUARDIAN_VIEW,
+        condition: status.permissions.GUARDIAN_VIEW,
       },
       {
         modifier: "guardian",
         trail: "guardian",
-        text: t("labels.dependant", { count: this.props.dependants.length }),
+        text: t("labels.dependant", { count: dependants.length }),
         href: "/guardian",
         icon: "users",
         to: true,
-        condition: this.props.status.permissions.GUARDIAN_VIEW,
+        condition: status.permissions.GUARDIAN_VIEW,
+      },
+      {
+        modifier: "announcements",
+        trail: "announcements",
+        text: t("labels.announcements", { ns: "messaging" }),
+        href: "/announcements#" + firstAnnouncement,
+        icon: "paper-plane",
+        to: true,
+        condition: status.isStudent,
+        badge: announcementCount,
       },
       {
         modifier: "announcer",
@@ -155,7 +173,8 @@ class MainFunctionNavbar extends React.Component<
         href: "/announcer",
         icon: "paper-plane",
         to: true,
-        condition: this.props.status.permissions.ANNOUNCER_TOOL,
+        condition: status.permissions.ANNOUNCER_TOOL,
+        badge: announcementCount,
       },
       {
         modifier: "evaluation",
@@ -164,7 +183,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/evaluation",
         icon: "evaluate",
         to: true,
-        condition: this.props.status.permissions.EVALUATION_VIEW_INDEX,
+        condition: status.permissions.EVALUATION_VIEW_INDEX,
       },
       {
         modifier: "organization",
@@ -173,7 +192,7 @@ class MainFunctionNavbar extends React.Component<
         href: "/organization",
         icon: "board",
         to: true,
-        condition: this.props.status.permissions.ORGANIZATION_VIEW,
+        condition: status.permissions.ORGANIZATION_VIEW,
       },
     ];
 
@@ -317,6 +336,8 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     messageCount: state.messages.unreadThreadCount,
+    announcementCount: state.announcements.unreadCount,
+    announcements: state.announcements.announcements,
     dependants: (state.dependants && state.dependants.list) || [],
   };
 }

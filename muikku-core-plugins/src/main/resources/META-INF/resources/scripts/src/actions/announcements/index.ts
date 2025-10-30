@@ -56,6 +56,10 @@ export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS",
   Announcement[]
 >;
+export type UPDATE_ANNOUNCEMENTS_UNREAD_COUNT = SpecificActionType<
+  "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT",
+  number
+>;
 
 /**
  * LoadAnnouncementsAsAClientTriggerType
@@ -155,6 +159,8 @@ export interface CreateAnnouncementTriggerType {
   }): AnyActionType;
 }
 
+const announcerApi = MApi.getAnnouncerApi();
+
 /**
  * validateAnnouncement
  * @param dispatch dispatch
@@ -235,6 +241,35 @@ const loadAnnouncements: LoadAnnouncementsTriggerType =
   };
 
 /**
+ * markAllAsRead
+ * @param location location
+ * @param workspaceId workspaceId
+ */
+const markAllAsRead: LoadAnnouncementsTriggerType = function markAllAsRead(
+  location,
+  workspaceId
+) {
+  return async (
+    dispatch: (arg: AnyActionType) => Dispatch<Action<AnyActionType>>,
+    getState: () => StateType
+  ) => {
+    try {
+      await announcerApi.markAllAnnouncementsAsRead();
+      dispatch(loadAnnouncements(location, workspaceId, false, true));
+    } catch (err) {
+      dispatch(
+        notificationActions.displayNotification(
+          i18n.t("notifications.setAllUnreadError", {
+            ns: "messaging",
+          }),
+          "error"
+        )
+      );
+    }
+  };
+};
+
+/**
  * loadMoreAnnouncements
  */
 const loadMoreAnnouncements: LoadMoreAnnouncementsTriggerType =
@@ -264,8 +299,6 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
     );
     try {
       if (!announcement) {
-        const announcerApi = MApi.getAnnouncerApi();
-
         // There is chance that user will try url with id that is not (anymore) available, then this try catch will take
         // care of it if that happens
         try {
@@ -297,6 +330,24 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
         );
       }
 
+      // Mark as read if unread
+      if (announcement.unread) {
+        const unreadCount = state.announcements.unreadCount - 1;
+
+        announcerApi.markAnnouncementAsRead({ announcementId });
+
+        dispatch({
+          type: "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT",
+          payload: unreadCount,
+        });
+        dispatch({
+          type: "UPDATE_ONE_ANNOUNCEMENT",
+          payload: {
+            update: { unread: false },
+            announcement,
+          },
+        });
+      }
       dispatch({
         type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
         payload: {
@@ -361,8 +412,6 @@ const updateAnnouncement: UpdateAnnouncementTriggerType =
       if (!validateAnnouncement(dispatch, getState, data.announcement)) {
         return data.fail && data.fail();
       }
-
-      const announcerApi = MApi.getAnnouncerApi();
 
       try {
         const nAnnouncement: Announcement = Object.assign(
@@ -436,8 +485,6 @@ const deleteAnnouncement: DeleteAnnouncementTriggerType =
       getState: () => StateType
     ) => {
       try {
-        const announcerApi = MApi.getAnnouncerApi();
-
         await announcerApi.deleteAnnouncement({
           announcementId: data.announcement.id,
         });
@@ -467,7 +514,6 @@ const deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType =
     ) => {
       const state = getState();
       const announcements: AnnouncementsState = state.announcements;
-      const announcerApi = MApi.getAnnouncerApi();
 
       await Promise.all(
         announcements.selected.map(async (announcement) => {
@@ -515,8 +561,6 @@ const createAnnouncement: CreateAnnouncementTriggerType =
       if (!validateAnnouncement(dispatch, getState, data.announcement)) {
         return data.fail && data.fail();
       }
-
-      const announcerApi = MApi.getAnnouncerApi();
 
       try {
         await announcerApi.createAnnouncement({
@@ -584,11 +628,10 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
         const loadUserGroups = options.loadUserGroups;
         delete options.loadUserGroups;
 
-        const announcerApi = MApi.getAnnouncerApi();
         const announcements = await announcerApi.getAnnouncements(fetchParams);
 
         if (loadUserGroups) {
-          announcements.forEach((a) =>
+          announcements.announcements.forEach((a) =>
             a.userGroupEntityIds.forEach((id) =>
               dispatch(loadUserGroupIndex(id))
             )
@@ -597,7 +640,8 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
 
         const payload: AnnouncementsStatePatch = {
           state: "READY",
-          announcements,
+          announcements: announcements.announcements,
+          unreadCount: announcements.unreadCount,
           location: null,
           selected: [],
           selectedIds: [],
@@ -609,7 +653,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
           payload,
         });
 
-        callback && callback(announcements);
+        callback && callback(announcements.announcements);
       } catch (err) {
         if (!isMApiError(err)) {
           throw err;
@@ -628,6 +672,7 @@ const loadAnnouncementsAsAClient: LoadAnnouncementsAsAClientTriggerType =
   };
 
 export {
+  markAllAsRead,
   loadAnnouncements,
   loadMoreAnnouncements,
   addToAnnouncementsSelected,

@@ -17,6 +17,7 @@ interface WorkspaceAnnouncementsProps extends WithTranslation {
   status: StatusType;
   workspace: WorkspaceDataType;
   announcements: Announcement[];
+  unreadCount: number;
 }
 
 /**
@@ -47,7 +48,12 @@ class WorkspaceAnnouncements extends React.Component<
           <div className="panel__header">
             <div className="panel__header-icon panel__header-icon--workspace-announcements icon-paper-plane"></div>
             <h2 className="panel__header-title">
-              {t("labels.announcements", { ns: "messaging" })}
+              {t("labels.announcement", { ns: "messaging" })}
+              {this.props.unreadCount > 0 && (
+                <span className="indicator indicator--panel-header">
+                  {this.props.unreadCount}
+                </span>
+              )}
             </h2>
           </div>
           {this.props.announcements.length && this.props.workspace ? (
@@ -64,7 +70,7 @@ class WorkspaceAnnouncements extends React.Component<
                     }
                     key={a.id}
                     as="div"
-                    className="item-list__item item-list__item--announcements item-list__item--has-workspaces"
+                    className={`item-list__item item-list__item--announcements  ${a.unread ? "item-list__item--unread" : ""} item-list__item--has-workspaces`}
                   >
                     <span className="item-list__icon item-list__icon--announcements icon-paper-plane"></span>
                     <span className="item-list__text-body item-list__text-body--multiline">
@@ -103,6 +109,7 @@ function mapStateToProps(state: StateType) {
   return {
     workspace: state.workspaces.currentWorkspace,
     announcements: state.announcements.announcements,
+    unreadCount: state.announcements.unreadCount,
     status: state.status,
   };
 }
