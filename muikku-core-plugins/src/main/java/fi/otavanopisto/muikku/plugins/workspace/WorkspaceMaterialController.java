@@ -54,6 +54,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -74,6 +75,9 @@ public class WorkspaceMaterialController {
   
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private WorkspaceController workspaceController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -931,7 +935,7 @@ public class WorkspaceMaterialController {
       
       // Exam functionality
       
-      if (((WorkspaceFolder) currentNode).getExam()) {
+      if (currentNode.getExam()) {
         // Users not logged in may never see exams
         if (!sessionController.isLoggedIn()) {
           continue;
@@ -963,12 +967,18 @@ public class WorkspaceMaterialController {
             }
           }
           if (showExamFolder) {
+            // Show exam folder to student who can participate in it
             contentNodes.add(createContentNode(currentNode, 0, includeHidden, nextSibling));
             continue;
           }
           else {
+            // Don't show exam folder to student who can't participate in it
             continue;
           }
+        }
+        else if (!workspaceController.canIManageWorkspaceMaterials(workspaceEntity)) {
+          // #7485: Don't show exam folder to staff who can't manage workspace materials 
+          continue;
         }
       }
 
