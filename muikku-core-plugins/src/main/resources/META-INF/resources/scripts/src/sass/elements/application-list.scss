@@ -204,7 +204,9 @@
 }
 
 .application-list__header-primary--announcement-meta {
+  justify-content: space-between;
   margin: 0 10px 10px;
+  width: 100%;
 }
 
 .application-list__header-primary--highlight {

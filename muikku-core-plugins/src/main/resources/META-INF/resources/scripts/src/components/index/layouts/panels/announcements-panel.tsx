@@ -165,6 +165,9 @@ class AnnouncementsPanel extends React.Component<
                 </div>
               ) : null}
             </span>
+            {announcement.pinned ? (
+              <span className="icon icon-pin"></span>
+            ) : null}
           </Link>
         );
       }
@@ -196,7 +199,7 @@ class AnnouncementsPanel extends React.Component<
 
     return (
       <Panel
-        header={this.props.t("labels.announcement", {
+        header={this.props.t("labels.announcements", {
           ns: "messaging",
           context: "other",
         })}

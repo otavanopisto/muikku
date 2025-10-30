@@ -144,11 +144,14 @@ class Announcements extends BodyScrollLoader<
                     }
                   >
                     <ApplicationListItemHeader>
-                      <ApplicationListHeaderPrimary>
+                      <ApplicationListHeaderPrimary modifiers="announcement-meta">
                         <ApplicationListItemDate
                           startDate={localize.date(announcement.startDate)}
                           endDate={localize.date(announcement.endDate)}
                         />
+                        {announcement.pinned && (
+                          <span className="icon icon-pin"></span>
+                        )}
                       </ApplicationListHeaderPrimary>
                     </ApplicationListItemHeader>
                     <ApplicationListItemBody header={announcement.caption} />

@@ -1245,6 +1245,7 @@
       "message": "Viesti",
       "name_discussionArea": "Keskustelualueen nimi",
       "pin": "Kiinnitä viesti",
+      "pinAnnouncement": "Kiinnitä tiedote",
       "recipients_one": "Vastaanottaja",
       "recipients_other": "Vastaanottajat",
       "remove": "$t(common:labels.remove)",
