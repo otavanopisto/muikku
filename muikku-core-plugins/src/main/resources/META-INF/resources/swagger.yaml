@@ -15489,6 +15489,8 @@ components:
           description: Subject code. Example "AI" etc...
         grade:
           $ref: "#/components/schemas/MatriculationExamGrade"
+        totalPoints:
+          type: integer
         gradeDate:
           type: string
           format: date
