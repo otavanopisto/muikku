@@ -935,7 +935,7 @@ public class WorkspaceMaterialController {
       
       // Exam functionality
       
-      if (((WorkspaceFolder) currentNode).getExam()) {
+      if (currentNode.getExam()) {
         // Users not logged in may never see exams
         if (!sessionController.isLoggedIn()) {
           continue;

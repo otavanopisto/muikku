@@ -44,6 +44,7 @@ public class WorkspaceFolder extends WorkspaceNode {
     this.viewRestrict = viewRestrict;
   }
   
+  @Override
   public boolean getExam() {
     return exam;
   }
