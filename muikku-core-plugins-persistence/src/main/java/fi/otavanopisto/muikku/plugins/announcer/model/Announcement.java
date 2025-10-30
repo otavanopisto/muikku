@@ -156,7 +156,7 @@ public class Announcement {
   private Boolean publiclyVisible;
   
   @OneToMany
-  @JoinTable (name = "AnnouncementCategoryIds", joinColumns = @JoinColumn(name = "announcement_Id"), inverseJoinColumns = @JoinColumn(name = "announcementCategory_id"))
+  @JoinTable (name = "AnnouncementCategories", joinColumns = @JoinColumn(name = "announcement_id"), inverseJoinColumns = @JoinColumn(name = "announcementCategory_id"))
   private List<AnnouncementCategory> categories;
 
   @Column (nullable=false)

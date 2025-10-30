@@ -146,9 +146,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     // Categories
     List<AnnouncementCategory> categories = new ArrayList<AnnouncementCategory>();
     
-    if (restModel.getCategories() == null) {
-      categories = Collections.emptyList();
-    } else {
+    if (CollectionUtils.isNotEmpty(restModel.getCategories())) {
       for (AnnouncementCategoryRESTModel categoryRest : restModel.getCategories()) {
         AnnouncementCategory category = announcementController.findAnnouncementCategoryById(categoryRest.getId());
         
@@ -259,6 +257,21 @@ public class AnnouncerRESTService extends PluginRESTService {
     if (oldAnnouncement.isPinned() != restModel.isPinned() && sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       pinned = restModel.isPinned();
     }
+    
+    // Categories
+    List<AnnouncementCategory> categories = new ArrayList<AnnouncementCategory>();
+    
+    if (CollectionUtils.isNotEmpty(restModel.getCategories())) {
+      categories = Collections.emptyList();
+    } else {
+      for (AnnouncementCategoryRESTModel categoryRest : restModel.getCategories()) {
+        AnnouncementCategory category = announcementController.findAnnouncementCategoryById(categoryRest.getId());
+        
+        if (category != null) {
+          categories.add(category);
+        }
+      }
+    }
 
     Announcement newAnnouncement = announcementController.updateAnnouncement(
         oldAnnouncement,
@@ -268,7 +281,8 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getEndDate(),
         restModel.getPubliclyVisible(),
         restModel.isArchived(),
-        pinned
+        pinned,
+        categories
     );
 
     announcementController.clearAnnouncementTargetGroups(newAnnouncement);
@@ -315,7 +329,8 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("onlyUnread") @DefaultValue("false") boolean onlyUnread,
       @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame,
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
-      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults,
+      @QueryParam("categoryIds") List<Long> categoryIds
   ) {
     if (!sessionController.isLoggedIn()) {
       return Response.noContent().build();
@@ -351,11 +366,25 @@ public class AnnouncerRESTService extends PluginRESTService {
         guardiansDependents.stream().map(GuardiansDependent::getUserIdentifier).collect(Collectors.toSet());
     }
     
+    // Categories
+    List<AnnouncementCategory> announcementCategories = new ArrayList<AnnouncementCategory>();
+    
+    if (CollectionUtils.isNotEmpty(categoryIds)) {
+      
+      for (Long categoryId : categoryIds) {
+        AnnouncementCategory category = announcementController.findAnnouncementCategoryById(categoryId);
+        
+        if (category != null) {
+          announcementCategories.add(category);
+        }
+      }
+    }
+    
     if (workspaceEntityId == null) {
       boolean includeGroups = !hideGroupAnnouncements;
       boolean includeWorkspaces = !hideWorkspaceAnnouncements;
       announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
-          includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyUnread, sessionController.getLoggedUserEntity().getId(), onlyArchived, firstResult, maxResults);
+          includeGroups, includeWorkspaces, environment, timeFrame, onlyMine ? currentUserEntity : null, onlyUnread, sessionController.getLoggedUserEntity().getId(), onlyArchived, firstResult, maxResults, announcementCategories);
 
     }
     else {
@@ -457,7 +486,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     OrganizationEntity organizationEntity = schoolDataIdentifier.getOrganization();
     
     List<Announcement> announcements = announcementController.listAnnouncements(announcementsForUser, organizationEntity,
-        true, true, AnnouncementEnvironmentRestriction.PUBLICANDGROUP, AnnouncementTimeFrame.CURRENT, null, true, sessionController.getLoggedUserEntity().getId(), false, 0, 100);
+        true, true, AnnouncementEnvironmentRestriction.PUBLICANDGROUP, AnnouncementTimeFrame.CURRENT, null, true, sessionController.getLoggedUserEntity().getId(), false, 0, 100, new ArrayList<AnnouncementCategory>());
 
     List<AnnouncementRecipientRESTModel> restModels = new ArrayList<AnnouncementRecipientRESTModel>();
     
@@ -484,9 +513,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   }
   
   @POST
-  @Path("/announcements/categories/create")
+  @Path("/categories/create")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createAnnouncementCategory(String category) {
+  public Response createAnnouncementCategory(@QueryParam("categoryName") String category) {
     
     if (!sessionController.hasRole(EnvironmentRoleArchetype.ADMINISTRATOR)) {
       return Response.status(Status.FORBIDDEN).entity("You don't have the permission to create announcement categories").build();
@@ -500,7 +529,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/announcements/categories")
+  @Path("/categories")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listCategories() {
     List<AnnouncementCategory> categories = announcementController.listAnnouncementCategories();
@@ -516,7 +545,7 @@ public class AnnouncerRESTService extends PluginRESTService {
   }
   
   @DELETE
-  @Path("/announcements/category/{ID}")
+  @Path("/categories/{ID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteAnnouncementCategory(@PathParam("ID") Long announcementCategoryId) {
     AnnouncementCategory announcementCategory = announcementController.findAnnouncementCategoryById(announcementCategoryId);

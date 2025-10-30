@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -55,8 +56,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   }
 
   public List<Announcement> listAnnouncements(OrganizationEntity organizationEntity, List<UserGroupEntity> userGroupEntities, 
-      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean onlyUnread, Long loggedUser,  boolean archived, Integer firstResult, Integer maxResults) {
-    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, onlyUnread, loggedUser, archived, firstResult, maxResults);
+      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean onlyUnread, Long loggedUser,  boolean archived, Integer firstResult, Integer maxResults, List<AnnouncementCategory> categories) {
+    return listAnnouncements(organizationEntity, userGroupEntities, workspaceEntities, environment, timeFrame, null, onlyUnread, loggedUser, archived, firstResult, maxResults, categories);
   }
   
   public List<Announcement> listAnnouncements(
@@ -70,7 +71,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       Long loggedUser,
       boolean archived,
       Integer firstResult, 
-      Integer maxResults) {
+      Integer maxResults,
+      List<AnnouncementCategory> categories) {
     EntityManager entityManager = getEntityManager();
     Date currentDate = onlyDateFields(new Date());
     
@@ -191,7 +193,15 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       predicates.add(criteriaBuilder.not(root.in(subquery)));
     }
     
-    predicates.add(criteriaBuilder.or(groupPredicates.toArray(new Predicate[0])));
+    /**
+     * Announcement categories:
+     */
+    
+    if (CollectionUtils.isNotEmpty(categories)) {
+      ListJoin<Announcement, AnnouncementCategory> join = root.join(Announcement_.categories);
+      predicates.add(join.in(categories));
+      //predicates.add(root.get(Announcement_.categories).join.in(categories));
+    }
     
     criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     

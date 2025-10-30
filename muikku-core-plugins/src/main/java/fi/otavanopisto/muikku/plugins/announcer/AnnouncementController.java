@@ -85,7 +85,7 @@ public class AnnouncementController {
     return announcementWorkspaceDAO.create(announcement, workspaceEntity.getId(), Boolean.FALSE);
   }
 
-  public Announcement updateAnnouncement(Announcement announcement, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible, boolean archived, boolean pinned) {
+  public Announcement updateAnnouncement(Announcement announcement, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible, boolean archived, boolean pinned, List<AnnouncementCategory> categories) {
     announcementDAO.updateCaption(announcement, caption);
     announcementDAO.updateContent(announcement, content);
     announcementDAO.updateStartDate(announcement, startDate);
@@ -93,11 +93,12 @@ public class AnnouncementController {
     announcementDAO.updatePubliclyVisible(announcement, publiclyVisible);
     announcementDAO.updateArchived(announcement, archived);
     announcementDAO.updatePinned(announcement, pinned);
+    announcementDAO.updateCategories(announcement, categories);
     return announcement;
   }
   
   public List<Announcement> listAnnouncements(Collection<SchoolDataIdentifier> userIdentifiers, OrganizationEntity organizationEntity, boolean includeGroups, boolean includeWorkspaces, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyUnread, Long loggedUser,  boolean onlyArchived, Integer firstResult, Integer maxResults) {
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity announcementOwner, boolean onlyUnread, Long loggedUser,  boolean onlyArchived, Integer firstResult, Integer maxResults, List<AnnouncementCategory> categories) {
 
     List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserIdentifiers(userIdentifiers) : Collections.emptyList();
     List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listActiveWorkspaceEntitiesByUserIdentifiers(userIdentifiers) : Collections.emptyList();
@@ -113,7 +114,8 @@ public class AnnouncementController {
         loggedUser,
         onlyArchived,
         firstResult, 
-        maxResults);
+        maxResults,
+        categories);
     
     return announcements;
   }
@@ -132,7 +134,8 @@ public class AnnouncementController {
         loggedUser,
         onlyArchived,
         firstResult, 
-        maxResults);
+        maxResults,
+        new ArrayList<AnnouncementCategory>());
     
     return announcements;
   }
@@ -153,7 +156,7 @@ public class AnnouncementController {
     }
     
     List<Announcement> result = new ArrayList<>(announcementDAO.listAnnouncements(organizationEntity,
-        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT, false, null, false, firstResult, maxResults));
+        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT, false, null, false, firstResult, maxResults, new ArrayList<AnnouncementCategory>()));
 
     
     Collections.sort(result, new Comparator<Announcement>() {
