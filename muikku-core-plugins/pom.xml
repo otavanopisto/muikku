@@ -312,68 +312,6 @@
         </plugins>
       </build>
     </profile>
-
-    <!-- Muikku frontend v4 -->
-
-    <profile>
-      <id>frontv4</id>
-      
-      <!-- Use frontend v4 when specifically requested-->
-      <activation>
-        <property>
-          <name>usefrontv4</name>
-          <value>true</value>
-        </property>
-      </activation>
-      
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.github.eirslett</groupId>
-            <artifactId>frontend-maven-plugin</artifactId>
-            <version>1.15.1</version>
-            <configuration>
-              <workingDirectory>src/main/resources/META-INF/resources/scripts/srcv4/</workingDirectory>
-              <environmentVariables>
-                <NODE_ENV>${frontend.environment}</NODE_ENV>
-              </environmentVariables>
-            </configuration>
-    
-            <executions>
-              <execution>
-                <id>install node and npm</id>
-                <goals>
-                  <goal>install-node-and-npm</goal>
-                </goals>
-                <phase>generate-resources</phase>
-                <configuration>
-                  <nodeVersion>v22.19.0</nodeVersion>
-                  <npmVersion>10.9.3</npmVersion>
-                </configuration>
-              </execution>
-              <execution>
-                <id>npm ci</id>
-                <goals>
-                  <goal>npm</goal>
-                </goals>
-                <configuration>
-                  <arguments>ci</arguments>
-                </configuration>
-              </execution>
-              <execution>
-                <id>npm run build</id>
-                <goals>
-                  <goal>npm</goal>
-                </goals>
-                <configuration>
-                  <arguments>run build-full</arguments>
-                </configuration>
-              </execution>
-           </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
   </profiles>
 
   <build>
@@ -435,8 +373,6 @@
         <excludes>
           <exclude>META-INF/resources/scripts/src/**/*</exclude>
           <exclude>META-INF/resources/scripts/src/*</exclude>
-          <exclude>META-INF/resources/scripts/srcv4/**/*</exclude>
-          <exclude>META-INF/resources/scripts/srcv4/*</exclude>
           <!--
               <exclude>META-INF/resources/scripts/src/node/**/*</exclude>
               <exclude>META-INF/resources/scripts/src/node/*</exclude>
