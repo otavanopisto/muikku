@@ -245,8 +245,8 @@
         <it.package>**</it.package>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
         <it.cargo.stop.timeout>240000</it.cargo.stop.timeout>
-        <elasticsearch.http.port>9200</elasticsearch.http.port>
-        <elasticsearch.node.port>9300</elasticsearch.node.port>
+        <elasticsearch.http.port>9400</elasticsearch.http.port>
+        <elasticsearch.node.port>9500</elasticsearch.node.port>
         <elasticsearch.cluster.name>elasticsearchatests</elasticsearch.cluster.name>
         <it.profile>ui-it</it.profile>
       </properties>
@@ -432,6 +432,7 @@
               <version>${elasticsearch.version}</version>
               <clusterName>${elasticsearch.cluster.name}</clusterName>
               <httpPort>${elasticsearch.http.port}</httpPort>
+              <transportPort>${elasticsearch.node.port}</transportPort>
               <autoCreateIndex>true</autoCreateIndex>
               <downloadUrl>https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.28-linux-x86_64.tar.gz</downloadUrl>
               <pathConf>${project.basedir}/src/test/resources/elasticsearch</pathConf>

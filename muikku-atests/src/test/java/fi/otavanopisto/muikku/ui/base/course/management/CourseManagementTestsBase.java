@@ -336,16 +336,6 @@ public class CourseManagementTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".hero__workspace-name-extension span", "For test");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), false);
         waitForVisible("#wokspaceName");
-        String title = getAttributeValue("#wokspaceName", "value");
-        int i = 0;
-        while (title.isEmpty()) {
-          i++;
-          refresh();
-          sleep(300);
-          title = getAttributeValue("#wokspaceName", "value");
-          if(i > 15)
-            break;
-        }
         waitForPresent(".license-selector select");
         scrollTo(".license-selector select", 150);
         waitForVisible(".license-selector select");
