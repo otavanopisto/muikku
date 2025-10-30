@@ -312,6 +312,25 @@
         </plugins>
       </build>
     </profile>
+    
+   <!-- Muikku frontend v4 -->
+
+    <profile>
+      <id>frontv4</id>
+
+      <!-- Use frontend v4 when specifically requested-->
+      <activation>
+        <property>
+          <name>usefrontv4</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+      <build>
+        <plugins>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <build>
