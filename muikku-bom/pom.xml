@@ -260,6 +260,12 @@
         <version>${muikku.version}</version>
       </dependency>
     
+      <dependency>
+        <groupId>fi.otavanopisto.muikku</groupId>
+        <artifactId>frontend</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+    
       <!-- Webapp-permission -->
 
       <dependency>
