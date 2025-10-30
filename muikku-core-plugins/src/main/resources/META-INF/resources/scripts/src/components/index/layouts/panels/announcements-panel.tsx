@@ -17,6 +17,7 @@ import { Announcement } from "~/generated/client";
  */
 interface AnnouncementsPanelProps extends WithTranslation<"common"> {
   status: StatusType;
+  unreadCount: number;
   announcements: Announcement[];
   overflow?: boolean;
 }
@@ -203,6 +204,7 @@ class AnnouncementsPanel extends React.Component<
           context: "other",
         })}
         icon="icon-paper-plane"
+        indicator={this.props.unreadCount > 0 ? this.props.unreadCount : null}
         modifier="announcements"
       >
         {this.props.announcements.length ? (
@@ -237,6 +239,7 @@ function mapStateToProps(state: StateType) {
   return {
     status: state.status,
     announcements: state.announcements.announcements,
+    unreadCount: state.announcements.unreadCount,
   };
 }
 

@@ -56,6 +56,10 @@ export type UPDATE_ANNOUNCEMENTS = SpecificActionType<
   "UPDATE_ANNOUNCEMENTS",
   Announcement[]
 >;
+export type UPDATE_ANNOUNCEMENTS_UNREAD_COUNT = SpecificActionType<
+  "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT",
+  number
+>;
 
 /**
  * LoadAnnouncementsAsAClientTriggerType
@@ -328,8 +332,14 @@ const loadAnnouncement: LoadAnnouncementTriggerType = function loadAnnouncement(
 
       // Mark as read if unread
       if (announcement.unread) {
+        const unreadCount = state.announcements.unreadCount - 1;
+
         announcerApi.markAnnouncementAsRead({ announcementId });
 
+        dispatch({
+          type: "UPDATE_ANNOUNCEMENTS_UNREAD_COUNT",
+          payload: unreadCount,
+        });
         dispatch({
           type: "UPDATE_ONE_ANNOUNCEMENT",
           payload: {
