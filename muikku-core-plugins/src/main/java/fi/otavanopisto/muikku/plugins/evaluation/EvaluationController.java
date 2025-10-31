@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -265,7 +264,7 @@ public class EvaluationController {
           WorkspaceMaterialAssignmentType.INTERIM_EVALUATION,
           BooleanPredicate.IGNORE);
       for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-        WorkspaceNodeEvaluation evaluation = findLatestUnarchivedWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceMaterial.getId(), userEntity.getId());
+        WorkspaceNodeEvaluation evaluation = findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceMaterial.getId(), userEntity.getId());
         for (WorkspaceAssessmentState assessment : activity.getAssessmentStates()) {
           if (evaluation != null && evaluation.getEvaluated().after(assessment.getDate())) {
             // Interim evaluation may not override a pending evaluation request
@@ -722,26 +721,6 @@ public class EvaluationController {
     supplementationRequestDAO.archive(supplementationRequest);
   }
 
-  public void deleteWorkspaceNodeEvaluation(WorkspaceNodeEvaluation evaluation) {
-    if (evaluation != null) {
-      List<WorkspaceNodeEvaluationAudioClip> evaluationAudioClips = listEvaluationAudioClips(evaluation);
-      for (WorkspaceNodeEvaluationAudioClip evaluationAudioClip : evaluationAudioClips) {
-        if (file.isFileInFileSystem(evaluation.getStudentEntityId(), evaluationAudioClip.getClipId())) {
-          try {
-            file.removeFileFromFileSystem(evaluation.getStudentEntityId(), evaluationAudioClip.getClipId());
-          } catch (IOException e) {
-            logger.log(Level.SEVERE, String.format("Could not remove clip %s", evaluationAudioClip.getClipId()), e);
-          }
-        }
-
-        // Remove db entry
-        workspaceNodeEvaluationAudioClipDAO.delete(evaluationAudioClip);
-      }
-
-      workspaceNodeEvaluationDAO.delete(evaluation);
-    }
-  }
-
   public SupplementationRequest findSupplementationRequestById(Long supplementationRequestId) {
     return supplementationRequestDAO.findById(supplementationRequestId);
   }
@@ -766,28 +745,8 @@ public class EvaluationController {
     return supplementationRequestDAO.findLatestByStudentAndWorkspaceAndSubjectIdentifierAndHandledAndArchived(studentEntityId, workspaceEntityId, subjectIdentifier, handled, archived);
   }
 
-  /**
-   * Returns latest unarchived WorkspaceNodeEvaluation for given student and 
-   * WorkspaceNode ignoring its type (assessment or supplementation request).
-   * 
-   * @param workspaceNodeId
-   * @param userEntityId
-   * @return
-   */
-  public WorkspaceNodeEvaluation findLatestUnarchivedWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(Long workspaceNodeId, Long userEntityId) {
-    List<WorkspaceNodeEvaluation> evaluations = workspaceNodeEvaluationDAO.listByWorkspaceNodeIdAndStudentEntityIdAndArchived(workspaceNodeId, userEntityId, false);
-    if (evaluations.isEmpty()) {
-      return null;
-    }
-    else if (evaluations.size() > 1) {
-      evaluations.sort(Comparator.comparing(WorkspaceNodeEvaluation::getEvaluated).reversed());
-    }
-    return evaluations.get(0);
-  }
-
-  // TODO There really should be just one but a bug has caused several?
-  public List<WorkspaceNodeEvaluation> listWorkspaceNodeEvaluationsByWorkspaceNodeIdAndStudentEntityId(Long workspaceNodeId, Long studentEntityId) {
-    return workspaceNodeEvaluationDAO.listByWorkspaceNodeIdAndStudentEntityId(workspaceNodeId, studentEntityId);
+  public WorkspaceNodeEvaluation findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(Long workspaceNodeId, Long userEntityId) {
+    return workspaceNodeEvaluationDAO.findByWorkspaceNodeIdAndStudentEntityId(workspaceNodeId, userEntityId);
   }
 
   public WorkspaceNodeEvaluation findWorkspaceNodeEvaluation(Long id) {
@@ -862,23 +821,16 @@ public class EvaluationController {
     return workspaceNodeEvaluation;
   }
 
-  /**
-   * Returns latest unarchived WorkspaceNodeEvaluation ignoring 
-   * its evaluationType (assessment or supplementation request).
-   * 
-   * @param userEntityId
-   * @param workspaceNodeId
-   * @return
-   */
   public RestAssignmentEvaluation getEvaluationInfo(Long userEntityId, Long workspaceNodeId) {
-    WorkspaceNodeEvaluation workspaceNodeEvaluation = findLatestUnarchivedWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceNodeId, userEntityId);
+    WorkspaceNodeEvaluation workspaceNodeEvaluation = findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(workspaceNodeId, userEntityId);
 
     if (workspaceNodeEvaluation != null) {
       List<WorkspaceNodeEvaluationAudioClip> evaluationAudioClips = workspaceNodeEvaluationAudioClipDAO.listByEvaluation(workspaceNodeEvaluation);
 
       WorkspaceNodeEvaluationType evaluationType = workspaceNodeEvaluation.getEvaluationType();
       RestAssignmentEvaluationType type = evaluationType == WorkspaceNodeEvaluationType.SUPPLEMENTATIONREQUEST
-          ? RestAssignmentEvaluationType.INCOMPLETE : RestAssignmentEvaluationType.PASSED;
+          ? RestAssignmentEvaluationType.INCOMPLETE
+          : RestAssignmentEvaluationType.PASSED;
 
       RestAssignmentEvaluation evaluation = new RestAssignmentEvaluation();
       evaluation.setId(workspaceNodeEvaluation.getId());

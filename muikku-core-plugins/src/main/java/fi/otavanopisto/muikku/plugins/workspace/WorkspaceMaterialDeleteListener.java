@@ -20,7 +20,7 @@ public class WorkspaceMaterialDeleteListener {
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
   
-  public void onWorkspaceMaterialDelete(@Observes WorkspaceMaterialDeleteEvent event) {
+  public void onWorkspaceMaterialDelete(@Observes WorkspaceMaterialDeleteEvent event) throws WorkspaceMaterialContainsAnswersExeption {
     WorkspaceMaterial workspaceMaterial = event.getWorkspaceNode();
     
     List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);

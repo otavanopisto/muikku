@@ -176,7 +176,7 @@ public class QueryFieldChangeListener {
     }
   }
   
-  public void onQueryFieldDelete(@Observes QueryFieldDeleteEvent event) {
+  public void onQueryFieldDelete(@Observes QueryFieldDeleteEvent event) throws WorkspaceMaterialContainsAnswersExeption {
     QueryField queryField = event.getQueryField();
     List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByQueryField(queryField);
     for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {

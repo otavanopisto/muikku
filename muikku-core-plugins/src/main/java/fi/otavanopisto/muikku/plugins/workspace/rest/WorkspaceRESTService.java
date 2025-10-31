@@ -106,6 +106,7 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerType;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.FileAnswerUtils;
@@ -248,6 +249,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private MaterialDeleteController materialDeleteController;
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
@@ -2920,7 +2924,7 @@ public class WorkspaceRESTService extends PluginRESTService {
                   if (childWorkspaceMaterial.getId().equals(workspaceMaterial.getId())) {
                     continue; // skip the one we delete below
                   }
-                  workspaceMaterialController.deleteWorkspaceMaterial(childWorkspaceMaterial, removeAnswers != null ? removeAnswers : false);
+                  materialDeleteController.deleteWorkspaceMaterial(childWorkspaceMaterial, removeAnswers != null ? removeAnswers : false);
                 }
               }
             }
@@ -2929,7 +2933,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
         // Actual delete
 
-        workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, removeAnswers != null ? removeAnswers : false);
+        materialDeleteController.deleteWorkspaceMaterial(workspaceMaterial, removeAnswers != null ? removeAnswers : false);
         return Response.noContent().build();
       }
       catch (WorkspaceMaterialContainsAnswersExeption e) {
@@ -2991,7 +2995,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     // WorkspaceFolder
     WorkspaceFolder workspaceFolder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
     if (workspaceFolder != null) {
-      workspaceMaterialController.deleteWorkspaceFolder(workspaceFolder);
+      materialDeleteController.deleteWorkspaceFolder(workspaceFolder);
     }
 
     return Response.ok(createRestModel(workspaceFolder)).build();
