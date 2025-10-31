@@ -191,6 +191,12 @@
   }
 }
 
+.wizard--language-profile { 
+  .wizard__container {
+    overflow-x: clip;
+  }
+}
+
 .wizard__summary-row {
   font-size: 1rem;
   padding: 15px 0;
@@ -206,7 +212,6 @@
 
 .wizard__container {
   min-height: 400px;
-  overflow: clip;
 }
 
 .wizard__footer {

@@ -62,6 +62,7 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationDeleteController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceNodeEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumThreadSubsciptionController;
@@ -81,6 +82,7 @@ import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -151,10 +153,16 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   private WorkspaceMaterialController workspaceMaterialController; 
 
   @Inject
+  private MaterialDeleteController materialDeleteController; 
+
+  @Inject
   private UserPendingPasswordChangeDAO userPendingPasswordChangeDAO; 
   
   @Inject
   private EvaluationController evaluationController;
+
+  @Inject
+  private EvaluationDeleteController evaluationDeleteController;
   
   @Inject
   private ForumController forumController;
@@ -630,14 +638,14 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     
     try {
-      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, true);
+      materialDeleteController.deleteWorkspaceMaterial(workspaceMaterial, true);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
     
     List<WorkspaceNodeEvaluation> evaluations = evaluationController.listWorkspaceNodeEvaluationsByWorkspaceNodeId(workspaceMaterialId);
     for (WorkspaceNodeEvaluation evaluation : evaluations) {
-      evaluationController.deleteWorkspaceNodeEvaluation(evaluation);
+      evaluationDeleteController.deleteWorkspaceNodeEvaluation(evaluation);
     }
     
     htmlMaterialController.deleteHtmlMaterial(htmlMaterial);

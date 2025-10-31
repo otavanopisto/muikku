@@ -23,16 +23,6 @@ public class PyramusMatriculationExamEnrollment
   }
 
   @Override
-  public String getNationalStudentNumber() {
-    return nationalStudentNumber;
-  }
-
-  @Override
-  public void setNationalStudentNumber(String nationalStudentNumber) {
-    this.nationalStudentNumber = nationalStudentNumber;
-  }
-
-  @Override
   public String getEnrollAs() {
     return enrollAs;
   }
@@ -174,7 +164,6 @@ public class PyramusMatriculationExamEnrollment
 
   public Long id;
   public Long examId;
-  public String nationalStudentNumber;
   public String enrollAs;
   public String degreeType;
   public boolean restartExam;

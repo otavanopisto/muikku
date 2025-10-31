@@ -129,6 +129,7 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
+    background-color: $color-default;
     border: solid 1px $color-toc-box-border;
     border-radius: $panel-border-radius;
     display: block;

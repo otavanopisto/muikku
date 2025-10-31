@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.files.TempFileUtils;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
@@ -16,6 +17,9 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
 public class WorkspaceAudioFieldIOHandler implements WorkspaceFieldIOHandler {
+
+  @Inject
+  private MaterialDeleteController materialDeleteController;
 
   @Inject
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
@@ -68,7 +72,7 @@ public class WorkspaceAudioFieldIOHandler implements WorkspaceFieldIOHandler {
       WorkspaceMaterialAudioFieldAnswerClip workspaceMaterialAudioFieldAnswerClip = workspaceMaterialFieldAnswerController.findWorkspaceMaterialAudioFieldAnswerClipByClipId(existingClipId);
       if (workspaceMaterialAudioFieldAnswerClip != null) {
         try {
-          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(workspaceMaterialAudioFieldAnswerClip);
+          materialDeleteController.deleteWorkspaceMaterialAudioFieldAnswerClip(workspaceMaterialAudioFieldAnswerClip);
         }
         catch (Exception e) {
           throw new WorkspaceFieldIOException("Failed to remove audio data", e);

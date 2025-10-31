@@ -720,6 +720,10 @@
   padding: 10px;
 }
 
+.application-list__item-content-header--unread {
+  font-weight: 600;
+}
+
 .application-list__item-content-header--announcer-announcement {
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;

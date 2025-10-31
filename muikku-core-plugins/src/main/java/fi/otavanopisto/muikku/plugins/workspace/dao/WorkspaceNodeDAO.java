@@ -8,10 +8,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode_;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceLanguage;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode_;
 
 public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
 
@@ -200,6 +200,10 @@ public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
   public WorkspaceNode updateUrlName(WorkspaceNode node, String urlName) {
     node.setUrlName(urlName);
     return persist(node);
+  }
+
+  public void delete(WorkspaceNode node) {
+    super.delete(node);
   }
 
 }
