@@ -80,7 +80,7 @@ public class MaterialDeleteController {
         deleteWorkspaceMaterialField(workspaceMaterialField, removeAnswers);
       }
       
-      // After individual fields and answers are gone, reply object can be deleted
+      // After individual fields and answers are gone, workspace material replies can be deleted
       
       List<WorkspaceMaterialReply> workspaceMaterialReplies = workspaceMaterialReplyDAO.listByWorkspaceMaterial(workspaceMaterial);
       for (WorkspaceMaterialReply workspaceMaterialReply : workspaceMaterialReplies) {
