@@ -270,9 +270,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Announcement"
+                $ref: "#/components/schemas/AnnouncementWithUnreadCount"
         "400":
           description: Invalid request was sent to the server
           content:
@@ -440,7 +438,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorModel"
-  
+
   /rest/announcer/announcements/markAllAsRead:
     post:
       operationId: markAllAnnouncementsAsRead
@@ -3004,7 +3002,7 @@ paths:
 
   /rest/evaluation/nodes/{workspaceNodeId}/users/{userEntityId}/evaluationInfo:
     get:
-      operationId: getWorkspaceNodeEvaluation
+      operationId: getWorkspaceNodeEvaluationInfo
       summary: Get workspace node evaluation
       description: Returns evaluation info for a single page and user
       tags:
@@ -3036,11 +3034,11 @@ paths:
         "403":
           description: Attempted to make a call with unauthorized client
 
-  /rest/evaluation/workspaces/{workspaceId}/nodes/{workspaceNodeId}/evaluations/:
+  /rest/evaluation/workspaces/{workspaceId}/nodes/{workspaceNodeId}:
     get:
-      operationId: getWorkspaceNodeEvaluations
-      summary: Get workspace node evaluations
-      description: Get workspace node evaluations
+      operationId: getWorkspaceNodeEvaluation
+      summary: Get workspace node evaluation
+      description: Get workspace node evaluation
       tags:
         - Evaluation
       parameters:
@@ -3067,13 +3065,13 @@ paths:
             format: int64
       responses:
         "200":
-          description: Workspace node evaluations
+          description: Workspace node evaluation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/NodeEvaluation"
+                $ref: "#/components/schemas/NodeEvaluation"
+        "204":
+          description: Requested workspace node evaluation doesn't exist
         "400":
           description: Invalid request was sent to the server
         "403":
@@ -13765,7 +13763,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/WorkspaceBasicInfo"
-
+    
     AnnouncementCategory:
       type: object
       description: AnnouncementCategory object
@@ -13800,6 +13798,21 @@ components:
         userEntityId:
           type: integer
           format: int64
+
+    AnnouncementWithUnreadCount:
+      type: object
+      description: AnnouncementWithUnreadCount object
+      required:
+        - unreadCount
+        - announcements
+      properties:
+        unreadCount:
+          type: integer
+          format: int64
+        announcements:
+          type: array
+          items:
+            $ref: "#/components/schemas/Announcement"
 
     AssessmentRequest:
       type: object
@@ -15619,6 +15632,8 @@ components:
           description: Subject code. Example "AI" etc...
         grade:
           $ref: "#/components/schemas/MatriculationExamGrade"
+        totalPoints:
+          type: integer
         gradeDate:
           type: string
           format: date

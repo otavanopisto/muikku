@@ -46,9 +46,18 @@ public class MatriculationGrade {
     this.gradeDate = gradeDate;
   }
   
+  public Integer getTotalPoints() {
+    return totalPoints;
+  }
+
+  public void setTotalPoints(Integer totalPoints) {
+    this.totalPoints = totalPoints;
+  }
+
   private String subject;
   private Integer year;
   private MatriculationExamTerm term;
   private String grade;
+  private Integer totalPoints;
   private LocalDate gradeDate;
 }

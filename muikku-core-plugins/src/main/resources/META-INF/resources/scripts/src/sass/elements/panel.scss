@@ -278,6 +278,7 @@
 .panel__header-icon--announcements {
   background-color: $color-index-text-for-panels-title-announcements-icon-background;
   color: $color-index-text-for-panels-title-announcements-icon-color;
+  position: relative;
 }
 
 .panel__header-icon--error {
@@ -313,6 +314,7 @@
 .panel__header-icon--workspace-announcements {
   background-color: $color-workspace-text-for-panels-title-announcements-icon-background;
   color: $color-workspace-text-for-panels-title-announcements-icon-color;
+  position: relative;
 }
 
 .panel__header-icon--workspace-description {
@@ -335,6 +337,7 @@
   font-weight: 300;
   height: $panel-header-title-height-mobile;
   line-height: 1;
+  position: relative;
   text-transform: uppercase;
 
   @include breakpoint($breakpoint-pad) {

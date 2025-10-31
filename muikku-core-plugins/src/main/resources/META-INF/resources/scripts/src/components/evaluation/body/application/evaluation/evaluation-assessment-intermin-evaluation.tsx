@@ -158,7 +158,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           id: assigment.materialId,
         });
 
-        const evaluation = await evaluationApi.getWorkspaceNodeEvaluations({
+        const evaluation = await evaluationApi.getWorkspaceNodeEvaluation({
           workspaceId: workspace.id,
           workspaceNodeId: assigment.id,
           userEntityId,
@@ -168,7 +168,7 @@ class EvaluationAssessmentInterminEvaluationRequest extends React.Component<
           {},
           {
             ...material,
-            evaluation: evaluation[0],
+            evaluation: evaluation,
             assignment: this.props.assigment,
             path: this.props.assigment.path,
             contentHiddenForUser: false,

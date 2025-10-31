@@ -1363,7 +1363,8 @@
   }
 }
 
-.button-pill--toggle-read {
+.button-pill--toggle-read,
+.button-pill--mark-all-read {
   background-color: $color-main-function-button-pill-toggle-read-background;
   color: $color-main-function-button-pill-toggle-read-text;
   flex-basis: auto;

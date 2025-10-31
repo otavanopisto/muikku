@@ -258,6 +258,7 @@ public class PyramusMatriculationSchoolDataBridge implements MatriculationSchool
         grade.setYear(pyramusGrade.getYear());
         grade.setTerm(translateTerm(pyramusGrade.getTerm()));
         grade.setGrade(pyramusGrade.getGrade() != null ? pyramusGrade.getGrade().name() : null);
+        grade.setTotalPoints(pyramusGrade.getTotalPoints());
         grade.setGradeDate(pyramusGrade.getGradeDate());
         
         grades.add(grade);

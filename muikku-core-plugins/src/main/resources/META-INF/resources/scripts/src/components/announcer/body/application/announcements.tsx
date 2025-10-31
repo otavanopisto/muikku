@@ -108,9 +108,13 @@ class Announcements extends BodyScrollLoader<
               const className = announcement.workspaces.length
                 ? "announcement announcement--workspace"
                 : "announcement announcement--environment";
+              const modifiers = announcement.unread
+                ? "application-list__item--highlight"
+                : "";
               return {
                 as: ApplicationListItem,
                 className,
+                modifiers,
                 onSelect: this.props.addToAnnouncementsSelected.bind(
                   null,
                   announcement
@@ -144,14 +148,20 @@ class Announcements extends BodyScrollLoader<
                     }
                   >
                     <ApplicationListItemHeader>
-                      <ApplicationListHeaderPrimary>
+                      <ApplicationListHeaderPrimary modifiers="announcement-meta">
                         <ApplicationListItemDate
                           startDate={localize.date(announcement.startDate)}
                           endDate={localize.date(announcement.endDate)}
                         />
+                        {announcement.pinned && (
+                          <span className="icon icon-pin"></span>
+                        )}
                       </ApplicationListHeaderPrimary>
                     </ApplicationListItemHeader>
-                    <ApplicationListItemBody header={announcement.caption} />
+                    <ApplicationListItemBody
+                      modifiers={announcement.unread ? "unread" : ""}
+                      header={announcement.caption}
+                    />
                     {announcement.workspaces.length !== 0 ||
                     announcement.userGroupEntityIds.length !== 0 ? (
                       <div className="labels item-list__announcement-workspaces">

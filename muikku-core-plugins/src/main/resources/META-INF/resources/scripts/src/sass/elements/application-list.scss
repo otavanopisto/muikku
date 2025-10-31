@@ -204,7 +204,9 @@
 }
 
 .application-list__header-primary--announcement-meta {
+  justify-content: space-between;
   margin: 0 10px 10px;
+  width: 100%;
 }
 
 .application-list__header-primary--highlight {
@@ -716,6 +718,10 @@
   font-size: 1rem;
   line-height: 1.3275rem;
   padding: 10px;
+}
+
+.application-list__item-content-header--unread {
+  font-weight: 600;
 }
 
 .application-list__item-content-header--announcer-announcement {

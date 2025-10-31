@@ -109,6 +109,10 @@ export async function loadAnnouncementsHelper(
     case "expired":
       params.timeFrame = "EXPIRED";
       break;
+    case "unread":
+      params.timeFrame = "ALL";
+      params.onlyUnread = true;
+      break;
     case "archived":
       params.timeFrame = "ALL";
       params.onlyArchived = true;
@@ -125,11 +129,12 @@ export async function loadAnnouncementsHelper(
   try {
     const newAnnouncements = await announcerApi.getAnnouncements(params);
 
-    const hasMore: boolean = newAnnouncements.length === MAX_LOADED_AT_ONCE + 1;
+    const hasMore: boolean =
+      newAnnouncements.announcements.length === MAX_LOADED_AT_ONCE + 1;
 
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
-    const actualResults = newAnnouncements.concat([]);
+    const actualResults = newAnnouncements.announcements.concat([]);
     if (hasMore) {
       //we got to get rid of that extra loaded announcement
       actualResults.pop();
@@ -150,6 +155,7 @@ export async function loadAnnouncementsHelper(
     } else {
       // Replace announcements for initial load
       payload.announcements = actualResults;
+      payload.unreadCount = newAnnouncements.unreadCount;
       payload.selected = [];
       payload.selectedIds = [];
     }

@@ -69,7 +69,13 @@ public class WorkspaceMaterialFieldController {
     workspaceMaterialFieldUpdateEvent.fire(new WorkspaceMaterialFieldUpdateEvent(workspaceMaterialField, materialField, removeAnswers));
   }
 
-  public void deleteWorkspaceMaterialField(WorkspaceMaterialField workspaceMaterialField, boolean removeAnswers) {
+  public void deleteWorkspaceMaterialField(WorkspaceMaterialField workspaceMaterialField, boolean removeAnswers)
+      throws WorkspaceMaterialContainsAnswersExeption {
+    
+    // If removeAnswers is true, this event will cause all answers associated with the workspace material field
+    // to be deleted so that the workspace material field itself no longer has associated entities preventing deletion.
+    // Otherwise, the call will fail on WorkspaceMaterialContainsAnswersExeption
+    
     workspaceMaterialFieldDeleteEvent.fire(new WorkspaceMaterialFieldDeleteEvent(workspaceMaterialField, removeAnswers));
     workspaceMaterialFieldDAO.delete(workspaceMaterialField);
   }

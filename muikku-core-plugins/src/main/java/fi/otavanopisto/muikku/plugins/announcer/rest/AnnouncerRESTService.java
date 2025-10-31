@@ -400,7 +400,8 @@ public class AnnouncerRESTService extends PluginRESTService {
       announcements = announcementController.listWorkspaceAnnouncements(organizationEntity,
           Arrays.asList(workspaceEntity), environment, timeFrame, onlyMine ? currentUserEntity : null, onlyUnread, sessionController.getLoggedUserEntity().getId(), onlyArchived, firstResult, maxResults);
     }
-
+    int unreadAnnouncements = 0;
+    
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
       if (onlyEditable && !canEdit(announcement, loggedUser)) {
@@ -412,9 +413,19 @@ public class AnnouncerRESTService extends PluginRESTService {
       
       AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces);
       restModels.add(restModel);
+      
+      // Count unread announcements
+      AnnouncementRecipient ar = announcementController.findAnnouncementRecipientByAnnouncementAndUserEntityId(announcement, currentUserEntity.getId());
+      
+      if (ar == null) {
+        unreadAnnouncements++;
+      }
     }
+    AnnouncementWithUnreadsRESTModel restModel = new AnnouncementWithUnreadsRESTModel();
+    restModel.setAnnouncements(restModels);
+    restModel.setUnreadCount(unreadAnnouncements);
     
-    return Response.ok(restModels).build();
+    return Response.ok(restModel).build();
   }
   
   @GET

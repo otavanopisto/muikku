@@ -20,6 +20,16 @@ import {
 } from "~/actions/base/notifications";
 import { WebsocketStateType } from "~/reducers/util/websocket";
 import { StatusType } from "~/reducers/base/status";
+import {
+  SetWorkspaceMaterialEditorStateTriggerType,
+  setWorkspaceMaterialEditorState,
+  RequestWorkspaceMaterialContentNodeAttachmentsTriggerType,
+  requestWorkspaceMaterialContentNodeAttachments,
+  UpdateWorkspaceMaterialContentNodeTriggerType,
+  updateWorkspaceMaterialContentNode,
+} from "~/actions/workspaces/material";
+import { Action, bindActionCreators, Dispatch } from "redux";
+import { AnyActionType } from "~/actions";
 
 /**
  * DescriptionPanelProps
@@ -35,6 +45,9 @@ interface DescriptionPanelProps extends WithTranslation {
 
   // Redux actions
   displayNotification: DisplayNotificationTriggerType;
+  updateWorkspaceMaterialContentNode: UpdateWorkspaceMaterialContentNodeTriggerType;
+  setWorkspaceMaterialEditorState: SetWorkspaceMaterialEditorStateTriggerType;
+  requestWorkspaceMaterialContentNodeAttachments: RequestWorkspaceMaterialContentNodeAttachmentsTriggerType;
 }
 
 /**
@@ -82,6 +95,15 @@ class DescriptionPanel extends React.Component<
               canAddAttachments
               canEditContent
               canSetTitle={false}
+              onUpdateWorkspaceMaterialContentNode={
+                this.props.updateWorkspaceMaterialContentNode
+              }
+              onSetWorkspaceMaterialEditorState={
+                this.props.setWorkspaceMaterialEditorState
+              }
+              onRequestWorkspaceMaterialContentNodeAttachments={
+                this.props.requestWorkspaceMaterialContentNodeAttachments
+              }
             >
               {(props, state, stateConfiguration) => (
                 <div>
@@ -118,11 +140,18 @@ function mapStateToProps(state: StateType) {
 
 /**
  * mapDispatchToProps
+ * @param dispatch dispatch
  */
-function mapDispatchToProps() {
-  return {
-    displayNotification,
-  };
+function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
+  return bindActionCreators(
+    {
+      displayNotification,
+      setWorkspaceMaterialEditorState,
+      updateWorkspaceMaterialContentNode,
+      requestWorkspaceMaterialContentNodeAttachments,
+    },
+    dispatch
+  );
 }
 
 export default withTranslation(["workspace", "common"])(

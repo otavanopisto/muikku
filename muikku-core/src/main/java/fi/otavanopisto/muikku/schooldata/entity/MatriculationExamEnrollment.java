@@ -8,8 +8,6 @@ public interface MatriculationExamEnrollment {
   public void setId(Long id);
   public Long getExamId();
   public void setExamId(Long examId);
-  public String getNationalStudentNumber();
-  public void setNationalStudentNumber(String nationalStudentNumber);
   public String getEnrollAs();
   public void setEnrollAs(String enrollAs);
   boolean isRestartExam();
