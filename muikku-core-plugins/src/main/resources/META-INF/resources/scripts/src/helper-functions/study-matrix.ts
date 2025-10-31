@@ -187,6 +187,33 @@ export const showSubject = (
 };
 
 /**
+ * Gets the course dropdown name
+ * @param subject subject
+ * @param course course
+ * @param showCredits boolean
+ */
+export const getCourseDropdownName = (
+  subject: SchoolSubject,
+  course: Course,
+  showCredits: boolean
+) => {
+  let courseDropdownName =
+    subject.subjectCode + course.courseNumber + " - " + course.name;
+
+  // Add asterisk to optional courses
+  if (!course.mandatory) {
+    courseDropdownName += "*";
+  }
+
+  // Add credits to uppersecondary courses
+  if (showCredits) {
+    courseDropdownName += ` (${course.length} op`;
+  }
+
+  return courseDropdownName;
+};
+
+/**
  * Selects the correct school course table based on the study programme name
  *
  * @param studyProgrammeName studyProgrammeName
@@ -215,7 +242,7 @@ export const compulsoryOrUpperSecondary = (
     );
 
     if (matrix) {
-      return matrix.subjectsTable;
+      return matrix;
     }
     return null;
   };
