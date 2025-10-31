@@ -341,11 +341,10 @@ public class CourseManagementTestsBase extends AbstractUITest {
         waitForVisible(".license-selector select");
         selectOption(".license-selector select", "CC3");
         sleep(3000);
-        scrollTo(".button--primary-function-save", 100);
+        scrollIntoView(".button--primary-function-save");
         waitAndClick(".button--primary-function-save");
-        waitForVisible(".notification-queue__item--success");
-        waitForNotVisible(".loading");
-        
+        waitForVisible(".notification-queue__items");
+        waitForNotVisible(".loading");        
         navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
         waitForPresent(".footer--workspace .license__link");
         assertTextIgnoreCase(".footer--workspace .license__link", "https://creativecommons.org/licenses/by-nc-sa/3.0");
