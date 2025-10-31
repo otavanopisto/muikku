@@ -36,10 +36,11 @@ import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsCategory;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRandom;
 import fi.otavanopisto.muikku.plugins.exam.rest.ExamSettingsRestModel;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
+import fi.otavanopisto.muikku.plugins.workspace.MaterialDeleteController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
+import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolderType;
@@ -67,7 +68,7 @@ public class ExamController {
   private WorkspaceMaterialReplyController replyController;
   
   @Inject
-  private WorkspaceMaterialFieldAnswerController answerController;
+  private MaterialDeleteController materialDeleteController;
   
   @Inject
   private EvaluationController evaluationController;
@@ -77,6 +78,9 @@ public class ExamController {
   
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
+  
+  @Inject
+  private WorkspaceMaterialFieldAnswerDAO workspaceMaterialFieldAnswerDAO;
   
   @Inject
   private WorkspaceFolderDAO workspaceFolderDAO;
@@ -131,11 +135,11 @@ public class ExamController {
           // Delete field answers
           WorkspaceMaterialReply reply = replyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
           if (reply != null) {
-            List<WorkspaceMaterialFieldAnswer> answers = answerController.listWorkspaceMaterialFieldAnswersByReply(reply);
+            List<WorkspaceMaterialFieldAnswer> answers = workspaceMaterialFieldAnswerDAO.listByReply(reply); 
             for (WorkspaceMaterialFieldAnswer answer : answers) {
-              answerController.deleteWorkspaceMaterialFieldAnswer(answer);
+              materialDeleteController.deleteWorkspaceMaterialFieldAnswer(answer);
             }
-            replyController.deleteWorkspaceMaterialReply(reply);
+            materialDeleteController.deleteWorkspaceMaterialReply(reply);
           }
           // Delete assignment evaluation
           WorkspaceNodeEvaluation evaluation = evaluationController.findWorkspaceNodeEvaluationByWorkspaceNodeAndStudent(assignmentId, attendance.getUserEntityId());
