@@ -82,6 +82,15 @@ const MatriculationHistory = (props: MatriculationHistoryProps) => {
                   })}{" "}
                   {matriculationGradeMap[sr.grade]}
                 </span>
+
+                {sr.totalPoints && (
+                  <span className="application-sub-panel__notification-content-data">
+                    {t("labels.totalPoints", {
+                      ns: "hops_new",
+                      points: sr.totalPoints,
+                    })}
+                  </span>
+                )}
               </div>
             ))}
           </div>
