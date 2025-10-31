@@ -7,38 +7,29 @@ import { StateType } from "~/reducers";
 import "~/sass/elements/label.scss";
 import "~/sass/elements/item-list.scss";
 import { localize } from "~/locales/i18n";
-import { withTranslation, WithTranslation } from "react-i18next";
 import { Announcement } from "~/generated/client";
-import { AnyActionType } from "~/actions";
-import { Action, Dispatch } from "redux";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import PagerV2 from "~/components/general/pagerV2";
 import { useTranslation } from "react-i18next";
-
-/**
- * AnnouncementsAsideProps
- */
-interface AnnouncementsAsideProps {
-  announcements: AnnouncementsState;
-}
 
 /**
  * AnnouncementsAside
  * @param props props
  * @returns component
  */
-const AnnouncementsAside: React.FC<AnnouncementsAsideProps> = (props) => {
+const AnnouncementsAside: React.FC = () => {
   const { t } = useTranslation("messaging");
   const [currentPage, setCurrentPage] = React.useState(0);
-  const { announcements } = props;
+  const announcements = useSelector(
+    (state: StateType) => state.announcements.announcements
+  );
+
   const itemsPerPage = 10;
   /**
    * Calculates amount of pages
    * depends how many items there is per page
    */
-  const pageCount = Math.ceil(
-    announcements.announcements.length / itemsPerPage
-  );
+  const pageCount = Math.ceil(announcements.length / itemsPerPage);
 
   /**
    * handles page changes,
@@ -56,8 +47,8 @@ const AnnouncementsAside: React.FC<AnnouncementsAsideProps> = (props) => {
    */
   const paginatedAnnouncements = React.useMemo(() => {
     const offset = currentPage * itemsPerPage;
-    return announcements.announcements.slice(offset, offset + itemsPerPage);
-  }, [announcements.announcements, currentPage, itemsPerPage]);
+    return announcements.slice(offset, offset + itemsPerPage);
+  }, [announcements, currentPage, itemsPerPage]);
 
   const renderPaginationBody = (
     <div
@@ -86,7 +77,7 @@ const AnnouncementsAside: React.FC<AnnouncementsAsideProps> = (props) => {
 
   return (
     <>
-      {announcements.announcements.length !== 0 ? (
+      {announcements.length !== 0 ? (
         <>
           <div className="item-list item-list--panel-announcements">
             {paginatedAnnouncements.map((announcement: Announcement) => {
@@ -141,9 +132,7 @@ const AnnouncementsAside: React.FC<AnnouncementsAsideProps> = (props) => {
               );
             })}
           </div>
-          {announcements.announcements.length > itemsPerPage
-            ? renderPaginationBody
-            : null}
+          {announcements.length > itemsPerPage ? renderPaginationBody : null}
         </>
       ) : (
         <div>{t("content.empty", { context: "announcements" })}</div>
@@ -152,26 +141,4 @@ const AnnouncementsAside: React.FC<AnnouncementsAsideProps> = (props) => {
   );
 };
 
-/**
- * mapStateToProps
- * @param state state
- * @returns object
- */
-function mapStateToProps(state: StateType) {
-  return {
-    announcements: state.announcements,
-  };
-}
-
-/**
- * mapDispatchToProps
- * @param dispatch dispatch
- * @returns object
- */
-function mapDispatchToProps(dispatch: Dispatch<Action<AnyActionType>>) {
-  return {};
-}
-
-export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(AnnouncementsAside)
-);
+export default AnnouncementsAside;
