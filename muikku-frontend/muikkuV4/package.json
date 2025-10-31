@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build --emptyOutDir",
     "build-full": "npm run build-api && npm run build",
-    "build-api": "openapi-generator-cli generate -i ../../swagger.yaml -o generated/client -c generator-config.json -g typescript-fetch",
+    "build-api": "openapi-generator-cli generate -i ../../muikku-core-plugins/src/main/resources/META-INF/resources/swagger.yaml -o generated/client -c generator-config.json -g typescript-fetch",
     "lint": "eslint .",
     "preview": "vite preview"
   },

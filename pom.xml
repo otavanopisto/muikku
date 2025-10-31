@@ -71,6 +71,7 @@
     <module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
     <module>muikku-atests-plugin-rest-model</module>
+    <module>muikku-frontend</module>
   </modules>
 
   <properties>
